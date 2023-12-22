@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/other.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <title>Manga Prime</title>
+</head>
+
+<body>
+    <header class="relative p-4 bg-gray-400">
+        <div class="flex flex-row justify-around items-center">
+            <div class="w-44">
+                <h1 class="mb-4 text-3xl italic">Manga Prime</h1>
+                <div class="flex flex-row gap-5">
+                    <i class="bi bi-facebook"></i>
+                    <i class="bi bi-instagram"></i>
+                    <i class="bi bi-twitter"></i>
+                    <i class="bi bi-discord"></i>
+                </div>
+            </div>
+            <nav class="flex flex-col justify-between">
+                <ul class="mb-4 flex flex-row items-center gap-4">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Gêneros</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Entrar</a><span class="cursor-default"> | </span><a href="#">Cadastrar</a></li>
+                </ul>
+                <div>
+                    <form action="search" method="post">
+                        <input type="search" class="w-full p-2">
+                    </form>
+                </div>
+            </nav>
+            <div class="h-20 w-20 bg-white rounded-full">
+                <i class="bi bi-gear-fill"></i>
+                <img src="" alt="" class="rounded-full">
+            </div>
+        </div>
+    </header>
+    <main class="container mx-auto bg-slate-400">
+        <div class="flex gap-2">
+            <div class="p-2 border-black border-2">
+                <h2>Atualizações</h2>
+            </div>
+            <div class="p-2 overflow-hidden">
+                <p class="truncate">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
+                    architecto culpa ducimus voluptatem adipisci sit quidem illum ratione quae, voluptatum praesentium
+                    dolore harum dolorem voluptate rerum, reprehenderit accusantium quibusdam cupiditate!</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <div class="col-span-2">
+                <img src="https://fakeimg.pl/2048x2048?text=Lorem+ipsum" alt="...">
+            </div>
+            <div class="col-span-1">
+                <h2>Mais acessados</h2>
+            </div>
+            <div class="col-span-3">
+                <h2>Em ascensão</h2>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-black text-white">
+        footer
+    </footer>
+</body>
+
+</html>
