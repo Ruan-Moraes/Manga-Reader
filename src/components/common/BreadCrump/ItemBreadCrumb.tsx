@@ -12,7 +12,10 @@ const ItemBreadCrumb: React.FC<ItemBreadCrumbProps> = ({
   isCurrentPage,
 }) => {
   return (
-    <a href={href} className={isCurrentPage ? 'text-quaternary-normal' : ''}>
+    <a
+      href={href}
+      className={isCurrentPage ? 'text-quaternary-normal font-bold' : ''}
+    >
       {text}
     </a>
   );
