@@ -25,7 +25,7 @@ const Header = () => {
           </li>
         </ul>
       </div>
-      <nav className="flex flex-col items-center justify-center gap-2 p-3 pb-4 bg-primary border-y-2 border-y-tertiary">
+      <nav className="flex flex-col items-center justify-center gap-2 p-3 pb-4 bg-primary-default border-y-2 border-y-tertiary">
         <div>
           <a
             href="#"
