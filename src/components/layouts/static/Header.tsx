@@ -1,5 +1,5 @@
-import BreadCrump from '../common/BreadCrump/BreadCrumb.tsx';
-import Input from '../common/Input';
+import BreadCrump from '../../common/breadcrumb/BreadCrumb.tsx';
+import SearchInput from '../../common/others/SearchInput.tsx';
 
 const Header = () => {
   return (
@@ -35,7 +35,7 @@ const Header = () => {
           </a>
         </div>
         <div className="w-full">
-          <Input />
+          <SearchInput />
         </div>
       </nav>
       <nav>

@@ -1,4 +1,4 @@
-import icon from '../../../assets/icons/warning.svg';
+import icon from '../../../../public/assets/icons/warning.svg';
 
 const Warning = () => {
   return (

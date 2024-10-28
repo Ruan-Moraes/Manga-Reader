@@ -1,14 +1,9 @@
-// @ts-expect-error - ignore import error
-import '@splidejs/react-splide/css';
-
-import Main from './components/layout/Main';
-import Header from './components/layout/Header';
+import Index from './components/Pages/Index/Index';
 
 function App() {
   return (
     <>
-      <Header />
-      <Main />
+      <Index />
     </>
   );
 }
