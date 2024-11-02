@@ -2,7 +2,7 @@ import { useRef } from 'react';
 
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
-import Item from './Item';
+import Slide from './Slide';
 
 const Carousel = () => {
   const splideRef = useRef<Splide>(null);
@@ -31,7 +31,7 @@ const Carousel = () => {
             splideRef.current?.go('+1');
           }}
         >
-          <Item
+          <Slide
             imageSrc="https://images.alphacoders.com/135/1359819.jpeg"
             title="Solo Leveling"
             synopsis="Sung Jinwoo (Aleks Le) é um simples caçador sem habilidades ou
@@ -40,12 +40,12 @@ const Carousel = () => {
             Sistema, para ser o único a receber raras habilidades, tornando-se
             possivelmente o caçador mais forte já visto."
           />
-          <Item
+          <Slide
             imageSrc="https://images8.alphacoders.com/108/1081458.jpg"
             title="Shingeki no Kyojin"
             synopsis="A história de Shingeki no Kyojin gira em torno de uma humanidade que vem sendo exterminada por gigantes. Porém alguns seres humanos estão dispostos a mudar história e formar um exército de ataque aos seres assassinos. É assim que entra Eren, nosso protagonista, que após ver sua mãe ser devorada por um gigante, decide que não deixará nenhum deles vivo e buscará sua vingança completa."
           />
-          <Item
+          <Slide
             imageSrc="https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp"
             title="Naruto Clássico"
             synopsis="A obra gira em torno das aventuras vividas por Naruto Uzumaki, um jovem órfão habitante da Aldeia da Folha que sonha em se tornar o quinto Hokage, o maior guerreiro e governante da vila."

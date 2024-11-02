@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const Item = ({
+const Card = ({
   type,
   imageSrc,
   title,
@@ -124,4 +124,4 @@ const Item = ({
   );
 };
 
-export default Item;
+export default Card;

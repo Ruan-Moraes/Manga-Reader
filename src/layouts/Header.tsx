@@ -1,5 +1,5 @@
-import BreadCrump from '../../common/breadcrumb/BreadCrumb.tsx';
-import SearchInput from '../../common/others/SearchInput.tsx';
+import BreadCrumb_Container from '../components/breadcrumb/BreadCrumb_Container.tsx';
+import Search_Input from '../components/inputs/SearchInput.tsx';
 
 const Header = () => {
   return (
@@ -29,17 +29,17 @@ const Header = () => {
         <div>
           <a
             href="#"
-            className="text-xl italic font-bold transition-colors ease-in hover:text-quaternary-normal text-tertiary-normal"
+            className="text-2xl italic font-bold transition-colors ease-in hover:text-quaternary-normal text-tertiary-normal"
           >
             Manga Reader
           </a>
         </div>
         <div className="w-full">
-          <SearchInput />
+          <Search_Input />
         </div>
       </nav>
       <nav>
-        <BreadCrump />
+        <BreadCrumb_Container />
       </nav>
     </header>
   );

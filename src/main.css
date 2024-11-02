@@ -8,6 +8,12 @@
   letter-spacing: 0.0625rem;
 }
 
+/* Reset */
+
+html {
+  background-color: #161616;
+}
+
 /* Tailwind */
 
 @tailwind base;

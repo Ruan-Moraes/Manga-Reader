@@ -1,12 +1,12 @@
-import SectionTitle from '../../others/SectionTitle';
-import Item from './Item';
+import Section_Title from '../../titles/Section_Title';
+import Card from './Card';
 
-const HorizontalCard = () => {
+const Cards_Container = () => {
   return (
     <section className="flex flex-col gap-4">
-      <SectionTitle title="Tops 5 obras em ascensão" sub="Ver mais..." />
+      <Section_Title title="Tops 5 obras em ascensão" sub="Ver mais..." />
       <div className="flex flex-col gap-4">
-        <Item
+        <Card
           type="Manhwa"
           title="Solo Leveling"
           imageSrc="https://images.alphacoders.com/135/1359819.jpeg"
@@ -18,7 +18,7 @@ const HorizontalCard = () => {
           publisher="D&C Media"
           synopsis="Sung Jinwoo (Aleks Le) é um simples caçador sem habilidades ou forças notáveis, mas um dia, após sobreviver a uma batalha que quase o levou à morte, é selecionado para um estranho programa chamado Sistema, para ser o único a receber raras habilidades, tornando-se possivelmente o caçador mais forte já visto."
         />
-        <Item
+        <Card
           type="Manga"
           title="Shingeki no Kyojin"
           imageSrc="https://images8.alphacoders.com/108/1081458.jpg"
@@ -30,7 +30,7 @@ const HorizontalCard = () => {
           publisher="Kodansha"
           synopsis="A história de Shingeki no Kyojin gira em torno de uma humanidade que vem sendo exterminada por gigantes. Porém alguns seres humanos estão dispostos a mudar história e formar um exército de ataque aos seres assassinos. É assim que entra Eren, nosso protagonista, que após ver sua mãe ser devorada por um gigante, decide que não deixará nenhum deles vivo e buscará sua vingança completa."
         />
-        <Item
+        <Card
           type="Manga"
           title="Naruto Clássico"
           imageSrc="https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp"
@@ -42,7 +42,7 @@ const HorizontalCard = () => {
           publisher="Shueisha"
           synopsis="A obra gira em torno das aventuras vividas por Naruto Uzumaki, um jovem órfão habitante da Aldeia da Folha que sonha em se tornar o quinto Hokage, o maior guerreiro e governante da vila."
         />
-        <Item
+        <Card
           type="Manhwa"
           title="The Beginning After The End"
           imageSrc="https://c4.wallpaperflare.com/wallpaper/553/405/131/the-beginning-after-the-end-arthur-leywin-hd-wallpaper-preview.jpg"
@@ -54,7 +54,7 @@ const HorizontalCard = () => {
           publisher="KakaoPage"
           synopsis="O protagonista, King Grey, foi transportado para outro mundo. Sua habilidade de administrar tudo o que o cerca o ajudará a se tornar o rei mais poderoso de todos os tempos? Acompanhe a história de King Grey e descubra."
         />
-        <Item
+        <Card
           type="Manga"
           title="Fukushuu o Koinegau Saikyou Yuusha wa, Yami no Chikara de Senmetsu Musou Suru"
           imageSrc="https://i0.wp.com/irisscanlator.com.br/wp-content/uploads/2023/07/001.png"
@@ -71,4 +71,4 @@ const HorizontalCard = () => {
   );
 };
 
-export default HorizontalCard;
+export default Cards_Container;

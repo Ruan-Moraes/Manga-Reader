@@ -1,18 +1,31 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    'border-quaternary-default',
+    'border-quinary-default',
+    'text-quinary-default',
+  ],
   theme: {
     extend: {
       colors: {
         primary: {
           default: '#161616',
-          'opacity-50': '#16161680',
+          opacity: {
+            50: '#16161680',
+          },
         },
         secondary: '#252526',
         tertiary: '#727273',
         quaternary: {
-          'opacity-25': '#ddda2a40',
-          normal: '#ddda2a',
+          default: '#ddda2a',
+          opacity: {
+            25: '#ddda2a40',
+          },
+        },
+        quinary: {
+          default: '#FF784F',
         },
       },
       boxShadow: {
