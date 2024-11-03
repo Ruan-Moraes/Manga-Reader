@@ -27,12 +27,14 @@ const Header = () => {
       </div>
       <nav className="flex flex-col items-center justify-center gap-2 p-3 pb-4 bg-primary-default border-y-2 border-y-tertiary">
         <div>
-          <a
-            href="#"
-            className="text-2xl italic font-bold transition-colors ease-in hover:text-quaternary-normal text-tertiary-normal"
-          >
-            Manga Reader
-          </a>
+          <h1>
+            <a
+              href="#"
+              className="text-2xl italic font-bold transition-colors ease-in hover:text-quaternary-normal text-tertiary-normal"
+            >
+              Manga Reader
+            </a>
+          </h1>
         </div>
         <div className="w-full">
           <Search_Input />

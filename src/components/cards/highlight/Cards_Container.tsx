@@ -1,10 +1,10 @@
 import Section_Title from '../../titles/Section_Title';
 import Card from './Card';
 
-const Cards_Container = () => {
+const Cards_Container = ({ title, sub }: { title: string; sub: string }) => {
   return (
     <section className="flex flex-col gap-4">
-      <Section_Title title="Tops 5 obras em ascensão" sub="Ver mais..." />
+      <Section_Title title={title} sub={sub} />
       <div className="flex flex-col gap-4">
         <Card
           type="Manhwa"
@@ -45,7 +45,7 @@ const Cards_Container = () => {
         <Card
           type="Manhwa"
           title="The Beginning After The End"
-          imageSrc="https://c4.wallpaperflare.com/wallpaper/553/405/131/the-beginning-after-the-end-arthur-leywin-hd-wallpaper-preview.jpg"
+          imageSrc="https://cdn.myanimelist.net/images/anime/1883/146143l.jpg"
           popularity="4"
           score="9.4"
           chapters="120"

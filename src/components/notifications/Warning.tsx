@@ -31,7 +31,7 @@ const Warning = ({
         <div>
           <a
             href={link}
-            className={`text-sm font-bold text-${color}-default hover:text-${color}-normal`}
+            className={`text-sm, font-bold text-${color}-default hover:text-${color}-normal`}
           >
             {linkText}
           </a>

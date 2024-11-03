@@ -33,7 +33,7 @@ const Card = ({
       const informationsHTMLHeight = informationsHTML.current.clientHeight;
 
       if (informationsHTMLHeight > 226) {
-        synopsisHTML.current.style.height = '14.125rem';
+        synopsisHTML.current.style.height = '14.05rem';
       }
 
       const paragraphHeight = synopsisHTML.current.clientHeight;
@@ -49,7 +49,7 @@ const Card = ({
   return (
     <div className="flex flex-col items-start">
       <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
-        <span>{type}</span>
+        <span className="font-bold">{type}</span>
       </div>
       <div className="flex flex-row items-center w-full gap-4">
         <div
@@ -60,7 +60,7 @@ const Card = ({
             <img
               src={imageSrc}
               alt={title}
-              className="object-cover max-h-[8rem] w-full"
+              className="object-cover max-h-[10rem] w-full aspect-square"
             />
           </div>
           <div className="border-t border-t-tertiary">
@@ -113,7 +113,7 @@ const Card = ({
             style={{
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: lines > 0 ? lines : undefined,
+              WebkitLineClamp: lines,
             }}
           >
             {synopsis}
