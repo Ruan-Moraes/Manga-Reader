@@ -1,12 +1,14 @@
-const Card = ({
-  type,
-  imageSrc,
-  title,
-}: {
+interface ICard {
   type: string;
   imageSrc: string;
   title: string;
-}) => {
+  chapters: string;
+  releaseDate: string;
+}
+
+const Card = ({ type, imageSrc, title, chapters, releaseDate }: ICard) => {
+  const lastThreeChapters = chapters.split(' ').slice(-3);
+
   return (
     <div className="flex flex-col items-start">
       <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
@@ -21,36 +23,61 @@ const Card = ({
           />
         </div>
         <div className="border-t border-t-tertiary">
-          <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
-            <h3 className="truncate">{title}</h3>
+          <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
+            <h3 className="truncate text-shadow-default">{title}</h3>
           </div>
-          <div className="flex flex-col px-2 text-xs">
-            <div className="flex items-center justify-between p-1 py-2 border-b border-tertiary">
-              <span className="text-tertiary">Capítulo:</span>
-              <span className="flex items-center gap-2">
-                <span className="p-0.5 px-1 text-[0.5rem] font-bold rounded-sm bg-tertiary">
-                  Novo
+          <div className="flex flex-col px-2">
+            {lastThreeChapters.map((chapter, index) => (
+              <p
+                key={index}
+                className={`flex items-center justify-between p-1 text-xs py-2 ${
+                  index < lastThreeChapters.length - 1
+                    ? 'border-b border-tertiary'
+                    : ''
+                }`}
+              >
+                <span className="text-tertiary">Capítulo:</span>
+                <span className="flex items-center gap-2">
+                  {index === 0 ? (
+                    <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
+                      {releaseDate}
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                  <span className="font-bold text-shadow-highlight">
+                    {chapter}
+                  </span>
                 </span>
-                <span className="font-bold">23</span>
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-1 py-2 border-b border-tertiary">
-              <span className="text-tertiary">Capítulo:</span>
-              <span>
-                <span className="font-bold">22</span>
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-1 py-2">
-              <span className="text-tertiary">Capítulo:</span>
-              <span>
-                <span className="font-bold">21</span>
-              </span>
-            </div>
+              </p>
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+// <div className="flex items-center justify-between p-1 py-2 border-b border-tertiary">
+//   <span className="text-tertiary">Capítulo:</span>
+//   <span className="flex items-center gap-2">
+//     <span className="p-0.5 px-1 text-[0.5rem] font-bold rounded-sm bg-tertiary">
+//       {releaseDate}
+//     </span>
+//     <span className="font-bold"></span>
+//   </span>
+// </div>
+// <div className="flex items-center justify-between p-1 py-2 border-b border-tertiary">
+//   <span className="text-tertiary">Capítulo:</span>
+//   <span>
+//     <span className="font-bold">22</span>
+//   </span>
+// </div>
+// <div className="flex items-center justify-between p-1 py-2">
+//   <span className="text-tertiary">Capítulo:</span>
+//   <span>
+//     <span className="font-bold">21</span>
+//   </span>
+// </div>
 
 export default Card;

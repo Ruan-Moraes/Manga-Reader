@@ -1,12 +1,10 @@
-const BreadCrumb_Item = ({
-  text,
-  href,
-  isCurrentPage,
-}: {
+interface IBreadCrumb_Item {
   text: string;
   href: string;
   isCurrentPage?: boolean;
-}) => {
+}
+
+const BreadCrumb_Item = ({ text, href, isCurrentPage }: IBreadCrumb_Item) => {
   return (
     <li>
       <a

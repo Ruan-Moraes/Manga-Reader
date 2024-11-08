@@ -1,50 +1,24 @@
-# React + TypeScript + Vite
+# Manga Reader - Projeto Pessoal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Manga Reader]()
 
-Currently, two official plugins are available:
+## Descrição
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este projeto implementa a arquitetura de microserviços, utilizando **Docker** e **Docker Compose** para orquestrar os containers dos microserviços. O sistema é um leitor de mangás, onde o usuário pode visualizar os mangás e seus capítulos, além de acessar as imagens dos capítulos.
 
-## Expanding the ESLint configuration
+Cada microserviço é responsável por uma parte específica do sistema, conforme descrito abaixo:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Manga Reader**: Microserviço responsável pela interface do usuário (Frontend). [Link do Projeto]()
+- **Manga Service**: Microserviço responsável pela gestão dos mangás e seus capítulos (Backend). [Link do Projeto]()
+- **Image Service**: Microserviço responsável por armazenar e disponibilizar as imagens dos capítulos dos mangás (Backend). [Link do Projeto]()
+- **Auth Service**: Microserviço responsável pela autenticação dos usuários (Backend). [Link do Projeto]()
 
-- Configure the top-level `parserOptions` property like this:
+## Tecnologias
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
-```
+- **React**: Framework utilizado para a criação do frontend do projeto.
+- **Spring Boot**: Framework utilizado para a criação dos microserviços no backend.
+- **Docker**: Ferramenta para criar os containers dos microserviços.
+- **Docker Compose**: Ferramenta para orquestrar os containers dos microserviços.
+- **PostgreSQL**: Banco de dados utilizado para armazenar as informações dos mangás, capítulos e usuários.
+- **MongoDB**: Banco de dados utilizado para armazenar as imagens dos capítulos dos mangás.
+- **JWT (JSON Web Token)**: Tecnologia utilizada para autenticação e autorização de usuários.

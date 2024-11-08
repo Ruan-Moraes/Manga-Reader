@@ -2,7 +2,8 @@ import { useRef } from 'react';
 
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
-import Slide from './Slide';
+
+import Slide from './SlideItem';
 
 const Carousel = () => {
   const splideRef = useRef<Splide>(null);
@@ -11,7 +12,9 @@ const Carousel = () => {
     <section className="flex flex-col items-start">
       <div className="px-4 py-2 rounded-t-sm bg-tertiary">
         <h2 className="flex flex-col items-center">
-          <span className="font-bold">Obras mais vistas</span>
+          <span className="font-bold text-shadow-default">
+            Obras mais vistas
+          </span>
           <span className="text-xs">(últimos 30 dias)</span>
         </h2>
       </div>

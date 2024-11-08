@@ -1,12 +1,16 @@
-import Section_Title from '../../titles/Section_Title';
-
 import Card from './Card';
 
-const Cards_Container = ({ title, sub }: { title: string; sub: string }) => {
+import Section_Title from '../../titles/Section_Title';
+interface ICards_Container {
+  title: string;
+  sub: string;
+}
+
+const Cards_Container = ({ title, sub }: ICards_Container) => {
   return (
     <section className="flex flex-col gap-4">
       <Section_Title title={title} sub={sub} />
-      <div className="flex gap-8 overflow-x-auto flex-nowrap">
+      <div className="flex gap-4 overflow-x-auto flex-nowrap">
         <Card
           type="Manga"
           chapters="1600"

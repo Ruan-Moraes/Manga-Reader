@@ -1,5 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
+interface ICard {
+  type: string;
+  imageSrc: string;
+  title: string;
+  popularity: string;
+  score: string;
+  chapters: string;
+  author: string;
+  artist: string;
+  publisher: string;
+  synopsis: string;
+}
+
 const Card = ({
   type,
   imageSrc,
@@ -11,18 +24,7 @@ const Card = ({
   artist,
   publisher,
   synopsis,
-}: {
-  type: string;
-  imageSrc: string;
-  title: string;
-  popularity: string;
-  score: string;
-  chapters: string;
-  author: string;
-  artist: string;
-  publisher: string;
-  synopsis: string;
-}) => {
+}: ICard) => {
   const informationsHTML = useRef<HTMLDivElement>(null);
   const synopsisHTML = useRef<HTMLDivElement>(null);
 
@@ -65,7 +67,7 @@ const Card = ({
           </div>
           <div className="border-t border-t-tertiary">
             <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
-              <h3 className="truncate">{title}</h3>
+              <h3 className="truncate text-shadow-default">{title}</h3>
             </div>
             <div className="flex flex-col w-full gap-1 p-2 text-xs">
               <div>

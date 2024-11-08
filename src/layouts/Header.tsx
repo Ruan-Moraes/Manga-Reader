@@ -1,9 +1,9 @@
 import BreadCrumb_Container from '../components/breadcrumb/BreadCrumb_Container.tsx';
-import Search_Input from '../components/inputs/SearchInput.tsx';
+import Search_Input from '../components/inputs/Search_Input.tsx';
 
 const Header = () => {
   return (
-    <header className="flex flex-col bg-secondary ">
+    <header className="flex flex-col bg-secondary">
       <div className="p-3">
         <ul className="flex items-center justify-end gap-3">
           <li>

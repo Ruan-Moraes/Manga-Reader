@@ -7,14 +7,28 @@ import './main.css';
 // Pages imports
 import Index from './pages/Index';
 import Error404 from './pages/Error404.tsx';
-
-// Routes
+import Login from './pages/Login.tsx';
+import Register from './pages/Register.tsx';
+import Categories from './pages/Categories.tsx';
+// Routes\
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const routes = createBrowserRouter([
   {
     path: '/',
     element: <Index />,
+  },
+  {
+    path: '/categories',
+    element: <Categories />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
   {
     path: '*',

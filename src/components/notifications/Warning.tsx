@@ -1,20 +1,19 @@
-const Warning = ({
-  title,
-  message,
-  color,
-  link,
-  linkText,
-}: {
+import { Colors } from '../../constants/Colors';
+
+interface IWarning {
   title: string;
   message: string;
-  color: 'quaternary' | 'quinary';
+  color: Colors;
   link?: string;
   linkText?: string;
-}) => {
+}
+
+const Warning = ({ title, message, color, link, linkText }: IWarning) => {
   return (
     <div className="flex flex-col items-center gap-4">
       <div
-        className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm border-${color}-default`}
+        className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm
+          border-${color}-default`}
       >
         <div>
           <h2>

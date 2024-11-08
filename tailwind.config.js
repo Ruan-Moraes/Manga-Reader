@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import plugin from 'tailwindcss/plugin';
 
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -13,7 +14,7 @@ export default {
         primary: {
           default: '#161616',
           opacity: {
-            50: '#16161680',
+            75: '#161616bf',
           },
         },
         secondary: '#252526',
@@ -22,6 +23,7 @@ export default {
           default: '#ddda2a',
           opacity: {
             25: '#ddda2a40',
+            50: '#ddda2a80',
           },
         },
         quinary: {
@@ -29,10 +31,25 @@ export default {
         },
       },
       boxShadow: {
-        default: '0.25rem 0.25rem 0px 0px #ddda2a40',
-        inside: '0px 0px 0.075rem 0.25rem #ddda2a40',
+        default: '0.25rem 0.25rem 0 0 #ddda2a40',
+        inside: '0 0 0.075rem 0.25rem #ddda2a40',
+      },
+      textShadow: {
+        default: '0.125rem 0.0625rem 0 #161616bf',
+        highlight: '0.125rem 0.0625rem 0 #ddda2a40',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      );
+    }),
+  ],
 };
