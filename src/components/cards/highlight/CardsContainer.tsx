@@ -1,12 +1,12 @@
+import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 
-import Section_Title from '../../titles/Section_Title';
-interface ICards_Container {
+interface ICardsContainer {
   title: string;
   sub: string;
 }
 
-const Cards_Container = ({ title, sub }: ICards_Container) => {
+const CardsContainer = ({ title, sub }: ICardsContainer) => {
   return (
     <section className="flex flex-col gap-4">
       <Section_Title title={title} sub={sub} />
@@ -76,4 +76,4 @@ const Cards_Container = ({ title, sub }: ICards_Container) => {
   );
 };
 
-export default Cards_Container;
+export default CardsContainer;

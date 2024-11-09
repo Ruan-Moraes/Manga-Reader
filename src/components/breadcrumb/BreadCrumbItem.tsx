@@ -1,10 +1,10 @@
-interface IBreadCrumb_Item {
+interface IBreadCrumbItem {
   text: string;
   href: string;
   isCurrentPage?: boolean;
 }
 
-const BreadCrumb_Item = ({ text, href, isCurrentPage }: IBreadCrumb_Item) => {
+const BreadCrumbItem = ({ text, href, isCurrentPage }: IBreadCrumbItem) => {
   return (
     <li>
       <a
@@ -18,4 +18,4 @@ const BreadCrumb_Item = ({ text, href, isCurrentPage }: IBreadCrumb_Item) => {
   );
 };
 
-export default BreadCrumb_Item;
+export default BreadCrumbItem;

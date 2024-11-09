@@ -33,10 +33,20 @@ export default {
       boxShadow: {
         default: '0.25rem 0.25rem 0 0 #ddda2a40',
         inside: '0 0 0.075rem 0.25rem #ddda2a40',
+        elevated: '-0.25rem 0.25rem 0 0 #ddda2a40',
       },
       textShadow: {
         default: '0.125rem 0.0625rem 0 #161616bf',
         highlight: '0.125rem 0.0625rem 0 #ddda2a40',
+      },
+      animation: {
+        marquee: 'marquee 10s linear infinite',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(-150%)' },
+        },
       },
     },
   },

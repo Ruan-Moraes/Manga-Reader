@@ -1,3 +1,5 @@
+const howManyChapters = 3;
+
 interface ICard {
   type: string;
   imageSrc: string;
@@ -7,7 +9,7 @@ interface ICard {
 }
 
 const Card = ({ type, imageSrc, title, chapters, releaseDate }: ICard) => {
-  const lastThreeChapters = chapters.split(' ').slice(-3);
+  const lastThreeChapters = chapters.split(' ').slice(-howManyChapters);
 
   return (
     <div className="flex flex-col items-start">
@@ -57,27 +59,5 @@ const Card = ({ type, imageSrc, title, chapters, releaseDate }: ICard) => {
     </div>
   );
 };
-
-// <div className="flex items-center justify-between p-1 py-2 border-b border-tertiary">
-//   <span className="text-tertiary">Capítulo:</span>
-//   <span className="flex items-center gap-2">
-//     <span className="p-0.5 px-1 text-[0.5rem] font-bold rounded-sm bg-tertiary">
-//       {releaseDate}
-//     </span>
-//     <span className="font-bold"></span>
-//   </span>
-// </div>
-// <div className="flex items-center justify-between p-1 py-2 border-b border-tertiary">
-//   <span className="text-tertiary">Capítulo:</span>
-//   <span>
-//     <span className="font-bold">22</span>
-//   </span>
-// </div>
-// <div className="flex items-center justify-between p-1 py-2">
-//   <span className="text-tertiary">Capítulo:</span>
-//   <span>
-//     <span className="font-bold">21</span>
-//   </span>
-// </div>
 
 export default Card;

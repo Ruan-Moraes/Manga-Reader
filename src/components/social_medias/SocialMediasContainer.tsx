@@ -1,6 +1,6 @@
-type ISocial_Medias_Container = {};
+type ISocialMediasContainer = {};
 
-const Social_Medias_Container = ({}: ISocial_Medias_Container) => {
+const SocialMediasContainer = ({}: ISocialMediasContainer) => {
   return (
     <aside className="flex flex-col">
       <div>
@@ -46,4 +46,4 @@ const Social_Medias_Container = ({}: ISocial_Medias_Container) => {
   );
 };
 
-export default Social_Medias_Container;
+export default SocialMediasContainer;

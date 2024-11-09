@@ -1,48 +1,72 @@
-import BreadCrumb_Container from '../components/breadcrumb/BreadCrumb_Container.tsx';
-import Search_Input from '../components/inputs/Search_Input.tsx';
+import { useLocation, Link } from 'react-router-dom';
 
-const Header = () => {
+import BreadCrumbContainer from '../components/breadcrumb/BreadCrumbContainer.tsx';
+import SearchInput from '../components/inputs/SearchInput.tsx';
+
+interface IHeader {
+  disabledSearch?: boolean;
+  disabledBreadcrumb?: boolean;
+}
+
+const Header = ({ disabledSearch, disabledBreadcrumb }: IHeader) => {
+  const location = useLocation();
+  console.log(location);
+
   return (
     <header className="flex flex-col bg-secondary">
-      <div className="p-3">
+      <div className="p-2 border-b-2 border-b-tertiary">
         <ul className="flex items-center justify-end gap-3">
           <li>
-            <a
-              href="#"
-              className="font-bold transition-colors ease-in hover:text-quaternary-normal"
+            <Link
+              to="/sign-up"
+              className={`font-bold transition ease-in hover:text-shadow-highlight ${
+                location.pathname === '/sign-up'
+                  ? 'text-quaternary-default'
+                  : ''
+              }`}
             >
               Sing Up
-            </a>
+            </Link>
           </li>
           <span className="font-bold">|</span>
           <li>
-            <a
-              href="#"
-              className="font-bold transition-colors ease-in hover:text-quaternary-normal"
+            <Link
+              to="/login"
+              className={`font-bold transition ease-in hover:text-shadow-highlight ${
+                location.pathname === '/login' ? 'text-quaternary-default' : ''
+              }`}
             >
               Login
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
-      <nav className="flex flex-col items-center justify-center gap-2 p-3 pb-4 bg-primary-default border-y-2 border-y-tertiary">
+      <nav
+        className={`flex flex-col items-center justify-center gap-2 p-3 border-b-2 bg-primary-default border-b-tertiary ${
+          !disabledSearch && !disabledBreadcrumb ? 'pb-4' : 'pb-3'
+        }`}
+      >
         <div>
           <h1>
-            <a
-              href="#"
+            <Link
+              to="/"
               className="text-2xl italic font-bold transition-colors ease-in hover:text-quaternary-normal text-tertiary-normal"
             >
               Manga Reader
-            </a>
+            </Link>
           </h1>
         </div>
-        <div className="w-full">
-          <Search_Input />
-        </div>
+        {!disabledSearch && (
+          <div className="w-full">
+            <SearchInput />
+          </div>
+        )}
       </nav>
-      <nav>
-        <BreadCrumb_Container />
-      </nav>
+      {!disabledBreadcrumb && (
+        <nav>
+          <BreadCrumbContainer />
+        </nav>
+      )}
     </header>
   );
 };

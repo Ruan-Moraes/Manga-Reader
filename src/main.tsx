@@ -8,9 +8,10 @@ import './main.css';
 import Index from './pages/Index';
 import Error404 from './pages/Error404.tsx';
 import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
+import SignUp from './pages/Sign_Up.tsx';
 import Categories from './pages/Categories.tsx';
-// Routes\
+
+// Routes
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const routes = createBrowserRouter([
@@ -27,8 +28,8 @@ const routes = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/register',
-    element: <Register />,
+    path: '/sign-up',
+    element: <SignUp />,
   },
   {
     path: '*',

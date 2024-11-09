@@ -1,8 +1,8 @@
-import Item from './BreadCrumb_Item';
+import Item from './BreadCrumbItem';
 
-const BreadCrumb_Container = () => {
+const BreadCrumbContainer = () => {
   return (
-    <ul className="flex px-2 py-1 overflow-x-scroll border-b-2 break-keep whitespace-nowrap border-b-tertiary">
+    <ul className="flex p-2 overflow-x-scroll text-xs border-b-2 break-keep whitespace-nowrap border-b-tertiary">
       <Item text="Home" href="#" />
       <Item text="Categorias" href="#" />
       <Item text="Manhwas" href="#" />
@@ -12,4 +12,4 @@ const BreadCrumb_Container = () => {
   );
 };
 
-export default BreadCrumb_Container;
+export default BreadCrumbContainer;

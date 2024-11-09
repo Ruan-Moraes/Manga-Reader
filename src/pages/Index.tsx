@@ -9,10 +9,10 @@ import Footer from '../layouts/Footer';
 
 import Warning from '../components/notifications/Warning';
 import Carousel from '../components/carousel/Carousel';
-import Highlight_Cards from '../components/cards/highlight/Cards_Container';
-import Horizontal_Card from '../components/cards/horizontal/Cards_Container';
-import Vertical_Cards from '../components/cards/vertical/Cards_Container';
-import Social_Medias from '../components/social_medias/Social_Medias_Container';
+import Highlight_Cards from '../components/cards/highlight/CardsContainer';
+import Horizontal_Card from '../components/cards/horizontal/CardsContainer';
+import Vertical_Cards from '../components/cards/vertical/CardsContainer';
+import Social_Medias from '../components/social_medias/SocialMediasContainer';
 
 const Index = () => {
   return (
