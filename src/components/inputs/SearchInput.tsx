@@ -1,4 +1,4 @@
-const Search_Input = () => {
+const SearchInput = () => {
   return (
     <form role="search">
       <input
@@ -11,4 +11,4 @@ const Search_Input = () => {
   );
 };
 
-export default Search_Input;
+export default SearchInput;

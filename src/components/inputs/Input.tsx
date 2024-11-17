@@ -2,10 +2,9 @@ interface IInput {
   label: string;
   type: string;
   placeholder: string;
-  value: string;
 }
 
-const Input = ({ label, type, placeholder, value }: IInput) => {
+const Input = ({ label, type, placeholder }: IInput) => {
   return (
     <div>
       <label className="flex flex-col gap-1 ">
@@ -13,7 +12,6 @@ const Input = ({ label, type, placeholder, value }: IInput) => {
         <input
           type={type}
           placeholder={placeholder}
-          value={value}
           className="w-full p-2 transition-all ease-in border-none rounded-sm outline-none appearance-none bg-tertiary placeholder-primary-default placeholder:text-sm shadow-default focus:shadow-inside hover:shadow-inside"
         />
       </label>

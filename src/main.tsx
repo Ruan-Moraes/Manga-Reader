@@ -1,17 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-// Styles imports
 import './main.css';
 
-// Pages imports
 import Index from './pages/Index';
 import Error404 from './pages/Error404.tsx';
 import Login from './pages/Login.tsx';
 import SignUp from './pages/Sign_Up.tsx';
 import Categories from './pages/Categories.tsx';
+import AboutUs from './pages/AboutUs.tsx';
+import Dmca from './pages/Dmca.tsx';
+import TermsOfUse from './pages/TermsOfUse.tsx';
 
-// Routes
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const routes = createBrowserRouter([
@@ -30,6 +30,18 @@ const routes = createBrowserRouter([
   {
     path: '/sign-up',
     element: <SignUp />,
+  },
+  {
+    path: '/about-us',
+    element: <AboutUs />,
+  },
+  {
+    path: '/dmca',
+    element: <Dmca />,
+  },
+  {
+    path: '/terms-of-use',
+    element: <TermsOfUse />,
   },
   {
     path: '*',

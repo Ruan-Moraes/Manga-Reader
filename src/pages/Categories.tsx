@@ -1,5 +1,5 @@
-const Category = () => {
+const Categories = () => {
   return <></>;
 };
 
-export default Category;
+export default Categories;

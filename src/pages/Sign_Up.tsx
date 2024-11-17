@@ -2,43 +2,48 @@ import Header from '../layouts/Header';
 import Main from '../layouts/Main';
 import Footer from '../layouts/Footer';
 
+import AuthenticationForm from '../components/form/AuthenticationForm';
 import Input from '../components/inputs/Input';
 import ButtonHighLight from '../components/buttons/RaisedButton';
+import Checkbox from '../components/inputs/CheckboxInput';
 
 const Register = () => {
   return (
     <>
       <Header disabledBreadcrumb={true} disabledSearch={true} />
       <Main>
-        <div>
-          <form>
-            <fieldset className="flex flex-col gap-6 p-4 border-2 rounded-sm border-tertiary">
-              <legend className="px-2 font-bold text-shadow-highlight">
-                Cadastro de usuário
-              </legend>
-              <Input
-                label="Nome:"
-                type="text"
-                placeholder="Nome de usuário"
-                value=""
-              />
-              <Input label="Email:" type="email" placeholder="Email" value="" />
-              <Input
-                label="Senha:"
-                type="password"
-                placeholder="Senha"
-                value=""
-              />
-              <Input
-                label="Confirmar senha:"
-                type="password"
-                placeholder="Confirme sua senha"
-                value=""
-              />
-              <ButtonHighLight text="Cadastrar" />
-            </fieldset>
-          </form>
-        </div>
+        <AuthenticationForm
+          title="Cadastro de usuário"
+          helperText="Já possui uma conta?"
+          linkText="Entrar"
+          linkTo="/login"
+        >
+          <Input label="Nome:" type="text" placeholder="Nome de usuário" />
+          <Input label="Email:" type="email" placeholder="Digite seu email" />
+          <Input
+            label="Senha:"
+            type="password"
+            placeholder="Digite sua senha"
+          />
+          <Input
+            label="Confirmar senha:"
+            type="password"
+            placeholder="Confirme sua senha"
+          />
+          <div className="flex flex-col gap-2">
+            <Checkbox
+              labelText="Eu aceito os"
+              linkTo="/termsofuse"
+              linkText="Termos de uso."
+            />
+            <Checkbox
+              labelText="Eu aceito as politicas de "
+              linkTo="/dmca"
+              linkText="DMCA."
+            />
+          </div>
+          <ButtonHighLight text="Cadastrar" />
+        </AuthenticationForm>
       </Main>
       <Footer disabledLinks={true} />
     </>

@@ -1,9 +1,9 @@
-interface ISection_Title {
+interface ISectionTitle {
   title: string;
   sub?: string;
 }
 
-const Section_Title = ({ title, sub }: ISection_Title) => {
+const SectionTitle = ({ title, sub }: ISectionTitle) => {
   return (
     <div>
       <h2 className="flex flex-col items-start justify-between">
@@ -14,4 +14,4 @@ const Section_Title = ({ title, sub }: ISection_Title) => {
   );
 };
 
-export default Section_Title;
+export default SectionTitle;

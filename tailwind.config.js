@@ -40,11 +40,11 @@ export default {
         highlight: '0.125rem 0.0625rem 0 #ddda2a40',
       },
       animation: {
-        marquee: 'marquee 10s linear infinite',
+        marquee: 'marquee 20s linear infinite',
       },
       keyframes: {
         marquee: {
-          '0%': { transform: 'translateX(100%)' },
+          '0%': { transform: 'translateX(125%)' },
           '100%': { transform: 'translateX(-150%)' },
         },
       },

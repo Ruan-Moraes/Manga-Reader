@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface IFooter {
   disabledLinks?: boolean;
 }
@@ -13,15 +15,18 @@ const Footer = ({ disabledLinks }: IFooter) => {
                 <h3 className="text-shadow-highlight">Links úteis</h3>
               </div>
               <div>
-                <ul className="flex flex-col px-2 text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
+                <ul className="flex flex-col px-2 text-sm text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
                   <li className="p-2 border-b-2 border-b-tertiary">
                     <a href="#">Home</a>
                   </li>
                   <li className="p-2 border-b-2 border-b-tertiary">
                     <a href="#">Categorias</a>
                   </li>
-                  <li className="p-2">
+                  <li className="p-2 border-b-2 border-b-tertiary">
                     <a href="#">Novidades</a>
+                  </li>
+                  <li className="p-2">
+                    <a href="#">Grupos</a>
                   </li>
                 </ul>
               </div>
@@ -31,7 +36,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
                 <h3 className="text-shadow-highlight">Redes sociais</h3>
               </div>
               <div>
-                <ul className="flex flex-col px-2 text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
+                <ul className="flex flex-col px-2 text-sm text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
                   <li className="p-2 border-b-2 border-b-tertiary">
                     <a href="#">Discord</a>
                   </li>
@@ -53,15 +58,21 @@ const Footer = ({ disabledLinks }: IFooter) => {
               <h3 className="text-shadow-highlight">Outros links</h3>
             </div>
             <div>
-              <ul className="flex flex-col px-2 text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
+              <ul className="flex flex-col px-2 text-sm text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
                 <li className="p-2 border-b-2 border-b-tertiary">
-                  <a href="#">Sobre</a>
+                  <Link to="">Quero publicar obra</Link>
                 </li>
                 <li className="p-2 border-b-2 border-b-tertiary">
-                  <a href="#">Contato</a>
+                  <Link to="">Doe para o projeto</Link>
+                </li>
+                <li className="p-2 border-b-2 border-b-tertiary">
+                  <Link to="about-us">Sobre nós</Link>
+                </li>
+                <li className="p-2 border-b-2 border-b-tertiary">
+                  <Link to="/dmca">DMCA</Link>
                 </li>
                 <li className="p-2">
-                  <a href="#">Termos de uso</a>
+                  <Link to="/terms-of-use">Termos de uso</Link>
                 </li>
               </ul>
             </div>

@@ -38,7 +38,7 @@ const Card = ({ type, imageSrc, title, chapters, releaseDate }: ICard) => {
                     : ''
                 }`}
               >
-                <span className="text-tertiary">Capítulo:</span>
+                <span>Capítulo:</span>
                 <span className="flex items-center gap-2">
                   {index === 0 ? (
                     <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
