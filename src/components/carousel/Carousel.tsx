@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
@@ -7,6 +7,21 @@ import Slide from './SlideItem';
 
 const Carousel = () => {
   const splideRef = useRef<Splide>(null);
+  const [intervalId, setIntervalId] = useState<number | null>(null);
+
+  const handleCarouselClick = () => {
+    splideRef.current?.go('+1');
+
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+
+    const newIntervalId = setInterval(() => {
+      splideRef.current?.go('+1');
+    }, 7500);
+
+    setIntervalId(newIntervalId);
+  };
 
   return (
     <section className="flex flex-col items-start">
@@ -18,21 +33,19 @@ const Carousel = () => {
           <span className="text-xs">(últimos 30 dias)</span>
         </h2>
       </div>
-      <div className="overflow-hidden border-2 rounded-sm rounded-tl-none border-tertiary">
+      <div className="border-2 rounded-sm rounded-tl-none border-tertiary">
         <Splide
           ref={splideRef}
           options={{
             type: 'fade',
             rewind: true,
             autoplay: true,
-            interval: 5000,
+            interval: 7500,
             speed: 500,
             pagination: false,
             arrows: false,
           }}
-          onClick={() => {
-            splideRef.current?.go('+1');
-          }}
+          onClick={handleCarouselClick}
         >
           <Slide
             imageSrc="https://images.alphacoders.com/135/1359819.jpeg"

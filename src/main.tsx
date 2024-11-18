@@ -4,13 +4,14 @@ import { createRoot } from 'react-dom/client';
 import './main.css';
 
 import Index from './pages/Index';
-import Error404 from './pages/Error404.tsx';
-import Login from './pages/Login.tsx';
-import SignUp from './pages/Sign_Up.tsx';
 import Categories from './pages/Categories.tsx';
+import Login from './pages/Login.tsx';
+import SignUp from './pages/SignUp.tsx';
+import IWantToPublishWork from './pages/IWantToPublishWork.tsx';
 import AboutUs from './pages/AboutUs.tsx';
 import Dmca from './pages/Dmca.tsx';
 import TermsOfUse from './pages/TermsOfUse.tsx';
+import Error404 from './pages/Error404.tsx';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -30,6 +31,10 @@ const routes = createBrowserRouter([
   {
     path: '/sign-up',
     element: <SignUp />,
+  },
+  {
+    path: '/i-want-to-publish-work',
+    element: <IWantToPublishWork />,
   },
   {
     path: '/about-us',

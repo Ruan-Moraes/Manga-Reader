@@ -7,7 +7,7 @@ import Input from '../components/inputs/Input';
 import ButtonHighLight from '../components/buttons/RaisedButton';
 import Checkbox from '../components/inputs/CheckboxInput';
 
-const Register = () => {
+const SignUp = () => {
   return (
     <>
       <Header disabledBreadcrumb={true} disabledSearch={true} />
@@ -15,7 +15,7 @@ const Register = () => {
         <AuthenticationForm
           title="Cadastro de usuário"
           helperText="Já possui uma conta?"
-          linkText="Entrar"
+          linkText="Faça login"
           linkTo="/login"
         >
           <Input label="Nome:" type="text" placeholder="Nome de usuário" />
@@ -33,11 +33,11 @@ const Register = () => {
           <div className="flex flex-col gap-2">
             <Checkbox
               labelText="Eu aceito os"
-              linkTo="/termsofuse"
+              linkTo="/terms-of-use"
               linkText="Termos de uso."
             />
             <Checkbox
-              labelText="Eu aceito as politicas de "
+              labelText="Eu aceito as políticas de "
               linkTo="/dmca"
               linkText="DMCA."
             />
@@ -50,4 +50,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;

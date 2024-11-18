@@ -17,7 +17,7 @@ import Social_Medias from '../components/social_medias/SocialMediasContainer';
 const Index = () => {
   return (
     <>
-      <Header />
+      <Header disabledBreadcrumb={true} />
       <Main>
         <Warning
           title="Atenção!"

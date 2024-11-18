@@ -17,7 +17,7 @@ const SlideItem = ({ imageSrc, title, synopsis }: ISlideItem) => {
         <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-75 max-h-[12.5rem]">
           <h3 className="text-lg font-bold text-shadow-highlight">{title}</h3>
           <p
-            className="text-xs max-h-[3.15rem] overflow-y-hidden"
+            className="text-xs max-h-[3.15rem] overflow-hidden"
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 3,

@@ -60,13 +60,19 @@ const Footer = ({ disabledLinks }: IFooter) => {
             <div>
               <ul className="flex flex-col px-2 text-sm text-center border-2 border-t-0 rounded-sm rounded-t-none bg-primary-default border-tertiary text-shadow-default">
                 <li className="p-2 border-b-2 border-b-tertiary">
-                  <Link to="">Quero publicar obra</Link>
+                  <Link to="/i-want-to-publish-work">Quero publicar obra</Link>
                 </li>
                 <li className="p-2 border-b-2 border-b-tertiary">
-                  <Link to="">Doe para o projeto</Link>
+                  <Link
+                    to="https://ko-fi.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Doe para o projeto
+                  </Link>
                 </li>
                 <li className="p-2 border-b-2 border-b-tertiary">
-                  <Link to="about-us">Sobre nós</Link>
+                  <Link to="/about-us">Quem somos</Link>
                 </li>
                 <li className="p-2 border-b-2 border-b-tertiary">
                   <Link to="/dmca">DMCA</Link>
