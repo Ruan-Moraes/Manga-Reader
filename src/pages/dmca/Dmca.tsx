@@ -1,17 +1,13 @@
-import Header from '../layouts/Header';
-import Main from '../layouts/Main';
-import Footer from '../layouts/Footer';
+import Header from '../../layouts/Header';
+import Main from '../../layouts/Main';
+import Footer from '../../layouts/Footer';
 
 import { Link } from 'react-router-dom';
 
 const Dmca = () => {
   return (
     <>
-      <Header
-        disabledAuth={true}
-        disabledBreadcrumb={true}
-        disabledSearch={true}
-      />
+      <Header disabledBreadcrumb={true} disabledSearch={true} />
       <Main>
         <section className="flex flex-col gap-4">
           <div>
@@ -99,18 +95,12 @@ const Dmca = () => {
                   laudantium nulla. Obcaecati.
                 </p>
               </div>
-              <div className="text-xs font-bold text-right underline text-shadow-highlight">
-                <ul>
-                  <li>
-                    <Link to="/terms-of-use">
-                      Termos de uso e Política de Privacidade
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/about-us">Quem somos?</Link>
-                  </li>
-                </ul>
-              </div>
+              <nav className="flex flex-col text-xs font-bold text-right underline text-shadow-highlight">
+                <Link to="/terms-of-use">
+                  Termos de uso e Política de Privacidade
+                </Link>
+                <Link to="/about-us">Quem somos?</Link>
+              </nav>
             </div>
           </div>
         </section>

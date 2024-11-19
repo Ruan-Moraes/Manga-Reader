@@ -1,17 +1,13 @@
-import Header from '../layouts/Header';
-import Footer from '../layouts/Footer';
-import Main from '../layouts/Main';
+import Header from '../../layouts/Header';
+import Footer from '../../layouts/Footer';
+import Main from '../../layouts/Main';
 
 import { Link } from 'react-router-dom';
 
 const AboutUs = () => {
   return (
     <>
-      <Header
-        disabledAuth={true}
-        disabledSearch={true}
-        disabledBreadcrumb={true}
-      />
+      <Header disabledSearch={true} disabledBreadcrumb={true} />
       <Main>
         <section className="flex flex-col gap-4">
           <div>
@@ -71,18 +67,12 @@ const AboutUs = () => {
                   laudantium nulla. Obcaecati.
                 </p>
               </div>
-              <div className="text-xs font-bold text-right underline text-shadow-highlight">
-                <ul>
-                  <li>
-                    <Link to="/dmca">Política de Direitos Autorais (DMCA)</Link>
-                  </li>
-                  <li>
-                    <Link to="/terms-of-use">
-                      Termos de uso e Política de Privacidade
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+              <nav className="flex flex-col text-xs font-bold text-right underline text-shadow-highlight">
+                <Link to="/dmca">Política de Direitos Autorais (DMCA)</Link>
+                <Link to="/terms-of-use">
+                  Termos de uso e Política de Privacidade
+                </Link>
+              </nav>
             </div>
           </div>
         </section>

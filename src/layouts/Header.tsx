@@ -1,9 +1,9 @@
 import { useLocation, Link } from 'react-router-dom';
 
-import { MdMenu } from 'react-icons/md';
-
 import SearchInput from '../components/inputs/SearchInput.tsx';
 import BreadCrumbContainer from '../components/breadcrumb/BreadCrumbContainer.tsx';
+
+import Menu from '../components/menu/Menu.tsx';
 
 interface IHeader {
   disabledAuth?: boolean;
@@ -23,35 +23,25 @@ const Header = ({
   return (
     <header className="flex flex-col bg-secondary">
       {!disabledAuth && (
-        <div className="p-2 border-b-2 border-b-tertiary">
-          <ul className="flex items-center justify-end gap-3">
-            <li>
-              <Link
-                to="/sign-up"
-                className={`font-bold transition ease-in hover:text-shadow-highlight ${
-                  location.pathname === '/sign-up'
-                    ? 'text-quaternary-default'
-                    : ''
-                }`}
-              >
-                Sing Up
-              </Link>
-            </li>
-            <span className="font-bold">|</span>
-            <li>
-              <Link
-                to="/login"
-                className={`font-bold transition ease-in hover:text-shadow-highlight ${
-                  location.pathname === '/login'
-                    ? 'text-quaternary-default'
-                    : ''
-                }`}
-              >
-                Login
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
+          <Link
+            to="/sign-up"
+            className={`font-bold transition ease-in hover:text-shadow-highlight ${
+              location.pathname === '/sign-up' ? 'text-quaternary-default' : ''
+            }`}
+          >
+            Sing Up
+          </Link>
+          <span className="font-bold">|</span>
+          <Link
+            to="/login"
+            className={`font-bold transition ease-in hover:text-shadow-highlight ${
+              location.pathname === '/login' ? 'text-quaternary-default' : ''
+            }`}
+          >
+            Login
+          </Link>
+        </nav>
       )}
       <nav
         className={`flex flex-col items-center justify-center gap-2 p-3 border-b-2 bg-primary-default border-b-tertiary ${
@@ -68,26 +58,10 @@ const Header = ({
             </Link>
           </h1>
         </div>
-        {!disabledSearch && (
-          <div className="w-full">
-            <SearchInput />
-          </div>
-        )}
+        {!disabledSearch && <SearchInput />}
       </nav>
-      {!disabledMenu && (
-        <nav
-          className={`flex flex-row-reverse p-2 border-b-2 border-b-tertiary ${
-            !disabledBreadcrumb ? 'bg-primary-default' : 'bg-secondary'
-          }`}
-        >
-          <MdMenu className="text-4xl" color="#0000ff" />
-        </nav>
-      )}
-      {!disabledBreadcrumb && (
-        <nav>
-          <BreadCrumbContainer />
-        </nav>
-      )}
+      {!disabledMenu && <Menu disabledBreadcrumb />}
+      {!disabledBreadcrumb && <BreadCrumbContainer />}
     </header>
   );
 };

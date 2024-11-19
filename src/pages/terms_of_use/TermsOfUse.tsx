@@ -1,17 +1,13 @@
 import { Link } from 'react-router-dom';
 
-import Header from '../layouts/Header';
-import Main from '../layouts/Main';
-import Footer from '../layouts/Footer';
+import Header from '../../layouts/Header';
+import Main from '../../layouts/Main';
+import Footer from '../../layouts/Footer';
 
 const TermsOfUse = () => {
   return (
     <>
-      <Header
-        disabledBreadcrumb={true}
-        disabledSearch={true}
-        disabledAuth={true}
-      />
+      <Header disabledBreadcrumb={true} disabledSearch={true} />
       <Main>
         <section className="flex flex-col gap-4">
           <div>
@@ -131,16 +127,10 @@ const TermsOfUse = () => {
                   laudantium nulla. Obcaecati.
                 </p>
               </div>
-              <div className="text-xs font-bold text-right underline text-shadow-highlight">
-                <ul>
-                  <li>
-                    <Link to="/dmca">Política de Direitos Autorais (DMCA)</Link>
-                  </li>
-                  <li>
-                    <Link to="/about-us">Quem somos?</Link>
-                  </li>
-                </ul>
-              </div>
+              <nav className="flex flex-col text-xs font-bold text-right underline text-shadow-highlight">
+                <Link to="/dmca">Política de Direitos Autorais (DMCA)</Link>
+                <Link to="/about-us">Quem somos?</Link>
+              </nav>
             </div>
           </div>
         </section>

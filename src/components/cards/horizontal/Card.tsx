@@ -12,7 +12,7 @@ const Card = ({ type, chapters, imageSrc, title }: ICard) => {
         <span className="font-bold">{type}</span>
         <span className="text-xs">({chapters} Capítulos)</span>
       </div>
-      <div className="border border-b-0 border-tertiary w-[20rem] h-[14rem]">
+      <div className="border border-b-0 border-tertiary w-[20rem] h-[14rem] relative">
         <img src={imageSrc} alt={title} className="w-full h-full object-fit" />
       </div>
       <div className="w-[20rem] px-2 py-1 rounded-b-sm bg-tertiary">

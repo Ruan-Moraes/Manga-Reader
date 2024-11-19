@@ -3,15 +3,16 @@ import { createRoot } from 'react-dom/client';
 
 import './main.css';
 
-import Index from './pages/Index';
-import Categories from './pages/Categories.tsx';
-import Login from './pages/Login.tsx';
-import SignUp from './pages/SignUp.tsx';
-import IWantToPublishWork from './pages/IWantToPublishWork.tsx';
-import AboutUs from './pages/AboutUs.tsx';
-import Dmca from './pages/Dmca.tsx';
-import TermsOfUse from './pages/TermsOfUse.tsx';
-import Error404 from './pages/Error404.tsx';
+import Index from './pages/index/Index.tsx';
+import Categories from './pages/categories/Categories.tsx';
+import Login from './pages/login/Login.tsx';
+import SignUp from './pages/sign_up/SignUp.tsx';
+import ForgotPassword from './pages/forgot_password/ForgotPassword.tsx';
+import IWantToPublishWork from './pages/i_want_to_publish_work/IWantToPublishWork.tsx';
+import AboutUs from './pages/about_us/AboutUs.tsx';
+import Dmca from './pages/dmca/Dmca.tsx';
+import TermsOfUse from './pages/terms_of_use/TermsOfUse.tsx';
+import Error404 from './pages/error404/Error404.tsx';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -31,6 +32,10 @@ const routes = createBrowserRouter([
   {
     path: '/sign-up',
     element: <SignUp />,
+  },
+  {
+    path: 'forgot-password',
+    element: <ForgotPassword />,
   },
   {
     path: '/i-want-to-publish-work',

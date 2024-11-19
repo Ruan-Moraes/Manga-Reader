@@ -1,11 +1,11 @@
-import Header from '../layouts/Header';
-import Main from '../layouts/Main';
-import Footer from '../layouts/Footer';
+import Header from '../../layouts/Header';
+import Main from '../../layouts/Main';
+import Footer from '../../layouts/Footer';
 
-import AuthenticationForm from '../components/form/AuthenticationForm';
-import Input from '../components/inputs/Input';
-import ButtonHighLight from '../components/buttons/RaisedButton';
-import Checkbox from '../components/inputs/CheckboxInput';
+import AuthenticationForm from '../../components/form/AuthenticationForm';
+import Input from '../../components/inputs/Input';
+import ButtonHighLight from '../../components/buttons/RaisedButton';
+import Checkbox from '../../components/inputs/CheckboxInput';
 
 const SignUp = () => {
   return (
@@ -14,9 +14,7 @@ const SignUp = () => {
       <Main>
         <AuthenticationForm
           title="Cadastro de usuário"
-          helperText="Já possui uma conta?"
-          linkText="Faça login"
-          linkTo="/login"
+          onFormSubmit={() => console.log('Form submitted')}
         >
           <Input label="Nome:" type="text" placeholder="Nome de usuário" />
           <Input label="Email:" type="email" placeholder="Digite seu email" />

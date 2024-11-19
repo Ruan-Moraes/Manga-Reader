@@ -6,7 +6,7 @@ interface ISectionTitle {
 const SectionTitle = ({ title, sub }: ISectionTitle) => {
   return (
     <div>
-      <h2 className="flex flex-col items-start justify-between">
+      <h2 className="flex flex-col">
         <span className="text-2xl font-bold">{title}</span>
         <a className="text-xs text-quaternary-default">{sub}</a>
       </h2>

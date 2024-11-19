@@ -1,13 +1,13 @@
 // @ts-expect-error - ignore import error
 import { SplideSlide } from '@splidejs/react-splide';
 
-interface ISlideItem {
+interface ICarouselItem {
   imageSrc: string;
   title: string;
   synopsis: string;
 }
 
-const SlideItem = ({ imageSrc, title, synopsis }: ISlideItem) => {
+const CarouselItem = ({ imageSrc, title, synopsis }: ICarouselItem) => {
   return (
     <SplideSlide>
       <div className="h-full">
@@ -32,4 +32,4 @@ const SlideItem = ({ imageSrc, title, synopsis }: ISlideItem) => {
   );
 };
 
-export default SlideItem;
+export default CarouselItem;

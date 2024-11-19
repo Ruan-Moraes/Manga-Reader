@@ -1,8 +1,8 @@
-import { Colors } from '../constants/Colors';
+import { COLORS } from '../../constants/COLORS';
 
-import Main from '../layouts/Main';
+import Main from '../../layouts/Main';
 
-import Warning from '../components/notifications/Warning';
+import Warning from '../../components/notifications/Warning';
 
 const Error404 = () => {
   return (
@@ -10,7 +10,7 @@ const Error404 = () => {
       <Warning
         title="Error 404"
         message="Não há nada aqui, você está perdido? Clique no link abaixo para voltar para a página inicial."
-        color={Colors.QUINARY}
+        color={COLORS.QUINARY}
         link="/"
         linkText="Voltar para a página inicial"
       />
