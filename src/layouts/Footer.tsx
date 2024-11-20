@@ -23,7 +23,10 @@ const Footer = ({ disabledLinks }: IFooter) => {
                     <a href="#">Categorias</a>
                   </li>
                   <li className="p-2 border-b-2 border-b-tertiary">
-                    <a href="#">Novidades</a>
+                    <a href="#">Notícias</a>
+                  </li>
+                  <li className="p-2 border-b-2 border-b-tertiary">
+                    <a href="#">Eventos</a>
                   </li>
                   <li className="p-2">
                     <a href="#">Grupos</a>
