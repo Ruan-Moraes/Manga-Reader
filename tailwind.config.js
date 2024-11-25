@@ -39,6 +39,9 @@ export default {
         default: '0.125rem 0.0625rem 0 #161616bf',
         highlight: '0.125rem 0.0625rem 0 #ddda2a40',
       },
+      transitionProperty: {
+        'text-shadow': 'text-shadow',
+      },
       animation: {
         marquee: 'marquee 20s linear infinite',
       },

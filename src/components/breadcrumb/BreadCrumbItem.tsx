@@ -9,7 +9,10 @@ const BreadCrumbItem = ({ text, href, isCurrentPage }: IBreadCrumbItem) => {
     <li>
       <a
         href={href}
-        className={isCurrentPage ? 'text-quaternary-default font-bold' : ''}
+        {...(isCurrentPage && { 'aria-current': 'page' })}
+        {...(isCurrentPage && {
+          className: 'text-quaternary-default font-bold',
+        })}
       >
         {text}
       </a>

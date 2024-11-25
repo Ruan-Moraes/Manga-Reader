@@ -14,9 +14,9 @@ const CheckboxInput = ({ labelText, linkText, linkTo }: ICheckboxInput) => {
           <input
             type="checkbox"
             name="checkboxInput"
-            className="w-full h-full transition border rounded-sm appearance-none cursor-pointer peer border-tertiary checked:bg-quaternary-opacity-50"
+            className="w-full h-full transition duration-500 border rounded-sm appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-50 peer peer-"
           />
-          <div className="absolute transition transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none peer-checked:opacity-100 top-1/2 left-1/2">
+          <div className="absolute transition duration-500 transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none top-1/2 left-1/2 peer peer-checked:opacity-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4 text-white"

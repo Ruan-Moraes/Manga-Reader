@@ -3,7 +3,7 @@ import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
 import AuthenticationForm from '../../components/form/AuthenticationForm';
-import Input from '../../components/inputs/Input';
+import BaseInput from '../../components/inputs/BaseInput';
 import ButtonHighLight from '../../components/buttons/RaisedButton';
 import Checkbox from '../../components/inputs/CheckboxInput';
 
@@ -16,14 +16,18 @@ const SignUp = () => {
           title="Cadastro de usuário"
           onFormSubmit={() => console.log('Form submitted')}
         >
-          <Input label="Nome:" type="text" placeholder="Nome de usuário" />
-          <Input label="Email:" type="email" placeholder="Digite seu email" />
-          <Input
+          <BaseInput label="Nome:" type="text" placeholder="Nome de usuário" />
+          <BaseInput
+            label="Email:"
+            type="email"
+            placeholder="Digite seu email"
+          />
+          <BaseInput
             label="Senha:"
             type="password"
             placeholder="Digite sua senha"
           />
-          <Input
+          <BaseInput
             label="Confirmar senha:"
             type="password"
             placeholder="Confirme sua senha"

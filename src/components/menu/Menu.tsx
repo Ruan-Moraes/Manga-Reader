@@ -1,141 +1,138 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback, useLayoutEffect } from 'react';
+import { clsx } from 'clsx';
+
 import { MdMenu } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { GrDocumentConfig } from 'react-icons/gr';
+
+import CustomLinkBase from '../links/elements/CustomLinkBase';
 import SearchInput from '../inputs/SearchInput';
+import Blur from '../blur/Blur';
+import CustomLinkWithBox from '../links/elements/CustomLinkWithBox';
 
 interface IMenu {
   disabledBreadcrumb?: boolean;
 }
 
-const Menu = ({ disabledBreadcrumb }: IMenu) => {
-  const [open, setOpen] = useState<boolean>(false);
+const Menu: React.FC<IMenu> = ({ disabledBreadcrumb }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isSticky, setIsSticky] = useState<boolean>(false);
+  const [menuHeight, setMenuHeight] = useState<number>(0);
 
-  const handleClick = () => {
-    setOpen(!open);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const originalOffset = useRef<number>(0);
 
-    if (open) {
-      document.body.style.overflow = 'auto';
-    } else {
-      document.body.style.overflow = 'hidden';
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prevOpen) => {
+      const newOpenState = !prevOpen;
+
+      document.body.style.overflow = newOpenState ? 'hidden' : 'auto';
+
+      return newOpenState;
+    });
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    if (menuRef.current) {
+      const currentScroll = window.scrollY;
+
+      setIsSticky(currentScroll > originalOffset.current);
     }
-  };
+  }, []);
 
-  const handleBlur = () => {
-    setOpen(false);
-    document.body.style.overflow = 'auto';
-  };
+  useLayoutEffect(() => {
+    if (menuRef.current) {
+      originalOffset.current = menuRef.current.offsetTop;
+      setMenuHeight(menuRef.current.offsetHeight / 16);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
-    <nav
-      className={`flex flex-row-reverse p-2 border-b-2 border-b-tertiary ${
-        !disabledBreadcrumb ? 'bg-primary-default' : 'bg-secondary'
-      }`}
-    >
-      <div>
-        <MdMenu
-          className="text-4xl cursor-pointer"
-          onClick={handleClick}
-          aria-expanded={open}
-          aria-controls="menu-links"
-        />
-      </div>
-      <div
-        id="menu-links"
-        className={`absolute left-0 top-0 h-screen bg-primary-default border-r-2 border-r-tertiary z-20 w-4/6 transition-all transform flex flex-col gap-4 ${
-          open ? 'translate-x-0' : '-translate-x-full'
-        }`}
-        style={{
-          transitionDuration: '300ms',
-        }}
+    <>
+      {isSticky && <div style={{ height: `${menuHeight}rem` }} />}
+      <nav
+        ref={menuRef}
+        className={clsx(
+          'px-3 py-2 border-b-2 border-b-tertiary transition duration-500',
+          {
+            'fixed top-0 left-0 right-0 z-10': isSticky,
+            'bg-primary-default': !disabledBreadcrumb,
+            'bg-secondary': disabledBreadcrumb,
+          }
+        )}
       >
-        <div className="flex flex-col items-center justify-center gap-2 p-4 pb-4 border-b-2 border-b-tertiary">
-          <div>
-            <h2 className="text-2xl italic font-bold text-center">
-              Manga Reader
+        <div className="flex items-center justify-between">
+          <div
+            className={clsx(
+              'transition duration-500 text-xl font-bold text-center',
+              {
+                'opacity-100': isSticky,
+                'opacity-0': !isSticky,
+              }
+            )}
+          >
+            <h2>
+              <CustomLinkBase href="/" text="Manga Reader" />
             </h2>
           </div>
-          <SearchInput />
-        </div>
-        <div className="flex flex-col gap-6 px-4">
-          <div className="grid grid-cols-2 gap-2">
-            <Link
-              to="/"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Categorias
-            </Link>
-            <Link
-              to="/"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Nacional
-            </Link>
-            <Link
-              to="/categories"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Mangas
-            </Link>
-            <Link
-              to="/about"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Manwhas
-            </Link>
-            <Link
-              to="/about"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Manhuas
-            </Link>
-            <Link
-              to="/about"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Novels
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Link
-              to="/"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Notícias
-            </Link>
-            <Link
-              to="/about"
-              onClick={handleClick}
-              className="px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Eventos
-            </Link>
-            <Link
-              to="/about"
-              onClick={handleClick}
-              className="col-span-2 px-2 py-1 font-bold text-center border-2 rounded-sm bg-secondary text-shadow-highlight border-tertiary"
-            >
-              Grupos
-            </Link>
+          <div>
+            <MdMenu
+              className="text-4xl cursor-pointer"
+              onClick={toggleMenu}
+              aria-expanded={isMenuOpen}
+              aria-controls="menu-links"
+            />
           </div>
         </div>
-      </div>
-      <div
-        className={`absolute top-0 left-0 w-screen h-screen backdrop-blur-sm z-10 transition-all ${
-          open ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-        style={{
-          transitionDuration: '300ms',
-        }}
-        onClick={handleBlur}
-      ></div>
-    </nav>
+        <div className="absolute">
+          <div
+            id="menu-links"
+            className={clsx(
+              'flex flex-col gap-4 w-4/6 fixed top-0 bottom-0 left-0 right-0 bg-primary-default border-r-2 border-r-tertiary z-20 transform transition-transform duration-500',
+              {
+                'translate-x-0': isMenuOpen,
+                '-translate-x-full': !isMenuOpen,
+              }
+            )}
+          >
+            <div className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 border-b-tertiary">
+              <h1 className="text-2xl font-bold">Manga Reader</h1>
+              <SearchInput />
+            </div>
+            <div className="flex flex-col h-full gap-6 px-4 pb-4">
+              <div className="grid grid-cols-2 gap-2">
+                <CustomLinkWithBox href="/" text="Categorias" />
+                <CustomLinkWithBox href="/" text="Nacional" />
+                <CustomLinkWithBox href="/categories" text="Mangas" />
+                <CustomLinkWithBox href="/about" text="Manwhas" />
+                <CustomLinkWithBox href="/about" text="Manhuas" />
+                <CustomLinkWithBox href="/about" text="Novels" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <CustomLinkWithBox href="/about" text="Notícias" />
+                <CustomLinkWithBox href="/about" text="Eventos" />
+                <CustomLinkWithBox
+                  href="/about"
+                  text="Grupos"
+                  otherStyles={{ gridColumn: '1/3' }}
+                />
+              </div>
+              <div className="mt-auto ml-auto">
+                <button className="p-3 border-2 rounded-sm border-tertiary bg-secondary">
+                  <GrDocumentConfig className="inline-block text-2xl" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <Blur open={isMenuOpen} setOpen={setIsMenuOpen} />
+        </div>
+      </nav>
+    </>
   );
 };
 

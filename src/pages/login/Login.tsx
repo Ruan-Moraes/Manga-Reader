@@ -3,8 +3,8 @@ import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
 import AuthenticationForm from '../../components/form/AuthenticationForm';
-import Input from '../../components/inputs/Input';
-import ButtonHighLight from '../../components/buttons/RaisedButton';
+import BaseInput from '../../components/inputs/BaseInput';
+import RaisedButton from '../../components/buttons/RaisedButton';
 
 const Login = () => {
   return (
@@ -18,13 +18,17 @@ const Login = () => {
           linkText="Clique aqui"
           linkTo="/forgot-password"
         >
-          <Input label="Email" type="email" placeholder="Digite seu email" />
-          <Input
+          <BaseInput
+            label="Email"
+            type="email"
+            placeholder="Digite seu email"
+          />
+          <BaseInput
             label="Senha:"
             type="password"
             placeholder="Digite sua senha"
           />
-          <ButtonHighLight text="Entrar:" />
+          <RaisedButton text="Entrar:" />
         </AuthenticationForm>
       </Main>
       <Footer disabledLinks={true} />

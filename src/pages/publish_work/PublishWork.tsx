@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-const IWantToPublishWork = () => {
+const PublishWork = () => {
   return (
     <>
       <Header disabledSearch={true} disabledBreadcrumb={true} />
@@ -57,4 +57,4 @@ const IWantToPublishWork = () => {
   );
 };
 
-export default IWantToPublishWork;
+export default PublishWork;

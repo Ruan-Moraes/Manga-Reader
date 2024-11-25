@@ -4,7 +4,7 @@ import Main from '../../layouts/Main';
 
 import Warning from '../../components/notifications/Warning';
 
-const Error404 = () => {
+const NotFound = () => {
   return (
     <Main>
       <Warning
@@ -18,4 +18,4 @@ const Error404 = () => {
   );
 };
 
-export default Error404;
+export default NotFound;

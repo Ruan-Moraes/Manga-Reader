@@ -8,7 +8,7 @@ const SectionTitle = ({ title, sub }: ISectionTitle) => {
     <div>
       <h2 className="flex flex-col">
         <span className="text-2xl font-bold">{title}</span>
-        <a className="text-xs text-quaternary-default">{sub}</a>
+        {sub && <span className="text-xs text-quaternary-default">{sub}</span>}
       </h2>
     </div>
   );

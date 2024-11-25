@@ -17,10 +17,10 @@ import SocialMedias from '../../components/social_medias/SocialMediasContainer';
 import SocialMediaItem from '../../components/social_medias/SocialMediaItem';
 
 import HighlightCards from '../../components/cards/highlight/CardsContainer';
-import HorizontalCard from '../../components/cards/horizontal/CardsContainer';
+import HorizontalCards from '../../components/cards/horizontal/CardsContainer';
 import VerticalCards from '../../components/cards/vertical/CardsContainer';
 
-const Index = () => {
+const Home = () => {
   return (
     <>
       <Header disabledBreadcrumb={true} />
@@ -77,7 +77,7 @@ const Index = () => {
           title="Tops 5 obras em ascensão"
           sub="Quero ver mais..."
         />
-        <HorizontalCard title="10 Obras aleatórias" sub="Quero ver mais..." />
+        <HorizontalCards title="10 Obras aleatórias" sub="Quero ver mais..." />
         <VerticalCards title="Obras Atualizadas" sub="Quero ver mais..." />
       </Main>
       <Footer />
@@ -85,4 +85,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Home;

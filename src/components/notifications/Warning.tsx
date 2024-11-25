@@ -12,8 +12,7 @@ const Warning = ({ title, message, color, link, linkText }: IWarning) => {
   return (
     <div {...(link && { className: 'flex flex-col items-center gap-4' })}>
       <div
-        className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm
-          border-${color}-default`}
+        className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm border-${color}-default`}
       >
         <div>
           <h2>
