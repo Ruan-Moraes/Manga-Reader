@@ -13,11 +13,11 @@ const Footer = ({ disabledLinks }: IFooter) => {
           <LinksSection
             title="Links úteis"
             links={[
-              { href: '#', text: 'Home' },
-              { href: '#', text: 'Categorias' },
-              { href: '#', text: 'Notícias' },
-              { href: '#', text: 'Eventos' },
-              { href: '#', text: 'Grupos' },
+              { href: '/', text: 'Home' },
+              { href: '/', text: 'Categorias' },
+              { href: '/', text: 'Notícias' },
+              { href: '/', text: 'Eventos' },
+              { href: '/', text: 'Grupos' },
             ]}
             otherStyles={{
               gridColumn: '1/3',
@@ -26,10 +26,10 @@ const Footer = ({ disabledLinks }: IFooter) => {
           <LinksSection
             title="Redes sociais"
             links={[
-              { href: '#', text: 'Discord' },
-              { href: '#', text: 'X (Twitter)' },
-              { href: '#', text: 'Facebook' },
-              { href: '#', text: 'Instagram' },
+              { href: '/', text: 'Discord' },
+              { href: '/', text: 'X (Twitter)' },
+              { href: '/', text: 'Facebook' },
+              { href: '/', text: 'Instagram' },
             ]}
             otherStyles={{
               gridColumn: '3/-1',
@@ -38,11 +38,14 @@ const Footer = ({ disabledLinks }: IFooter) => {
           <LinksSection
             title="Outros links"
             links={[
-              { href: '/i-want-to-publish-work', text: 'Quero publicar obra' },
+              {
+                href: '/Manga-Reader/i-want-to-publish-work',
+                text: 'Quero publicar obra',
+              },
               { href: 'https://ko-fi.com/', text: 'Doe para o projeto' },
-              { href: '/about-us', text: 'Quem somos' },
-              { href: '/dmca', text: 'DMCA' },
-              { href: '/terms-of-use', text: 'Termos de uso' },
+              { href: '/Manga-Reader/about-us', text: 'Quem somos' },
+              { href: '/Manga-Reader/dmca', text: 'DMCA' },
+              { href: '/Manga-Reader/terms-of-use', text: 'Termos de uso' },
             ]}
             otherStyles={{
               gridColumn: '2/4',

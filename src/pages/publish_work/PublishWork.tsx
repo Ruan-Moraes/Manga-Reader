@@ -2,6 +2,8 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
+import { Link } from 'react-router-dom';
+
 const PublishWork = () => {
   return (
     <>
@@ -42,11 +44,7 @@ const PublishWork = () => {
                 </p>
               </div>
               <div className="text-xs font-bold text-right underline text-shadow-highlight">
-                <ul>
-                  <li>
-                    <a href="#">Nosso Discord</a>
-                  </li>
-                </ul>
+                <Link to="#">Nosso Discord</Link>
               </div>
             </div>
           </div>

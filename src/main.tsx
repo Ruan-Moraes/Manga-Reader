@@ -58,7 +58,6 @@ const routes = createBrowserRouter([
         path: '/dmca',
         element: <Dmca />,
       },
-
       {
         path: '*',
         element: <NotFound />,

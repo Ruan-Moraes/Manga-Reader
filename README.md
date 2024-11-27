@@ -16,14 +16,11 @@ Cada microserviço é responsável por uma parte específica do sistema, conform
 
 ## Tecnologias
 
-- **Typescript**: Linguagem de programação utilizada para o desenvolvimento do projeto.
-- **Java**: Linguagem de programação utilizada para o desenvolvimento do projeto.
-- **React**: Biblioteca utilizada para a criação da interface do usuário.
-- **Node.js with Express**: Framework utilizado para a criação dos microserviços no backend.
-- **Spring Boot**: Framework utilizado para a criação dos microserviços no backend.
+- **Typescript (Node.js with Express + React) | Java (Spring Boot)**: Tecnologias utilizadas para desenvolver os microserviços.
 - **Docker**: Ferramenta para criar os containers dos microserviços.
 - **Docker Compose**: Ferramenta para orquestrar os containers dos microserviços.
 - **PostgreSQL**: Banco de dados utilizado para armazenar as informações dos mangás, capítulos e usuários.
 - **MongoDB**: Banco de dados utilizado para armazenar as imagens dos capítulos dos mangás.
 - **JWT (JSON Web Token)**: Tecnologia utilizada para autenticação e autorização de usuários.
+- **Bcrypt**: Tecnologia utilizada para criptografar as senhas dos usuários.
 - **Swagger**: Ferramenta utilizada para documentar a API dos microserviços.

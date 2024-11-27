@@ -77,7 +77,7 @@ const Menu: React.FC<IMenu> = ({ disabledBreadcrumb }) => {
             )}
           >
             <h2>
-              <CustomLinkBase href="/" text="Manga Reader" />
+              <CustomLinkBase href="#" text="Manga Reader" />
             </h2>
           </div>
           <div>
@@ -106,18 +106,18 @@ const Menu: React.FC<IMenu> = ({ disabledBreadcrumb }) => {
             </div>
             <div className="flex flex-col h-full gap-6 px-4 pb-4">
               <div className="grid grid-cols-2 gap-2">
-                <CustomLinkWithBox href="/" text="Categorias" />
-                <CustomLinkWithBox href="/" text="Nacional" />
-                <CustomLinkWithBox href="/categories" text="Mangas" />
-                <CustomLinkWithBox href="/about" text="Manwhas" />
-                <CustomLinkWithBox href="/about" text="Manhuas" />
-                <CustomLinkWithBox href="/about" text="Novels" />
+                <CustomLinkWithBox href="#" text="Categorias" />
+                <CustomLinkWithBox href="#" text="Nacional" />
+                <CustomLinkWithBox href="#" text="Mangas" />
+                <CustomLinkWithBox href="#" text="Manwhas" />
+                <CustomLinkWithBox href="#" text="Manhuas" />
+                <CustomLinkWithBox href="#" text="Novels" />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <CustomLinkWithBox href="/about" text="Notícias" />
-                <CustomLinkWithBox href="/about" text="Eventos" />
+                <CustomLinkWithBox href="#" text="Notícias" />
+                <CustomLinkWithBox href="#" text="Eventos" />
                 <CustomLinkWithBox
-                  href="/about"
+                  href="#"
                   text="Grupos"
                   otherStyles={{ gridColumn: '1/3' }}
                 />
