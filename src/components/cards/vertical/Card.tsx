@@ -6,10 +6,18 @@ interface ICard {
   title: string;
   chapters: string;
   releaseDate: string;
+  objectFit?: string;
 }
 
-const Card = ({ type, imageSrc, title, chapters, releaseDate }: ICard) => {
-  const lastThreeChapters = chapters.split(' ').slice(-howManyChapters);
+const Card = ({
+  type,
+  imageSrc,
+  title,
+  chapters,
+  releaseDate,
+  objectFit,
+}: ICard) => {
+  const lastThreeChapters = chapters.split('/').slice(-howManyChapters);
 
   return (
     <div className="flex flex-col items-start">
@@ -21,7 +29,9 @@ const Card = ({ type, imageSrc, title, chapters, releaseDate }: ICard) => {
           <img
             src={imageSrc}
             alt={title}
-            className="object-fit aspect-square"
+            className={`${
+              objectFit ? 'object-' + objectFit : 'object-fill'
+            } aspect-square`}
           />
         </div>
         <div className="border-t border-t-tertiary">

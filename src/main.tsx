@@ -20,42 +20,43 @@ import NotFound from './pages/error/NotFound.tsx';
 
 const routes = createBrowserRouter([
   {
+    path: 'Manga-Reader',
     element: <AppLayout />,
     children: [
       {
-        path: '/',
+        path: '',
         element: <Home />,
       },
       {
-        path: '/categories',
+        path: 'categories',
         element: <CategoryList />,
       },
       {
-        path: '/login',
+        path: 'login',
         element: <Login />,
       },
       {
-        path: '/sign-up',
+        path: 'sign-up',
         element: <SignUp />,
       },
       {
-        path: '/forgot-password',
+        path: 'forgot-password',
         element: <ForgotPassword />,
       },
       {
-        path: '/i-want-to-publish-work',
+        path: 'i-want-to-publish-work',
         element: <PublishWork />,
       },
       {
-        path: '/about-us',
+        path: 'about-us',
         element: <AboutUs />,
       },
       {
-        path: '/terms-of-use',
+        path: 'terms-of-use',
         element: <TermsOfUse />,
       },
       {
-        path: '/dmca',
+        path: 'dmca',
         element: <Dmca />,
       },
       {

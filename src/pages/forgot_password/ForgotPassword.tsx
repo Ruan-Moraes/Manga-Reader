@@ -13,7 +13,11 @@ const ForgotPassword = () => {
       <Main>
         <AuthenticationForm
           title="Recuperação de senha"
-          onFormSubmit={() => console.log('Form submitted')}
+          onFormSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+
+            console.log('Form submitted');
+          }}
         >
           <BaseInput
             label="Email"

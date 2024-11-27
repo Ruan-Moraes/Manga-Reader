@@ -42,6 +42,7 @@ const Menu: React.FC<IMenu> = ({ disabledBreadcrumb }) => {
   useLayoutEffect(() => {
     if (menuRef.current) {
       originalOffset.current = menuRef.current.offsetTop;
+
       setMenuHeight(menuRef.current.offsetHeight / 16);
     }
 

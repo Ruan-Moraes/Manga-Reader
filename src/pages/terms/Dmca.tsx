@@ -96,10 +96,10 @@ const Dmca = () => {
                 </p>
               </div>
               <nav className="flex flex-col text-xs font-bold text-right underline text-shadow-highlight">
-                <Link to="/terms-of-use">
+                <Link to="/Manga-Reader/terms-of-use">
                   Termos de uso e Política de Privacidade
                 </Link>
-                <Link to="/about-us">Quem somos?</Link>
+                <Link to="/Manga-Reader/about-us">Quem somos?</Link>
               </nav>
             </div>
           </div>

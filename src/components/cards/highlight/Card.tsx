@@ -11,6 +11,7 @@ interface ICard {
   artist: string;
   publisher: string;
   synopsis: string;
+  objectFit?: string;
 }
 
 const Card = ({
@@ -24,6 +25,7 @@ const Card = ({
   artist,
   publisher,
   synopsis,
+  objectFit,
 }: ICard) => {
   const informationsHTML = useRef<HTMLDivElement>(null);
   const synopsisHTML = useRef<HTMLDivElement>(null);
@@ -62,7 +64,9 @@ const Card = ({
             <img
               src={imageSrc}
               alt={title}
-              className="object-cover max-h-[10rem] w-full aspect-square"
+              className={`${
+                objectFit ? 'object-' + objectFit : 'object-cover'
+              } max-h-[10rem] w-full aspect-square`}
             />
           </div>
           <div className="border-t border-t-tertiary">

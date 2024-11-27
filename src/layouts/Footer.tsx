@@ -13,11 +13,11 @@ const Footer = ({ disabledLinks }: IFooter) => {
           <LinksSection
             title="Links úteis"
             links={[
-              { href: '/', text: 'Home' },
-              { href: '/', text: 'Categorias' },
-              { href: '/', text: 'Notícias' },
-              { href: '/', text: 'Eventos' },
-              { href: '/', text: 'Grupos' },
+              { href: '#', text: 'Home' },
+              { href: '#', text: 'Categorias' },
+              { href: '#', text: 'Notícias' },
+              { href: '#', text: 'Eventos' },
+              { href: '#', text: 'Grupos' },
             ]}
             otherStyles={{
               gridColumn: '1/3',
@@ -26,10 +26,10 @@ const Footer = ({ disabledLinks }: IFooter) => {
           <LinksSection
             title="Redes sociais"
             links={[
-              { href: '/', text: 'Discord' },
-              { href: '/', text: 'X (Twitter)' },
-              { href: '/', text: 'Facebook' },
-              { href: '/', text: 'Instagram' },
+              { href: '#', text: 'Discord' },
+              { href: '#', text: 'X (Twitter)' },
+              { href: '#', text: 'Facebook' },
+              { href: '#', text: 'Instagram' },
             ]}
             otherStyles={{
               gridColumn: '3/-1',
