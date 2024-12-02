@@ -35,12 +35,12 @@ const SignUp = () => {
           <div className="flex flex-col gap-2">
             <Checkbox
               labelText="Eu aceito os"
-              linkTo="/terms-of-use"
+              href="/terms-of-use"
               linkText="Termos de uso."
             />
             <Checkbox
               labelText="Eu aceito as políticas de "
-              linkTo="/dmca"
+              href="/dmca"
               linkText="DMCA."
             />
           </div>

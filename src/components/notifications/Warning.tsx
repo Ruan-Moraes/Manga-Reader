@@ -1,16 +1,18 @@
 import { COLORS } from '../../constants/COLORS';
 
+import { Link } from 'react-router-dom';
+
 interface IWarning {
   title: string;
   message: string;
   color: COLORS;
-  link?: string;
+  href?: string;
   linkText?: string;
 }
 
-const Warning = ({ title, message, color, link, linkText }: IWarning) => {
+const Warning = ({ title, message, color, href, linkText }: IWarning) => {
   return (
-    <div {...(link && { className: 'flex flex-col items-center gap-4' })}>
+    <div {...(href && { className: 'flex flex-col items-center gap-4' })}>
       <div
         className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm border-${color}-default`}
       >
@@ -25,14 +27,14 @@ const Warning = ({ title, message, color, link, linkText }: IWarning) => {
           <p>{message}</p>
         </div>
       </div>
-      {link && (
+      {href && (
         <div>
-          <a
-            href={link}
+          <Link
+            to={href}
             className={`text-sm, font-bold text-${color}-default hover:text-${color}-normal`}
           >
             {linkText}
-          </a>
+          </Link>
         </div>
       )}
     </div>

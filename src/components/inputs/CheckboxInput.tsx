@@ -1,12 +1,11 @@
-import { Link } from 'react-router-dom';
-
+import CustomLinkBase from '../links/elements/CustomLinkBase';
 interface ICheckboxInput {
   labelText: string;
   linkText: string;
-  linkTo: string;
+  href: string;
 }
 
-const CheckboxInput = ({ labelText, linkText, linkTo }: ICheckboxInput) => {
+const CheckboxInput = ({ labelText, linkText, href }: ICheckboxInput) => {
   return (
     <div>
       <label className="flex items-center gap-2">
@@ -36,12 +35,14 @@ const CheckboxInput = ({ labelText, linkText, linkTo }: ICheckboxInput) => {
         <p className="text-sm">
           <span>{labelText}</span>{' '}
           <span>
-            <Link
-              to={linkTo}
-              className="font-bold underline text-tertiary-default text-shadow-highlight"
-            >
-              {linkText}
-            </Link>
+            <CustomLinkBase
+              href={href}
+              text={linkText}
+              otherStyles={{
+                fontWeight: 'bold',
+                textDecoration: 'underline',
+              }}
+            />
           </span>
         </p>
       </label>

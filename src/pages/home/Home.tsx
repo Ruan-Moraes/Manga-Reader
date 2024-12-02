@@ -551,22 +551,22 @@ const Home = () => {
           <SocialMediaItem
             color={SOCIAL_MEDIA_COLORS.DISCORD}
             name="Discord"
-            link="#"
+            href="#"
           />
           <SocialMediaItem
             color={SOCIAL_MEDIA_COLORS.X}
             name="X (Twitter)"
-            link="#"
+            href="#"
           />
           <SocialMediaItem
             color={SOCIAL_MEDIA_COLORS.FACEBOOK}
             name="Facebook"
-            link="#"
+            href="#"
           />
           <SocialMediaItem
             color={SOCIAL_MEDIA_COLORS.INSTAGRAM}
             name="Instagram"
-            link="#"
+            href="#"
           />
         </SocialMedias>
         <Carousel>

@@ -18,6 +18,9 @@ const ForgotPassword = () => {
 
             console.log('Form submitted');
           }}
+          helperText="Lembrou da senha?"
+          linkText="Clique aqui"
+          href="/login"
         >
           <BaseInput
             label="Email"

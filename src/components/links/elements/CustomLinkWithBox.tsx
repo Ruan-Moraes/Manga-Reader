@@ -9,7 +9,7 @@ interface ICustomLinkWithBox {
 const CustomLinkWithBox = ({ href, text, otherStyles }: ICustomLinkWithBox) => {
   return (
     <Link
-      to={href}
+      to={'/Manga-Reader' + href}
       style={otherStyles || {}}
       className="p-2 font-bold text-center duration-500 border-2 rounded-sm bg-secondary transition-text-shadow hover:text-shadow-highlight border-tertiary"
     >

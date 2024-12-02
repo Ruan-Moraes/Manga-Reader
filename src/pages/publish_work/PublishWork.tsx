@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import { Link } from 'react-router-dom';
+import CustomLinkBase from '../../components/links/elements/CustomLinkBase';
 
 const PublishWork = () => {
   return (
@@ -44,7 +44,7 @@ const PublishWork = () => {
                 </p>
               </div>
               <div className="text-xs font-bold text-right underline text-shadow-highlight">
-                <Link to="#">Nosso Discord</Link>
+                <CustomLinkBase href="/contact" text="Entre em contato" />
               </div>
             </div>
           </div>

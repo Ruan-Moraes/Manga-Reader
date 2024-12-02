@@ -8,7 +8,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AppLayout from './components/app_layout/AppLayout.tsx';
 
 import Home from './pages/home/Home.tsx';
-import CategoryList from './pages/categories/CategoryList.tsx';
+import Categories from './pages/categories/Categories.tsx';
 import Login from './pages/login/Login.tsx';
 import SignUp from './pages/sign_up/SignUp.tsx';
 import ForgotPassword from './pages/forgot_password/ForgotPassword.tsx';
@@ -29,7 +29,7 @@ const routes = createBrowserRouter([
       },
       {
         path: 'categories',
-        element: <CategoryList />,
+        element: <Categories />,
       },
       {
         path: 'login',

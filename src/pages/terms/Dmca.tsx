@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import { Link } from 'react-router-dom';
+import CustomLinkBase from '../../components/links/elements/CustomLinkBase';
 
 const Dmca = () => {
   return (
@@ -95,11 +95,21 @@ const Dmca = () => {
                   laudantium nulla. Obcaecati.
                 </p>
               </div>
-              <nav className="flex flex-col text-xs font-bold text-right underline text-shadow-highlight">
-                <Link to="/Manga-Reader/terms-of-use">
-                  Termos de uso e Política de Privacidade
-                </Link>
-                <Link to="/Manga-Reader/about-us">Quem somos?</Link>
+              <nav className="flex flex-col items-end text-xs underline text-shadow-highlight">
+                <CustomLinkBase
+                  href="/terms-of-use"
+                  text="Termos de uso e Política de Privacidade"
+                  otherStyles={{
+                    width: 'fit-content',
+                  }}
+                />
+                <CustomLinkBase
+                  href="/about-us"
+                  text="Quem somos?"
+                  otherStyles={{
+                    width: 'fit-content',
+                  }}
+                />
               </nav>
             </div>
           </div>

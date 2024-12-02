@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import Main from '../../layouts/Main';
 
-import { Link } from 'react-router-dom';
+import CustomLinkBase from '../../components/links/elements/CustomLinkBase';
 
 const AboutUs = () => {
   return (
@@ -67,11 +67,21 @@ const AboutUs = () => {
                   laudantium nulla. Obcaecati.
                 </p>
               </div>
-              <nav className="flex flex-col text-xs font-bold text-right underline text-shadow-highlight">
-                <Link to="/dmca">Política de Direitos Autorais (DMCA)</Link>
-                <Link to="/terms-of-use">
-                  Termos de uso e Política de Privacidade
-                </Link>
+              <nav className="flex flex-col items-end text-xs underline text-shadow-highlight">
+                <CustomLinkBase
+                  href="/dmca"
+                  text="Política de Direitos Autorais (DMCA)"
+                  otherStyles={{
+                    width: 'fit-content',
+                  }}
+                />
+                <CustomLinkBase
+                  href="/terms-of-use"
+                  text="Termos de uso e Política de Privacidade"
+                  otherStyles={{
+                    width: 'fit-content',
+                  }}
+                />
               </nav>
             </div>
           </div>

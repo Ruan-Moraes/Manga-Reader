@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
+import CustomLinkBase from '../links/elements/CustomLinkBase';
 
 interface IAuthenticationForm {
   title: string;
   helperText?: string;
   onFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   linkText?: string;
-  linkTo?: string;
+  href?: string;
   children: React.ReactNode;
 }
 
@@ -14,7 +14,7 @@ const AuthenticationForm = ({
   onFormSubmit,
   helperText,
   linkText,
-  linkTo,
+  href,
   children,
 }: IAuthenticationForm) => {
   return (
@@ -29,13 +29,17 @@ const AuthenticationForm = ({
           </fieldset>
         </form>
       </div>
-      {helperText && linkText && linkTo && (
+      {helperText && linkText && href && (
         <div>
           <p className="text-sm text-center text-tertiary-default">
             {helperText}{' '}
-            <Link to={linkTo} className="font-bold underline">
-              {linkText}
-            </Link>
+            <CustomLinkBase
+              href={href}
+              text={linkText}
+              otherStyles={{
+                textDecoration: 'underline',
+              }}
+            />
           </p>
         </div>
       )}

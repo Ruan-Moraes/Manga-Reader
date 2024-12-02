@@ -13,7 +13,7 @@ const CustomLinkWithBorder = ({
 }: ICustomLinkWithBorder) => {
   return (
     <Link
-      to={href}
+      to={'/Manga-Reader' + href}
       style={otherStyles || {}}
       className="p-2 duration-500 border-b-2 border-b-tertiary transition-text-shadow hover:text-shadow-highlight"
     >

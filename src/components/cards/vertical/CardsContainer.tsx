@@ -1,6 +1,5 @@
-import { Children, useRef } from 'react';
-
-import clsx from 'clsx';
+import { useState, Children } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Section_Title from '../../titles/SectionTitle';
 import ButtonHighLight from '../../buttons/RaisedButton';
@@ -12,9 +11,18 @@ interface ICardsContainer {
 }
 
 const CardsContainer = ({ title, sub, children }: ICardsContainer) => {
-  const allChildren = Children.toArray(children) as React.ReactElement[];
+  const [visible, setVisible] = useState(10);
 
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const allChildren = Children.toArray(children) as React.ReactElement[];
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (visible >= allChildren.length) {
+      navigate('/Manga-Reader/categories?q=latest');
+    } else {
+      setVisible((prev) => prev + 10);
+    }
+  };
 
   return (
     <section className="flex flex-col gap-4">
@@ -23,23 +31,11 @@ const CardsContainer = ({ title, sub, children }: ICardsContainer) => {
       </div>
       <div>
         <div className="grid grid-cols-2 gap-4">
-          {allChildren.slice(0, 10).map((child) => (
-            <div key={child.key}>{child}</div>
-          ))}
-        </div>
-        <div className={clsx('grid-cols-2 gap-4')}>
-          {allChildren.slice(10, 20).map((child) => (
-            <div key={child.key}>{child}</div>
-          ))}
-        </div>
-        <div className={clsx('grid-cols-2 gap-4')}>
-          {allChildren.slice(20, 30).map((child) => (
-            <div key={child.key}>{child}</div>
-          ))}
+          {allChildren.slice(0, visible)}
         </div>
       </div>
       <div>
-        <ButtonHighLight text="Ver Mais" ref={buttonRef} />
+        <ButtonHighLight text="Ver Mais" callBack={handleClick} />
       </div>
     </section>
   );

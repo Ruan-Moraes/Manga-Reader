@@ -16,7 +16,7 @@ const Login = () => {
           onFormSubmit={() => console.log('Form submitted')}
           helperText="Esqueceu sua senha?"
           linkText="Clique aqui"
-          linkTo="/forgot-password"
+          href="/forgot-password"
         >
           <BaseInput
             label="Email"

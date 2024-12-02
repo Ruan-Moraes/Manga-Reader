@@ -6,7 +6,7 @@ interface IBreadCrumbItem {
 
 const BreadCrumbItem = ({ text, href, isCurrentPage }: IBreadCrumbItem) => {
   return (
-    <li>
+    <div>
       <a
         href={href}
         {...(isCurrentPage && { 'aria-current': 'page' })}
@@ -17,7 +17,7 @@ const BreadCrumbItem = ({ text, href, isCurrentPage }: IBreadCrumbItem) => {
         {text}
       </a>
       <span className="mx-2 font-bold">/</span>
-    </li>
+    </div>
   );
 };
 

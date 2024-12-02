@@ -13,7 +13,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
           <LinksSection
             title="Links úteis"
             links={[
-              { href: '#', text: 'Home' },
+              { href: '/', text: 'Home' },
               { href: '#', text: 'Categorias' },
               { href: '#', text: 'Notícias' },
               { href: '#', text: 'Eventos' },
@@ -39,13 +39,13 @@ const Footer = ({ disabledLinks }: IFooter) => {
             title="Outros links"
             links={[
               {
-                href: '/Manga-Reader/i-want-to-publish-work',
+                href: '/i-want-to-publish-work',
                 text: 'Quero publicar obra',
               },
               { href: 'https://ko-fi.com/', text: 'Doe para o projeto' },
-              { href: '/Manga-Reader/about-us', text: 'Quem somos' },
-              { href: '/Manga-Reader/dmca', text: 'DMCA' },
-              { href: '/Manga-Reader/terms-of-use', text: 'Termos de uso' },
+              { href: '/about-us', text: 'Quem somos' },
+              { href: '/dmca', text: 'DMCA' },
+              { href: '/terms-of-use', text: 'Termos de uso' },
             ]}
             otherStyles={{
               gridColumn: '2/4',

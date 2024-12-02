@@ -21,9 +21,17 @@ const Header = ({
     <header className="flex flex-col bg-secondary">
       {!disabledAuth && (
         <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
-          <CustomLinkBase href="/Manga-Reader/sign-up" text="Sing up" />
+          <CustomLinkBase
+            href="/sign-up"
+            text="Sing up"
+            enabledColorWhenActive={true}
+          />
           <span className="font-bold">|</span>
-          <CustomLinkBase href="/Manga-Reader/login" text="Login" />
+          <CustomLinkBase
+            href="/login"
+            text="Login"
+            enabledColorWhenActive={true}
+          />
         </nav>
       )}
       <nav className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
