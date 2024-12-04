@@ -1,19 +1,24 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
 import './main.css';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import AppLayout from './components/app_layout/AppLayout.tsx';
+import AppLayout from './components/app-layout/AppLayout.tsx';
 
 import Home from './pages/home/Home.tsx';
+import Title from './pages/title/Title.tsx';
 import Categories from './pages/categories/Categories.tsx';
 import Login from './pages/login/Login.tsx';
-import SignUp from './pages/sign_up/SignUp.tsx';
-import ForgotPassword from './pages/forgot_password/ForgotPassword.tsx';
-import PublishWork from './pages/publish_work/PublishWork.tsx';
-import AboutUs from './pages/about_us/AboutUs.tsx';
+import SignUp from './pages/sign-up/SignUp.tsx';
+import ForgotPassword from './pages/forgot-password/ForgotPassword.tsx';
+import PublishWork from './pages/publish-work/PublishWork.tsx';
+import AboutUs from './pages/about-us/AboutUs.tsx';
 import TermsOfUse from './pages/terms/TermsOfUse.tsx';
 import Dmca from './pages/terms/Dmca.tsx';
 import NotFound from './pages/error/NotFound.tsx';
@@ -26,6 +31,10 @@ const routes = createBrowserRouter([
       {
         path: '',
         element: <Home />,
+      },
+      {
+        path: 'title/:title',
+        element: <Title />,
       },
       {
         path: 'categories',
@@ -69,6 +78,8 @@ const routes = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={routes} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={routes} />
+    </QueryClientProvider>
   </StrictMode>
 );

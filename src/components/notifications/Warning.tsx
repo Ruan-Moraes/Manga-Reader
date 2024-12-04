@@ -1,6 +1,6 @@
 import { COLORS } from '../../constants/COLORS';
 
-import { Link } from 'react-router-dom';
+import CustomLinkBase from '../links/elements/CustomLinkBase';
 
 interface IWarning {
   title: string;
@@ -12,7 +12,7 @@ interface IWarning {
 
 const Warning = ({ title, message, color, href, linkText }: IWarning) => {
   return (
-    <div {...(href && { className: 'flex flex-col items-center gap-4' })}>
+    <div {...(linkText && { className: 'flex flex-col items-center gap-2' })}>
       <div
         className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm border-${color}-default`}
       >
@@ -27,16 +27,16 @@ const Warning = ({ title, message, color, href, linkText }: IWarning) => {
           <p>{message}</p>
         </div>
       </div>
-      {href && (
-        <div>
-          <Link
-            to={href}
-            className={`text-sm, font-bold text-${color}-default hover:text-${color}-normal`}
-          >
-            {linkText}
-          </Link>
-        </div>
-      )}
+      {href ||
+        (linkText && (
+          <div className="text-center">
+            <CustomLinkBase
+              href={'/'}
+              text={linkText}
+              className={`text-sm text-${color}-default hover:text-${color}-normal`}
+            />
+          </div>
+        ))}
     </div>
   );
 };

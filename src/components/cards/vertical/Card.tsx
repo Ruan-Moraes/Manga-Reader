@@ -1,6 +1,9 @@
+import CustomLinkBase from '../../links/elements/CustomLinkBase';
+
 const howManyChapters = 3;
 
 interface ICard {
+  id: string;
   type: string;
   imageSrc: string;
   title: string;
@@ -10,6 +13,7 @@ interface ICard {
 }
 
 const Card = ({
+  id,
   type,
   imageSrc,
   title,
@@ -36,7 +40,9 @@ const Card = ({
         </div>
         <div className="border-t border-t-tertiary">
           <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
-            <h3 className="truncate text-shadow-default">{title}</h3>
+            <h3 className="truncate text-shadow-default">
+              <CustomLinkBase href={`/title/${id}`} text={title} />
+            </h3>
           </div>
           <div className="flex flex-col px-2">
             {lastThreeChapters.map((chapter, index) => (

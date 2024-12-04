@@ -1,0 +1,414 @@
+{
+  "mostViewedTitles": [
+    {
+      "id": "1",
+      "title": "Solo Leveling",
+      "synopsis": "Sung Jin-woo, um caçador de nível baixo, é considerado o caçador mais fraco de toda a humanidade. Certo dia, ele se depara com uma masmorra dupla, que tem uma masmorra de nível alto escondida dentro de uma masmorra de nível baixo. Diante de um Jinwoo gravemente ferido, surge uma misteriosa missão!",
+      "imageSrc": "https://images.alphacoders.com/135/1359819.jpeg"
+    },
+    {
+      "id": "234567",
+      "title": "Shingeki no Kyojin",
+      "synopsis": "Attack on Titan se passa em um mundo onde a humanidade vive dentro de cidades cercadas por enormes Muralhas que os protegem dos Titãs, criaturas humanóides gigantes que devoram humanos aparentemente sem motivo. A história gira em torno de Eren Jaeger, sua irmã adotiva Mikasa Ackerman e seu amigo de infância Armin Arlert, cujas vidas mudam para sempre após o aparecimento de um Titã Colossal, que provoca a destruição de sua cidade natal e a morte da mãe de Eren. Jurando vingança e recuperar o mundo dos Titãs, Eren, Mikasa e Armin se juntam a Divisão de Reconhecimento, um grupo de elite de soldados que lutam contra Titãs fora das Muralhas.",
+      "imageSrc": "https://images8.alphacoders.com/108/1081458.jpg"
+    },
+    {
+      "id": "345678",
+      "title": "Naruto Clássico",
+      "synopsis": "Naruto (ナルト) é uma série de mangá escrita e ilustrada por Masashi Kishimoto, que conta a história de Naruto Uzumaki, um jovem ninja que constantemente procura por reconhecimento e sonha em se tornar Hokage, o ninja líder de sua vila.",
+      "imageSrc": "https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp"
+    },
+    {
+      "id": "456789",
+      "title": "One Piece",
+      "synopsis": "A história acompanha Monkey D. Luffy, um jovem cujo corpo ganhou as propriedades de borracha após ter comido uma fruta do diabo por engano. Com sua tripulação, os Piratas do Chapéu de Palha, Luffy explora a Grand Line em busca do One Piece, o maior tesouro do mundo, para se tornar o próximo Rei dos Piratas.",
+      "imageSrc": "https://images3.alphacoders.com/134/1342304.jpeg"
+    }
+  ],
+  "titlesInAscension": [
+    {
+      "id": "123456",
+      "type": "Manhwa",
+      "title": "Solo Leveling",
+      "imageSrc": "https://images.alphacoders.com/135/1359819.jpeg",
+      "popularity": "1",
+      "score": "9.8",
+      "chapters": "180",
+      "author": "Chugong",
+      "artist": "Jang Sung-Rak",
+      "publisher": "D&C Media",
+      "synopsis": "Sung Jin-woo, um caçador de nível baixo, é considerado o caçador mais fraco de toda a humanidade. Certo dia, ele se depara com uma masmorra dupla, que tem uma masmorra de nível alto escondida dentro de uma masmorra de nível baixo. Diante de um Jinwoo gravemente ferido, surge uma misteriosa missão!",
+      "objectFit": "cover"
+    },
+    {
+      "id": "234567",
+      "type": "Manga",
+      "title": "Shingeki no Kyojin",
+      "imageSrc": "https://images8.alphacoders.com/108/1081458.jpg",
+      "popularity": "2",
+      "score": "9.6",
+      "chapters": "139",
+      "author": "Hajime Isayama",
+      "artist": "Hajime Isayama",
+      "publisher": "Kodansha",
+      "synopsis": "Attack on Titan se passa em um mundo onde a humanidade vive dentro de cidades cercadas por enormes Muralhas que os protegem dos Titãs, criaturas humanóides gigantes que devoram humanos aparentemente sem motivo. A história gira em torno de Eren Jaeger, sua irmã adotiva Mikasa Ackerman e seu amigo de infância Armin Arlert, cujas vidas mudam para sempre após o aparecimento de um Titã Colossal, que provoca a destruição de sua cidade natal e a morte da mãe de Eren. Jurando vingança e recuperar o mundo dos Titãs, Eren, Mikasa e Armin se juntam a Divisão de Reconhecimento, um grupo de elite de soldados que lutam contra Titãs fora das Muralhas.",
+      "objectFit": "cover"
+    },
+    {
+      "id": "345678",
+      "type": "Manga",
+      "title": "Naruto Clássico",
+      "imageSrc": "https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp",
+      "popularity": "3",
+      "score": "9.5",
+      "chapters": "700",
+      "author": "Masashi Kishimoto",
+      "artist": "Masashi Kishimoto",
+      "publisher": "Shonen Jump+ (Shueisha)",
+      "synopsis": "Naruto (ナルト) é uma série de mangá escrita e ilustrada por Masashi Kishimoto, que conta a história de Naruto Uzumaki, um jovem ninja que constantemente procura por reconhecimento e sonha em se tornar Hokage, o ninja líder de sua vila.",
+      "objectFit": "cover"
+    },
+    {
+      "id": "456789",
+      "type": "Manga",
+      "title": "Dandandan",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1990/139975l.jpg",
+      "popularity": "4",
+      "score": "9.4",
+      "chapters": "100",
+      "author": "Yukinobu Tatsu",
+      "artist": "Yukinobu Tatsu",
+      "publisher": "Shonen Jump+ (Shueisha)",
+      "synopsis": "Momo Ayase é uma estudante do ensino médio que acredita em fantasmas que vêm de uma família de médiuns, enquanto Ken Takakura (apelidado de Okarun, abreviação de Occult-kun), acredita em alienígenas. Os dois discordam um do outro, com Momo não acreditando em alienígenas e Okarun não acreditando em espíritos.",
+      "objectFit": "cover"
+    },
+    {
+      "id": "969640",
+      "type": "Manga",
+      "title": "Tokyo Ghoul",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/6/74916l.jpg?_gl=1*119kumj*_gcl_au*MTQxNzU4NDYwMy4xNzMwNTgyMjEy*_ga*NzQ0MDI0MjM3LjE3MzA1ODIyMDU.*_ga_26FEP9527K*MTczMjczMTU3NS41LjEuMTczMjczMTk2MS41OC4wLjA.",
+      "popularity": "5",
+      "score": "9.3",
+      "chapters": "143",
+      "author": "Sui Ishida",
+      "artist": "Sui Ishida",
+      "publisher": "Young Jump (Shueisha)",
+      "synopsis": "Tokyo Ghoul é uma série de mangá escrita e ilustrada por Sui Ishida. A história segue Ken Kaneki, um estudante universitário que quase morre em um encontro às cegas com Rize Kamishiro, uma mulher que se revela um Ghoul. Kaneki é levado ao hospital em estado crítico. Depois de recuperar a consciência, ele descobre que passou por uma cirurgia que o transformou em meio-Ghoul. Isso o transforma em um ser híbrido, meio humano e meio Ghoul, e ele é forçado a viver escondido dos humanos.",
+      "objectFit": "fill"
+    }
+  ],
+  "randomTitles": [
+    {
+      "id": "309392",
+      "type": "Manga",
+      "chapters": "1600",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1460/110427l.jpg",
+      "title": "One Piece"
+    },
+    {
+      "id": "703078",
+      "type": "Manhwa",
+      "chapters": "180",
+      "imageSrc": "https://images.alphacoders.com/135/1359819.jpeg",
+      "title": "Solo Leveling"
+    },
+    {
+      "id": "632215",
+      "type": "Manhua",
+      "chapters": "400",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/7/85886l.jpg",
+      "title": "Tales of Demons and Gods"
+    },
+    {
+      "id": "794536",
+      "type": "Manga",
+      "chapters": "139",
+      "imageSrc": "https://images8.alphacoders.com/108/1081458.jpg",
+      "title": "Shingeki no Kyojin"
+    },
+    {
+      "id": "868960",
+      "type": "Manhwa",
+      "chapters": "200",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/257841l.jpg",
+      "title": "Tower of God"
+    },
+    {
+      "id": "77269",
+      "type": "Manhua",
+      "chapters": "300",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/205814l.jpg",
+      "title": "The God of High School"
+    },
+    {
+      "id": "382150",
+      "type": "Manga",
+      "chapters": "1000",
+      "imageSrc": "https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp",
+      "title": "Naruto Clássico"
+    },
+    {
+      "id": "467442",
+      "type": "Manhwa",
+      "chapters": "150",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1883/146143l.jpg",
+      "title": "The Beginning After the End"
+    },
+    {
+      "id": "742739",
+      "type": "Manga",
+      "chapters": "50",
+      "imageSrc": "https://i0.wp.com/irisscanlator.com.br/wp-content/uploads/2023/07/001.png",
+      "title": "Fukushuu o Koinegau Saikyou Yuusha wa, Yami no Chikara de Senmetsu Musou Suru"
+    },
+    {
+      "id": "232439",
+      "type": "Manga",
+      "chapters": "800",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/3/180022l.jpg",
+      "title": "Bleach"
+    }
+  ],
+  "updatedTitles": [
+    {
+      "id": "916601",
+      "type": "Manhwa",
+      "title": "The Beginning After The End",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1883/146143l.jpg",
+      "chapters": "100/99/98.5",
+      "releaseDate": "07/09"
+    },
+    {
+      "id": "259784",
+      "type": "Manga",
+      "title": "Shingeki no Kyojin",
+      "imageSrc": "https://images8.alphacoders.com/108/1081458.jpg",
+      "chapters": "139/138/137",
+      "releaseDate": "06/09"
+    },
+    {
+      "id": "418425",
+      "type": "Manga",
+      "title": "Naruto Clássico",
+      "imageSrc": "https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp",
+      "chapters": "700/699/698",
+      "releaseDate": "05/09"
+    },
+    {
+      "id": "110242",
+      "type": "Manhwa",
+      "title": "Solo Leveling",
+      "imageSrc": "https://images.alphacoders.com/135/1359819.jpeg",
+      "chapters": "155/154/153",
+      "releaseDate": "04/09"
+    },
+    {
+      "id": "412882",
+      "type": "Manga",
+      "title": "Fukushuu o Koinegau Saikyou Yuusha wa Yami no Chikara de Senmetsu Musou Suru",
+      "imageSrc": "https://i0.wp.com/irisscanlator.com.br/wp-content/uploads/2023/07/001.png",
+      "chapters": "10/9/8",
+      "releaseDate": "03/09"
+    },
+    {
+      "id": "221618",
+      "type": "Manhwa",
+      "title": "Tower of God",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/257841l.jpg",
+      "chapters": "500/499/498",
+      "releaseDate": "02/09"
+    },
+    {
+      "id": "748340",
+      "type": "Manhua",
+      "title": "Tales of Demons and Gods",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/7/85886l.jpg",
+      "chapters": "300/299/298",
+      "releaseDate": "01/09"
+    },
+    {
+      "id": "548710",
+      "type": "Manhua",
+      "title": "The God of High School",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/205814l.jpg",
+      "chapters": "500/499/498",
+      "releaseDate": "29/08"
+    },
+    {
+      "id": "64995",
+      "type": "Manga",
+      "title": "One Piece",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1460/110427l.jpg",
+      "chapters": "1000/999/998",
+      "releaseDate": "28/08"
+    },
+    {
+      "id": "26226",
+      "type": "Manga",
+      "title": "Blue Lock",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1358/143377l.jpg",
+      "chapters": "50/49/48",
+      "releaseDate": "27/08"
+    },
+    {
+      "id": "480298",
+      "type": "Manhwa",
+      "title": "The Beginning After The End",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1883/146143l.jpg",
+      "chapters": "100/99/98.5",
+      "releaseDate": "07/09"
+    },
+    {
+      "id": "346371",
+      "type": "Manga",
+      "title": "Shingeki no Kyojin",
+      "imageSrc": "https://images8.alphacoders.com/108/1081458.jpg",
+      "chapters": "139/138/137",
+      "releaseDate": "06/09"
+    },
+    {
+      "id": "845560",
+      "type": "Manga",
+      "title": "Naruto Clássico",
+      "imageSrc": "https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp",
+      "chapters": "700/699/698",
+      "releaseDate": "05/09"
+    },
+    {
+      "id": "936073",
+      "type": "Manhwa",
+      "title": "Solo Leveling",
+      "imageSrc": "https://images.alphacoders.com/135/1359819.jpeg",
+      "chapters": "155/154/153",
+      "releaseDate": "04/09"
+    },
+    {
+      "id": "996114",
+      "type": "Manga",
+      "title": "Fukushuu o Koinegau Saikyou Yuusha wa Yami no Chikara de Senmetsu Musou Suru",
+      "imageSrc": "https://i0.wp.com/irisscanlator.com.br/wp-content/uploads/2023/07/001.png",
+      "chapters": "10/9/8",
+      "releaseDate": "03/09"
+    },
+    {
+      "id": "367423",
+      "type": "Manhwa",
+      "title": "Tower of God",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/257841l.jpg",
+      "chapters": "500/499/498",
+      "releaseDate": "02/09"
+    },
+    {
+      "id": "393138",
+      "type": "Manhua",
+      "title": "Tales of Demons and Gods",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/7/85886l.jpg",
+      "chapters": "300/299/298",
+      "releaseDate": "01/09"
+    },
+    {
+      "id": "140136",
+      "type": "Manhua",
+      "title": "The God of High School",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/205814l.jpg",
+      "chapters": "500/499/498",
+      "releaseDate": "29/08"
+    },
+    {
+      "id": "135546",
+      "type": "Manga",
+      "title": "One Piece",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1460/110427l.jpg",
+      "chapters": "1000/999/998",
+      "releaseDate": "28/08"
+    },
+    {
+      "id": "811180",
+      "type": "Manga",
+      "title": "Blue Lock",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1358/143377l.jpg",
+      "chapters": "50/49/48",
+      "releaseDate": "27/08"
+    },
+    {
+      "id": "237168",
+      "type": "Manhwa",
+      "title": "The Beginning After The End",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1883/146143l.jpg",
+      "chapters": "100/99/98.5",
+      "releaseDate": "07/09"
+    },
+    {
+      "id": "184367",
+      "type": "Manga",
+      "title": "Shingeki no Kyojin",
+      "imageSrc": "https://images8.alphacoders.com/108/1081458.jpg",
+      "chapters": "139/138/137",
+      "releaseDate": "06/09"
+    },
+    {
+      "id": "768230",
+      "type": "Manga",
+      "title": "Naruto Clássico",
+      "imageSrc": "https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp",
+      "chapters": "700/699/698",
+      "releaseDate": "05/09"
+    },
+    {
+      "id": "359937",
+      "type": "Manhwa",
+      "title": "Solo Leveling",
+      "imageSrc": "https://images.alphacoders.com/135/1359819.jpeg",
+      "chapters": "155/154/153",
+      "releaseDate": "04/09"
+    },
+    {
+      "id": "103273",
+      "type": "Manga",
+      "title": "Fukushuu o Koinegau Saikyou Yuusha wa Yami no Chikara de Senmetsu Musou Suru",
+      "imageSrc": "https://i0.wp.com/irisscanlator.com.br/wp-content/uploads/2023/07/001.png",
+      "chapters": "10/9/8",
+      "releaseDate": "03/09"
+    },
+    {
+      "id": "312868",
+      "type": "Manhwa",
+      "title": "Tower of God",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/257841l.jpg",
+      "chapters": "500/499/498",
+      "releaseDate": "02/09"
+    },
+    {
+      "id": "369412",
+      "type": "Manhua",
+      "title": "Tales of Demons and Gods",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/7/85886l.jpg",
+      "chapters": "300/299/298",
+      "releaseDate": "01/09"
+    },
+    {
+      "id": "894101",
+      "type": "Manhua",
+      "title": "The God of High School",
+      "imageSrc": "https://cdn.myanimelist.net/images/manga/1/205814l.jpg",
+      "chapters": "500/499/498",
+      "releaseDate": "29/08"
+    },
+    {
+      "id": "57433",
+      "type": "Manga",
+      "title": "One Piece",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1460/110427l.jpg",
+      "chapters": "1000/999/998",
+      "releaseDate": "28/08"
+    },
+    {
+      "id": "27054",
+      "type": "Manga",
+      "title": "Blue Lock",
+      "imageSrc": "https://cdn.myanimelist.net/images/anime/1358/143377l.jpg",
+      "chapters": "50/49/48",
+      "releaseDate": "27/08"
+    }
+  ]
+}

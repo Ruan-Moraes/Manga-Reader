@@ -1,58 +1,45 @@
-import { useRef, useState } from 'react';
-
 // @ts-expect-error - ignore import error
-import { Splide } from '@splidejs/react-splide';
+import { SplideSlide } from '@splidejs/react-splide';
+
+import CustomLinkBase from '../links/elements/CustomLinkBase';
 
 interface ICarousel {
-  children: React.ReactNode;
+  id: string;
+  imageSrc: string;
+  title: string;
+  synopsis: string;
 }
 
-const Carousel = ({ children }: ICarousel) => {
-  const splideRef = useRef<Splide>(null);
-  const [intervalId, setIntervalId] = useState<number | null>(null);
-
-  const handleCarouselClick = () => {
-    splideRef.current?.go('+1');
-
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
-
-    const newIntervalId = setInterval(() => {
-      splideRef.current?.go('+1');
-    }, 7500);
-
-    setIntervalId(newIntervalId);
-  };
-
+const Carousel = ({ id, imageSrc, title, synopsis }: ICarousel) => {
   return (
-    <section className="flex flex-col items-start">
-      <div className="px-4 py-2 rounded-t-sm bg-tertiary">
-        <h2 className="flex flex-col items-center text-center">
-          <span className="font-bold text-shadow-default">
-            Obras mais vistas
-          </span>
-          <span className="text-xs">(últimos 30 dias)</span>
-        </h2>
+    <SplideSlide>
+      <div>
+        <div>
+          <img src={imageSrc} alt="#" className="object-cover h-[18rem]" />
+        </div>
+        <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-75 max-h-[12.5rem]">
+          <h3 className="text-lg font-bold text-shadow-highlight">
+            <CustomLinkBase
+              href={`/title/${id}`}
+              text={title}
+              otherStyles={{
+                textShadow: '0.125rem 0.0625rem 0 #161616bf',
+              }}
+            />
+          </h3>
+          <p
+            className="text-xs max-h-[3.15rem] overflow-hidden"
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            {synopsis}
+          </p>
+        </div>
       </div>
-      <div className="border-2 rounded-sm rounded-tl-none border-tertiary">
-        <Splide
-          ref={splideRef}
-          options={{
-            type: 'fade',
-            rewind: true,
-            autoplay: true,
-            interval: 7500,
-            speed: 500,
-            pagination: false,
-            arrows: false,
-          }}
-          onClick={handleCarouselClick}
-        >
-          {children}
-        </Splide>
-      </div>
-    </section>
+    </SplideSlide>
   );
 };
 

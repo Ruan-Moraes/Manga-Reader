@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
+import CustomLinkBase from '../../links/elements/CustomLinkBase';
+
 interface ICard {
+  id: string;
   type: string;
   imageSrc: string;
   title: string;
@@ -15,6 +18,7 @@ interface ICard {
 }
 
 const Card = ({
+  id,
   type,
   imageSrc,
   title,
@@ -71,7 +75,15 @@ const Card = ({
           </div>
           <div className="border-t border-t-tertiary">
             <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
-              <h3 className="truncate text-shadow-default">{title}</h3>
+              <h3 className="truncate text-shadow-default">
+                <CustomLinkBase
+                  href={`/title/${id}`}
+                  text={title}
+                  otherStyles={{
+                    textShadow: '0.125rem 0.0625rem 0 #161616bf',
+                  }}
+                />
+              </h3>
             </div>
             <div className="flex flex-col w-full gap-1 p-2 text-xs">
               <div>

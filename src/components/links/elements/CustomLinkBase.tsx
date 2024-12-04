@@ -5,15 +5,17 @@ import clsx from 'clsx';
 interface ICustomLinkBase {
   href: string;
   text: string;
-  enabledColorWhenActive?: boolean;
+  className?: string;
   otherStyles?: React.CSSProperties;
+  enabledColorWhenActive?: boolean;
 }
 
 const CustomLinkBase = ({
   href,
   text,
-  enabledColorWhenActive,
+  className,
   otherStyles,
+  enabledColorWhenActive,
 }: ICustomLinkBase) => {
   const location = useLocation();
 
@@ -24,7 +26,7 @@ const CustomLinkBase = ({
     <Link
       to={'/Manga-Reader' + href}
       style={otherStyles || {}}
-      className={clsx('font-bold text-center duration-500', {
+      className={clsx(`font-bold duration-500 ${className}`, {
         'transition-text-shadow hover:text-shadow-highlight':
           !enabledColorWhenActive,
         'text-quaternary-default': enabledColorWhenActive && isActive,

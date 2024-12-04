@@ -1,4 +1,7 @@
+import CustomLinkBase from '../../links/elements/CustomLinkBase';
+
 interface ICard {
+  id: string;
   type: string;
   chapters: string;
   imageSrc: string;
@@ -6,7 +9,7 @@ interface ICard {
   objectFit?: string;
 }
 
-const Card = ({ type, chapters, imageSrc, title, objectFit }: ICard) => {
+const Card = ({ id, type, chapters, imageSrc, title, objectFit }: ICard) => {
   return (
     <div className="flex flex-col items-start flex-shrink-0">
       <div className="flex flex-col px-3 py-1 text-center rounded-sm rounded-b-none bg-tertiary">
@@ -24,7 +27,7 @@ const Card = ({ type, chapters, imageSrc, title, objectFit }: ICard) => {
       </div>
       <div className="w-[20rem] px-2 py-1 rounded-b-sm bg-tertiary">
         <h3 className="font-bold text-center truncate text-shadow-default">
-          {title}
+          <CustomLinkBase href={`/title/${id}`} text={title} />
         </h3>
       </div>
     </div>

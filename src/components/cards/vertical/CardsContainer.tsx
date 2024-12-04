@@ -1,19 +1,65 @@
-import { useState, Children } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import UseFetchArtWork from '../../../hooks/useFetchArtWork';
 
 import Section_Title from '../../titles/SectionTitle';
 import ButtonHighLight from '../../buttons/RaisedButton';
+import Card from './Card';
+import SkeletonCard from './SkeletonCard';
 
 interface ICardsContainer {
+  queryKey: string;
+  url: string;
+  validTime?: number;
   title: string;
   sub: string;
-  children: React.ReactNode;
 }
 
-const CardsContainer = ({ title, sub, children }: ICardsContainer) => {
-  const [visible, setVisible] = useState(10);
+interface IUpdatedTitles {
+  id: string;
+  type: string;
+  imageSrc: string;
+  title: string;
+  releaseDate: string;
+  chapters: string;
+  objectFit?: string;
+}
 
-  const allChildren = Children.toArray(children) as React.ReactElement[];
+const CardsContainer = ({
+  queryKey,
+  url,
+  validTime,
+  title,
+  sub,
+}: ICardsContainer) => {
+  const [visible, setVisible] = useState(10);
+  const { data, status } = UseFetchArtWork<IUpdatedTitles[]>(
+    queryKey,
+    url,
+    validTime
+  );
+
+  const allChildren = useMemo(() => {
+    if (status === 'success' && Array.isArray(data) && data.length > 0) {
+      return data.map(
+        ({ id, title, type, imageSrc, releaseDate, chapters, objectFit }) => (
+          <Card
+            key={id}
+            id={id}
+            title={title}
+            type={type}
+            imageSrc={imageSrc}
+            releaseDate={releaseDate}
+            chapters={chapters}
+            objectFit={objectFit}
+          />
+        )
+      );
+    }
+    return [];
+  }, [data, status]);
+
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -26,17 +72,19 @@ const CardsContainer = ({ title, sub, children }: ICardsContainer) => {
 
   return (
     <section className="flex flex-col gap-4">
-      <div>
-        <Section_Title title={title} sub={sub} />
+      <Section_Title title={title} sub={sub} />
+      <div className="grid grid-cols-2 gap-4">
+        {status === 'pending' && (
+          <>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </>
+        )}
+        {status === 'error' && <p>Ocorreu um erro ao buscar os dados</p>}
+        {status === 'success' && allChildren.slice(0, visible)}
       </div>
-      <div>
-        <div className="grid grid-cols-2 gap-4">
-          {allChildren.slice(0, visible)}
-        </div>
-      </div>
-      <div>
-        <ButtonHighLight text="Ver Mais" callBack={handleClick} />
-      </div>
+      <ButtonHighLight text="Ver Mais" callBack={handleClick} />
     </section>
   );
 };
