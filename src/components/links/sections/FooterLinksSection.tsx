@@ -15,7 +15,7 @@ const FooterLinksSection = ({
   return (
     <div style={otherStyles || {}}>
       <div className="p-2 font-bold text-center border-2 rounded-sm rounded-b-none bg-primary-default border-tertiary">
-        <h3 className="text-shadow-highlight">{title}</h3>
+        <h2 className="text-shadow-highlight">{title}</h2>
       </div>
       <LinkBox>
         {links.map((link, index) => (

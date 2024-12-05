@@ -9,7 +9,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
   return (
     <footer className="mt-auto bg-secondary">
       {!disabledLinks && (
-        <div className="grid items-center grid-cols-4 gap-4 p-4 border-t-2 border-t-tertiary">
+        <div className="grid items-center grid-cols-8 gap-4 p-4 border-t-2 border-t-tertiary">
           <LinksSection
             title="Links úteis"
             links={[
@@ -20,7 +20,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
               { href: '#', text: 'Grupos' },
             ]}
             otherStyles={{
-              gridColumn: '1/3',
+              gridColumn: '1/5',
             }}
           />
           <LinksSection
@@ -32,7 +32,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
               { href: '#', text: 'Instagram' },
             ]}
             otherStyles={{
-              gridColumn: '3/-1',
+              gridColumn: '5/9',
             }}
           />
           <LinksSection
@@ -48,7 +48,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
               { href: '/terms-of-use', text: 'Termos de uso' },
             ]}
             otherStyles={{
-              gridColumn: '2/4',
+              gridColumn: '2/8',
             }}
           />
         </div>

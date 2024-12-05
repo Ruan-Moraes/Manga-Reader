@@ -107,12 +107,21 @@ const Menu: React.FC<IMenu> = ({ disabledBreadcrumb }) => {
             </div>
             <div className="flex flex-col h-full gap-6 px-4 pb-4">
               <div className="grid grid-cols-2 gap-2">
-                <CustomLinkWithBox href="#" text="Categorias" />
-                <CustomLinkWithBox href="#" text="Nacional" />
-                <CustomLinkWithBox href="#" text="Mangas" />
-                <CustomLinkWithBox href="#" text="Manwhas" />
-                <CustomLinkWithBox href="#" text="Manhuas" />
-                <CustomLinkWithBox href="#" text="Novels" />
+                <CustomLinkWithBox href="/categories" text="Categorias" />
+                <CustomLinkWithBox
+                  href="/categories?q=national"
+                  text="Nacional"
+                />
+                <CustomLinkWithBox href="/categories?q=mangas" text="Mangas" />
+                <CustomLinkWithBox
+                  href="/categories?q=manwhas"
+                  text="Manwhas"
+                />
+                <CustomLinkWithBox
+                  href="/categories?q=manhuas"
+                  text="Manhuas"
+                />
+                <CustomLinkWithBox href="/categories?q=novels" text="Novels" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <CustomLinkWithBox href="#" text="Notícias" />

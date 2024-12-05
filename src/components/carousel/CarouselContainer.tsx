@@ -78,7 +78,7 @@ const CarouselContainer = ({
         {status === 'error' && (
           <div className="flex items-center justify-center h-full">
             <p className="p-4 font-bold text-center text-quinary-default">
-              Ocorreu um erro ao buscar os dados.
+              Ocorreu um erro ao buscar os dados. Tente novamente mais tarde.
             </p>
           </div>
         )}

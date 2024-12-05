@@ -50,7 +50,7 @@ const Header = ({
         </div>
         {!disabledSearch && <SearchInput />}
       </nav>
-      {!disabledMenu && <Menu disabledBreadcrumb={true} />}
+      {!disabledMenu && <Menu disabledBreadcrumb={disabledBreadcrumb} />}
       {!disabledBreadcrumb && <BreadCrumbContainer />}
     </header>
   );

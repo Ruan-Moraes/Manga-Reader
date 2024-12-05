@@ -1,7 +1,10 @@
 import UseFetchArtWork from '../../../hooks/useFetchArtWork';
 
+import { COLORS } from '../../../constants/COLORS';
+
 import Section_Title from '../../titles/SectionTitle';
 import SkeletonCard from './SkeletonCard';
+import Warning from '../../notifications/Warning';
 import Card from './Card';
 
 interface ICardsContainer {
@@ -48,7 +51,13 @@ const CardsContainer = ({
           Array.from({ length: 5 }).map((_, index) => (
             <SkeletonCard key={index} />
           ))}
-        {status === 'error' && <p>Ocorreu um erro ao buscar os dados</p>}
+        {status === 'error' && (
+          <Warning
+            title="Erro!"
+            message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+            color={COLORS.QUINARY}
+          />
+        )}
         {status === 'success' &&
           Array.isArray(data) &&
           data.length > 0 &&

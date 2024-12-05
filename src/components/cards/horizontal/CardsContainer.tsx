@@ -1,7 +1,10 @@
 import useFetchArtWork from '../../../hooks/useFetchArtWork';
 
+import { COLORS } from '../../../constants/COLORS';
+
 import Section_Title from '../../titles/SectionTitle';
 import SkeletonCard from './SkeletonCard';
+import Warning from '../../notifications/Warning';
 import Card from './Card';
 
 interface ICardsContainer {
@@ -37,12 +40,18 @@ const CardsContainer = ({
   return (
     <section className="flex flex-col gap-4">
       <Section_Title title={title} sub={sub} />
-      <div className="flex gap-4 overflow-x-auto flex-nowrap">
+      <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">
         {status === 'pending' &&
           Array.from({ length: 10 }).map((_, index) => (
             <SkeletonCard key={index} />
           ))}
-        {status === 'error' && <p>Ocorreu um erro ao buscar os dados</p>}
+        {status === 'error' && (
+          <Warning
+            title="Erro!"
+            message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+            color={COLORS.QUINARY}
+          />
+        )}
         {status === 'success' &&
           Array.isArray(data) &&
           data.length > 0 &&

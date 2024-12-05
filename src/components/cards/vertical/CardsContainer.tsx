@@ -1,12 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import clsx from 'clsx';
+
 import UseFetchArtWork from '../../../hooks/useFetchArtWork';
+
+import { COLORS } from '../../../constants/COLORS';
 
 import Section_Title from '../../titles/SectionTitle';
 import ButtonHighLight from '../../buttons/RaisedButton';
-import Card from './Card';
 import SkeletonCard from './SkeletonCard';
+import Warning from '../../notifications/Warning';
+import Card from './Card';
 
 interface ICardsContainer {
   queryKey: string;
@@ -73,7 +78,11 @@ const CardsContainer = ({
   return (
     <section className="flex flex-col gap-4">
       <Section_Title title={title} sub={sub} />
-      <div className="grid grid-cols-2 gap-4">
+      <div
+        className={clsx('grid grid-cols-2 gap-4', {
+          'grid-cols-1': status === 'error',
+        })}
+      >
         {status === 'pending' && (
           <>
             {Array.from({ length: 10 }).map((_, index) => (
@@ -81,7 +90,13 @@ const CardsContainer = ({
             ))}
           </>
         )}
-        {status === 'error' && <p>Ocorreu um erro ao buscar os dados</p>}
+        {status === 'error' && (
+          <Warning
+            title="Erro!"
+            message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+            color={COLORS.QUINARY}
+          />
+        )}
         {status === 'success' && allChildren.slice(0, visible)}
       </div>
       <ButtonHighLight text="Ver Mais" callBack={handleClick} />
