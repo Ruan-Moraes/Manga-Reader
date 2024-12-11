@@ -4,19 +4,17 @@ import SearchInput from '../components/inputs/SearchInput';
 import Menu from '../components/menu/Menu.tsx';
 import BreadCrumbContainer from '../components/breadcrumb/BreadCrumbContainer';
 
-interface IHeader {
+type HeaderProps = {
   disabledAuth?: boolean;
   disabledSearch?: boolean;
-  disabledMenu?: boolean;
   disabledBreadcrumb?: boolean;
-}
+};
 
 const Header = ({
   disabledAuth,
   disabledSearch,
-  disabledMenu,
   disabledBreadcrumb,
-}: IHeader) => {
+}: HeaderProps) => {
   return (
     <header className="flex flex-col bg-secondary">
       {!disabledAuth && (
@@ -38,19 +36,15 @@ const Header = ({
         <div>
           <h1>
             <CustomLinkBase
-              href="/"
+              href=""
               text="Manga Reader"
-              otherStyles={{
-                fontSize: '1.875rem',
-                lineHeight: '2.25rem',
-                fontStyle: 'italic',
-              }}
+              className="text-2xl italic"
             />
           </h1>
         </div>
         {!disabledSearch && <SearchInput />}
       </nav>
-      {!disabledMenu && <Menu disabledBreadcrumb={disabledBreadcrumb} />}
+      <Menu />
       {!disabledBreadcrumb && <BreadCrumbContainer />}
     </header>
   );

@@ -1,10 +1,10 @@
-interface IBaseInput {
+type BaseInputProps = {
   label: string;
   type: string;
   placeholder: string;
-}
+};
 
-const BaseInput = ({ label, type, placeholder }: IBaseInput) => {
+const BaseInput = ({ label, type, placeholder }: BaseInputProps) => {
   return (
     <div>
       <label className="flex flex-col gap-1 ">
@@ -12,7 +12,7 @@ const BaseInput = ({ label, type, placeholder }: IBaseInput) => {
         <input
           type={type}
           placeholder={placeholder}
-          className="w-full p-2 transition-shadow duration-500 border-none rounded-sm outline-none appearance-none bg-tertiary placeholder-primary-default placeholder:text-sm shadow-default focus:shadow-inside hover:shadow-inside"
+          className="w-full p-2 transition-shadow duration-300 border-none rounded-sm outline-none appearance-none bg-tertiary placeholder-primary-default placeholder:text-sm shadow-default focus:shadow-inside hover:shadow-inside"
         />
       </label>
     </div>

@@ -1,21 +1,23 @@
 import { Link } from 'react-router-dom';
 
-interface ICustomLinkWithBorder {
+type CustomLinkWithBorderProps = {
   href: string;
-  text: string;
   otherStyles?: React.CSSProperties;
-}
+  text: string;
+};
 
 const CustomLinkWithBorder = ({
   href,
-  text,
   otherStyles,
-}: ICustomLinkWithBorder) => {
+  text,
+}: CustomLinkWithBorderProps) => {
+  const isExternalLink = href.includes('http');
+
   return (
     <Link
-      to={'/Manga-Reader' + href}
+      to={isExternalLink ? href : '/Manga-Reader' + href}
       style={otherStyles || {}}
-      className="p-2 duration-500 border-b-2 border-b-tertiary transition-text-shadow hover:text-shadow-highlight"
+      className="p-2 duration-300 border-b-2 border-b-tertiary transition-text-shadow hover:text-shadow-highlight"
     >
       {text}
     </Link>

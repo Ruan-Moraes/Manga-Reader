@@ -1,19 +1,19 @@
 import LinkBox from '../../boxes/LinkBox';
 import CustomLinkWithBorder from '../elements/CustomLinkWithBorder';
 
-interface IFooterLinksSection {
+type FooterLinksSectionProps = {
   title: string;
   links: { href: string; text: string }[];
-  otherStyles?: React.CSSProperties;
-}
+  classNames?: string;
+};
 
 const FooterLinksSection = ({
   title,
   links,
-  otherStyles,
-}: IFooterLinksSection) => {
+  classNames,
+}: FooterLinksSectionProps) => {
   return (
-    <div style={otherStyles || {}}>
+    <div className={classNames || ''}>
       <div className="p-2 font-bold text-center border-2 rounded-sm rounded-b-none bg-primary-default border-tertiary">
         <h2 className="text-shadow-highlight">{title}</h2>
       </div>

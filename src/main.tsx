@@ -11,17 +11,19 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import AppLayout from './components/app-layout/AppLayout.tsx';
 
-import Home from './pages/home/Home.tsx';
-import Title from './pages/title/Title.tsx';
-import Categories from './pages/categories/Categories.tsx';
-import Login from './pages/login/Login.tsx';
-import SignUp from './pages/sign-up/SignUp.tsx';
-import ForgotPassword from './pages/forgot-password/ForgotPassword.tsx';
-import PublishWork from './pages/publish-work/PublishWork.tsx';
-import AboutUs from './pages/about-us/AboutUs.tsx';
-import TermsOfUse from './pages/terms/TermsOfUse.tsx';
-import Dmca from './pages/terms/Dmca.tsx';
-import NotFound from './pages/error/NotFound.tsx';
+import Home from './routes/home/Home.tsx';
+import Title from './routes/title/Title.tsx';
+import Categories from './routes/categories/Categories.tsx';
+import Groups from './routes/groups/Groups.tsx';
+import News from './routes/news/News.tsx';
+import Login from './routes/login/Login.tsx';
+import SignUp from './routes/sign-up/SignUp.tsx';
+import ForgotPassword from './routes/forgot-password/ForgotPassword.tsx';
+import PublishWork from './routes/publish-work/PublishWork.tsx';
+import AboutUs from './routes/about-us/AboutUs.tsx';
+import TermsOfUse from './routes/terms/TermsOfUse.tsx';
+import Dmca from './routes/terms/Dmca.tsx';
+import NotFound from './routes/error/NotFound.tsx';
 
 const routes = createBrowserRouter([
   {
@@ -37,8 +39,24 @@ const routes = createBrowserRouter([
         element: <Title />,
       },
       {
+        path: 'title/:title/:chapter',
+        element: <Title />,
+      },
+      {
         path: 'categories',
         element: <Categories />,
+      },
+      {
+        path: 'groups',
+        element: <Groups />,
+      },
+      {
+        path: 'news',
+        element: <News />,
+      },
+      {
+        path: 'events',
+        element: <News />,
       },
       {
         path: 'login',

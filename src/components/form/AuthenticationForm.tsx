@@ -1,22 +1,22 @@
 import CustomLinkBase from '../links/elements/CustomLinkBase';
 
-interface IAuthenticationForm {
-  title: string;
-  helperText?: string;
+type AuthenticationFormProps = {
   onFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  title: string;
+  children: React.ReactNode;
+  helperText?: string;
   linkText?: string;
   href?: string;
-  children: React.ReactNode;
-}
+};
 
 const AuthenticationForm = ({
-  title,
   onFormSubmit,
+  title,
+  children,
   helperText,
   linkText,
   href,
-  children,
-}: IAuthenticationForm) => {
+}: AuthenticationFormProps) => {
   return (
     <div className="flex flex-col gap-2">
       <div>

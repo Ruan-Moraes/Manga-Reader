@@ -5,31 +5,26 @@ import clsx from 'clsx';
 
 import UseFetchArtWork from '../../../hooks/useFetchArtWork';
 
-import { COLORS } from '../../../constants/COLORS';
-
 import Section_Title from '../../titles/SectionTitle';
-import ButtonHighLight from '../../buttons/RaisedButton';
-import SkeletonCard from './SkeletonCard';
-import Warning from '../../notifications/Warning';
 import Card from './Card';
+import ButtonHighLight from '../../buttons/RaisedButton';
 
-interface ICardsContainer {
+type CardsContainerProps = {
   queryKey: string;
   url: string;
   validTime?: number;
   title: string;
   sub: string;
-}
+};
 
-interface IUpdatedTitles {
+type UpdatedTitlesProps = {
   id: string;
   type: string;
   imageSrc: string;
   title: string;
   releaseDate: string;
   chapters: string;
-  objectFit?: string;
-}
+};
 
 const CardsContainer = ({
   queryKey,
@@ -37,9 +32,9 @@ const CardsContainer = ({
   validTime,
   title,
   sub,
-}: ICardsContainer) => {
+}: CardsContainerProps) => {
   const [visible, setVisible] = useState(10);
-  const { data, status } = UseFetchArtWork<IUpdatedTitles[]>(
+  const { data, status } = UseFetchArtWork<UpdatedTitlesProps[]>(
     queryKey,
     url,
     validTime
@@ -48,7 +43,7 @@ const CardsContainer = ({
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
       return data.map(
-        ({ id, title, type, imageSrc, releaseDate, chapters, objectFit }) => (
+        ({ id, title, type, imageSrc, releaseDate, chapters }) => (
           <Card
             key={id}
             id={id}
@@ -57,12 +52,20 @@ const CardsContainer = ({
             imageSrc={imageSrc}
             releaseDate={releaseDate}
             chapters={chapters}
-            objectFit={objectFit}
           />
         )
       );
     }
-    return [];
+
+    if (status === 'pending') {
+      return Array.from({ length: 10 }).map((_, index) => (
+        <Card key={index} isLoading={true} />
+      ));
+    }
+
+    return Array.from({ length: 1 }).map((_, index) => (
+      <Card key={index} isError={true} />
+    ));
   }, [data, status]);
 
   const navigate = useNavigate();
@@ -79,25 +82,12 @@ const CardsContainer = ({
     <section className="flex flex-col gap-4">
       <Section_Title title={title} sub={sub} />
       <div
-        className={clsx('grid grid-cols-2 gap-4', {
+        className={clsx('grid gap-4', {
+          'grid-cols-2': status === 'success' || status === 'pending',
           'grid-cols-1': status === 'error',
         })}
       >
-        {status === 'pending' && (
-          <>
-            {Array.from({ length: 10 }).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))}
-          </>
-        )}
-        {status === 'error' && (
-          <Warning
-            title="Erro!"
-            message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
-            color={COLORS.QUINARY}
-          />
-        )}
-        {status === 'success' && allChildren.slice(0, visible)}
+        {allChildren.slice(0, visible)}
       </div>
       <ButtonHighLight text="Ver Mais" callBack={handleClick} />
     </section>

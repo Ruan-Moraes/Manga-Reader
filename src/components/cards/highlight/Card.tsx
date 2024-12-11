@@ -1,36 +1,44 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { COLORS } from '../../../constants/COLORS';
+
+import Warning from '../../notifications/Warning';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
-interface ICard {
-  id: string;
-  type: string;
-  imageSrc: string;
-  title: string;
-  popularity: string;
-  score: string;
-  chapters: string;
-  author: string;
-  artist: string;
-  publisher: string;
-  synopsis: string;
-  objectFit?: string;
-}
+type Status = {
+  isLoading?: boolean;
+  isError?: boolean;
+};
+
+type CardProps = {
+  id?: string;
+  type?: string;
+  imageSrc?: string;
+  title?: string;
+  popularity?: string;
+  score?: string;
+  chapters?: string;
+  author?: string;
+  artist?: string;
+  publisher?: string;
+  synopsis?: string;
+};
 
 const Card = ({
   id,
-  type,
-  imageSrc,
-  title,
-  popularity,
-  score,
-  chapters,
-  author,
-  artist,
-  publisher,
-  synopsis,
-  objectFit,
-}: ICard) => {
+  type = '...',
+  imageSrc = 'Carregando...',
+  title = '...',
+  popularity = '...',
+  score = '...',
+  chapters = '...',
+  author = '...',
+  artist = '...',
+  publisher = '...',
+  synopsis = 'Carregando...',
+  isLoading,
+  isError,
+}: CardProps & Status) => {
   const informationsHTML = useRef<HTMLDivElement>(null);
   const synopsisHTML = useRef<HTMLDivElement>(null);
 
@@ -54,6 +62,81 @@ const Card = ({
     }
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-start">
+        <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
+          <span className="font-bold">{type}</span>
+        </div>
+        <div className="flex flex-row items-center w-full gap-4">
+          <div className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary">
+            <div className="flex items-center justify-center h-52">
+              <span className="font-bold text-center text-tertiary">
+                {imageSrc}
+              </span>
+            </div>
+            <div className="border-t border-t-tertiary">
+              <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
+                <span className="truncate text-shadow-default">{title}</span>
+              </div>
+              <div className="flex flex-col w-full gap-1 p-2 text-xs">
+                <div>
+                  <span className="truncate">
+                    <span className="font-bold">Popularidade:</span>{' '}
+                    <span className="text-tertiary">{popularity} º</span>
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <span className="font-bold">Nota:</span>{' '}
+                    <span className="text-tertiary">{score}</span>
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <span className="font-bold">Capítulos:</span>{' '}
+                    <span className="text-tertiary">{chapters}</span>
+                  </span>
+                </div>
+                <div>
+                  <span className="truncate">
+                    <span className="font-bold">Autor:</span>{' '}
+                    <span className="text-tertiary">{author}</span>
+                  </span>
+                </div>
+                <div>
+                  <span className="truncate">
+                    <span className="font-bold">Artista:</span>{' '}
+                    <span className="text-tertiary">{artist}</span>
+                  </span>
+                </div>
+                <div>
+                  <span className="truncate">
+                    <span className="font-bold">Editora:</span>{' '}
+                    <span className="text-tertiary">{publisher}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-2/4 overflow-hidden">
+            <span className="block text-center text-tertiary">{synopsis}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Warning
+        title="Erro!"
+        message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+        color={COLORS.QUINARY}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col items-start">
       <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
@@ -68,9 +151,7 @@ const Card = ({
             <img
               src={imageSrc}
               alt={title}
-              className={`${
-                objectFit ? 'object-' + objectFit : 'object-cover'
-              } max-h-[10rem] w-full aspect-square`}
+              className="object-cover max-h-[10rem] w-full aspect-square"
             />
           </div>
           <div className="border-t border-t-tertiary">

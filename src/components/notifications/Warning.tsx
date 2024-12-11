@@ -2,17 +2,19 @@ import { COLORS } from '../../constants/COLORS';
 
 import CustomLinkBase from '../links/elements/CustomLinkBase';
 
-interface IWarning {
+type WarningProps = {
+  linkText?: string;
+  color: COLORS;
   title: string;
   message: string;
-  color: COLORS;
   href?: string;
-  linkText?: string;
-}
+};
 
-const Warning = ({ title, message, color, href, linkText }: IWarning) => {
+const Warning = ({ linkText, color, title, message, href }: WarningProps) => {
   return (
-    <div {...(linkText && { className: 'flex flex-col items-center gap-2' })}>
+    <div
+      className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
+    >
       <div
         className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm border-${color}-default`}
       >

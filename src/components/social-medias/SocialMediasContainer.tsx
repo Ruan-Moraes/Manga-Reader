@@ -1,8 +1,8 @@
-type ISocialMediasContainer = {
+type SocialMediasContainerProps = {
   children: React.ReactNode;
 };
 
-const SocialMediasContainer = ({ children }: ISocialMediasContainer) => {
+const SocialMediasContainer = ({ children }: SocialMediasContainerProps) => {
   return (
     <div>
       <div className="p-2 rounded-t-sm bg-tertiary">

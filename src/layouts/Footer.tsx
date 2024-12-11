@@ -1,11 +1,11 @@
 // src/components/Footer/Footer.tsx
 import LinksSection from '../components/links/sections/FooterLinksSection';
 
-interface IFooter {
+type FooterProps = {
   disabledLinks?: boolean;
-}
+};
 
-const Footer = ({ disabledLinks }: IFooter) => {
+const Footer = ({ disabledLinks }: FooterProps) => {
   return (
     <footer className="mt-auto bg-secondary">
       {!disabledLinks && (
@@ -14,14 +14,12 @@ const Footer = ({ disabledLinks }: IFooter) => {
             title="Links úteis"
             links={[
               { href: '/', text: 'Home' },
-              { href: '#', text: 'Categorias' },
-              { href: '#', text: 'Notícias' },
-              { href: '#', text: 'Eventos' },
-              { href: '#', text: 'Grupos' },
+              { href: '/categories', text: 'Categorias' },
+              { href: '/news', text: 'Notícias' },
+              { href: '/events', text: 'Eventos' },
+              { href: '/groups', text: 'Grupos' },
             ]}
-            otherStyles={{
-              gridColumn: '1/5',
-            }}
+            classNames="col-span-4"
           />
           <LinksSection
             title="Redes sociais"
@@ -31,9 +29,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
               { href: '#', text: 'Facebook' },
               { href: '#', text: 'Instagram' },
             ]}
-            otherStyles={{
-              gridColumn: '5/9',
-            }}
+            classNames="col-span-4"
           />
           <LinksSection
             title="Outros links"
@@ -47,9 +43,7 @@ const Footer = ({ disabledLinks }: IFooter) => {
               { href: '/dmca', text: 'DMCA' },
               { href: '/terms-of-use', text: 'Termos de uso' },
             ]}
-            otherStyles={{
-              gridColumn: '2/8',
-            }}
+            classNames=" col-start-2 col-span-6"
           />
         </div>
       )}

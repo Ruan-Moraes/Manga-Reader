@@ -13,7 +13,7 @@ import Warning from '../../components/notifications/Warning';
 import SocialMedias from '../../components/social-medias/SocialMediasContainer';
 import SocialMediaItem from '../../components/social-medias/SocialMediaItem';
 
-import CarouselContainer from '../../components/carousel/CarouselContainer';
+import CarouselContainer from '../../components/cards/carousel/CarouselContainer';
 import HighlightCards from '../../components/cards/highlight/CardsContainer';
 import RowCardsContainer from '../../components/cards/horizontal/CardsContainer';
 import GridCardsContainer from '../../components/cards/vertical/CardsContainer';

@@ -1,9 +1,9 @@
-interface ISectionTitle {
+type SectionTitleProps = {
   title: string;
   sub?: string;
-}
+};
 
-const SectionTitle = ({ title, sub }: ISectionTitle) => {
+const SectionTitle = ({ title, sub }: SectionTitleProps) => {
   return (
     <div>
       <h2 className="flex flex-col">

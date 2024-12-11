@@ -1,11 +1,12 @@
 import CustomLinkBase from '../links/elements/CustomLinkBase';
-interface ICheckboxInput {
-  labelText: string;
-  linkText: string;
-  href: string;
-}
 
-const CheckboxInput = ({ labelText, linkText, href }: ICheckboxInput) => {
+type CheckboxInputProps = {
+  labelText: string;
+  href: string;
+  linkText: string;
+};
+
+const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputProps) => {
   return (
     <div>
       <label className="flex items-center gap-2">
@@ -13,9 +14,9 @@ const CheckboxInput = ({ labelText, linkText, href }: ICheckboxInput) => {
           <input
             type="checkbox"
             name="checkboxInput"
-            className="w-full h-full transition duration-500 border rounded-sm appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-5 peer checked:bg-quaternary-opacity-50"
+            className="w-full h-full transition duration-300 border rounded-sm appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-5 peer checked:bg-quaternary-opacity-50"
           />
-          <div className="absolute transition duration-500 transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none top-1/2 left-1/2 peer peer-checked:opacity-100">
+          <div className="absolute transition duration-300 transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none top-1/2 left-1/2 peer peer-checked:opacity-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4 text-white"
