@@ -1,44 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Select, { MultiValue } from 'react-select';
 
-import { OptionTypes } from '../../types/OptionTypes';
+import Select from 'react-select';
+
+import { TagsTypes } from '../../types/TagsTypes';
 
 type SelectInputProps = {
-  options: readonly OptionTypes[];
+  options: TagsTypes[] | undefined;
   placeholder: string;
-  handleTagsChange: (newValue: OptionTypes[]) => void;
+  onChange: (newValue: TagsTypes[]) => void;
 };
 
-const SelectInput = ({
-  options,
-  placeholder,
-  handleTagsChange,
-}: SelectInputProps) => {
+const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
   const location = useLocation();
-
-  const [query, setQuery] = useState<OptionTypes[]>([]);
-
-  const handleChange = (selectedTags: MultiValue<OptionTypes>) => {
-    const newTags = selectedTags as OptionTypes[];
-
-    setQuery(newTags);
-    handleTagsChange(newTags);
-  };
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const queryParam = searchParams.get('q');
-
-    if (queryParam) {
-      const tags: OptionTypes[] = queryParam
-        .split(',')
-        .map((tag) => options.find((option) => option.value === tag))
-        .filter((tag) => tag !== undefined) as OptionTypes[];
-
-      setQuery(tags);
-    }
-  }, [location.search, options]);
+  const [query, setQuery] = useState<TagsTypes[]>([]);
 
   return (
     <div>
@@ -47,7 +22,7 @@ const SelectInput = ({
           isMulti
           value={query}
           options={options}
-          onChange={handleChange}
+          onChange={onChange}
           noOptionsMessage={() => null}
           blurInputOnSelect={false}
           closeMenuOnSelect={false}

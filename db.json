@@ -410,5 +410,207 @@
       "chapters": "50/49/48",
       "releaseDate": "27/08"
     }
+  ],
+  "tags": [
+    {
+      "id": "1",
+      "name": "Ação"
+    },
+    {
+      "id": "2",
+      "name": "Aventura"
+    },
+    {
+      "id": "3",
+      "name": "Comédia"
+    },
+    {
+      "id": "4",
+      "name": "Drama"
+    },
+    {
+      "id": "5",
+      "name": "Fantasia"
+    },
+    {
+      "id": "6",
+      "name": "Horror"
+    },
+    {
+      "id": "7",
+      "name": "Mistério"
+    },
+    {
+      "id": "8",
+      "name": "Romance"
+    },
+    {
+      "id": "9",
+      "name": "Sci-Fi"
+    },
+    {
+      "id": "10",
+      "name": "Slice of Life"
+    },
+    {
+      "id": "11",
+      "name": "Sobrenatural"
+    },
+    {
+      "id": "12",
+      "name": "Thriller"
+    },
+    {
+      "id": "13",
+      "name": "Esportes"
+    },
+    {
+      "id": "14",
+      "name": "Histórico"
+    },
+    {
+      "id": "15",
+      "name": "Psicológico"
+    },
+    {
+      "id": "16",
+      "name": "Seinen"
+    },
+    {
+      "id": "17",
+      "name": "Shoujo"
+    },
+    {
+      "id": "18",
+      "name": "Shounen"
+    },
+    {
+      "id": "19",
+      "name": "Josei"
+    },
+    {
+      "id": "20",
+      "name": "Mecha"
+    },
+    {
+      "id": "21",
+      "name": "Militar"
+    },
+    {
+      "id": "22",
+      "name": "Música"
+    },
+    {
+      "id": "23",
+      "name": "Paródia"
+    },
+    {
+      "id": "24",
+      "name": "Policial"
+    },
+    {
+      "id": "25",
+      "name": "Samurai"
+    },
+    {
+      "id": "26",
+      "name": "Vampiros"
+    },
+    {
+      "id": "27",
+      "name": "Vida Escolar"
+    },
+    {
+      "id": "28",
+      "name": "Yaoi"
+    },
+    {
+      "id": "29",
+      "name": "Yuri"
+    },
+    {
+      "id": "30",
+      "name": "Harem"
+    },
+    {
+      "id": "31",
+      "name": "Isekai"
+    },
+    {
+      "id": "32",
+      "name": "Magia"
+    },
+    {
+      "id": "33",
+      "name": "Artes Marciais"
+    },
+    {
+      "id": "34",
+      "name": "Super Poderes"
+    },
+    {
+      "id": "35",
+      "name": "Tragédia"
+    },
+    {
+      "id": "36",
+      "name": "Ecchi"
+    },
+    {
+      "id": "37",
+      "name": "Manwhas"
+    },
+    {
+      "id": "38",
+      "name": "Mangas"
+    },
+    {
+      "id": "39",
+      "name": "Nacionais"
+    },
+    {
+      "id": "40",
+      "name": "Manhuas"
+    },
+    {
+      "id": "41",
+      "name": "Light Novels"
+    },
+    {
+      "id": "42",
+      "name": "Cyberpunk"
+    },
+    {
+      "id": "43",
+      "name": "Distopia"
+    },
+    {
+      "id": "44",
+      "name": "Gore"
+    },
+    {
+      "id": "45",
+      "name": "Steampunk"
+    },
+    {
+      "id": "46",
+      "name": "Supernatural"
+    },
+    {
+      "id": "47",
+      "name": "Post-Apocalyptic"
+    },
+    {
+      "id": "48",
+      "name": "Adventure"
+    },
+    {
+      "id": "49",
+      "name": "Fantasy"
+    },
+    {
+      "id": "50",
+      "name": "Martial Arts"
+    }
   ]
 }

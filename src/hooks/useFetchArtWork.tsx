@@ -1,11 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-const UseFetchArtWork = <T,>(
-  queryKey: string,
-  url: string,
-  validTime?: number
-) => {
-  return useQuery<T>({
+const UseFetchArtWork = (queryKey: string, url: string, validTime?: number) => {
+  return useQuery({
     queryKey: [queryKey],
     queryFn: async () => {
       return await fetch(url).then((response) => response.json());

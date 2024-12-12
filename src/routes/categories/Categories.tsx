@@ -4,35 +4,39 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import { OptionTypes } from '../../types/OptionTypes';
-import { tagsList } from '../../constants/TAGS';
-
 import FiltersForm from '../../components/form/FiltersForm';
 import SelectInput from '../../components/inputs/SelectInput';
 
+import useTags from '../../types/TagsTypes';
+
 import { SortTypes } from '../../types/SortTypes';
-// import { SortList } from '../../constants/SORT';
+import { StatusTypes } from '../../types/StatusTypes';
+import { AdultContentTypes } from '../../types/AdultContentTypes';
 
 import RadioInput from '../../components/inputs/RadioInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
+import SectionTitle from '../../components/titles/SectionTitle';
 
 const Categories = () => {
+  const {
+    data: tags,
+    isLoading: tagsLoading,
+    isError: tagsIsError,
+  } = useTags();
+
   const selectedSortRefs = useRef<HTMLInputElement[]>([]);
+  const selectedStatusRefs = useRef<HTMLInputElement[]>([]);
+  const selectedAdultContentRefs = useRef<HTMLInputElement[]>([]);
 
-  const [selectedSort, setSelectedSort] = useState<SortTypes>('most_read');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedSort, setSelectedSort] = useState<SortTypes>('most_read');
+  const [selectedStatus, setSelectedStatus] = useState<StatusTypes>('ongoing');
+  const [selectedAdultContent, setSelectedAdultContent] =
+    useState<AdultContentTypes>('no_adult_content');
 
-  const handleTagsChange = useCallback((newValue: OptionTypes[]) => {
-    setSelectedTags(newValue.map((tag: OptionTypes) => tag.value));
-  }, []);
-
-  const handleSortChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value as SortTypes;
-
-      setSelectedSort(value);
-
-      selectedSortRefs.current.forEach((ref) => {
+  const changeClasses = useCallback(
+    (refs: React.MutableRefObject<HTMLInputElement[]>) => {
+      refs.current.forEach((ref) => {
         const parent = ref.parentNode as HTMLElement;
 
         parent.classList.remove(
@@ -53,112 +57,289 @@ const Categories = () => {
     []
   );
 
+  const handleTagsChange = useCallback(
+    (newValue): void => {
+      if (tagsLoading || tagsIsError) return;
+
+      const tags = selectedTags.map((tag) => {
+        return tags.find((t) => t.name === tag);
+      });
+    },
+    [tagsLoading, tagsIsError, selectedTags]
+  );
+
+  const handleSortChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      setter: React.Dispatch<React.SetStateAction<SortTypes>>,
+      refs: React.MutableRefObject<HTMLInputElement[]>,
+      valueParser: (value: string) => SortTypes
+    ) => {
+      setter(valueParser(e.target.value));
+
+      changeClasses(refs);
+    },
+    [changeClasses]
+  );
+
+  const handleStatusChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      setter: React.Dispatch<React.SetStateAction<StatusTypes>>,
+      refs: React.MutableRefObject<HTMLInputElement[]>,
+      valueParser: (value: string) => StatusTypes
+    ) => {
+      setter(valueParser(e.target.value));
+
+      changeClasses(refs);
+    },
+    [changeClasses]
+  );
+
+  const handleAdultContentChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      setter: React.Dispatch<React.SetStateAction<AdultContentTypes>>,
+      refs: React.MutableRefObject<HTMLInputElement[]>,
+      valueParser: (value: string) => AdultContentTypes
+    ) => {
+      setter(valueParser(e.target.value));
+
+      changeClasses(refs);
+    },
+    [changeClasses]
+  );
+
   console.log(selectedTags);
   console.log(selectedSort);
+  console.log(selectedStatus);
+  console.log(selectedAdultContent);
 
   return (
     <>
       <Header disabledBreadcrumb={true} />
       <Main>
+        <SectionTitle title="Filtros">
+          <p className="text-sm text-justify">
+            Aplique filtros para encontrar as obras que você deseja ler. Você
+            pode filtrar por categorias, ordenar por mais lidos, maior nota,
+            ordem alfabética, entre outros. Além disso, você pode filtrar por
+            status da obra e se deseja exibir conteúdo maior de 18 anos.
+          </p>
+        </SectionTitle>
         <FiltersForm title="Categorias">
           <SelectInput
-            options={tagsList}
-            handleTagsChange={handleTagsChange}
+            options={tags}
+            onChange={handleTagsChange}
             placeholder={'Filtrar por categorias'}
           />
         </FiltersForm>
         <FiltersForm title="Ordenar por" isGrid={true}>
           <RadioInput
-            text="Mais lidos"
-            value="most_read"
+            onChange={(e) =>
+              handleSortChange(
+                e,
+                setSelectedSort,
+                selectedSortRefs,
+                (value: string) => value as SortTypes
+              )
+            }
+            refElement={selectedSortRefs}
+            defaultValue={true}
             index={0}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="sort"
+            value="most_read"
+            labelText="Mais lidos"
           />
           <RadioInput
-            text="Maior Nota"
-            value="most_rated"
+            onChange={(e) =>
+              handleSortChange(
+                e,
+                setSelectedSort,
+                selectedSortRefs,
+                (value: string) => value as SortTypes
+              )
+            }
+            refElement={selectedSortRefs}
             index={1}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="sort"
+            value="most_rated"
+            labelText="Maior Nota"
           />
-
           <RadioInput
-            text="Ancensão"
-            value="ascension"
+            onChange={(e) =>
+              handleSortChange(
+                e,
+                setSelectedSort,
+                selectedSortRefs,
+                (value: string) => value as SortTypes
+              )
+            }
+            refElement={selectedSortRefs}
             index={2}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="sort"
+            value="ascension"
+            labelText="Ancensão"
           />
           <RadioInput
-            text="Mais Recente"
-            value="most_recent"
+            onChange={(e) =>
+              handleSortChange(
+                e,
+                setSelectedSort,
+                selectedSortRefs,
+                (value: string) => value as SortTypes
+              )
+            }
+            refElement={selectedSortRefs}
             index={3}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="sort"
+            value="most_recent"
+            labelText="Mais Recente"
           />
           <RadioInput
-            text="Aleatório"
-            value="random"
+            onChange={(e) =>
+              handleSortChange(
+                e,
+                setSelectedSort,
+                selectedSortRefs,
+                (value: string) => value as SortTypes
+              )
+            }
+            refElement={selectedSortRefs}
             index={4}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="sort"
+            value="random"
+            labelText="Aleatório"
           />
           <RadioInput
-            text="Ordem Alfabética"
-            value="alphabetical"
+            onChange={(e) =>
+              handleSortChange(
+                e,
+                setSelectedSort,
+                selectedSortRefs,
+                (value: string) => value as SortTypes
+              )
+            }
+            refElement={selectedSortRefs}
             index={5}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="sort"
+            value="alphabetical"
+            labelText="Ordem Alfabética"
           />
         </FiltersForm>
         <FiltersForm title="Status" isGrid={true}>
           <RadioInput
-            text="Completo"
-            value="complete"
+            onChange={(e) =>
+              handleStatusChange(
+                e,
+                setSelectedStatus,
+                selectedStatusRefs,
+                (value: string) => value as StatusTypes
+              )
+            }
+            refElement={selectedStatusRefs}
             index={0}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="status"
+            value="complete"
+            labelText="Completo"
           />
           <RadioInput
-            text="Em andamento"
-            value="ongoing"
+            onChange={(e) =>
+              handleStatusChange(
+                e,
+                setSelectedStatus,
+                selectedStatusRefs,
+                (value: string) => value as StatusTypes
+              )
+            }
+            refElement={selectedStatusRefs}
             index={1}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="status"
+            value="ongoing"
+            labelText="Em andamento"
           />
           <RadioInput
-            text="Hiato"
-            value="hiatus"
+            onChange={(e) =>
+              handleStatusChange(
+                e,
+                setSelectedStatus,
+                selectedStatusRefs,
+                (value: string) => value as StatusTypes
+              )
+            }
+            refElement={selectedStatusRefs}
             index={2}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="status"
+            value="hiatus"
+            labelText="Hiato"
           />
           <RadioInput
-            text="Cancelado"
-            value="cancelled"
+            onChange={(e) =>
+              handleStatusChange(
+                e,
+                setSelectedStatus,
+                selectedStatusRefs,
+                (value: string) => value as StatusTypes
+              )
+            }
+            refElement={selectedStatusRefs}
             index={3}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="status"
+            value="cancelled"
+            labelText="Cancelado"
+          />
+          <RadioInput
+            onChange={(e) =>
+              handleStatusChange(
+                e,
+                setSelectedStatus,
+                selectedStatusRefs,
+                (value: string) => value as StatusTypes
+              )
+            }
+            refElement={selectedStatusRefs}
+            defaultValue={true}
+            index={2}
+            className="col-span-full"
+            fieldName="status"
+            value="all"
+            labelText="Todos"
           />
         </FiltersForm>
         <FiltersForm title="Exibir conteúdo +18" isGrid={true}>
           <RadioInput
-            text="Sim"
-            value="yes"
+            onChange={(e) =>
+              handleAdultContentChange(
+                e,
+                setSelectedAdultContent,
+                selectedAdultContentRefs,
+                (value: string) => value as AdultContentTypes
+              )
+            }
+            refElement={selectedAdultContentRefs}
             index={0}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="adult_content"
+            value="adult_content"
+            labelText="Sim"
           />
           <RadioInput
-            text="Não"
-            value="no"
+            onChange={(e) =>
+              handleAdultContentChange(
+                e,
+                setSelectedAdultContent,
+                selectedAdultContentRefs,
+                (value: string) => value as AdultContentTypes
+              )
+            }
+            refElement={selectedAdultContentRefs}
+            defaultValue={true}
             index={1}
-            handleSortChange={handleSortChange}
-            selectedSortRefs={selectedSortRefs}
+            fieldName="adult_content"
+            value="no_adult_content"
+            labelText="Não"
           />
         </FiltersForm>
-        <RaisedButton text="Aplicar" />
+        <RaisedButton text="Aplicar Filtros" />
       </Main>
       <Footer />
     </>
@@ -166,74 +347,3 @@ const Categories = () => {
 };
 
 export default Categories;
-
-{
-  /*
-          <div className="flex flex-col gap-2">
-            <div>
-              <h3 className="text-lg font-bold">Status:</h3>
-            </div>
-            <form className="grid grid-cols-2 gap-4">
-              {['complete', 'ongoing', 'hiatus', 'cancelled'].map(
-                (value, index) => (
-                  <div key={value}>
-                    <label className="relative flex items-center justify-center h-12 text-sm text-center transition-colors duration-300 border-2 rounded-sm bg-secondary border-tertiary">
-                      <input
-                        onChange={handleSortChange}
-                        ref={(ref) =>
-                          (selectedSortRefs.current[index] =
-                            ref as HTMLInputElement)
-                        }
-                        type="radio"
-                        name="sort"
-                        value={value}
-                        className="absolute top-0 bottom-0 left-0 right-0 appearance-none"
-                        checked={selectedSort === value}
-                      />
-                      <span className="px-2 font-bold text-shadow-default">
-                        {value === 'complete'
-                          ? 'Completo'
-                          : value === 'ongoing'
-                          ? 'Em andamento'
-                          : value === 'hiatus'
-                          ? 'Hiato'
-                          : 'Cancelado'}
-                      </span>
-                    </label>
-                  </div>
-                )
-              )}
-            </form>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div>
-              <h3 className="text-lg font-bold">Exibir conteúdo +18:</h3>
-            </div>
-            <div>
-              <form className="grid grid-cols-2 gap-4">
-                {['yes', 'no'].map((value, index) => (
-                  <div key={value}>
-                    <label className="relative flex items-center justify-center h-12 text-sm text-center transition-colors duration-300 border-2 rounded-sm bg-secondary border-tertiary">
-                      <input
-                        onChange={handleSortChange}
-                        ref={(ref) =>
-                          (selectedSortRefs.current[index] =
-                            ref as HTMLInputElement)
-                        }
-                        type="radio"
-                        name="sort"
-                        value={value}
-                        className="absolute top-0 bottom-0 left-0 right-0 appearance-none"
-                        checked={selectedSort === value}
-                      />
-                      <span className="px-2 font-bold text-shadow-default">
-                        {value === 'yes' ? 'Sim' : 'Não'}
-                      </span>
-                    </label>
-                  </div>
-                ))}
-              </form>
-            </div>
-          </div>
-        </section>*/
-}
