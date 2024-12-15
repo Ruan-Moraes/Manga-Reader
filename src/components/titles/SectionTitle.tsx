@@ -1,19 +1,42 @@
+import CustomLinkBase from '../links/elements/CustomLinkBase';
+
 type SectionTitleProps = {
-  title: string;
-  sub?: string;
   children?: React.ReactNode;
+  titleStyleClasses?: string;
+  title: string;
+  subTitle?: string;
+  subLink?: string;
 };
 
-const SectionTitle = ({ title, sub, children }: SectionTitleProps) => {
+const SectionTitle = ({
+  children,
+  titleStyleClasses,
+  title,
+  subTitle,
+  subLink,
+}: SectionTitleProps) => {
   return (
-    <div className={children ? 'flex flex-col gap-2' : ''}>
+    <div className={children ? 'flex flex-col gap-2' : 'flex flex-col'}>
       <div>
-        <h2 className="flex flex-col">
-          <span className="text-2xl font-bold">{title}</span>
-          {sub && (
-            <span className="text-xs text-quaternary-default">{sub}</span>
+        <div>
+          <h2
+            className={`font-bold ${
+              titleStyleClasses ? titleStyleClasses : 'text-2xl'
+            }`}
+          >
+            {title}
+          </h2>
+        </div>
+        <div>
+          {subTitle && !subLink && (
+            <p className="text-xs text-quaternary-default">{subTitle}</p>
           )}
-        </h2>
+          {subTitle && subLink && (
+            <p className="text-xs text-quaternary-default">
+              <CustomLinkBase href={subLink} text={subTitle} />
+            </p>
+          )}
+        </div>
       </div>
       <div>{children}</div>
     </div>

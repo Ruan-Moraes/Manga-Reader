@@ -5,8 +5,8 @@ type AuthenticationFormProps = {
   title: string;
   children: React.ReactNode;
   helperText?: string;
-  linkText?: string;
   href?: string;
+  hrefText?: string;
 };
 
 const AuthenticationForm = ({
@@ -14,8 +14,8 @@ const AuthenticationForm = ({
   title,
   children,
   helperText,
-  linkText,
   href,
+  hrefText,
 }: AuthenticationFormProps) => {
   return (
     <div className="flex flex-col gap-2">
@@ -29,17 +29,11 @@ const AuthenticationForm = ({
           </fieldset>
         </form>
       </div>
-      {helperText && linkText && href && (
+      {helperText && href && hrefText && (
         <div>
           <p className="text-sm text-center text-tertiary-default">
             {helperText}{' '}
-            <CustomLinkBase
-              href={href}
-              text={linkText}
-              otherStyles={{
-                textDecoration: 'underline',
-              }}
-            />
+            <CustomLinkBase href={href} className="underline" text={hrefText} />
           </p>
         </div>
       )}

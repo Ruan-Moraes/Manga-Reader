@@ -2,53 +2,31 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import CustomLinkBase from '../../components/links/elements/CustomLinkBase';
+import ParagraphsSection from '../../components/sections/ParagraphsSection';
+import SectionTitle from '../../components/titles/SectionTitle';
+import Paragraph from '../../components/paragraph/Paragraph';
+
+import ContactForm from '../../components/forms/ContactForm';
 
 const PublishWork = () => {
   return (
     <>
-      <Header disabledSearch={true} disabledBreadcrumb={true} />
+      <Header disabledSearch={true} />
       <Main>
-        <section className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 text-xs text-justify">
-            <h2 className="text-lg font-bold">
-              Como faço para publicar meu trabalho?
-            </h2>
-            <div className="flex flex-col gap-2">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                facilisi. Nullam nec purus non dolor fermentum ultricies. Sed
-                sagittis, justo nec
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam
-                nesciunt dolorem suscipit deserunt, reiciendis cum esse
-                cupiditate mollitia fugit eligendi. Laudantium sequi similique
-                natus dicta doloremque velit
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div>
-              <h2 className="text-lg font-bold">
-                Entre em contato com a nossa equipe
-              </h2>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="text-xs text-justify">
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus
-                  error quae suscipit mollitia deserunt alias ipsam facilis modi
-                  adipisci vel quis ipsum obcaecati, ut, nam accusantium magni
-                  laudantium nulla. Obcaecati.
-                </p>
-              </div>
-              <div className="text-xs font-bold text-right underline text-shadow-highlight">
-                <CustomLinkBase href="/contact" text="Entre em contato" />
-              </div>
-            </div>
-          </div>
-        </section>
+        <ParagraphsSection>
+          <SectionTitle titleStyleClasses="text-lg" title="Publicar Trabalho" />
+          <Paragraph
+            paragraphContent={[
+              {
+                text: 'Se você é um autor e deseja publicar seu trabalho em nosso site, entre em contato conosco para obter mais informações sobre como enviar seu trabalho para revisão e publicação.',
+              },
+              {
+                text: 'Nós aceitamos mangas, webtoons, fanfics, fanarts, e outros tipos de trabalhos criativos. Se você tem uma história para contar ou uma arte para compartilhar, nós adoraríamos ajudá-lo a compartilhar seu trabalho com o mundo.',
+              },
+            ]}
+          />
+        </ParagraphsSection>
+        <ContactForm />
       </Main>
       <Footer disabledLinks={true} />
     </>

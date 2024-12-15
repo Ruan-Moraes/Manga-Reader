@@ -1,22 +1,33 @@
+import { useCallback } from 'react';
+
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import AuthenticationForm from '../../components/form/AuthenticationForm';
+import AuthenticationForm from '../../components/forms/AuthenticationForm';
 import BaseInput from '../../components/inputs/BaseInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
 
 const Login = () => {
+  const handleFormSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      console.log('Formulário enviado');
+    },
+    []
+  );
+
   return (
     <>
-      <Header disabledSearch={true} disabledBreadcrumb={true} />
+      <Header disabledSearch={true} />
       <Main>
         <AuthenticationForm
+          onFormSubmit={handleFormSubmit}
           title="Login de usuário"
-          onFormSubmit={() => console.log('Form submitted')}
           helperText="Esqueceu sua senha?"
-          linkText="Clique aqui"
           href="/forgot-password"
+          hrefText="Clique aqui"
         >
           <BaseInput
             label="Email"

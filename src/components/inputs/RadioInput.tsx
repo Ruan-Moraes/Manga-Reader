@@ -1,57 +1,89 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { SortTypes } from '../../types/SortTypes';
-import { StatusTypes } from '../../types/StatusTypes';
-import { AdultContentTypes } from '../../types/AdultContentTypes';
-
-type RadioInputProps = {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  refElement: React.MutableRefObject<HTMLInputElement[]>;
-  defaultValue?: boolean;
-  index: number;
-  className?: string;
+type RadioInputProps<T> = {
   fieldName: string;
-  value: SortTypes | StatusTypes | AdultContentTypes;
+  onChange: (newValue: T) => void;
+  defaultValue?: boolean;
+  className?: string;
+  value: T;
   labelText: string;
 };
 
-const RadioInput = ({
-  onChange,
-  refElement,
-  defaultValue,
-  index,
-  className,
+const RadioInput = <T extends string | number | readonly string[] | undefined>({
   fieldName,
+  onChange,
+  defaultValue,
+  className,
   value,
   labelText,
-}: RadioInputProps) => {
-  useEffect(() => {
-    if (refElement.current[0] && defaultValue) {
-      const parent = refElement.current[defaultValue ? index : 0]
-        .parentNode as HTMLElement;
+}: RadioInputProps<T>) => {
+  const [searchParams] = useSearchParams();
 
-      parent.classList.remove('border-tertiary', 'bg-secondary');
-      parent.classList.add(
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const changeClasses = useCallback(() => {
+    const parentElement = inputRef!.current!.parentNode as HTMLElement;
+
+    parentElement.classList.remove('border-tertiary', 'bg-secondary');
+    parentElement.classList.add(
+      'border-quaternary-default',
+      'bg-quaternary-opacity-25'
+    );
+  }, []);
+
+  const removeClassesFromAllElements = useCallback(() => {
+    const allInputRefs = Array.from(
+      document.querySelectorAll(`input[name=${fieldName}]`)
+    );
+
+    allInputRefs.forEach((input) => {
+      const parentElement = input.parentNode as HTMLElement;
+
+      parentElement.classList.remove(
         'border-quaternary-default',
         'bg-quaternary-opacity-25'
       );
+      parentElement.classList.add('border-tertiary', 'bg-secondary');
+    });
+  }, [fieldName]);
+
+  const handleChange = useCallback(() => {
+    onChange(inputRef!.current!.value as T);
+
+    removeClassesFromAllElements();
+
+    changeClasses();
+  }, [onChange, changeClasses, removeClassesFromAllElements]);
+
+  useEffect(() => {
+    if (fieldName && searchParams.has(fieldName)) {
+      const sort = searchParams.get(fieldName);
+
+      if (sort?.includes(value!.toString())) {
+        handleChange();
+      }
+
+      return;
     }
-  }, [refElement, defaultValue, index]);
+
+    if (defaultValue) {
+      handleChange();
+
+      return;
+    }
+  }, [defaultValue, handleChange, searchParams, fieldName, value]);
 
   return (
     <div {...(className ? { className } : {})}>
-      <label className="relative flex items-center justify-center h-12 text-sm text-center transition-colors duration-300 border-2 rounded-sm bg-secondary border-tertiary">
+      <label className="relative flex items-center justify-center h-12 text-sm text-center transition-colors duration-300 border-2 rounded-sm cursor-pointer hover:bg-quaternary-opacity-25 bg-secondary border-tertiary">
         <input
-          onChange={onChange}
-          ref={(inputRef) => {
-            if (inputRef) {
-              refElement.current[index] = inputRef as HTMLInputElement;
-            }
-          }}
-          type="radio"
+          className="absolute top-0 bottom-0 left-0 right-0 appearance-none cursor-pointer "
           name={fieldName}
+          onChange={handleChange}
+          ref={inputRef}
+          type="radio"
           value={value}
-          className="absolute top-0 bottom-0 left-0 right-0 appearance-none"
         />
         <span className="px-2 font-bold text-shadow-default">{labelText}</span>
       </label>

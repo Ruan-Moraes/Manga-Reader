@@ -4,16 +4,16 @@ import Warning from '../../notifications/Warning';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
 type Status = {
-  isLoading?: boolean;
   isError?: boolean;
+  isLoading?: boolean;
 };
 
 type CardProps = {
-  id?: string;
-  type?: string;
   chapters?: string;
+  id?: string;
   imageSrc?: string;
   title?: string;
+  type?: string;
 };
 
 const Card = ({
@@ -49,9 +49,9 @@ const Card = ({
   if (isError) {
     return (
       <Warning
-        title="Erro!"
-        message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
         color={COLORS.QUINARY}
+        message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+        title="Erro!"
       />
     );
   }
@@ -64,14 +64,14 @@ const Card = ({
       </div>
       <div className="border border-b-0 border-tertiary w-[20rem] h-[14rem] relative">
         <img
-          src={imageSrc}
           alt={title}
           className="object-cover w-full h-full"
+          src={imageSrc}
         />
       </div>
       <div className="w-[20rem] px-2 py-1 rounded-b-sm bg-tertiary">
         <h3 className="font-bold text-center truncate text-shadow-default">
-          <CustomLinkBase href={`/title/${id}`} text={title} />
+          <CustomLinkBase href={`/titles/${id}`} text={title} />
         </h3>
       </div>
     </div>

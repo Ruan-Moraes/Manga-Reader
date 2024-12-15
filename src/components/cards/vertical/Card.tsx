@@ -6,17 +6,17 @@ import Warning from '../../notifications/Warning';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
 type Status = {
-  isLoading?: boolean;
   isError?: boolean;
+  isLoading?: boolean;
 };
 
 type CardProps = {
-  id?: string;
-  type?: string;
-  imageSrc?: string;
-  title?: string;
   chapters?: string;
+  id?: string;
+  imageSrc?: string;
   releaseDate?: string;
+  title?: string;
+  type?: string;
 };
 
 const Card = ({
@@ -52,10 +52,10 @@ const Card = ({
             <div className="flex flex-col px-2">
               {Array.from({ length: 3 }).map((_, index) => (
                 <p
-                  key={index}
                   className={`flex items-center justify-between p-1 text-xs py-2 ${
                     index < 2 ? 'border-b border-tertiary' : ''
                   }`}
+                  key={index}
                 >
                   <span>Capítulo:</span>
                   <span className="flex items-center gap-2">
@@ -82,9 +82,9 @@ const Card = ({
   if (isError) {
     return (
       <Warning
-        title="Erro!"
-        message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
         color={COLORS.QUINARY}
+        message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+        title="Erro!"
       />
     );
   }
@@ -97,29 +97,30 @@ const Card = ({
       <div className="flex flex-col w-full border rounded-sm rounded-tl-none border-tertiary">
         <div>
           <img
-            src={imageSrc}
             alt={title}
             className="spect-square h-[11.625rem] w-full object-cover"
             loading="lazy"
+            src={imageSrc}
           />
         </div>
         <div className="border-t border-t-tertiary">
           <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
             <h3 className="truncate text-shadow-default">
-              <CustomLinkBase href={`/title/${id}`} text={title} />
+              <CustomLinkBase href={`/titles/${id}`} text={title} />
             </h3>
           </div>
           <div className="flex flex-col px-2">
             {lastThreeChapters.map((chapter, index) => (
               <p
-                key={index}
                 className={`flex items-center justify-between p-1 text-xs py-2 ${
                   index < lastThreeChapters.length - 1
                     ? 'border-b border-tertiary'
                     : ''
                 }`}
+                key={index}
               >
-                <span>Capítulo:</span>
+                <span className="mobile-md:hidden">Cap:</span>
+                <span className="hidden mobile-md:block">Capítulo:</span>
                 <span className="flex items-center gap-2">
                   {index === 0 ? (
                     <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
@@ -130,7 +131,7 @@ const Card = ({
                   )}
                   <span className="font-bold text-shadow-highlight">
                     <CustomLinkBase
-                      href={`/title/${id}/${chapter}`}
+                      href={`/titles/${id}/${chapter}`}
                       text={chapter}
                     />
                   </span>

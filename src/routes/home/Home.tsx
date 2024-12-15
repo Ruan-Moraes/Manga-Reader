@@ -10,72 +10,73 @@ import Footer from '../../layouts/Footer';
 
 import Warning from '../../components/notifications/Warning';
 
-import SocialMedias from '../../components/social-medias/SocialMediasContainer';
-import SocialMediaItem from '../../components/social-medias/SocialMediaItem';
+import SocialMediasContainer from '../../components/social-medias/SocialMediasContainer';
+import SocialMedia from '../../components/social-medias/SocialMedia';
 
 import CarouselContainer from '../../components/cards/carousel/CarouselContainer';
-import HighlightCards from '../../components/cards/highlight/CardsContainer';
+import HighlightCardsContainer from '../../components/cards/highlight/CardsContainer';
 import RowCardsContainer from '../../components/cards/horizontal/CardsContainer';
 import GridCardsContainer from '../../components/cards/vertical/CardsContainer';
 
 const Home = () => {
   return (
     <>
-      <Header disabledBreadcrumb={true} />
+      <Header />
       <Main>
         <Warning
+          color={COLORS.QUATERNARY}
           title="Atenção!"
           message="Site em desenvolvimento, algumas funcionalidades podem não estar disponíveis."
-          color={COLORS.QUATERNARY}
         />
-        <SocialMedias>
-          <SocialMediaItem
+        <SocialMediasContainer>
+          <SocialMedia
             color={SOCIAL_MEDIA_COLORS.DISCORD}
+            href="#"
             name="Discord"
-            href="#"
           />
-          <SocialMediaItem
+          <SocialMedia
             color={SOCIAL_MEDIA_COLORS.X}
+            href="#"
             name="X (Twitter)"
-            href="#"
           />
-          <SocialMediaItem
+          <SocialMedia
             color={SOCIAL_MEDIA_COLORS.FACEBOOK}
+            href="#"
             name="Facebook"
-            href="#"
           />
-          <SocialMediaItem
+          <SocialMedia
             color={SOCIAL_MEDIA_COLORS.INSTAGRAM}
-            name="Instagram"
             href="#"
+            name="Instagram"
           />
-        </SocialMedias>
+        </SocialMediasContainer>
         <CarouselContainer
           queryKey="mostViewedTitles"
           url="http://localhost:5000/mostViewedTitles"
           validTime={30}
+          title="Obras mais vistas"
+          subTitle="Últimos 30 dias"
         />
-        <HighlightCards
+        <HighlightCardsContainer
           queryKey="hqsInAscension"
           url="http://localhost:5000/titlesInAscension"
           validTime={30}
           title="Tops 5 obras em ascensão"
-          sub="Quero ver mais..."
+          subTitle="Quero ver mais..."
         />
         <RowCardsContainer
           queryKey="randomTitles"
           url="http://localhost:5000/randomTitles"
           validTime={30}
           title="10 Obras aleatórias"
-          sub="Quero ver mais..."
+          subTitle="Quero ver mais..."
         />
-
         <GridCardsContainer
           queryKey="updatedTitles"
           url="http://localhost:5000/updatedTitles"
           validTime={30}
           title="Obras Atualizadas"
-          sub="Quero ver mais..."
+          subTitle="Quero ver mais..."
         />
       </Main>
       <Footer />

@@ -9,11 +9,10 @@ const News = () => {
     <>
       <Main>
         <Warning
+          linkText="Voltar para a página inicial"
           color={COLORS.QUATERNARY}
           title="Em construção"
           message="Essa página ainda está em construção. Por favor, volte mais tarde."
-          linkText="Voltar para a página inicial"
-          href=""
         />
       </Main>
     </>

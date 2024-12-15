@@ -1,16 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import './main.css';
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 import AppLayout from './components/app-layout/AppLayout.tsx';
-
 import Home from './routes/home/Home.tsx';
 import Title from './routes/title/Title.tsx';
 import Categories from './routes/categories/Categories.tsx';
@@ -25,6 +20,16 @@ import TermsOfUse from './routes/terms/TermsOfUse.tsx';
 import Dmca from './routes/terms/Dmca.tsx';
 import NotFound from './routes/error/NotFound.tsx';
 
+const queryClient = new QueryClient({});
+
+export const clearCache = () => {
+  queryClient.resetQueries();
+
+  localStorage.clear();
+
+  alert('Cache limpo com sucesso!');
+};
+
 const routes = createBrowserRouter([
   {
     path: 'Manga-Reader',
@@ -35,11 +40,11 @@ const routes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'title/:title',
+        path: 'titles/:title',
         element: <Title />,
       },
       {
-        path: 'title/:title/:chapter',
+        path: 'titles/:title/:chapter',
         element: <Title />,
       },
       {

@@ -1,113 +1,47 @@
-import { useRef, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+
+import tags from '../../utils/fetchTags';
+
+import { TagsTypes } from '../../types/TagsTypes';
+import { SortTypes } from '../../types/SortTypes';
+import { StatusTypes } from '../../types/StatusTypes';
+import { AdultContentTypes } from '../../types/AdultContentTypes';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import FiltersForm from '../../components/form/FiltersForm';
+import SectionTitle from '../../components/titles/SectionTitle';
+import Paragraph from '../../components/paragraph/Paragraph';
+import FiltersForm from '../../components/forms/FiltersForm';
 import SelectInput from '../../components/inputs/SelectInput';
-
-import useTags from '../../types/TagsTypes';
-
-import { SortTypes } from '../../types/SortTypes';
-import { StatusTypes } from '../../types/StatusTypes';
-import { AdultContentTypes } from '../../types/AdultContentTypes';
-
 import RadioInput from '../../components/inputs/RadioInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
-import SectionTitle from '../../components/titles/SectionTitle';
 
 const Categories = () => {
-  const {
-    data: tags,
-    isLoading: tagsLoading,
-    isError: tagsIsError,
-  } = useTags();
-
-  const selectedSortRefs = useRef<HTMLInputElement[]>([]);
-  const selectedStatusRefs = useRef<HTMLInputElement[]>([]);
-  const selectedAdultContentRefs = useRef<HTMLInputElement[]>([]);
-
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TagsTypes[]>([]);
   const [selectedSort, setSelectedSort] = useState<SortTypes>('most_read');
   const [selectedStatus, setSelectedStatus] = useState<StatusTypes>('ongoing');
   const [selectedAdultContent, setSelectedAdultContent] =
     useState<AdultContentTypes>('no_adult_content');
 
-  const changeClasses = useCallback(
-    (refs: React.MutableRefObject<HTMLInputElement[]>) => {
-      refs.current.forEach((ref) => {
-        const parent = ref.parentNode as HTMLElement;
+  const handleSelectedTags = useCallback((newValue: TagsTypes[]) => {
+    setSelectedTags(newValue as TagsTypes[]);
+  }, []);
 
-        parent.classList.remove(
-          'border-quaternary-default',
-          'bg-quaternary-opacity-25'
-        );
-        parent.classList.add('border-tertiary', 'bg-secondary');
+  const handleSortChange = useCallback((newValue: SortTypes) => {
+    setSelectedSort(newValue);
+  }, []);
 
-        if (ref.checked) {
-          parent.classList.remove('border-tertiary', 'bg-secondary');
-          parent.classList.add(
-            'border-quaternary-default',
-            'bg-quaternary-opacity-25'
-          );
-        }
-      });
-    },
-    []
-  );
-
-  const handleTagsChange = useCallback(
-    (newValue): void => {
-      if (tagsLoading || tagsIsError) return;
-
-      const tags = selectedTags.map((tag) => {
-        return tags.find((t) => t.name === tag);
-      });
-    },
-    [tagsLoading, tagsIsError, selectedTags]
-  );
-
-  const handleSortChange = useCallback(
-    (
-      e: React.ChangeEvent<HTMLInputElement>,
-      setter: React.Dispatch<React.SetStateAction<SortTypes>>,
-      refs: React.MutableRefObject<HTMLInputElement[]>,
-      valueParser: (value: string) => SortTypes
-    ) => {
-      setter(valueParser(e.target.value));
-
-      changeClasses(refs);
-    },
-    [changeClasses]
-  );
-
-  const handleStatusChange = useCallback(
-    (
-      e: React.ChangeEvent<HTMLInputElement>,
-      setter: React.Dispatch<React.SetStateAction<StatusTypes>>,
-      refs: React.MutableRefObject<HTMLInputElement[]>,
-      valueParser: (value: string) => StatusTypes
-    ) => {
-      setter(valueParser(e.target.value));
-
-      changeClasses(refs);
-    },
-    [changeClasses]
-  );
+  const handleStatusChange = useCallback((newValue: StatusTypes) => {
+    setSelectedStatus(newValue);
+  }, []);
 
   const handleAdultContentChange = useCallback(
-    (
-      e: React.ChangeEvent<HTMLInputElement>,
-      setter: React.Dispatch<React.SetStateAction<AdultContentTypes>>,
-      refs: React.MutableRefObject<HTMLInputElement[]>,
-      valueParser: (value: string) => AdultContentTypes
-    ) => {
-      setter(valueParser(e.target.value));
-
-      changeClasses(refs);
+    (newValue: AdultContentTypes) => {
+      setSelectedAdultContent(newValue);
     },
-    [changeClasses]
+    []
   );
 
   console.log(selectedTags);
@@ -117,224 +51,109 @@ const Categories = () => {
 
   return (
     <>
-      <Header disabledBreadcrumb={true} />
+      <Header />
       <Main>
         <SectionTitle title="Filtros">
-          <p className="text-sm text-justify">
-            Aplique filtros para encontrar as obras que você deseja ler. Você
-            pode filtrar por categorias, ordenar por mais lidos, maior nota,
-            ordem alfabética, entre outros. Além disso, você pode filtrar por
-            status da obra e se deseja exibir conteúdo maior de 18 anos.
-          </p>
+          <Paragraph
+            paragraphContent={[
+              {
+                text: 'Aplique filtros para encontrar as obras que você deseja ler. Você pode filtrar por categorias, ordenar por mais lidos, maior nota, ordem alfabética, entre outros. Além disso, você pode filtrar por status da obra e se deseja exibir conteúdo maior de 18 anos.',
+              },
+            ]}
+          />
         </SectionTitle>
         <FiltersForm title="Categorias">
           <SelectInput
+            urlParameterName="tags"
             options={tags}
-            onChange={handleTagsChange}
-            placeholder={'Filtrar por categorias'}
+            onChange={handleSelectedTags}
+            placeholder="Seleciona uma ou mais categorias"
           />
         </FiltersForm>
-        <FiltersForm title="Ordenar por" isGrid={true}>
+        <FiltersForm isGrid={true} title="Ordenar por">
           <RadioInput
-            onChange={(e) =>
-              handleSortChange(
-                e,
-                setSelectedSort,
-                selectedSortRefs,
-                (value: string) => value as SortTypes
-              )
-            }
-            refElement={selectedSortRefs}
-            defaultValue={true}
-            index={0}
             fieldName="sort"
+            onChange={handleSortChange}
+            defaultValue={true}
             value="most_read"
             labelText="Mais lidos"
           />
           <RadioInput
-            onChange={(e) =>
-              handleSortChange(
-                e,
-                setSelectedSort,
-                selectedSortRefs,
-                (value: string) => value as SortTypes
-              )
-            }
-            refElement={selectedSortRefs}
-            index={1}
             fieldName="sort"
+            onChange={handleSortChange}
             value="most_rated"
             labelText="Maior Nota"
           />
           <RadioInput
-            onChange={(e) =>
-              handleSortChange(
-                e,
-                setSelectedSort,
-                selectedSortRefs,
-                (value: string) => value as SortTypes
-              )
-            }
-            refElement={selectedSortRefs}
-            index={2}
             fieldName="sort"
+            onChange={handleSortChange}
             value="ascension"
             labelText="Ancensão"
           />
           <RadioInput
-            onChange={(e) =>
-              handleSortChange(
-                e,
-                setSelectedSort,
-                selectedSortRefs,
-                (value: string) => value as SortTypes
-              )
-            }
-            refElement={selectedSortRefs}
-            index={3}
             fieldName="sort"
+            onChange={handleSortChange}
             value="most_recent"
             labelText="Mais Recente"
           />
           <RadioInput
-            onChange={(e) =>
-              handleSortChange(
-                e,
-                setSelectedSort,
-                selectedSortRefs,
-                (value: string) => value as SortTypes
-              )
-            }
-            refElement={selectedSortRefs}
-            index={4}
             fieldName="sort"
+            onChange={handleSortChange}
             value="random"
             labelText="Aleatório"
           />
           <RadioInput
-            onChange={(e) =>
-              handleSortChange(
-                e,
-                setSelectedSort,
-                selectedSortRefs,
-                (value: string) => value as SortTypes
-              )
-            }
-            refElement={selectedSortRefs}
-            index={5}
             fieldName="sort"
+            onChange={handleSortChange}
             value="alphabetical"
             labelText="Ordem Alfabética"
           />
         </FiltersForm>
-        <FiltersForm title="Status" isGrid={true}>
+        <FiltersForm isGrid={true} title="Status">
           <RadioInput
-            onChange={(e) =>
-              handleStatusChange(
-                e,
-                setSelectedStatus,
-                selectedStatusRefs,
-                (value: string) => value as StatusTypes
-              )
-            }
-            refElement={selectedStatusRefs}
-            index={0}
             fieldName="status"
+            onChange={handleStatusChange}
             value="complete"
             labelText="Completo"
           />
           <RadioInput
-            onChange={(e) =>
-              handleStatusChange(
-                e,
-                setSelectedStatus,
-                selectedStatusRefs,
-                (value: string) => value as StatusTypes
-              )
-            }
-            refElement={selectedStatusRefs}
-            index={1}
             fieldName="status"
+            onChange={handleStatusChange}
+            defaultValue={true}
             value="ongoing"
             labelText="Em andamento"
           />
           <RadioInput
-            onChange={(e) =>
-              handleStatusChange(
-                e,
-                setSelectedStatus,
-                selectedStatusRefs,
-                (value: string) => value as StatusTypes
-              )
-            }
-            refElement={selectedStatusRefs}
-            index={2}
             fieldName="status"
+            onChange={handleStatusChange}
             value="hiatus"
             labelText="Hiato"
           />
           <RadioInput
-            onChange={(e) =>
-              handleStatusChange(
-                e,
-                setSelectedStatus,
-                selectedStatusRefs,
-                (value: string) => value as StatusTypes
-              )
-            }
-            refElement={selectedStatusRefs}
-            index={3}
             fieldName="status"
+            onChange={handleStatusChange}
             value="cancelled"
             labelText="Cancelado"
           />
           <RadioInput
-            onChange={(e) =>
-              handleStatusChange(
-                e,
-                setSelectedStatus,
-                selectedStatusRefs,
-                (value: string) => value as StatusTypes
-              )
-            }
-            refElement={selectedStatusRefs}
-            defaultValue={true}
-            index={2}
             className="col-span-full"
             fieldName="status"
+            onChange={handleStatusChange}
             value="all"
             labelText="Todos"
           />
         </FiltersForm>
-        <FiltersForm title="Exibir conteúdo +18" isGrid={true}>
+        <FiltersForm isGrid={true} title="Exibir conteúdo +18">
           <RadioInput
-            onChange={(e) =>
-              handleAdultContentChange(
-                e,
-                setSelectedAdultContent,
-                selectedAdultContentRefs,
-                (value: string) => value as AdultContentTypes
-              )
-            }
-            refElement={selectedAdultContentRefs}
-            index={0}
             fieldName="adult_content"
+            onChange={handleAdultContentChange}
             value="adult_content"
             labelText="Sim"
           />
           <RadioInput
-            onChange={(e) =>
-              handleAdultContentChange(
-                e,
-                setSelectedAdultContent,
-                selectedAdultContentRefs,
-                (value: string) => value as AdultContentTypes
-              )
-            }
-            refElement={selectedAdultContentRefs}
             defaultValue={true}
-            index={1}
             fieldName="adult_content"
+            onChange={handleAdultContentChange}
             value="no_adult_content"
             labelText="Não"
           />

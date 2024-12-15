@@ -4,15 +4,15 @@ import { SplideSlide } from '@splidejs/react-splide';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
 type Status = {
-  isLoading?: boolean;
   isError?: boolean;
+  isLoading?: boolean;
 };
 
 type CarouselProps = {
   id?: string;
   imageSrc?: string;
-  title?: string;
   synopsis?: string;
+  title?: string;
 };
 
 const Carousel = ({
@@ -45,16 +45,14 @@ const Carousel = ({
     <SplideSlide>
       <div>
         <div>
-          <img src={imageSrc!} alt="#" className="object-cover h-[18rem]" />
+          <img alt="#" className="object-cover h-[18rem]" src={imageSrc!} />
         </div>
         <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-75 max-h-[12.5rem]">
           <h3 className="text-lg font-bold text-shadow-highlight">
             <CustomLinkBase
-              href={`/title/${id!}`}
+              href={`/titles/${id!}`}
+              className="hover:text-shadow-default"
               text={title!}
-              otherStyles={{
-                textShadow: '0.125rem 0.0625rem 0 #161616bf',
-              }}
             />
           </h3>
           <p

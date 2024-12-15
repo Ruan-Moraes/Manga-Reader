@@ -33,9 +33,9 @@ const Warning = ({ linkText, color, title, message, href }: WarningProps) => {
         (linkText && (
           <div className="text-center">
             <CustomLinkBase
-              href={'/'}
-              text={linkText}
               className={`text-sm text-${color}-default hover:text-${color}-normal`}
+              href={href || '/'}
+              text={linkText}
             />
           </div>
         ))}

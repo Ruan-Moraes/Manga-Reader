@@ -2,67 +2,43 @@ import { useMemo } from 'react';
 
 import UseFetchArtWork from '../../../hooks/useFetchArtWork';
 
+import { CardsContainerProps } from '../../../types/CardContainerProps';
+
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
-
-type CardsContainerProps = {
-  queryKey: string;
-  url: string;
-  validTime?: number;
-  title: string;
-  sub: string;
-};
-
-type TitlesInAscensionProps = {
-  id: string;
-  type: string;
-  imageSrc: string;
-  title: string;
-  popularity: string;
-  score: string;
-  chapters: string;
-  author: string;
-  artist: string;
-  publisher: string;
-  synopsis: string;
-};
 
 const CardsContainer = ({
   queryKey,
   url,
   validTime,
   title,
-  sub,
+  subTitle,
 }: CardsContainerProps) => {
-  const { data, status } = UseFetchArtWork<TitlesInAscensionProps[]>(
-    queryKey,
-    url,
-    validTime
-  );
+  const { data, status } = UseFetchArtWork(queryKey, url, validTime);
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
       return data.map((item) => (
         <Card
-          key={item.id}
+          artist={item.artist}
+          author={item.author}
+          chapters={item.chapters}
           id={item.id}
+          imageSrc={item.imageSrc}
+          key={item.id}
+          popularity={item.popularity}
+          publisher={item.publisher}
+          score={item.score}
+          synopsis={item.synopsis}
           title={item.title}
           type={item.type}
-          imageSrc={item.imageSrc}
-          popularity={item.popularity}
-          score={item.score}
-          chapters={item.chapters}
-          author={item.author}
-          artist={item.artist}
-          publisher={item.publisher}
-          synopsis={item.synopsis}
         />
       ));
     }
 
     if (status === 'pending') {
       return Array.from({ length: 5 }).map((_, index) => (
-        <Card key={index} isLoading />
+        <Card isLoading key={index} />
       ));
     }
 
@@ -71,7 +47,11 @@ const CardsContainer = ({
 
   return (
     <section className="flex flex-col gap-4">
-      <Section_Title title={title} sub={sub} />
+      <Section_Title
+        subLink="/categories?sort=ascension&status=all"
+        subTitle={subTitle}
+        title={title}
+      />
       <div className="flex flex-col gap-4">{allChildren}</div>
     </section>
   );

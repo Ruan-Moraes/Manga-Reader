@@ -1,31 +1,33 @@
 import LinkBox from '../../boxes/LinkBox';
-import CustomLinkWithBorder from '../elements/CustomLinkWithBorder';
+import CustomLinkBase from '../elements/CustomLinkBase';
 
 type FooterLinksSectionProps = {
+  className?: string;
   title: string;
   links: { href: string; text: string }[];
-  classNames?: string;
 };
 
 const FooterLinksSection = ({
+  className,
   title,
   links,
-  classNames,
 }: FooterLinksSectionProps) => {
   return (
-    <div className={classNames || ''}>
+    <div {...(className && { className })}>
       <div className="p-2 font-bold text-center border-2 rounded-sm rounded-b-none bg-primary-default border-tertiary">
         <h2 className="text-shadow-highlight">{title}</h2>
       </div>
       <LinkBox>
         {links.map((link, index) => (
-          <CustomLinkWithBorder
-            key={index}
+          <CustomLinkBase
             href={link.href}
-            text={link.text}
-            otherStyles={
-              index === links.length - 1 ? { borderBottom: 'none' } : {}
+            key={index}
+            className={
+              index === links.length - 1
+                ? 'border-b-0 border-b-tertiary p-2'
+                : 'border-b-2 border-b-tertiary p-2'
             }
+            text={link.text}
           />
         ))}
       </LinkBox>

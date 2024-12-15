@@ -5,53 +5,34 @@ import clsx from 'clsx';
 
 import UseFetchArtWork from '../../../hooks/useFetchArtWork';
 
+import { CardsContainerProps } from '../../../types/CardContainerProps';
+
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 import ButtonHighLight from '../../buttons/RaisedButton';
-
-type CardsContainerProps = {
-  queryKey: string;
-  url: string;
-  validTime?: number;
-  title: string;
-  sub: string;
-};
-
-type UpdatedTitlesProps = {
-  id: string;
-  type: string;
-  imageSrc: string;
-  title: string;
-  releaseDate: string;
-  chapters: string;
-};
 
 const CardsContainer = ({
   queryKey,
   url,
   validTime,
   title,
-  sub,
+  subTitle,
 }: CardsContainerProps) => {
   const [visible, setVisible] = useState(10);
-  const { data, status } = UseFetchArtWork<UpdatedTitlesProps[]>(
-    queryKey,
-    url,
-    validTime
-  );
+  const { data, status } = UseFetchArtWork(queryKey, url, validTime);
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
       return data.map(
         ({ id, title, type, imageSrc, releaseDate, chapters }) => (
           <Card
-            key={id}
+            chapters={chapters}
             id={id}
+            imageSrc={imageSrc}
+            key={id}
+            releaseDate={releaseDate}
             title={title}
             type={type}
-            imageSrc={imageSrc}
-            releaseDate={releaseDate}
-            chapters={chapters}
           />
         )
       );
@@ -59,12 +40,12 @@ const CardsContainer = ({
 
     if (status === 'pending') {
       return Array.from({ length: 10 }).map((_, index) => (
-        <Card key={index} isLoading={true} />
+        <Card isLoading={true} key={index} />
       ));
     }
 
     return Array.from({ length: 1 }).map((_, index) => (
-      <Card key={index} isError={true} />
+      <Card isError={true} key={index} />
     ));
   }, [data, status]);
 
@@ -80,7 +61,11 @@ const CardsContainer = ({
 
   return (
     <section className="flex flex-col gap-4">
-      <Section_Title title={title} sub={sub} />
+      <Section_Title
+        subLink="/categories?sort=most_recent&status=all"
+        subTitle={subTitle}
+        title={title}
+      />
       <div
         className={clsx('grid gap-4', {
           'grid-cols-2': status === 'success' || status === 'pending',
@@ -89,7 +74,7 @@ const CardsContainer = ({
       >
         {allChildren.slice(0, visible)}
       </div>
-      <ButtonHighLight text="Ver Mais" callBack={handleClick} />
+      <ButtonHighLight callBack={handleClick} text="Ver Mais" />
     </section>
   );
 };

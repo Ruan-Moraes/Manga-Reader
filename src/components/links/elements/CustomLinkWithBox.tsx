@@ -1,22 +1,22 @@
 import { Link } from 'react-router-dom';
 
 type CustomLinkWithBoxProps = {
+  className?: string;
   href: string;
   text: string;
-  classNames?: string;
 };
 
 const CustomLinkWithBox = ({
+  className,
   href,
   text,
-  classNames,
 }: CustomLinkWithBoxProps) => {
   const isExternalLink = href.includes('http');
 
   return (
     <Link
+      className={`p-2 font-bold text-xs mobile-md:text-base text-center duration-300 border-2 rounded-sm bg-secondary transition-text-shadow hover:text-shadow-highlight border-tertiary ${className}`}
       to={isExternalLink ? href : '/Manga-Reader' + href}
-      className={`p-2 font-bold text-center duration-300 border-2 rounded-sm bg-secondary transition-text-shadow hover:text-shadow-highlight border-tertiary ${classNames}`}
     >
       {text}
     </Link>

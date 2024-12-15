@@ -2,55 +2,37 @@ import { useMemo } from 'react';
 
 import useFetchArtWork from '../../../hooks/useFetchArtWork';
 
+import { CardsContainerProps } from '../../../types/CardContainerProps';
+
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
-
-type CardsContainerProps = {
-  queryKey: string;
-  url: string;
-  validTime?: number;
-  title: string;
-  sub: string;
-};
-
-type RandomTitlesProps = {
-  id: string;
-  type: string;
-  imageSrc: string;
-  chapters: string;
-  title: string;
-};
 
 const CardsContainer = ({
   queryKey,
   url,
   validTime,
   title,
-  sub,
+  subTitle,
 }: CardsContainerProps) => {
-  const { data, status } = useFetchArtWork<RandomTitlesProps[]>(
-    queryKey,
-    url,
-    validTime
-  );
+  const { data, status } = useFetchArtWork(queryKey, url, validTime);
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
       return data.map((item) => (
         <Card
-          key={item.id}
+          chapters={item.chapters}
           id={item.id}
+          imageSrc={item.imageSrc}
+          key={item.id}
           title={item.title}
           type={item.type}
-          imageSrc={item.imageSrc}
-          chapters={item.chapters}
         />
       ));
     }
 
     if (status === 'pending') {
       return Array.from({ length: 10 }).map((_, index) => (
-        <Card key={index} isLoading />
+        <Card isLoading key={index} />
       ));
     }
 
@@ -59,7 +41,11 @@ const CardsContainer = ({
 
   return (
     <section className="flex flex-col gap-4">
-      <Section_Title title={title} sub={sub} />
+      <Section_Title
+        subLink="/categories?sort=random&status=all"
+        subTitle={subTitle}
+        title={title}
+      />
       <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">
         {allChildren}
       </div>

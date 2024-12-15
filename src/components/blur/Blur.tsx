@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
 type BlurProps = {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpen: boolean;
+  onChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Blur = ({ open, setOpen }: BlurProps) => {
+const Blur = ({ isOpen, onChange }: BlurProps) => {
   useEffect(() => {
-    if (open) {
+    if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -16,21 +16,21 @@ const Blur = ({ open, setOpen }: BlurProps) => {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [open]);
+  }, [isOpen]);
 
   const handleBlur = () => {
-    setOpen(false);
+    onChange(false);
   };
 
   return (
     <div
+      className={`fixed z-10 top-0 bottom-0 left-0 right-0 backdrop-blur-sm ${
+        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
       onClick={handleBlur}
       style={{
         transition: 'opacity 300ms',
       }}
-      className={`fixed z-10 top-0 bottom-0 left-0 right-0 backdrop-blur-sm ${
-        open ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}
     ></div>
   );
 };

@@ -1,11 +1,20 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-const UseFetchArtWork = (queryKey: string, url: string, validTime?: number) => {
+import { TitleTypes } from '../types/TitleTypes';
+
+const UseFetchArtWork = (
+  queryKey: string,
+  url: string,
+  validTime?: number
+): UseQueryResult<TitleTypes[] | Error> => {
   return useQuery({
     queryKey: [queryKey],
     queryFn: async () => {
-      return await fetch(url).then((response) => response.json());
+      const response = await fetch(url);
+
+      return await response.json();
     },
+
     staleTime: validTime ? 1000 * 60 * validTime : 0,
   });
 };

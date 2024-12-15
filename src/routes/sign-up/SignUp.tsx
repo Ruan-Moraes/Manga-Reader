@@ -2,19 +2,25 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import AuthenticationForm from '../../components/form/AuthenticationForm';
+import AuthenticationForm from '../../components/forms/AuthenticationForm';
 import BaseInput from '../../components/inputs/BaseInput';
 import ButtonHighLight from '../../components/buttons/RaisedButton';
 import Checkbox from '../../components/inputs/CheckboxInput';
 
 const SignUp = () => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log('Form submitted');
+  };
+
   return (
     <>
-      <Header disabledBreadcrumb={true} disabledSearch={true} />
+      <Header disabledSearch={true} />
       <Main>
         <AuthenticationForm
+          onFormSubmit={handleFormSubmit}
           title="Cadastro de usuário"
-          onFormSubmit={() => console.log('Form submitted')}
         >
           <BaseInput label="Nome:" type="text" placeholder="Nome de usuário" />
           <BaseInput

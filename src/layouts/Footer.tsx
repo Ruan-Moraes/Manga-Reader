@@ -1,4 +1,3 @@
-// src/components/Footer/Footer.tsx
 import LinksSection from '../components/links/sections/FooterLinksSection';
 
 type FooterProps = {
@@ -12,6 +11,7 @@ const Footer = ({ disabledLinks }: FooterProps) => {
         <div className="grid items-center grid-cols-8 gap-4 p-4 border-t-2 border-t-tertiary">
           <LinksSection
             title="Links úteis"
+            className="col-span-4"
             links={[
               { href: '/', text: 'Home' },
               { href: '/categories', text: 'Categorias' },
@@ -19,9 +19,9 @@ const Footer = ({ disabledLinks }: FooterProps) => {
               { href: '/events', text: 'Eventos' },
               { href: '/groups', text: 'Grupos' },
             ]}
-            classNames="col-span-4"
           />
           <LinksSection
+            className="col-span-4"
             title="Redes sociais"
             links={[
               { href: '#', text: 'Discord' },
@@ -29,9 +29,9 @@ const Footer = ({ disabledLinks }: FooterProps) => {
               { href: '#', text: 'Facebook' },
               { href: '#', text: 'Instagram' },
             ]}
-            classNames="col-span-4"
           />
           <LinksSection
+            className="col-span-6 col-start-2 "
             title="Outros links"
             links={[
               {
@@ -43,11 +43,10 @@ const Footer = ({ disabledLinks }: FooterProps) => {
               { href: '/dmca', text: 'DMCA' },
               { href: '/terms-of-use', text: 'Termos de uso' },
             ]}
-            classNames=" col-start-2 col-span-6"
           />
         </div>
       )}
-      <div className="p-2 text-xs text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
+      <div className="p-2 mobile-md:text-xs mobile-sm:text-[0.6125rem] text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
         <p>&copy; 2024 Manga Reader. Todos os direitos reservados.</p>
       </div>
     </footer>

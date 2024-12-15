@@ -10,25 +10,18 @@ type CarouselContainerProps = {
   queryKey: string;
   url: string;
   validTime?: number;
-};
-
-type MostViewedTitlesProps = {
-  id: string;
-  imageSrc: string;
-  title: string;
-  synopsis: string;
+  title?: string;
+  subTitle?: string;
 };
 
 const CarouselContainer = ({
   queryKey,
   url,
   validTime,
+  title,
+  subTitle,
 }: CarouselContainerProps) => {
-  const { data, status } = useFetchArtWork<MostViewedTitlesProps[]>(
-    queryKey,
-    url,
-    validTime
-  );
+  const { data, status } = useFetchArtWork(queryKey, url, validTime);
 
   const splideRef = useRef<Splide>(null);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
@@ -61,9 +54,9 @@ const CarouselContainer = ({
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
-      return data.map(({ id, imageSrc, title, synopsis }) => (
+      return (
         <Splide
-          ref={splideRef}
+          onClick={handleCarouselClick}
           options={{
             type: 'fade',
             rewind: true,
@@ -72,17 +65,19 @@ const CarouselContainer = ({
             pagination: false,
             arrows: false,
           }}
-          onClick={handleCarouselClick}
+          ref={splideRef}
         >
-          <Carousel
-            key={id}
-            id={id}
-            imageSrc={imageSrc}
-            title={title}
-            synopsis={synopsis}
-          />
+          {data.map(({ id, imageSrc, title, synopsis }) => (
+            <Carousel
+              id={id}
+              imageSrc={imageSrc}
+              key={id}
+              synopsis={synopsis}
+              title={title}
+            />
+          ))}
         </Splide>
-      ));
+      );
     }
 
     if (status === 'pending') {
@@ -96,10 +91,8 @@ const CarouselContainer = ({
     <section className="flex flex-col items-start">
       <div className="px-4 py-2 rounded-t-sm bg-tertiary">
         <h2 className="flex flex-col items-center text-center">
-          <span className="font-bold text-shadow-default">
-            Obras mais vistas
-          </span>
-          <span className="text-xs">(últimos 30 dias)</span>
+          <span className="font-bold text-shadow-default">{title}</span>
+          <span className="text-xs">({subTitle})</span>
         </h2>
       </div>
       <div className="w-full border-2 rounded-sm rounded-tl-none border-tertiary h-[18rem] overflow-hidden">

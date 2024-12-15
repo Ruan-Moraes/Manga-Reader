@@ -1,31 +1,76 @@
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-
-import Select from 'react-select';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Select, { MultiValue } from 'react-select';
 
 import { TagsTypes } from '../../types/TagsTypes';
 
 type SelectInputProps = {
+  urlParameterName?: string;
   options: TagsTypes[] | undefined;
-  placeholder: string;
   onChange: (newValue: TagsTypes[]) => void;
+  placeholder: string;
 };
 
-const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
-  const location = useLocation();
-  const [query, setQuery] = useState<TagsTypes[]>([]);
+const SelectInput = ({
+  urlParameterName,
+  options,
+  onChange,
+  placeholder,
+}: SelectInputProps) => {
+  const [searchParams] = useSearchParams();
+  const [selectedValues, setSelectedValues] = useState<TagsTypes[]>([]);
+
+  useEffect(() => {
+    if (!urlParameterName) {
+      setSelectedValues([]);
+
+      return;
+    }
+
+    const updateDefaultValues = async () => {
+      if (searchParams.has(urlParameterName)) {
+        const tags = searchParams.get(urlParameterName)?.split(',');
+
+        if (tags) {
+          const upperCaseTags = tags.map((tag) => tag.trim().toUpperCase());
+
+          const selectedTags = options?.filter((option) =>
+            upperCaseTags.includes(option.label.toUpperCase())
+          );
+
+          if (selectedTags) {
+            setSelectedValues(selectedTags);
+
+            onChange(selectedTags);
+          }
+        }
+      }
+
+      if (!searchParams.has(urlParameterName)) {
+        setSelectedValues([]);
+      }
+    };
+
+    updateDefaultValues();
+  }, [searchParams, options, onChange, urlParameterName]);
+
+  const handleChange = (newValue: MultiValue<TagsTypes>) => {
+    setSelectedValues(newValue as TagsTypes[]);
+
+    onChange(newValue as TagsTypes[]);
+  };
 
   return (
     <div>
       <form>
         <Select
-          isMulti
-          value={query}
-          options={options}
-          onChange={onChange}
-          noOptionsMessage={() => null}
           blurInputOnSelect={false}
           closeMenuOnSelect={false}
+          isMulti
+          noOptionsMessage={() => 'Sem opções'}
+          onChange={handleChange}
+          options={options}
+          value={selectedValues}
           placeholder={placeholder}
           styles={{
             control: (baseStyles, state) => ({
@@ -39,7 +84,7 @@ const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
                 : '0.25rem 0.25rem 0 0 #ddda2a40',
               color: '#FFFFFF',
               cursor: 'text',
-              transition: 'box-shadow 0.5s',
+              transition: 'box-shadow 0.3s',
               ':hover': {
                 boxShadow: '0 0 0.075rem 0.25rem #ddda2a40',
               },
@@ -66,7 +111,7 @@ const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
               padding: '0.25rem',
               borderRadius: '0.125rem',
               backgroundColor: '#161616',
-              transition: 'background-color 0.5s',
+              transition: 'background-color 0.3s',
               ':hover': {
                 backgroundColor: '#161616bf',
               },
@@ -87,7 +132,7 @@ const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
               ':hover': {
                 backgroundColor: '#ddda2a80',
               },
-              transition: 'background-color 0.5s',
+              transition: 'background-color 0.3s',
             }),
             menu: (baseStyles) => ({
               ...baseStyles,
@@ -114,7 +159,7 @@ const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
               margin: '0 0.25rem 0 0',
               borderRadius: '0.125rem',
               cursor: 'pointer',
-              transition: 'background-color 0.5s',
+              transition: 'background-color 0.3s',
               ':hover': {
                 backgroundColor: '#ddda2a80',
               },
@@ -125,7 +170,7 @@ const SelectInput = ({ options, placeholder, onChange }: SelectInputProps) => {
               margin: '0 0 0 0.25rem',
               borderRadius: '0.125rem',
               cursor: 'pointer',
-              transition: 'background-color 0.5s',
+              transition: 'background-color 0.3s',
               ':hover': {
                 backgroundColor: '#ddda2a80',
               },

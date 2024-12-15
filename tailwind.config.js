@@ -10,6 +10,11 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'mobile-sm': '20rem',
+        'mobile-md': '23.4375rem',
+        'mobile-lg': '26.5625rem',
+      },
       colors: {
         primary: {
           default: '#161616',
