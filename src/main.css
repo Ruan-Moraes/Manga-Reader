@@ -14,7 +14,6 @@ html {
   background-color: #161616;
 }
 
-/* Define a largura da scrollbar */
 ::-webkit-scrollbar {
   width: 0.5rem;
 }
@@ -38,12 +37,32 @@ html {
 }
 
 .scrollbar-hidden {
-  -ms-overflow-style: none !important; /* IE and Edge */
-  scrollbar-width: none !important; /* Firefox */
+  scrollbar-width: none !important;
   scrollbar-color: transparent transparent !important;
+  -ms-overflow-style: none !important;
 }
 
-/* Tailwind */
+.splide__arrows svg {
+  fill: #727273;
+}
+
+.Toastify__toast-container {
+  width: auto !important;
+  right: 0 !important;
+  left: auto !important;
+}
+
+.Toastify__progress-bar--wrp {
+  z-index: 9999 !important;
+  border-radius: 0 !important;
+  border-bottom-left-radius: 0.25rem !important;
+}
+
+.Toastify__progress-bar--bg {
+  background-color: #727273 !important;
+
+  opacity: 1 !important;
+}
 
 /* Tailwind */
 

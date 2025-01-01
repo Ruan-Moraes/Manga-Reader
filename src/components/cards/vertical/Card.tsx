@@ -1,34 +1,51 @@
 import { useMemo } from 'react';
 
+import { TitleTypes } from '../../../types/TitleTypes';
+import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
+
 import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
-type Status = {
-  isError?: boolean;
-  isLoading?: boolean;
-};
-
-type CardProps = {
-  chapters?: string;
-  id?: string;
-  imageSrc?: string;
-  releaseDate?: string;
-  title?: string;
-  type?: string;
-};
+type CardProps = Partial<
+  Omit<
+    TitleTypes,
+    | 'synopsis'
+    | 'popularity'
+    | 'score'
+    | 'author'
+    | 'artist'
+    | 'publisher'
+    | 'createdAt'
+  >
+> &
+  StatusFetchTypes;
 
 const Card = ({
   id,
   type = '...',
-  imageSrc = 'Carregando...',
+  cover = 'Carregando...',
   title = '...',
   chapters = '...',
-  releaseDate = '...',
+  updatedAt = '...',
   isLoading,
   isError,
-}: CardProps & Status) => {
+}: CardProps) => {
+  const updatedAtDate = useMemo(() => {
+    const date = new Date(updatedAt);
+
+    return `${
+      date.getDate().toString().length === 1
+        ? `0${date.getDate()}`
+        : date.getDate()
+    }/${
+      date.getMonth().toString().length === 1
+        ? `0${date.getMonth() + 1}`
+        : date.getMonth() + 1
+    }`;
+  }, [updatedAt]);
+
   const howManyChapters = useMemo(() => 3, []);
   const lastThreeChapters = useMemo(
     () => chapters?.split('/')?.slice(-howManyChapters) ?? [],
@@ -43,7 +60,7 @@ const Card = ({
         </div>
         <div className="flex flex-col w-full border rounded-sm rounded-tl-none border-tertiary">
           <div className="flex items-center justify-center h-[11.625rem]">
-            <span className="font-bold text-tertiary">{imageSrc}</span>
+            <span className="font-bold text-tertiary">{cover}</span>
           </div>
           <div className="border-t border-t-tertiary">
             <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
@@ -61,7 +78,7 @@ const Card = ({
                   <span className="flex items-center gap-2">
                     {index === 0 ? (
                       <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
-                        {releaseDate}
+                        {updatedAt}
                       </span>
                     ) : (
                       ''
@@ -96,12 +113,13 @@ const Card = ({
       </div>
       <div className="flex flex-col w-full border rounded-sm rounded-tl-none border-tertiary">
         <div>
-          <img
-            alt={title}
-            className="spect-square h-[11.625rem] w-full object-cover"
-            loading="lazy"
-            src={imageSrc}
-          />
+          <CustomLinkBase href={`/titles/${id}`} className="block h-full">
+            <img
+              alt={`Capa do título: ${title}`}
+              className="spect-square h-[11.625rem] w-full object-cover"
+              src={cover}
+            />
+          </CustomLinkBase>
         </div>
         <div className="border-t border-t-tertiary">
           <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
@@ -124,7 +142,7 @@ const Card = ({
                 <span className="flex items-center gap-2">
                   {index === 0 ? (
                     <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
-                      {releaseDate}
+                      {updatedAtDate}
                     </span>
                   ) : (
                     ''

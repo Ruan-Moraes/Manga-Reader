@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import UseFetchArtWork from '../../../hooks/useFetchArtWork';
+import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import { CardsContainerProps } from '../../../types/CardContainerProps';
+import UseFetchArtWork from '../../../hooks/useFetchArtWork';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
@@ -13,44 +13,58 @@ const CardsContainer = ({
   validTime,
   title,
   subTitle,
-}: CardsContainerProps) => {
+}: CardsContainerTypes) => {
   const { data, status } = UseFetchArtWork(queryKey, url, validTime);
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
-      return data.map((item) => (
-        <Card
-          artist={item.artist}
-          author={item.author}
-          chapters={item.chapters}
-          id={item.id}
-          imageSrc={item.imageSrc}
-          key={item.id}
-          popularity={item.popularity}
-          publisher={item.publisher}
-          score={item.score}
-          synopsis={item.synopsis}
-          title={item.title}
-          type={item.type}
-        />
-      ));
+      return data.map(
+        ({
+          id,
+          type,
+          cover,
+          title,
+          synopsis,
+          chapters,
+          popularity,
+          score,
+          author,
+          artist,
+          publisher,
+        }) => (
+          <Card
+            id={id}
+            type={type}
+            cover={cover}
+            title={title}
+            synopsis={synopsis}
+            chapters={chapters}
+            popularity={popularity}
+            score={score}
+            author={author}
+            artist={artist}
+            publisher={publisher}
+            key={id}
+          />
+        )
+      );
     }
 
     if (status === 'pending') {
       return Array.from({ length: 5 }).map((_, index) => (
-        <Card isLoading key={index} />
+        <Card isLoading={true} key={index} />
       ));
     }
 
-    return <Card isError />;
+    return <Card isError={true} />;
   }, [data, status]);
 
   return (
     <section className="flex flex-col gap-4">
       <Section_Title
-        subLink="/categories?sort=ascension&status=all"
-        subTitle={subTitle}
         title={title}
+        subTitle={subTitle}
+        subLink="/categories?sort=ascension&status=all"
       />
       <div className="flex flex-col gap-4">{allChildren}</div>
     </section>

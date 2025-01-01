@@ -1,16 +1,24 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import {
+  QueryClientProvider,
+  QueryClient,
+  QueryCache,
+} from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import './main.css';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import AppLayout from './components/app-layout/AppLayout.tsx';
 import Home from './routes/home/Home.tsx';
-import Title from './routes/title/Title.tsx';
+import Titles from './routes/titles/Titles.tsx';
 import Categories from './routes/categories/Categories.tsx';
 import Groups from './routes/groups/Groups.tsx';
 import News from './routes/news/News.tsx';
+import Events from './routes/events/Events.tsx';
 import Login from './routes/login/Login.tsx';
 import SignUp from './routes/sign-up/SignUp.tsx';
 import ForgotPassword from './routes/forgot-password/ForgotPassword.tsx';
@@ -19,15 +27,33 @@ import AboutUs from './routes/about-us/AboutUs.tsx';
 import TermsOfUse from './routes/terms/TermsOfUse.tsx';
 import Dmca from './routes/terms/Dmca.tsx';
 import NotFound from './routes/error/NotFound.tsx';
+import Toast from './components/toast/Toast';
 
-const queryClient = new QueryClient({});
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({}),
+});
 
-export const clearCache = () => {
-  queryClient.resetQueries();
+export const clearCache = (): void => {
+  try {
+    queryClient.resetQueries();
+    localStorage.clear();
 
-  localStorage.clear();
+    toast.success('Cache limpo com sucesso!');
+  } catch (error) {
+    console.error('Erro ao limpar cache:', error);
+  }
+};
 
-  alert('Cache limpo com sucesso!');
+export const getCache = (key: string[]) => {
+  try {
+    const cachedData = queryClient.getQueryData(key);
+
+    return cachedData || null;
+  } catch (error) {
+    console.error('Error getting cache:', error);
+
+    return null;
+  }
 };
 
 const routes = createBrowserRouter([
@@ -41,11 +67,11 @@ const routes = createBrowserRouter([
       },
       {
         path: 'titles/:title',
-        element: <Title />,
+        element: <Titles />,
       },
       {
         path: 'titles/:title/:chapter',
-        element: <Title />,
+        element: <Titles />,
       },
       {
         path: 'categories',
@@ -61,7 +87,7 @@ const routes = createBrowserRouter([
       },
       {
         path: 'events',
-        element: <News />,
+        element: <Events />,
       },
       {
         path: 'login',
@@ -103,6 +129,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={routes} />
+      <Toast />
     </QueryClientProvider>
   </StrictMode>
 );

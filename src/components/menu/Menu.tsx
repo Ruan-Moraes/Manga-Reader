@@ -58,7 +58,7 @@ const Menu = () => {
         className={clsx(
           'px-3 py-2 bg-secondary border-b-2 border-b-tertiary transition duration-300',
           {
-            'fixed top-0 left-0 right-0 z-10': isSticky,
+            'fixed top-0 left-0 right-0 z-30': isSticky,
           }
         )}
         ref={menuRef}
@@ -93,7 +93,7 @@ const Menu = () => {
         <div className="absolute">
           <div
             className={clsx(
-              'flex flex-col gap-4 w-4/6 fixed top-0 bottom-0 left-0 right-0 bg-primary-default border-r-2 border-r-tertiary z-20 transform transition-transform duration-300',
+              'flex flex-col gap-4 w-4/6 fixed top-0 bottom-0 left-0 right-0 bg-primary-default border-r-2 border-r-tertiary z-30 transform transition-transform duration-300',
               {
                 'translate-x-0': isMenuOpen,
                 '-translate-x-full': !isMenuOpen,

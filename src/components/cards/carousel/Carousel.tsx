@@ -1,28 +1,34 @@
+import { TitleTypes } from '../../../types/TitleTypes';
+import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
+
 // @ts-expect-error - ignore import error
 import { SplideSlide } from '@splidejs/react-splide';
-
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
-type Status = {
-  isError?: boolean;
-  isLoading?: boolean;
-};
-
-type CarouselProps = {
-  id?: string;
-  imageSrc?: string;
-  synopsis?: string;
-  title?: string;
-};
+type CarouselProps = Partial<
+  Omit<
+    TitleTypes,
+    | 'createdAt'
+    | 'updatedAt'
+    | 'popularity'
+    | 'score'
+    | 'author'
+    | 'artist'
+    | 'publisher'
+    | 'chapters'
+    | 'type'
+  >
+> &
+  StatusFetchTypes;
 
 const Carousel = ({
   id,
-  imageSrc,
+  cover,
   title,
   synopsis,
   isLoading,
   isError,
-}: CarouselProps & Status) => {
+}: CarouselProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full p-4">
@@ -43,27 +49,39 @@ const Carousel = ({
 
   return (
     <SplideSlide>
-      <div>
-        <div>
-          <img alt="#" className="object-cover h-[18rem]" src={imageSrc!} />
-        </div>
-        <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-75 max-h-[12.5rem]">
-          <h3 className="text-lg font-bold text-shadow-highlight">
-            <CustomLinkBase
-              href={`/titles/${id!}`}
-              className="hover:text-shadow-default"
-              text={title!}
+      <div className="relative h-full">
+        <div className="h-full">
+          <CustomLinkBase
+            href={`/titles/${id}`}
+            className="block h-full cursor-default"
+          >
+            <img
+              alt={`Capa do título: ${title}`}
+              className="w-full h-full object-fit"
+              src={cover}
             />
+          </CustomLinkBase>
+        </div>
+        <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-85">
+          <h3
+            className="overflow-hidden text-lg font-bold text-shadow-default"
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            <CustomLinkBase href={`/titles/${id}`} text={title} />
           </h3>
           <p
-            className="text-xs max-h-[3.15rem] overflow-hidden"
+            className="overflow-hidden text-xs"
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
             }}
           >
-            {synopsis!}
+            {synopsis}
           </p>
         </div>
       </div>

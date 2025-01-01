@@ -1,44 +1,36 @@
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
+
+import { TitleTypes } from '../../../types/TitleTypes';
+import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
 import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
-type Status = {
-  isError?: boolean;
-  isLoading?: boolean;
-};
-
-type CardProps = {
-  artist?: string;
-  author?: string;
-  chapters?: string;
-  id?: string;
-  imageSrc?: string;
-  popularity?: string;
-  publisher?: string;
-  score?: string;
-  synopsis?: string;
-  title?: string;
-  type?: string;
-};
+type CardProps = Partial<Omit<TitleTypes, 'createdAt' | 'updatedAt'>> &
+  StatusFetchTypes;
 
 const Card = ({
   id,
   type = '...',
-  imageSrc = 'Carregando...',
+  cover = 'Carregando...',
   title = '...',
+  synopsis = 'Carregando...',
+  chapters = '...',
   popularity = '...',
   score = '...',
-  chapters = '...',
   author = '...',
   artist = '...',
   publisher = '...',
-  synopsis = 'Carregando...',
   isLoading,
   isError,
-}: CardProps & Status) => {
+}: CardProps) => {
+  const lastChapter = useMemo(
+    () => chapters?.split('/')?.slice(-1)[0],
+    [chapters]
+  );
+
   const informationsHTML = useRef<HTMLDivElement>(null);
   const synopsisHTML = useRef<HTMLDivElement>(null);
 
@@ -58,6 +50,7 @@ const Card = ({
       );
 
       const totalLines = Math.ceil(paragraphHeight / lineHeight) - 1;
+
       setLines(totalLines);
     }
   }, []);
@@ -72,7 +65,7 @@ const Card = ({
           <div className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary">
             <div className="flex items-center justify-center h-52">
               <span className="font-bold text-center text-tertiary">
-                {imageSrc}
+                {cover}
               </span>
             </div>
             <div className="border-t border-t-tertiary">
@@ -144,23 +137,25 @@ const Card = ({
       </div>
       <div className="flex flex-row items-center w-full gap-4">
         <div
-          className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary"
           ref={informationsHTML}
+          className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary"
         >
           <div>
-            <img
-              alt={title}
-              className="object-cover max-h-[10rem] w-full aspect-square"
-              src={imageSrc}
-            />
+            <CustomLinkBase href={`/titles/${id}`} className="block h-full">
+              <img
+                alt={`Capa do título: ${title}`}
+                src={cover}
+                className="object-cover max-h-[10rem] w-full aspect-square"
+              />
+            </CustomLinkBase>
           </div>
           <div className="border-t border-t-tertiary">
             <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
               <h3 className="truncate text-shadow-default">
                 <CustomLinkBase
                   href={`/titles/${id}`}
-                  className="text-shadow-default"
                   text={title}
+                  className="text-shadow-default"
                 />
               </h3>
             </div>
@@ -179,7 +174,7 @@ const Card = ({
               <div>
                 <p>
                   <span className="font-bold">Capítulos:</span>{' '}
-                  <span>{chapters}</span>
+                  <span>{lastChapter}</span>
                 </p>
               </div>
               <div>
@@ -205,13 +200,13 @@ const Card = ({
         </div>
         <div className="w-2/4 overflow-hidden">
           <p
-            className="text-xs text-justify"
             ref={synopsisHTML}
             style={{
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
               WebkitLineClamp: lines,
             }}
+            className="text-xs text-justify"
           >
             {synopsis}
           </p>

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import useFetchArtWork from '../../../hooks/useFetchArtWork';
 
-import { CardsContainerProps } from '../../../types/CardContainerProps';
+import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
@@ -13,38 +13,38 @@ const CardsContainer = ({
   validTime,
   title,
   subTitle,
-}: CardsContainerProps) => {
+}: CardsContainerTypes) => {
   const { data, status } = useFetchArtWork(queryKey, url, validTime);
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
-      return data.map((item) => (
+      return data.map(({ id, type, cover, title, chapters }) => (
         <Card
-          chapters={item.chapters}
-          id={item.id}
-          imageSrc={item.imageSrc}
-          key={item.id}
-          title={item.title}
-          type={item.type}
+          chapters={chapters}
+          id={id}
+          cover={cover}
+          key={id}
+          title={title}
+          type={type}
         />
       ));
     }
 
     if (status === 'pending') {
       return Array.from({ length: 10 }).map((_, index) => (
-        <Card isLoading key={index} />
+        <Card isLoading={true} key={index} />
       ));
     }
 
-    return <Card isError />;
+    return <Card isError={true} />;
   }, [data, status]);
 
   return (
     <section className="flex flex-col gap-4">
       <Section_Title
-        subLink="/categories?sort=random&status=all"
-        subTitle={subTitle}
         title={title}
+        subTitle={subTitle}
+        subLink="/categories?sort=random&status=all"
       />
       <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">
         {allChildren}

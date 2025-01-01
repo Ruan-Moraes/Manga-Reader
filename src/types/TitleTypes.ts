@@ -1,12 +1,12 @@
 export type TitleTypes = {
   id: string;
-  cover: string;
   type: string;
+  cover: string;
   title: string;
   synopsis: string;
   chapters: string;
-  popularity: number;
-  score: number;
+  popularity: number | string;
+  score: number | string;
   author: string;
   artist: string;
   publisher: string;

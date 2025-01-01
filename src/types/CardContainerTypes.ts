@@ -1,4 +1,4 @@
-export type CardsContainerProps = {
+export type CardsContainerTypes = {
   queryKey: string;
   url: string;
   validTime?: number;

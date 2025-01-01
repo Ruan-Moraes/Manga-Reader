@@ -5,18 +5,21 @@ import clsx from 'clsx';
 type CustomLinkBaseProps = {
   href: string;
   className?: string;
+  inlineStyle?: React.CSSProperties;
   enabledColorWhenActive?: boolean;
-  text: string;
+  text?: string;
+  children?: React.ReactNode;
 };
 
 const CustomLinkBase = ({
   href,
   className,
+  inlineStyle,
   enabledColorWhenActive,
   text,
+  children,
 }: CustomLinkBaseProps) => {
   const isExternalLink = href.includes('http');
-
   const isActive = useLocation().pathname === `/Manga-Reader${href}`;
 
   return (
@@ -27,9 +30,10 @@ const CustomLinkBase = ({
           'text-quaternary-default': enabledColorWhenActive && isActive,
         }
       )}
+      style={inlineStyle}
       to={isExternalLink ? href : '/Manga-Reader' + href}
     >
-      {text}
+      {children || text}
     </Link>
   );
 };

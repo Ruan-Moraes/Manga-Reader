@@ -48,6 +48,8 @@ const SelectInput = ({
 
       if (!searchParams.has(urlParameterName)) {
         setSelectedValues([]);
+
+        onChange([]);
       }
     };
 

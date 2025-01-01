@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react';
 
-import tags from '../../utils/fetchTags';
-
 import { TagsTypes } from '../../types/TagsTypes';
 import { SortTypes } from '../../types/SortTypes';
 import { StatusTypes } from '../../types/StatusTypes';
@@ -11,6 +9,8 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
+import useFetchTags from '../../hooks/useFetchTags';
+
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';
 import FiltersForm from '../../components/forms/FiltersForm';
@@ -19,6 +19,13 @@ import RadioInput from '../../components/inputs/RadioInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
 
 const Categories = () => {
+  const { data } = useFetchTags(
+    'tags',
+    'https://db-json-ten.vercel.app/tags',
+    16
+  );
+  const tags = Array.isArray(data) ? data : undefined;
+
   const [selectedTags, setSelectedTags] = useState<TagsTypes[]>([]);
   const [selectedSort, setSelectedSort] = useState<SortTypes>('most_read');
   const [selectedStatus, setSelectedStatus] = useState<StatusTypes>('ongoing');
@@ -48,6 +55,32 @@ const Categories = () => {
   console.log(selectedSort);
   console.log(selectedStatus);
   console.log(selectedAdultContent);
+
+  const createUrl = () => {
+    const params = new URLSearchParams();
+
+    if (selectedTags.length > 0) {
+      selectedTags.forEach((tag) => {
+        params.append('tags', tag.value.toString());
+      });
+    }
+
+    if (selectedSort) {
+      params.set('sort', selectedSort);
+    }
+
+    if (selectedStatus) {
+      params.set('status', selectedStatus);
+    }
+
+    if (selectedAdultContent) {
+      params.set('adult_content', selectedAdultContent);
+    }
+
+    return `http://localhost:5000/titles?${params.toString()}`;
+  };
+
+  console.log(createUrl());
 
   return (
     <>

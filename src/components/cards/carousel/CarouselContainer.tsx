@@ -1,5 +1,4 @@
-import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
-
+import { useMemo, useRef, useEffect } from 'react';
 import useFetchArtWork from '../../../hooks/useFetchArtWork';
 
 // @ts-expect-error - ignore import error
@@ -24,56 +23,47 @@ const CarouselContainer = ({
   const { data, status } = useFetchArtWork(queryKey, url, validTime);
 
   const splideRef = useRef<Splide>(null);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  const handleCarouselClick = useCallback(() => {
-    if (splideRef.current) {
-      splideRef.current.go('+1');
-    }
-
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
-
-    const newIntervalId = setInterval(() => {
-      if (splideRef.current) {
-        splideRef.current.go('+1');
-      }
-    }, 7500);
-
-    setIntervalId(newIntervalId);
-  }, [intervalId]);
 
   useEffect(() => {
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
+    if (splideRef.current) {
+      const { root, track, list } =
+        splideRef.current.splide.Components.Elements;
+
+      if (root && track && list) {
+        root.classList.add('h-full');
+        track.classList.add('h-full');
+        list.classList.add('h-full');
       }
-    };
-  }, [intervalId]);
+    }
+  }, [data]);
 
   const allChildren = useMemo(() => {
     if (status === 'success' && Array.isArray(data) && data.length > 0) {
       return (
         <Splide
-          onClick={handleCarouselClick}
           options={{
             type: 'fade',
             rewind: true,
-            autoplay: false,
-            speed: 500,
+            autoplay: true,
+            interval: 5000,
+            speed: 300,
+            pauseOnHover: true,
+            pauseOnFocus: true,
             pagination: false,
-            arrows: false,
+            arrows: true,
+            classes: {
+              arrow: `rounded-sm align-middle flex z-10 cursor-pointer w-8 px-2 py-2 bg-primary-opacity-85 absolute top-1/2 transform -translate-y-1/2 border-2 border-tertiary`,
+            },
           }}
           ref={splideRef}
         >
-          {data.map(({ id, imageSrc, title, synopsis }) => (
+          {data.map(({ id, title, cover, synopsis }) => (
             <Carousel
               id={id}
-              imageSrc={imageSrc}
-              key={id}
-              synopsis={synopsis}
               title={title}
+              cover={cover}
+              synopsis={synopsis}
+              key={id}
             />
           ))}
         </Splide>
@@ -81,11 +71,11 @@ const CarouselContainer = ({
     }
 
     if (status === 'pending') {
-      return <Carousel isLoading />;
+      return <Carousel isLoading={true} />;
     }
 
-    return <Carousel isError />;
-  }, [data, status, handleCarouselClick]);
+    return <Carousel isError={true} />;
+  }, [data, status]);
 
   return (
     <section className="flex flex-col items-start">

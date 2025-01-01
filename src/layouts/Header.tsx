@@ -12,7 +12,7 @@ type HeaderProps = {
 
 const Header = ({ disabledAuth, disabledSearch }: HeaderProps) => {
   return (
-    <header className={clsx('bg-secondary', !disabledAuth && 'flex flex-col')}>
+    <header className={clsx('bg-secondary', {})}>
       {!disabledAuth && (
         <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
           <CustomLinkBase

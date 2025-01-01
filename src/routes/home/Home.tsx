@@ -52,28 +52,28 @@ const Home = () => {
         </SocialMediasContainer>
         <CarouselContainer
           queryKey="mostViewedTitles"
-          url="http://localhost:5000/mostViewedTitles"
+          url="https://db-json-ten.vercel.app/titlesCarousel"
           validTime={30}
           title="Obras mais vistas"
           subTitle="Últimos 30 dias"
         />
         <HighlightCardsContainer
           queryKey="hqsInAscension"
-          url="http://localhost:5000/titlesInAscension"
+          url="https://db-json-ten.vercel.app/titlesMostViewed"
           validTime={30}
           title="Tops 5 obras em ascensão"
           subTitle="Quero ver mais..."
         />
         <RowCardsContainer
           queryKey="randomTitles"
-          url="http://localhost:5000/randomTitles"
+          url="https://db-json-ten.vercel.app/randomTitles"
           validTime={30}
           title="10 Obras aleatórias"
           subTitle="Quero ver mais..."
         />
         <GridCardsContainer
           queryKey="updatedTitles"
-          url="http://localhost:5000/updatedTitles"
+          url="https://db-json-ten.vercel.app/updatedTitles"
           validTime={30}
           title="Obras Atualizadas"
           subTitle="Quero ver mais..."
