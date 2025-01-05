@@ -142,13 +142,13 @@ const Menu = () => {
               </div>
               <div className="flex w-full gap-4 mt-auto ml-auto">
                 <button
-                  className="flex items-center justify-center gap-2 p-3 font-bold text-center border-2 rounded-sm mobile-sm:text-xs mobile-md:text-base border-tertiary bg-secondary grow"
+                  className="flex items-center justify-center gap-2 p-3 font-bold text-center border rounded-sm mobile-sm:text-xs mobile-md:text-base border-tertiary bg-secondary grow"
                   onClick={clearCache}
                 >
                   Limpar cache
                 </button>
-                <button className="p-3 border-2 rounded-sm border-tertiary bg-secondary">
-                  <GrDocumentConfig className="inline-block text-2xl" />
+                <button className="p-3 border rounded-sm border-tertiary bg-secondary">
+                  <GrDocumentConfig className="text-2xl" />
                 </button>
               </div>
             </div>

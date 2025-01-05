@@ -22,11 +22,11 @@ const FooterLinksSection = ({
           <CustomLinkBase
             href={link.href}
             key={index}
-            className={
+            className={`${
               index === links.length - 1
                 ? 'border-b-0 border-b-tertiary p-2'
                 : 'border-b-2 border-b-tertiary p-2'
-            }
+            } font-normal`}
             text={link.text}
           />
         ))}

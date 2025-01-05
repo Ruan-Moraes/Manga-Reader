@@ -9,7 +9,7 @@ type CheckboxInputProps = {
 const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputProps) => {
   return (
     <div>
-      <label className="flex items-center gap-2">
+      <label className="flex items-center gap-2 w-max">
         <div className="relative w-5 h-5">
           <input
             className="w-full h-full transition duration-300 border rounded-sm appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-5 peer checked:bg-quaternary-opacity-50"

@@ -16,7 +16,7 @@ const SectionTitle = ({
   subLink,
 }: SectionTitleProps) => {
   return (
-    <div className={children ? 'flex flex-col gap-2' : 'flex flex-col'}>
+    <div className={children ? 'flex flex-col gap-2' : ' flex flex-col'}>
       <div>
         <div>
           <h2
@@ -38,7 +38,7 @@ const SectionTitle = ({
           )}
         </div>
       </div>
-      <div>{children}</div>
+      {children && <div>{children}</div>}
     </div>
   );
 };

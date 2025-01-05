@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import LinksSection from '../components/links/sections/FooterLinksSection';
 
 type FooterProps = {
@@ -5,6 +6,10 @@ type FooterProps = {
 };
 
 const Footer = ({ disabledLinks }: FooterProps) => {
+  const getYear = useMemo(() => {
+    return new Date().getFullYear();
+  }, []);
+
   return (
     <footer className="mt-auto bg-secondary">
       {!disabledLinks && (
@@ -47,7 +52,7 @@ const Footer = ({ disabledLinks }: FooterProps) => {
         </div>
       )}
       <div className="p-2 mobile-md:text-xs mobile-sm:text-[0.6125rem] text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
-        <p>&copy; 2024 Manga Reader. Todos os direitos reservados.</p>
+        <p>&copy; {`${getYear}`} Manga Reader. Todos os direitos reservados.</p>
       </div>
     </footer>
   );

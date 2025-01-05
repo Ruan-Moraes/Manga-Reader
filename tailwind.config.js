@@ -19,7 +19,7 @@ export default {
         primary: {
           default: '#161616',
           opacity: {
-            85: '#161616d9',
+            80: '#161616cc',
             75: '#161616bf',
           },
         },

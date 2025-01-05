@@ -61,7 +61,7 @@ const Card = ({
         <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
           <span className="font-bold">{type}</span>
         </div>
-        <div className="flex flex-row items-center w-full gap-4">
+        <div className="flex flex-row items-center w-full gap-2">
           <div className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary">
             <div className="flex items-center justify-center h-52">
               <span className="font-bold text-center text-tertiary">
@@ -135,7 +135,7 @@ const Card = ({
       <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
         <span className="font-bold">{type}</span>
       </div>
-      <div className="flex flex-row items-center w-full gap-4">
+      <div className="flex flex-row items-center w-full gap-2">
         <div
           ref={informationsHTML}
           className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary"

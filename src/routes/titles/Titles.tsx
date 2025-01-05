@@ -8,6 +8,10 @@ import { BsBookmark } from 'react-icons/bs';
 import { AiOutlineLike } from 'react-icons/ai';
 import { MdGroups } from 'react-icons/md';
 import { MdOutlineShoppingCart } from 'react-icons/md';
+import { FaSortNumericDown } from 'react-icons/fa';
+// import { FaSortNumericDownAlt } from 'react-icons/fa';
+
+// import BaseButton from './../../components/buttons/BaseButton';
 
 const Titles = () => {
   // const { title } = useParams<{ title: string }>();
@@ -18,12 +22,12 @@ const Titles = () => {
       <Main>
         <div>
           <div className="flex gap-2">
-            <div className="flex flex-col w-[calc(50%_-_0.25rem)] border-2 rounded-t-sm border-tertiary border-b-0">
-              <div className="w-full h-64 border-b-2 border-b-tertiary">
+            <div className="flex flex-col w-[calc(50%_-_0.25rem)] border rounded-t-sm border-tertiary border-b-0">
+              <div className="w-full h-64 border-b border-b-tertiary">
                 <img
                   src="https://wallpapers.com/images/high/naruto-manga-e86faunm0r96om1e.webp"
                   alt=""
-                  className="w-full h-full object-fit "
+                  className="object-cover w-full h-full"
                 />
               </div>
               <div>
@@ -87,10 +91,7 @@ const Titles = () => {
                   dentro de si, a Kyuubi, a Raposa de Nove Caudas. Ele é
                   ambicioso e quer se tornar o Hokage, o líder da Vila da Folha.
                   Ele é um membro da equipe 7, composta por ele, Sasuke Uchiha,
-                  Sakura Haruno e seu sensei, Kakashi Hatake. Lorem ipsum dolor,
-                  sit amet consectetur adipisicing elit. Inventore quod placeat
-                  tempora, quisquam officiis numquam hic aliquam vel quos ipsam
-                  vero dolore. */}
+                  Sakura Haruno e seu sensei, Kakashi Hatake. */}
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla
                   qui ut cupiditate! Commodi, dolore consequuntur quam tempore
                   autem assumenda non ipsum ducimus, ipsam eos quis et quisquam
@@ -132,7 +133,7 @@ const Titles = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between h-full py-2 rounded-r-sm rounded-bl-sm bg-tertiary">
+          <div className="flex items-center justify-between h-full py-2 border rounded-r-sm rounded-bl-sm border-tertiary bg-tertiary">
             <div className="flex items-center justify-center grow">
               <BsBookmark className="text-2xl" />
             </div>
@@ -150,15 +151,38 @@ const Titles = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div className="flex gap-4">
-            <h3 className="text-sm font-bold text-center text-shadow-default">
-              Capítulos
-            </h3>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <div>
+              <h3 className="text-xl font-bold leading-none text-shadow-default">
+                Capítulos:
+              </h3>
+            </div>
+            <div className="flex items-stretch gap-2">
+              <div>
+                <button className="flex items-center h-full gap-2 px-2 py-1 border rounded-sm border-tertiary bg-secondary">
+                  <span className="text-xs font-bold">Ordenar por:</span>
+                  <span>
+                    <FaSortNumericDown className="text-lg" />
+                  </span>
+                </button>
+              </div>
+              <div className="grow">
+                <div>
+                  <input
+                    type="search"
+                    name=""
+                    id=""
+                    placeholder="Pesquisar Capítulo"
+                    className="w-full px-2 py-1 border rounded-sm appearance-none border-tertiary bg-secondary"
+                  />
+                </div>
+                <div></div>
+              </div>
+            </div>
           </div>
-
-          {/* <div className="flex flex-col gap-1 p-2 text-xs">
-            <div className="flex justify-between py-2 border-b-2 border-b-tertiary">
+          <div className="flex flex-col gap-1 text-xs">
+            <div className="flex justify-between pb-2 border-b-2 border-b-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>1</span>
@@ -377,7 +401,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between py-2 border-b-2 border-b-tertiary">
+            <div className="flex justify-between pt-2">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>12</span>
@@ -397,7 +421,24 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-          </div> */}
+          </div>
+          <div>
+            <ul className="flex text-center rounded-sm bg-secondary">
+              <li className="p-1 grow">1</li>
+              <li className="h-8 border rounded-sm border-primary-default"></li>
+              <li className="p-1 grow">2</li>
+              <li className="h-8 border rounded-sm border-primary-default"></li>
+              <li className="p-1 grow">3</li>
+              <li className="h-8 border rounded-sm border-primary-default"></li>
+              <li className="p-1 grow">4</li>
+              <li className="h-8 border rounded-sm border-primary-default"></li>
+              <li className="p-1 grow">5</li>
+              <li className="h-8 border rounded-sm border-primary-default"></li>
+              <li className="p-1 grow">6</li>
+              <li className="h-8 border rounded-sm border-primary-default"></li>
+              <li className="p-1 grow">52</li>
+            </ul>
+          </div>
         </div>
       </Main>
       <Footer />

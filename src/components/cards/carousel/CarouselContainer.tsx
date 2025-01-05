@@ -4,6 +4,7 @@ import useFetchArtWork from '../../../hooks/useFetchArtWork';
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
 import Carousel from './Carousel';
+import CustomLinkBase from './../../links/elements/CustomLinkBase';
 
 type CarouselContainerProps = {
   queryKey: string;
@@ -52,7 +53,7 @@ const CarouselContainer = ({
             pagination: false,
             arrows: true,
             classes: {
-              arrow: `rounded-sm align-middle flex z-10 cursor-pointer w-8 px-2 py-2 bg-primary-opacity-85 absolute top-1/2 transform -translate-y-1/2 border-2 border-tertiary`,
+              arrow: `rounded-sm align-middle flex z-10 cursor-pointer w-8 px-2 py-2 bg-primary-opacity-80 absolute top-1/2 transform -translate-y-1/2 border border-tertiary`,
             },
           }}
           ref={splideRef}
@@ -81,11 +82,15 @@ const CarouselContainer = ({
     <section className="flex flex-col items-start">
       <div className="px-4 py-2 rounded-t-sm bg-tertiary">
         <h2 className="flex flex-col items-center text-center">
-          <span className="font-bold text-shadow-default">{title}</span>
+          <CustomLinkBase
+            href="/categories?sort=most_read&status=all"
+            text={title}
+            className="text-shadow-default"
+          />
           <span className="text-xs">({subTitle})</span>
         </h2>
       </div>
-      <div className="w-full border-2 rounded-sm rounded-tl-none border-tertiary h-[18rem] overflow-hidden">
+      <div className="w-full border rounded-sm rounded-tl-none border-tertiary h-[18rem] overflow-hidden">
         {allChildren}
       </div>
     </section>

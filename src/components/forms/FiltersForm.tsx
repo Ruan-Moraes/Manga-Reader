@@ -7,12 +7,12 @@ type FiltersFormProps = {
 const FiltersForm = ({ title, isGrid, children }: FiltersFormProps) => {
   return (
     <>
-      <section className="flex-col gap-4 before:flex">
+      <section className="flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div>
             <h3 className="text-lg font-bold">{title}</h3>
           </div>
-          <div {...(isGrid ? { className: 'grid grid-cols-2 gap-4' } : {})}>
+          <div {...(isGrid ? { className: 'grid grid-cols-2 gap-2' } : {})}>
             {children}
           </div>
         </div>

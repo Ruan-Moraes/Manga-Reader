@@ -62,7 +62,7 @@ const Carousel = ({
             />
           </CustomLinkBase>
         </div>
-        <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-85">
+        <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-80">
           <h3
             className="overflow-hidden text-lg font-bold text-shadow-default"
             style={{
@@ -74,7 +74,7 @@ const Carousel = ({
             <CustomLinkBase href={`/titles/${id}`} text={title} />
           </h3>
           <p
-            className="overflow-hidden text-xs"
+            className="overflow-hidden text-xs text-shadow-default"
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 3,
