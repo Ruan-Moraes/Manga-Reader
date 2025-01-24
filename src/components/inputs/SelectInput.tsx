@@ -4,7 +4,7 @@ import Select, { MultiValue } from 'react-select';
 
 import { TagsTypes } from '../../types/TagsTypes';
 
-type SelectInputProps = {
+type SelectInputTypes = {
   urlParameterName?: string;
   options: TagsTypes[] | undefined;
   onChange: (newValue: TagsTypes[]) => void;
@@ -16,7 +16,7 @@ const SelectInput = ({
   options,
   onChange,
   placeholder,
-}: SelectInputProps) => {
+}: SelectInputTypes) => {
   const [searchParams] = useSearchParams();
   const [selectedValues, setSelectedValues] = useState<TagsTypes[]>([]);
 
@@ -69,7 +69,7 @@ const SelectInput = ({
           blurInputOnSelect={false}
           closeMenuOnSelect={false}
           isMulti
-          noOptionsMessage={() => 'Sem opções'}
+          noOptionsMessage={() => 'Carregando...'}
           onChange={handleChange}
           options={options}
           value={selectedValues}
@@ -156,9 +156,10 @@ const SelectInput = ({
                 color: '#161616',
               },
             }),
+
             clearIndicator: () => ({
               padding: '0.125rem',
-              margin: '0 0.25rem 0 0',
+              margin: '0 0.5rem 0 0',
               borderRadius: '0.125rem',
               cursor: 'pointer',
               transition: 'background-color 0.3s',
@@ -166,10 +167,16 @@ const SelectInput = ({
                 backgroundColor: '#ddda2a80',
               },
             }),
+            indicatorSeparator: (baseStyles) => ({
+              ...baseStyles,
+              margin: '6px 0',
+              height: 'calc(100% - 10px)',
+              backgroundColor: '#252526',
+            }),
             dropdownIndicator: (baseStyles) => ({
               ...baseStyles,
               padding: '0.125rem',
-              margin: '0 0 0 0.25rem',
+              margin: '0 0 0 0.5rem',
               borderRadius: '0.125rem',
               cursor: 'pointer',
               transition: 'background-color 0.3s',

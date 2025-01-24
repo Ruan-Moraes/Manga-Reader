@@ -1,10 +1,10 @@
-type BaseInputProps = {
+type BaseInputTypes = {
   label: string;
   type: string;
   placeholder: string;
 };
 
-const BaseInput = ({ label, type, placeholder }: BaseInputProps) => {
+const BaseInput = ({ label, type, placeholder }: BaseInputTypes) => {
   return (
     <div>
       <label className="flex flex-col gap-1">

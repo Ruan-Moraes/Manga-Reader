@@ -4,9 +4,10 @@ export type TitleTypes = {
   cover: string;
   title: string;
   synopsis: string;
-  chapters: string;
-  popularity: number | string;
-  score: number | string;
+  genres: string[] | string;
+  chapters: string[] | string;
+  popularity: string;
+  score: string;
   author: string;
   artist: string;
   publisher: string;

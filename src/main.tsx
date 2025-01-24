@@ -7,14 +7,17 @@ import {
 } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import './main.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import AppLayout from './components/app-layout/AppLayout.tsx';
 import Home from './routes/home/Home.tsx';
 import Titles from './routes/titles/Titles.tsx';
+import Chapter from './routes/chapter/Chapter.tsx';
 import Categories from './routes/categories/Categories.tsx';
 import Groups from './routes/groups/Groups.tsx';
 import News from './routes/news/News.tsx';
@@ -38,7 +41,11 @@ export const clearCache = (): void => {
     queryClient.resetQueries();
     localStorage.clear();
 
-    toast.success('Cache limpo com sucesso!');
+    toast.warning('Limpando cache!');
+
+    setTimeout(() => {
+      location.reload();
+    }, 750);
   } catch (error) {
     console.error('Erro ao limpar cache:', error);
   }
@@ -71,7 +78,7 @@ const routes = createBrowserRouter([
       },
       {
         path: 'titles/:title/:chapter',
-        element: <Titles />,
+        element: <Chapter />,
       },
       {
         path: 'categories',
@@ -130,6 +137,7 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={routes} />
       <Toast />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </StrictMode>
 );

@@ -1,41 +1,42 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import clsx from 'clsx';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import UseFetchArtWork from '../../../hooks/useFetchArtWork';
+import UseFetchTitle from '../../../hooks/useFetchTitle';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 import ButtonHighLight from '../../buttons/RaisedButton';
 
 const CardsContainer = ({
-  queryKey,
   url,
   validTime,
   title,
   subTitle,
 }: CardsContainerTypes) => {
-  const { data, status } = UseFetchArtWork(queryKey, url, validTime);
-
   const navigate = useNavigate();
+
+  const { data, status } = UseFetchTitle(url, validTime);
   const [visible, setVisible] = useState(10);
 
   const allChildren = useMemo(() => {
-    if (status === 'success' && Array.isArray(data) && data.length > 0) {
-      return data.map(({ id, type, cover, title, chapters, updatedAt }) => (
-        <Card
-          id={id}
-          type={type}
-          cover={cover}
-          title={title}
-          chapters={chapters}
-          updatedAt={updatedAt}
-          key={id}
-        />
-      ));
+    if (status === 'success') {
+      return Object.values(data).map(
+        ({ id, type, cover, title, chapters, updatedAt }) => (
+          <Card
+            id={id}
+            type={type}
+            cover={cover}
+            title={title}
+            chapters={chapters}
+            updatedAt={updatedAt}
+            key={id}
+          />
+        )
+      );
     }
 
     if (status === 'pending') {
@@ -49,13 +50,13 @@ const CardsContainer = ({
     ));
   }, [data, status]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (visible >= allChildren.length) {
       navigate('/Manga-Reader/categories?sort=most_recent&status=all');
     } else {
       setVisible((prev) => prev + 10);
     }
-  };
+  }, [visible, allChildren.length, navigate]);
 
   return (
     <section className="flex flex-col gap-4">
@@ -65,7 +66,7 @@ const CardsContainer = ({
         subLink="/categories?sort=most_recent&status=all"
       />
       <div
-        className={clsx('grid gap-4', {
+        className={clsx('grid gap-x-2 gap-y-4', {
           'grid-cols-2': status === 'success' || status === 'pending',
           'grid-cols-1': status === 'error',
         })}

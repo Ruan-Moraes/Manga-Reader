@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
-type BlurProps = {
+type BlurTypes = {
   isOpen: boolean;
   onChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Blur = ({ isOpen, onChange }: BlurProps) => {
+const Blur = ({ isOpen, onChange }: BlurTypes) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';

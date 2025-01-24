@@ -1,9 +1,9 @@
-type ParagraphProps = {
+type ParagraphTypes = {
   title?: string;
   paragraphContent: { text: string }[];
 };
 
-const Paragraph = ({ title, paragraphContent }: ParagraphProps) => {
+const Paragraph = ({ title, paragraphContent }: ParagraphTypes) => {
   return (
     <div className={title ? 'flex flex-col gap-2' : ''}>
       {title && (

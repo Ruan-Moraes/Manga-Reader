@@ -1,13 +1,12 @@
 import { useMemo, useRef, useEffect } from 'react';
-import useFetchArtWork from '../../../hooks/useFetchArtWork';
+import UseFetchTitle from '../../../hooks/useFetchTitle';
 
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
 import Carousel from './Carousel';
 import CustomLinkBase from './../../links/elements/CustomLinkBase';
 
-type CarouselContainerProps = {
-  queryKey: string;
+type CarouselContainerTypes = {
   url: string;
   validTime?: number;
   title?: string;
@@ -15,13 +14,12 @@ type CarouselContainerProps = {
 };
 
 const CarouselContainer = ({
-  queryKey,
   url,
   validTime,
   title,
   subTitle,
-}: CarouselContainerProps) => {
-  const { data, status } = useFetchArtWork(queryKey, url, validTime);
+}: CarouselContainerTypes) => {
+  const { data, status } = UseFetchTitle(url, validTime);
 
   const splideRef = useRef<Splide>(null);
 
@@ -39,7 +37,7 @@ const CarouselContainer = ({
   }, [data]);
 
   const allChildren = useMemo(() => {
-    if (status === 'success' && Array.isArray(data) && data.length > 0) {
+    if (status === 'success') {
       return (
         <Splide
           options={{
@@ -58,13 +56,13 @@ const CarouselContainer = ({
           }}
           ref={splideRef}
         >
-          {data.map(({ id, title, cover, synopsis }) => (
+          {Object.values(data).map(({ id, title, cover, synopsis }) => (
             <Carousel
+              key={id}
               id={id}
               title={title}
               cover={cover}
               synopsis={synopsis}
-              key={id}
             />
           ))}
         </Splide>

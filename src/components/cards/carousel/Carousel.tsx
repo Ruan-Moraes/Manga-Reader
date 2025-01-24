@@ -5,7 +5,7 @@ import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 import { SplideSlide } from '@splidejs/react-splide';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
-type CarouselProps = Partial<
+type CarouselTypes = Partial<
   Omit<
     TitleTypes,
     | 'createdAt'
@@ -26,23 +26,23 @@ const Carousel = ({
   cover,
   title,
   synopsis,
-  isLoading,
   isError,
-}: CarouselProps) => {
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full p-4">
-        <p className="font-bold text-center text-tertiary">Carregando...</p>
-      </div>
-    );
-  }
-
+  isLoading,
+}: CarouselTypes) => {
   if (isError) {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="p-4 font-bold text-center text-quinary-default">
           Ocorreu um erro ao buscar os dados. Tente novamente mais tarde.
         </p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full p-4">
+        <p className="font-bold text-center text-tertiary">Carregando...</p>
       </div>
     );
   }
@@ -57,8 +57,8 @@ const Carousel = ({
           >
             <img
               alt={`Capa do título: ${title}`}
-              className="w-full h-full object-fit"
               src={cover}
+              className="w-full h-full object-fit"
             />
           </CustomLinkBase>
         </div>

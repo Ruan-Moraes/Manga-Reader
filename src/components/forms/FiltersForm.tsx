@@ -1,10 +1,10 @@
-type FiltersFormProps = {
+type FiltersFormTypes = {
   title: string;
   isGrid?: boolean;
   children: React.ReactNode;
 };
 
-const FiltersForm = ({ title, isGrid, children }: FiltersFormProps) => {
+const FiltersForm = ({ title, isGrid, children }: FiltersFormTypes) => {
   return (
     <>
       <section className="flex-col gap-4">

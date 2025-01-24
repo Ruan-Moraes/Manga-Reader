@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-type RadioInputProps<T> = {
+type RadioInputTypes<T> = {
   fieldName: string;
   onChange: (newValue: T) => void;
   defaultValue?: boolean;
@@ -17,7 +17,7 @@ const RadioInput = <T extends string | number | readonly string[] | undefined>({
   className,
   value,
   labelText,
-}: RadioInputProps<T>) => {
+}: RadioInputTypes<T>) => {
   const [searchParams] = useSearchParams();
 
   const inputRef = useRef<HTMLInputElement>(null);

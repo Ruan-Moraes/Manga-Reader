@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import LinksSection from '../components/links/sections/FooterLinksSection';
 
-type FooterProps = {
+type FooterTypes = {
   disabledLinks?: boolean;
 };
 
-const Footer = ({ disabledLinks }: FooterProps) => {
+const Footer = ({ disabledLinks }: FooterTypes) => {
   const getYear = useMemo(() => {
     return new Date().getFullYear();
   }, []);

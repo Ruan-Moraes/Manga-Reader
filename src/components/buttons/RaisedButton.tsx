@@ -1,9 +1,9 @@
-type RaisedButtonProps = {
+type RaisedButtonTypes = {
   onClick?: () => void;
   text: string;
 };
 
-const RaisedButton = ({ onClick, text }: RaisedButtonProps) => {
+const RaisedButton = ({ onClick, text }: RaisedButtonTypes) => {
   return (
     <button
       {...(onClick && { onClick })}

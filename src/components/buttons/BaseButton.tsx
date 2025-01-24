@@ -1,9 +1,9 @@
-type BaseButtonProps = {
+type BaseButtonTypes = {
   onClick?: () => void;
   text: string;
 };
 
-const BaseButton = ({ onClick, text }: BaseButtonProps) => {
+const BaseButton = ({ onClick, text }: BaseButtonTypes) => {
   return (
     <button
       {...(onClick && { onClick })}

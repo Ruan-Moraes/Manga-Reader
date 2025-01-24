@@ -2,7 +2,7 @@ import { COLORS } from '../../constants/COLORS';
 
 import CustomLinkBase from '../links/elements/CustomLinkBase';
 
-type WarningProps = {
+type WarningTypes = {
   linkText?: string;
   color: COLORS;
   title: string;
@@ -10,7 +10,10 @@ type WarningProps = {
   href?: string;
 };
 
-const Warning = ({ linkText, color, title, message, href }: WarningProps) => {
+const Warning = ({ linkText, color, title, message, href }: WarningTypes) => {
+  console.log(linkText);
+  console.log(href);
+
   return (
     <div
       className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
@@ -29,16 +32,15 @@ const Warning = ({ linkText, color, title, message, href }: WarningProps) => {
           <p>{message}</p>
         </div>
       </div>
-      {href ||
-        (linkText && (
-          <div className="text-center">
-            <CustomLinkBase
-              className={`text-sm text-${color}-default hover:text-${color}-normal`}
-              href={href || '/'}
-              text={linkText}
-            />
-          </div>
-        ))}
+      {href && (
+        <div className="text-center">
+          <CustomLinkBase
+            href={href || '/'}
+            className={`text-sm text-${color}-default hover:text-${color}-normal`}
+            text={linkText || 'Voltar'}
+          />
+        </div>
+      )}
     </div>
   );
 };

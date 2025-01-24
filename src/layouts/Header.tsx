@@ -5,12 +5,12 @@ import clsx from 'clsx';
 import SearchInput from '../components/inputs/SearchInput';
 import Menu from '../components/menu/Menu.tsx';
 
-type HeaderProps = {
+type HeaderTypes = {
   disabledAuth?: boolean;
   disabledSearch?: boolean;
 };
 
-const Header = ({ disabledAuth, disabledSearch }: HeaderProps) => {
+const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
   return (
     <header className={clsx('bg-secondary', {})}>
       {!disabledAuth && (
@@ -31,11 +31,7 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderProps) => {
       <nav className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
         <div>
           <h1>
-            <CustomLinkBase
-              className="text-2xl italic"
-              href=""
-              text="Manga Reader"
-            />
+            <CustomLinkBase className="text-2xl italic" text="Manga Reader" />
           </h1>
         </div>
         {!disabledSearch && <SearchInput />}

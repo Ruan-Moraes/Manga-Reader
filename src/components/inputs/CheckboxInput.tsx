@@ -1,12 +1,12 @@
 import CustomLinkBase from '../links/elements/CustomLinkBase';
 
-type CheckboxInputProps = {
+type CheckboxInputTypes = {
   labelText: string;
   href: string;
   linkText: string;
 };
 
-const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputProps) => {
+const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputTypes) => {
   return (
     <div>
       <label className="flex items-center gap-2 w-max">

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import useFetchArtWork from '../../../hooks/useFetchArtWork';
+import UseFetchTitle from '../../../hooks/useFetchTitle';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
@@ -8,22 +8,21 @@ import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 
 const CardsContainer = ({
-  queryKey,
   url,
   validTime,
   title,
   subTitle,
 }: CardsContainerTypes) => {
-  const { data, status } = useFetchArtWork(queryKey, url, validTime);
+  const { data, status } = UseFetchTitle(url, validTime);
 
   const allChildren = useMemo(() => {
-    if (status === 'success' && Array.isArray(data) && data.length > 0) {
-      return data.map(({ id, type, cover, title, chapters }) => (
+    if (status === 'success') {
+      return Object.values(data).map(({ id, type, cover, title, chapters }) => (
         <Card
-          chapters={chapters}
-          id={id}
-          cover={cover}
           key={id}
+          id={id}
+          chapters={chapters}
+          cover={cover}
           title={title}
           type={type}
         />

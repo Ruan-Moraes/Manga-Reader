@@ -2,8 +2,8 @@ import { useLocation, Link } from 'react-router-dom';
 
 import clsx from 'clsx';
 
-type CustomLinkBaseProps = {
-  href: string;
+type CustomLinkBaseTypes = {
+  href?: string;
   className?: string;
   inlineStyle?: React.CSSProperties;
   enabledColorWhenActive?: boolean;
@@ -12,13 +12,13 @@ type CustomLinkBaseProps = {
 };
 
 const CustomLinkBase = ({
-  href,
+  href = '/',
   className,
   inlineStyle,
   enabledColorWhenActive,
   text,
   children,
-}: CustomLinkBaseProps) => {
+}: CustomLinkBaseTypes) => {
   const isExternalLink = href.includes('http');
   const isActive = useLocation().pathname === `/Manga-Reader${href}`;
 

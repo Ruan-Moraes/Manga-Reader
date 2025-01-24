@@ -77,7 +77,7 @@ const Categories = () => {
       params.set('adult_content', selectedAdultContent);
     }
 
-    return `http://localhost:5000/titles?${params.toString()}`;
+    return `http://localhost:5000/search_title_by?${params.toString()}`;
   };
 
   console.log(createUrl());

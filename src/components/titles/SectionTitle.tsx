@@ -1,6 +1,6 @@
 import CustomLinkBase from '../links/elements/CustomLinkBase';
 
-type SectionTitleProps = {
+type SectionTitleTypes = {
   children?: React.ReactNode;
   titleStyleClasses?: string;
   title: string;
@@ -14,7 +14,7 @@ const SectionTitle = ({
   title,
   subTitle,
   subLink,
-}: SectionTitleProps) => {
+}: SectionTitleTypes) => {
   return (
     <div className={children ? 'flex flex-col gap-2' : ' flex flex-col'}>
       <div>

@@ -8,7 +8,7 @@ import { COLORS } from '../../../constants/COLORS';
 import Warning from '../../notifications/Warning';
 import CustomLinkBase from '../../links/elements/CustomLinkBase';
 
-type CardProps = Partial<
+type CardTypes = Partial<
   Omit<
     TitleTypes,
     | 'synopsis'
@@ -31,8 +31,10 @@ const Card = ({
   updatedAt = '...',
   isLoading,
   isError,
-}: CardProps) => {
+}: CardTypes) => {
   const updatedAtDate = useMemo(() => {
+    if (updatedAt === '...') return updatedAt;
+
     const date = new Date(updatedAt);
 
     return `${
@@ -46,55 +48,7 @@ const Card = ({
     }`;
   }, [updatedAt]);
 
-  const howManyChapters = useMemo(() => 3, []);
-  const lastThreeChapters = useMemo(
-    () => chapters?.split('/')?.slice(-howManyChapters) ?? [],
-    [chapters, howManyChapters]
-  );
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-start">
-        <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
-          <span className="font-bold">{type}</span>
-        </div>
-        <div className="flex flex-col w-full border rounded-sm rounded-tl-none border-tertiary">
-          <div className="flex items-center justify-center h-[11.625rem]">
-            <span className="font-bold text-tertiary">{cover}</span>
-          </div>
-          <div className="border-t border-t-tertiary">
-            <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
-              <span className="text-shadow-default">{title}</span>
-            </div>
-            <div className="flex flex-col px-2">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <p
-                  className={`flex items-center justify-between p-1 text-xs py-2 ${
-                    index < 2 ? 'border-b border-tertiary' : ''
-                  }`}
-                  key={index}
-                >
-                  <span>Capítulo:</span>
-                  <span className="flex items-center gap-2">
-                    {index === 0 ? (
-                      <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
-                        {updatedAt}
-                      </span>
-                    ) : (
-                      ''
-                    )}
-                    <span className="font-bold text-tertiary">
-                      <span>{chapters}</span>
-                    </span>
-                  </span>
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const chaptersReverse = [...chapters].reverse();
 
   if (isError) {
     return (
@@ -112,28 +66,36 @@ const Card = ({
         <span className="font-bold">{type}</span>
       </div>
       <div className="flex flex-col w-full border rounded-sm rounded-tl-none border-tertiary">
-        <div>
-          <CustomLinkBase href={`/titles/${id}`} className="block h-full">
-            <img
-              alt={`Capa do título: ${title}`}
-              className="spect-square h-[11.625rem] w-full object-cover"
-              src={cover}
-            />
-          </CustomLinkBase>
-        </div>
+        {isLoading && (
+          <div className="flex items-center justify-center h-44 mobile-md:h-56">
+            <span className="font-bold text-tertiary">{cover}</span>
+          </div>
+        )}
+        {!isLoading && (
+          <div>
+            <CustomLinkBase href={`/titles/${id}`} className="block h-full">
+              <img
+                alt={`Capa do título: ${title}`}
+                className="object-cover w-full h-44 mobile-md:h-56 spect-square"
+                src={cover}
+              />
+            </CustomLinkBase>
+          </div>
+        )}
         <div className="border-t border-t-tertiary">
-          <div className="px-2 py-0.5 text-sm font-bold text-center bg-tertiary">
-            <h3 className="truncate text-shadow-default">
-              <CustomLinkBase href={`/titles/${id}`} text={title} />
-            </h3>
+          <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
+            {isLoading && <span className="text-shadow-default">{title}</span>}
+            {!isLoading && (
+              <h3 className="overflow-x-auto text-nowrap text-shadow-default scrollbar-hidden">
+                <CustomLinkBase href={`/titles/${id}`} text={title} />
+              </h3>
+            )}
           </div>
           <div className="flex flex-col px-2">
-            {lastThreeChapters.map((chapter, index) => (
+            {Array.from({ length: 3 }).map((_, index) => (
               <p
                 className={`flex items-center justify-between p-1 text-xs py-2 ${
-                  index < lastThreeChapters.length - 1
-                    ? 'border-b border-tertiary'
-                    : ''
+                  index < 2 ? 'border-b border-tertiary' : ''
                 }`}
                 key={index}
               >
@@ -141,18 +103,22 @@ const Card = ({
                 <span className="hidden mobile-md:block">Capítulo:</span>
                 <span className="flex items-center gap-2">
                   {index === 0 ? (
-                    <span className="p-0.5 px-1 text-[0.5rem] rounded-sm bg-tertiary">
+                    <span className="px-1 text-[0.5rem] rounded-sm bg-tertiary">
                       {updatedAtDate}
                     </span>
                   ) : (
                     ''
                   )}
-                  <span className="font-bold text-shadow-highlight">
-                    <CustomLinkBase
-                      href={`/titles/${id}/${chapter}`}
-                      text={chapter}
-                    />
-                  </span>
+                  {isLoading ? (
+                    <span className="font-bold text-tertiary">{chapters}</span>
+                  ) : (
+                    <span className="font-bold text-shadow-highlight">
+                      <CustomLinkBase
+                        href={`/titles/${id}/${chaptersReverse[index]}`}
+                        text={chaptersReverse[index]}
+                      />
+                    </span>
+                  )}
                 </span>
               </p>
             ))}

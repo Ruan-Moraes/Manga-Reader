@@ -13,6 +13,7 @@ const Groups = () => {
           color={COLORS.QUATERNARY}
           title="Em construção"
           message="Essa página ainda está em construção. Por favor, volte mais tarde."
+          href="/"
         />
       </Main>
     </>
