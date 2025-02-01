@@ -9,7 +9,9 @@ const Blur = ({ isOpen, onChange }: BlurTypes) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
+    }
+
+    if (!isOpen) {
       document.body.style.overflow = 'auto';
     }
 

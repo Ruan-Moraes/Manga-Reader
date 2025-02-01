@@ -139,7 +139,7 @@ const Categories = () => {
             fieldName="sort"
             onChange={handleSortChange}
             value="alphabetical"
-            labelText="Ordem Alfabética"
+            labelText="Alfabética"
           />
         </FiltersForm>
         <FiltersForm isGrid={true} title="Status">
@@ -152,7 +152,6 @@ const Categories = () => {
           <RadioInput
             fieldName="status"
             onChange={handleStatusChange}
-            defaultValue={true}
             value="ongoing"
             labelText="Em andamento"
           />
@@ -171,6 +170,7 @@ const Categories = () => {
           <RadioInput
             className="col-span-full"
             fieldName="status"
+            defaultValue={true}
             onChange={handleStatusChange}
             value="all"
             labelText="Todos"

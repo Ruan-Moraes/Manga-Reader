@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import Main from '../../layouts/Main';
 
-import ParagraphsSection from '../../components/sections/ParagraphsSection';
+import ParagraphBlock from '../../components/paragraph/sections/ParagraphBlock';
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';
 
@@ -11,7 +11,7 @@ const AboutUs = () => {
     <>
       <Header disabledSearch={true} />
       <Main>
-        <ParagraphsSection>
+        <ParagraphBlock>
           <SectionTitle titleStyleClasses="text-lg" title="Quem Somos?" />
           <Paragraph
             paragraphContent={[
@@ -43,7 +43,7 @@ const AboutUs = () => {
               },
             ]}
           />
-        </ParagraphsSection>
+        </ParagraphBlock>
       </Main>
       <Footer />
     </>

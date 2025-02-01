@@ -53,7 +53,9 @@ const CardsContainer = ({
   const handleClick = useCallback(() => {
     if (visible >= allChildren.length) {
       navigate('/Manga-Reader/categories?sort=most_recent&status=all');
-    } else {
+    }
+
+    if (visible < allChildren.length) {
       setVisible((prev) => prev + 10);
     }
   }, [visible, allChildren.length, navigate]);

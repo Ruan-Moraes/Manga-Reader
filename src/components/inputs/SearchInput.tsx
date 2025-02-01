@@ -3,21 +3,21 @@ import { IoSearchSharp } from 'react-icons/io5';
 const SearchInput = () => {
   return (
     <div className="w-full">
-      <form className="flex gap-3" role="search">
-        <input
-          aria-label="Search"
-          className="w-full p-2 truncate transition-shadow duration-300 border-none rounded-sm outline-none appearance-none bg-tertiary placeholder-primary-default placeholder:text-sm shadow-default focus:shadow-inside hover:shadow-inside"
-          name="search"
-          placeholder="Pesquisar por obras, autores, gêneros..."
-          type="Search"
-        />
-        <div className="flex justify-end">
-          <button
-            className="px-4 py-2 transition-shadow duration-300 rounded-sm bg-tertiary shadow-default focus:shadow-inside hover:shadow-inside"
-            type="submit"
-          >
-            <IoSearchSharp size={20} />
-          </button>
+      <form role="search">
+        <div className="flex items-center h-10 px-4 transition-shadow duration-300 rounded-sm bg-tertiary shadow-default focus:shadow-inside hover:shadow-inside">
+          <input
+            name="search"
+            type="Search"
+            aria-label="Search"
+            placeholder="Pesquisar por obras, autores, gêneros..."
+            className="w-full truncate bg-transparent border-none outline-none appearance-none placeholder-primary-default placeholder:text-sm grow"
+          />
+          <div className="flex items-center justify-center">
+            <div className="w-[0.0625rem] h-[1.875rem] bg-secondary"></div>
+            <button type="submit" className="pl-4">
+              <IoSearchSharp size={24} />
+            </button>
+          </div>
         </div>
       </form>
     </div>

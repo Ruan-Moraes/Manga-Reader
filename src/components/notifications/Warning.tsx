@@ -1,6 +1,6 @@
 import { COLORS } from '../../constants/COLORS';
 
-import CustomLinkBase from '../links/elements/CustomLinkBase';
+import CustomLink from '../links/elements/CustomLink';
 
 type WarningTypes = {
   linkText?: string;
@@ -11,9 +11,6 @@ type WarningTypes = {
 };
 
 const Warning = ({ linkText, color, title, message, href }: WarningTypes) => {
-  console.log(linkText);
-  console.log(href);
-
   return (
     <div
       className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
@@ -34,7 +31,7 @@ const Warning = ({ linkText, color, title, message, href }: WarningTypes) => {
       </div>
       {href && (
         <div className="text-center">
-          <CustomLinkBase
+          <CustomLink
             href={href || '/'}
             className={`text-sm text-${color}-default hover:text-${color}-normal`}
             text={linkText || 'Voltar'}

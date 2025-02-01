@@ -1,4 +1,4 @@
-import CustomLinkBase from '../links/elements/CustomLinkBase';
+import CustomLink from '../links/elements/CustomLink';
 
 type CheckboxInputTypes = {
   labelText: string;
@@ -36,7 +36,7 @@ const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputTypes) => {
         <p className="text-sm cursor-pointer">
           <span>{labelText}</span>{' '}
           <span>
-            <CustomLinkBase
+            <CustomLink
               href={href}
               className="font-bold underline"
               text={linkText}

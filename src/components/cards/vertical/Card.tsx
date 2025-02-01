@@ -6,7 +6,7 @@ import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
-import CustomLinkBase from '../../links/elements/CustomLinkBase';
+import CustomLink from '../../links/elements/CustomLink';
 
 type CardTypes = Partial<
   Omit<
@@ -73,13 +73,13 @@ const Card = ({
         )}
         {!isLoading && (
           <div>
-            <CustomLinkBase href={`/titles/${id}`} className="block h-full">
+            <CustomLink href={`/titles/${id}`} className="block h-full">
               <img
                 alt={`Capa do título: ${title}`}
                 className="object-cover w-full h-44 mobile-md:h-56 spect-square"
                 src={cover}
               />
-            </CustomLinkBase>
+            </CustomLink>
           </div>
         )}
         <div className="border-t border-t-tertiary">
@@ -87,7 +87,7 @@ const Card = ({
             {isLoading && <span className="text-shadow-default">{title}</span>}
             {!isLoading && (
               <h3 className="overflow-x-auto text-nowrap text-shadow-default scrollbar-hidden">
-                <CustomLinkBase href={`/titles/${id}`} text={title} />
+                <CustomLink href={`/titles/${id}`} text={title} />
               </h3>
             )}
           </div>
@@ -113,7 +113,7 @@ const Card = ({
                     <span className="font-bold text-tertiary">{chapters}</span>
                   ) : (
                     <span className="font-bold text-shadow-highlight">
-                      <CustomLinkBase
+                      <CustomLink
                         href={`/titles/${id}/${chaptersReverse[index]}`}
                         text={chaptersReverse[index]}
                       />

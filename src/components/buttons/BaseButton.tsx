@@ -3,6 +3,7 @@ type BaseButtonTypes = {
   text: string;
 };
 
+// Todo: Refactor this component 
 const BaseButton = ({ onClick, text }: BaseButtonTypes) => {
   return (
     <button

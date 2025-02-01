@@ -1,10 +1,11 @@
 import { useMemo, useRef, useEffect } from 'react';
-import UseFetchTitle from '../../../hooks/useFetchTitle';
-
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
+
+import UseFetchTitle from '../../../hooks/useFetchTitle';
+
 import Carousel from './Carousel';
-import CustomLinkBase from './../../links/elements/CustomLinkBase';
+import CustomLink from '../../links/elements/CustomLink';
 
 type CarouselContainerTypes = {
   url: string;
@@ -80,7 +81,7 @@ const CarouselContainer = ({
     <section className="flex flex-col items-start">
       <div className="px-4 py-2 rounded-t-sm bg-tertiary">
         <h2 className="flex flex-col items-center text-center">
-          <CustomLinkBase
+          <CustomLink
             href="/categories?sort=most_read&status=all"
             text={title}
             className="text-shadow-default"

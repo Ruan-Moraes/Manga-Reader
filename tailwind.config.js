@@ -7,6 +7,11 @@ export default {
     'border-quaternary-default',
     'border-quinary-default',
     'text-quinary-default',
+    'ml-2',
+    'ml-4',
+    'ml-6',
+    'ml-8',
+    'ml-10',
   ],
   theme: {
     extend: {
@@ -37,6 +42,7 @@ export default {
         },
       },
       boxShadow: {
+        black: '0 0 2rem 0.25rem #161616bf',
         default: '0.25rem 0.25rem 0 0 #ddda2a40',
         inside: '0 0 0.075rem 0.25rem #ddda2a40',
         elevated: '-0.25rem 0.25rem 0 0 #ddda2a40',

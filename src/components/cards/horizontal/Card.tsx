@@ -6,7 +6,7 @@ import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
-import CustomLinkBase from '../../links/elements/CustomLinkBase';
+import CustomLink from '../../links/elements/CustomLink';
 
 type CardTypes = Partial<
   Omit<
@@ -68,24 +68,28 @@ const Card = ({
           </span>
         )}
         {!isLoading && (
-          <CustomLinkBase href={`/titles/${id}`} className="block h-full">
+          <CustomLink href={`/titles/${id}`} className="block h-full">
             <img
               alt={`Capa do título: ${title}`}
               className="object-cover w-full h-full"
               src={cover}
             />
-          </CustomLinkBase>
+          </CustomLink>
         )}
       </div>
       <div className="w-[20rem] px-2 py-1 rounded-b-sm bg-tertiary">
         {isLoading && (
-          <span className="block font-bold text-center truncate text-shadow-default">
+          <span className="block font-bold text-center text-shadow-default">
             {title}
           </span>
         )}
         {!isLoading && (
-          <h3 className="font-bold text-center truncate text-shadow-default">
-            <CustomLinkBase href={`/titles/${id}`} text={title} />
+          <h3 className="overflow-x-auto text-center text-nowrap">
+            <CustomLink
+              href={`/titles/${id}`}
+              text={title}
+              className="text-shadow-default"
+            />
           </h3>
         )}
       </div>

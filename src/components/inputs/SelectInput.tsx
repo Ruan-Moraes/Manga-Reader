@@ -77,7 +77,8 @@ const SelectInput = ({
           styles={{
             control: (baseStyles, state) => ({
               ...baseStyles,
-              padding: '0.5rem',
+              padding: '0 0.5rem',
+              height: '2.5rem',
               backgroundColor: '#727273',
               borderRadius: '0.125rem',
               border: 'none',

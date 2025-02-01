@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import ParagraphsSection from '../../components/sections/ParagraphsSection';
+import ParagraphBlock from '../../components/paragraph/sections/ParagraphBlock';
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';
 
@@ -11,7 +11,7 @@ const TermsOfUse = () => {
     <>
       <Header disabledSearch={true} />
       <Main>
-        <ParagraphsSection>
+        <ParagraphBlock>
           <SectionTitle
             titleStyleClasses="text-lg"
             title="Termos de uso e Políticas de privacidade"
@@ -69,7 +69,7 @@ const TermsOfUse = () => {
               },
             ]}
           />
-        </ParagraphsSection>
+        </ParagraphBlock>
       </Main>
       <Footer />
     </>

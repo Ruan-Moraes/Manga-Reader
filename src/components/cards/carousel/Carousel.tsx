@@ -1,9 +1,10 @@
+// @ts-expect-error - ignore import error
+import { SplideSlide } from '@splidejs/react-splide';
+
 import { TitleTypes } from '../../../types/TitleTypes';
 import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
-// @ts-expect-error - ignore import error
-import { SplideSlide } from '@splidejs/react-splide';
-import CustomLinkBase from '../../links/elements/CustomLinkBase';
+import CustomLink from '../../links/elements/CustomLink';
 
 type CarouselTypes = Partial<
   Omit<
@@ -51,7 +52,7 @@ const Carousel = ({
     <SplideSlide>
       <div className="relative h-full">
         <div className="h-full">
-          <CustomLinkBase
+          <CustomLink
             href={`/titles/${id}`}
             className="block h-full cursor-default"
           >
@@ -60,7 +61,7 @@ const Carousel = ({
               src={cover}
               className="w-full h-full object-fit"
             />
-          </CustomLinkBase>
+          </CustomLink>
         </div>
         <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-80">
           <h3
@@ -71,7 +72,7 @@ const Carousel = ({
               WebkitBoxOrient: 'vertical',
             }}
           >
-            <CustomLinkBase href={`/titles/${id}`} text={title} />
+            <CustomLink href={`/titles/${id}`} text={title} />
           </h3>
           <p
             className="overflow-hidden text-xs text-shadow-default"

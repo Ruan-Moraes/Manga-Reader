@@ -1,4 +1,4 @@
-import CustomLinkBase from '../components/links/elements/CustomLinkBase';
+import CustomLink from '../components/links/elements/CustomLink.tsx';
 
 import clsx from 'clsx';
 
@@ -15,13 +15,13 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
     <header className={clsx('bg-secondary', {})}>
       {!disabledAuth && (
         <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
-          <CustomLinkBase
+          <CustomLink
             enabledColorWhenActive={true}
             href="/sign-up"
             text="Sing up"
           />
           <span className="font-bold">|</span>
-          <CustomLinkBase
+          <CustomLink
             enabledColorWhenActive={true}
             href="/login"
             text="Login"
@@ -31,7 +31,7 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
       <nav className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
         <div>
           <h1>
-            <CustomLinkBase className="text-2xl italic" text="Manga Reader" />
+            <CustomLink className="text-2xl italic" text="Manga Reader" />
           </h1>
         </div>
         {!disabledSearch && <SearchInput />}

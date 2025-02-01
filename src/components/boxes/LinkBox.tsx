@@ -1,14 +1,31 @@
+import React, { useCallback, useRef } from 'react';
+
+import CustomLink from '../links/elements/CustomLink';
+
 type LinkBoxTypes = {
-  children: React.ReactNode;
+  children: React.ReactElement;
   className?: string;
 };
 
 const LinkBox = ({ children, className }: LinkBoxTypes) => {
+  const childRef = useRef<HTMLAnchorElement>(null);
+
+  const handleClick = useCallback(() => {
+    if (childRef.current) {
+      childRef.current.click();
+    }
+  }, []);
+
+  if (children.type !== CustomLink) {
+    throw new Error('LinkBox children must be of type CustomLink');
+  }
+
   return (
     <div
-      className={`text-center duration-300 border rounded-sm bg-secondary border-tertiary hover:bg-quaternary-opacity-50 ${className}`}
+      onClick={handleClick}
+      className={`text-center flex items-center justify-center relative h-10 duration-300 border rounded-sm bg-secondary border-tertiary hover:bg-quaternary-opacity-25 ${className}`}
     >
-      {children}
+      {React.cloneElement(children, { ref: childRef })}
     </div>
   );
 };

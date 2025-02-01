@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import LinksSection from '../components/links/sections/FooterLinksSection';
+import LinksSection from '../components/links/sections/FooterLinkBlock';
 
 type FooterTypes = {
   disabledLinks?: boolean;
@@ -36,7 +36,7 @@ const Footer = ({ disabledLinks }: FooterTypes) => {
             ]}
           />
           <LinksSection
-            className="col-span-6 col-start-2 "
+            className="col-span-6 col-start-2"
             title="Outros links"
             links={[
               {

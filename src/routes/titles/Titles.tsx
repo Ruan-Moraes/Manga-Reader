@@ -10,7 +10,8 @@ import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
 import Card from '../../components/cards/title/Card';
-// import BaseButton from './../../components/buttons/BaseButton';
+// import CommentsList from '../../components/comments/CommentsList';
+import Comment from '../../components/comments/Comment';
 
 import { BsBookmark } from 'react-icons/bs';
 import { AiOutlineLike } from 'react-icons/ai';
@@ -33,19 +34,22 @@ const Titles = () => {
     return titles[Number(id)];
   }, []);
 
-  // const getTitleFromAPI = useCallback((id: string) => {}, []);
+  // Todo: Implementar a função abaixo
+  const getTitleFromAPI = useCallback((id: string) => {
+    console.log('fetching title from API' + id);
+  }, []);
 
   const getTitle = useCallback(
     (id: string) => {
       const title = getTitleFromCache(id);
 
       if (!title) {
-        // TODO: fetch titles from API
+        getTitleFromAPI(id);
       }
 
       return title;
     },
-    [getTitleFromCache]
+    [getTitleFromCache, getTitleFromAPI]
   );
 
   const {
@@ -60,7 +64,7 @@ const Titles = () => {
     author,
     artist,
     publisher,
-  } = getTitle(id);
+  } = getTitle(id) || {};
 
   return (
     <>
@@ -101,7 +105,7 @@ const Titles = () => {
             </div>
           </div>
         </section>
-        <div className="flex flex-col gap-4">
+        <section className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <div>
               <h3 className="text-xl font-bold leading-none text-shadow-default">
@@ -616,27 +620,176 @@ const Titles = () => {
           </div>
           <div className="flex flex-col gap-2">
             <div>
-              <ul className="flex text-center rounded-sm bg-secondary">
-                <li className="p-1 border rounded-l-sm border-tertiary grow bg-quaternary-opacity-50 text-shadow-default">
+              <ul className="flex text-center rounded-sm">
+                <li className="p-1 font-bold border rounded-l-sm border-tertiary grow bg-quaternary-opacity-50 text-shadow-default">
                   1
                 </li>
-                <li className="p-1 border border-tertiary grow ">2</li>
-                <li className="p-1 border border-tertiary grow">3</li>
-                <li className="p-1 border border-tertiary grow ">4</li>
-                <li className="p-1 border border-tertiary grow">5</li>
-                <li className="p-1 border border-tertiary grow">6</li>
-                <li className="p-1 border rounded-r-sm border-tertiary grow">
+                <li className="p-1 border border-tertiary grow bg-secondary">
+                  2
+                </li>
+                <li className="p-1 border border-tertiary grow bg-secondary">
+                  3
+                </li>
+                <li className="p-1 border border-tertiary grow bg-secondary">
+                  4
+                </li>
+                <li className="p-1 border border-tertiary grow bg-secondary">
+                  5
+                </li>
+                <li className="p-1 border border-tertiary grow bg-secondary">
+                  6
+                </li>
+                <li className="p-1 border rounded-r-sm border-tertiary grow bg-secondary">
                   32
                 </li>
               </ul>
             </div>
             <div className="text-center">
               <p className="text-sm">
-                Página <span>1</span> de <span>32</span>
+                Página <span className="font-bold">1</span> de{' '}
+                <span className="font-bold">32</span>
               </p>
             </div>
           </div>
-        </div>
+        </section>
+        <section>
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <div>
+                <h3 className="text-xl font-bold">Comentários</h3>
+              </div>
+              <div>
+                <form>
+                  <textarea
+                    className="w-full p-2 text-xs border rounded-sm bg-secondary border-tertiary"
+                    placeholder="Gostou ou não gostou? Deixe sua opinião sobre essa obra :)"
+                    rows={5}
+                  ></textarea>
+                </form>
+              </div>
+              <div>
+                <button className="px-8 py-2 text-sm font-bold border rounded-sm bg-secondary border-tertiary">
+                  Enviar
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col -mt-4">
+              <Comment
+                isOwner
+                isHighlighted
+                isModerator
+                userName="Usuário de alta periculosidade"
+                userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isMember
+                nestedLevel={1}
+                wasEdited
+                userName="Naruto Uzumaki"
+                userPhoto="https://storage.googleapis.com/pod_public/1300/207360.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                userName="Sasuke Uchiha"
+                nestedLevel={1}
+                userPhoto="https://boo-prod.b-cdn.net/database/profiles/16779658133692cab7e879edd111139eefe3687a5e51c.jpg?class=sm"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
+              />
+              <Comment
+                isMember
+                userName="Naruto Uzumaki"
+                userPhoto="https://storage.googleapis.com/pod_public/1300/207360.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isModerator
+                nestedLevel={1}
+                userName="Usuário de alta periculosidade"
+                userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isMember
+                nestedLevel={2}
+                userName="Hinata Hyuga"
+                userPhoto="https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isOwner
+                nestedLevel={3}
+                isModerator
+                userName="Usuário de alta periculosidade"
+                userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isOwner
+                nestedLevel={4}
+                isModerator
+                userName="Usuário de alta periculosidade"
+                userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isOwner
+                nestedLevel={4}
+                isModerator
+                userName="Usuário de alta periculosidade"
+                userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                isOwner
+                nestedLevel={3}
+                isModerator
+                userName="Usuário de alta periculosidade"
+                userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                userName="Sakura Haruno"
+                nestedLevel={1}
+                userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+              />
+              <Comment
+                userName="Sakura Haruno"
+                nestedLevel={1}
+                userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
+                date={new Date()}
+              />
+              <Comment
+                isMember
+                nestedLevel={2}
+                userName="Hinata Hyuga"
+                userPhoto="https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp"
+                date={new Date()}
+                image="https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg"
+              />
+              <Comment
+                userName="Sakura Haruno"
+                nestedLevel={3}
+                userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
+                date={new Date()}
+                text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
+                image="https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png"
+              />
+            </div>
+          </div>
+        </section>
       </Main>
       <Footer />
     </>

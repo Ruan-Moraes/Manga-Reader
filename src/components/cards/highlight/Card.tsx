@@ -5,9 +5,9 @@ import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
 import { COLORS } from '../../../constants/COLORS';
 
-import TitleDetails from '../../informations/TitleDetails';
 import Warning from '../../notifications/Warning';
-import CustomLinkBase from '../../links/elements/CustomLinkBase';
+import TitleDetails from '../../informations/TitleDetails';
+import CustomLink from '../../links/elements/CustomLink';
 
 type CardTypes = Partial<Omit<TitleTypes, 'createdAt' | 'updatedAt'>> &
   StatusFetchTypes;
@@ -95,13 +95,13 @@ const Card = ({
             className="flex flex-col w-2/4 overflow-hidden border rounded-sm rounded-tl-none border-tertiary"
           >
             <div className="h-44 mobile-md:h-56">
-              <CustomLinkBase href={`/titles/${id}`} className="h-full">
+              <CustomLink href={`/titles/${id}`} className="h-full">
                 <img
                   alt={`Capa do título: ${title}`}
                   src={cover}
                   className="object-cover w-full h-full aspect-square"
                 />
-              </CustomLinkBase>
+              </CustomLink>
             </div>
             <TitleDetails
               {...{

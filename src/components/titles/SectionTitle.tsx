@@ -1,4 +1,4 @@
-import CustomLinkBase from '../links/elements/CustomLinkBase';
+import CustomLink from '../links/elements/CustomLink';
 
 type SectionTitleTypes = {
   children?: React.ReactNode;
@@ -33,7 +33,7 @@ const SectionTitle = ({
           )}
           {subTitle && subLink && (
             <p className="text-xs text-quaternary-default">
-              <CustomLinkBase href={subLink} text={subTitle} />
+              <CustomLink href={subLink} text={subTitle} />
             </p>
           )}
         </div>

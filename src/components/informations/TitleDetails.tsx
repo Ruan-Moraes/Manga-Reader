@@ -3,11 +3,11 @@ import { useMemo } from 'react';
 import { TitleTypes } from '../../types/TitleTypes';
 import { StatusFetchTypes } from '../../types/StatusFetchTypes';
 
-import CustomLinkBase from '../links/elements/CustomLinkBase';
+import CustomLink from '../links/elements/CustomLink';
 
 type TitleDetailsTypes = Partial<
   Omit<TitleTypes, 'cover' | 'synopsis' | 'genres' | 'createdAt' | 'updatedAt'>
-> & { disableType: boolean } & StatusFetchTypes;
+> & { disableType?: boolean } & StatusFetchTypes;
 
 const TitleDetails = ({
   id,
@@ -36,7 +36,7 @@ const TitleDetails = ({
           <span className="text-shadow-default">{title}</span>
         ) : (
           <h3 className="overflow-x-auto scrollbar-hidden">
-            <CustomLinkBase
+            <CustomLink
               href={`/titles/${id}`}
               text={title}
               className="text-nowrap text-shadow-default"

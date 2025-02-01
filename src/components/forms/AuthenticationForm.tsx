@@ -1,4 +1,4 @@
-import CustomLinkBase from '../links/elements/CustomLinkBase';
+import CustomLink from '../links/elements/CustomLink';
 
 type AuthenticationFormTypes = {
   onFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -33,7 +33,7 @@ const AuthenticationForm = ({
         <div>
           <p className="text-sm text-center text-tertiary-default">
             {helperText}{' '}
-            <CustomLinkBase href={href} className="underline" text={hrefText} />
+            <CustomLink href={href} className="underline" text={hrefText} />
           </p>
         </div>
       )}
