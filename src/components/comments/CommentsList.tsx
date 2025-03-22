@@ -1,4 +1,4 @@
-// import { useState } from 'react';
+import { useCallback } from 'react';
 
 import Comment from './Comment';
 import UserModal from '../user/UserModal';
@@ -21,9 +21,15 @@ const CommentsList = () => {
   // const [comments, setComments] = useState<CommentProps[]>([]);
 
   // Todo: Fetch comments from the server
-  // const getComments = async () => {
+  // const fetchComments = async () => {
   //
   // };
+
+  const handleClickProfile = () => {
+    console.log('Clicou no perfil');
+
+    return 'executou';
+  };
 
   return (
     <div className="flex flex-col -mt-4">
@@ -36,6 +42,7 @@ const CommentsList = () => {
         userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isMember
@@ -45,6 +52,7 @@ const CommentsList = () => {
         userPhoto="https://storage.googleapis.com/pod_public/1300/207360.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         userName="Sasuke Uchiha"
@@ -52,6 +60,7 @@ const CommentsList = () => {
         userPhoto="https://boo-prod.b-cdn.net/database/profiles/16779658133692cab7e879edd111139eefe3687a5e51c.jpg?class=sm"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isMember
@@ -59,6 +68,7 @@ const CommentsList = () => {
         userPhoto="https://storage.googleapis.com/pod_public/1300/207360.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isModerator
@@ -67,6 +77,7 @@ const CommentsList = () => {
         userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isMember
@@ -75,6 +86,7 @@ const CommentsList = () => {
         userPhoto="https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isOwner
@@ -84,6 +96,7 @@ const CommentsList = () => {
         userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isOwner
@@ -93,6 +106,7 @@ const CommentsList = () => {
         userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isOwner
@@ -102,6 +116,7 @@ const CommentsList = () => {
         userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isOwner
@@ -111,6 +126,7 @@ const CommentsList = () => {
         userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         userName="Sakura Haruno"
@@ -118,12 +134,14 @@ const CommentsList = () => {
         userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+        onClickProfile={handleClickProfile}
       />
       <Comment
         userName="Sakura Haruno"
         nestedLevel={1}
         userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
         date={new Date()}
+        onClickProfile={handleClickProfile}
       />
       <Comment
         isMember
@@ -132,6 +150,7 @@ const CommentsList = () => {
         userPhoto="https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp"
         date={new Date()}
         image="https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg"
+        onClickProfile={handleClickProfile}
       />
       <Comment
         userName="Sakura Haruno"
@@ -140,6 +159,7 @@ const CommentsList = () => {
         date={new Date()}
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
         image="https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png"
+        onClickProfile={handleClickProfile}
       />
     </div>
   );

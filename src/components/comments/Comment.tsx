@@ -5,32 +5,40 @@ import clsx from 'clsx';
 
 type CommentProps = {
   nestedLevel?: 0 | 1 | 2 | 3 | 4;
+
   isOwner?: boolean;
   isHighlighted?: boolean;
   isModerator?: boolean;
   isMember?: boolean;
   wasEdited?: boolean;
+
   userName: string;
   userPhoto: string;
   date: Date;
   text?: string;
   image?: string;
+
+  onClickProfile: () => void;
 };
 
 const Comment = ({
   nestedLevel = 0,
+
   isOwner,
   isHighlighted,
   isModerator,
   isMember,
   wasEdited,
+
   userName,
   userPhoto,
   date,
   text,
   image,
+
+  onClickProfile,
 }: CommentProps) => {
-  const treatDate = useCallback((date: Date) => {
+  const treatDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: 'numeric',
@@ -40,31 +48,33 @@ const Comment = ({
     };
 
     return new Intl.DateTimeFormat('pt-BR', options).format(date);
-  }, []);
-
-  const nestedComment: {
-    [key: number]: number;
-  } = {
-    0: 0,
-    1: 8,
-    2: 24,
-    3: 40,
-    4: 56,
   };
 
-  const nestedBorder: {
-    [key: number]: number;
-  } = {
-    0: -8,
-    1: -24,
-    2: -40,
-    3: -56,
-    4: -72,
+  console.log(onClickProfile);
+
+  const calculateNastedComment = (nestedLevel: number) => {
+    if (nestedLevel === 0) {
+      return 0;
+    }
+
+    if (nestedLevel === 1) {
+      return 8;
+    }
+
+    return nestedLevel * 8 + 8 * (nestedLevel - 1);
   };
 
-  // const handleClickProfile = useCallback(() => {
-  //   setIsModalOpen((prev) => !prev);
-  // }, []);
+  const calculateNestedBorder = (index: number) => {
+    if (index === 0) {
+      return -8;
+    }
+
+    if (index === 1) {
+      return -24;
+    }
+
+    return -(index * 8 + 8 * (index + 1));
+  };
 
   if (!text && !image) {
     return null;
@@ -72,7 +82,7 @@ const Comment = ({
 
   return (
     <div
-      style={{ marginLeft: nestedComment[nestedLevel] + 'px' }}
+      style={{ marginLeft: calculateNastedComment(nestedLevel) + 'px' }}
       className={clsx({
         [`relative`]: nestedLevel > 0,
       })}
@@ -83,7 +93,7 @@ const Comment = ({
             key={index}
             className="absolute h-full border-l border-quaternary-opacity-25"
             style={{
-              left: nestedBorder[index] + 'px',
+              left: calculateNestedBorder(index) + 'px',
             }}
           ></div>
         ))}
@@ -123,7 +133,11 @@ const Comment = ({
           {/* Foto do usuário */}
           <div className="w-16 h-16 rounded-sm shrink-0">
             <img
-              // onClick={handleClickProfile}
+              onClick={() => {
+                console.log('Foto do usuário clicada');
+
+                onClickProfile();
+              }}
               src={userPhoto}
               alt={`Foto de perfil de ${userName}`}
               className="object-cover w-full h-full rounded-sm"
@@ -134,7 +148,10 @@ const Comment = ({
           <div className="flex flex-col justify-center overflow-hidden">
             {isMember && (
               <div>
-                <span className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight">
+                <span
+                  onClick={onClickProfile}
+                  className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
+                >
                   <span>Membro</span>
                   <MdStar size={16} />
                 </span>
@@ -142,7 +159,10 @@ const Comment = ({
             )}
             {isModerator && (
               <div>
-                <span className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight">
+                <span
+                  onClick={onClickProfile}
+                  className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
+                >
                   <span>Moderador</span>
                   <MdAdminPanelSettings size={16} />
                 </span>
@@ -150,7 +170,7 @@ const Comment = ({
             )}
             <div>
               <h4
-                // onClick={handleClickProfile}
+                onClick={onClickProfile}
                 className={clsx(
                   'leading-none font-bold truncate text-shadow-default',
                   {
