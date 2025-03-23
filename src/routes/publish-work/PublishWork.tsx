@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import ParagraphBlock from '../../components/paragraph/sections/ParagraphBlock';
+import ParagraphContainer from '../../components/paragraph/ParagraphContainer';
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';
 
@@ -13,7 +13,7 @@ const PublishWork = () => {
     <>
       <Header disabledSearch={true} />
       <Main>
-        <ParagraphBlock>
+        <ParagraphContainer>
           <SectionTitle titleStyleClasses="text-lg" title="Publicar Trabalho" />
           <Paragraph
             paragraphContent={[
@@ -25,7 +25,7 @@ const PublishWork = () => {
               },
             ]}
           />
-        </ParagraphBlock>
+        </ParagraphContainer>
         <ContactForm />
       </Main>
       <Footer disabledLinks={true} />

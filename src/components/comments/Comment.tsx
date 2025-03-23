@@ -1,44 +1,39 @@
-import { useCallback } from 'react';
 import { MdAdminPanelSettings, MdStar } from 'react-icons/md';
 
 import clsx from 'clsx';
 
+import { UserTypes } from '../../types/UserTypes';
+
 type CommentProps = {
-  nestedLevel?: 0 | 1 | 2 | 3 | 4;
+  onClickProfile: (userData: UserTypes) => void;
+  nestedLevel?: number;
 
-  isOwner?: boolean;
-  isHighlighted?: boolean;
-  isModerator?: boolean;
-  isMember?: boolean;
+  isOwner: boolean;
   wasEdited?: boolean;
+  commentData: Date;
+  commentText?: string;
+  commentImage?: string;
 
-  userName: string;
-  userPhoto: string;
-  date: Date;
-  text?: string;
-  image?: string;
-
-  onClickProfile: () => void;
+  user: UserTypes;
 };
 
 const Comment = ({
+  onClickProfile,
   nestedLevel = 0,
 
   isOwner,
-  isHighlighted,
-  isModerator,
-  isMember,
   wasEdited,
+  commentData,
+  commentText,
+  commentImage,
 
-  userName,
-  userPhoto,
-  date,
-  text,
-  image,
-
-  onClickProfile,
+  user,
 }: CommentProps) => {
-  const treatDate = (date: Date) => {
+  if (!commentText && !commentImage) {
+    return null;
+  }
+
+  const treatDate = (commentData: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: 'numeric',
@@ -47,10 +42,17 @@ const Comment = ({
       minute: 'numeric',
     };
 
-    return new Intl.DateTimeFormat('pt-BR', options).format(date);
+    return new Intl.DateTimeFormat('pt-BR', options).format(commentData);
   };
 
-  console.log(onClickProfile);
+  const userData: UserTypes = {
+    isHighlighted: user.isHighlighted,
+    isModerator: user.isModerator,
+    isMember: user.isMember,
+
+    name: user.name,
+    photo: user.photo,
+  };
 
   const calculateNastedComment = (nestedLevel: number) => {
     if (nestedLevel === 0) {
@@ -75,10 +77,6 @@ const Comment = ({
 
     return -(index * 8 + 8 * (index + 1));
   };
-
-  if (!text && !image) {
-    return null;
-  }
 
   return (
     <div
@@ -108,8 +106,8 @@ const Comment = ({
         className={clsx(
           'flex flex-col gap-2 p-2 border rounded-sm rounded-bl-none border-tertiary mt-4',
           {
-            'bg-secondary': !isHighlighted,
-            'bg-quaternary-opacity-25': isHighlighted,
+            'bg-secondary': !user.isHighlighted,
+            'bg-quaternary-opacity-25': user.isHighlighted,
           }
         )}
       >
@@ -120,7 +118,9 @@ const Comment = ({
         */}
         <div className="flex justify-end gap-2 text-[0.5625rem]">
           <div className="px-2 py-1 rounded-sm shadow-lg bg-primary-default">
-            <span className=" text-shadow-default">{treatDate(date)}</span>
+            <span className=" text-shadow-default">
+              {treatDate(commentData)}
+            </span>
           </div>
           {wasEdited && (
             <div className="px-2 py-1 rounded-sm shadow-lg bg-primary-default">
@@ -133,23 +133,19 @@ const Comment = ({
           {/* Foto do usuário */}
           <div className="w-16 h-16 rounded-sm shrink-0">
             <img
-              onClick={() => {
-                console.log('Foto do usuário clicada');
-
-                onClickProfile();
-              }}
-              src={userPhoto}
-              alt={`Foto de perfil de ${userName}`}
+              onClick={() => onClickProfile(userData)}
+              src={user.photo}
+              alt={`Foto de perfil de ${user.name}`}
               className="object-cover w-full h-full rounded-sm"
             />
           </div>
 
           {/* Detalhes do usuário */}
           <div className="flex flex-col justify-center overflow-hidden">
-            {isMember && (
+            {user.isMember && (
               <div>
                 <span
-                  onClick={onClickProfile}
+                  onClick={() => onClickProfile(userData)}
                   className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
                 >
                   <span>Membro</span>
@@ -157,10 +153,10 @@ const Comment = ({
                 </span>
               </div>
             )}
-            {isModerator && (
+            {user.isModerator && (
               <div>
                 <span
-                  onClick={onClickProfile}
+                  onClick={() => onClickProfile(userData)}
                   className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
                 >
                   <span>Moderador</span>
@@ -170,15 +166,15 @@ const Comment = ({
             )}
             <div>
               <h4
-                onClick={onClickProfile}
+                onClick={() => onClickProfile(userData)}
                 className={clsx(
                   'leading-none font-bold truncate text-shadow-default',
                   {
-                    'text-shadow-default': isHighlighted,
+                    'text-shadow-default': user.isHighlighted,
                   }
                 )}
               >
-                {userName}
+                {user.name}
               </h4>
             </div>
           </div>
@@ -187,16 +183,16 @@ const Comment = ({
         {/* Texto do comentário */}
         <div className="flex flex-col gap-2">
           <div>
-            <p className="text-xs text-justify">{text}</p>
+            <p className="text-xs text-justify">{commentText}</p>
           </div>
 
           {/* Imagem do comentário */}
-          {image && (
+          {commentImage && (
             <div>
               <img
                 className="object-cover w-full rounded-sm max-h-64"
-                src={image}
-                alt={`Imagem do comentário de ${userName}`}
+                src={commentImage}
+                alt={`Imagem do comentário de ${user.name}`} // TODO: Alterar para quando o sistema de comentários estiver pronto
               />
             </div>
           )}

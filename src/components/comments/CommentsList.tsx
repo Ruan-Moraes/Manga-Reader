@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import Comment from './Comment';
 import UserModal from '../user/UserModal';
 
+import { UserTypes } from '../../types/UserTypes';
+
 // type CommentProps = {
 //   isOwner: boolean; // Alterar quando a autenticação estiver pronta
 //   isHighlighted: boolean;
@@ -18,33 +20,56 @@ import UserModal from '../user/UserModal';
 // };
 
 const CommentsList = () => {
-  // const [comments, setComments] = useState<CommentProps[]>([]);
+  const userData: UserTypes = {
+    isHighlighted: false,
+    isModerator: false,
+    isMember: false,
 
-  // Todo: Fetch comments from the server
+    name: '',
+    photo: '',
+  };
+
   // const fetchComments = async () => {
-  //
+  //  Todo: Fetch comments from the server
   // };
 
-  const handleClickProfile = () => {
-    console.log('Clicou no perfil');
+  const handleClickProfile = ({
+    isHighlighted,
+    isModerator,
+    isMember,
 
-    return 'executou';
+    name,
+    photo,
+  }: UserTypes): void => {
+    userData.isHighlighted = isHighlighted;
+    userData.isModerator = isModerator;
+    userData.isMember = isMember;
+
+    userData.name = name;
+    userData.photo = photo;
+
+    console.log('userData', userData);
   };
 
   return (
     <div className="flex flex-col -mt-4">
       <UserModal />
       <Comment
-        isOwner
-        isHighlighted
-        isModerator
-        userName="Usuário de alta periculosidade"
-        userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
+        user={{
+          isHighlighted: true,
+          isModerator: true,
+          isMember: false,
+
+          name: 'Usuário de alta periculosidade',
+          photo:
+            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+        }}
+        isOwner
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
       />
-      <Comment
+      {/* <Comment
         isMember
         nestedLevel={1}
         wasEdited
@@ -160,7 +185,7 @@ const CommentsList = () => {
         text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
         image="https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png"
         onClickProfile={handleClickProfile}
-      />
+      /> */}
     </div>
   );
 };

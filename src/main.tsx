@@ -6,8 +6,9 @@ import {
   QueryCache,
 } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+import { UserModalProvider } from './context/user/UserModalContext';
 
 import './main.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -135,9 +136,11 @@ const routes = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={routes} />
-      <Toast />
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      <UserModalProvider>
+        <RouterProvider router={routes} />
+        <Toast />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      </UserModalProvider>
     </QueryClientProvider>
   </StrictMode>
 );

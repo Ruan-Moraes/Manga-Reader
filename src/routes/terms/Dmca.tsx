@@ -2,7 +2,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import ParagraphBlock from '../../components/paragraph/sections/ParagraphBlock';
+import ParagraphContainer from '../../components/paragraph/ParagraphContainer';
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';
 
@@ -11,7 +11,7 @@ const Dmca = () => {
     <>
       <Header disabledSearch={true} />
       <Main>
-        <ParagraphBlock>
+        <ParagraphContainer>
           <SectionTitle
             titleStyleClasses="text-lg"
             title="Política de Direitos Autorais (DMCA)"
@@ -60,7 +60,7 @@ const Dmca = () => {
               },
             ]}
           />
-        </ParagraphBlock>
+        </ParagraphContainer>
       </Main>
       <Footer />
     </>
