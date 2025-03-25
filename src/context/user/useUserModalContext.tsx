@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import { UserModalContext } from './UserModalContext';
 
-export const useUserModal = () => {
+export const useUserModalContext = () => {
   const context = useContext(UserModalContext);
 
   if (!context) {

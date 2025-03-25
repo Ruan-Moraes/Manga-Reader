@@ -1,6 +1,3 @@
-// @ts-expect-error - ignore import error
-import '@splidejs/react-splide/css';
-
 import { COLORS } from '../../constants/COLORS';
 import { SOCIAL_MEDIA_COLORS } from '../../constants/SOCIAL_MEDIA_COLORS';
 
@@ -12,7 +9,6 @@ import Warning from '../../components/notifications/Warning';
 
 import SocialMediasContainer from '../../components/social-medias/SocialMediasContainer';
 import SocialMedia from '../../components/social-medias/SocialMedia';
-
 import CarouselContainer from '../../components/cards/carousel/CarouselContainer';
 import HighlightCardsContainer from '../../components/cards/highlight/CardsContainer';
 import RowCardsContainer from '../../components/cards/horizontal/CardsContainer';

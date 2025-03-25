@@ -55,7 +55,7 @@ const Menu = () => {
         className={clsx(
           'px-3 py-2 bg-secondary border-b-2 border-b-tertiary transition duration-300',
           {
-            'fixed top-0 left-0 right-0 z-30': isSticky,
+            'fixed top-0 left-0 right-0 z-20': isSticky,
           }
         )}
         ref={menuRef}
@@ -108,7 +108,7 @@ const Menu = () => {
             </div>
             <MenuLinkBlock />
           </div>
-          <Blur isOpen={isMenuOpen} onChange={setIsMenuOpen} />
+          <Blur isOpen={isMenuOpen} onClickBlur={setIsMenuOpen} />
         </div>
       </nav>
     </>

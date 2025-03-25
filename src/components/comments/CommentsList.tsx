@@ -1,191 +1,251 @@
-import { useCallback } from 'react';
+import { useUserModalContext } from '../../context/user/useUserModalContext';
 
+import UserModal from '../modals/user/UserModal';
 import Comment from './Comment';
-import UserModal from '../user/UserModal';
 
 import { UserTypes } from '../../types/UserTypes';
 
-// type CommentProps = {
-//   isOwner: boolean; // Alterar quando a autenticação estiver pronta
-//   isHighlighted: boolean;
-//   isModerator: boolean;
-//   isMember: boolean;
-//   wasEdited: boolean;
-//   userName: string;
-//   userPhoto: string;
-//   date: string;
-//   text: string;
-//   image: string;
-//   answers: CommentProps[];
-// };
-
 const CommentsList = () => {
-  const userData: UserTypes = {
-    isHighlighted: false,
-    isModerator: false,
-    isMember: false,
+  const { openUserModal, setUserData } = useUserModalContext();
 
-    name: '',
-    photo: '',
-  };
+  // const fetchComments = async () => {}; // TODO: Implementar função para buscar os comentários do usuário
 
-  // const fetchComments = async () => {
-  //  Todo: Fetch comments from the server
-  // };
+  // useEffect(() => {
+  // fetchComments();
+  // }, []);
 
   const handleClickProfile = ({
-    isHighlighted,
-    isModerator,
-    isMember,
+    id,
+    moderator,
+    member,
 
     name,
     photo,
   }: UserTypes): void => {
-    userData.isHighlighted = isHighlighted;
-    userData.isModerator = isModerator;
-    userData.isMember = isMember;
+    setUserData({
+      id,
+      moderator,
+      member,
 
-    userData.name = name;
-    userData.photo = photo;
+      name,
+      photo,
+    });
 
-    console.log('userData', userData);
+    openUserModal();
   };
 
   return (
     <div className="flex flex-col -mt-4">
       <UserModal />
       <Comment
+        nestedLevel={0}
         onClickProfile={handleClickProfile}
         user={{
-          isHighlighted: true,
-          isModerator: true,
-          isMember: false,
-
+          id: '1',
           name: 'Usuário de alta periculosidade',
           photo:
             'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
+        }}
+        isOwner
+        isHighlighted
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+      />
+      <Comment
+        nestedLevel={1}
+        onClickProfile={handleClickProfile}
+        user={{
+          id: '2',
+          name: 'Naruto Uzumaki',
+          photo: 'https://storage.googleapis.com/pod_public/1300/207360.jpg',
+          member: {
+            isMember: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 1)
+            ),
+          },
+        }}
+        wasEdited
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+      />
+      <Comment
+        nestedLevel={1}
+        onClickProfile={handleClickProfile}
+        user={{
+          id: '3',
+          name: 'Sasuke Uchiha',
+          photo:
+            'https://boo-prod.b-cdn.net/database/profiles/16779658133692cab7e879edd111139eefe3687a5e51c.jpg?class=sm',
+        }}
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
+      />
+      <Comment
+        onClickProfile={handleClickProfile}
+        user={{
+          id: '2',
+          name: 'Naruto Uzumaki',
+          photo: 'https://storage.googleapis.com/pod_public/1300/207360.jpg',
+          member: {
+            isMember: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 1)
+            ),
+          },
+        }}
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+      />
+      <Comment
+        nestedLevel={1}
+        onClickProfile={handleClickProfile}
+        user={{
+          id: '1',
+          name: 'Usuário de alta periculosidade',
+          photo:
+            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
         }}
         isOwner
         commentData={new Date()}
         commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
       />
-      {/* <Comment
-        isMember
-        nestedLevel={1}
-        wasEdited
-        userName="Naruto Uzumaki"
-        userPhoto="https://storage.googleapis.com/pod_public/1300/207360.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
-        onClickProfile={handleClickProfile}
-      />
       <Comment
-        userName="Sasuke Uchiha"
-        nestedLevel={1}
-        userPhoto="https://boo-prod.b-cdn.net/database/profiles/16779658133692cab7e879edd111139eefe3687a5e51c.jpg?class=sm"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
-        onClickProfile={handleClickProfile}
-      />
-      <Comment
-        isMember
-        userName="Naruto Uzumaki"
-        userPhoto="https://storage.googleapis.com/pod_public/1300/207360.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
-        onClickProfile={handleClickProfile}
-      />
-      <Comment
-        isModerator
-        nestedLevel={1}
-        userName="Usuário de alta periculosidade"
-        userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
-        onClickProfile={handleClickProfile}
-      />
-      <Comment
-        isMember
         nestedLevel={2}
-        userName="Hinata Hyuga"
-        userPhoto="https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
+        user={{
+          id: '4',
+          name: 'Hinata Hyuga',
+          photo:
+            'https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
+        }}
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
       />
       <Comment
-        isOwner
         nestedLevel={3}
-        isModerator
-        userName="Usuário de alta periculosidade"
-        userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
+        user={{
+          id: '1',
+          name: 'Usuário de alta periculosidade',
+          photo:
+            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
+        }}
+        isOwner
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
       />
       <Comment
-        isOwner
         nestedLevel={4}
-        isModerator
-        userName="Usuário de alta periculosidade"
-        userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
+        user={{
+          id: '1',
+          name: 'Usuário de alta periculosidade',
+          photo:
+            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
+        }}
+        isOwner
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
       />
       <Comment
-        isOwner
         nestedLevel={4}
-        isModerator
-        userName="Usuário de alta periculosidade"
-        userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
-      />
-      <Comment
+        user={{
+          id: '1',
+          name: 'Usuário de alta periculosidade',
+          photo:
+            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
+        }}
         isOwner
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
+      />
+      <Comment
         nestedLevel={3}
-        isModerator
-        userName="Usuário de alta periculosidade"
-        userPhoto="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
+        user={{
+          id: '1',
+          name: 'Usuário de alta periculosidade',
+          photo:
+            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
+          moderator: {
+            isModerator: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 2)
+            ),
+          },
+        }}
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
       />
       <Comment
-        userName="Sakura Haruno"
+        nestedLevel={0}
+        onClickProfile={handleClickProfile}
+        user={{
+          id: '4',
+          name: 'Hinata Hyuga',
+          photo:
+            'https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp',
+          member: {
+            isMember: true,
+            since: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 1)
+            ),
+          },
+        }}
+        commentData={new Date()}
+        commentImage="https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg"
+      />
+      <Comment
         nestedLevel={1}
-        userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har."
         onClickProfile={handleClickProfile}
+        user={{
+          id: '5',
+          name: 'Sakura Haruno',
+          photo:
+            'https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png',
+        }}
+        commentData={new Date()}
+        commentText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
+        commentImage="https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png"
       />
-      <Comment
-        userName="Sakura Haruno"
-        nestedLevel={1}
-        userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
-        date={new Date()}
-        onClickProfile={handleClickProfile}
-      />
-      <Comment
-        isMember
-        nestedLevel={2}
-        userName="Hinata Hyuga"
-        userPhoto="https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg631b0d291bede6.24534360.jpg%3FlastEdited%3D1662717231&w=600&h=600&f=webp"
-        date={new Date()}
-        image="https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg"
-        onClickProfile={handleClickProfile}
-      />
-      <Comment
-        userName="Sakura Haruno"
-        nestedLevel={3}
-        userPhoto="https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png"
-        date={new Date()}
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?"
-        image="https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png"
-        onClickProfile={handleClickProfile}
-      /> */}
     </div>
   );
 };

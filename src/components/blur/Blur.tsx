@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 
 type BlurTypes = {
   isOpen: boolean;
-  onChange: React.Dispatch<React.SetStateAction<boolean>>;
+  onClickBlur: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Blur = ({ isOpen, onChange }: BlurTypes) => {
+const Blur = ({ isOpen, onClickBlur }: BlurTypes) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -21,7 +21,7 @@ const Blur = ({ isOpen, onChange }: BlurTypes) => {
   }, [isOpen]);
 
   const handleBlur = () => {
-    onChange(false);
+    onClickBlur(false);
   };
 
   return (

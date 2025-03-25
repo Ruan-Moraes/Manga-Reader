@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import UseFetchTitle from '../../../hooks/useFetchTitle';
+import UseFetchTitles from '../../../hooks/useFetchTitles';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
@@ -19,7 +19,7 @@ const CardsContainer = ({
 }: CardsContainerTypes) => {
   const navigate = useNavigate();
 
-  const { data, status } = UseFetchTitle(url, validTime);
+  const { data, status } = UseFetchTitles(url, validTime);
   const [visible, setVisible] = useState(10);
 
   const allChildren = useMemo(() => {

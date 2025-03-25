@@ -1,100 +1,93 @@
-import { useReducer } from 'react';
+import { SOCIAL_MEDIA_COLORS } from '../../../constants/SOCIAL_MEDIA_COLORS';
 
-import { SOCIAL_MEDIA_COLORS } from '../../constants/SOCIAL_MEDIA_COLORS';
-import { UserTypes } from '../../types/UserTypes';
+import { useUserModalContext } from '../../../context/user/useUserModalContext';
 
-import { useUserModal } from '../../context/user/useUserModal';
+import treatDate from '../../../services/utils/treatDate';
 
-import SocialMedia from '../social-medias/SocialMedia';
-import Blur from '../blur/Blur';
+import SocialMedia from '../../social-medias/SocialMedia';
+import Blur from '../../blur/Blur';
 
-type UserModalProps = {
-  isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+const UserModal = () => {
+  const { isUserModalOpen, closeUserModal, userData } = useUserModalContext();
 
-  user: UserTypes;
-};
+  // const fetchUserData = async () => {}; // TODO: Implementar função para buscar os dados do usuário
 
-const UserModal = ({ user }: UserModalProps) => {
-  if (!user) {
+  // useEffect(() => {
+  // fetchUserData(id);
+  // });
+
+  if (!isUserModalOpen) {
     return null;
   }
 
-  const { isOpen, closeModal } = useUserModal();
-
-  const [userDate, dispatchUser] = useReducer(
-    (state: UserTypes, action: Partial<UserTypes>) => ({
-      ...state,
-      ...action,
-    }),
-    
-    {
-      isHighlighted: false,
-      isModerator: false,
-      isMember: false,
-
-      name: '',
-      photo: '',
-    }
-  );
+  if (!userData) {
+    return null;
+  }
 
   return (
     <>
-      <Blur isOpen={isOpen} onClick={closeModal} />
+      <Blur isOpen={isUserModalOpen} onClickBlur={closeUserModal} />
       <div className="fixed left-0 right-0 z-20 flex flex-col gap-2 mx-4 -translate-y-1/2 top-1/2">
         <div className="z-20 flex flex-col gap-2 p-2 border rounded-sm bg-secondary border-tertiary">
           <div className="flex justify-end">
             <button
-              onClick={closeModal}
+              onClick={closeUserModal}
               className="px-2 py-1 text-xs font-bold rounded-sm shadow-lg bg-primary-default"
             >
-              <span>Fechar</span>
+              Fechar
             </button>
           </div>
           <div className="flex gap-2 border-b border-b-tertiary scrollbar-hidden">
             <div className="h-28 w-28 shrink-0">
               <img
-                src={userDate.photo}
-                alt={`Foto de perfil de ${userDate.name}`}
+                src={userData!.photo}
+                alt={`Foto de perfil de ${userData!.name}`}
                 className="object-cover w-full h-full border border-b-0 rounded-sm rounded-b-none bg-secondary border-tertiary"
               />
             </div>
             <div
               style={{ maxWidth: 'calc(100% - 7.5rem)' }}
-              className="flex flex-col gap-2 py-2"
+              className="flex flex-col justify-center gap-2"
             >
               <div className="overflow-x-auto">
-                <h3 className="flex flex-col font-bold leading-none text-nowrap text-shadow-default">
-                  <span>{userDate.name}</span>
-                  <span>
+                <h3 className="flex flex-col gap-0.5 font-bold leading-none text-nowrap text-shadow-default">
+                  <span>{userData!.name}</span>
+                  {userData.moderator?.isModerator && (
                     <span className="text-xs font-normal text-tertiary">
-                      Membro desde 2021
+                      Moderador desde{' '}
+                      {treatDate(userData.moderator.since, {
+                        year: 'numeric',
+                        month: 'long',
+                      })}
                     </span>
-                  </span>
+                  )}
+                  {userData.member?.isMember && (
+                    <span className="text-xs font-normal text-tertiary">
+                      Membro desde{' '}
+                      {treatDate(userData.member.since, {
+                        year: 'numeric',
+                        month: 'long',
+                      })}
+                    </span>
+                  )}
                 </h3>
               </div>
               <div>
                 <ul className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
-                  <li className="flex items-center justify-center p-2 rounded-sm bg-quaternary-opacity-25">
-                    <span className="text-xs leading-none text-center text-nowrap">
-                      Membro
-                    </span>
-                  </li>
-                  <li className="flex items-center justify-center p-2 rounded-sm bg-quaternary-opacity-25">
-                    <span className="text-xs leading-none text-center text-nowrap">
-                      Moderador
-                    </span>
-                  </li>
-                  <li className="flex items-center justify-center p-2 rounded-sm bg-quaternary-opacity-25">
-                    <span className="text-xs leading-none text-center text-nowrap">
-                      Membro
-                    </span>
-                  </li>
-                  <li className="flex items-center justify-center p-2 rounded-sm bg-quaternary-opacity-25">
-                    <span className="text-xs leading-none text-center text-nowrap">
-                      Apreciador de café
-                    </span>
-                  </li>
+                  {userData!.moderator?.isModerator && (
+                    <li className="flex items-center justify-center p-2 rounded-sm bg-quaternary-opacity-25">
+                      <span className="text-xs leading-none text-center text-nowrap">
+                        Moderador
+                      </span>
+                    </li>
+                  )}
+                  {userData!.member?.isMember && (
+                    <li className="flex items-center justify-center p-2 rounded-sm bg-quaternary-opacity-25">
+                      <span className="text-xs leading-none text-center text-nowrap">
+                        Membro
+                      </span>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -152,7 +145,7 @@ const UserModal = ({ user }: UserModalProps) => {
                 </li>
                 <li className="flex items-center gap-1 p-2 rounded-sm bg-quaternary-opacity-25">
                   <span className="text-xs leading-none text-center text-nowrap">
-                    100 Deslikes
+                    1000 Deslikes
                   </span>
                 </li>
               </ul>

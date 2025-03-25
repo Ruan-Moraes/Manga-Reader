@@ -1,14 +1,20 @@
+import { AiFillLike } from 'react-icons/ai';
+import { AiFillDislike } from 'react-icons/ai';
 import { MdAdminPanelSettings, MdStar } from 'react-icons/md';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
 import clsx from 'clsx';
 
 import { UserTypes } from '../../types/UserTypes';
 
+import treatDate from '../../services/utils/treatDate';
+
 type CommentProps = {
   onClickProfile: (userData: UserTypes) => void;
   nestedLevel?: number;
 
-  isOwner: boolean;
+  isOwner?: boolean;
+  isHighlighted?: boolean;
   wasEdited?: boolean;
   commentData: Date;
   commentText?: string;
@@ -22,7 +28,9 @@ const Comment = ({
   nestedLevel = 0,
 
   isOwner,
+  isHighlighted,
   wasEdited,
+
   commentData,
   commentText,
   commentImage,
@@ -33,22 +41,10 @@ const Comment = ({
     return null;
   }
 
-  const treatDate = (commentData: Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-    };
-
-    return new Intl.DateTimeFormat('pt-BR', options).format(commentData);
-  };
-
   const userData: UserTypes = {
-    isHighlighted: user.isHighlighted,
-    isModerator: user.isModerator,
-    isMember: user.isMember,
+    id: user.id,
+    moderator: user.moderator,
+    member: user.member,
 
     name: user.name,
     photo: user.photo,
@@ -101,13 +97,13 @@ const Comment = ({
 
       <div
         style={{
-          marginLeft: nestedLevel === 0 ? 0 : 8 + 'px',
+          marginLeft: nestedLevel === 0 ? 0 : 0.5 + 'rem',
         }}
         className={clsx(
           'flex flex-col gap-2 p-2 border rounded-sm rounded-bl-none border-tertiary mt-4',
           {
-            'bg-secondary': !user.isHighlighted,
-            'bg-quaternary-opacity-25': user.isHighlighted,
+            'bg-secondary': !isHighlighted,
+            'bg-quaternary-opacity-25': isHighlighted,
           }
         )}
       >
@@ -119,7 +115,13 @@ const Comment = ({
         <div className="flex justify-end gap-2 text-[0.5625rem]">
           <div className="px-2 py-1 rounded-sm shadow-lg bg-primary-default">
             <span className=" text-shadow-default">
-              {treatDate(commentData)}
+              {treatDate(commentData, {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+              })}
             </span>
           </div>
           {wasEdited && (
@@ -142,7 +144,7 @@ const Comment = ({
 
           {/* Detalhes do usuário */}
           <div className="flex flex-col justify-center overflow-hidden">
-            {user.isMember && (
+            {user.member?.isMember && (
               <div>
                 <span
                   onClick={() => onClickProfile(userData)}
@@ -153,7 +155,7 @@ const Comment = ({
                 </span>
               </div>
             )}
-            {user.isModerator && (
+            {user.moderator?.isModerator && (
               <div>
                 <span
                   onClick={() => onClickProfile(userData)}
@@ -170,7 +172,7 @@ const Comment = ({
                 className={clsx(
                   'leading-none font-bold truncate text-shadow-default',
                   {
-                    'text-shadow-default': user.isHighlighted,
+                    'text-shadow-default': isHighlighted,
                   }
                 )}
               >
@@ -199,25 +201,23 @@ const Comment = ({
         </div>
 
         {/* Camada de ações*/}
-        <div
-          className={clsx('flex', {
-            'justify-end': !isOwner,
-            'justify-between': isOwner,
-          })}
-        >
-          {isOwner && (
-            <div className="flex gap-2">
-              <button className="p-2 text-xs rounded-sm shadow-lg bg-primary-default">
-                <span>Editar</span>
+        <div className="flex justify-between">
+          <div className="flex gap-2">
+            <button className="px-3 py-2 text-xs rounded-sm shadow-lg bg-primary-default">
+              <AiFillDislike />
+            </button>
+            <button className="px-3 py-2 text-xs rounded-sm shadow-lg bg-primary-default">
+              <AiFillLike />
+            </button>
+          </div>
+          <div className="flex gap-2">
+            {isOwner && (
+              <button className="px-3 py-2 text-xs rounded-sm shadow-lg bg-primary-default">
+                <FaRegTrashAlt />
               </button>
-              <button className="p-2 text-xs rounded-sm shadow-lg bg-primary-default">
-                <span>Excluir</span>
-              </button>
-            </div>
-          )}
-          <div>
-            <button className="p-2 text-xs rounded-sm shadow-lg bg-primary-default">
-              <span>Responder</span>
+            )}
+            <button className="px-3 py-2 text-xs rounded-sm shadow-lg bg-primary-default">
+              Responder
             </button>
           </div>
         </div>

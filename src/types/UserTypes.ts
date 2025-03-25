@@ -1,12 +1,17 @@
 export type UserTypes = {
-  isHighlighted: boolean;
-  isModerator: boolean;
-  isMember: boolean;
-
-  name: string;
+  id: string;
   photo: string;
-  tags?: string[];
+  name: string;
   bio?: string;
+
+  moderator?: {
+    isModerator: boolean;
+    since: Date;
+  };
+  member?: {
+    isMember: boolean;
+    since: Date;
+  };
   socialMediasLinks?: {
     [key: string]: string;
   };

@@ -2,7 +2,7 @@ import { useMemo, useRef, useEffect } from 'react';
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
 
-import UseFetchTitle from '../../../hooks/useFetchTitle';
+import UseFetchTitles from '../../../hooks/useFetchTitles';
 
 import Carousel from './Carousel';
 import CustomLink from '../../links/elements/CustomLink';
@@ -20,7 +20,7 @@ const CarouselContainer = ({
   title,
   subTitle,
 }: CarouselContainerTypes) => {
-  const { data, status } = UseFetchTitle(url, validTime);
+  const { data, status } = UseFetchTitles(url, validTime);
 
   const splideRef = useRef<Splide>(null);
 

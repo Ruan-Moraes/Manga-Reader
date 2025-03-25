@@ -31,6 +31,7 @@ import AboutUs from './routes/about-us/AboutUs.tsx';
 import TermsOfUse from './routes/terms/TermsOfUse.tsx';
 import Dmca from './routes/terms/Dmca.tsx';
 import NotFound from './routes/error/NotFound.tsx';
+
 import Toast from './components/toast/Toast';
 
 const queryClient = new QueryClient({

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import UseFetchTitle from '../../../hooks/useFetchTitle';
+import UseFetchTitles from '../../../hooks/useFetchTitles';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
@@ -13,7 +13,7 @@ const CardsContainer = ({
   title,
   subTitle,
 }: CardsContainerTypes) => {
-  const { data, status } = UseFetchTitle(url, validTime);
+  const { data, status } = UseFetchTitles(url, validTime);
 
   const allChildren = useMemo(() => {
     if (status === 'success') {

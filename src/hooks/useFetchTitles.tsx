@@ -1,7 +1,8 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
+
 import { TitleTypes } from '../types/TitleTypes';
 
-const UseFetchTitle = (
+const UseFetchTitles = (
   url: string,
   validTime?: number
 ): UseQueryResult<Record<string, TitleTypes>, Error> => {
@@ -32,4 +33,4 @@ const UseFetchTitle = (
   });
 };
 
-export default UseFetchTitle;
+export default UseFetchTitles;
