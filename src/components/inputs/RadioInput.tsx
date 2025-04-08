@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 type RadioInputTypes<T> = {
-  fieldName: string;
   onChange: (newValue: T) => void;
+
+  fieldName: string;
   defaultValue?: boolean;
   className?: string;
   value: T;
@@ -11,8 +12,9 @@ type RadioInputTypes<T> = {
 };
 
 const RadioInput = <T extends string | number | readonly string[] | undefined>({
-  fieldName,
   onChange,
+
+  fieldName,
   defaultValue,
   className,
   value,

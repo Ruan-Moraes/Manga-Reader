@@ -1,10 +1,11 @@
-type BaseButtonTypes = {
+type BaseButtonProps = {
   onClick?: () => void;
   text: string;
 };
 
-// Todo: Refactor this component 
-const BaseButton = ({ onClick, text }: BaseButtonTypes) => {
+// Todo: Refactor this component
+
+const BaseButton = ({ onClick, text }: BaseButtonProps) => {
   return (
     <button
       {...(onClick && { onClick })}

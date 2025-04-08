@@ -5,9 +5,10 @@ import Select, { MultiValue } from 'react-select';
 import { TagsTypes } from '../../types/TagsTypes';
 
 type SelectInputTypes = {
-  urlParameterName?: string;
-  options: TagsTypes[] | undefined;
   onChange: (newValue: TagsTypes[]) => void;
+
+  urlParameterName?: string;
+  options?: TagsTypes[];
   placeholder: string;
 };
 

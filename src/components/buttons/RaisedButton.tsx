@@ -1,9 +1,11 @@
-type RaisedButtonTypes = {
+type RaisedButtonProps = {
   onClick?: () => void;
   text: string;
 };
 
-const RaisedButton = ({ onClick, text }: RaisedButtonTypes) => {
+// Todo: Refactor this component
+
+const RaisedButton = ({ onClick, text }: RaisedButtonProps) => {
   return (
     <button
       {...(onClick && { onClick })}

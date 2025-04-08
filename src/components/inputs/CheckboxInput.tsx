@@ -1,12 +1,12 @@
 import CustomLink from '../links/elements/CustomLink';
 
 type CheckboxInputTypes = {
-  labelText: string;
+  label: string;
   href: string;
   linkText: string;
 };
 
-const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputTypes) => {
+const CheckboxInput = ({ label, href, linkText }: CheckboxInputTypes) => {
   return (
     <div>
       <label className="flex items-center gap-2 w-max">
@@ -34,7 +34,7 @@ const CheckboxInput = ({ labelText, href, linkText }: CheckboxInputTypes) => {
           </div>
         </div>
         <p className="text-sm cursor-pointer">
-          <span>{labelText}</span>{' '}
+          <span>{label}</span>{' '}
           <span>
             <CustomLink
               href={href}
