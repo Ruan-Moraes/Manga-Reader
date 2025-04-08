@@ -9,6 +9,7 @@ import Main from './../../layouts/Main';
 import Footer from './../../layouts/Footer';
 
 import Warning from '../../components/notifications/Warning';
+import CommentInput from '../../components/inputs/CommentInput';
 // import Comment from '../../components/comments/Comment';
 
 // import { MdAdminPanelSettings } from 'react-icons/md';
@@ -321,20 +322,7 @@ const Chapter = () => {
               <div>
                 <h3 className="text-xl font-bold">Comentários</h3>
               </div>
-              <div>
-                <form>
-                  <textarea
-                    className="w-full p-2 text-xs border rounded-sm bg-secondary border-tertiary"
-                    placeholder="Comparilhe sua opinião sobre o capítulo..."
-                    rows={5}
-                  ></textarea>
-                </form>
-              </div>
-              <div>
-                <button className="px-8 py-2 text-sm font-bold border rounded-sm bg-secondary border-tertiary">
-                  Enviar
-                </button>
-              </div>
+              <CommentInput placeholder="Deixe seu comentário" />
             </div>
             <div className="flex flex-col -mt-4">
               <CommentsList />
