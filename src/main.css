@@ -2,13 +2,19 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
+/* Tailwind */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset */
+
 * {
   font-family: 'Nunito Sans', sans-serif;
   color: #ffffff;
   letter-spacing: 0.0625rem;
 }
-
-/* Reset */
 
 html {
   background-color: #161616;
@@ -42,30 +48,8 @@ html {
   -ms-overflow-style: none !important;
 }
 
+/* Splide | Carousel */
+
 .splide__arrows svg {
   fill: #727273;
 }
-
-.Toastify__toast-container {
-  width: auto !important;
-  right: 0 !important;
-  left: auto !important;
-}
-
-.Toastify__progress-bar--wrp {
-  z-index: 9999 !important;
-  border-radius: 0 !important;
-  border-bottom-left-radius: 0.25rem !important;
-}
-
-.Toastify__progress-bar--bg {
-  background-color: #727273 !important;
-
-  opacity: 1 !important;
-}
-
-/* Tailwind */
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;

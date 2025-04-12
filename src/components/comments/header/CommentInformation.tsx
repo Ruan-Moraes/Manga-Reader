@@ -24,7 +24,7 @@ const CommentInformation = ({
       </div>
       {wasEdited && (
         <div className="px-2 py-1 rounded-sm shadow-lg bg-primary-default">
-          <span className=" text-shadow-default">Editada</span>
+          <span className=" text-shadow-default">Editado</span>
         </div>
       )}
     </div>

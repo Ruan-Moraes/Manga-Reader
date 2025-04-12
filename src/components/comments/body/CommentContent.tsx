@@ -22,7 +22,7 @@ const CommentContent = ({
       {commentImage && (
         <div>
           <img
-            className="object-cover w-full rounded-sm max-h-64"
+            className="object-cover object-center w-full rounded-sm max-h-64"
             src={commentImage}
             alt={`Imagem do comentário de ${user.name}`} // TODO: Alterar para quando o sistema de comentários estiver pronto
           />
