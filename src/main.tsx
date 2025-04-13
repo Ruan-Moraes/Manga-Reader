@@ -8,13 +8,6 @@ import {
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { UserModalProvider } from './context/user/UserModalContext';
-
-import './main.css';
-import 'react-toastify/dist/ReactToastify.css';
-
-import { toast } from 'react-toastify';
-
 import AppLayout from './components/app-layout/AppLayout.tsx';
 import Home from './routes/home/Home.tsx';
 import Titles from './routes/titles/Titles.tsx';
@@ -32,6 +25,12 @@ import TermsOfUse from './routes/terms/TermsOfUse.tsx';
 import Dmca from './routes/terms/Dmca.tsx';
 import NotFound from './routes/error/NotFound.tsx';
 
+import { UserModalProvider } from './context/user/UserModalContext';
+
+import './styles/index.css';
+
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import Toast from './components/toast/Toast';
 
 const queryClient = new QueryClient({

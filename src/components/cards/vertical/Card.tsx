@@ -103,7 +103,7 @@ const Card = ({
                 <span className="hidden mobile-md:block">Capítulo:</span>
                 <span className="flex items-center gap-2">
                   {index === 0 ? (
-                    <span className="px-1 text-[0.5rem] rounded-sm bg-tertiary">
+                    <span className="p-1 text-[0.5rem] rounded-sm bg-tertiary">
                       {updatedAtDate}
                     </span>
                   ) : (

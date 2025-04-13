@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 
 import { IoImages } from 'react-icons/io5';
 import { FaUpload } from 'react-icons/fa';
@@ -14,30 +14,32 @@ type CommentInputProps = {
 const CommentInput = ({ placeholder }: CommentInputProps) => {
   const textareaRef = useRef<HTMLDivElement>(null);
 
+  const [images, setImages] = useState<string[]>([]);
+
   const removeTextareaPlaceholder = useCallback(() => {
     const textarea = textareaRef.current;
 
-    if (!textarea) {
-      return;
-    }
+    if (!textarea) return;
 
     const placeholderElement = textarea.querySelector('#textarea_placeholder');
 
     if (placeholderElement) {
       textarea.removeChild(placeholderElement);
     }
-  }, [textareaRef]);
+  }, []);
 
   const addTextareaPlaceholder = useCallback(() => {
     const textarea = textareaRef.current;
 
     if (
       textarea &&
-      (textarea.innerHTML.trim() === '' || textarea.innerHTML.trim() === '<br>')
+      (textarea.innerHTML.trim() === '' ||
+        textarea.innerHTML.trim() === '<br>') &&
+      images.length === 0
     ) {
       textarea.innerHTML = `<span class="text-tertiary" id="textarea_placeholder">${placeholder}</span>`;
     }
-  }, [placeholder]);
+  }, [placeholder, images.length]);
 
   const handleInputChange = useCallback(() => {
     removeTextareaPlaceholder();
@@ -53,16 +55,8 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
   }, []);
 
   const exceedsImageLimit = useCallback(() => {
-    const textarea = textareaRef.current;
-
-    if (textarea) {
-      const images = textarea.querySelectorAll('img');
-
-      return images.length >= 3;
-    }
-
-    return false;
-  }, []);
+    return images.length >= 3;
+  }, [images.length]);
 
   const isImageValid = useCallback((file: File | undefined) => {
     if (!file) {
@@ -78,6 +72,10 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
     }
 
     return true;
+  }, []);
+
+  const handleRemoveImage = useCallback((index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   const addImageToTextarea = useCallback(() => {
@@ -103,13 +101,7 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
 
         const imageUrl = reader.result as string;
 
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.className = 'object-cover object-center w-full rounded-sm max-h-64';
-
-        const textarea = textareaRef.current;
-
-        textarea!.appendChild(img);
+        setImages((prev) => [...prev, imageUrl]);
       };
 
       reader.readAsDataURL(file);
@@ -121,8 +113,9 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
     removeTextareaPlaceholder,
   ]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const uploadImage = useCallback(() => {}, []); // TODO: logic to submit the image to the server
+  const uploadImage = useCallback(() => {
+    // TODO: lógica para envio das imagens ao servidor
+  }, []);
 
   useEffect(() => {
     addTextareaPlaceholder();
@@ -140,22 +133,39 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
                 onBlur={addTextareaPlaceholder}
                 contentEditable="true"
                 className="flex flex-col w-full h-full gap-2 p-2 rounded-sm outline-none resize-none bg-primary-default scrollbar-hidden"
-              ></div>
+              >
+                {images.map((url, index) => (
+                  <div
+                    key={index}
+                    className="relative inline-block w-full max-h-64"
+                  >
+                    <img
+                      src={url}
+                      className="object-cover object-center w-full rounded-sm max-h-64"
+                      alt={`uploaded-${index}`}
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0 px-2 py-1 text-xs font-bold bg-red-600 rounded-tr-sm rounded-bl-sm"
+                      contentEditable="false"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
               <div className="flex gap-2">
                 <IconButton
                   onClick={() => {
-                    // Todo: Add a function to handle the emoji picker
+                    // TODO: adicionar seletor de emojis
                   }}
                 >
                   <IoImages />
                 </IconButton>
-                <IconButton
-                  onClick={() => {
-                    addImageToTextarea();
-                  }}
-                >
+                <IconButton onClick={addImageToTextarea}>
                   <FaUpload />
                 </IconButton>
               </div>

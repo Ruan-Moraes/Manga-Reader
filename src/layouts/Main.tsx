@@ -6,7 +6,7 @@ type MainTypes = {
 const Main = ({ children, className }: MainTypes) => {
   return (
     <main
-      className={`flex flex-col gap-6 px-2 py-4 mobile-md:py-8 mobile-md:px-4 ${className}`}
+      className={`flex flex-col gap-6 px-2.5 py-4 mobile-md:py-8 mobile-md:px-4 ${className}`}
     >
       {children}
     </main>

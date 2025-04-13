@@ -39,11 +39,13 @@ const Home = () => {
             color={SOCIAL_MEDIA_COLORS.FACEBOOK}
             href="#"
             name="Facebook"
+            className="rounded-bl-sm"
           />
           <SocialMedia
             color={SOCIAL_MEDIA_COLORS.INSTAGRAM}
             href="#"
             name="Instagram"
+            className="rounded-br-sm"
           />
         </SocialMediasContainer>
         <CarouselContainer

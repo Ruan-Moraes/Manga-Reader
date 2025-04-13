@@ -51,7 +51,7 @@ const Footer = ({ disabledLinks }: FooterTypes) => {
           />
         </div>
       )}
-      <div className="p-2 mobile-md:text-xs mobile-sm:text-[0.6125rem] text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
+      <div className="p-2 text-xs text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
         <p>&copy; {`${getYear}`} Manga Reader. Todos os direitos reservados.</p>
       </div>
     </footer>

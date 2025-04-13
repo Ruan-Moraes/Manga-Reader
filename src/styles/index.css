@@ -4,9 +4,11 @@
 
 /* Tailwind */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Custom styles with Tailwind */
+
+@config "../../tailwind.config.js";
 
 /* Reset */
 

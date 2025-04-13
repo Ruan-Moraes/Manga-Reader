@@ -84,7 +84,7 @@ const CarouselContainer = ({
           <CustomLink
             href="/categories?sort=most_read&status=all"
             text={title}
-            className="text-shadow-default"
+            className="text-shadow-default text-quaternary-default"
           />
           <span className="text-xs">({subTitle})</span>
         </h2>

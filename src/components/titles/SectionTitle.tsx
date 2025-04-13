@@ -32,8 +32,12 @@ const SectionTitle = ({
             <p className="text-xs text-quaternary-default">{subTitle}</p>
           )}
           {subTitle && subLink && (
-            <p className="text-xs text-quaternary-default">
-              <CustomLink href={subLink} text={subTitle} />
+            <p className="leading-0">
+              <CustomLink
+                href={subLink}
+                text={subTitle}
+                className="text-xs text-quaternary-default"
+              />
             </p>
           )}
         </div>
