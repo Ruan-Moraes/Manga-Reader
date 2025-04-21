@@ -34,7 +34,7 @@ const Titles = () => {
     return titles[Number(id)];
   }, []);
 
-  // Todo: Implementar a função abaixo
+  // TODO: Implementar a função abaixo
   const getTitleFromAPI = useCallback((id: string) => {
     console.log('fetching title from API' + id);
   }, []);
@@ -86,20 +86,20 @@ const Titles = () => {
             publisher={publisher}
           />
 
-          {/* Todo:  Transforma a div abaixo em um componente */}
-          <div className="flex items-center justify-between h-full py-2 border rounded-r-sm rounded-bl-sm border-tertiary bg-tertiary">
+          {/* TODO:  Transforma a div abaixo em um componente */}
+          <div className="flex items-center justify-between h-full py-2 border rounded-r-xs rounded-bl-xs border-tertiary bg-tertiary">
             <div className="flex items-center justify-center grow">
               <BsBookmark className="text-2xl" />
             </div>
-            <div className="h-8 mx-2 border rounded-sm border-secondary"></div>
+            <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
             <div className="flex items-center justify-center grow">
               <AiOutlineLike className="text-2xl" />
             </div>
-            <div className="h-8 mx-2 border rounded-sm border-secondary"></div>
+            <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
             <div className="flex items-center justify-center grow">
               <MdGroups className="text-2xl" />
             </div>
-            <div className="h-8 mx-2 border rounded-sm border-secondary"></div>
+            <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
             <div className="flex items-center justify-center grow">
               <MdOutlineShoppingCart className="text-2xl" />
             </div>
@@ -114,7 +114,7 @@ const Titles = () => {
             </div>
             <div className="flex items-stretch gap-2">
               <div>
-                <button className="flex items-center h-full gap-2 p-2 border rounded-sm border-tertiary bg-secondary">
+                <button className="flex items-center h-full gap-2 p-2 border rounded-xs border-tertiary bg-secondary">
                   <span className="text-xs font-bold w-max">Ordenar por:</span>
                   <span>
                     <FaSortNumericDown className="text-lg" />
@@ -128,17 +128,17 @@ const Titles = () => {
                     name=""
                     id=""
                     placeholder="Pesquisar Capítulo"
-                    className="w-full h-full p-2 border rounded-sm rounded-r-none appearance-none 1 border-tertiary bg-secondary"
+                    className="w-full h-full p-2 border rounded-xs rounded-r-none appearance-none 1 border-tertiary bg-secondary"
                   />
                 </div>
-                <div className="flex items-center px-4 py-2 border border-l-0 rounded-r-sm border-tertiary bg-secondary">
+                <div className="flex items-center px-4 py-2 border border-l-0 rounded-r-xs border-tertiary bg-secondary">
                   <IoSearchSharp size={20} />
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 text-xs">
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>24</span>
@@ -158,7 +158,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>23</span>
@@ -178,7 +178,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>22</span>
@@ -198,7 +198,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>21</span>
@@ -218,7 +218,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>20</span>
@@ -238,7 +238,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>19</span>
@@ -258,7 +258,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>18</span>
@@ -278,7 +278,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>17</span>
@@ -298,7 +298,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>16</span>
@@ -318,7 +318,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>15</span>
@@ -338,7 +338,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>14</span>
@@ -358,7 +358,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>13</span>
@@ -378,7 +378,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>12</span>
@@ -398,7 +398,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>11</span>
@@ -418,7 +418,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>10</span>
@@ -438,7 +438,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>9</span>
@@ -458,7 +458,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>8</span>
@@ -478,7 +478,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>7</span>
@@ -498,7 +498,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>6</span>
@@ -518,7 +518,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>5</span>
@@ -538,7 +538,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>4</span>
@@ -558,7 +558,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>3</span>
@@ -577,7 +577,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>2</span>
@@ -597,7 +597,7 @@ const Titles = () => {
                 </p>
               </div>
             </div>
-            <div className="flex justify-between px-2 py-2 border rounded-sm border-tertiary">
+            <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
               <div className="flex flex-col gap-1">
                 <p>
                   <span className="font-bold">Capítulo:</span> <span>1</span>
@@ -620,8 +620,8 @@ const Titles = () => {
           </div>
           <div className="flex flex-col gap-2">
             <div>
-              <ul className="flex text-center rounded-sm">
-                <li className="p-1 font-bold border rounded-l-sm border-tertiary grow bg-quaternary-opacity-50 text-shadow-default">
+              <ul className="flex text-center rounded-xs">
+                <li className="p-1 font-bold border rounded-l-xs border-tertiary grow bg-quaternary-opacity-50 text-shadow-default">
                   1
                 </li>
                 <li className="p-1 border border-tertiary grow bg-secondary">
@@ -639,7 +639,7 @@ const Titles = () => {
                 <li className="p-1 border border-tertiary grow bg-secondary">
                   6
                 </li>
-                <li className="p-1 border rounded-r-sm border-tertiary grow bg-secondary">
+                <li className="p-1 border rounded-r-xs border-tertiary grow bg-secondary">
                   32
                 </li>
               </ul>
@@ -661,14 +661,14 @@ const Titles = () => {
               <div>
                 <form>
                   <textarea
-                    className="w-full p-2 text-xs border rounded-sm bg-secondary border-tertiary"
+                    className="w-full p-2 text-xs border rounded-xs bg-secondary border-tertiary"
                     placeholder="Gostou ou não gostou? Deixe sua opinião sobre essa obra :)"
                     rows={5}
                   ></textarea>
                 </form>
               </div>
               <div>
-                <button className="px-8 py-2 text-sm font-bold border rounded-sm bg-secondary border-tertiary">
+                <button className="px-8 py-2 text-sm font-bold border rounded-xs bg-secondary border-tertiary">
                   Enviar
                 </button>
               </div>

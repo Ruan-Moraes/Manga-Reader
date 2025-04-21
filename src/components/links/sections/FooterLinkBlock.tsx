@@ -13,10 +13,10 @@ const FooterLinksSection = ({
 }: FooterLinksSectionTypes) => {
   return (
     <div className={`bg-primary-default ${className}`}>
-      <div className="p-2 font-bold text-center border-2 rounded-sm rounded-b-none border-tertiary">
+      <div className="p-2 font-bold text-center border-2 rounded-xs rounded-b-none border-tertiary">
         <h2 className="text-shadow-highlight">{title}</h2>
       </div>
-      <div className="flex flex-col px-2 text-sm text-center border-2 border-t-0 rounded-sm rounded-t-none border-tertiary">
+      <div className="flex flex-col px-2 text-sm text-center border-2 border-t-0 rounded-xs rounded-t-none border-tertiary">
         {links.map((link, index) => {
           const { href, text } = link;
 

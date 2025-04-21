@@ -57,12 +57,12 @@ const MenuLinkBlock = () => {
       </div>
       <div className="flex items-center w-full gap-2 mt-auto ml-auto text-center mobile-sm:text-xs mobile-md:text-sm">
         <button
-          className="h-10 px-4 font-bold border rounded-sm border-tertiary bg-secondary grow"
+          className="h-10 px-4 font-bold border rounded-xs border-tertiary bg-secondary grow"
           onClick={clearCache}
         >
           Limpar cache
         </button>
-        <button className="h-10 px-4 border rounded-sm border-tertiary bg-secondary">
+        <button className="h-10 px-4 border rounded-xs border-tertiary bg-secondary">
           <GrDocumentConfig className="text-2xl" />
         </button>
       </div>

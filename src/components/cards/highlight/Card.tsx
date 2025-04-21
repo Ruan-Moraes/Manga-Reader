@@ -62,12 +62,12 @@ const Card = ({
 
   return (
     <div className="flex flex-col items-start">
-      <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
+      <div className="px-3 py-1 rounded-xs rounded-b-none bg-tertiary">
         <span className="font-bold">{type}</span>
       </div>
       <div className="flex flex-row items-center w-full gap-2">
         {isLoading && (
-          <div className="flex flex-col w-2/4 border rounded-sm rounded-tl-none border-tertiary">
+          <div className="flex flex-col w-2/4 border rounded-xs rounded-tl-none border-tertiary">
             <div className="flex items-center justify-center h-44 mobile-md:h-56">
               <span className="font-bold text-center text-tertiary">
                 {cover}
@@ -92,7 +92,7 @@ const Card = ({
         {!isLoading && (
           <div
             ref={detailsHTML}
-            className="flex flex-col w-2/4 overflow-hidden border rounded-sm rounded-tl-none border-tertiary"
+            className="flex flex-col w-2/4 overflow-hidden border rounded-xs rounded-tl-none border-tertiary"
           >
             <div className="h-44 mobile-md:h-56">
               <CustomLink href={`/titles/${id}`} className="h-full">

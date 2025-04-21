@@ -13,7 +13,7 @@ const TitleDescription = ({
     <>
       <div className="flex flex-col gap-2">
         <div>
-          <h3 className="px-2 py-1 text-sm font-bold text-center rounded-sm bg-tertiary text-shadow-default">
+          <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">
             Sinopse
           </h3>
         </div>
@@ -23,7 +23,7 @@ const TitleDescription = ({
       </div>
       <div className="flex flex-col gap-2">
         <div>
-          <h3 className="px-2 py-1 text-sm font-bold text-center rounded-sm bg-tertiary text-shadow-default">
+          <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">
             Gêneros
           </h3>
         </div>

@@ -25,7 +25,8 @@ import TermsOfUse from './routes/terms/TermsOfUse.tsx';
 import Dmca from './routes/terms/Dmca.tsx';
 import NotFound from './routes/error/NotFound.tsx';
 
-import { UserModalProvider } from './context/user/UserModalContext';
+import { UserModalProvider } from './context/modals/user/UserModalContext.tsx';
+import { ConfirmModalProvider } from './context/modals/confirm/ConfirmModalContext.tsx';
 
 import './styles/index.css';
 
@@ -137,9 +138,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <UserModalProvider>
-        <RouterProvider router={routes} />
-        <Toast />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ConfirmModalProvider>
+          <RouterProvider router={routes} />
+          <Toast />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        </ConfirmModalProvider>
       </UserModalProvider>
     </QueryClientProvider>
   </StrictMode>

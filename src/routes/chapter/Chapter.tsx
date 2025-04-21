@@ -10,6 +10,7 @@ import Footer from './../../layouts/Footer';
 
 import Warning from '../../components/notifications/Warning';
 import CommentInput from '../../components/inputs/CommentInput';
+import FilterComments from '../../components/comments/FilterComments';
 // import Comment from '../../components/comments/Comment';
 
 // import { MdAdminPanelSettings } from 'react-icons/md';
@@ -109,7 +110,7 @@ const Chapter = () => {
   // }, [previousScrollPosition, isScrollingUp, timeoutId]);
 
   if (isNaN(Number(chapterId))) {
-    // Todo: Implement a way to check if the chapter exists
+    // TODO: Implement a way to check if the chapter exists
 
     return (
       <Main>
@@ -272,10 +273,10 @@ const Chapter = () => {
                 </form>
               </div>
               <div className="flex gap-2">
-                <button className="p-2 border rounded-sm bg-secondary border-tertiary grow">
+                <button className="p-2 border rounded-xs bg-secondary border-tertiary grow">
                   Anterior
                 </button>
-                <button className="p-2 border rounded-sm bg-secondary border-tertiary grow">
+                <button className="p-2 border rounded-xs bg-secondary border-tertiary grow">
                   Próximo
                 </button>
               </div>
@@ -322,7 +323,10 @@ const Chapter = () => {
               <div>
                 <h3 className="text-xl font-bold">Comentários</h3>
               </div>
-              <CommentInput placeholder="Deixe seu comentário" />
+              <div className="flex flex-col gap-4">
+                <CommentInput placeholder="Deixe seu comentário" />
+                <FilterComments />
+              </div>
             </div>
             <div className="flex flex-col -mt-4">
               <CommentsList />
@@ -330,7 +334,7 @@ const Chapter = () => {
           </div>
         </section>
         <div
-          className="fixed bottom-[calc(0%_-_0.5rem)] shadow-black left-0 right-0 flex justify-center gap-2 p-2 m-4 mb-2 transition-all transform border duration-50 bg-secondary border-tertiary"
+          className="fixed bottom-[calc(0%_-_0.5rem)] shadow-black left-0 right-0 flex justify-center gap-2 p-2 m-4 mb-2 transition-all transform border duration-50 bg-secondary border-tertiary rounded-xs"
           ref={bottomNavRef}
         >
           <div className="grow">
@@ -461,10 +465,10 @@ const Chapter = () => {
             </form>
           </div>
           <div className="flex gap-2">
-            <button className="p-2 border rounded-sm bg-secondary border-tertiary grow">
+            <button className="p-2 border rounded-xs bg-secondary border-tertiary grow">
               Anterior
             </button>
-            <button className="p-2 border rounded-sm bg-secondary border-tertiary grow">
+            <button className="p-2 border rounded-xs bg-secondary border-tertiary grow">
               Próximo
             </button>
           </div>

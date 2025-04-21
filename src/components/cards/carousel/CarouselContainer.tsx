@@ -1,6 +1,8 @@
 import { useMemo, useRef, useEffect } from 'react';
 // @ts-expect-error - ignore import error
 import { Splide } from '@splidejs/react-splide';
+// @ts-expect-error - ignore import error
+import '@splidejs/react-splide/css';
 
 import UseFetchTitles from '../../../hooks/useFetchTitles';
 
@@ -52,7 +54,7 @@ const CarouselContainer = ({
             pagination: false,
             arrows: true,
             classes: {
-              arrow: `rounded-sm align-middle flex z-10 cursor-pointer w-8 px-2 py-2 bg-primary-opacity-80 absolute top-1/2 transform -translate-y-1/2 border border-tertiary`,
+              arrow: `rounded-xs align-middle flex z-10 cursor-pointer w-8 px-2 py-2 bg-primary-opacity-80 absolute top-1/2 transform -translate-y-1/2 border border-tertiary`,
             },
           }}
           ref={splideRef}
@@ -79,7 +81,7 @@ const CarouselContainer = ({
 
   return (
     <section className="flex flex-col items-start">
-      <div className="px-4 py-2 rounded-t-sm bg-tertiary">
+      <div className="px-4 py-2 rounded-t-xs bg-tertiary">
         <h2 className="flex flex-col items-center text-center">
           <CustomLink
             href="/categories?sort=most_read&status=all"
@@ -89,7 +91,7 @@ const CarouselContainer = ({
           <span className="text-xs">({subTitle})</span>
         </h2>
       </div>
-      <div className="w-full border rounded-sm rounded-tl-none border-tertiary h-[18rem] overflow-hidden">
+      <div className="w-full border rounded-xs rounded-tl-none border-tertiary h-[18rem] overflow-hidden">
         {allChildren}
       </div>
     </section>

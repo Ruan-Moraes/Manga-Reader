@@ -11,7 +11,7 @@ const CommentInformation = ({
 }: CommentInformationProps) => {
   return (
     <div className="flex justify-end gap-2 text-[0.5625rem]">
-      <div className="px-2 py-1 rounded-sm shadow-lg bg-primary-default">
+      <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
         <span className=" text-shadow-default">
           {treatDate(commentData, {
             year: 'numeric',
@@ -23,7 +23,7 @@ const CommentInformation = ({
         </span>
       </div>
       {wasEdited && (
-        <div className="px-2 py-1 rounded-sm shadow-lg bg-primary-default">
+        <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
           <span className=" text-shadow-default">Editado</span>
         </div>
       )}

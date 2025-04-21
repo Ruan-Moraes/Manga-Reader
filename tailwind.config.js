@@ -2,16 +2,11 @@
 import plugin from 'tailwindcss/plugin';
 
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
   safelist: [
     'border-quaternary-default !important',
     'border-quinary-default !important',
     'text-quinary-default !important',
-    // 'ml-2 !important',
-    // 'ml-4 !important',
-    // 'ml-6 !important',
-    // 'ml-8 !important',
-    // 'ml-10 !important',
   ],
   theme: {
     extend: {

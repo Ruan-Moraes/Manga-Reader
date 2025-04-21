@@ -21,7 +21,7 @@ const AuthenticationForm = ({
     <div className="flex flex-col gap-2">
       <div>
         <form onSubmit={onFormSubmit}>
-          <fieldset className="flex flex-col gap-6 p-4 border-2 rounded-sm border-tertiary">
+          <fieldset className="flex flex-col gap-6 p-4 border-2 rounded-xs border-tertiary">
             <legend className="px-2 text-lg font-bold text-shadow-highlight">
               {title}
             </legend>

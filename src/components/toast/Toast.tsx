@@ -4,15 +4,15 @@ import { ToastContainer } from 'react-toastify';
 import { POSITIONS } from '../../constants/POSITIONS';
 
 // const contextClass = {
-//   info: 'bg-primary-default overflow-hidden text-primary p-2 rounded-sm flex gap-2 items-center',
+//   info: 'bg-primary-default overflow-hidden text-primary p-2 rounded-xs flex gap-2 items-center',
 //   success:
-//     'bg-primary-default overflow-hidden text-primary p-2 rounded-sm flex gap-2 items-center',
+//     'bg-primary-default overflow-hidden text-primary p-2 rounded-xs flex gap-2 items-center',
 //   error:
-//     'bg-primary-default overflow-hidden text-primary p-2 rounded-sm flex gap-2 items-center',
+//     'bg-primary-default overflow-hidden text-primary p-2 rounded-xs flex gap-2 items-center',
 //   warning:
-//     'bg-primary-default overflow-hidden text-primary p-2 rounded-sm flex gap-2 items-center',
+//     'bg-primary-default overflow-hidden text-primary p-2 rounded-xs flex gap-2 items-center',
 //   default:
-//     'bg-primary-default overflow-hidden text-primary p-2 rounded-sm flex gap-2 items-center',
+//     'bg-primary-default overflow-hidden text-primary p-2 rounded-xs flex gap-2 items-center',
 // };
 
 const Toast = () => (

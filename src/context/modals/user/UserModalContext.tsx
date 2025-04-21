@@ -1,6 +1,6 @@
 import { createContext, useState, ReactNode } from 'react';
 
-import { UserTypes } from '../../types/UserTypes';
+import { UserTypes } from '../../../types/UserTypes';
 
 type UserModalContextProps = {
   isUserModalOpen: boolean;
@@ -17,7 +17,7 @@ const UserModalContext = createContext<UserModalContextProps | undefined>(
 );
 
 const UserModalProvider = ({ children }: { children: ReactNode }) => {
-  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserTypes | null>(null);
 
   const openUserModal = () => {

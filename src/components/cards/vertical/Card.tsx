@@ -62,10 +62,10 @@ const Card = ({
 
   return (
     <div className="flex flex-col items-start">
-      <div className="px-3 py-1 rounded-sm rounded-b-none bg-tertiary">
+      <div className="px-3 py-1 rounded-xs rounded-b-none bg-tertiary">
         <span className="font-bold">{type}</span>
       </div>
-      <div className="flex flex-col w-full border rounded-sm rounded-tl-none border-tertiary">
+      <div className="flex flex-col w-full border rounded-xs rounded-tl-none border-tertiary">
         {isLoading && (
           <div className="flex items-center justify-center h-44 mobile-md:h-56">
             <span className="font-bold text-tertiary">{cover}</span>
@@ -103,7 +103,7 @@ const Card = ({
                 <span className="hidden mobile-md:block">Capítulo:</span>
                 <span className="flex items-center gap-2">
                   {index === 0 ? (
-                    <span className="p-1 text-[0.5rem] rounded-sm bg-tertiary">
+                    <span className="p-1 text-[0.5rem] rounded-xs bg-tertiary">
                       {updatedAtDate}
                     </span>
                   ) : (

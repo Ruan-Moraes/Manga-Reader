@@ -10,7 +10,7 @@ const GenresBox = ({ genres = 'Carregando...' }: GenresBoxTypes) => {
           {genres.map((genre, index) => (
             <li
               key={index}
-              className="p-1 border rounded-sm bg-secondary border-tertiary"
+              className="p-1 border rounded-xs bg-secondary border-tertiary"
             >
               {genre}
             </li>

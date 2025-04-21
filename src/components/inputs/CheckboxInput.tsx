@@ -12,7 +12,7 @@ const CheckboxInput = ({ label, href, linkText }: CheckboxInputTypes) => {
       <label className="flex items-center gap-2 w-max">
         <div className="relative w-5 h-5">
           <input
-            className="w-full h-full transition duration-300 border rounded-sm appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-5 peer checked:bg-quaternary-opacity-50"
+            className="w-full h-full transition duration-300 border rounded-xs appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-5 peer checked:bg-quaternary-opacity-50"
             name="checkboxInput"
             type="checkbox"
           />

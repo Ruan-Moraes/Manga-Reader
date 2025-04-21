@@ -125,14 +125,14 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
     <div className="flex flex-col gap-4">
       <div>
         <form onSubmit={(e) => e.preventDefault()}>
-          <div className="text-xs border rounded-sm bg-secondary border-tertiary">
+          <div className="text-xs border rounded-xs bg-secondary border-tertiary">
             <div className="flex p-2">
               <div
                 ref={textareaRef}
                 onClick={handleInputChange}
                 onBlur={addTextareaPlaceholder}
                 contentEditable="true"
-                className="flex flex-col w-full h-full gap-2 p-2 rounded-sm outline-none resize-none bg-primary-default scrollbar-hidden"
+                className="flex flex-col w-full h-full gap-2 p-2 rounded-xs outline-none resize-none bg-primary-default scrollbar-hidden"
               >
                 {images.map((url, index) => (
                   <div
@@ -141,12 +141,12 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
                   >
                     <img
                       src={url}
-                      className="object-cover object-center w-full rounded-sm max-h-64"
+                      className="object-cover object-center w-full rounded-xs max-h-64"
                       alt={`uploaded-${index}`}
                     />
                     <button
                       type="button"
-                      className="absolute top-0 right-0 px-2 py-1 text-xs font-bold bg-red-600 rounded-tr-sm rounded-bl-sm"
+                      className="absolute top-0 right-0 px-2 py-1 text-xs font-bold bg-red-600 rounded-tr-xs rounded-bl-xs"
                       contentEditable="false"
                       onClick={() => handleRemoveImage(index)}
                     >
@@ -172,7 +172,7 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
               <div>
                 <button
                   type="submit"
-                  className="px-3 py-2 text-xs transition-colors duration-300 rounded-sm bg-primary-default hover:bg-quaternary-opacity-25"
+                  className="px-3 py-2 text-xs transition-colors duration-300 rounded-xs bg-primary-default hover:bg-quaternary-opacity-25"
                 >
                   Enviar
                 </button>

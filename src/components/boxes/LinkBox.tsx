@@ -23,7 +23,7 @@ const LinkBox = ({ children, className }: LinkBoxTypes) => {
   return (
     <div
       onClick={handleClick}
-      className={`text-center flex items-center justify-center relative h-10 duration-300 border rounded-sm bg-secondary border-tertiary hover:bg-quaternary-opacity-25 ${className}`}
+      className={`text-center flex items-center justify-center relative h-10 duration-300 border rounded-xs bg-secondary border-tertiary hover:bg-quaternary-opacity-25 ${className}`}
     >
       {React.cloneElement(children, { ref: childRef })}
     </div>

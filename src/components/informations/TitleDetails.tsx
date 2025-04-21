@@ -23,7 +23,7 @@ const TitleDetails = ({
   isLoading,
 }: TitleDetailsTypes) => {
   const lastChapter = useMemo(
-    // Todo: Alterar quando a API estiver pronta
+    // TODO: Alterar quando a API estiver pronta
 
     () => chapters?.[chapters.length - 1],
     [chapters]

@@ -1,4 +1,4 @@
-import { useUserModalContext } from '../../context/user/useUserModalContext';
+import { useUserModalContext } from '../../context/modals/user/useUserModalContext';
 
 import UserModal from '../modals/user/UserModal';
 import Comment from './Comment';

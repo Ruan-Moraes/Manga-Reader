@@ -33,7 +33,7 @@ const Card = ({
   isLoading,
 }: CardTypes) => {
   const lastChapter = useMemo(
-    // Todo: Alterar quando a API estiver pronta
+    // TODO: Alterar quando a API estiver pronta
 
     () => chapters?.[chapters.length - 1],
     [chapters]
@@ -51,7 +51,7 @@ const Card = ({
 
   return (
     <div className="flex flex-col items-start flex-shrink-0">
-      <div className="flex flex-col px-3 py-1 text-center rounded-sm rounded-b-none bg-tertiary">
+      <div className="flex flex-col px-3 py-1 text-center rounded-b-none rounded-xs bg-tertiary">
         <span className="font-bold">{type}</span>
         <span className="text-xs">
           {isLoading ? (
@@ -61,7 +61,7 @@ const Card = ({
           )}
         </span>
       </div>
-      <div className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-sm overflow-hidden">
+      <div className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-xs overflow-hidden">
         {isLoading && (
           <span className="flex items-center justify-center h-full font-bold text-tertiary">
             {cover}
@@ -77,7 +77,7 @@ const Card = ({
           </CustomLink>
         )}
       </div>
-      <div className="w-[20rem] px-2 py-1 rounded-b-sm bg-tertiary">
+      <div className="w-[20rem] px-2 py-1 rounded-b-xs bg-tertiary">
         {isLoading && (
           <span className="block font-bold text-center text-shadow-default">
             {title}

@@ -97,7 +97,7 @@ const Comment = ({
           marginLeft: nestedLevel === 0 ? 0 : 0.5 + 'rem',
         }}
         className={clsx(
-          'flex flex-col gap-2 p-2 border rounded-sm rounded-bl-none border-tertiary mt-4',
+          'flex flex-col gap-2 p-2 border rounded-xs rounded-bl-none border-tertiary mt-4',
           {
             'bg-secondary': !isHighlighted,
             'bg-quaternary-opacity-25': isHighlighted,

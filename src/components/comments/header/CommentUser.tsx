@@ -19,12 +19,12 @@ const CommentUser = ({
 }: CommentUserProps) => {
   return (
     <div className="flex gap-2">
-      <div className="w-16 h-16 rounded-sm shrink-0">
+      <div className="w-16 h-16 rounded-xs shrink-0">
         <img
           onClick={() => onClickProfile(user)}
           src={user.photo}
           alt={`Foto de perfil de ${user.name}`}
-          className="object-cover w-full h-full rounded-sm"
+          className="object-cover w-full h-full rounded-xs"
         />
       </div>
       <div className="flex flex-col justify-center overflow-hidden">

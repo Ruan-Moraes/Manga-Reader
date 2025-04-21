@@ -9,7 +9,7 @@ import UseFetchTitles from '../../../hooks/useFetchTitles';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
-import ButtonHighLight from '../../buttons/RaisedButton';
+import RaisedButton from '../../buttons/RaisedButton';
 
 const CardsContainer = ({
   url,
@@ -75,7 +75,7 @@ const CardsContainer = ({
       >
         {allChildren.slice(0, visible)}
       </div>
-      <ButtonHighLight onClick={handleClick} text="Ver Mais" />
+      <RaisedButton onClick={handleClick} text="Ver Mais" />
     </section>
   );
 };

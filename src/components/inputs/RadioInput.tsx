@@ -78,7 +78,7 @@ const RadioInput = <T extends string | number | readonly string[] | undefined>({
 
   return (
     <div {...(className ? { className } : {})}>
-      <label className="relative flex items-center justify-center h-10 text-sm text-center transition-colors duration-300 border rounded-sm cursor-pointer hover:bg-quaternary-opacity-25 bg-secondary border-tertiary">
+      <label className="relative flex items-center justify-center h-10 text-sm text-center transition-colors duration-300 border rounded-xs cursor-pointer hover:bg-quaternary-opacity-25 bg-secondary border-tertiary">
         <input
           className="absolute top-0 bottom-0 left-0 right-0 appearance-none cursor-pointer "
           name={fieldName}

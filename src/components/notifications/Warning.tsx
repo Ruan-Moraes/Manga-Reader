@@ -16,7 +16,7 @@ const Warning = ({ linkText, color, title, message, href }: WarningTypes) => {
       className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
     >
       <div
-        className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-sm border-${color}-default`}
+        className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-xs border-${color}-default`}
       >
         <div>
           <h2>

@@ -38,7 +38,7 @@ const Card = ({
 
   return (
     <div className="flex gap-2">
-      <div className="flex flex-col w-2/4 overflow-hidden border border-b-0 rounded-t-sm border-tertiary">
+      <div className="flex flex-col w-2/4 overflow-hidden border border-b-0 rounded-t-xs border-tertiary">
         {isLoading && (
           <div className="flex items-center justify-center w-full border-b h-44 mobile-md:h-56 border-b-tertiary">
             <p className="text-tertiary">{cover}</p>
