@@ -325,7 +325,7 @@ const Chapter = () => {
               </div>
               <div className="flex flex-col gap-4">
                 <CommentInput placeholder="Deixe seu comentário" />
-                <FilterComments />
+                <FilterComments title="Filtar comentários por:" />
               </div>
             </div>
             <div className="flex flex-col -mt-4">

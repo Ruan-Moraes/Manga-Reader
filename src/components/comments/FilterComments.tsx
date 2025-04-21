@@ -1,30 +1,30 @@
 import { AiFillLike } from 'react-icons/ai';
 import { AiFillDislike } from 'react-icons/ai';
-import { FaCalendarDays } from 'react-icons/fa6';
+// import { FaCalendarDays } from 'react-icons/fa6';
+
 import IconButton from '../buttons/IconButton';
+import CalendarArrowDown from '../icons/CalendarArrowDown';
+import CalendarArrowUp from '../icons/CalendarArrowUp';
 
 type FilterCommentsProps = {
-  // Define the props for FilterComments component here
+  title: string;
 };
 
-const FilterComments = () => {
+const FilterComments = ({ title }: FilterCommentsProps) => {
   return (
     <div className="flex flex-col gap-1 p-2 border rounded-xs bg-secondary border-tertiary">
       <div>
-        <h4 className="font-bold">Filtar comentários por:</h4>
+        <h4 className="font-bold">{title}</h4>
       </div>
-      <div className="flex items-center gap-2">
-        <IconButton onClick={() => {}} className="flex items-center gap-2 py-2">
-          <AiFillLike size={16} />
-          <span className="text-xs font-bold">mais curtidas</span>
-        </IconButton>
-        <IconButton onClick={() => {}} className="flex items-center gap-2 py-2">
+      <div className="flex items-center gap-2 grow">
+        <IconButton onClick={() => {}} className="h-8">
           <AiFillDislike size={13} />
-          <span className="text-xs font-bold">mais dislikes</span>
         </IconButton>
-        <IconButton onClick={() => {}} className="flex items-center gap-2 py-2">
-          <FaCalendarDays size={13} />
+        <IconButton onClick={() => {}} className="h-8">
+          <AiFillLike size={13} />
         </IconButton>
+        <CalendarArrowDown onClick={() => {}} className="h-8" />
+        <CalendarArrowUp onClick={() => {}} className="h-8" />
       </div>
     </div>
   );
