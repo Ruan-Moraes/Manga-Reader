@@ -110,7 +110,7 @@ const Chapter = () => {
   // }, [previousScrollPosition, isScrollingUp, timeoutId]);
 
   if (isNaN(Number(chapterId))) {
-    // TODO: Implement a way to check if the chapter exists
+    // TODO: Implementar uma maneira de lidar com capítulos inválidos
 
     return (
       <Main>

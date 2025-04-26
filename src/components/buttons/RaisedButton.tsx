@@ -3,7 +3,7 @@ type RaisedButtonProps = {
   text: string;
 };
 
-// TODO: Refactor this component
+// TODO: Refatora esse componente
 
 const RaisedButton = ({ onClick, text }: RaisedButtonProps) => {
   return (

@@ -10,6 +10,7 @@ type FilterCommentsProps = {
   title: string;
 };
 
+// TODO: Fazer a lógica de filtro
 const FilterComments = ({ title }: FilterCommentsProps) => {
   return (
     <div className="flex flex-col gap-1 p-2 border rounded-xs bg-secondary border-tertiary">

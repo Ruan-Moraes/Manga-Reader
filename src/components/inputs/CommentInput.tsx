@@ -114,7 +114,7 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
   ]);
 
   const uploadImage = useCallback(() => {
-    // TODO: lógica para envio das imagens ao servidor
+    // TODO: Fazer lógica de upload de imagem
   }, []);
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
                 onClick={handleInputChange}
                 onBlur={addTextareaPlaceholder}
                 contentEditable="true"
-                className="flex flex-col w-full h-full gap-2 p-2 rounded-xs outline-none resize-none bg-primary-default scrollbar-hidden"
+                className="flex flex-col w-full h-full gap-2 p-2 outline-none resize-none rounded-xs bg-primary-default scrollbar-hidden"
               >
                 {images.map((url, index) => (
                   <div
@@ -160,7 +160,7 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
               <div className="flex gap-2">
                 <IconButton
                   onClick={() => {
-                    // TODO: adicionar seletor de emojis
+                    // TODO: Adicionar seletor de emojis
                   }}
                 >
                   <IoImages />

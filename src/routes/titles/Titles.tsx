@@ -10,8 +10,9 @@ import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
 import Card from '../../components/cards/title/Card';
+import CommentInput from '../../components/inputs/CommentInput';
+import FilterComments from '../../components/comments/FilterComments';
 import CommentsList from '../../components/comments/CommentsList';
-import Comment from '../../components/comments/Comment';
 
 import { BsBookmark } from 'react-icons/bs';
 import { AiOutlineLike } from 'react-icons/ai';
@@ -34,9 +35,8 @@ const Titles = () => {
     return titles[Number(id)];
   }, []);
 
-  // TODO: Implementar a função abaixo
   const getTitleFromAPI = useCallback((id: string) => {
-    console.log('fetching title from API' + id);
+    console.log('fetching title from API' + id); // TODO: Implementar lógica de busca titulos da API
   }, []);
 
   const getTitle = useCallback(
@@ -128,7 +128,7 @@ const Titles = () => {
                     name=""
                     id=""
                     placeholder="Pesquisar Capítulo"
-                    className="w-full h-full p-2 border rounded-xs rounded-r-none appearance-none 1 border-tertiary bg-secondary"
+                    className="w-full h-full p-2 border rounded-r-none appearance-none rounded-xs 1 border-tertiary bg-secondary"
                   />
                 </div>
                 <div className="flex items-center px-4 py-2 border border-l-0 rounded-r-xs border-tertiary bg-secondary">
@@ -658,19 +658,9 @@ const Titles = () => {
               <div>
                 <h3 className="text-xl font-bold">Comentários</h3>
               </div>
-              <div>
-                <form>
-                  <textarea
-                    className="w-full p-2 text-xs border rounded-xs bg-secondary border-tertiary"
-                    placeholder="Gostou ou não gostou? Deixe sua opinião sobre essa obra :)"
-                    rows={5}
-                  ></textarea>
-                </form>
-              </div>
-              <div>
-                <button className="px-8 py-2 text-sm font-bold border rounded-xs bg-secondary border-tertiary">
-                  Enviar
-                </button>
+              <div className="flex flex-col gap-4">
+                <CommentInput placeholder="Deixe seu comentário" />
+                <FilterComments title="Filtar comentários por:" />
               </div>
             </div>
             <div className="flex flex-col -mt-4">

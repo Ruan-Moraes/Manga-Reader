@@ -2,20 +2,43 @@ import clsx from 'clsx';
 
 type IconButtonProps = {
   onClick: () => void;
-  children?: React.ReactNode;
   className?: string;
+  children?: React.ReactNode;
+  dislikeCount?: string;
+  likeCount?: string;
 };
 
-const IconButton = ({ onClick, children, className }: IconButtonProps) => {
+const IconButton = ({
+  onClick,
+  className,
+  children,
+  dislikeCount,
+  likeCount,
+}: IconButtonProps) => {
   return (
     <button
       type="button"
       onClick={onClick}
       className={`px-3 transition-colors duration-300 rounded-xs bg-primary-default hover:bg-quaternary-opacity-25
-        ${clsx(!className && 'py-1', className && className)}
+        ${clsx(
+          !className && 'py-1',
+          className && className,
+          (likeCount || dislikeCount) && 'relative'
+        )}
         `}
     >
       {children}
+      {(likeCount || dislikeCount) && (
+        <span
+          className={`flex justify-center items-center text-center absolute top-[-0.25rem] right-[-0.25rem] text-[0.5rem] font-bold text-white p-0.5 border border-tertiary rounded-full ${clsx(
+            dislikeCount && 'bg-red-500',
+            likeCount && 'bg-green-500'
+          )}`}
+        >
+          {likeCount && <span>{likeCount}</span>}
+          {dislikeCount && <span>{dislikeCount}</span>}
+        </span>
+      )}
     </button>
   );
 };

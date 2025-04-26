@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 
+import { CommentTypes } from '../../types/CommentTypes';
 import { UserTypes } from '../../types/UserTypes';
 
 import CommentInformation from './header/CommentInformation';
@@ -7,23 +8,12 @@ import CommentUser from './header/CommentUser';
 import CommentContent from './body/CommentContent';
 import CommentActions from './footer/CommentActions';
 
-type CommentProps = {
-  onClickProfile: (userData: UserTypes) => void;
-  nestedLevel?: number;
-
-  isOwner?: boolean;
-  isHighlighted?: boolean;
-  wasEdited?: boolean;
-  commentData: Date;
-  commentText?: string;
-  commentImage?: string;
-
-  user: UserTypes;
-};
-
 const Comment = ({
   onClickProfile,
+
   nestedLevel = 0,
+
+  user,
 
   isOwner,
   isHighlighted,
@@ -32,9 +22,7 @@ const Comment = ({
   commentData,
   commentText,
   commentImage,
-
-  user,
-}: CommentProps) => {
+}: CommentTypes & { nestedLevel?: number }) => {
   if (!commentText && !commentImage) {
     return null;
   }
@@ -110,13 +98,11 @@ const Comment = ({
           isHighlighted={isHighlighted}
           user={userData}
         />
-
         <CommentContent
           commentText={commentText}
           commentImage={commentImage}
           user={userData}
         />
-
         <CommentActions isOwner={isOwner} />
       </div>
     </div>
