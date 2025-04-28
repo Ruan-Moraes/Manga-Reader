@@ -10,6 +10,8 @@ import CommentActions from './footer/CommentActions';
 
 const Comment = ({
   onClickProfile,
+  onClickEdit,
+  onClickDelete,
 
   nestedLevel = 0,
 
@@ -22,7 +24,11 @@ const Comment = ({
   commentData,
   commentText,
   commentImage,
-}: CommentTypes & { nestedLevel?: number }) => {
+}: { nestedLevel?: number } & {
+  onClickProfile: (user: UserTypes) => void;
+  onClickEdit: () => void;
+  onClickDelete: () => void;
+} & CommentTypes) => {
   if (!commentText && !commentImage) {
     return null;
   }
@@ -62,7 +68,7 @@ const Comment = ({
 
   return (
     <div
-      style={{ marginLeft: calculateNastedComment(nestedLevel) + 'px' }}
+      style={{ marginLeft: calculateNastedComment(nestedLevel) / 16 + 'rem' }}
       className={clsx({
         [`relative`]: nestedLevel > 0,
       })}
@@ -73,7 +79,7 @@ const Comment = ({
             key={index}
             className="absolute h-full border-l border-quaternary-opacity-25"
             style={{
-              left: calculateNestedBorder(index) + 'px',
+              left: calculateNestedBorder(index) / 16 + 'rem',
             }}
           ></div>
         ))}

@@ -1,8 +1,6 @@
 import { UserTypes } from './UserTypes';
 
 export type CommentTypes = {
-  onClickProfile: (userData: UserTypes) => void;
-
   commentId: string;
   parentCommentId?: string;
 

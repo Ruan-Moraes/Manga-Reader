@@ -13,29 +13,34 @@ import Comment from './Comment';
 
 const CommentsList = () => {
   const { openUserModal, setUserData } = useUserModalContext();
+
+  const handleClickProfile = useCallback(
+    ({ id, moderator, member, name, photo }: UserTypes): void => {
+      setUserData({
+        id,
+        moderator,
+        member,
+        name,
+        photo,
+      });
+
+      openUserModal();
+    },
+    [openUserModal, setUserData]
+  );
+
+  const handleClickEdit = useCallback(() => {
+    console.log('Edit comment');
+  }, []);
+  const handleClickDelete = useCallback(() => {
+    console.log('Delete comment');
+  }, []);
+
   const [comments, setComments] = useState<
     Omit<CommentTypes, 'onClickProfile'>[]
   >([]);
 
-  const handleClickProfile = ({
-    id,
-    moderator,
-    member,
-    name,
-    photo,
-  }: UserTypes): void => {
-    setUserData({
-      id,
-      moderator,
-      member,
-      name,
-      photo,
-    });
-
-    openUserModal();
-  };
-
-  // * Mock data
+  // * Mock data // TODO: Remover quando a API estiver pronta
   const fetchComments = useCallback(() => {
     const comments = [
       {
@@ -244,7 +249,7 @@ const CommentsList = () => {
           'https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg',
       },
       {
-        commentId: 'e2f3b4c5-6d7e-4f8b-9a0b-1c2d3e4f5g6h',
+        commentId: '1b0dd1ca-a78d-4e60-980b-c13470c58de2',
         parentCommentId: 'd1e2f3g4-h5i6-7j8k-9l0m-1n2o3p4q5r6s',
         user: {
           id: '5',
@@ -312,12 +317,12 @@ const CommentsList = () => {
     []
   );
 
-  const buildCommentTree = useCallback(() => {
+  const buildCommentsTree = useCallback(() => {
     const commentMap = createCommentMap(comments as CommentTypes[]);
-    const rootComments = buildTree(commentMap, comments as CommentTypes[]);
+    const commentsTree = buildTree(commentMap, comments as CommentTypes[]);
 
-    return flattenTree(rootComments);
-  }, [buildTree, createCommentMap, comments, flattenTree]);
+    return flattenTree(commentsTree);
+  }, [createCommentMap, comments, buildTree, flattenTree]);
 
   useEffect(() => {
     fetchComments();
@@ -326,13 +331,15 @@ const CommentsList = () => {
   return (
     <div className="flex flex-col -mt-4">
       <UserModal />
-      {buildCommentTree().map(({ comment, nestedLevel }) => (
+      {buildCommentsTree().map(({ comment, nestedLevel }) => (
         <Comment
           key={comment.commentId}
           onClickProfile={handleClickProfile}
+          onClickEdit={handleClickEdit}
+          onClickDelete={handleClickDelete}
+          nestedLevel={nestedLevel}
           commentId={comment.commentId}
           parentCommentId={comment.parentCommentId}
-          nestedLevel={nestedLevel}
           user={comment.user}
           isOwner={comment.isOwner}
           isHighlighted={comment.isHighlighted}

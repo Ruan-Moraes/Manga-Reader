@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { AiFillLike } from 'react-icons/ai';
 import { AiFillDislike } from 'react-icons/ai';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import { MdEdit } from 'react-icons/md';
 
 import { useConfirmModalContext } from '../../../context/modals/confirm/useModalContext';
 
@@ -50,13 +51,22 @@ const CommentActions = ({ isOwner }: CommentActionsProps) => {
       </div>
       <div className="flex gap-2">
         {isOwner && (
-          <IconButton
-            onClick={() => {
-              openConfirmModal();
-            }}
-          >
-            <FaRegTrashAlt size={13} />
-          </IconButton>
+          <>
+            <IconButton
+              onClick={() => {
+                openConfirmModal();
+              }}
+            >
+              <FaRegTrashAlt size={13} />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                openConfirmModal();
+              }}
+            >
+              <MdEdit size={13} />
+            </IconButton>
+          </>
         )}
         {/* TODO: Implementar lógica de resposta */}
         <BlackButton text="Responder" onClick={() => {}} />
