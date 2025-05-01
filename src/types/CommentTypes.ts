@@ -13,6 +13,9 @@ export type CommentTypes = {
   commentData: Date;
   commentText?: string;
   commentImage?: string;
+
+  dislikeCount: string;
+  likeCount: string;
 };
 
 export type CommentWithChildrenTypes = CommentTypes & {

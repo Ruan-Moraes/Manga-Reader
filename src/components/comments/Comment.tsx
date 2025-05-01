@@ -1,7 +1,10 @@
 import clsx from 'clsx';
+import { useState, useCallback } from 'react'; // Importe useState e useCallback
 
 import { CommentTypes } from '../../types/CommentTypes';
 import { UserTypes } from '../../types/UserTypes';
+
+import ConfirmModal from '../../components/modals/confirm/ConfirmModal'; // Importe o ConfirmModal
 
 import CommentInformation from './header/CommentInformation';
 import CommentUser from './header/CommentUser';
@@ -10,9 +13,11 @@ import CommentActions from './footer/CommentActions';
 
 const Comment = ({
   onClickProfile,
+
   onClickEdit,
   onClickDelete,
 
+  commentId,
   nestedLevel = 0,
 
   user,
@@ -24,11 +29,30 @@ const Comment = ({
   commentData,
   commentText,
   commentImage,
+
+  likeCount,
+  dislikeCount,
 }: { nestedLevel?: number } & {
   onClickProfile: (user: UserTypes) => void;
   onClickEdit: () => void;
-  onClickDelete: () => void;
+  onClickDelete: (id: string) => void;
 } & CommentTypes) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+
+  const handleOpenDeleteModal = useCallback(() => {
+    setIsDeleteModalOpen(true);
+  }, []);
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setIsDeleteModalOpen(false);
+  }, []);
+
+  const handleDeleteComment = useCallback(() => {
+    onClickDelete(commentId);
+
+    handleCloseDeleteModal();
+  }, [onClickDelete, commentId, handleCloseDeleteModal]);
+
   if (!commentText && !commentImage) {
     return null;
   }
@@ -37,7 +61,6 @@ const Comment = ({
     id: user.id,
     moderator: user.moderator,
     member: user.member,
-
     name: user.name,
     photo: user.photo,
   };
@@ -109,8 +132,21 @@ const Comment = ({
           commentImage={commentImage}
           user={userData}
         />
-        <CommentActions isOwner={isOwner} />
+        <CommentActions
+          isOwner={isOwner}
+          onDelete={handleOpenDeleteModal}
+          onEdit={onClickEdit}
+          likeCount={likeCount}
+          dislikeCount={dislikeCount}
+        />
       </div>
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onConfirm={handleDeleteComment}
+        onCancel={handleCloseDeleteModal}
+        title="Deletar comentário"
+        message="Você tem certeza que deseja deletar este comentário? Essa ação deletará os comentários relacionados a ele."
+      />
     </div>
   );
 };

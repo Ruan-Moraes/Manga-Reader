@@ -14,32 +14,6 @@ import Comment from './Comment';
 const CommentsList = () => {
   const { openUserModal, setUserData } = useUserModalContext();
 
-  const handleClickProfile = useCallback(
-    ({ id, moderator, member, name, photo }: UserTypes): void => {
-      setUserData({
-        id,
-        moderator,
-        member,
-        name,
-        photo,
-      });
-
-      openUserModal();
-    },
-    [openUserModal, setUserData]
-  );
-
-  const handleClickEdit = useCallback(() => {
-    console.log('Edit comment');
-  }, []);
-  const handleClickDelete = useCallback(() => {
-    console.log('Delete comment');
-  }, []);
-
-  const [comments, setComments] = useState<
-    Omit<CommentTypes, 'onClickProfile'>[]
-  >([]);
-
   // * Mock data // TODO: Remover quando a API estiver pronta
   const fetchComments = useCallback(() => {
     const comments = [
@@ -62,6 +36,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '42',
+        dislikeCount: '3',
       },
       {
         commentId: '3dd84f94-dd37-4bb2-aa91-990c61b44719',
@@ -81,6 +57,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '15',
+        dislikeCount: '7',
       },
       {
         commentId: 'cb64cd92-65f4-47c2-b64b-9f7080928041',
@@ -94,6 +72,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?',
+        likeCount: '28',
+        dislikeCount: '1',
       },
       {
         commentId: 'f1b0c4a2-3d5e-4f8b-8c7d-9a6e0f1b2c3e',
@@ -111,6 +91,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '56',
+        dislikeCount: '12',
       },
       {
         commentId: '34c6b2c6-59fc-4ac3-bddc-76d4f73ccc38',
@@ -131,6 +113,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '33',
+        dislikeCount: '5',
       },
       {
         commentId: 'e2f3b4c5-6d7e-4f8b-9a0b-1c2d3e4f5g6h',
@@ -150,6 +134,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '19',
+        dislikeCount: '4',
       },
       {
         commentId: 'f7g8h9i0-j1k2-3l4m-5n6o-7p8q9r0s1t2u',
@@ -170,6 +156,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '47',
+        dislikeCount: '8',
       },
       {
         commentId: 'v3w4x5y6-z7a8-9b0c-1d2e-3f4g5h6i7j8k',
@@ -190,45 +178,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentText:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
-      },
-      {
-        commentId: 'l9m0n1o2-p3q4-5r6s-7t8u-9v0w1x2y3z4a',
-        parentCommentId: 'f7g8h9i0-j1k2-3l4m-5n6o-7p8q9r0s1t2u',
-        user: {
-          id: '1',
-          name: 'Usuário de alta periculosidade',
-          photo:
-            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
-          moderator: {
-            isModerator: true,
-            since: new Date(
-              new Date().setFullYear(new Date().getFullYear() - 2)
-            ),
-          },
-        },
-        isOwner: true,
-        commentData: new Date(),
-        commentText:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
-      },
-      {
-        commentId: 'b5c6d7e8-f9a0-1b2c-3d4e-5f6g7h8i9j0k',
-        parentCommentId: 'e2f3b4c5-6d7e-4f8b-9a0b-1c2d3e4f5g6h',
-        user: {
-          id: '1',
-          name: 'Usuário de alta periculosidade',
-          photo:
-            'https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg',
-          moderator: {
-            isModerator: true,
-            since: new Date(
-              new Date().setFullYear(new Date().getFullYear() - 2)
-            ),
-          },
-        },
-        commentData: new Date(),
-        commentText:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+        likeCount: '24',
+        dislikeCount: '6',
       },
       {
         commentId: 'd1e2f3g4-h5i6-7j8k-9l0m-1n2o3p4q5r6s',
@@ -247,6 +198,8 @@ const CommentsList = () => {
         commentData: new Date(),
         commentImage:
           'https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg',
+        likeCount: '38',
+        dislikeCount: '2',
       },
       {
         commentId: '1b0dd1ca-a78d-4e60-980b-c13470c58de2',
@@ -262,11 +215,43 @@ const CommentsList = () => {
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?',
         commentImage:
           'https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png',
+        likeCount: '51',
+        dislikeCount: '9',
       },
     ];
 
     setComments(comments);
   }, []);
+
+  const handleClickProfile = useCallback(
+    ({ id, moderator, member, name, photo }: UserTypes): void => {
+      setUserData({
+        id,
+        moderator,
+        member,
+        name,
+        photo,
+      });
+
+      openUserModal();
+    },
+    [openUserModal, setUserData]
+  );
+
+  const handleClickEdit = useCallback(() => {
+    // TODO: Implementa Lógica de edição
+  }, []);
+  const onClickDelete = useCallback((id: string) => {
+    // TODO: Chama a API para deletar o comentário, e atualiza a lista
+
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.commentId !== id)
+    );
+  }, []);
+
+  const [comments, setComments] = useState<
+    Omit<CommentTypes, 'onClickProfile'>[]
+  >([]);
 
   const createCommentMap = useCallback((comments: CommentTypes[]) => {
     const map = new Map<string, CommentWithChildrenTypes>();
@@ -336,10 +321,9 @@ const CommentsList = () => {
           key={comment.commentId}
           onClickProfile={handleClickProfile}
           onClickEdit={handleClickEdit}
-          onClickDelete={handleClickDelete}
+          onClickDelete={onClickDelete}
           nestedLevel={nestedLevel}
           commentId={comment.commentId}
-          parentCommentId={comment.parentCommentId}
           user={comment.user}
           isOwner={comment.isOwner}
           isHighlighted={comment.isHighlighted}
@@ -347,6 +331,8 @@ const CommentsList = () => {
           commentData={comment.commentData}
           commentText={comment.commentText}
           commentImage={comment.commentImage}
+          likeCount={comment.likeCount}
+          dislikeCount={comment.dislikeCount}
         />
       ))}
     </div>

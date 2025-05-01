@@ -1,69 +1,48 @@
-import { useCallback } from 'react';
 import { AiFillLike } from 'react-icons/ai';
 import { AiFillDislike } from 'react-icons/ai';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
 
-import { useConfirmModalContext } from '../../../context/modals/confirm/useModalContext';
-
-import ConfirmModal from '../../modals/confirm/ConfirmModal';
 import IconButton from '../../buttons/IconButton';
 import BlackButton from '../../buttons/BlackButton';
 
 type CommentActionsProps = {
-  isOwner: boolean | undefined;
-  likeCount?: number;
-  dislikeCount?: number;
+  onDelete: () => void;
+  onEdit: () => void;
+
+  isOwner?: boolean;
+  dislikeCount: string;
+  likeCount: string;
 };
 
-const CommentActions = ({ isOwner }: CommentActionsProps) => {
-  const { openConfirmModal } = useConfirmModalContext();
+const CommentActions = ({
+  onDelete,
+  onEdit,
 
-  // TODO: Implementar a lógica de deletar comentário
-  // Provavelmente, passar o ID do comentário para o modal, deletar o comentário
-  // e deletar recursivamente quaisquer comentários relacionados que o referenciem.
+  isOwner,
 
-  const handleDelete = useCallback(() => {
-    // TODO: Implementar lógica de deletar comentário
-    console.log('Comment deleted');
-  }, []);
-
-  const handleCancel = useCallback(() => {
-    // TODO: Implementar lógica de cancelar a exclusão do comentário
-    console.log('Delete canceled');
-  }, []);
-
+  dislikeCount,
+  likeCount,
+}: CommentActionsProps) => {
   return (
     <div className="flex justify-between">
-      <ConfirmModal
-        title="Deletar comentário"
-        message="Você tem certeza que deseja deletar este comentário? Essa ação NÃO deletará os comentários relacionados a ele."
-        onConfirm={handleDelete}
-        onCancel={handleCancel}
-      />
       <div className="flex gap-2">
-        <IconButton onClick={() => {}} dislikeCount="12">
+        <IconButton onClick={() => {}} dislikeCount={dislikeCount}>
+          {/* // TODO: Implementar lógica de dislike */}
           <AiFillDislike size={13} />
         </IconButton>
-        <IconButton onClick={() => {}} likeCount="52">
+        <IconButton onClick={() => {}} likeCount={likeCount}>
+          {/* // TODO: Implementar lógica de like */}
           <AiFillLike size={13} />
         </IconButton>
       </div>
       <div className="flex gap-2">
         {isOwner && (
           <>
-            <IconButton
-              onClick={() => {
-                openConfirmModal();
-              }}
-            >
+            <IconButton onClick={onDelete}>
               <FaRegTrashAlt size={13} />
             </IconButton>
-            <IconButton
-              onClick={() => {
-                openConfirmModal();
-              }}
-            >
+            <IconButton onClick={onEdit}>
               <MdEdit size={13} />
             </IconButton>
           </>

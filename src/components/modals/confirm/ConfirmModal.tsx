@@ -1,56 +1,49 @@
 import { useCallback } from 'react';
 
-import { useConfirmModalContext } from '../../../context/modals/confirm/useModalContext';
-
 import BaseModal from '../base/BaseModal';
 import BaseButton from '../../buttons/BaseButton';
 
 type ConfirmModalProps = {
-  title: string;
-  message: string;
+  isOpen: boolean;
+
   onConfirm: () => void;
   onCancel: () => void;
+
+  title: string;
+  message: string;
 };
 
 const ConfirmModal = ({
-  title,
-  message,
+  isOpen,
+
   onConfirm,
   onCancel,
-}: ConfirmModalProps) => {
-  const { isConfirmModalOpen, closeConfirmModal } = useConfirmModalContext();
 
+  title,
+  message,
+}: ConfirmModalProps) => {
   const handleConfirm = useCallback(() => {
     onConfirm();
+  }, [onConfirm]);
 
-    closeConfirmModal();
-  }, [onConfirm, closeConfirmModal]);
-
-  const handleCancel = useCallback(() => {
+  const handleCancelClick = useCallback(() => {
     onCancel();
-
-    closeConfirmModal();
-  }, [onCancel, closeConfirmModal]);
+  }, [onCancel]);
 
   return (
-    isConfirmModalOpen && (
-      <>
-        <BaseModal
-          isModalOpen={isConfirmModalOpen}
-          closeModal={closeConfirmModal}
-        >
-          <div className="flex flex-col gap-4 p-2">
-            <h2 className="text-lg font-bold leading-none text-center text-quinary-default">
-              {title}
-            </h2>
-            <p className="text-sm font-normal text-center">{message}</p>
-            <div className="flex justify-end gap-2">
-              <BaseButton text="Cancelar" onClick={handleCancel} />
-              <BaseButton text="Confirmar" onClick={handleConfirm} />
-            </div>
+    isOpen && (
+      <BaseModal isModalOpen={isOpen} closeModal={handleCancelClick}>
+        <div className="flex flex-col gap-4 p-2">
+          <h2 className="text-lg font-bold leading-none text-center text-quinary-default">
+            {title}
+          </h2>
+          <p className="text-sm font-normal text-center">{message}</p>
+          <div className="flex justify-end gap-2">
+            <BaseButton text="Cancelar" onClick={handleCancelClick} />
+            <BaseButton text="Confirmar" onClick={handleConfirm} />
           </div>
-        </BaseModal>
-      </>
+        </div>
+      </BaseModal>
     )
   );
 };

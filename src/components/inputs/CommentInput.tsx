@@ -137,11 +137,11 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
                 {images.map((url, index) => (
                   <div
                     key={index}
-                    className="relative inline-block w-full max-h-64"
+                    className="relative inline-block w-full h-full" // Se alterar aqui, não se esqueça de alterar no CommentContent.tsx
                   >
                     <img
                       src={url}
-                      className="object-cover object-center w-full rounded-xs max-h-64"
+                      className="object-cover w-full rounded-xs max-h-[30rem]" // Se alterar aqui, não se esqueça de alterar no CommentContent.tsx
                       alt={`uploaded-${index}`}
                     />
                     <button

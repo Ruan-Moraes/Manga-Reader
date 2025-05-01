@@ -24,7 +24,7 @@ const CommentContent = ({
           <img
             src={commentImage}
             alt={`Imagem do comentário de ${user.name}`} // TODO: Alterar para quando o sistema de comentários estiver pronto
-            className="object-cover object-center w-full rounded-xs max-h-64"
+            className="object-cover object-center w-full rounded-xs max-h-[30rem]" // Se alterar aqui, não se esqueça de alterar no CommentInput.tsx
           />
         </div>
       )}
