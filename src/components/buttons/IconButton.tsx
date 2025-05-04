@@ -15,6 +15,14 @@ const IconButton = ({
   dislikeCount,
   likeCount,
 }: IconButtonProps) => {
+  if (dislikeCount && Number(dislikeCount) < 10) {
+    dislikeCount = dislikeCount.padStart(2, '0');
+  }
+
+  if (likeCount && Number(likeCount) < 10) {
+    likeCount = likeCount.padStart(2, '0');
+  }
+
   return (
     <button
       type="button"

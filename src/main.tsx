@@ -26,6 +26,7 @@ import Dmca from './routes/terms/Dmca.tsx';
 import NotFound from './routes/error/NotFound.tsx';
 
 import { UserModalProvider } from './context/modals/user/UserModalContext.tsx';
+import { EmojiModalProvider } from './context/modals/emoji/EmojiModalContext.tsx';
 
 import './styles/index.css';
 
@@ -137,9 +138,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <UserModalProvider>
-        <RouterProvider router={routes} />
-        <Toast />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <EmojiModalProvider>
+          <RouterProvider router={routes} />
+          <Toast />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        </EmojiModalProvider>
       </UserModalProvider>
     </QueryClientProvider>
   </StrictMode>
