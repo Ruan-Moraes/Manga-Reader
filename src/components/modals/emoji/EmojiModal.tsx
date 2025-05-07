@@ -1,17 +1,16 @@
-import BaseModal from '../base/BaseModal';
-
 import { useEmojiModalContext } from '../../../context/modals/emoji/useEmojiModalContext';
+
+import BaseModal from '../base/BaseModal';
+import EmojiModalHeader from './header/EmojiModalHeader';
+import EmojiModalBody from './body/EmojiModalBody';
 
 const EmojiModal = () => {
   const { isEmojiModalOpen, closeEmojiModal } = useEmojiModalContext();
 
   return (
     <BaseModal isModalOpen={isEmojiModalOpen} closeModal={closeEmojiModal}>
-      <div>
-        <div>
-          <h4>Selecione um Emoji</h4>
-        </div>
-      </div>
+      <EmojiModalHeader />
+      <EmojiModalBody />
     </BaseModal>
   );
 };

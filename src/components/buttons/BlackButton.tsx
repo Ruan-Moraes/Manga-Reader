@@ -1,9 +1,9 @@
 type BlackButtonProps = {
-  text: string;
   onClick: () => void;
+  text: string;
 };
 
-const BlackButton = ({ text, onClick }: BlackButtonProps) => {
+const BlackButton = ({ onClick, text }: BlackButtonProps) => {
   return (
     <button
       className={`px-3 py-2 text-xs rounded-xs shadow-lg bg-primary-default`}

@@ -5,7 +5,7 @@ import { useCommentEditor } from '../../hooks/useCommentEditor';
 import { useEmojiModalContext } from '../../context/modals/emoji/useEmojiModalContext';
 
 import IconButton from '../buttons/IconButton';
-import EmojiModal from '../modals/emoji/EmojiModal';
+import EmojiModal from '../modals/Emoji/EmojiModal';
 
 type CommentInputProps = {
   placeholder: string;
