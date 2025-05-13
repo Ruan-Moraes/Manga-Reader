@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { TagsTypes } from '../types/TagsTypes';
+import { TagsTypes } from '../../types/TagsTypes';
 
 const useFetchTags = (
   queryKey: string,

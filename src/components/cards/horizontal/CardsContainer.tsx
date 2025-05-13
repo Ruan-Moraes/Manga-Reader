@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import UseFetchTitles from '../../../hooks/useFetchTitles';
+import UseFetchTitles from '../../../hooks/fetch/useFetchTitles';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 

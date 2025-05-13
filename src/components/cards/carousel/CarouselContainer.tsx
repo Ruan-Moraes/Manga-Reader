@@ -4,7 +4,7 @@ import { Splide } from '@splidejs/react-splide';
 // @ts-expect-error - ignore import error
 import '@splidejs/react-splide/css';
 
-import UseFetchTitles from '../../../hooks/useFetchTitles';
+import UseFetchTitles from '../../../hooks/fetch/useFetchTitles';
 
 import Carousel from './Carousel';
 import CustomLink from '../../links/elements/CustomLink';
@@ -84,7 +84,7 @@ const CarouselContainer = ({
       <div className="px-4 py-2 rounded-t-xs bg-tertiary">
         <h2 className="flex flex-col items-center text-center">
           <CustomLink
-            href="/categories?sort=most_read&status=all"
+            link="/categories?sort=most_read&status=all"
             text={title}
             className="text-shadow-default text-quaternary-default"
           />

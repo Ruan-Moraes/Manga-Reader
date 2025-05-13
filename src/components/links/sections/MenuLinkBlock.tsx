@@ -10,18 +10,18 @@ const MenuLinkBlock = () => {
     <div className="flex flex-col h-full gap-6 px-4 pb-4">
       <div className="grid grid-cols-2 gap-2 text-sm">
         <LinkBox className="col-span-2">
-          <CustomLink href="/categories?tags=shounen" text="Shounen" />
+          <CustomLink link="/categories?tags=shounen" text="Shounen" />
         </LinkBox>
         <LinkBox>
           <CustomLink
-            href="/categories?tags=seinen"
+            link="/categories?tags=seinen"
             text="Seinen"
             className="hover:text-shadow-default"
           />
         </LinkBox>
         <LinkBox>
           <CustomLink
-            href="/categories?tags=shoujo"
+            link="/categories?tags=shoujo"
             text="Shoujo"
             className="hover:text-shadow-default"
           />
@@ -29,30 +29,30 @@ const MenuLinkBlock = () => {
       </div>
       <div className="grid grid-cols-2 gap-2 text-sm">
         <LinkBox className="col-span-2">
-          <CustomLink href="/categories?tags=nacionais" text="Nacional" />
+          <CustomLink link="/categories?tags=nacionais" text="Nacional" />
         </LinkBox>
         <LinkBox>
-          <CustomLink href="/categories?tags=mangas" text="Mangas" />
+          <CustomLink link="/categories?tags=mangas" text="Mangas" />
         </LinkBox>
         <LinkBox>
-          <CustomLink href="/categories?tags=manwhas" text="Manhwas" />
+          <CustomLink link="/categories?tags=manwhas" text="Manhwas" />
         </LinkBox>
         <LinkBox>
-          <CustomLink href="/categories?tags=manhuas" text="Manhuas" />
+          <CustomLink link="/categories?tags=manhuas" text="Manhuas" />
         </LinkBox>
         <LinkBox>
-          <CustomLink href="/categories?tags=Light%20Novels" text="Novels" />
+          <CustomLink link="/categories?tags=Light%20Novels" text="Novels" />
         </LinkBox>
       </div>
       <div className="grid grid-cols-2 gap-2 text-sm">
         <LinkBox className="col-span-2">
-          <CustomLink href="/groups" text="Grupos" />
+          <CustomLink link="/groups" text="Grupos" />
         </LinkBox>
         <LinkBox>
-          <CustomLink href="/news" text="Notícias" />
+          <CustomLink link="/news" text="Notícias" />
         </LinkBox>
         <LinkBox>
-          <CustomLink href="/events" text="Eventos" />
+          <CustomLink link="/events" text="Eventos" />
         </LinkBox>
       </div>
       <div className="flex items-center w-full gap-2 mt-auto ml-auto text-center mobile-sm:text-xs mobile-md:text-sm">

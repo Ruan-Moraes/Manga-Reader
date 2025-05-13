@@ -18,21 +18,21 @@ const Footer = ({ disabledLinks }: FooterTypes) => {
             title="Links úteis"
             className="col-span-4"
             links={[
-              { href: '/', text: 'Home' },
-              { href: '/categories', text: 'Categorias' },
-              { href: '/news', text: 'Notícias' },
-              { href: '/events', text: 'Eventos' },
-              { href: '/groups', text: 'Grupos' },
+              { url: '/', text: 'Home' },
+              { url: '/categories', text: 'Categorias' },
+              { url: '/news', text: 'Notícias' },
+              { url: '/events', text: 'Eventos' },
+              { url: '/groups', text: 'Grupos' },
             ]}
           />
           <LinksSection
             className="col-span-4"
             title="Redes sociais"
             links={[
-              { href: '#', text: 'Discord' },
-              { href: '#', text: 'X (Twitter)' },
-              { href: '#', text: 'Facebook' },
-              { href: '#', text: 'Instagram' },
+              { url: '#', text: 'Discord' },
+              { url: '#', text: 'X (Twitter)' },
+              { url: '#', text: 'Facebook' },
+              { url: '#', text: 'Instagram' },
             ]}
           />
           <LinksSection
@@ -40,13 +40,13 @@ const Footer = ({ disabledLinks }: FooterTypes) => {
             title="Outros links"
             links={[
               {
-                href: '/i-want-to-publish-work',
+                url: '/i-want-to-publish-work',
                 text: 'Quero publicar obra',
               },
-              { href: 'https://ko-fi.com/', text: 'Doe para o projeto' },
-              { href: '/about-us', text: 'Quem somos' },
-              { href: '/dmca', text: 'DMCA' },
-              { href: '/terms-of-use', text: 'Termos de uso' },
+              { url: 'https://ko-fi.com/', text: 'Doe para o projeto' },
+              { url: '/about-us', text: 'Quem somos' },
+              { url: '/dmca', text: 'DMCA' },
+              { url: '/terms-of-use', text: 'Termos de uso' },
             ]}
           />
         </div>

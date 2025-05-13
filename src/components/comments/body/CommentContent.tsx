@@ -1,28 +1,28 @@
 import { UserTypes } from '../../../types/UserTypes';
 
 type CommentContentProps = {
-  commentText: string | undefined;
-  commentImage: string | undefined;
+  textContent: string | undefined;
+  imageContent: string | undefined;
 
   user: UserTypes;
 };
 
 const CommentContent = ({
-  commentText,
-  commentImage,
+  textContent,
+  imageContent,
   user,
 }: CommentContentProps) => {
   return (
     <div className="flex flex-col gap-2">
-      {commentText && (
+      {textContent && (
         <div>
-          <p className="text-xs text-justify">{commentText}</p>
+          <p className="text-xs text-justify">{textContent}</p>
         </div>
       )}
-      {commentImage && (
+      {imageContent && (
         <div>
           <img
-            src={commentImage}
+            src={imageContent}
             alt={`Imagem do comentário de ${user.name}`} // TODO: Alterar para quando o sistema de comentários estiver pronto
             className="object-cover object-center w-full rounded-xs max-h-[30rem]" // Se alterar aqui, não se esqueça de alterar no CommentInput.tsx
           />

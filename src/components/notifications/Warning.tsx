@@ -7,10 +7,10 @@ type WarningTypes = {
   color: COLORS;
   title: string;
   message: string;
-  href?: string;
+  link?: string;
 };
 
-const Warning = ({ linkText, color, title, message, href }: WarningTypes) => {
+const Warning = ({ linkText, color, title, message, link }: WarningTypes) => {
   return (
     <div
       className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
@@ -29,10 +29,10 @@ const Warning = ({ linkText, color, title, message, href }: WarningTypes) => {
           <p>{message}</p>
         </div>
       </div>
-      {href && (
+      {link && (
         <div className="text-center">
           <CustomLink
-            href={href || '/'}
+            link={link || '/'}
             className={`text-sm text-${color}-default hover:text-${color}-normal`}
             text={linkText || 'Voltar'}
           />

@@ -53,7 +53,7 @@ const Carousel = ({
       <div className="relative h-full">
         <div className="h-full">
           <CustomLink
-            href={`/titles/${id}`}
+            link={`/titles/${id}`}
             className="block h-full cursor-default"
           >
             <img
@@ -72,7 +72,7 @@ const Carousel = ({
               WebkitBoxOrient: 'vertical',
             }}
           >
-            <CustomLink href={`/titles/${id}`} text={title} />
+            <CustomLink link={`/titles/${id}`} text={title} />
           </h3>
           <p
             className="overflow-hidden text-xs text-shadow-default"

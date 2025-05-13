@@ -26,8 +26,8 @@ const Login = () => {
           onFormSubmit={handleFormSubmit}
           title="Login de usuário"
           helperText="Esqueceu sua senha?"
-          href="/forgot-password"
-          hrefText="Clique aqui"
+          link="/forgot-password"
+          linkText="Clique aqui"
         >
           <BaseInput
             label="Email"

@@ -18,7 +18,7 @@ const CommentsList = () => {
   const fetchComments = useCallback(() => {
     const comments = [
       {
-        commentId: '1856c659-5e1d-4750-9777-74e3496e01da',
+        id: '1856c659-5e1d-4750-9777-74e3496e01da',
         user: {
           id: '1',
           name: 'Usuário de alta periculosidade',
@@ -34,13 +34,13 @@ const CommentsList = () => {
         isOwner: true,
         isHighlighted: true,
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '42',
         dislikeCount: '3',
       },
       {
-        commentId: '3dd84f94-dd37-4bb2-aa91-990c61b44719',
+        id: '3dd84f94-dd37-4bb2-aa91-990c61b44719',
         parentCommentId: '1856c659-5e1d-4750-9777-74e3496e01da',
         user: {
           id: '2',
@@ -55,13 +55,13 @@ const CommentsList = () => {
         },
         wasEdited: true,
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '15',
         dislikeCount: '7',
       },
       {
-        commentId: 'cb64cd92-65f4-47c2-b64b-9f7080928041',
+        id: 'cb64cd92-65f4-47c2-b64b-9f7080928041',
         parentCommentId: '1856c659-5e1d-4750-9777-74e3496e01da',
         user: {
           id: '3',
@@ -70,13 +70,13 @@ const CommentsList = () => {
             'https://boo-prod.b-cdn.net/database/profiles/16779658133692cab7e879edd111139eefe3687a5e51c.jpg?class=sm',
         },
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?',
         likeCount: '28',
         dislikeCount: '1',
       },
       {
-        commentId: 'f1b0c4a2-3d5e-4f8b-8c7d-9a6e0f1b2c3e',
+        id: 'f1b0c4a2-3d5e-4f8b-8c7d-9a6e0f1b2c3e',
         user: {
           id: '2',
           name: 'Naruto Uzumaki',
@@ -89,13 +89,13 @@ const CommentsList = () => {
           },
         },
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '56',
         dislikeCount: '12',
       },
       {
-        commentId: '34c6b2c6-59fc-4ac3-bddc-76d4f73ccc38',
+        id: '34c6b2c6-59fc-4ac3-bddc-76d4f73ccc38',
         parentCommentId: 'f1b0c4a2-3d5e-4f8b-8c7d-9a6e0f1b2c3e',
         user: {
           id: '1',
@@ -111,13 +111,13 @@ const CommentsList = () => {
         },
         isOwner: true,
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '33',
         dislikeCount: '5',
       },
       {
-        commentId: 'e2f3b4c5-6d7e-4f8b-9a0b-1c2d3e4f5g6h',
+        id: 'e2f3b4c5-6d7e-4f8b-9a0b-1c2d3e4f5g6h',
         parentCommentId: '34c6b2c6-59fc-4ac3-bddc-76d4f73ccc38',
         user: {
           id: '4',
@@ -132,13 +132,13 @@ const CommentsList = () => {
           },
         },
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '19',
         dislikeCount: '4',
       },
       {
-        commentId: 'f7g8h9i0-j1k2-3l4m-5n6o-7p8q9r0s1t2u',
+        id: 'f7g8h9i0-j1k2-3l4m-5n6o-7p8q9r0s1t2u',
         parentCommentId: 'e2f3b4c5-6d7e-4f8b-9a0b-1c2d3e4f5g6h',
         user: {
           id: '1',
@@ -154,13 +154,13 @@ const CommentsList = () => {
         },
         isOwner: true,
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '47',
         dislikeCount: '8',
       },
       {
-        commentId: 'v3w4x5y6-z7a8-9b0c-1d2e-3f4g5h6i7j8k',
+        id: 'v3w4x5y6-z7a8-9b0c-1d2e-3f4g5h6i7j8k',
         parentCommentId: 'f7g8h9i0-j1k2-3l4m-5n6o-7p8q9r0s1t2u',
         user: {
           id: '1',
@@ -176,13 +176,13 @@ const CommentsList = () => {
         },
         isOwner: true,
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
         likeCount: '24',
         dislikeCount: '6',
       },
       {
-        commentId: 'd1e2f3g4-h5i6-7j8k-9l0m-1n2o3p4q5r6s',
+        id: 'd1e2f3g4-h5i6-7j8k-9l0m-1n2o3p4q5r6s',
         user: {
           id: '4',
           name: 'Hinata Hyuga',
@@ -196,13 +196,13 @@ const CommentsList = () => {
           },
         },
         commentData: new Date(),
-        commentImage:
+        imageContent:
           'https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg',
         likeCount: '38',
         dislikeCount: '2',
       },
       {
-        commentId: '1b0dd1ca-a78d-4e60-980b-c13470c58de2',
+        id: '1b0dd1ca-a78d-4e60-980b-c13470c58de2',
         parentCommentId: 'd1e2f3g4-h5i6-7j8k-9l0m-1n2o3p4q5r6s',
         user: {
           id: '5',
@@ -211,9 +211,9 @@ const CommentsList = () => {
             'https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png',
         },
         commentData: new Date(),
-        commentText:
+        textContent:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?',
-        commentImage:
+        imageContent:
           'https://c0.klipartz.com/pngpicture/77/557/gratis-png-kyon-anime-manga-internet-meme-haruhi-suzumiya-anime.png',
         likeCount: '51',
         dislikeCount: '9',
@@ -245,7 +245,7 @@ const CommentsList = () => {
     // TODO: Chama a API para deletar o comentário, e atualiza a lista
 
     setComments((prevComments) =>
-      prevComments.filter((comment) => comment.commentId !== id)
+      prevComments.filter((comment) => comment.id !== id)
     );
   }, []);
 
@@ -257,7 +257,7 @@ const CommentsList = () => {
     const map = new Map<string, CommentWithChildrenTypes>();
 
     comments.forEach((comment) => {
-      map.set(comment.commentId, { ...comment, children: [] });
+      map.set(comment.id, { ...comment, children: [] });
     });
 
     return map;
@@ -268,7 +268,7 @@ const CommentsList = () => {
       const roots: CommentWithChildrenTypes[] = [];
 
       comments.forEach((comment) => {
-        const mappedComment = map.get(comment.commentId)!;
+        const mappedComment = map.get(comment.id)!;
 
         if (comment.parentCommentId) {
           const parent = map.get(comment.parentCommentId);
@@ -318,19 +318,19 @@ const CommentsList = () => {
       <UserModal />
       {buildCommentsTree().map(({ comment, nestedLevel }) => (
         <Comment
-          key={comment.commentId}
+          key={comment.id}
           onClickProfile={handleClickProfile}
           onClickEdit={handleClickEdit}
           onClickDelete={onClickDelete}
           nestedLevel={nestedLevel}
-          commentId={comment.commentId}
+          id={comment.id}
           user={comment.user}
           isOwner={comment.isOwner}
           isHighlighted={comment.isHighlighted}
           wasEdited={comment.wasEdited}
           commentData={comment.commentData}
-          commentText={comment.commentText}
-          commentImage={comment.commentImage}
+          textContent={comment.textContent}
+          imageContent={comment.imageContent}
           likeCount={comment.likeCount}
           dislikeCount={comment.dislikeCount}
         />

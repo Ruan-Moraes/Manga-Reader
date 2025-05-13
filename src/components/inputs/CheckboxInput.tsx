@@ -2,11 +2,11 @@ import CustomLink from '../links/elements/CustomLink';
 
 type CheckboxInputTypes = {
   label: string;
-  href: string;
+  link: string;
   linkText: string;
 };
 
-const CheckboxInput = ({ label, href, linkText }: CheckboxInputTypes) => {
+const CheckboxInput = ({ label, link, linkText }: CheckboxInputTypes) => {
   return (
     <div>
       <label className="flex items-center gap-2 w-max">
@@ -37,7 +37,7 @@ const CheckboxInput = ({ label, href, linkText }: CheckboxInputTypes) => {
           <span>{label}</span>{' '}
           <span>
             <CustomLink
-              href={href}
+              link={link}
               className="font-bold underline"
               text={linkText}
             />

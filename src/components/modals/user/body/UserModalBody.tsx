@@ -4,44 +4,36 @@ import { useUserModalContext } from '../../../../context/modals/user/useUserModa
 
 import SocialMedia from '../../../social-medias/SocialMedia';
 
+type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
+
 const UserModalBody = () => {
   const { userData } = useUserModalContext();
 
   return (
     <div className="flex flex-col gap-4 mt-2">
-      <div className="flex flex-col gap-2">
-        <h4 className="font-bold leading-none text-shadow-default">Bio:</h4>
-        <p className="text-xs text-shadow-default">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam
-          velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius
-          ducimus iure fugiat har.
-        </p>
-      </div>
-      <div className="flex flex-col gap-2">
-        <h4 className="font-bold leading-none text-shadow-default">
-          Redes sociais:
-        </h4>
-        <div className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
-          <SocialMedia
-            className="rounded-xs"
-            color={SOCIAL_MEDIA_COLORS.INSTAGRAM}
-            href="https://www.instagram.com/"
-            name="Instagram"
-          />
-          <SocialMedia
-            className="rounded-xs"
-            color={SOCIAL_MEDIA_COLORS.X}
-            href="https://twitter.com/"
-            name="X (Twitter)"
-          />
-          <SocialMedia
-            className="rounded-xs"
-            color={SOCIAL_MEDIA_COLORS.FACEBOOK}
-            href="https://www.facebook.com/"
-            name="Facebook"
-          />
+      {userData?.bio && (
+        <div className="flex flex-col gap-2">
+          <h4 className="font-bold leading-none text-shadow-default">Bio:</h4>
+          <p className="text-xs text-shadow-default">{userData.bio}</p>
         </div>
-      </div>
+      )}
+      {userData?.socialMediasLinks && (
+        <div className="flex flex-col gap-2">
+          <h4 className="font-bold leading-none text-shadow-default">
+            Redes sociais:
+          </h4>
+          <div className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
+            {userData.socialMediasLinks.map((socialMedia) => (
+              <SocialMedia
+                link={socialMedia.link}
+                name={socialMedia.name}
+                color={SOCIAL_MEDIA_COLORS[socialMedia.name as SocialMediaName]}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         <h4 className="font-bold leading-none text-shadow-default">
           Estatísticas:

@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { TitleTypes } from '../types/TitleTypes';
+import { TitleTypes } from '../../types/TitleTypes';
 
 const UseFetchTitles = (
   url: string,

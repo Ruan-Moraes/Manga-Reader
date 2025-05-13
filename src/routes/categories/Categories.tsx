@@ -9,7 +9,7 @@ import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import useFetchTags from '../../hooks/useFetchTags';
+import useFetchTags from '../../hooks/fetch/useFetchTags';
 
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';

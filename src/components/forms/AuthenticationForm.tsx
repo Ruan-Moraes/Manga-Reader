@@ -5,8 +5,8 @@ type AuthenticationFormTypes = {
   title: string;
   children: React.ReactNode;
   helperText?: string;
-  href?: string;
-  hrefText?: string;
+  link?: string;
+  linkText?: string;
 };
 
 const AuthenticationForm = ({
@@ -14,8 +14,8 @@ const AuthenticationForm = ({
   title,
   children,
   helperText,
-  href,
-  hrefText,
+  link,
+  linkText,
 }: AuthenticationFormTypes) => {
   return (
     <div className="flex flex-col gap-2">
@@ -29,11 +29,11 @@ const AuthenticationForm = ({
           </fieldset>
         </form>
       </div>
-      {helperText && href && hrefText && (
+      {helperText && link && linkText && (
         <div>
           <p className="text-sm text-center text-tertiary-default">
             {helperText}{' '}
-            <CustomLink href={href} className="underline" text={hrefText} />
+            <CustomLink link={link} className="underline" text={linkText} />
           </p>
         </div>
       )}

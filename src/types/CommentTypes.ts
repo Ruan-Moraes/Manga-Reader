@@ -1,7 +1,7 @@
 import { UserTypes } from './UserTypes';
 
 export type CommentTypes = {
-  commentId: string;
+  id: string;
   parentCommentId?: string;
 
   user: UserTypes;
@@ -10,9 +10,11 @@ export type CommentTypes = {
   isHighlighted?: boolean;
   wasEdited?: boolean;
 
-  commentData: Date;
-  commentText?: string;
-  commentImage?: string;
+  createdAt: string;
+  updatedAt: string;
+
+  textContent?: string;
+  imageContent?: string;
 
   dislikeCount: string;
   likeCount: string;

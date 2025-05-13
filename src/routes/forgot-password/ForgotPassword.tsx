@@ -26,8 +26,8 @@ const ForgotPassword = () => {
           onFormSubmit={handleFormSubmit}
           title="Recuperação de senha"
           helperText="Lembrou da senha?"
-          href="/login"
-          hrefText="Clique aqui"
+          link="/login"
+          linkText="Clique aqui"
         >
           <BaseInput
             label="Email"

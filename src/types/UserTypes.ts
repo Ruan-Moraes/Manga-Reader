@@ -13,8 +13,9 @@ export type UserTypes = {
     since: Date;
   };
   socialMediasLinks?: {
-    [key: string]: string;
-  };
+    name: string;
+    link: string;
+  }[];
   statistics?: {
     comments?: number;
     likes?: number;

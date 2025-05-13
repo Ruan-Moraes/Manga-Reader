@@ -4,7 +4,7 @@ import { useLocation, Link } from 'react-router-dom';
 import clsx from 'clsx';
 
 type CustomLinkBaseTypes = {
-  href?: string;
+  link?: string;
   className?: string;
   enabledColorWhenActive?: boolean;
   inlineStyle?: React.CSSProperties;
@@ -15,7 +15,7 @@ type CustomLinkBaseTypes = {
 const CustomLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
   (
     {
-      href = '/',
+      link = '/',
       className,
       enabledColorWhenActive,
       inlineStyle,
@@ -24,8 +24,8 @@ const CustomLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
     }: CustomLinkBaseTypes,
     ref
   ) => {
-    const isExternalLink = href.includes('http');
-    const isActive = useLocation().pathname === `/Manga-Reader${href}`;
+    const isExternalLink = link.includes('http');
+    const isActive = useLocation().pathname === `/Manga-Reader${link}`;
 
     return (
       <Link
@@ -37,7 +37,7 @@ const CustomLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
           }
         )}
         style={inlineStyle}
-        to={isExternalLink ? href : '/Manga-Reader' + href}
+        to={isExternalLink ? link : '/Manga-Reader' + link}
       >
         {children || text}
       </Link>

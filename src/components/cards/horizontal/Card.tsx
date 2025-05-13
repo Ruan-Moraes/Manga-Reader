@@ -68,7 +68,7 @@ const Card = ({
           </span>
         )}
         {!isLoading && (
-          <CustomLink href={`/titles/${id}`} className="block h-full">
+          <CustomLink link={`/titles/${id}`} className="block h-full">
             <img
               alt={`Capa do título: ${title}`}
               className="object-cover w-full h-full"
@@ -86,7 +86,7 @@ const Card = ({
         {!isLoading && (
           <h3 className="overflow-x-auto text-center text-nowrap">
             <CustomLink
-              href={`/titles/${id}`}
+              link={`/titles/${id}`}
               text={title}
               className="text-shadow-default"
             />

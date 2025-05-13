@@ -17,13 +17,13 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
         <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
           <CustomLink
             enabledColorWhenActive={true}
-            href="/sign-up"
+            link="/sign-up"
             text="Sing up"
           />
           <span className="font-bold">|</span>
           <CustomLink
             enabledColorWhenActive={true}
-            href="/login"
+            link="/login"
             text="Login"
           />
         </nav>

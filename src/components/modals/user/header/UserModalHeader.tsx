@@ -8,8 +8,8 @@ const UserModalHeader = () => {
   const { closeUserModal, userData } = useUserModalContext();
 
   const dateOptions = {
-    year: 'numeric',
-    month: 'long',
+    year: 'numeric' as const,
+    month: 'long' as const,
   };
 
   return (

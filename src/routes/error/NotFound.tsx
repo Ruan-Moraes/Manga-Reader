@@ -12,7 +12,7 @@ const NotFound = () => {
         color={COLORS.QUINARY}
         title="Error 404"
         message="Não há nada aqui, você está perdido? Clique no link abaixo para voltar para a página inicial."
-        href="/"
+        link="/"
       />
     </Main>
   );

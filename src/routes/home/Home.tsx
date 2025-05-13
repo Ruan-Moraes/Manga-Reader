@@ -27,23 +27,23 @@ const Home = () => {
         <SocialMediasContainer>
           <SocialMedia
             color={SOCIAL_MEDIA_COLORS.DISCORD}
-            href="#"
+            link="#"
             name="Discord"
           />
           <SocialMedia
             color={SOCIAL_MEDIA_COLORS.X}
-            href="#"
+            link="#"
             name="X (Twitter)"
           />
           <SocialMedia
             color={SOCIAL_MEDIA_COLORS.FACEBOOK}
-            href="#"
+            link="#"
             name="Facebook"
             className="rounded-bl-xs"
           />
           <SocialMedia
             color={SOCIAL_MEDIA_COLORS.INSTAGRAM}
-            href="#"
+            link="#"
             name="Instagram"
             className="rounded-br-xs"
           />

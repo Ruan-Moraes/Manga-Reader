@@ -95,7 +95,7 @@ const Card = ({
             className="flex flex-col w-2/4 overflow-hidden border rounded-xs rounded-tl-none border-tertiary"
           >
             <div className="h-44 mobile-md:h-56">
-              <CustomLink href={`/titles/${id}`} className="h-full">
+              <CustomLink link={`/titles/${id}`} className="h-full">
                 <img
                   alt={`Capa do título: ${title}`}
                   src={cover}

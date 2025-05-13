@@ -3,7 +3,7 @@ import React, { useCallback, useRef } from 'react';
 import CustomLink from '../links/elements/CustomLink';
 
 type LinkBoxTypes = {
-  children: React.ReactElement;
+  children: React.ReactElement<typeof CustomLink>;
   className?: string;
 };
 
@@ -25,7 +25,9 @@ const LinkBox = ({ children, className }: LinkBoxTypes) => {
       onClick={handleClick}
       className={`text-center flex items-center justify-center relative h-10 duration-300 border rounded-xs bg-secondary border-tertiary hover:bg-quaternary-opacity-25 ${className}`}
     >
-      {React.cloneElement(children, { ref: childRef })}
+      {React.cloneElement(children, {
+        ref: childRef,
+      } as React.RefAttributes<HTMLAnchorElement>)}
     </div>
   );
 };

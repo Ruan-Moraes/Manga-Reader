@@ -119,7 +119,7 @@ const Chapter = () => {
           message="O capítulo que você está tentando acessar não existe."
           color={COLORS.QUINARY}
           linkText="Voltar para página do título"
-          href={`/titles/${titleId}`}
+          link={`/titles/${titleId}`}
         />
       </Main>
     );

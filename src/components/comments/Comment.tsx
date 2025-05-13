@@ -17,7 +17,7 @@ const Comment = ({
   onClickEdit,
   onClickDelete,
 
-  commentId,
+  id,
   nestedLevel = 0,
 
   user,
@@ -27,8 +27,8 @@ const Comment = ({
   wasEdited,
 
   commentData,
-  commentText,
-  commentImage,
+  textContent,
+  imageContent,
 
   likeCount,
   dislikeCount,
@@ -48,12 +48,12 @@ const Comment = ({
   }, []);
 
   const handleDeleteComment = useCallback(() => {
-    onClickDelete(commentId);
+    onClickDelete(id);
 
     handleCloseDeleteModal();
-  }, [onClickDelete, commentId, handleCloseDeleteModal]);
+  }, [onClickDelete, id, handleCloseDeleteModal]);
 
-  if (!commentText && !commentImage) {
+  if (!textContent && !imageContent) {
     return null;
   }
 
@@ -128,8 +128,8 @@ const Comment = ({
           user={userData}
         />
         <CommentContent
-          commentText={commentText}
-          commentImage={commentImage}
+          textContent={textContent}
+          imageContent={imageContent}
           user={userData}
         />
         <CommentActions

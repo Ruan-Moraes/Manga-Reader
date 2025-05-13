@@ -37,7 +37,7 @@ const TitleDetails = ({
         ) : (
           <h3 className="overflow-x-auto scrollbar-hidden">
             <CustomLink
-              href={`/titles/${id}`}
+              link={`/titles/${id}`}
               text={title}
               className="text-nowrap text-shadow-default"
             />

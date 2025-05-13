@@ -73,7 +73,7 @@ const Card = ({
         )}
         {!isLoading && (
           <div>
-            <CustomLink href={`/titles/${id}`} className="block h-full">
+            <CustomLink link={`/titles/${id}`} className="block h-full">
               <img
                 alt={`Capa do título: ${title}`}
                 className="object-cover w-full h-44 mobile-md:h-56 spect-square"
@@ -87,7 +87,7 @@ const Card = ({
             {isLoading && <span className="text-shadow-default">{title}</span>}
             {!isLoading && (
               <h3 className="overflow-x-auto text-nowrap text-shadow-default scrollbar-hidden">
-                <CustomLink href={`/titles/${id}`} text={title} />
+                <CustomLink link={`/titles/${id}`} text={title} />
               </h3>
             )}
           </div>
@@ -114,7 +114,7 @@ const Card = ({
                   ) : (
                     <span className="font-bold text-shadow-highlight">
                       <CustomLink
-                        href={`/titles/${id}/${chaptersReverse[index]}`}
+                        link={`/titles/${id}/${chaptersReverse[index]}`}
                         text={chaptersReverse[index]}
                       />
                     </span>
