@@ -2,7 +2,7 @@ import { useUserModalContext } from '../../../../context/modals/user/useUserModa
 
 import treatDate from '../../../../services/utils/treatDate';
 
-import CloseButton from '../../share/buttons/CloseButton';
+import BlackButton from '../../../buttons/BlackButton';
 
 const UserModalHeader = () => {
   const { closeUserModal, userData } = useUserModalContext();
@@ -15,7 +15,7 @@ const UserModalHeader = () => {
   return (
     <div>
       <div className="flex justify-end">
-        <CloseButton onClick={closeUserModal} text="fechar" />
+        <BlackButton onClick={closeUserModal} text="fechar" />
       </div>
       <div className="flex gap-2 border-b border-b-tertiary scrollbar-hidden">
         <div className="h-28 w-28 shrink-0">

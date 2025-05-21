@@ -14,7 +14,7 @@ import Comment from './Comment';
 const CommentsList = () => {
   const { openUserModal, setUserData } = useUserModalContext();
 
-  // * Mock data // TODO: Remover quando a API estiver pronta
+  // * Mock data // TODO: Remover quando a API estiver pronta -- useFetchComments já está implementado
   const fetchComments = useCallback(() => {
     const comments = [
       {
@@ -328,7 +328,8 @@ const CommentsList = () => {
           isOwner={comment.isOwner}
           isHighlighted={comment.isHighlighted}
           wasEdited={comment.wasEdited}
-          commentData={comment.commentData}
+          createdAt={comment.createdAt}
+          updatedAt={comment.updatedAt}
           textContent={comment.textContent}
           imageContent={comment.imageContent}
           likeCount={comment.likeCount}

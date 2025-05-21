@@ -1,19 +1,17 @@
 import { useEmojiModalContext } from '../../../../context/modals/emoji/useEmojiModalContext';
 
-import CloseButton from '../../share/buttons/CloseButton';
+import BlackButton from '../../../buttons/BlackButton';
 
 const EmojiModalHeader = () => {
   const { closeEmojiModal } = useEmojiModalContext();
 
   return (
-    <div className="pb-2 border-b border-b-tertiary">
-      <div className="flex justify-between items-center">
-        <div>
-          <h4 className="italic font-bold leading-none">Selecione um Emoji</h4>
-        </div>
-        <div>
-          <CloseButton onClick={closeEmojiModal} text="fechar" />
-        </div>
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-end">
+        <BlackButton onClick={closeEmojiModal} text="Fechar" />
+      </div>
+      <div>
+        <h4 className="font-bold">Selecione um Emoji, Sticker ou GIF</h4>
       </div>
     </div>
   );

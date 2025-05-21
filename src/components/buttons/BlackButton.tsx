@@ -1,5 +1,6 @@
 type BlackButtonProps = {
   onClick: () => void;
+
   text: string;
 };
 

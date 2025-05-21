@@ -102,7 +102,7 @@ export function useCommentEditor(placeholder: string) {
 
         const imgHTML = `
           <div contenteditable="false" style="position: relative; display: inline-block; max-width: 100%;">
-            <img src="${imageUrl}" style="max-height: 30rem; border-radius: 0.25rem; display: block; object-fit: cover;" />
+            <img src="${imageUrl}" style="max-height: 30rem; border-radius: 0.125rem; display: block; object-fit: cover;" />
             <button type="button" class="remove-img-btn" style="position: absolute; top: 0; right: 0; background: #f56565; color: white; font-size: 0.75rem; padding: 0.125rem 0.375rem; border: none; border-radius: 0 0.25rem 0 0.25rem; opacity: 0.75;">
               X
             </button>
@@ -112,7 +112,7 @@ export function useCommentEditor(placeholder: string) {
 
         textarea.focus();
 
-        document.execCommand('insertHTML', false, imgHTML);
+        document.execCommand('insertHTML', false, imgHTML); // Comando "execCommand" está obsoleto, e não possui outro substituto.
 
         setTimeout(() => {
           updateImagesFromDOM();

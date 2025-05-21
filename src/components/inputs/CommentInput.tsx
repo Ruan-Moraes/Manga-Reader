@@ -1,7 +1,7 @@
 import { IoImages } from 'react-icons/io5';
 import { FaUpload } from 'react-icons/fa';
 
-import { useCommentEditor } from '../../hooks/useCommentEditor';
+import { useCommentEditor } from '../../hooks/comments/useCommentEditor';
 import { useEmojiModalContext } from '../../context/modals/emoji/useEmojiModalContext';
 
 import IconButton from '../buttons/IconButton';

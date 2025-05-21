@@ -2,7 +2,9 @@ import Blur from '../../blur/Blur';
 
 type BaseModalProps = {
   isModalOpen: boolean;
+
   closeModal: () => void;
+
   children: React.ReactNode;
 };
 

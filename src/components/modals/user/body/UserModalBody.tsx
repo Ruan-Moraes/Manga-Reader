@@ -33,7 +33,7 @@ const UserModalBody = () => {
           </div>
         </div>
       )}
-
+      {/* TODO: Termina de fazer lógicas */}
       <div className="flex flex-col gap-2">
         <h4 className="font-bold leading-none text-shadow-default">
           Estatísticas:

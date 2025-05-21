@@ -21,7 +21,7 @@ const useFetchComments = (
       return data;
     },
 
-    staleTime: validTime ? 1000 * 60 * 60 * 24 * validTime : 0, // Todo: definir o tempo de expiração
+    staleTime: validTime ? 1000 * 60 * 60 * 24 * validTime : 0,
   });
 };
 

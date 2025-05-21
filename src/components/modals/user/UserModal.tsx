@@ -1,4 +1,3 @@
-
 import { useUserModalContext } from '../../../context/modals/user/useUserModalContext';
 
 import BaseModal from '../base/BaseModal';
