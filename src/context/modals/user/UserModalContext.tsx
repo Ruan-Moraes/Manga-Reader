@@ -1,15 +1,15 @@
-import { createContext, useState, ReactNode } from 'react';
+import {createContext, ReactNode, useCallback, useState} from 'react';
 
-import { UserTypes } from '../../../types/UserTypes';
+import {UserTypes} from '../../../types/UserTypes';
 
 type UserModalContextProps = {
-  isUserModalOpen: boolean;
+    isUserModalOpen: boolean;
 
-  openUserModal: () => void;
-  closeUserModal: () => void;
+    openUserModal: () => void;
+    closeUserModal: () => void;
 
-  userData: UserTypes | null;
-  setUserData: (userData: UserTypes) => void;
+    userData: UserTypes | null;
+    setUserData: (userData: UserTypes) => void;
 };
 
 // MOCK USER DATA
@@ -57,34 +57,35 @@ type UserModalContextProps = {
 // };
 
 const UserModalContext = createContext<UserModalContextProps | undefined>(
-  undefined
+    undefined
 );
 
-const UserModalProvider = ({ children }: { children: ReactNode }) => {
-  const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserTypes | null>(null);
+const UserModalProvider = ({children}: { children: ReactNode }) => {
+    const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
 
-  const openUserModal = () => {
-    setIsUserModalOpen(true);
-  };
+    const [userData, setUserData] = useState<UserTypes | null>(null);
 
-  const closeUserModal = () => {
-    setIsUserModalOpen(false);
-  };
+    const openUserModal = useCallback(() => {
+        setIsUserModalOpen(true);
+    }, [])
 
-  return (
-    <UserModalContext.Provider
-      value={{
-        isUserModalOpen,
-        openUserModal,
-        closeUserModal,
-        userData,
-        setUserData,
-      }}
-    >
-      {children}
-    </UserModalContext.Provider>
-  );
+    const closeUserModal = useCallback(() => {
+        setIsUserModalOpen(false);
+    }, [])
+
+    return (
+        <UserModalContext.Provider
+            value={{
+                isUserModalOpen,
+                openUserModal,
+                closeUserModal,
+                userData,
+                setUserData,
+            }}
+        >
+            {children}
+        </UserModalContext.Provider>
+    );
 };
 
-export { UserModalContext, UserModalProvider };
+export {UserModalContext, UserModalProvider};

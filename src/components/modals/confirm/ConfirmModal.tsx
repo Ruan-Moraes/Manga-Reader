@@ -1,50 +1,50 @@
-import { useCallback } from 'react';
+import {useCallback} from 'react';
 
 import BaseModal from '../base/BaseModal';
 import ConfirmModalHeader from './header/ConfirmModalHeader';
 import ConfirmModalBody from './body/ConfirmModalBody';
 
 type ConfirmModalProps = {
-  isOpen: boolean;
+    isOpen: boolean;
 
-  title: string;
-  message: string;
+    title: string;
+    message: string;
 
-  onConfirm: () => void;
-  onCancel: () => void;
+    onConfirm: () => void;
+    onCancel: () => void;
 };
 
 const ConfirmModal = ({
-  isOpen,
+                          isOpen,
 
-  title,
-  message,
+                          title,
+                          message,
 
-  onConfirm,
-  onCancel,
-}: ConfirmModalProps) => {
-  const handleConfirm = useCallback(() => {
-    onConfirm();
-  }, [onConfirm]);
+                          onConfirm,
+                          onCancel,
+                      }: ConfirmModalProps) => {
+    const handleConfirm = useCallback(() => {
+        onConfirm();
+    }, [onConfirm]);
 
-  const handleCancelClick = useCallback(() => {
-    onCancel();
-  }, [onCancel]);
+    const handleCancelClick = useCallback(() => {
+        onCancel();
+    }, [onCancel]);
 
-  return (
-    isOpen && (
-      <BaseModal isModalOpen={isOpen} closeModal={handleCancelClick}>
-        <div className="flex flex-col gap-2 p-2">
-          <ConfirmModalHeader title={title} />
-          <ConfirmModalBody
-            message={message}
-            onConfirm={handleConfirm}
-            onCancel={handleCancelClick}
-          />
-        </div>
-      </BaseModal>
-    )
-  );
+    return (
+        isOpen && (
+            <BaseModal isModalOpen={isOpen} closeModal={handleCancelClick}>
+                <div className="flex flex-col gap-2 p-2">
+                    <ConfirmModalHeader title={title}/>
+                    <ConfirmModalBody
+                        message={message}
+                        onConfirm={handleConfirm}
+                        onCancel={handleCancelClick}
+                    />
+                </div>
+            </BaseModal>
+        )
+    );
 };
 
 export default ConfirmModal;

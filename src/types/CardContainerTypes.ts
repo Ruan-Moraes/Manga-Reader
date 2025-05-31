@@ -1,6 +1,6 @@
 export type CardsContainerTypes = {
-  url: string;
-  validTime?: number;
-  title: string;
-  subTitle: string;
+    url: string;
+    validTime?: number;
+    title: string;
+    subTitle: string;
 };

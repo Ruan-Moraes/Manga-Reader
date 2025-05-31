@@ -1,37 +1,62 @@
-import { useEmojiModalContext } from '../../../context/modals/emoji/useEmojiModalContext';
+import {useState} from "react";
+
+import {useEmojiModalContext} from '../../../context/modals/emoji/useEmojiModalContext';
 
 import BaseModal from '../base/BaseModal';
-import EmojiModalHeader from './Header/EmojiModalHeader';
+import EmojiModalHeader from "./header/EmojiModalHeader";
 import EmojiModalBody from './Body/EmojiModalBody';
-import EmojiModalFooter from './Footer/EmojiModalFooter';
+import EmojiModalFooter from './footer/EmojiModalFooter';
 
 const EmojiModal = () => {
-  const { isEmojiModalOpen, closeEmojiModal } = useEmojiModalContext();
+    const {isEmojiModalOpen, closeEmojiModal} = useEmojiModalContext();
 
-  const emojiSelected = (e: HTMLImageElement) => {
-    e.setAttribute('data-selected', 'true');
+    const [selectedEmoji, setSelectedEmoji] = useState<HTMLImageElement | null>(null);
 
-    e.parentElement!.classList.remove('border-tertiary');
-    e.parentElement!.classList.add('border-quaternary-default');
-  };
+    const applySelectionStyles = (imgElement: HTMLImageElement) => {
+        imgElement.setAttribute('data-selected', 'true');
 
-  const onClose = (e: HTMLImageElement) => {
-    e.removeAttribute('data-selected');
+        if (imgElement.parentElement) {
+            imgElement.parentElement.classList.remove('border-tertiary');
+            imgElement.parentElement.classList.add('border-quaternary-opacity-50');
+        }
+    };
 
-    e.parentElement!.classList.remove('border-quaternary-default');
+    const removeSelectionStyles = (imgElement: HTMLImageElement) => {
+        imgElement.removeAttribute('data-selected');
 
-    e.parentElement!.classList.add('border-tertiary');
-  };
+        if (imgElement.parentElement) {
+            imgElement.parentElement.classList.remove('border-quaternary-opacity-50');
+            imgElement.parentElement.classList.add('border-tertiary');
+        }
+    };
 
-  return (
-    <BaseModal isModalOpen={isEmojiModalOpen} closeModal={closeEmojiModal}>
-      <div className="flex flex-col gap-2">
-        <EmojiModalHeader />
-        <EmojiModalBody onClick={emojiSelected} onClose={onClose} />
-        <EmojiModalFooter />
-      </div>
-    </BaseModal>
-  );
+    const handleEmojiClick = (clickedEmoji: HTMLImageElement) => {
+        if (selectedEmoji === clickedEmoji) {
+            removeSelectionStyles(clickedEmoji);
+
+            setSelectedEmoji(null);
+        }
+
+        if (!(selectedEmoji === clickedEmoji)) {
+            if (selectedEmoji) {
+                removeSelectionStyles(selectedEmoji);
+            }
+
+            applySelectionStyles(clickedEmoji);
+
+            setSelectedEmoji(clickedEmoji);
+        }
+    };
+
+    return (
+        <BaseModal isModalOpen={isEmojiModalOpen} closeModal={closeEmojiModal}>
+            <div className="flex flex-col gap-4">
+                <EmojiModalHeader/>
+                <EmojiModalBody onEmojiClick={handleEmojiClick}/>
+                <EmojiModalFooter selectedEmoji={selectedEmoji}/>
+            </div>
+        </BaseModal>
+    );
 };
 
 export default EmojiModal;

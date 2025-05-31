@@ -1,4 +1,4 @@
 export type StatusFetchTypes = {
-  isLoading?: boolean;
-  isError?: boolean;
+    isLoading?: boolean;
+    isError?: boolean;
 };

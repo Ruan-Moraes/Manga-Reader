@@ -13,45 +13,45 @@
 /* Reset */
 
 * {
-  font-family: 'Nunito Sans', sans-serif;
-  color: #ffffff;
-  letter-spacing: 0.0625rem;
+    font-family: 'Nunito Sans', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0.0625rem;
 }
 
 html {
-  background-color: #161616;
+    background-color: #161616;
 }
 
 ::-webkit-scrollbar {
-  width: 0.5rem;
+    width: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #2d2d2d;
+    background-color: #2d2d2d;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #444;
-  border: 0.125rem solid #2d2d2d;
-  transition: background-color 0.5s;
+    background-color: #444;
+    border: 0.125rem solid #2d2d2d;
+    transition: background-color 0.5s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #777;
+    background-color: #777;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background-color: #999;
+    background-color: #999;
 }
 
 .scrollbar-hidden {
-  scrollbar-width: none !important;
-  scrollbar-color: transparent transparent !important;
-  -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+    scrollbar-color: transparent transparent !important;
+    -ms-overflow-style: none !important;
 }
 
 /* Splide | Carousel */
 
 .splide__arrows svg {
-  fill: #727273;
+    fill: #727273;
 }

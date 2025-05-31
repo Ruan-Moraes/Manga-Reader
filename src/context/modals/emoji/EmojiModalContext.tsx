@@ -1,38 +1,41 @@
-import { createContext, useState, ReactNode } from 'react';
+import {createContext, ReactNode, useCallback, useState} from 'react';
 
-type EmojiModalContextProps = {
-  isEmojiModalOpen: boolean;
+type EmojiModalContextType = {
+    isEmojiModalOpen: boolean;
 
-  openEmojiModal: () => void;
-  closeEmojiModal: () => void;
+    openEmojiModal: () => void;
+    closeEmojiModal: () => void;
+
+    selectedEmoji: HTMLImageElement | null;
+    setSelectedEmoji: (emoji: HTMLImageElement | null) => void;
 };
 
-const EmojiModalContext = createContext<EmojiModalContextProps | undefined>(
-  undefined
-);
+const EmojiModalContext = createContext<EmojiModalContextType | undefined>(undefined);
 
-const EmojiModalProvider = ({ children }: { children: ReactNode }) => {
-  const [isEmojiModalOpen, setIsEmojiModalOpen] = useState<boolean>(false);
+const EmojiModalProvider = ({children}: { children: ReactNode }) => {
+    const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
 
-  const openEmojiModal = () => {
-    setIsEmojiModalOpen(true);
-  };
+    const [selectedEmojiState, setSelectedEmojiState] = useState<HTMLImageElement | null>(null);
 
-  const closeEmojiModal = () => {
-    setIsEmojiModalOpen(false);
-  };
+    const openEmojiModal = useCallback(() => setIsEmojiModalOpen(true), []);
 
-  return (
-    <EmojiModalContext.Provider
-      value={{
-        isEmojiModalOpen,
-        openEmojiModal,
-        closeEmojiModal,
-      }}
-    >
-      {children}
-    </EmojiModalContext.Provider>
-  );
+    const closeEmojiModal = useCallback(() => setIsEmojiModalOpen(false), []);
+
+    const setSelectedEmoji = useCallback((emoji: HTMLImageElement | null) => {
+        setSelectedEmojiState(emoji);
+    }, []);
+
+    return (
+        <EmojiModalContext.Provider value={{
+            isEmojiModalOpen,
+            openEmojiModal,
+            closeEmojiModal,
+            selectedEmoji: selectedEmojiState,
+            setSelectedEmoji
+        }}>
+            {children}
+        </EmojiModalContext.Provider>
+    );
 };
 
-export { EmojiModalContext, EmojiModalProvider };
+export {EmojiModalContext, EmojiModalProvider};
