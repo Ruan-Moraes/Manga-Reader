@@ -1,15 +1,15 @@
-import {useCallback, useState} from 'react';
+import { useCallback, useState } from 'react';
 
-import {TagsTypes} from '../../types/TagsTypes';
-import {SortTypes} from '../../types/SortTypes';
-import {StatusTypes} from '../../types/StatusTypes';
-import {AdultContentTypes} from '../../types/AdultContentTypes';
+import { TagsTypes } from '../../types/TagsTypes';
+import { SortTypes } from '../../types/SortTypes';
+import { StatusTypes } from '../../types/StatusTypes';
+import { AdultContentTypes } from '../../types/AdultContentTypes';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import useFetchTags from '../../hooks/fetch/useFetchTags';
+import useTagsFetch from '../../hooks/tags/data/useTagsFetch';
 
 import SectionTitle from '../../components/titles/SectionTitle';
 import Paragraph from '../../components/paragraph/Paragraph';
@@ -19,16 +19,17 @@ import RadioInput from '../../components/inputs/RadioInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
 
 const Categories = () => {
-    const {data} = useFetchTags(
+    const { data } = useTagsFetch(
         'tags',
         'https://db-json-ten.vercel.app/tags',
-        16
+        16,
     );
     const tags = Array.isArray(data) ? data : undefined;
 
     const [selectedTags, setSelectedTags] = useState<TagsTypes[]>([]);
     const [selectedSort, setSelectedSort] = useState<SortTypes>('most_read');
-    const [selectedStatus, setSelectedStatus] = useState<StatusTypes>('ongoing');
+    const [selectedStatus, setSelectedStatus] =
+        useState<StatusTypes>('ongoing');
     const [selectedAdultContent, setSelectedAdultContent] =
         useState<AdultContentTypes>('no_adult_content');
 
@@ -48,7 +49,7 @@ const Categories = () => {
         (newValue: AdultContentTypes) => {
             setSelectedAdultContent(newValue);
         },
-        []
+        [],
     );
 
     console.log(selectedTags);
@@ -60,7 +61,7 @@ const Categories = () => {
         const params = new URLSearchParams();
 
         if (selectedTags.length > 0) {
-            selectedTags.forEach((tag) => {
+            selectedTags.forEach(tag => {
                 params.append('tags', tag.value.toString());
             });
         }
@@ -84,7 +85,7 @@ const Categories = () => {
 
     return (
         <>
-            <Header/>
+            <Header />
             <Main>
                 <SectionTitle title="Filtros">
                     <Paragraph
@@ -191,9 +192,9 @@ const Categories = () => {
                         labelText="Não"
                     />
                 </FiltersForm>
-                <RaisedButton text="Aplicar Filtros"/>
+                <RaisedButton text="Aplicar Filtros" />
             </Main>
-            <Footer/>
+            <Footer />
         </>
     );
 };

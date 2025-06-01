@@ -1,7 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
-import {ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
-import {POSITIONS} from '../../constants/POSITIONS';
+import { POSITIONS } from '../../constants/POSITIONS';
 
 // const contextClass = {
 //   info: 'bg-primary-default overflow-hidden text-primary p-2 rounded-xs flex gap-2 items-center',

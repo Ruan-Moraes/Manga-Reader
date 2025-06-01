@@ -1,4 +1,4 @@
-import {COLORS} from '../../constants/COLORS';
+import { COLORS } from '../../constants/COLORS';
 
 import Main from '../../layouts/Main';
 

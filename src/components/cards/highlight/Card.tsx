@@ -1,9 +1,9 @@
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import {TitleTypes} from '../../../types/TitleTypes';
-import {StatusFetchTypes} from '../../../types/StatusFetchTypes';
+import { TitleTypes } from '../../../types/TitleTypes';
+import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
-import {COLORS} from '../../../constants/COLORS';
+import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
 import TitleDetails from '../../informations/TitleDetails';
@@ -13,20 +13,20 @@ type CardTypes = Partial<Omit<TitleTypes, 'createdAt' | 'updatedAt'>> &
     StatusFetchTypes;
 
 const Card = ({
-                  id,
-                  type = '...',
-                  cover = 'Carregando...',
-                  title = '...',
-                  synopsis = 'Carregando...',
-                  chapters = '...',
-                  popularity = '...',
-                  score = '...',
-                  author = '...',
-                  artist = '...',
-                  publisher = '...',
-                  isError,
-                  isLoading,
-              }: CardTypes) => {
+    id,
+    type = '...',
+    cover = 'Carregando...',
+    title = '...',
+    synopsis = 'Carregando...',
+    chapters = '...',
+    popularity = '...',
+    score = '...',
+    author = '...',
+    artist = '...',
+    publisher = '...',
+    isError,
+    isLoading,
+}: CardTypes) => {
     const detailsHTML = useRef<HTMLDivElement>(null);
     const synopsisHTML = useRef<HTMLDivElement>(null);
 
@@ -41,7 +41,7 @@ const Card = ({
 
             const paragraphHeight = synopsisHTML.current.clientHeight;
             const lineHeight = parseFloat(
-                getComputedStyle(synopsisHTML.current).lineHeight
+                getComputedStyle(synopsisHTML.current).lineHeight,
             );
 
             const totalLines = Math.ceil(paragraphHeight / lineHeight);
@@ -69,9 +69,9 @@ const Card = ({
                 {isLoading && (
                     <div className="flex flex-col w-2/4 border rounded-xs rounded-tl-none border-tertiary">
                         <div className="flex items-center justify-center h-44 mobile-md:h-56">
-              <span className="font-bold text-center text-tertiary">
-                {cover}
-              </span>
+                            <span className="font-bold text-center text-tertiary">
+                                {cover}
+                            </span>
                         </div>
                         <TitleDetails
                             {...{
@@ -95,7 +95,10 @@ const Card = ({
                         className="flex flex-col w-2/4 overflow-hidden border rounded-xs rounded-tl-none border-tertiary"
                     >
                         <div className="h-44 mobile-md:h-56">
-                            <CustomLink link={`/titles/${id}`} className="h-full">
+                            <CustomLink
+                                link={`/titles/${id}`}
+                                className="h-full"
+                            >
                                 <img
                                     alt={`Capa do título: ${title}`}
                                     src={cover}
@@ -121,7 +124,9 @@ const Card = ({
                 )}
                 <div className="w-2/4 overflow-hidden">
                     {isLoading && (
-                        <div className="text-center text-tertiary">{synopsis}</div>
+                        <div className="text-center text-tertiary">
+                            {synopsis}
+                        </div>
                     )}
                     {!isLoading && (
                         <p

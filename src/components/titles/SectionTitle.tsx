@@ -9,27 +9,27 @@ type SectionTitleTypes = {
 };
 
 const SectionTitle = ({
-                          children,
-                          titleStyleClasses,
-                          title,
-                          subTitle,
-                          subLink,
-                      }: SectionTitleTypes) => {
+    children,
+    titleStyleClasses,
+    title,
+    subTitle,
+    subLink,
+}: SectionTitleTypes) => {
     return (
         <div className={children ? 'flex flex-col gap-2' : ' flex flex-col'}>
             <div>
                 <div>
                     <h2
-                        className={`font-bold ${
-                            titleStyleClasses ? titleStyleClasses : 'text-2xl'
-                        }`}
+                        className={`font-bold ${titleStyleClasses ? titleStyleClasses : 'text-2xl'}`}
                     >
                         {title}
                     </h2>
                 </div>
                 <div>
                     {subTitle && !subLink && (
-                        <p className="text-xs text-quaternary-default">{subTitle}</p>
+                        <p className="text-xs text-quaternary-default">
+                            {subTitle}
+                        </p>
                     )}
                     {subTitle && subLink && (
                         <p className="leading-0">

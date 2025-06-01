@@ -10,13 +10,13 @@ type AuthenticationFormTypes = {
 };
 
 const AuthenticationForm = ({
-                                onFormSubmit,
-                                title,
-                                children,
-                                helperText,
-                                link,
-                                linkText,
-                            }: AuthenticationFormTypes) => {
+    onFormSubmit,
+    title,
+    children,
+    helperText,
+    link,
+    linkText,
+}: AuthenticationFormTypes) => {
     return (
         <div className="flex flex-col gap-2">
             <div>
@@ -33,7 +33,11 @@ const AuthenticationForm = ({
                 <div>
                     <p className="text-sm text-center text-tertiary-default">
                         {helperText}{' '}
-                        <CustomLink link={link} className="underline" text={linkText}/>
+                        <CustomLink
+                            link={link}
+                            className="underline"
+                            text={linkText}
+                        />
                     </p>
                 </div>
             )}

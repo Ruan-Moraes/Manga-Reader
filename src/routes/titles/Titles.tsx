@@ -1,9 +1,9 @@
-import {useCallback} from 'react';
-import {useParams} from 'react-router-dom';
+import { useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 
-import {TitleTypes} from '../../types/TitleTypes';
+import { TitleTypes } from '../../types/TitleTypes';
 
-import {getCache} from "../../services/utils/cache.tsx";
+import { getCache } from '../../services/utils/cache.tsx';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -14,18 +14,19 @@ import CommentInput from '../../components/inputs/CommentInput';
 import FilterComments from '../../components/comments/FilterComments';
 import CommentsList from '../../components/comments/CommentsList';
 
-import {BsBookmark} from 'react-icons/bs';
-import {AiOutlineLike} from 'react-icons/ai';
-import {MdGroups, MdOutlineShoppingCart} from 'react-icons/md';
-import {FaSortNumericDown} from 'react-icons/fa';
+import { BsBookmark } from 'react-icons/bs';
+import { AiOutlineLike } from 'react-icons/ai';
+import { MdGroups, MdOutlineShoppingCart } from 'react-icons/md';
+import { FaSortNumericDown } from 'react-icons/fa';
 // import { FaSortNumericDownAlt } from 'react-icons/fa';
-import {IoSearchSharp} from 'react-icons/io5';
+import { IoSearchSharp } from 'react-icons/io5';
 
 const Titles = () => {
     const id = useParams().title!;
 
     const getTitleFromCache = useCallback((id: string) => {
-        const titles: TitleTypes[] = (getCache(['titles']) as TitleTypes[]) || [];
+        const titles: TitleTypes[] =
+            (getCache(['titles']) as TitleTypes[]) || [];
 
         if (titles.length === 0) {
             console.log('fetching titles from API');
@@ -48,7 +49,7 @@ const Titles = () => {
 
             return title;
         },
-        [getTitleFromCache, getTitleFromAPI]
+        [getTitleFromCache, getTitleFromAPI],
     );
 
     const {
@@ -67,7 +68,7 @@ const Titles = () => {
 
     return (
         <>
-            <Header/>
+            <Header />
             <Main>
                 <section>
                     <Card
@@ -86,22 +87,21 @@ const Titles = () => {
                     />
 
                     {/* TODO:  Transforma a div abaixo em um componente */}
-                    <div
-                        className="flex items-center justify-between h-full py-2 border rounded-r-xs rounded-bl-xs border-tertiary bg-tertiary">
+                    <div className="flex items-center justify-between h-full py-2 border rounded-r-xs rounded-bl-xs border-tertiary bg-tertiary">
                         <div className="flex items-center justify-center grow">
-                            <BsBookmark className="text-2xl"/>
+                            <BsBookmark className="text-2xl" />
                         </div>
                         <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
                         <div className="flex items-center justify-center grow">
-                            <AiOutlineLike className="text-2xl"/>
+                            <AiOutlineLike className="text-2xl" />
                         </div>
                         <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
                         <div className="flex items-center justify-center grow">
-                            <MdGroups className="text-2xl"/>
+                            <MdGroups className="text-2xl" />
                         </div>
                         <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
                         <div className="flex items-center justify-center grow">
-                            <MdOutlineShoppingCart className="text-2xl"/>
+                            <MdOutlineShoppingCart className="text-2xl" />
                         </div>
                     </div>
                 </section>
@@ -114,12 +114,13 @@ const Titles = () => {
                         </div>
                         <div className="flex items-stretch gap-2">
                             <div>
-                                <button
-                                    className="flex items-center h-full gap-2 p-2 border rounded-xs border-tertiary bg-secondary">
-                                    <span className="text-xs font-bold w-max">Ordenar por:</span>
+                                <button className="flex items-center h-full gap-2 p-2 border rounded-xs border-tertiary bg-secondary">
+                                    <span className="text-xs font-bold w-max">
+                                        Ordenar por:
+                                    </span>
                                     <span>
-                    <FaSortNumericDown className="text-lg"/>
-                  </span>
+                                        <FaSortNumericDown className="text-lg" />
+                                    </span>
                                 </button>
                             </div>
                             <div className="flex grow">
@@ -132,9 +133,8 @@ const Titles = () => {
                                         className="w-full h-full p-2 border rounded-r-none appearance-none rounded-xs 1 border-tertiary bg-secondary"
                                     />
                                 </div>
-                                <div
-                                    className="flex items-center px-4 py-2 border border-l-0 rounded-r-xs border-tertiary bg-secondary">
-                                    <IoSearchSharp size={20}/>
+                                <div className="flex items-center px-4 py-2 border border-l-0 rounded-r-xs border-tertiary bg-secondary">
+                                    <IoSearchSharp size={20} />
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,8 @@ const Titles = () => {
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>24</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>24</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -156,14 +157,16 @@ const Titles = () => {
                                     <span>13/03/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>23</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>23</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -176,14 +179,16 @@ const Titles = () => {
                                     <span>06/03/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>22</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>22</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -196,14 +201,16 @@ const Titles = () => {
                                     <span>27/02/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>21</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>21</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -216,14 +223,16 @@ const Titles = () => {
                                     <span>20/02/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>20</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>20</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -236,14 +245,16 @@ const Titles = () => {
                                     <span>13/02/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>19</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>19</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -256,14 +267,16 @@ const Titles = () => {
                                     <span>06/02/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>18</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>18</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -276,14 +289,16 @@ const Titles = () => {
                                     <span>30/01/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>17</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>17</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -296,14 +311,16 @@ const Titles = () => {
                                     <span>23/01/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>16</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>16</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -316,14 +333,16 @@ const Titles = () => {
                                     <span>16/01/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>15</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>15</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -336,14 +355,16 @@ const Titles = () => {
                                     <span>09/01/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>14</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>14</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -356,14 +377,16 @@ const Titles = () => {
                                     <span>02/01/2003</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>13</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>13</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -376,14 +399,16 @@ const Titles = () => {
                                     <span>26/12/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>12</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>12</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -396,14 +421,16 @@ const Titles = () => {
                                     <span>19/12/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>11</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>11</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -416,14 +443,16 @@ const Titles = () => {
                                     <span>12/12/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>10</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>10</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -436,14 +465,16 @@ const Titles = () => {
                                     <span>05/12/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>9</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>9</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -456,14 +487,16 @@ const Titles = () => {
                                     <span>28/11/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>8</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>8</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -476,14 +509,16 @@ const Titles = () => {
                                     <span>21/11/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>7</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>7</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -496,14 +531,16 @@ const Titles = () => {
                                     <span>14/11/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>6</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>6</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -516,14 +553,16 @@ const Titles = () => {
                                     <span>07/11/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>5</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>5</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -536,14 +575,16 @@ const Titles = () => {
                                     <span>31/10/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>4</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>4</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -556,17 +597,20 @@ const Titles = () => {
                                     <span>24/10/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>3</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>3</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Título:</span> <span>Time 7</span>
+                                    <span className="font-bold">Título:</span>{' '}
+                                    <span>Time 7</span>
                                 </p>
                             </div>
                             <div className="flex flex-col gap-1">
@@ -575,14 +619,16 @@ const Titles = () => {
                                     <span>17/10/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>2</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>2</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -595,14 +641,16 @@ const Titles = () => {
                                     <span>10/10/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
                         <div className="flex justify-between px-2 py-2 border rounded-xs border-tertiary">
                             <div className="flex flex-col gap-1">
                                 <p>
-                                    <span className="font-bold">Capítulo:</span> <span>1</span>
+                                    <span className="font-bold">Capítulo:</span>{' '}
+                                    <span>1</span>
                                 </p>
                                 <p>
                                     <span className="font-bold">Título:</span>{' '}
@@ -615,7 +663,8 @@ const Titles = () => {
                                     <span>03/10/2002</span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Páginas:</span> <span>54</span>
+                                    <span className="font-bold">Páginas:</span>{' '}
+                                    <span>54</span>
                                 </p>
                             </div>
                         </div>
@@ -658,20 +707,22 @@ const Titles = () => {
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col gap-2">
                             <div>
-                                <h3 className="text-xl font-bold">Comentários</h3>
+                                <h3 className="text-xl font-bold">
+                                    Comentários
+                                </h3>
                             </div>
                             <div className="flex flex-col gap-4">
-                                <CommentInput placeholder="Deixe seu comentário"/>
-                                <FilterComments title="Filtar comentários por:"/>
+                                <CommentInput placeholder="Deixe seu comentário" />
+                                <FilterComments title="Filtar comentários por:" />
                             </div>
                         </div>
                         <div className="flex flex-col -mt-4">
-                            <CommentsList/>
+                            <CommentsList />
                         </div>
                     </div>
                 </section>
             </Main>
-            <Footer/>
+            <Footer />
         </>
     );
 };

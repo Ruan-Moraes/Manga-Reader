@@ -9,7 +9,7 @@ import Paragraph from '../../components/paragraph/Paragraph';
 const Dmca = () => {
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <ParagraphContainer>
                     <SectionTitle
@@ -62,7 +62,7 @@ const Dmca = () => {
                     />
                 </ParagraphContainer>
             </Main>
-            <Footer/>
+            <Footer />
         </>
     );
 };

@@ -1,4 +1,4 @@
-import {UserTypes} from './UserTypes';
+import { UserTypes } from './UserTypes';
 
 export type CommentTypes = {
     id: string;
@@ -6,12 +6,11 @@ export type CommentTypes = {
 
     user: UserTypes;
 
-    isOwner?: boolean;
+    isOwner: boolean;
     isHighlighted?: boolean;
     wasEdited?: boolean;
 
     createdAt: string;
-    updatedAt: string;
 
     textContent?: string;
     imageContent?: string;

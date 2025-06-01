@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import plugin from 'tailwindcss/plugin';
+import plugin from 'tailwindcss/plugin'
 
 export default {
     content: ['./index.html', './src/**/*.{ts,tsx}'],
@@ -11,9 +11,9 @@ export default {
     theme: {
         extend: {
             screens: {
-                'mobile-sm': '20rem',       // 320px
-                'mobile-md': '23.4375rem',  // 375px
-                'mobile-lg': '26.5625rem',  // 425px
+                'mobile-sm': '20rem', // 320px
+                'mobile-md': '23.4375rem', // 375px
+                'mobile-lg': '26.5625rem', // 425px
             },
             colors: {
                 primary: {
@@ -54,22 +54,22 @@ export default {
             },
             keyframes: {
                 marquee: {
-                    '0%': {transform: 'translateX(125%) !important'},
-                    '100%': {transform: 'translateX(-150%) !important'},
+                    '0%': { transform: 'translateX(125%) !important' },
+                    '100%': { transform: 'translateX(-150%) !important' },
                 },
             },
         },
     },
     plugins: [
-        plugin(function ({matchUtilities, theme}) {
+        plugin(function ({ matchUtilities, theme }) {
             matchUtilities(
                 {
-                    'text-shadow': (value) => ({
+                    'text-shadow': value => ({
                         textShadow: value + ' !important',
                     }),
                 },
-                {values: theme('textShadow')}
-            );
+                { values: theme('textShadow') },
+            )
         }),
     ],
-};
+}

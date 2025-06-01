@@ -6,9 +6,9 @@ type TitleDescriptionTypes = {
 };
 
 const TitleDescription = ({
-                              genres = 'Carregando...',
-                              synopsis = 'Carregando...',
-                          }: TitleDescriptionTypes) => {
+    genres = 'Carregando...',
+    synopsis = 'Carregando...',
+}: TitleDescriptionTypes) => {
     return (
         <>
             <div className="flex flex-col gap-2">
@@ -27,7 +27,7 @@ const TitleDescription = ({
                         Gêneros
                     </h3>
                 </div>
-                <GenresBox genres={genres}/>
+                <GenresBox genres={genres} />
             </div>
         </>
     );

@@ -1,36 +1,36 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 
-import {CardsContainerTypes} from '../../../types/CardContainerTypes';
+import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import UseFetchTitles from '../../../hooks/fetch/useFetchTitles';
+import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 
 const CardsContainer = ({
-                            url,
-                            validTime,
-                            title,
-                            subTitle,
-                        }: CardsContainerTypes) => {
-    const {data, status} = UseFetchTitles(url, validTime);
+    url,
+    validTime,
+    title,
+    subTitle,
+}: CardsContainerTypes) => {
+    const { data, status } = UseTitlesFetch(url, validTime);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return Object.values(data).map(
                 ({
-                     id,
-                     type,
-                     cover,
-                     title,
-                     synopsis,
-                     chapters,
-                     popularity,
-                     score,
-                     author,
-                     artist,
-                     publisher,
-                 }) => (
+                    id,
+                    type,
+                    cover,
+                    title,
+                    synopsis,
+                    chapters,
+                    popularity,
+                    score,
+                    author,
+                    artist,
+                    publisher,
+                }) => (
                     <Card
                         key={id}
                         id={id}
@@ -45,17 +45,17 @@ const CardsContainer = ({
                         artist={artist}
                         publisher={publisher}
                     />
-                )
+                ),
             );
         }
 
         if (status === 'pending') {
-            return Array.from({length: 5}).map((_, index) => (
-                <Card isLoading={true} key={index}/>
+            return Array.from({ length: 5 }).map((_, index) => (
+                <Card isLoading={true} key={index} />
             ));
         }
 
-        return <Card isError={true}/>;
+        return <Card isError={true} />;
     }, [data, status]);
 
     return (

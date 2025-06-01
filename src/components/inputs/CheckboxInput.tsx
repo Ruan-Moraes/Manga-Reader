@@ -6,7 +6,7 @@ type CheckboxInputTypes = {
     linkText: string;
 };
 
-const CheckboxInput = ({label, link, linkText}: CheckboxInputTypes) => {
+const CheckboxInput = ({ label, link, linkText }: CheckboxInputTypes) => {
     return (
         <div>
             <label className="flex items-center gap-2 w-max">
@@ -16,8 +16,7 @@ const CheckboxInput = ({label, link, linkText}: CheckboxInputTypes) => {
                         name="checkboxInput"
                         type="checkbox"
                     />
-                    <div
-                        className="absolute transition duration-300 transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none top-1/2 left-1/2 peer peer-checked:opacity-100">
+                    <div className="absolute transition duration-300 transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none top-1/2 left-1/2 peer peer-checked:opacity-100">
                         <svg
                             className="w-4 h-4 text-white"
                             fill="currentColor"
@@ -37,12 +36,12 @@ const CheckboxInput = ({label, link, linkText}: CheckboxInputTypes) => {
                 <p className="text-sm cursor-pointer">
                     <span>{label}</span>{' '}
                     <span>
-            <CustomLink
-                link={link}
-                className="font-bold underline"
-                text={linkText}
-            />
-          </span>
+                        <CustomLink
+                            link={link}
+                            className="font-bold underline"
+                            text={linkText}
+                        />
+                    </span>
                 </p>
             </label>
         </div>

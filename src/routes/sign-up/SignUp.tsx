@@ -16,13 +16,17 @@ const SignUp = () => {
 
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
                     title="Cadastro de usuário"
                 >
-                    <BaseInput label="Nome:" type="text" placeholder="Nome de usuário"/>
+                    <BaseInput
+                        label="Nome:"
+                        type="text"
+                        placeholder="Nome de usuário"
+                    />
                     <BaseInput
                         label="Email:"
                         type="email"
@@ -50,10 +54,10 @@ const SignUp = () => {
                             linkText="DMCA."
                         />
                     </div>
-                    <ButtonHighLight text="Cadastrar"/>
+                    <ButtonHighLight text="Cadastrar" />
                 </AuthenticationForm>
             </Main>
-            <Footer disabledLinks={true}/>
+            <Footer disabledLinks={true} />
         </>
     );
 };

@@ -9,10 +9,13 @@ import Paragraph from '../../components/paragraph/Paragraph';
 const AboutUs = () => {
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <ParagraphContainer>
-                    <SectionTitle titleStyleClasses="text-lg" title="Quem Somos?"/>
+                    <SectionTitle
+                        titleStyleClasses="text-lg"
+                        title="Quem Somos?"
+                    />
                     <Paragraph
                         paragraphContent={[
                             {
@@ -45,7 +48,7 @@ const AboutUs = () => {
                     />
                 </ParagraphContainer>
             </Main>
-            <Footer/>
+            <Footer />
         </>
     );
 };

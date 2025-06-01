@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 
-import {UserTypes} from '../../../types/UserTypes';
+import { UserTypes } from '../../../types/UserTypes';
 
-import {MdAdminPanelSettings, MdStar} from 'react-icons/md';
+import { MdAdminPanelSettings, MdStar } from 'react-icons/md';
 
 type CommentUserProps = {
     onClickProfile: (userData: UserTypes) => void;
@@ -13,10 +13,10 @@ type CommentUserProps = {
 };
 
 const CommentUser = ({
-                         onClickProfile,
-                         isHighlighted,
-                         user,
-                     }: CommentUserProps) => {
+    onClickProfile,
+    isHighlighted,
+    user,
+}: CommentUserProps) => {
     return (
         <div className="flex gap-2">
             <div className="w-16 h-16 rounded-xs shrink-0">
@@ -30,24 +30,24 @@ const CommentUser = ({
             <div className="flex flex-col justify-center overflow-hidden">
                 {user.member?.isMember && (
                     <div>
-            <span
-                onClick={() => onClickProfile(user)}
-                className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
-            >
-              <span>Membro</span>
-              <MdStar size={16}/>
-            </span>
+                        <span
+                            onClick={() => onClickProfile(user)}
+                            className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
+                        >
+                            <span>Membro</span>
+                            <MdStar size={16} />
+                        </span>
                     </div>
                 )}
                 {user.moderator?.isModerator && (
                     <div>
-            <span
-                onClick={() => onClickProfile(user)}
-                className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
-            >
-              <span>Moderador</span>
-              <MdAdminPanelSettings size={16}/>
-            </span>
+                        <span
+                            onClick={() => onClickProfile(user)}
+                            className="flex items-center gap-1 text-sm font-bold leading-none text-shadow-highlight"
+                        >
+                            <span>Moderador</span>
+                            <MdAdminPanelSettings size={16} />
+                        </span>
                     </div>
                 )}
                 <div>
@@ -57,7 +57,7 @@ const CommentUser = ({
                             'leading-none font-bold truncate text-shadow-default',
                             {
                                 'text-shadow-default': isHighlighted,
-                            }
+                            },
                         )}
                     >
                         {user.name}

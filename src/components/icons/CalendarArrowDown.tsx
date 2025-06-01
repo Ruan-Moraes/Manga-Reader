@@ -7,7 +7,7 @@ type CalendarArrowDownProps = {
     className?: string;
 };
 
-const CalendarArrowDown = ({onClick, className}: CalendarArrowDownProps) => {
+const CalendarArrowDown = ({ onClick, className }: CalendarArrowDownProps) => {
     return (
         <IconButton onClick={onClick} className={className}>
             <img

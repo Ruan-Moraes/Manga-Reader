@@ -1,12 +1,12 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import {QueryClientProvider} from '@tanstack/react-query';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import {queryClient} from "./services/utils/cache.tsx";
+import { queryClient } from './services/utils/cache.tsx';
 
-import {UserModalProvider} from './context/modals/user/UserModalContext.tsx';
-import {EmojiModalProvider} from './context/modals/emoji/EmojiModalContext.tsx';
+import { UserModalProvider } from './context/modals/user/UserModalContext.tsx';
+import { EmojiModalProvider } from './context/modals/emoji/EmojiModalContext.tsx';
 
 import AppLayout from './components/app-layout/AppLayout.tsx';
 import Home from './routes/home/Home.tsx';
@@ -30,70 +30,71 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Toast from './components/toast/Toast';
 
+// TODO: Cria dois arquivos de rotas, um para as rotas públicas e outro para as rotas privadas (com autenticação).
 const routes = createBrowserRouter([
     {
         path: 'Manga-Reader',
-        element: <AppLayout/>,
+        element: <AppLayout />,
         children: [
             {
                 path: '',
-                element: <Home/>,
+                element: <Home />,
             },
             {
                 path: 'titles/:title',
-                element: <Titles/>,
+                element: <Titles />,
             },
             {
                 path: 'titles/:title/:chapter',
-                element: <Chapter/>,
+                element: <Chapter />,
             },
             {
                 path: 'categories',
-                element: <Categories/>,
+                element: <Categories />,
             },
             {
                 path: 'groups',
-                element: <Groups/>,
+                element: <Groups />,
             },
             {
                 path: 'news',
-                element: <News/>,
+                element: <News />,
             },
             {
                 path: 'events',
-                element: <Events/>,
+                element: <Events />,
             },
             {
                 path: 'login',
-                element: <Login/>,
+                element: <Login />,
             },
             {
                 path: 'sign-up',
-                element: <SignUp/>,
+                element: <SignUp />,
             },
             {
                 path: 'forgot-password',
-                element: <ForgotPassword/>,
+                element: <ForgotPassword />,
             },
             {
                 path: 'i-want-to-publish-work',
-                element: <PublishWork/>,
+                element: <PublishWork />,
             },
             {
                 path: 'about-us',
-                element: <AboutUs/>,
+                element: <AboutUs />,
             },
             {
                 path: 'terms-of-use',
-                element: <TermsOfUse/>,
+                element: <TermsOfUse />,
             },
             {
                 path: 'dmca',
-                element: <Dmca/>,
+                element: <Dmca />,
             },
             {
                 path: '*',
-                element: <NotFound/>,
+                element: <NotFound />,
             },
         ],
     },
@@ -104,11 +105,11 @@ createRoot(document.getElementById('root')!).render(
         <QueryClientProvider client={queryClient}>
             <UserModalProvider>
                 <EmojiModalProvider>
-                    <RouterProvider router={routes}/>
-                    <Toast/>
+                    <RouterProvider router={routes} />
+                    <Toast />
                     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                 </EmojiModalProvider>
             </UserModalProvider>
         </QueryClientProvider>
-    </StrictMode>
+    </StrictMode>,
 );

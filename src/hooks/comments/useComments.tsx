@@ -1,46 +1,42 @@
-import {useEffect, useState} from 'react';
+import useCommentsFetch from './data/useCommentsFetch';
+import useCommentCRUD from './internal/useCommentCRUD';
+import useCommentTree from './internal/useCommentTree';
 
-import {CommentTypes} from '../../types/CommentTypes';
+const COMMENTS_QUERY_KEY = 'comments';
 
-export function useComments(id: number) {
-    const [comments, setComments] = useState<CommentTypes[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+export const useComments = () => {
+    const {
+        data: comments,
+        isLoading,
+        isError,
+        error,
+        refetch,
+    } = useCommentsFetch(COMMENTS_QUERY_KEY, '/api/comments');
 
-    useEffect(() => {
-        const fetchComments = async () => {
-            try {
-                const response = await fetch(`/api/comments/${id}`);
+    const {
+        deleteComment,
+        editComment,
+        isDeletingComment,
+        isEditingComment,
+        deleteCommentError,
+        editCommentError,
+    } = useCommentCRUD({
+        queryKey: COMMENTS_QUERY_KEY,
+    });
 
-                const data = await response.json();
+    const { getCommentsTree } = useCommentTree(comments || []);
 
-                setComments(data);
-            } catch (error) {
-                console.error('Erro ao buscar comentários:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchComments();
-    }, [id]);
-
-    const handleDelete = async (id: string) => {
-        try {
-            const response = await fetch(`/api/comments/${id}`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                setComments((prev) => prev.filter((c) => c.id !== id));
-            }
-
-            if (!response.ok) {
-                console.error('Erro ao excluir comentário:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Erro ao excluir comentário:', error);
-        }
+    return {
+        commentsTree: getCommentsTree(),
+        isLoading,
+        isError,
+        error,
+        deleteComment,
+        editComment,
+        isDeletingComment,
+        isEditingComment,
+        deleteCommentError,
+        editCommentError,
+        refetchComments: refetch,
     };
-
-    return {comments, isLoading, handleDelete};
-}
+};

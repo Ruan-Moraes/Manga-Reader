@@ -1,10 +1,10 @@
-import {useEffect, useMemo, useRef} from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 // @ts-expect-error - ignore import error
-import {Splide} from '@splidejs/react-splide';
+import { Splide } from '@splidejs/react-splide';
 // @ts-expect-error - ignore import error
 import '@splidejs/react-splide/css';
 
-import UseFetchTitles from '../../../hooks/fetch/useFetchTitles';
+import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import Carousel from './Carousel';
 import CustomLink from '../../links/elements/CustomLink';
@@ -17,18 +17,18 @@ type CarouselContainerTypes = {
 };
 
 const CarouselContainer = ({
-                               url,
-                               validTime,
-                               title,
-                               subTitle,
-                           }: CarouselContainerTypes) => {
-    const {data, status} = UseFetchTitles(url, validTime);
+    url,
+    validTime,
+    title,
+    subTitle,
+}: CarouselContainerTypes) => {
+    const { data, status } = UseTitlesFetch(url, validTime);
 
     const splideRef = useRef<Splide>(null);
 
     useEffect(() => {
         if (splideRef.current) {
-            const {root, track, list} =
+            const { root, track, list } =
                 splideRef.current.splide.Components.Elements;
 
             if (root && track && list) {
@@ -59,24 +59,26 @@ const CarouselContainer = ({
                     }}
                     ref={splideRef}
                 >
-                    {Object.values(data).map(({id, title, cover, synopsis}) => (
-                        <Carousel
-                            key={id}
-                            id={id}
-                            title={title}
-                            cover={cover}
-                            synopsis={synopsis}
-                        />
-                    ))}
+                    {Object.values(data).map(
+                        ({ id, title, cover, synopsis }) => (
+                            <Carousel
+                                key={id}
+                                id={id}
+                                title={title}
+                                cover={cover}
+                                synopsis={synopsis}
+                            />
+                        ),
+                    )}
                 </Splide>
             );
         }
 
         if (status === 'pending') {
-            return <Carousel isLoading={true}/>;
+            return <Carousel isLoading={true} />;
         }
 
-        return <Carousel isError={true}/>;
+        return <Carousel isError={true} />;
     }, [data, status]);
 
     return (

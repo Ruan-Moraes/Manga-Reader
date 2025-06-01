@@ -12,7 +12,7 @@ const treatDate = (
         day?: 'numeric' | '2-digit';
         hour?: 'numeric' | '2-digit';
         minute?: 'numeric' | '2-digit';
-    }
+    },
 ) => {
     const options: Intl.DateTimeFormatOptions = {
         year,

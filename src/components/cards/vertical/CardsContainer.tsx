@@ -1,31 +1,31 @@
-import {useCallback, useMemo, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import clsx from 'clsx';
 
-import {CardsContainerTypes} from '../../../types/CardContainerTypes';
+import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import UseFetchTitles from '../../../hooks/fetch/useFetchTitles';
+import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 import RaisedButton from '../../buttons/RaisedButton';
 
 const CardsContainer = ({
-                            url,
-                            validTime,
-                            title,
-                            subTitle,
-                        }: CardsContainerTypes) => {
+    url,
+    validTime,
+    title,
+    subTitle,
+}: CardsContainerTypes) => {
     const navigate = useNavigate();
 
-    const {data, status} = UseFetchTitles(url, validTime);
+    const { data, status } = UseTitlesFetch(url, validTime);
     const [visible, setVisible] = useState(10);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return Object.values(data).map(
-                ({id, type, cover, title, chapters, updatedAt}) => (
+                ({ id, type, cover, title, chapters, updatedAt }) => (
                     <Card
                         id={id}
                         type={type}
@@ -35,18 +35,18 @@ const CardsContainer = ({
                         updatedAt={updatedAt}
                         key={id}
                     />
-                )
+                ),
             );
         }
 
         if (status === 'pending') {
-            return Array.from({length: 10}).map((_, index) => (
-                <Card isLoading={true} key={index}/>
+            return Array.from({ length: 10 }).map((_, index) => (
+                <Card isLoading={true} key={index} />
             ));
         }
 
-        return Array.from({length: 1}).map((_, index) => (
-            <Card isError={true} key={index}/>
+        return Array.from({ length: 1 }).map((_, index) => (
+            <Card isError={true} key={index} />
         ));
     }, [data, status]);
 
@@ -56,7 +56,7 @@ const CardsContainer = ({
         }
 
         if (visible < allChildren.length) {
-            setVisible((prev) => prev + 10);
+            setVisible(prev => prev + 10);
         }
     }, [visible, allChildren.length, navigate]);
 
@@ -75,7 +75,7 @@ const CardsContainer = ({
             >
                 {allChildren.slice(0, visible)}
             </div>
-            <RaisedButton onClick={handleClick} text="Ver Mais"/>
+            <RaisedButton onClick={handleClick} text="Ver Mais" />
         </section>
     );
 };

@@ -1,13 +1,13 @@
-import {useContext} from 'react';
+import { useContext } from 'react';
 
-import {UserModalContext} from './UserModalContext';
+import { UserModalContext } from './UserModalContext';
 
 export const useUserModalContext = () => {
     const context = useContext(UserModalContext);
 
     if (!context) {
         throw new Error(
-            'useUserModal deve ser usado dentro de um UserModalProvider'
+            'useUserModal deve ser usado dentro de um UserModalProvider',
         );
     }
 

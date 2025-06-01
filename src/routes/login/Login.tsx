@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import { useCallback } from 'react';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -15,12 +15,12 @@ const Login = () => {
 
             console.log('Formulário enviado');
         },
-        []
+        [],
     );
 
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
@@ -39,10 +39,10 @@ const Login = () => {
                         type="password"
                         placeholder="Digite sua senha"
                     />
-                    <RaisedButton text="Entrar:"/>
+                    <RaisedButton text="Entrar:" />
                 </AuthenticationForm>
             </Main>
-            <Footer disabledLinks={true}/>
+            <Footer disabledLinks={true} />
         </>
     );
 };

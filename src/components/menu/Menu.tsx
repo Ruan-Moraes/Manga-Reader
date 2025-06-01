@@ -1,7 +1,7 @@
-import {useCallback, useLayoutEffect, useRef, useState} from 'react';
-import {MdMenu} from 'react-icons/md';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { MdMenu } from 'react-icons/md';
 
-import {clsx} from 'clsx';
+import { clsx } from 'clsx';
 
 import CustomLink from '../links/elements/CustomLink';
 import MainSearchInput from '../inputs/MainSearchInput.tsx';
@@ -17,7 +17,7 @@ const Menu = () => {
     const originalOffset = useRef<number>(0);
 
     const toggleMenu = useCallback(() => {
-        setIsMenuOpen((prevOpen) => {
+        setIsMenuOpen(prevOpen => {
             const newOpenState = !prevOpen;
 
             document.body.style.overflow = newOpenState ? 'hidden' : 'auto';
@@ -50,13 +50,13 @@ const Menu = () => {
 
     return (
         <>
-            {isSticky && <div style={{height: `${menuHeight}rem`}}/>}
+            {isSticky && <div style={{ height: `${menuHeight}rem` }} />}
             <nav
                 className={clsx(
                     'px-3 py-2 bg-secondary border-b-2 border-b-tertiary transition duration-300',
                     {
                         'fixed top-0 left-0 right-0 z-20': isSticky,
-                    }
+                    },
                 )}
                 ref={menuRef}
             >
@@ -68,7 +68,7 @@ const Menu = () => {
                                 {
                                     'opacity-100': isSticky,
                                     'opacity-0': !isSticky,
-                                }
+                                },
                             )}
                         >
                             <h2
@@ -76,7 +76,7 @@ const Menu = () => {
                                     'pointer-events-none': !isSticky,
                                 })}
                             >
-                                <CustomLink text="Manga Reader"/>
+                                <CustomLink text="Manga Reader" />
                             </h2>
                         </div>
                         <div>
@@ -96,20 +96,19 @@ const Menu = () => {
                             {
                                 'translate-x-0': isMenuOpen,
                                 'translate-x-full': !isMenuOpen,
-                            }
+                            },
                         )}
                         id="menu-links"
                     >
-                        <div
-                            className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 border-b-tertiary">
+                        <div className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 border-b-tertiary">
                             <h2 className="text-2xl italic font-bold mobile-sm:text-xl mobile-md:text-2xl">
-                                <CustomLink text="Manga Reader"/>
+                                <CustomLink text="Manga Reader" />
                             </h2>
-                            <MainSearchInput/>
+                            <MainSearchInput />
                         </div>
-                        <MenuLinkBlock/>
+                        <MenuLinkBlock />
                     </div>
-                    <Blur isOpen={isMenuOpen} onClickBlur={setIsMenuOpen}/>
+                    <Blur isOpen={isMenuOpen} onClickBlur={setIsMenuOpen} />
                 </div>
             </nav>
         </>

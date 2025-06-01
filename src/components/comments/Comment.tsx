@@ -1,55 +1,63 @@
 import clsx from 'clsx';
-import {useCallback, useState} from 'react'; // Importe useState e useCallback
-import {CommentTypes} from '../../types/CommentTypes';
-import {UserTypes} from '../../types/UserTypes';
 
-import ConfirmModal from '../../components/modals/confirm/ConfirmModal'; // Importe o ConfirmModal
+import { CommentTypes } from '../../types/CommentTypes';
+import { UserTypes } from '../../types/UserTypes';
+
+import useCommentModal from '../../hooks/comments/internal/useCommentModal';
+
+import DeleteModal from '../modals/no-context/delete-comment/DeleteModal';
+import EditModal from '../modals/no-context/edit-comment/EditModal';
+
 import CommentInformation from './header/CommentInformation';
 import CommentUser from './header/CommentUser';
 import CommentContent from './body/CommentContent';
 import CommentActions from './footer/CommentActions';
 
 const Comment = ({
-                     onClickProfile,
+    onClickProfile,
+    onClickEdit,
+    onClickDelete,
 
-                     onClickEdit,
-                     onClickDelete,
+    nestedLevel = 0,
+    id,
 
-                     id,
-                     nestedLevel = 0,
+    user,
 
-                     user,
+    isOwner,
+    isHighlighted,
+    wasEdited,
 
-                     isOwner,
-                     isHighlighted,
-                     wasEdited,
+    createdAt,
 
-                     commentData,
-                     textContent,
-                     imageContent,
+    textContent,
+    imageContent,
 
-                     likeCount,
-                     dislikeCount,
-                 }: { nestedLevel?: number } & {
+    likeCount,
+    dislikeCount,
+}: { nestedLevel?: number } & {
     onClickProfile: (user: UserTypes) => void;
-    onClickEdit: () => void;
+    onClickEdit: (
+        id: string,
+        newTextContent?: string,
+        newImageContent?: string,
+    ) => void;
     onClickDelete: (id: string) => void;
 } & CommentTypes) => {
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+    const {
+        isDeleteModalOpen,
+        openDeleteModal,
+        closeDeleteModal,
+        confirmDeleteComment,
 
-    const handleOpenDeleteModal = useCallback(() => {
-        setIsDeleteModalOpen(true);
-    }, []);
-
-    const handleCloseDeleteModal = useCallback(() => {
-        setIsDeleteModalOpen(false);
-    }, []);
-
-    const handleDeleteComment = useCallback(() => {
-        onClickDelete(id);
-
-        handleCloseDeleteModal();
-    }, [onClickDelete, id, handleCloseDeleteModal]);
+        isEditModalOpen,
+        openEditModal,
+        closeEditModal,
+        confirmEditComment,
+    } = useCommentModal({
+        onDelete: onClickDelete,
+        onEdit: onClickEdit,
+        commentId: id,
+    });
 
     if (!textContent && !imageContent) {
         return null;
@@ -57,56 +65,51 @@ const Comment = ({
 
     const userData: UserTypes = {
         id: user.id,
-        moderator: user.moderator,
-        member: user.member,
         name: user.name,
         photo: user.photo,
+        bio: user.bio,
+        moderator: user.moderator,
+        member: user.member,
+        socialMediasLinks: user.socialMediasLinks,
+        statistics: user.statistics,
+        recommendedTitles: user.recommendedTitles,
     };
 
-    const calculateNastedComment = (nestedLevel: number) => {
-        if (nestedLevel === 0) {
-            return 0;
-        }
+    const getIndentationMargin = (level: number) => {
+        if (level === 0) return 0;
+        if (level === 1) return 8;
 
-        if (nestedLevel === 1) {
-            return 8;
-        }
-
-        return nestedLevel * 8 + 8 * (nestedLevel - 1);
+        return level * 8 + 8 * (level - 1);
     };
 
-    const calculateNestedBorder = (index: number) => {
-        if (index === 0) {
-            return -8;
-        }
-
-        if (index === 1) {
-            return -24;
-        }
+    const getBorderOffset = (index: number) => {
+        if (index === 0) return -8;
+        if (index === 1) return -24;
 
         return -(index * 8 + 8 * (index + 1));
     };
 
     return (
         <div
-            style={{marginLeft: calculateNastedComment(nestedLevel) / 16 + 'rem'}}
+            style={{
+                marginLeft: getIndentationMargin(nestedLevel) / 16 + 'rem',
+            }}
             className={clsx({
                 [`relative`]: nestedLevel > 0,
             })}
         >
             {nestedLevel > 0 &&
-                Array.from({length: nestedLevel}, (_, index) => (
+                Array.from({ length: nestedLevel }, (_, index) => (
                     <div
                         key={index}
                         className="absolute h-full border-l border-quaternary-opacity-25"
                         style={{
-                            left: calculateNestedBorder(index) / 16 + 'rem',
+                            left: getBorderOffset(index) / 16 + 'rem',
                         }}
                     ></div>
                 ))}
             {nestedLevel > 0 && (
-                <div
-                    className="absolute w-[0.9375rem] border-t -left-[0.4453125rem] border-quaternary-opacity-25 top-6"></div>
+                <div className="absolute w-[0.9375rem] border-t -left-[0.4453125rem] border-quaternary-opacity-25 top-6"></div>
             )}
             <div
                 style={{
@@ -117,10 +120,13 @@ const Comment = ({
                     {
                         'bg-secondary': !isHighlighted,
                         'bg-quaternary-opacity-25': isHighlighted,
-                    }
+                    },
                 )}
             >
-                <CommentInformation commentData={commentData} wasEdited={wasEdited}/>
+                <CommentInformation
+                    createdAt={createdAt}
+                    wasEdited={wasEdited}
+                />
                 <CommentUser
                     onClickProfile={onClickProfile}
                     isHighlighted={isHighlighted}
@@ -132,19 +138,31 @@ const Comment = ({
                     user={userData}
                 />
                 <CommentActions
+                    onDelete={openDeleteModal}
+                    onEdit={openEditModal}
                     isOwner={isOwner}
-                    onDelete={handleOpenDeleteModal}
-                    onEdit={onClickEdit}
                     likeCount={likeCount}
                     dislikeCount={dislikeCount}
                 />
             </div>
-            <ConfirmModal
+            {/* Modal de confirmação de exclusão */}
+            <DeleteModal
                 isOpen={isDeleteModalOpen}
-                onConfirm={handleDeleteComment}
-                onCancel={handleCloseDeleteModal}
+                onConfirm={confirmDeleteComment}
+                onCancel={closeDeleteModal}
                 title="Deletar comentário"
                 message="Você tem certeza que deseja deletar este comentário? Essa ação deletará os comentários relacionados a ele."
+            />
+            {/* Modal de edição de comentário */}
+            <EditModal
+                isOpen={isEditModalOpen}
+                onEdit={(newTextContent, newImageContent) => {
+                    confirmEditComment(newTextContent, newImageContent);
+                }}
+                onCancel={closeEditModal}
+                title="Editar comentário"
+                initialText={textContent}
+                initialImages={imageContent}
             />
         </div>
     );

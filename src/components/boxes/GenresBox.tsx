@@ -2,7 +2,7 @@ type GenresBoxTypes = {
     genres: string[] | string;
 };
 
-const GenresBox = ({genres = 'Carregando...'}: GenresBoxTypes) => {
+const GenresBox = ({ genres = 'Carregando...' }: GenresBoxTypes) => {
     return (
         <div className="text-xs text-center">
             {Array.isArray(genres) ? (

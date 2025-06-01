@@ -1,9 +1,9 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 
-import {TitleTypes} from '../../../types/TitleTypes';
-import {StatusFetchTypes} from '../../../types/StatusFetchTypes';
+import { TitleTypes } from '../../../types/TitleTypes';
+import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
-import {COLORS} from '../../../constants/COLORS';
+import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
 import CustomLink from '../../links/elements/CustomLink';
@@ -24,19 +24,19 @@ type CardTypes = Partial<
     StatusFetchTypes;
 
 const Card = ({
-                  id,
-                  type = '...',
-                  cover = 'Carregando...',
-                  title = '...',
-                  chapters = '...',
-                  isError,
-                  isLoading,
-              }: CardTypes) => {
+    id,
+    type = '...',
+    cover = 'Carregando...',
+    title = '...',
+    chapters = '...',
+    isError,
+    isLoading,
+}: CardTypes) => {
     const lastChapter = useMemo(
         // TODO: Alterar quando a API estiver pronta
 
         () => chapters?.[chapters.length - 1],
-        [chapters]
+        [chapters],
     );
 
     if (isError) {
@@ -54,19 +54,18 @@ const Card = ({
             <div className="flex flex-col px-3 py-1 text-center rounded-b-none rounded-xs bg-tertiary">
                 <span className="font-bold">{type}</span>
                 <span className="text-xs">
-          {isLoading ? (
-              <span>({chapters} Capítulos)</span>
-          ) : (
-              <span>({lastChapter} Capítulos)</span>
-          )}
-        </span>
+                    {isLoading ? (
+                        <span>({chapters} Capítulos)</span>
+                    ) : (
+                        <span>({lastChapter} Capítulos)</span>
+                    )}
+                </span>
             </div>
-            <div
-                className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-xs overflow-hidden">
+            <div className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-xs overflow-hidden">
                 {isLoading && (
                     <span className="flex items-center justify-center h-full font-bold text-tertiary">
-            {cover}
-          </span>
+                        {cover}
+                    </span>
                 )}
                 {!isLoading && (
                     <CustomLink link={`/titles/${id}`} className="block h-full">
@@ -81,8 +80,8 @@ const Card = ({
             <div className="w-[20rem] px-2 py-1 rounded-b-xs bg-tertiary">
                 {isLoading && (
                     <span className="block font-bold text-center text-shadow-default">
-            {title}
-          </span>
+                        {title}
+                    </span>
                 )}
                 {!isLoading && (
                     <h3 className="overflow-x-auto text-center text-nowrap">

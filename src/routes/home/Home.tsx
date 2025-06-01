@@ -1,5 +1,5 @@
-import {COLORS} from '../../constants/COLORS';
-import {SOCIAL_MEDIA_COLORS} from '../../constants/SOCIAL_MEDIA_COLORS';
+import { COLORS } from '../../constants/COLORS';
+import { SOCIAL_MEDIA_COLORS } from '../../constants/SOCIAL_MEDIA_COLORS';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -17,7 +17,7 @@ import GridCardsContainer from '../../components/cards/vertical/CardsContainer';
 const Home = () => {
     return (
         <>
-            <Header/>
+            <Header />
             <Main>
                 <Warning
                     color={COLORS.QUATERNARY}
@@ -73,7 +73,7 @@ const Home = () => {
                     subTitle="Quero ver mais..."
                 />
             </Main>
-            <Footer/>
+            <Footer />
         </>
     );
 };

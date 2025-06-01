@@ -1,32 +1,35 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 
-import {TitleTypes} from '../../types/TitleTypes';
-import {StatusFetchTypes} from '../../types/StatusFetchTypes';
+import { TitleTypes } from '../../types/TitleTypes';
+import { StatusFetchTypes } from '../../types/StatusFetchTypes';
 
 import CustomLink from '../links/elements/CustomLink';
 
 type TitleDetailsTypes = Partial<
-    Omit<TitleTypes, 'cover' | 'synopsis' | 'genres' | 'createdAt' | 'updatedAt'>
+    Omit<
+        TitleTypes,
+        'cover' | 'synopsis' | 'genres' | 'createdAt' | 'updatedAt'
+    >
 > & { disableType?: boolean } & StatusFetchTypes;
 
 const TitleDetails = ({
-                          id,
-                          title,
-                          type,
-                          chapters,
-                          popularity,
-                          score,
-                          author,
-                          artist,
-                          publisher,
-                          disableType = false,
-                          isLoading,
-                      }: TitleDetailsTypes) => {
+    id,
+    title,
+    type,
+    chapters,
+    popularity,
+    score,
+    author,
+    artist,
+    publisher,
+    disableType = false,
+    isLoading,
+}: TitleDetailsTypes) => {
     const lastChapter = useMemo(
         // TODO: Alterar quando a API estiver pronta
 
         () => chapters?.[chapters.length - 1],
-        [chapters]
+        [chapters],
     );
 
     return (
@@ -49,49 +52,57 @@ const TitleDetails = ({
                     <p className="truncate">
                         <span className="font-bold">Popularidade:</span>{' '}
                         <span className={isLoading ? 'text-tertiary' : ''}>
-              {popularity}º
-            </span>
+                            {popularity}º
+                        </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Nota:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>{score}</span>
+                        <span className={isLoading ? 'text-tertiary' : ''}>
+                            {score}
+                        </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Capítulos:</span>{' '}
                         <span className={isLoading ? 'text-tertiary' : ''}>
-              {lastChapter}
-            </span>
+                            {lastChapter}
+                        </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Autor:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>{author}</span>
+                        <span className={isLoading ? 'text-tertiary' : ''}>
+                            {author}
+                        </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Artista:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>{artist}</span>
+                        <span className={isLoading ? 'text-tertiary' : ''}>
+                            {artist}
+                        </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Editora:</span>{' '}
                         <span className={isLoading ? 'text-tertiary' : ''}>
-              {publisher}
-            </span>
+                            {publisher}
+                        </span>
                     </p>
                 </div>
                 {!disableType && type && (
                     <div>
                         <p className="truncate">
                             <span className="font-bold">Tipo:</span>{' '}
-                            <span className={isLoading ? 'text-tertiary' : ''}>{type}</span>
+                            <span className={isLoading ? 'text-tertiary' : ''}>
+                                {type}
+                            </span>
                         </p>
                     </div>
                 )}

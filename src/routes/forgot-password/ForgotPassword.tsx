@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import { useCallback } from 'react';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -15,12 +15,12 @@ const ForgotPassword = () => {
 
             console.log('Form submitted');
         },
-        []
+        [],
     );
 
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
@@ -34,10 +34,10 @@ const ForgotPassword = () => {
                         type="email"
                         placeholder="Digite seu email"
                     />
-                    <RaisedButton text="Recuperar senha"/>
+                    <RaisedButton text="Recuperar senha" />
                 </AuthenticationForm>
             </Main>
-            <Footer disabledLinks={true}/>
+            <Footer disabledLinks={true} />
         </>
     );
 };

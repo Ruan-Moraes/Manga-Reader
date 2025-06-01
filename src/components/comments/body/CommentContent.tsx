@@ -1,4 +1,4 @@
-import {UserTypes} from '../../../types/UserTypes';
+import { UserTypes } from '../../../types/UserTypes';
 
 type CommentContentProps = {
     textContent: string | undefined;
@@ -8,10 +8,10 @@ type CommentContentProps = {
 };
 
 const CommentContent = ({
-                            textContent,
-                            imageContent,
-                            user,
-                        }: CommentContentProps) => {
+    textContent,
+    imageContent,
+    user,
+}: CommentContentProps) => {
     return (
         <div className="flex flex-col gap-2">
             {textContent && (

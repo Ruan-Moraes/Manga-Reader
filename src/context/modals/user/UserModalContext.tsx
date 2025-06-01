@@ -1,6 +1,6 @@
-import {createContext, ReactNode, useCallback, useState} from 'react';
+import { createContext, ReactNode, useCallback, useState } from 'react';
 
-import {UserTypes} from '../../../types/UserTypes';
+import { UserTypes } from '../../../types/UserTypes';
 
 type UserModalContextProps = {
     isUserModalOpen: boolean;
@@ -57,21 +57,21 @@ type UserModalContextProps = {
 // };
 
 const UserModalContext = createContext<UserModalContextProps | undefined>(
-    undefined
+    undefined,
 );
 
-const UserModalProvider = ({children}: { children: ReactNode }) => {
+const UserModalProvider = ({ children }: { children: ReactNode }) => {
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
 
     const [userData, setUserData] = useState<UserTypes | null>(null);
 
     const openUserModal = useCallback(() => {
         setIsUserModalOpen(true);
-    }, [])
+    }, []);
 
     const closeUserModal = useCallback(() => {
         setIsUserModalOpen(false);
-    }, [])
+    }, []);
 
     return (
         <UserModalContext.Provider
@@ -88,4 +88,4 @@ const UserModalProvider = ({children}: { children: ReactNode }) => {
     );
 };
 
-export {UserModalContext, UserModalProvider};
+export { UserModalContext, UserModalProvider };

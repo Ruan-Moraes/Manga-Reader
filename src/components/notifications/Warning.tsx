@@ -1,4 +1,4 @@
-import {COLORS} from '../../constants/COLORS';
+import { COLORS } from '../../constants/COLORS';
 
 import CustomLink from '../links/elements/CustomLink';
 
@@ -10,7 +10,7 @@ type WarningTypes = {
     link?: string;
 };
 
-const Warning = ({linkText, color, title, message, link}: WarningTypes) => {
+const Warning = ({ linkText, color, title, message, link }: WarningTypes) => {
     return (
         <div
             className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
@@ -20,9 +20,11 @@ const Warning = ({linkText, color, title, message, link}: WarningTypes) => {
             >
                 <div>
                     <h2>
-            <span className={`text-xl font-bold text-${color}-default`}>
-              {title}
-            </span>
+                        <span
+                            className={`text-xl font-bold text-${color}-default`}
+                        >
+                            {title}
+                        </span>
                     </h2>
                 </div>
                 <div className="text-xs">

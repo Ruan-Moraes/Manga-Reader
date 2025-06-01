@@ -9,7 +9,7 @@ import Paragraph from '../../components/paragraph/Paragraph';
 const TermsOfUse = () => {
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <ParagraphContainer>
                     <SectionTitle
@@ -71,7 +71,7 @@ const TermsOfUse = () => {
                     />
                 </ParagraphContainer>
             </Main>
-            <Footer/>
+            <Footer />
         </>
     );
 };

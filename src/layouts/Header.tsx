@@ -10,7 +10,7 @@ type HeaderTypes = {
     disabledSearch?: boolean;
 };
 
-const Header = ({disabledAuth, disabledSearch}: HeaderTypes) => {
+const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
     return (
         <header className={clsx('bg-secondary', {})}>
             {!disabledAuth && (
@@ -28,16 +28,18 @@ const Header = ({disabledAuth, disabledSearch}: HeaderTypes) => {
                     />
                 </nav>
             )}
-            <nav
-                className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
+            <nav className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
                 <div>
                     <h1>
-                        <CustomLink className="text-2xl italic" text="Manga Reader"/>
+                        <CustomLink
+                            className="text-2xl italic"
+                            text="Manga Reader"
+                        />
                     </h1>
                 </div>
-                {!disabledSearch && <MainSearchInput/>}
+                {!disabledSearch && <MainSearchInput />}
             </nav>
-            <Menu/>
+            <Menu />
         </header>
     );
 };

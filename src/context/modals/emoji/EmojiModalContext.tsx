@@ -1,4 +1,4 @@
-import {createContext, ReactNode, useCallback, useState} from 'react';
+import { createContext, ReactNode, useCallback, useState } from 'react';
 
 type EmojiModalContextType = {
     isEmojiModalOpen: boolean;
@@ -10,12 +10,15 @@ type EmojiModalContextType = {
     setSelectedEmoji: (emoji: HTMLImageElement | null) => void;
 };
 
-const EmojiModalContext = createContext<EmojiModalContextType | undefined>(undefined);
+const EmojiModalContext = createContext<EmojiModalContextType | undefined>(
+    undefined,
+);
 
-const EmojiModalProvider = ({children}: { children: ReactNode }) => {
+const EmojiModalProvider = ({ children }: { children: ReactNode }) => {
     const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
 
-    const [selectedEmojiState, setSelectedEmojiState] = useState<HTMLImageElement | null>(null);
+    const [selectedEmojiState, setSelectedEmojiState] =
+        useState<HTMLImageElement | null>(null);
 
     const openEmojiModal = useCallback(() => setIsEmojiModalOpen(true), []);
 
@@ -26,16 +29,18 @@ const EmojiModalProvider = ({children}: { children: ReactNode }) => {
     }, []);
 
     return (
-        <EmojiModalContext.Provider value={{
-            isEmojiModalOpen,
-            openEmojiModal,
-            closeEmojiModal,
-            selectedEmoji: selectedEmojiState,
-            setSelectedEmoji
-        }}>
+        <EmojiModalContext.Provider
+            value={{
+                isEmojiModalOpen,
+                openEmojiModal,
+                closeEmojiModal,
+                selectedEmoji: selectedEmojiState,
+                setSelectedEmoji,
+            }}
+        >
             {children}
         </EmojiModalContext.Provider>
     );
 };
 
-export {EmojiModalContext, EmojiModalProvider};
+export { EmojiModalContext, EmojiModalProvider };

@@ -1,11 +1,11 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 import LinksSection from '../components/links/sections/FooterLinkBlock';
 
 type FooterTypes = {
     disabledLinks?: boolean;
 };
 
-const Footer = ({disabledLinks}: FooterTypes) => {
+const Footer = ({ disabledLinks }: FooterTypes) => {
     const getYear = useMemo(() => {
         return new Date().getFullYear();
     }, []);
@@ -18,21 +18,21 @@ const Footer = ({disabledLinks}: FooterTypes) => {
                         title="Links úteis"
                         className="col-span-4"
                         links={[
-                            {url: '/', text: 'Home'},
-                            {url: '/categories', text: 'Categorias'},
-                            {url: '/news', text: 'Notícias'},
-                            {url: '/events', text: 'Eventos'},
-                            {url: '/groups', text: 'Grupos'},
+                            { url: '/', text: 'Home' },
+                            { url: '/categories', text: 'Categorias' },
+                            { url: '/news', text: 'Notícias' },
+                            { url: '/events', text: 'Eventos' },
+                            { url: '/groups', text: 'Grupos' },
                         ]}
                     />
                     <LinksSection
                         className="col-span-4"
                         title="Redes sociais"
                         links={[
-                            {url: '#', text: 'Discord'},
-                            {url: '#', text: 'X (Twitter)'},
-                            {url: '#', text: 'Facebook'},
-                            {url: '#', text: 'Instagram'},
+                            { url: '#', text: 'Discord' },
+                            { url: '#', text: 'X (Twitter)' },
+                            { url: '#', text: 'Facebook' },
+                            { url: '#', text: 'Instagram' },
                         ]}
                     />
                     <LinksSection
@@ -43,17 +43,22 @@ const Footer = ({disabledLinks}: FooterTypes) => {
                                 url: '/i-want-to-publish-work',
                                 text: 'Quero publicar obra',
                             },
-                            {url: 'https://ko-fi.com/', text: 'Doe para o projeto'},
-                            {url: '/about-us', text: 'Quem somos'},
-                            {url: '/dmca', text: 'DMCA'},
-                            {url: '/terms-of-use', text: 'Termos de uso'},
+                            {
+                                url: 'https://ko-fi.com/',
+                                text: 'Doe para o projeto',
+                            },
+                            { url: '/about-us', text: 'Quem somos' },
+                            { url: '/dmca', text: 'DMCA' },
+                            { url: '/terms-of-use', text: 'Termos de uso' },
                         ]}
                     />
                 </div>
             )}
-            <div
-                className="p-2 text-xs text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
-                <p>&copy; {`${getYear}`} Manga Reader. Todos os direitos reservados.</p>
+            <div className="p-2 text-xs text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
+                <p>
+                    &copy; {`${getYear}`} Manga Reader. Todos os direitos
+                    reservados.
+                </p>
             </div>
         </footer>
     );

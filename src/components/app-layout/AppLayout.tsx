@@ -1,10 +1,10 @@
-import {Outlet, ScrollRestoration} from 'react-router-dom';
+import { Outlet, ScrollRestoration } from 'react-router-dom';
 
 const AppLayout = () => {
     return (
         <>
-            <ScrollRestoration/>
-            <Outlet/>
+            <ScrollRestoration />
+            <Outlet />
         </>
     );
 };

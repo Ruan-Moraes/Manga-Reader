@@ -1,7 +1,7 @@
-import {COLORS} from '../../../constants/COLORS';
+import { COLORS } from '../../../constants/COLORS';
 
-import {TitleTypes} from '../../../types/TitleTypes';
-import {StatusFetchTypes} from '../../../types/StatusFetchTypes';
+import { TitleTypes } from '../../../types/TitleTypes';
+import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
 import Warning from '../../notifications/Warning';
 import TitleDetails from '../../informations/TitleDetails';
@@ -11,21 +11,21 @@ type CardTypes = Partial<Omit<TitleTypes, 'createdAt' | 'updatedAt'>> &
     StatusFetchTypes;
 
 const Card = ({
-                  id,
-                  type = '...',
-                  cover = 'Carregando...',
-                  title = '...',
-                  synopsis = 'Carregando...',
-                  genres = '...',
-                  chapters = '...',
-                  popularity = '...',
-                  score = '...',
-                  author = '...',
-                  artist = '...',
-                  publisher = '...',
-                  isLoading,
-                  isError,
-              }: CardTypes) => {
+    id,
+    type = '...',
+    cover = 'Carregando...',
+    title = '...',
+    synopsis = 'Carregando...',
+    genres = '...',
+    chapters = '...',
+    popularity = '...',
+    score = '...',
+    author = '...',
+    artist = '...',
+    publisher = '...',
+    isLoading,
+    isError,
+}: CardTypes) => {
     if (isError) {
         return (
             <Warning
@@ -40,8 +40,7 @@ const Card = ({
         <div className="flex gap-2">
             <div className="flex flex-col w-2/4 overflow-hidden border border-b-0 rounded-t-xs border-tertiary">
                 {isLoading && (
-                    <div
-                        className="flex items-center justify-center w-full border-b h-44 mobile-md:h-56 border-b-tertiary">
+                    <div className="flex items-center justify-center w-full border-b h-44 mobile-md:h-56 border-b-tertiary">
                         <p className="text-tertiary">{cover}</p>
                     </div>
                 )}

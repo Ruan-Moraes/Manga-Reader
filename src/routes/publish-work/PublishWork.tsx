@@ -11,10 +11,13 @@ import ContactForm from '../../components/forms/ContactForm';
 const PublishWork = () => {
     return (
         <>
-            <Header disabledSearch={true}/>
+            <Header disabledSearch={true} />
             <Main>
                 <ParagraphContainer>
-                    <SectionTitle titleStyleClasses="text-lg" title="Publicar Trabalho"/>
+                    <SectionTitle
+                        titleStyleClasses="text-lg"
+                        title="Publicar Trabalho"
+                    />
                     <Paragraph
                         paragraphContent={[
                             {
@@ -26,9 +29,9 @@ const PublishWork = () => {
                         ]}
                     />
                 </ParagraphContainer>
-                <ContactForm/>
+                <ContactForm />
             </Main>
-            <Footer disabledLinks={true}/>
+            <Footer disabledLinks={true} />
         </>
     );
 };
