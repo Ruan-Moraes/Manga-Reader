@@ -179,7 +179,7 @@ const useCommentsFetch = (
                             since: new Date('2023-06-01T19:21:56.000Z'),
                         },
                     },
-                    isOwner: false,
+                    isOwner: true,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     imageContent:
                         'https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg',

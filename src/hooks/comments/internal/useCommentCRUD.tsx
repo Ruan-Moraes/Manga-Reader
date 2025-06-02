@@ -1,39 +1,39 @@
-import { useCallback } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {useCallback} from 'react';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+
+import {toast} from "react-toastify";
 
 type UseCommentCRUDProps = {
     queryKey: string;
 };
 
-const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
+const useCommentCRUD = ({queryKey}: UseCommentCRUDProps) => {
     const queryClient = useQueryClient();
 
     const deleteCommentMutation = useMutation({
         // TODO: Chamar a API real para deletar o comentário
         mutationFn: async (id: string) => {
-            console.log(`Simulando exclusão do comentário com ID: ${id}`);
-
             return id;
         },
-        onSuccess: deletedId => {
-            queryClient.invalidateQueries({ queryKey: [queryKey] });
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: [queryKey]});
 
-            console.log(
-                `Comentário ${deletedId} deletado com sucesso (e dados refetchados).`,
-            );
+            toast.success(`Comentário deletado com sucesso.`); // TODO: Atualizar o estado da UI
         },
         // TODO: Lidar com o erro na UI
         onError: error => {
             console.error('Erro ao deletar comentário:', error);
+
+            toast.error('Erro ao deletar comentário.');
         },
     });
 
     const editCommentMutation = useMutation({
         mutationFn: async ({
-            id,
-            newTextContent,
-            newImageContent,
-        }: {
+                               id,
+                               newTextContent,
+                               newImageContent,
+                           }: {
             id: string;
             newTextContent?: string;
             newImageContent?: string;
@@ -41,10 +41,10 @@ const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
             // TODO: Chamar a API real para editar o comentário
             console.log(`Simulando edição do comentário com ID: ${id}`);
 
-            return { id, newTextContent, newImageContent };
+            return {id, newTextContent, newImageContent};
         },
         onSuccess: updatedComment => {
-            queryClient.invalidateQueries({ queryKey: [queryKey] });
+            queryClient.invalidateQueries({queryKey: [queryKey]});
 
             console.log(
                 `Comentário ${updatedComment.id} editado com sucesso (e dados refetchados).`,
@@ -65,7 +65,7 @@ const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
 
     const editComment = useCallback(
         (id: string, newTextContent?: string, newImageContent?: string) => {
-            editCommentMutation.mutate({ id, newTextContent, newImageContent });
+            editCommentMutation.mutate({id, newTextContent, newImageContent});
         },
         [editCommentMutation],
     );
@@ -73,10 +73,10 @@ const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
     return {
         deleteComment,
         editComment,
-        isDeleting: deleteCommentMutation.isPending,
-        isEditing: editCommentMutation.isPending,
-        deleteError: deleteCommentMutation.error,
-        editError: editCommentMutation.error,
+        isDeletingComment: deleteCommentMutation.isPending,
+        isEditingComment: editCommentMutation.isPending,
+        deleteCommentError: deleteCommentMutation.error,
+        editCommentError: editCommentMutation.error,
     };
 };
 

@@ -221,8 +221,8 @@ const useCommentChat = (placeholder: string) => {
         textareaRef,
         addImage,
         addImageFromEmoji,
-        handleInputChange: removePlaceholder,
-        handleBlur: addPlaceholder,
+        removePlaceholder,
+        addPlaceholder,
     };
 };
 

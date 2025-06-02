@@ -145,7 +145,6 @@ const Comment = ({
                     dislikeCount={dislikeCount}
                 />
             </div>
-            {/* Modal de confirmação de exclusão */}
             <DeleteModal
                 isOpen={isDeleteModalOpen}
                 onConfirm={confirmDeleteComment}
@@ -153,12 +152,9 @@ const Comment = ({
                 title="Deletar comentário"
                 message="Você tem certeza que deseja deletar este comentário? Essa ação deletará os comentários relacionados a ele."
             />
-            {/* Modal de edição de comentário */}
             <EditModal
                 isOpen={isEditModalOpen}
-                onEdit={(newTextContent, newImageContent) => {
-                    confirmEditComment(newTextContent, newImageContent);
-                }}
+                onEdit={confirmEditComment}
                 onCancel={closeEditModal}
                 title="Editar comentário"
                 initialText={textContent}

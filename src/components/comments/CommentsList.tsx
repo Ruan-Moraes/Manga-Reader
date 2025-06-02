@@ -18,7 +18,7 @@ const CommentsList = () => {
         error,
         deleteComment,
         editComment,
-        // isDeletingComment, // Você pode usar esses estados para mostrar spinners globais
+        // isDeletingComment, // TODO: Implementar lógica para outros estados
         // isEditingComment,
         // deleteCommentError,
         // editCommentError,
