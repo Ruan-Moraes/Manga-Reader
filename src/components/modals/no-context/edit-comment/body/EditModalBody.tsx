@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { IoImages } from 'react-icons/io5';
-import { FaUpload } from 'react-icons/fa';
+import {useEffect, useRef} from 'react';
+import {IoImages} from 'react-icons/io5';
+import {FaUpload} from 'react-icons/fa';
 
-import { useEmojiModalContext } from '../../../../../context/modals/emoji/useEmojiModalContext';
+import {useEmojiModalContext} from '../../../../../context/modals/emoji/useEmojiModalContext';
 
 import useCommentChat from '../../../../../hooks/comments/internal/useCommentChat';
 
@@ -11,18 +11,18 @@ import IconButton from '../../../../buttons/IconButton';
 import BlackButton from '../../../../buttons/BlackButton';
 
 type EditModalBodyProps = {
-    onEdit: (newTextContent?: string, newImageContent?: string) => void;
+    onEdit: (newTextContent: string | null, newImageContent: string | null) => void;
     onCancel: () => void;
-    initialText?: string;
-    initialImages?: string;
+    initialText: string | null;
+    initialImages: string | null;
 };
 
 const EditModalBody = ({
-    onEdit,
-    onCancel,
-    initialText,
-    initialImages,
-}: EditModalBodyProps) => {
+                           onEdit,
+                           onCancel,
+                           initialText,
+                           initialImages,
+                       }: EditModalBodyProps) => {
     const {
         textareaRef,
         addImage,
@@ -30,8 +30,10 @@ const EditModalBody = ({
         removePlaceholder,
     } = useCommentChat('Edite seu comentário');
 
-    const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
+    const {openEmojiModal, selectedEmoji, setSelectedEmoji} =
         useEmojiModalContext();
+
+    const initialValuesProcessed = useRef(false);
 
     useEffect(() => {
         if (selectedEmoji) {
@@ -44,7 +46,9 @@ const EditModalBody = ({
     useEffect(() => {
         const textarea = textareaRef.current;
 
-        if (textarea) {
+        if (textarea && !initialValuesProcessed.current) {
+            initialValuesProcessed.current = true;
+
             if (initialText) {
                 removePlaceholder();
 
@@ -66,13 +70,11 @@ const EditModalBody = ({
                         </div>
                         <br/>`;
 
-                        if (textarea.innerHTML === '') {
-                            textarea.innerHTML = imgHTML;
-                        }
-
-                        if (textarea.innerHTML !== '') {
+                        if (!(textarea.innerHTML === '')) {
                             textarea.innerHTML += imgHTML;
                         }
+
+                        textarea.innerHTML = imgHTML;
                     }
                 });
             }
@@ -83,20 +85,19 @@ const EditModalBody = ({
         if (textareaRef.current) {
             const newText = textareaRef.current.innerText.trim();
 
-            // Get all image sources from the textarea
             const imgElements = textareaRef.current.querySelectorAll('img');
             const imgSources = Array.from(imgElements)
                 .map(img => img.getAttribute('src'))
                 .filter(Boolean)
                 .join(',');
 
-            onEdit(newText || undefined, imgSources || undefined);
+            onEdit(newText || null, imgSources || null);
         }
     };
 
     return (
         <>
-            <EmojiModal />
+            <EmojiModal/>
             <div className="flex flex-col gap-4">
                 <div className="text-xs border rounded-xs bg-secondary border-tertiary">
                     <div className="flex p-2">
@@ -109,10 +110,10 @@ const EditModalBody = ({
                     <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                         <div className="flex gap-2">
                             <IconButton onClick={openEmojiModal}>
-                                <IoImages />
+                                <IoImages/>
                             </IconButton>
                             <IconButton onClick={addImage}>
-                                <FaUpload />
+                                <FaUpload/>
                             </IconButton>
                         </div>
                         <div className="flex gap-2">

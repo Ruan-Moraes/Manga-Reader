@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 type UseCommentModalsProps = {
     onDelete: (id: string) => void;
-    onEdit: (id: string, newTextContent?: string, newImageContent?: string) => void;
+    onEdit: (id: string, newTextContent: string | null, newImageContent: string | null) => void;
 
     commentId: string;
 };
@@ -39,7 +39,7 @@ const useCommentModal = ({
         setIsEditModalOpen(false);
     }, []);
 
-    const confirmEditComment = useCallback((newTextContent?: string, newImageContent?: string) => {
+    const confirmEditComment = useCallback((newTextContent: string | null, newImageContent: string | null) => {
         onEdit(commentId, newTextContent, newImageContent);
 
         closeEditModal();

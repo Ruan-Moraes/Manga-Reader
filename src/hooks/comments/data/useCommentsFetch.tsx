@@ -22,6 +22,7 @@ const useCommentsFetch = (
             const mockComments: CommentTypes[] = [
                 {
                     id: '1856c659-5e1d-4750-9777-74e3496e01da',
+                    parentCommentId: null,
                     user: {
                         id: '1',
                         name: 'Usuário de alta periculosidade',
@@ -33,9 +34,11 @@ const useCommentsFetch = (
                     },
                     isOwner: true,
                     isHighlighted: true,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '42',
                     dislikeCount: '3',
                 },
@@ -52,10 +55,12 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: false,
+                    isHighlighted: false,
                     wasEdited: true,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '15',
                     dislikeCount: '7',
                 },
@@ -68,14 +73,18 @@ const useCommentsFetch = (
                         photo: 'https://boo-prod.b-cdn.net/database/profiles/16779658133692cab7e879edd111139eefe3687a5e51c.jpg?class=sm',
                     },
                     isOwner: false,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?',
+                    imageContent: null,
                     likeCount: '28',
                     dislikeCount: '1',
                 },
                 {
                     id: 'f1b0c4a2-3d5e-4f8b-8c7d-9a6e0f1b2c3e',
+                    parentCommentId: null,
                     user: {
                         id: '2',
                         name: 'Naruto Uzumaki',
@@ -86,9 +95,12 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: false,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '56',
                     dislikeCount: '12',
                 },
@@ -105,9 +117,12 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: true,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '33',
                     dislikeCount: '5',
                 },
@@ -124,9 +139,12 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: false,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '19',
                     dislikeCount: '4',
                 },
@@ -143,9 +161,12 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: true,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '47',
                     dislikeCount: '8',
                 },
@@ -162,14 +183,18 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: true,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit? Nesciunt autem, ut illum maxime atque ullam quo eum quod eius ducimus iure fugiat har.',
+                    imageContent: null,
                     likeCount: '24',
                     dislikeCount: '6',
                 },
                 {
                     id: 'd1e2f3g4-h5i6-7j8k-9l0m-1n2o3p4q5r6s',
+                    parentCommentId: null,
                     user: {
                         id: '4',
                         name: 'Hinata Hyuga',
@@ -180,7 +205,10 @@ const useCommentsFetch = (
                         },
                     },
                     isOwner: true,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
+                    textContent: null,
                     imageContent:
                         'https://t.ctcdn.com.br/LH0-pVW87nALWza-n2YXafNP-ng=/768x432/smart/i598772.jpeg',
                     likeCount: '38',
@@ -195,6 +223,8 @@ const useCommentsFetch = (
                         photo: 'https://cdn.ome.lt/uno0VMDEDgYjPNHHzp01Pxpzs6M=/987x0/smart/uploads/conteudo/fotos/Design_sem_nome-346.png',
                     },
                     isOwner: false,
+                    isHighlighted: false,
+                    wasEdited: false,
                     createdAt: '2025-06-01T19:21:56.000Z',
                     textContent:
                         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, nam velit?',

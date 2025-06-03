@@ -38,8 +38,8 @@ const Comment = ({
     onClickProfile: (user: UserTypes) => void;
     onClickEdit: (
         id: string,
-        newTextContent?: string,
-        newImageContent?: string,
+        newTextContent: string | null,
+        newImageContent: string | null,
     ) => void;
     onClickDelete: (id: string) => void;
 } & CommentTypes) => {
@@ -89,6 +89,7 @@ const Comment = ({
         return -(index * 8 + 8 * (index + 1));
     };
 
+    // @ts-ignore
     return (
         <div
             style={{

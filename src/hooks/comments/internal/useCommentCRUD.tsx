@@ -24,7 +24,7 @@ const useCommentCRUD = ({queryKey}: UseCommentCRUDProps) => {
         onError: error => {
             console.error('Erro ao deletar comentário:', error);
 
-            toast.error('Erro ao deletar comentário.');
+            toast.error('Erro ao deletar comentário.'); // TODO: Atualizar o estado da UI
         },
     });
 
@@ -35,24 +35,23 @@ const useCommentCRUD = ({queryKey}: UseCommentCRUDProps) => {
                                newImageContent,
                            }: {
             id: string;
-            newTextContent?: string;
-            newImageContent?: string;
+            newTextContent: string | null;
+            newImageContent: string | null;
         }) => {
             // TODO: Chamar a API real para editar o comentário
-            console.log(`Simulando edição do comentário com ID: ${id}`);
 
             return {id, newTextContent, newImageContent};
         },
-        onSuccess: updatedComment => {
+        onSuccess: () => {
             queryClient.invalidateQueries({queryKey: [queryKey]});
 
-            console.log(
-                `Comentário ${updatedComment.id} editado com sucesso (e dados refetchados).`,
-            );
+            toast.success("Comentário editado com sucesso."); // TODO: Atualizar o estado da UI
         },
         // TODO: Lidar com o erro na UI
         onError: error => {
             console.error('Erro ao editar comentário:', error);
+
+            toast.error('Erro ao editar comentário.'); // TODO: Atualizar o estado da UI
         },
     });
 
@@ -64,7 +63,7 @@ const useCommentCRUD = ({queryKey}: UseCommentCRUDProps) => {
     );
 
     const editComment = useCallback(
-        (id: string, newTextContent?: string, newImageContent?: string) => {
+        (id: string, newTextContent: string | null, newImageContent: string | null) => {
             editCommentMutation.mutate({id, newTextContent, newImageContent});
         },
         [editCommentMutation],

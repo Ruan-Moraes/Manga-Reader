@@ -1,8 +1,8 @@
 import { UserTypes } from '../../../types/UserTypes';
 
 type CommentContentProps = {
-    textContent: string | undefined;
-    imageContent: string | undefined;
+    textContent: string | null;
+    imageContent: string | null;
 
     user: UserTypes;
 };

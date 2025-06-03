@@ -7,12 +7,13 @@ import EditModalBody from './body/EditModalBody';
 type EditModalProps = {
     isOpen: boolean;
 
-    onEdit: (newTextContent?: string, newImageContent?: string) => void;
+    onEdit: (newTextContent: string | null, newImageContent: string | null) => void;
     onCancel: () => void;
 
     title: string;
-    initialText?: string;
-    initialImages?: string;
+
+    initialText: string | null;
+    initialImages: string | null;
 };
 
 const EditModal = ({
@@ -22,11 +23,12 @@ const EditModal = ({
     onCancel,
 
     title,
+
     initialText,
     initialImages,
 }: EditModalProps) => {
     const handleEdit = useCallback(
-        (newTextContent?: string, newImageContent?: string) => {
+        (newTextContent: string | null, newImageContent: string | null) => {
             onEdit(newTextContent, newImageContent);
         },
         [onEdit],
