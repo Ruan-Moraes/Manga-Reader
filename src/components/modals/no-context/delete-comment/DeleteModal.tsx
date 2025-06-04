@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
-
 import BaseModal from '../../base/BaseModal';
 import DeleteModalHeader from './header/DeleteModalHeader';
 import DeleteModalBody from './body/DeleteModalBody';
+import DeleteModalFooter from "./footer/DeleteModalFooter";
 
 type DeleteModalProps = {
     isOpen: boolean;
@@ -23,24 +22,13 @@ const DeleteModal = ({
     onConfirm,
     onCancel,
 }: DeleteModalProps) => {
-    const handleConfirm = useCallback(() => {
-        onConfirm();
-    }, [onConfirm]);
-
-    const handleCancelClick = useCallback(() => {
-        onCancel();
-    }, [onCancel]);
-
     return (
         isOpen && (
-            <BaseModal isModalOpen={isOpen} closeModal={handleCancelClick}>
-                <div className="flex flex-col gap-2 p-2">
+            <BaseModal isModalOpen={isOpen} closeModal={onCancel}>
+                <div className="flex flex-col gap-3 p-2">
                     <DeleteModalHeader title={title} />
-                    <DeleteModalBody
-                        message={message}
-                        onConfirm={handleConfirm}
-                        onCancel={handleCancelClick}
-                    />
+                    <DeleteModalBody message={message} />
+                    <DeleteModalFooter onConfirm={onConfirm} onCancel={onCancel} />
                 </div>
             </BaseModal>
         )

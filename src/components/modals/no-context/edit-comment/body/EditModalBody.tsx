@@ -17,6 +17,7 @@ type EditModalBodyProps = {
     initialImages: string | null;
 };
 
+// TODO: Refatorar para usar o hook useCommentChat
 const EditModalBody = ({
                            onEdit,
                            onCancel,
