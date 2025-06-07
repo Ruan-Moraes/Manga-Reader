@@ -48,8 +48,8 @@ const Card = ({
                     <div className="w-full h-44 mobile-md:h-56">
                         <img
                             src={cover}
-                            alt={`Capa do título ${title}`}
-                            className="object-cover w-full h-full aspect-square"
+                            alt={`Capa do título: ${title}`}
+                            className="object-cover w-full h-full aspect-square text-center leading-8"
                         />
                     </div>
                 )}

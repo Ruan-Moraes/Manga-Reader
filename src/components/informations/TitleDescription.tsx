@@ -18,7 +18,11 @@ const TitleDescription = ({
                     </h3>
                 </div>
                 <div>
-                    <p className="text-xs text-justify">{synopsis}</p>
+                    {synopsis === 'Carregando...' ? (
+                        <p className="text-xs text-center">{synopsis}</p>
+                    ) : (
+                        <p className="text-xs text-justify">{synopsis}</p>
+                    )}
                 </div>
             </div>
             <div className="flex flex-col gap-2">

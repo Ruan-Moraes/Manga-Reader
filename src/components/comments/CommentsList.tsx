@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { UserTypes } from '../../types/UserTypes'; // Ajuste o caminho se necessário
+import { UserTypes } from '../../types/UserTypes';
 
 import { useUserModalContext } from '../../context/modals/user/useUserModalContext';
-import { useComments } from '../../hooks/comments/useComments'; // Importe o hook orquestrador
+import { useComments } from '../../hooks/comments/useComments';
 
 import UserModal from '../modals/with-context/user/UserModal';
 import Comment from './Comment';

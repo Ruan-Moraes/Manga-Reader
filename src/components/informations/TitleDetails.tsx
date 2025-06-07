@@ -25,12 +25,24 @@ const TitleDetails = ({
     disableType = false,
     isLoading,
 }: TitleDetailsTypes) => {
-    const lastChapter = useMemo(
-        // TODO: Alterar quando a API estiver pronta
+    const lastChapter = useMemo(() => {
+        if (isLoading) {
+            return 'Carregando...';
+        }
 
-        () => chapters?.[chapters.length - 1],
-        [chapters],
-    );
+        if (!chapters || chapters === '0') {
+            return 'Nenhum capítulo';
+        }
+
+        if (typeof chapters === 'string') {
+            return chapters;
+        }
+
+        // TODO: Alterar quando a API estiver pronta
+        const lastChapterNumber = chapters[chapters.length - 1];
+
+        return lastChapterNumber ? lastChapterNumber : 'Nenhum capítulo';
+    }, [chapters, isLoading]);
 
     return (
         <div>
@@ -52,7 +64,9 @@ const TitleDetails = ({
                     <p className="truncate">
                         <span className="font-bold">Popularidade:</span>{' '}
                         <span className={isLoading ? 'text-tertiary' : ''}>
-                            {popularity}º
+                            {popularity === '...'
+                                ? popularity
+                                : popularity + 'º'}
                         </span>
                     </p>
                 </div>
