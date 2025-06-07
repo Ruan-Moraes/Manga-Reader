@@ -16,26 +16,14 @@ const EmojiModal = () => {
 
     const applySelectionStyles = (imgElement: HTMLImageElement) => {
         imgElement.setAttribute('data-selected', 'true');
-
-        if (!imgElement.parentElement) {
-            return;
-        }
-
-        imgElement.parentElement.classList.remove('border-tertiary');
-        imgElement.parentElement.classList.add('border-quaternary-opacity-50');
+        imgElement.classList.remove('border-tertiary');
+        imgElement.classList.add('border-quaternary-default');
     };
 
     const removeSelectionStyles = (imgElement: HTMLImageElement) => {
         imgElement.removeAttribute('data-selected');
-
-        if (!imgElement.parentElement) {
-            return;
-        }
-
-        imgElement.parentElement.classList.remove(
-            'border-quaternary-opacity-50',
-        );
-        imgElement.parentElement.classList.add('border-tertiary');
+        imgElement.classList.remove('border-quaternary-default');
+        imgElement.classList.add('border-tertiary');
     };
 
     const handleEmojiClick = (clickedEmoji: HTMLImageElement) => {

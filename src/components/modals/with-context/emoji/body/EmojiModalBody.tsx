@@ -26,20 +26,20 @@ const EmojiModalBody = ({ onEmojiClick }: EmojiModalBodyProps) => {
                             const emojiId = `emoji_${colIndex * 3 + rowIndex}`;
 
                             return (
-                                <div
-                                    key={emojiId}
-                                    className="w-[124px] h-[124px] border border-tertiary rounded-xs shadow-lg overflow-hidden cursor-pointer"
-                                >
-                                    <img
-                                        src={`https://fakeimg.pl/600x400?text=Emoji_${colIndex * 3 + rowIndex}`}
-                                        alt={`Emoji ${colIndex * 3 + rowIndex}`}
-                                        onClick={(
-                                            e: React.MouseEvent<HTMLImageElement>,
-                                        ) => {
-                                            onEmojiClick(e.currentTarget);
-                                        }}
-                                        className="w-full h-full object-cover"
-                                    />
+                                <div key={emojiId}>
+                                    <div>
+                                        <img
+                                            src={`https://placehold.co/600x400/6D8196/png`}
+                                            alt={`Emoji ${colIndex * 3 + rowIndex}`}
+                                            onClick={(
+                                                e: React.MouseEvent<HTMLImageElement>,
+                                            ) => onEmojiClick(e.currentTarget)}
+                                            className="border border-tertiary rounded-xs shadow-lg overflow-hidden cursor-pointer object-cover w-[124px] h-[124px]"
+                                        />
+                                    </div>
+                                    <div>
+                                        <span className="text-center inline-block w-full">{`Emoji ${colIndex * 3 + rowIndex}`}</span>
+                                    </div>
                                 </div>
                             );
                         })}

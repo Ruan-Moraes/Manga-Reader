@@ -120,8 +120,8 @@ const EditModalBody = ({
                             </IconButton>
                         </div>
                         <div className="flex gap-2">
-                            <BlackButton onClick={onCancel} text={'Cancelar'} />
-                            <BlackButton onClick={handleSave} text={'Salvar'} />
+                            <BlackButton onClick={onCancel} text="Cancelar" />
+                            <BlackButton onClick={handleSave} text="Salvar" />
                         </div>
                     </div>
                 </div>

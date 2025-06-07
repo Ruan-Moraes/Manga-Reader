@@ -329,61 +329,61 @@ const Chapter = () => {
                     <div className="flex flex-col justify-center gap-0.5">
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://fakeimg.pl/1024x1024?text=Capítulo"
+                                src="https://placehold.co/600x400/png"
                                 alt=""
                             />
                         </div>

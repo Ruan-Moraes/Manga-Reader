@@ -41,71 +41,74 @@ const UserModalBody = () => {
                     </div>
                 </div>
             )}
-            {/* TODO: Termina de fazer lógicas */}
-            <div className="flex flex-col gap-2">
-                <h4 className="font-bold leading-none text-shadow-default">
-                    Estatísticas:
-                </h4>
-                <ul className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
-                    <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                        <span className="text-xs leading-none text-center text-nowrap">
-                            1000 Comentários
-                        </span>
-                    </li>
-                    <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                        <span className="text-xs leading-none text-center text-nowrap">
-                            1000 Likes
-                        </span>
-                    </li>
-                    <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                        <span className="text-xs leading-none text-center text-nowrap">
-                            1000 Deslikes
-                        </span>
-                    </li>
-                </ul>
-            </div>
-            <div className="flex flex-col gap-2">
-                <h4 className="font-bold leading-none text-shadow-default">
-                    Obras que recomendo:
-                </h4>
-                <div className="flex gap-2 overflow-x-auto flex-nowrap scrollbar-hidden">
-                    <div className="h-32 w-28 shrink-0">
-                        <img
-                            src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                            alt="Imagem de uma obra"
-                            className="object-cover w-full h-full rounded-xs"
-                        />
-                    </div>
-                    <div className="h-32 w-28 shrink-0">
-                        <img
-                            src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                            alt="Imagem de uma obra"
-                            className="object-cover w-full h-full rounded-xs"
-                        />
-                    </div>
-                    <div className="h-32 w-28 shrink-0">
-                        <img
-                            src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                            alt="Imagem de uma obra"
-                            className="object-cover w-full h-full rounded-xs"
-                        />
-                    </div>
-                    <div className="h-32 w-28 shrink-0">
-                        <img
-                            src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                            alt="Imagem de uma obra"
-                            className="object-cover w-full h-full rounded-xs"
-                        />
-                    </div>
-                    <div className="h-32 w-28 shrink-0">
-                        <img
-                            src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                            alt="Imagem de uma obra"
-                            className="object-cover w-full h-full rounded-xs"
-                        />
+            {userData?.statistics && (
+                <div className="flex flex-col gap-2">
+                    <h4 className="font-bold leading-none text-shadow-default">
+                        Estatísticas:
+                    </h4>
+                    <ul className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
+                        <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
+                            <span className="text-xs leading-none text-center text-nowrap">
+                                1000 Comentários
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
+                            <span className="text-xs leading-none text-center text-nowrap">
+                                1000 Likes
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
+                            <span className="text-xs leading-none text-center text-nowrap">
+                                1000 Deslikes
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            )}
+            {userData?.recommendedTitles && (
+                <div className="flex flex-col gap-2">
+                    <h4 className="font-bold leading-none text-shadow-default">
+                        Obras que recomendo:
+                    </h4>
+                    <div className="flex gap-2 overflow-x-auto flex-nowrap scrollbar-hidden">
+                        <div className="h-32 w-28 shrink-0">
+                            <img
+                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                                alt="Imagem de uma obra"
+                                className="object-cover w-full h-full rounded-xs"
+                            />
+                        </div>
+                        <div className="h-32 w-28 shrink-0">
+                            <img
+                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                                alt="Imagem de uma obra"
+                                className="object-cover w-full h-full rounded-xs"
+                            />
+                        </div>
+                        <div className="h-32 w-28 shrink-0">
+                            <img
+                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                                alt="Imagem de uma obra"
+                                className="object-cover w-full h-full rounded-xs"
+                            />
+                        </div>
+                        <div className="h-32 w-28 shrink-0">
+                            <img
+                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                                alt="Imagem de uma obra"
+                                className="object-cover w-full h-full rounded-xs"
+                            />
+                        </div>
+                        <div className="h-32 w-28 shrink-0">
+                            <img
+                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
+                                alt="Imagem de uma obra"
+                                className="object-cover w-full h-full rounded-xs"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
