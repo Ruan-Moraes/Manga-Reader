@@ -2,7 +2,16 @@ import { useCallback, useState } from 'react';
 
 type UseCommentModalsProps = {
     onDelete: (id: string) => void;
-    onEdit: (id: string, newTextContent: string | null, newImageContent: string | null) => void;
+    onEdit: (
+        id: string,
+        newTextContent: string | null,
+        newImageContent: string | null,
+    ) => void;
+    onReply: (
+        id: string,
+        textContent: string | null,
+        imageContent: string | null,
+    ) => void;
 
     commentId: string;
 };
@@ -10,6 +19,7 @@ type UseCommentModalsProps = {
 const useCommentModal = ({
     onDelete,
     onEdit,
+    onReply,
 
     commentId,
 }: UseCommentModalsProps) => {
@@ -39,11 +49,35 @@ const useCommentModal = ({
         setIsEditModalOpen(false);
     }, []);
 
-    const confirmEditComment = useCallback((newTextContent: string | null, newImageContent: string | null) => {
-        onEdit(commentId, newTextContent, newImageContent);
+    const confirmEditComment = useCallback(
+        (newTextContent: string | null, newImageContent: string | null) => {
+            onEdit(commentId, newTextContent, newImageContent);
 
-        closeEditModal();
-    }, [onEdit, commentId, closeEditModal]);
+            closeEditModal();
+        },
+        [onEdit, commentId, closeEditModal],
+    );
+
+    const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+
+    const openReplyModal = useCallback(() => {
+        setIsReplyModalOpen(true);
+    }, []);
+
+    const closeReplyModal = useCallback(() => {
+        setIsReplyModalOpen(false);
+    }, []);
+
+    const confirmReplyComment = useCallback(
+        (textContent: string | null, imageContent: string | null) => {
+            if (onReply) {
+                onReply(commentId, textContent, imageContent);
+            }
+
+            closeReplyModal();
+        },
+        [onReply, commentId, closeReplyModal],
+    );
 
     return {
         isDeleteModalOpen,
@@ -54,6 +88,10 @@ const useCommentModal = ({
         openEditModal,
         closeEditModal,
         confirmEditComment,
+        isReplyModalOpen,
+        openReplyModal,
+        closeReplyModal,
+        confirmReplyComment,
     };
 };
 

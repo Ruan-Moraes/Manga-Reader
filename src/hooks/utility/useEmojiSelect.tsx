@@ -64,7 +64,7 @@ export function useCommentEditor(placeholder: string) {
         return false;
     }, [images]);
 
-    const isImageValid = useCallback((file: File | undefined) => {
+    const isImageValid = useCallback((file: File | null) => {
         if (!file) {
             toast.error('Nenhum arquivo selecionado');
 

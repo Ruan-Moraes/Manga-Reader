@@ -64,7 +64,7 @@ const useCommentChat = (placeholder: string) => {
         return false;
     }, [images]);
 
-    const isImageValid = useCallback((file: File | undefined) => {
+    const isImageValid = useCallback((file: File | null) => {
         if (!file) {
             toast.error('Nenhum arquivo selecionado');
 
@@ -87,7 +87,7 @@ const useCommentChat = (placeholder: string) => {
         input.click();
 
         input.onchange = () => {
-            const file = input.files?.[0];
+            const file = input.files?.[0] || null;
 
             if (!isImageValid(file)) return;
             if (exceedsImageLimit()) return;
@@ -108,8 +108,7 @@ const useCommentChat = (placeholder: string) => {
                                         X
                                     </button>
                                  </div>
-                                 <br/>
-                                `;
+                                 <br/>`;
 
                 textarea.focus();
 

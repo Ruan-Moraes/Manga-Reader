@@ -56,9 +56,7 @@ type UserModalContextProps = {
 //   ],
 // };
 
-const UserModalContext = createContext<UserModalContextProps | undefined>(
-    undefined,
-);
+const UserModalContext = createContext<UserModalContextProps | null>(null);
 
 const UserModalProvider = ({ children }: { children: ReactNode }) => {
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);

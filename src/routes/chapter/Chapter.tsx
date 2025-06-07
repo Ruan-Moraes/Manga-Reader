@@ -22,7 +22,7 @@ const Chapter = () => {
     const titleId = useParams().title;
     const chapterId = useParams().chapter;
 
-    const bottomNavRef = useRef<HTMLDivElement>(null);
+    const bottomNavRef = useRef<HTMLDivElement | null>(null);
 
     // const [isScrollingUp, setIsScrollingUp] = useState<boolean>(false);
     // const [previousScrollPosition, setPreviousScrollPosition] =

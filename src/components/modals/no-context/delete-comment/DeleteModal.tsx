@@ -1,7 +1,7 @@
 import BaseModal from '../../base/BaseModal';
 import DeleteModalHeader from './header/DeleteModalHeader';
 import DeleteModalBody from './body/DeleteModalBody';
-import DeleteModalFooter from "./footer/DeleteModalFooter";
+import DeleteModalFooter from './footer/DeleteModalFooter';
 
 type DeleteModalProps = {
     isOpen: boolean;
@@ -28,7 +28,10 @@ const DeleteModal = ({
                 <div className="flex flex-col gap-3 p-2">
                     <DeleteModalHeader title={title} />
                     <DeleteModalBody message={message} />
-                    <DeleteModalFooter onConfirm={onConfirm} onCancel={onCancel} />
+                    <DeleteModalFooter
+                        onConfirm={onConfirm}
+                        onCancel={onCancel}
+                    />
                 </div>
             </BaseModal>
         )

@@ -16,10 +16,13 @@ export const useComments = () => {
     const {
         deleteComment,
         editComment,
+        replyComment,
         isDeletingComment,
         isEditingComment,
+        isReplyingComment,
         deleteCommentError,
         editCommentError,
+        replyCommentError,
     } = useCommentCRUD({
         queryKey: COMMENTS_QUERY_KEY,
     });
@@ -33,10 +36,13 @@ export const useComments = () => {
         error,
         deleteComment,
         editComment,
+        replyComment,
         isDeletingComment,
         isEditingComment,
+        isReplyingComment,
         deleteCommentError,
         editCommentError,
+        replyCommentError,
         refetchComments: refetch,
     };
 };

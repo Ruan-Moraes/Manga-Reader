@@ -24,7 +24,9 @@ const Categories = () => {
         'https://db-json-ten.vercel.app/tags',
         16,
     );
-    const tags = Array.isArray(data) ? data : undefined;
+    const tags: TagsTypes[] | undefined = Array.isArray(data)
+        ? data
+        : undefined;
 
     const [selectedTags, setSelectedTags] = useState<TagsTypes[]>([]);
     const [selectedSort, setSelectedSort] = useState<SortTypes>('most_read');

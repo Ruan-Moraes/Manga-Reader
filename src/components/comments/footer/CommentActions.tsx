@@ -8,6 +8,7 @@ import BlackButton from '../../buttons/BlackButton';
 type CommentActionsProps = {
     onDelete: () => void;
     onEdit: () => void;
+    onReply: () => void;
 
     isOwner: boolean;
 
@@ -18,6 +19,7 @@ type CommentActionsProps = {
 const CommentActions = ({
     onDelete,
     onEdit,
+    onReply,
 
     isOwner,
 
@@ -47,8 +49,7 @@ const CommentActions = ({
                         </IconButton>
                     </>
                 )}
-                {/* TODO: Implementar lógica de resposta */}
-                <BlackButton text="Responder" onClick={() => {}} />
+                <BlackButton text="Responder" onClick={onReply} />
             </div>
         </div>
     );

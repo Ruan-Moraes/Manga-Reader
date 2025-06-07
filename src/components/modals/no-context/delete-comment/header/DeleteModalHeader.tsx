@@ -1,14 +1,14 @@
-import {FaRegTrashAlt} from 'react-icons/fa';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
 type DeleteModalHeaderProps = {
     title: string;
 };
 
-const DeleteModalHeader = ({title}: DeleteModalHeaderProps) => {
+const DeleteModalHeader = ({ title }: DeleteModalHeaderProps) => {
     return (
         <div>
             <h2 className="flex items-center justify-center gap-2 text-lg font-bold leading-none text-center text-quinary-default">
-                <FaRegTrashAlt size={26} fill={"#ff784f"}/> {title}
+                <FaRegTrashAlt size={26} fill={'#ff784f'} /> {title}
             </h2>
         </div>
     );

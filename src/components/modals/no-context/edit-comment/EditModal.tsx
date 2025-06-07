@@ -7,7 +7,10 @@ import EditModalBody from './body/EditModalBody';
 type EditModalProps = {
     isOpen: boolean;
 
-    onEdit: (newTextContent: string | null, newImageContent: string | null) => void;
+    onEdit: (
+        newTextContent: string | null,
+        newImageContent: string | null,
+    ) => void;
     onCancel: () => void;
 
     title: string;

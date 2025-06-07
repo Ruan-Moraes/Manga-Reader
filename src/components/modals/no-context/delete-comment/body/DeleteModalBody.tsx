@@ -2,7 +2,7 @@ type DeleteModalBodyProps = {
     message: string;
 };
 
-const DeleteModalBody = ({message}: DeleteModalBodyProps) => {
+const DeleteModalBody = ({ message }: DeleteModalBodyProps) => {
     return (
         <div className="flex flex-col gap-4">
             <div>

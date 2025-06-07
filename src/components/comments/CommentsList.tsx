@@ -17,11 +17,14 @@ const CommentsList = () => {
         isError,
         error,
         deleteComment,
-        editComment,
         // isDeletingComment, // TODO: Implementar lógica para outros estados
-        // isEditingComment,
-        // deleteCommentError,
-        // editCommentError,
+        // deleteCommentError, // TODO: Implementar lógica para outros estados
+        editComment,
+        // isEditingComment, // TODO: Implementar lógica para outros estados
+        // editCommentError, // TODO: Implementar lógica para outros estados
+        replyComment,
+        // isReplyingComment, // TODO: Implementar lógica para outros estados
+        // replyCommentError, // TODO: Implementar lógica para outros estados
     } = useComments();
 
     const handleClickProfile = useCallback(
@@ -68,8 +71,10 @@ const CommentsList = () => {
                     onClickProfile={handleClickProfile}
                     onClickEdit={editComment}
                     onClickDelete={deleteComment}
+                    onClickReply={replyComment}
                     nestedLevel={nestedLevel}
                     id={comment.id}
+                    parentCommentId={comment.parentCommentId}
                     user={comment.user}
                     isOwner={comment.isOwner}
                     isHighlighted={comment.isHighlighted}

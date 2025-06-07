@@ -19,8 +19,8 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
         textareaRef,
         addImage,
         addImageFromEmoji,
-        handleInputChange,
-        handleBlur,
+        removePlaceholder,
+        addPlaceholder,
     } = useCommentChat(placeholder);
 
     const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
@@ -43,8 +43,8 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
                         <div className="flex p-2">
                             <div
                                 ref={textareaRef}
-                                onClick={handleInputChange}
-                                onBlur={handleBlur}
+                                onClick={removePlaceholder}
+                                onBlur={addPlaceholder}
                                 contentEditable="true"
                                 className="flex flex-col w-full h-full gap-2 p-2 outline-none resize-none rounded-xs bg-primary-default scrollbar-hidden"
                             />

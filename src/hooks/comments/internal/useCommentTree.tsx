@@ -63,7 +63,7 @@ const useCommentTree = (comments: CommentTypes[] | Error) => {
 
             return comments.flatMap(comment => [
                 {
-                    comment: { ...comment, children: undefined },
+                    comment: { ...comment, children: null },
                     nestedLevel: level,
                 },
 

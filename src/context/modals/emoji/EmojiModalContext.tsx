@@ -10,9 +10,7 @@ type EmojiModalContextType = {
     setSelectedEmoji: (emoji: HTMLImageElement | null) => void;
 };
 
-const EmojiModalContext = createContext<EmojiModalContextType | undefined>(
-    undefined,
-);
+const EmojiModalContext = createContext<EmojiModalContextType | null>(null);
 
 const EmojiModalProvider = ({ children }: { children: ReactNode }) => {
     const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);

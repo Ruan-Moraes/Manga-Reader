@@ -1,8 +1,8 @@
-import {useEffect, useRef} from 'react';
-import {IoImages} from 'react-icons/io5';
-import {FaUpload} from 'react-icons/fa';
+import { useEffect, useRef } from 'react';
+import { IoImages } from 'react-icons/io5';
+import { FaUpload } from 'react-icons/fa';
 
-import {useEmojiModalContext} from '../../../../../context/modals/emoji/useEmojiModalContext';
+import { useEmojiModalContext } from '../../../../../context/modals/emoji/useEmojiModalContext';
 
 import useCommentChat from '../../../../../hooks/comments/internal/useCommentChat';
 
@@ -11,7 +11,10 @@ import IconButton from '../../../../buttons/IconButton';
 import BlackButton from '../../../../buttons/BlackButton';
 
 type EditModalBodyProps = {
-    onEdit: (newTextContent: string | null, newImageContent: string | null) => void;
+    onEdit: (
+        newTextContent: string | null,
+        newImageContent: string | null,
+    ) => void;
     onCancel: () => void;
     initialText: string | null;
     initialImages: string | null;
@@ -19,19 +22,15 @@ type EditModalBodyProps = {
 
 // TODO: Refatorar para usar o hook useCommentChat
 const EditModalBody = ({
-                           onEdit,
-                           onCancel,
-                           initialText,
-                           initialImages,
-                       }: EditModalBodyProps) => {
-    const {
-        textareaRef,
-        addImage,
-        addImageFromEmoji,
-        removePlaceholder,
-    } = useCommentChat('Edite seu comentário');
+    onEdit,
+    onCancel,
+    initialText,
+    initialImages,
+}: EditModalBodyProps) => {
+    const { textareaRef, addImage, addImageFromEmoji, removePlaceholder } =
+        useCommentChat('Edite seu comentário');
 
-    const {openEmojiModal, selectedEmoji, setSelectedEmoji} =
+    const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
         useEmojiModalContext();
 
     const initialValuesProcessed = useRef(false);
@@ -63,7 +62,8 @@ const EditModalBody = ({
 
                 imageUrls.forEach(imageUrl => {
                     if (imageUrl.trim()) {
-                        const imgHTML = `<div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
+                        const imgHTML = `
+                        <div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
                             <img src="${imageUrl}" style="max-height: 30rem; border-radius: 0.125rem; display: block; object-fit: cover;" />
                             <button type="button" class="remove-img-btn" style="position: absolute; top: 0; right: 0; background: #f56565; color: white; font-size: 0.75rem; padding: 0.125rem 0.375rem; border: none; border-radius: 0 0.125rem 0 0.125rem; opacity: 0.75;">
                                 X
@@ -71,11 +71,13 @@ const EditModalBody = ({
                         </div>
                         <br/>`;
 
-                        if (!(textarea.innerHTML === '')) {
+                        if (textarea.innerHTML !== '') {
                             textarea.innerHTML += imgHTML;
                         }
 
-                        textarea.innerHTML = imgHTML;
+                        if (textarea.innerHTML === '') {
+                            textarea.innerHTML = imgHTML;
+                        }
                     }
                 });
             }
@@ -98,7 +100,7 @@ const EditModalBody = ({
 
     return (
         <>
-            <EmojiModal/>
+            <EmojiModal />
             <div className="flex flex-col gap-4">
                 <div className="text-xs border rounded-xs bg-secondary border-tertiary">
                     <div className="flex p-2">
@@ -111,21 +113,15 @@ const EditModalBody = ({
                     <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                         <div className="flex gap-2">
                             <IconButton onClick={openEmojiModal}>
-                                <IoImages/>
+                                <IoImages />
                             </IconButton>
                             <IconButton onClick={addImage}>
-                                <FaUpload/>
+                                <FaUpload />
                             </IconButton>
                         </div>
                         <div className="flex gap-2">
-                            <BlackButton
-                                onClick={onCancel}
-                                text={'Cancelar'}
-                            />
-                            <BlackButton
-                                onClick={handleSave}
-                                text={'Salvar'}
-                            />
+                            <BlackButton onClick={onCancel} text={'Cancelar'} />
+                            <BlackButton onClick={handleSave} text={'Salvar'} />
                         </div>
                     </div>
                 </div>

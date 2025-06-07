@@ -7,6 +7,7 @@ import useCommentModal from '../../hooks/comments/internal/useCommentModal';
 
 import DeleteModal from '../modals/no-context/delete-comment/DeleteModal';
 import EditModal from '../modals/no-context/edit-comment/EditModal';
+import ReplyModal from '../modals/no-context/reply-comment/ReplyModal';
 
 import CommentInformation from './header/CommentInformation';
 import CommentUser from './header/CommentUser';
@@ -17,6 +18,7 @@ const Comment = ({
     onClickProfile,
     onClickEdit,
     onClickDelete,
+    onClickReply,
 
     nestedLevel = 0,
     id,
@@ -42,6 +44,11 @@ const Comment = ({
         newImageContent: string | null,
     ) => void;
     onClickDelete: (id: string) => void;
+    onClickReply: (
+        id: string,
+        textContent: string | null,
+        imageContent: string | null,
+    ) => void;
 } & CommentTypes) => {
     const {
         isDeleteModalOpen,
@@ -53,9 +60,15 @@ const Comment = ({
         openEditModal,
         closeEditModal,
         confirmEditComment,
+
+        isReplyModalOpen,
+        openReplyModal,
+        closeReplyModal,
+        confirmReplyComment,
     } = useCommentModal({
         onDelete: onClickDelete,
         onEdit: onClickEdit,
+        onReply: onClickReply,
         commentId: id,
     });
 
@@ -89,7 +102,6 @@ const Comment = ({
         return -(index * 8 + 8 * (index + 1));
     };
 
-    // @ts-ignore
     return (
         <div
             style={{
@@ -141,6 +153,7 @@ const Comment = ({
                 <CommentActions
                     onDelete={openDeleteModal}
                     onEdit={openEditModal}
+                    onReply={openReplyModal}
                     isOwner={isOwner}
                     likeCount={likeCount}
                     dislikeCount={dislikeCount}
@@ -160,6 +173,12 @@ const Comment = ({
                 title="Editar comentário"
                 initialText={textContent}
                 initialImages={imageContent}
+            />
+            <ReplyModal
+                isOpen={isReplyModalOpen}
+                onReply={confirmReplyComment}
+                onCancel={closeReplyModal}
+                title="Responder comentário"
             />
         </div>
     );

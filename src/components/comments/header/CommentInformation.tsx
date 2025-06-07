@@ -2,7 +2,7 @@ import treatDate from '../../../services/utils/treatDate';
 
 type CommentInformationProps = {
     createdAt: string;
-    wasEdited: boolean | undefined;
+    wasEdited: boolean;
 };
 
 const CommentInformation = ({
