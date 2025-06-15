@@ -27,8 +27,12 @@ const EditModalBody = ({
     initialText,
     initialImages,
 }: EditModalBodyProps) => {
+    const editTextareaRef = useRef<HTMLDivElement | null>(null);
     const { textareaRef, addImage, addImageFromEmoji, removePlaceholder } =
-        useCommentChat('Edite seu comentário');
+        useCommentChat({
+            placeholder: 'Edite seu comentário',
+            externalRef: editTextareaRef,
+        });
 
     const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
         useEmojiModalContext();

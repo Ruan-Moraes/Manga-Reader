@@ -6,7 +6,7 @@ import CustomLink from '../elements/CustomLink';
 
 const MenuLinkBlock = () => {
     return (
-        <div className="flex flex-col h-full gap-6 px-4 pb-4 pt-4">
+        <div className="flex flex-col h-full gap-6 px-4 pb-4">
             <div className="flex flex-col gap-2">
                 <div>
                     <h3 className="font-bold">Gêneros Famosos</h3>

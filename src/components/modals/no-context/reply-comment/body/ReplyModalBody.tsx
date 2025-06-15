@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { IoImages } from 'react-icons/io5';
 import { FaUpload } from 'react-icons/fa';
 
@@ -16,9 +16,11 @@ type ReplyModalBodyProps = {
 };
 
 const ReplyModalBody = ({ onReply, onCancel }: ReplyModalBodyProps) => {
-    const { textareaRef, addImage, addImageFromEmoji } = useCommentChat(
-        'Escreva sua resposta',
-    ); // FIX: Entende o porquê não está a digitar quando o usuário clica no textarea
+    const replyTextareaRef = useRef<HTMLDivElement | null>(null);
+    const { textareaRef, addImage, addImageFromEmoji } = useCommentChat({
+        placeholder: 'Escreva sua resposta',
+        externalRef: replyTextareaRef,
+    });
 
     const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
         useEmojiModalContext();

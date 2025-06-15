@@ -1,35 +1,58 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+    MutableRefObject,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { toast } from 'react-toastify';
 
-const useCommentChat = (placeholder: string) => {
-    const textareaRef = useRef<HTMLDivElement | null>(null);
+type UseCommentChatProps = {
+    placeholder: string;
+    externalRef?: MutableRefObject<HTMLDivElement | null>;
+};
+
+const useCommentChat = (options: UseCommentChatProps | string) => {
+    const placeholder =
+        typeof options === 'string' ? options : options.placeholder;
+    const externalRef =
+        typeof options === 'object' ? options.externalRef : undefined;
+
+    const internalRef = useRef<HTMLDivElement | null>(null);
+    const textareaRef = externalRef || internalRef;
 
     const [images, setImages] = useState<string[]>([]);
 
     const shouldShowPlaceholder = useCallback((): boolean => {
         const textarea = textareaRef.current;
 
-        if (!textarea) return false;
+        if (!textarea) {
+            return false;
+        }
 
         return (
             textarea.innerHTML.trim() === '' ||
             textarea.innerHTML.trim() === '<br>' ||
             textarea.innerText.trim().length === 0
         );
-    }, []);
+    }, [textareaRef]);
 
     const addPlaceholder = useCallback(() => {
         const textarea = textareaRef.current;
 
-        if (!textarea || !shouldShowPlaceholder()) return;
+        if (!textarea || !shouldShowPlaceholder()) {
+            return;
+        }
 
         textarea.innerHTML = `<span contenteditable="false" class="text-tertiary" id="textarea_placeholder">${placeholder}</span>`;
-    }, [placeholder, shouldShowPlaceholder]);
+    }, [placeholder, shouldShowPlaceholder, textareaRef]);
 
     const removePlaceholder = useCallback(() => {
         const textarea = textareaRef.current;
 
-        if (!textarea) return;
+        if (!textarea) {
+            return;
+        }
 
         const placeholderElement = textarea.querySelector(
             '#textarea_placeholder',
@@ -38,12 +61,14 @@ const useCommentChat = (placeholder: string) => {
         if (placeholderElement) {
             placeholderElement.remove();
         }
-    }, []);
+    }, [textareaRef]);
 
     const updateImagesFromDOM = useCallback(() => {
         const textarea = textareaRef.current;
 
-        if (!textarea) return;
+        if (!textarea) {
+            return;
+        }
 
         const currentImgs = Array.from(
             textarea.querySelectorAll('[contenteditable="false"] img'),
@@ -52,7 +77,7 @@ const useCommentChat = (placeholder: string) => {
             .filter(Boolean) as string[];
 
         setImages(currentImgs);
-    }, []);
+    }, [textareaRef]);
 
     const exceedsImageLimit = useCallback(() => {
         if (images.length >= 3) {
@@ -89,8 +114,13 @@ const useCommentChat = (placeholder: string) => {
         input.onchange = () => {
             const file = input.files?.[0] || null;
 
-            if (!isImageValid(file)) return;
-            if (exceedsImageLimit()) return;
+            if (!isImageValid(file)) {
+                return;
+            }
+
+            if (exceedsImageLimit()) {
+                return;
+            }
 
             const reader = new FileReader();
 
@@ -98,8 +128,11 @@ const useCommentChat = (placeholder: string) => {
                 const imageUrl = reader.result as string;
                 const textarea = textareaRef.current;
 
-                if (!textarea) return;
+                if (!textarea) {
+                    return;
+                }
 
+                textarea.focus();
                 removePlaceholder();
 
                 const imgHTML = `<div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
@@ -110,9 +143,21 @@ const useCommentChat = (placeholder: string) => {
                                  </div>
                                  <br/>`;
 
-                textarea.focus();
+                const range = document.createRange();
+                const selection = window.getSelection();
 
-                document.execCommand('insertHTML', false, imgHTML); // Comando "execCommand" está obsoleto, mas não possui outro substituto.
+                if (selection) {
+                    selection.removeAllRanges();
+
+                    range.selectNodeContents(textarea);
+                    range.collapse(false);
+
+                    selection.addRange(range);
+                }
+
+                document.execCommand('insertHTML', false, imgHTML);
+
+                textarea.focus();
 
                 setTimeout(() => {
                     updateImagesFromDOM();
@@ -125,12 +170,15 @@ const useCommentChat = (placeholder: string) => {
         exceedsImageLimit,
         isImageValid,
         removePlaceholder,
+        textareaRef,
         updateImagesFromDOM,
     ]);
 
     const addImageFromEmoji = useCallback(
         (emoji: HTMLImageElement | null) => {
-            if (exceedsImageLimit()) return;
+            if (exceedsImageLimit()) {
+                return;
+            }
 
             if (!emoji) {
                 toast.error('Nenhum emoji selecionado');
@@ -140,8 +188,11 @@ const useCommentChat = (placeholder: string) => {
 
             const textarea = textareaRef.current;
 
-            if (!textarea) return;
+            if (!textarea) {
+                return;
+            }
 
+            textarea.focus();
             removePlaceholder();
 
             const imgHTML = `<div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
@@ -150,24 +201,42 @@ const useCommentChat = (placeholder: string) => {
                                         X
                                     </button>
                                  </div>
-                                 <br/>
-                                `;
+                                 <br/>`;
+
+            const range = document.createRange();
+            const selection = window.getSelection();
+
+            if (selection) {
+                selection.removeAllRanges();
+
+                range.selectNodeContents(textarea);
+                range.collapse(false);
+
+                selection.addRange(range);
+            }
+
+            document.execCommand('insertHTML', false, imgHTML);
 
             textarea.focus();
-
-            document.execCommand('insertHTML', false, imgHTML); // Comando "execCommand" está obsoleto, mas não possui outro substituto.
 
             setTimeout(() => {
                 updateImagesFromDOM();
             }, 0);
         },
-        [exceedsImageLimit, removePlaceholder, updateImagesFromDOM],
+        [
+            exceedsImageLimit,
+            removePlaceholder,
+            textareaRef,
+            updateImagesFromDOM,
+        ],
     );
 
     useEffect(() => {
         const textarea = textareaRef.current;
 
-        if (!textarea) return;
+        if (!textarea) {
+            return;
+        }
 
         addPlaceholder();
 
@@ -189,7 +258,9 @@ const useCommentChat = (placeholder: string) => {
 
                     container.remove();
 
-                    if (shouldShowPlaceholder()) addPlaceholder();
+                    if (shouldShowPlaceholder()) {
+                        addPlaceholder();
+                    }
                 }
             }
         };
@@ -197,23 +268,46 @@ const useCommentChat = (placeholder: string) => {
         const handleInput = () => {
             updateImagesFromDOM();
 
-            if (shouldShowPlaceholder()) addPlaceholder();
+            if (shouldShowPlaceholder()) {
+                addPlaceholder();
+            }
+        };
+
+        const handleFocus = () => {
+            removePlaceholder();
+
+            if (textarea && shouldShowPlaceholder()) {
+                const range = document.createRange();
+                const selection = window.getSelection();
+
+                if (selection) {
+                    selection.removeAllRanges();
+
+                    range.setStart(textarea, 0);
+                    range.collapse(true);
+
+                    selection.addRange(range);
+                }
+            }
         };
 
         textarea.addEventListener('click', handleClick);
         textarea.addEventListener('input', handleInput);
         textarea.addEventListener('keyup', handleInput);
+        textarea.addEventListener('focus', handleFocus);
 
         return () => {
             textarea.removeEventListener('click', handleClick);
             textarea.removeEventListener('input', handleInput);
             textarea.removeEventListener('keyup', handleInput);
+            textarea.removeEventListener('focus', handleFocus);
         };
     }, [
         addPlaceholder,
         removePlaceholder,
-        updateImagesFromDOM,
         shouldShowPlaceholder,
+        textareaRef,
+        updateImagesFromDOM,
     ]);
 
     return {

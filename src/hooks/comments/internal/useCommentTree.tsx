@@ -43,10 +43,12 @@ const useCommentTree = (comments: CommentTypes[] | Error) => {
 
                     parent?.children.push(mappedComment);
                 }
+
                 if (!comment.parentCommentId) {
                     roots.push(mappedComment);
                 }
             });
+
             return roots;
         },
         [isError],

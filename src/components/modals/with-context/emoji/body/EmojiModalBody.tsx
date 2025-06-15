@@ -34,7 +34,7 @@ const EmojiModalBody = ({ onEmojiClick }: EmojiModalBodyProps) => {
                                             onClick={(
                                                 e: React.MouseEvent<HTMLImageElement>,
                                             ) => onEmojiClick(e.currentTarget)}
-                                            className="border border-tertiary rounded-xs shadow-lg overflow-hidden cursor-pointer object-cover w-[124px] h-[124px]"
+                                            className="border border-tertiary rounded-xs shadow-lg overflow-hidden cursor-pointer object-cover w-[124px] h-[124px] transition-colors duration-300"
                                         />
                                     </div>
                                     <div>

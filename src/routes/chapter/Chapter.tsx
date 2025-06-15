@@ -408,7 +408,7 @@ const Chapter = () => {
                     </div>
                 </section>
                 <div
-                    className="fixed bottom-[calc(0%_-_0.5rem)] shadow-black left-0 right-0 flex justify-center gap-2 p-2 m-4 mb-2 transition-all transform border duration-50 bg-secondary border-tertiary rounded-xs"
+                    className="fixed bottom-[calc(0%_-_0.5rem)] shadow-black left-0 right-0 flex justify-center gap-2 p-2 m-4 mb-2 transition-all transform border duration-300 bg-secondary border-tertiary rounded-xs"
                     ref={bottomNavRef}
                 >
                     <div className="grow">
