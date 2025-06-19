@@ -1,6 +1,6 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 
-import { toast } from 'react-toastify';
+import { showWarningToast } from '../../utils/toastUtils';
 
 export const queryClient = new QueryClient({
     queryCache: new QueryCache({}),
@@ -11,11 +11,11 @@ export const clearCache = (): void => {
         queryClient.resetQueries();
         localStorage.clear();
 
-        toast.warning('Limpando cache!');
+        showWarningToast('Limpando cache!', { toastId: 'clear-cache' });
 
         setTimeout(() => {
             location.reload();
-        }, 750);
+        }, 2250);
     } catch (error) {
         console.error('Erro ao limpar cache:', error);
     }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+
+import { showErrorToast } from '../../utils/toastUtils';
 
 export function useCommentEditor(placeholder: string) {
     const textareaRef = useRef<HTMLDivElement>(null);
@@ -56,7 +57,9 @@ export function useCommentEditor(placeholder: string) {
 
     const exceedsImageLimit = useCallback(() => {
         if (images.length >= 3) {
-            toast.error('Você só pode adicionar até 3 imagens');
+            showErrorToast('Você só pode adicionar até 3 imagens', {
+                toastId: 'emoji-image-limit-error',
+            });
 
             return true;
         }
@@ -66,13 +69,17 @@ export function useCommentEditor(placeholder: string) {
 
     const isImageValid = useCallback((file: File | null) => {
         if (!file) {
-            toast.error('Nenhum arquivo selecionado');
+            showErrorToast('Nenhum arquivo selecionado', {
+                toastId: 'emoji-no-file-selected-error',
+            });
 
             return false;
         }
 
         if (file.size > 2 * 1024 * 1024) {
-            toast.error('O arquivo deve ter no máximo 2MB');
+            showErrorToast('O arquivo deve ter no máximo 2MB', {
+                toastId: 'emoji-file-size-error',
+            });
 
             return false;
         }
@@ -87,7 +94,7 @@ export function useCommentEditor(placeholder: string) {
         input.click();
 
         input.onchange = () => {
-            const file = input.files?.[0];
+            const file = input.files?.[0] || null;
 
             if (!isImageValid(file)) return;
             if (exceedsImageLimit()) return;

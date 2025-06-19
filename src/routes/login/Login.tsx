@@ -1,4 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { showInfoToast, showSuccessToast } from '../../utils/toastUtils';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -8,14 +11,51 @@ import AuthenticationForm from '../../components/forms/AuthenticationForm';
 import BaseInput from '../../components/inputs/BaseInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
 
+// TODO: Implementar autenticação real
 const Login = () => {
+    const navigate = useNavigate();
+
+    const [redirectPath, setRedirectPath] = useState<string | null>(null);
+
+    useEffect(() => {
+        const storedPath = localStorage.getItem('redirectAfterLogin');
+
+        if (storedPath) {
+            setRedirectPath(storedPath);
+
+            showInfoToast(
+                'Após o login, você será redirecionado para a página que tentou acessar.',
+                { toastId: 'redirect-info' },
+            );
+        }
+    }, []);
+
     const handleFormSubmit = useCallback(
         (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
 
             console.log('Formulário enviado');
+
+            if (redirectPath) {
+                localStorage.removeItem('redirectAfterLogin');
+
+                navigate(redirectPath);
+
+                showSuccessToast(
+                    'Autenticação bem-sucedida! Redirecionando para a página solicitada.',
+                    { toastId: 'auth-success-redirect' },
+                );
+            }
+
+            if (!redirectPath) {
+                navigate('/Manga-Reader');
+
+                showSuccessToast('Autenticação bem-sucedida!', {
+                    toastId: 'auth-success',
+                });
+            }
         },
-        [],
+        [navigate, redirectPath],
     );
 
     return (

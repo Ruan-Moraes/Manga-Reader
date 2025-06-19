@@ -5,7 +5,8 @@ import {
     useRef,
     useState,
 } from 'react';
-import { toast } from 'react-toastify';
+
+import { showErrorToast } from '../../../utils/toastUtils';
 
 type UseCommentChatProps = {
     placeholder: string;
@@ -81,7 +82,9 @@ const useCommentChat = (options: UseCommentChatProps | string) => {
 
     const exceedsImageLimit = useCallback(() => {
         if (images.length >= 3) {
-            toast.error('Você só pode adicionar até 3 imagens');
+            showErrorToast('Você só pode adicionar até 3 imagens', {
+                toastId: 'image-limit-error',
+            });
 
             return true;
         }
@@ -91,13 +94,17 @@ const useCommentChat = (options: UseCommentChatProps | string) => {
 
     const isImageValid = useCallback((file: File | null) => {
         if (!file) {
-            toast.error('Nenhum arquivo selecionado');
+            showErrorToast('Nenhum arquivo selecionado', {
+                toastId: 'no-file-selected-error',
+            });
 
             return false;
         }
 
         if (file.size > 2 * 1024 * 1024) {
-            toast.error('O arquivo deve ter no máximo 2MB');
+            showErrorToast('O arquivo deve ter no máximo 2MB', {
+                toastId: 'file-size-error',
+            });
 
             return false;
         }
@@ -181,7 +188,9 @@ const useCommentChat = (options: UseCommentChatProps | string) => {
             }
 
             if (!emoji) {
-                toast.error('Nenhum emoji selecionado');
+                showErrorToast('Nenhum emoji selecionado', {
+                    toastId: 'no-emoji-selected-error',
+                });
 
                 return;
             }

@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+
 import { ToastContainer } from 'react-toastify';
 
 import { POSITIONS } from '../../constants/POSITIONS';
@@ -24,6 +25,7 @@ const Toast = () => (
             closeOnClick={true}
             theme="dark"
             limit={1}
+            newestOnTop={true}
         />
     </>
 );
