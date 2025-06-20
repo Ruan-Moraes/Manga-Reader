@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 
+import { API_URLS, QUERY_KEYS, ROUTES } from '../../../constants/API_CONSTANTS';
+
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
+import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 
-const CardsContainer = ({
-    url,
-    validTime,
-    title,
-    subTitle,
-}: CardsContainerTypes) => {
-    const { data, status } = UseTitlesFetch(url, validTime);
+const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
+    const { data, status } = useTitlesFetch(
+        API_URLS.TITLE_URL,
+        QUERY_KEYS.TITLES_ON_THE_RISE,
+    );
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
@@ -63,7 +63,7 @@ const CardsContainer = ({
             <Section_Title
                 title={title}
                 subTitle={subTitle}
-                subLink="/categories?sort=ascension&status=all"
+                subLink={ROUTES.CATEGORIES_ASCENSION}
             />
             <div className="flex flex-col gap-4">{allChildren}</div>
         </section>

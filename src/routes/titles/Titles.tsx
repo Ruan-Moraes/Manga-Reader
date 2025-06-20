@@ -1,13 +1,10 @@
-import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-
-import { TitleTypes } from '../../types/TitleTypes';
-
-import { getCache } from '../../services/utils/cache.tsx';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
+
+import useTitles from '../../hooks/titles/useTitles';
 
 import Card from '../../components/cards/title/Card';
 import CommentInput from '../../components/inputs/CommentInput';
@@ -18,39 +15,17 @@ import { BsBookmark } from 'react-icons/bs';
 import { AiOutlineLike } from 'react-icons/ai';
 import { MdGroups, MdOutlineShoppingCart } from 'react-icons/md';
 import { FaSortNumericDown } from 'react-icons/fa';
-// import { FaSortNumericDownAlt } from 'react-icons/fa';
 import { IoSearchSharp } from 'react-icons/io5';
 
 const Titles = () => {
     const id = useParams().title!;
 
-    const getTitleFromCache = useCallback((id: string) => {
-        const titles: TitleTypes[] =
-            (getCache(['titles']) as TitleTypes[]) || [];
+    const { titles, isLoading, isError, error } = useTitles(id);
 
-        if (titles.length === 0) {
-            console.log('fetching titles from API');
-        }
-
-        return titles[Number(id)];
-    }, []);
-
-    const getTitleFromAPI = useCallback((id: string) => {
-        console.log('fetching title from API' + id); // TODO: Implementar lógica de busca titulos da API
-    }, []);
-
-    const getTitle = useCallback(
-        (id: string) => {
-            const title = getTitleFromCache(id);
-
-            if (!title) {
-                getTitleFromAPI(id);
-            }
-
-            return title;
-        },
-        [getTitleFromCache, getTitleFromAPI],
-    );
+    const currentTitle =
+        titles && titles.length > 0
+            ? titles.find(title => title.id === id) || titles[Number(id)]
+            : undefined;
 
     const {
         title,
@@ -64,7 +39,7 @@ const Titles = () => {
         author,
         artist,
         publisher,
-    } = getTitle(id) || {};
+    } = currentTitle || {};
 
     return (
         <>

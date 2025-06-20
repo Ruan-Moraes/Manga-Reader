@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 
-import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
+import { API_URLS, QUERY_KEYS, ROUTES } from '../../../constants/API_CONSTANTS';
+
+import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 
-const CardsContainer = ({
-    url,
-    validTime,
-    title,
-    subTitle,
-}: CardsContainerTypes) => {
-    const { data, status } = UseTitlesFetch(url, validTime);
+const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
+    const { data, status } = useTitlesFetch(
+        API_URLS.TITLE_URL,
+        QUERY_KEYS.RANDOM_TITLES,
+    );
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
@@ -45,7 +45,7 @@ const CardsContainer = ({
             <Section_Title
                 title={title}
                 subTitle={subTitle}
-                subLink="/categories?sort=random&status=all"
+                subLink={ROUTES.CATEGORIES_RANDOM}
             />
             <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">
                 {allChildren}

@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
+import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
+import { COLORS } from '../../../constants/COLORS';
+
 import { TitleTypes } from '../../../types/TitleTypes';
 import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
-
-import { COLORS } from '../../../constants/COLORS';
 
 import Warning from '../../notifications/Warning';
 import CustomLink from '../../links/elements/CustomLink';
@@ -50,7 +51,7 @@ const Card = ({
         return (
             <Warning
                 color={COLORS.QUINARY}
-                message="Ocorreu um erro ao carregar os dados. Tente novamente mais tarde."
+                message={ERROR_MESSAGES.FETCH_ERROR_BASE}
                 title="Erro!"
             />
         );

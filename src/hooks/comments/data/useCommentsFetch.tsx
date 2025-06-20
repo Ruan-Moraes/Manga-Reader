@@ -1,5 +1,7 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
+
 import { CommentTypes } from '../../../types/CommentTypes';
 
 const useCommentsFetch = (
@@ -9,10 +11,10 @@ const useCommentsFetch = (
     return useQuery<CommentTypes[], Error>({
         queryKey: [queryKey],
         queryFn: async () => {
-            const response = await fetch(url);
+            const response = await fetch(url + queryKey);
 
             if (!response.ok) {
-                throw new Error('Ocorreu um erro ao buscar os comentários');
+                throw new Error(ERROR_MESSAGES.FETCH_COMMENTS_ERROR);
             }
 
             // const data: CommentTypes[] = await response.json();

@@ -49,26 +49,18 @@ const Home = () => {
                     />
                 </SocialMediasContainer>
                 <CarouselContainer
-                    url="https://db-json-ten.vercel.app/titlesCarousel"
-                    validTime={30}
                     title="Obras mais vistas"
                     subTitle="Últimos 30 dias"
                 />
                 <HighlightCardsContainer
-                    url="https://db-json-ten.vercel.app/titlesMostViewed"
-                    validTime={30}
                     title="Tops 5 obras em ascensão"
                     subTitle="Quero ver mais..."
                 />
                 <RowCardsContainer
-                    url="https://db-json-ten.vercel.app/randomTitles"
-                    validTime={30}
                     title="10 Obras aleatórias"
                     subTitle="Quero ver mais..."
                 />
                 <GridCardsContainer
-                    url="https://db-json-ten.vercel.app/updatedTitles"
-                    validTime={30}
                     title="Obras Atualizadas"
                     subTitle="Quero ver mais..."
                 />

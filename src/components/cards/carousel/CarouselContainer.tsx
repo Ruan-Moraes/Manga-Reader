@@ -4,25 +4,20 @@ import { Splide } from '@splidejs/react-splide';
 // @ts-expect-error - ignore import error
 import '@splidejs/react-splide/css';
 
-import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
+import { API_URLS, QUERY_KEYS, ROUTES } from '../../../constants/API_CONSTANTS';
+
+import { CardsContainerTypes } from '../../../types/CardContainerTypes';
+
+import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import Carousel from './Carousel';
 import CustomLink from '../../links/elements/CustomLink';
 
-type CarouselContainerTypes = {
-    url: string;
-    validTime?: number;
-    title?: string;
-    subTitle?: string;
-};
-
-const CarouselContainer = ({
-    url,
-    validTime,
-    title,
-    subTitle,
-}: CarouselContainerTypes) => {
-    const { data, status } = UseTitlesFetch(url, validTime);
+const CarouselContainer = ({ title, subTitle }: CardsContainerTypes) => {
+    const { data, status } = useTitlesFetch(
+        API_URLS.TITLE_URL,
+        QUERY_KEYS.TITLES_IN_THE_CAROUSEL,
+    );
 
     const splideRef = useRef<Splide>(null);
 
@@ -86,7 +81,7 @@ const CarouselContainer = ({
             <div className="px-4 py-2 rounded-t-xs bg-tertiary">
                 <h2 className="flex flex-col items-center text-center">
                     <CustomLink
-                        link="/categories?sort=most_read&status=all"
+                        link={ROUTES.CATEGORIES_MOST_READ}
                         text={title}
                         className="text-shadow-default text-quaternary-default"
                     />

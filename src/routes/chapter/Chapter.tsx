@@ -16,11 +16,21 @@ import FilterComments from '../../components/comments/FilterComments';
 // import { MdStar } from 'react-icons/md';
 import CommentsList from '../../components/comments/CommentsList';
 
+import useTitles from '../../hooks/titles/useTitles';
+
 const Chapter = () => {
     const navigate = useNavigate();
 
-    const titleId = useParams().title;
-    const chapterId = useParams().chapter;
+    const titleId: string = useParams().title;
+    const chapterId: string = useParams().chapter;
+
+    const { titles, isLoading, isError, error } = useTitles(titleId);
+
+    const currentTitle =
+        titles && titles.length > 0
+            ? titles.find(title => title.id === titleId) ||
+              titles[Number(titleId)]
+            : undefined;
 
     const bottomNavRef = useRef<HTMLDivElement | null>(null);
 
@@ -146,7 +156,7 @@ const Chapter = () => {
                                     WebkitLineClamp: 3,
                                 }}
                             >
-                                Naruto Clássico
+                                {currentTitle?.title || 'Carregando...'}
                             </h2>
                         </div>
                         <div className="flex flex-col gap-2">

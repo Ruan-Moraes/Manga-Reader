@@ -3,23 +3,23 @@ import { useNavigate } from 'react-router-dom';
 
 import clsx from 'clsx';
 
+import { API_URLS, QUERY_KEYS, ROUTES } from '../../../constants/API_CONSTANTS';
+
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import UseTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
+import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 import RaisedButton from '../../buttons/RaisedButton';
 
-const CardsContainer = ({
-    url,
-    validTime,
-    title,
-    subTitle,
-}: CardsContainerTypes) => {
+const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
     const navigate = useNavigate();
 
-    const { data, status } = UseTitlesFetch(url, validTime);
+    const { data, status } = useTitlesFetch(
+        API_URLS.TITLE_URL,
+        QUERY_KEYS.UPDATED_TILTES,
+    );
     const [visible, setVisible] = useState(10);
 
     const allChildren = useMemo(() => {
@@ -52,7 +52,7 @@ const CardsContainer = ({
 
     const handleClick = useCallback(() => {
         if (visible >= allChildren.length) {
-            navigate('/Manga-Reader/categories?sort=most_recent&status=all');
+            navigate(ROUTES.WEB_URL + ROUTES.CATEGORIES_MOST_RECENT);
         }
 
         if (visible < allChildren.length) {
@@ -65,7 +65,7 @@ const CardsContainer = ({
             <Section_Title
                 title={title}
                 subTitle={subTitle}
-                subLink="/categories?sort=most_recent&status=all"
+                subLink={ROUTES.CATEGORIES_MOST_RECENT}
             />
             <div
                 className={clsx('grid gap-x-2 gap-y-4', {

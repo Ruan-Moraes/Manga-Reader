@@ -1,8 +1,8 @@
+import { API_URLS, QUERY_KEYS } from '../../constants/API_CONSTANTS';
+
 import useCommentsFetch from './data/useCommentsFetch';
 import useCommentCRUD from './internal/useCommentCRUD';
 import useCommentTree from './internal/useCommentTree';
-
-const COMMENTS_QUERY_KEY = 'comments';
 
 export const useComments = () => {
     const {
@@ -11,7 +11,7 @@ export const useComments = () => {
         isError,
         error,
         refetch,
-    } = useCommentsFetch(COMMENTS_QUERY_KEY, '/api/comments');
+    } = useCommentsFetch(API_URLS.COMMENTS_URL, QUERY_KEYS.COMMENTS);
 
     const {
         deleteComment,
@@ -24,7 +24,7 @@ export const useComments = () => {
         editCommentError,
         replyCommentError,
     } = useCommentCRUD({
-        queryKey: COMMENTS_QUERY_KEY,
+        queryKey: QUERY_KEYS.COMMENTS,
     });
 
     const { getCommentsTree } = useCommentTree(comments || []);

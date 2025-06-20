@@ -1,36 +1,43 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
+
 import { TitleTypes } from '../../../types/TitleTypes';
 
-const UseTitlesFetch = (
+const useTitlesFetch = (
     url: string,
-    validTime?: number,
-): UseQueryResult<Record<string, TitleTypes>, Error> => {
-    return useQuery<Record<string, TitleTypes>, Error>({
-        queryKey: ['titles'],
+    queryKey: string,
+): UseQueryResult<TitleTypes[] | Error> => {
+    return useQuery<TitleTypes[], Error>({
+        queryKey: [queryKey],
         queryFn: async () => {
-            const response = await fetch(url);
+            let response = null;
 
-            if (!response.ok) {
-                throw new Error('Falha na requisição');
+            if (!isNaN(Number(queryKey))) {
+                if (url.endsWith('/')) {
+                    url = url.slice(0, -1);
+                }
+
+                console.log(`${url}?title=${queryKey}`);
+
+                response = await fetch(`${url}?title=${queryKey}`);
+            }
+
+            if (isNaN(Number(queryKey))) {
+                response = await fetch(url + queryKey);
+            }
+
+            if (response === null || response === undefined || !response.ok) {
+                throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
             }
 
             const data: TitleTypes[] = await response.json();
 
-            const titles = data.reduce(
-                (acc: Record<string, TitleTypes>, title: TitleTypes) => {
-                    acc[title.id] = title;
-
-                    return acc;
-                },
-                {},
-            );
-
-            return titles;
+            return data;
         },
 
-        staleTime: validTime ? 1000 * 60 * validTime : 0,
+        staleTime: 1000 * 60 * 30, // 30 minutes
     });
 };
 
-export default UseTitlesFetch;
+export default useTitlesFetch;
