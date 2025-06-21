@@ -11,7 +11,7 @@ const useCommentsFetch = (
     return useQuery<CommentTypes[], Error>({
         queryKey: [queryKey],
         queryFn: async () => {
-            const response = await fetch(url + queryKey);
+            const response = await fetch(url + '/' + queryKey);
 
             if (!response.ok) {
                 throw new Error(ERROR_MESSAGES.FETCH_COMMENTS_ERROR);

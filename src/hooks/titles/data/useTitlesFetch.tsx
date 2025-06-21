@@ -11,29 +11,31 @@ const useTitlesFetch = (
     return useQuery<TitleTypes[], Error>({
         queryKey: [queryKey],
         queryFn: async () => {
-            let response = null;
+            try {
+                const response = await fetch(url + '/' + queryKey);
 
-            if (!isNaN(Number(queryKey))) {
-                if (url.endsWith('/')) {
-                    url = url.slice(0, -1);
+                if (
+                    response === null ||
+                    response === undefined ||
+                    !response.ok
+                ) {
+                    throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
                 }
 
-                console.log(`${url}?title=${queryKey}`);
+                const data: TitleTypes[] = await response.json();
 
-                response = await fetch(`${url}?title=${queryKey}`);
+                return data;
+            } catch (error) {
+                if (error instanceof Error) {
+                    return Promise.reject(error);
+                }
+
+                return Promise.reject(
+                    new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR),
+                );
+
+                console.log(error);
             }
-
-            if (isNaN(Number(queryKey))) {
-                response = await fetch(url + queryKey);
-            }
-
-            if (response === null || response === undefined || !response.ok) {
-                throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
-            }
-
-            const data: TitleTypes[] = await response.json();
-
-            return data;
         },
 
         staleTime: 1000 * 60 * 30, // 30 minutes

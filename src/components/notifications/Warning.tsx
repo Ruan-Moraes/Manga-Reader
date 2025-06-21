@@ -12,9 +12,7 @@ type WarningTypes = {
 
 const Warning = ({ linkText, color, title, message, link }: WarningTypes) => {
     return (
-        <div
-            className={`w-full${linkText ? ' flex flex-col items-center gap-2' : ''}`}
-        >
+        <div className="w-full flex flex-col items-center gap-2">
             <div
                 className={`flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-xs border-${color}-default`}
             >
@@ -31,12 +29,21 @@ const Warning = ({ linkText, color, title, message, link }: WarningTypes) => {
                     <p>{message}</p>
                 </div>
             </div>
-            {link && (
+            {link && linkText && (
                 <div className="text-center">
                     <CustomLink
-                        link={link || '/'}
+                        link={link}
                         className={`text-sm text-${color}-default hover:text-${color}-normal`}
-                        text={linkText || 'Voltar'}
+                        text={linkText}
+                    />
+                </div>
+            )}
+            {!link && !linkText && (
+                <div className="text-center">
+                    <CustomLink
+                        link="/"
+                        className={`text-sm text-${color}-default hover:text-${color}-normal`}
+                        text="Voltar para a página inicial"
                     />
                 </div>
             )}

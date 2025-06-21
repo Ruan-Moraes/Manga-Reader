@@ -9,11 +9,11 @@ import {
     useCommentSortContext,
 } from '../../context/comments/CommentSortContext';
 
-type FilterCommentsProps = {
+type SortCommentsProps = {
     title: string;
 };
 
-const FilterComments = ({ title }: FilterCommentsProps) => {
+const SortComments = ({ title }: SortCommentsProps) => {
     const { sortType, setSortType } = useCommentSortContext();
 
     const handleSortClick = (type: SortType) => {
@@ -63,4 +63,4 @@ const FilterComments = ({ title }: FilterCommentsProps) => {
     );
 };
 
-export default FilterComments;
+export default SortComments;

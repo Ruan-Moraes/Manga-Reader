@@ -1,10 +1,6 @@
-import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
-import { COLORS } from '../../../constants/COLORS';
-
 import { TitleTypes } from '../../../types/TitleTypes';
 import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
 
-import Warning from '../../notifications/Warning';
 import TitleDetails from '../../informations/TitleDetails';
 import TitleDescription from '../../informations/TitleDescription';
 
@@ -15,7 +11,7 @@ const Card = ({
     id,
     type = '...',
     cover = 'Carregando...',
-    title = '...',
+    name = '...',
     synopsis = 'Carregando...',
     genres = '...',
     chapters = '...',
@@ -25,18 +21,7 @@ const Card = ({
     artist = '...',
     publisher = '...',
     isLoading,
-    isError,
 }: CardTypes) => {
-    if (isError) {
-        return (
-            <Warning
-                color={COLORS.QUINARY}
-                message={ERROR_MESSAGES.FETCH_ERROR_BASE}
-                title="Erro!"
-            />
-        );
-    }
-
     return (
         <div className="flex gap-2">
             <div className="flex flex-col w-2/4 overflow-hidden border border-b-0 rounded-t-xs border-tertiary">
@@ -49,7 +34,7 @@ const Card = ({
                     <div className="w-full h-44 mobile-md:h-56">
                         <img
                             src={cover}
-                            alt={`Capa do título: ${title}`}
+                            alt={`Capa do título: ${name}`}
                             className="object-cover w-full h-full aspect-square text-center leading-8"
                         />
                     </div>
@@ -58,7 +43,7 @@ const Card = ({
                     {...{
                         id,
                         type,
-                        title,
+                        name,
                         popularity,
                         score,
                         chapters,

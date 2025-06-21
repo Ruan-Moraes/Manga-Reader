@@ -59,7 +59,7 @@ const CarouselContainer = ({ title, subTitle }: CardsContainerTypes) => {
                             <Carousel
                                 key={id}
                                 id={id}
-                                title={title}
+                                name={title}
                                 cover={cover}
                                 synopsis={synopsis}
                             />

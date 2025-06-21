@@ -17,7 +17,7 @@ const Card = ({
     id,
     type = '...',
     cover = 'Carregando...',
-    title = '...',
+    name = '...',
     synopsis = 'Carregando...',
     chapters = '...',
     popularity = '...',
@@ -77,7 +77,7 @@ const Card = ({
                         <TitleDetails
                             {...{
                                 type,
-                                title,
+                                name,
                                 popularity,
                                 score,
                                 chapters,
@@ -101,7 +101,7 @@ const Card = ({
                                 className="h-full"
                             >
                                 <img
-                                    alt={`Capa do título: ${title}`}
+                                    alt={`Capa do título: ${name}`}
                                     src={cover}
                                     className="object-cover w-full h-full aspect-square"
                                 />
@@ -110,7 +110,7 @@ const Card = ({
                         <TitleDetails
                             {...{
                                 id,
-                                title,
+                                name,
                                 chapters,
                                 popularity,
                                 score,

@@ -27,7 +27,7 @@ const Card = ({
     id,
     type = '...',
     cover = 'Carregando...',
-    title = '...',
+    name = '...',
     chapters = '...',
     updatedAt = '...',
     isLoading,
@@ -75,7 +75,7 @@ const Card = ({
                             className="block h-full"
                         >
                             <img
-                                alt={`Capa do título: ${title}`}
+                                alt={`Capa do título: ${name}`}
                                 className="object-cover w-full h-44 mobile-md:h-56 spect-square"
                                 src={cover}
                             />
@@ -85,13 +85,13 @@ const Card = ({
                 <div className="border-t border-t-tertiary">
                     <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
                         {isLoading && (
-                            <span className="text-shadow-default">{title}</span>
+                            <span className="text-shadow-default">{name}</span>
                         )}
                         {!isLoading && (
                             <h3 className="overflow-x-auto text-nowrap text-shadow-default scrollbar-hidden">
                                 <CustomLink
                                     link={`/titles/${id}`}
-                                    text={title}
+                                    text={name}
                                 />
                             </h3>
                         )}

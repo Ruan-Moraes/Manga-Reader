@@ -14,7 +14,7 @@ type TitleDetailsTypes = Partial<
 
 const TitleDetails = ({
     id,
-    title,
+    name,
     type,
     chapters,
     popularity,
@@ -27,11 +27,11 @@ const TitleDetails = ({
 }: TitleDetailsTypes) => {
     const lastChapter = useMemo(() => {
         if (isLoading) {
-            return 'Carregando...';
+            return '...';
         }
 
         if (!chapters || chapters === '0') {
-            return 'Nenhum capítulo';
+            return 'N/A';
         }
 
         if (typeof chapters === 'string') {
@@ -48,12 +48,12 @@ const TitleDetails = ({
         <div>
             <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
                 {isLoading ? (
-                    <span className="text-shadow-default">{title}</span>
+                    <span className="text-shadow-default">{name}</span>
                 ) : (
                     <h3 className="overflow-x-auto scrollbar-hidden">
                         <CustomLink
                             link={`/titles/${id}`}
-                            text={title}
+                            text={name}
                             className="text-nowrap text-shadow-default"
                         />
                     </h3>

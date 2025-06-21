@@ -8,8 +8,8 @@ export enum ROUTES {
 }
 
 export enum API_URLS {
-    TITLE_URL = 'https://db-json-ten.vercel.app/',
-    COMMENTS_URL = 'https://db-json-ten.vercel.app/',
+    TITLE_URL = 'https://db-json-ten.vercel.app',
+    COMMENTS_URL = 'https://db-json-ten.vercel.app',
 }
 
 export enum QUERY_KEYS {
@@ -22,6 +22,8 @@ export enum QUERY_KEYS {
 }
 
 export enum ERROR_MESSAGES {
+    INVALID_ID_ERROR = 'O título é inválido. Por favor, verifique a URL e tente novamente.',
+
     FETCH_ERROR_BASE = 'Ocorreu um erro ao carregar os dados. Tente novamente mais tarde.',
 
     FETCH_TITLES_ERROR = 'Ocorreu um erro ao buscar os títulos',

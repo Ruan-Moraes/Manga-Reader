@@ -2,7 +2,7 @@ export type TitleTypes = {
     id: string;
     type: string;
     cover: string;
-    title: string;
+    name: string;
     synopsis: string;
     genres: string[] | string;
     chapters: string[] | string;

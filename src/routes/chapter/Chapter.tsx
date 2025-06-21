@@ -10,7 +10,7 @@ import Footer from './../../layouts/Footer';
 
 import Warning from '../../components/notifications/Warning';
 import CommentInput from '../../components/inputs/CommentInput';
-import FilterComments from '../../components/comments/FilterComments';
+import SortComments from '../../components/comments/SortComments';
 // import Comment from '../../components/comments/Comment';
 // import { MdAdminPanelSettings } from 'react-icons/md';
 // import { MdStar } from 'react-icons/md';
@@ -406,7 +406,7 @@ const Chapter = () => {
                             </div>
                             <div className="flex flex-col gap-4">
                                 <CommentInput placeholder="Deixe seu comentário" />
-                                <FilterComments title="Filtar comentários por:" />
+                                <SortComments title="Ordernar comentários por:" />
                             </div>
                         </div>
                         <div className="flex flex-col -mt-4">

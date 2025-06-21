@@ -25,7 +25,7 @@ type CarouselTypes = Partial<
 const Carousel = ({
     id,
     cover,
-    title,
+    name,
     synopsis,
     isError,
     isLoading,
@@ -60,7 +60,7 @@ const Carousel = ({
                         className="block h-full cursor-default"
                     >
                         <img
-                            alt={`Capa do título: ${title}`}
+                            alt={`Capa do título: ${name}`}
                             src={cover}
                             className="w-full h-full object-fit"
                         />
@@ -75,7 +75,7 @@ const Carousel = ({
                             WebkitBoxOrient: 'vertical',
                         }}
                     >
-                        <CustomLink link={`/titles/${id}`} text={title} />
+                        <CustomLink link={`/titles/${id}`} text={name} />
                     </h3>
                     <p
                         className="overflow-hidden text-xs text-shadow-default"

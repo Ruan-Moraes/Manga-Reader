@@ -30,7 +30,7 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
                         id={id}
                         type={type}
                         cover={cover}
-                        title={title}
+                        name={title}
                         chapters={chapters}
                         updatedAt={updatedAt}
                         key={id}

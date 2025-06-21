@@ -24,7 +24,7 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
                         id={id}
                         chapters={chapters}
                         cover={cover}
-                        title={title}
+                        name={title}
                         type={type}
                     />
                 ),

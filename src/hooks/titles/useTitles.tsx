@@ -2,7 +2,7 @@ import { API_URLS } from '../../constants/API_CONSTANTS';
 
 import useTitlesFetch from './data/useTitlesFetch';
 
-export const useTitles = ({ id }: { id: string }) => {
+const useTitles = (id: string) => {
     const {
         data: titles,
         isLoading,
