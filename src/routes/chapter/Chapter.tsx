@@ -338,10 +338,7 @@ const Chapter = () => {
                 <section>
                     <div className="flex flex-col justify-center gap-0.5">
                         <div>
-                            <img
-                                src="https://placehold.co/600x400/png"
-                                alt=""
-                            />
+                            <img src="https://p/png" alt="" />
                         </div>
                         <div>
                             <img
