@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 
+import { ERROR_MESSAGES } from '../../constants/API_CONSTANTS';
 import { COLORS } from '../../constants/COLORS';
 
 import useTitle from '../../hooks/titles/useTitle';
@@ -18,7 +19,7 @@ import Warning from '../../components/notifications/Warning';
 const Titles = () => {
     const id = Number(useParams().title!);
 
-    const { title, isLoading, isError, error } = useTitle(id);
+    const { data: title, isLoading, isError, error } = useTitle(id);
 
     if (isError) {
         return (
@@ -28,7 +29,7 @@ const Titles = () => {
                     message={
                         error instanceof Error
                             ? error.message
-                            : 'Ocorreu um erro desconhecido.'
+                            : ERROR_MESSAGES.UNKNOWN_ERROR
                     }
                     color={COLORS.QUINARY}
                 />
@@ -36,13 +37,27 @@ const Titles = () => {
         );
     }
 
+    if (isLoading || !title) {
+        return (
+            <Main>
+                <Warning
+                    title="Carregando título..."
+                    message="Por favor, aguarde enquanto o título é carregado."
+                    color={COLORS.QUINARY}
+                />
+            </Main>
+        );
+    }
+
     const {
-        name,
         type,
         cover,
+        name,
         synopsis,
         genres,
+
         chapters,
+
         popularity,
         score,
         author,

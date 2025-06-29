@@ -10,20 +10,21 @@ import Section_Title from '../../titles/SectionTitle';
 import Card from './Card';
 
 const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
-    const { data, status } = useTitlesFetch(
+    const { data: titles, status } = useTitlesFetch(
         API_URLS.TITLE_URL,
         QUERY_KEYS.TITLES_ON_THE_RISE,
     );
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
-            return Object.values(data).map(
+            return Object.values(titles).map(
                 ({
                     id,
                     type,
                     cover,
-                    title,
+                    name,
                     synopsis,
+                    genres,
                     chapters,
                     popularity,
                     score,
@@ -36,8 +37,9 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
                         id={id}
                         type={type}
                         cover={cover}
-                        name={title}
+                        name={name}
                         synopsis={synopsis}
+                        genres={genres}
                         chapters={chapters}
                         popularity={popularity}
                         score={score}
@@ -56,7 +58,7 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
         }
 
         return <Card isError={true} />;
-    }, [data, status]);
+    }, [status, titles]);
 
     return (
         <section className="flex flex-col gap-4">

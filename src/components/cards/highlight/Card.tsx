@@ -15,16 +15,17 @@ type CardTypes = Partial<Omit<TitleTypes, 'createdAt' | 'updatedAt'>> &
 
 const Card = ({
     id,
-    type = '...',
-    cover = 'Carregando...',
-    name = '...',
-    synopsis = 'Carregando...',
-    chapters = '...',
-    popularity = '...',
-    score = '...',
-    author = '...',
-    artist = '...',
-    publisher = '...',
+    type,
+    cover,
+    name,
+    synopsis,
+    chapters,
+    popularity,
+    score,
+    author,
+    artist,
+    publisher,
+
     isError,
     isLoading,
 }: CardTypes) => {
@@ -76,6 +77,7 @@ const Card = ({
                         </div>
                         <TitleDetails
                             {...{
+                                id,
                                 type,
                                 name,
                                 popularity,
@@ -84,7 +86,9 @@ const Card = ({
                                 author,
                                 artist,
                                 publisher,
+
                                 disableType: true,
+
                                 isLoading,
                             }}
                         />
@@ -110,14 +114,17 @@ const Card = ({
                         <TitleDetails
                             {...{
                                 id,
+                                type,
                                 name,
-                                chapters,
                                 popularity,
                                 score,
+                                chapters,
                                 author,
                                 artist,
                                 publisher,
+
                                 disableType: true,
+
                                 isLoading,
                             }}
                         />

@@ -3,7 +3,6 @@ export type UserTypes = {
     photo: string;
     name: string;
     bio?: string;
-
     moderator?: {
         isModerator: boolean;
         since: Date;

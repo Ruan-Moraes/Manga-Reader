@@ -2,19 +2,18 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { TagsTypes } from '../../../types/TagsTypes';
 
+import checkValidReturn from '../../../services/utils/checkValidReturn';
+
 const useTagsFetch = (
     queryKey: string,
     url: string,
-    validTime?: number,
 ): UseQueryResult<TagsTypes[] | Error> => {
     return useQuery<TagsTypes[] | Error>({
         queryKey: [queryKey],
         queryFn: async () => {
             const response = await fetch(url);
 
-            if (!response.ok) {
-                throw new Error('Ocorreu um erro ao buscar as tags');
-            }
+            checkValidReturn(response);
 
             const data: { id: number; name: string }[] = await response.json();
 
@@ -24,7 +23,7 @@ const useTagsFetch = (
             }));
         },
 
-        staleTime: validTime ? 1000 * 60 * 60 * 24 * validTime : 0,
+        staleTime: 1000 * 60 * 60 * 24,
     });
 };
 

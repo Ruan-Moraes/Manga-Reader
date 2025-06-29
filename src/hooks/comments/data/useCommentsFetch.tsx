@@ -1,8 +1,8 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
-
 import { CommentTypes } from '../../../types/CommentTypes';
+
+import checkValidReturn from '../../../services/utils/checkValidReturn';
 
 const useCommentsFetch = (
     url: string,
@@ -13,9 +13,7 @@ const useCommentsFetch = (
         queryFn: async () => {
             const response = await fetch(url + '/' + queryKey);
 
-            if (!response.ok) {
-                throw new Error(ERROR_MESSAGES.FETCH_COMMENTS_ERROR);
-            }
+            checkValidReturn(response);
 
             // const data: CommentTypes[] = await response.json();
 

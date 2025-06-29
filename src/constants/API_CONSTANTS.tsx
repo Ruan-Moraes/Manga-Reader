@@ -13,6 +13,7 @@ export enum API_URLS {
 }
 
 export enum QUERY_KEYS {
+    TITLES = 'titles',
     TITLES_IN_THE_CAROUSEL = 'titlesCarousel',
     TITLES_ON_THE_RISE = 'titlesMostViewed ',
     RANDOM_TITLES = 'randomTitles',
@@ -22,6 +23,8 @@ export enum QUERY_KEYS {
 }
 
 export enum ERROR_MESSAGES {
+    UNKNOWN_ERROR = 'Ocorreu um erro desconhecido. Tente novamente mais tarde.',
+
     INVALID_ID_ERROR = 'O título é inválido. Por favor, verifique a URL e tente novamente.',
 
     FETCH_ERROR_BASE = 'Ocorreu um erro ao carregar os dados. Tente novamente mais tarde.',

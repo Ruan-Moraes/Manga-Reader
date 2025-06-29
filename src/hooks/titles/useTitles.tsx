@@ -2,14 +2,14 @@ import { API_URLS } from '../../constants/API_CONSTANTS';
 
 import useTitlesFetch from './data/useTitlesFetch';
 
-const useTitles = (id: string) => {
+const useTitles = (queryKeys: string) => {
     const {
         data: titles,
         isLoading,
         isError,
         error,
         refetch,
-    } = useTitlesFetch(API_URLS.TITLE_URL, id);
+    } = useTitlesFetch(API_URLS.TITLE_URL, queryKeys);
 
     return {
         titles,

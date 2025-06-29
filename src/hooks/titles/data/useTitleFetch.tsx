@@ -1,31 +1,34 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
+import { ERROR_MESSAGES, QUERY_KEYS } from '../../../constants/API_CONSTANTS';
 
 import { TitleTypes } from '../../../types/TitleTypes';
+
+import { showErrorToast } from '../../../utils/toastUtils';
+
+import checkValidReturn from '../../../services/utils/checkValidReturn';
+import checkValidId from '../../../services/utils/checkValidId';
 
 const useTitleFetch = (
     url: string,
     id: number,
-): UseQueryResult<TitleTypes | Error> => {
+): UseQueryResult<TitleTypes, Error> => {
     return useQuery<TitleTypes, Error>({
-        queryKey: [id],
+        queryKey: [QUERY_KEYS.TITLES, id],
         queryFn: async () => {
-            if (isNaN(id)) {
-                return Promise.reject(
-                    new Error(ERROR_MESSAGES.INVALID_ID_ERROR),
+            try {
+                checkValidId(id);
+
+                const response = await fetch(
+                    url + '/' + QUERY_KEYS.TITLES + '/' + id,
                 );
+
+                checkValidReturn(response);
+
+                return await response.json();
+            } catch (error) {
+                showErrorToast(ERROR_MESSAGES.FETCH_TITLES_ERROR);
             }
-
-            const response = await fetch(url + '/' + id);
-
-            if (response === null || response === undefined || !response.ok) {
-                throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
-            }
-
-            const data: TitleTypes = await response.json();
-
-            return data;
         },
     });
 };

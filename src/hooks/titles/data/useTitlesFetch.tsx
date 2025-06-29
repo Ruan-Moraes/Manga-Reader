@@ -4,6 +4,10 @@ import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
 
 import { TitleTypes } from '../../../types/TitleTypes';
 
+import { showErrorToast } from '../../../utils/toastUtils';
+
+import checkValidReturn from '../../../services/utils/checkValidReturn';
+
 const useTitlesFetch = (
     url: string,
     queryKey: string,
@@ -14,27 +18,11 @@ const useTitlesFetch = (
             try {
                 const response = await fetch(url + '/' + queryKey);
 
-                if (
-                    response === null ||
-                    response === undefined ||
-                    !response.ok
-                ) {
-                    throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
-                }
+                checkValidReturn(response);
 
-                const data: TitleTypes[] = await response.json();
-
-                return data;
+                return await response.json();
             } catch (error) {
-                if (error instanceof Error) {
-                    return Promise.reject(error);
-                }
-
-                return Promise.reject(
-                    new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR),
-                );
-
-                console.log(error);
+                showErrorToast(ERROR_MESSAGES.FETCH_TITLES_ERROR);
             }
         },
 

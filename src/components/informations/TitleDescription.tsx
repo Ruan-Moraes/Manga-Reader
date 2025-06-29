@@ -1,14 +1,8 @@
 import GenresBox from '../boxes/GenresBox';
 
-type TitleDescriptionTypes = {
-    genres: string[] | string;
-    synopsis: string;
-};
+type TitleDescriptionTypes = Pick<TitleTypes, 'genres' | 'synopsis'>;
 
-const TitleDescription = ({
-    genres = 'Carregando...',
-    synopsis = 'Carregando...',
-}: TitleDescriptionTypes) => {
+const TitleDescription = ({ genres, synopsis }: TitleDescriptionTypes) => {
     return (
         <>
             <div className="flex flex-col gap-2">
@@ -18,11 +12,7 @@ const TitleDescription = ({
                     </h3>
                 </div>
                 <div>
-                    {synopsis === 'Carregando...' ? (
-                        <p className="text-xs text-center">{synopsis}</p>
-                    ) : (
-                        <p className="text-xs text-justify">{synopsis}</p>
-                    )}
+                    <p className="text-xs text-justify">{synopsis}</p>
                 </div>
             </div>
             <div className="flex flex-col gap-2">

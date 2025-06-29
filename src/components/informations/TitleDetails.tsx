@@ -22,27 +22,14 @@ const TitleDetails = ({
     author,
     artist,
     publisher,
+
     disableType = false,
+
     isLoading,
 }: TitleDetailsTypes) => {
     const lastChapter = useMemo(() => {
-        if (isLoading) {
-            return '...';
-        }
-
-        if (!chapters || chapters === '0') {
-            return 'N/A';
-        }
-
-        if (typeof chapters === 'string') {
-            return chapters;
-        }
-
-        // TODO: Alterar quando a API estiver pronta
-        const lastChapterNumber = chapters[chapters.length - 1];
-
-        return lastChapterNumber ? lastChapterNumber : 'Nenhum capítulo';
-    }, [chapters, isLoading]);
+        return chapters ? [chapters?.length - 1] : 'Nenhum capítulo';
+    }, [chapters]);
 
     return (
         <div>
