@@ -1,6 +1,6 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 
-import { showWarningToast } from '../../utils/toastUtils';
+import { showWarningToast } from './toastUtils';
 
 export const queryClient = new QueryClient({
     queryCache: new QueryCache({}),

@@ -6,7 +6,7 @@ import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
 import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
-import Section_Title from '../../titles/SectionTitle';
+import SectionTitle from '../../titles/SectionTitle';
 import Card from './Card';
 
 const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
@@ -33,6 +33,8 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
                     publisher,
                 }) => (
                     <Card
+                        isLoading={false}
+                        isError={false}
                         key={id}
                         id={id}
                         type={type}
@@ -53,16 +55,16 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
 
         if (status === 'pending') {
             return Array.from({ length: 5 }).map((_, index) => (
-                <Card isLoading={true} key={index} />
+                <Card isLoading={true} isError={false} key={index} />
             ));
         }
 
-        return <Card isError={true} />;
+        return <Card isError={true} isLoading={false} />;
     }, [status, titles]);
 
     return (
         <section className="flex flex-col gap-4">
-            <Section_Title
+            <SectionTitle
                 title={title}
                 subTitle={subTitle}
                 subLink={ROUTES.CATEGORIES_ASCENSION}

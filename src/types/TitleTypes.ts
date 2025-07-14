@@ -1,3 +1,5 @@
+import { ChapterTypes } from './ChapterTypes';
+
 export type TitleTypes = {
     id: string;
     type: string;
@@ -5,7 +7,7 @@ export type TitleTypes = {
     name: string;
     synopsis: string;
     genres: string[];
-    chapters: string[];
+    chapters: ChapterTypes[];
     popularity: string;
     score: string;
     author: string;

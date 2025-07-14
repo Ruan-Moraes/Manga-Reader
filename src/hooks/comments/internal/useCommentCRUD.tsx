@@ -1,23 +1,18 @@
 import { useCallback } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-import { showSuccessToast, showErrorToast } from '../../../utils/toastUtils';
+import {
+    showSuccessToast,
+    showErrorToast,
+} from '../../../services/utils/toastUtils';
 
-type UseCommentCRUDProps = {
-    queryKey: string;
-};
-
-const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
-    const queryClient = useQueryClient();
-
+const useCommentCRUD = () => {
     const deleteCommentMutation = useMutation({
         // TODO: Chamar a API real para deletar o comentário
         mutationFn: async (id: string) => {
             return id;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [queryKey] });
-
             showSuccessToast(`Comentário deletado com sucesso.`, {
                 toastId: 'delete-comment-success',
             }); // TODO: Atualizar o estado da UI
@@ -47,8 +42,6 @@ const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
             return { id, newTextContent, newImageContent };
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [queryKey] });
-
             showSuccessToast('Comentário editado com sucesso.', {
                 toastId: 'edit-comment-success',
             }); // TODO: Atualizar o estado da UI
@@ -78,8 +71,6 @@ const useCommentCRUD = ({ queryKey }: UseCommentCRUDProps) => {
             return { id, textContent, imageContent };
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [queryKey] });
-
             showSuccessToast('Resposta adicionada com sucesso.', {
                 toastId: 'reply-comment-success',
             }); // TODO: Atualizar o estado da UI

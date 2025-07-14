@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { showInfoToast, showSuccessToast } from '../../utils/toastUtils';
+import {
+    showInfoToast,
+    showSuccessToast,
+} from '../../services/utils/toastUtils';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';

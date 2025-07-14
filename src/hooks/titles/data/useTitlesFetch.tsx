@@ -4,8 +4,6 @@ import { ERROR_MESSAGES } from '../../../constants/API_CONSTANTS';
 
 import { TitleTypes } from '../../../types/TitleTypes';
 
-import { showErrorToast } from '../../../utils/toastUtils';
-
 import checkValidReturn from '../../../services/utils/checkValidReturn';
 
 const useTitlesFetch = (
@@ -22,7 +20,9 @@ const useTitlesFetch = (
 
                 return await response.json();
             } catch (error) {
-                showErrorToast(ERROR_MESSAGES.FETCH_TITLES_ERROR);
+                console.error('Erro ao buscar títulos:', error);
+
+                throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
             }
         },
 

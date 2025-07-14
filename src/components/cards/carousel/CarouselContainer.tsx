@@ -57,6 +57,8 @@ const CarouselContainer = ({ title, subTitle }: CardsContainerTypes) => {
                     {Object.values(data).map(
                         ({ id, title, cover, synopsis }) => (
                             <Carousel
+                                isLoading={false}
+                                isError={false}
                                 key={id}
                                 id={id}
                                 name={title}
@@ -70,10 +72,10 @@ const CarouselContainer = ({ title, subTitle }: CardsContainerTypes) => {
         }
 
         if (status === 'pending') {
-            return <Carousel isLoading={true} />;
+            return <Carousel isLoading={true} isError={false} />;
         }
 
-        return <Carousel isError={true} />;
+        return <Carousel isError={true} isLoading={false} />;
     }, [data, status]);
 
     return (

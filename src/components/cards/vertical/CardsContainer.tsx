@@ -9,7 +9,7 @@ import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
 import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
-import Section_Title from '../../titles/SectionTitle';
+import SectionTitle from '../../titles/SectionTitle';
 import Card from './Card';
 import RaisedButton from '../../buttons/RaisedButton';
 
@@ -20,20 +20,23 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
         API_URLS.TITLE_URL,
         QUERY_KEYS.UPDATED_TILTES,
     );
+
     const [visible, setVisible] = useState(10);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return Object.values(data).map(
-                ({ id, type, cover, title, chapters, updatedAt }) => (
+                ({ id, type, cover, name, chapters, updatedAt }) => (
                     <Card
+                        isLoading={false}
+                        isError={false}
+                        key={id}
                         id={id}
                         type={type}
                         cover={cover}
-                        name={title}
+                        name={name}
                         chapters={chapters}
                         updatedAt={updatedAt}
-                        key={id}
                     />
                 ),
             );
@@ -41,12 +44,12 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
 
         if (status === 'pending') {
             return Array.from({ length: 10 }).map((_, index) => (
-                <Card isLoading={true} key={index} />
+                <Card isLoading={true} isError={false} key={index} />
             ));
         }
 
         return Array.from({ length: 1 }).map((_, index) => (
-            <Card isError={true} key={index} />
+            <Card isError={true} isLoading={false} key={index} />
         ));
     }, [data, status]);
 
@@ -62,7 +65,7 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
 
     return (
         <section className="flex flex-col gap-4">
-            <Section_Title
+            <SectionTitle
                 title={title}
                 subTitle={subTitle}
                 subLink={ROUTES.CATEGORIES_MOST_RECENT}

@@ -1,17 +1,19 @@
 import React from 'react';
 
-import { FaSortNumericDown } from 'react-icons/fa';
+import { FaSortNumericDown, FaSortNumericUpAlt } from 'react-icons/fa';
 import { IoSearchSharp } from 'react-icons/io5';
 
 interface ChapterFilterProps {
     onSortClick?: () => void;
     onSearchSubmit?: (searchTerm: string) => void;
+    isAscending: boolean;
 }
 
-const ChapterFilter: React.FC<ChapterFilterProps> = ({
+const ChapterFilter = ({
     onSortClick,
     onSearchSubmit,
-}) => {
+    isAscending,
+}: ChapterFilterProps) => {
     const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && onSearchSubmit) {
             onSearchSubmit((e.target as HTMLInputElement).value);
@@ -35,12 +37,16 @@ const ChapterFilter: React.FC<ChapterFilterProps> = ({
                             Ordenar por:
                         </span>
                         <span>
-                            <FaSortNumericDown className="text-lg" />
+                            {isAscending ? (
+                                <FaSortNumericUpAlt className="text-lg" />
+                            ) : (
+                                <FaSortNumericDown className="text-lg" />
+                            )}
                         </span>
                     </button>
                 </div>
                 <div className="flex grow">
-                    <div>
+                    <div className="grow">
                         <input
                             id="chapter-search"
                             name="chapter-search"

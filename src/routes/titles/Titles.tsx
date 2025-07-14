@@ -1,48 +1,61 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { ERROR_MESSAGES } from '../../constants/API_CONSTANTS';
 import { COLORS } from '../../constants/COLORS';
 
+import { TitleTypes } from '../../types/TitleTypes';
+import { CommentTypes } from '../../types/CommentTypes';
+
 import useTitle from '../../hooks/titles/useTitle';
+import useComments from '../../hooks/comments/useComments';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
 import Footer from '../../layouts/Footer';
 
-import Card from '../../components/cards/title/Card';
+import Loading from '../loading/Loading';
+
+import Warning from '../../components/notifications/Warning';
+import Card from '../../components/cards/base/Card';
 import TitleActions from '../../components/actions/TitleActions';
 import ChapterFilter from '../../components/filters/ChapterFilter';
 import ChapterList from '../../components/chapters/ChapterList';
 import CommentsSection from '../../components/comments/CommentsSection';
-import Warning from '../../components/notifications/Warning';
 
 const Titles = () => {
-    const id = Number(useParams().title!);
+    const [isAscending, setIsAscending] = useState<boolean>(true);
 
-    const { data: title, isLoading, isError, error } = useTitle(id);
+    const id = Number(useParams().titleId!);
 
-    if (isError) {
-        return (
-            <Main>
-                <Warning
-                    title="Erro ao carregar título"
-                    message={
-                        error instanceof Error
-                            ? error.message
-                            : ERROR_MESSAGES.UNKNOWN_ERROR
-                    }
-                    color={COLORS.QUINARY}
-                />
-            </Main>
-        );
+    const {
+        title,
+        isLoading: isTitleLoading,
+        isError: isTitleError,
+        error: titleError,
+    } = useTitle(id);
+
+    const {
+        comments,
+        isLoading: isCommentsLoading,
+        isError: isCommentsError,
+        error: commentsError,
+    } = useComments(id);
+
+    if (isTitleLoading) {
+        return <Loading />;
     }
 
-    if (isLoading || !title) {
+    if (isTitleError) {
         return (
             <Main>
                 <Warning
-                    title="Carregando título..."
-                    message="Por favor, aguarde enquanto o título é carregado."
+                    title="Ops! Ocorreu um erro."
+                    message={
+                        titleError instanceof Error
+                            ? titleError.message
+                            : ERROR_MESSAGES.UNKNOWN_ERROR
+                    }
                     color={COLORS.QUINARY}
                 />
             </Main>
@@ -55,154 +68,40 @@ const Titles = () => {
         name,
         synopsis,
         genres,
-
         chapters,
-
         popularity,
         score,
         author,
         artist,
         publisher,
-    } = title;
-
-    // Mock chapter data
-    const chapterData = [
-        {
-            number: '24',
-            title: 'O legado dos antigos',
-            date: '13/03/2003',
-            pages: '54',
-        },
-        {
-            number: '23',
-            title: 'A verdadeira batalha',
-            date: '06/03/2003',
-            pages: '54',
-        },
-        {
-            number: '22',
-            title: 'O destino de Konoha',
-            date: '27/02/2003',
-            pages: '54',
-        },
-        {
-            number: '21',
-            title: 'O treino final',
-            date: '20/02/2003',
-            pages: '54',
-        },
-        {
-            number: '20',
-            title: 'O guardião de Konoha',
-            date: '13/02/2003',
-            pages: '54',
-        },
-        {
-            number: '19',
-            title: 'Reencontro inesperado',
-            date: '06/02/2003',
-            pages: '54',
-        },
-        {
-            number: '18',
-            title: 'Os segredos de Orochimaru',
-            date: '30/01/2003',
-            pages: '54',
-        },
-        {
-            number: '17',
-            title: 'Choque de forças',
-            date: '23/01/2003',
-            pages: '54',
-        },
-        {
-            number: '16',
-            title: 'Plano de fuga',
-            date: '16/01/2003',
-            pages: '54',
-        },
-        {
-            number: '15',
-            title: 'A decisão de Sasuke',
-            date: '09/01/2003',
-            pages: '54',
-        },
-        {
-            number: '14',
-            title: 'O ataque inesperado',
-            date: '02/01/2003',
-            pages: '54',
-        },
-        {
-            number: '13',
-            title: 'O despertar do poder',
-            date: '26/12/2002',
-            pages: '54',
-        },
-        {
-            number: '12',
-            title: 'O desafio de Gaara!!',
-            date: '19/12/2002',
-            pages: '54',
-        },
-        {
-            number: '11',
-            title: 'Exame Chunnin, começa!',
-            date: '12/12/2002',
-            pages: '54',
-        },
-        {
-            number: '10',
-            title: 'O exame chunnin',
-            date: '05/12/2002',
-            pages: '54',
-        },
-        {
-            number: '9',
-            title: 'Kakashi-sensei',
-            date: '28/11/2002',
-            pages: '54',
-        },
-        {
-            number: '8',
-            title: 'Desafio de vida ou morte',
-            date: '21/11/2002',
-            pages: '54',
-        },
-        {
-            number: '7',
-            title: 'Os rivais de Konoha',
-            date: '14/11/2002',
-            pages: '54',
-        },
-        { number: '6', title: 'Decisão', date: '07/11/2002', pages: '54' },
-        {
-            number: '5',
-            title: 'Exame de Graduação',
-            date: '31/10/2002',
-            pages: '54',
-        },
-        { number: '4', title: 'Os rivais', date: '24/10/2002', pages: '54' },
-        { number: '3', title: 'Time 7', date: '17/10/2002', pages: '54' },
-        {
-            number: '2',
-            title: 'Conhecendo os colegas',
-            date: '10/10/2002',
-            pages: '54',
-        },
-        {
-            number: '1',
-            title: 'Naruto Uzumaki',
-            date: '03/10/2002',
-            pages: '54',
-        },
-    ];
-
-    // TODO: Fazer mock de comentários | TO JUNIE: Do not execute this task now.
+    } = title as TitleTypes;
 
     const handleChapterClick = (chapterNumber: string) => {
         console.log(`Chapter ${chapterNumber} clicked`);
     };
+
+    const handleSortClick = () => {
+        setIsAscending(prevState => !prevState);
+    };
+
+    const sortedChapters = [...chapters].sort((a, b) => {
+        const numA = parseFloat(a.number);
+        const numB = parseFloat(b.number);
+
+        if (isNaN(numA) && isNaN(numB)) {
+            return 0;
+        }
+
+        if (isNaN(numA)) {
+            return isAscending ? 1 : -1;
+        }
+
+        if (isNaN(numB)) {
+            return isAscending ? -1 : 1;
+        }
+
+        return isAscending ? numA - numB : numB - numA;
+    });
 
     return (
         <>
@@ -210,6 +109,9 @@ const Titles = () => {
             <Main>
                 <section>
                     <Card
+                        showType={true}
+                        shouldLoadCardData={false}
+                        isLoading={false}
                         id={String(id)}
                         type={type}
                         cover={cover}
@@ -231,18 +133,25 @@ const Titles = () => {
                     />
                 </section>
                 <section className="flex flex-col gap-4">
-                    <ChapterFilter // TODO: Implementar função | TO JUNIE: Do not execute this task now.
-                        onSortClick={() => console.log('Sort clicked')}
+                    <ChapterFilter
+                        onSortClick={handleSortClick}
                         onSearchSubmit={searchTerm =>
                             console.log('Search submitted:', searchTerm)
                         }
+                        isAscending={isAscending}
                     />
                     <ChapterList
-                        chapters={chapterData}
+                        key={isAscending ? 'ASC' : 'DESC'}
+                        chapters={sortedChapters}
                         onChapterClick={handleChapterClick}
                     />
                 </section>
-                <CommentsSection />
+                <CommentsSection
+                    comments={comments as CommentTypes[]}
+                    isLoading={isCommentsLoading}
+                    isError={isCommentsError}
+                    error={commentsError}
+                />
             </Main>
             <Footer />
         </>

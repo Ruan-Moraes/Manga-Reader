@@ -1,18 +1,14 @@
 import { useMemo } from 'react';
 
-import { TitleTypes } from '../../types/TitleTypes';
-import { StatusFetchTypes } from '../../types/StatusFetchTypes';
+import { TitleDetailsTypes } from '../../types/CardTypes';
 
 import CustomLink from '../links/elements/CustomLink';
 
-type TitleDetailsTypes = Partial<
-    Omit<
-        TitleTypes,
-        'cover' | 'synopsis' | 'genres' | 'createdAt' | 'updatedAt'
-    >
-> & { disableType?: boolean } & StatusFetchTypes;
-
 const TitleDetails = ({
+    showType,
+    shouldLoadCardData,
+    isLoading,
+
     id,
     name,
     type,
@@ -22,20 +18,19 @@ const TitleDetails = ({
     author,
     artist,
     publisher,
-
-    disableType = false,
-
-    isLoading,
 }: TitleDetailsTypes) => {
+    const isDataLoading = shouldLoadCardData && isLoading;
+
+    // Todo: provavelmente, vou ter que alterar isso para pegar o último capítulo
     const lastChapter = useMemo(() => {
-        return chapters ? [chapters?.length - 1] : 'Nenhum capítulo';
+        return chapters ? [chapters?.length - 1] : 'N/A';
     }, [chapters]);
 
     return (
         <div>
             <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
-                {isLoading ? (
-                    <span className="text-shadow-default">{name}</span>
+                {isDataLoading ? (
+                    <span className="text-shadow-default">...</span>
                 ) : (
                     <h3 className="overflow-x-auto scrollbar-hidden">
                         <CustomLink
@@ -49,60 +44,60 @@ const TitleDetails = ({
             <div className="flex flex-col w-full gap-1 p-2 text-xs">
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Popularidade:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>
-                            {popularity === '...'
-                                ? popularity
-                                : popularity + 'º'}
+                        <span className="font-bold">Popularidade: </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>
+                            {isDataLoading ? '...' : popularity + 'º'}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Nota:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>
-                            {score}
+                        <span className="font-bold">Nota: </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>
+                            {isDataLoading ? '...' : score}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Capítulos:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>
-                            {lastChapter}
+                        <span className="font-bold">Capítulos: </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>
+                            {isDataLoading ? '...' : lastChapter}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Autor:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>
-                            {author}
+                        <span className="font-bold">Autor: </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>
+                            {isDataLoading ? '...' : author || 'N/A'}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Artista:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>
-                            {artist}
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>
+                            {isDataLoading ? '...' : artist || 'N/A'}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
                         <span className="font-bold">Editora:</span>{' '}
-                        <span className={isLoading ? 'text-tertiary' : ''}>
-                            {publisher}
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>
+                            {isDataLoading ? '...' : publisher || 'N/A'}
                         </span>
                     </p>
                 </div>
-                {!disableType && type && (
+                {showType && type && (
                     <div>
                         <p className="truncate">
                             <span className="font-bold">Tipo:</span>{' '}
-                            <span className={isLoading ? 'text-tertiary' : ''}>
-                                {type}
+                            <span
+                                className={isDataLoading ? 'text-tertiary' : ''}
+                            >
+                                {isDataLoading ? '...' : type}
                             </span>
                         </p>
                     </div>

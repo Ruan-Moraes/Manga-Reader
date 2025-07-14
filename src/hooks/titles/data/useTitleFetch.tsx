@@ -4,15 +4,13 @@ import { ERROR_MESSAGES, QUERY_KEYS } from '../../../constants/API_CONSTANTS';
 
 import { TitleTypes } from '../../../types/TitleTypes';
 
-import { showErrorToast } from '../../../utils/toastUtils';
-
 import checkValidReturn from '../../../services/utils/checkValidReturn';
 import checkValidId from '../../../services/utils/checkValidId';
 
 const useTitleFetch = (
     url: string,
     id: number,
-): UseQueryResult<TitleTypes, Error> => {
+): UseQueryResult<TitleTypes | Error> => {
     return useQuery<TitleTypes, Error>({
         queryKey: [QUERY_KEYS.TITLES, id],
         queryFn: async () => {
@@ -25,9 +23,13 @@ const useTitleFetch = (
 
                 checkValidReturn(response);
 
-                return await response.json();
+                const title: TitleTypes = await response.json();
+
+                return title;
             } catch (error) {
-                showErrorToast(ERROR_MESSAGES.FETCH_TITLES_ERROR);
+                console.error('Erro ao buscar título:', error);
+
+                throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
             }
         },
     });

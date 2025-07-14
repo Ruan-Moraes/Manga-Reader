@@ -3,14 +3,14 @@ import { COLORS } from '../../constants/COLORS';
 import CustomLink from '../links/elements/CustomLink';
 
 type WarningTypes = {
-    linkText?: string;
     color: COLORS;
     title: string;
     message: string;
     link?: string;
+    linkText?: string;
 };
 
-const Warning = ({ linkText, color, title, message, link }: WarningTypes) => {
+const Warning = ({ color, title, message, link, linkText }: WarningTypes) => {
     return (
         <div className="w-full flex flex-col items-center gap-2">
             <div
@@ -35,15 +35,6 @@ const Warning = ({ linkText, color, title, message, link }: WarningTypes) => {
                         link={link}
                         className={`text-sm text-${color}-default hover:text-${color}-normal`}
                         text={linkText}
-                    />
-                </div>
-            )}
-            {!link && !linkText && (
-                <div className="text-center">
-                    <CustomLink
-                        link="/"
-                        className={`text-sm text-${color}-default hover:text-${color}-normal`}
-                        text="Voltar para a página inicial"
                     />
                 </div>
             )}

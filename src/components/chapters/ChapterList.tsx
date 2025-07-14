@@ -1,25 +1,25 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { ChapterTypes } from '../../types/ChapterTypes';
+
+import formatDateToBrazilian from '../../services/utils/formatDateToBrazilian';
 
 import ChapterItem from './ChapterItem';
 import ChapterPagination from './ChapterPagination';
 
 type ChapterListProps = {
     chapters: ChapterTypes[];
-    itemsPerPage?: number;
     onChapterClick?: (chapterNumber: string) => void;
 };
 
-// TODO: Refatora, provavelmente o backend vai retornar o número de capitulos que um titulo tem, do jeito que está, o frontend está fazendo o calculo com array de capitulos
-const ChapterList = ({
-    chapters,
-    itemsPerPage = 10,
-    onChapterClick,
-}: ChapterListProps) => {
-    const [currentPage, setCurrentPage] = useState<number>(1);
+const ChapterList = ({ chapters, onChapterClick }: ChapterListProps) => {
+    const itemsPerPage = useMemo(() => 10, []);
+    const totalPages = useMemo(
+        () => Math.ceil(chapters.length / itemsPerPage),
+        [chapters.length, itemsPerPage],
+    );
 
-    const totalPages = Math.ceil(chapters.length / itemsPerPage);
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     const indexOfLastChapter = currentPage * itemsPerPage;
     const indexOfFirstChapter = indexOfLastChapter - itemsPerPage;
@@ -36,12 +36,12 @@ const ChapterList = ({
     return (
         <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2 text-xs">
-                {currentChapters.map(chapter => (
+                {currentChapters.map((chapter, index) => (
                     <ChapterItem
-                        key={chapter.number}
+                        key={`${chapter.number}-${index}`}
                         chapterNumber={chapter.number}
                         title={chapter.title}
-                        date={chapter.date}
+                        date={formatDateToBrazilian(chapter.releaseDate)}
                         pages={chapter.pages}
                         onClick={() =>
                             onChapterClick && onChapterClick(chapter.number)

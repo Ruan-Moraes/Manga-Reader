@@ -6,7 +6,7 @@ import useTitlesFetch from '../../../hooks/titles/data/useTitlesFetch';
 
 import { CardsContainerTypes } from '../../../types/CardContainerTypes';
 
-import Section_Title from '../../titles/SectionTitle';
+import SectionTitle from '../../titles/SectionTitle';
 import Card from './Card';
 
 const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
@@ -18,13 +18,15 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return Object.values(data).map(
-                ({ id, type, cover, title, chapters }) => (
+                ({ id, type, cover, name, chapters }) => (
                     <Card
+                        isLoading={false}
+                        isError={false}
                         key={id}
                         id={id}
                         chapters={chapters}
                         cover={cover}
-                        name={title}
+                        name={name}
                         type={type}
                     />
                 ),
@@ -33,16 +35,16 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
 
         if (status === 'pending') {
             return Array.from({ length: 10 }).map((_, index) => (
-                <Card isLoading={true} key={index} />
+                <Card isLoading={true} isError={false} key={index} />
             ));
         }
 
-        return <Card isError={true} />;
+        return <Card isError={true} isLoading={false} />;
     }, [data, status]);
 
     return (
         <section className="flex flex-col gap-4">
-            <Section_Title
+            <SectionTitle
                 title={title}
                 subTitle={subTitle}
                 subLink={ROUTES.CATEGORIES_RANDOM}

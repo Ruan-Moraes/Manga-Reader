@@ -1,17 +1,19 @@
 import { useMemo } from 'react';
+
 import LinksSection from '../components/links/sections/FooterLinkBlock';
 
 type FooterTypes = {
+    styles?: React.CSSProperties;
     disabledLinks?: boolean;
 };
 
-const Footer = ({ disabledLinks }: FooterTypes) => {
+const Footer = ({ styles, disabledLinks }: FooterTypes) => {
     const getYear = useMemo(() => {
         return new Date().getFullYear();
     }, []);
 
     return (
-        <footer className="mt-auto bg-secondary">
+        <footer className="mt-auto bg-secondary" style={styles}>
             {!disabledLinks && (
                 <div className="grid items-center grid-cols-8 gap-4 p-4 border-t-2 border-t-tertiary">
                     <LinksSection
@@ -37,7 +39,7 @@ const Footer = ({ disabledLinks }: FooterTypes) => {
                     />
                     <LinksSection
                         className="col-span-6 col-start-2"
-                        title="Links úteis"
+                        title="Outros links"
                         links={[
                             {
                                 url: '/i-want-to-publish-work',

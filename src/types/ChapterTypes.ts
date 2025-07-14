@@ -1,6 +1,6 @@
 export type ChapterTypes = {
     number: string;
     title: string;
-    date: string;
+    releaseDate: string;
     pages: string;
 };

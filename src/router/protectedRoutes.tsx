@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { showErrorToast } from '../utils/toastUtils';
+import { showErrorToast } from '../services/utils/toastUtils';
 
 import PublishWork from '../routes/publish-work/PublishWork.tsx';
 

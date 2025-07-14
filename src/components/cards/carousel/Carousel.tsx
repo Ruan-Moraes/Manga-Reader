@@ -1,35 +1,19 @@
 // @ts-expect-error - ignore import error
 import { SplideSlide } from '@splidejs/react-splide';
 
-import { TitleTypes } from '../../../types/TitleTypes';
-import { StatusFetchTypes } from '../../../types/StatusFetchTypes';
+import { CarouselCardTypes } from '../../../types/CardTypes';
 
 import CustomLink from '../../links/elements/CustomLink';
 
-type CarouselTypes = Partial<
-    Omit<
-        TitleTypes,
-        | 'createdAt'
-        | 'updatedAt'
-        | 'popularity'
-        | 'score'
-        | 'author'
-        | 'artist'
-        | 'publisher'
-        | 'chapters'
-        | 'type'
-    >
-> &
-    StatusFetchTypes;
-
 const Carousel = ({
-    id,
-    cover,
-    name,
-    synopsis,
-    isError,
     isLoading,
-}: CarouselTypes) => {
+    isError,
+
+    id,
+    name,
+    cover,
+    synopsis,
+}: CarouselCardTypes) => {
     if (isError) {
         return (
             <div className="flex items-center justify-center h-full">

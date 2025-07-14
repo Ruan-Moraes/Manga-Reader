@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { showErrorToast } from '../../utils/toastUtils';
+import { showErrorToast } from '../../services/utils/toastUtils';
 
 export function useCommentEditor(placeholder: string) {
     const textareaRef = useRef<HTMLDivElement>(null);

@@ -125,11 +125,11 @@ const Chapter = () => {
         return (
             <Main>
                 <Warning
+                    color={COLORS.QUINARY}
                     title="Capítulo não encontrado"
                     message="O capítulo que você está tentando acessar não existe."
-                    color={COLORS.QUINARY}
-                    linkText="Voltar para página do título"
                     link={`/titles/${titleId}`}
+                    linkText="Voltar para página do título"
                 />
             </Main>
         );

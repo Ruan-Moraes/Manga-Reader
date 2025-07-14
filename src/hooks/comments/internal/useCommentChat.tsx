@@ -6,7 +6,7 @@ import {
     useState,
 } from 'react';
 
-import { showErrorToast } from '../../../utils/toastUtils';
+import { showErrorToast } from '../../../services/utils/toastUtils';
 
 type UseCommentChatProps = {
     placeholder: string;

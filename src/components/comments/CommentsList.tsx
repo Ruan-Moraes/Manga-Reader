@@ -1,31 +1,36 @@
 import { useCallback } from 'react';
 
 import { UserTypes } from '../../types/UserTypes';
+import { CommentTypes } from '../../types/CommentTypes';
 
 import { useUserModalContext } from '../../context/modals/user/useUserModalContext';
-import { useComments } from '../../hooks/comments/useComments';
+
+import useCommentTree from '../../hooks/comments/internal/useCommentTree';
+import useCommentCRUD from '../../hooks/comments/internal/useCommentCRUD';
 
 import UserModal from '../modals/with-context/user/UserModal';
 import Comment from './Comment';
 
-const CommentsList = () => {
+type CommentsListProps = {
+    comments?: CommentTypes[];
+    isLoading?: boolean;
+    isError?: boolean;
+    error?: Error | null;
+};
+
+const CommentsList = ({
+    comments,
+    isLoading,
+    isError,
+    error,
+}: CommentsListProps) => {
     const { openUserModal, setUserData } = useUserModalContext();
 
-    const {
-        commentsTree,
-        isLoading,
-        isError,
-        error,
-        deleteComment,
-        // isDeletingComment, // TODO: Implementar lógica para outros estados
-        // deleteCommentError, // TODO: Implementar lógica para outros estados
-        editComment,
-        // isEditingComment, // TODO: Implementar lógica para outros estados
-        // editCommentError, // TODO: Implementar lógica para outros estados
-        replyComment,
-        // isReplyingComment, // TODO: Implementar lógica para outros estados
-        // replyCommentError, // TODO: Implementar lógica para outros estados
-    } = useComments();
+    const { deleteComment, editComment, replyComment } = useCommentCRUD();
+
+    const { getCommentsTree } = useCommentTree(comments || []);
+
+    const commentsTree = comments ? getCommentsTree() : [];
 
     const handleClickProfile = useCallback(
         (user: UserTypes): void => {
@@ -40,6 +45,7 @@ const CommentsList = () => {
                 statistics: user.statistics,
                 recommendedTitles: user.recommendedTitles,
             });
+
             openUserModal();
         },
         [openUserModal, setUserData],
@@ -56,8 +62,7 @@ const CommentsList = () => {
     if (isError) {
         return (
             <div className="text-center text-quinary-default">
-                Erro ao carregar comentários:{' '}
-                {error?.message || 'Erro desconhecido'}
+                {error!.message || 'Erro desconhecido'}
             </div>
         );
     }

@@ -19,11 +19,11 @@ const publicRoutes = [
         element: <Home />,
     },
     {
-        path: 'titles/:title',
+        path: 'titles/:titleId',
         element: <Titles />,
     },
     {
-        path: 'titles/:title/:chapter',
+        path: 'titles/:titleId/:chapter',
         element: <Chapter />,
     },
     {
