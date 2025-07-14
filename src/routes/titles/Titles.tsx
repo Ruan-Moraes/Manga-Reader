@@ -8,7 +8,7 @@ import { TitleTypes } from '../../types/TitleTypes';
 import { CommentTypes } from '../../types/CommentTypes';
 
 import useTitle from '../../hooks/titles/useTitle';
-import useComments from '../../hooks/comments/useComments';
+// import useComments from '../../hooks/comments/useComments';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -21,10 +21,11 @@ import Card from '../../components/cards/base/Card';
 import TitleActions from '../../components/actions/TitleActions';
 import ChapterFilter from '../../components/filters/ChapterFilter';
 import ChapterList from '../../components/chapters/ChapterList';
-import CommentsSection from '../../components/comments/CommentsSection';
+// import CommentsSection from '../../components/comments/CommentsSection';
 
 const Titles = () => {
     const [isAscending, setIsAscending] = useState<boolean>(true);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const id = Number(useParams().titleId!);
 
@@ -35,12 +36,12 @@ const Titles = () => {
         error: titleError,
     } = useTitle(id);
 
-    const {
-        comments,
-        isLoading: isCommentsLoading,
-        isError: isCommentsError,
-        error: commentsError,
-    } = useComments(id);
+    // const {
+    //     comments,
+    //     isLoading: isCommentsLoading,
+    //     isError: isCommentsError,
+    //     error: commentsError,
+    // } = useComments(id);
 
     if (isTitleLoading) {
         return <Loading />;
@@ -84,24 +85,39 @@ const Titles = () => {
         setIsAscending(prevState => !prevState);
     };
 
-    const sortedChapters = [...chapters].sort((a, b) => {
-        const numA = parseFloat(a.number);
-        const numB = parseFloat(b.number);
+    const handleSearchSubmit = (searchTerm: string) => {
+        setSearchTerm(searchTerm);
+    };
 
-        if (isNaN(numA) && isNaN(numB)) {
-            return 0;
-        }
+    const filteredAndSortedChapters = [...chapters]
+        .filter(chapter => {
+            if (!searchTerm.trim()) return true;
 
-        if (isNaN(numA)) {
-            return isAscending ? 1 : -1;
-        }
+            const searchLower = searchTerm.toLowerCase();
 
-        if (isNaN(numB)) {
-            return isAscending ? -1 : 1;
-        }
+            return (
+                chapter.number.toLowerCase().includes(searchLower) ||
+                chapter.title.toLowerCase().includes(searchLower)
+            );
+        })
+        .sort((a, b) => {
+            const numA = parseFloat(a.number);
+            const numB = parseFloat(b.number);
 
-        return isAscending ? numA - numB : numB - numA;
-    });
+            if (isNaN(numA) && isNaN(numB)) {
+                return 0;
+            }
+
+            if (isNaN(numA)) {
+                return isAscending ? 1 : -1;
+            }
+
+            if (isNaN(numB)) {
+                return isAscending ? -1 : 1;
+            }
+
+            return isAscending ? numA - numB : numB - numA;
+        });
 
     return (
         <>
@@ -135,23 +151,21 @@ const Titles = () => {
                 <section className="flex flex-col gap-4">
                     <ChapterFilter
                         onSortClick={handleSortClick}
-                        onSearchSubmit={searchTerm =>
-                            console.log('Search submitted:', searchTerm)
-                        }
+                        onSearchSubmit={handleSearchSubmit}
                         isAscending={isAscending}
                     />
                     <ChapterList
-                        key={isAscending ? 'ASC' : 'DESC'}
-                        chapters={sortedChapters}
+                        key={`${isAscending ? 'ASC' : 'DESC'}-${searchTerm}`}
+                        chapters={filteredAndSortedChapters}
                         onChapterClick={handleChapterClick}
                     />
                 </section>
-                <CommentsSection
-                    comments={comments as CommentTypes[]}
-                    isLoading={isCommentsLoading}
-                    isError={isCommentsError}
-                    error={commentsError}
-                />
+                {/*<CommentsSection*/}
+                {/*    comments={comments as CommentTypes[]}*/}
+                {/*    isLoading={isCommentsLoading}*/}
+                {/*    isError={isCommentsError}*/}
+                {/*    error={commentsError}*/}
+                {/*/>*/}
             </Main>
             <Footer />
         </>
