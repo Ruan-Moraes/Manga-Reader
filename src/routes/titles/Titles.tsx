@@ -8,7 +8,7 @@ import { TitleTypes } from '../../types/TitleTypes';
 import { CommentTypes } from '../../types/CommentTypes';
 
 import useTitle from '../../hooks/titles/useTitle';
-// import useComments from '../../hooks/comments/useComments';
+import useComments from '../../hooks/comments/useComments';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -21,7 +21,7 @@ import Card from '../../components/cards/base/Card';
 import TitleActions from '../../components/actions/TitleActions';
 import ChapterFilter from '../../components/filters/ChapterFilter';
 import ChapterList from '../../components/chapters/ChapterList';
-// import CommentsSection from '../../components/comments/CommentsSection';
+import CommentsSection from '../../components/comments/CommentsSection';
 
 const Titles = () => {
     const [isAscending, setIsAscending] = useState<boolean>(true);
@@ -36,12 +36,12 @@ const Titles = () => {
         error: titleError,
     } = useTitle(id);
 
-    // const {
-    //     comments,
-    //     isLoading: isCommentsLoading,
-    //     isError: isCommentsError,
-    //     error: commentsError,
-    // } = useComments(id);
+    const {
+        comments,
+        isLoading: isCommentsLoading,
+        isError: isCommentsError,
+        error: commentsError,
+    } = useComments(id);
 
     if (isTitleLoading) {
         return <Loading />;
@@ -160,12 +160,12 @@ const Titles = () => {
                         onChapterClick={handleChapterClick}
                     />
                 </section>
-                {/*<CommentsSection*/}
-                {/*    comments={comments as CommentTypes[]}*/}
-                {/*    isLoading={isCommentsLoading}*/}
-                {/*    isError={isCommentsError}*/}
-                {/*    error={commentsError}*/}
-                {/*/>*/}
+                <CommentsSection
+                    comments={comments as CommentTypes[]}
+                    isLoading={isCommentsLoading}
+                    isError={isCommentsError}
+                    error={commentsError}
+                />
             </Main>
             <Footer />
         </>

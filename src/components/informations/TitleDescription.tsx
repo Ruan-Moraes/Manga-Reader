@@ -1,5 +1,7 @@
 import GenresBox from '../boxes/GenresBox';
 
+import { TitleTypes } from '../../types/TitleTypes';
+
 type TitleDescriptionTypes = Pick<TitleTypes, 'genres' | 'synopsis'>;
 
 const TitleDescription = ({ genres, synopsis }: TitleDescriptionTypes) => {
