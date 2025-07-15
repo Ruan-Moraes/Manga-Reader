@@ -92,7 +92,7 @@ const CommentsList = ({
                 />
             ))}
             {commentsTree.length === 0 && !isLoading && !isError && (
-                <div className="text-gray-400 text-center py-8">
+                <div className="text-gray-400 text-center mt-12 font-bold">
                     Nenhum comentário encontrado.
                 </div>
             )}

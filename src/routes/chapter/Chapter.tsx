@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Select, { SingleValue } from 'react-select';
+import { IoImageOutline } from 'react-icons/io5';
 
 import { COLORS } from '../../constants/COLORS';
 
@@ -41,6 +42,11 @@ const Chapter = () => {
 
     const [isBottomNavVisible, setIsBottomNavVisible] = useState(false);
     const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+    const [imageError, setImageError] = useState<boolean>(false);
+
+    const handleImageError = () => {
+        setImageError(true);
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -146,18 +152,33 @@ const Chapter = () => {
             <Header />
             <Main>
                 <section>
-                    <div className="flex flex-col gap-2">
-                        <div>
-                            <h2
-                                className="overflow-hidden text-xl font-bold"
-                                style={{
-                                    display: '-webkit-box',
-                                    WebkitBoxOrient: 'vertical',
-                                    WebkitLineClamp: 3,
-                                }}
-                            >
-                                {currentTitle?.title || 'Carregando...'}
-                            </h2>
+                    <div className="flex flex-col gap-4">
+                        <div className="bg-secondary flex items-center justify-center w-full h-80 rounded-xs border border-tertiary">
+                            {imageError && (
+                                <div className="flex flex-col items-center justify-center">
+                                    <IoImageOutline
+                                        size={96}
+                                        className="text-tertiary"
+                                    />
+                                    <span className="mt-2 text-sm text-center text-tertiary">
+                                        Não foi possível carregar a imagem
+                                    </span>
+                                </div>
+                            )}
+                            {!imageError && isLoading && (
+                                <div>
+                                    <span className="w-full h-80 object-cover rounded-md">
+                                        Carregando imagem do título...
+                                    </span>
+                                </div>
+                            )}
+                            {!imageError && !isLoading && (
+                                <img
+                                    src={currentTitle?.coverImage}
+                                    alt={currentTitle?.title}
+                                    className="w-full h-80 object-cover rounded-md"
+                                />
+                            )}
                         </div>
                         <div className="flex flex-col gap-2">
                             <div>
@@ -342,55 +363,55 @@ const Chapter = () => {
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
                         <div>
                             <img
-                                src="https://placehold.co/600x400/png"
+                                src="https://placehold.co/600x800/png"
                                 alt=""
                             />
                         </div>
