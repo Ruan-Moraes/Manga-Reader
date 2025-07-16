@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Select, { SingleValue } from 'react-select';
+import Select, { SelectOption } from '../../components/ui/Select';
+import { SingleValue, MultiValue, ActionMeta } from 'react-select';
 import { IoImageOutline } from 'react-icons/io5';
 
 import { COLORS } from '../../constants/COLORS';
@@ -142,9 +143,12 @@ const Chapter = () => {
     }
 
     const handleChange = (
-        newValue: SingleValue<{ value: string | undefined; label: string }>,
+        newValue: MultiValue<SelectOption> | SingleValue<SelectOption>,
+        actionMeta: ActionMeta<SelectOption>
     ) => {
-        navigate(`/Manga-Reader/titles/${titleId}/${newValue?.value}`);
+        if (newValue && !Array.isArray(newValue)) {
+            navigate(`/Manga-Reader/titles/${titleId}/${(newValue as SelectOption).value}`);
+        }
     };
 
     return (
@@ -184,6 +188,7 @@ const Chapter = () => {
                             <div>
                                 <form>
                                     <Select
+                                        variant="default"
                                         name="chapter"
                                         onChange={handleChange}
                                         defaultValue={{
@@ -235,113 +240,6 @@ const Chapter = () => {
                                                 label: 'Capítulo 10',
                                             },
                                         ]}
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                                ...baseStyles,
-                                                padding: '0.5rem',
-                                                backgroundColor: '#252526',
-                                                borderRadius: '0.125rem',
-                                                border: state.isFocused
-                                                    ? '0.0625rem solid #ddda2a'
-                                                    : '0.0625rem solid #727273',
-                                                boxShadow: state.isFocused
-                                                    ? '0 0 0 0'
-                                                    : '0 0 0 0',
-                                                cursor: 'text',
-                                                transition: 'border 0.3s',
-                                                '&:hover': {
-                                                    border: state.isFocused
-                                                        ? 0
-                                                        : 0,
-                                                },
-                                            }),
-                                            placeholder: baseStyles => ({
-                                                ...baseStyles,
-                                                fontSize: '0.875rem',
-                                                lineHeight: '1rem',
-                                                color: '#FFFFFF',
-                                            }),
-                                            valueContainer: baseStyles => ({
-                                                ...baseStyles,
-                                                padding: '0',
-                                            }),
-                                            input: baseStyles => ({
-                                                ...baseStyles,
-                                                margin: '0 0 0 0.25rem',
-                                                padding: '0',
-                                                color: '#FFFFFF',
-                                            }),
-                                            singleValue: baseStyles => ({
-                                                ...baseStyles,
-                                                color: '#FFFFFF',
-                                            }),
-                                            multiValue: baseStyles => ({
-                                                ...baseStyles,
-                                                margin: '0.125rem',
-                                                padding: '0.25rem',
-                                                borderRadius: '0.125rem',
-                                                backgroundColor: '#161616',
-                                                transition:
-                                                    'background-color 0.3s',
-                                                ':hover': {
-                                                    backgroundColor:
-                                                        '#161616bf',
-                                                },
-                                            }),
-                                            multiValueLabel: baseStyles => ({
-                                                ...baseStyles,
-                                                fontSize: '0.875rem',
-                                                lineHeight: '1rem',
-                                                color: '#FFFFFF',
-                                            }),
-                                            menu: baseStyles => ({
-                                                ...baseStyles,
-                                                borderRadius: '0.125rem',
-                                                border: '0.125rem solid #727273',
-                                                backgroundColor: '#161616',
-                                            }),
-                                            menuList: baseStyles => ({
-                                                ...baseStyles,
-                                                padding: '0',
-                                                overflowX: 'hidden',
-                                            }),
-                                            option: (baseStyles, state) => ({
-                                                ...baseStyles,
-                                                backgroundColor:
-                                                    state.isSelected
-                                                        ? '#ddda2a'
-                                                        : '#161616',
-                                                color: state.isSelected
-                                                    ? '#161616'
-                                                    : '#FFFFFF',
-                                                ':hover': {
-                                                    backgroundColor: '#ddda2a',
-                                                    color: '#161616',
-                                                },
-                                                borderBottom:
-                                                    '0.0625rem solid #727273',
-                                                ':last-child': {
-                                                    borderBottom: '0',
-                                                },
-                                            }),
-                                            dropdownIndicator: baseStyles => ({
-                                                ...baseStyles,
-                                                padding: '0.125rem',
-                                                margin: '0 0 0 6px',
-                                                cursor: 'pointer',
-                                                transition:
-                                                    'background-color 0.3s',
-                                                ':hover': {
-                                                    backgroundColor:
-                                                        '#ddda2a80',
-                                                },
-                                            }),
-                                            indicatorSeparator: baseStyles => ({
-                                                ...baseStyles,
-                                                margin: '0',
-                                                backgroundColor: '#727273',
-                                            }),
-                                        }}
                                     />
                                 </form>
                             </div>
@@ -442,6 +340,7 @@ const Chapter = () => {
                     <div className="grow">
                         <form>
                             <Select
+                                variant="chapter"
                                 name="chapter"
                                 onChange={handleChange}
                                 defaultValue={{
@@ -464,111 +363,6 @@ const Chapter = () => {
                                     { value: '9', label: 'Capítulo 9' },
                                     { value: '10', label: 'Capítulo 10' },
                                 ]}
-                                styles={{
-                                    control: (baseStyles, state) => ({
-                                        ...baseStyles,
-                                        padding: '0.5rem',
-                                        backgroundColor: '#252526',
-                                        borderRadius: '0.125rem',
-                                        border: state.isFocused
-                                            ? '0.0625rem solid #ddda2a'
-                                            : '0.0625rem solid #727273',
-                                        boxShadow: state.isFocused
-                                            ? '0 0 0 0'
-                                            : '0 0 0 0',
-                                        cursor: 'text',
-                                        transition: 'border 0.3s',
-                                        '&:hover': {
-                                            border: state.isFocused ? 0 : 0,
-                                        },
-                                    }),
-                                    placeholder: baseStyles => ({
-                                        ...baseStyles,
-                                        fontSize: '0.875rem',
-                                        lineHeight: '1rem',
-                                        color: '#FFFFFF',
-                                    }),
-                                    valueContainer: baseStyles => ({
-                                        ...baseStyles,
-                                        padding: '0',
-                                    }),
-                                    input: baseStyles => ({
-                                        ...baseStyles,
-                                        margin: '0 0 0 0.25rem',
-                                        padding: '0',
-                                        color: '#FFFFFF',
-                                    }),
-                                    singleValue: baseStyles => ({
-                                        ...baseStyles,
-                                        color: '#FFFFFF',
-                                    }),
-                                    multiValue: baseStyles => ({
-                                        ...baseStyles,
-                                        margin: '0.125rem',
-                                        padding: '0.25rem',
-                                        borderRadius: '0.125rem',
-                                        backgroundColor: '#161616',
-                                        transition: 'background-color 0.3s',
-                                        ':hover': {
-                                            backgroundColor: '#161616bf',
-                                        },
-                                    }),
-                                    multiValueLabel: baseStyles => ({
-                                        ...baseStyles,
-                                        borderBottom: '0.0625rem solid #ddda2a',
-                                        fontSize: '0.875rem',
-                                        lineHeight: '1rem',
-                                        color: '#FFFFFF',
-                                    }),
-                                    menu: baseStyles => ({
-                                        ...baseStyles,
-                                        borderRadius: '0',
-                                        borderTopRightRadius: '0.0625rem',
-                                        borderTopLeftRadius: '0.0625rem',
-                                        border: '0.0625rem solid #727273',
-                                        backgroundColor: '#2525266',
-                                        boxShadow: '0 0 0 0',
-                                    }),
-                                    menuList: baseStyles => ({
-                                        ...baseStyles,
-                                        padding: '0',
-                                        overflowX: 'hidden',
-                                    }),
-                                    option: (baseStyles, state) => ({
-                                        ...baseStyles,
-                                        backgroundColor: state.isSelected
-                                            ? '#ddda2a'
-                                            : '#161616',
-                                        color: state.isSelected
-                                            ? '#161616'
-                                            : '#FFFFFF',
-                                        ':hover': {
-                                            backgroundColor: '#ddda2a',
-                                            color: '#161616',
-                                        },
-                                        borderBottom: '0.0625rem solid #727273',
-                                        ':last-child': {
-                                            borderBottom: '0',
-                                        },
-                                    }),
-                                    dropdownIndicator: baseStyles => ({
-                                        ...baseStyles,
-                                        padding: '0.125rem',
-                                        margin: '0 0 0 6px',
-                                        rotate: '180deg',
-
-                                        cursor: 'pointer',
-                                        transition: 'background-color 0.3s',
-                                        ':hover': {
-                                            backgroundColor: '#ddda2a80',
-                                        },
-                                    }),
-                                    indicatorSeparator: baseStyles => ({
-                                        ...baseStyles,
-                                        margin: '0',
-                                        backgroundColor: '#727273',
-                                    }),
-                                }}
                             />
                         </form>
                     </div>

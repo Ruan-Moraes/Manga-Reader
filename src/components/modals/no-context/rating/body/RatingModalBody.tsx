@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-import Select from 'react-select';
+import Select, { SelectOption } from '../../../../ui/Select';
 
 type CategoryRating = {
     [key: string]: number;
@@ -75,93 +75,23 @@ const RatingModalBody = ({ onRatingChange }: RatingModalBodyProps) => {
                             </span>
                         </label>
                         <Select
+                            variant="rating"
                             value={ratingOptions.find(
                                 option =>
                                     option.value ===
                                     categoryRatings[category.key],
                             )}
-                            onChange={selectedOption => {
-                                if (selectedOption) {
+                            onChange={(selectedOption) => {
+                                if (selectedOption && !Array.isArray(selectedOption)) {
                                     handleCategoryChange(
                                         category.key,
-                                        selectedOption.value,
+                                        Number((selectedOption as SelectOption).value),
                                     );
                                 }
                             }}
                             options={ratingOptions}
                             placeholder="Selecione o nível..."
                             isSearchable={false}
-                            styles={{
-                                control: (provided, state) => ({
-                                    ...provided,
-                                    backgroundColor: 'var(--color-tertiary)',
-                                    border: '1px solid var(--color-tertiary)',
-                                    borderRadius: '6px',
-                                    padding: '0px 4px',
-                                    fontSize: '14px',
-                                    minHeight: '36px',
-                                    boxShadow: 'none',
-                                    cursor: 'pointer',
-                                    '&:hover': {
-                                        backgroundColor:
-                                            'var(--color-secondary)',
-                                        borderColor: 'var(--color-secondary)',
-                                    },
-                                    ...(state.isFocused && {
-                                        borderColor: 'var(--color-primary)',
-                                        outline:
-                                            '2px solid rgba(var(--color-primary-rgb), 0.3)',
-                                        outlineOffset: '0px',
-                                    }),
-                                }),
-                                menu: provided => ({
-                                    ...provided,
-                                    backgroundColor: 'var(--color-tertiary)',
-                                    border: '1px solid var(--color-tertiary)',
-                                    borderRadius: '6px',
-                                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                                    zIndex: 9999,
-                                }),
-                                option: (provided, state) => ({
-                                    ...provided,
-                                    backgroundColor: state.isSelected
-                                        ? 'var(--color-primary)'
-                                        : state.isFocused
-                                          ? 'var(--color-secondary)'
-                                          : 'var(--color-tertiary)',
-                                    color: state.isSelected
-                                        ? 'white'
-                                        : 'var(--color-text)',
-                                    cursor: 'pointer',
-                                    fontSize: '14px',
-                                    padding: '8px 12px',
-                                    '&:hover': {
-                                        backgroundColor: state.isSelected
-                                            ? 'var(--color-primary)'
-                                            : 'var(--color-secondary)',
-                                    },
-                                }),
-                                singleValue: provided => ({
-                                    ...provided,
-                                    color: 'var(--color-text)',
-                                    fontSize: '14px',
-                                }),
-                                placeholder: provided => ({
-                                    ...provided,
-                                    color: 'var(--color-text-muted)',
-                                    fontSize: '14px',
-                                }),
-                                dropdownIndicator: provided => ({
-                                    ...provided,
-                                    color: 'var(--color-text)',
-                                    '&:hover': {
-                                        color: 'var(--color-primary)',
-                                    },
-                                }),
-                                indicatorSeparator: () => ({
-                                    display: 'none',
-                                }),
-                            }}
                         />
                     </div>
                 ))}
