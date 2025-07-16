@@ -65,7 +65,10 @@ const ChapterFilter = ({
                             className="w-full h-full p-2 border rounded-r-none appearance-none rounded-xs 1 border-tertiary bg-secondary outline-none"
                         />
                     </div>
-                    <div onClick={handleSearchIconClick} className="flex items-center px-4 py-2 border border-l-0 rounded-r-xs border-tertiary bg-secondary cursor-pointer duration-300 transition-colors hover:bg-quaternary-opacity-50">
+                    <div
+                        onClick={handleSearchIconClick}
+                        className="flex items-center px-4 py-2 border border-l-0 rounded-r-xs border-tertiary bg-secondary cursor-pointer duration-300 transition-colors hover:bg-quaternary-opacity-50"
+                    >
                         <IoSearchSharp size={20} />
                     </div>
                 </div>

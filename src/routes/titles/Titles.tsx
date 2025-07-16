@@ -9,6 +9,8 @@ import { CommentTypes } from '../../types/CommentTypes';
 
 import useTitle from '../../hooks/titles/useTitle';
 import useComments from '../../hooks/comments/useComments';
+import useBookmark from '../../hooks/titles/useBookmark';
+import useRating from '../../hooks/titles/useRating';
 
 import Header from '../../layouts/Header';
 import Main from '../../layouts/Main';
@@ -22,8 +24,15 @@ import TitleActions from '../../components/actions/TitleActions';
 import ChapterFilter from '../../components/filters/ChapterFilter';
 import ChapterList from '../../components/chapters/ChapterList';
 import CommentsSection from '../../components/comments/CommentsSection';
+import RatingModal from '../../components/modals/no-context/rating/RatingModal';
+import InfoModal from '../../components/modals/no-context/info/InfoModal';
 
 const Titles = () => {
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
+    const [isGroupsModalOpen, setIsGroupsModalOpen] = useState<boolean>(false);
+    const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false);
+    const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
     const [isAscending, setIsAscending] = useState<boolean>(true);
     const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -42,6 +51,9 @@ const Titles = () => {
         isError: isCommentsError,
         error: commentsError,
     } = useComments(id);
+
+    const { toggleBookmark, bookmarkData } = useBookmark();
+    const { submitRating, isSubmittingRating } = useRating();
 
     if (isTitleLoading) {
         return <Loading />;
@@ -88,6 +100,32 @@ const Titles = () => {
     const handleSearchSubmit = (searchTerm: string) => {
         setSearchTerm(searchTerm);
     };
+
+    const handleBookmarkClick = () => {
+        toggleBookmark(id, isBookmarked);
+    };
+
+    const handleLikeClick = () => {
+        setIsRatingModalOpen(true);
+    };
+
+    const handleGroupsClick = () => {
+        setIsGroupsModalOpen(true);
+    };
+
+    const handleCartClick = () => {
+        setIsCartModalOpen(true);
+    };
+
+    const handleRatingSubmit = (rating: number) => {
+        submitRating(id, rating);
+    };
+
+    if (bookmarkData && bookmarkData.titleId === id) {
+        if (isBookmarked !== bookmarkData.isBookmarked) {
+            setIsBookmarked(bookmarkData.isBookmarked);
+        }
+    }
 
     const filteredAndSortedChapters = [...chapters]
         .filter(chapter => {
@@ -141,11 +179,11 @@ const Titles = () => {
                         artist={artist}
                         publisher={publisher}
                     />
-                    <TitleActions // TODO: Implementar funções | TO JUNIE: Do not execute this task now.
-                        onBookmarkClick={() => console.log('Bookmark clicked')}
-                        onLikeClick={() => console.log('Like clicked')}
-                        onGroupsClick={() => console.log('Groups clicked')}
-                        onCartClick={() => console.log('Cart clicked')}
+                    <TitleActions
+                        onBookmarkClick={handleBookmarkClick}
+                        onLikeClick={handleLikeClick}
+                        onGroupsClick={handleGroupsClick}
+                        onCartClick={handleCartClick}
                     />
                 </section>
                 <section className="flex flex-col gap-4">
@@ -168,6 +206,28 @@ const Titles = () => {
                 />
             </Main>
             <Footer />
+            <RatingModal
+                isModalOpen={isRatingModalOpen}
+                closeModal={() => setIsRatingModalOpen(false)}
+                onSubmitRating={handleRatingSubmit}
+                isSubmitting={isSubmittingRating}
+            />
+            <InfoModal
+                isModalOpen={isGroupsModalOpen}
+                closeModal={() => setIsGroupsModalOpen(false)}
+                title="Grupos de Tradução"
+                message="Aqui você pode encontrar informações sobre os grupos de tradução responsáveis por esta obra."
+                linkText="Ver Grupos"
+                linkUrl="https://example.com/groups"
+            />
+            <InfoModal
+                isModalOpen={isCartModalOpen}
+                closeModal={() => setIsCartModalOpen(false)}
+                title="Adicionar ao Carrinho"
+                message="Adicione esta obra ao seu carrinho para compra ou acompanhamento."
+                linkText="Ir ao Carrinho"
+                linkUrl="https://example.com/cart"
+            />
         </>
     );
 };
