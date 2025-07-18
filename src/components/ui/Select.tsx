@@ -1,21 +1,25 @@
-﻿import React from 'react';
-import ReactSelect, { Props as ReactSelectProps, StylesConfig } from 'react-select';
+﻿import ReactSelect, {
+    Props as ReactSelectProps,
+    StylesConfig,
+} from 'react-select';
 
-export interface SelectOption {
+import { SelectVariantTypes } from '../../types/SelectVariantTypes';
+
+export type SelectOption = {
     value: string | number;
     label: string;
     isDisabled?: boolean;
-}
+};
 
-export type SelectVariant = 'default' | 'chapter' | 'rating';
-
-export interface SelectProps extends Omit<ReactSelectProps<SelectOption>, 'styles'> {
-    variant?: SelectVariant;
-    menuPlacement?: 'auto' | 'bottom' | 'top';
+interface SelectProps extends Omit<ReactSelectProps<SelectOption>, 'styles'> {
+    variant?: SelectVariantTypes;
     customStyles?: StylesConfig<SelectOption>;
+    menuPlacement?: 'auto' | 'bottom' | 'top';
 }
 
-const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> => {
+const getVariantStyles = (
+    variant: SelectVariantTypes,
+): StylesConfig<SelectOption> => {
     const baseStyles: StylesConfig<SelectOption> = {
         control: (provided, state) => ({
             ...provided,
@@ -32,27 +36,27 @@ const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> =>
                 border: state.isFocused ? 0 : 0,
             },
         }),
-        placeholder: (provided) => ({
+        placeholder: provided => ({
             ...provided,
             fontSize: '0.875rem',
             lineHeight: '1rem',
             color: '#FFFFFF',
         }),
-        valueContainer: (provided) => ({
+        valueContainer: provided => ({
             ...provided,
             padding: '0',
         }),
-        input: (provided) => ({
+        input: provided => ({
             ...provided,
             margin: '0 0 0 0.25rem',
             padding: '0',
             color: '#FFFFFF',
         }),
-        singleValue: (provided) => ({
+        singleValue: provided => ({
             ...provided,
             color: '#FFFFFF',
         }),
-        multiValue: (provided) => ({
+        multiValue: provided => ({
             ...provided,
             margin: '0.125rem',
             padding: '0.25rem',
@@ -63,19 +67,19 @@ const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> =>
                 backgroundColor: '#161616bf',
             },
         }),
-        multiValueLabel: (provided) => ({
+        multiValueLabel: provided => ({
             ...provided,
             fontSize: '0.875rem',
             lineHeight: '1rem',
             color: '#FFFFFF',
         }),
-        menu: (provided) => ({
+        menu: provided => ({
             ...provided,
             borderRadius: '0.125rem',
             border: '0.125rem solid #727273',
             backgroundColor: '#161616',
         }),
-        menuList: (provided) => ({
+        menuList: provided => ({
             ...provided,
             padding: '0',
             overflowX: 'hidden',
@@ -93,17 +97,17 @@ const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> =>
                 borderBottom: '0',
             },
         }),
-        dropdownIndicator: (provided) => ({
+        dropdownIndicator: provided => ({
             ...provided,
             padding: '0.125rem',
-            margin: '0 0 0 6px',
+            margin: '0 0 0 0.375rem',
             cursor: 'pointer',
             transition: 'background-color 0.3s',
             ':hover': {
                 backgroundColor: '#ddda2a80',
             },
         }),
-        indicatorSeparator: (provided) => ({
+        indicatorSeparator: provided => ({
             ...provided,
             margin: '0',
             backgroundColor: '#727273',
@@ -114,14 +118,14 @@ const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> =>
         case 'chapter':
             return {
                 ...baseStyles,
-                multiValueLabel: (provided) => ({
+                multiValueLabel: provided => ({
                     ...provided,
                     borderBottom: '0.0625rem solid #ddda2a',
                     fontSize: '0.875rem',
                     lineHeight: '1rem',
                     color: '#FFFFFF',
                 }),
-                menu: (provided) => ({
+                menu: provided => ({
                     ...provided,
                     borderRadius: '0',
                     borderTopRightRadius: '0.0625rem',
@@ -130,10 +134,10 @@ const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> =>
                     backgroundColor: '#2525266',
                     boxShadow: '0 0 0 0',
                 }),
-                dropdownIndicator: (provided) => ({
+                dropdownIndicator: provided => ({
                     ...provided,
                     padding: '0.125rem',
-                    margin: '0 0 0 6px',
+                    margin: '0 0 0 0.375rem',
                     rotate: '180deg',
                     cursor: 'pointer',
                     transition: 'background-color 0.3s',
@@ -142,112 +146,114 @@ const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> =>
                     },
                 }),
             };
-
         case 'rating':
             return {
                 control: (provided, state) => ({
                     ...provided,
-                    backgroundColor: 'var(--color-tertiary)',
-                    border: '1px solid var(--color-tertiary)',
-                    borderRadius: '6px',
-                    padding: '0px 4px',
-                    fontSize: '14px',
-                    minHeight: '36px',
+                    backgroundColor: '#252526',
+                    border: '0.0625rem solid #727273',
+                    borderRadius: '0.125rem',
+                    padding: '0 0.25rem',
+                    fontSize: '0.875rem',
+                    minHeight: '2.25rem',
                     boxShadow: 'none',
                     cursor: 'pointer',
                     '&:hover': {
-                        backgroundColor: 'var(--color-secondary)',
-                        borderColor: 'var(--color-secondary)',
+                        backgroundColor: '#161616',
                     },
                     ...(state.isFocused && {
-                        borderColor: 'var(--color-primary)',
-                        outline: '2px solid rgba(var(--color-primary-rgb), 0.3)',
-                        outlineOffset: '0px',
+                        backgroundColor: '#161616',
                     }),
                 }),
-                menu: (provided) => ({
+                menu: provided => ({
                     ...provided,
-                    backgroundColor: 'var(--color-tertiary)',
-                    border: '1px solid var(--color-tertiary)',
-                    borderRadius: '6px',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                    backgroundColor: '#161616',
+                    border: '0.0625rem solid #727273',
+                    borderRadius: '0.125rem',
+                    boxShadow: '0 0.25rem 0.5rem rgba(0,0,0,0.1)',
                     zIndex: 9999,
                 }),
                 option: (provided, state) => ({
                     ...provided,
                     backgroundColor: state.isSelected
-                        ? 'var(--color-primary)'
+                        ? '#ddda2a'
                         : state.isFocused
-                        ? 'var(--color-secondary)'
-                        : 'var(--color-tertiary)',
-                    color: state.isSelected ? 'white' : 'var(--color-text)',
+                          ? '#252526'
+                          : '#161616',
+                    color: state.isSelected ? '#161616' : '#FFFFFF',
                     cursor: 'pointer',
-                    fontSize: '14px',
-                    padding: '8px 12px',
+                    fontSize: '0.875rem',
+                    padding: '0.5rem 0.75rem',
                     '&:hover': {
                         backgroundColor: state.isSelected
-                            ? 'var(--color-primary)'
-                            : 'var(--color-secondary)',
+                            ? '#ddda2a'
+                            : '#252526',
+                    },
+                    borderBottom: '0.0625rem solid #727273',
+                    ':last-child': {
+                        borderBottom: '0',
                     },
                 }),
-                singleValue: (provided) => ({
+                singleValue: provided => ({
                     ...provided,
-                    color: 'var(--color-text)',
-                    fontSize: '14px',
+                    color: '#FFFFFF',
+                    fontSize: '0.875rem',
                 }),
-                placeholder: (provided) => ({
+                placeholder: provided => ({
                     ...provided,
-                    color: 'var(--color-text-muted)',
-                    fontSize: '14px',
+                    color: '#727273',
+                    fontSize: '0.875rem',
                 }),
-                dropdownIndicator: (provided) => ({
+                dropdownIndicator: provided => ({
                     ...provided,
-                    color: 'var(--color-text)',
+                    color: '#FFFFFF',
                     '&:hover': {
-                        color: 'var(--color-primary)',
+                        color: '#ddda2a',
                     },
                 }),
                 indicatorSeparator: () => ({
                     display: 'none',
                 }),
-                valueContainer: (provided) => ({
+                valueContainer: provided => ({
                     ...provided,
                     padding: '0',
                 }),
-                input: (provided) => ({
+                input: provided => ({
                     ...provided,
                     margin: '0 0 0 0.25rem',
                     padding: '0',
-                    color: 'var(--color-text)',
+                    color: '#FFFFFF',
                 }),
-                menuList: (provided) => ({
+                menuList: provided => ({
                     ...provided,
                     padding: '0',
                     overflowX: 'hidden',
+                    maxHeight: '15rem',
+                    overflowY: 'auto',
                 }),
             };
-
         default:
             return baseStyles;
     }
 };
 
-const Select: React.FC<SelectProps> = ({
+const Select = ({
     variant = 'default',
     customStyles,
     menuPlacement = 'auto',
     ...props
-}) => {
+}: SelectProps) => {
     const variantStyles = getVariantStyles(variant);
-    const finalStyles = customStyles 
+
+    const finalStyles = customStyles
         ? { ...variantStyles, ...customStyles }
         : variantStyles;
 
     return (
         <ReactSelect
+            menuPlacement={menuPlacement}
             {...props}
             styles={finalStyles}
-            menuPlacement={menuPlacement}
         />
     );
 };

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import Select, { SelectOption } from '../../../../ui/Select';
 
 type CategoryRating = {
@@ -7,30 +7,40 @@ type CategoryRating = {
 
 type RatingModalBodyProps = {
     onRatingChange: (rating: number) => void;
+    onAllCategoriesRated?: (allRated: boolean) => void;
 };
 
-const RatingModalBody = ({ onRatingChange }: RatingModalBodyProps) => {
+const RatingModalBody = ({ onRatingChange, onAllCategoriesRated }: RatingModalBodyProps) => {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const selectRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+    const [openSelectKey, setOpenSelectKey] = useState<string | null>(null);
     const [categoryRatings, setCategoryRatings] = useState<CategoryRating>({
-        Diversion: 0,
-        Art: 0,
-        Storyline: 0,
-        Characters: 0,
-        Originality: 0,
+        Diversion: -1,
+        Art: -1,
+        Storyline: -1,
+        Characters: -1,
+        Originality: -1,
+        Pacing: -1,
     });
 
     const categories = [
         { key: 'Diversion', label: 'Diversão', icon: '🎉' },
         { key: 'Art', label: 'Arte', icon: '🎨' },
-        { key: 'Storyline', label: 'História', icon: '📖' },
+        { key: 'Storyline', label: 'Enredo', icon: '📖' },
         { key: 'Characters', label: 'Personagens', icon: '👤' },
         { key: 'Originality', label: 'Originalidade', icon: '💡' },
+        { key: 'Pacing', label: 'Ritmo', icon: '⏱' },
     ];
 
     const ratingOptions = [
-        { value: 0, label: 'Selecione o nível...', isDisabled: true },
-        { value: 0.4167, label: 'Baixo' },
-        { value: 0.8333, label: 'Médio' },
-        { value: 1.25, label: 'Alto' },
+        { value: -1, label: 'Não avaliado', selected: true, disabled: true },
+        { value: 0, label: 'Nota: 0' },
+        { value: 1, label: 'Nota: 1' },
+        { value: 2, label: 'Nota: 2' },
+        { value: 3, label: 'Nota: 3' },
+        { value: 4, label: 'Nota: 4' },
+        { value: 5, label: 'Nota: 5' },
     ];
 
     const handleCategoryChange = (category: string, value: number) => {
@@ -40,22 +50,57 @@ const RatingModalBody = ({ onRatingChange }: RatingModalBodyProps) => {
         }));
     };
 
-    const calculateTotalScore = () => {
-        const total = Object.values(categoryRatings).reduce(
-            (sum, rating) => sum + rating,
-            0,
-        );
+    const handleMenuOpen = (categoryKey: string) => {
+        setOpenSelectKey(categoryKey);
 
-        return Math.min(Math.max(total, 0), 10);
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.style.overflow = 'hidden';
+        }
+
+        setTimeout(() => {
+            const selectElement = selectRefs.current[categoryKey];
+
+            if (!selectElement) {
+                return;
+            }
+
+            selectElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            });
+        }, 50);
     };
+
+    const handleMenuClose = () => {
+        setOpenSelectKey(null);
+
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.style.overflow = 'auto';
+        }
+    };
+
+    const calculateTotalScore = useCallback(() => {
+        const ratings = Object.values(categoryRatings);
+        const total = ratings.reduce((sum, rating) => sum + (rating === -1 ? 0 : rating), 0);
+        const totalCategories = ratings.length;
+        const average = totalCategories > 0 ? total / totalCategories : 0;
+
+        return Math.min(Math.max(average, 0), 10);
+    }, [categoryRatings]);
 
     const totalScore = calculateTotalScore();
 
     useEffect(() => {
         const totalScore = calculateTotalScore();
+        const allCategoriesRated = Object.values(categoryRatings).every(rating => rating !== -1);
 
         onRatingChange(Math.round(totalScore * 100) / 100);
-    }, [calculateTotalScore, categoryRatings, onRatingChange]);
+
+        if (onAllCategoriesRated) {
+            onAllCategoriesRated(allCategoriesRated);
+        }
+    }, [calculateTotalScore, categoryRatings, onRatingChange, onAllCategoriesRated]);
 
     return (
         <div className="flex flex-col gap-4 pb-2">
@@ -65,36 +110,62 @@ const RatingModalBody = ({ onRatingChange }: RatingModalBodyProps) => {
                     será calculada com base nas suas avaliações.
                 </p>
             </div>
-            <div className="grid grid-cols-1 gap-4 max-h-80 overflow-y-auto pr-2">
-                {categories.map(category => (
-                    <div key={category.key} className="flex flex-col gap-1">
-                        <label className="flex items-center gap-1 text-sm">
-                            <span className="text-lg">{category.icon}</span>
-                            <span className="font-bold text-shadow-default leading-none">
-                                {category.label}
-                            </span>
-                        </label>
-                        <Select
-                            variant="rating"
-                            value={ratingOptions.find(
-                                option =>
-                                    option.value ===
-                                    categoryRatings[category.key],
-                            )}
-                            onChange={(selectedOption) => {
-                                if (selectedOption && !Array.isArray(selectedOption)) {
-                                    handleCategoryChange(
-                                        category.key,
-                                        Number((selectedOption as SelectOption).value),
-                                    );
-                                }
+            <div
+                ref={scrollContainerRef}
+                className="grid grid-cols-1 gap-4 max-h-80 overflow-y-auto pr-2"
+            >
+                {categories.map(category => {
+                    const isCurrentSelectOpen = openSelectKey === category.key;
+                    const shouldHideSelect =
+                        openSelectKey !== null && !isCurrentSelectOpen;
+
+                    return (
+                        <div
+                            key={category.key}
+                            ref={e => (selectRefs.current[category.key] = e)}
+                            className="flex flex-col gap-1"
+                            style={{
+                                visibility: shouldHideSelect
+                                    ? 'hidden'
+                                    : 'visible',
                             }}
-                            options={ratingOptions}
-                            placeholder="Selecione o nível..."
-                            isSearchable={false}
-                        />
-                    </div>
-                ))}
+                        >
+                            <label className="flex items-center gap-1 text-sm">
+                                <span className="text-lg">{category.icon}</span>
+                                <span className="font-bold text-shadow-default leading-none">
+                                    {category.label}
+                                </span>
+                            </label>
+                            <Select
+                                variant="rating"
+                                options={ratingOptions}
+                                value={ratingOptions.find(
+                                    option =>
+                                        option.value ===
+                                        categoryRatings[category.key],
+                                )}
+                                onChange={selectedOption => {
+                                    if (
+                                        selectedOption &&
+                                        !Array.isArray(selectedOption)
+                                    ) {
+                                        handleCategoryChange(
+                                            category.key,
+                                            Number(
+                                                (selectedOption as SelectOption)
+                                                    .value,
+                                            ),
+                                        );
+                                    }
+                                }}
+                                onMenuOpen={() => handleMenuOpen(category.key)}
+                                onMenuClose={handleMenuClose}
+                                isSearchable={false}
+                                placeholder="Selecione uma nota"
+                            />
+                        </div>
+                    );
+                })}
             </div>
             <div className="border-t border-tertiary pt-4">
                 <div className="flex items-center justify-between mb-2">
