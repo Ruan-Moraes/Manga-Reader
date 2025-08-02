@@ -26,6 +26,8 @@ import ChapterList from '../../components/chapters/ChapterList';
 import CommentsSection from '../../components/comments/CommentsSection';
 import RatingModal from '../../components/modals/no-context/rating/RatingModal';
 import InfoModal from '../../components/modals/no-context/info/InfoModal';
+import GroupsModal from '../../components/modals/no-context/groups/GroupsModal';
+import StoresModal from '../../components/modals/no-context/stores/StoresModal';
 
 const Titles = () => {
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
@@ -212,21 +214,15 @@ const Titles = () => {
                 onSubmitRating={handleRatingSubmit}
                 isSubmitting={isSubmittingRating}
             />
-            <InfoModal
+            <GroupsModal
                 isModalOpen={isGroupsModalOpen}
                 closeModal={() => setIsGroupsModalOpen(false)}
-                title="Grupos de Tradução"
-                message="Aqui você pode encontrar informações sobre os grupos de tradução responsáveis por esta obra."
-                linkText="Ver Grupos"
-                linkUrl="https://example.com/groups"
+                titleId={id}
             />
-            <InfoModal
+            <StoresModal
                 isModalOpen={isCartModalOpen}
                 closeModal={() => setIsCartModalOpen(false)}
-                title="Adicionar ao Carrinho"
-                message="Adicione esta obra ao seu carrinho para compra ou acompanhamento."
-                linkText="Ir ao Carrinho"
-                linkUrl="https://example.com/cart"
+                titleId={id}
             />
         </>
     );
