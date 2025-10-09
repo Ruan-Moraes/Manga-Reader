@@ -86,22 +86,10 @@ const Card = ({
                 <span className="flex items-center gap-2">
                     {hasChapters && index === 0 && (
                         <span className="p-1 text-[0.5rem] rounded-xs bg-tertiary">
-                            {
-                                // TODO: Utilizar o método treatDate para formatar a data
-                                (() => {
-                                    const date = new Date(chapter.releaseDate);
-
-                                    const month = (date.getMonth() + 1)
-                                        .toString()
-                                        .padStart(2, '0');
-                                    const day = date
-                                        .getDate()
-                                        .toString()
-                                        .padStart(2, '0');
-
-                                    return `${month}/${day}`;
-                                })()
-                            }
+                            {treatDate(chapter.releaseDate!, {
+                                month: '2-digit',
+                                day: '2-digit',
+                            })}
                         </span>
                     )}
                     {isLoading ? (

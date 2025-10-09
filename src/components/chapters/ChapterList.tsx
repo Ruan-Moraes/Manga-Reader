@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { ChapterTypes } from '../../types/ChapterTypes';
 
-import formatDateToBrazilian from '../../services/utils/formatDateToBrazilian';
+import treatDate from '../../services/utils/treatDate';
 
 import ChapterItem from './ChapterItem';
 import ChapterPagination from './ChapterPagination';
@@ -41,7 +41,11 @@ const ChapterList = ({ chapters, onChapterClick }: ChapterListProps) => {
                         key={`${chapter.number}-${index}`}
                         chapterNumber={chapter.number}
                         title={chapter.title}
-                        date={formatDateToBrazilian(chapter.releaseDate)}
+                        date={treatDate(chapter.releaseDate, {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        })}
                         pages={chapter.pages}
                         onClick={() =>
                             onChapterClick && onChapterClick(chapter.number)

@@ -1,6 +1,6 @@
 import { GrDocumentConfig } from 'react-icons/gr';
 
-import { clearCache } from '../../../services/utils/cache.tsx';
+import { clearCache } from '../../../services/utils/cache.ts';
 
 import CustomLink from '../elements/CustomLink';
 

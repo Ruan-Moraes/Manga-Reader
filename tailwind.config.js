@@ -30,6 +30,7 @@ export default {
                     opacity: {
                         25: '#ddda2a40 !important',
                         50: '#ddda2a80 !important',
+                        75: '#ddda2abf !important',
                     },
                 },
                 quinary: {

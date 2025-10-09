@@ -8,8 +8,6 @@ export interface StoreTypes {
     currency: string;
     availability: 'in_stock' | 'out_of_stock' | 'pre_order';
     rating: number;
-    deliveryTime: string;
-    shippingCost: number;
     discount?: {
         percentage: number;
         originalPrice: number;

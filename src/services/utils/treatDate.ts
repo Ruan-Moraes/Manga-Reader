@@ -1,8 +1,8 @@
 const treatDate = (
-    date: Date,
+    date: Date | string,
     {
-        year = 'numeric',
-        month = 'numeric',
+        year,
+        month,
         day,
         hour,
         minute,
@@ -14,6 +14,8 @@ const treatDate = (
         minute?: 'numeric' | '2-digit';
     },
 ) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+
     const options: Intl.DateTimeFormatOptions = {
         year,
         month,
@@ -22,7 +24,7 @@ const treatDate = (
         minute,
     };
 
-    return new Intl.DateTimeFormat('pt-BR', options).format(date);
+    return new Intl.DateTimeFormat('pt-BR', options).format(dateObj);
 };
 
 export default treatDate;

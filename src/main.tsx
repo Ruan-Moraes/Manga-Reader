@@ -3,12 +3,11 @@ import { createRoot } from 'react-dom/client';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
 import { UserModalProvider } from './context/modals/user/UserModalContext.tsx';
 import { EmojiModalProvider } from './context/modals/emoji/EmojiModalContext.tsx';
 import { CommentSortProvider } from './context/comments/CommentSortContext.tsx';
 
-import { queryClient } from './services/utils/cache.tsx';
+import { queryClient } from './services/utils/cache.ts';
 
 import AppLayout from './components/app-layout/AppLayout.tsx';
 

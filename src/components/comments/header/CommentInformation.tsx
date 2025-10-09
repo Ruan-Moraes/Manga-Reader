@@ -9,13 +9,11 @@ const CommentInformation = ({
     createdAt,
     wasEdited,
 }: CommentInformationProps) => {
-    const date = new Date(createdAt);
-
     return (
         <div className="flex justify-end gap-2 text-[0.5625rem]">
             <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
-                <span className=" text-shadow-default">
-                    {treatDate(date, {
+                <span className="text-shadow-default">
+                    {treatDate(createdAt, {
                         year: 'numeric',
                         month: 'numeric',
                         day: 'numeric',

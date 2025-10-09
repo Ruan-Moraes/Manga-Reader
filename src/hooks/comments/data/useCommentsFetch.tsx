@@ -18,7 +18,7 @@ const useCommentsFetch = (
                 checkValidId(id);
 
                 const response = await fetch(
-                    url + '/' + QUERY_KEYS.COMMENTS + '/' + id,
+                    url + '/' + QUERY_KEYS.COMMENTS + '/', // + id, TODO: Retirar depois
                 );
 
                 checkValidReturn(response);

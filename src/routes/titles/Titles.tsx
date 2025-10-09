@@ -92,7 +92,7 @@ const Titles = () => {
     } = title as TitleTypes;
 
     const handleChapterClick = (chapterNumber: string) => {
-        console.log(`Chapter ${chapterNumber} clicked`);
+        console.log(`Chapter ${chapterNumber} clicked`); // Todo: implementar
     };
 
     const handleSortClick = () => {

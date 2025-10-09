@@ -18,7 +18,7 @@ const CardsContainer = ({ title, subTitle }: CardsContainerTypes) => {
 
     const { data, status } = useTitlesFetch(
         API_URLS.TITLE_URL,
-        QUERY_KEYS.UPDATED_TILTES,
+        QUERY_KEYS.UPDATED_TITLES,
     );
 
     const [visible, setVisible] = useState(10);

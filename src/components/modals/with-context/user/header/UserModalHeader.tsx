@@ -32,20 +32,20 @@ const UserModalHeader = () => {
                     <div className="overflow-x-auto">
                         <h3 className="flex flex-col gap-0.5 font-bold leading-none text-nowrap text-shadow-default">
                             <span>{userData!.name}</span>
-                            {userData?.moderator?.isModerator && (
+                            {userData!.moderator?.isModerator && (
                                 <span className="text-xs font-normal text-tertiary">
                                     Moderador desde{' '}
                                     {treatDate(
-                                        userData.moderator.since,
+                                        userData!.moderator.since,
                                         dateOptions,
                                     )}
                                 </span>
                             )}
-                            {userData?.member?.isMember && (
+                            {userData!.member?.isMember && (
                                 <span className="text-xs font-normal text-tertiary">
                                     Membro desde{' '}
                                     {treatDate(
-                                        userData.member.since,
+                                        userData!.member!.since,
                                         dateOptions,
                                     )}
                                 </span>

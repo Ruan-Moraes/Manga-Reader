@@ -19,7 +19,8 @@ const RatingModal = ({
     isSubmitting = false,
 }: RatingModalProps) => {
     const [currentRating, setCurrentRating] = useState<number>(0);
-    const [allCategoriesRated, setAllCategoriesRated] = useState<boolean>(false);
+    const [allCategoriesRated, setAllCategoriesRated] =
+        useState<boolean>(false);
 
     const handleSubmit = () => {
         if (allCategoriesRated && currentRating > 0) {
@@ -47,8 +48,8 @@ const RatingModal = ({
     return (
         <BaseModal isModalOpen={isModalOpen} closeModal={handleCancel}>
             <RatingModalHeader title="Classificar Título" />
-            <RatingModalBody 
-                onRatingChange={handleRatingChange} 
+            <RatingModalBody
+                onRatingChange={handleRatingChange}
                 onAllCategoriesRated={handleAllCategoriesRated}
             />
             <RatingModalFooter
