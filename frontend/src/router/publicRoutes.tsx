@@ -6,6 +6,7 @@ import Groups from '../routes/groups/Groups.tsx';
 import GroupProfile from '../routes/groups/GroupProfile.tsx';
 import SavedMangas from '../routes/saved-mangas/SavedMangas.tsx';
 import News from '../routes/news/News.tsx';
+import NewsDetails from '../routes/news/NewsDetails.tsx';
 import Events from '../routes/events/Events.tsx';
 import EventDetails from '../routes/events/EventDetails.tsx';
 import Login from '../routes/login/Login.tsx';
@@ -63,6 +64,10 @@ const publicRoutes = [
     {
         path: 'news',
         element: <News />,
+    },
+    {
+        path: 'news/:newsId',
+        element: <NewsDetails />,
     },
     {
         path: 'events',
