@@ -7,6 +7,7 @@ import GroupProfile from '../routes/groups/GroupProfile.tsx';
 import SavedMangas from '../routes/saved-mangas/SavedMangas.tsx';
 import News from '../routes/news/News.tsx';
 import Events from '../routes/events/Events.tsx';
+import EventDetails from '../routes/events/EventDetails.tsx';
 import Login from '../routes/login/Login.tsx';
 import SignUp from '../routes/sign-up/SignUp.tsx';
 import ForgotPassword from '../routes/forgot-password/ForgotPassword.tsx';
@@ -66,6 +67,10 @@ const publicRoutes = [
     {
         path: 'events',
         element: <Events />,
+    },
+    {
+        path: 'events/:eventId',
+        element: <EventDetails />,
     },
     {
         path: 'login',
