@@ -1,14 +1,12 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 
 import BaseModal from '../../base/BaseModal';
-import RatingModalHeader from './header/RatingModalHeader';
-import RatingModalBody from './body/RatingModalBody';
-import RatingModalFooter from './footer/RatingModalFooter';
+import RatingStars from '../../../ratings/RatingStars';
 
 type RatingModalProps = {
     isModalOpen: boolean;
     closeModal: () => void;
-    onSubmitRating: (rating: number) => void;
+    onSubmitRating: (rating: number, comment?: string) => void;
     isSubmitting?: boolean;
 };
 
@@ -19,45 +17,50 @@ const RatingModal = ({
     isSubmitting = false,
 }: RatingModalProps) => {
     const [currentRating, setCurrentRating] = useState<number>(0);
-    const [allCategoriesRated, setAllCategoriesRated] =
-        useState<boolean>(false);
+    const [comment, setComment] = useState<string>('');
 
     const handleSubmit = () => {
-        if (allCategoriesRated && currentRating > 0) {
-            onSubmitRating(currentRating);
-            setCurrentRating(0);
-            setAllCategoriesRated(false);
-            closeModal();
+        if (currentRating < 1) {
+            return;
         }
-    };
 
-    const handleCancel = () => {
+        onSubmitRating(currentRating, comment);
         setCurrentRating(0);
-        setAllCategoriesRated(false);
+        setComment('');
         closeModal();
     };
 
-    const handleRatingChange = (rating: number) => {
-        setCurrentRating(rating);
-    };
-
-    const handleAllCategoriesRated = (allRated: boolean) => {
-        setAllCategoriesRated(allRated);
-    };
-
     return (
-        <BaseModal isModalOpen={isModalOpen} closeModal={handleCancel}>
-            <RatingModalHeader title="Classificar Título" />
-            <RatingModalBody
-                onRatingChange={handleRatingChange}
-                onAllCategoriesRated={handleAllCategoriesRated}
-            />
-            <RatingModalFooter
-                onSubmit={handleSubmit}
-                onCancel={handleCancel}
-                isSubmitting={isSubmitting}
-                isDisabled={!allCategoriesRated}
-            />
+        <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
+            <div className="flex flex-col gap-4">
+                <h3 className="text-lg font-bold">Avaliar mangá</h3>
+                <RatingStars
+                    value={currentRating}
+                    onChange={setCurrentRating}
+                    size={24}
+                />
+                <textarea
+                    value={comment}
+                    onChange={event => setComment(event.target.value)}
+                    placeholder="Comentário (opcional)"
+                    className="w-full h-24 p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                />
+                <div className="flex gap-2">
+                    <button
+                        onClick={closeModal}
+                        className="flex-1 px-4 py-2 text-sm border rounded-xs border-tertiary"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={currentRating < 1 || isSubmitting}
+                        className="flex-1 px-4 py-2 text-sm text-white rounded-xs bg-primary disabled:opacity-50"
+                    >
+                        {isSubmitting ? 'Enviando...' : 'Enviar avaliação'}
+                    </button>
+                </div>
+            </div>
         </BaseModal>
     );
 };

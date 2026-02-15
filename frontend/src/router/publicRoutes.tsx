@@ -3,6 +3,8 @@ import Titles from '../routes/titles/Titles.tsx';
 import Chapter from '../routes/chapter/Chapter.tsx';
 import Categories from '../routes/categories/Categories.tsx';
 import Groups from '../routes/groups/Groups.tsx';
+import GroupProfile from '../routes/groups/GroupProfile.tsx';
+import SavedMangas from '../routes/saved-mangas/SavedMangas.tsx';
 import News from '../routes/news/News.tsx';
 import Events from '../routes/events/Events.tsx';
 import Login from '../routes/login/Login.tsx';
@@ -33,6 +35,14 @@ const publicRoutes = [
     {
         path: 'groups',
         element: <Groups />,
+    },
+    {
+        path: 'groups/:groupId',
+        element: <GroupProfile />,
+    },
+    {
+        path: 'saved-mangas',
+        element: <SavedMangas />,
     },
     {
         path: 'news',

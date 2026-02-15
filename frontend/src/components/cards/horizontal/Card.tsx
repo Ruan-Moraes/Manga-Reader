@@ -7,6 +7,10 @@ import { HorizontalCardTypes } from '../../../types/CardTypes';
 
 import Warning from '../../notifications/Warning';
 import CustomLink from '../../links/elements/CustomLink';
+import FavoriteButton from '../../favorites/FavoriteButton';
+import useSavedMangas from '../../../hooks/titles/useSavedMangas';
+import { getRatingsAverage } from '../../../services/mock/mockRatingService';
+import RatingStars from '../../ratings/RatingStars';
 
 const Card = ({
     isError,
@@ -18,7 +22,10 @@ const Card = ({
     name,
     chapters,
 }: HorizontalCardTypes) => {
-    // TODO: Alterar quando a API estiver finalizada.
+    const { isSaved, toggleFavorite } = useSavedMangas();
+
+    const average = useMemo(() => getRatingsAverage(String(id)), [id]);
+
     const lastChapter = useMemo(() => {
         if (!chapters || chapters.length === 0) {
             return '...';
@@ -42,13 +49,8 @@ const Card = ({
             <div className="flex flex-col px-3 py-1 text-center rounded-b-none rounded-xs bg-tertiary">
                 <span className="font-bold">{isLoading ? '...' : type}</span>
                 <span className="text-xs">
-                    <span>
-                        (
-                        {lastChapter === '...'
-                            ? lastChapter
-                            : lastChapter.number}{' '}
-                        Capítulos)
-                    </span>
+                    ({lastChapter === '...' ? lastChapter : lastChapter.number}{' '}
+                    Capítulos)
                 </span>
             </div>
             <div className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-xs overflow-hidden">
@@ -58,22 +60,42 @@ const Card = ({
                     </span>
                 )}
                 {!isLoading && (
-                    <CustomLink link={`/titles/${id}`} className="block h-full">
-                        <img
-                            alt={`Capa do título: ${name}`}
-                            className="object-cover w-full h-full"
-                            src={cover}
-                        />
-                    </CustomLink>
+                    <>
+                        <div className="absolute top-2 left-2 z-10">
+                            <FavoriteButton
+                                isSaved={isSaved(String(id))}
+                                onClick={() =>
+                                    toggleFavorite({
+                                        titleId: String(id),
+                                        name: name || 'Sem nome',
+                                        cover: cover || '',
+                                        type: type || 'Mangá',
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className="absolute right-2 top-2 z-10 px-2 py-1 rounded-xs bg-secondary/80">
+                            <RatingStars value={average} size={12} showValue />
+                        </div>
+                        <CustomLink
+                            link={`/titles/${id}`}
+                            className="block h-full"
+                        >
+                            <img
+                                alt={`Capa do título: ${name}`}
+                                className="object-cover w-full h-full"
+                                src={cover}
+                            />
+                        </CustomLink>
+                    </>
                 )}
             </div>
             <div className="w-[20rem] px-2 py-1 rounded-b-xs bg-tertiary">
-                {isLoading && (
+                {isLoading ? (
                     <span className="block font-bold text-center text-shadow-default">
                         ...
                     </span>
-                )}
-                {!isLoading && (
+                ) : (
                     <h3 className="overflow-x-auto text-center text-nowrap">
                         <CustomLink
                             link={`/titles/${id}`}

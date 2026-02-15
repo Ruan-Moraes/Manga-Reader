@@ -8,4 +8,6 @@ export type GroupTypes = {
     totalTitles: number;
     foundedYear?: number;
     status: 'active' | 'inactive' | 'hiatus';
+    members: string[];
+    translatedTitleIds: string[];
 };

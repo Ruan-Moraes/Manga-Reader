@@ -72,6 +72,11 @@ const MenuLinkBlock = () => {
                 </div>
                 <div className="flex flex-col gap-1.5 pl-3">
                     <CustomLink
+                        link="/saved-mangas"
+                        text="Meus salvos"
+                        inlineStyle={{ fontWeight: 'normal' }}
+                    />
+                    <CustomLink
                         link="/groups"
                         text="Grupos"
                         inlineStyle={{ fontWeight: 'normal' }}

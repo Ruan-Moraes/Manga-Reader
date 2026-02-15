@@ -7,18 +7,16 @@ type GroupsContainerProps = {
     title?: string;
 };
 
-const GroupsContainer = ({ 
-    groups, 
-    isLoading = false, 
-    title = "Grupos de Tradução" 
+const GroupsContainer = ({
+    groups,
+    isLoading = false,
+    title = 'Grupos de Tradução',
 }: GroupsContainerProps) => {
     if (isLoading) {
         return (
             <div className="flex flex-col gap-4">
-                {title && (
-                    <h2 className="text-lg font-bold">{title}</h2>
-                )}
-                <div className="grid grid-cols-2 gap-x-2 gap-y-4">
+                {title && <h2 className="text-lg font-bold">{title}</h2>}
+                <div className="grid grid-cols-1 mobile-md:grid-cols-2 gap-x-2 gap-y-4">
                     {Array.from({ length: 6 }).map((_, index) => (
                         <GroupCard
                             key={index}
@@ -34,9 +32,7 @@ const GroupsContainer = ({
     if (!groups || groups.length === 0) {
         return (
             <div className="flex flex-col gap-4">
-                {title && (
-                    <h2 className="text-lg font-bold">{title}</h2>
-                )}
+                {title && <h2 className="text-lg font-bold">{title}</h2>}
                 <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
                     <p className="text-tertiary text-center text-sm">
                         Nenhum grupo de tradução encontrado para esta obra.
@@ -48,16 +44,10 @@ const GroupsContainer = ({
 
     return (
         <div className="flex flex-col gap-4">
-            {title && (
-                <h2 className="text-lg font-bold">{title}</h2>
-            )}
-            <div className="grid grid-cols-2 gap-x-2 gap-y-4">
-                {groups.map((group) => (
-                    <GroupCard
-                        key={group.id}
-                        group={group}
-                        isLoading={false}
-                    />
+            {title && <h2 className="text-lg font-bold">{title}</h2>}
+            <div className="grid grid-cols-1 mobile-md:grid-cols-2 gap-x-2 gap-y-4">
+                {groups.map(group => (
+                    <GroupCard key={group.id} group={group} isLoading={false} />
                 ))}
             </div>
         </div>
