@@ -1,129 +1,250 @@
-import { GrDocumentConfig } from 'react-icons/gr';
-import { FiLogOut, FiUser } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+
+import { clsx } from 'clsx';
 
 import { clearCache } from '../../../services/utils/cache.ts';
 
-import CustomLink from '../elements/CustomLink';
-import { UserTypes } from '../../../types/UserTypes.ts';
-
-type MenuLinkBlockProps = {
-    user: UserTypes | null;
-    isLoggedIn: boolean;
-    onLogout: () => void;
+export type MenuProfile = {
+    id: string;
+    label: string;
+    fullName?: string;
+    email?: string;
+    planBadge?: string;
+    savedCount?: number;
+    unreadNotifications?: number;
+    newsBadge?: string;
+    eventBadge?: string;
+    canDownload?: boolean;
+    isAdmin?: boolean;
+    isVisitor?: boolean;
 };
 
-const MenuLinkBlock = ({ user, isLoggedIn, onLogout }: MenuLinkBlockProps) => {
+type MenuLinkBlockProps = {
+    profile: MenuProfile;
+    isLoggedIn: boolean;
+    onLogout: () => void;
+    onNavigate: () => void;
+};
+
+type MenuItem = {
+    label: string;
+    link: string;
+    badge?: string;
+};
+
+const sectionTitleClass =
+    'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-tertiary';
+
+const menuItemClass =
+    'flex items-center justify-between px-3 py-2.5 rounded-xs text-sm font-medium transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default';
+
+const MenuNavLink = ({
+    label,
+    link,
+    badge,
+    onNavigate,
+}: MenuItem & { onNavigate: () => void }) => {
     return (
-        <div className="flex flex-col h-full gap-4 px-4 pb-4">
+        <Link
+            to={`/Manga-Reader${link}`}
+            className={menuItemClass}
+            onClick={onNavigate}
+        >
+            <span>{label}</span>
+            {badge && (
+                <span className="px-2 py-0.5 text-[0.68rem] font-semibold rounded-xs bg-secondary border border-tertiary text-tertiary">
+                    {badge}
+                </span>
+            )}
+        </Link>
+    );
+};
+
+const MenuLinkBlock = ({
+    profile,
+    isLoggedIn,
+    onLogout,
+    onNavigate,
+}: MenuLinkBlockProps) => {
+    const feedItems: MenuItem[] = [
+        { label: 'Home', link: '/' },
+        {
+            label: 'Trending',
+            link: '/categories?sort=trending',
+            badge: 'em alta',
+        },
+        { label: 'Novidades', link: '/news?filter=new' },
+    ];
+
+    const libraryItems: MenuItem[] = [
+        {
+            label: 'Meus Mangás',
+            link: '/saved-mangas',
+            badge: `${profile.savedCount ?? 0} salvos`,
+        },
+        { label: 'Avaliados', link: '/reviews' },
+        ...(profile.canDownload
+            ? [{ label: 'Downloads', link: '/library?tab=downloads' }]
+            : []),
+    ];
+
+    const communityItems: MenuItem[] = [
+        { label: 'Notícias', link: '/news', badge: profile.newsBadge ?? '+0' },
+        {
+            label: 'Eventos',
+            link: '/events',
+            badge: profile.eventBadge ?? 'sem próximos',
+        },
+        { label: 'Grupos de Tradução', link: '/groups' },
+        { label: 'Fórum / Discussões', link: '/groups?tab=forum' },
+    ];
+
+    const settingsItems: MenuItem[] = [
+        { label: 'Meu Perfil', link: '/profile' },
+        {
+            label: 'Notificações',
+            link: '/profile?tab=notifications',
+            badge: `+${profile.unreadNotifications ?? 0}`,
+        },
+        { label: 'Aparência', link: '/profile?tab=appearance' },
+        { label: 'Modo Leitura', link: '/profile?tab=reading' },
+        { label: 'Privacidade', link: '/profile?tab=privacy' },
+    ];
+
+    const adminItems: MenuItem[] = [
+        { label: 'Dashboard', link: '/profile?tab=dashboard' },
+        { label: 'Gerenciar Notícias', link: '/news?tab=manage' },
+        { label: 'Gerenciar Eventos', link: '/events?tab=manage' },
+        { label: 'Gerenciar Grupos', link: '/groups?tab=manage' },
+        { label: 'Gerenciar Usuários', link: '/profile?tab=users' },
+        { label: 'Configurações do Site', link: '/profile?tab=site' },
+    ];
+
+    return (
+        <div className="flex flex-col h-full gap-4 px-4 pb-4 overflow-y-auto">
             <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
-                {isLoggedIn && user ? (
+                {isLoggedIn && !profile.isVisitor ? (
                     <>
-                        <div className="flex items-center gap-2">
-                            <img
-                                src={user.photo}
-                                alt={user.name}
-                                className="object-cover w-10 h-10 border rounded-full border-tertiary"
-                            />
-                            <div>
-                                <p className="text-sm text-tertiary">
-                                    Conectado como
-                                </p>
-                                <p className="font-bold">{user.name}</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-1.5 pl-1">
-                            <CustomLink
-                                link="/profile"
-                                text="Meu Perfil"
-                                inlineStyle={{ fontWeight: 'normal' }}
-                            />
-                            <CustomLink
-                                link="/library"
-                                text="Minha Biblioteca"
-                                inlineStyle={{ fontWeight: 'normal' }}
-                            />
-                            <CustomLink
-                                link="/reviews"
-                                text="Minhas Avaliações"
-                                inlineStyle={{ fontWeight: 'normal' }}
-                            />
-                            <CustomLink
-                                link="/groups"
-                                text="Grupos de Tradução"
-                                inlineStyle={{ fontWeight: 'normal' }}
-                            />
-                        </div>
+                        <p className={sectionTitleClass}>Conta</p>
+                        <p className="text-sm font-semibold">
+                            {profile.fullName}
+                        </p>
+                        <p className="text-xs text-tertiary">
+                            {profile.email?.replace(
+                                /(.{4}).*(@.*)/,
+                                '$1••••$2',
+                            )}
+                        </p>
+                        {profile.planBadge && (
+                            <p className="text-xs font-semibold text-quaternary-default">
+                                {profile.planBadge}
+                            </p>
+                        )}
                     </>
                 ) : (
-                    <div className="flex flex-col gap-1.5">
-                        <p className="text-sm text-tertiary">
-                            Entre para salvar mangás e avaliar capítulos.
+                    <>
+                        <p className={sectionTitleClass}>Bem-vindo</p>
+                        <p className="text-sm font-semibold">
+                            Faça parte da comunidade
                         </p>
-                        <CustomLink link="/login" text="Entrar" />
-                        <CustomLink
-                            link="/sign-up"
-                            text="Criar conta"
-                            inlineStyle={{ fontWeight: 'normal' }}
-                        />
-                    </div>
+                        <div className="flex gap-2 pt-1">
+                            <Link
+                                to="/Manga-Reader/login"
+                                onClick={onNavigate}
+                                className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
+                            >
+                                Entrar
+                            </Link>
+                            <Link
+                                to="/Manga-Reader/sign-up"
+                                onClick={onNavigate}
+                                className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
+                            >
+                                Cadastrar
+                            </Link>
+                        </div>
+                    </>
                 )}
             </div>
 
-            <div className="flex flex-col gap-2">
-                <h3 className="font-bold">Navegação rápida</h3>
-                <div className="flex flex-col gap-1.5 pl-3">
-                    <CustomLink
-                        link="/categories?tags=Isekai"
-                        text="Isekai"
-                        inlineStyle={{ fontWeight: 'normal' }}
+            <section className="flex flex-col gap-1.5">
+                <h3 className={sectionTitleClass}>Feed</h3>
+                {feedItems.map(item => (
+                    <MenuNavLink
+                        key={item.label}
+                        {...item}
+                        onNavigate={onNavigate}
                     />
-                    <CustomLink
-                        link="/categories?tags=shounen"
-                        text="Shounen"
-                        inlineStyle={{ fontWeight: 'normal' }}
-                    />
-                    <CustomLink
-                        link="/news"
-                        text="Notícias"
-                        inlineStyle={{ fontWeight: 'normal' }}
-                    />
-                    <CustomLink
-                        link="/events"
-                        text="Eventos"
-                        inlineStyle={{ fontWeight: 'normal' }}
-                    />
-                </div>
-            </div>
+                ))}
+            </section>
 
-            <div className="flex items-center w-full gap-2 mt-auto ml-auto text-center mobile-sm:text-xs mobile-md:text-sm">
+            {isLoggedIn && !profile.isVisitor && (
+                <section className="flex flex-col gap-1.5">
+                    <h3 className={sectionTitleClass}>Biblioteca</h3>
+                    {libraryItems.map(item => (
+                        <MenuNavLink
+                            key={item.label}
+                            {...item}
+                            onNavigate={onNavigate}
+                        />
+                    ))}
+                </section>
+            )}
+
+            <section className="flex flex-col gap-1.5">
+                <h3 className={sectionTitleClass}>Comunidade</h3>
+                {communityItems.map(item => (
+                    <MenuNavLink
+                        key={item.label}
+                        {...item}
+                        onNavigate={onNavigate}
+                    />
+                ))}
+            </section>
+
+            {isLoggedIn && !profile.isVisitor && (
+                <section className="flex flex-col gap-1.5">
+                    <h3 className={sectionTitleClass}>Configurações</h3>
+                    {settingsItems.map(item => (
+                        <MenuNavLink
+                            key={item.label}
+                            {...item}
+                            onNavigate={onNavigate}
+                        />
+                    ))}
+                </section>
+            )}
+
+            {profile.isAdmin && (
+                <section className="flex flex-col gap-1.5">
+                    <h3 className={sectionTitleClass}>Admin</h3>
+                    {adminItems.map(item => (
+                        <MenuNavLink
+                            key={item.label}
+                            {...item}
+                            onNavigate={onNavigate}
+                        />
+                    ))}
+                </section>
+            )}
+
+            <div className="flex items-center w-full gap-2 pt-2 mt-auto border-t border-tertiary/50">
                 <button
                     onClick={clearCache}
-                    className="h-10 px-4 font-bold border rounded-xs border-tertiary bg-secondary grow"
+                    className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-secondary hover:bg-tertiary/20"
                 >
                     Limpar cache
                 </button>
-                {isLoggedIn ? (
+                {isLoggedIn && !profile.isVisitor && (
                     <button
                         onClick={onLogout}
-                        className="h-10 px-3 border rounded-xs border-tertiary bg-secondary"
-                        aria-label="Sair"
+                        className={clsx(
+                            'h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-secondary hover:bg-tertiary/20',
+                        )}
                     >
-                        <FiLogOut className="text-2xl" />
-                    </button>
-                ) : (
-                    <button
-                        className="h-10 px-3 border rounded-xs border-tertiary bg-secondary"
-                        aria-label="Configurações"
-                    >
-                        <GrDocumentConfig className="text-2xl" />
+                        Sair
                     </button>
                 )}
-                <button
-                    className="h-10 px-3 border rounded-xs border-tertiary bg-secondary"
-                    aria-label="Perfil"
-                >
-                    <FiUser className="text-2xl" />
-                </button>
             </div>
         </div>
     );
