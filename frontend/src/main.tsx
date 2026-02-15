@@ -2,22 +2,23 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { UserModalProvider } from './context/modals/user/UserModalContext.tsx';
-import { EmojiModalProvider } from './context/modals/emoji/EmojiModalContext.tsx';
-import { CommentSortProvider } from './context/comments/CommentSortContext.tsx';
 
-import { queryClient } from './services/utils/cache.ts';
+import { UserModalProvider } from '@feature/auth';
+import { EmojiModalProvider, CommentSortProvider } from '@feature/comment';
 
-import AppLayout from './components/app-layout/AppLayout.tsx';
+import { queryClient } from '@shared/service/util/cache';
 
-import publicRoutes from './router/publicRoutes.tsx';
-import protectedRoutes from './router/protectedRoutes.tsx';
+import AppLayout from '@app/layout/AppLayout';
 
-import './styles/index.css';
+import publicRoutes from '@app/router/PublicRoutes';
+import protectedRoutes from '@app/router/ProtectedRoutes';
+
+import './style/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Toast from './components/toast/Toast';
+import Toast from '@shared/component/toast/Toast';
 
 const routes = createBrowserRouter([
     {
