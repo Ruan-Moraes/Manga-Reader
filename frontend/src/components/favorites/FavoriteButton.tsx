@@ -15,16 +15,20 @@ const FavoriteButton = ({
         <button
             type="button"
             onClick={onClick}
-            className="flex items-center gap-1.5 px-2 py-1 text-xs font-semibold border rounded-xs border-tertiary bg-secondary hover:bg-primary-default transition-colors"
+            className={`flex items-center gap-2 px-3 py-2 text-xs font-semibold border rounded-xs transition-all ${
+                isSaved
+                    ? 'border-quaternary-default bg-quaternary-default/25'
+                    : 'border-tertiary bg-secondary hover:bg-primary-default'
+            }`}
         >
             {isLoading ? (
                 <span>...</span>
             ) : isSaved ? (
-                <BsBookmarkFill className="text-quaternary-default" />
+                <BsBookmarkFill className="text-quaternary-default animate-pulse" />
             ) : (
                 <BsBookmark />
             )}
-            {isSaved ? 'Salvo' : 'Salvar'}
+            {isSaved ? 'Na biblioteca' : 'Salvar na biblioteca'}
         </button>
     );
 };

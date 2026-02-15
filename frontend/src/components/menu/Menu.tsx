@@ -7,11 +7,15 @@ import CustomLink from '../links/elements/CustomLink';
 import MainSearchInput from '../inputs/MainSearchInput.tsx';
 import Blur from '../blur/Blur';
 import MenuLinkBlock from '../links/sections/MenuLinkBlock';
+import useAuth from '../../hooks/user/useAuth.tsx';
+import { showInfoToast } from '../../services/utils/toastUtils.ts';
 
 const Menu = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isSticky, setIsSticky] = useState<boolean>(false);
     const [menuHeight, setMenuHeight] = useState<number>(0);
+
+    const { user, isLoggedIn, logout } = useAuth();
 
     const menuRef = useRef<HTMLDivElement>(null);
     const originalOffset = useRef<number>(0);
@@ -79,14 +83,12 @@ const Menu = () => {
                                 <CustomLink text="Manga Reader" />
                             </h2>
                         </div>
-                        <div>
-                            <MdMenu
-                                aria-controls="menu-links"
-                                aria-expanded={isMenuOpen}
-                                onClick={toggleMenu}
-                                className="text-4xl cursor-pointer"
-                            />
-                        </div>
+                        <MdMenu
+                            aria-controls="menu-links"
+                            aria-expanded={isMenuOpen}
+                            onClick={toggleMenu}
+                            className="text-4xl cursor-pointer hover:scale-105 transition-transform"
+                        />
                     </div>
                 </div>
                 <div className="absolute">
@@ -106,7 +108,15 @@ const Menu = () => {
                             </h2>
                             <MainSearchInput />
                         </div>
-                        <MenuLinkBlock />
+                        <MenuLinkBlock
+                            user={user}
+                            isLoggedIn={isLoggedIn}
+                            onLogout={() => {
+                                logout();
+                                showInfoToast('Você saiu da sua conta.');
+                                setIsMenuOpen(false);
+                            }}
+                        />
                     </div>
                     <Blur isOpen={isMenuOpen} onClickBlur={setIsMenuOpen} />
                 </div>

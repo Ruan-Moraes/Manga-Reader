@@ -11,8 +11,6 @@ import treatDate from '../../../services/utils/treatDate';
 import Warning from '../../notifications/Warning';
 import CustomLink from '../../links/elements/CustomLink';
 import { ChapterTypes } from '../../../types/ChapterTypes';
-import FavoriteButton from '../../favorites/FavoriteButton';
-import useSavedMangas from '../../../hooks/titles/useSavedMangas';
 import RatingStars from '../../ratings/RatingStars';
 import { getRatingsAverage } from '../../../services/mock/mockRatingService';
 
@@ -26,7 +24,6 @@ const Card = ({
     name,
     chapters,
 }: VerticalCardTypes) => {
-    const { isSaved, toggleFavorite } = useSavedMangas();
     const average = useMemo(() => getRatingsAverage(String(id)), [id]);
 
     const listOfChapters = useMemo(() => {
@@ -136,20 +133,7 @@ const Card = ({
                 )}
                 {!isLoading && (
                     <div className="relative">
-                        <div className="absolute left-2 top-2 z-10">
-                            <FavoriteButton
-                                isSaved={isSaved(String(id))}
-                                onClick={() =>
-                                    toggleFavorite({
-                                        titleId: String(id),
-                                        name: name || 'Sem nome',
-                                        cover: cover || '',
-                                        type: type || 'Mangá',
-                                    })
-                                }
-                            />
-                        </div>
-                        <div className="absolute right-2 top-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/85">
+                        <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                             <RatingStars value={average} size={12} showValue />
                         </div>
                         <CustomLink

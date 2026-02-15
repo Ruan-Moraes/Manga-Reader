@@ -1,6 +1,7 @@
 import { MangaRating } from '../../types/RatingTypes';
 
 const STORAGE_KEY = 'manga-reader:ratings';
+const USER_REVIEWS_KEY = 'manga-reader:user-reviews';
 
 const users = ['Ana', 'Carlos', 'Mika', 'Rui', 'João', 'Ester', 'Nina', 'Leo'];
 const comments = [
@@ -103,6 +104,16 @@ export const submitTitleRating = ({
     ratings[titleId] = [newRating, ...(ratings[titleId] ?? [])];
 
     saveRatingsStore(ratings);
+
+    const userReviewsStorage = localStorage.getItem(USER_REVIEWS_KEY);
+    const userReviews = userReviewsStorage
+        ? (JSON.parse(userReviewsStorage) as MangaRating[])
+        : [];
+
+    localStorage.setItem(
+        USER_REVIEWS_KEY,
+        JSON.stringify([newRating, ...userReviews]),
+    );
 
     return newRating;
 };

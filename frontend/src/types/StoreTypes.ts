@@ -1,16 +1,11 @@
 export interface StoreTypes {
     id: string;
     name: string;
-    logo: string;
+    logo?: string;
+    icon?: string;
     description: string;
     website: string;
-    price: number;
-    currency: string;
-    availability: 'in_stock' | 'out_of_stock' | 'pre_order';
-    rating: number;
-    discount?: {
-        percentage: number;
-        originalPrice: number;
-    };
+    availability?: 'in_stock' | 'out_of_stock' | 'pre_order';
+    rating?: number;
     features: string[];
 }

@@ -14,6 +14,9 @@ import AboutUs from '../routes/about-us/AboutUs.tsx';
 import TermsOfUse from '../routes/terms/TermsOfUse.tsx';
 import Dmca from '../routes/terms/Dmca.tsx';
 import NotFound from '../routes/error/NotFound.tsx';
+import Profile from '../routes/profile/Profile.tsx';
+import Library from '../routes/library/Library.tsx';
+import Reviews from '../routes/reviews/Reviews.tsx';
 
 const publicRoutes = [
     {
@@ -43,6 +46,18 @@ const publicRoutes = [
     {
         path: 'saved-mangas',
         element: <SavedMangas />,
+    },
+    {
+        path: 'library',
+        element: <Library />,
+    },
+    {
+        path: 'profile',
+        element: <Profile />,
+    },
+    {
+        path: 'reviews',
+        element: <Reviews />,
     },
     {
         path: 'news',

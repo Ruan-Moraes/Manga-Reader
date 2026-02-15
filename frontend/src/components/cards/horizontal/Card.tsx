@@ -7,8 +7,6 @@ import { HorizontalCardTypes } from '../../../types/CardTypes';
 
 import Warning from '../../notifications/Warning';
 import CustomLink from '../../links/elements/CustomLink';
-import FavoriteButton from '../../favorites/FavoriteButton';
-import useSavedMangas from '../../../hooks/titles/useSavedMangas';
 import { getRatingsAverage } from '../../../services/mock/mockRatingService';
 import RatingStars from '../../ratings/RatingStars';
 
@@ -22,8 +20,6 @@ const Card = ({
     name,
     chapters,
 }: HorizontalCardTypes) => {
-    const { isSaved, toggleFavorite } = useSavedMangas();
-
     const average = useMemo(() => getRatingsAverage(String(id)), [id]);
 
     const lastChapter = useMemo(() => {
@@ -61,20 +57,7 @@ const Card = ({
                 )}
                 {!isLoading && (
                     <>
-                        <div className="absolute top-2 left-2 z-10">
-                            <FavoriteButton
-                                isSaved={isSaved(String(id))}
-                                onClick={() =>
-                                    toggleFavorite({
-                                        titleId: String(id),
-                                        name: name || 'Sem nome',
-                                        cover: cover || '',
-                                        type: type || 'Mangá',
-                                    })
-                                }
-                            />
-                        </div>
-                        <div className="absolute right-2 top-2 z-10 px-2 py-1 rounded-xs bg-secondary/80">
+                        <div className="absolute right-2 bottom-2 z-10 px-2 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                             <RatingStars value={average} size={12} showValue />
                         </div>
                         <CustomLink

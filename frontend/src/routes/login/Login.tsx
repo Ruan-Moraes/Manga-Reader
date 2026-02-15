@@ -13,12 +13,14 @@ import Footer from '../../layouts/Footer';
 import AuthenticationForm from '../../components/forms/AuthenticationForm';
 import BaseInput from '../../components/inputs/BaseInput';
 import RaisedButton from '../../components/buttons/RaisedButton';
+import useAuth from '../../hooks/user/useAuth';
 
 // TODO: Implementar autenticação real
 const Login = () => {
     const navigate = useNavigate();
 
     const [redirectPath, setRedirectPath] = useState<string | null>(null);
+    const { login } = useAuth();
 
     useEffect(() => {
         const storedPath = localStorage.getItem('redirectAfterLogin');
@@ -37,7 +39,7 @@ const Login = () => {
         (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
 
-            console.log('Formulário enviado');
+            login();
 
             if (redirectPath) {
                 localStorage.removeItem('redirectAfterLogin');
@@ -58,7 +60,7 @@ const Login = () => {
                 });
             }
         },
-        [navigate, redirectPath],
+        [login, navigate, redirectPath],
     );
 
     return (
