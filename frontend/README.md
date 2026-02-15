@@ -24,3 +24,31 @@ Cada microserviço é responsável por uma parte específica do sistema, conform
 - **JWT (JSON Web Token)**: Tecnologia utilizada para autenticação e autorização de usuários.
 - **Bcrypt**: Tecnologia utilizada para criptografar as senhas dos usuários.
 - **Swagger**: Ferramenta utilizada para documentar a API dos microserviços.
+
+## Melhorias de UX implementadas
+
+### Navegação e estado de autenticação (mock)
+- O menu lateral agora possui navegação contextual para usuário logado/visitante.
+- Novas rotas:
+  - `/profile`: edição de nome e bio do usuário com avatar.
+  - `/library`: biblioteca por status (Lendo, Quero Ler, Concluído).
+  - `/reviews`: histórico de avaliações com edição de nota/comentário e exclusão.
+- Login mock persiste no `localStorage` e altera cabeçalho/menu automaticamente.
+
+### Cards, avaliações e favoritos
+- Removido botão de salvar dos cards de listagem (vertical, horizontal e destaque).
+- Cards exibem apenas média de avaliação com estrelas de alto contraste (preenchidas/vazadas + sombra).
+- O salvar/favoritar permanece na página individual do título, com feedback via toast.
+
+### Seção "Onde Comprar"
+- Redesenhada para uma lista limpa de lojas parceiras.
+- Sem preços, com foco em acesso direto ao site da loja.
+- Visual consistente com o tema do app.
+
+## Como testar os novos fluxos
+1. Acesse `/login` e entre (mock).
+2. Abra o menu e valide links: Perfil, Minha Biblioteca, Minhas Avaliações e Grupos.
+3. Entre em um título e salve/remova da biblioteca (toast de feedback).
+4. Acesse `/library` e verifique organização por status.
+5. Acesse `/reviews` para editar nota/comentário e excluir avaliações.
+6. Em um título, abra "Onde Comprar" e teste os links externos.

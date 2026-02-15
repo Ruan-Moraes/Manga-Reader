@@ -28,6 +28,10 @@ import RatingModal from '../../components/modals/no-context/rating/RatingModal';
 import GroupsModal from '../../components/modals/no-context/groups/GroupsModal';
 import StoresModal from '../../components/modals/no-context/stores/StoresModal';
 import RatingStars from '../../components/ratings/RatingStars';
+import {
+    showInfoToast,
+    showSuccessToast,
+} from '../../services/utils/toastUtils';
 
 const Titles = () => {
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
@@ -95,12 +99,21 @@ const Titles = () => {
     };
 
     const handleBookmarkClick = () => {
+        const wasSaved = isSaved(String(id));
+
         toggleBookmark({
             titleId: String(id),
             name,
             cover,
             type,
         });
+
+        if (wasSaved) {
+            showInfoToast('Mangá removido da sua biblioteca.');
+            return;
+        }
+
+        showSuccessToast('Mangá salvo na sua biblioteca.');
     };
 
     const filteredAndSortedChapters = [...chapters]
@@ -218,12 +231,12 @@ const Titles = () => {
             <GroupsModal
                 isModalOpen={isGroupsModalOpen}
                 closeModal={() => setIsGroupsModalOpen(false)}
-                titleId={id}
+                titleId={String(id)}
             />
             <StoresModal
                 isModalOpen={isCartModalOpen}
                 closeModal={() => setIsCartModalOpen(false)}
-                titleId={id}
+                titleId={String(id)}
             />
         </>
     );

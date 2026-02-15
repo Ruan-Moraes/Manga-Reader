@@ -1,4 +1,4 @@
-import { FaStar } from 'react-icons/fa';
+import { FaRegStar, FaStar } from 'react-icons/fa';
 
 type RatingStarsProps = {
     value: number;
@@ -25,21 +25,29 @@ const RatingStars = ({
                             key={starValue}
                             type="button"
                             onClick={() => onChange?.(starValue)}
-                            className="transition-transform hover:scale-110"
+                            className="transition-transform hover:scale-110 disabled:cursor-default"
+                            disabled={!onChange}
                         >
-                            <FaStar
-                                size={size}
-                                className={
-                                    isActive
-                                        ? 'text-yellow-400'
-                                        : 'text-tertiary'
-                                }
-                            />
+                            {isActive ? (
+                                <FaStar
+                                    size={size}
+                                    className="text-yellow-400 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]"
+                                />
+                            ) : (
+                                <FaRegStar
+                                    size={size}
+                                    className="text-white/80 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]"
+                                />
+                            )}
                         </button>
                     );
                 })}
             </div>
-            {showValue && <span className="text-xs">{value.toFixed(1)}</span>}
+            {showValue && (
+                <span className="text-xs font-semibold text-white drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]">
+                    {value.toFixed(1)}
+                </span>
+            )}
         </div>
     );
 };

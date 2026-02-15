@@ -9,8 +9,6 @@ import { HighlightCardTypes } from '../../../types/CardTypes';
 import Warning from '../../notifications/Warning';
 import TitleDetails from '../../informations/TitleDetails';
 import CustomLink from '../../links/elements/CustomLink';
-import FavoriteButton from '../../favorites/FavoriteButton';
-import useSavedMangas from '../../../hooks/titles/useSavedMangas';
 import RatingStars from '../../ratings/RatingStars';
 import { getRatingsAverage } from '../../../services/mock/mockRatingService';
 
@@ -30,7 +28,6 @@ const Card = ({
     artist,
     publisher,
 }: HighlightCardTypes) => {
-    const { isSaved, toggleFavorite } = useSavedMangas();
     const average = useMemo(() => getRatingsAverage(String(id)), [id]);
 
     const detailsHTML = useRef<HTMLDivElement>(null);
@@ -108,20 +105,7 @@ const Card = ({
                         className="flex flex-col w-2/4 overflow-hidden border rounded-xs rounded-tl-none border-tertiary"
                     >
                         <div className="relative h-44 mobile-md:h-56">
-                            <div className="absolute left-2 top-2 z-10">
-                                <FavoriteButton
-                                    isSaved={isSaved(String(id))}
-                                    onClick={() =>
-                                        toggleFavorite({
-                                            titleId: String(id),
-                                            name: name || 'Sem nome',
-                                            cover: cover || '',
-                                            type: type || 'Mangá',
-                                        })
-                                    }
-                                />
-                            </div>
-                            <div className="absolute right-2 top-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80">
+                            <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                                 <RatingStars
                                     value={average}
                                     size={12}
