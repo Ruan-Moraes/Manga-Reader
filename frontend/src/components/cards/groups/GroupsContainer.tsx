@@ -16,7 +16,7 @@ const GroupsContainer = ({
         return (
             <div className="flex flex-col gap-4">
                 {title && <h2 className="text-lg font-bold">{title}</h2>}
-                <div className="grid grid-cols-1 mobile-md:grid-cols-2 gap-x-2 gap-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4">
                     {Array.from({ length: 6 }).map((_, index) => (
                         <GroupCard
                             key={index}
@@ -45,7 +45,7 @@ const GroupsContainer = ({
     return (
         <div className="flex flex-col gap-4">
             {title && <h2 className="text-lg font-bold">{title}</h2>}
-            <div className="grid grid-cols-1 mobile-md:grid-cols-2 gap-x-2 gap-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4">
                 {groups.map(group => (
                     <GroupCard key={group.id} group={group} isLoading={false} />
                 ))}

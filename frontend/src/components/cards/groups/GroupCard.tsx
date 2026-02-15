@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { IoImageOutline } from 'react-icons/io5';
+import { IoOpenOutline } from 'react-icons/io5';
 
+import { getGroupStatusLabel } from '../../../services/mock/mockGroupService';
 import { GroupTypes } from '../../../types/GroupTypes';
 import CustomLink from '../../links/elements/CustomLink';
 
@@ -9,63 +9,74 @@ type GroupCardProps = {
     isLoading?: boolean;
 };
 
+const statusColorMap = {
+    active: 'bg-green-400',
+    hiatus: 'bg-yellow-400',
+    inactive: 'bg-red-400',
+};
+
 const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
-    const [imageError, setImageError] = useState<boolean>(false);
-
-    const getStatusText = (status: string) => {
-        switch (status) {
-            case 'active':
-                return 'Ativo';
-            case 'inactive':
-                return 'Inativo';
-            case 'hiatus':
-                return 'Hiato';
-            default:
-                return 'Desconhecido';
-        }
-    };
-
     if (isLoading) {
         return (
-            <div className="flex flex-col w-full border rounded-xs border-tertiary">
-                <div className="flex justify-center items-center h-24 mobile-md:h-32 bg-secondary">
-                    <span className="font-bold text-tertiary">
-                        Carregando...
-                    </span>
-                </div>
-            </div>
+            <article className="flex flex-col gap-3 p-4 border rounded-xs border-tertiary animate-pulse bg-secondary/40">
+                <div className="mx-auto w-20 h-20 rounded-full bg-tertiary" />
+                <div className="w-2/3 h-4 rounded-xs bg-tertiary" />
+                <div className="w-full h-3 rounded-xs bg-tertiary" />
+                <div className="w-1/2 h-3 rounded-xs bg-tertiary" />
+            </article>
         );
     }
 
     return (
-        <article className="flex flex-col w-full overflow-hidden border rounded-xs border-tertiary hover:shadow-md transition-shadow">
-            <div className="overflow-hidden relative h-24 mobile-md:h-32">
-                {!imageError && group.logo ? (
-                    <img
-                        src={group.logo}
-                        alt={`Logo do grupo: ${group.name}`}
-                        onError={() => setImageError(true)}
-                        className="object-cover w-full h-full"
-                    />
-                ) : (
-                    <div className="flex justify-center items-center w-full h-full bg-secondary">
-                        <IoImageOutline size={24} className="text-tertiary" />
-                    </div>
-                )}
-            </div>
+        <article className="flex flex-col gap-4 p-4 border rounded-xs border-tertiary bg-secondary/40 hover:-translate-y-1 hover:shadow-elevated transition-all duration-200">
+            <img
+                src={group.logo}
+                alt={`Avatar do grupo ${group.name}`}
+                className="object-cover mx-auto w-20 h-20 rounded-full border border-quaternary"
+            />
 
-            <div className="flex flex-col gap-1 p-2">
-                <h3 className="text-sm font-bold truncate">{group.name}</h3>
-                <p className="text-xs text-tertiary line-clamp-2">
-                    {group.description}
-                </p>
-                <p className="text-xs">
-                    {getStatusText(group.status)} · {group.members.length}{' '}
-                    membros
-                </p>
+            <div className="flex flex-col gap-2">
+                <h3 className="text-base font-bold text-center">
+                    {group.name}
+                </h3>
+
+                <div className="flex flex-wrap gap-1 justify-center">
+                    {group.genres.map(genre => (
+                        <span
+                            key={genre}
+                            className="px-2 py-1 text-[0.65rem] border rounded-xs border-tertiary bg-primary"
+                        >
+                            {genre}
+                        </span>
+                    ))}
+                </div>
+
+                <div className="flex justify-between items-center text-xs">
+                    <span className="flex gap-2 items-center">
+                        <span
+                            className={`h-2 w-2 rounded-full ${statusColorMap[group.status]}`}
+                        />
+                        {getGroupStatusLabel(group.status)}
+                    </span>
+                    <a
+                        href={group.website}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="transition-colors text-tertiary hover:text-quaternary"
+                        title="Abrir site oficial"
+                    >
+                        <IoOpenOutline size={14} />
+                    </a>
+                </div>
+
+                <div className="flex justify-between text-xs text-tertiary">
+                    <span>{group.members.length} membros</span>
+                    <span>{group.totalTitles} obras</span>
+                </div>
+
                 <CustomLink
                     link={`/groups/${group.id}`}
-                    text="Ver perfil"
+                    text="Ver detalhes"
                     className="text-xs"
                 />
             </div>
