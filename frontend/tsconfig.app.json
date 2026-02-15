@@ -12,6 +12,15 @@
         "moduleDetection": "force",
         "noEmit": true,
         "jsx": "react-jsx",
+        /* Path aliases */
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"],
+            "@feature/*": ["./src/feature/*"],
+            "@shared/*": ["./src/shared/*"],
+            "@app/*": ["./src/app/*"],
+            "@mock/*": ["./src/mock/*"]
+        },
         /* Linting */
         "strict": true,
         "noUnusedLocals": true,
