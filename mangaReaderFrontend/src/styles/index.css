@@ -1,0 +1,93 @@
+/* Fonts */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+/* Tailwind */
+
+@import 'tailwindcss';
+
+/* Custom styles with Tailwind */
+
+@config "../../tailwind.config.js";
+
+/* Reset */
+
+* {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0.0625rem;
+}
+
+html {
+    background-color: #161616;
+}
+
+::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #2d2d2d;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border: 0.125rem solid #2d2d2d;
+    transition: background-color 0.5s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #777;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: #999;
+}
+
+.scrollbar-hidden {
+    scrollbar-width: none !important;
+    scrollbar-color: transparent transparent !important;
+    -ms-overflow-style: none !important;
+}
+
+/* Splide | Carousel */
+
+.splide__arrows svg {
+    fill: #727273;
+}
+
+/* Loader */
+
+.loader {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: inline-block;
+    border-top: 0.25rem solid #fff;
+    border-right: 0.25rem solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+.loader::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    border-left: 0.25rem solid #ddda2a;
+    border-bottom: 0.25rem solid transparent;
+    animation: rotation 0.5s linear infinite reverse;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

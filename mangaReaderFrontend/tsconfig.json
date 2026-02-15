@@ -1,0 +1,16 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "./tsconfig.app.json"
+        },
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ],
+    "include": ["src", "eslint.config.js"],
+    "exclude": ["node_modules", "dist"],
+    "compilerOptions": {
+        "jsx": "react"
+    }
+}
