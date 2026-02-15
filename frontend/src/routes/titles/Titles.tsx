@@ -25,15 +25,14 @@ import ChapterFilter from '../../components/filters/ChapterFilter';
 import ChapterList from '../../components/chapters/ChapterList';
 import CommentsSection from '../../components/comments/CommentsSection';
 import RatingModal from '../../components/modals/no-context/rating/RatingModal';
-import InfoModal from '../../components/modals/no-context/info/InfoModal';
 import GroupsModal from '../../components/modals/no-context/groups/GroupsModal';
 import StoresModal from '../../components/modals/no-context/stores/StoresModal';
+import RatingStars from '../../components/ratings/RatingStars';
 
 const Titles = () => {
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
     const [isGroupsModalOpen, setIsGroupsModalOpen] = useState<boolean>(false);
     const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false);
-    const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
     const [isAscending, setIsAscending] = useState<boolean>(true);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -54,8 +53,8 @@ const Titles = () => {
         error: commentsError,
     } = useComments(id);
 
-    const { toggleBookmark, bookmarkData } = useBookmark();
-    const { submitRating, isSubmittingRating } = useRating();
+    const { toggleBookmark, isSaved } = useBookmark();
+    const { submitRating, ratings, average } = useRating(String(id));
 
     if (isTitleLoading) {
         return <Loading />;
@@ -91,43 +90,18 @@ const Titles = () => {
         publisher,
     } = title as TitleTypes;
 
-    const handleChapterClick = (chapterNumber: string) => {
-        console.log(`Chapter ${chapterNumber} clicked`); // Todo: implementar
-    };
-
     const handleSortClick = () => {
         setIsAscending(prevState => !prevState);
     };
 
-    const handleSearchSubmit = (searchTerm: string) => {
-        setSearchTerm(searchTerm);
-    };
-
     const handleBookmarkClick = () => {
-        toggleBookmark(id, isBookmarked);
+        toggleBookmark({
+            titleId: String(id),
+            name,
+            cover,
+            type,
+        });
     };
-
-    const handleLikeClick = () => {
-        setIsRatingModalOpen(true);
-    };
-
-    const handleGroupsClick = () => {
-        setIsGroupsModalOpen(true);
-    };
-
-    const handleCartClick = () => {
-        setIsCartModalOpen(true);
-    };
-
-    const handleRatingSubmit = (rating: number) => {
-        submitRating(id, rating);
-    };
-
-    if (bookmarkData && bookmarkData.titleId === id) {
-        if (isBookmarked !== bookmarkData.isBookmarked) {
-            setIsBookmarked(bookmarkData.isBookmarked);
-        }
-    }
 
     const filteredAndSortedChapters = [...chapters]
         .filter(chapter => {
@@ -181,24 +155,52 @@ const Titles = () => {
                         artist={artist}
                         publisher={publisher}
                     />
+                    <div className="flex items-center justify-between px-2 py-2 mt-2 border rounded-xs border-tertiary bg-secondary">
+                        <span className="text-sm font-semibold">
+                            Média da comunidade
+                        </span>
+                        <RatingStars value={average} showValue />
+                    </div>
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
-                        onLikeClick={handleLikeClick}
-                        onGroupsClick={handleGroupsClick}
-                        onCartClick={handleCartClick}
+                        onLikeClick={() => setIsRatingModalOpen(true)}
+                        onGroupsClick={() => setIsGroupsModalOpen(true)}
+                        onCartClick={() => setIsCartModalOpen(true)}
+                        isBookmarked={isSaved(String(id))}
                     />
                 </section>
                 <section className="flex flex-col gap-4">
                     <ChapterFilter
                         onSortClick={handleSortClick}
-                        onSearchSubmit={handleSearchSubmit}
+                        onSearchSubmit={setSearchTerm}
                         isAscending={isAscending}
                     />
                     <ChapterList
                         key={`${isAscending ? 'ASC' : 'DESC'}-${searchTerm}`}
                         chapters={filteredAndSortedChapters}
-                        onChapterClick={handleChapterClick}
+                        onChapterClick={() => undefined}
                     />
+                </section>
+                <section className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary">
+                    <h3 className="font-bold">Avaliações recentes</h3>
+                    {ratings.slice(0, 5).map(review => (
+                        <article
+                            key={review.id}
+                            className="p-2 border rounded-xs border-tertiary"
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-semibold">
+                                    {review.userName}
+                                </span>
+                                <RatingStars value={review.stars} size={12} />
+                            </div>
+                            {review.comment && (
+                                <p className="mt-1 text-xs text-tertiary">
+                                    {review.comment}
+                                </p>
+                            )}
+                        </article>
+                    ))}
                 </section>
                 <CommentsSection
                     comments={comments as CommentTypes[]}
@@ -211,8 +213,7 @@ const Titles = () => {
             <RatingModal
                 isModalOpen={isRatingModalOpen}
                 closeModal={() => setIsRatingModalOpen(false)}
-                onSubmitRating={handleRatingSubmit}
-                isSubmitting={isSubmittingRating}
+                onSubmitRating={submitRating}
             />
             <GroupsModal
                 isModalOpen={isGroupsModalOpen}

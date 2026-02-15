@@ -1,0 +1,72 @@
+import { GroupTypes } from '../../types/GroupTypes';
+
+export const mockGroups: GroupTypes[] = [
+    {
+        id: 'g-1',
+        name: 'Mirai Scans',
+        logo: 'https://picsum.photos/400/240?random=31',
+        description: 'Especialistas em ação e fantasia com releases semanais.',
+        totalTitles: 22,
+        foundedYear: 2019,
+        status: 'active',
+        members: ['Aline', 'Goku', 'Marta', 'Yuri'],
+        translatedTitleIds: ['1', '4', '7', '10'],
+    },
+    {
+        id: 'g-2',
+        name: 'Lótus Team',
+        logo: 'https://picsum.photos/400/240?random=32',
+        description: 'Equipe focada em drama e slice of life.',
+        totalTitles: 17,
+        foundedYear: 2020,
+        status: 'active',
+        members: ['Renata', 'Piero', 'Kaio'],
+        translatedTitleIds: ['2', '3', '8'],
+    },
+    {
+        id: 'g-3',
+        name: 'Nexus Mangás',
+        description: 'Grupo veterano com catálogo extenso.',
+        totalTitles: 40,
+        foundedYear: 2016,
+        status: 'inactive',
+        members: ['Luan', 'Dri', 'Cecília', 'Mauro', 'Breno'],
+        translatedTitleIds: ['5', '6', '9', '12'],
+    },
+    {
+        id: 'g-4',
+        name: 'Aurora Scan',
+        logo: 'https://picsum.photos/400/240?random=33',
+        description: 'Traduções de romances escolares e comédia.',
+        totalTitles: 14,
+        foundedYear: 2021,
+        status: 'active',
+        members: ['Nina', 'Saki'],
+        translatedTitleIds: ['11', '13', '14'],
+    },
+    {
+        id: 'g-5',
+        name: 'Kitsune Project',
+        logo: 'https://picsum.photos/400/240?random=34',
+        description: 'Equipe em hiato com projetos pontuais.',
+        totalTitles: 9,
+        foundedYear: 2022,
+        status: 'hiatus',
+        members: ['Léo', 'Miya', 'Tati'],
+        translatedTitleIds: ['15', '16'],
+    },
+    {
+        id: 'g-6',
+        name: 'Vortex BR',
+        logo: 'https://picsum.photos/400/240?random=35',
+        description: 'Foco em obras de aventura e mistério.',
+        totalTitles: 12,
+        foundedYear: 2023,
+        status: 'active',
+        members: ['Karla', 'Dante', 'Igor'],
+        translatedTitleIds: ['1', '6', '11'],
+    },
+];
+
+export const getGroupsByTitle = (titleId: string) =>
+    mockGroups.filter(group => group.translatedTitleIds.includes(titleId));
