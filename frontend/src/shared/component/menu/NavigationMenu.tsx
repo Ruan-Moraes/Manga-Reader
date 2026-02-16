@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { IoMenu } from 'react-icons/io5';
 
 import { clsx } from 'clsx';
 
@@ -7,8 +8,9 @@ import Overlay from '@shared/component/blur/Overlay';
 import SidebarMenuContent, {
     MenuProfile,
 } from '@shared/component/link/section/SidebarMenuContent';
-import { useAuth } from '@feature/auth';
 import { showInfoToast } from '@shared/service/util/toastService';
+
+import { useAuth } from '@feature/auth';
 
 const menuProfiles: MenuProfile[] = [
     {
@@ -47,7 +49,9 @@ const menuProfiles: MenuProfile[] = [
 const NavigationMenu = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isSticky, setIsSticky] = useState<boolean>(false);
+
     const [menuHeight, setMenuHeight] = useState<number>(0);
+
     const [selectedProfileId, setSelectedProfileId] =
         useState<string>('visitor');
 
@@ -154,15 +158,13 @@ const NavigationMenu = () => {
                             <AppLink text="Manga Reader" />
                         </h2>
                     </div>
-                    <button
-                        type="button"
+                    <div
                         aria-controls="menu-links"
                         aria-expanded={isMenuOpen}
                         onClick={toggleMenu}
-                        className="h-10 px-5 text-sm font-semibold tracking-wide uppercase border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default"
                     >
-                        Menu
-                    </button>
+                        <IoMenu fontSize="2.5rem" />
+                    </div>
                 </div>
                 <div className="absolute">
                     <aside
@@ -185,7 +187,7 @@ const NavigationMenu = () => {
                             <button
                                 type="button"
                                 onClick={closeMenu}
-                                className="h-9 px-4 text-xs font-semibold uppercase border rounded-xs border-tertiary hover:bg-tertiary/20"
+                                className="h-10 px-4 text-xs font-semibold uppercase border rounded-xs border-tertiary hover:bg-tertiary/20"
                             >
                                 Fechar
                             </button>
@@ -207,40 +209,6 @@ const NavigationMenu = () => {
                                 </button>
                             </form>
                         </div>
-
-                        {!isLoggedIn && (
-                            <div className="px-4">
-                                <div className="p-3 text-xs border rounded-xs border-tertiary bg-secondary/40">
-                                    <p className="mb-2 font-semibold uppercase text-tertiary">
-                                        Perfil de teste
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {menuProfiles.map(profile => (
-                                            <button
-                                                key={profile.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedProfileId(
-                                                        profile.id,
-                                                    )
-                                                }
-                                                className={clsx(
-                                                    'px-3 py-1.5 text-xs border rounded-xs border-tertiary hover:bg-tertiary/20',
-                                                    {
-                                                        'bg-tertiary/20':
-                                                            selectedProfileId ===
-                                                            profile.id,
-                                                    },
-                                                )}
-                                            >
-                                                {profile.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                         <SidebarMenuContent
                             profile={currentProfile}
                             isLoggedIn={isLoggedIn}

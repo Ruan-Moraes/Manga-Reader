@@ -8,7 +8,6 @@ const TitleDetails = ({
     showType,
     shouldLoadCardData,
     isLoading,
-
     id,
     name,
     type,

@@ -18,18 +18,23 @@ const useAuth = () => {
 
     const login = useCallback(async () => {
         const loggedUser = await signIn();
+
         setUser(loggedUser);
+
         return loggedUser;
     }, []);
 
     const logout = useCallback(async () => {
         await signOut();
+
         setUser(null);
     }, []);
 
     const updateProfile = useCallback(async (partialUser: Partial<User>) => {
         const updatedUser = await updateProfileService(partialUser);
+
         setUser(updatedUser);
+
         return updatedUser;
     }, []);
 

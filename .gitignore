@@ -167,3 +167,7 @@ fabric.properties
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/react,webstorm,visualstudiocode,yarn
+# Environment variables
+.env
+.env.local
+.env.*.local

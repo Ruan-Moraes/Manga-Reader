@@ -33,10 +33,10 @@ type MenuItem = {
 };
 
 const sectionTitleClass =
-    'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-tertiary';
+    'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-quaternary-default';
 
 const menuItemClass =
-    'flex items-center justify-between px-3 py-2.5 rounded-xs text-sm font-medium transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default';
+    'flex items-center justify-between px-3 py-2 rounded-xs text-sm font-medium transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default';
 
 const MenuNavLink = ({
     label,
