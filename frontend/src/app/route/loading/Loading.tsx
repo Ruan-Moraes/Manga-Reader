@@ -1,12 +1,12 @@
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 const Loading = () => {
     return (
         <>
             <Header />
-            <Main className="my-auto">
+            <MainContent className="my-auto">
                 <div className="flex flex-col items-center justify-start h-full gap-4">
                     <div className="relative">
                         <span className="loader"></span>
@@ -18,7 +18,7 @@ const Loading = () => {
                         </p>
                     </div>
                 </div>
-            </Main>
+            </MainContent>
             <Footer styles={{ marginTop: 0 }} />
         </>
     );

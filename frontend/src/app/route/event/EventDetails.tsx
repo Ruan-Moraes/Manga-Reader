@@ -8,13 +8,9 @@ import {
 } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
-import {
-    getEventById,
-    getRelatedEvents,
-    statusLabel,
-} from '@feature/event';
+import { getEventById, getRelatedEvents, statusLabel } from '@feature/event';
 
 const EventDetails = () => {
     const { eventId = '' } = useParams();
@@ -24,12 +20,12 @@ const EventDetails = () => {
         return (
             <>
                 <Header />
-                <Main>
+                <MainContent>
                     <p>Evento não encontrado.</p>
-                    <Link to="/events" className="text-purple-400 underline">
+                    <Link to="/Manga-Reader/events" className="text-purple-400 underline">
                         Voltar para eventos
                     </Link>
-                </Main>
+                </MainContent>
                 <Footer />
             </>
         );
@@ -40,7 +36,7 @@ const EventDetails = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <article className="space-y-5">
                     <section className="overflow-hidden border rounded-2xl border-tertiary bg-secondary">
                         <img
@@ -215,7 +211,7 @@ const EventDetails = () => {
                                     Contato: {event.organizer.contact}
                                 </p>
                                 <Link
-                                    to="/events"
+                                    to="/Manga-Reader/events"
                                     className="text-sm text-purple-400 underline"
                                 >
                                     Outros eventos do organizador
@@ -229,7 +225,7 @@ const EventDetails = () => {
                                 {relatedEvents.map(item => (
                                     <Link
                                         key={item.id}
-                                        to={`/event/${item.id}`}
+                                        to={`/Manga-Reader/event/${item.id}`}
                                         className="flex items-center gap-2 p-2 rounded-lg bg-primary"
                                     >
                                         <img
@@ -251,7 +247,7 @@ const EventDetails = () => {
                         </aside>
                     </section>
                 </article>
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

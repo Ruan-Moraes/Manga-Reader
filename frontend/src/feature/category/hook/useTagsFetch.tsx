@@ -4,9 +4,7 @@ import { Tag } from '../type/tag.types';
 
 import { getTags } from '../service/tagService';
 
-const useTagsFetch = (
-    queryKey: string,
-): UseQueryResult<Tag[] | Error> => {
+const useTagsFetch = (queryKey: string): UseQueryResult<Tag[] | Error> => {
     return useQuery<Tag[] | Error>({
         queryKey: [queryKey],
         queryFn: async () => {

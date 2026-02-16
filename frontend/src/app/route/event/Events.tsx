@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import { useAuth } from '@feature/auth';
 import {
@@ -96,7 +96,7 @@ const Events = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section className="p-4 border bg-secondary border-tertiary rounded-2xl">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                         <div>
@@ -227,7 +227,7 @@ const Events = () => {
                                 {featured.subtitle}
                             </p>
                             <Link
-                                to={`/event/${featured.id}`}
+                                to={`/Manga-Reader/event/${featured.id}`}
                                 className="inline-flex px-4 py-2 text-sm font-medium text-purple-900 bg-white rounded-lg"
                             >
                                 Ver detalhes
@@ -482,7 +482,7 @@ const Events = () => {
                         </div>
                     </section>
                 )}
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );
@@ -490,7 +490,7 @@ const Events = () => {
 
 const EventCard = ({ event }: { event: EventData }) => (
     <Link
-        to={`/event/${event.id}`}
+        to={`/Manga-Reader/event/${event.id}`}
         className="overflow-hidden transition border group rounded-2xl border-tertiary bg-secondary hover:-translate-y-1 hover:shadow-xl hover:border-purple-400/70"
     >
         <img

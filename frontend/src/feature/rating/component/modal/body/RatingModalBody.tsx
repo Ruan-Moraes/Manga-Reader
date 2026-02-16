@@ -1,6 +1,6 @@
 ﻿import { useCallback, useEffect, useRef, useState } from 'react';
 
-import Select, { SelectOption } from '@shared/component/ui/Select';
+import StyledSelect, { SelectOption } from '@shared/component/ui/StyledSelect';
 
 type CategoryRating = {
     [key: string]: number;
@@ -150,7 +150,7 @@ const RatingModalBody = ({
                                     {category.label}
                                 </span>
                             </label>
-                            <Select
+                            <StyledSelect
                                 variant="rating"
                                 options={ratingOptions}
                                 value={ratingOptions.find(

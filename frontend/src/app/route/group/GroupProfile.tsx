@@ -2,16 +2,22 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import Warning from '@shared/component/notification/Warning';
-import { COLORS } from '@shared/constant/COLORS';
-import { useGroupDetails, GroupHeader, MemberModal } from '@feature/group';
+import AppLink from '@shared/component/link/element/AppLink';
+import AlertBanner from '@shared/component/notification/AlertBanner';
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
+import {
+    useGroupDetails,
+    GroupDetailHeader,
+    MemberListModal,
+} from '@feature/group';
 
 const GroupProfile = () => {
     const { groupId } = useParams();
-    const [isMemberModalOpen, setIsMemberModalOpen] = useState<boolean>(false);
+    const [isMemberListModalOpen, setIsMemberListModalOpen] =
+        useState<boolean>(false);
     const [workSort, setWorkSort] = useState<
         'popularity' | 'date' | 'chapters'
     >('popularity');
@@ -50,27 +56,27 @@ const GroupProfile = () => {
 
     if (!isLoading && !group) {
         return (
-            <Main>
-                <Warning
-                    color={COLORS.QUINARY}
+            <MainContent>
+                <AlertBanner
+                    color={THEME_COLORS.QUINARY}
                     title="Grupo não encontrado"
                     message="Não foi possível localizar o perfil solicitado."
                     link="/groups"
                     linkText="Voltar para Grupos"
                 />
-            </Main>
+            </MainContent>
         );
     }
 
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 {group && (
                     <>
-                        <GroupHeader
+                        <GroupDetailHeader
                             group={group}
-                            onOpenMembers={() => setIsMemberModalOpen(true)}
+                            onOpenMembers={() => setIsMemberListModalOpen(true)}
                         />
 
                         <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -113,7 +119,7 @@ const GroupProfile = () => {
                         </section>
 
                         <section className="flex flex-col gap-3">
-                            <div className="flex justify-between items-center">
+                            <div className="flex items-center justify-between">
                                 <h3 className="font-bold">Obras traduzidas</h3>
                                 <select
                                     value={workSort}
@@ -125,7 +131,7 @@ const GroupProfile = () => {
                                                 | 'chapters',
                                         )
                                     }
-                                    className="p-2 text-xs rounded-xs border border-tertiary bg-secondary"
+                                    className="p-2 text-xs border rounded-xs border-tertiary bg-secondary"
                                 >
                                     <option value="popularity">
                                         Popularidade
@@ -139,10 +145,10 @@ const GroupProfile = () => {
 
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                 {sortedWorks.map(work => (
-                                    <a
+                                    <AppLink
                                         key={work.id}
-                                        href={`/Manga-Reader/title/${work.id}`}
-                                        className="overflow-hidden border rounded-xs border-tertiary bg-secondary/40 hover:border-quaternary hover:shadow-default transition-all"
+                                        link={`/title/${work.id}`}
+                                        className="overflow-hidden transition-all border rounded-xs border-tertiary bg-secondary/40 hover:border-quaternary hover:shadow-default"
                                     >
                                         <img
                                             src={work.cover}
@@ -168,14 +174,14 @@ const GroupProfile = () => {
                                                     : 'Completo'}
                                             </span>
                                         </div>
-                                    </a>
+                                    </AppLink>
                                 ))}
                             </div>
                         </section>
 
-                        <MemberModal
-                            isOpen={isMemberModalOpen}
-                            closeModal={() => setIsMemberModalOpen(false)}
+                        <MemberListModal
+                            isOpen={isMemberListModalOpen}
+                            closeModal={() => setIsMemberListModalOpen(false)}
                             group={group}
                         />
                     </>
@@ -188,7 +194,7 @@ const GroupProfile = () => {
                         </p>
                     </section>
                 )}
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

@@ -3,13 +3,13 @@ import clsx from 'clsx';
 import { type CommentData } from '../type/comment.types';
 import { type User } from '@feature/auth';
 
-import useCommentModal from '../hook/internal/useCommentModal';
+import useCommentModals from '../hook/internal/useCommentModals';
 
 import DeleteModal from './modal/delete-comment/DeleteModal';
 import EditModal from './modal/edit-comment/EditModal';
 import ReplyModal from './modal/reply-comment/ReplyModal';
 
-import CommentInformation from './header/CommentInformation';
+import CommentMetadata from './header/CommentMetadata';
 import CommentUser from './header/CommentUser';
 import CommentContent from './body/CommentContent';
 import CommentActions from './footer/CommentActions';
@@ -65,7 +65,7 @@ const Comment = ({
         openReplyModal,
         closeReplyModal,
         confirmReplyComment,
-    } = useCommentModal({
+    } = useCommentModals({
         onDelete: onClickDelete,
         onEdit: onClickEdit,
         onReply: onClickReply,
@@ -136,10 +136,7 @@ const Comment = ({
                     },
                 )}
             >
-                <CommentInformation
-                    createdAt={createdAt}
-                    wasEdited={wasEdited}
-                />
+                <CommentMetadata createdAt={createdAt} wasEdited={wasEdited} />
                 <CommentUser
                     onClickProfile={onClickProfile}
                     isHighlighted={isHighlighted}

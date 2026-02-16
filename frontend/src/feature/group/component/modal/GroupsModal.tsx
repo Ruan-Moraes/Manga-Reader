@@ -4,9 +4,7 @@ import BaseModal from '@shared/component/modal/base/BaseModal';
 import GroupsContainer from '../card/GroupsContainer';
 
 import { Group } from '../../type/group.types';
-import {
-    getGroupsByTitleId,
-} from '../../service/groupService';
+import { getGroupsByTitleId } from '../../service/groupService';
 
 type GroupsModalProps = {
     isModalOpen: boolean;
@@ -23,9 +21,7 @@ const GroupsModal = ({
     isLoading = false,
     titleId,
 }: GroupsModalProps) => {
-    const [scopedGroups, setScopedGroups] = useState<Group[]>(
-        groups ?? [],
-    );
+    const [scopedGroups, setScopedGroups] = useState<Group[]>(groups ?? []);
 
     useEffect(() => {
         if (groups) {

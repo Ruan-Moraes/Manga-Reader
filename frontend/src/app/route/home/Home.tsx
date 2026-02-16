@@ -1,14 +1,14 @@
-import { COLORS } from '@shared/constant/COLORS';
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import Warning from '@shared/component/notification/Warning';
+import AlertBanner from '@shared/component/notification/AlertBanner';
 
-import SocialMediasContainer from '@shared/component/social-media/SocialMediasContainer';
-import SocialMedia from '@shared/component/social-media/SocialMedia';
+import SocialMediaSection from '@shared/component/social-media/SocialMediaSection';
+import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
 import {
     CarouselContainer,
     HighlightCardsContainer,
@@ -20,36 +20,36 @@ const Home = () => {
     return (
         <>
             <Header />
-            <Main>
-                <Warning
-                    color={COLORS.QUATERNARY}
+            <MainContent>
+                <AlertBanner
+                    color={THEME_COLORS.QUATERNARY}
                     title="Atenção!"
                     message="Site em desenvolvimento, algumas funcionalidades podem não estar disponíveis."
                 />
-                <SocialMediasContainer>
-                    <SocialMedia
+                <SocialMediaSection>
+                    <SocialMediaLink
                         color={SOCIAL_MEDIA_COLORS.DISCORD}
                         link="#"
                         name="Discord"
                     />
-                    <SocialMedia
+                    <SocialMediaLink
                         color={SOCIAL_MEDIA_COLORS.X}
                         link="#"
                         name="X (Twitter)"
                     />
-                    <SocialMedia
+                    <SocialMediaLink
                         color={SOCIAL_MEDIA_COLORS.FACEBOOK}
                         link="#"
                         name="Facebook"
                         className="rounded-bl-xs"
                     />
-                    <SocialMedia
+                    <SocialMediaLink
                         color={SOCIAL_MEDIA_COLORS.INSTAGRAM}
                         link="#"
                         name="Instagram"
                         className="rounded-br-xs"
                     />
-                </SocialMediasContainer>
+                </SocialMediaSection>
                 <CarouselContainer
                     title="Obras mais vistas"
                     subTitle="Últimos 30 dias"
@@ -66,7 +66,7 @@ const Home = () => {
                     title="Obras Atualizadas"
                     subTitle="Quero ver mais..."
                 />
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

@@ -1,20 +1,20 @@
-import { COLORS } from '@shared/constant/COLORS';
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 
-import Warning from '@shared/component/notification/Warning';
+import AlertBanner from '@shared/component/notification/AlertBanner';
 
 const NotFound = () => {
     return (
-        <Main>
-            <Warning
+        <MainContent>
+            <AlertBanner
                 linkText="Voltar para a página inicial"
-                color={COLORS.QUINARY}
+                color={THEME_COLORS.QUINARY}
                 title="Ops! Página não encontrada."
                 message="Não há nada aqui, você está perdido? Clique no link abaixo para voltar para a página inicial."
                 link="/"
             />
-        </Main>
+        </MainContent>
     );
 };
 

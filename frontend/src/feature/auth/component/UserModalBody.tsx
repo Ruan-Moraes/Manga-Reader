@@ -2,7 +2,7 @@ import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 
 import { useUserModalContext } from '../context/useUserModalContext';
 
-import SocialMedia from '@shared/component/social-media/SocialMedia';
+import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 

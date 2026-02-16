@@ -19,9 +19,7 @@ export const getGroupById = async (
     return mockGroups.find(g => g.id === groupId);
 };
 
-export const getGroupsByTitleId = async (
-    titleId: string,
-): Promise<Group[]> => {
+export const getGroupsByTitleId = async (titleId: string): Promise<Group[]> => {
     await simulateDelay();
     return mockGroups.filter(g => g.translatedTitleIds.includes(titleId));
 };

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from '@shared/constant/API_CONSTANTS';
+import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 
 const checkValidId = (id: number): void => {
     if (isNaN(id)) {

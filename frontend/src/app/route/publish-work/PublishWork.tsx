@@ -1,10 +1,10 @@
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import ParagraphContainer from '@shared/component/paragraph/ParagraphContainer';
+import TextSection from '@shared/component/paragraph/TextSection';
 import SectionTitle from '@shared/component/title/SectionTitle';
-import Paragraph from '@shared/component/paragraph/Paragraph';
+import TextBlock from '@shared/component/paragraph/TextBlock';
 
 import ContactForm from '@shared/component/form/ContactForm';
 
@@ -12,8 +12,8 @@ const PublishWork = () => {
     return (
         <>
             <Header disabledSearch={true} />
-            <Main>
-                <ParagraphContainer>
+            <MainContent>
+                <TextSection>
                     <SectionTitle
                         titleStyleClasses="text-lg"
                         title="Publicar Trabalho"
@@ -28,9 +28,9 @@ const PublishWork = () => {
                             },
                         ]}
                     />
-                </ParagraphContainer>
+                </TextSection>
                 <ContactForm />
-            </Main>
+            </MainContent>
             <Footer disabledLinks={true} />
         </>
     );

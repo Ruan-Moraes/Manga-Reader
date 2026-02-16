@@ -5,7 +5,10 @@ import {
 } from '@shared/service/mockApi';
 import { mockLibrary } from '@mock/data/library';
 
-import { type ReadingListType, type UserSavedLibrary } from '../type/favorite.types';
+import {
+    type ReadingListType,
+    type UserSavedLibrary,
+} from '../type/saved-library.types';
 
 // ---------------------------------------------------------------------------
 // Storage
@@ -47,7 +50,13 @@ export const toggleSavedManga = async (data: {
         users.push({
             userId,
             name: 'Novo Usuário',
-            savedMangas: [{ ...title, list: defaultList, savedAt: new Date().toISOString() }],
+            savedMangas: [
+                {
+                    ...title,
+                    list: defaultList,
+                    savedAt: new Date().toISOString(),
+                },
+            ],
         });
         saveLibrary(users);
         return { isSaved: true };
@@ -61,7 +70,11 @@ export const toggleSavedManga = async (data: {
         ? users[userIndex].savedMangas.filter(m => m.titleId !== title.titleId)
         : [
               ...users[userIndex].savedMangas,
-              { ...title, list: defaultList, savedAt: new Date().toISOString() },
+              {
+                  ...title,
+                  list: defaultList,
+                  savedAt: new Date().toISOString(),
+              },
           ];
 
     saveLibrary(users);

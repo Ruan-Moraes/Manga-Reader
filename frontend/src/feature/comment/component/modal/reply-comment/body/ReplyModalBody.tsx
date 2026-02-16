@@ -4,11 +4,11 @@ import { FaUpload } from 'react-icons/fa';
 
 import { useEmojiModalContext } from '../../../../context/useEmojiModalContext';
 
-import useCommentChat from '../../../../hook/internal/useCommentChat';
+import useCommentRichEditor from '../../../../hook/internal/useCommentRichEditor';
 
 import EmojiModal from '../../../EmojiModal';
-import IconButton from '@shared/component/button/IconButton';
-import BlackButton from '@shared/component/button/BlackButton';
+import BadgeIconButton from '@shared/component/button/BadgeIconButton';
+import DarkButton from '@shared/component/button/DarkButton';
 
 type ReplyModalBodyProps = {
     onReply: (textContent: string | null, imageContent: string | null) => void;
@@ -17,7 +17,7 @@ type ReplyModalBodyProps = {
 
 const ReplyModalBody = ({ onReply, onCancel }: ReplyModalBodyProps) => {
     const replyTextareaRef = useRef<HTMLDivElement | null>(null);
-    const { textareaRef, addImage, addImageFromEmoji } = useCommentChat({
+    const { textareaRef, addImage, addImageFromEmoji } = useCommentRichEditor({
         placeholder: 'Escreva sua resposta',
         externalRef: replyTextareaRef,
     });
@@ -61,16 +61,16 @@ const ReplyModalBody = ({ onReply, onCancel }: ReplyModalBodyProps) => {
                     </div>
                     <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                         <div className="flex gap-2">
-                            <IconButton onClick={openEmojiModal}>
+                            <BadgeIconButton onClick={openEmojiModal}>
                                 <IoImages />
-                            </IconButton>
-                            <IconButton onClick={addImage}>
+                            </BadgeIconButton>
+                            <BadgeIconButton onClick={addImage}>
                                 <FaUpload />
-                            </IconButton>
+                            </BadgeIconButton>
                         </div>
                         <div className="flex gap-2">
-                            <BlackButton onClick={onCancel} text={'Cancelar'} />
-                            <BlackButton
+                            <DarkButton onClick={onCancel} text={'Cancelar'} />
+                            <DarkButton
                                 onClick={handleSave}
                                 text={'Responder'}
                             />

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Chapter } from '../type/chapter.types';
 
-import treatDate from '@shared/service/util/treatDate';
+import formatDate from '@shared/service/util/formatDate';
 
 import ChapterItem from './ChapterItem';
 import ChapterPagination from './ChapterPagination';
@@ -41,7 +41,7 @@ const ChapterList = ({ chapters, onChapterClick }: ChapterListProps) => {
                         key={`${chapter.number}-${index}`}
                         chapterNumber={chapter.number}
                         title={chapter.title}
-                        date={treatDate(chapter.releaseDate, {
+                        date={formatDate(chapter.releaseDate, {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric',

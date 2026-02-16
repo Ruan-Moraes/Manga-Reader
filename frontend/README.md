@@ -26,33 +26,33 @@
 
 Aplicação SPA para leitura e gerenciamento de mangás. O frontend consome dados de uma API JSON externa (`db-json-ten.vercel.app`) para títulos, comentários e tags, e utiliza serviços mock (`localStorage`) para autenticação, avaliações, biblioteca e reviews.
 
-| Métrica            | Valor          |
-| ------------------ | -------------- |
+| Métrica            | Valor                |
+| ------------------ | -------------------- |
 | Total de arquivos  | **191** `.ts`/`.tsx` |
-| Features           | **11** módulos |
-| Rotas              | **20** páginas |
-| Componentes shared | **33** componentes |
-| Barrel files       | **11** `index.ts` |
+| Features           | **11** módulos       |
+| Rotas              | **20** páginas       |
+| Componentes shared | **33** componentes   |
+| Barrel files       | **11** `index.ts`    |
 
 ---
 
 ## 🛠 Stack Tecnológica
 
-| Categoria       | Tecnologia                          | Versão   |
-| --------------- | ----------------------------------- | -------- |
-| Framework       | React                               | 19.1.0   |
-| Linguagem       | TypeScript                          | 5.8.3    |
-| Bundler         | Vite (SWC plugin)                   | 6.2.6    |
-| Estilos         | TailwindCSS                         | 4.1.3    |
-| Server State    | @tanstack/react-query               | 5.73.3   |
-| Roteamento      | react-router-dom                    | 6.24.0   |
-| Carrossel       | @splidejs/react-splide              | 0.7.12   |
-| Selects         | react-select                        | 5.10.1   |
-| Toasts          | react-toastify                      | 11.0.5   |
-| Ícones          | react-icons                         | 5.5.0    |
-| Classes utilitárias | clsx                            | 2.1.1    |
-| Linting         | ESLint + Prettier                   | 9.24.0   |
-| Deploy          | GitHub Pages (gh-pages)             | 6.3.0    |
+| Categoria           | Tecnologia              | Versão |
+| ------------------- | ----------------------- | ------ |
+| Framework           | React                   | 19.1.0 |
+| Linguagem           | TypeScript              | 5.8.3  |
+| Bundler             | Vite (SWC plugin)       | 6.2.6  |
+| Estilos             | TailwindCSS             | 4.1.3  |
+| Server State        | @tanstack/react-query   | 5.73.3 |
+| Roteamento          | react-router-dom        | 6.24.0 |
+| Carrossel           | @splidejs/react-splide  | 0.7.12 |
+| Selects             | react-select            | 5.10.1 |
+| Toasts              | react-toastify          | 11.0.5 |
+| Ícones              | react-icons             | 5.5.0  |
+| Classes utilitárias | clsx                    | 2.1.1  |
+| Linting             | ESLint + Prettier       | 9.24.0 |
+| Deploy              | GitHub Pages (gh-pages) | 6.3.0  |
 
 ---
 
@@ -60,31 +60,31 @@ Aplicação SPA para leitura e gerenciamento de mangás. O frontend consome dado
 
 ### Migração para Arquitetura Modular
 
-| Etapa | Descrição                            | Status |
-| ----- | ------------------------------------ | ------ |
-| 1     | Análise completa do codebase         | ✅ Concluído |
-| 2     | Criação da estrutura de diretórios   | ✅ Concluído |
-| 3     | Migração piloto (auth)               | ✅ Concluído |
-| 4     | Migração das features restantes      | ✅ Concluído |
-| 5     | Limpeza, barrels e padronização      | ✅ Concluído |
+| Etapa | Descrição                          | Status       |
+| ----- | ---------------------------------- | ------------ |
+| 1     | Análise completa do codebase       | ✅ Concluído |
+| 2     | Criação da estrutura de diretórios | ✅ Concluído |
+| 3     | Migração piloto (auth)             | ✅ Concluído |
+| 4     | Migração das features restantes    | ✅ Concluído |
+| 5     | Limpeza, barrels e padronização    | ✅ Concluído |
 
 ### Qualidade e Padronização
 
-| Item                                         | Status |
-| -------------------------------------------- | ------ |
-| Path aliases (`@features`, `@shared`, `@app`) | ✅ Concluído |
-| Barrel files para todas as 11 features       | ✅ Concluído |
-| 0 deep `@features/` imports (100% via barrel ou relativo) | ✅ Concluído |
-| Imports intra-feature convertidos para relativo | ✅ Concluído |
-| Cross-feature imports via barrel              | ✅ Concluído |
-| tsconfig.json limpo (project references)      | ✅ Concluído |
-| tsconfig.node.json escopado para configs      | ✅ Concluído |
-| Diretórios vazios/bogus removidos             | ✅ Concluído |
-| Extensões `.ts`/`.tsx` removidas dos imports  | ✅ Concluído |
-| Shared barrel files                           | ⬜ Pendente (não prioritário — deep paths são padrão no `@shared`) |
-| Testes unitários                              | ⬜ Pendente |
-| Backend real (substituir mocks)               | ⬜ Pendente |
-| CI/CD pipeline                                | ⬜ Pendente |
+| Item                                                      | Status                                                             |
+| --------------------------------------------------------- | ------------------------------------------------------------------ |
+| Path aliases (`@features`, `@shared`, `@app`)             | ✅ Concluído                                                       |
+| Barrel files para todas as 11 features                    | ✅ Concluído                                                       |
+| 0 deep `@features/` imports (100% via barrel ou relativo) | ✅ Concluído                                                       |
+| Imports intra-feature convertidos para relativo           | ✅ Concluído                                                       |
+| Cross-feature imports via barrel                          | ✅ Concluído                                                       |
+| tsconfig.json limpo (project references)                  | ✅ Concluído                                                       |
+| tsconfig.node.json escopado para configs                  | ✅ Concluído                                                       |
+| Diretórios vazios/bogus removidos                         | ✅ Concluído                                                       |
+| Extensões `.ts`/`.tsx` removidas dos imports              | ✅ Concluído                                                       |
+| Shared barrel files                                       | ⬜ Pendente (não prioritário — deep paths são padrão no `@shared`) |
+| Testes unitários                                          | ⬜ Pendente                                                        |
+| Backend real (substituir mocks)                           | ⬜ Pendente                                                        |
+| CI/CD pipeline                                            | ⬜ Pendente                                                        |
 
 ---
 
@@ -172,122 +172,122 @@ frontend/src/
 
 ## 🧩 Funcionalidades por Feature
 
-### `auth` — Autenticação *(9 arquivos)*
-
-| Funcionalidade                | Status |
-| ----------------------------- | ------ |
-| Login/Logout mock (localStorage) | ✅ |
-| Persistência de sessão          | ✅ |
-| Edição de perfil (nome, bio)    | ✅ |
-| Modal de visualização de usuário| ✅ |
-| Context provider (UserModal)    | ✅ |
-| Autenticação real (API)         | ⬜ |
-| Registro de conta               | ⬜ |
-| Recuperação de senha            | ⬜ |
-
-### `manga` — Títulos e Cards *(21 arquivos)*
-
-| Funcionalidade                      | Status |
-| ----------------------------------- | ------ |
-| Listagem de títulos (API real)      | ✅ |
-| 5 variantes de card (base, carousel, highlight, horizontal, vertical) | ✅ |
-| Detalhes do título                  | ✅ |
-| Descrição do título                 | ✅ |
-| Ações do título (salvar, avaliar, comprar, grupos) | ✅ |
-| Busca/filtro de títulos             | ⬜ |
-| Paginação na listagem               | ⬜ |
-
-### `chapter` — Capítulos *(6 arquivos)*
-
-| Funcionalidade          | Status |
-| ----------------------- | ------ |
-| Lista de capítulos      | ✅ |
-| Filtro de capítulos     | ✅ |
-| Paginação de capítulos  | ✅ |
-| Leitor de capítulo      | ✅ |
-| Navegação entre capítulos | ✅ |
-
-### `comment` — Comentários *(35 arquivos)*
+### `auth` — Autenticação _(9 arquivos)_
 
 | Funcionalidade                   | Status |
 | -------------------------------- | ------ |
-| Listagem de comentários (API real) | ✅ |
-| Árvore de comentários (replies)  | ✅ |
-| Input de comentário com emojis   | ✅ |
-| Ordenação de comentários         | ✅ |
-| Modal de edição de comentário    | ✅ |
-| Modal de resposta                | ✅ |
-| Modal de exclusão                | ✅ |
-| Modal de emojis                  | ✅ |
-| Context providers (Emoji, Sort)  | ✅ |
-| CRUD real via API                | ⬜ |
+| Login/Logout mock (localStorage) | ✅     |
+| Persistência de sessão           | ✅     |
+| Edição de perfil (nome, bio)     | ✅     |
+| Modal de visualização de usuário | ✅     |
+| Context provider (UserModal)     | ✅     |
+| Autenticação real (API)          | ⬜     |
+| Registro de conta                | ⬜     |
+| Recuperação de senha             | ⬜     |
 
-### `rating` — Avaliações *(11 arquivos)*
+### `manga` — Títulos e Cards _(21 arquivos)_
 
-| Funcionalidade                    | Status |
-| --------------------------------- | ------ |
-| Componente de estrelas (RatingStars) | ✅ |
-| Modal de avaliação                | ✅ |
-| Cálculo de média de avaliações    | ✅ |
-| Avaliações do usuário (mock)      | ✅ |
-| Edição/exclusão de review         | ✅ |
-| Avaliações reais via API          | ⬜ |
+| Funcionalidade                                                        | Status |
+| --------------------------------------------------------------------- | ------ |
+| Listagem de títulos (API real)                                        | ✅     |
+| 5 variantes de card (base, carousel, highlight, horizontal, vertical) | ✅     |
+| Detalhes do título                                                    | ✅     |
+| Descrição do título                                                   | ✅     |
+| Ações do título (salvar, avaliar, comprar, grupos)                    | ✅     |
+| Busca/filtro de títulos                                               | ⬜     |
+| Paginação na listagem                                                 | ⬜     |
 
-### `group` — Grupos *(11 arquivos)*
+### `chapter` — Capítulos _(6 arquivos)_
 
-| Funcionalidade                 | Status |
-| ------------------------------ | ------ |
-| Listagem de grupos com filtros | ✅ |
-| Perfil do grupo com detalhes   | ✅ |
-| Modal de membros               | ✅ |
-| Modal de seleção de grupo      | ✅ |
-| Cards de grupo                 | ✅ |
-| Dados reais via API            | ⬜ |
+| Funcionalidade            | Status |
+| ------------------------- | ------ |
+| Lista de capítulos        | ✅     |
+| Filtro de capítulos       | ✅     |
+| Paginação de capítulos    | ✅     |
+| Leitor de capítulo        | ✅     |
+| Navegação entre capítulos | ✅     |
 
-### `library` — Biblioteca *(6 arquivos)*
+### `comment` — Comentários _(35 arquivos)_
 
 | Funcionalidade                     | Status |
 | ---------------------------------- | ------ |
-| Salvar/remover mangá (mock)        | ✅ |
-| Organização por status (Lendo, Quero Ler, Concluído) | ✅ |
-| Botão de favorito                  | ✅ |
-| Hook useBookmark                   | ✅ |
-| Persistência real via API          | ⬜ |
+| Listagem de comentários (API real) | ✅     |
+| Árvore de comentários (replies)    | ✅     |
+| Input de comentário com emojis     | ✅     |
+| Ordenação de comentários           | ✅     |
+| Modal de edição de comentário      | ✅     |
+| Modal de resposta                  | ✅     |
+| Modal de exclusão                  | ✅     |
+| Modal de emojis                    | ✅     |
+| Context providers (Emoji, Sort)    | ✅     |
+| CRUD real via API                  | ⬜     |
 
-### `category` — Categorias *(7 arquivos)*
+### `rating` — Avaliações _(11 arquivos)_
 
-| Funcionalidade                  | Status |
-| ------------------------------- | ------ |
-| Busca de tags (API real)        | ✅ |
-| Filtros por gênero, status, sort | ✅ |
-| SelectInput customizado         | ✅ |
-| Tipos para filtros (Sort, Status, AdultContent) | ✅ |
+| Funcionalidade                       | Status |
+| ------------------------------------ | ------ |
+| Componente de estrelas (RatingStars) | ✅     |
+| Modal de avaliação                   | ✅     |
+| Cálculo de média de avaliações       | ✅     |
+| Avaliações do usuário (mock)         | ✅     |
+| Edição/exclusão de review            | ✅     |
+| Avaliações reais via API             | ⬜     |
 
-### `news` — Notícias *(2 arquivos)*
-
-| Funcionalidade                 | Status |
-| ------------------------------ | ------ |
-| Listagem de notícias (mock)    | ✅ |
-| Detalhes da notícia            | ✅ |
-| Filtros por categoria          | ✅ |
-| Dados reais via API            | ⬜ |
-
-### `event` — Eventos *(3 arquivos)*
+### `group` — Grupos _(11 arquivos)_
 
 | Funcionalidade                 | Status |
 | ------------------------------ | ------ |
-| Listagem de eventos (mock)     | ✅ |
-| Detalhes do evento             | ✅ |
-| Filtros por status/tipo        | ✅ |
-| Dados reais via API            | ⬜ |
+| Listagem de grupos com filtros | ✅     |
+| Perfil do grupo com detalhes   | ✅     |
+| Modal de membros               | ✅     |
+| Modal de seleção de grupo      | ✅     |
+| Cards de grupo                 | ✅     |
+| Dados reais via API            | ⬜     |
 
-### `store` — Lojas *(5 arquivos)*
+### `library` — Biblioteca _(6 arquivos)_
 
-| Funcionalidade                 | Status |
-| ------------------------------ | ------ |
-| Modal de lojas parceiras       | ✅ |
-| Container de listagem          | ✅ |
-| Card de loja                   | ✅ |
+| Funcionalidade                                       | Status |
+| ---------------------------------------------------- | ------ |
+| Salvar/remover mangá (mock)                          | ✅     |
+| Organização por status (Lendo, Quero Ler, Concluído) | ✅     |
+| Botão de favorito                                    | ✅     |
+| Hook useBookmark                                     | ✅     |
+| Persistência real via API                            | ⬜     |
+
+### `category` — Categorias _(7 arquivos)_
+
+| Funcionalidade                                  | Status |
+| ----------------------------------------------- | ------ |
+| Busca de tags (API real)                        | ✅     |
+| Filtros por gênero, status, sort                | ✅     |
+| SelectInput customizado                         | ✅     |
+| Tipos para filtros (Sort, Status, AdultContent) | ✅     |
+
+### `news` — Notícias _(2 arquivos)_
+
+| Funcionalidade              | Status |
+| --------------------------- | ------ |
+| Listagem de notícias (mock) | ✅     |
+| Detalhes da notícia         | ✅     |
+| Filtros por categoria       | ✅     |
+| Dados reais via API         | ⬜     |
+
+### `event` — Eventos _(3 arquivos)_
+
+| Funcionalidade             | Status |
+| -------------------------- | ------ |
+| Listagem de eventos (mock) | ✅     |
+| Detalhes do evento         | ✅     |
+| Filtros por status/tipo    | ✅     |
+| Dados reais via API        | ⬜     |
+
+### `store` — Lojas _(5 arquivos)_
+
+| Funcionalidade           | Status |
+| ------------------------ | ------ |
+| Modal de lojas parceiras | ✅     |
+| Container de listagem    | ✅     |
+| Card de loja             | ✅     |
 
 ---
 
@@ -298,28 +298,29 @@ frontend/src/
 O projeto foi migrado de uma estrutura **flat por tipo de arquivo** (`components/`, `hooks/`, `services/`) para uma **arquitetura modular por features** (`features/auth/`, `features/manga/`, etc.).
 
 **Motivação:**
+
 - Encapsulamento — cada feature é autocontida com seus components, hooks, services e types
 - Escalabilidade — novas features não poluem pastas globais
 - Navegabilidade — qualquer desenvolvedor encontra rapidamente tudo sobre um domínio
 
 **Três camadas:**
 
-| Camada | Pasta | Responsabilidade |
-| ------ | ----- | ---------------- |
-| Features | `src/features/` | Lógica de domínio encapsulada por módulo |
-| Shared | `src/shared/` | Componentes, utilitários e tipos genéricos reutilizáveis |
-| App | `src/app/` | Layouts, roteamento e composição de páginas |
+| Camada   | Pasta           | Responsabilidade                                         |
+| -------- | --------------- | -------------------------------------------------------- |
+| Features | `src/features/` | Lógica de domínio encapsulada por módulo                 |
+| Shared   | `src/shared/`   | Componentes, utilitários e tipos genéricos reutilizáveis |
+| App      | `src/app/`      | Layouts, roteamento e composição de páginas              |
 
 ### Path Aliases
 
 Configurados no `tsconfig.app.json` e espelhados no `vite.config.ts`:
 
-| Alias | Caminho | Uso |
-| ----- | ------- | --- |
-| `@features/*` | `./src/features/*` | Import de features via barrel |
-| `@shared/*` | `./src/shared/*` | Import de shared com deep paths |
-| `@app/*` | `./src/app/*` | Import de layouts/routes |
-| `@/*` | `./src/*` | Fallback genérico |
+| Alias         | Caminho            | Uso                             |
+| ------------- | ------------------ | ------------------------------- |
+| `@features/*` | `./src/features/*` | Import de features via barrel   |
+| `@shared/*`   | `./src/shared/*`   | Import de shared com deep paths |
+| `@app/*`      | `./src/app/*`      | Import de layouts/routes        |
+| `@/*`         | `./src/*`          | Fallback genérico               |
 
 ### Barrel Files
 
@@ -340,25 +341,25 @@ Cada feature expõe sua **API pública** através de um `index.ts`. Regras:
 
 3 contextos globais provididos no `main.tsx`:
 
-| Context | Feature | Finalidade |
-| ------- | ------- | ---------- |
-| `UserModalProvider` | auth | Estado do modal de perfil de usuário |
-| `EmojiModalProvider` | comment | Estado do modal de emojis |
-| `CommentSortProvider` | comment | Estado da ordenação de comentários |
+| Context               | Feature | Finalidade                           |
+| --------------------- | ------- | ------------------------------------ |
+| `UserModalProvider`   | auth    | Estado do modal de perfil de usuário |
+| `EmojiModalProvider`  | comment | Estado do modal de emojis            |
+| `CommentSortProvider` | comment | Estado da ordenação de comentários   |
 
 ### Serviços Mock vs API Real
 
-| Serviço | Tipo | Caminho |
-| ------- | ---- | ------- |
-| Títulos, Capítulos | API Real | `https://db-json-ten.vercel.app` |
-| Comentários, Tags | API Real | `https://db-json-ten.vercel.app` |
-| Auth (login/logout) | Mock (localStorage) | `features/auth/services/` |
-| Avaliações | Mock (localStorage) | `features/rating/services/` |
-| Biblioteca | Mock (localStorage) | `features/library/services/` |
-| Reviews do usuário | Mock (localStorage) | `features/rating/services/` |
-| Notícias | Mock (dados estáticos) | `features/news/services/` |
-| Eventos | Mock (dados estáticos) | `features/event/services/` |
-| Grupos | Mock (dados estáticos) | `features/group/services/` |
+| Serviço             | Tipo                   | Caminho                          |
+| ------------------- | ---------------------- | -------------------------------- |
+| Títulos, Capítulos  | API Real               | `https://db-json-ten.vercel.app` |
+| Comentários, Tags   | API Real               | `https://db-json-ten.vercel.app` |
+| Auth (login/logout) | Mock (localStorage)    | `features/auth/services/`        |
+| Avaliações          | Mock (localStorage)    | `features/rating/services/`      |
+| Biblioteca          | Mock (localStorage)    | `features/library/services/`     |
+| Reviews do usuário  | Mock (localStorage)    | `features/rating/services/`      |
+| Notícias            | Mock (dados estáticos) | `features/news/services/`        |
+| Eventos             | Mock (dados estáticos) | `features/event/services/`       |
+| Grupos              | Mock (dados estáticos) | `features/group/services/`       |
 
 ---
 
@@ -366,13 +367,13 @@ Cada feature expõe sua **API pública** através de um `index.ts`. Regras:
 
 Auditoria de imports (atualizada em 15/02/2026):
 
-| Padrão | Contagem | Status |
-| ------ | -------- | ------ |
-| Imports via barrel (`@features/xxx`) | 37 | ✅ Padrão |
-| Imports intra-feature relativos (`../`) | 77 | ✅ Padrão |
-| Imports `@shared/` (deep paths) | 153 | ✅ Padrão |
-| Imports `@app/` | 93 | ✅ Padrão |
-| Deep `@features/` imports | **0** | ✅ Zero |
+| Padrão                                  | Contagem | Status    |
+| --------------------------------------- | -------- | --------- |
+| Imports via barrel (`@features/xxx`)    | 37       | ✅ Padrão |
+| Imports intra-feature relativos (`../`) | 77       | ✅ Padrão |
+| Imports `@shared/` (deep paths)         | 153      | ✅ Padrão |
+| Imports `@app/`                         | 93       | ✅ Padrão |
+| Deep `@features/` imports               | **0**    | ✅ Zero   |
 
 ---
 
@@ -380,18 +381,18 @@ Auditoria de imports (atualizada em 15/02/2026):
 
 ### `Chapter.tsx` — Erros de TypeScript pré-existentes
 
-| Erro | Linha | Severidade |
-| ---- | ----- | ---------- |
-| `useParams()` retorna `string \| undefined`, atribuído a `string` | 21-22 | 🔴 Erro |
-| `titles` é `Error \| TitleTypes[]`, falta type narrowing | 27-29 | 🔴 Erro |
+| Erro                                                                            | Linha       | Severidade |
+| ------------------------------------------------------------------------------- | ----------- | ---------- |
+| `useParams()` retorna `string \| undefined`, atribuído a `string`               | 21-22       | 🔴 Erro    |
+| `titles` é `Error \| TitleTypes[]`, falta type narrowing                        | 27-29       | 🔴 Erro    |
 | Variáveis não utilizadas (`isError`, `error`, `handleImageError`, `actionMeta`) | 24, 43, 142 | 🟡 Warning |
-| Formatação Prettier (`actionMeta` e template literal) | 142, 145 | 🟡 Lint |
+| Formatação Prettier (`actionMeta` e template literal)                           | 142, 145    | 🟡 Lint    |
 
 ### `Categories.tsx` — Argumento extra
 
-| Erro | Linha | Severidade |
-| ---- | ----- | ---------- |
-| `useTagsFetch` chamado com 3 argumentos, esperava 2 | 26 | 🔴 Erro |
+| Erro                                                | Linha | Severidade |
+| --------------------------------------------------- | ----- | ---------- |
+| `useTagsFetch` chamado com 3 argumentos, esperava 2 | 26    | 🔴 Erro    |
 
 > **Nota:** Esses erros são pré-existentes e **não foram introduzidos** pela migração de arquitetura. São candidatos para correção na próxima iteração.
 
@@ -455,14 +456,14 @@ npm run format
 
 ### Scripts Disponíveis
 
-| Script | Comando | Descrição |
-| ------ | ------- | --------- |
-| `dev` | `vite --host --force` | Dev server com hot reload |
-| `build` | `tsc -b && vite build` | Type-check + build de produção |
-| `preview` | `vite preview` | Preview do build local |
-| `deploy` | `gh-pages -d dist` | Deploy para GitHub Pages |
-| `lint` | `eslint . --ext .ts,.tsx` | Verificação de lint |
-| `format` | `prettier --write .` | Formatação automática |
+| Script    | Comando                   | Descrição                      |
+| --------- | ------------------------- | ------------------------------ |
+| `dev`     | `vite --host --force`     | Dev server com hot reload      |
+| `build`   | `tsc -b && vite build`    | Type-check + build de produção |
+| `preview` | `vite preview`            | Preview do build local         |
+| `deploy`  | `gh-pages -d dist`        | Deploy para GitHub Pages       |
+| `lint`    | `eslint . --ext .ts,.tsx` | Verificação de lint            |
+| `format`  | `prettier --write .`      | Formatação automática          |
 
 ---
 

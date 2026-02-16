@@ -1,11 +1,11 @@
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 import clsx from 'clsx';
 
 import MainSearchInput from '@shared/component/input/MainSearchInput';
-import Menu from '@shared/component/menu/Menu';
+import NavigationMenu from '@shared/component/menu/NavigationMenu';
 import { useAuth } from '@feature/auth';
-import { showInfoToast } from '@shared/service/util/toastUtils';
+import { showInfoToast } from '@shared/service/util/toastService';
 
 type HeaderTypes = {
     disabledAuth?: boolean;
@@ -26,7 +26,7 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
                                 alt={user.name}
                                 className="object-cover w-8 h-8 border rounded-full border-tertiary"
                             />
-                            <CustomLink
+                            <AppLink
                                 enabledColorWhenActive={true}
                                 link="/profile"
                                 text={user.name}
@@ -44,13 +44,13 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
                         </>
                     ) : (
                         <>
-                            <CustomLink
+                            <AppLink
                                 enabledColorWhenActive={true}
                                 link="/sign-up"
                                 text="Cadastro"
                             />
                             <span className="font-bold">|</span>
-                            <CustomLink
+                            <AppLink
                                 enabledColorWhenActive={true}
                                 link="/login"
                                 text="Login"
@@ -62,7 +62,7 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
             <nav className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
                 <div>
                     <h1>
-                        <CustomLink
+                        <AppLink
                             className="text-2xl italic"
                             text="Manga Reader"
                         />
@@ -70,7 +70,7 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
                 </div>
                 {!disabledSearch && <MainSearchInput />}
             </nav>
-            <Menu />
+            <NavigationMenu />
         </header>
     );
 };

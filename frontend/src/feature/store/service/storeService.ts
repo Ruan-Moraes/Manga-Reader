@@ -12,12 +12,14 @@ export const getStores = async (): Promise<Store[]> => {
     return mockStores;
 };
 
-export const getStoresByTitleId = async (
-    titleId: string,
-): Promise<Store[]> => {
+export const getStoresByTitleId = async (titleId: string): Promise<Store[]> => {
     await simulateDelay();
 
-    const storeIds = titleStoreMap[titleId] ?? ['store-1', 'store-2', 'store-3'];
+    const storeIds = titleStoreMap[titleId] ?? [
+        'store-1',
+        'store-2',
+        'store-3',
+    ];
 
     return mockStores.filter(s => storeIds.includes(s.id));
 };

@@ -2,7 +2,7 @@ import { IoOpenOutline } from 'react-icons/io5';
 
 import { getGroupStatusLabel } from '../../service/groupService';
 import { Group } from '../../type/group.types';
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 type GroupCardProps = {
     group: Group;
@@ -74,7 +74,7 @@ const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
                     <span>{group.totalTitles} obras</span>
                 </div>
 
-                <CustomLink
+                <AppLink
                     link={`/groups/${group.id}`}
                     text="Ver detalhes"
                     className="text-xs"

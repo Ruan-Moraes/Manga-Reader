@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { TitleDetails } from '../../type/card.types';
+import { TitleDetails } from '../../type/title-card.types';
 
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 const TitleDetails = ({
     showType,
@@ -33,7 +33,7 @@ const TitleDetails = ({
                     <span className="text-shadow-default">...</span>
                 ) : (
                     <h3 className="overflow-x-auto scrollbar-hidden">
-                        <CustomLink
+                        <AppLink
                             link={`/title/${id}`}
                             text={name}
                             className="text-nowrap text-shadow-default"

@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Select, { SelectOption } from '@shared/component/ui/Select';
+import StyledSelect, { SelectOption } from '@shared/component/ui/StyledSelect';
 import { SingleValue, MultiValue, ActionMeta } from 'react-select';
 import { IoImageOutline } from 'react-icons/io5';
 
-import { COLORS } from '@shared/constant/COLORS';
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import Warning from '@shared/component/notification/Warning';
+import AlertBanner from '@shared/component/notification/AlertBanner';
 import { CommentInput, SortComments, CommentsList } from '@feature/comment';
 
 import { useTitles } from '@feature/manga';
@@ -125,31 +125,33 @@ const Chapter = () => {
         // TODO: Implementar uma maneira de lidar com capítulos inválidos
 
         return (
-            <Main>
-                <Warning
-                    color={COLORS.QUINARY}
+            <MainContent>
+                <AlertBanner
+                    color={THEME_COLORS.QUINARY}
                     title="Capítulo não encontrado"
                     message="O capítulo que você está tentando acessar não existe."
                     link={`/title/${titleId}`}
                     linkText="Voltar para página do título"
                 />
-            </Main>
+            </MainContent>
         );
     }
 
     const handleChange = (
         newValue: MultiValue<SelectOption> | SingleValue<SelectOption>,
-        actionMeta: ActionMeta<SelectOption>
+        actionMeta: ActionMeta<SelectOption>,
     ) => {
         if (newValue && !Array.isArray(newValue)) {
-            navigate(`/Manga-Reader/title/${titleId}/${(newValue as SelectOption).value}`);
+            navigate(
+                `/Manga-Reader/title/${titleId}/${(newValue as SelectOption).value}`,
+            );
         }
     };
 
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section>
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-center w-full border bg-secondary h-80 rounded-xs border-tertiary">
@@ -182,7 +184,7 @@ const Chapter = () => {
                         <div className="flex flex-col gap-2">
                             <div>
                                 <form>
-                                    <Select
+                                    <StyledSelect
                                         variant="default"
                                         name="chapter"
                                         onChange={handleChange}
@@ -334,7 +336,7 @@ const Chapter = () => {
                 >
                     <div className="grow">
                         <form>
-                            <Select
+                            <StyledSelect
                                 variant="chapter"
                                 name="chapter"
                                 onChange={handleChange}
@@ -370,7 +372,7 @@ const Chapter = () => {
                         </button>
                     </div>
                 </div>
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

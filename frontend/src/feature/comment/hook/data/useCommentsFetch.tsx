@@ -1,10 +1,11 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { ERROR_MESSAGES, QUERY_KEYS } from '@shared/constant/API_CONSTANTS';
+import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
+import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { CommentData } from '../../type/comment.types';
 
-import checkValidId from '@shared/service/util/checkValidId';
+import validateId from '@shared/service/util/validateId';
 import { getCommentsByTitleId } from '../../service/commentService';
 
 const useCommentsFetch = (
@@ -14,7 +15,7 @@ const useCommentsFetch = (
         queryKey: [QUERY_KEYS.COMMENTS, id],
         queryFn: async () => {
             try {
-                checkValidId(id);
+                validateId(id);
 
                 return await getCommentsByTitleId(id);
             } catch (error) {

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 
-import { ROUTES } from './src/shared/constant/API_CONSTANTS.ts';
+import { ROUTES } from './src/shared/constant/ROUTES.ts';
 
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';

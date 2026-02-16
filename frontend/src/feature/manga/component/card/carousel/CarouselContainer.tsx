@@ -4,16 +4,18 @@ import { Splide } from '@splidejs/react-splide';
 // @ts-expect-error - ignore import error
 import '@splidejs/react-splide/css';
 
-import { API_URLS, QUERY_KEYS, ROUTES } from '@shared/constant/API_CONSTANTS';
+import { API_URLS } from '@shared/constant/API_URLS';
+import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
+import { ROUTES } from '@shared/constant/ROUTES';
 
-import { CardsContainer } from '../../../type/card-container.types';
+import { SectionHeader } from '../../../type/section-header.types';
 
 import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
-import Carousel from './Carousel';
-import CustomLink from '@shared/component/link/element/CustomLink';
+import CarouselSlide from './CarouselSlide';
+import AppLink from '@shared/component/link/element/AppLink';
 
-const CarouselContainer = ({ title, subTitle }: CardsContainer) => {
+const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
     const { data, status } = useTitlesFetch(
         API_URLS.TITLE_URL,
         QUERY_KEYS.TITLES_IN_THE_CAROUSEL,
@@ -56,7 +58,7 @@ const CarouselContainer = ({ title, subTitle }: CardsContainer) => {
                 >
                     {Object.values(data).map(
                         ({ id, title, cover, synopsis }) => (
-                            <Carousel
+                            <CarouselSlide
                                 isLoading={false}
                                 isError={false}
                                 key={id}
@@ -72,17 +74,17 @@ const CarouselContainer = ({ title, subTitle }: CardsContainer) => {
         }
 
         if (status === 'pending') {
-            return <Carousel isLoading={true} isError={false} />;
+            return <CarouselSlide isLoading={true} isError={false} />;
         }
 
-        return <Carousel isError={true} isLoading={false} />;
+        return <CarouselSlide isError={true} isLoading={false} />;
     }, [data, status]);
 
     return (
         <section className="flex flex-col items-start">
             <div className="px-4 py-2 rounded-t-xs bg-tertiary">
                 <h2 className="flex flex-col items-center text-center">
-                    <CustomLink
+                    <AppLink
                         link={ROUTES.CATEGORIES_MOST_READ}
                         text={title}
                         className="text-shadow-default text-quaternary-default"

@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 
-import {
-    CommentData,
-    CommentWithChildren,
-} from '../../type/comment.types';
+import { CommentData, CommentWithChildren } from '../../type/comment.types';
 
 import { useCommentSortContext } from '../../context/CommentSortContext';
 
@@ -30,10 +27,7 @@ const useCommentTree = (comments: CommentData[] | Error) => {
     );
 
     const buildTree = useCallback(
-        (
-            map: Map<string, CommentWithChildren>,
-            comments: CommentData[],
-        ) => {
+        (map: Map<string, CommentWithChildren>, comments: CommentData[]) => {
             if (isError || !comments || comments.length === 0) {
                 return [];
             }

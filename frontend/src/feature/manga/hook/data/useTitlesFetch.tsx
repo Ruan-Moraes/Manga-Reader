@@ -1,14 +1,12 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { ERROR_MESSAGES } from '@shared/constant/API_CONSTANTS';
+import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 
 import { Title } from '../../type/title.types';
 
 import { getTitles } from '../../service/titleService';
 
-const useTitlesFetch = (
-    queryKey: string,
-): UseQueryResult<Title[] | Error> => {
+const useTitlesFetch = (queryKey: string): UseQueryResult<Title[] | Error> => {
     return useQuery<Title[], Error>({
         queryKey: [queryKey],
         queryFn: async () => {

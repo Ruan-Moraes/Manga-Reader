@@ -1,6 +1,9 @@
 // features/comment/index.ts
 export { default as useComments } from './hook/useComments';
-export { CommentSortProvider, useCommentSortContext } from './context/CommentSortContext';
+export {
+    CommentSortProvider,
+    useCommentSortContext,
+} from './context/CommentSortContext';
 export { EmojiModalProvider } from './context/EmojiModalContext';
 export { useEmojiModalContext } from './context/useEmojiModalContext';
 export { default as CommentsSection } from './component/CommentsSection';

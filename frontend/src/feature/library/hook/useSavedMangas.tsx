@@ -6,7 +6,7 @@ import {
     toggleSavedManga as toggleSavedMangaService,
     updateSavedMangaList,
 } from '../service/libraryService';
-import { ReadingListType, SavedMangaItem } from '../type/favorite.types';
+import { ReadingListType, SavedMangaItem } from '../type/saved-library.types';
 
 const useSavedMangas = (userId = 'user-1') => {
     const [savedMangas, setSavedMangas] = useState<SavedMangaItem[]>([]);

@@ -1,7 +1,7 @@
 import Home from '@app/route/home/Home';
-import Titles from '@app/route/title/Titles';
+import TitleDetailsPage from '@app/route/title/TitleDetails';
 import Chapter from '@app/route/chapter/Chapter';
-import Categories from '@app/route/category/Categories';
+import CategoryFilters from '@app/route/category/CategoryFilters';
 import Groups from '@app/route/group/Groups';
 import GroupProfile from '@app/route/group/GroupProfile';
 import SavedMangas from '@app/route/saved-manga/SavedMangas';
@@ -18,7 +18,9 @@ import Dmca from '@app/route/term/Dmca';
 import NotFound from '@app/route/error/NotFound';
 import Profile from '@app/route/profile/Profile';
 import Library from '@app/route/library/Library';
-import Reviews from '@app/route/review/Reviews';
+import MyReviews from '@app/route/review/MyReviews';
+import Forum from '@app/route/forum/Forum';
+import ForumTopic from '@app/route/forum/ForumTopic';
 
 const publicRoutes = [
     {
@@ -26,16 +28,16 @@ const publicRoutes = [
         element: <Home />,
     },
     {
-        path: 'titles/:titleId',
-        element: <Titles />,
+        path: 'title/:titleId',
+        element: <TitleDetailsPage />,
     },
     {
-        path: 'titles/:titleId/:chapter',
+        path: 'title/:titleId/:chapter',
         element: <Chapter />,
     },
     {
         path: 'categories',
-        element: <Categories />,
+        element: <CategoryFilters />,
     },
     {
         path: 'groups',
@@ -59,7 +61,7 @@ const publicRoutes = [
     },
     {
         path: 'reviews',
-        element: <Reviews />,
+        element: <MyReviews />,
     },
     {
         path: 'news',
@@ -74,8 +76,16 @@ const publicRoutes = [
         element: <Events />,
     },
     {
-        path: 'events/:eventId',
+        path: 'event/:eventId',
         element: <EventDetails />,
+    },
+    {
+        path: 'forum',
+        element: <Forum />,
+    },
+    {
+        path: 'forum/:topicId',
+        element: <ForumTopic />,
     },
     {
         path: 'login',

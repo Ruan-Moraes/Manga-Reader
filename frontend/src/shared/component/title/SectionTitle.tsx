@@ -1,4 +1,4 @@
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 type SectionTitleTypes = {
     children?: React.ReactNode;
@@ -33,7 +33,7 @@ const SectionTitle = ({
                     )}
                     {subTitle && subLink && (
                         <p className="leading-0">
-                            <CustomLink
+                            <AppLink
                                 link={subLink}
                                 text={subTitle}
                                 className="text-xs text-quaternary-default"

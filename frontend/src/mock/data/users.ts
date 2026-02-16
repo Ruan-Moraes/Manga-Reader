@@ -18,8 +18,14 @@ export const mockUsers: User[] = [
         ],
         statistics: { comments: 28, likes: 74, dislikes: 2 },
         recommendedTitles: [
-            { image: 'https://picsum.photos/300/450?random=r1', link: '/title/1' },
-            { image: 'https://picsum.photos/300/450?random=r2', link: '/title/5' },
+            {
+                image: 'https://picsum.photos/300/450?random=r1',
+                link: '/title/1',
+            },
+            {
+                image: 'https://picsum.photos/300/450?random=r2',
+                link: '/title/5',
+            },
         ],
     },
     {

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { showSuccessToast } from '@shared/service/util/toastUtils';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import useSavedMangas from './useSavedMangas';
 
 const useBookmark = () => {

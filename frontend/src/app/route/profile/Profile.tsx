@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import { useAuth } from '@feature/auth';
-import { showSuccessToast } from '@shared/service/util/toastUtils';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 const Profile = () => {
     const { user, updateProfile } = useAuth();
@@ -15,7 +15,7 @@ const Profile = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section className="p-4 border rounded-xs border-tertiary bg-secondary/30">
                     <h2 className="mb-4 text-xl font-bold">
                         Perfil do Usuário
@@ -68,7 +68,7 @@ const Profile = () => {
                         </p>
                     )}
                 </section>
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

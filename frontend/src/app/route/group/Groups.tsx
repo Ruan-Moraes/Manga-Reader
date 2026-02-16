@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import { GroupCard, useGroups, type GroupStatus } from '@feature/group';
@@ -22,7 +22,7 @@ const Groups = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section className="flex flex-col gap-4">
                     <h2 className="text-xl font-bold">Grupos de Tradução</h2>
                     <p className="text-sm text-tertiary">
@@ -93,7 +93,7 @@ const Groups = () => {
                               <GroupCard key={group.id} group={group} />
                           ))}
                 </section>
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

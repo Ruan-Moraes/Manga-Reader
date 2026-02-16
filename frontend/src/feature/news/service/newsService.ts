@@ -1,11 +1,7 @@
 import { simulateDelay } from '@shared/service/mockApi';
 import { mockNews } from '@mock/data/news';
 
-import type {
-    NewsCategory,
-    NewsFilter,
-    NewsItem,
-} from '../type/news.types';
+import type { NewsCategory, NewsFilter, NewsItem } from '../type/news.types';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -31,8 +27,10 @@ export const getNews = async (filters?: NewsFilter): Promise<NewsItem[]> => {
             : new Date(now - periodInDays[period] * 86_400_000);
 
     const filtered = mockNews.filter(news => {
-        if (tab !== 'all' && tab !== 'Principais' && news.category !== tab) return false;
-        if (tab === 'Principais' && !news.isFeatured && news.trendingScore < 85) return false;
+        if (tab !== 'all' && tab !== 'Principais' && news.category !== tab)
+            return false;
+        if (tab === 'Principais' && !news.isFeatured && news.trendingScore < 85)
+            return false;
         if (source !== 'all' && news.source !== source) return false;
         if (limitDate && new Date(news.publishedAt) < limitDate) return false;
         if (normalizedQuery) {
@@ -48,17 +46,17 @@ export const getNews = async (filters?: NewsFilter): Promise<NewsItem[]> => {
     return filtered.sort((a, b) => {
         if (sort === 'most-read') return b.views - a.views;
         if (sort === 'trending') return b.trendingScore - a.trendingScore;
-        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        return (
+            new Date(b.publishedAt).getTime() -
+            new Date(a.publishedAt).getTime()
+        );
     });
 };
 
 export const getNewsById = (id: string): NewsItem | undefined =>
     mockNews.find(n => n.id === id);
 
-export const getRelatedNews = (
-    news: NewsItem,
-    limit = 6,
-): NewsItem[] =>
+export const getRelatedNews = (news: NewsItem, limit = 6): NewsItem[] =>
     mockNews
         .filter(
             item =>
@@ -114,8 +112,10 @@ export const filterNews = (filters: NewsFilter): NewsItem[] => {
             : new Date(now - periodInDays[period] * 86_400_000);
 
     const filtered = mockNews.filter(news => {
-        if (tab !== 'all' && tab !== 'Principais' && news.category !== tab) return false;
-        if (tab === 'Principais' && !news.isFeatured && news.trendingScore < 85) return false;
+        if (tab !== 'all' && tab !== 'Principais' && news.category !== tab)
+            return false;
+        if (tab === 'Principais' && !news.isFeatured && news.trendingScore < 85)
+            return false;
         if (source !== 'all' && news.source !== source) return false;
         if (limitDate && new Date(news.publishedAt) < limitDate) return false;
         if (normalizedQuery) {
@@ -131,6 +131,9 @@ export const filterNews = (filters: NewsFilter): NewsItem[] => {
     return filtered.sort((a, b) => {
         if (sort === 'most-read') return b.views - a.views;
         if (sort === 'trending') return b.trendingScore - a.trendingScore;
-        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        return (
+            new Date(b.publishedAt).getTime() -
+            new Date(a.publishedAt).getTime()
+        );
     });
 };

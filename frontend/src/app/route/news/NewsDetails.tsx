@@ -12,13 +12,9 @@ import {
 } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
-import {
-    formatRelativeDate,
-    getNewsById,
-    getRelatedNews,
-} from '@feature/news';
+import { formatRelativeDate, getNewsById, getRelatedNews } from '@feature/news';
 
 const formatDate = (date: string) =>
     new Intl.DateTimeFormat('pt-BR', {
@@ -82,19 +78,19 @@ const NewsDetails = () => {
         return (
             <>
                 <Header />
-                <Main>
+                <MainContent>
                     <section className="p-6 border rounded-xl border-tertiary bg-secondary">
                         <h1 className="text-2xl font-bold">
                             Notícia não encontrada
                         </h1>
                         <Link
-                            to="/news"
+                            to="/Manga-Reader/news"
                             className="inline-block mt-3 text-purple-300 underline"
                         >
                             Voltar para notícias
                         </Link>
                     </section>
-                </Main>
+                </MainContent>
                 <Footer />
             </>
         );
@@ -107,7 +103,7 @@ const NewsDetails = () => {
                 style={{ width: `${readingProgress}%` }}
             />
             <Header />
-            <Main>
+            <MainContent>
                 <article className="space-y-5">
                     <header className="overflow-hidden border rounded-2xl border-tertiary bg-secondary">
                         <img
@@ -374,7 +370,7 @@ const NewsDetails = () => {
                                     {relatedNews.map(item => (
                                         <Link
                                             key={item.id}
-                                            to={`/news/${item.id}`}
+                                            to={`/Manga-Reader/news/${item.id}`}
                                             className="block min-w-56 rounded-lg bg-primary p-2 xl:min-w-0"
                                         >
                                             <p className="text-sm font-medium line-clamp-2">
@@ -396,7 +392,7 @@ const NewsDetails = () => {
                                 {relatedNews.slice(0, 4).map(item => (
                                     <Link
                                         key={`${item.id}-extra`}
-                                        to={`/news/${item.id}`}
+                                        to={`/Manga-Reader/news/${item.id}`}
                                         className="block text-sm underline text-purple-300"
                                     >
                                         {item.title}
@@ -406,7 +402,7 @@ const NewsDetails = () => {
                         </aside>
                     </section>
                 </article>
-            </Main>
+            </MainContent>
 
             <button
                 type="button"

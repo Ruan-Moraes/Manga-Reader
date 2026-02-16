@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import {
     NewsCategory,
@@ -135,7 +135,7 @@ const News = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section className="p-4 border rounded-2xl border-tertiary bg-secondary">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                         <div>
@@ -210,7 +210,7 @@ const News = () => {
 
                         {!isLoading && heroNews && (
                             <Link
-                                to={`/news/${heroNews.id}`}
+                                to={`/Manga-Reader/news/${heroNews.id}`}
                                 className="block overflow-hidden transition border rounded-2xl border-tertiary bg-secondary hover:-translate-y-1"
                             >
                                 <div className="relative">
@@ -297,7 +297,7 @@ const News = () => {
                                         <div className="mt-2 space-y-2">
                                             <h3 className="font-semibold leading-snug line-clamp-2">
                                                 <Link
-                                                    to={`/news/${news.id}`}
+                                                    to={`/Manga-Reader/news/${news.id}`}
                                                     onClick={() =>
                                                         setReadNews(current =>
                                                             current.includes(
@@ -374,7 +374,7 @@ const News = () => {
                             {sidebarMostRead.map(item => (
                                 <Link
                                     key={item.id}
-                                    to={`/news/${item.id}`}
+                                    to={`/Manga-Reader/news/${item.id}`}
                                     className="flex items-start gap-2 text-sm"
                                 >
                                     <span className="w-2 h-2 mt-2 bg-purple-400 rounded-full" />
@@ -446,7 +446,7 @@ const News = () => {
                         </div>
                     </aside>
                 </section>
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

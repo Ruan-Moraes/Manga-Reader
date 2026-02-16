@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import {
     showInfoToast,
     showSuccessToast,
-} from '@shared/service/util/toastUtils';
+} from '@shared/service/util/toastService';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import AuthenticationForm from '@shared/component/form/AuthenticationForm';
@@ -66,7 +66,7 @@ const Login = () => {
     return (
         <>
             <Header disabledSearch={true} />
-            <Main>
+            <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
                     title="Login de usuário"
@@ -86,7 +86,7 @@ const Login = () => {
                     />
                     <RaisedButton text="Entrar:" />
                 </AuthenticationForm>
-            </Main>
+            </MainContent>
             <Footer disabledLinks={true} />
         </>
     );

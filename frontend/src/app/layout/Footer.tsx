@@ -24,6 +24,7 @@ const Footer = ({ styles, disabledLinks }: FooterTypes) => {
                             { url: '/categories', text: 'Categorias' },
                             { url: '/news', text: 'Notícias' },
                             { url: '/events', text: 'Eventos' },
+                            { url: '/forum', text: 'Fórum' },
                             { url: '/groups', text: 'Grupos' },
                         ]}
                     />

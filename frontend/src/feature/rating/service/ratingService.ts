@@ -98,7 +98,12 @@ export const updateReview = async (data: {
 
     const reviews = getReviewsStore().map(r =>
         r.id === data.id
-            ? { ...r, stars: data.stars, comment: data.comment, createdAt: new Date().toISOString() }
+            ? {
+                  ...r,
+                  stars: data.stars,
+                  comment: data.comment,
+                  createdAt: new Date().toISOString(),
+              }
             : r,
     );
 

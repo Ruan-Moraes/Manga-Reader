@@ -9,7 +9,8 @@ export const mockStores: Store[] = [
         id: 'store-1',
         name: 'Amazon',
         icon: 'amazon',
-        description: 'Marketplace oficial com catálogo variado e entrega rápida.',
+        description:
+            'Marketplace oficial com catálogo variado e entrega rápida.',
         website: 'https://amazon.com.br',
         availability: 'in_stock',
         rating: 4.7,
@@ -19,7 +20,8 @@ export const mockStores: Store[] = [
         id: 'store-2',
         name: 'Panini',
         icon: 'panini',
-        description: 'Editora parceira com lançamentos frequentes e edições exclusivas.',
+        description:
+            'Editora parceira com lançamentos frequentes e edições exclusivas.',
         website: 'https://panini.com.br',
         availability: 'in_stock',
         rating: 4.5,
@@ -28,7 +30,8 @@ export const mockStores: Store[] = [
     {
         id: 'store-3',
         name: 'Livraria Cultura',
-        description: 'Livraria com seção dedicada a mangás e eventos literários.',
+        description:
+            'Livraria com seção dedicada a mangás e eventos literários.',
         website: 'https://livrariacultura.com.br',
         availability: 'in_stock',
         rating: 4.3,
@@ -48,7 +51,8 @@ export const mockStores: Store[] = [
         id: 'store-5',
         name: 'NewPOP',
         icon: 'default',
-        description: 'Manhwas, mangás e publicações de nicho para leitores exigentes.',
+        description:
+            'Manhwas, mangás e publicações de nicho para leitores exigentes.',
         website: 'https://newpop.com.br',
         availability: 'in_stock',
         rating: 4.4,
@@ -58,7 +62,8 @@ export const mockStores: Store[] = [
         id: 'store-6',
         name: 'Magalu',
         icon: 'default',
-        description: 'Grande varejo online com preços competitivos e promoções.',
+        description:
+            'Grande varejo online com preços competitivos e promoções.',
         website: 'https://magazineluiza.com.br',
         availability: 'in_stock',
         rating: 4.1,
@@ -78,7 +83,8 @@ export const mockStores: Store[] = [
         id: 'store-8',
         name: 'Shopee',
         icon: 'default',
-        description: 'Marketplace com vendedores independentes e ofertas diárias.',
+        description:
+            'Marketplace com vendedores independentes e ofertas diárias.',
         website: 'https://shopee.com.br',
         availability: 'in_stock',
         rating: 3.9,

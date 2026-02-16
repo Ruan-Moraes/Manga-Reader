@@ -1,4 +1,4 @@
-import CustomLink from '../element/CustomLink';
+import AppLink from '../element/AppLink';
 
 type FooterLinksSectionTypes = {
     className?: string;
@@ -21,7 +21,7 @@ const FooterLinksSection = ({
                     const { url, text } = link;
 
                     return (
-                        <CustomLink
+                        <AppLink
                             key={index}
                             link={url}
                             text={text}

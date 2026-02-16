@@ -1,13 +1,10 @@
 import { MdSort } from 'react-icons/md';
 import { AiFillDislike, AiFillLike } from 'react-icons/ai';
-import IconButton from '@shared/component/button/IconButton';
-import CalendarArrowDown from '@shared/component/icon/CalendarArrowDown';
-import CalendarArrowUp from '@shared/component/icon/CalendarArrowUp';
+import BadgeIconButton from '@shared/component/button/BadgeIconButton';
+import SortOldestButton from '@shared/component/icon/SortOldestButton';
+import SortNewestButton from '@shared/component/icon/SortNewestButton';
 
-import {
-    SortType,
-    useCommentSortContext,
-} from '../context/CommentSortContext';
+import { SortType, useCommentSortContext } from '../context/CommentSortContext';
 
 type SortCommentsProps = {
     title: string;
@@ -32,29 +29,29 @@ const SortComments = ({ title }: SortCommentsProps) => {
                 <h4 className="font-bold">{title}</h4>
             </div>
             <div className="flex items-center gap-2 grow">
-                <IconButton
+                <BadgeIconButton
                     onClick={() => setSortType(null)}
                     className={`h-8 ${sortType === null ? 'bg-quaternary-opacity-50' : ''}`}
                 >
                     <MdSort size={13} />
-                </IconButton>
-                <IconButton
+                </BadgeIconButton>
+                <BadgeIconButton
                     onClick={() => handleSortClick('dislikes')}
                     className={`h-8 ${sortType === 'dislikes' ? 'bg-quaternary-opacity-50' : ''}`}
                 >
                     <AiFillDislike size={13} />
-                </IconButton>
-                <IconButton
+                </BadgeIconButton>
+                <BadgeIconButton
                     onClick={() => handleSortClick('likes')}
                     className={`h-8 ${sortType === 'likes' ? 'bg-quaternary-opacity-50' : ''}`}
                 >
                     <AiFillLike size={13} />
-                </IconButton>
-                <CalendarArrowDown
+                </BadgeIconButton>
+                <SortOldestButton
                     onClick={() => handleSortClick('newest')}
                     className={`h-8 ${sortType === 'newest' ? 'bg-quaternary-opacity-50' : ''}`}
                 />
-                <CalendarArrowUp
+                <SortNewestButton
                     onClick={() => handleSortClick('oldest')}
                     className={`h-8 ${sortType === 'oldest' ? 'bg-quaternary-opacity-50' : ''}`}
                 />

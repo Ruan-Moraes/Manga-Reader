@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 import { useSavedMangas, type ReadingListType } from '@feature/library';
 
 const listTypes: ReadingListType[] = ['Lendo', 'Quero Ler', 'Concluído'];
@@ -24,7 +24,7 @@ const SavedMangas = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section className="flex flex-col gap-4">
                     <h2 className="text-xl font-bold">Meus Mangás Salvos</h2>
                     <div className="flex flex-wrap gap-2">
@@ -56,7 +56,7 @@ const SavedMangas = () => {
                                 className="object-cover w-20 h-28 rounded-xs"
                             />
                             <div className="flex flex-col flex-1 gap-2">
-                                <CustomLink
+                                <AppLink
                                     link={`/title/${manga.titleId}`}
                                     text={manga.name}
                                     className="text-sm"
@@ -99,7 +99,7 @@ const SavedMangas = () => {
                         </article>
                     ))}
                 </section>
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

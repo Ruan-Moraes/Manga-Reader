@@ -1,8 +1,4 @@
-import {
-    type GroupMember,
-    type Group,
-    type GroupWork,
-} from '@feature/group';
+import { type GroupMember, type Group, type GroupWork } from '@feature/group';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -162,7 +158,8 @@ export const mockGroups: Group[] = [
         name: 'Mirai Scans',
         logo: 'https://picsum.photos/400/400?random=31',
         banner: 'https://picsum.photos/1280/360?random=131',
-        description: 'Especialistas em ação e fantasia com fluxo semanal e revisão colaborativa.',
+        description:
+            'Especialistas em ação e fantasia com fluxo semanal e revisão colaborativa.',
         website: 'https://mangadex.org',
         totalTitles: 6,
         foundedYear: 2019,
@@ -180,7 +177,8 @@ export const mockGroups: Group[] = [
         name: 'Lótus Team',
         logo: 'https://picsum.photos/400/400?random=32',
         banner: 'https://picsum.photos/1280/360?random=132',
-        description: 'Equipe focada em drama e slice of life, com edição refinada.',
+        description:
+            'Equipe focada em drama e slice of life, com edição refinada.',
         website: 'https://myanimelist.net',
         totalTitles: 4,
         foundedYear: 2020,
@@ -216,7 +214,8 @@ export const mockGroups: Group[] = [
         name: 'Aurora Scan',
         logo: 'https://picsum.photos/400/400?random=34',
         banner: 'https://picsum.photos/1280/360?random=134',
-        description: 'Traduções de romances escolares e comédia com lançamentos quinzenais.',
+        description:
+            'Traduções de romances escolares e comédia com lançamentos quinzenais.',
         website: 'https://www.reddit.com',
         totalTitles: 3,
         foundedYear: 2021,
@@ -252,7 +251,8 @@ export const mockGroups: Group[] = [
         name: 'Vortex BR',
         logo: 'https://picsum.photos/400/400?random=36',
         banner: 'https://picsum.photos/1280/360?random=136',
-        description: 'Foco em aventura e mistério com revisão técnica detalhada.',
+        description:
+            'Foco em aventura e mistério com revisão técnica detalhada.',
         website: 'https://www.crunchyroll.com',
         totalTitles: 5,
         foundedYear: 2023,
@@ -270,7 +270,8 @@ export const mockGroups: Group[] = [
         name: 'Pixel Ink',
         logo: 'https://picsum.photos/400/400?random=37',
         banner: 'https://picsum.photos/1280/360?random=137',
-        description: 'Time pequeno especializado em webtoons de fantasia urbana.',
+        description:
+            'Time pequeno especializado em webtoons de fantasia urbana.',
         website: 'https://www.webtoons.com',
         totalTitles: 3,
         foundedYear: 2024,
@@ -288,7 +289,8 @@ export const mockGroups: Group[] = [
         name: 'Old Pages',
         logo: 'https://picsum.photos/400/400?random=38',
         banner: 'https://picsum.photos/1280/360?random=138',
-        description: 'Equipe histórica em pausa, conhecida por obras clássicas completas.',
+        description:
+            'Equipe histórica em pausa, conhecida por obras clássicas completas.',
         website: 'https://www.goodreads.com',
         totalTitles: 4,
         foundedYear: 2015,

@@ -1,4 +1,4 @@
-﻿import BlackButton from '@shared/component/button/BlackButton';
+﻿import DarkButton from '@shared/component/button/DarkButton';
 
 type DeleteModalFooterProps = {
     onConfirm: () => void;
@@ -8,8 +8,8 @@ type DeleteModalFooterProps = {
 function DeleteModalFooter({ onConfirm, onCancel }: DeleteModalFooterProps) {
     return (
         <div className="flex justify-end gap-2">
-            <BlackButton text="Cancelar" onClick={onCancel} />
-            <BlackButton text="Confirmar" onClick={onConfirm} />
+            <DarkButton text="Cancelar" onClick={onCancel} />
+            <DarkButton text="Confirmar" onClick={onConfirm} />
         </div>
     );
 }

@@ -2,8 +2,8 @@ import { AiFillDislike, AiFillLike } from 'react-icons/ai';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
 
-import IconButton from '@shared/component/button/IconButton';
-import BlackButton from '@shared/component/button/BlackButton';
+import BadgeIconButton from '@shared/component/button/BadgeIconButton';
+import DarkButton from '@shared/component/button/DarkButton';
 
 type CommentActionsProps = {
     onDelete: () => void;
@@ -29,27 +29,27 @@ const CommentActions = ({
     return (
         <div className="flex justify-between">
             <div className="flex gap-2">
-                <IconButton onClick={() => {}} dislikeCount={dislikeCount}>
+                <BadgeIconButton onClick={() => {}} dislikeCount={dislikeCount}>
                     {/* // TODO: Implementar lógica de dislike */}
                     <AiFillDislike size={13} />
-                </IconButton>
-                <IconButton onClick={() => {}} likeCount={likeCount}>
+                </BadgeIconButton>
+                <BadgeIconButton onClick={() => {}} likeCount={likeCount}>
                     {/* // TODO: Implementar lógica de like */}
                     <AiFillLike size={13} />
-                </IconButton>
+                </BadgeIconButton>
             </div>
             <div className="flex gap-2">
                 {isOwner && (
                     <>
-                        <IconButton onClick={onDelete}>
+                        <BadgeIconButton onClick={onDelete}>
                             <FaRegTrashAlt size={13} />
-                        </IconButton>
-                        <IconButton onClick={onEdit}>
+                        </BadgeIconButton>
+                        <BadgeIconButton onClick={onEdit}>
                             <MdEdit size={13} />
-                        </IconButton>
+                        </BadgeIconButton>
                     </>
                 )}
-                <BlackButton text="Responder" onClick={onReply} />
+                <DarkButton text="Responder" onClick={onReply} />
             </div>
         </div>
     );

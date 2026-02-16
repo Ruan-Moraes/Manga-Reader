@@ -1,6 +1,17 @@
 import { type MangaRating } from '@feature/rating';
 
-const users = ['Ana', 'Carlos', 'Mika', 'Rui', 'João', 'Ester', 'Nina', 'Leo', 'Sakura', 'Dante'];
+const users = [
+    'Ana',
+    'Carlos',
+    'Mika',
+    'Rui',
+    'João',
+    'Ester',
+    'Nina',
+    'Leo',
+    'Sakura',
+    'Dante',
+];
 const ratingComments = [
     'Arte impecável e história viciante.',
     'Ritmo bom, mas alguns capítulos são lentos.',
@@ -36,7 +47,10 @@ const buildRatings = (): Record<string, MangaRating[]> => {
                 titleId,
                 userName: users[seed % users.length],
                 stars,
-                comment: seed % 3 !== 0 ? ratingComments[seed % ratingComments.length] : undefined,
+                comment:
+                    seed % 3 !== 0
+                        ? ratingComments[seed % ratingComments.length]
+                        : undefined,
                 createdAt: new Date(
                     Date.now() - (seed + 1) * 86_400_000,
                 ).toISOString(),

@@ -1,11 +1,11 @@
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import AuthenticationForm from '@shared/component/form/AuthenticationForm';
 import BaseInput from '@shared/component/input/BaseInput';
 import ButtonHighLight from '@shared/component/button/RaisedButton';
-import Checkbox from '@shared/component/input/CheckboxInput';
+import Checkbox from '@shared/component/input/CheckboxWithLink';
 
 const SignUp = () => {
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -17,7 +17,7 @@ const SignUp = () => {
     return (
         <>
             <Header disabledSearch={true} />
-            <Main>
+            <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
                     title="Cadastro de usuário"
@@ -56,7 +56,7 @@ const SignUp = () => {
                     </div>
                     <ButtonHighLight text="Cadastrar" />
                 </AuthenticationForm>
-            </Main>
+            </MainContent>
             <Footer disabledLinks={true} />
         </>
     );

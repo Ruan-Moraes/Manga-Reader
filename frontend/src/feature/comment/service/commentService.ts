@@ -68,7 +68,9 @@ export const deleteComment = async (id: string): Promise<void> => {
     await simulateDelay();
 
     for (const titleId of Object.keys(commentsStore)) {
-        commentsStore[titleId] = commentsStore[titleId].filter(c => c.id !== id);
+        commentsStore[titleId] = commentsStore[titleId].filter(
+            c => c.id !== id,
+        );
     }
 };
 

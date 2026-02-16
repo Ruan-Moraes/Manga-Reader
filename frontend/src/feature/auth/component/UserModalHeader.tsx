@@ -1,8 +1,8 @@
 import { useUserModalContext } from '../context/useUserModalContext';
 
-import treatDate from '@shared/service/util/treatDate';
+import formatDate from '@shared/service/util/formatDate';
 
-import BlackButton from '@shared/component/button/BlackButton';
+import DarkButton from '@shared/component/button/DarkButton';
 
 const UserModalHeader = () => {
     const { closeUserModal, userData } = useUserModalContext();
@@ -15,7 +15,7 @@ const UserModalHeader = () => {
     return (
         <div>
             <div className="flex justify-end">
-                <BlackButton onClick={closeUserModal} text="fechar" />
+                <DarkButton onClick={closeUserModal} text="fechar" />
             </div>
             <div className="flex gap-2 border-b border-b-tertiary scrollbar-hidden">
                 <div className="h-28 w-28 shrink-0">
@@ -35,7 +35,7 @@ const UserModalHeader = () => {
                             {userData!.moderator?.isModerator && (
                                 <span className="text-xs font-normal text-tertiary">
                                     Moderador desde{' '}
-                                    {treatDate(
+                                    {formatDate(
                                         userData!.moderator.since,
                                         dateOptions,
                                     )}
@@ -44,7 +44,7 @@ const UserModalHeader = () => {
                             {userData!.member?.isMember && (
                                 <span className="text-xs font-normal text-tertiary">
                                     Membro desde{' '}
-                                    {treatDate(
+                                    {formatDate(
                                         userData!.member!.since,
                                         dateOptions,
                                     )}

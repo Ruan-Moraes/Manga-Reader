@@ -27,14 +27,11 @@ const useAuth = () => {
         setUser(null);
     }, []);
 
-    const updateProfile = useCallback(
-        async (partialUser: Partial<User>) => {
-            const updatedUser = await updateProfileService(partialUser);
-            setUser(updatedUser);
-            return updatedUser;
-        },
-        [],
-    );
+    const updateProfile = useCallback(async (partialUser: Partial<User>) => {
+        const updatedUser = await updateProfileService(partialUser);
+        setUser(updatedUser);
+        return updatedUser;
+    }, []);
 
     return {
         user,

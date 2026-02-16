@@ -1,8 +1,8 @@
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 import { useSavedMangas } from '@feature/library';
 
 const Library = () => {
@@ -11,7 +11,7 @@ const Library = () => {
     return (
         <>
             <Header />
-            <Main>
+            <MainContent>
                 <section>
                     <h2 className="text-xl font-bold">Minha Biblioteca</h2>
                     <p className="text-sm text-tertiary">
@@ -42,7 +42,7 @@ const Library = () => {
                                             className="object-cover w-12 h-16 rounded-xs"
                                         />
                                         <div className="flex flex-col">
-                                            <CustomLink
+                                            <AppLink
                                                 link={`/title/${manga.titleId}`}
                                                 text={manga.name}
                                                 className="text-sm"
@@ -57,7 +57,7 @@ const Library = () => {
                         </div>
                     </section>
                 ))}
-            </Main>
+            </MainContent>
             <Footer />
         </>
     );

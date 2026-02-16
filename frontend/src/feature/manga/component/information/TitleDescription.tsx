@@ -1,4 +1,4 @@
-import GenresBox from '@shared/component/box/GenresBox';
+import GenreTagList from '@shared/component/box/GenreTagList';
 
 import { Title } from '../../type/title.types';
 
@@ -23,7 +23,7 @@ const TitleDescription = ({ genres, synopsis }: TitleDescriptionTypes) => {
                         Gêneros
                     </h3>
                 </div>
-                <GenresBox genres={genres} />
+                <GenreTagList genres={genres} />
             </div>
         </>
     );

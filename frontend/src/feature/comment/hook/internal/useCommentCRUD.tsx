@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import {
     showSuccessToast,
     showErrorToast,
-} from '@shared/service/util/toastUtils';
+} from '@shared/service/util/toastService';
 
 const useCommentCRUD = () => {
     const deleteCommentMutation = useMutation({

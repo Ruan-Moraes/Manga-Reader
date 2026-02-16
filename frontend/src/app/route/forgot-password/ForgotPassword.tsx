@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
+import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import AuthenticationForm from '@shared/component/form/AuthenticationForm';
@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     return (
         <>
             <Header disabledSearch={true} />
-            <Main>
+            <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
                     title="Recuperação de senha"
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
                     />
                     <RaisedButton text="Recuperar senha" />
                 </AuthenticationForm>
-            </Main>
+            </MainContent>
             <Footer disabledLinks={true} />
         </>
     );

@@ -1,7 +1,7 @@
 import { useEmojiModalContext } from '../context/useEmojiModalContext';
 
-import BlackButton from '@shared/component/button/BlackButton';
-import SearchInput from '@shared/component/input/SearchInput';
+import DarkButton from '@shared/component/button/DarkButton';
+import InlineSearchInput from '@shared/component/input/InlineSearchInput';
 
 const EmojiModalHeader = () => {
     const { closeEmojiModal } = useEmojiModalContext();
@@ -9,7 +9,7 @@ const EmojiModalHeader = () => {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex justify-end">
-                <BlackButton onClick={closeEmojiModal} text="Fechar" />
+                <DarkButton onClick={closeEmojiModal} text="Fechar" />
             </div>
             <div className="flex flex-col gap-2">
                 <div>
@@ -17,7 +17,9 @@ const EmojiModalHeader = () => {
                         Selecione um Emoji, Sticker ou GIF
                     </h4>
                 </div>
-                <SearchInput placeholder={'Pesquisar Emoji, Sticker ou GIF'} />
+                <InlineSearchInput
+                    placeholder={'Pesquisar Emoji, Sticker ou GIF'}
+                />
             </div>
         </div>
     );

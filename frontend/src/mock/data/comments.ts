@@ -17,7 +17,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: true,
             wasEdited: false,
             createdAt: '2025-07-28T14:30:00.000Z',
-            textContent: 'A arte desse mangá é absurda! Cada painel parece uma pintura. Não consigo parar de ler.',
+            textContent:
+                'A arte desse mangá é absurda! Cada painel parece uma pintura. Não consigo parar de ler.',
             imageContent: null,
             dislikeCount: '1',
             likeCount: '24',
@@ -30,7 +31,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-07-28T15:10:00.000Z',
-            textContent: 'Concordo totalmente! O capítulo 5 foi o melhor até agora.',
+            textContent:
+                'Concordo totalmente! O capítulo 5 foi o melhor até agora.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '8',
@@ -43,7 +45,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: true,
             createdAt: '2025-07-27T10:00:00.000Z',
-            textContent: 'Achei o ritmo um pouco lento nos primeiros capítulos, mas depois melhora muito.',
+            textContent:
+                'Achei o ritmo um pouco lento nos primeiros capítulos, mas depois melhora muito.',
             imageContent: null,
             dislikeCount: '3',
             likeCount: '12',
@@ -69,7 +72,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-07-26T08:45:00.000Z',
-            textContent: 'O design das armaduras é incrível. Alguém sabe se o autor tem artbook?',
+            textContent:
+                'O design das armaduras é incrível. Alguém sabe se o autor tem artbook?',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '19',
@@ -82,7 +86,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-07-26T09:30:00.000Z',
-            textContent: 'Sim! Saiu um artbook limitado no Japão. Ainda não tem tradução.',
+            textContent:
+                'Sim! Saiu um artbook limitado no Japão. Ainda não tem tradução.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '7',
@@ -97,7 +102,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: true,
             wasEdited: false,
             createdAt: '2025-06-04T16:00:00.000Z',
-            textContent: 'Manhwa com arte colorida linda. O worldbuilding futurista é muito bem feito.',
+            textContent:
+                'Manhwa com arte colorida linda. O worldbuilding futurista é muito bem feito.',
             imageContent: null,
             dislikeCount: '2',
             likeCount: '31',
@@ -110,7 +116,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-06-03T12:15:00.000Z',
-            textContent: 'O protagonista tem uma evolução muito boa. Quero ver o próximo arco!',
+            textContent:
+                'O protagonista tem uma evolução muito boa. Quero ver o próximo arco!',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '18',
@@ -123,7 +130,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: true,
             createdAt: '2025-06-04T17:30:00.000Z',
-            textContent: 'Os cenários são dignos de wallpaper. Salvei vários painéis.',
+            textContent:
+                'Os cenários são dignos de wallpaper. Salvei vários painéis.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '14',
@@ -138,7 +146,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-05-02T09:00:00.000Z',
-            textContent: 'A mistura de hacker com florista é genial. Muito original.',
+            textContent:
+                'A mistura de hacker com florista é genial. Muito original.',
             imageContent: null,
             dislikeCount: '1',
             likeCount: '22',
@@ -151,7 +160,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-05-01T14:45:00.000Z',
-            textContent: 'Esse mangá merece mais reconhecimento. A narrativa é muito bem construída.',
+            textContent:
+                'Esse mangá merece mais reconhecimento. A narrativa é muito bem construída.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '16',
@@ -166,7 +176,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: true,
             wasEdited: false,
             createdAt: '2025-04-11T10:30:00.000Z',
-            textContent: 'Vibes de Indiana Jones com fantasia japonesa. Perfeito!',
+            textContent:
+                'Vibes de Indiana Jones com fantasia japonesa. Perfeito!',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '27',
@@ -179,7 +190,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-04-10T20:00:00.000Z',
-            textContent: 'O capítulo 7 me deixou com o queixo caído. Que plot twist!',
+            textContent:
+                'O capítulo 7 me deixou com o queixo caído. Que plot twist!',
             imageContent: null,
             dislikeCount: '1',
             likeCount: '20',
@@ -194,7 +206,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-07-21T11:00:00.000Z',
-            textContent: 'Leio esse mangá sempre com fome. As ilustrações de comida são tentadoras demais.',
+            textContent:
+                'Leio esse mangá sempre com fome. As ilustrações de comida são tentadoras demais.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '33',
@@ -207,7 +220,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: false,
             wasEdited: false,
             createdAt: '2025-07-21T12:30:00.000Z',
-            textContent: 'Hahaha eu também! Já tentei fazer a receita do capítulo 2.',
+            textContent:
+                'Hahaha eu também! Já tentei fazer a receita do capítulo 2.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '11',
@@ -222,7 +236,8 @@ export const mockComments: Record<string, CommentData[]> = {
             isHighlighted: true,
             wasEdited: false,
             createdAt: '2024-12-05T19:00:00.000Z',
-            textContent: 'Obra-prima. A cena da batalha final com a trilha sonora imaginária é chilling.',
+            textContent:
+                'Obra-prima. A cena da batalha final com a trilha sonora imaginária é chilling.',
             imageContent: null,
             dislikeCount: '0',
             likeCount: '45',

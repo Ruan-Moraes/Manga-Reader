@@ -12,9 +12,7 @@ export const getTags = async (): Promise<Tag[]> => {
     return mockTags;
 };
 
-export const getTagById = async (
-    id: number,
-): Promise<Tag | undefined> => {
+export const getTagById = async (id: number): Promise<Tag | undefined> => {
     await simulateDelay(100);
     return mockTags.find(t => t.value === id);
 };

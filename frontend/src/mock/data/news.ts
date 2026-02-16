@@ -98,14 +98,18 @@ const coreNews: NewsItem[] = [
         id: 'news-1',
         title: 'Novo mangá de horror do criador de Junji Ito chega ao Brasil',
         subtitle: 'Editora confirma lançamento com edição especial e brindes.',
-        excerpt: 'Título inédito chega com tiragem inicial limitada, pré-venda e acabamento premium para colecionadores.',
+        excerpt:
+            'Título inédito chega com tiragem inicial limitada, pré-venda e acabamento premium para colecionadores.',
         content: [
             'A editora anunciou oficialmente a chegada do novo mangá de horror do criador de Junji Ito ao mercado brasileiro. A obra terá acabamento capa dura e páginas coloridas no capítulo de abertura.',
             'Além do lançamento físico, a publicação contará com campanha de pré-venda e brindes exclusivos para quem comprar no primeiro lote. A estratégia busca fortalecer o crescimento do segmento de terror no país.',
             'Segundo a distribuidora, o título chegará às principais redes e lojas especializadas ainda neste trimestre.',
         ],
         coverImage: 'https://picsum.photos/1200/675?random=801',
-        gallery: ['https://picsum.photos/900/520?random=811', 'https://picsum.photos/900/520?random=812'],
+        gallery: [
+            'https://picsum.photos/900/520?random=811',
+            'https://picsum.photos/900/520?random=812',
+        ],
         source: 'Manga Reader News',
         sourceLogo: 'https://picsum.photos/40/40?random=901',
         category: 'Lançamentos',
@@ -134,7 +138,8 @@ const coreNews: NewsItem[] = [
         id: 'news-2',
         title: 'Solo Leveling ganha 2ª temporada para 2025',
         subtitle: 'Estúdio confirma retorno com novo arco e visual inédito.',
-        excerpt: 'Produção revelou teaser, janela de estreia e principais nomes da equipe criativa da sequência.',
+        excerpt:
+            'Produção revelou teaser, janela de estreia e principais nomes da equipe criativa da sequência.',
         content: [
             'Durante painel especial, foi confirmada a produção da segunda temporada de Solo Leveling para 2025.',
             'A equipe reforçou que o novo arco terá foco em confrontos maiores e mais desenvolvimento dos personagens secundários.',
@@ -159,7 +164,8 @@ const coreNews: NewsItem[] = [
         id: 'news-3',
         title: 'Entrevistamos o tradutor de One Piece: desafios e curiosidades',
         subtitle: 'Bastidores da adaptação e escolhas culturais no Brasil.',
-        excerpt: 'Profissional conta como funciona o processo entre fidelidade ao original e adaptação para público local.',
+        excerpt:
+            'Profissional conta como funciona o processo entre fidelidade ao original e adaptação para público local.',
         content: [
             'Em entrevista exclusiva, o tradutor responsável por One Piece comentou os maiores desafios do trabalho semanal.',
             'Entre os temas abordados estão trocadilhos, regionalismos e a pressão por prazos curtos.',
@@ -183,8 +189,10 @@ const coreNews: NewsItem[] = [
     {
         id: 'news-4',
         title: 'CCXP 2024: Painel da Panini anuncia 20 novos títulos',
-        subtitle: 'Editoras reforçam aposta em catálogo diversificado para 2025.',
-        excerpt: 'Painel trouxe anúncios de shonen, seinen e novos selos com foco em colecionáveis premium.',
+        subtitle:
+            'Editoras reforçam aposta em catálogo diversificado para 2025.',
+        excerpt:
+            'Painel trouxe anúncios de shonen, seinen e novos selos com foco em colecionáveis premium.',
         content: [
             'A cobertura da CCXP trouxe um pacote robusto de anúncios da Panini para os próximos meses.',
             'Foram confirmados títulos inéditos no Brasil, reimpressões aguardadas e edições especiais com extras.',
@@ -209,7 +217,8 @@ const coreNews: NewsItem[] = [
         id: 'news-5',
         title: '10 easter eggs em Attack on Titan que você nunca percebeu',
         subtitle: 'Detalhes escondidos conectam temporadas e simbolismos.',
-        excerpt: 'Análise destaca pistas visuais, referências de roteiro e mensagens no background de cenas importantes.',
+        excerpt:
+            'Análise destaca pistas visuais, referências de roteiro e mensagens no background de cenas importantes.',
         content: [
             'Attack on Titan continua rendendo análises de fãs por conta da quantidade de detalhes ocultos.',
             'Nesta lista especial, reunimos easter eggs que ajudam a reinterpretar momentos clássicos da história.',
@@ -234,7 +243,8 @@ const coreNews: NewsItem[] = [
         id: 'news-6',
         title: 'Mercado de mangás cresce 30% no Brasil em 2024',
         subtitle: 'Relatório aponta aumento de leitores e expansão do varejo.',
-        excerpt: 'Dados de mercado mostram aceleração do segmento com destaque para coleções de longa duração.',
+        excerpt:
+            'Dados de mercado mostram aceleração do segmento com destaque para coleções de longa duração.',
         content: [
             'Novo estudo setorial indica crescimento de 30% no mercado de mangás no Brasil em 2024.',
             'O avanço é puxado por lançamentos simultâneos, expansão do e-commerce e maior presença em redes nacionais.',
@@ -289,8 +299,14 @@ const extraTitles = [
 ];
 
 const extraCategories: NewsCategory[] = [
-    'Adaptações', 'Lançamentos', 'Indústria', 'Eventos',
-    'Curiosidades', 'Mercado', 'Entrevistas', 'Internacional',
+    'Adaptações',
+    'Lançamentos',
+    'Indústria',
+    'Eventos',
+    'Curiosidades',
+    'Mercado',
+    'Entrevistas',
+    'Internacional',
 ];
 
 const extraNews: NewsItem[] = extraTitles.map((title, index) => {
@@ -320,8 +336,10 @@ const extraNews: NewsItem[] = extraTitles.map((title, index) => {
     return {
         id,
         title,
-        subtitle: 'Cobertura rápida com análises e impactos para fãs e mercado.',
-        excerpt: 'Resumo com contexto, dados e próximos passos sobre a notícia para leitores acompanharem os desdobramentos.',
+        subtitle:
+            'Cobertura rápida com análises e impactos para fãs e mercado.',
+        excerpt:
+            'Resumo com contexto, dados e próximos passos sobre a notícia para leitores acompanharem os desdobramentos.',
         content: [
             'A pauta desta semana traz atualizações importantes para o público que acompanha o cenário otaku e geek.',
             'Fontes do setor apontam impactos diretos em lançamentos, agenda de eventos e estratégias de distribuição.',
@@ -332,10 +350,21 @@ const extraNews: NewsItem[] = extraTitles.map((title, index) => {
             `https://picsum.photos/900/520?random=${980 + index}`,
             `https://picsum.photos/900/520?random=${1080 + index}`,
         ],
-        source: ['Manga Reader News', 'Anime Prime', 'Otaku Insider', 'Geek Business'][index % 4],
+        source: [
+            'Manga Reader News',
+            'Anime Prime',
+            'Otaku Insider',
+            'Geek Business',
+        ][index % 4],
         sourceLogo: `https://picsum.photos/40/40?random=${940 + index}`,
         category,
-        tags: ['One Piece', 'Jujutsu Kaisen', 'Panini', 'Shonen', 'Seinen'].slice(0, 2 + (index % 3)),
+        tags: [
+            'One Piece',
+            'Jujutsu Kaisen',
+            'Panini',
+            'Shonen',
+            'Seinen',
+        ].slice(0, 2 + (index % 3)),
         author: authors[index % authors.length],
         publishedAt: addDays(-(index + 1), -(index % 12)),
         readTime: 4 + (index % 7),

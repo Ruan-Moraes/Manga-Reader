@@ -4,11 +4,11 @@ import { FaUpload } from 'react-icons/fa';
 
 import { useEmojiModalContext } from '../context/useEmojiModalContext';
 
-import useCommentChat from '../hook/internal/useCommentChat';
+import useCommentRichEditor from '../hook/internal/useCommentRichEditor';
 
 import EmojiModal from './EmojiModal';
-import IconButton from '@shared/component/button/IconButton';
-import BlackButton from '@shared/component/button/BlackButton';
+import BadgeIconButton from '@shared/component/button/BadgeIconButton';
+import DarkButton from '@shared/component/button/DarkButton';
 
 type CommentInputProps = {
     placeholder: string;
@@ -21,7 +21,7 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
         addImageFromEmoji,
         removePlaceholder,
         addPlaceholder,
-    } = useCommentChat(placeholder);
+    } = useCommentRichEditor(placeholder);
 
     const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
         useEmojiModalContext();
@@ -51,15 +51,15 @@ const CommentInput = ({ placeholder }: CommentInputProps) => {
                         </div>
                         <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                             <div className="flex gap-2">
-                                <IconButton onClick={openEmojiModal}>
+                                <BadgeIconButton onClick={openEmojiModal}>
                                     <IoImages />
-                                </IconButton>
-                                <IconButton onClick={addImage}>
+                                </BadgeIconButton>
+                                <BadgeIconButton onClick={addImage}>
                                     <FaUpload />
-                                </IconButton>
+                                </BadgeIconButton>
                             </div>
                             <div>
-                                <BlackButton
+                                <DarkButton
                                     onClick={() => {}}
                                     text={'Enviar'}
                                 />

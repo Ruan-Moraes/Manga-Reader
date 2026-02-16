@@ -1,9 +1,9 @@
-import { COLORS } from '@shared/constant/COLORS';
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
 import CustomLink from '@shared/component/link/element/CustomLink';
 
 type WarningTypes = {
-    color: COLORS;
+    color: THEME_COLORS;
     title: string;
     message: string;
     link?: string;

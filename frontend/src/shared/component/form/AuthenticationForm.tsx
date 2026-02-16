@@ -1,4 +1,4 @@
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 type AuthenticationFormTypes = {
     onFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -33,7 +33,7 @@ const AuthenticationForm = ({
                 <div>
                     <p className="text-sm text-center text-tertiary-default">
                         {helperText}{' '}
-                        <CustomLink
+                        <AppLink
                             link={link}
                             className="underline"
                             text={linkText}
