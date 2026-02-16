@@ -99,6 +99,8 @@ atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
 .idea/replstate.xml
+# comment the following lines
+!.yarn/cache
 
 # SonarLint plugin
 .idea/sonarlint/
@@ -171,3 +173,5 @@ fabric.properties
 .env
 .env.local
 .env.*.local
+
+dist
