@@ -4,7 +4,7 @@ import { IoImageOutline } from 'react-icons/io5';
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
-import { HighlightCard } from '../../../type/title-card.types';
+import type { HighlightCard as HighlightCardProps } from '../../../type/title-card.types';
 
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import TitleDetails from '../../information/TitleDetails';
@@ -26,7 +26,7 @@ const HighlightCard = ({
     author,
     artist,
     publisher,
-}: HighlightCard) => {
+}: HighlightCardProps) => {
     const average = useMemo(() => getRatingsAverage(String(id)), [id]);
 
     const detailsHTML = useRef<HTMLDivElement>(null);

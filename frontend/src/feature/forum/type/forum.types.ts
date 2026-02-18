@@ -45,7 +45,12 @@ export type ForumTopic = {
     replies: ForumReply[];
 };
 
-export type ForumSort = 'recent' | 'popular' | 'unanswered' | 'oldest';
+export type ForumSort =
+    | 'recent'
+    | 'popular'
+    | 'most-replies'
+    | 'unanswered'
+    | 'oldest';
 
 export type ForumFilter = {
     query?: string;
@@ -53,4 +58,6 @@ export type ForumFilter = {
     sort?: ForumSort;
     page?: number;
     pageSize?: number;
+    onlyPinned?: boolean;
+    onlySolved?: boolean;
 };

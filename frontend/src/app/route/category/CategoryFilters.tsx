@@ -82,7 +82,7 @@ const CategoryFilters = () => {
             <Header />
             <MainContent>
                 <SectionTitle title="Filtros">
-                    <Paragraph
+                    <TextBlock
                         paragraphContent={[
                             {
                                 text: 'Aplique filtros para encontrar as obras que você deseja ler. Você pode filtrar por categorias, ordenar por mais lidos, maior nota, ordem alfabética, entre outros. Além disso, você pode filtrar por status da obra e se deseja exibir conteúdo maior de 18 anos.',

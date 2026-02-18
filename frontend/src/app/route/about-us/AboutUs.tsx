@@ -16,7 +16,7 @@ const AboutUs = () => {
                         titleStyleClasses="text-lg"
                         title="Quem Somos?"
                     />
-                    <Paragraph
+                    <TextBlock
                         paragraphContent={[
                             {
                                 text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
@@ -26,7 +26,7 @@ const AboutUs = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         paragraphContent={[
                             {
                                 text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
@@ -36,7 +36,7 @@ const AboutUs = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         paragraphContent={[
                             {
                                 text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',

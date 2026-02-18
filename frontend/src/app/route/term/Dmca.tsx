@@ -17,7 +17,7 @@ const Dmca = () => {
                         title="Política de Direitos Autorais (DMCA)"
                         subTitle="Última atualização: XX de XXXXXXXX de XXXX"
                     />
-                    <Paragraph
+                    <TextBlock
                         title="1. Politica de Direitos Autorais"
                         paragraphContent={[
                             {
@@ -28,7 +28,7 @@ const Dmca = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="2. Coleta de informações pessoais"
                         paragraphContent={[
                             {
@@ -36,7 +36,7 @@ const Dmca = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="3. Uso de informações pessoais"
                         paragraphContent={[
                             {
@@ -44,7 +44,7 @@ const Dmca = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="4. Compartilhamento de informações pessoais"
                         paragraphContent={[
                             {
@@ -52,7 +52,7 @@ const Dmca = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="5. Cookies e tecnologias semelhantes"
                         paragraphContent={[
                             {

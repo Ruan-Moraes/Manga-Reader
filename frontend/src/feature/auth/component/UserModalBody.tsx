@@ -28,7 +28,8 @@ const UserModalBody = () => {
                     </h4>
                     <div className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
                         {userData.socialMediasLinks.map(socialMedia => (
-                            <SocialMedia
+                            <SocialMediaLink
+                                key={socialMedia.link}
                                 link={socialMedia.link}
                                 name={socialMedia.name}
                                 color={

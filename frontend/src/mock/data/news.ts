@@ -3,7 +3,7 @@ import type {
     NewsCategory,
     NewsComment,
     NewsItem,
-} from '@feature/news/types/news.types';
+} from '@feature/news/type/news.types';
 
 // ---------------------------------------------------------------------------
 // Helpers

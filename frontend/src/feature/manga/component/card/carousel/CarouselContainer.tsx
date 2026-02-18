@@ -4,7 +4,6 @@ import { Splide } from '@splidejs/react-splide';
 // @ts-expect-error - ignore import error
 import '@splidejs/react-splide/css';
 
-import { API_URLS } from '@shared/constant/API_URLS';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
 
@@ -17,7 +16,6 @@ import AppLink from '@shared/component/link/element/AppLink';
 
 const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
     const { data, status } = useTitlesFetch(
-        API_URLS.TITLE_URL,
         QUERY_KEYS.TITLES_IN_THE_CAROUSEL,
     );
 

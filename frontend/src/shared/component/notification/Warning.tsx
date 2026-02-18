@@ -1,6 +1,6 @@
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
-import CustomLink from '@shared/component/link/element/CustomLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 type WarningTypes = {
     color: THEME_COLORS;
@@ -31,7 +31,7 @@ const Warning = ({ color, title, message, link, linkText }: WarningTypes) => {
             </div>
             {link && linkText && (
                 <div className="text-center">
-                    <CustomLink
+                    <AppLink
                         link={link}
                         className={`text-sm text-${color}-default hover:text-${color}-normal`}
                         text={linkText}

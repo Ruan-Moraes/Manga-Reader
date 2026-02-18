@@ -231,7 +231,7 @@ const TitleDetailsPage = () => {
             <GroupsModal
                 isModalOpen={isGroupsModalOpen}
                 closeModal={() => setIsGroupsModalOpen(false)}
-                titleId={String(id)}
+                titleId={id}
             />
             <StoresModal
                 isModalOpen={isCartModalOpen}

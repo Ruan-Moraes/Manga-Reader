@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { API_URLS } from '@shared/constant/API_URLS';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
 
@@ -13,7 +12,6 @@ import HighlightCard from './HighlightCard';
 
 const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const { data: titles, status } = useTitlesFetch(
-        API_URLS.TITLE_URL,
         QUERY_KEYS.TITLES_ON_THE_RISE,
     );
 

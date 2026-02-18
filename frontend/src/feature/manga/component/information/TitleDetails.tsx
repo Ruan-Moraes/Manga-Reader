@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { TitleDetails } from '../../type/title-card.types';
+import type { TitleDetails as TitleDetailsProps } from '../../type/title-card.types';
 
 import AppLink from '@shared/component/link/element/AppLink';
 
@@ -17,7 +17,7 @@ const TitleDetails = ({
     author,
     artist,
     publisher,
-}: TitleDetails) => {
+}: TitleDetailsProps) => {
     const isDataLoading = shouldLoadCardData && isLoading;
 
     // Todo: provavelmente, vou ter que alterar isso para pegar o último capítulo

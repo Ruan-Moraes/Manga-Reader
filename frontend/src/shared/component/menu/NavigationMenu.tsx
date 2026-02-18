@@ -52,8 +52,7 @@ const NavigationMenu = () => {
 
     const [menuHeight, setMenuHeight] = useState<number>(0);
 
-    const [selectedProfileId, setSelectedProfileId] =
-        useState<string>('visitor');
+    const [selectedProfileId] = useState<string>('visitor');
 
     const { user, isLoggedIn, logout } = useAuth();
 

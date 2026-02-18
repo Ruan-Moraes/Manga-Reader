@@ -37,7 +37,7 @@ export const getNews = async (filters?: NewsFilter): Promise<NewsItem[]> => {
             return (
                 news.title.toLowerCase().includes(normalizedQuery) ||
                 news.excerpt.toLowerCase().includes(normalizedQuery) ||
-                news.tags.some(t => t.toLowerCase().includes(normalizedQuery))
+                news.tags.some((t: string) => t.toLowerCase().includes(normalizedQuery))
             );
         }
         return true;
@@ -62,7 +62,7 @@ export const getRelatedNews = (news: NewsItem, limit = 6): NewsItem[] =>
             item =>
                 item.id !== news.id &&
                 (item.category === news.category ||
-                    item.tags.some(t => news.tags.includes(t))),
+                    item.tags.some((t: string) => news.tags.includes(t))),
         )
         .slice(0, limit);
 
@@ -122,7 +122,7 @@ export const filterNews = (filters: NewsFilter): NewsItem[] => {
             return (
                 news.title.toLowerCase().includes(normalizedQuery) ||
                 news.excerpt.toLowerCase().includes(normalizedQuery) ||
-                news.tags.some(t => t.toLowerCase().includes(normalizedQuery))
+                news.tags.some((t: string) => t.toLowerCase().includes(normalizedQuery))
             );
         }
         return true;
