@@ -17,7 +17,7 @@ const TermsOfUse = () => {
                         title="Termos de uso e Políticas de privacidade"
                         subTitle="Última atualização: XX de XXXXXXXX de XXXX"
                     />
-                    <Paragraph
+                    <TextBlock
                         title="1. Introdução"
                         paragraphContent={[
                             {
@@ -28,7 +28,7 @@ const TermsOfUse = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="2. Coleta de informações pessoais"
                         paragraphContent={[
                             {
@@ -39,7 +39,7 @@ const TermsOfUse = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="3. Uso de informações pessoais"
                         paragraphContent={[
                             {
@@ -47,7 +47,7 @@ const TermsOfUse = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="4. Compartilhamento de informações pessoais"
                         paragraphContent={[
                             {
@@ -58,7 +58,7 @@ const TermsOfUse = () => {
                             },
                         ]}
                     />
-                    <Paragraph
+                    <TextBlock
                         title="5. Cookies e tecnologias semelhantes"
                         paragraphContent={[
                             {

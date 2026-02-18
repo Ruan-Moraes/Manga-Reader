@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import StyledSelect, { SelectOption } from '@shared/component/ui/StyledSelect';
-import { SingleValue, MultiValue, ActionMeta } from 'react-select';
+import { SingleValue, MultiValue } from 'react-select';
 import { IoImageOutline } from 'react-icons/io5';
 
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
@@ -18,14 +18,13 @@ import { useTitles } from '@feature/manga';
 const Chapter = () => {
     const navigate = useNavigate();
 
-    const titleId: string = useParams().title;
-    const chapterId: string = useParams().chapter;
+    const { title: titleId = '', chapter: chapterId = '' } = useParams();
 
-    const { titles, isLoading, isError, error } = useTitles(titleId);
+    const { titles, isLoading } = useTitles(titleId);
 
     const currentTitle =
-        titles && titles.length > 0
-            ? titles.find(title => title.id === titleId) ||
+        Array.isArray(titles) && titles.length > 0
+            ? titles.find(title => String(title.id) === titleId) ||
               titles[Number(titleId)]
             : undefined;
 
@@ -39,10 +38,6 @@ const Chapter = () => {
     const [isBottomNavVisible, setIsBottomNavVisible] = useState(false);
     const [windowHeight, setWindowHeight] = useState(window.innerHeight);
     const [imageError, setImageError] = useState<boolean>(false);
-
-    const handleImageError = () => {
-        setImageError(true);
-    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -139,7 +134,6 @@ const Chapter = () => {
 
     const handleChange = (
         newValue: MultiValue<SelectOption> | SingleValue<SelectOption>,
-        actionMeta: ActionMeta<SelectOption>,
     ) => {
         if (newValue && !Array.isArray(newValue)) {
             navigate(
@@ -175,8 +169,9 @@ const Chapter = () => {
                             )}
                             {!imageError && !isLoading && (
                                 <img
-                                    src={currentTitle?.coverImage}
-                                    alt={currentTitle?.title}
+                                    src={currentTitle?.cover}
+                                    alt={currentTitle?.name}
+                                    onError={() => setImageError(true)}
                                     className="object-cover w-full rounded-md h-80"
                                 />
                             )}

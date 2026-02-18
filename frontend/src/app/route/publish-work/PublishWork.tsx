@@ -18,7 +18,7 @@ const PublishWork = () => {
                         titleStyleClasses="text-lg"
                         title="Publicar Trabalho"
                     />
-                    <Paragraph
+                    <TextBlock
                         paragraphContent={[
                             {
                                 text: 'Se você é um autor e deseja publicar seu trabalho em nosso site, entre em contato conosco para obter mais informações sobre como enviar seu trabalho para revisão e publicação.',

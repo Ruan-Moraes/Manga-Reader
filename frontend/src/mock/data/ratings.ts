@@ -23,9 +23,6 @@ const ratingComments = [
     'Cenários maravilhosos e painéis detalhados.',
 ];
 
-const randomFrom = <T>(items: T[]) =>
-    items[Math.floor(Math.random() * items.length)] as T;
-
 /**
  * Gera avaliações determinísticas para os 16 títulos.
  * Usa uma seed simples (índice) para manter consistência entre reloads

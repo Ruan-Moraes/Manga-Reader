@@ -1,6 +1,5 @@
 import type {
     ForumAuthor,
-    ForumCategory,
     ForumReply,
     ForumTopic,
 } from '@feature/forum/type/forum.types';
@@ -99,44 +98,6 @@ const buildReplies = (count: number, baseDate: string): ForumReply[] =>
             isBestAnswer: i === 0 && Math.random() > 0.6,
         };
     });
-
-const categories: ForumCategory[] = [
-    'Geral',
-    'Recomendações',
-    'Spoilers',
-    'Suporte',
-    'Off-topic',
-    'Teorias',
-    'Fanart',
-    'Notícias',
-];
-
-const tagPool = [
-    'One Piece',
-    'Jujutsu Kaisen',
-    'Chainsaw Man',
-    'Manga',
-    'Anime',
-    'Recomendação',
-    'Discussão',
-    'Teoria',
-    'Spoiler',
-    'Novato',
-    'Seinen',
-    'Shounen',
-    'Isekai',
-    'Romance',
-    'Terror',
-    'Slice of Life',
-    'Webtoon',
-    'Mangaká',
-];
-
-const pickTags = () => {
-    const count = 1 + Math.floor(Math.random() * 3);
-    const shuffled = [...tagPool].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-};
 
 const now = new Date();
 const daysAgo = (d: number) => {

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
 
-import { VerticalCard } from '../../../type/title-card.types';
+import type { VerticalCard as VerticalCardProps } from '../../../type/title-card.types';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
@@ -22,7 +22,7 @@ const VerticalCard = ({
     cover,
     name,
     chapters,
-}: VerticalCard) => {
+}: VerticalCardProps) => {
     const average = useMemo(() => getRatingsAverage(String(id)), [id]);
 
     const listOfChapters = useMemo(() => {

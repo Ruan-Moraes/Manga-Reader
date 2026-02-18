@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import clsx from 'clsx';
 
-import { API_URLS } from '@shared/constant/API_URLS';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
 
@@ -19,7 +18,6 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const navigate = useNavigate();
 
     const { data, status } = useTitlesFetch(
-        API_URLS.TITLE_URL,
         QUERY_KEYS.UPDATED_TITLES,
     );
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
 
-import { BaseCard } from '../../../type/title-card.types';
+import type { BaseCard as BaseCardProps } from '../../../type/title-card.types';
 
 import TitleDetails from '../../information/TitleDetails';
 import TitleDescription from '../../information/TitleDescription';
@@ -23,7 +23,7 @@ const BaseCard = ({
     author,
     artist,
     publisher,
-}: BaseCard) => {
+}: BaseCardProps) => {
     const [imageError, setImageError] = useState<boolean>(false);
 
     const handleImageError = () => {

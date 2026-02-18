@@ -7,7 +7,7 @@ const useBookmark = () => {
     const { isSaved, toggleFavorite } = useSavedMangas();
 
     const toggleBookmark = useCallback(
-        ({
+        async ({
             titleId,
             name,
             cover,
@@ -18,7 +18,7 @@ const useBookmark = () => {
             cover: string;
             type: string;
         }) => {
-            const nowSaved = toggleFavorite({ titleId, name, cover, type });
+            const nowSaved = await toggleFavorite({ titleId, name, cover, type });
 
             showSuccessToast(
                 nowSaved

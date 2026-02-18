@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
-import { HorizontalCard } from '../../../type/title-card.types';
+import type { HorizontalCard as HorizontalCardProps } from '../../../type/title-card.types';
 
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import AppLink from '@shared/component/link/element/AppLink';
@@ -18,7 +18,7 @@ const HorizontalCard = ({
     cover,
     name,
     chapters,
-}: HorizontalCard) => {
+}: HorizontalCardProps) => {
     const average = useMemo(() => getRatingsAverage(String(id)), [id]);
 
     const lastChapter = useMemo(() => {

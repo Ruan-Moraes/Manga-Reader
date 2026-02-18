@@ -18,12 +18,12 @@ export { default as TitleActions } from './component/action/TitleActions';
 // Types
 export type { Title } from './type/title.types';
 export type {
-    BaseCard,
+    BaseCard as BaseCardProps,
     CarouselCard,
-    HighlightCard,
-    VerticalCard,
-    HorizontalCard,
-    TitleDetails,
+    HighlightCard as HighlightCardProps,
+    VerticalCard as VerticalCardProps,
+    HorizontalCard as HorizontalCardProps,
+    TitleDetails as TitleDetailsProps,
 } from './type/title-card.types';
 export type { CardConfiguration } from './type/card-configuration.types';
 export type { SectionHeader } from './type/section-header.types';
