@@ -6,6 +6,7 @@ import Footer from '@app/layout/Footer';
 
 import { GroupCard, useGroups, type GroupStatus } from '@feature/group';
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Groups = () => {
     const [status, setStatus] = useState<'all' | GroupStatus>('all');
     const [genre, setGenre] = useState<'all' | string>('all');

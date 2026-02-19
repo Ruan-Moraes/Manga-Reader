@@ -4,9 +4,11 @@ import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import { useAuth } from '@feature/auth';
 import { showSuccessToast } from '@shared/service/util/toastService';
 
+import { useAuth } from '@feature/auth';
+
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Profile = () => {
     const { user, updateProfile } = useAuth();
     const [name, setName] = useState(user?.name ?? '');

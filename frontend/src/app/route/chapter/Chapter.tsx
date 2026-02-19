@@ -1,124 +1,32 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import StyledSelect, { SelectOption } from '@shared/component/ui/StyledSelect';
-import { SingleValue, MultiValue } from 'react-select';
 import { IoImageOutline } from 'react-icons/io5';
-
-import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 import AlertBanner from '@shared/component/notification/AlertBanner';
+import StyledSelect from '@shared/component/ui/StyledSelect';
+
 import { CommentInput, SortComments, CommentsList } from '@feature/comment';
 
-import { useTitles } from '@feature/manga';
+import { useChapterReader } from '@feature/chapter';
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Chapter = () => {
-    const navigate = useNavigate();
+    const {
+        titleId,
+        chapterId,
+        currentTitle,
+        isLoading,
+        isInvalidChapter,
+        bottomNavRef,
+        imageError,
+        setImageError,
+        handleChapterChange,
+    } = useChapterReader();
 
-    const { title: titleId = '', chapter: chapterId = '' } = useParams();
-
-    const { titles, isLoading } = useTitles(titleId);
-
-    const currentTitle =
-        Array.isArray(titles) && titles.length > 0
-            ? titles.find(title => String(title.id) === titleId) ||
-              titles[Number(titleId)]
-            : undefined;
-
-    const bottomNavRef = useRef<HTMLDivElement | null>(null);
-
-    // const [isScrollingUp, setIsScrollingUp] = useState<boolean>(false);
-    // const [previousScrollPosition, setPreviousScrollPosition] =
-    //   useState<number>(0);
-    // const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-
-    const [isBottomNavVisible, setIsBottomNavVisible] = useState(false);
-    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-    const [imageError, setImageError] = useState<boolean>(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            const newHeight = window.innerHeight;
-
-            if (newHeight < windowHeight) {
-                setIsBottomNavVisible(true);
-            }
-
-            if (newHeight > windowHeight) {
-                setIsBottomNavVisible(false);
-            }
-
-            setWindowHeight(newHeight);
-        };
-
-        if (bottomNavRef.current) {
-            if (isBottomNavVisible) {
-                bottomNavRef.current.style.transform =
-                    'translateY(calc(0% - 0.5rem))';
-            }
-
-            if (!isBottomNavVisible) {
-                bottomNavRef.current.style.transform = 'translateY(calc(100%))';
-            }
-        }
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [windowHeight, isBottomNavVisible]);
-
-    // useEffect(() => {
-    //   const handleScroll = () => {
-    //     const currentScrollPosition =
-    //       window.pageYOffset || document.documentElement.scrollTop;
-
-    //     if (timeoutId) {
-    //       clearTimeout(timeoutId);
-    //     }
-
-    //     const newTimeoutId = setTimeout(() => {
-    //       if (currentScrollPosition < previousScrollPosition) {
-    //         setIsScrollingUp(true);
-    //       } else {
-    //         setIsScrollingUp(false);
-    //       }
-
-    //       setPreviousScrollPosition(
-    //         currentScrollPosition <= 0 ? 0 : currentScrollPosition
-    //       );
-
-    //       if (isScrollingUp) {
-    //         if (bottomNavRef.current) {
-    //           bottomNavRef.current.style.transform = 'translateY(0)';
-    //         }
-    //       } else {
-    //         if (bottomNavRef.current) {
-    //           bottomNavRef.current.style.transform = 'translateY(100%)';
-    //         }
-    //       }
-    //     }, 75);
-
-    //     setTimeoutId(newTimeoutId);
-    //   };
-
-    //   document.addEventListener('scroll', handleScroll);
-
-    //   return () => {
-    //     if (timeoutId) {
-    //       clearTimeout(timeoutId);
-    //     }
-    //     document.removeEventListener('scroll', handleScroll);
-    //   };
-    // }, [previousScrollPosition, isScrollingUp, timeoutId]);
-
-    if (isNaN(Number(chapterId))) {
-        // TODO: Implementar uma maneira de lidar com capítulos inválidos
-
+    if (isInvalidChapter) {
         return (
             <MainContent>
                 <AlertBanner
@@ -131,16 +39,6 @@ const Chapter = () => {
             </MainContent>
         );
     }
-
-    const handleChange = (
-        newValue: MultiValue<SelectOption> | SingleValue<SelectOption>,
-    ) => {
-        if (newValue && !Array.isArray(newValue)) {
-            navigate(
-                `/Manga-Reader/title/${titleId}/${(newValue as SelectOption).value}`,
-            );
-        }
-    };
 
     return (
         <>
@@ -182,7 +80,7 @@ const Chapter = () => {
                                     <StyledSelect
                                         variant="default"
                                         name="chapter"
-                                        onChange={handleChange}
+                                        onChange={handleChapterChange}
                                         defaultValue={{
                                             value: chapterId,
                                             label: `Capítulo ${chapterId}`,
@@ -334,7 +232,7 @@ const Chapter = () => {
                             <StyledSelect
                                 variant="chapter"
                                 name="chapter"
-                                onChange={handleChange}
+                                onChange={handleChapterChange}
                                 defaultValue={{
                                     value: chapterId,
                                     label: `Capítulo ${chapterId}`,

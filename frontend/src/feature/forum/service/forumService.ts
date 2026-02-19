@@ -90,6 +90,10 @@ export const getForumTopicById = async (
     return mockForumTopics.find(t => t.id === id);
 };
 
+/** Sync version — used by hooks that derive data in useMemo */
+export const getForumTopicByIdSync = (id: string): ForumTopic | undefined =>
+    mockForumTopics.find(t => t.id === id);
+
 export const getForumCategories = async (): Promise<ForumCategory[]> => {
     await simulateDelay(100);
     return forumCategories;
@@ -136,8 +140,7 @@ export const formatRelativeDate = (date: string): string => {
     if (diffMin < 60) return `há ${diffMin} min`;
     if (diffHours < 24)
         return `há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
-    if (diffDays < 30)
-        return `há ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
+    if (diffDays < 30) return `há ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
 
     const diffMonths = Math.floor(diffDays / 30);
     return `há ${diffMonths} ${diffMonths > 1 ? 'meses' : 'mês'}`;
@@ -167,4 +170,16 @@ export const paginateTopics = (
         items: topics.slice(start, start + TOPICS_PER_PAGE),
         totalPages,
     };
+};
+
+export const roleLabel: Record<string, string> = {
+    admin: 'Admin',
+    moderator: 'Moderador',
+    member: 'Membro',
+};
+
+export const roleBadgeColor: Record<string, string> = {
+    admin: 'bg-red-500/20 text-red-400',
+    moderator: 'bg-blue-500/20 text-blue-400',
+    member: 'bg-gray-500/20 text-gray-400',
 };

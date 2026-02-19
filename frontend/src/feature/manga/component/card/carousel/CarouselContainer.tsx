@@ -15,9 +15,7 @@ import CarouselSlide from './CarouselSlide';
 import AppLink from '@shared/component/link/element/AppLink';
 
 const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data, status } = useTitlesFetch(
-        QUERY_KEYS.TITLES_IN_THE_CAROUSEL,
-    );
+    const { data, status } = useTitlesFetch(QUERY_KEYS.TITLES_IN_THE_CAROUSEL);
 
     const splideRef = useRef<Splide>(null);
 

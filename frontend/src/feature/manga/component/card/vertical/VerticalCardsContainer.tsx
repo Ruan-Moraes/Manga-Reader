@@ -17,9 +17,7 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const navigate = useNavigate();
 
-    const { data, status } = useTitlesFetch(
-        QUERY_KEYS.UPDATED_TITLES,
-    );
+    const { data, status } = useTitlesFetch(QUERY_KEYS.UPDATED_TITLES);
 
     const [visible, setVisible] = useState(10);
 

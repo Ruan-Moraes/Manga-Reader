@@ -10,10 +10,13 @@ import {
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+
 import { getEventById, getRelatedEvents, statusLabel } from '@feature/event';
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const EventDetails = () => {
     const { eventId = '' } = useParams();
+
     const event = getEventById(eventId);
 
     if (!event) {
@@ -22,7 +25,10 @@ const EventDetails = () => {
                 <Header />
                 <MainContent>
                     <p>Evento não encontrado.</p>
-                    <Link to="/Manga-Reader/events" className="text-purple-400 underline">
+                    <Link
+                        to="/Manga-Reader/events"
+                        className="text-purple-400 underline"
+                    >
                         Voltar para eventos
                     </Link>
                 </MainContent>
@@ -71,7 +77,6 @@ const EventDetails = () => {
                             </div>
                         </div>
                     </section>
-
                     <section className="grid grid-cols-1 gap-4 xl:grid-cols-3">
                         <div className="space-y-4 xl:col-span-2">
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
@@ -84,7 +89,7 @@ const EventDetails = () => {
                                         'pt-BR',
                                     )}
                                 </p>
-                                <p className="inline-flex items-center gap-2 text-sm text-tertiary ml-4">
+                                <p className="inline-flex items-center gap-2 ml-4 text-sm text-tertiary">
                                     <FiCalendar /> Término:{' '}
                                     {new Date(event.endDate).toLocaleString(
                                         'pt-BR',
@@ -237,7 +242,7 @@ const EventDetails = () => {
                                             <p className="text-sm font-medium">
                                                 {item.title}
                                             </p>
-                                            <p className="text-xs text-tertiary inline-flex items-center gap-1">
+                                            <p className="inline-flex items-center gap-1 text-xs text-tertiary">
                                                 <FiUsers /> {item.participants}
                                             </p>
                                         </div>

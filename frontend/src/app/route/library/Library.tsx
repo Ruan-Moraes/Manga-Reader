@@ -3,8 +3,10 @@ import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import AppLink from '@shared/component/link/element/AppLink';
+
 import { useSavedMangas } from '@feature/library';
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Library = () => {
     const { savedByList } = useSavedMangas();
 

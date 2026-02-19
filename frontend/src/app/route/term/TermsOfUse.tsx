@@ -9,7 +9,7 @@ import TextBlock from '@shared/component/paragraph/TextBlock';
 const TermsOfUse = () => {
     return (
         <>
-            <Header disabledSearch={true} />
+            <Header showSearch={true} />
             <MainContent>
                 <TextSection>
                     <SectionTitle

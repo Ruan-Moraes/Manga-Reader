@@ -4,17 +4,17 @@ import LinksSection from '@shared/component/link/section/FooterLinksSection';
 
 type FooterTypes = {
     styles?: React.CSSProperties;
-    disabledLinks?: boolean;
+    showLinks?: boolean;
 };
 
-const Footer = ({ styles, disabledLinks }: FooterTypes) => {
+const Footer = ({ styles, showLinks }: FooterTypes) => {
     const getYear = useMemo(() => {
         return new Date().getFullYear();
     }, []);
 
     return (
         <footer className="mt-auto bg-secondary" style={styles}>
-            {!disabledLinks && (
+            {!showLinks && (
                 <div className="grid items-center grid-cols-8 gap-4 p-4 border-t-2 border-t-tertiary">
                     <LinksSection
                         title="Links úteis"

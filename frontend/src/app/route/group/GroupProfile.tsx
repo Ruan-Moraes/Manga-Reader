@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import Header from '@app/layout/Header';
@@ -8,51 +8,26 @@ import Footer from '@app/layout/Footer';
 import AppLink from '@shared/component/link/element/AppLink';
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
+
 import {
     useGroupDetails,
+    useGroupWorks,
     GroupDetailHeader,
     MemberListModal,
+    type WorkSortOption,
 } from '@feature/group';
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const GroupProfile = () => {
     const { groupId } = useParams();
+
     const [isMemberListModalOpen, setIsMemberListModalOpen] =
         useState<boolean>(false);
-    const [workSort, setWorkSort] = useState<
-        'popularity' | 'date' | 'chapters'
-    >('popularity');
-    const [activeGenre, setActiveGenre] = useState<string | null>(null);
 
     const { group, isLoading } = useGroupDetails(groupId);
 
-    const sortedWorks = useMemo(() => {
-        if (!group) return [];
-
-        const scopedWorks = activeGenre
-            ? group.translatedWorks.filter(work =>
-                  work.genres.includes(activeGenre),
-              )
-            : group.translatedWorks;
-
-        const works = [...scopedWorks];
-
-        works.sort((a, b) => {
-            if (workSort === 'date') {
-                return (
-                    new Date(b.updatedAt).getTime() -
-                    new Date(a.updatedAt).getTime()
-                );
-            }
-
-            if (workSort === 'chapters') {
-                return b.chapters - a.chapters;
-            }
-
-            return b.popularity - a.popularity;
-        });
-
-        return works;
-    }, [activeGenre, group, workSort]);
+    const { workSort, setWorkSort, activeGenre, toggleGenre, sortedWorks } =
+        useGroupWorks(group?.translatedWorks ?? []);
 
     if (!isLoading && !group) {
         return (
@@ -90,13 +65,7 @@ const GroupProfile = () => {
                                     {group.genres.map(genre => (
                                         <button
                                             key={genre}
-                                            onClick={() =>
-                                                setActiveGenre(prev =>
-                                                    prev === genre
-                                                        ? null
-                                                        : genre,
-                                                )
-                                            }
+                                            onClick={() => toggleGenre(genre)}
                                             className={`px-2 py-1 text-xs border rounded-xs transition-colors ${
                                                 activeGenre === genre
                                                     ? 'border-quaternary text-quaternary'
@@ -125,10 +94,8 @@ const GroupProfile = () => {
                                     value={workSort}
                                     onChange={event =>
                                         setWorkSort(
-                                            event.target.value as
-                                                | 'popularity'
-                                                | 'date'
-                                                | 'chapters',
+                                            event.target
+                                                .value as WorkSortOption,
                                         )
                                     }
                                     className="p-2 text-xs border rounded-xs border-tertiary bg-secondary"

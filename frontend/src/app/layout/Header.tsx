@@ -4,20 +4,22 @@ import clsx from 'clsx';
 
 import MainSearchInput from '@shared/component/input/MainSearchInput';
 import NavigationMenu from '@shared/component/menu/NavigationMenu';
+
 import { useAuth } from '@feature/auth';
+
 import { showInfoToast } from '@shared/service/util/toastService';
 
 type HeaderTypes = {
-    disabledAuth?: boolean;
-    disabledSearch?: boolean;
+    showAuth?: boolean;
+    showSearch?: boolean;
 };
 
-const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
+const Header = ({ showAuth, showSearch }: HeaderTypes) => {
     const { user, isLoggedIn, logout } = useAuth();
 
     return (
         <header className={clsx('bg-secondary', {})}>
-            {!disabledAuth && (
+            {!showAuth && (
                 <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
                     {isLoggedIn && user ? (
                         <>
@@ -68,7 +70,7 @@ const Header = ({ disabledAuth, disabledSearch }: HeaderTypes) => {
                         />
                     </h1>
                 </div>
-                {!disabledSearch && <MainSearchInput />}
+                {!showSearch && <MainSearchInput />}
             </nav>
             <NavigationMenu />
         </header>

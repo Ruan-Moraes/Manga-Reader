@@ -102,6 +102,12 @@ export const statusLabel: Record<EventData['status'], string> = {
     ended: 'Encerrado',
 };
 
+export const formatEventDate = (date: string) =>
+    new Intl.DateTimeFormat('pt-BR', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+    }).format(new Date(date));
+
 // ---------------------------------------------------------------------------
 // Sync filter — usado pelos componentes de rota em useMemo
 // ---------------------------------------------------------------------------

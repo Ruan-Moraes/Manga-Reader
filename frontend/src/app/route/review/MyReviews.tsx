@@ -4,6 +4,8 @@ import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
+import { showSuccessToast } from '@shared/service/util/toastService';
+
 import {
     RatingStars,
     getUserReviews,
@@ -11,8 +13,8 @@ import {
     deleteUserReview,
     type MangaRating,
 } from '@feature/rating';
-import { showSuccessToast } from '@shared/service/util/toastService';
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const MyReviews = () => {
     const [reviews, setReviews] = useState<MangaRating[]>([]);
 

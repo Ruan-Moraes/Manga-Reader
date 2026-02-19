@@ -9,6 +9,7 @@ import AlertBanner from '@shared/component/notification/AlertBanner';
 
 import SocialMediaSection from '@shared/component/social-media/SocialMediaSection';
 import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
+
 import {
     CarouselContainer,
     HighlightCardsContainer,

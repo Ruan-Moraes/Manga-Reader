@@ -11,7 +11,7 @@ import ContactForm from '@shared/component/form/ContactForm';
 const PublishWork = () => {
     return (
         <>
-            <Header disabledSearch={true} />
+            <Header showSearch={true} />
             <MainContent>
                 <TextSection>
                     <SectionTitle
@@ -31,7 +31,7 @@ const PublishWork = () => {
                 </TextSection>
                 <ContactForm />
             </MainContent>
-            <Footer disabledLinks={true} />
+            <Footer showLinks={true} />
         </>
     );
 };

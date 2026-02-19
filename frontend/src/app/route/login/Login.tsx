@@ -13,6 +13,7 @@ import Footer from '@app/layout/Footer';
 import AuthenticationForm from '@shared/component/form/AuthenticationForm';
 import BaseInput from '@shared/component/input/BaseInput';
 import RaisedButton from '@shared/component/button/RaisedButton';
+
 import { useAuth } from '@feature/auth';
 
 // TODO: Implementar autenticação real
@@ -20,6 +21,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const [redirectPath, setRedirectPath] = useState<string | null>(null);
+
     const { login } = useAuth();
 
     useEffect(() => {
@@ -65,7 +67,7 @@ const Login = () => {
 
     return (
         <>
-            <Header disabledSearch={true} />
+            <Header showSearch={true} />
             <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
@@ -87,7 +89,7 @@ const Login = () => {
                     <RaisedButton text="Entrar:" />
                 </AuthenticationForm>
             </MainContent>
-            <Footer disabledLinks={true} />
+            <Footer showLinks={true} />
         </>
     );
 };

@@ -1,7 +1,6 @@
-import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
-
 import MainContent from '@/app/layout/Main';
 
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 import AlertBanner from '@shared/component/notification/AlertBanner';
 
 const NotFound = () => {

@@ -37,7 +37,9 @@ export const getNews = async (filters?: NewsFilter): Promise<NewsItem[]> => {
             return (
                 news.title.toLowerCase().includes(normalizedQuery) ||
                 news.excerpt.toLowerCase().includes(normalizedQuery) ||
-                news.tags.some((t: string) => t.toLowerCase().includes(normalizedQuery))
+                news.tags.some((t: string) =>
+                    t.toLowerCase().includes(normalizedQuery),
+                )
             );
         }
         return true;
@@ -85,6 +87,12 @@ export const formatRelativeDate = (date: string): string => {
     return `há ${diffInDays} dia${diffInDays > 1 ? 's' : ''}`;
 };
 
+export const formatNewsDate = (date: string) =>
+    new Intl.DateTimeFormat('pt-BR', {
+        dateStyle: 'full',
+        timeStyle: 'short',
+    }).format(new Date(date));
+
 /** Todas as categorias disponíveis. */
 export const newsCategories: NewsCategory[] = [
     'Principais',
@@ -122,7 +130,9 @@ export const filterNews = (filters: NewsFilter): NewsItem[] => {
             return (
                 news.title.toLowerCase().includes(normalizedQuery) ||
                 news.excerpt.toLowerCase().includes(normalizedQuery) ||
-                news.tags.some((t: string) => t.toLowerCase().includes(normalizedQuery))
+                news.tags.some((t: string) =>
+                    t.toLowerCase().includes(normalizedQuery),
+                )
             );
         }
         return true;

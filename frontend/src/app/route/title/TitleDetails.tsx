@@ -4,6 +4,18 @@ import { useParams } from 'react-router-dom';
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
+import Header from '@app/layout/Header';
+import MainContent from '@/app/layout/Main';
+import Footer from '@app/layout/Footer';
+
+import Loading from '@app/route/loading/Loading';
+
+import AlertBanner from '@shared/component/notification/AlertBanner';
+import {
+    showInfoToast,
+    showSuccessToast,
+} from '@shared/service/util/toastService';
+
 import {
     type Title,
     useTitle,
@@ -17,29 +29,14 @@ import {
 } from '@feature/comment';
 import { useBookmark } from '@feature/library';
 import { useRating, RatingStars, RatingModal } from '@feature/rating';
-import { ChapterFilter, ChapterList } from '@feature/chapter';
+import { ChapterFilter, ChapterList, useChapterSort } from '@feature/chapter';
 import { GroupsModal } from '@feature/group';
 import { StoresModal } from '@feature/store';
-
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
-
-import Loading from '@app/route/loading/Loading';
-
-import AlertBanner from '@shared/component/notification/AlertBanner';
-import {
-    showInfoToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
 
 const TitleDetailsPage = () => {
     const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
     const [isGroupsModalOpen, setIsGroupsModalOpen] = useState<boolean>(false);
     const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false);
-
-    const [isAscending, setIsAscending] = useState<boolean>(true);
-    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const id = Number(useParams().titleId!);
 
@@ -51,11 +48,33 @@ const TitleDetailsPage = () => {
     } = useTitle(id);
 
     const {
+        type,
+        cover,
+        name,
+        synopsis,
+        genres,
+        chapters,
+        popularity,
+        score,
+        author,
+        artist,
+        publisher,
+    } = title as Title;
+
+    const {
         comments,
         isLoading: isCommentsLoading,
         isError: isCommentsError,
         error: commentsError,
     } = useComments(id);
+
+    const {
+        isAscending,
+        searchTerm,
+        setSearchTerm,
+        handleSortClick,
+        filteredAndSortedChapters,
+    } = useChapterSort(chapters);
 
     const { toggleBookmark, isSaved } = useBookmark();
     const { submitRating, ratings, average } = useRating(String(id));
@@ -80,24 +99,6 @@ const TitleDetailsPage = () => {
         );
     }
 
-    const {
-        type,
-        cover,
-        name,
-        synopsis,
-        genres,
-        chapters,
-        popularity,
-        score,
-        author,
-        artist,
-        publisher,
-    } = title as Title;
-
-    const handleSortClick = () => {
-        setIsAscending(prevState => !prevState);
-    };
-
     const handleBookmarkClick = () => {
         const wasSaved = isSaved(String(id));
 
@@ -115,36 +116,6 @@ const TitleDetailsPage = () => {
 
         showSuccessToast('Mangá salvo na sua biblioteca.');
     };
-
-    const filteredAndSortedChapters = [...chapters]
-        .filter(chapter => {
-            if (!searchTerm.trim()) return true;
-
-            const searchLower = searchTerm.toLowerCase();
-
-            return (
-                chapter.number.toLowerCase().includes(searchLower) ||
-                chapter.title.toLowerCase().includes(searchLower)
-            );
-        })
-        .sort((a, b) => {
-            const numA = parseFloat(a.number);
-            const numB = parseFloat(b.number);
-
-            if (isNaN(numA) && isNaN(numB)) {
-                return 0;
-            }
-
-            if (isNaN(numA)) {
-                return isAscending ? 1 : -1;
-            }
-
-            if (isNaN(numB)) {
-                return isAscending ? -1 : 1;
-            }
-
-            return isAscending ? numA - numB : numB - numA;
-        });
 
     return (
         <>

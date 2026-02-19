@@ -11,9 +11,7 @@ import SectionTitle from '@shared/component/title/SectionTitle';
 import HorizontalCard from './HorizontalCard';
 
 const HorizontalCardsContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data, status } = useTitlesFetch(
-        QUERY_KEYS.RANDOM_TITLES,
-    );
+    const { data, status } = useTitlesFetch(QUERY_KEYS.RANDOM_TITLES);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {

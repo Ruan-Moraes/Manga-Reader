@@ -18,7 +18,12 @@ const useBookmark = () => {
             cover: string;
             type: string;
         }) => {
-            const nowSaved = await toggleFavorite({ titleId, name, cover, type });
+            const nowSaved = await toggleFavorite({
+                titleId,
+                name,
+                cover,
+                type,
+            });
 
             showSuccessToast(
                 nowSaved

@@ -8,6 +8,7 @@ import ButtonHighLight from '@shared/component/button/RaisedButton';
 import Checkbox from '@shared/component/input/CheckboxWithLink';
 
 const SignUp = () => {
+    // TODO: Implementar lógica de validação e envio do formulário de cadastro
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -16,7 +17,7 @@ const SignUp = () => {
 
     return (
         <>
-            <Header disabledSearch={true} />
+            <Header showSearch={true} />
             <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
@@ -57,7 +58,7 @@ const SignUp = () => {
                     <ButtonHighLight text="Cadastrar" />
                 </AuthenticationForm>
             </MainContent>
-            <Footer disabledLinks={true} />
+            <Footer showLinks={true} />
         </>
     );
 };

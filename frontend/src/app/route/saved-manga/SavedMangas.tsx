@@ -9,6 +9,7 @@ import { useSavedMangas, type ReadingListType } from '@feature/library';
 
 const listTypes: ReadingListType[] = ['Lendo', 'Quero Ler', 'Concluído'];
 
+// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const SavedMangas = () => {
     const [selectedList, setSelectedList] = useState<ReadingListType | 'Todos'>(
         'Todos',

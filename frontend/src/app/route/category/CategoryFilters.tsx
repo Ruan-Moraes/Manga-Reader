@@ -1,14 +1,3 @@
-import { useCallback, useState } from 'react';
-
-import {
-    type Tag,
-    type Sort,
-    type PublicationStatus,
-    type AdultContent,
-    useTagsFetch,
-    TagSelectInput,
-} from '@feature/category';
-
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -19,63 +8,24 @@ import FiltersForm from '@shared/component/form/FiltersForm';
 import RadioInput from '@shared/component/input/RadioInput';
 import RaisedButton from '@shared/component/button/RaisedButton';
 
+import {
+    type Tag,
+    useTagsFetch,
+    useCategoryFilters,
+    TagSelectInput,
+} from '@feature/category';
+
 const CategoryFilters = () => {
     const { data } = useTagsFetch('tags');
+
     const tags: Tag[] | undefined = Array.isArray(data) ? data : undefined;
 
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-    const [selectedSort, setSelectedSort] = useState<Sort>('most_read');
-    const [selectedStatus, setSelectedStatus] =
-        useState<PublicationStatus>('ongoing');
-    const [selectedAdultContent, setSelectedAdultContent] =
-        useState<AdultContent>('no_adult_content');
-
-    const handleSelectedTags = useCallback((newValue: Tag[]) => {
-        setSelectedTags(newValue as Tag[]);
-    }, []);
-
-    const handleSortChange = useCallback((newValue: Sort) => {
-        setSelectedSort(newValue);
-    }, []);
-
-    const handleStatusChange = useCallback((newValue: PublicationStatus) => {
-        setSelectedStatus(newValue);
-    }, []);
-
-    const handleAdultContentChange = useCallback((newValue: AdultContent) => {
-        setSelectedAdultContent(newValue);
-    }, []);
-
-    console.log(selectedTags);
-    console.log(selectedSort);
-    console.log(selectedStatus);
-    console.log(selectedAdultContent);
-
-    const createUrl = () => {
-        const params = new URLSearchParams();
-
-        if (selectedTags.length > 0) {
-            selectedTags.forEach(tag => {
-                params.append('tags', tag.value.toString());
-            });
-        }
-
-        if (selectedSort) {
-            params.set('sort', selectedSort);
-        }
-
-        if (selectedStatus) {
-            params.set('status', selectedStatus);
-        }
-
-        if (selectedAdultContent) {
-            params.set('adult_content', selectedAdultContent);
-        }
-
-        return `http://localhost:5000/search_title_by?${params.toString()}`;
-    };
-
-    console.log(createUrl());
+    const {
+        handleSelectedTags,
+        handleSortChange,
+        handleStatusChange,
+        handleAdultContentChange,
+    } = useCategoryFilters();
 
     return (
         <>

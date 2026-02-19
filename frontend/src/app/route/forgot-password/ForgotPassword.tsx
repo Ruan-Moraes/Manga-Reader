@@ -9,6 +9,7 @@ import BaseInput from '@shared/component/input/BaseInput';
 import RaisedButton from '@shared/component/button/RaisedButton';
 
 const ForgotPassword = () => {
+    // TODO: Criar a feature de recuperação de senha, permitindo que os usuários possam solicitar a recuperação de senha através do email cadastrado. Implementar a lógica para enviar um email com um link de recuperação para o usuário, e criar uma página para o usuário poder criar uma nova senha após clicar no link recebido por email.
     const handleFormSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
@@ -20,7 +21,7 @@ const ForgotPassword = () => {
 
     return (
         <>
-            <Header disabledSearch={true} />
+            <Header showSearch={true} />
             <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
@@ -37,7 +38,7 @@ const ForgotPassword = () => {
                     <RaisedButton text="Recuperar senha" />
                 </AuthenticationForm>
             </MainContent>
-            <Footer disabledLinks={true} />
+            <Footer showLinks={true} />
         </>
     );
 };
