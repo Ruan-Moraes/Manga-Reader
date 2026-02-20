@@ -69,11 +69,8 @@ const ReplyModalBody = ({ onReply, onCancel }: ReplyModalBodyProps) => {
                             </BadgeIconButton>
                         </div>
                         <div className="flex gap-2">
-                            <DarkButton onClick={onCancel} text={'Cancelar'} />
-                            <DarkButton
-                                onClick={handleSave}
-                                text={'Responder'}
-                            />
+                            <DarkButton onClick={onCancel} text="Cancelar" />
+                            <DarkButton onClick={handleSave} text="Responder" />
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import { IoSearchSharp } from 'react-icons/io5';
 
+// TODO: Terminar a implementação do componente.
 const MainSearchInput = () => {
     return (
         <div className="w-full">

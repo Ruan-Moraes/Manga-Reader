@@ -1,4 +1,4 @@
-import { type User } from '@feature/auth';
+import { type User } from '@feature/user';
 
 type CommentContentProps = {
     textContent: string | null;

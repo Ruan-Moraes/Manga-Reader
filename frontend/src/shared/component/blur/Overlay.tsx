@@ -26,13 +26,13 @@ const Overlay = ({ isOpen, onClickBlur }: OverlayTypes) => {
 
     return (
         <div
-            className={`fixed z-20 top-0 bottom-0 left-0 right-0 backdrop-blur-xs ${
-                isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
             onClick={handleBlur}
             style={{
                 transition: 'opacity 300ms',
             }}
+            className={`fixed z-20 top-0 bottom-0 left-0 right-0 backdrop-blur-xs ${
+                isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
         ></div>
     );
 };

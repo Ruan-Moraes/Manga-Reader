@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { User } from '../type/user.types';
+import { type User } from '@feature/user';
 
-import {
-    getCurrentUser,
-    signIn,
-    signOut,
-    updateProfile as updateProfileService,
-} from '../service/authService';
+import { getCurrentUser, signIn, signOut } from '../service/authService';
 
 const useAuth = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -30,20 +25,12 @@ const useAuth = () => {
         setUser(null);
     }, []);
 
-    const updateProfile = useCallback(async (partialUser: Partial<User>) => {
-        const updatedUser = await updateProfileService(partialUser);
-
-        setUser(updatedUser);
-
-        return updatedUser;
-    }, []);
-
     return {
         user,
+        setUser,
         isLoggedIn: Boolean(user),
         login,
         logout,
-        updateProfile,
     };
 };
 

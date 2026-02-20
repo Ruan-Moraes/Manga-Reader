@@ -12,6 +12,7 @@ import EventDetails from '@app/route/event/EventDetails';
 import Login from '@app/route/login/Login';
 import SignUp from '@app/route/sign-up/SignUp';
 import ForgotPassword from '@app/route/forgot-password/ForgotPassword';
+import ResetPassword from '@app/route/forgot-password/ResetPassword';
 import AboutUs from '@app/route/about-us/AboutUs';
 import TermsOfUse from '@app/route/term/TermsOfUse';
 import Dmca from '@app/route/term/Dmca';
@@ -98,6 +99,10 @@ const publicRoutes = [
     {
         path: 'forgot-password',
         element: <ForgotPassword />,
+    },
+    {
+        path: 'reset-password',
+        element: <ResetPassword />,
     },
     {
         path: 'about-us',

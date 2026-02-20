@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import { type CommentData } from '../type/comment.types';
-import { type User } from '@feature/auth';
+import { type User } from '@feature/user';
 
 import useCommentModals from '../hook/internal/useCommentModals';
 

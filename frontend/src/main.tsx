@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { UserModalProvider } from '@feature/auth';
+import { UserModalProvider } from '@feature/user';
 import { EmojiModalProvider, CommentSortProvider } from '@feature/comment';
 
 import { queryClient } from '@shared/service/util/queryCache';

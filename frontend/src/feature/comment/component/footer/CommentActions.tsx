@@ -49,7 +49,7 @@ const CommentActions = ({
                         </BadgeIconButton>
                     </>
                 )}
-                <DarkButton text="Responder" onClick={onReply} />
+                <DarkButton onClick={onReply} text="Responder" />
             </div>
         </div>
     );

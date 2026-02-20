@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import { type User } from '@feature/auth';
+import { type User } from '@feature/user';
 
 import { MdAdminPanelSettings, MdStar } from 'react-icons/md';
 

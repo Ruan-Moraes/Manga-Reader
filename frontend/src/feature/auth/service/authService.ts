@@ -3,51 +3,60 @@ import {
     getFromStorage,
     saveToStorage,
     removeFromStorage,
+    ok,
+    fail,
 } from '@shared/service/mockApi';
+
+import type { MockApiResponse } from '@shared/service/mockApi';
+
 import { mockUsers } from '@mock/data/users';
 
-import { type User } from '../type/user.types';
+import { type User } from '@feature/user';
 
-// ---------------------------------------------------------------------------
-// Storage
-// ---------------------------------------------------------------------------
-
-const AUTH_KEY = 'manga-reader:auth-user';
-
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
+import { AUTH_KEY } from '@feature/auth/constant/AUTH_KEY';
 
 export const getCurrentUser = async (): Promise<User | null> => {
     await simulateDelay(100);
+
     return getFromStorage<User | null>(AUTH_KEY, null);
 };
 
 export const signIn = async (): Promise<User> => {
     await simulateDelay(300);
 
-    const user = mockUsers[0]; // "Leitor Demo"
+    // TODO: Implementar a autenticação real
+    const user = mockUsers[0];
+
     saveToStorage(AUTH_KEY, user);
 
     return user;
 };
 
 export const signOut = async (): Promise<void> => {
-    await simulateDelay(100);
+    // TODO: Implementar a desautenticação real
     removeFromStorage(AUTH_KEY);
 };
 
-export const updateProfile = async (
-    partial: Partial<User>,
-): Promise<User | null> => {
-    await simulateDelay(200);
+export const requestPasswordReset = async (
+    _email: string,
+): Promise<MockApiResponse<null>> => {
+    await simulateDelay(500);
 
-    const current = getFromStorage<User | null>(AUTH_KEY, null);
+    // TODO: Validar email no backend real
+    // Mock sempre retorna sucesso para simular o envio do email
+    return ok(null, 'Email de recuperação enviado com sucesso!');
+};
 
-    if (!current) return null;
+export const resetPassword = async (
+    token: string,
+    _newPassword: string,
+): Promise<MockApiResponse<null>> => {
+    await simulateDelay(500);
 
-    const updated = { ...current, ...partial };
-    saveToStorage(AUTH_KEY, updated);
+    // TODO: Validar token real e atualizar senha no backend
+    if (!token) {
+        return fail(null, 'Token de recuperação inválido ou expirado.');
+    }
 
-    return updated;
+    return ok(null, 'Senha redefinida com sucesso!');
 };

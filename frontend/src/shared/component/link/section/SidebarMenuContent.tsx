@@ -4,6 +4,8 @@ import { clsx } from 'clsx';
 
 import { clearCache } from '@shared/service/util/queryCache';
 
+// TODO: Refatorar para usar o AppLink e evitar duplicação de código, além de garantir consistência visual e funcional em toda a aplicação.
+
 export type MenuProfile = {
     id: string;
     label: string;

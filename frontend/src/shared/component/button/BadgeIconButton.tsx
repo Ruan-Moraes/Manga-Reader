@@ -28,11 +28,11 @@ const BadgeIconButton = ({
             type="button"
             onClick={onClick}
             className={`px-3 transition-colors duration-300 rounded-xs bg-primary-default hover:bg-quaternary-opacity-25
-        ${clsx(
-            !className && 'py-1',
-            className && className,
-            (likeCount || dislikeCount) && 'relative',
-        )}
+            ${clsx(
+                !className && 'py-1',
+                className && className,
+                (likeCount || dislikeCount) && 'relative',
+            )}
         `}
         >
             {children}

@@ -1,4 +1,4 @@
-import { type User } from '@feature/auth';
+import { type User } from '@feature/user';
 
 export type CommentData = {
     id: string;

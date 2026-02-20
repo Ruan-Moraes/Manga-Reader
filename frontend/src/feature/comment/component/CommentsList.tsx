@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { type User, useUserModalContext, UserModal } from '@feature/auth';
+import { type User, useUserModalContext, UserModal } from '@feature/user';
 import { type CommentData } from '../type/comment.types';
 
 import useCommentTree from '../hook/internal/useCommentTree';

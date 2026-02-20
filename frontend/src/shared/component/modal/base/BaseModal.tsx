@@ -2,9 +2,7 @@ import Overlay from '@shared/component/blur/Overlay';
 
 type BaseModalProps = {
     isModalOpen: boolean;
-
     closeModal: () => void;
-
     children: React.ReactNode;
 };
 

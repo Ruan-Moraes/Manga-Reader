@@ -2,9 +2,8 @@ type InlineSearchInputProps = {
     placeholder: string;
 };
 
+// TODO: Terminar a implementação do componente.
 const InlineSearchInput = ({ placeholder }: InlineSearchInputProps) => {
-    // TODO: Fazer chamada para a API de pesquisa
-
     return (
         <div>
             <form>

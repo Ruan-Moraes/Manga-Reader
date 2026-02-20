@@ -6,6 +6,7 @@ type CheckboxWithLinkTypes = {
     linkText: string;
 };
 
+// TODO: Terminar a implementação do componente.
 const CheckboxWithLink = ({ label, link, linkText }: CheckboxWithLinkTypes) => {
     return (
         <div>

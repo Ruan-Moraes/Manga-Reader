@@ -24,6 +24,12 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
         }: CustomLinkBaseTypes,
         ref,
     ) => {
+        if (text && children) {
+            throw new Error(
+                'O componente AppLink não pode receber ambos os props "text" e "children". Por favor, escolha um dos dois para evitar conflitos de renderização.',
+            );
+        }
+
         const isExternalLink = link.includes('http');
         const isActive = useLocation().pathname === `/Manga-Reader${link}`;
 
@@ -40,7 +46,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
                 style={inlineStyle}
                 to={isExternalLink ? link : '/Manga-Reader' + link}
             >
-                {children || text}
+                {children ?? text}
             </Link>
         );
     },
