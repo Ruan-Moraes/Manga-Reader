@@ -38,22 +38,21 @@ export const signOut = async (): Promise<void> => {
 };
 
 export const requestPasswordReset = async (
-    _email: string,
+    email: string,
 ): Promise<MockApiResponse<null>> => {
     await simulateDelay(500);
 
-    // TODO: Validar email no backend real
-    // Mock sempre retorna sucesso para simular o envio do email
+    // TODO: Implementar a lógica real de envio de email de recuperação
     return ok(null, 'Email de recuperação enviado com sucesso!');
 };
 
 export const resetPassword = async (
     token: string,
-    _newPassword: string,
+    newPassword: string,
 ): Promise<MockApiResponse<null>> => {
     await simulateDelay(500);
 
-    // TODO: Validar token real e atualizar senha no backend
+    // TODO: Implementar a lógica real de redefinição de senha
     if (!token) {
         return fail(null, 'Token de recuperação inválido ou expirado.');
     }

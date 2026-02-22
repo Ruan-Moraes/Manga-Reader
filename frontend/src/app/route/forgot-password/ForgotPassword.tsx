@@ -17,7 +17,7 @@ const ForgotPassword = () => {
             <Header showSearch={true} />
             <MainContent>
                 {isSubmitted ? (
-                    <section className="flex flex-col items-center justify-center max-w-md gap-4 p-8 mx-auto mt-12 text-center">
+                    <section className="flex flex-col items-center justify-center max-w-md gap-4 mx-auto text-center">
                         <h2 className="text-2xl font-bold text-shadow-default">
                             Email enviado!
                         </h2>

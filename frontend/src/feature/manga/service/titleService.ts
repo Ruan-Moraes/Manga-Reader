@@ -1,14 +1,12 @@
 import { simulateDelay } from '@shared/service/mockApi';
+
 import { mockTitles } from '@mock/data/titles';
 
 import { type Title } from '../type/title.types';
 
-// ---------------------------------------------------------------------------
-// Title Service — substitui fetch() para a API real
-// ---------------------------------------------------------------------------
-
 export const getTitles = async (): Promise<Title[]> => {
     await simulateDelay();
+
     return mockTitles;
 };
 

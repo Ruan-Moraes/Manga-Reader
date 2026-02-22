@@ -65,6 +65,7 @@ const useResetPassword = () => {
                     showSuccessToast(
                         response.message ?? 'Senha redefinida com sucesso!',
                     );
+
                     navigate('/Manga-Reader/login');
                 } else {
                     showErrorToast(

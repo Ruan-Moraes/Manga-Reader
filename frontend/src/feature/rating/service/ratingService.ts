@@ -56,6 +56,7 @@ export const submitRating = async (data: {
     titleId: string;
     stars: number;
     comment?: string;
+    categoryRatings?: Record<string, number>;
 }): Promise<MangaRating> => {
     await simulateDelay(200);
 
@@ -67,6 +68,7 @@ export const submitRating = async (data: {
         userName: 'Você',
         stars: data.stars,
         comment: data.comment,
+        categoryRatings: data.categoryRatings,
         createdAt: new Date().toISOString(),
     };
 

@@ -27,6 +27,7 @@ const useForgotPassword = () => {
 
             if (!trimmedEmail) {
                 showErrorToast('Por favor, insira seu email.');
+
                 return;
             }
 
@@ -37,6 +38,7 @@ const useForgotPassword = () => {
 
                 if (response.success) {
                     setIsSubmitted(true);
+
                     showSuccessToast(
                         response.message ?? 'Email enviado com sucesso!',
                     );

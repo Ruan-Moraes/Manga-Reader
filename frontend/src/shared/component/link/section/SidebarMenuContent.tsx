@@ -230,18 +230,19 @@ const SidebarMenuContent = ({
                 </section>
             )}
 
-            <div className="flex items-center w-full gap-2 pt-2 mt-auto border-t border-tertiary/50">
+            <div className="flex items-center w-full gap-2 p-2 mt-auto border bg-secondary rounded-xs border-tertiary">
                 <button
                     onClick={clearCache}
-                    className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-secondary hover:bg-tertiary/20"
+                    className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20"
                 >
                     Limpar cache
                 </button>
+
                 {isLoggedIn && !profile.isVisitor && (
                     <button
                         onClick={onLogout}
                         className={clsx(
-                            'h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-secondary hover:bg-tertiary/20',
+                            'h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20',
                         )}
                     >
                         Sair

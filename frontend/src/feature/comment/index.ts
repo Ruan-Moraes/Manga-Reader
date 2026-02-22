@@ -1,5 +1,6 @@
 // features/comment/index.ts
 export { default as useComments } from './hook/useComments';
+export { default as useCommentPagination } from './hook/useCommentPagination';
 export {
     CommentSortProvider,
     useCommentSortContext,

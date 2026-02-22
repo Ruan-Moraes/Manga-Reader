@@ -20,8 +20,21 @@ const useRatings = (titleId: string) => {
     }, [loadRatings]);
 
     const submitRating = useCallback(
-        async ({ stars, comment }: { stars: number; comment?: string }) => {
-            await submitRatingService({ titleId, stars, comment });
+        async ({
+            stars,
+            comment,
+            categoryRatings,
+        }: {
+            stars: number;
+            comment?: string;
+            categoryRatings?: Record<string, number>;
+        }) => {
+            await submitRatingService({
+                titleId,
+                stars,
+                comment,
+                categoryRatings,
+            });
             await loadRatings();
         },
         [loadRatings, titleId],

@@ -198,11 +198,11 @@ const NavigationMenu = () => {
                                     name="menu-search"
                                     type="search"
                                     placeholder="Buscar mangás, notícias, grupos..."
-                                    className="w-full h-10 px-3 text-sm bg-secondary border rounded-xs border-tertiary placeholder:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default"
+                                    className="w-full h-10 px-3 text-sm border bg-secondary rounded-xs border-tertiary placeholder:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default"
                                 />
                                 <button
                                     type="submit"
-                                    className="h-10 px-4 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
+                                    className="h-10 px-4 text-xs font-semibold uppercase border rounded-xs border-tertiary hover:bg-tertiary/20"
                                 >
                                     Buscar
                                 </button>

@@ -51,14 +51,6 @@ const TitleDetails = ({
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Nota: </span>
-                        <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading ? '...' : score}
-                        </span>
-                    </p>
-                </div>
-                <div>
-                    <p className="truncate">
                         <span className="font-bold">Capítulos: </span>
                         <span className={isDataLoading ? 'text-tertiary' : ''}>
                             {isDataLoading ? '...' : lastChapter}

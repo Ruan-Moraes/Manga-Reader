@@ -1,8 +1,4 @@
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-
-import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
-import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -16,29 +12,46 @@ import {
     showSuccessToast,
 } from '@shared/service/util/toastService';
 
+import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
+import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
+
 import {
     type Title,
     useTitle,
+    useTitleModals,
     BaseCard as Card,
     TitleActions,
 } from '@feature/manga';
-import {
-    type CommentData,
-    useComments,
-    CommentsSection,
-} from '@feature/comment';
+import { useComments, CommentsSection } from '@feature/comment';
 import { useBookmark } from '@feature/library';
-import { useRating, RatingStars, RatingModal } from '@feature/rating';
+import {
+    useRating,
+    RatingStars,
+    RatingModal,
+    RecentReviews,
+} from '@feature/rating';
 import { ChapterFilter, ChapterList, useChapterSort } from '@feature/chapter';
 import { GroupsModal } from '@feature/group';
 import { StoresModal } from '@feature/store';
 
 const TitleDetailsPage = () => {
-    const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
-    const [isGroupsModalOpen, setIsGroupsModalOpen] = useState<boolean>(false);
-    const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false);
+    const { titleId: rawTitleId } = useParams();
 
-    const id = Number(useParams().titleId!);
+    const id = Number(rawTitleId);
+
+    const isValidId = rawTitleId !== undefined && !isNaN(id);
+
+    const {
+        isRatingModalOpen,
+        isGroupsModalOpen,
+        isCartModalOpen,
+        openRatingModal,
+        closeRatingModal,
+        openGroupsModal,
+        closeGroupsModal,
+        openCartModal,
+        closeCartModal,
+    } = useTitleModals();
 
     const {
         title,
@@ -46,20 +59,6 @@ const TitleDetailsPage = () => {
         isError: isTitleError,
         error: titleError,
     } = useTitle(id);
-
-    const {
-        type,
-        cover,
-        name,
-        synopsis,
-        genres,
-        chapters,
-        popularity,
-        score,
-        author,
-        artist,
-        publisher,
-    } = title as Title;
 
     const {
         comments,
@@ -74,13 +73,23 @@ const TitleDetailsPage = () => {
         setSearchTerm,
         handleSortClick,
         filteredAndSortedChapters,
-    } = useChapterSort(chapters);
+    } = useChapterSort(
+        title && !(title instanceof Error) ? title.chapters : [],
+    );
 
     const { toggleBookmark, isSaved } = useBookmark();
     const { submitRating, ratings, average } = useRating(String(id));
 
-    if (isTitleLoading) {
-        return <Loading />;
+    if (!isValidId) {
+        return (
+            <MainContent>
+                <AlertBanner
+                    title="ID inválido"
+                    message={ERROR_MESSAGES.INVALID_ID_ERROR}
+                    color={THEME_COLORS.QUINARY}
+                />
+            </MainContent>
+        );
     }
 
     if (isTitleError) {
@@ -99,22 +108,37 @@ const TitleDetailsPage = () => {
         );
     }
 
-    const handleBookmarkClick = () => {
-        const wasSaved = isSaved(String(id));
+    if (isTitleLoading) {
+        return <Loading />;
+    }
 
-        toggleBookmark({
+    const {
+        type,
+        cover,
+        name,
+        synopsis,
+        genres,
+        chapters,
+        popularity,
+        score,
+        author,
+        artist,
+        publisher,
+    } = title as Title;
+
+    const handleBookmarkClick = async () => {
+        const nowSaved = await toggleBookmark({
             titleId: String(id),
             name,
             cover,
             type,
         });
 
-        if (wasSaved) {
+        if (nowSaved) {
+            showSuccessToast('Mangá salvo na sua biblioteca.');
+        } else {
             showInfoToast('Mangá removido da sua biblioteca.');
-            return;
         }
-
-        showSuccessToast('Mangá salvo na sua biblioteca.');
     };
 
     return (
@@ -139,7 +163,7 @@ const TitleDetailsPage = () => {
                         artist={artist}
                         publisher={publisher}
                     />
-                    <div className="flex items-center justify-between px-2 py-2 mt-2 border rounded-xs border-tertiary bg-secondary">
+                    <div className="flex items-center justify-between px-2 py-2 border border-tertiary bg-primary-default rounded-tr-xs">
                         <span className="text-sm font-semibold">
                             Média da comunidade
                         </span>
@@ -147,9 +171,9 @@ const TitleDetailsPage = () => {
                     </div>
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
-                        onLikeClick={() => setIsRatingModalOpen(true)}
-                        onGroupsClick={() => setIsGroupsModalOpen(true)}
-                        onCartClick={() => setIsCartModalOpen(true)}
+                        onLikeClick={openRatingModal}
+                        onGroupsClick={openGroupsModal}
+                        onCartClick={openCartModal}
                         isBookmarked={isSaved(String(id))}
                     />
                 </section>
@@ -165,29 +189,11 @@ const TitleDetailsPage = () => {
                         onChapterClick={() => undefined}
                     />
                 </section>
-                <section className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary">
-                    <h3 className="font-bold">Avaliações recentes</h3>
-                    {ratings.slice(0, 5).map(review => (
-                        <article
-                            key={review.id}
-                            className="p-2 border rounded-xs border-tertiary"
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-semibold">
-                                    {review.userName}
-                                </span>
-                                <RatingStars value={review.stars} size={12} />
-                            </div>
-                            {review.comment && (
-                                <p className="mt-1 text-xs text-tertiary">
-                                    {review.comment}
-                                </p>
-                            )}
-                        </article>
-                    ))}
-                </section>
+                <RecentReviews ratings={ratings} />
                 <CommentsSection
-                    comments={comments as CommentData[]}
+                    comments={
+                        comments instanceof Error || !comments ? [] : comments
+                    }
                     isLoading={isCommentsLoading}
                     isError={isCommentsError}
                     error={commentsError}
@@ -196,17 +202,17 @@ const TitleDetailsPage = () => {
             <Footer />
             <RatingModal
                 isModalOpen={isRatingModalOpen}
-                closeModal={() => setIsRatingModalOpen(false)}
+                closeModal={closeRatingModal}
                 onSubmitRating={submitRating}
             />
             <GroupsModal
                 isModalOpen={isGroupsModalOpen}
-                closeModal={() => setIsGroupsModalOpen(false)}
+                closeModal={closeGroupsModal}
                 titleId={id}
             />
             <StoresModal
                 isModalOpen={isCartModalOpen}
-                closeModal={() => setIsCartModalOpen(false)}
+                closeModal={closeCartModal}
                 titleId={String(id)}
             />
         </>

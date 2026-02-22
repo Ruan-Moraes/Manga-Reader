@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import { showSuccessToast } from '@shared/service/util/toastService';
 import useSavedMangas from './useSavedMangas';
 
 const useBookmark = () => {
@@ -24,12 +23,6 @@ const useBookmark = () => {
                 cover,
                 type,
             });
-
-            showSuccessToast(
-                nowSaved
-                    ? 'Título adicionado aos favoritos.'
-                    : 'Título removido dos favoritos.',
-            );
 
             return nowSaved;
         },

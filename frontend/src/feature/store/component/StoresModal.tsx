@@ -32,7 +32,7 @@ const StoresModal = ({
     return (
         <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
             <div className="flex flex-col gap-4">
-                <div className="pb-2 border-b border-tertiary">
+                <div>
                     <h2 className="text-lg font-bold">Onde Comprar</h2>
                     <p className="text-xs text-tertiary">
                         Escolha uma loja parceira e siga para o site oficial.

@@ -5,6 +5,7 @@ import { type CommentData } from '../type/comment.types';
 
 import useCommentTree from '../hook/internal/useCommentTree';
 import useCommentCRUD from '../hook/internal/useCommentCRUD';
+import useCommentPagination from '../hook/useCommentPagination';
 import Comment from './Comment';
 
 type CommentsListProps = {
@@ -27,6 +28,9 @@ const CommentsList = ({
     const { getCommentsTree } = useCommentTree(comments || []);
 
     const commentsTree = comments ? getCommentsTree() : [];
+
+    const { visibleItems, hasMore, loadMore } =
+        useCommentPagination(commentsTree);
 
     const handleClickProfile = useCallback(
         (user: User): void => {
@@ -66,7 +70,7 @@ const CommentsList = ({
     return (
         <div className="flex flex-col -mt-8">
             <UserModal />
-            {commentsTree.map(({ comment, nestedLevel }) => (
+            {visibleItems.map(({ comment, nestedLevel }) => (
                 <Comment
                     key={comment.id}
                     onClickProfile={handleClickProfile}
@@ -87,6 +91,15 @@ const CommentsList = ({
                     dislikeCount={comment.dislikeCount}
                 />
             ))}
+            {hasMore && (
+                <button
+                    type="button"
+                    onClick={loadMore}
+                    className="mt-4 self-center text-sm font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
+                >
+                    Ver mais comentários
+                </button>
+            )}
             {commentsTree.length === 0 && !isLoading && !isError && (
                 <div className="text-gray-400 text-center mt-12 font-bold">
                     Nenhum comentário encontrado.

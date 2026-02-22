@@ -6,7 +6,6 @@ import { Tag } from '../type/tag.types';
 
 type TagSelectInputProps = {
     onChange: (newValue: Tag[]) => void;
-
     urlParameterName?: string;
     options?: Tag[];
     placeholder: string;
@@ -67,6 +66,7 @@ const TagSelectInput = ({
 
     return (
         <div>
+            {/* TODO: Transforma esse input em componente */}
             <StyledSelect
                 blurInputOnSelect={false}
                 closeMenuOnSelect={false}
@@ -79,8 +79,8 @@ const TagSelectInput = ({
                 styles={{
                     control: (baseStyles, state) => ({
                         ...baseStyles,
-                        padding: '0 0.5rem',
-                        height: '2.5rem',
+                        padding: '0.25rem',
+                        minHeight: '2.5rem',
                         backgroundColor: '#727273',
                         borderRadius: '0.125rem',
                         border: 'none',
@@ -127,18 +127,6 @@ const TagSelectInput = ({
                         lineHeight: '1rem',
                         color: '#FFFFFF',
                     }),
-                    multiValueRemove: baseStyles => ({
-                        ...baseStyles,
-                        padding: '0 0.25rem',
-                        borderRadius: '0.125rem',
-                        fontSize: '0.875rem',
-                        lineHeight: '1rem',
-                        color: '#FFFFFF',
-                        ':hover': {
-                            backgroundColor: '#ddda2a80',
-                        },
-                        transition: 'background-color 0.3s',
-                    }),
                     menu: baseStyles => ({
                         ...baseStyles,
                         borderRadius: '0.125rem',
@@ -159,17 +147,6 @@ const TagSelectInput = ({
                         ':hover': {
                             backgroundColor: '#ddda2a',
                             color: '#161616',
-                        },
-                    }),
-
-                    clearIndicator: () => ({
-                        padding: '0.125rem',
-                        margin: '0 0.5rem 0 0',
-                        borderRadius: '0.125rem',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.3s',
-                        ':hover': {
-                            backgroundColor: '#ddda2a80',
                         },
                     }),
                     indicatorSeparator: baseStyles => ({

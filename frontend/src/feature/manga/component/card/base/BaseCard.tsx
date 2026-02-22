@@ -3,6 +3,7 @@ import { IoImageOutline } from 'react-icons/io5';
 
 import type { BaseCard as BaseCardProps } from '../../../type/title-card.types';
 
+import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import TitleDetails from '../../information/TitleDetails';
 import TitleDescription from '../../information/TitleDescription';
 
@@ -25,6 +26,7 @@ const BaseCard = ({
     publisher,
 }: BaseCardProps) => {
     const [imageError, setImageError] = useState<boolean>(false);
+    const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
     const handleImageError = () => {
         setImageError(true);
@@ -35,12 +37,19 @@ const BaseCard = ({
             <div className="flex flex-col w-2/4 overflow-hidden border border-b-0 rounded-t-xs border-tertiary">
                 <div className="w-full h-44 mobile-md:h-56">
                     {!imageError ? (
-                        <img
-                            src={cover}
-                            alt={`Capa do título: ${name}`}
-                            onError={handleImageError}
-                            className="object-cover w-full h-full aspect-square text-center leading-8"
-                        />
+                        <button
+                            type="button"
+                            onClick={() => setIsLightboxOpen(true)}
+                            className="w-full h-full cursor-zoom-in"
+                            aria-label={`Ampliar capa: ${name}`}
+                        >
+                            <img
+                                src={cover}
+                                alt={`Capa do título: ${name}`}
+                                onError={handleImageError}
+                                className="object-cover w-full h-full aspect-square text-center leading-8"
+                            />
+                        </button>
                     ) : (
                         <div className="flex items-center justify-center w-full h-full bg-secondary">
                             <div className="flex flex-col items-center justify-center">
@@ -75,11 +84,18 @@ const BaseCard = ({
             <div className="flex flex-col justify-between w-2/4 gap-4 pb-2">
                 <TitleDescription
                     {...{
+                        name,
                         genres,
                         synopsis,
                     }}
                 />
             </div>
+            <ImageLightbox
+                isOpen={isLightboxOpen}
+                onClose={() => setIsLightboxOpen(false)}
+                src={cover}
+                alt={`Capa do título: ${name}`}
+            />
         </div>
     );
 };

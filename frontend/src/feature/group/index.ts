@@ -4,6 +4,7 @@ export { default as useGroupWorks } from './hook/useGroupWorks';
 export type { WorkSortOption } from './hook/useGroupWorks';
 export { default as GroupCard } from './component/card/GroupCard';
 export { default as GroupDetailHeader } from './component/card/GroupDetailHeader';
+export { default as GroupSummaryCard } from './component/card/GroupSummaryCard';
 export { default as GroupsContainer } from './component/card/GroupsContainer';
 export { default as GroupsModal } from './component/modal/GroupsModal';
 export { default as MemberListModal } from './component/modal/MemberListModal';
