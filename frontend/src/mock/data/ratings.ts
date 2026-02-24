@@ -23,6 +23,27 @@ const ratingComments = [
     'Cenários maravilhosos e painéis detalhados.',
 ];
 
+const categoryKeys = [
+    'Diversion',
+    'Art',
+    'Storyline',
+    'Characters',
+    'Originality',
+    'Pacing',
+] as const;
+
+const buildCategoryRatings = (seed: number): Record<string, number> => {
+    const ratings: Record<string, number> = {};
+    categoryKeys.forEach((key, i) => {
+        // Deterministic half-star values between 1.0 and 5.0
+        const base = ((seed + i * 3) % 9) + 1; // 1-9
+        ratings[key] = base * 0.5; // 0.5-4.5
+        if (ratings[key] < 1) ratings[key] = 1;
+        if (ratings[key] > 5) ratings[key] = 5;
+    });
+    return ratings;
+};
+
 /**
  * Gera avaliações determinísticas para os 16 títulos.
  * Usa uma seed simples (índice) para manter consistência entre reloads
@@ -38,6 +59,7 @@ const buildRatings = (): Record<string, MangaRating[]> => {
         ratings[titleId] = Array.from({ length: amount }).map((_, i) => {
             const seed = titleIndex * 100 + i;
             const stars = 1 + (seed % 5);
+            const catRatings = buildCategoryRatings(seed);
 
             return {
                 id: `${titleId}-${i}`,
@@ -48,6 +70,7 @@ const buildRatings = (): Record<string, MangaRating[]> => {
                     seed % 3 !== 0
                         ? ratingComments[seed % ratingComments.length]
                         : undefined,
+                categoryRatings: catRatings,
                 createdAt: new Date(
                     Date.now() - (seed + 1) * 86_400_000,
                 ).toISOString(),
@@ -70,6 +93,14 @@ export const mockUserReviews: MangaRating[] = [
         userName: 'Você',
         stars: 5,
         comment: 'Arte absurda e narrativa muito envolvente.',
+        categoryRatings: {
+            Diversion: 5,
+            Art: 5,
+            Storyline: 4.5,
+            Characters: 5,
+            Originality: 4.5,
+            Pacing: 4,
+        },
         createdAt: '2026-01-24T11:40:00.000Z',
     },
     {
@@ -78,6 +109,14 @@ export const mockUserReviews: MangaRating[] = [
         userName: 'Você',
         stars: 4,
         comment: 'Excelente começo, quero ver os próximos arcos.',
+        categoryRatings: {
+            Diversion: 4,
+            Art: 4.5,
+            Storyline: 4,
+            Characters: 3.5,
+            Originality: 4,
+            Pacing: 3.5,
+        },
         createdAt: '2026-01-28T17:15:00.000Z',
     },
 ];

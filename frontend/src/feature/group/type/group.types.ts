@@ -44,6 +44,7 @@ export type GroupWork = {
 export type Group = {
     id: string;
     name: string;
+    username: string;
     logo: string;
     banner: string;
     description: string;
@@ -54,6 +55,7 @@ export type Group = {
     status: GroupStatus;
     members: GroupMember[];
     genres: string[];
+    focusTags: string[];
     rating: number;
     popularity: number;
     translatedWorks: GroupWork[];

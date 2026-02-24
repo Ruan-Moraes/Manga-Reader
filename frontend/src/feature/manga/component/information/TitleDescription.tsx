@@ -7,7 +7,7 @@ import SynopsisModal from './SynopsisModal';
 
 type TitleDescriptionTypes = Pick<Title, 'name' | 'genres' | 'synopsis'>;
 
-const SYNOPSIS_MAX_LINES = 4;
+const SYNOPSIS_MAX_LINES = 7;
 
 const TitleDescription = ({
     name,

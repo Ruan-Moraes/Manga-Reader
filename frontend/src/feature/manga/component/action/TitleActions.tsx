@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { AiOutlineLike } from 'react-icons/ai';
 import { MdGroups, MdOutlineShoppingCart } from 'react-icons/md';

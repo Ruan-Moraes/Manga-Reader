@@ -156,6 +156,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-1',
         name: 'Mirai Scans',
+        username: '@mirai_scans',
         logo: 'https://picsum.photos/400/400?random=31',
         banner: 'https://picsum.photos/1280/360?random=131',
         description:
@@ -167,6 +168,7 @@ export const mockGroups: Group[] = [
         status: 'active',
         members: getMembers(['m-1', 'm-2', 'm-3', 'm-4', 'm-17']),
         genres: ['Ação', 'Fantasia', 'Aventura'],
+        focusTags: ['Shonen', 'Ação', 'Tradução rápida'],
         rating: 4.8,
         popularity: 98,
         translatedWorks: pickWorks(['1', '4', '6', '7', '8', '3']),
@@ -175,6 +177,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-2',
         name: 'Lótus Team',
+        username: '@lotus_team',
         logo: 'https://picsum.photos/400/400?random=32',
         banner: 'https://picsum.photos/1280/360?random=132',
         description:
@@ -186,6 +189,7 @@ export const mockGroups: Group[] = [
         status: 'active',
         members: getMembers(['m-5', 'm-6', 'm-7', 'm-8', 'm-16']),
         genres: ['Drama', 'Slice of Life', 'Romance'],
+        focusTags: ['Josei', 'Drama', 'Edição refinada'],
         rating: 4.5,
         popularity: 89,
         translatedWorks: pickWorks(['2', '5', '8', '3']),
@@ -194,6 +198,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-3',
         name: 'Nexus Mangás',
+        username: '@nexus_mangas',
         logo: 'https://picsum.photos/400/400?random=33',
         banner: 'https://picsum.photos/1280/360?random=133',
         description: 'Grupo veterano com catálogo extenso e alta curadoria.',
@@ -204,6 +209,7 @@ export const mockGroups: Group[] = [
         status: 'inactive',
         members: getMembers(['m-8', 'm-14', 'm-15', 'm-11', 'm-12', 'm-16']),
         genres: ['Seinen', 'Mistério', 'Thriller'],
+        focusTags: ['Seinen', 'Suspense', 'Curadoria'],
         rating: 4.2,
         popularity: 75,
         translatedWorks: pickWorks(['1', '2', '4', '6', '7', '8']),
@@ -212,6 +218,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-4',
         name: 'Aurora Scan',
+        username: '@aurora_scan',
         logo: 'https://picsum.photos/400/400?random=34',
         banner: 'https://picsum.photos/1280/360?random=134',
         description:
@@ -223,6 +230,7 @@ export const mockGroups: Group[] = [
         status: 'active',
         members: getMembers(['m-9', 'm-10', 'm-3', 'm-7']),
         genres: ['Romance', 'Comédia', 'Escolar'],
+        focusTags: ['Romance', 'Escolar', 'Lançamento quinzenal'],
         rating: 4.4,
         popularity: 81,
         translatedWorks: pickWorks(['2', '5', '8']),
@@ -231,6 +239,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-5',
         name: 'Kitsune Project',
+        username: '@kitsune_proj',
         logo: 'https://picsum.photos/400/400?random=35',
         banner: 'https://picsum.photos/1280/360?random=135',
         description: 'Equipe em hiato que prioriza projetos especiais curtos.',
@@ -241,6 +250,7 @@ export const mockGroups: Group[] = [
         status: 'hiatus',
         members: getMembers(['m-11', 'm-12', 'm-4', 'm-15']),
         genres: ['Sobrenatural', 'Drama', 'Suspense'],
+        focusTags: ['Sobrenatural', 'One-shots', 'Projetos curtos'],
         rating: 4,
         popularity: 62,
         translatedWorks: pickWorks(['5', '3', '7']),
@@ -249,6 +259,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-6',
         name: 'Vortex BR',
+        username: '@vortex_br',
         logo: 'https://picsum.photos/400/400?random=36',
         banner: 'https://picsum.photos/1280/360?random=136',
         description:
@@ -260,6 +271,7 @@ export const mockGroups: Group[] = [
         status: 'active',
         members: getMembers(['m-13', 'm-14', 'm-15', 'm-6', 'm-2']),
         genres: ['Aventura', 'Mistério', 'Ação'],
+        focusTags: ['Aventura', 'Mistério', 'Revisão técnica'],
         rating: 4.7,
         popularity: 92,
         translatedWorks: pickWorks(['1', '6', '7', '4', '3']),
@@ -268,6 +280,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-7',
         name: 'Pixel Ink',
+        username: '@pixel_ink',
         logo: 'https://picsum.photos/400/400?random=37',
         banner: 'https://picsum.photos/1280/360?random=137',
         description:
@@ -279,6 +292,7 @@ export const mockGroups: Group[] = [
         status: 'active',
         members: getMembers(['m-16', 'm-17', 'm-10', 'm-12']),
         genres: ['Fantasia', 'Urbano', 'Ação'],
+        focusTags: ['Webtoon', 'Fantasia urbana', 'Ação'],
         rating: 4.1,
         popularity: 66,
         translatedWorks: pickWorks(['3', '8', '5']),
@@ -287,6 +301,7 @@ export const mockGroups: Group[] = [
     {
         id: 'g-8',
         name: 'Old Pages',
+        username: '@old_pages',
         logo: 'https://picsum.photos/400/400?random=38',
         banner: 'https://picsum.photos/1280/360?random=138',
         description:
@@ -298,6 +313,7 @@ export const mockGroups: Group[] = [
         status: 'inactive',
         members: getMembers(['m-1', 'm-5', 'm-8', 'm-14', 'm-17']),
         genres: ['Clássico', 'Drama', 'Histórico'],
+        focusTags: ['Clássico', 'Histórico', 'Obras completas'],
         rating: 3.9,
         popularity: 58,
         translatedWorks: pickWorks(['2', '4', '6', '1']),

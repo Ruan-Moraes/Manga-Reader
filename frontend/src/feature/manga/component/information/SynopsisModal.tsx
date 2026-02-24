@@ -37,21 +37,24 @@ const SynopsisModal = ({
     return (
         <BaseModal isModalOpen={isOpen} closeModal={onClose}>
             <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-between pb-2 border-b border-tertiary">
+                <div className="flex items-center justify-center pb-2 border-b border-tertiary">
                     <h3 className="text-sm font-bold leading-tight">
                         Sinopse de {title}
                     </h3>
-                    <button
-                        onClick={onClose}
-                        className="text-xs text-tertiary hover:text-white transition-colors cursor-pointer"
-                    >
-                        Fechar
-                    </button>
                 </div>
                 <div className="max-h-[60vh] overflow-y-auto pr-1">
                     <p className="text-xs text-justify whitespace-pre-line leading-relaxed">
                         {synopsis}
                     </p>
+                </div>
+                <div className="pt-1">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-full px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors cursor-pointer"
+                    >
+                        Fechar
+                    </button>
                 </div>
             </div>
         </BaseModal>

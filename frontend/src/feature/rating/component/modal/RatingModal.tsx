@@ -1,19 +1,17 @@
-import { useCallback, useState } from 'react';
-
 import BaseModal from '@shared/component/modal/base/BaseModal';
 
-import RatingModalHeader from './header/RatingModalHeader';
-import RatingModalBody from './body/RatingModalBody';
-import RatingModalFooter from './footer/RatingModalFooter';
+import RatingWizard from './wizard/RatingWizard';
 
 type RatingModalProps = {
     isModalOpen: boolean;
     closeModal: () => void;
+    /* eslint-disable no-unused-vars */
     onSubmitRating: (
         rating: number,
         comment?: string,
         categoryRatings?: Record<string, number>,
     ) => void;
+    /* eslint-enable no-unused-vars */
     isSubmitting?: boolean;
 };
 
@@ -23,47 +21,21 @@ const RatingModal = ({
     onSubmitRating,
     isSubmitting = false,
 }: RatingModalProps) => {
-    const [totalScore, setTotalScore] = useState<number>(0);
-    const [allCategoriesRated, setAllCategoriesRated] =
-        useState<boolean>(false);
-
-    const handleRatingChange = useCallback((score: number) => {
-        setTotalScore(score);
-    }, []);
-
-    const handleAllCategoriesRated = useCallback((allRated: boolean) => {
-        setAllCategoriesRated(allRated);
-    }, []);
-
-    const handleSubmit = () => {
-        if (!allCategoriesRated) return;
-
-        const stars = Math.round((totalScore / 2) * 10) / 10;
-
-        onSubmitRating(stars);
-        setTotalScore(0);
-        setAllCategoriesRated(false);
-        closeModal();
-    };
-
-    const handleCancel = () => {
-        setTotalScore(0);
-        setAllCategoriesRated(false);
+    const handleSubmit = (
+        stars: number,
+        comment?: string,
+        categoryRatings?: Record<string, number>,
+    ) => {
+        onSubmitRating(stars, comment, categoryRatings);
         closeModal();
     };
 
     return (
-        <BaseModal isModalOpen={isModalOpen} closeModal={handleCancel}>
-            <RatingModalHeader title="Avaliar mangá" />
-            <RatingModalBody
-                onRatingChange={handleRatingChange}
-                onAllCategoriesRated={handleAllCategoriesRated}
-            />
-            <RatingModalFooter
+        <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
+            <RatingWizard
                 onSubmit={handleSubmit}
-                onCancel={handleCancel}
+                onCancel={closeModal}
                 isSubmitting={isSubmitting}
-                isDisabled={!allCategoriesRated}
             />
         </BaseModal>
     );
