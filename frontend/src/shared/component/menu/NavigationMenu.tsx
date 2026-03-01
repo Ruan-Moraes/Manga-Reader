@@ -11,6 +11,7 @@ import SidebarMenuContent, {
 import { showInfoToast } from '@shared/service/util/toastService';
 
 import { useAuth } from '@feature/auth';
+import { type UserRole } from '@feature/user';
 
 const menuProfiles: MenuProfile[] = [
     {
@@ -30,6 +31,20 @@ const menuProfiles: MenuProfile[] = [
         eventBadge: '2 próximos',
         canDownload: true,
         isAdmin: false,
+    },
+    {
+        id: 'poster',
+        label: 'Postador',
+        fullName: 'Postador Demo',
+        email: 'postador.demo@mangareader.com',
+        planBadge: '[Postador]',
+        savedCount: 24,
+        unreadNotifications: 6,
+        newsBadge: '+6',
+        eventBadge: '3 próximos',
+        canDownload: true,
+        isAdmin: false,
+        isPoster: true,
     },
     {
         id: 'admin',
@@ -54,7 +69,7 @@ const NavigationMenu = () => {
 
     const [selectedProfileId] = useState<string>('visitor');
 
-    const { user, isLoggedIn, logout } = useAuth();
+    const { user, isLoggedIn, loginAs, logout } = useAuth();
 
     const menuRef = useRef<HTMLDivElement>(null);
     const originalOffset = useRef<number>(0);
@@ -66,20 +81,32 @@ const NavigationMenu = () => {
 
     const currentProfile = useMemo(() => {
         if (isLoggedIn && user) {
-            const isAdmin = Boolean(user.moderator?.isModerator);
+            const role = user.role ?? 'user';
+            const isAdmin = role === 'admin';
+            const isPoster = role === 'poster' || role === 'admin';
+            const planBadge = isAdmin
+                ? '[Admin]'
+                : isPoster
+                  ? '[Postador]'
+                  : '[Pro]';
 
             return {
-                id: isAdmin ? 'admin-real' : 'user-real',
-                label: isAdmin ? 'Administrador' : 'Usuário',
+                id: `${role}-real`,
+                label: isAdmin
+                    ? 'Administrador'
+                    : isPoster
+                      ? 'Postador'
+                      : 'Usuário',
                 fullName: user.name,
                 email: `${user.name.toLowerCase().replace(/\s+/g, '.')}@mangareader.com`,
-                planBadge: isAdmin ? '[Admin]' : '[Pro]',
+                planBadge,
                 savedCount: 12,
                 unreadNotifications: 4,
                 newsBadge: '+2',
                 eventBadge: '2 próximos',
                 canDownload: true,
                 isAdmin,
+                isPoster,
             } satisfies MenuProfile;
         }
 
@@ -211,6 +238,26 @@ const NavigationMenu = () => {
                         <SidebarMenuContent
                             profile={currentProfile}
                             isLoggedIn={isLoggedIn}
+                            onAuthRoleChange={async role => {
+                                if (role === 'visitor') {
+                                    await logout();
+                                    showInfoToast(
+                                        'Modo visitante ativado no menu.',
+                                    );
+                                    return;
+                                }
+
+                                await loginAs(role as UserRole);
+                                showInfoToast(
+                                    `Perfil ${
+                                        role === 'admin'
+                                            ? 'Administrador'
+                                            : role === 'poster'
+                                              ? 'Postador'
+                                              : 'Usuário'
+                                    } ativado.`,
+                                );
+                            }}
                             onLogout={() => {
                                 logout();
                                 showInfoToast('Você saiu da sua conta.');

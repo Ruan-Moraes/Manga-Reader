@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { clsx } from 'clsx';
 
-import { clearCache } from '@shared/service/util/queryCache';
 import UserSettingsModal from '@shared/component/modal/settings/UserSettingsModal';
+import { clearCache } from '@shared/service/util/queryCache';
 
 // TODO: Refatorar para usar o AppLink e evitar duplicação de código, além de garantir consistência visual e funcional em toda a aplicação.
 
@@ -20,12 +20,14 @@ export type MenuProfile = {
     eventBadge?: string;
     canDownload?: boolean;
     isAdmin?: boolean;
+    isPoster?: boolean;
     isVisitor?: boolean;
 };
 
 type MenuLinkBlockProps = {
     profile: MenuProfile;
     isLoggedIn: boolean;
+    onAuthRoleChange: (_role: 'visitor' | 'user' | 'poster' | 'admin') => void;
     onLogout: () => void;
     onNavigate: () => void;
 };
@@ -67,6 +69,7 @@ const MenuNavLink = ({
 const SidebarMenuContent = ({
     profile,
     isLoggedIn,
+    onAuthRoleChange,
     onLogout,
     onNavigate,
 }: MenuLinkBlockProps) => {
@@ -118,17 +121,57 @@ const SidebarMenuContent = ({
         { label: 'Privacidade', link: '/profile?tab=privacy' },
     ];
 
-    const adminItems: MenuItem[] = [
-        { label: 'Dashboard', link: '/profile?tab=dashboard' },
-        { label: 'Gerenciar Notícias', link: '/news?tab=manage' },
-        { label: 'Gerenciar Eventos', link: '/events?tab=manage' },
-        { label: 'Gerenciar Grupos', link: '/groups?tab=manage' },
-        { label: 'Gerenciar Usuários', link: '/profile?tab=users' },
-        { label: 'Configurações do Site', link: '/profile?tab=site' },
+    const roleItems: MenuItem[] = [
+        ...(profile.isPoster || profile.isAdmin
+            ? [{ label: 'Dashboard', link: '/dashboard' }]
+            : []),
+        ...(profile.isAdmin
+            ? [
+                  { label: 'Gerenciar Notícias', link: '/news?tab=manage' },
+                  { label: 'Gerenciar Eventos', link: '/events?tab=manage' },
+                  { label: 'Gerenciar Grupos', link: '/groups?tab=manage' },
+                  { label: 'Gerenciar Usuários', link: '/profile?tab=users' },
+                  { label: 'Configurações do Site', link: '/profile?tab=site' },
+              ]
+            : []),
     ];
 
     return (
         <div className="flex flex-col h-full gap-4 px-4 pb-4 overflow-y-auto">
+            <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
+                <p className={sectionTitleClass}>Simular autenticação</p>
+                <div className="grid grid-cols-2 gap-2">
+                    <button
+                        type="button"
+                        onClick={() => onAuthRoleChange('user')}
+                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
+                    >
+                        Usuário
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onAuthRoleChange('poster')}
+                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
+                    >
+                        Postador
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onAuthRoleChange('admin')}
+                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
+                    >
+                        Admin
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onAuthRoleChange('visitor')}
+                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
+                    >
+                        Visitante
+                    </button>
+                </div>
+            </div>
+
             <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
                 {isLoggedIn && !profile.isVisitor ? (
                     <>
@@ -222,10 +265,10 @@ const SidebarMenuContent = ({
                 </section>
             )}
 
-            {profile.isAdmin && (
+            {(profile.isPoster || profile.isAdmin) && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>Admin</h3>
-                    {adminItems.map(item => (
+                    <h3 className={sectionTitleClass}>Painel</h3>
+                    {roleItems.map(item => (
                         <MenuNavLink
                             key={item.label}
                             {...item}

@@ -1,7 +1,10 @@
+export type UserRole = 'user' | 'poster' | 'admin';
+
 export type User = {
     id: string;
     photo: string;
     name: string;
+    role?: UserRole;
     bio?: string;
     moderator?: {
         isModerator: boolean;

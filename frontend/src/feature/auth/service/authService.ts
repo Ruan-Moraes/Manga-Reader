@@ -11,21 +11,41 @@ import type { MockApiResponse } from '@shared/service/mockApi';
 
 import { mockUsers } from '@mock/data/users';
 
-import { type User } from '@feature/user';
+import { type User, type UserRole } from '@feature/user';
 
 import { AUTH_KEY } from '@feature/auth/constant/AUTH_KEY';
+
+const fallbackUser = mockUsers[0];
+
+const usersByRole: Record<UserRole, User> = {
+    user: mockUsers.find(user => user.role === 'user') ?? fallbackUser,
+    poster: mockUsers.find(user => user.role === 'poster') ?? fallbackUser,
+    admin: mockUsers.find(user => user.role === 'admin') ?? fallbackUser,
+};
+
+export const getCurrentUserSync = (): User | null =>
+    getFromStorage<User | null>(AUTH_KEY, null);
 
 export const getCurrentUser = async (): Promise<User | null> => {
     await simulateDelay(100);
 
-    return getFromStorage<User | null>(AUTH_KEY, null);
+    return getCurrentUserSync();
 };
 
 export const signIn = async (): Promise<User> => {
     await simulateDelay(300);
 
-    // TODO: Implementar a autenticação real
-    const user = mockUsers[0];
+    const user = usersByRole.user;
+
+    saveToStorage(AUTH_KEY, user);
+
+    return user;
+};
+
+export const signInAs = async (role: UserRole): Promise<User> => {
+    await simulateDelay(120);
+
+    const user = usersByRole[role] ?? usersByRole.user;
 
     saveToStorage(AUTH_KEY, user);
 
@@ -33,26 +53,25 @@ export const signIn = async (): Promise<User> => {
 };
 
 export const signOut = async (): Promise<void> => {
-    // TODO: Implementar a desautenticação real
     removeFromStorage(AUTH_KEY);
 };
 
 export const requestPasswordReset = async (
-    email: string,
+    _email: string,
 ): Promise<MockApiResponse<null>> => {
     await simulateDelay(500);
+    void _email;
 
-    // TODO: Implementar a lógica real de envio de email de recuperação
     return ok(null, 'Email de recuperação enviado com sucesso!');
 };
 
 export const resetPassword = async (
     token: string,
-    newPassword: string,
+    _newPassword: string,
 ): Promise<MockApiResponse<null>> => {
     await simulateDelay(500);
+    void _newPassword;
 
-    // TODO: Implementar a lógica real de redefinição de senha
     if (!token) {
         return fail(null, 'Token de recuperação inválido ou expirado.');
     }

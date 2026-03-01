@@ -4,10 +4,14 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { showErrorToast } from '@shared/service/util/toastService';
 
 import PublishWork from '@app/route/publish-work/PublishWork';
+import Dashboard from '@app/route/dashboard/Dashboard';
 
-// TODO: Implementar a autenticação real
+import { getCurrentUserSync } from '@feature/auth/service/authService';
+import { type UserRole } from '@feature/user';
+
 const AuthGuard = ({ children }: { children: ReactNode }) => {
-    const isAuthenticated = false;
+    const user = getCurrentUserSync();
+    const isAuthenticated = Boolean(user);
 
     const location = useLocation();
 
@@ -29,12 +33,47 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
     return <>{children}</>;
 };
 
+const RoleGuard = ({
+    children,
+    allowedRoles,
+}: {
+    children: ReactNode;
+    allowedRoles: UserRole[];
+}) => {
+    const user = getCurrentUserSync();
+    const role = user?.role ?? 'user';
+
+    if (!user) {
+        return <Navigate to="/Manga-Reader/login" replace />;
+    }
+
+    if (!allowedRoles.includes(role)) {
+        showErrorToast('Você não possui permissão para acessar o dashboard.', {
+            toastId: 'dashboard-role-error',
+        });
+
+        return <Navigate to="/Manga-Reader/" replace />;
+    }
+
+    return <>{children}</>;
+};
+
 const protectedRoutes = [
     {
         path: 'i-want-to-publish-work',
         element: (
             <AuthGuard>
                 <PublishWork />
+            </AuthGuard>
+        ),
+    },
+    {
+        path: 'dashboard',
+        element: (
+            <AuthGuard>
+                <RoleGuard allowedRoles={['admin', 'poster']}>
+                    <Dashboard />
+                </RoleGuard>
             </AuthGuard>
         ),
     },

@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { type User } from '@feature/user';
+import { type User, type UserRole } from '@feature/user';
 
-import { getCurrentUser, signIn, signOut } from '../service/authService';
+import {
+    getCurrentUser,
+    signIn,
+    signInAs,
+    signOut,
+} from '../service/authService';
 
 const useAuth = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -13,6 +18,14 @@ const useAuth = () => {
 
     const login = useCallback(async () => {
         const loggedUser = await signIn();
+
+        setUser(loggedUser);
+
+        return loggedUser;
+    }, []);
+
+    const loginAs = useCallback(async (role: UserRole) => {
+        const loggedUser = await signInAs(role);
 
         setUser(loggedUser);
 
@@ -30,6 +43,7 @@ const useAuth = () => {
         setUser,
         isLoggedIn: Boolean(user),
         login,
+        loginAs,
         logout,
     };
 };
