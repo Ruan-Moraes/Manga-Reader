@@ -1,25 +1,19 @@
 import { useCallback, useState } from 'react';
 
 import RatingStars from '../../RatingStars';
+
 import FinalScoreCard from './FinalScoreCard';
+
 import { RATING_CATEGORIES } from './ratingCategories';
-
-const TOTAL_STEPS = RATING_CATEGORIES.length + 1; // 6 categories + final
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 type CategoryRatings = Record<string, number>;
 type CategoryComments = Record<string, string>;
 
-/* eslint-disable no-unused-vars */
 type RatingSubmitFn = (
     stars: number,
     comment?: string,
     categoryRatings?: Record<string, number>,
 ) => void;
-/* eslint-enable no-unused-vars */
 
 type RatingWizardProps = {
     onSubmit: RatingSubmitFn;
@@ -27,9 +21,7 @@ type RatingWizardProps = {
     isSubmitting?: boolean;
 };
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+const TOTAL_STEPS = RATING_CATEGORIES.length + 1; // 6 categories + final
 
 const RatingWizard = ({
     onSubmit,
@@ -55,16 +47,14 @@ const RatingWizard = ({
 
     const allCategoriesRated = Object.values(categoryRatings).every(v => v > 0);
 
-    // Compute average across all rated categories (ignore unrated = -1)
     const computeAverage = useCallback(() => {
+
         const rated = Object.values(categoryRatings).filter(v => v > 0);
+
         if (rated.length === 0) return 0;
+
         return rated.reduce((a, b) => a + b, 0) / rated.length;
     }, [categoryRatings]);
-
-    // -----------------------------------------------------------------------
-    // Handlers
-    // -----------------------------------------------------------------------
 
     const handleCategoryRating = (value: number) => {
         if (!currentCategory) return;
@@ -104,10 +94,12 @@ const RatingWizard = ({
         const commentParts = RATING_CATEGORIES.map(
             c => categoryComments[c.key],
         ).filter(Boolean);
+
         const combinedComment =
             commentParts.length > 0 ? commentParts.join(' | ') : undefined;
 
         const cleanRatings: Record<string, number> = {};
+
         RATING_CATEGORIES.forEach(c => {
             cleanRatings[c.key] = categoryRatings[c.key];
         });
@@ -117,21 +109,19 @@ const RatingWizard = ({
 
     const handleReset = () => {
         setCurrentStep(0);
+
         setCategoryRatings(
             Object.fromEntries(
                 RATING_CATEGORIES.map(c => [c.key, -1]),
             ) as CategoryRatings,
         );
+
         setCategoryComments(
             Object.fromEntries(
                 RATING_CATEGORIES.map(c => [c.key, '']),
             ) as CategoryComments,
         );
     };
-
-    // -----------------------------------------------------------------------
-    // Render: Step Indicator
-    // -----------------------------------------------------------------------
 
     const renderStepIndicator = () => (
         <div className="overflow-x-auto scrollbar-hidden">
@@ -182,16 +172,14 @@ const RatingWizard = ({
         </div>
     );
 
-    // -----------------------------------------------------------------------
-    // Render: Category Step Content
-    // -----------------------------------------------------------------------
-
     const renderCategoryStep = () => {
         if (!currentCategory) return null;
 
         const currentRating = categoryRatings[currentCategory.key];
         const currentComment = categoryComments[currentCategory.key];
+
         const isRated = currentRating > 0;
+
         const canAdvance = isRated;
 
         return (
@@ -205,7 +193,6 @@ const RatingWizard = ({
                         {currentCategory.description}
                     </p>
                 </div>
-
                 <div className="flex justify-center py-2">
                     <RatingStars
                         value={isRated ? currentRating : 0}
@@ -215,7 +202,6 @@ const RatingWizard = ({
                         halfPrecision
                     />
                 </div>
-
                 <textarea
                     value={currentComment}
                     onChange={e => handleCategoryComment(e.target.value)}
@@ -223,7 +209,6 @@ const RatingWizard = ({
                     rows={2}
                     className="w-full p-2 text-xs border rounded-xs resize-none bg-primary-default border-tertiary placeholder:text-tertiary focus:border-quaternary-default focus:outline-none transition-colors"
                 />
-
                 <div className="flex gap-2">
                     <button
                         type="button"
@@ -245,10 +230,6 @@ const RatingWizard = ({
         );
     };
 
-    // -----------------------------------------------------------------------
-    // Render: Final Step
-    // -----------------------------------------------------------------------
-
     const renderFinalStep = () => (
         <FinalScoreCard
             average={computeAverage()}
@@ -260,10 +241,6 @@ const RatingWizard = ({
             allCategoriesRated={allCategoriesRated}
         />
     );
-
-    // -----------------------------------------------------------------------
-    // Main Render
-    // -----------------------------------------------------------------------
 
     return (
         <div className="flex flex-col gap-3">
@@ -282,9 +259,7 @@ const RatingWizard = ({
                     Fechar
                 </button>
             </div>
-
             {renderStepIndicator()}
-
             <div
                 key={currentStep}
                 className="animate-fade-in"

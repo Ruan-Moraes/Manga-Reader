@@ -1,0 +1,37 @@
+# ==============================================================================
+# Manga Reader — Test Profile
+# ==============================================================================
+# Configuração para testes automatizados.
+# Usa H2 in-memory para JPA (sem precisar de Docker/Testcontainers).
+# MongoDB é desabilitado — testes de integração com MongoDB usarão
+# Testcontainers quando configurado.
+# ==============================================================================
+
+spring:
+  docker:
+    compose:
+      enabled: false
+
+  # H2 in-memory para testes simples de JPA
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  flyway:
+    enabled: false
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mangareader-test
+
+logging:
+  level:
+    root: WARN
+    com.mangareader: DEBUG

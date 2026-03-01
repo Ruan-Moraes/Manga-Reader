@@ -1,0 +1,105 @@
+# ==============================================================================
+# Manga Reader — Configuração Principal
+# ==============================================================================
+# Profiles disponíveis:
+#   - (default): Desenvolvimento local com Docker Compose
+#   - prod:      Produção (connection strings via variáveis de ambiente)
+#   - test:      Testes automatizados
+# ==============================================================================
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: manga-reader
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Docker Compose — Auto-start dos serviços ao rodar 'mvn spring-boot:run'
+  # O spring-boot-docker-compose detecta o compose file e injeta as
+  # connection strings automaticamente (datasource.url, mongodb.uri, etc.)
+  # ────────────────────────────────────────────────────────────────────────────
+  docker:
+    compose:
+      lifecycle-management: start-and-stop
+      skip:
+        in-tests: true
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JPA / Hibernate
+  # ────────────────────────────────────────────────────────────────────────────
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update        # TODO: Mudar para 'validate' após ativar Flyway
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Flyway — Migrations PostgreSQL
+  # ────────────────────────────────────────────────────────────────────────────
+  flyway:
+    enabled: false              # TODO: Ativar quando a primeira migration for criada
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Jackson — Serialização JSON
+  # ────────────────────────────────────────────────────────────────────────────
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+# ==============================================================================
+# Actuator
+# ==============================================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# ==============================================================================
+# SpringDoc / Swagger UI
+# ==============================================================================
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
+    operations-sorter: method
+    tags-sorter: alpha
+  default-produces-media-type: application/json
+
+# ==============================================================================
+# Logging
+# ==============================================================================
+logging:
+  level:
+    root: INFO
+    com.mangareader: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# ==============================================================================
+# App — Custom properties
+# ==============================================================================
+app:
+  name: Manga Reader
+  version: 0.0.1-SNAPSHOT
+  cors:
+    allowed-origins: http://localhost:5173
+  jwt:
+    secret: manga-reader-dev-secret-key-that-is-at-least-256-bits-long-for-hs256
+    access-token-expiration: 900000      # 15 minutos
+    refresh-token-expiration: 604800000  # 7 dias

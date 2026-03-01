@@ -19,21 +19,15 @@ const Comment = ({
     onClickEdit,
     onClickDelete,
     onClickReply,
-
     nestedLevel = 0,
     id,
-
     user,
-
     isOwner,
     isHighlighted,
     wasEdited,
-
     createdAt,
-
     textContent,
     imageContent,
-
     likeCount,
     dislikeCount,
 }: { nestedLevel?: number } & {
@@ -55,12 +49,10 @@ const Comment = ({
         openDeleteModal,
         closeDeleteModal,
         confirmDeleteComment,
-
         isEditModalOpen,
         openEditModal,
         closeEditModal,
         confirmEditComment,
-
         isReplyModalOpen,
         openReplyModal,
         closeReplyModal,

@@ -1,0 +1,41 @@
+# ==============================================================================
+# Manga Reader — Production Profile
+# ==============================================================================
+# Todas as connection strings vêm de variáveis de ambiente.
+# Não há valores sensíveis hardcoded.
+# ==============================================================================
+
+spring:
+  docker:
+    compose:
+      enabled: false
+
+  # PostgreSQL
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+
+  # MongoDB
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  # Flyway
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    root: WARN
+    com.mangareader: INFO
+    org.hibernate.SQL: WARN

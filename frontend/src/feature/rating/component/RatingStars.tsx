@@ -1,9 +1,9 @@
 import { useRef } from 'react';
+
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
 
 type RatingStarsProps = {
     value: number;
-    // eslint-disable-next-line no-unused-vars
     onChange?: (rating: number) => void;
     size?: number;
     showValue?: boolean;
@@ -33,6 +33,7 @@ const RatingStars = ({
         }
 
         const button = starRefs.current[index];
+
         if (!button) return;
 
         const rect = button.getBoundingClientRect();
@@ -44,6 +45,7 @@ const RatingStars = ({
 
     const renderStar = (index: number) => {
         const starValue = index + 1;
+
         const isFull = value >= starValue;
         const isHalf = !isFull && value >= starValue - 0.5;
 
@@ -54,6 +56,7 @@ const RatingStars = ({
 
         if (isFull) return <FaStar size={size} className={iconClass} />;
         if (isHalf) return <FaStarHalfAlt size={size} className={iconClass} />;
+
         return <FaRegStar size={size} className={iconClass} />;
     };
 
