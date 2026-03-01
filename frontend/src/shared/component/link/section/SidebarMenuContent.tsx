@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { clsx } from 'clsx';
 
 import { clearCache } from '@shared/service/util/queryCache';
+import UserSettingsModal from '@shared/component/modal/settings/UserSettingsModal';
 
 // TODO: Refatorar para usar o AppLink e evitar duplicação de código, além de garantir consistência visual e funcional em toda a aplicação.
 
@@ -68,6 +70,9 @@ const SidebarMenuContent = ({
     onLogout,
     onNavigate,
 }: MenuLinkBlockProps) => {
+    const [isUserSettingsOpen, setIsUserSettingsOpen] =
+        useState<boolean>(false);
+
     const feedItems: MenuItem[] = [
         { label: 'Home', link: '/' },
         {
@@ -232,6 +237,15 @@ const SidebarMenuContent = ({
 
             <div className="flex items-center w-full gap-2 p-2 mt-auto border bg-secondary rounded-xs border-tertiary">
                 <button
+                    type="button"
+                    onClick={() => setIsUserSettingsOpen(true)}
+                    className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20"
+                >
+                    Configurações
+                </button>
+
+                <button
+                    type="button"
                     onClick={clearCache}
                     className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20"
                 >
@@ -240,6 +254,7 @@ const SidebarMenuContent = ({
 
                 {isLoggedIn && !profile.isVisitor && (
                     <button
+                        type="button"
                         onClick={onLogout}
                         className={clsx(
                             'h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20',
@@ -249,6 +264,12 @@ const SidebarMenuContent = ({
                     </button>
                 )}
             </div>
+
+            <UserSettingsModal
+                isOpen={isUserSettingsOpen}
+                onClose={() => setIsUserSettingsOpen(false)}
+                isLoggedIn={isLoggedIn && !profile.isVisitor}
+            />
         </div>
     );
 };

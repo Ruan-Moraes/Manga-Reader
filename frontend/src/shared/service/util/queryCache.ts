@@ -1,5 +1,7 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 
+import { USER_SETTINGS_STORAGE_KEY } from '@shared/constant/USER_SETTINGS_STORAGE_KEY';
+
 import { showWarningToast } from './toastService';
 
 export const queryClient = new QueryClient({
@@ -9,7 +11,14 @@ export const queryClient = new QueryClient({
 export const clearCache = (): void => {
     try {
         queryClient.resetQueries();
+
+        const userSettings = localStorage.getItem(USER_SETTINGS_STORAGE_KEY);
+
         localStorage.clear();
+
+        if (userSettings) {
+            localStorage.setItem(USER_SETTINGS_STORAGE_KEY, userSettings);
+        }
 
         showWarningToast('Limpando cache!', { toastId: 'clear-cache' });
 
