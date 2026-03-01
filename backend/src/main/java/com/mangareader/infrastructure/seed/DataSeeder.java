@@ -36,6 +36,9 @@ import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.domain.news.valueobject.NewsReaction;
 import com.mangareader.domain.rating.entity.MangaRating;
+import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.domain.store.entity.Store;
+import com.mangareader.domain.store.valueobject.StoreAvailability;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.infrastructure.persistence.mongo.repository.CommentMongoRepository;
@@ -46,6 +49,8 @@ import com.mangareader.infrastructure.persistence.postgres.repository.EventJpaRe
 import com.mangareader.infrastructure.persistence.postgres.repository.ForumTopicJpaRepository;
 import com.mangareader.infrastructure.persistence.postgres.repository.GroupJpaRepository;
 import com.mangareader.infrastructure.persistence.postgres.repository.LibraryJpaRepository;
+import com.mangareader.infrastructure.persistence.postgres.repository.StoreJpaRepository;
+import com.mangareader.infrastructure.persistence.postgres.repository.TagJpaRepository;
 import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -72,6 +77,8 @@ public class DataSeeder implements ApplicationRunner {
     private final NewsMongoRepository newsRepository;
     private final EventJpaRepository eventRepository;
     private final ForumTopicJpaRepository forumTopicRepository;
+    private final TagJpaRepository tagRepository;
+    private final StoreJpaRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -85,6 +92,8 @@ public class DataSeeder implements ApplicationRunner {
         seedNews();
         seedEvents();
         seedForum();
+        seedTags();
+        seedStores();
     }
 
     // ─── Users (PostgreSQL) ──────────────────────────────────────────────
@@ -978,5 +987,130 @@ public class DataSeeder implements ApplicationRunner {
 
         forumTopicRepository.saveAll(List.of(regras, onePiece, recomendacao, teoria, suporte));
         log.info("✓ 5 tópicos de fórum de demonstração criados.");
+    }
+
+    // ─── Tags (PostgreSQL) ───────────────────────────────────────────────
+
+    private void seedTags() {
+        if (tagRepository.count() > 0) {
+            log.info("Tags já existem — seed de tags ignorado.");
+            return;
+        }
+
+        var tags = List.of(
+                Tag.builder().label("Ação").build(),
+                Tag.builder().label("Aventura").build(),
+                Tag.builder().label("Comédia").build(),
+                Tag.builder().label("Drama").build(),
+                Tag.builder().label("Fantasia").build(),
+                Tag.builder().label("Ficção Científica").build(),
+                Tag.builder().label("Horror").build(),
+                Tag.builder().label("Mistério").build(),
+                Tag.builder().label("Romance").build(),
+                Tag.builder().label("Seinen").build(),
+                Tag.builder().label("Shoujo").build(),
+                Tag.builder().label("Shounen").build(),
+                Tag.builder().label("Slice of Life").build(),
+                Tag.builder().label("Sobrenatural").build(),
+                Tag.builder().label("Suspense").build(),
+                Tag.builder().label("Esportes").build(),
+                Tag.builder().label("Artes Marciais").build(),
+                Tag.builder().label("Histórico").build(),
+                Tag.builder().label("Culinária").build(),
+                Tag.builder().label("Urbano").build(),
+                Tag.builder().label("RPG").build(),
+                Tag.builder().label("Escolar").build(),
+                Tag.builder().label("Mecha").build(),
+                Tag.builder().label("Musical").build()
+        );
+
+        tagRepository.saveAll(tags);
+        log.info("✓ {} tags de demonstração criadas.", tags.size());
+    }
+
+    // ─── Stores (PostgreSQL) ─────────────────────────────────────────────
+
+    private void seedStores() {
+        if (storeRepository.count() > 0) {
+            log.info("Stores já existem — seed de stores ignorado.");
+            return;
+        }
+
+        var stores = List.of(
+                Store.builder()
+                        .name("Amazon")
+                        .icon("amazon")
+                        .description("Marketplace oficial com catálogo variado e entrega rápida.")
+                        .website("https://amazon.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(4.7)
+                        .features(List.of("Entrega rápida", "Prime", "Frete grátis"))
+                        .build(),
+                Store.builder()
+                        .name("Panini")
+                        .icon("panini")
+                        .description("Editora parceira com lançamentos frequentes e edições exclusivas.")
+                        .website("https://panini.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(4.5)
+                        .features(List.of("Lançamentos", "Edições exclusivas"))
+                        .build(),
+                Store.builder()
+                        .name("Livraria Cultura")
+                        .description("Livraria com seção dedicada a mangás e eventos literários.")
+                        .website("https://livrariacultura.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(4.3)
+                        .features(List.of("Curadoria", "Eventos"))
+                        .build(),
+                Store.builder()
+                        .name("JBC")
+                        .icon("default")
+                        .description("Editora com foco em mangás e light novels brasileiros.")
+                        .website("https://editorajbc.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(4.6)
+                        .features(List.of("Editora oficial", "Assinatura mensal"))
+                        .build(),
+                Store.builder()
+                        .name("NewPOP")
+                        .icon("default")
+                        .description("Manhwas, mangás e publicações de nicho para leitores exigentes.")
+                        .website("https://newpop.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(4.4)
+                        .features(List.of("Manhwa", "Edições premium"))
+                        .build(),
+                Store.builder()
+                        .name("Magalu")
+                        .icon("default")
+                        .description("Grande varejo online com preços competitivos e promoções.")
+                        .website("https://magazineluiza.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(4.1)
+                        .features(List.of("Cashback", "Parcelamento"))
+                        .build(),
+                Store.builder()
+                        .name("Comix")
+                        .icon("default")
+                        .description("Loja especializada em mangás, HQs e colecionáveis.")
+                        .website("https://comix.com.br")
+                        .availability(StoreAvailability.PRE_ORDER)
+                        .rating(4.8)
+                        .features(List.of("Colecionáveis", "Pré-venda"))
+                        .build(),
+                Store.builder()
+                        .name("Shopee")
+                        .icon("default")
+                        .description("Marketplace com vendedores independentes e ofertas diárias.")
+                        .website("https://shopee.com.br")
+                        .availability(StoreAvailability.IN_STOCK)
+                        .rating(3.9)
+                        .features(List.of("Frete grátis", "Cupons"))
+                        .build()
+        );
+
+        storeRepository.saveAll(stores);
+        log.info("✓ {} lojas de demonstração criadas.", stores.size());
     }
 }

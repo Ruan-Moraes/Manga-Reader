@@ -18,6 +18,8 @@ public interface TitleRepositoryPort {
 
     List<Title> searchByName(String query);
 
+    List<Title> findByGenresContainingAll(List<String> genres);
+
     Title save(Title title);
 
     void deleteById(String id);

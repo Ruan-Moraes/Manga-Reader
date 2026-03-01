@@ -3,6 +3,7 @@ package com.mangareader.infrastructure.persistence.mongo.repository;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import com.mangareader.domain.manga.entity.Title;
 
@@ -14,4 +15,7 @@ public interface TitleMongoRepository extends MongoRepository<Title, String> {
     List<Title> findByGenresContaining(String genre);
 
     List<Title> findByNameContainingIgnoreCase(String name);
+
+    @Query("{ 'genres': { $all: ?0 } }")
+    List<Title> findByGenresContainingAll(List<String> genres);
 }

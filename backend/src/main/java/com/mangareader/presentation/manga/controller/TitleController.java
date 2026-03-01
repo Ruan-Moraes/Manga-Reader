@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mangareader.application.manga.usecase.FilterTitlesUseCase;
 import com.mangareader.application.manga.usecase.GetTitleByIdUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesByGenreUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesUseCase;
 import com.mangareader.application.manga.usecase.SearchTitlesUseCase;
+import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.presentation.manga.dto.TitleResponse;
 import com.mangareader.presentation.manga.mapper.TitleMapper;
 import com.mangareader.shared.dto.ApiResponse;
@@ -36,6 +38,7 @@ public class TitleController {
     private final GetTitleByIdUseCase getTitleByIdUseCase;
     private final SearchTitlesUseCase searchTitlesUseCase;
     private final GetTitlesByGenreUseCase getTitlesByGenreUseCase;
+    private final FilterTitlesUseCase filterTitlesUseCase;
 
     @GetMapping
     @Operation(summary = "Listar títulos", description = "Retorna todos os títulos do catálogo")
@@ -64,6 +67,22 @@ public class TitleController {
     @Operation(summary = "Filtrar por gênero", description = "Retorna títulos que contêm o gênero especificado")
     public ResponseEntity<ApiResponse<List<TitleResponse>>> getByGenre(@PathVariable String genre) {
         var titles = getTitlesByGenreUseCase.execute(genre);
+        return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponseList(titles)));
+    }
+
+    @GetMapping("/filter")
+    @Operation(summary = "Busca avançada", description = "Filtra títulos por múltiplos gêneros/tags e critério de ordenação")
+    public ResponseEntity<ApiResponse<List<TitleResponse>>> filter(
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false, defaultValue = "MOST_READ") String sort
+    ) {
+        SortCriteria sortCriteria;
+        try {
+            sortCriteria = SortCriteria.valueOf(sort.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            sortCriteria = SortCriteria.MOST_READ;
+        }
+        var titles = filterTitlesUseCase.execute(genres, sortCriteria);
         return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponseList(titles)));
     }
 }

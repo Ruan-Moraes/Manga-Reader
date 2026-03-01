@@ -41,6 +41,11 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     }
 
     @Override
+    public List<Title> findByGenresContainingAll(List<String> genres) {
+        return mongoRepository.findByGenresContainingAll(genres);
+    }
+
+    @Override
     public Title save(Title title) {
         return mongoRepository.save(title);
     }
