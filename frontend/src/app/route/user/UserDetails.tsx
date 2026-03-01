@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -10,6 +10,7 @@ import TextSection from '@shared/component/paragraph/TextSection';
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
+import formatDate from '@shared/service/util/formatDate';
 
 import { getMockUserById } from '@mock/data/users';
 import { useAuth } from '@feature/auth';
@@ -50,10 +51,17 @@ const UserDetails = () => {
         );
     }
 
-    const memberBadge = targetUser.member?.isMember ? 'Membro' : null;
-    const moderatorBadge = targetUser.moderator?.isModerator
-        ? 'Moderador'
-        : null;
+    const dateOptions = {
+        year: 'numeric' as const,
+        month: 'long' as const,
+    };
+
+    const roleLabel =
+        targetUser.role === 'admin'
+            ? 'Administrador'
+            : targetUser.role === 'poster'
+              ? 'Postador'
+              : 'Leitor';
 
     return (
         <>
@@ -65,18 +73,56 @@ const UserDetails = () => {
                         title={`Perfil de ${targetUser.name}`}
                     />
 
-                    <div className="grid gap-4 md:grid-cols-[220px_1fr]">
-                        <button
-                            type="button"
-                            onClick={() => setIsPhotoExpanded(true)}
-                            className="overflow-hidden border rounded-xs border-tertiary"
-                        >
-                            <img
-                                src={targetUser.photo}
-                                alt={`Foto de perfil de ${targetUser.name}`}
-                                className="object-cover w-full h-full min-h-56"
-                            />
-                        </button>
+                    <div className="grid gap-4 md:grid-cols-[240px_1fr]">
+                        <div className="space-y-3">
+                            <button
+                                type="button"
+                                onClick={() => setIsPhotoExpanded(true)}
+                                className="overflow-hidden border rounded-xs border-tertiary"
+                            >
+                                <img
+                                    src={targetUser.photo}
+                                    alt={`Foto de perfil de ${targetUser.name}`}
+                                    className="object-cover w-full h-full min-h-56"
+                                />
+                            </button>
+
+                            <div className="p-3 border rounded-xs border-tertiary bg-secondary/40">
+                                <h4 className="mb-2 text-sm font-semibold">
+                                    Conta
+                                </h4>
+                                <ul className="space-y-1 text-xs text-tertiary">
+                                    <li>
+                                        <span className="font-semibold text-primary-default">
+                                            Cargo:
+                                        </span>{' '}
+                                        {roleLabel}
+                                    </li>
+                                    {targetUser.member?.isMember && (
+                                        <li>
+                                            <span className="font-semibold text-primary-default">
+                                                Membro desde:
+                                            </span>{' '}
+                                            {formatDate(
+                                                targetUser.member.since,
+                                                dateOptions,
+                                            )}
+                                        </li>
+                                    )}
+                                    {targetUser.moderator?.isModerator && (
+                                        <li>
+                                            <span className="font-semibold text-primary-default">
+                                                Moderação desde:
+                                            </span>{' '}
+                                            {formatDate(
+                                                targetUser.moderator.since,
+                                                dateOptions,
+                                            )}
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
 
                         <div className="flex flex-col gap-4">
                             <div>
@@ -90,34 +136,19 @@ const UserDetails = () => {
                                 )}
                             </div>
 
-                            <div className="flex flex-wrap gap-2">
-                                {memberBadge && (
-                                    <span className="px-2 py-1 text-xs font-semibold rounded-xs bg-quaternary-opacity-25">
-                                        {memberBadge}
-                                    </span>
-                                )}
-                                {moderatorBadge && (
-                                    <span className="px-2 py-1 text-xs font-semibold rounded-xs bg-quaternary-opacity-25">
-                                        {moderatorBadge}
-                                    </span>
-                                )}
+                            <div className="grid gap-2 text-xs sm:grid-cols-3">
+                                <div className="p-2 border rounded-xs border-tertiary bg-secondary/40">
+                                    {targetUser.statistics?.comments ?? 0}{' '}
+                                    comentários
+                                </div>
+                                <div className="p-2 border rounded-xs border-tertiary bg-secondary/40">
+                                    {targetUser.statistics?.likes ?? 0} likes
+                                </div>
+                                <div className="p-2 border rounded-xs border-tertiary bg-secondary/40">
+                                    {targetUser.statistics?.dislikes ?? 0}{' '}
+                                    dislikes
+                                </div>
                             </div>
-
-                            {targetUser.statistics && (
-                                <ul className="grid gap-2 text-xs sm:grid-cols-3">
-                                    <li className="p-2 border rounded-xs border-tertiary bg-secondary/40">
-                                        {targetUser.statistics.comments ?? 0}{' '}
-                                        comentários
-                                    </li>
-                                    <li className="p-2 border rounded-xs border-tertiary bg-secondary/40">
-                                        {targetUser.statistics.likes ?? 0} likes
-                                    </li>
-                                    <li className="p-2 border rounded-xs border-tertiary bg-secondary/40">
-                                        {targetUser.statistics.dislikes ?? 0}{' '}
-                                        dislikes
-                                    </li>
-                                </ul>
-                            )}
 
                             {targetUser.socialMediasLinks &&
                                 targetUser.socialMediasLinks.length > 0 && (
@@ -138,6 +169,32 @@ const UserDetails = () => {
                                                             ]
                                                         }
                                                     />
+                                                ),
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                            {targetUser.recommendedTitles &&
+                                targetUser.recommendedTitles.length > 0 && (
+                                    <div>
+                                        <h4 className="mb-2 text-sm font-semibold">
+                                            Obras recomendadas
+                                        </h4>
+                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                                            {targetUser.recommendedTitles.map(
+                                                title => (
+                                                    <Link
+                                                        key={title.link}
+                                                        to={`/Manga-Reader${title.link}`}
+                                                        className="overflow-hidden border rounded-xs border-tertiary"
+                                                    >
+                                                        <img
+                                                            src={title.image}
+                                                            alt="Obra recomendada"
+                                                            className="object-cover w-full h-36"
+                                                        />
+                                                    </Link>
                                                 ),
                                             )}
                                         </div>
