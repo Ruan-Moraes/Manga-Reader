@@ -23,14 +23,19 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                 <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
                     {isLoggedIn && user ? (
                         <>
-                            <img
-                                src={user.photo}
-                                alt={user.name}
-                                className="object-cover w-8 h-8 border rounded-full border-tertiary"
-                            />
+                            <AppLink
+                                link={`/users/${user.id}`}
+                                className="shrink-0"
+                            >
+                                <img
+                                    src={user.photo}
+                                    alt={user.name}
+                                    className="object-cover w-8 h-8 border rounded-full border-tertiary"
+                                />
+                            </AppLink>
                             <AppLink
                                 enabledColorWhenActive={true}
-                                link="/profile"
+                                link={`/users/${user.id}`}
                                 text={user.name}
                             />
                             <span className="font-bold">|</span>

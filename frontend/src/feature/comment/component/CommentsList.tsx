@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { type User, useUserModalContext, UserModal } from '@feature/user';
+import { type User } from '@feature/user';
 import { type CommentData } from '../type/comment.types';
 
 import useCommentTree from '../hook/internal/useCommentTree';
@@ -21,7 +22,7 @@ const CommentsList = ({
     isError,
     error,
 }: CommentsListProps) => {
-    const { openUserModal, setUserData } = useUserModalContext();
+    const navigate = useNavigate();
 
     const { deleteComment, editComment, replyComment } = useCommentCRUD();
 
@@ -34,21 +35,9 @@ const CommentsList = ({
 
     const handleClickProfile = useCallback(
         (user: User): void => {
-            setUserData({
-                id: user.id,
-                moderator: user.moderator,
-                member: user.member,
-                name: user.name,
-                photo: user.photo,
-                bio: user.bio,
-                socialMediasLinks: user.socialMediasLinks,
-                statistics: user.statistics,
-                recommendedTitles: user.recommendedTitles,
-            });
-
-            openUserModal();
+            navigate(`/Manga-Reader/users/${user.id}`);
         },
-        [openUserModal, setUserData],
+        [navigate],
     );
 
     if (isLoading) {
@@ -69,7 +58,6 @@ const CommentsList = ({
 
     return (
         <div className="flex flex-col -mt-8">
-            <UserModal />
             {visibleItems.map(({ comment, nestedLevel }) => (
                 <Comment
                     key={comment.id}

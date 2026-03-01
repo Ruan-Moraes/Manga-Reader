@@ -22,6 +22,7 @@ import Library from '@app/route/library/Library';
 import MyReviews from '@app/route/review/MyReviews';
 import Forum from '@app/route/forum/Forum';
 import ForumTopic from '@app/route/forum/ForumTopic';
+import UserDetails from '@app/route/user/UserDetails';
 
 const publicRoutes = [
     {
@@ -87,6 +88,11 @@ const publicRoutes = [
     {
         path: 'forum/:topicId',
         element: <ForumTopic />,
+    },
+
+    {
+        path: 'users/:userId',
+        element: <UserDetails />,
     },
     {
         path: 'login',
