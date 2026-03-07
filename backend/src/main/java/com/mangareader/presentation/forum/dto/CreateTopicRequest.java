@@ -15,9 +15,11 @@ public record CreateTopicRequest(
         String title,
 
         @NotBlank(message = "Conteúdo é obrigatório.")
+        @Size(max = 10000, message = "Conteúdo deve ter no máximo 10000 caracteres.")
         String content,
 
         @NotNull(message = "Categoria é obrigatória.")
+        @Size(max = 100, message = "Categoria deve ter no máximo 100 caracteres.")
         String category,
 
         List<String> tags

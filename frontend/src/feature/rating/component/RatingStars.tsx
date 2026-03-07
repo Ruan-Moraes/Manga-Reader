@@ -78,11 +78,11 @@ const RatingStars = ({
                     </button>
                 ))}
             </div>
-            {showValue && (
-                <span className="text-xs font-semibold text-white drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]">
-                    {value.toFixed(1)}
-                </span>
-            )}
+            {/*{showValue && (*/}
+            {/*    <span className="text-xs font-semibold text-white drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]">*/}
+            {/*        {value.toFixed(1)}*/}
+            {/*    </span>*/}
+            {/*)}*/}
         </div>
     );
 };

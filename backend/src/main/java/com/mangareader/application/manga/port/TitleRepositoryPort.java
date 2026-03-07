@@ -3,6 +3,9 @@ package com.mangareader.application.manga.port;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.manga.entity.Title;
 
 /**
@@ -23,4 +26,14 @@ public interface TitleRepositoryPort {
     Title save(Title title);
 
     void deleteById(String id);
+
+    // ── Paginated ────────────────────────────────────────────────────────
+
+    Page<Title> findAll(Pageable pageable);
+
+    Page<Title> findByGenresContaining(String genre, Pageable pageable);
+
+    Page<Title> searchByName(String query, Pageable pageable);
+
+    Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);
 }

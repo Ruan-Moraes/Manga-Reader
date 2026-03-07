@@ -1,7 +1,7 @@
 package com.mangareader.application.manga.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -18,10 +18,10 @@ public class SearchTitlesUseCase {
 
     private final TitleRepositoryPort titleRepository;
 
-    public List<Title> execute(String query) {
+    public Page<Title> execute(String query, Pageable pageable) {
         if (query == null || query.isBlank()) {
-            return titleRepository.findAll();
+            return titleRepository.findAll(pageable);
         }
-        return titleRepository.searchByName(query.trim());
+        return titleRepository.searchByName(query.trim(), pageable);
     }
 }

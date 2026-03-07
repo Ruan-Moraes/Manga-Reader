@@ -1,7 +1,7 @@
 package com.mangareader.application.event.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.event.port.EventRepositoryPort;
@@ -19,7 +19,7 @@ public class GetEventsByStatusUseCase {
 
     private final EventRepositoryPort eventRepository;
 
-    public List<Event> execute(EventStatus status) {
-        return eventRepository.findByStatus(status);
+    public Page<Event> execute(EventStatus status, Pageable pageable) {
+        return eventRepository.findByStatus(status, pageable);
     }
 }

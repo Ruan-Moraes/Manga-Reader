@@ -3,6 +3,8 @@ package com.mangareader.infrastructure.persistence.postgres.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
@@ -43,5 +45,15 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
     @Override
     public void deleteById(Long id) {
         jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Tag> findAll(Pageable pageable) {
+        return jpaRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Tag> findByLabelContainingIgnoreCase(String query, Pageable pageable) {
+        return jpaRepository.findByLabelContainingIgnoreCase(query, pageable);
     }
 }

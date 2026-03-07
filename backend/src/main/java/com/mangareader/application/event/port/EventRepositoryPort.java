@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.domain.event.valueobject.EventStatus;
 
@@ -21,4 +24,8 @@ public interface EventRepositoryPort {
     Event save(Event event);
 
     void deleteById(UUID id);
+
+    Page<Event> findAll(Pageable pageable);
+
+    Page<Event> findByStatus(EventStatus status, Pageable pageable);
 }

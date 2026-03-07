@@ -5,14 +5,10 @@ import type {
     InternalAxiosRequestConfig,
 } from 'axios';
 
-import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { showErrorToast } from '@shared/service/util/toastService';
+import { resolveApiErrorMessage } from '@shared/service/util/apiErrorMessages';
 
-import type {
-    ApiErrorResponse,
-    ApiResponse,
-    HttpClientConfig,
-} from './httpTypes';
+import type { ApiErrorResponse, HttpClientConfig } from './httpTypes';
 
 /** Mesma chave usada pelo authService para persistir a sessão. */
 const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
@@ -24,8 +20,9 @@ const onRequest = (
         const raw = localStorage.getItem(AUTH_STORAGE_KEY);
 
         if (raw) {
-            const user = JSON.parse(raw);
-            const token: string | undefined = user?.token ?? user?.accessToken;
+            const parsed = JSON.parse(raw);
+            const token: string | undefined =
+                parsed?.accessToken ?? parsed?.token;
 
             if (token) {
                 config.headers.set('Authorization', `Bearer ${token}`);
@@ -38,73 +35,44 @@ const onRequest = (
     return config;
 };
 
-const onResponseSuccess = (
-    response: AxiosResponse,
-): AxiosResponse<ApiResponse<unknown>> => {
-    const normalized: ApiResponse<unknown> = {
-        data: response.data,
-        success: true,
-        statusCode: response.status,
-    };
-
-    return { ...response, data: normalized };
-};
+/**
+ * O backend já retorna `ApiResponse<T>` — o interceptor apenas repassa
+ * `response` intacto. Assim, `response.data` já é o `ApiResponse<T>`.
+ */
+const onResponseSuccess = (response: AxiosResponse): AxiosResponse => response;
 
 // ---------------------------------------------------------------------------
-// Error interceptor — trata erros HTTP e de rede
+// Error interceptor — trata erros HTTP, de rede e códigos da API
 // ---------------------------------------------------------------------------
-const buildFriendlyMessage = (status: number): string => {
-    let response: string = ERROR_MESSAGES.UNKNOWN_ERROR;
 
-    if (status === 400) {
-        response = 'Requisição inválida. Verifique os dados enviados.';
-    }
-
-    if (status === 401) {
-        response = ERROR_MESSAGES.UNAUTHORIZED_ERROR;
-    }
-
-    if (status === 403) {
-        response = ERROR_MESSAGES.FORBIDDEN_ERROR;
-    }
-
-    if (status === 404) {
-        response = 'Recurso não encontrado.';
-    }
-
-    if (status === 408) {
-        response = ERROR_MESSAGES.TIMEOUT_ERROR;
-    }
-
-    if (status === 422) {
-        response = 'Os dados enviados são inválidos.';
-    }
-
-    if (status === 429) {
-        response = 'Muitas requisições. Tente novamente em alguns instantes.';
-    }
-
-    if (status >= 500) {
-        response = ERROR_MESSAGES.SERVER_ERROR;
-    }
-
-    return response;
+/** Shape que o backend envia no body de erros. */
+type ServerErrorBody = {
+    success?: boolean;
+    code?: string;
+    message?: string;
+    statusCode?: number;
+    fieldErrors?: Record<string, string>;
 };
 
 const createOnResponseError =
     (clientConfig: HttpClientConfig) =>
-    (error: AxiosError<{ message?: string }>): Promise<never> => {
+    (error: AxiosError<ServerErrorBody>): Promise<never> => {
         const status = error.response?.status ?? 0;
-        const serverMessage = error.response?.data?.message;
+        const body = error.response?.data;
 
-        let message = serverMessage || buildFriendlyMessage(status);
+        // Extrai code e fieldErrors que o backend retorna
+        const code = body?.code;
+        const fieldErrors = body?.fieldErrors;
+
+        // Mensagem: prefere mapeamento por código, depois a mensagem do servidor
+        let message = resolveApiErrorMessage(code, status, body?.message);
 
         if (error.code === 'ECONNABORTED' || error.code === 'ERR_CANCELED') {
-            message = ERROR_MESSAGES.TIMEOUT_ERROR;
+            message = resolveApiErrorMessage(undefined, 408);
         }
 
         if (!error.response) {
-            message = ERROR_MESSAGES.NETWORK_ERROR;
+            message = resolveApiErrorMessage(undefined, 0);
         }
 
         // 401 → limpa sessão local (token expirado / inválido)
@@ -119,15 +87,17 @@ const createOnResponseError =
         // Toast automático (desabilitável via config)
         if (!clientConfig.silentErrors) {
             showErrorToast(message, {
-                toastId: `http-error-${status || 'network'}`,
+                toastId: `http-error-${code || status || 'network'}`,
             });
         }
 
         const apiError: ApiErrorResponse = {
             success: false,
+            code,
             message,
             statusCode: status,
-            rawData: error.response?.data,
+            fieldErrors,
+            rawData: body,
         };
 
         return Promise.reject(apiError);

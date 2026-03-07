@@ -1,8 +1,10 @@
 package com.mangareader.presentation.comment.controller;
 
-import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ import com.mangareader.presentation.comment.dto.CreateCommentRequest;
 import com.mangareader.presentation.comment.dto.UpdateCommentRequest;
 import com.mangareader.presentation.comment.mapper.CommentMapper;
 import com.mangareader.shared.dto.ApiResponse;
+import com.mangareader.shared.dto.PageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,10 +53,18 @@ public class CommentController {
     private final ReactToCommentUseCase reactToCommentUseCase;
 
     @GetMapping("/title/{titleId}")
-    @Operation(summary = "Listar comentários", description = "Retorna todos os comentários de um título")
-    public ResponseEntity<ApiResponse<List<CommentResponse>>> getByTitle(@PathVariable String titleId) {
-        var comments = getCommentsByTitleUseCase.execute(titleId);
-        return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponseList(comments)));
+    @Operation(summary = "Listar comentários", description = "Retorna comentários de um título com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<CommentResponse>>> getByTitle(
+            @PathVariable String titleId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        var pageable = buildPageable(page, size, sort, direction);
+        var result = getCommentsByTitleUseCase.execute(titleId, pageable);
+        var mapped = result.map(CommentMapper::toResponse);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @PostMapping
@@ -110,6 +121,11 @@ public class CommentController {
     // ── Helper ──────────────────────────────────────────────────────────────
 
     private UUID extractUserId(Authentication auth) {
-        return UUID.fromString((String) auth.getPrincipal());
+        return (UUID) auth.getPrincipal();
+    }
+
+    private Pageable buildPageable(int page, int size, String sort, String direction) {
+        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

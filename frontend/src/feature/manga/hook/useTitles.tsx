@@ -1,16 +1,18 @@
 import useTitlesFetch from './data/useTitlesFetch';
 
-const useTitles = (queryKeys: string) => {
+const useTitles = (queryKeys: string, page = 0, size = 20) => {
     const {
-        data: titles,
+        data: pageData,
         isLoading,
         isError,
         error,
         refetch,
-    } = useTitlesFetch(queryKeys);
+    } = useTitlesFetch(queryKeys, page, size);
 
     return {
-        titles,
+        titles: pageData?.content ?? [],
+        totalPages: pageData?.totalPages ?? 0,
+        totalElements: pageData?.totalElements ?? 0,
         isLoading,
         isError,
         error,

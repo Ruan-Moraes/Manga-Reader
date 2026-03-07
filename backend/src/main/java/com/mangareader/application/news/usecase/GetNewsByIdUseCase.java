@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetNewsByIdUseCase {
-
     private final NewsRepositoryPort newsRepository;
 
     public NewsItem execute(String id) {

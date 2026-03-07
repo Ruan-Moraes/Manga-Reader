@@ -1,7 +1,7 @@
 package com.mangareader.application.comment.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
@@ -21,7 +21,7 @@ public class GetCommentsByTitleUseCase {
     /**
      * Retorna todos os comentários do título, ordenados por data (mais recente primeiro).
      */
-    public List<Comment> execute(String titleId) {
-        return commentRepository.findByTitleId(titleId);
+    public Page<Comment> execute(String titleId, Pageable pageable) {
+        return commentRepository.findByTitleId(titleId, pageable);
     }
 }

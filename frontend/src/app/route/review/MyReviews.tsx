@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -9,8 +9,8 @@ import { showSuccessToast } from '@shared/service/util/toastService';
 import {
     RatingStars,
     getUserReviews,
-    updateUserReview,
-    deleteUserReview,
+    updateReview,
+    deleteReview,
     type MangaRating,
 } from '@feature/rating';
 
@@ -18,9 +18,14 @@ import {
 const MyReviews = () => {
     const [reviews, setReviews] = useState<MangaRating[]>([]);
 
-    useEffect(() => {
-        setReviews(getUserReviews());
+    const loadReviews = useCallback(async () => {
+        const page = await getUserReviews();
+        setReviews(page.content);
     }, []);
+
+    useEffect(() => {
+        loadReviews();
+    }, [loadReviews]);
 
     return (
         <>
@@ -44,34 +49,36 @@ const MyReviews = () => {
                                 </span>
                                 <RatingStars
                                     value={review.stars}
-                                    onChange={value => {
-                                        updateUserReview({
+                                    onChange={async value => {
+                                        await updateReview({
                                             id: review.id,
+                                            titleId: review.titleId,
                                             stars: value,
                                             comment: review.comment,
                                         });
-                                        setReviews(getUserReviews());
+                                        await loadReviews();
                                         showSuccessToast('Nota atualizada.');
                                     }}
                                 />
                             </div>
                             <textarea
                                 value={review.comment ?? ''}
-                                onChange={event => {
-                                    updateUserReview({
+                                onChange={async event => {
+                                    await updateReview({
                                         id: review.id,
+                                        titleId: review.titleId,
                                         stars: review.stars,
                                         comment: event.target.value,
                                     });
-                                    setReviews(getUserReviews());
+                                    await loadReviews();
                                 }}
                                 className="w-full h-20 p-2 mt-2 text-sm border rounded-xs border-tertiary bg-secondary"
                             />
                             <div className="flex justify-end mt-2">
                                 <button
-                                    onClick={() => {
-                                        deleteUserReview(review.id);
-                                        setReviews(getUserReviews());
+                                    onClick={async () => {
+                                        await deleteReview(review.id);
+                                        await loadReviews();
                                         showSuccessToast('Avaliação removida.');
                                     }}
                                     className="px-3 py-1 text-xs border rounded-xs border-quinary-default hover:bg-quinary-default/20"

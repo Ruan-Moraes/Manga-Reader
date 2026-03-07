@@ -1,7 +1,7 @@
 package com.mangareader.application.category.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
@@ -18,7 +18,7 @@ public class SearchTagsUseCase {
 
     private final TagRepositoryPort tagRepository;
 
-    public List<Tag> execute(String query) {
-        return tagRepository.findByLabelContainingIgnoreCase(query);
+    public Page<Tag> execute(String query, Pageable pageable) {
+        return tagRepository.findByLabelContainingIgnoreCase(query, pageable);
     }
 }

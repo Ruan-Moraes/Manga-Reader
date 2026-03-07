@@ -23,7 +23,6 @@ import io.jsonwebtoken.security.Keys;
  */
 @Component
 public class JwtTokenProvider implements TokenPort {
-
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     private final SecretKey secretKey;
@@ -84,6 +83,29 @@ public class JwtTokenProvider implements TokenPort {
             log.debug("Token inválido: {}", e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public String generatePasswordResetToken(UUID userId, String email) {
+        long passwordResetExpiration = 15 * 60 * 1000L; // 15 minutos
+        return Jwts.builder()
+                .subject(userId.toString())
+                .claim("email", email)
+                .claim("type", "password_reset")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + passwordResetExpiration))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    @Override
+    public String extractRole(String token) {
+        return extractClaims(token).get("role", String.class);
+    }
+
+    @Override
+    public String extractType(String token) {
+        return extractClaims(token).get("type", String.class);
     }
 
     private Claims extractClaims(String token) {

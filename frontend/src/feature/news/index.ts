@@ -12,7 +12,6 @@ export {
     getNews,
     getNewsById,
     getRelatedNews,
-    getNewsSources,
     isNewsFresh,
     formatRelativeDate,
     formatNewsDate,

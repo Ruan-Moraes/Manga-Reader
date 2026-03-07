@@ -2,6 +2,8 @@ package com.mangareader.infrastructure.persistence.mongo.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.mangareader.domain.news.entity.NewsItem;
@@ -19,4 +21,8 @@ public interface NewsMongoRepository extends MongoRepository<NewsItem, String> {
     List<NewsItem> findByIsFeaturedTrue();
 
     List<NewsItem> findAllByOrderByPublishedAtDesc();
+
+    Page<NewsItem> findByCategory(NewsCategory category, Pageable pageable);
+
+    Page<NewsItem> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 }

@@ -1,8 +1,9 @@
 package com.mangareader.application.rating.usecase;
 
-import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
@@ -19,7 +20,7 @@ public class GetUserRatingsUseCase {
 
     private final RatingRepositoryPort ratingRepository;
 
-    public List<MangaRating> execute(UUID userId) {
-        return ratingRepository.findByUserId(userId.toString());
+    public Page<MangaRating> execute(UUID userId, Pageable pageable) {
+        return ratingRepository.findByUserId(userId.toString(), pageable);
     }
 }

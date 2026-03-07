@@ -1,31 +1,30 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { type User, type UserRole } from '@feature/user';
+import { type User } from '@feature/user';
 
 import {
     getCurrentUser,
+    getStoredSession,
     signIn,
-    signInAs,
     signOut,
 } from '../service/authService';
+
+type SignInPayload = { email: string; password: string };
 
 const useAuth = () => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        getCurrentUser().then(setUser);
+        const session = getStoredSession();
+
+        if (!session) return;
+
+        getCurrentUser().then(setUser).catch(() => setUser(null));
     }, []);
 
-    const login = useCallback(async () => {
-        const loggedUser = await signIn();
-
-        setUser(loggedUser);
-
-        return loggedUser;
-    }, []);
-
-    const loginAs = useCallback(async (role: UserRole) => {
-        const loggedUser = await signInAs(role);
+    const login = useCallback(async (payload: SignInPayload) => {
+        const authResponse = await signIn(payload);
+        const loggedUser = authResponse as unknown as User;
 
         setUser(loggedUser);
 
@@ -43,7 +42,6 @@ const useAuth = () => {
         setUser,
         isLoggedIn: Boolean(user),
         login,
-        loginAs,
         logout,
     };
 };

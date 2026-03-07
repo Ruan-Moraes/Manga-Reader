@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.store.port.StoreRepositoryPort;
@@ -39,5 +41,15 @@ public class StoreRepositoryAdapter implements StoreRepositoryPort {
     @Override
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Store> findByTitleId(String titleId) {
+        return jpaRepository.findByTitleId(titleId);
+    }
+
+    @Override
+    public Page<Store> findAll(Pageable pageable) {
+        return jpaRepository.findAll(pageable);
     }
 }

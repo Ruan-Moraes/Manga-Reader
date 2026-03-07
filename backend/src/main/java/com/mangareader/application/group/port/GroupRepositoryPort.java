@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.group.entity.Group;
 
 /**
@@ -22,4 +25,11 @@ public interface GroupRepositoryPort {
     Group save(Group group);
 
     void deleteById(UUID id);
+
+    /**
+     * Busca grupos que traduzem um determinado título.
+     */
+    List<Group> findByTitleId(String titleId);
+
+    Page<Group> findAll(Pageable pageable);
 }

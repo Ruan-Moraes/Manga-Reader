@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.store.entity.Store;
 
 /**
@@ -18,4 +21,11 @@ public interface StoreRepositoryPort {
     Store save(Store store);
 
     void deleteById(UUID id);
+
+    /**
+     * Busca lojas que vendem um determinado título.
+     */
+    List<Store> findByTitleId(String titleId);
+
+    Page<Store> findAll(Pageable pageable);
 }

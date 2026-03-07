@@ -34,17 +34,11 @@ const useForgotPassword = () => {
             setIsLoading(true);
 
             try {
-                const response = await requestPasswordReset(trimmedEmail);
+                const message = await requestPasswordReset(trimmedEmail);
 
-                if (response.success) {
-                    setIsSubmitted(true);
+                setIsSubmitted(true);
 
-                    showSuccessToast(
-                        response.message ?? 'Email enviado com sucesso!',
-                    );
-                } else {
-                    showErrorToast(response.message ?? 'Erro ao enviar email.');
-                }
+                showSuccessToast(message ?? 'Email enviado com sucesso!');
             } catch {
                 showErrorToast('Ocorreu um erro inesperado. Tente novamente.');
             } finally {

@@ -1,17 +1,22 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
+import type { PageResponse } from '@shared/service/http';
 
 import { Title } from '../../type/title.types';
 
 import { getTitles } from '../../service/titleService';
 
-const useTitlesFetch = (queryKey: string): UseQueryResult<Title[] | Error> => {
-    return useQuery<Title[], Error>({
-        queryKey: [queryKey],
+const useTitlesFetch = (
+    queryKey: string,
+    page = 0,
+    size = 20,
+): UseQueryResult<PageResponse<Title>, Error> => {
+    return useQuery<PageResponse<Title>, Error>({
+        queryKey: [queryKey, page, size],
         queryFn: async () => {
             try {
-                return await getTitles();
+                return await getTitles(page, size);
             } catch (error) {
                 console.error('Erro ao buscar títulos:', error);
 

@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     private final TokenPort tokenPort;
 
     @Override
@@ -36,20 +35,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
         String token = extractToken(request);
 
         if (token != null && tokenPort.isTokenValid(token)) {
+            // Ignora tokens que não são access tokens (refresh, password_reset)
+            String tokenType = tokenPort.extractType(token);
+            if (tokenType != null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             UUID userId = tokenPort.extractUserId(token);
+
             String email = tokenPort.extractEmail(token);
 
-            // Extrair role seria ideal, mas para simplificar usamos ROLE_USER
-            // em fases futuras extraímos do claim "role"
-            var authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            // Extrai role real do claim JWT
+            String role = tokenPort.extractRole(token);
+            String authority = "ROLE_" + (role != null ? role.toUpperCase() : "USER");
+            var authorities = List.of(new SimpleGrantedAuthority(authority));
 
             var authentication = new UsernamePasswordAuthenticationToken(
                     userId, email, authorities
             );
+
             authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request)
             );
@@ -62,9 +70,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String extractToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
+
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             return header.substring(7);
         }
+
         return null;
     }
 }

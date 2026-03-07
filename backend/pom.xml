@@ -4,47 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <!-- ================================================================= -->
-    <!-- PARENT                                                            -->
-    <!-- ================================================================= -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
         <relativePath/>
     </parent>
-
-    <!-- ================================================================= -->
-    <!-- PROJECT COORDINATES                                               -->
-    <!-- ================================================================= -->
     <groupId>com.mangareader</groupId>
     <artifactId>manga-reader-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Manga Reader Backend</name>
     <description>Backend API for the Manga Reader platform</description>
-
-    <!-- ================================================================= -->
-    <!-- PROPERTIES                                                        -->
-    <!-- ================================================================= -->
     <properties>
         <java.version>23</java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <springdoc.version>2.8.4</springdoc.version>
         <!-- Phase 1: Auth -->
         <jjwt.version>0.12.6</jjwt.version>
-        <!-- Phase 2+: MongoDB migrations -->
-        <!-- <mongock.version>5.5.0</mongock.version> -->
+        <!-- Phase 8: MongoDB migrations -->
+        <mongock.version>5.5.0</mongock.version>
     </properties>
-
-    <!-- ================================================================= -->
-    <!-- DEPENDENCIES                                                      -->
-    <!-- ================================================================= -->
     <dependencies>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- CORE                                                           -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -57,10 +37,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- PERSISTENCE — PostgreSQL (JPA + Flyway)                        -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -78,27 +54,15 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- PERSISTENCE — MongoDB                                          -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- API DOCUMENTATION — SpringDoc OpenAPI (Swagger UI)             -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- MAPPING & BOILERPLATE                                          -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -109,21 +73,12 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- DOCKER COMPOSE SUPPORT (dev only)                              -->
-        <!-- Spring Boot auto-starts compose services on 'mvn spring-boot:run' -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- AUTH — Spring Security + JWT (jjwt)                            -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -146,10 +101,19 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- PHASE 2+: MESSAGING, CACHE, EMAIL (uncomment when needed)      -->
-        <!-- ─────────────────────────────────────────────────────────────── -->
-        <!--
+        <!-- Phase 8: Mongock (MongoDB migrations) -->
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongock-springboot-v3</artifactId>
+            <version>${mongock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongodb-springdata-v4-driver</artifactId>
+            <version>${mongock.version}</version>
+        </dependency>
+
+        <!-- Phase 9: Messaging + Cache -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
@@ -162,15 +126,22 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+
+        <!-- ─────────────────────────────────────────────────────────────── -->
+        <!-- EMAIL                                                           -->
+        <!-- ─────────────────────────────────────────────────────────────────── -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        -->
-
         <!-- ─────────────────────────────────────────────────────────────── -->
-        <!-- TESTING                                                        -->
+        <!-- RATE LIMITING                                                   -->
         <!-- ─────────────────────────────────────────────────────────────── -->
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>8.10.1</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -205,13 +176,8 @@
         </dependency>
         -->
     </dependencies>
-
-    <!-- ================================================================= -->
-    <!-- BUILD                                                             -->
-    <!-- ================================================================= -->
     <build>
         <plugins>
-            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -224,8 +190,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-            <!-- Compiler Plugin — Annotation Processors (Lombok + MapStruct) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

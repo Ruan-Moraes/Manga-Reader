@@ -3,6 +3,9 @@ package com.mangareader.application.comment.port;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.comment.entity.Comment;
 
 /**
@@ -21,4 +24,6 @@ public interface CommentRepositoryPort {
     Comment save(Comment comment);
 
     void deleteById(String id);
+
+    Page<Comment> findByTitleId(String titleId, Pageable pageable);
 }

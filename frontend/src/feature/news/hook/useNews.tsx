@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { filterNews, getNewsSources } from '../service/newsService';
+import { getNews, filterNews } from '../service/newsService';
 import type { NewsCategory, NewsItem } from '../type/news.types';
 
 const tabs: Array<'Principais' | NewsCategory> = [
@@ -17,6 +17,7 @@ const myNewsTabs = ['Salvas', 'Lidas', 'Recomendadas'] as const;
 type MyNewsTab = (typeof myNewsTabs)[number];
 
 const useNews = () => {
+    const [allNews, setAllNews] = useState<NewsItem[]>([]);
     const [activeTab, setActiveTab] =
         useState<(typeof tabs)[number]>('Principais');
     const [query, setQuery] = useState('');
@@ -27,29 +28,35 @@ const useNews = () => {
     const [sort, setSort] = useState<'recent' | 'most-read' | 'trending'>(
         'recent',
     );
-    const [savedNews, setSavedNews] = useState<string[]>([
-        'news-1',
-        'news-3',
-        'news-8',
-    ]);
-    const [readNews, setReadNews] = useState<string[]>(['news-2', 'news-6']);
+    const [savedNews, setSavedNews] = useState<string[]>([]);
+    const [readNews, setReadNews] = useState<string[]>([]);
     const [myNewsTab, setMyNewsTab] = useState<MyNewsTab>('Salvas');
     const [visibleItems, setVisibleItems] = useState(7);
     const [isLoading, setIsLoading] = useState(true);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-    const sources = useMemo(() => getNewsSources(), []);
+    useEffect(() => {
+        setIsLoading(true);
+        getNews(0, 100)
+            .then(page => setAllNews(page.content))
+            .finally(() => setIsLoading(false));
+    }, []);
+
+    const sources = useMemo(() => {
+        const unique = Array.from(new Set(allNews.map(n => n.source)));
+        return ['all', ...unique] as readonly string[];
+    }, [allNews]);
 
     const filteredNews = useMemo(
         () =>
-            filterNews({
+            filterNews(allNews, {
                 tab: activeTab,
                 query,
                 period,
                 source,
                 sort,
             }),
-        [activeTab, period, query, sort, source],
+        [allNews, activeTab, period, query, sort, source],
     );
 
     useEffect(() => {

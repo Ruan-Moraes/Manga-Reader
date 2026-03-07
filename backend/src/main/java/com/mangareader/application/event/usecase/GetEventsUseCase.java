@@ -1,7 +1,7 @@
 package com.mangareader.application.event.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.event.port.EventRepositoryPort;
@@ -18,7 +18,7 @@ public class GetEventsUseCase {
 
     private final EventRepositoryPort eventRepository;
 
-    public List<Event> execute() {
-        return eventRepository.findAll();
+    public Page<Event> execute(Pageable pageable) {
+        return eventRepository.findAll(pageable);
     }
 }

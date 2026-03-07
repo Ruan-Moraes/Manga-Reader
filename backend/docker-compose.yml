@@ -1,20 +1,4 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# Manga Reader — Docker Compose (Desenvolvimento Local)
-#
-# Uso:
-#   docker compose up -d          → Inicia todos os serviços em background
-#   docker compose down           → Para todos os serviços
-#   docker compose down -v        → Para e remove volumes (reset de dados)
-#
-# Nota: O spring-boot-docker-compose inicia automaticamente ao rodar
-#       'mvn spring-boot:run' (não precisa de 'docker compose up' manual).
-# ─────────────────────────────────────────────────────────────────────────────
-
 services:
-
-  # ═══════════════════════════════════════════════════════════════════════════
-  # PostgreSQL 17 — Dados relacionais (Users, Groups, Events, Forum, Library)
-  # ═══════════════════════════════════════════════════════════════════════════
   postgres:
     image: postgres:17-alpine
     container_name: mangareader-postgres
@@ -32,10 +16,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
-  # ═══════════════════════════════════════════════════════════════════════════
-  # MongoDB 8 — Dados documentais (Titles, Ratings, Comments, News)
-  # ═══════════════════════════════════════════════════════════════════════════
   mongodb:
     image: mongo:8.0
     container_name: mangareader-mongodb
@@ -51,11 +31,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
-  # ═══════════════════════════════════════════════════════════════════════════
-  # RabbitMQ 4 — Mensageria assíncrona (Score aggregation, Notifications...)
-  # Management UI: http://localhost:15672 (manga / manga_secret)
-  # ═══════════════════════════════════════════════════════════════════════════
   rabbitmq:
     image: rabbitmq:4-management-alpine
     container_name: mangareader-rabbitmq
@@ -73,10 +48,6 @@ services:
       timeout: 10s
       retries: 5
     restart: unless-stopped
-
-  # ═══════════════════════════════════════════════════════════════════════════
-  # Redis 7 — Cache distribuído (Hot data, Rate limiting, Refresh tokens)
-  # ═══════════════════════════════════════════════════════════════════════════
   redis:
     image: redis:7-alpine
     container_name: mangareader-redis
@@ -89,7 +60,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
 volumes:
   postgres_data:
     driver: local

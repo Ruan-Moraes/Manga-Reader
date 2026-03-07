@@ -1,7 +1,7 @@
 package com.mangareader.application.group.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
@@ -18,7 +18,7 @@ public class GetGroupsUseCase {
 
     private final GroupRepositoryPort groupRepository;
 
-    public List<Group> execute() {
-        return groupRepository.findAll();
+    public Page<Group> execute(Pageable pageable) {
+        return groupRepository.findAll(pageable);
     }
 }

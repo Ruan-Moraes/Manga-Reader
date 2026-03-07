@@ -3,6 +3,8 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -53,5 +55,25 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     @Override
     public void deleteById(String id) {
         mongoRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Title> findAll(Pageable pageable) {
+        return mongoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Title> findByGenresContaining(String genre, Pageable pageable) {
+        return mongoRepository.findByGenresContaining(genre, pageable);
+    }
+
+    @Override
+    public Page<Title> searchByName(String query, Pageable pageable) {
+        return mongoRepository.findByNameContainingIgnoreCase(query, pageable);
+    }
+
+    @Override
+    public Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable) {
+        return mongoRepository.findByGenresContainingAll(genres, pageable);
     }
 }

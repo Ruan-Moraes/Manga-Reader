@@ -1,5 +1,6 @@
-import { simulateDelay } from '@shared/service/mockApi';
-import { mockStores, titleStoreMap } from '@mock/data/stores';
+import { api } from '@shared/service/http';
+import type { ApiResponse, PageResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type Store } from '../type/store.types';
 
@@ -7,19 +8,27 @@ import { type Store } from '../type/store.types';
 // Public API
 // ---------------------------------------------------------------------------
 
-export const getStores = async (): Promise<Store[]> => {
-    await simulateDelay();
-    return mockStores;
+export const getStores = async (
+    page = 0,
+    size = 20,
+): Promise<PageResponse<Store>> => {
+    const response = await api.get<ApiResponse<PageResponse<Store>>>(
+        API_URLS.STORES,
+        { params: { page, size } },
+    );
+
+    return response.data.data;
 };
 
-export const getStoresByTitleId = async (titleId: string): Promise<Store[]> => {
-    await simulateDelay();
+export const getStoresByTitleId = async (
+    titleId: string,
+    page = 0,
+    size = 20,
+): Promise<PageResponse<Store>> => {
+    const response = await api.get<ApiResponse<PageResponse<Store>>>(
+        `${API_URLS.STORES}/title/${titleId}`,
+        { params: { page, size } },
+    );
 
-    const storeIds = titleStoreMap[titleId] ?? [
-        'store-1',
-        'store-2',
-        'store-3',
-    ];
-
-    return mockStores.filter(s => storeIds.includes(s.id));
+    return response.data.data;
 };

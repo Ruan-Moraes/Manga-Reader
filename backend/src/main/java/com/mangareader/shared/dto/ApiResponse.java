@@ -17,9 +17,6 @@ public record ApiResponse<T>(
         String message,
         Integer statusCode
 ) {
-
-    // ── Factory methods ─────────────────────────────────────────────────────
-
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(data, true, null, null);
     }

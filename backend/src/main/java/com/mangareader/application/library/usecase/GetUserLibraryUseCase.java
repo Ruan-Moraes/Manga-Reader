@@ -1,8 +1,9 @@
 package com.mangareader.application.library.usecase;
 
-import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
@@ -19,7 +20,7 @@ public class GetUserLibraryUseCase {
 
     private final LibraryRepositoryPort libraryRepository;
 
-    public List<SavedManga> execute(UUID userId) {
-        return libraryRepository.findByUserId(userId);
+    public Page<SavedManga> execute(UUID userId, Pageable pageable) {
+        return libraryRepository.findByUserId(userId, pageable);
     }
 }

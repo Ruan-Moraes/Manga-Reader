@@ -3,6 +3,8 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
@@ -49,5 +51,20 @@ public class NewsRepositoryAdapter implements NewsRepositoryPort {
     @Override
     public void deleteById(String id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Page<NewsItem> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<NewsItem> findByCategory(NewsCategory category, Pageable pageable) {
+        return repository.findByCategory(category, pageable);
+    }
+
+    @Override
+    public Page<NewsItem> searchByTitle(String query, Pageable pageable) {
+        return repository.findByTitleContainingIgnoreCase(query, pageable);
     }
 }

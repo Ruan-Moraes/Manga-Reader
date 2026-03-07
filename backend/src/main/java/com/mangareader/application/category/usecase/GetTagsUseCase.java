@@ -1,7 +1,7 @@
 package com.mangareader.application.category.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
@@ -18,7 +18,7 @@ public class GetTagsUseCase {
 
     private final TagRepositoryPort tagRepository;
 
-    public List<Tag> execute() {
-        return tagRepository.findAll();
+    public Page<Tag> execute(Pageable pageable) {
+        return tagRepository.findAll(pageable);
     }
 }

@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useAuth } from '@feature/auth';
-import { filterEvents } from '../service/eventService';
-import type { EventType } from '../type/event.types';
+import { filterEvents, getEvents } from '../service/eventService';
+import type { EventData, EventType } from '../type/event.types';
 
 const tabs = [
     { id: 'upcoming', label: 'Próximos Eventos' },
@@ -19,6 +19,7 @@ const useEvents = () => {
         user?.moderator?.isModerator || user?.member?.isMember,
     );
 
+    const [allEvents, setAllEvents] = useState<EventData[]>([]);
     const [activeTab, setActiveTab] = useState<TabId>('upcoming');
     const [query, setQuery] = useState('');
     const [type, setType] = useState<'all' | EventType>('all');
@@ -29,9 +30,13 @@ const useEvents = () => {
         'date',
     );
 
+    useEffect(() => {
+        getEvents(0, 100).then(page => setAllEvents(page.content));
+    }, []);
+
     const events = useMemo(
         () =>
-            filterEvents({
+            filterEvents(allEvents, {
                 tab: activeTab,
                 query,
                 type,
@@ -39,7 +44,7 @@ const useEvents = () => {
                 sort,
                 isLoggedIn,
             }),
-        [activeTab, isLoggedIn, period, query, sort, type],
+        [allEvents, activeTab, isLoggedIn, period, query, sort, type],
     );
 
     const featured = events.find(event => event.isFeatured) ?? events[0];

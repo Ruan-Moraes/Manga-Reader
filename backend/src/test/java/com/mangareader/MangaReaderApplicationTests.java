@@ -3,7 +3,6 @@ package com.mangareader;
 import org.junit.jupiter.api.Test;
 
 class MangaReaderApplicationTests {
-
     @Test
     void contextCreationSmokeTest() {
         // Teste de contexto completo (@SpringBootTest) será adicionado

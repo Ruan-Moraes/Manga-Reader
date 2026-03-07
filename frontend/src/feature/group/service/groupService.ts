@@ -1,5 +1,6 @@
-import { simulateDelay } from '@shared/service/mockApi';
-import { mockGroups, membersPool, groupNameById } from '@mock/data/groups';
+import { api } from '@shared/service/http';
+import type { ApiResponse, PageResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type GroupStatus, type Group } from '../type/group.types';
 
@@ -7,37 +8,48 @@ import { type GroupStatus, type Group } from '../type/group.types';
 // Public API
 // ---------------------------------------------------------------------------
 
-export const getGroups = async (): Promise<Group[]> => {
-    await simulateDelay();
-    return mockGroups;
+export const getGroups = async (
+    page = 0,
+    size = 20,
+): Promise<PageResponse<Group>> => {
+    const response = await api.get<ApiResponse<PageResponse<Group>>>(
+        API_URLS.GROUPS,
+        { params: { page, size } },
+    );
+
+    return response.data.data;
 };
 
 export const getGroupById = async (
     groupId: string,
-): Promise<Group | undefined> => {
-    await simulateDelay();
-    return mockGroups.find(g => g.id === groupId);
+): Promise<Group> => {
+    const response = await api.get<ApiResponse<Group>>(
+        `${API_URLS.GROUPS}/${groupId}`,
+    );
+
+    return response.data.data;
 };
 
-export const getGroupsByTitleId = async (titleId: string): Promise<Group[]> => {
-    await simulateDelay();
-    return mockGroups.filter(g => g.translatedTitleIds.includes(titleId));
+export const getGroupsByTitleId = async (
+    titleId: string,
+    page = 0,
+    size = 20,
+): Promise<PageResponse<Group>> => {
+    const response = await api.get<ApiResponse<PageResponse<Group>>>(
+        `${API_URLS.GROUPS}/title/${titleId}`,
+        { params: { page, size } },
+    );
+
+    return response.data.data;
 };
 
 export const getMemberById = async (memberId: string) => {
-    await simulateDelay();
+    const response = await api.get<ApiResponse<unknown>>(
+        `${API_URLS.GROUPS}/members/${memberId}`,
+    );
 
-    const member = membersPool.find(m => m.id === memberId);
-    if (!member) return null;
-
-    return {
-        ...member,
-        groups: member.groups.filter(g => groupNameById.has(g.id)),
-    };
+    return response.data.data;
 };
-
-export const getAllGenres = (): string[] =>
-    Array.from(new Set(mockGroups.flatMap(g => g.genres))).sort();
 
 export const getGroupStatusLabel = (status: GroupStatus): string => {
     if (status === 'active') return 'Ativo';

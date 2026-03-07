@@ -2,7 +2,6 @@
 export {
     getForumTopics,
     getForumTopicById,
-    getForumTopicByIdSync,
     getForumCategories,
     filterForumTopics,
     formatRelativeDate,

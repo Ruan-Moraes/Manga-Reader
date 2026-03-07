@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
@@ -49,5 +51,15 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     @Override
     public void deleteById(UUID id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public List<Group> findByTitleId(String titleId) {
+        return repository.findByTitleId(titleId);
+    }
+
+    @Override
+    public Page<Group> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 
@@ -21,4 +24,6 @@ public interface LibraryRepositoryPort {
     SavedManga save(SavedManga savedManga);
 
     void deleteByUserIdAndTitleId(UUID userId, String titleId);
+
+    Page<SavedManga> findByUserId(UUID userId, Pageable pageable);
 }

@@ -56,18 +56,12 @@ import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRep
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Popula o banco com dados de demonstração.
- * <p>
- * Ativado apenas com o profile {@code dev} (padrão).
- * Pula se já existirem dados.
- */
+
 @Slf4j
 @Component
-@Profile("!test")
+@Profile("dev")
 @RequiredArgsConstructor
 public class DataSeeder implements ApplicationRunner {
-
     private final UserJpaRepository userRepository;
     private final TitleMongoRepository titleRepository;
     private final CommentMongoRepository commentRepository;
@@ -96,11 +90,10 @@ public class DataSeeder implements ApplicationRunner {
         seedStores();
     }
 
-    // ─── Users (PostgreSQL) ──────────────────────────────────────────────
-
     private void seedUsers() {
         if (userRepository.count() > 0) {
             log.info("Usuários já existem — seed de users ignorado.");
+
             return;
         }
 
@@ -142,14 +135,14 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         userRepository.saveAll(users);
+
         log.info("✓ {} usuários de demonstração criados.", users.size());
     }
-
-    // ─── Titles (MongoDB) ────────────────────────────────────────────────
 
     private void seedTitles() {
         if (titleRepository.count() > 0) {
             log.info("Títulos já existem — seed de titles ignorado.");
+
             return;
         }
 
@@ -306,19 +299,18 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         titleRepository.saveAll(titles);
+
         log.info("✓ {} títulos de demonstração criados.", titles.size());
     }
-
-    // ─── Comments (MongoDB) ──────────────────────────────────────────────
 
     private void seedComments() {
         if (commentRepository.count() > 0) {
             log.info("Comentários já existem — seed de comments ignorado.");
+
             return;
         }
 
         var comments = List.of(
-                // Título 1 — Reino de Aço
                 Comment.builder().id("c-1-1").titleId("1").parentCommentId(null)
                         .userId("seed-user-3").userName("Carlos Henrique").userPhoto("https://i.pravatar.cc/100?img=15")
                         .isHighlighted(true).textContent("A arte desse mangá é absurda! Cada painel parece uma pintura. Não consigo parar de ler.")
@@ -335,8 +327,6 @@ public class DataSeeder implements ApplicationRunner {
                         .userId("seed-user-7").userName("João Pedro").userPhoto("https://i.pravatar.cc/100?img=52")
                         .textContent("Vale a pena a paciência. O clímax é épico.")
                         .likeCount(15).dislikeCount(0).build(),
-
-                // Título 2 — Lâmina do Amanhã
                 Comment.builder().id("c-2-1").titleId("2").parentCommentId(null)
                         .userId("seed-user-7").userName("João Pedro").userPhoto("https://i.pravatar.cc/100?img=52")
                         .textContent("Manhwa com premissa incrível! A mistura de medieval com sci-fi funciona demais.")
@@ -345,8 +335,6 @@ public class DataSeeder implements ApplicationRunner {
                         .userId("seed-user-2").userName("Mika Tanaka").userPhoto("https://i.pravatar.cc/100?img=11")
                         .textContent("Os torneios clandestinos são o ponto alto. Muita adrenalina!")
                         .likeCount(14).dislikeCount(0).build(),
-
-                // Título 3 — Flores de Neon
                 Comment.builder().id("c-3-1").titleId("3").parentCommentId(null)
                         .userId("seed-user-6").userName("Ester Nakamura").userPhoto("https://i.pravatar.cc/100?img=44")
                         .isHighlighted(true).textContent("Suspense urbano bem construído. A protagonista é muito carismática.")
@@ -355,8 +343,6 @@ public class DataSeeder implements ApplicationRunner {
                         .userId("seed-user-1").userName("Leitor Demo").userPhoto("https://i.pravatar.cc/100?img=32")
                         .textContent("Sim! A cena do capítulo 4 me deixou sem fôlego.")
                         .likeCount(9).dislikeCount(0).build(),
-
-                // Título 5 — Vento Cortante
                 Comment.builder().id("c-5-1").titleId("5").parentCommentId(null)
                         .userId("seed-user-5").userName("Rui Oliveira").userPhoto("https://i.pravatar.cc/100?img=33")
                         .textContent("Artes marciais + drama pesado = combinação perfeita. Nota 10!")
@@ -364,18 +350,19 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         commentRepository.saveAll(comments);
+
         log.info("✓ {} comentários de demonstração criados.", comments.size());
     }
-
-    // ─── Ratings (MongoDB) ───────────────────────────────────────────────
 
     private void seedRatings() {
         if (ratingRepository.count() > 0) {
             log.info("Avaliações já existem — seed de ratings ignorado.");
+
             return;
         }
 
         String[] userNames = {"Ana", "Carlos", "Mika", "Rui", "João", "Ester", "Nina", "Leo", "Sakura", "Dante"};
+
         String[] ratingComments = {
                 "Arte impecável e história viciante.",
                 "Ritmo bom, mas alguns capítulos são lentos.",
@@ -386,20 +373,26 @@ public class DataSeeder implements ApplicationRunner {
                 "Recomendo para quem gosta do gênero.",
                 "Cenários maravilhosos e painéis detalhados."
         };
+
         String[] categoryKeys = {"Diversion", "Art", "Storyline", "Characters", "Originality", "Pacing"};
 
         for (int titleIdx = 0; titleIdx < 8; titleIdx++) {
             String titleId = String.valueOf(titleIdx + 1);
+
             int amount = 3 + ((titleIdx * 7 + 3) % 8); // 3-10 ratings por título
 
             for (int i = 0; i < amount; i++) {
                 int seed = titleIdx * 100 + i;
+
                 double stars = 1 + (seed % 5);
 
                 Map<String, Double> catRatings = new java.util.HashMap<>();
+
                 for (int k = 0; k < categoryKeys.length; k++) {
                     double base = ((seed + k * 3) % 9) + 1;
+
                     double val = base * 0.5;
+
                     catRatings.put(categoryKeys[k], Math.max(1.0, Math.min(5.0, val)));
                 }
 
@@ -420,15 +413,15 @@ public class DataSeeder implements ApplicationRunner {
         log.info("✓ Avaliações de demonstração criadas para 8 títulos.");
     }
 
-    // ─── Library (PostgreSQL) ────────────────────────────────────────────
-
     private void seedLibrary() {
         if (libraryRepository.count() > 0) {
             log.info("Biblioteca já existe — seed de library ignorado.");
+
             return;
         }
 
         var users = userRepository.findAll();
+
         if (users.isEmpty()) return;
 
         var demoUser = users.get(0); // Leitor Demo
@@ -466,26 +459,25 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         libraryRepository.saveAll(saved);
+
         log.info("✓ {} itens de biblioteca de demonstração criados.", saved.size());
     }
-
-    // ─── Groups (PostgreSQL) ─────────────────────────────────────────────
 
     private void seedGroups() {
         if (groupRepository.count() > 0) {
             log.info("Grupos já existem — seed de groups ignorado.");
+
             return;
         }
 
         var users = userRepository.findAll();
+
         if (users.size() < 4) return;
 
         var admin = users.get(3);     // Ana Beatriz (admin)
         var carlos = users.get(2);    // Carlos Henrique
         var mika = users.get(1);      // Mika Tanaka
         var demo = users.get(0);      // Leitor Demo
-
-        // ── Grupo 1: Sakura Scans ──────────────────────────────────────
 
         var sakura = Group.builder()
                 .name("Sakura Scans")
@@ -524,8 +516,6 @@ public class DataSeeder implements ApplicationRunner {
                 .genres(List.of("Suspense", "Seinen", "Urbano")).build();
 
         sakura.getTranslatedWorks().addAll(List.of(sakuraWork1, sakuraWork2));
-
-        // ── Grupo 2: Tempest Scans ─────────────────────────────────────
 
         var tempest = Group.builder()
                 .name("Tempest Scans")
@@ -568,8 +558,6 @@ public class DataSeeder implements ApplicationRunner {
 
         tempest.getTranslatedWorks().addAll(List.of(tempestWork1, tempestWork2, tempestWork3));
 
-        // ── Grupo 3: Polaris TL (em hiato) ─────────────────────────────
-
         var polaris = Group.builder()
                 .name("Polaris Translations")
                 .username("polaris-tl")
@@ -599,14 +587,14 @@ public class DataSeeder implements ApplicationRunner {
         polaris.getTranslatedWorks().add(polarisWork1);
 
         groupRepository.saveAll(List.of(sakura, tempest, polaris));
+
         log.info("✓ 3 grupos de tradução de demonstração criados.");
     }
-
-    // ─── News (MongoDB) ──────────────────────────────────────────────────
 
     private void seedNews() {
         if (newsRepository.count() > 0) {
             log.info("Notícias já existem — seed de news ignorado.");
+
             return;
         }
 
@@ -640,7 +628,6 @@ public class DataSeeder implements ApplicationRunner {
                         .isFeatured(true)
                         .reactions(NewsReaction.builder().like(180).excited(92).sad(3).surprised(24).build())
                         .build(),
-
                 NewsItem.builder()
                         .id("news-2")
                         .title("Solo Leveling confirma 3ª temporada do anime para 2026")
@@ -660,7 +647,6 @@ public class DataSeeder implements ApplicationRunner {
                         .isExclusive(true).isFeatured(true)
                         .reactions(NewsReaction.builder().like(450).excited(320).sad(5).surprised(67).build())
                         .build(),
-
                 NewsItem.builder()
                         .id("news-3")
                         .title("Guia: os melhores mangás de 2025 segundo os leitores")
@@ -679,7 +665,6 @@ public class DataSeeder implements ApplicationRunner {
                         .readTime(6).views(5400).commentsCount(78).trendingScore(88)
                         .reactions(NewsReaction.builder().like(210).excited(45).sad(12).surprised(8).build())
                         .build(),
-
                 NewsItem.builder()
                         .id("news-4")
                         .title("Editora NewPOP anuncia 5 novos manhwas para o catálogo brasileiro")
@@ -698,7 +683,6 @@ public class DataSeeder implements ApplicationRunner {
                         .readTime(3).views(2100).commentsCount(34).trendingScore(72)
                         .reactions(NewsReaction.builder().like(98).excited(56).sad(2).surprised(15).build())
                         .build(),
-
                 NewsItem.builder()
                         .id("news-5")
                         .title("Entrevista exclusiva: Hiroshi Tanaka fala sobre Crônicas de Polaris")
@@ -721,20 +705,20 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         newsRepository.saveAll(news);
+
         log.info("✓ {} notícias de demonstração criadas.", news.size());
     }
 
-    // ─── Events (PostgreSQL) ─────────────────────────────────────────────
 
     private void seedEvents() {
         if (eventRepository.count() > 0) {
             log.info("Eventos já existem — seed de events ignorado.");
+
             return;
         }
 
         var now = LocalDateTime.now();
 
-        // Evento 1 — AnimeCon SP (registrations open, upcoming)
         var animeCon = Event.builder()
                 .title("AnimeCon SP 2026")
                 .subtitle("O maior evento de anime e mangá do Brasil")
@@ -774,7 +758,6 @@ public class DataSeeder implements ApplicationRunner {
         var ticket3 = EventTicket.builder().event(animeCon).name("VIP + Meet & Greet").price("R$ 349,90").available(50).build();
         animeCon.getTickets().addAll(List.of(ticket1, ticket2, ticket3));
 
-        // Evento 2 — Noite de Autógrafos (coming soon)
         var autografos = Event.builder()
                 .title("Noite de Autógrafos — Hiroshi Tanaka")
                 .subtitle("Sessão exclusiva com o autor de Crônicas de Polaris")
@@ -808,9 +791,9 @@ public class DataSeeder implements ApplicationRunner {
                 .build();
 
         var ticketAut = EventTicket.builder().event(autografos).name("Acesso com livro").price("Gratuito").available(100).build();
+
         autografos.getTickets().add(ticketAut);
 
-        // Evento 3 — Live de Mangá (happening now)
         var live = Event.builder()
                 .title("Live: Análise dos Lançamentos de Março")
                 .subtitle("Resenha ao vivo dos principais lançamentos do mês")
@@ -835,7 +818,6 @@ public class DataSeeder implements ApplicationRunner {
                 .participants(340).interested(1200).isFeatured(true)
                 .build();
 
-        // Evento 4 — Evento passado (ended)
         var workshop = Event.builder()
                 .title("Workshop: Introdução ao Desenho de Mangá")
                 .subtitle("Aprenda as bases do estilo mangá com profissionais")
@@ -861,18 +843,19 @@ public class DataSeeder implements ApplicationRunner {
                 .build();
 
         eventRepository.saveAll(List.of(animeCon, autografos, live, workshop));
+
         log.info("✓ 4 eventos de demonstração criados.");
     }
-
-    // ─── Forum (PostgreSQL) ──────────────────────────────────────────────
 
     private void seedForum() {
         if (forumTopicRepository.count() > 0) {
             log.info("Fórum já existe — seed de forum ignorado.");
+
             return;
         }
 
         var users = userRepository.findAll();
+
         if (users.size() < 4) return;
 
         var demo = users.get(0);   // Leitor Demo
@@ -880,7 +863,6 @@ public class DataSeeder implements ApplicationRunner {
         var carlos = users.get(2); // Carlos Henrique
         var admin = users.get(3);  // Ana Beatriz (admin)
 
-        // Tópico 1 — Pinned, regras
         var regras = ForumTopic.builder()
                 .author(admin)
                 .title("📌 Regras do Fórum — Leia antes de postar")
@@ -903,7 +885,6 @@ public class DataSeeder implements ApplicationRunner {
         regras.getReplies().addAll(List.of(regraReply1, regraReply2));
         regras.setReplyCount(2);
 
-        // Tópico 2 — Discussão popular
         var onePiece = ForumTopic.builder()
                 .author(carlos)
                 .title("One Piece: o final será satisfatório? [SPOILERS]")
@@ -928,7 +909,6 @@ public class DataSeeder implements ApplicationRunner {
 
         onePiece.getReplies().addAll(List.of(opReply1, opReply2, opReply3));
 
-        // Tópico 3 — Recomendação
         var recomendacao = ForumTopic.builder()
                 .author(mika)
                 .title("Recomendem mangás de romance parecidos com Coração de Porcelana")
@@ -950,7 +930,6 @@ public class DataSeeder implements ApplicationRunner {
         recomendacao.getReplies().addAll(List.of(recReply1, recReply2));
         recomendacao.setSolved(true);
 
-        // Tópico 4 — Teoria
         var teoria = ForumTopic.builder()
                 .author(demo)
                 .title("Teoria: o verdadeiro poder da Armadura Negra em Reino de Aço")
@@ -967,7 +946,6 @@ public class DataSeeder implements ApplicationRunner {
 
         teoria.getReplies().add(teoriaReply);
 
-        // Tópico 5 — Suporte
         var suporte = ForumTopic.builder()
                 .author(mika)
                 .title("Como salvar mangás na biblioteca?")
@@ -986,14 +964,15 @@ public class DataSeeder implements ApplicationRunner {
         suporte.getReplies().add(suporteReply);
 
         forumTopicRepository.saveAll(List.of(regras, onePiece, recomendacao, teoria, suporte));
+
         log.info("✓ 5 tópicos de fórum de demonstração criados.");
     }
 
-    // ─── Tags (PostgreSQL) ───────────────────────────────────────────────
 
     private void seedTags() {
         if (tagRepository.count() > 0) {
             log.info("Tags já existem — seed de tags ignorado.");
+
             return;
         }
 
@@ -1025,14 +1004,14 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         tagRepository.saveAll(tags);
+
         log.info("✓ {} tags de demonstração criadas.", tags.size());
     }
-
-    // ─── Stores (PostgreSQL) ─────────────────────────────────────────────
 
     private void seedStores() {
         if (storeRepository.count() > 0) {
             log.info("Stores já existem — seed de stores ignorado.");
+
             return;
         }
 
@@ -1111,6 +1090,7 @@ public class DataSeeder implements ApplicationRunner {
         );
 
         storeRepository.saveAll(stores);
+
         log.info("✓ {} lojas de demonstração criadas.", stores.size());
     }
 }

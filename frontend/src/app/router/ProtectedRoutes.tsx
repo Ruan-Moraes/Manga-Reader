@@ -6,12 +6,12 @@ import { showErrorToast } from '@shared/service/util/toastService';
 import PublishWork from '@app/route/publish-work/PublishWork';
 import Dashboard from '@app/route/dashboard/Dashboard';
 
-import { getCurrentUserSync } from '@feature/auth/service/authService';
+import { getStoredSession } from '@feature/auth/service/authService';
 import { type UserRole } from '@feature/user';
 
 const AuthGuard = ({ children }: { children: ReactNode }) => {
-    const user = getCurrentUserSync();
-    const isAuthenticated = Boolean(user);
+    const session = getStoredSession();
+    const isAuthenticated = Boolean(session);
 
     const location = useLocation();
 
@@ -40,10 +40,10 @@ const RoleGuard = ({
     children: ReactNode;
     allowedRoles: UserRole[];
 }) => {
-    const user = getCurrentUserSync();
-    const role = user?.role ?? 'user';
+    const session = getStoredSession();
+    const role = (session?.role ?? 'user') as UserRole;
 
-    if (!user) {
+    if (!session) {
         return <Navigate to="/Manga-Reader/login" replace />;
     }
 

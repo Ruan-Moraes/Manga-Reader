@@ -3,6 +3,9 @@ package com.mangareader.application.news.port;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 
@@ -22,4 +25,10 @@ public interface NewsRepositoryPort {
     NewsItem save(NewsItem newsItem);
 
     void deleteById(String id);
+
+    Page<NewsItem> findAll(Pageable pageable);
+
+    Page<NewsItem> findByCategory(NewsCategory category, Pageable pageable);
+
+    Page<NewsItem> searchByTitle(String query, Pageable pageable);
 }

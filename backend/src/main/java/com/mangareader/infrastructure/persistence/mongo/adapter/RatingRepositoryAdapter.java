@@ -3,6 +3,8 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
@@ -53,5 +55,15 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     @Override
     public long countByTitleId(String titleId) {
         return repository.countByTitleId(titleId);
+    }
+
+    @Override
+    public Page<MangaRating> findByTitleId(String titleId, Pageable pageable) {
+        return repository.findByTitleId(titleId, pageable);
+    }
+
+    @Override
+    public Page<MangaRating> findByUserId(String userId, Pageable pageable) {
+        return repository.findByUserId(userId, pageable);
     }
 }

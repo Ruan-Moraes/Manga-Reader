@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.mangareader.infrastructure.security.jwt.JwtAuthenticationFilter;
+import com.mangareader.infrastructure.security.ratelimit.RateLimitFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +22,15 @@ import lombok.RequiredArgsConstructor;
  * Configuração do Spring Security.
  * <p>
  * Stateless (JWT), CSRF desabilitado, CORS delegado ao {@code CorsConfig}.
+ * Exceções de autenticação/autorização retornam JSON via {@link SecurityExceptionHandler}.
  */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final SecurityExceptionHandler securityExceptionHandler;
+    private final RateLimitFilter rateLimitFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,7 +41,6 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // ── Públicos ────────────────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/titles/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/titles").permitAll()
@@ -56,19 +58,26 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/tags").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").permitAll()
 
-                        // ── Swagger / Actuator ──────────────────────────
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api-docs/**",
-                                "/v3/api-docs/**",
-                                "/actuator/**"
+                                "/v3/api-docs/**"
                         ).permitAll()
 
-                        // ── Qualquer outra rota requer autenticação ─────
+                        // Actuator: apenas health público, demais requerem autenticação
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                        .requestMatchers("/actuator/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(securityExceptionHandler)
+                        .accessDeniedHandler(securityExceptionHandler)
+                )
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

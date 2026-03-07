@@ -3,6 +3,8 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
@@ -48,5 +50,10 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     @Override
     public void deleteById(String id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Page<Comment> findByTitleId(String titleId, Pageable pageable) {
+        return repository.findByTitleId(titleId, pageable);
     }
 }

@@ -1,7 +1,8 @@
 package com.mangareader.presentation.news.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.presentation.news.dto.NewsResponse;
 import com.mangareader.presentation.news.mapper.NewsMapper;
 import com.mangareader.shared.dto.ApiResponse;
+import com.mangareader.shared.dto.PageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,10 +39,20 @@ public class NewsController {
     private final SearchNewsUseCase searchNewsUseCase;
 
     @GetMapping
-    @Operation(summary = "Listar notícias", description = "Retorna todas as notícias ordenadas por data")
-    public ResponseEntity<ApiResponse<List<NewsResponse>>> getAll() {
-        var news = getNewsUseCase.execute();
-        return ResponseEntity.ok(ApiResponse.success(NewsMapper.toResponseList(news)));
+    @Operation(summary = "Listar notícias", description = "Retorna notícias com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<NewsResponse>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "publishedAt") String sort,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        var pageable = buildPageable(page, size, sort, direction);
+
+        var result = getNewsUseCase.execute(pageable);
+
+        var mapped = result.map(NewsMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/{id}")
@@ -52,27 +64,52 @@ public class NewsController {
 
     @GetMapping("/category/{category}")
     @Operation(summary = "Filtrar notícias por categoria")
-    public ResponseEntity<ApiResponse<List<NewsResponse>>> getByCategory(@PathVariable String category) {
+    public ResponseEntity<ApiResponse<PageResponse<NewsResponse>>> getByCategory(
+            @PathVariable String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
         var cat = parseCategory(category);
-        var news = getNewsByCategoryUseCase.execute(cat);
-        return ResponseEntity.ok(ApiResponse.success(NewsMapper.toResponseList(news)));
+
+        var pageable = buildPageable(page, size, "publishedAt", "desc");
+
+        var result = getNewsByCategoryUseCase.execute(cat, pageable);
+
+        var mapped = result.map(NewsMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/search")
     @Operation(summary = "Pesquisar notícias por título")
-    public ResponseEntity<ApiResponse<List<NewsResponse>>> search(@RequestParam String q) {
-        var news = searchNewsUseCase.execute(q);
-        return ResponseEntity.ok(ApiResponse.success(NewsMapper.toResponseList(news)));
+    public ResponseEntity<ApiResponse<PageResponse<NewsResponse>>> search(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        var pageable = buildPageable(page, size, "publishedAt", "desc");
+
+        var result = searchNewsUseCase.execute(q, pageable);
+
+        var mapped = result.map(NewsMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
-    // ── Helper ──────────────────────────────────────────────────────────────
-
+    // TODO: Esses métodos de parsing e construção de Pageable podem ser extraídos para componentes de utilitário ou similares para evitar repetição em outros controllers
     private NewsCategory parseCategory(String value) {
         for (NewsCategory cat : NewsCategory.values()) {
             if (cat.getDisplayName().equalsIgnoreCase(value) || cat.name().equalsIgnoreCase(value)) {
                 return cat;
             }
         }
+
         throw new IllegalArgumentException("Categoria de notícia inválida: " + value);
+    }
+
+    private Pageable buildPageable(int page, int size, String sort, String direction) {
+        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

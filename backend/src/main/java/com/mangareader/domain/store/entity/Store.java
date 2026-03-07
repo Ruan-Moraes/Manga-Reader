@@ -9,6 +9,7 @@ import org.hibernate.type.SqlTypes;
 
 import com.mangareader.domain.store.valueobject.StoreAvailability;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,4 +65,8 @@ public class Store {
     @Column(columnDefinition = "jsonb")
     @Builder.Default
     private List<String> features = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<StoreTitle> titles = new ArrayList<>();
 }

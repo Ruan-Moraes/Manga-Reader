@@ -59,19 +59,13 @@ const useResetPassword = () => {
             setIsLoading(true);
 
             try {
-                const response = await resetPassword(token, password);
+                const message = await resetPassword(token, password);
 
-                if (response.success) {
-                    showSuccessToast(
-                        response.message ?? 'Senha redefinida com sucesso!',
-                    );
+                showSuccessToast(
+                    message ?? 'Senha redefinida com sucesso!',
+                );
 
-                    navigate('/Manga-Reader/login');
-                } else {
-                    showErrorToast(
-                        response.message ?? 'Erro ao redefinir senha.',
-                    );
-                }
+                navigate('/Manga-Reader/login');
             } catch {
                 showErrorToast('Ocorreu um erro inesperado. Tente novamente.');
             } finally {

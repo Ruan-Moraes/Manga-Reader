@@ -1,7 +1,7 @@
 package com.mangareader.application.news.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
@@ -19,7 +19,7 @@ public class GetNewsByCategoryUseCase {
 
     private final NewsRepositoryPort newsRepository;
 
-    public List<NewsItem> execute(NewsCategory category) {
-        return newsRepository.findByCategory(category);
+    public Page<NewsItem> execute(NewsCategory category, Pageable pageable) {
+        return newsRepository.findByCategory(category, pageable);
     }
 }

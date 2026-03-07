@@ -11,7 +11,6 @@ import SidebarMenuContent, {
 import { showInfoToast } from '@shared/service/util/toastService';
 
 import { useAuth } from '@feature/auth';
-import { type UserRole } from '@feature/user';
 
 const menuProfiles: MenuProfile[] = [
     {
@@ -69,7 +68,7 @@ const NavigationMenu = () => {
 
     const [selectedProfileId] = useState<string>('visitor');
 
-    const { user, isLoggedIn, loginAs, logout } = useAuth();
+    const { user, isLoggedIn, logout } = useAuth();
 
     const menuRef = useRef<HTMLDivElement>(null);
     const originalOffset = useRef<number>(0);
@@ -247,15 +246,9 @@ const NavigationMenu = () => {
                                     return;
                                 }
 
-                                await loginAs(role as UserRole);
+                                // TODO: in production, role switching via mock is disabled
                                 showInfoToast(
-                                    `Perfil ${
-                                        role === 'admin'
-                                            ? 'Administrador'
-                                            : role === 'poster'
-                                              ? 'Postador'
-                                              : 'Usuário'
-                                    } ativado.`,
+                                    'Troca de perfil via menu será removida em produção.',
                                 );
                             }}
                             onLogout={() => {

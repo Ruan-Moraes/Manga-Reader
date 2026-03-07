@@ -3,6 +3,9 @@ package com.mangareader.application.rating.port;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mangareader.domain.rating.entity.MangaRating;
 
 /**
@@ -23,4 +26,8 @@ public interface RatingRepositoryPort {
     void deleteById(String id);
 
     long countByTitleId(String titleId);
+
+    Page<MangaRating> findByTitleId(String titleId, Pageable pageable);
+
+    Page<MangaRating> findByUserId(String userId, Pageable pageable);
 }

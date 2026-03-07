@@ -3,6 +3,9 @@ package com.mangareader.application.manga.usecase;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -22,7 +25,7 @@ public class FilterTitlesUseCase {
 
     private final TitleRepositoryPort titleRepository;
 
-    public List<Title> execute(List<String> genres, SortCriteria sort) {
+    public Page<Title> execute(List<String> genres, SortCriteria sort, Pageable pageable) {
         List<Title> titles;
 
         if (genres == null || genres.isEmpty()) {
@@ -31,7 +34,14 @@ public class FilterTitlesUseCase {
             titles = titleRepository.findByGenresContainingAll(genres);
         }
 
-        return applySort(titles, sort);
+        List<Title> sorted = applySort(titles, sort);
+
+        // In-memory pagination (sort criteria depend on string fields)
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), sorted.size());
+        var content = start < sorted.size() ? sorted.subList(start, end) : List.<Title>of();
+
+        return new PageImpl<>(content, pageable, sorted.size());
     }
 
     private List<Title> applySort(List<Title> titles, SortCriteria sort) {

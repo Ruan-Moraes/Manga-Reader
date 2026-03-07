@@ -27,6 +27,13 @@ spring:
   flyway:
     enabled: false
 
+  cache:
+    type: none
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
   data:
     mongodb:
       uri: mongodb://localhost:27017/mangareader-test

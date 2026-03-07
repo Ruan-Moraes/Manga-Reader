@@ -1,7 +1,7 @@
 package com.mangareader.application.store.usecase;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.store.port.StoreRepositoryPort;
@@ -18,7 +18,7 @@ public class GetStoresUseCase {
 
     private final StoreRepositoryPort storeRepository;
 
-    public List<Store> execute() {
-        return storeRepository.findAll();
+    public Page<Store> execute(Pageable pageable) {
+        return storeRepository.findAll(pageable);
     }
 }

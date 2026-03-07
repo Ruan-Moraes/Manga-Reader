@@ -1,80 +1,131 @@
-import {
-    simulateDelay,
-    getFromStorage,
-    saveToStorage,
-    removeFromStorage,
-    ok,
-    fail,
-} from '@shared/service/mockApi';
+import { api } from '@shared/service/http';
+import type { ApiResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
-import type { MockApiResponse } from '@shared/service/mockApi';
+// ---------------------------------------------------------------------------
+// Types — espelham os DTOs do backend
+// ---------------------------------------------------------------------------
 
-import { mockUsers } from '@mock/data/users';
-
-import { type User, type UserRole } from '@feature/user';
-
-import { AUTH_KEY } from '@feature/auth/constant/AUTH_KEY';
-
-const fallbackUser = mockUsers[0];
-
-const usersByRole: Record<UserRole, User> = {
-    user: mockUsers.find(user => user.role === 'user') ?? fallbackUser,
-    poster: mockUsers.find(user => user.role === 'poster') ?? fallbackUser,
-    admin: mockUsers.find(user => user.role === 'admin') ?? fallbackUser,
+export type AuthResponse = {
+    accessToken: string;
+    refreshToken: string;
+    userId: string;
+    name: string;
+    email: string;
+    role: string;
+    photoUrl?: string;
 };
 
-export const getCurrentUserSync = (): User | null =>
-    getFromStorage<User | null>(AUTH_KEY, null);
-
-export const getCurrentUser = async (): Promise<User | null> => {
-    await simulateDelay(100);
-
-    return getCurrentUserSync();
+export type SignInRequest = {
+    email: string;
+    password: string;
 };
 
-export const signIn = async (): Promise<User> => {
-    await simulateDelay(300);
-
-    const user = usersByRole.user;
-
-    saveToStorage(AUTH_KEY, user);
-
-    return user;
+export type SignUpRequest = {
+    name: string;
+    email: string;
+    password: string;
 };
 
-export const signInAs = async (role: UserRole): Promise<User> => {
-    await simulateDelay(120);
+// ---------------------------------------------------------------------------
+// Storage keys
+// ---------------------------------------------------------------------------
 
-    const user = usersByRole[role] ?? usersByRole.user;
+const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
 
-    saveToStorage(AUTH_KEY, user);
+// ---------------------------------------------------------------------------
+// Helpers — sessão local
+// ---------------------------------------------------------------------------
 
-    return user;
+const persistSession = (auth: AuthResponse): void => {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+};
+
+const clearSession = (): void => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+};
+
+export const getStoredSession = (): AuthResponse | null => {
+    try {
+        const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+        return raw ? (JSON.parse(raw) as AuthResponse) : null;
+    } catch {
+        return null;
+    }
+};
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+export const signIn = async (data: SignInRequest): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+        API_URLS.AUTH_SIGN_IN,
+        data,
+    );
+
+    const auth = response.data.data;
+    persistSession(auth);
+    return auth;
+};
+
+export const signUp = async (data: SignUpRequest): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+        API_URLS.AUTH_SIGN_UP,
+        data,
+    );
+
+    const auth = response.data.data;
+    persistSession(auth);
+    return auth;
+};
+
+export const refreshToken = async (token: string): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+        API_URLS.AUTH_REFRESH,
+        { refreshToken: token },
+    );
+
+    const auth = response.data.data;
+    persistSession(auth);
+    return auth;
+};
+
+export const getCurrentUser = async (): Promise<AuthResponse | null> => {
+    const session = getStoredSession();
+    if (!session?.accessToken) return null;
+
+    try {
+        const response = await api.get<ApiResponse<AuthResponse>>(
+            API_URLS.AUTH_ME,
+        );
+        return response.data.data;
+    } catch {
+        return null;
+    }
 };
 
 export const signOut = async (): Promise<void> => {
-    removeFromStorage(AUTH_KEY);
+    clearSession();
 };
 
-export const requestPasswordReset = async (
-    _email: string,
-): Promise<MockApiResponse<null>> => {
-    await simulateDelay(500);
-    void _email;
+export const requestPasswordReset = async (email: string): Promise<string> => {
+    const response = await api.post<ApiResponse<string>>(
+        API_URLS.AUTH_FORGOT_PASSWORD,
+        { email },
+    );
 
-    return ok(null, 'Email de recuperação enviado com sucesso!');
+    return response.data.data;
 };
 
 export const resetPassword = async (
     token: string,
-    _newPassword: string,
-): Promise<MockApiResponse<null>> => {
-    await simulateDelay(500);
-    void _newPassword;
+    newPassword: string,
+): Promise<string> => {
+    const response = await api.post<ApiResponse<string>>(
+        API_URLS.AUTH_RESET_PASSWORD,
+        { token, newPassword },
+    );
 
-    if (!token) {
-        return fail(null, 'Token de recuperação inválido ou expirado.');
-    }
-
-    return ok(null, 'Senha redefinida com sucesso!');
+    return response.data.data;
 };

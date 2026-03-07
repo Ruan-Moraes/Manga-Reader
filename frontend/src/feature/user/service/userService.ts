@@ -1,28 +1,28 @@
-import {
-    simulateDelay,
-    getFromStorage,
-    saveToStorage,
-} from '@shared/service/mockApi';
-
-import { AUTH_KEY } from '@feature/auth/constant/AUTH_KEY';
+import { api } from '@shared/service/http';
+import type { ApiResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type User } from '../type/user.types';
 
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+export const getUserProfile = async (userId: string): Promise<User> => {
+    const response = await api.get<ApiResponse<User>>(
+        `${API_URLS.USERS}/${userId}`,
+    );
+
+    return response.data.data;
+};
+
 export const updateProfile = async (
     partial: Partial<User>,
-): Promise<User | null> => {
-    await simulateDelay(200);
+): Promise<User> => {
+    const response = await api.put<ApiResponse<User>>(
+        `${API_URLS.USERS}/me`,
+        partial,
+    );
 
-    const current = getFromStorage<User | null>(AUTH_KEY, null);
-
-    if (!current) return null;
-
-    const updated = { ...current, ...partial };
-
-    saveToStorage(AUTH_KEY, updated);
-
-    // TODO: Implementar a atualização de perfil real, incluindo a persistência no backend
-    // TODO: [Implementar chamada à API para atualizar o perfil do usuário]
-
-    return updated;
+    return response.data.data;
 };

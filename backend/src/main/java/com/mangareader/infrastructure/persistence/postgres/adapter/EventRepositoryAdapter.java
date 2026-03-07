@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.event.port.EventRepositoryPort;
@@ -45,5 +47,15 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     @Override
     public void deleteById(UUID id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Page<Event> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Event> findByStatus(EventStatus status, Pageable pageable) {
+        return repository.findByStatus(status, pageable);
     }
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
@@ -45,5 +47,10 @@ public class LibraryRepositoryAdapter implements LibraryRepositoryPort {
     @Override
     public void deleteByUserIdAndTitleId(UUID userId, String titleId) {
         repository.deleteByUserIdAndTitleId(userId, titleId);
+    }
+
+    @Override
+    public Page<SavedManga> findByUserId(UUID userId, Pageable pageable) {
+        return repository.findByUserId(userId, pageable);
     }
 }

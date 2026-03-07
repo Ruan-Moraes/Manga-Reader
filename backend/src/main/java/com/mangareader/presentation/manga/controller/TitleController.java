@@ -2,6 +2,9 @@ package com.mangareader.presentation.manga.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +21,7 @@ import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.presentation.manga.dto.TitleResponse;
 import com.mangareader.presentation.manga.mapper.TitleMapper;
 import com.mangareader.shared.dto.ApiResponse;
+import com.mangareader.shared.dto.PageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,10 +45,20 @@ public class TitleController {
     private final FilterTitlesUseCase filterTitlesUseCase;
 
     @GetMapping
-    @Operation(summary = "Listar títulos", description = "Retorna todos os títulos do catálogo")
-    public ResponseEntity<ApiResponse<List<TitleResponse>>> getAll() {
-        var titles = getTitlesUseCase.execute();
-        return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponseList(titles)));
+    @Operation(summary = "Listar títulos", description = "Retorna todos os títulos do catálogo com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        var pageable = buildPageable(page, size, sort, direction);
+
+        var result = getTitlesUseCase.execute(pageable);
+
+        var mapped = result.map(TitleMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/{id}")
@@ -56,33 +70,65 @@ public class TitleController {
 
     @GetMapping("/search")
     @Operation(summary = "Pesquisar títulos", description = "Busca títulos por nome (pesquisa parcial)")
-    public ResponseEntity<ApiResponse<List<TitleResponse>>> search(
-            @RequestParam(defaultValue = "") String q
+    public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> search(
+            @RequestParam(defaultValue = "") String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        var titles = searchTitlesUseCase.execute(q);
-        return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponseList(titles)));
+        var pageable = buildPageable(page, size, "name", "asc");
+
+        var result = searchTitlesUseCase.execute(q, pageable);
+
+        var mapped = result.map(TitleMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/genre/{genre}")
     @Operation(summary = "Filtrar por gênero", description = "Retorna títulos que contêm o gênero especificado")
-    public ResponseEntity<ApiResponse<List<TitleResponse>>> getByGenre(@PathVariable String genre) {
-        var titles = getTitlesByGenreUseCase.execute(genre);
-        return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponseList(titles)));
+    public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> getByGenre(
+            @PathVariable String genre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        var pageable = buildPageable(page, size, "name", "asc");
+
+        var result = getTitlesByGenreUseCase.execute(genre, pageable);
+
+        var mapped = result.map(TitleMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/filter")
     @Operation(summary = "Busca avançada", description = "Filtra títulos por múltiplos gêneros/tags e critério de ordenação")
-    public ResponseEntity<ApiResponse<List<TitleResponse>>> filter(
+    public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> filter(
             @RequestParam(required = false) List<String> genres,
-            @RequestParam(required = false, defaultValue = "MOST_READ") String sort
+            @RequestParam(required = false, defaultValue = "MOST_READ") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
         SortCriteria sortCriteria;
+
         try {
             sortCriteria = SortCriteria.valueOf(sort.toUpperCase());
         } catch (IllegalArgumentException e) {
             sortCriteria = SortCriteria.MOST_READ;
         }
-        var titles = filterTitlesUseCase.execute(genres, sortCriteria);
-        return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponseList(titles)));
+
+        var pageable = buildPageable(page, size, "name", "asc");
+
+        var result = filterTitlesUseCase.execute(genres, sortCriteria, pageable);
+
+        var mapped = result.map(TitleMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
+    }
+
+    // TODO: Retirar essa lógica do controller
+    private Pageable buildPageable(int page, int size, String sort, String direction) {
+        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

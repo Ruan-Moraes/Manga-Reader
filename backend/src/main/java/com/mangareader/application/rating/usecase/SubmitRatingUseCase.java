@@ -3,12 +3,16 @@ package com.mangareader.application.rating.usecase;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
+import com.mangareader.application.shared.event.RatingEvent;
+import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.rating.entity.MangaRating;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class SubmitRatingUseCase {
 
     private final RatingRepositoryPort ratingRepository;
     private final UserRepositoryPort userRepository;
+    private final EventPublisherPort eventPublisher;
 
     public record SubmitRatingInput(
             String titleId,
@@ -33,6 +38,7 @@ public class SubmitRatingUseCase {
             Map<String, Double> categoryRatings
     ) {}
 
+    @CacheEvict(value = CacheNames.RATING_AVERAGE, key = "#input.titleId()")
     public MangaRating execute(SubmitRatingInput input) {
         User user = userRepository.findById(input.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", input.userId()));
@@ -55,6 +61,8 @@ public class SubmitRatingUseCase {
             rating.setCategoryRatings(input.categoryRatings());
         }
 
-        return ratingRepository.save(rating);
+        MangaRating saved = ratingRepository.save(rating);
+        eventPublisher.publish("rating.submitted", new RatingEvent(input.titleId(), input.userId().toString()));
+        return saved;
     }
 }
