@@ -1,12 +1,15 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+    getForumTopics,
     filterForumTopics,
     paginateTopics,
     type ForumCategory,
     type ForumSort,
 } from '@feature/forum';
+import type { ForumTopic } from '../type/forum.types';
 
 const useForumPage = () => {
+    const [allTopicsRaw, setAllTopicsRaw] = useState<ForumTopic[]>([]);
     const [activeCategory, setActiveCategory] = useState<'all' | ForumCategory>(
         'all',
     );
@@ -14,9 +17,18 @@ const useForumPage = () => {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
 
+    useEffect(() => {
+        getForumTopics(0, 200).then(res => setAllTopicsRaw(res.content));
+    }, []);
+
     const allTopics = useMemo(
-        () => filterForumTopics({ category: activeCategory, sort, query }),
-        [activeCategory, sort, query],
+        () =>
+            filterForumTopics(allTopicsRaw, {
+                category: activeCategory,
+                sort,
+                query,
+            }),
+        [allTopicsRaw, activeCategory, sort, query],
     );
 
     const { items: topics, totalPages } = useMemo(

@@ -5,5 +5,6 @@ export { registerInterceptors } from './httpInterceptors';
 export type {
     ApiResponse,
     ApiErrorResponse,
+    PageResponse,
     HttpClientConfig,
 } from './httpTypes';

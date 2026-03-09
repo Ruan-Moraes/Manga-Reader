@@ -1,61 +1,131 @@
-import {
-    simulateDelay,
-    getFromStorage,
-    saveToStorage,
-    removeFromStorage,
-    ok,
-    fail,
-} from '@shared/service/mockApi';
+import { api } from '@shared/service/http';
+import type { ApiResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
-import type { MockApiResponse } from '@shared/service/mockApi';
+// ---------------------------------------------------------------------------
+// Types — espelham os DTOs do backend
+// ---------------------------------------------------------------------------
 
-import { mockUsers } from '@mock/data/users';
-
-import { type User } from '@feature/user';
-
-import { AUTH_KEY } from '@feature/auth/constant/AUTH_KEY';
-
-export const getCurrentUser = async (): Promise<User | null> => {
-    await simulateDelay(100);
-
-    return getFromStorage<User | null>(AUTH_KEY, null);
+export type AuthResponse = {
+    accessToken: string;
+    refreshToken: string;
+    userId: string;
+    name: string;
+    email: string;
+    role: string;
+    photoUrl?: string;
 };
 
-export const signIn = async (): Promise<User> => {
-    await simulateDelay(300);
+export type SignInRequest = {
+    email: string;
+    password: string;
+};
 
-    // TODO: Implementar a autenticação real
-    const user = mockUsers[0];
+export type SignUpRequest = {
+    name: string;
+    email: string;
+    password: string;
+};
 
-    saveToStorage(AUTH_KEY, user);
+// ---------------------------------------------------------------------------
+// Storage keys
+// ---------------------------------------------------------------------------
 
-    return user;
+const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
+
+// ---------------------------------------------------------------------------
+// Helpers — sessão local
+// ---------------------------------------------------------------------------
+
+const persistSession = (auth: AuthResponse): void => {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+};
+
+const clearSession = (): void => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+};
+
+export const getStoredSession = (): AuthResponse | null => {
+    try {
+        const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+        return raw ? (JSON.parse(raw) as AuthResponse) : null;
+    } catch {
+        return null;
+    }
+};
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+export const signIn = async (data: SignInRequest): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+        API_URLS.AUTH_SIGN_IN,
+        data,
+    );
+
+    const auth = response.data.data;
+    persistSession(auth);
+    return auth;
+};
+
+export const signUp = async (data: SignUpRequest): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+        API_URLS.AUTH_SIGN_UP,
+        data,
+    );
+
+    const auth = response.data.data;
+    persistSession(auth);
+    return auth;
+};
+
+export const refreshToken = async (token: string): Promise<AuthResponse> => {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+        API_URLS.AUTH_REFRESH,
+        { refreshToken: token },
+    );
+
+    const auth = response.data.data;
+    persistSession(auth);
+    return auth;
+};
+
+export const getCurrentUser = async (): Promise<AuthResponse | null> => {
+    const session = getStoredSession();
+    if (!session?.accessToken) return null;
+
+    try {
+        const response = await api.get<ApiResponse<AuthResponse>>(
+            API_URLS.AUTH_ME,
+        );
+        return response.data.data;
+    } catch {
+        return null;
+    }
 };
 
 export const signOut = async (): Promise<void> => {
-    // TODO: Implementar a desautenticação real
-    removeFromStorage(AUTH_KEY);
+    clearSession();
 };
 
-export const requestPasswordReset = async (
-    email: string,
-): Promise<MockApiResponse<null>> => {
-    await simulateDelay(500);
+export const requestPasswordReset = async (email: string): Promise<string> => {
+    const response = await api.post<ApiResponse<string>>(
+        API_URLS.AUTH_FORGOT_PASSWORD,
+        { email },
+    );
 
-    // TODO: Implementar a lógica real de envio de email de recuperação
-    return ok(null, 'Email de recuperação enviado com sucesso!');
+    return response.data.data;
 };
 
 export const resetPassword = async (
     token: string,
     newPassword: string,
-): Promise<MockApiResponse<null>> => {
-    await simulateDelay(500);
+): Promise<string> => {
+    const response = await api.post<ApiResponse<string>>(
+        API_URLS.AUTH_RESET_PASSWORD,
+        { token, newPassword },
+    );
 
-    // TODO: Implementar a lógica real de redefinição de senha
-    if (!token) {
-        return fail(null, 'Token de recuperação inválido ou expirado.');
-    }
-
-    return ok(null, 'Senha redefinida com sucesso!');
+    return response.data.data;
 };

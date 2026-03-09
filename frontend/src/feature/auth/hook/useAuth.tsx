@@ -2,17 +2,29 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { type User } from '@feature/user';
 
-import { getCurrentUser, signIn, signOut } from '../service/authService';
+import {
+    getCurrentUser,
+    getStoredSession,
+    signIn,
+    signOut,
+} from '../service/authService';
+
+type SignInPayload = { email: string; password: string };
 
 const useAuth = () => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        getCurrentUser().then(setUser);
+        const session = getStoredSession();
+
+        if (!session) return;
+
+        getCurrentUser().then(setUser).catch(() => setUser(null));
     }, []);
 
-    const login = useCallback(async () => {
-        const loggedUser = await signIn();
+    const login = useCallback(async (payload: SignInPayload) => {
+        const authResponse = await signIn(payload);
+        const loggedUser = authResponse as unknown as User;
 
         setUser(loggedUser);
 

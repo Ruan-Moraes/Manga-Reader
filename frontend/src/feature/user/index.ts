@@ -1,5 +1,5 @@
 // Types
-export type { User } from './type/user.types';
+export type { User, UserRole } from './type/user.types';
 
 // Hooks
 export { default as useUserProfile } from './hook/useUserProfile';

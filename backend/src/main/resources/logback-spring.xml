@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- DEV profile — Console colorido e legível                              -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <springProfile name="default | dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.mangareader" level="DEBUG"/>
+    </springProfile>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- PROD profile — JSON estruturado (1 linha por evento)                  -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <springProfile name="prod">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+        <logger name="com.mangareader" level="INFO"/>
+        <logger name="org.hibernate.SQL" level="WARN"/>
+    </springProfile>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- TEST profile — Mínimo (apenas WARN+)                                 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <springProfile name="test">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

@@ -1,9 +1,9 @@
 /**
  * Wrapper padrão de resposta da API.
  *
- * Todas as respostas (sucesso ou erro tratado) são normalizadas para
- * esse formato pelo response interceptor do Axios, garantindo que hooks
- * e componentes sempre consumam a mesma interface.
+ * Shape retornado pelo backend Spring Boot em **todas** as respostas de sucesso.
+ * O response interceptor do Axios NÃO re-encapsula — o `data` do Axios já é
+ * este objeto, garantindo que hooks e componentes consumam a mesma interface.
  */
 export type ApiResponse<T> = {
     data: T;
@@ -17,13 +17,34 @@ export type ApiResponse<T> = {
  *
  * É o objeto rejeitado na Promise — pode ser capturado tanto por
  * `.catch()` quanto pelo `onError` do React Query.
+ *
+ * O campo `code` contém o código técnico padronizado da API
+ * (ex.: `AUTH_TOKEN_EXPIRED`, `RESOURCE_NOT_FOUND`).
+ * O frontend mapeia esses códigos para mensagens amigáveis ao usuário.
  */
 export type ApiErrorResponse = {
     success: false;
+    /** Código técnico do erro (vem do backend `ApiErrorCode`). */
+    code?: string;
+    /** Mensagem já amigável, pronta para exibir. */
     message: string;
     statusCode: number;
+    /** Erros por campo (presente em erros de validação). */
+    fieldErrors?: Record<string, string>;
     /** Dados brutos retornados pelo back-end, quando existem. */
     rawData?: unknown;
+};
+
+/**AUTH_ACCESS_DENIED
+ * Wrapper para respostas paginadas — espelho do `PageResponse` do backend.
+ */
+export type PageResponse<T> = {
+    content: T[];
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    last: boolean;
 };
 
 /**
@@ -35,7 +56,7 @@ export type ApiErrorResponse = {
 export type HttpClientConfig = {
     /** URL base da API (ex.: `https://api.mangareader.com/v1`). */
     baseURL?: string;
-    /** Timeout em milissegundos. Padrão: 15 000 (15 s). */
+    /** Timeout em milissegundos. Padrão: 30 000 (30 s). */
     timeout?: number;
     /** Headers adicionais aplicados a todas as requisições. */
     headers?: Record<string, string>;

@@ -7,7 +7,7 @@ import SynopsisModal from './SynopsisModal';
 
 type TitleDescriptionTypes = Pick<Title, 'name' | 'genres' | 'synopsis'>;
 
-const SYNOPSIS_MAX_LINES = 7;
+const SYNOPSIS_MAX_LINES = 18;
 
 const TitleDescription = ({
     name,
@@ -15,6 +15,7 @@ const TitleDescription = ({
     synopsis,
 }: TitleDescriptionTypes) => {
     const synopsisRef = useRef<HTMLParagraphElement>(null);
+
     const [isClamped, setIsClamped] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -52,7 +53,7 @@ const TitleDescription = ({
                             onClick={() => setIsModalOpen(true)}
                             className="mt-1 text-xs font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
                         >
-                            Leia mais
+                            Ler mais
                         </button>
                     )}
                 </div>

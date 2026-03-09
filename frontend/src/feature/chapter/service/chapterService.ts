@@ -1,5 +1,6 @@
-import { simulateDelay } from '@shared/service/mockApi';
-import { mockTitles } from '@mock/data/titles';
+import { api } from '@shared/service/http';
+import type { ApiResponse, PageResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type Chapter } from '../type/chapter.types';
 
@@ -9,21 +10,24 @@ import { type Chapter } from '../type/chapter.types';
 
 export const getChaptersByTitleId = async (
     titleId: string,
-): Promise<Chapter[]> => {
-    await simulateDelay();
+    page = 0,
+    size = 50,
+): Promise<PageResponse<Chapter>> => {
+    const response = await api.get<ApiResponse<PageResponse<Chapter>>>(
+        `${API_URLS.CHAPTERS}/title/${titleId}`,
+        { params: { page, size } },
+    );
 
-    const title = mockTitles.find(t => t.id === titleId);
-
-    return title?.chapters ?? [];
+    return response.data.data;
 };
 
 export const getChapterByNumber = async (
     titleId: string,
     chapterNumber: string,
-): Promise<Chapter | undefined> => {
-    await simulateDelay();
+): Promise<Chapter> => {
+    const response = await api.get<ApiResponse<Chapter>>(
+        `${API_URLS.CHAPTERS}/title/${titleId}/${chapterNumber}`,
+    );
 
-    const title = mockTitles.find(t => t.id === titleId);
-
-    return title?.chapters.find(ch => ch.number === chapterNumber);
+    return response.data.data;
 };

@@ -3,18 +3,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     getUserLibrary,
     removeSavedManga as removeSavedMangaService,
-    toggleSavedManga as toggleSavedMangaService,
+    saveToLibrary,
     updateSavedMangaList,
 } from '../service/libraryService';
 import { ReadingListType, SavedMangaItem } from '../type/saved-library.types';
 
-const useSavedMangas = (userId = 'user-1') => {
+const useSavedMangas = () => {
     const [savedMangas, setSavedMangas] = useState<SavedMangaItem[]>([]);
 
     const loadLibrary = useCallback(async () => {
-        const userLibrary = await getUserLibrary(userId);
-        setSavedMangas(userLibrary?.savedMangas ?? []);
-    }, [userId]);
+        const page = await getUserLibrary();
+        setSavedMangas(page.content);
+    }, []);
 
     useEffect(() => {
         loadLibrary();
@@ -27,27 +27,37 @@ const useSavedMangas = (userId = 'user-1') => {
             cover: string;
             type: string;
         }) => {
-            const response = await toggleSavedMangaService({ userId, title });
+            const alreadySaved = savedMangas.some(
+                m => m.titleId === title.titleId,
+            );
+
+            if (alreadySaved) {
+                await removeSavedMangaService(title.titleId);
+                await loadLibrary();
+                return false;
+            }
+
+            await saveToLibrary({ titleId: title.titleId });
             await loadLibrary();
-            return response.isSaved;
+            return true;
         },
-        [loadLibrary, userId],
+        [loadLibrary, savedMangas],
     );
 
     const changeList = useCallback(
         async (titleId: string, list: ReadingListType) => {
-            await updateSavedMangaList({ userId, titleId, list });
+            await updateSavedMangaList({ titleId, list });
             await loadLibrary();
         },
-        [loadLibrary, userId],
+        [loadLibrary],
     );
 
     const removeFromSaved = useCallback(
         async (titleId: string) => {
-            await removeSavedMangaService(userId, titleId);
+            await removeSavedMangaService(titleId);
             await loadLibrary();
         },
-        [loadLibrary, userId],
+        [loadLibrary],
     );
 
     const savedByList = useMemo(

@@ -8,11 +8,13 @@ export { default as RatingModal } from './component/modal/RatingModal';
 export { default as RecentReviews } from './component/RecentReviews';
 
 // Services
-export { getRatingsAverage } from './service/ratingService';
 export {
-    getUserReviewsSync as getUserReviews,
-    updateUserReview,
-    deleteUserReview,
+    getRatingsAverage,
+    getUserReviews,
+    updateReview,
+    deleteReview,
+    submitRating,
+    getRatingsByTitleId,
 } from './service/ratingService';
 
 // Types

@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: mangareader-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: mangareader
+      POSTGRES_USER: manga
+      POSTGRES_PASSWORD: manga_secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U manga -d mangareader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  mongodb:
+    image: mongo:8.0
+    container_name: mangareader-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: mangareader
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: mangareader-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: manga
+      RABBITMQ_DEFAULT_PASS: manga_secret
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+  redis:
+    image: redis:7-alpine
+    container_name: mangareader-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+volumes:
+  postgres_data:
+    driver: local
+  mongo_data:
+    driver: local
+  rabbitmq_data:
+    driver: local

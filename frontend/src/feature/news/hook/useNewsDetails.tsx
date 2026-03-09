@@ -1,20 +1,38 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { getNewsById, getRelatedNews } from '../service/newsService';
+import type { NewsItem } from '../type/news.types';
 
 const useNewsDetails = (newsId: string | undefined) => {
-    const news = newsId ? getNewsById(newsId) : undefined;
+    const [news, setNews] = useState<NewsItem | undefined>();
+    const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+
+    useEffect(() => {
+        if (!newsId) {
+            setNews(undefined);
+            setRelatedNews([]);
+            return;
+        }
+
+        getNewsById(newsId).then(setNews).catch(() => setNews(undefined));
+    }, [newsId]);
+
+    useEffect(() => {
+        if (!news) {
+            setRelatedNews([]);
+            return;
+        }
+
+        getRelatedNews(news.id)
+            .then(setRelatedNews)
+            .catch(() => setRelatedNews([]));
+    }, [news]);
 
     const [commentSort, setCommentSort] = useState<'recent' | 'relevant'>(
         'recent',
     );
     const [showSpoilers, setShowSpoilers] = useState(false);
     const [readingProgress, setReadingProgress] = useState(0);
-
-    const relatedNews = useMemo(
-        () => (news ? getRelatedNews(news) : []),
-        [news],
-    );
 
     const sortedComments = useMemo(() => {
         if (!news) {

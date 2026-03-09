@@ -1,117 +1,46 @@
-import {
-    simulateDelay,
-    getFromStorage,
-    saveToStorage,
-} from '@shared/service/mockApi';
-import { mockLibrary } from '@mock/data/library';
+import { api } from '@shared/service/http';
+import type { ApiResponse, PageResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
-import {
-    type ReadingListType,
-    type UserSavedLibrary,
-} from '../type/saved-library.types';
-
-// ---------------------------------------------------------------------------
-// Storage
-// ---------------------------------------------------------------------------
-
-const STORAGE_KEY = 'manga-reader:saved-library';
-
-const getLibrary = (): UserSavedLibrary[] =>
-    getFromStorage<UserSavedLibrary[]>(STORAGE_KEY, mockLibrary);
-
-const saveLibrary = (data: UserSavedLibrary[]) =>
-    saveToStorage(STORAGE_KEY, data);
+import { type ReadingListType, type SavedMangaItem } from '../type/saved-library.types';
 
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
 export const getUserLibrary = async (
-    userId: string,
-): Promise<UserSavedLibrary | null> => {
-    await simulateDelay(100);
-
-    return getLibrary().find(u => u.userId === userId) ?? null;
-};
-
-export const toggleSavedManga = async (data: {
-    userId: string;
-    title: { titleId: string; name: string; cover: string; type: string };
-    defaultList?: ReadingListType;
-}): Promise<{ isSaved: boolean }> => {
-    await simulateDelay(200);
-
-    const users = getLibrary();
-    const { userId, title, defaultList = 'Quero Ler' } = data;
-
-    const userIndex = users.findIndex(u => u.userId === userId);
-
-    if (userIndex === -1) {
-        users.push({
-            userId,
-            name: 'Novo Usuário',
-            savedMangas: [
-                {
-                    ...title,
-                    list: defaultList,
-                    savedAt: new Date().toISOString(),
-                },
-            ],
-        });
-        saveLibrary(users);
-        return { isSaved: true };
-    }
-
-    const alreadySaved = users[userIndex].savedMangas.some(
-        m => m.titleId === title.titleId,
+    page = 0,
+    size = 20,
+): Promise<PageResponse<SavedMangaItem>> => {
+    const response = await api.get<ApiResponse<PageResponse<SavedMangaItem>>>(
+        API_URLS.LIBRARY,
+        { params: { page, size } },
     );
 
-    users[userIndex].savedMangas = alreadySaved
-        ? users[userIndex].savedMangas.filter(m => m.titleId !== title.titleId)
-        : [
-              ...users[userIndex].savedMangas,
-              {
-                  ...title,
-                  list: defaultList,
-                  savedAt: new Date().toISOString(),
-              },
-          ];
+    return response.data.data;
+};
 
-    saveLibrary(users);
+export const saveToLibrary = async (data: {
+    titleId: string;
+    list?: ReadingListType;
+}): Promise<SavedMangaItem> => {
+    const response = await api.post<ApiResponse<SavedMangaItem>>(
+        API_URLS.LIBRARY,
+        { titleId: data.titleId, list: data.list ?? 'Quero Ler' },
+    );
 
-    return { isSaved: !alreadySaved };
+    return response.data.data;
 };
 
 export const updateSavedMangaList = async (data: {
-    userId: string;
     titleId: string;
     list: ReadingListType;
 }): Promise<void> => {
-    await simulateDelay(100);
-
-    const users = getLibrary();
-    const user = users.find(u => u.userId === data.userId);
-
-    if (!user) return;
-
-    user.savedMangas = user.savedMangas.map(m =>
-        m.titleId === data.titleId ? { ...m, list: data.list } : m,
-    );
-
-    saveLibrary(users);
+    await api.patch(`${API_URLS.LIBRARY}/${data.titleId}`, {
+        list: data.list,
+    });
 };
 
-export const removeSavedManga = async (
-    userId: string,
-    titleId: string,
-): Promise<void> => {
-    await simulateDelay(100);
-
-    const users = getLibrary();
-    const user = users.find(u => u.userId === userId);
-
-    if (!user) return;
-
-    user.savedMangas = user.savedMangas.filter(m => m.titleId !== titleId);
-    saveLibrary(users);
+export const removeSavedManga = async (titleId: string): Promise<void> => {
+    await api.delete(`${API_URLS.LIBRARY}/${titleId}`);
 };

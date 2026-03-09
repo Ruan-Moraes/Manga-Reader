@@ -18,4 +18,12 @@ export default defineConfig({
             '@mock': path.resolve(__dirname, './src/mock'),
         },
     },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+            },
+        },
+    },
 });

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
     getRatingsAverage,
@@ -7,17 +7,32 @@ import {
 } from '../service/ratingService';
 import { MangaRating } from '../type/rating.types';
 
+type RatingAverageResult = {
+    average: number;
+    count: number;
+};
+
 const useRatings = (titleId: string) => {
     const [ratings, setRatings] = useState<MangaRating[]>([]);
+    const [average, setAverage] = useState<RatingAverageResult>({
+        average: 0,
+        count: 0,
+    });
 
     const loadRatings = useCallback(async () => {
         const data = await getRatingsByTitleId(titleId);
-        setRatings(data);
+        setRatings(data.content);
+    }, [titleId]);
+
+    const loadAverage = useCallback(async () => {
+        const data = await getRatingsAverage(titleId);
+        setAverage({ average: data.average, count: data.count });
     }, [titleId]);
 
     useEffect(() => {
         loadRatings();
-    }, [loadRatings]);
+        loadAverage();
+    }, [loadRatings, loadAverage]);
 
     const submitRating = useCallback(
         async ({
@@ -36,13 +51,9 @@ const useRatings = (titleId: string) => {
                 categoryRatings,
             });
             await loadRatings();
+            await loadAverage();
         },
-        [loadRatings, titleId],
-    );
-
-    const average = useMemo(
-        () => getRatingsAverage(titleId),
-        [ratings, titleId],
+        [loadRatings, loadAverage, titleId],
     );
 
     return {

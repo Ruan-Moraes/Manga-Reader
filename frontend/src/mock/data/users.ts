@@ -10,6 +10,7 @@ export const mockUsers: User[] = [
         id: 'user-1',
         photo: 'https://i.pravatar.cc/100?img=32',
         name: 'Leitor Demo',
+        role: 'user',
         bio: 'Fã de fantasia, ação e slice of life. Sempre em busca do próximo mangá para maratonar.',
         member: { isMember: true, since: new Date('2024-03-18') },
         socialMediasLinks: [
@@ -48,6 +49,7 @@ export const mockUsers: User[] = [
         id: 'user-4',
         photo: 'https://i.pravatar.cc/100?img=21',
         name: 'Ana Beatriz',
+        role: 'admin',
         bio: 'Tradutora amadora e revisora voluntária.',
         moderator: { isModerator: true, since: new Date('2024-01-10') },
         member: { isMember: true, since: new Date('2021-09-20') },
@@ -110,6 +112,7 @@ export const mockUsers: User[] = [
         id: 'user-12',
         photo: 'https://i.pravatar.cc/100?img=35',
         name: 'Haru Yamamoto',
+        role: 'poster',
         bio: 'Estudante de japonês e tradutor iniciante.',
         member: { isMember: true, since: new Date('2025-01-08') },
         statistics: { comments: 15, likes: 34, dislikes: 2 },

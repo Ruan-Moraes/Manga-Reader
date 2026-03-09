@@ -36,6 +36,7 @@ const CommentsList = ({
         (user: User): void => {
             setUserData({
                 id: user.id,
+                role: user.role,
                 moderator: user.moderator,
                 member: user.member,
                 name: user.name,

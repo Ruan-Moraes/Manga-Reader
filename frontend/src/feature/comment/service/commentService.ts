@@ -1,22 +1,71 @@
-import { simulateDelay } from '@shared/service/mockApi';
-import { mockComments } from '@mock/data/comments';
-import { mockUsers } from '@mock/data/users';
+import { api } from '@shared/service/http';
+import type { ApiResponse, PageResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type CommentData } from '../type/comment.types';
 
 // ---------------------------------------------------------------------------
-// Comment Service
+// Types — espelham os DTOs do backend
 // ---------------------------------------------------------------------------
 
-/** Armazena comentários em memória para permitir CRUD sem recarregar. */
-const commentsStore: Record<string, CommentData[]> = { ...mockComments };
+type CommentResponse = {
+    id: string;
+    titleId: string;
+    parentCommentId: string | null;
+    userId: string;
+    userName: string;
+    userPhoto: string;
+    isHighlighted: boolean;
+    wasEdited: boolean;
+    createdAt: string;
+    textContent: string | null;
+    imageContent: string | null;
+    likeCount: string;
+    dislikeCount: string;
+};
+
+// ---------------------------------------------------------------------------
+// Mapper — backend → frontend shape
+// ---------------------------------------------------------------------------
+
+const toCommentData = (c: CommentResponse): CommentData => ({
+    id: c.id,
+    parentCommentId: c.parentCommentId,
+    user: {
+        id: c.userId,
+        name: c.userName,
+        photo: c.userPhoto ?? '',
+    },
+    isOwner: false, // determinado pelo componente via auth context
+    isHighlighted: c.isHighlighted,
+    wasEdited: c.wasEdited,
+    createdAt: c.createdAt,
+    textContent: c.textContent,
+    imageContent: c.imageContent,
+    likeCount: c.likeCount,
+    dislikeCount: c.dislikeCount,
+});
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
 
 export const getCommentsByTitleId = async (
-    titleId: number | string,
-): Promise<CommentData[]> => {
-    await simulateDelay();
+    titleId: string,
+    page = 0,
+    size = 20,
+): Promise<PageResponse<CommentData>> => {
+    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(
+        `${API_URLS.COMMENTS}/title/${titleId}`,
+        { params: { page, size } },
+    );
 
-    return commentsStore[String(titleId)] ?? [];
+    const pageData = response.data.data;
+
+    return {
+        ...pageData,
+        content: pageData.content.map(toCommentData),
+    };
 };
 
 export const createComment = async (data: {
@@ -24,76 +73,46 @@ export const createComment = async (data: {
     textContent: string;
     parentCommentId?: string | null;
 }): Promise<CommentData> => {
-    await simulateDelay();
+    const response = await api.post<ApiResponse<CommentResponse>>(
+        API_URLS.COMMENTS,
+        {
+            titleId: data.titleId,
+            textContent: data.textContent,
+            parentCommentId: data.parentCommentId ?? null,
+        },
+    );
 
-    const currentUser = mockUsers[0]; // usuário logado
-
-    const newComment: CommentData = {
-        id: `c-${data.titleId}-${Date.now()}`,
-        parentCommentId: data.parentCommentId ?? null,
-        user: currentUser,
-        isOwner: true,
-        isHighlighted: false,
-        wasEdited: false,
-        createdAt: new Date().toISOString(),
-        textContent: data.textContent,
-        imageContent: null,
-        dislikeCount: '0',
-        likeCount: '0',
-    };
-
-    if (!commentsStore[data.titleId]) {
-        commentsStore[data.titleId] = [];
-    }
-
-    commentsStore[data.titleId] = [newComment, ...commentsStore[data.titleId]];
-
-    return newComment;
+    return toCommentData(response.data.data);
 };
 
 export const updateComment = async (
     id: string,
     textContent: string,
-): Promise<void> => {
-    await simulateDelay();
+): Promise<CommentData> => {
+    const response = await api.put<ApiResponse<CommentResponse>>(
+        `${API_URLS.COMMENTS}/${id}`,
+        { textContent },
+    );
 
-    for (const titleId of Object.keys(commentsStore)) {
-        commentsStore[titleId] = commentsStore[titleId].map(c =>
-            c.id === id ? { ...c, textContent, wasEdited: true } : c,
-        );
-    }
+    return toCommentData(response.data.data);
 };
 
 export const deleteComment = async (id: string): Promise<void> => {
-    await simulateDelay();
-
-    for (const titleId of Object.keys(commentsStore)) {
-        commentsStore[titleId] = commentsStore[titleId].filter(
-            c => c.id !== id,
-        );
-    }
+    await api.delete(`${API_URLS.COMMENTS}/${id}`);
 };
 
-export const likeComment = async (id: string): Promise<void> => {
-    await simulateDelay();
+export const likeComment = async (id: string): Promise<CommentData> => {
+    const response = await api.post<ApiResponse<CommentResponse>>(
+        `${API_URLS.COMMENTS}/${id}/like`,
+    );
 
-    for (const titleId of Object.keys(commentsStore)) {
-        commentsStore[titleId] = commentsStore[titleId].map(c =>
-            c.id === id
-                ? { ...c, likeCount: String(Number(c.likeCount) + 1) }
-                : c,
-        );
-    }
+    return toCommentData(response.data.data);
 };
 
-export const dislikeComment = async (id: string): Promise<void> => {
-    await simulateDelay();
+export const dislikeComment = async (id: string): Promise<CommentData> => {
+    const response = await api.post<ApiResponse<CommentResponse>>(
+        `${API_URLS.COMMENTS}/${id}/dislike`,
+    );
 
-    for (const titleId of Object.keys(commentsStore)) {
-        commentsStore[titleId] = commentsStore[titleId].map(c =>
-            c.id === id
-                ? { ...c, dislikeCount: String(Number(c.dislikeCount) + 1) }
-                : c,
-        );
-    }
+    return toCommentData(response.data.data);
 };

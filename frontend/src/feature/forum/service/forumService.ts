@@ -1,5 +1,6 @@
-import { simulateDelay } from '@shared/service/mockApi';
-import { mockForumTopics } from '@mock/data/forums';
+import { api } from '@shared/service/http';
+import type { ApiResponse, PageResponse } from '@shared/service/http';
+import { API_URLS } from '@shared/constant/API_URLS';
 
 import type {
     ForumCategory,
@@ -33,7 +34,7 @@ export const forumSortOptions: { value: ForumSort; label: string }[] = [
 export const TOPICS_PER_PAGE = 8;
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Helpers (sync — usados em useMemo)
 // ---------------------------------------------------------------------------
 
 const matchesQuery = (topic: ForumTopic, query: string): boolean => {
@@ -70,40 +71,47 @@ const sortTopics = (topics: ForumTopic[], sort: ForumSort): ForumTopic[] => {
 };
 
 // ---------------------------------------------------------------------------
-// Public API — Async (simulam chamadas ao backend)
+// Public API — Async (chamadas ao backend)
 // ---------------------------------------------------------------------------
 
 export const getForumTopics = async (
-    filters?: ForumFilter,
-): Promise<ForumTopic[]> => {
-    await simulateDelay();
+    page = 0,
+    size = 20,
+): Promise<PageResponse<ForumTopic>> => {
+    const response = await api.get<ApiResponse<PageResponse<ForumTopic>>>(
+        API_URLS.FORUM,
+        { params: { page, size } },
+    );
 
-    if (!filters) return sortTopics(mockForumTopics, 'recent');
-
-    return filterForumTopics(filters);
+    return response.data.data;
 };
 
 export const getForumTopicById = async (
     id: string,
-): Promise<ForumTopic | undefined> => {
-    await simulateDelay();
-    return mockForumTopics.find(t => t.id === id);
+): Promise<ForumTopic> => {
+    const response = await api.get<ApiResponse<ForumTopic>>(
+        `${API_URLS.FORUM}/${id}`,
+    );
+
+    return response.data.data;
 };
 
-/** Sync version — used by hooks that derive data in useMemo */
-export const getForumTopicByIdSync = (id: string): ForumTopic | undefined =>
-    mockForumTopics.find(t => t.id === id);
-
 export const getForumCategories = async (): Promise<ForumCategory[]> => {
-    await simulateDelay(100);
-    return forumCategories;
+    const response = await api.get<ApiResponse<ForumCategory[]>>(
+        `${API_URLS.FORUM}/categories`,
+    );
+
+    return response.data.data;
 };
 
 // ---------------------------------------------------------------------------
 // Sync filter — usado pelos componentes de rota em useMemo
 // ---------------------------------------------------------------------------
 
-export const filterForumTopics = (filters: ForumFilter): ForumTopic[] => {
+export const filterForumTopics = (
+    items: ForumTopic[],
+    filters: ForumFilter,
+): ForumTopic[] => {
     const {
         category = 'all',
         sort = 'recent',
@@ -114,7 +122,7 @@ export const filterForumTopics = (filters: ForumFilter): ForumTopic[] => {
 
     const normalizedQuery = query.trim().toLowerCase();
 
-    const filtered = mockForumTopics.filter(topic => {
+    const filtered = items.filter(topic => {
         if (category !== 'all' && topic.category !== category) return false;
         if (onlyPinned && !topic.isPinned) return false;
         if (onlySolved && !topic.isSolved) return false;

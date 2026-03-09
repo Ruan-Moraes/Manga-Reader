@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { getAllGenres, getGroups } from '../service/groupService';
+import { getGroups } from '../service/groupService';
 import { GroupStatus, Group } from '../type/group.types';
 
 type GroupFilters = {
@@ -30,11 +30,16 @@ const useGroups = (filters: GroupFilters) => {
     useEffect(() => {
         setIsLoading(true);
 
-        getGroups().then(data => {
-            setAllGroups(data);
+        getGroups(0, 100).then(page => {
+            setAllGroups(page.content);
             setIsLoading(false);
         });
     }, []);
+
+    const genres = useMemo(
+        () => Array.from(new Set(allGroups.flatMap(g => g.genres))).sort(),
+        [allGroups],
+    );
 
     const groups = useMemo(() => {
         const filtered = allGroups.filter(group => {
@@ -51,7 +56,7 @@ const useGroups = (filters: GroupFilters) => {
 
     return {
         groups,
-        genres: getAllGenres(),
+        genres,
         isLoading,
     };
 };

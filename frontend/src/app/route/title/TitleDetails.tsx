@@ -165,9 +165,9 @@ const TitleDetailsPage = () => {
                     />
                     <div className="flex items-center justify-between px-2 py-2 border border-tertiary bg-primary-default rounded-tr-xs">
                         <span className="text-sm font-semibold">
-                            Média da comunidade
+                            Média da comunidade:
                         </span>
-                        <RatingStars value={average} showValue />
+                        <RatingStars value={average} />
                     </div>
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}

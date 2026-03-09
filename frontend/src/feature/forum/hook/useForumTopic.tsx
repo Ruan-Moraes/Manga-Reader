@@ -1,14 +1,31 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getForumTopicByIdSync, filterForumTopics } from '@feature/forum';
+import { getForumTopicById, getForumTopics, filterForumTopics } from '@feature/forum';
+import type { ForumTopic } from '../type/forum.types';
 
 const useForumTopic = () => {
     const { topicId } = useParams();
 
-    const topic = useMemo(
-        () => (topicId ? getForumTopicByIdSync(topicId) : undefined),
-        [topicId],
-    );
+    const [topic, setTopic] = useState<ForumTopic | undefined>();
+    const [relatedTopicsRaw, setRelatedTopicsRaw] = useState<ForumTopic[]>([]);
+
+    useEffect(() => {
+        if (!topicId) {
+            setTopic(undefined);
+            return;
+        }
+
+        getForumTopicById(topicId).then(setTopic).catch(() => setTopic(undefined));
+    }, [topicId]);
+
+    useEffect(() => {
+        if (!topic) {
+            setRelatedTopicsRaw([]);
+            return;
+        }
+
+        getForumTopics(0, 50).then(page => setRelatedTopicsRaw(page.content));
+    }, [topic]);
 
     const [replySort, setReplySort] = useState<'recent' | 'likes'>('recent');
 
@@ -25,10 +42,13 @@ const useForumTopic = () => {
 
     const relatedTopics = useMemo(() => {
         if (!topic) return [];
-        return filterForumTopics({ category: topic.category, sort: 'popular' })
+        return filterForumTopics(relatedTopicsRaw, {
+            category: topic.category,
+            sort: 'popular',
+        })
             .filter(t => t.id !== topic.id)
             .slice(0, 5);
-    }, [topic]);
+    }, [topic, relatedTopicsRaw]);
 
     return {
         topic,

@@ -32,6 +32,20 @@ const menuProfiles: MenuProfile[] = [
         isAdmin: false,
     },
     {
+        id: 'poster',
+        label: 'Postador',
+        fullName: 'Postador Demo',
+        email: 'postador.demo@mangareader.com',
+        planBadge: '[Postador]',
+        savedCount: 24,
+        unreadNotifications: 6,
+        newsBadge: '+6',
+        eventBadge: '3 próximos',
+        canDownload: true,
+        isAdmin: false,
+        isPoster: true,
+    },
+    {
         id: 'admin',
         label: 'Administrador',
         fullName: 'Admin Demo',
@@ -66,20 +80,32 @@ const NavigationMenu = () => {
 
     const currentProfile = useMemo(() => {
         if (isLoggedIn && user) {
-            const isAdmin = Boolean(user.moderator?.isModerator);
+            const role = user.role ?? 'user';
+            const isAdmin = role === 'admin';
+            const isPoster = role === 'poster' || role === 'admin';
+            const planBadge = isAdmin
+                ? '[Admin]'
+                : isPoster
+                  ? '[Postador]'
+                  : '[Pro]';
 
             return {
-                id: isAdmin ? 'admin-real' : 'user-real',
-                label: isAdmin ? 'Administrador' : 'Usuário',
+                id: `${role}-real`,
+                label: isAdmin
+                    ? 'Administrador'
+                    : isPoster
+                      ? 'Postador'
+                      : 'Usuário',
                 fullName: user.name,
                 email: `${user.name.toLowerCase().replace(/\s+/g, '.')}@mangareader.com`,
-                planBadge: isAdmin ? '[Admin]' : '[Pro]',
+                planBadge,
                 savedCount: 12,
                 unreadNotifications: 4,
                 newsBadge: '+2',
                 eventBadge: '2 próximos',
                 canDownload: true,
                 isAdmin,
+                isPoster,
             } satisfies MenuProfile;
         }
 
@@ -211,6 +237,20 @@ const NavigationMenu = () => {
                         <SidebarMenuContent
                             profile={currentProfile}
                             isLoggedIn={isLoggedIn}
+                            onAuthRoleChange={async role => {
+                                if (role === 'visitor') {
+                                    await logout();
+                                    showInfoToast(
+                                        'Modo visitante ativado no menu.',
+                                    );
+                                    return;
+                                }
+
+                                // TODO: in production, role switching via mock is disabled
+                                showInfoToast(
+                                    'Troca de perfil via menu será removida em produção.',
+                                );
+                            }}
                             onLogout={() => {
                                 logout();
                                 showInfoToast('Você saiu da sua conta.');
