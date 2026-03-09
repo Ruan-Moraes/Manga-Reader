@@ -569,6 +569,80 @@ Para cada service, a migração envolve:
 
 ---
 
+# Plano de geração de testes
+
+## Progresso
+
+### Concluído
+
+- Entidade testada: `User`
+- Quantidade de testes criados: `4`
+- Comportamentos cobertos: valores padrão no builder (`role` e `socialLinks`), sobrescrita de role, associação de links sociais e validação de campos opcionais nulos no construtor vazio.
+- Observações importantes: testes unitários da entidade `User` implementados com JUnit 5, sem dependência de contexto Spring.
+
+### Em andamento
+
+- Manga
+
+### Próximas etapas
+
+1. Domain: `Manga`, `Chapter`, `Comment`, `Rating`, `Library`, `Group`, `News`, `Event`, `Forum`, `Category/Tag`, `Store`.
+2. Value Objects: `Chapter`, `NewsAuthor`, `NewsCategory`, `NewsReaction`, `EventLocation` e demais VOs de domínio.
+3. Repositórios: adapters JPA/Mongo + contratos de persistência por módulo.
+4. Services: serviços de aplicação e integrações auxiliares.
+5. Use Cases: fluxos por funcionalidade (auth, manga, comentário, avaliação, etc.).
+6. Controllers: testes de camada de apresentação e contratos HTTP.
+
+
+## Etapas de execução (histórico contínuo)
+
+### Etapa 1 - Domínio User
+
+#### O que foi feito
+- Implementados 4 testes unitários para a entidade `User` cobrindo defaults do builder, sobrescrita de `role`, associação de `socialLinks` e construtor vazio.
+- Etapa marcada como concluída no plano de progresso.
+
+#### O que será feito
+- Iniciar a Etapa 2 com foco no domínio `Manga`, mantendo abordagem incremental por entidade.
+
+#### Pendências / Observações
+- Execução local de testes pode depender de acesso ao repositório Maven Central no ambiente.
+
+### Etapa 2 - Domínio Manga (planejamento técnico)
+
+#### O que foi feito
+- Etapa de `Manga` mantida como **Em andamento**, respeitando a sequência do plano (domínio antes das demais camadas).
+- Definido o objetivo da etapa: iniciar pelos testes unitários da entidade principal e evoluir para entidades relacionadas de domínio na ordem incremental.
+- Atualizado este README como fonte única de rastreabilidade desta interação.
+
+#### O que será feito
+- Implementar testes unitários iniciais da entidade de domínio `Manga` na próxima interação, com foco em comportamentos centrais (defaults, mutações válidas e invariantes básicas).
+- Registrar no bloco `Concluído` a quantidade real de testes criados e os comportamentos efetivamente cobertos após a implementação.
+
+#### Pendências / Observações
+- Confirmar escopo exato da entidade `Manga` (campos e regras de domínio) antes de escrever os testes para evitar cobertura superficial.
+- Em caso de limitação de ambiente para execução Maven, registrar o impedimento explicitamente no histórico sem reportar sucesso inexistente.
+
+### Etapa 3 - Próxima entidade de domínio (pré-planejamento)
+
+#### O que foi feito
+- Definida continuidade incremental pós-`Manga` dentro do mesmo eixo de domínio.
+
+#### O que será feito
+- Avançar para a próxima entidade de domínio na ordem do plano (`Chapter`) após concluir `Manga`.
+
+#### Pendências / Observações
+- Só iniciar `Chapter` após fechamento da etapa `Manga` com cobertura e registro completo no histórico.
+
+## Histórico de execução
+
+- 2026-03-09 — `User` registrado como entidade em andamento para início do plano.
+- 2026-03-09 — `User` movido para concluído com implementação de 4 testes unitários e cobertura dos comportamentos base da entidade.
+- 2026-03-09 — Etapa 2 registrada: `Manga` definida como item em andamento; próxima interação focará implementação dos testes da entidade.
+- 2026-03-09 — Etapa 2 atualizada com planejamento técnico, definição de próxima ação e pontos de atenção para execução/validação.
+
+---
+
 ## Contato
 
 Projeto pessoal de estudo — Ruan.
