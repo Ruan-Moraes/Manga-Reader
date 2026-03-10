@@ -4,6 +4,47 @@
 
 ---
 
+## 🎯 Foco Atual: Testes do Backend
+
+**Fase ativa**: Implementação de testes automatizados no backend.
+**Próxima fase**: Finalização das features e integração frontend ↔ backend.
+
+O backend possui ~80 endpoints e 60+ use cases implementados, mas a cobertura de testes é mínima (1 arquivo com 4 testes unitários). Antes de avançar com features e integração, o foco é **garantir a qualidade da base existente** com testes em todas as camadas.
+
+### Progresso dos Testes
+
+```
+[✅] Domain: User (4 testes)
+[🔄] Domain: Manga (em andamento)
+[🔲] Domain: Chapter, Comment, Rating, Library, Group, News, Event, Forum, Tag, Store
+[🔲] Value Objects: Chapter, NewsAuthor, EventLocation, etc.
+[🔲] Use Cases: 60+ use cases (unitários com mocks)
+[🔲] Repositories: Adapters JPA/Mongo (integração)
+[🔲] Controllers: 13 controllers (MockMVC)
+[🔲] Security: JWT flow, endpoints protegidos
+```
+
+### Ordem de execução dos testes
+
+| # | Camada | Escopo | Abordagem |
+|---|--------|--------|-----------|
+| 1 | **Domain** | Entidades, VOs, Enums | JUnit 5 puro, sem Spring |
+| 2 | **Application** | Use Cases (60+) | Unitários com mocks dos ports |
+| 3 | **Infrastructure** | Repositories/Adapters | Integração com H2/TestContainers |
+| 4 | **Presentation** | Controllers (13) | MockMVC + Spring Security Test |
+| 5 | **Security** | JWT, Auth Guards | Testes de endpoints com/sem token |
+
+### Após os testes
+
+1. Completar endpoints pendentes (chapters, user profile, forgot/reset password)
+2. Integrar frontend com API real (10 de 13 features usam mock data)
+3. CI/CD pipeline
+4. Preparar para produção
+
+> Documentação completa do projeto disponível em [`/docs`](docs/overview.md).
+
+---
+
 ## Sumário
 
 1. [Visão Geral](#1-visão-geral)
@@ -36,32 +77,47 @@ O **Manga Reader** é composto por:
 
 | Métrica | Valor |
 |---------|-------|
-| Arquivos Java (backend) | **180** |
 | Domínios implementados | **12** (Auth, Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store) |
-| Endpoints REST | **~40** |
-| Frontend services | **13** (todos ainda em mock) |
-| Testes automatizados | **1** (context load — mínimo) |
+| Use Cases | **60+** |
+| REST Controllers | **13** |
+| Endpoints REST | **~80** |
+| Tabelas PostgreSQL | **14** |
+| Coleções MongoDB | **4** |
+| Páginas Frontend | **22+** |
+| Features Frontend | **13** (3 com API real, 10 com mock data) |
+| Testes automatizados | **4** (domínio User — mínimo) |
 
 ---
 
 ## 2. Arquitetura
 
-### Clean Architecture (4 camadas)
+### Backend — Clean Architecture (4 camadas)
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    presentation/                         │
-│         Controllers  ·  DTOs  ·  Mappers                │
+│         13 Controllers  ·  ~80 endpoints  ·  DTOs       │
 ├─────────────────────────────────────────────────────────┤
 │                    application/                          │
-│            Use Cases  ·  Port Interfaces                │
+│           60+ Use Cases  ·  Port Interfaces             │
 ├─────────────────────────────────────────────────────────┤
 │                     domain/                              │
-│         Entities  ·  Value Objects  ·  Enums             │
+│     11 Domínios  ·  Entities  ·  Value Objects          │
 ├─────────────────────────────────────────────────────────┤
 │                  infrastructure/                         │
-│   Adapters · Repositories · Security · Seed · Config    │
+│  Persistence · Security · Email · Messaging · Seed      │
 └─────────────────────────────────────────────────────────┘
+```
+
+### Frontend — Arquitetura Modular por Feature
+
+```
+src/
+├── app/        → Layouts, rotas (22+), router (guards)
+├── feature/    → 13 módulos (auth, manga, chapter, comment, ...)
+├── shared/     → 33 componentes, HTTP client, constantes, tipos
+├── mock/       → 11 datasets (substituição pendente por API real)
+└── style/      → Tailwind + customizações
 ```
 
 ### Dual Database
@@ -84,22 +140,29 @@ O **Manga Reader** é composto por:
 | Spring Security | 6.x | Autenticação JWT (jjwt 0.12.6) |
 | Spring Data JPA | — | Acesso PostgreSQL |
 | Spring Data MongoDB | — | Acesso MongoDB |
+| Spring Data Redis | — | Cache (TTL 5 min) |
+| Spring AMQP | — | Mensageria (RabbitMQ) |
+| Spring Mail | — | Envio de emails |
+| Spring Actuator | — | Health checks e métricas |
 | SpringDoc OpenAPI | 2.8.4 | Documentação Swagger UI |
-| MapStruct | 1.6.3 | Mapeamento DTO (parcial — maioria usa mappers estáticos) |
-| Lombok | — | Redução boilerplate |
-| Flyway | — | Migrations SQL (configurado, **não utilizado ainda**) |
+| MapStruct | 1.6.3 | Mapeamento entity ↔ DTO |
+| Bucket4j | 8.10.1 | Rate limiting |
+| Flyway | — | Migrations PostgreSQL |
+| Mongock | — | Migrations MongoDB |
 | Maven | 3.9.9 | Build |
 
 ### Frontend
 
 | Tecnologia | Versão | Uso |
 |-----------|--------|-----|
-| React | 19 | UI |
-| TypeScript | — | Tipagem |
-| Vite | — | Build/dev server |
-| TailwindCSS | — | Estilos |
-| Axios | — | HTTP client (pronto, **não utilizado ainda**) |
-| React Query | — | Cache/state (parcial) |
+| React | 19.1.0 | UI |
+| TypeScript | 5.8.3 | Tipagem |
+| Vite | 6.2.6 | Build/dev server (SWC) |
+| TailwindCSS | 4.1.3 | Estilos |
+| React Router | 6.24.0 | Roteamento SPA |
+| TanStack React Query | 5.73.3 | Server state / cache |
+| Axios | 1.13.5 | HTTP client com interceptores |
+| React Toastify | 11.0.5 | Notificações |
 
 ### Infraestrutura
 
@@ -107,8 +170,8 @@ O **Manga Reader** é composto por:
 |---------|--------|-------|--------|
 | PostgreSQL | 17 (alpine) | 5432 | ✅ Em uso |
 | MongoDB | 8.0 | 27017 | ✅ Em uso |
-| RabbitMQ | 4 (management) | 5672/15672 | ⚠️ Contêiner sobe, **não utilizado no código** |
-| Redis | 7 (alpine) | 6379 | ⚠️ Contêiner sobe, **não utilizado no código** |
+| RabbitMQ | 4 (management) | 5672/15672 | ✅ Configurado |
+| Redis | 7 (alpine) | 6379 | ✅ Configurado (cache TTL 5 min) |
 
 ---
 
@@ -160,108 +223,72 @@ Dev server em `http://localhost:5173`.
 
 ```
 Manga-Reader/
+├── docs/                    # Documentação completa do projeto
+│   ├── overview.md          # Visão geral e estado atual
+│   ├── frontend-analysis.md # Análise técnica do frontend
+│   ├── backend-analysis.md  # Análise técnica do backend
+│   ├── tech-debt.md         # Dívidas técnicas (prioridade + impacto)
+│   ├── pending-tasks.md     # Tarefas pendentes por área
+│   └── deployment-plan.md   # Plano de deploy em produção
+│
 ├── backend/
 │   ├── docker-compose.yml
+│   ├── docker-compose.prod.yml
 │   ├── Dockerfile
 │   ├── pom.xml
 │   └── src/main/java/com/mangareader/
-│       ├── domain/              # Entidades, Value Objects, Enums
-│       │   ├── category/        # Tag (entity) + PublicationStatus, SortCriteria (enums)
-│       │   ├── comment/         # Comment (MongoDB)
-│       │   ├── event/           # Event, EventTicket, EventParticipant + VOs
-│       │   ├── forum/           # ForumTopic, ForumReply + ForumCategory
-│       │   ├── group/           # Group, GroupMember, GroupWork + enums
-│       │   ├── library/         # SavedManga + ReadingListType
-│       │   ├── manga/           # Title (MongoDB), Chapter (VO)
-│       │   ├── news/            # NewsItem (MongoDB) + NewsAuthor, NewsCategory, NewsReaction
-│       │   ├── rating/          # MangaRating (MongoDB)
-│       │   ├── store/           # Store + StoreAvailability
-│       │   └── user/            # User, UserSocialLink + UserRole
-│       ├── application/         # Use Cases + Ports (interfaces)
-│       │   ├── auth/            # SignIn, SignUp, RefreshToken
-│       │   ├── category/        # GetTags, GetTagById, SearchTags
-│       │   ├── comment/         # CRUD + ReactToComment
-│       │   ├── event/           # GetEvents, GetById, GetByStatus
-│       │   ├── forum/           # CRUD + CreateReply
-│       │   ├── group/           # CRUD + Join
-│       │   ├── library/         # Save, Remove, ChangeList, GetLibrary
-│       │   ├── manga/           # GetTitles, GetById, Search, Genre, Filter
-│       │   ├── news/            # GetNews, GetById, GetByCategory, Search
-│       │   ├── rating/          # Submit, Delete, GetByTitle, GetAverage, GetUser
-│       │   └── store/           # GetStores, GetById
-│       ├── infrastructure/
-│       │   ├── persistence/     # JPA/Mongo repositories + adapters
-│       │   ├── security/        # JWT filter, provider, SecurityConfig
-│       │   └── seed/            # DataSeeder (dados de demonstração)
-│       ├── presentation/        # Controllers + DTOs + Mappers
+│       ├── domain/              # Entidades, VOs, Enums (11 domínios)
+│       ├── application/         # 60+ Use Cases + Ports (interfaces)
+│       ├── infrastructure/      # Persistence, Security, Email, Messaging, Seed
+│       ├── presentation/        # 13 Controllers + DTOs + Mappers
 │       └── shared/              # ApiResponse, PageResponse, exceptions, configs
 │
 └── frontend/
     └── src/
-        ├── app/                 # Layout, rotas, router
+        ├── app/                 # Layout, rotas (22+), router (guards)
         ├── feature/             # 13 módulos (auth, manga, comment, rating, etc.)
-        ├── mock/                # Dados mock (ainda em uso por TODOS os services)
-        ├── shared/              # Componentes, constantes, HTTP client, types
-        └── style/               # CSS global
+        ├── mock/                # Dados mock (10 features ainda dependem disto)
+        ├── shared/              # 33 componentes, HTTP client, constantes, tipos
+        └── style/               # CSS global + Tailwind
 ```
 
 ---
 
 ## 7. Estado Atual da Implementação
 
-### Fases concluídas
+### Backend — ✅ Funcionalidades Core Implementadas
 
-| Fase | Escopo | Arquivos | Status |
-|------|--------|----------|--------|
-| **Fase 0** | Foundation — scaffold, Docker, Clean Architecture, configs | 55 | ✅ Concluída |
-| **Fase 1** | Auth (JWT) + Manga (CRUD + busca) | +25 = 80 | ✅ Concluída |
-| **Fase 2** | Comments (CRUD + reações) + Ratings (CRUD + médias) | +24 = 104 | ✅ Concluída |
-| **Fase 3** | Library (salvar/remover/lista) + Groups (CRUD + join) | +24 = 128 | ✅ Concluída |
-| **Fase 4** | News + Events + Forum | +34 = 162 | ✅ Concluída |
-| **Fase 5** | Category/Tags + Store + Filtro avançado de títulos | +18 = 180 | ✅ Concluída |
+| Fase | Escopo | Status |
+|------|--------|--------|
+| Foundation | Scaffold, Docker, Clean Architecture, configs | ✅ |
+| Auth | JWT (sign-in, sign-up, refresh, me, forgot/reset password) | ✅ |
+| Manga | Titles CRUD + busca + filtros | ✅ |
+| Chapters | Listagem e leitura por número | ✅ |
+| Comments | CRUD + reações (like/dislike) | ✅ |
+| Ratings | CRUD + médias por título | ✅ |
+| Library | Salvar, remover, mudar lista | ✅ |
+| Groups | CRUD + join/leave + works | ✅ |
+| News | Listagem + busca + categorias | ✅ |
+| Events | Listagem + filtro por status | ✅ |
+| Forum | CRUD tópicos + replies + categorias | ✅ |
+| Tags | Listagem + busca | ✅ |
+| Stores | Listagem + por título | ✅ |
+| Security | JWT, BCrypt, CORS, Rate Limiting | ✅ |
+| Infra | Email, RabbitMQ, Redis cache, Seed data | ✅ |
+| **Testes** | **4 testes unitários (User)** | **🔄 Em andamento** |
 
-### Cobertura CRUD por controller
+### Frontend — ✅ UI Completa, ⚠️ Integração Pendente
 
-| Controller | GET | POST | PUT | PATCH | DELETE | Avaliação |
-|-----------|-----|------|-----|-------|--------|-----------|
-| AuthController | — | sign-in, sign-up, refresh | — | — | — | Parcial (falta forgot/reset password, `/me`) |
-| TagController | all, byId, search | — | — | — | — | Read-only (adequado) |
-| TitleController | all, byId, search, genre, filter | — | — | — | — | Read-only (adequado para público) |
-| CommentController | byTitle | create, like, dislike | update | — | delete | **CRUD completo** |
-| RatingController | byTitle, average, user | submit | — | — | delete | Falta update |
-| LibraryController | userLibrary | save | — | changeList | remove | **CRUD completo** |
-| GroupController | all, byId, byUsername | create, join | — | — | — | Falta update, delete, leave |
-| NewsController | all, byId, byCategory, search | — | — | — | — | Read-only |
-| EventController | all, byId, byStatus | — | — | — | — | Read-only |
-| ForumController | all, byId, byCategory | createTopic, createReply | — | — | — | Falta update, delete |
-| StoreController | all, byId | — | — | — | — | Read-only |
-
-### Ports × Adapters
-
-| Port | Adapter | Status |
-|------|---------|--------|
-| UserRepositoryPort | UserRepositoryAdapter | ✅ |
-| TitleRepositoryPort | TitleRepositoryAdapter | ✅ |
-| CommentRepositoryPort | CommentRepositoryAdapter | ✅ |
-| RatingRepositoryPort | RatingRepositoryAdapter | ✅ |
-| LibraryRepositoryPort | LibraryRepositoryAdapter | ✅ |
-| GroupRepositoryPort | GroupRepositoryAdapter | ✅ |
-| NewsRepositoryPort | NewsRepositoryAdapter | ✅ |
-| EventRepositoryPort | EventRepositoryAdapter | ✅ |
-| ForumRepositoryPort | ForumRepositoryAdapter | ✅ |
-| TagRepositoryPort | TagRepositoryAdapter | ✅ |
-| StoreRepositoryPort | StoreRepositoryAdapter | ✅ |
-| **TokenPort** | — | ❌ **Sem adapter** (JwtTokenProvider existe mas não implementa o port) |
-
-### Entidades sem use cases
-
-| Entidade | Motivo |
-|----------|--------|
-| `EventParticipant` | Nenhum endpoint de participação em eventos |
-| `EventTicket` | Gerenciado inline com Event, mas sem CRUD próprio |
-| `GroupWork` | Obras do grupo — seed existe, mas sem CRUD |
-| `User` (perfil) | Apenas auth existe; sem controller de perfil |
-| `UserSocialLink` | Sem CRUD — valor criado no seed |
+| Área | Status |
+|------|--------|
+| 22+ páginas com UI responsiva | ✅ |
+| 13 módulos de feature | ✅ |
+| HTTP client com interceptores | ✅ |
+| Guards (AuthGuard, RoleGuard) | ✅ |
+| 3 features com API real (titles, tags, comments GET) | ✅ |
+| 10 features com mock data | ⚠️ Pendente |
+| Validação de formulários | ⚠️ Pendente |
+| Testes frontend | 🔲 Não iniciado |
 
 ---
 
@@ -271,143 +298,164 @@ Manga-Reader/
 
 | Método | Endpoint | Auth | Descrição |
 |--------|----------|------|-----------|
-| POST | `/api/auth/sign-in` | Não | Login com email/senha |
-| POST | `/api/auth/sign-up` | Não | Registro |
-| POST | `/api/auth/refresh` | Não | Renovar access token |
+| POST | `/api/auth/sign-in` | Não | Login |
+| POST | `/api/auth/sign-up` | Não | Cadastro |
+| POST | `/api/auth/refresh` | Não | Refresh token |
+| GET | `/api/auth/me` | Sim | Usuário atual |
+| POST | `/api/auth/forgot-password` | Não | Solicitar reset |
+| POST | `/api/auth/reset-password` | Não | Resetar senha |
 
 ### Titles (`/api/titles`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/titles` | Não | Listar todos |
-| GET | `/api/titles/{id}` | Não | Por ID |
-| GET | `/api/titles/search?q=` | Não | Busca por nome |
-| GET | `/api/titles/genre/{genre}` | Não | Por gênero |
-| GET | `/api/titles/filter?genres=a,b&sort=MOST_READ` | Não | Busca avançada multi-gênero + ordenação |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/titles` | Não |
+| GET | `/api/titles/{id}` | Não |
+| GET | `/api/titles/search?q=` | Não |
+| GET | `/api/titles/genre/{genre}` | Não |
+| GET | `/api/titles/filter?genres=&sort=` | Não |
+
+### Chapters (`/api/titles/{titleId}/chapters`)
+
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/titles/{titleId}/chapters` | Não |
+| GET | `/api/titles/{titleId}/chapters/{number}` | Não |
 
 ### Tags (`/api/tags`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/tags` | Não | Todas (ordenadas A-Z) |
-| GET | `/api/tags/{id}` | Não | Por ID |
-| GET | `/api/tags/search?q=` | Não | Busca parcial |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/tags` | Não |
+| GET | `/api/tags/{id}` | Não |
+| GET | `/api/tags/search?q=` | Não |
 
 ### Comments (`/api/comments`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/comments/title/{titleId}` | Não | Comentários de um título |
-| POST | `/api/comments` | Sim | Criar comentário |
-| PUT | `/api/comments/{id}` | Sim | Editar comentário |
-| DELETE | `/api/comments/{id}` | Sim | Remover comentário |
-| POST | `/api/comments/{id}/like` | Sim | Like |
-| POST | `/api/comments/{id}/dislike` | Sim | Dislike |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/comments/title/{titleId}` | Não |
+| POST | `/api/comments` | Sim |
+| PUT | `/api/comments/{id}` | Sim |
+| DELETE | `/api/comments/{id}` | Sim |
+| POST | `/api/comments/{id}/react` | Sim |
 
 ### Ratings (`/api/ratings`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/ratings/title/{titleId}` | Não | Avaliações de um título |
-| GET | `/api/ratings/title/{titleId}/average` | Não | Média de avaliações |
-| GET | `/api/ratings/user` | Sim | Minhas avaliações |
-| POST | `/api/ratings` | Sim | Submeter avaliação |
-| DELETE | `/api/ratings/{id}` | Sim | Remover avaliação |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/ratings/title/{titleId}` | Não |
+| GET | `/api/ratings/title/{titleId}/average` | Não |
+| POST | `/api/ratings` | Sim |
+| PUT | `/api/ratings/{id}` | Sim |
+| DELETE | `/api/ratings/{id}` | Sim |
+| GET | `/api/ratings/user/me` | Sim |
 
-### Library (`/api/library`)
+### Library (`/api/library`) — Todos autenticados
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/library` | Sim | Minha biblioteca |
-| POST | `/api/library` | Sim | Salvar título |
-| PATCH | `/api/library/{titleId}` | Sim | Mudar lista de leitura |
-| DELETE | `/api/library/{titleId}` | Sim | Remover da biblioteca |
+| Método | Endpoint |
+|--------|----------|
+| GET | `/api/library` |
+| POST | `/api/library` |
+| PATCH | `/api/library/{titleId}` |
+| DELETE | `/api/library/{titleId}` |
 
 ### Groups (`/api/groups`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/groups` | Não | Listar todos |
-| GET | `/api/groups/{id}` | Não | Por ID |
-| GET | `/api/groups/username/{username}` | Não | Por username |
-| POST | `/api/groups` | Sim | Criar grupo |
-| POST | `/api/groups/{id}/join` | Sim | Entrar no grupo |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/groups` | Não |
+| GET | `/api/groups/{id}` | Não |
+| GET | `/api/groups/username/{username}` | Não |
+| GET | `/api/groups/title/{titleId}` | Não |
+| POST | `/api/groups` | Sim |
+| PUT | `/api/groups/{id}` | Sim |
+| POST | `/api/groups/{id}/join` | Sim |
+| POST | `/api/groups/{id}/leave` | Sim |
+| POST | `/api/groups/{id}/works` | Sim |
+| DELETE | `/api/groups/{id}/works/{titleId}` | Sim |
 
 ### News (`/api/news`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/news` | Não | Todas as notícias |
-| GET | `/api/news/{id}` | Não | Por ID |
-| GET | `/api/news/category/{category}` | Não | Por categoria |
-| GET | `/api/news/search?q=` | Não | Busca por título |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/news` | Não |
+| GET | `/api/news/{id}` | Não |
+| GET | `/api/news/category/{category}` | Não |
+| GET | `/api/news/search?q=` | Não |
 
 ### Events (`/api/events`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/events` | Não | Todos os eventos |
-| GET | `/api/events/{id}` | Não | Por ID |
-| GET | `/api/events/status/{status}` | Não | Por status |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/events` | Não |
+| GET | `/api/events/{id}` | Não |
+| GET | `/api/events/status/{status}` | Não |
 
 ### Forum (`/api/forum`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/forum?page=0&size=20&sort=createdAt&direction=desc` | Não | Tópicos paginados |
-| GET | `/api/forum/{id}` | Não | Tópico com respostas |
-| GET | `/api/forum/category/{category}` | Não | Por categoria |
-| POST | `/api/forum` | Sim | Criar tópico |
-| POST | `/api/forum/{id}/replies` | Sim | Responder tópico |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/forum` | Não |
+| GET | `/api/forum/{id}` | Não |
+| GET | `/api/forum/category/{category}` | Não |
+| GET | `/api/forum/categories` | Não |
+| POST | `/api/forum` | Sim |
+| POST | `/api/forum/{id}/reply` | Sim |
+| PUT | `/api/forum/{id}` | Sim |
+| DELETE | `/api/forum/{id}` | Sim |
 
 ### Stores (`/api/stores`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/stores` | Não | Todas as lojas |
-| GET | `/api/stores/{id}` | Não | Por ID |
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/stores` | Não |
+| GET | `/api/stores/{id}` | Não |
+| GET | `/api/stores/title/{titleId}` | Não |
+
+### Users (`/api/users`)
+
+| Método | Endpoint | Auth |
+|--------|----------|------|
+| GET | `/api/users/{id}` | Não |
+| GET | `/api/users/me` | Sim |
+| PATCH | `/api/users/me` | Sim |
 
 ---
 
 ## 9. Cobertura Frontend × Backend
 
-### Status de migração dos services
+### Status de integração por feature
 
-**Nenhum** service do frontend foi migrado para consumir a API real. Todos os 13 services usam `simulateDelay()` + dados mock. O HTTP client (Axios) está pronto com interceptors, injeção de Bearer token e tratamento de erro, mas **não é usado por nenhum service**.
+| Feature | GET (API real) | CRUD (API real) | Fonte Atual |
+|---------|:-:|:-:|-------------|
+| **manga** (titles) | ✅ | — | API real |
+| **category** (tags) | ✅ | — | API real |
+| **comment** | ✅ | ❌ | API real (GET) / Mock (CRUD) |
+| **auth** | 🔲 | 🔲 | Endpoints definidos, não testados |
+| **rating** | ❌ | ❌ | Mock data |
+| **group** | ❌ | ❌ | Mock data |
+| **library** | ❌ | ❌ | Mock data (localStorage) |
+| **news** | ❌ | ❌ | Mock data |
+| **event** | ❌ | ❌ | Mock data |
+| **forum** | ❌ | ❌ | Mock data |
+| **store** | ❌ | ❌ | Mock data |
+| **user** | ❌ | ❌ | Mock data |
 
-### Endpoints que o frontend espera mas o backend NÃO tem
+### Ordem de migração sugerida (pós-testes)
 
-| Funcionalidade | Endpoint esperado | Prioridade |
-|---------------|-------------------|-----------|
-| Capítulos de um título | `GET /api/titles/{id}/chapters` | 🔴 Alta |
-| Capítulo por número | `GET /api/titles/{id}/chapters/{num}` | 🔴 Alta |
-| Perfil do usuário logado | `GET /api/auth/me` | 🔴 Alta |
-| Atualizar perfil | `PATCH /api/users/me` | 🟡 Média |
-| Recuperação de senha | `POST /api/auth/forgot-password` | 🟡 Média |
-| Resetar senha | `POST /api/auth/reset-password` | 🟡 Média |
-| Atualizar avaliação | `PUT /api/ratings/{id}` | 🟡 Média |
-| Lojas por título | `GET /api/stores/title/{titleId}` | 🟡 Média |
-| Grupos por título | `GET /api/groups/title/{titleId}` | 🟡 Média |
-| Notícias relacionadas | `GET /api/news/{id}/related` | 🟢 Baixa |
-| Fontes de notícias | `GET /api/news/sources` | 🟢 Baixa |
-| Eventos relacionados | `GET /api/events/{id}/related` | 🟢 Baixa |
-| Categorias do fórum (lista) | `GET /api/forum/categories` | 🟢 Baixa |
-| Membro por ID | `GET /api/groups/members/{id}` | 🟢 Baixa |
-
-### Endpoints do backend que o frontend ainda não consome
-
-| Backend pronto | Frontend service não usa |
-|---------------|------------------------|
-| `POST /api/auth/sign-up` | Sem service call de sign-up real |
-| `POST /api/auth/refresh` | Sem auto-refresh de token |
-| `GET /api/tags/search?q=` | Frontend não busca tags via API |
-| `GET /api/titles/filter` | Frontend filtra client-side |
-| `GET /api/news/search` | Frontend filtra client-side |
-| `GET /api/news/category/{cat}` | Frontend filtra client-side |
-| `POST /api/forum` | Frontend não cria tópicos via API |
-| `POST /api/forum/{id}/replies` | Frontend não cria replies via API |
-| `POST /api/groups` | Frontend não cria grupos via API |
-| `POST /api/groups/{id}/join` | Frontend não entra em grupo via API |
+| # | Service | Justificativa |
+|---|---------|---------------|
+| 1 | `authService` | Fundação — autenticação para todos os endpoints protegidos |
+| 2 | `libraryService` | Feature pessoal chave, CRUD completo |
+| 3 | `ratingService` | Interação social, CRUD completo |
+| 4 | `commentService` (CRUD) | Completar integração parcial existente |
+| 5 | `userService` | Perfil do usuário |
+| 6 | `forumService` | Comunidade, CRUD com replies |
+| 7 | `groupService` | Comunidade, CRUD com membros e works |
+| 8 | `newsService` | Conteúdo editorial (read-only) |
+| 9 | `eventService` | Conteúdo editorial (read-only) |
+| 10 | `storeService` | Complementar (read-only) |
 
 ---
 
@@ -415,231 +463,130 @@ Manga-Reader/
 
 ### 🔴 Críticas
 
-| # | Dívida | Descrição | Impacto |
-|---|--------|-----------|---------|
-| 1 | **Zero testes** | Apenas 1 teste (context load). Sem testes unitários, de integração ou de controller. Testcontainers e spring-security-test estão comentados no POM. | Risco alto de regressão |
-| 2 | **Sem migrations (Flyway/Mongock)** | Schema PostgreSQL gerenciado por `ddl-auto: update`. Sem migration files. Flyway desabilitado. Mongock não configurado. | Schema drift, impossível rollback |
-| 3 | **JWT secret hardcoded** | Secret fixo em `application.yml` no profile padrão. Sem rotação de chaves. | Vulnerabilidade em qualquer deploy não-dev |
-| 4 | **TokenPort sem adapter** | O port `TokenPort` existe na camada de aplicação mas `JwtTokenProvider` não o implementa formalmente. | Quebra do princípio de inversão de dependência |
-| 5 | **`ddl-auto: update` em dev** | Hibernate gerencia o schema sem controle de versão. Já marcado como TODO para trocar pra `validate`. | Mudanças de schema não rastreáveis |
+| # | Dívida | Impacto |
+|---|--------|---------|
+| 1 | **Cobertura de testes mínima** (4 testes em todo o backend, 0 no frontend) | Bloqueante para produção |
+| 2 | **10 features frontend usam mock data** | Aplicação não funcional em cenário real |
 
 ### 🟡 Importantes
 
-| # | Dívida | Descrição |
-|---|--------|-----------|
-| 6 | **Redis não utilizado** | Contêiner sobe no Docker Compose, dependency comentada no POM. Nenhum `@Cacheable` ou uso de cache. |
-| 7 | **RabbitMQ não utilizado** | Contêiner sobe, dependency comentada. Nenhum producer/consumer implementado. Planejado para `rating.submitted`, `user.profile.updated`. |
-| 8 | **Frontend 100% mock** | Nenhum dos 13 services consome a API real. HTTP client Axios pronto mas não utilizado. |
-| 9 | **Sem rate limiting** | Nenhum mecanismo de proteção contra abuso (Bucket4j, Resilience4j, etc.). |
-| 10 | **Sem logback.xml** | Logging usa apenas config do `application.yml`. Sem rotação de logs, sem formato JSON para produção. |
-| 11 | **MapStruct parcialmente usado** | Declarado no POM com processor, mas todos os mappers são manuais (classes estáticas `*Mapper`). |
-| 12 | **Sem validação em alguns DTOs** | Requests como `SaveToLibraryRequest`, `ChangeListRequest` podem não ter `@Valid` completo. |
-| 13 | **Sem paginação em vários endpoints** | Titles, Comments, Ratings, News, Events, Groups retornam listas completas sem paginação. Apenas Forum usa `PageResponse`. |
+| # | Dívida | Impacto |
+|---|--------|---------|
+| 3 | Sem CI/CD pipeline | Deploys manuais, sem verificação automática |
+| 4 | Auth end-to-end não testado | Fluxo de autenticação pode falhar em produção |
+| 5 | Validação insuficiente em formulários frontend | UX degradada, dados inválidos |
 
 ### 🟢 Menores
 
-| # | Dívida | Descrição |
-|---|--------|-----------|
-| 14 | **Java 23 vs README** | README de arquitetura menciona Java 21 LTS, mas `pom.xml` e SDKMAN usam Java 23. |
-| 15 | **Seed data em produção** | `DataSeeder` roda em `@Profile("!test")` — rodaria em prod se não houver cuidado. Deveria ser `@Profile("dev")`. |
-| 16 | **ForumMapper `postCount` hardcoded** | `ForumMapper` retorna `postCount = 0` para todos os autores (placeholder). |
-| 17 | **Sem HATEOAS** | Respostas não incluem links de navegação entre recursos. |
-| 18 | **Sem versionamento de API** | Endpoints em `/api/` sem prefixo de versão (`/api/v1/`). |
+| # | Dívida |
+|---|--------|
+| 6 | Componentes de página grandes (>100 linhas) — precisam de split |
+| 7 | Sem lazy loading / code splitting para rotas |
+| 8 | Sem acessibilidade (ARIA, HTML semântico) |
+| 9 | Conteúdo placeholder em Termos de Uso e DMCA |
+| 10 | Referências cross-database (PostgreSQL ↔ MongoDB) sem integridade documentada |
+| 11 | Basename `/Manga-Reader` hardcoded |
+| 12 | Sem i18n |
+
+> Detalhamento completo com prioridades em [`docs/tech-debt.md`](docs/tech-debt.md).
 
 ---
 
 ## 11. Pendências Funcionais
 
-### Endpoints que precisam ser criados
+### Backend — Testes (foco atual)
 
-| Prioridade | Endpoint | Domínio | Descrição |
-|-----------|----------|---------|-----------|
-| 🔴 | `GET /api/titles/{id}/chapters` | Chapter | Listar capítulos de um título |
-| 🔴 | `GET /api/titles/{id}/chapters/{num}` | Chapter | Ler capítulo específico |
-| 🔴 | `GET /api/auth/me` | Auth | Retornar dados do usuário logado |
-| 🟡 | `POST /api/auth/forgot-password` | Auth | Solicitar recuperação de senha |
-| 🟡 | `POST /api/auth/reset-password` | Auth | Resetar senha com token |
-| 🟡 | `PUT /api/ratings/{id}` | Rating | Atualizar avaliação existente |
-| 🟡 | `PATCH /api/users/me` | User | Atualizar perfil |
-| 🟡 | `GET /api/stores/title/{titleId}` | Store | Lojas que vendem um título |
-| 🟡 | `PUT /api/forum/{id}` | Forum | Editar tópico |
-| 🟡 | `DELETE /api/forum/{id}` | Forum | Remover tópico |
-| 🟡 | `PUT /api/groups/{id}` | Group | Editar grupo |
-| 🟡 | `DELETE /api/groups/{id}/leave` | Group | Sair do grupo |
-| 🟢 | `GET /api/news/{id}/related` | News | Notícias relacionadas |
-| 🟢 | `GET /api/events/{id}/related` | Event | Eventos relacionados |
-| 🟢 | `GET /api/forum/categories` | Forum | Lista de categorias disponíveis |
-| 🟢 | `POST /api/events/{id}/participate` | Event | Participar de evento |
+| Camada | Escopo | Status |
+|--------|--------|--------|
+| Domain | User, Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Tag, Store + VOs | 🔄 Em andamento |
+| Application | 60+ Use Cases com mocks dos ports | 🔲 |
+| Infrastructure | Repositories (H2 + TestContainers) | 🔲 |
+| Presentation | 13 Controllers (MockMVC) | 🔲 |
+| Security | JWT flow, endpoints protegidos | 🔲 |
 
-### Use cases que precisam ser criados
+### Frontend — Integração (próxima fase)
 
-| Entidade | Use Case faltante |
-|----------|-------------------|
-| Chapter | GetChaptersByTitle, GetChapterByNumber |
-| User | GetProfile, UpdateProfile |
-| EventParticipant | ParticipateInEvent, CancelParticipation |
-| GroupWork | AddWorkToGroup, RemoveWorkFromGroup |
-| Rating | UpdateRating |
-| ForumTopic | UpdateTopic, DeleteTopic |
-| Group | UpdateGroup, LeaveGroup, DeleteGroup |
+| Tarefa | Quantidade |
+|--------|-----------|
+| Conectar features à API real | 10 features |
+| Implementar validação de formulários | 8 formulários |
+| Implementar lazy loading (React.lazy) | 22+ rotas |
+| Refatorar componentes grandes | ~9 páginas |
 
-### Migração Frontend → API real
-
-Para cada service, a migração envolve:
-
-1. Substituir `simulateDelay()` + mock data por chamada ao `api` (Axios client)
-2. Mapear resposta `ApiResponse<T>` para o tipo esperado
-3. Remover import do `@mock/data/*`
-4. Configurar `VITE_API_BASE_URL` no `.env`
-
-**Ordem sugerida de migração:**
-
-| # | Service | Justificativa |
-|---|---------|---------------|
-| 1 | `authService.ts` | Fundação — todos os outros services autenticados dependem dela |
-| 2 | `titleService.ts` | Core do produto — catálogo |
-| 3 | `tagService.ts` | Complementar ao catálogo (filtros) |
-| 4 | `chapterService.ts` | Core — leitura de capítulos (requer backend endpoint novo) |
-| 5 | `commentService.ts` | Interação social primária |
-| 6 | `ratingService.ts` | Interação social |
-| 7 | `libraryService.ts` | Funcionalidade pessoal chave |
-| 8 | `storeService.ts` | Complementar |
-| 9 | `groupService.ts` | Comunidade |
-| 10 | `newsService.ts` | Conteúdo editorial |
-| 11 | `eventService.ts` | Conteúdo editorial |
-| 12 | `forumService.ts` | Comunidade |
-| 13 | `userService.ts` | Requer backend endpoints novos |
+> Lista completa em [`docs/pending-tasks.md`](docs/pending-tasks.md).
 
 ---
 
 ## 12. Roadmap
 
-### Fase 6 — Capítulos + Perfil + Auth completo
+```
+[✅]  Fase 1-5: Backend features (domínios, use cases, endpoints, security, infra)
+[✅]  Fase 6: Frontend UI (22+ páginas, 13 features, layout, guards)
+[🔄]  Fase 7: Testes do backend ← ESTAMOS AQUI
+        ├─ Domain entities e VOs
+        ├─ Use Cases (unitários)
+        ├─ Repositories (integração)
+        ├─ Controllers (MockMVC)
+        └─ Security (JWT, auth)
+[🔲]  Fase 8: Integração frontend ↔ backend
+        ├─ Migrar 10 features de mock → API real
+        ├─ Testar auth end-to-end
+        └─ Alinhar tipos e paginação
+[🔲]  Fase 9: Qualidade e polish
+        ├─ Testes frontend
+        ├─ Validação de formulários
+        ├─ Lazy loading / code splitting
+        └─ Acessibilidade
+[🔲]  Fase 10: Produção
+        ├─ CI/CD pipeline (GitHub Actions)
+        ├─ Infraestrutura cloud
+        ├─ Deploy staging + produção
+        └─ Monitoramento
+```
 
-- [ ] Criar `ChapterController` com endpoints de leitura
-- [ ] Criar `GET /api/auth/me` retornando dados do usuário logado
-- [ ] Criar `UserController` para CRUD de perfil
-- [ ] Implementar forgot/reset password (requer configuração de e-mail ou token simples)
-- [ ] Corrigir `TokenPort` para que `JwtTokenProvider` implemente a interface
-- [ ] Adicionar `PUT /api/ratings/{id}` (update rating)
-
-### Fase 7 — Testes
-
-- [ ] Descomentar Testcontainers no POM (PostgreSQL + MongoDB)
-- [ ] Descomentar `spring-security-test`
-- [ ] Escrever testes unitários para todos os use cases
-- [ ] Escrever testes de integração para os repositories/adapters
-- [ ] Escrever testes de controller (`@WebMvcTest` ou `MockMvc`)
-- [ ] Atingir cobertura mínima de 80%
-
-### Fase 8 — Migrations
-
-- [ ] Gerar migration Flyway V1 a partir do schema atual (dump do PostgreSQL)
-- [ ] Habilitar Flyway em dev (`enabled: true`)
-- [ ] Trocar `ddl-auto: update` para `ddl-auto: validate`
-- [ ] Configurar Mongock para MongoDB (indexes, collections)
-
-### Fase 9 — Cache + Mensageria
-
-- [ ] Descomentar dependências Redis e RabbitMQ no POM
-- [ ] Configurar `@EnableCaching` + `@Cacheable` nos endpoints de leitura mais acessados
-- [ ] Implementar consumer RabbitMQ para `rating.submitted` (recalcular média)
-- [ ] Implementar consumer para `user.profile.updated` (desnormalização MongoDB)
-
-### Fase 10 — Polish + Produção
-
-- [ ] Adicionar paginação em todos os endpoints de listagem
-- [ ] Implementar rate limiting (Bucket4j)
-- [ ] Criar `logback-spring.xml` com formato JSON e rotação
-- [ ] Adicionar versionamento de API (`/api/v1/`)
-- [ ] Configurar HTTPS/TLS
-- [ ] Revisar `DataSeeder` para rodar apenas com `@Profile("dev")`
-- [ ] Pipeline CI/CD (build + test + Docker image + deploy)
-- [ ] Monitoramento com Prometheus + Grafana (via Spring Actuator)
-
-### Fase 11 — Migração Frontend
-
-- [ ] Migrar `authService.ts` (sign-in, sign-up, refresh, me)
-- [ ] Migrar `titleService.ts` + `chapterService.ts`
-- [ ] Migrar `commentService.ts` + `ratingService.ts`
-- [ ] Migrar `libraryService.ts` + `tagService.ts`
-- [ ] Migrar services restantes
-- [ ] Remover diretório `@mock/` e `mockApi.ts`
-- [ ] Configurar `.env` com `VITE_API_BASE_URL=http://localhost:8080`
+> Plano detalhado de deploy em [`docs/deployment-plan.md`](docs/deployment-plan.md).
 
 ---
 
-# Plano de geração de testes
-
-## Progresso
+## Plano de Testes — Progresso
 
 ### Concluído
 
-- Entidade testada: `User`
-- Quantidade de testes criados: `4`
-- Comportamentos cobertos: valores padrão no builder (`role` e `socialLinks`), sobrescrita de role, associação de links sociais e validação de campos opcionais nulos no construtor vazio.
-- Observações importantes: testes unitários da entidade `User` implementados com JUnit 5, sem dependência de contexto Spring.
+- **User** — 4 testes unitários: defaults do builder, sobrescrita de role, associação de socialLinks, construtor vazio.
 
 ### Em andamento
 
-- Manga
+- **Manga** — Testes unitários da entidade de domínio (defaults, mutações, invariantes).
 
 ### Próximas etapas
 
-1. Domain: `Manga`, `Chapter`, `Comment`, `Rating`, `Library`, `Group`, `News`, `Event`, `Forum`, `Category/Tag`, `Store`.
-2. Value Objects: `Chapter`, `NewsAuthor`, `NewsCategory`, `NewsReaction`, `EventLocation` e demais VOs de domínio.
-3. Repositórios: adapters JPA/Mongo + contratos de persistência por módulo.
-4. Services: serviços de aplicação e integrações auxiliares.
-5. Use Cases: fluxos por funcionalidade (auth, manga, comentário, avaliação, etc.).
-6. Controllers: testes de camada de apresentação e contratos HTTP.
+1. **Domain**: Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Tag, Store
+2. **Value Objects**: Chapter, NewsAuthor, NewsCategory, EventLocation, etc.
+3. **Use Cases**: Fluxos por funcionalidade com mocks dos ports
+4. **Repositories**: Adapters JPA/Mongo com H2/TestContainers
+5. **Controllers**: Testes de camada HTTP com MockMVC
+6. **Security**: JWT flow completo, endpoints protegidos vs públicos
 
+### Histórico de execução
 
-## Etapas de execução (histórico contínuo)
+| Data | Ação |
+|------|------|
+| 2026-03-09 | User — 4 testes unitários ✅ |
+| 2026-03-09 | Manga — Planejamento técnico, definição de escopo 🔄 |
+| 2026-03-09 | Documentação completa do projeto criada em `/docs` |
 
-### Etapa 1 - Domínio User
+---
 
-#### O que foi feito
-- Implementados 4 testes unitários para a entidade `User` cobrindo defaults do builder, sobrescrita de `role`, associação de `socialLinks` e construtor vazio.
-- Etapa marcada como concluída no plano de progresso.
+## Documentação
 
-#### O que será feito
-- Iniciar a Etapa 2 com foco no domínio `Manga`, mantendo abordagem incremental por entidade.
-
-#### Pendências / Observações
-- Execução local de testes pode depender de acesso ao repositório Maven Central no ambiente.
-
-### Etapa 2 - Domínio Manga (planejamento técnico)
-
-#### O que foi feito
-- Etapa de `Manga` mantida como **Em andamento**, respeitando a sequência do plano (domínio antes das demais camadas).
-- Definido o objetivo da etapa: iniciar pelos testes unitários da entidade principal e evoluir para entidades relacionadas de domínio na ordem incremental.
-- Atualizado este README como fonte única de rastreabilidade desta interação.
-
-#### O que será feito
-- Implementar testes unitários iniciais da entidade de domínio `Manga` na próxima interação, com foco em comportamentos centrais (defaults, mutações válidas e invariantes básicas).
-- Registrar no bloco `Concluído` a quantidade real de testes criados e os comportamentos efetivamente cobertos após a implementação.
-
-#### Pendências / Observações
-- Confirmar escopo exato da entidade `Manga` (campos e regras de domínio) antes de escrever os testes para evitar cobertura superficial.
-- Em caso de limitação de ambiente para execução Maven, registrar o impedimento explicitamente no histórico sem reportar sucesso inexistente.
-
-### Etapa 3 - Próxima entidade de domínio (pré-planejamento)
-
-#### O que foi feito
-- Definida continuidade incremental pós-`Manga` dentro do mesmo eixo de domínio.
-
-#### O que será feito
-- Avançar para a próxima entidade de domínio na ordem do plano (`Chapter`) após concluir `Manga`.
-
-#### Pendências / Observações
-- Só iniciar `Chapter` após fechamento da etapa `Manga` com cobertura e registro completo no histórico.
-
-## Histórico de execução
-
-- 2026-03-09 — `User` registrado como entidade em andamento para início do plano.
-- 2026-03-09 — `User` movido para concluído com implementação de 4 testes unitários e cobertura dos comportamentos base da entidade.
-- 2026-03-09 — Etapa 2 registrada: `Manga` definida como item em andamento; próxima interação focará implementação dos testes da entidade.
-- 2026-03-09 — Etapa 2 atualizada com planejamento técnico, definição de próxima ação e pontos de atenção para execução/validação.
+| Documento | Descrição |
+|-----------|-----------|
+| [`docs/overview.md`](docs/overview.md) | Visão geral, stack, arquitetura, fase de desenvolvimento |
+| [`docs/frontend-analysis.md`](docs/frontend-analysis.md) | Análise técnica completa do frontend |
+| [`docs/backend-analysis.md`](docs/backend-analysis.md) | Análise técnica completa do backend |
+| [`docs/tech-debt.md`](docs/tech-debt.md) | 15 dívidas técnicas com impacto e prioridade |
+| [`docs/pending-tasks.md`](docs/pending-tasks.md) | Tarefas pendentes organizadas por área + roadmap |
+| [`docs/deployment-plan.md`](docs/deployment-plan.md) | Variáveis, infra, build, Nginx, CI/CD, checklist de segurança |
 
 ---
 

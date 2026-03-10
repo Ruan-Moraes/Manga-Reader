@@ -208,6 +208,7 @@ public class GroupController {
 
     private Pageable buildPageable(int page, int size, String sort, String direction) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }
