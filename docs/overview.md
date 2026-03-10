@@ -1,6 +1,6 @@
 # Manga Reader — Visão Geral do Projeto
 
-> Última atualização: 9 de março de 2026
+> Última atualização: 10 de março de 2026
 
 ---
 
@@ -142,6 +142,7 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
 
 | Área | Status | Observação |
 |------|--------|------------|
+| **Testes Backend** | ~90% | **79 arquivos de teste, 397 testes unitários** (13 domain, 57 use case, 9 controller). Faltam: 3 testes de use case (Store) e 4 testes de controller (News, Rating, Store, User) |
 | **Integração Frontend-Backend** | ~25% | Apenas títulos, tags e comentários buscam dados reais da API; 10 features restantes usam mock data |
 | **Autenticação End-to-End** | ~60% | Serviço frontend definido com endpoints, guards implementados, mas fluxo completo não testado com backend |
 | **Formulários** | ~40% | Estrutura pronta para Login, SignUp, ForgotPassword; falta validação e integração completa |
@@ -153,7 +154,6 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
 
 | Área | Descrição |
 |------|-----------|
-| **Testes Automatizados** | 1 único arquivo de teste no backend (UserTest, 4 testes de domínio); zero testes no frontend |
 | **CI/CD Pipeline** | Nenhum workflow de integração contínua ou deploy automatizado |
 | **Deploy em Produção** | Nenhum ambiente de produção configurado além do Dockerfile e docker-compose.prod.yml |
 | **Upload de Arquivos** | Sem sistema para upload de capas, avatares ou páginas de capítulos |
@@ -161,6 +161,7 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
 | **Internacionalização** | Strings de UI hardcoded em português; mensagens de erro em português |
 | **Conteúdo Legal** | Páginas de Termos de Uso e DMCA contêm texto placeholder |
 | **Monitoramento** | Actuator configurado, mas sem sistema de logging/alertas em produção |
+| **Testes Frontend** | Zero testes no frontend (React Testing Library, E2E) |
 
 ---
 
@@ -182,8 +183,11 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
 [🔲] Integração Frontend ↔ Backend
     └─ Apenas 3/13 features conectadas à API real
 
-[🔲] Testes
-    └─ Infraestrutura de testes pronta (JUnit, TestContainers) mas não utilizada
+[�] Testes Unitários Backend     ← EM ANDAMENTO
+    └─ 79 arquivos, 397 testes (domain: 13/13, use case: 57/60, controller: 9/13). Faltam 7 arquivos.
+
+[🔲] Testes de Integração / E2E
+    └─ Repositórios, segurança, testes frontend — não iniciados
 
 [🔲] Preparação para Deploy
     └─ Dockerfile e docker-compose.prod.yml existem, mas sem pipeline CI/CD
@@ -192,7 +196,7 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
     └─ Não iniciado
 ```
 
-**Conclusão**: O projeto está na **segunda metade da fase de implementação**, com o backend substancialmente completo e o frontend com UI construída mas dependente de dados mock. A próxima etapa natural é a **integração real** entre frontend e backend, seguida de testes e preparação para produção.
+**Conclusão**: O projeto está na **fase de testes e estabilização do backend**, com 397 testes unitários implementados cobrindo ~90% dos componentes testáveis (domain entities, use cases e controllers). Faltam 7 arquivos de teste para cobertura completa dos testes unitários. O frontend permanece com UI construída mas dependente de dados mock (~25% integrado). As próximas etapas são: (1) completar os 7 testes unitários restantes, (2) integração real frontend ↔ backend, (3) testes de integração/E2E, e (4) preparação para produção.
 
 ---
 

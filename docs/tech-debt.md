@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 9 de março de 2026
+> Última atualização: 10 de março de 2026
 
 ---
 
@@ -12,21 +12,22 @@ Este documento lista as dívidas técnicas identificadas no projeto, organizadas
 
 ## Prioridade Crítica
 
-### DT-01: Ausência quase total de testes automatizados
+### DT-01: Cobertura de testes unitários do backend quase completa — faltam 7 arquivos
 
-**Descrição**: O backend possui 1 único arquivo de teste (`UserTest` com 4 testes unitários de domínio). O frontend possui zero testes. A infraestrutura de testes do backend está pronta (JUnit 5, H2, TestContainers, MockMVC, Spring Security Test) mas não está sendo utilizada.
+**Descrição**: O backend possui **79 arquivos de teste com 397 testes unitários** (0 erros de compilação), cobrindo:
+- **Domain entities**: 13/13 arquivos (107 testes) — \u2705 completo
+- **Use Cases**: 57/60 arquivos (206 testes) — faltam 3 (Store: GetStores, GetStoresById, GetStoresByTitleId)
+- **Controllers**: 9/13 arquivos (84 testes) — faltam 4 (News, Rating, Store, User)
 
-**Impacto**: Bloqueante para produção. Impossível garantir que:
-- Regras de negócio estão corretas
-- Endpoints retornam os dados esperados
-- Segurança (JWT, guards) funciona corretamente
-- Refatorações não quebram funcionalidades existentes
-- Regressões são detectadas automaticamente
+O frontend possui **zero testes**. Não há testes de integração (repositories) nem testes de segurança (JWT flow, 401/403).
+
+**Impacto**: A cobertura unitária está em ~90%, próxima do completo. **Bloqueantes para produção** são os testes de integração/segurança e testes frontend (E2E) que ainda não foram iniciados.
 
 **Recomendação**:
-1. Backend: Testes unitários para todos os use cases, testes de integração para controllers e repositórios, testes de segurança para endpoints protegidos
-2. Frontend: Testes de componentes com React Testing Library, testes de hooks customizados, testes de integração para fluxos críticos (auth, navegação)
-3. Meta mínima para deploy: Cobertura de ~80% nos use cases do backend e testes E2E para fluxos críticos
+1. Backend: Completar os 7 arquivos de teste unitário restantes (Store use cases + 4 controllers)
+2. Backend: Adicionar testes de integração para controllers e repositórios, testes de segurança para endpoints protegidos
+3. Frontend: Testes de componentes com React Testing Library, testes de hooks customizados, testes E2E para fluxos críticos (auth, navegação)
+4. Meta mínima para deploy: 100% cobertura unitária backend + testes E2E para fluxos críticos
 
 ---
 

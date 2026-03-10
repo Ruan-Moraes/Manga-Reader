@@ -1,6 +1,6 @@
 # Manga Reader — Tarefas Pendentes
 
-> Última atualização: 9 de março de 2026
+> Última atualização: 10 de março de 2026
 
 ---
 
@@ -84,14 +84,16 @@ Dividir page components grandes em subcomponentes:
 
 ### 2.1. Testes (Prioridade Crítica)
 
-| Categoria | Escopo | Detalhes |
-|-----------|--------|----------|
-| **Testes unitários** | Use Cases (60+) | Testar lógica de negócio isolada com mocks dos ports |
-| **Testes unitários** | Domain entities | Testar validações, builders, métodos de domínio |
-| **Testes de integração** | Controllers (13) | Testar endpoints com MockMVC e banco in-memory |
-| **Testes de integração** | Repositories | Testar queries PostgreSQL (H2) e MongoDB (TestContainers) |
-| **Testes de segurança** | Auth endpoints | Testar JWT flow, refresh, 401/403 responses |
-| **Testes de segurança** | Protected endpoints | Testar acesso com/sem token, roles |
+| Categoria | Escopo | Status | Detalhes |
+|-----------|--------|--------|----------|
+| **Testes unitários — Domain entities** | 11 entidades | ✅ **Concluído** | 13 arquivos, ~107 testes (UserTest, TitleTest, CommentTest, GroupTest, ForumTopicTest, ForumReplyTest, SavedMangaTest, EventTest, NewsItemTest, TagTest, MangaRatingTest, StoreTest, ChapterTest) |
+| **Testes unitários — Use Cases** | 60 use cases | 🟡 **95% Concluído** | 57/60 arquivos, ~206 testes. **Faltam 3**: GetStoresUseCaseTest, GetStoresByTitleIdUseCaseTest, GetStoreByIdUseCaseTest |
+| **Testes unitários — Controllers** | 13 controllers | 🟡 **69% Concluído** | 9/13 arquivos, ~84 testes. **Faltam 4**: NewsControllerTest, RatingControllerTest, StoreControllerTest, UserControllerTest |
+| **Testes de integração** | Repositories | 🔲 Não iniciado | Testar queries PostgreSQL (H2) e MongoDB (TestContainers) |
+| **Testes de segurança** | Auth + Protected endpoints | 🔲 Não iniciado | Testar JWT flow, refresh, 401/403 responses, acesso com/sem token |
+| **Testes frontend** | Componentes + hooks + E2E | 🔲 Não iniciado | React Testing Library, testes de hooks, Cypress/Playwright |
+
+**Resumo de testes**: 79 arquivos, 397 testes unitários, 0 erros de compilação. Faltam **7 arquivos** para cobertura unitária completa do backend.
 
 ### 2.2. Documentação (Prioridade Alta)
 
