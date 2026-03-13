@@ -1,6 +1,6 @@
 # Manga Reader — Tarefas Pendentes
 
-> Última atualização: 10 de março de 2026
+> Última atualização: 13 de março de 2026
 
 ---
 
@@ -91,11 +91,11 @@ Dividir page components grandes em subcomponentes:
 | **Testes unitários — Controllers** | 13 controllers | ✅ **Concluído** | 13/13 arquivos, ~129 testes |
 | **Testes de integração — JPA** | Repositories PostgreSQL | ✅ **Concluído** | 7/7 adapters: User, Library, Tag, Group, Store, Event, Forum (H2) |
 | **Testes de segurança — unitário** | JwtTokenProvider | ✅ **Concluído** | JwtTokenProvider unitário |
-| **Testes de integração — MongoDB** | Repositories MongoDB | 🔲 Não iniciado | 0/4 adapters: Title, Comment, Rating, News (TestContainers) |
-| **Testes de segurança — integrado** | Auth E2E | 🔲 Não iniciado | Fluxo Auth completo com @SpringBootTest + TestContainers |
+| **Testes de integração — MongoDB** | Repositories MongoDB | ✅ **Concluído** | 4/4 adapters: Title, Comment, Rating, News (~62 testes, TestContainers) |
+| **Testes de segurança — integrado** | Auth E2E | ✅ **Concluído** | Fluxo Auth completo (~19 testes) com @SpringBootTest + TestContainers |
 | **Testes frontend** | Componentes + hooks + E2E | 🔲 Não iniciado | React Testing Library, testes de hooks, Cypress/Playwright |
 
-**Resumo de testes**: 95 arquivos, **531 testes passando**, 0 failures, 0 errors. Build verde.
+**Resumo de testes**: 105 arquivos, **~693 testes**, 0 failures, 0 errors. Build verde.
 
 ### 2.2. Documentação (Prioridade Alta)
 

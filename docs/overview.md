@@ -1,6 +1,6 @@
 # Manga Reader — Visão Geral do Projeto
 
-> Última atualização: 10 de março de 2026
+> Última atualização: 13 de março de 2026
 
 ---
 
@@ -142,9 +142,9 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
 
 | Área | Status | Observação |
 |------|--------|------------|
-| **Testes Backend** | ~90% | **79 arquivos de teste, 397 testes unitários** (13 domain, 57 use case, 9 controller). Faltam: 3 testes de use case (Store) e 4 testes de controller (News, Rating, Store, User) |
+| **Testes Backend** | ~100% | **105 arquivos de teste, ~693 testes** (13 domain, 60 use case, 13 controller, 7 JPA integration, 4 MongoDB integration, 1 Auth E2E, 1 JWT unit). Cobertura unitária e de integração completa |
 | **Integração Frontend-Backend** | ~25% | Apenas títulos, tags e comentários buscam dados reais da API; 10 features restantes usam mock data |
-| **Autenticação End-to-End** | ~60% | Serviço frontend definido com endpoints, guards implementados, mas fluxo completo não testado com backend |
+| **Autenticação End-to-End** | ~80% | Backend testado E2E (sign-up → sign-in → /me → refresh → reset password) com @SpringBootTest + TestContainers. Falta teste frontend→backend no browser |
 | **Formulários** | ~40% | Estrutura pronta para Login, SignUp, ForgotPassword; falta validação e integração completa |
 | **Operações CRUD** | ~30% | Endpoints backend existem; frontend tem apenas read (GET) implementado para maioria |
 | **Comentários** | ~50% | Listagem funcional com API real; criação, edição, deleção não conectados |
@@ -177,17 +177,20 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
 [✅] Implementação de funcionalidades — Backend
     └─ 60+ use cases, 13 controllers, ~80 endpoints, security, email, messaging
 
-[🔄] Implementação de funcionalidades — Frontend     ← FASE ATUAL
+[🔄] Implementação de funcionalidades — Frontend
     └─ 22+ páginas com UI, 13 features com mock data, auth structure
 
-[🔲] Integração Frontend ↔ Backend
+[🔲] Integração Frontend ↔ Backend     ← PRÓXIMA FASE
     └─ Apenas 3/13 features conectadas à API real
 
-[�] Testes Unitários Backend     ← EM ANDAMENTO
-    └─ 79 arquivos, 397 testes (domain: 13/13, use case: 57/60, controller: 9/13). Faltam 7 arquivos.
+[✅] Testes Unitários Backend
+    └─ 105 arquivos, ~693 testes (domain: 13/13, use case: 60/60, controller: 13/13). Completo.
 
-[🔲] Testes de Integração / E2E
-    └─ Repositórios, segurança, testes frontend — não iniciados
+[✅] Testes de Integração / E2E Backend
+    └─ MongoDB adapters (4/4, TestContainers), JPA adapters (7/7, H2), Auth E2E (19 testes)
+
+[🔲] Testes Frontend
+    └─ Componentes, hooks, E2E — não iniciados
 
 [🔲] Preparação para Deploy
     └─ Dockerfile e docker-compose.prod.yml existem, mas sem pipeline CI/CD
@@ -196,7 +199,7 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
     └─ Não iniciado
 ```
 
-**Conclusão**: O projeto está na **fase de testes e estabilização do backend**, com 397 testes unitários implementados cobrindo ~90% dos componentes testáveis (domain entities, use cases e controllers). Faltam 7 arquivos de teste para cobertura completa dos testes unitários. O frontend permanece com UI construída mas dependente de dados mock (~25% integrado). As próximas etapas são: (1) completar os 7 testes unitários restantes, (2) integração real frontend ↔ backend, (3) testes de integração/E2E, e (4) preparação para produção.
+**Conclusão**: O backend está com **cobertura de testes completa** — 105 arquivos, ~693 testes cobrindo unitários (domain, use cases, controllers), integração (JPA + MongoDB com TestContainers) e segurança E2E (auth flow). O frontend permanece com UI construída mas dependente de dados mock (~25% integrado). As próximas etapas são: (1) integração real frontend ↔ backend, (2) testes frontend (componentes, hooks, E2E), e (3) preparação para produção.
 
 ---
 

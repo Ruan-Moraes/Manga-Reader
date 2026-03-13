@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 10 de março de 2026
+> Última atualização: 13 de março de 2026
 
 ---
 
@@ -12,22 +12,25 @@ Este documento lista as dívidas técnicas identificadas no projeto, organizadas
 
 ## Prioridade Crítica
 
-### DT-01: Cobertura de testes unitários do backend quase completa — faltam 7 arquivos
+### DT-01: Testes backend completos — testes frontend ainda não iniciados
 
-**Descrição**: O backend possui **79 arquivos de teste com 397 testes unitários** (0 erros de compilação), cobrindo:
-- **Domain entities**: 13/13 arquivos (107 testes) — \u2705 completo
-- **Use Cases**: 57/60 arquivos (206 testes) — faltam 3 (Store: GetStores, GetStoresById, GetStoresByTitleId)
-- **Controllers**: 9/13 arquivos (84 testes) — faltam 4 (News, Rating, Store, User)
+**Descrição**: O backend possui **105 arquivos de teste com ~693 testes**, cobrindo todas as camadas:
+- **Domain entities**: 13/13 arquivos (107 testes) — ✅ completo
+- **Use Cases**: 60/60 arquivos (206 testes) — ✅ completo
+- **Controllers**: 13/13 arquivos (129 testes) — ✅ completo
+- **Integração JPA (PostgreSQL)**: 7/7 adapters (89 testes) — ✅ completo
+- **Integração MongoDB**: 4/4 adapters (~62 testes, TestContainers) — ✅ completo
+- **Segurança E2E**: Auth flow completo (~19 testes, @SpringBootTest + TestContainers) — ✅ completo
+- **Segurança unitário**: JwtTokenProvider — ✅ completo
 
-O frontend possui **zero testes**. Não há testes de integração (repositories) nem testes de segurança (JWT flow, 401/403).
+O frontend possui **zero testes**. Não há testes E2E frontend (Cypress/Playwright).
 
-**Impacto**: A cobertura unitária está em ~90%, próxima do completo. **Bloqueantes para produção** são os testes de integração/segurança e testes frontend (E2E) que ainda não foram iniciados.
+**Impacto**: A cobertura backend está completa para testes unitários e de integração. **Bloqueante para produção** são os testes frontend (componentes, hooks, E2E) que ainda não foram iniciados.
 
 **Recomendação**:
-1. Backend: Completar os 7 arquivos de teste unitário restantes (Store use cases + 4 controllers)
-2. Backend: Adicionar testes de integração para controllers e repositórios, testes de segurança para endpoints protegidos
-3. Frontend: Testes de componentes com React Testing Library, testes de hooks customizados, testes E2E para fluxos críticos (auth, navegação)
-4. Meta mínima para deploy: 100% cobertura unitária backend + testes E2E para fluxos críticos
+1. Frontend: Testes de componentes com React Testing Library, testes de hooks customizados
+2. Frontend: Testes E2E para fluxos críticos (auth, navegação, CRUD) com Cypress ou Playwright
+3. Meta mínima para deploy: testes E2E para fluxos críticos frontend
 
 ---
 
@@ -65,21 +68,21 @@ O frontend possui **zero testes**. Não há testes de integração (repositories
 
 ---
 
-### DT-04: Fluxo de autenticação não testado end-to-end
+### DT-04: Fluxo de autenticação frontend→backend não testado em conjunto
 
-**Descrição**: O backend tem endpoints de auth implementados (sign-in, sign-up, refresh, forgot/reset password). O frontend tem o `authService` com todos os métodos e guards (AuthGuard, RoleGuard). Porém, o fluxo completo frontend→backend nunca foi testado em conjunto.
+**Descrição**: O backend tem endpoints de auth implementados e **testados com testes E2E de integração** (sign-up → sign-in → /me → refresh → reset password). O frontend tem o `authService` com todos os métodos e guards (AuthGuard, RoleGuard). Porém, o fluxo completo **frontend→backend** nunca foi testado em conjunto (browser real).
 
 **Impacto**:
-- Não é possível garantir que login, cadastro e refresh token funcionam
-- Guards de rota podem não funcionar corretamente com tokens reais
-- Interceptor de 401 (logout automático) não foi validado
+- Guards de rota podem não funcionar corretamente com tokens reais no browser
+- Interceptor de 401 (logout automático) não foi validado com o backend real
 - Fluxo de reset de senha depende de email funcional
+- LocalStorage/sessionStorage handling não validado
 
 **Recomendação**:
-1. Testar manualmente o fluxo completo: sign-up → sign-in → me → refresh → protected route
-2. Verificar interceptores HTTP (token injection, 401 handling)
+1. Testar manualmente o fluxo completo no browser: sign-up → sign-in → me → refresh → protected route
+2. Verificar interceptores HTTP (token injection, 401 handling) com o backend real
 3. Testar forgot/reset password com console email adapter (dev)
-4. Escrever testes E2E para o fluxo de auth
+4. Escrever testes E2E frontend (Cypress/Playwright) para o fluxo de auth
 
 ---
 

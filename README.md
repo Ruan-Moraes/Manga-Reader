@@ -6,10 +6,10 @@
 
 ## 🎯 Foco Atual: Testes do Backend
 
-**Fase ativa**: Implementação de testes automatizados no backend.
-**Próxima fase**: Finalização das features e integração frontend ↔ backend.
+**Fase ativa**: Testes do backend concluídos — preparando integração frontend ↔ backend.
+**Próxima fase**: Integração das 10 features frontend com API real.
 
-O backend possui ~80 endpoints e 60+ use cases implementados. A cobertura de testes atingiu **95 arquivos de teste** e **531 testes passando**. O foco atual é **completar testes de infraestrutura MongoDB e segurança**.
+O backend possui ~80 endpoints e 60+ use cases implementados. A cobertura de testes atingiu **100 arquivos de teste** e **~612 testes**. Todas as camadas de teste foram implementadas.
 
 ### Progresso dos Testes
 
@@ -19,8 +19,8 @@ O backend possui ~80 endpoints e 60+ use cases implementados. A cobertura de tes
 [✅] Presentation: 13/13 controllers testados (~129 testes)
 [✅] Infrastructure JPA: 7/7 adapters PostgreSQL testados (~46 testes)
 [✅] Infrastructure Security: JwtTokenProvider unitário
-[🔲] Infrastructure MongoDB: 0/4 adapters (TestContainers) — não iniciado
-[🔲] Security: Fluxo Auth integrado — não iniciado
+[✅] Infrastructure MongoDB: 4/4 adapters (TestContainers) — ~62 testes
+[✅] Security: Fluxo Auth E2E integrado — ~19 testes
 ```
 
 ### Ordem de execução dos testes
@@ -84,7 +84,7 @@ O **Manga Reader** é composto por:
 | Coleções MongoDB | **4** |
 | Páginas Frontend | **22+** |
 | Features Frontend | **13** (3 com API real, 10 com mock data) |
-| Testes automatizados | **531** (95 arquivos — domain, application, presentation, infra JPA completa) |
+| Testes automatizados | **~612** (100 arquivos — domain, application, presentation, infra JPA, infra MongoDB, security E2E) |
 
 ---
 
@@ -274,7 +274,7 @@ Manga-Reader/
 | Stores | Listagem + por título | ✅ |
 | Security | JWT, BCrypt, CORS, Rate Limiting | ✅ |
 | Infra | Email, RabbitMQ, Redis cache, Seed data | ✅ |
-| **Testes** | **531 testes (95 arquivos) — domain ✅, application ✅, presentation ✅, infra JPA ✅** | **🔄 Em andamento** |
+| **Testes** | **~612 testes (100 arquivos) — domain ✅, application ✅, presentation ✅, infra JPA ✅, infra MongoDB ✅, security E2E ✅** | **✅** |
 
 ### Frontend — ✅ UI Completa, ⚠️ Integração Pendente
 
@@ -502,8 +502,8 @@ Manga-Reader/
 | Presentation | 13/13 Controllers (~129 testes) | ✅ Completo |
 | Infrastructure JPA | 7/7 adapters PostgreSQL (~46 testes) | ✅ Completo |
 | Infrastructure Security | JwtTokenProvider unitário | ✅ Completo |
-| Infrastructure MongoDB | 0/4 adapters (Title, Comment, Rating, News) | 🔲 Não iniciado |
-| Security integrado | Fluxo Auth E2E com TestContainers | 🔲 Não iniciado |
+| Infrastructure MongoDB | 4/4 adapters com TestContainers (~62 testes) | ✅ Completo |
+| Security integrado | Fluxo Auth E2E com @SpringBootTest + TestContainers (~19 testes) | ✅ Completo |
 
 ### Frontend — Integração (próxima fase)
 
@@ -523,15 +523,15 @@ Manga-Reader/
 ```
 [✅]  Fase 1-5: Backend features (domínios, use cases, endpoints, security, infra)
 [✅]  Fase 6: Frontend UI (22+ páginas, 13 features, layout, guards)
-[🔄]  Fase 7: Testes do backend ← ESTAMOS AQUI
+[✅]  Fase 7: Testes do backend ✅ COMPLETO
         ├─ ✅ Domain entities e VOs (13/13)
         ├─ ✅ Use Cases unitários (60/60)
         ├─ ✅ Controllers MockMVC (13/13)
         ├─ ✅ Infrastructure JPA (7/7 adapters)
         ├─ ✅ JwtTokenProvider unitário
-        ├─ 🔲 Infrastructure MongoDB (0/4 adapters — TestContainers)
-        └─ 🔲 Security integrado (fluxo Auth E2E)
-[🔲]  Fase 8: Integração frontend ↔ backend
+        ├─ ✅ Infrastructure MongoDB (4/4 adapters — TestContainers)
+        └─ ✅ Security integrado (fluxo Auth E2E)
+[🔄]  Fase 8: Integração frontend ↔ backend ← PRÓXIMA FASE
         ├─ Migrar 10 features de mock → API real
         ├─ Testar auth end-to-end
         └─ Alinhar tipos e paginação
@@ -557,14 +557,16 @@ Manga-Reader/
 
 - **Domain (13/13)** — User, Title, Chapter(VO), Comment, Event, ForumReply, ForumTopic, Group, SavedManga, NewsItem, MangaRating, Store, Tag (~107 testes)
 - **Application (60/60)** — Todos os use cases com mocks dos ports (~206 testes)
-- **Presentation (13/13)** — Todos os controllers escritos (~129 testes) — **mas todos falhando** (ver abaixo)
-- **Infrastructure parcial** — UserRepositoryAdapter, LibraryRepositoryAdapter, TagRepositoryAdapter (H2), JwtTokenProvider (unitário)
+- **Presentation (13/13)** — Todos os controllers escritos (~129 testes)
+- **Infrastructure JPA (7/7)** — User, Library, Tag, Group, Store, Event, Forum (H2) (~46 testes)
+- **Infrastructure MongoDB (4/4)** — Title, Comment, Rating, News (TestContainers) (~62 testes)
+- **Security unitário** — JwtTokenProvider
+- **Security integrado** — Auth E2E: sign-up → sign-in → me → refresh → rotas protegidas (~19 testes)
 
 ### Próximas etapas
 
-1. **Infrastructure MongoDB** — adapters com TestContainers: Title, Comment, Rating, News
-2. **Security integrado** — fluxo Auth completo (@SpringBootTest + TestContainers)
-3. **CI** — GitHub Actions pipeline (JaCoCo já no pom.xml)
+1. **CI** — GitHub Actions pipeline (JaCoCo já no pom.xml)
+2. **Integração frontend ↔ backend** — 10 features mock → API real
 
 ### Histórico de execução
 
@@ -578,6 +580,9 @@ Manga-Reader/
 | 2026-03-11 | Infrastructure parcial — 3 adapters JPA + JwtTokenProvider |
 | 2026-03-12 | Fix: controllers corrigidos (TokenPort mock), TitleTest, JoinGroupUseCaseTest, TagRepositoryAdapterTest |
 | 2026-03-12 | Infrastructure JPA completo — 4 novos adapters: Event, Store, Forum, Group (H2) |
+| 2026-03-13 | Infrastructure MongoDB completo — 4 adapters: Title, Comment, Rating, News (TestContainers) |
+| 2026-03-13 | Security E2E completo — Auth flow integrado (sign-up, sign-in, refresh, rotas protegidas) |
+| 2026-03-13 | Dependências habilitadas: TestContainers, spring-security-test, junit-jupiter |
 
 ---
 
