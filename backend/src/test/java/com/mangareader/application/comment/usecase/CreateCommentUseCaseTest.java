@@ -97,8 +97,8 @@ class CreateCommentUseCaseTest {
             Comment result = createCommentUseCase.execute(input);
 
             // Assert
-            assertThat(result.getIsHighlighted()).isFalse();
-            assertThat(result.getWasEdited()).isFalse();
+            assertThat(result.isHighlighted()).isFalse();
+            assertThat(result.isWasEdited()).isFalse();
             assertThat(result.getLikeCount()).isZero();
             assertThat(result.getDislikeCount()).isZero();
         }

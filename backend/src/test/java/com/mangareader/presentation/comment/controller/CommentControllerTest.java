@@ -34,6 +34,7 @@ import com.mangareader.application.comment.usecase.GetCommentsByTitleUseCase;
 import com.mangareader.application.comment.usecase.ReactToCommentUseCase;
 import com.mangareader.application.comment.usecase.UpdateCommentUseCase;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(CommentController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -57,6 +58,9 @@ class CommentControllerTest {
 
     @MockitoBean
     private ReactToCommentUseCase reactToCommentUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
 

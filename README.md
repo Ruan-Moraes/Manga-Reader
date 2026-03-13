@@ -9,19 +9,18 @@
 **Fase ativa**: Implementação de testes automatizados no backend.
 **Próxima fase**: Finalização das features e integração frontend ↔ backend.
 
-O backend possui ~80 endpoints e 60+ use cases implementados, mas a cobertura de testes é mínima (1 arquivo com 4 testes unitários). Antes de avançar com features e integração, o foco é **garantir a qualidade da base existente** com testes em todas as camadas.
+O backend possui ~80 endpoints e 60+ use cases implementados. A cobertura de testes atingiu **95 arquivos de teste** e **531 testes passando**. O foco atual é **completar testes de infraestrutura MongoDB e segurança**.
 
 ### Progresso dos Testes
 
 ```
-[✅] Domain: User (4 testes)
-[🔄] Domain: Manga (em andamento)
-[🔲] Domain: Chapter, Comment, Rating, Library, Group, News, Event, Forum, Tag, Store
-[🔲] Value Objects: Chapter, NewsAuthor, EventLocation, etc.
-[🔲] Use Cases: 60+ use cases (unitários com mocks)
-[🔲] Repositories: Adapters JPA/Mongo (integração)
-[🔲] Controllers: 13 controllers (MockMVC)
-[🔲] Security: JWT flow, endpoints protegidos
+[✅] Domain: 13/13 entidades e VOs testadas (~107 testes)
+[✅] Application: 60/60 use cases testados (~206 testes)
+[✅] Presentation: 13/13 controllers testados (~129 testes)
+[✅] Infrastructure JPA: 7/7 adapters PostgreSQL testados (~46 testes)
+[✅] Infrastructure Security: JwtTokenProvider unitário
+[🔲] Infrastructure MongoDB: 0/4 adapters (TestContainers) — não iniciado
+[🔲] Security: Fluxo Auth integrado — não iniciado
 ```
 
 ### Ordem de execução dos testes
@@ -85,7 +84,7 @@ O **Manga Reader** é composto por:
 | Coleções MongoDB | **4** |
 | Páginas Frontend | **22+** |
 | Features Frontend | **13** (3 com API real, 10 com mock data) |
-| Testes automatizados | **4** (domínio User — mínimo) |
+| Testes automatizados | **531** (95 arquivos — domain, application, presentation, infra JPA completa) |
 
 ---
 
@@ -275,7 +274,7 @@ Manga-Reader/
 | Stores | Listagem + por título | ✅ |
 | Security | JWT, BCrypt, CORS, Rate Limiting | ✅ |
 | Infra | Email, RabbitMQ, Redis cache, Seed data | ✅ |
-| **Testes** | **4 testes unitários (User)** | **🔄 Em andamento** |
+| **Testes** | **531 testes (95 arquivos) — domain ✅, application ✅, presentation ✅, infra JPA ✅** | **🔄 Em andamento** |
 
 ### Frontend — ✅ UI Completa, ⚠️ Integração Pendente
 
@@ -465,7 +464,7 @@ Manga-Reader/
 
 | # | Dívida | Impacto |
 |---|--------|---------|
-| 1 | **Cobertura de testes mínima** (4 testes em todo o backend, 0 no frontend) | Bloqueante para produção |
+| 1 | **Testes de controller quebrados** (13 controllers com ApplicationContext failure) + 0 testes no frontend | Bloqueante para produção |
 | 2 | **10 features frontend usam mock data** | Aplicação não funcional em cenário real |
 
 ### 🟡 Importantes
@@ -498,11 +497,13 @@ Manga-Reader/
 
 | Camada | Escopo | Status |
 |--------|--------|--------|
-| Domain | User, Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Tag, Store + VOs | 🔄 Em andamento |
-| Application | 60+ Use Cases com mocks dos ports | 🔲 |
-| Infrastructure | Repositories (H2 + TestContainers) | 🔲 |
-| Presentation | 13 Controllers (MockMVC) | 🔲 |
-| Security | JWT flow, endpoints protegidos | 🔲 |
+| Domain | 13/13 entidades e VOs (~107 testes) | ✅ Completo |
+| Application | 60/60 Use Cases (~206 testes) | ✅ Completo |
+| Presentation | 13/13 Controllers (~129 testes) | ✅ Completo |
+| Infrastructure JPA | 7/7 adapters PostgreSQL (~46 testes) | ✅ Completo |
+| Infrastructure Security | JwtTokenProvider unitário | ✅ Completo |
+| Infrastructure MongoDB | 0/4 adapters (Title, Comment, Rating, News) | 🔲 Não iniciado |
+| Security integrado | Fluxo Auth E2E com TestContainers | 🔲 Não iniciado |
 
 ### Frontend — Integração (próxima fase)
 
@@ -523,11 +524,13 @@ Manga-Reader/
 [✅]  Fase 1-5: Backend features (domínios, use cases, endpoints, security, infra)
 [✅]  Fase 6: Frontend UI (22+ páginas, 13 features, layout, guards)
 [🔄]  Fase 7: Testes do backend ← ESTAMOS AQUI
-        ├─ Domain entities e VOs
-        ├─ Use Cases (unitários)
-        ├─ Repositories (integração)
-        ├─ Controllers (MockMVC)
-        └─ Security (JWT, auth)
+        ├─ ✅ Domain entities e VOs (13/13)
+        ├─ ✅ Use Cases unitários (60/60)
+        ├─ ✅ Controllers MockMVC (13/13)
+        ├─ ✅ Infrastructure JPA (7/7 adapters)
+        ├─ ✅ JwtTokenProvider unitário
+        ├─ 🔲 Infrastructure MongoDB (0/4 adapters — TestContainers)
+        └─ 🔲 Security integrado (fluxo Auth E2E)
 [🔲]  Fase 8: Integração frontend ↔ backend
         ├─ Migrar 10 features de mock → API real
         ├─ Testar auth end-to-end
@@ -552,28 +555,29 @@ Manga-Reader/
 
 ### Concluído
 
-- **User** — 4 testes unitários: defaults do builder, sobrescrita de role, associação de socialLinks, construtor vazio.
-
-### Em andamento
-
-- **Manga** — Testes unitários da entidade de domínio (defaults, mutações, invariantes).
+- **Domain (13/13)** — User, Title, Chapter(VO), Comment, Event, ForumReply, ForumTopic, Group, SavedManga, NewsItem, MangaRating, Store, Tag (~107 testes)
+- **Application (60/60)** — Todos os use cases com mocks dos ports (~206 testes)
+- **Presentation (13/13)** — Todos os controllers escritos (~129 testes) — **mas todos falhando** (ver abaixo)
+- **Infrastructure parcial** — UserRepositoryAdapter, LibraryRepositoryAdapter, TagRepositoryAdapter (H2), JwtTokenProvider (unitário)
 
 ### Próximas etapas
 
-1. **Domain**: Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Tag, Store
-2. **Value Objects**: Chapter, NewsAuthor, NewsCategory, EventLocation, etc.
-3. **Use Cases**: Fluxos por funcionalidade com mocks dos ports
-4. **Repositories**: Adapters JPA/Mongo com H2/TestContainers
-5. **Controllers**: Testes de camada HTTP com MockMVC
-6. **Security**: JWT flow completo, endpoints protegidos vs públicos
+1. **Infrastructure MongoDB** — adapters com TestContainers: Title, Comment, Rating, News
+2. **Security integrado** — fluxo Auth completo (@SpringBootTest + TestContainers)
+3. **CI** — GitHub Actions pipeline (JaCoCo já no pom.xml)
 
 ### Histórico de execução
 
 | Data | Ação |
 |------|------|
 | 2026-03-09 | User — 4 testes unitários ✅ |
-| 2026-03-09 | Manga — Planejamento técnico, definição de escopo 🔄 |
 | 2026-03-09 | Documentação completa do projeto criada em `/docs` |
+| 2026-03-10 | Domain completo — 13 entidades/VOs testadas ✅ |
+| 2026-03-10 | Application completo — 60 use cases testados ✅ |
+| 2026-03-11 | Presentation — 13 controllers escritos (todos falhando) |
+| 2026-03-11 | Infrastructure parcial — 3 adapters JPA + JwtTokenProvider |
+| 2026-03-12 | Fix: controllers corrigidos (TokenPort mock), TitleTest, JoinGroupUseCaseTest, TagRepositoryAdapterTest |
+| 2026-03-12 | Infrastructure JPA completo — 4 novos adapters: Event, Store, Forum, Group (H2) |
 
 ---
 

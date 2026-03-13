@@ -41,6 +41,7 @@ import com.mangareader.application.group.usecase.UpdateGroupUseCase;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.valueobject.GroupStatus;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(GroupController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -79,6 +80,9 @@ class GroupControllerTest {
 
     @MockitoBean
     private RemoveWorkFromGroupUseCase removeWorkFromGroupUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
 

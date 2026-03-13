@@ -30,6 +30,7 @@ import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.event.valueobject.EventTimeline;
 import com.mangareader.domain.event.valueobject.EventType;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(EventController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,6 +48,9 @@ class EventControllerTest {
 
     @MockitoBean
     private GetEventsByStatusUseCase getEventsByStatusUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private Event buildEvent() {
         return Event.builder()

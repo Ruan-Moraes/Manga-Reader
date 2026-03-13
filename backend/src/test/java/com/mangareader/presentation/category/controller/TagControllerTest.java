@@ -25,6 +25,7 @@ import com.mangareader.application.category.usecase.GetTagsUseCase;
 import com.mangareader.application.category.usecase.SearchTagsUseCase;
 import com.mangareader.domain.category.entity.Tag;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(TagController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -42,6 +43,9 @@ class TagControllerTest {
 
     @MockitoBean
     private SearchTagsUseCase searchTagsUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     @Nested
     @DisplayName("GET /api/tags")

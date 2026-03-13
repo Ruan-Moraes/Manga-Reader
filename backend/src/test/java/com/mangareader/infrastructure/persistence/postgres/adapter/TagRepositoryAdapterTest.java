@@ -32,8 +32,8 @@ class TagRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        entityManager.persistAndFlush(Tag.builder().label("Ação").build());
-        entityManager.persistAndFlush(Tag.builder().label("Aventura").build());
+        entityManager.persistAndFlush(Tag.builder().label("Action").build());
+        entityManager.persistAndFlush(Tag.builder().label("Adventure").build());
         entityManager.persistAndFlush(Tag.builder().label("Romance").build());
     }
 
@@ -47,8 +47,8 @@ class TagRepositoryAdapterTest {
             var tags = tagRepository.findAll();
 
             assertThat(tags).hasSize(3);
-            assertThat(tags.get(0).getLabel()).isEqualTo("Ação");
-            assertThat(tags.get(1).getLabel()).isEqualTo("Aventura");
+            assertThat(tags.get(0).getLabel()).isEqualTo("Action");
+            assertThat(tags.get(1).getLabel()).isEqualTo("Adventure");
             assertThat(tags.get(2).getLabel()).isEqualTo("Romance");
         }
     }
@@ -86,7 +86,7 @@ class TagRepositoryAdapterTest {
             var result = tagRepository.findByLabelContainingIgnoreCase("ven");
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getLabel()).isEqualTo("Aventura");
+            assertThat(result.get(0).getLabel()).isEqualTo("Adventure");
         }
 
         @Test

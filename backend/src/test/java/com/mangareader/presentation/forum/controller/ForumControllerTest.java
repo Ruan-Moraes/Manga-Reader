@@ -40,6 +40,7 @@ import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(ForumController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -69,6 +70,9 @@ class ForumControllerTest {
 
     @MockitoBean
     private DeleteForumTopicUseCase deleteForumTopicUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
 

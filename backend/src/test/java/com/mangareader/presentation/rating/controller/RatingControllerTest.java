@@ -34,6 +34,7 @@ import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
 import com.mangareader.application.rating.usecase.UpdateRatingUseCase;
 import com.mangareader.domain.rating.entity.MangaRating;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(RatingController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -60,6 +61,9 @@ class RatingControllerTest {
 
     @MockitoBean
     private GetUserRatingsUseCase getUserRatingsUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
 

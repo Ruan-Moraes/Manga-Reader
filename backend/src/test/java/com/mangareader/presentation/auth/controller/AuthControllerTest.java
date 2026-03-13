@@ -29,6 +29,7 @@ import com.mangareader.application.auth.usecase.SignInUseCase;
 import com.mangareader.application.auth.usecase.SignUpUseCase;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -55,6 +56,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private ResetPasswordUseCase resetPasswordUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     @Nested
     @DisplayName("POST /api/auth/sign-in")
@@ -182,6 +186,7 @@ class AuthControllerTest {
         @DisplayName("Deve retornar 200 com novos tokens")
         void deveRetornar200ComNovosTokens() throws Exception {
             var output = new RefreshTokenUseCase.RefreshOutput("new-access", "new-refresh");
+
             when(refreshTokenUseCase.execute(any())).thenReturn(output);
 
             mockMvc.perform(post("/api/auth/refresh")

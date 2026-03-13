@@ -26,6 +26,7 @@ import com.mangareader.application.user.usecase.UpdateUserProfileUseCase;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,6 +41,9 @@ class UserControllerTest {
 
     @MockitoBean
     private UpdateUserProfileUseCase updateUserProfileUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
 

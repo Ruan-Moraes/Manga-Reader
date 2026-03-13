@@ -104,7 +104,7 @@ class TitleTest {
     }
 
     @Test
-    @DisplayName("Construtor vazio deve manter campos opcionais nulos e listas nulas")
+    @DisplayName("Construtor vazio deve manter campos opcionais nulos e listas inicializadas via @Builder.Default")
     void shouldKeepFieldsNullOnNoArgsConstructor() {
         Title title = new Title();
 
@@ -120,8 +120,11 @@ class TitleTest {
         assertNull(title.getScore());
         assertNull(title.getCreatedAt());
         assertNull(title.getUpdatedAt());
-        assertNull(title.getGenres());
-        assertNull(title.getChapters());
+        // Listas com field initializer são inicializadas mesmo no no-args constructor
+        assertNotNull(title.getGenres());
+        assertTrue(title.getGenres().isEmpty());
+        assertNotNull(title.getChapters());
+        assertTrue(title.getChapters().isEmpty());
     }
 
     @Test

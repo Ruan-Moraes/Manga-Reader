@@ -68,7 +68,7 @@ class UpdateCommentUseCaseTest {
 
             // Assert
             assertThat(result.getTextContent()).isEqualTo("Texto atualizado");
-            assertThat(result.getWasEdited()).isTrue();
+            assertThat(result.isWasEdited()).isTrue();
         }
 
         @Test
@@ -87,7 +87,7 @@ class UpdateCommentUseCaseTest {
             ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
             verify(commentRepository).save(captor.capture());
             assertThat(captor.getValue().getTextContent()).isEqualTo("Novo texto");
-            assertThat(captor.getValue().getWasEdited()).isTrue();
+            assertThat(captor.getValue().isWasEdited()).isTrue();
         }
     }
 

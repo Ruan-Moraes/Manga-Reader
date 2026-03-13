@@ -33,6 +33,7 @@ import com.mangareader.application.library.usecase.RemoveFromLibraryUseCase;
 import com.mangareader.application.library.usecase.SaveToLibraryUseCase;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(LibraryController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -53,6 +54,9 @@ class LibraryControllerTest {
 
     @MockitoBean
     private RemoveFromLibraryUseCase removeFromLibraryUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
 

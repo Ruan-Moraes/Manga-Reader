@@ -86,14 +86,16 @@ Dividir page components grandes em subcomponentes:
 
 | Categoria | Escopo | Status | Detalhes |
 |-----------|--------|--------|----------|
-| **Testes unitários — Domain entities** | 11 entidades | ✅ **Concluído** | 13 arquivos, ~107 testes (UserTest, TitleTest, CommentTest, GroupTest, ForumTopicTest, ForumReplyTest, SavedMangaTest, EventTest, NewsItemTest, TagTest, MangaRatingTest, StoreTest, ChapterTest) |
-| **Testes unitários — Use Cases** | 60 use cases | 🟡 **95% Concluído** | 57/60 arquivos, ~206 testes. **Faltam 3**: GetStoresUseCaseTest, GetStoresByTitleIdUseCaseTest, GetStoreByIdUseCaseTest |
-| **Testes unitários — Controllers** | 13 controllers | 🟡 **69% Concluído** | 9/13 arquivos, ~84 testes. **Faltam 4**: NewsControllerTest, RatingControllerTest, StoreControllerTest, UserControllerTest |
-| **Testes de integração** | Repositories | 🔲 Não iniciado | Testar queries PostgreSQL (H2) e MongoDB (TestContainers) |
-| **Testes de segurança** | Auth + Protected endpoints | 🔲 Não iniciado | Testar JWT flow, refresh, 401/403 responses, acesso com/sem token |
+| **Testes unitários — Domain entities** | 13 entidades/VOs | ✅ **Concluído** | 13 arquivos, ~107 testes |
+| **Testes unitários — Use Cases** | 60 use cases | ✅ **Concluído** | 60/60 arquivos, ~206 testes |
+| **Testes unitários — Controllers** | 13 controllers | ✅ **Concluído** | 13/13 arquivos, ~129 testes |
+| **Testes de integração — JPA** | Repositories PostgreSQL | ✅ **Concluído** | 7/7 adapters: User, Library, Tag, Group, Store, Event, Forum (H2) |
+| **Testes de segurança — unitário** | JwtTokenProvider | ✅ **Concluído** | JwtTokenProvider unitário |
+| **Testes de integração — MongoDB** | Repositories MongoDB | 🔲 Não iniciado | 0/4 adapters: Title, Comment, Rating, News (TestContainers) |
+| **Testes de segurança — integrado** | Auth E2E | 🔲 Não iniciado | Fluxo Auth completo com @SpringBootTest + TestContainers |
 | **Testes frontend** | Componentes + hooks + E2E | 🔲 Não iniciado | React Testing Library, testes de hooks, Cypress/Playwright |
 
-**Resumo de testes**: 79 arquivos, 397 testes unitários, 0 erros de compilação. Faltam **7 arquivos** para cobertura unitária completa do backend.
+**Resumo de testes**: 95 arquivos, **531 testes passando**, 0 failures, 0 errors. Build verde.
 
 ### 2.2. Documentação (Prioridade Alta)
 

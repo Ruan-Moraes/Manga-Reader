@@ -31,6 +31,7 @@ import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.manga.valueobject.Chapter;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(TitleController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -54,6 +55,9 @@ class TitleControllerTest {
 
     @MockitoBean
     private FilterTitlesUseCase filterTitlesUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private Title buildTitle(String id) {
         return Title.builder()

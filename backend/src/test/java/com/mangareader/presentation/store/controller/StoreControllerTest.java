@@ -26,6 +26,7 @@ import com.mangareader.application.store.usecase.GetStoresUseCase;
 import com.mangareader.domain.store.entity.Store;
 import com.mangareader.domain.store.valueobject.StoreAvailability;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(StoreController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -43,6 +44,9 @@ class StoreControllerTest {
 
     @MockitoBean
     private GetStoresByTitleIdUseCase getStoresByTitleIdUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private Store buildStore(UUID id, String name) {
         return Store.builder()

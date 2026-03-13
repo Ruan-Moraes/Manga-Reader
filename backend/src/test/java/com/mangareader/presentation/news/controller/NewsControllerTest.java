@@ -27,6 +27,7 @@ import com.mangareader.application.news.usecase.SearchNewsUseCase;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(NewsController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,6 +48,9 @@ class NewsControllerTest {
 
     @MockitoBean
     private SearchNewsUseCase searchNewsUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private NewsItem buildNews(String id, String title) {
         return NewsItem.builder()

@@ -20,6 +20,7 @@ import com.mangareader.application.manga.usecase.GetChapterByNumberUseCase;
 import com.mangareader.application.manga.usecase.GetChaptersByTitleUseCase;
 import com.mangareader.domain.manga.valueobject.Chapter;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(ChapterController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -34,6 +35,9 @@ class ChapterControllerTest {
 
     @MockitoBean
     private GetChapterByNumberUseCase getChapterByNumberUseCase;
+
+    @MockitoBean
+    private TokenPort tokenPort;
 
     private Chapter buildChapter(String number) {
         return Chapter.builder()

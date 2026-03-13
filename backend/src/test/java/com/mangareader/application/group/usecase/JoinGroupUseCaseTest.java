@@ -146,6 +146,7 @@ class JoinGroupUseCaseTest {
 
             var input = new JoinGroupInput(GROUP_ID, USER_ID, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(existingUser));
 
             // Act & Assert
             assertThatThrownBy(() -> joinGroupUseCase.execute(input))
