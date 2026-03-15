@@ -181,64 +181,46 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
         updateImagesFromDOM,
     ]);
 
-    const addImageFromEmoji = useCallback(
-        (emoji: HTMLImageElement | null) => {
-            if (exceedsImageLimit()) {
-                return;
-            }
+    const getContent = useCallback((): {
+        textContent: string | null;
+        imageContent: string | null;
+    } => {
+        const textarea = textareaRef.current;
 
-            if (!emoji) {
-                showErrorToast('Nenhum emoji selecionado', {
-                    toastId: 'no-emoji-selected-error',
-                });
+        if (!textarea) {
+            return { textContent: null, imageContent: null };
+        }
 
-                return;
-            }
+        const placeholderEl = textarea.querySelector('#textarea_placeholder');
+        const text = placeholderEl
+            ? null
+            : textarea.innerText.trim() || null;
 
-            const textarea = textareaRef.current;
+        const imgElements = textarea.querySelectorAll(
+            '[contenteditable="false"] img',
+        );
+        const imgSources = Array.from(imgElements)
+            .map(img => img.getAttribute('src'))
+            .filter(Boolean)
+            .join(',');
 
-            if (!textarea) {
-                return;
-            }
+        return {
+            textContent: text,
+            imageContent: imgSources || null,
+        };
+    }, [textareaRef]);
 
-            textarea.focus();
-            removePlaceholder();
+    const clearContent = useCallback(() => {
+        const textarea = textareaRef.current;
 
-            const imgHTML = `<div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
-                                    <img src="${emoji}" style="max-height: 30rem; border-radius: 0.125rem; display: block; object-fit: cover;" />
-                                    <button type="button" class="remove-img-btn" style="position: absolute; top: 0; right: 0; background: #f56565; color: white; font-size: 0.75rem; padding: 0.125rem 0.375rem; border: none; border-radius: 0 0.125rem 0 0.125rem; opacity: 0.75;">
-                                        X
-                                    </button>
-                                 </div>
-                                 <br/>`;
+        if (!textarea) {
+            return;
+        }
 
-            const range = document.createRange();
-            const selection = window.getSelection();
-
-            if (selection) {
-                selection.removeAllRanges();
-
-                range.selectNodeContents(textarea);
-                range.collapse(false);
-
-                selection.addRange(range);
-            }
-
-            document.execCommand('insertHTML', false, imgHTML);
-
-            textarea.focus();
-
-            setTimeout(() => {
-                updateImagesFromDOM();
-            }, 0);
-        },
-        [
-            exceedsImageLimit,
-            removePlaceholder,
-            textareaRef,
-            updateImagesFromDOM,
-        ],
-    );
+        textarea.innerHTML = '';
+        setImages([]);
+        addPlaceholder();
+    }, [textareaRef, addPlaceholder]);
 
     useEffect(() => {
         const textarea = textareaRef.current;
@@ -322,9 +304,10 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
     return {
         textareaRef,
         addImage,
-        addImageFromEmoji,
         removePlaceholder,
         addPlaceholder,
+        getContent,
+        clearContent,
     };
 };
 

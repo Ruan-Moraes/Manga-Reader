@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetRatingAverageUseCase {
-
     private final RatingRepositoryPort ratingRepository;
 
     public record RatingAverage(double average, long count) {}
@@ -31,7 +30,7 @@ public class GetRatingAverageUseCase {
         }
 
         double avg = ratings.stream()
-                .mapToDouble(MangaRating::getStars)
+                .mapToDouble(MangaRating::getOverallRating)
                 .average()
                 .orElse(0.0);
 

@@ -18,7 +18,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Chapter {
-
     private String number;
     private String title;
     private String releaseDate;

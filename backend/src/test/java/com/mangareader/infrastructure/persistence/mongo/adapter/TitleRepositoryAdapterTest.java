@@ -25,7 +25,6 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @Import({TitleRepositoryAdapter.class, MongoTestContainerConfig.class})
 @DisplayName("TitleRepositoryAdapter — Integração MongoDB")
 class TitleRepositoryAdapterTest {
-
     @Autowired
     private TitleRepositoryPort titleRepository;
 
@@ -71,11 +70,11 @@ class TitleRepositoryAdapterTest {
     @Nested
     @DisplayName("findAll")
     class FindAll {
-
         @Test
         @DisplayName("Deve retornar todos os títulos")
         void deveRetornarTodosTitulos() {
             var result = titleRepository.findAll();
+
             assertThat(result).hasSize(3);
         }
 
@@ -83,6 +82,7 @@ class TitleRepositoryAdapterTest {
         @DisplayName("Deve retornar página de títulos")
         void deveRetornarPaginaDeTitulos() {
             var page = titleRepository.findAll(PageRequest.of(0, 2));
+
             assertThat(page.getContent()).hasSize(2);
             assertThat(page.getTotalElements()).isEqualTo(3);
             assertThat(page.getTotalPages()).isEqualTo(2);
@@ -92,11 +92,11 @@ class TitleRepositoryAdapterTest {
     @Nested
     @DisplayName("findById")
     class FindById {
-
         @Test
         @DisplayName("Deve retornar título quando ID existe")
         void deveRetornarTituloQuandoIdExiste() {
             var result = titleRepository.findById(naruto.getId());
+
             assertThat(result).isPresent();
             assertThat(result.get().getName()).isEqualTo("Naruto");
         }
@@ -105,6 +105,7 @@ class TitleRepositoryAdapterTest {
         @DisplayName("Deve retornar empty quando ID não existe")
         void deveRetornarEmptyQuandoIdNaoExiste() {
             var result = titleRepository.findById("id-inexistente");
+
             assertThat(result).isEmpty();
         }
     }
@@ -112,11 +113,11 @@ class TitleRepositoryAdapterTest {
     @Nested
     @DisplayName("findByGenresContaining")
     class FindByGenresContaining {
-
         @Test
         @DisplayName("Deve retornar títulos que contêm o gênero")
         void deveRetornarTitulosComGenero() {
             var result = titleRepository.findByGenresContaining("Action");
+
             assertThat(result).hasSize(2)
                     .extracting(Title::getName)
                     .containsExactlyInAnyOrder("Naruto", "One Piece");
@@ -126,6 +127,7 @@ class TitleRepositoryAdapterTest {
         @DisplayName("Deve retornar página de títulos por gênero")
         void deveRetornarPaginaPorGenero() {
             var page = titleRepository.findByGenresContaining("Action", PageRequest.of(0, 1));
+
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getTotalElements()).isEqualTo(2);
         }
@@ -134,11 +136,11 @@ class TitleRepositoryAdapterTest {
     @Nested
     @DisplayName("searchByName")
     class SearchByName {
-
         @Test
         @DisplayName("Deve buscar por nome case-insensitive")
         void deveBuscarPorNomeCaseInsensitive() {
             var result = titleRepository.searchByName("naruto");
+
             assertThat(result).hasSize(1);
             assertThat(result.get(0).getName()).isEqualTo("Naruto");
         }
@@ -147,6 +149,7 @@ class TitleRepositoryAdapterTest {
         @DisplayName("Deve buscar por nome parcial paginado")
         void deveBuscarPorNomeParcialPaginado() {
             var page = titleRepository.searchByName("note", PageRequest.of(0, 10));
+
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getContent().get(0).getName()).isEqualTo("Death Note");
         }
@@ -155,6 +158,7 @@ class TitleRepositoryAdapterTest {
         @DisplayName("Deve retornar vazio para nome inexistente")
         void deveRetornarVazioParaNomeInexistente() {
             var result = titleRepository.searchByName("Dragon Ball");
+
             assertThat(result).isEmpty();
         }
     }
@@ -162,11 +166,11 @@ class TitleRepositoryAdapterTest {
     @Nested
     @DisplayName("findByGenresContainingAll")
     class FindByGenresContainingAll {
-
         @Test
         @DisplayName("Deve retornar títulos que contêm todos os gêneros")
         void deveRetornarTitulosComTodosGeneros() {
             var result = titleRepository.findByGenresContainingAll(List.of("Action", "Comedy"));
+
             assertThat(result).hasSize(1);
             assertThat(result.get(0).getName()).isEqualTo("One Piece");
         }
@@ -176,6 +180,7 @@ class TitleRepositoryAdapterTest {
         void deveRetornarPaginaComTodosGeneros() {
             var page = titleRepository.findByGenresContainingAll(
                     List.of("Action", "Adventure"), PageRequest.of(0, 10));
+
             assertThat(page.getContent()).hasSize(2);
             assertThat(page.getTotalElements()).isEqualTo(2);
         }
@@ -184,7 +189,6 @@ class TitleRepositoryAdapterTest {
     @Nested
     @DisplayName("save")
     class Save {
-
         @Test
         @DisplayName("Deve persistir novo título e gerar ID")
         void devePersistirNovoTitulo() {
@@ -205,23 +209,26 @@ class TitleRepositoryAdapterTest {
         @Test
         @DisplayName("Deve atualizar título existente")
         void deveAtualizarTituloExistente() {
-            naruto.setScore("9.5");
+            naruto.setRatingAverage(3.5);
+
             titleRepository.save(naruto);
 
             var updated = titleRepository.findById(naruto.getId());
+
             assertThat(updated).isPresent();
-            assertThat(updated.get().getScore()).isEqualTo("9.5");
+
+            assertThat(updated.get().getRatingAverage()).isEqualTo(3.5);
         }
     }
 
     @Nested
     @DisplayName("deleteById")
     class DeleteById {
-
         @Test
         @DisplayName("Deve remover o título")
         void deveRemoverTitulo() {
             titleRepository.deleteById(naruto.getId());
+
             assertThat(titleRepository.findById(naruto.getId())).isEmpty();
             assertThat(titleRepository.findAll()).hasSize(2);
         }

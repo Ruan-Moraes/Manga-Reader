@@ -56,9 +56,6 @@ const UserModalHeader = () => {
                             >
                                 {userData.name}
                             </button>
-                            <span className="text-[0.65rem] font-normal text-tertiary">
-                                Clique no nome ou na foto para abrir o perfil
-                            </span>
                             {userData.moderator?.isModerator && (
                                 <span className="text-xs font-normal text-tertiary">
                                     Moderador desde{' '}

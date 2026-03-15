@@ -5,26 +5,23 @@ import type { VerticalCard as VerticalCardProps } from '../../../type/title-card
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
-
 import formatDate from '@shared/service/util/formatDate';
-
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import AppLink from '@shared/component/link/element/AppLink';
+
 import { type Chapter } from '@feature/chapter';
-import { RatingStars, getRatingsAverage } from '@feature/rating';
+import { RatingStars } from '@feature/rating';
 
 const VerticalCard = ({
     isError,
     isLoading,
-
     id,
     type,
     cover,
     name,
+    ratingAverage,
     chapters,
 }: VerticalCardProps) => {
-    const average = useMemo(() => getRatingsAverage(String(id)), [id]);
-
     const listOfChapters = useMemo(() => {
         if (!chapters || chapters.length === 0) {
             return [];
@@ -133,7 +130,7 @@ const VerticalCard = ({
                 {!isLoading && (
                     <div className="relative">
                         <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
-                            <RatingStars value={average} size={12} showValue />
+                            <RatingStars value={ratingAverage!} size={12} />
                         </div>
                         <AppLink link={`/title/${id}`} className="block h-full">
                             {!imageError ? (

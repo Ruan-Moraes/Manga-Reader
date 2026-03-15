@@ -27,11 +27,17 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                                 link={`/users/${user.id}`}
                                 className="shrink-0"
                             >
-                                <img
-                                    src={user.photo}
-                                    alt={user.name}
-                                    className="object-cover w-8 h-8 border rounded-full border-tertiary"
-                                />
+                                {user.photo ? (
+                                    <img
+                                        src={user.photo}
+                                        alt={user.name}
+                                        className="object-cover w-8 h-8 border rounded-full border-tertiary"
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center w-8 h-8 text-sm font-bold border rounded-full border-tertiary bg-tertiary">
+                                        {user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
                             </AppLink>
                             <AppLink
                                 enabledColorWhenActive={true}

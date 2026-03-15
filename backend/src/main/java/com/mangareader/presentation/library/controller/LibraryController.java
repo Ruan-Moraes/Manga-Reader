@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.library.usecase.ChangeReadingListUseCase;
+import com.mangareader.application.library.usecase.GetLibraryCountsUseCase;
+import com.mangareader.application.library.usecase.GetUserLibraryByListUseCase;
 import com.mangareader.application.library.usecase.GetUserLibraryUseCase;
 import com.mangareader.application.library.usecase.RemoveFromLibraryUseCase;
 import com.mangareader.application.library.usecase.SaveToLibraryUseCase;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.presentation.library.dto.ChangeListRequest;
+import com.mangareader.presentation.library.dto.LibraryCountsResponse;
 import com.mangareader.presentation.library.dto.SaveToLibraryRequest;
 import com.mangareader.presentation.library.dto.SavedMangaResponse;
 import com.mangareader.presentation.library.mapper.LibraryMapper;
@@ -46,26 +49,42 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Library", description = "Biblioteca pessoal do usuário")
 public class LibraryController {
     private final GetUserLibraryUseCase getUserLibraryUseCase;
+    private final GetUserLibraryByListUseCase getUserLibraryByListUseCase;
+    private final GetLibraryCountsUseCase getLibraryCountsUseCase;
     private final SaveToLibraryUseCase saveToLibraryUseCase;
     private final ChangeReadingListUseCase changeReadingListUseCase;
     private final RemoveFromLibraryUseCase removeFromLibraryUseCase;
 
     @GetMapping
-    @Operation(summary = "Minha biblioteca", description = "Retorna mangás salvos do usuário com paginação")
+    @Operation(summary = "Minha biblioteca", description = "Retorna mangás salvos do usuário com paginação. Filtrável por lista.")
     public ResponseEntity<ApiResponse<PageResponse<SavedMangaResponse>>> getLibrary(
             Authentication auth,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "savedAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @RequestParam(defaultValue = "desc") String direction,
+            @RequestParam(required = false) String list
     ) {
         var pageable = buildPageable(page, size, sort, direction);
+        var userId = extractUserId(auth);
 
-        var result = getUserLibraryUseCase.execute(extractUserId(auth), pageable);
+        var result = (list != null)
+                ? getUserLibraryByListUseCase.execute(userId, parseReadingList(list), pageable)
+                : getUserLibraryUseCase.execute(userId, pageable);
 
         var mapped = result.map(LibraryMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
+    }
+
+    @GetMapping("/counts")
+    @Operation(summary = "Contagens da biblioteca", description = "Retorna a quantidade de mangás por lista de leitura")
+    public ResponseEntity<ApiResponse<LibraryCountsResponse>> getCounts(Authentication auth) {
+        var counts = getLibraryCountsUseCase.execute(extractUserId(auth));
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new LibraryCountsResponse(counts.lendo(), counts.queroLer(), counts.concluido(), counts.total())
+        ));
     }
 
     @PostMapping

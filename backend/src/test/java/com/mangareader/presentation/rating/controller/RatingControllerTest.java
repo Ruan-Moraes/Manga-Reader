@@ -77,9 +77,16 @@ class RatingControllerTest {
         return MangaRating.builder()
                 .id(id)
                 .titleId("title-1")
+                .titleName("Solo Leveling")
                 .userId(USER_ID.toString())
                 .userName("ruan")
-                .stars(4.5)
+                .funRating(4.5)
+                .artRating(5.0)
+                .storylineRating(4.0)
+                .charactersRating(4.5)
+                .originalityRating(3.5)
+                .pacingRating(4.0)
+                .overallRating(4.3)
                 .comment("Ótimo mangá!")
                 .build();
     }
@@ -99,7 +106,8 @@ class RatingControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.content.length()").value(2))
-                    .andExpect(jsonPath("$.data.content[0].stars").value(4.5));
+                    .andExpect(jsonPath("$.data.content[0].overallRating").value(4.3))
+                    .andExpect(jsonPath("$.data.content[0].titleName").value("Solo Leveling"));
         }
 
         @Test
@@ -162,12 +170,21 @@ class RatingControllerTest {
             mockMvc.perform(post("/api/ratings")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "title-1", "stars": 4.5, "comment": "Excelente!"}
+                                    {
+                                        "titleId": "title-1",
+                                        "funRating": 4.5,
+                                        "artRating": 5.0,
+                                        "storylineRating": 4.0,
+                                        "charactersRating": 4.5,
+                                        "originalityRating": 3.5,
+                                        "pacingRating": 4.0,
+                                        "comment": "Excelente!"
+                                    }
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.stars").value(4.5));
+                    .andExpect(jsonPath("$.data.overallRating").value(4.3));
         }
 
         @Test
@@ -176,7 +193,12 @@ class RatingControllerTest {
             mockMvc.perform(post("/api/ratings")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "", "stars": 4.0}
+                                    {
+                                        "titleId": "",
+                                        "funRating": 4.0, "artRating": 4.0,
+                                        "storylineRating": 4.0, "charactersRating": 4.0,
+                                        "originalityRating": 4.0, "pacingRating": 4.0
+                                    }
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -188,7 +210,12 @@ class RatingControllerTest {
             mockMvc.perform(post("/api/ratings")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "title-1", "stars": 0}
+                                    {
+                                        "titleId": "title-1",
+                                        "funRating": 0, "artRating": 4.0,
+                                        "storylineRating": 4.0, "charactersRating": 4.0,
+                                        "originalityRating": 4.0, "pacingRating": 4.0
+                                    }
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -200,7 +227,12 @@ class RatingControllerTest {
             mockMvc.perform(post("/api/ratings")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "title-1", "stars": 6}
+                                    {
+                                        "titleId": "title-1",
+                                        "funRating": 6, "artRating": 4.0,
+                                        "storylineRating": 4.0, "charactersRating": 4.0,
+                                        "originalityRating": 4.0, "pacingRating": 4.0
+                                    }
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -219,7 +251,7 @@ class RatingControllerTest {
             mockMvc.perform(put("/api/ratings/r1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"stars": 3.0, "comment": "Revisando minha opinião"}
+                                    {"funRating": 3.0, "comment": "Revisando minha opinião"}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isOk())
@@ -235,7 +267,7 @@ class RatingControllerTest {
             mockMvc.perform(put("/api/ratings/r-inexistente")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"stars": 3.0}
+                                    {"artRating": 3.0}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isNotFound());

@@ -6,9 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * DTO completo de título, incluindo capítulos.
- * <p>
- * Compatível com o frontend ({@code Title} em title.types.ts):
- * <pre>{ id, type, cover, name, synopsis, genres, chapters, popularity, score, author, artist, publisher, createdAt, updatedAt }</pre>
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record TitleResponse(
@@ -20,7 +17,9 @@ public record TitleResponse(
         List<String> genres,
         List<ChapterResponse> chapters,
         String popularity,
-        String score,
+        Double ratingAverage,
+        Long ratingCount,
+        Double rankingScore,
         String author,
         String artist,
         String publisher,

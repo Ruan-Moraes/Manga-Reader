@@ -30,7 +30,6 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("RefreshTokenUseCase")
 class RefreshTokenUseCaseTest {
-
     @Mock
     private TokenPort tokenPort;
 

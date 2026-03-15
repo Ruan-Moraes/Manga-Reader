@@ -13,7 +13,6 @@ const TitleDetails = ({
     type,
     chapters,
     popularity,
-    score,
     author,
     artist,
     publisher,

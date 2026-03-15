@@ -32,6 +32,7 @@ public class UpdateUserProfileUseCase {
             String name,
             String bio,
             String photoUrl,
+            String bannerUrl,
             List<SocialLinkInput> socialLinks
     ) {}
 
@@ -49,6 +50,9 @@ public class UpdateUserProfileUseCase {
         }
         if (input.photoUrl() != null) {
             user.setPhotoUrl(input.photoUrl());
+        }
+        if (input.bannerUrl() != null) {
+            user.setBannerUrl(input.bannerUrl());
         }
 
         if (input.socialLinks() != null) {

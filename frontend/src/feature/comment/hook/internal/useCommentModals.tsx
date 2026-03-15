@@ -7,11 +7,6 @@ type UseCommentModalsOptions = {
         newTextContent: string | null,
         newImageContent: string | null,
     ) => void;
-    onReply: (
-        id: string,
-        textContent: string | null,
-        imageContent: string | null,
-    ) => void;
 
     commentId: string;
 };
@@ -19,7 +14,6 @@ type UseCommentModalsOptions = {
 const useCommentModals = ({
     onDelete,
     onEdit,
-    onReply,
 
     commentId,
 }: UseCommentModalsOptions) => {
@@ -58,27 +52,6 @@ const useCommentModals = ({
         [onEdit, commentId, closeEditModal],
     );
 
-    const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-
-    const openReplyModal = useCallback(() => {
-        setIsReplyModalOpen(true);
-    }, []);
-
-    const closeReplyModal = useCallback(() => {
-        setIsReplyModalOpen(false);
-    }, []);
-
-    const confirmReplyComment = useCallback(
-        (textContent: string | null, imageContent: string | null) => {
-            if (onReply) {
-                onReply(commentId, textContent, imageContent);
-            }
-
-            closeReplyModal();
-        },
-        [onReply, commentId, closeReplyModal],
-    );
-
     return {
         isDeleteModalOpen,
         openDeleteModal,
@@ -88,10 +61,6 @@ const useCommentModals = ({
         openEditModal,
         closeEditModal,
         confirmEditComment,
-        isReplyModalOpen,
-        openReplyModal,
-        closeReplyModal,
-        confirmReplyComment,
     };
 };
 

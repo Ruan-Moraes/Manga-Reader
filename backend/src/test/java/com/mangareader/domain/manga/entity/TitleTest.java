@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import com.mangareader.domain.manga.valueobject.Chapter;
 
 class TitleTest {
-
     @Test
     @DisplayName("Deve iniciar com listas vazias de genres e chapters no builder padrão")
     void shouldInitializeDefaultListsWhenUsingBuilder() {
@@ -47,7 +46,9 @@ class TitleTest {
                 .genres(List.of("Action", "Adventure"))
                 .chapters(List.of(ch1))
                 .popularity("1")
-                .score("9.5")
+                .ratingAverage(4.5)
+                .ratingCount(100L)
+                .rankingScore(4.3)
                 .author("Eiichiro Oda")
                 .artist("Eiichiro Oda")
                 .publisher("Shueisha")
@@ -63,7 +64,9 @@ class TitleTest {
         assertEquals(1, title.getChapters().size());
         assertEquals("1", title.getChapters().getFirst().getNumber());
         assertEquals("1", title.getPopularity());
-        assertEquals("9.5", title.getScore());
+        assertEquals(4.5, title.getRatingAverage());
+        assertEquals(100L, title.getRatingCount());
+        assertEquals(4.3, title.getRankingScore());
         assertEquals("Eiichiro Oda", title.getAuthor());
         assertEquals("Eiichiro Oda", title.getArtist());
         assertEquals("Shueisha", title.getPublisher());
@@ -117,9 +120,12 @@ class TitleTest {
         assertNull(title.getArtist());
         assertNull(title.getPublisher());
         assertNull(title.getPopularity());
-        assertNull(title.getScore());
+        assertNull(title.getRatingAverage());
+        assertNull(title.getRatingCount());
+        assertNull(title.getRankingScore());
         assertNull(title.getCreatedAt());
         assertNull(title.getUpdatedAt());
+
         // Listas com field initializer são inicializadas mesmo no no-args constructor
         assertNotNull(title.getGenres());
         assertTrue(title.getGenres().isEmpty());
@@ -135,11 +141,15 @@ class TitleTest {
                 .build();
 
         title.setName("Atualizado");
-        title.setScore("8.0");
+        title.setRatingAverage(3.0);
+        title.setRatingCount(50L);
+        title.setRankingScore(2.8);
         title.setPopularity("5");
 
         assertEquals("Atualizado", title.getName());
-        assertEquals("8.0", title.getScore());
+        assertEquals(3.0, title.getRatingAverage());
+        assertEquals(50L, title.getRatingCount());
+        assertEquals(2.8, title.getRankingScore());
         assertEquals("5", title.getPopularity());
     }
 }

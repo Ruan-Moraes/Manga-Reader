@@ -23,7 +23,6 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetChaptersByTitleUseCase")
 class GetChaptersByTitleUseCaseTest {
-
     @Mock
     private TitleRepositoryPort titleRepository;
 
@@ -33,7 +32,6 @@ class GetChaptersByTitleUseCaseTest {
     @Nested
     @DisplayName("Cenário de sucesso")
     class Sucesso {
-
         @Test
         @DisplayName("Deve retornar lista de capítulos do título")
         void deveRetornarCapitulosDoTitulo() {
@@ -43,6 +41,7 @@ class GetChaptersByTitleUseCaseTest {
                     Chapter.builder().number("2").title("A Jornada").build(),
                     Chapter.builder().number("3").title("O Confronto").build()
             );
+
             Title title = Title.builder().id("abc123").name("Naruto").chapters(chapters).build();
 
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
@@ -61,6 +60,7 @@ class GetChaptersByTitleUseCaseTest {
         void deveRetornarListaVaziaQuandoSemCapitulos() {
             // Arrange
             Title title = Title.builder().id("abc123").name("Novo Mangá").build();
+
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
 
             // Act
@@ -74,7 +74,6 @@ class GetChaptersByTitleUseCaseTest {
     @Nested
     @DisplayName("Cenários de erro")
     class Erro {
-
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")
         void deveLancarExcecaoQuandoTituloNaoExiste() {

@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.mangareader.domain.user.valueobject.UserRole;
+import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -57,14 +58,31 @@ public class User {
     @Column(name = "photo_url")
     private String photoUrl;
 
+    @Column(name = "banner_url")
+    private String bannerUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
     private UserRole role = UserRole.MEMBER;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "comment_visibility", nullable = false, length = 20)
+    @Builder.Default
+    private VisibilitySetting commentVisibility = VisibilitySetting.PUBLIC;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "view_history_visibility", nullable = false, length = 20)
+    @Builder.Default
+    private VisibilitySetting viewHistoryVisibility = VisibilitySetting.PUBLIC;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserSocialLink> socialLinks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserRecommendation> recommendations = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

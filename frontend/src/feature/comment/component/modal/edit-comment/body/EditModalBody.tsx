@@ -1,12 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { IoImages } from 'react-icons/io5';
 import { FaUpload } from 'react-icons/fa';
-
-import { useEmojiModalContext } from '../../../../context/useEmojiModalContext';
 
 import useCommentRichEditor from '../../../../hook/internal/useCommentRichEditor';
 
-import EmojiModal from '../../../EmojiModal';
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
 import DarkButton from '@shared/component/button/DarkButton';
 
@@ -20,7 +16,6 @@ type EditModalBodyProps = {
     initialImages: string | null;
 };
 
-// TODO: Refatorar para usar o hook useCommentRichEditor
 const EditModalBody = ({
     onEdit,
     onCancel,
@@ -28,24 +23,13 @@ const EditModalBody = ({
     initialImages,
 }: EditModalBodyProps) => {
     const editTextareaRef = useRef<HTMLDivElement | null>(null);
-    const { textareaRef, addImage, addImageFromEmoji, removePlaceholder } =
+    const { textareaRef, addImage, removePlaceholder } =
         useCommentRichEditor({
             placeholder: 'Edite seu comentário',
             externalRef: editTextareaRef,
         });
 
-    const { openEmojiModal, selectedEmoji, setSelectedEmoji } =
-        useEmojiModalContext();
-
     const initialValuesProcessed = useRef(false);
-
-    useEffect(() => {
-        if (selectedEmoji) {
-            addImageFromEmoji(selectedEmoji);
-
-            setSelectedEmoji(null);
-        }
-    }, [addImageFromEmoji, selectedEmoji, setSelectedEmoji]);
 
     useEffect(() => {
         const textarea = textareaRef.current;
@@ -103,34 +87,28 @@ const EditModalBody = ({
     };
 
     return (
-        <>
-            <EmojiModal />
-            <div className="flex flex-col gap-4">
-                <div className="text-xs border rounded-xs bg-secondary border-tertiary">
-                    <div className="flex p-2">
-                        <div
-                            ref={textareaRef}
-                            contentEditable="true"
-                            className="flex flex-col w-full h-full gap-2 p-2 outline-none resize-none rounded-xs bg-primary-default scrollbar-hidden"
-                        />
+        <div className="flex flex-col gap-4">
+            <div className="text-xs border rounded-xs bg-secondary border-tertiary">
+                <div className="flex p-2">
+                    <div
+                        ref={textareaRef}
+                        contentEditable="true"
+                        className="flex flex-col w-full h-full gap-2 p-2 outline-none resize-none rounded-xs bg-primary-default scrollbar-hidden min-h-[4rem]"
+                    />
+                </div>
+                <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
+                    <div className="flex gap-2">
+                        <BadgeIconButton onClick={addImage}>
+                            <FaUpload />
+                        </BadgeIconButton>
                     </div>
-                    <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
-                        <div className="flex gap-2">
-                            <BadgeIconButton onClick={openEmojiModal}>
-                                <IoImages />
-                            </BadgeIconButton>
-                            <BadgeIconButton onClick={addImage}>
-                                <FaUpload />
-                            </BadgeIconButton>
-                        </div>
-                        <div className="flex gap-2">
-                            <DarkButton onClick={onCancel} text="Cancelar" />
-                            <DarkButton onClick={handleSave} text="Salvar" />
-                        </div>
+                    <div className="flex gap-2">
+                        <DarkButton onClick={onCancel} text="Cancelar" />
+                        <DarkButton onClick={handleSave} text="Salvar" />
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

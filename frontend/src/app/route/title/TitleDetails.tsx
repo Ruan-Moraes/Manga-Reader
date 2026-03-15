@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import Header from '@app/layout/Header';
@@ -33,6 +34,8 @@ import {
 import { ChapterFilter, ChapterList, useChapterSort } from '@feature/chapter';
 import { GroupsModal } from '@feature/group';
 import { StoresModal } from '@feature/store';
+import { getStoredSession } from '@feature/auth/service/authService';
+import { recordView } from '@feature/user/service/userService';
 
 const TitleDetailsPage = () => {
     const { titleId: rawTitleId } = useParams();
@@ -60,11 +63,19 @@ const TitleDetailsPage = () => {
         error: titleError,
     } = useTitle(id);
 
+    // Fire-and-forget: registra visualização no histórico do usuário
+    useEffect(() => {
+        if (rawTitleId && getStoredSession()) {
+            recordView(rawTitleId).catch(() => {});
+        }
+    }, [rawTitleId]);
+
     const {
         comments,
         isLoading: isCommentsLoading,
         isError: isCommentsError,
         error: commentsError,
+        refetchComments,
     } = useComments(id);
 
     const {
@@ -120,7 +131,9 @@ const TitleDetailsPage = () => {
         genres,
         chapters,
         popularity,
-        score,
+        ratingAverage,
+        ratingCount,
+        rankingScore,
         author,
         artist,
         publisher,
@@ -158,7 +171,9 @@ const TitleDetailsPage = () => {
                         genres={genres}
                         chapters={chapters}
                         popularity={popularity}
-                        score={score}
+                        ratingAverage={ratingAverage}
+                        ratingCount={ratingCount}
+                        rankingScore={rankingScore}
                         author={author}
                         artist={artist}
                         publisher={publisher}
@@ -167,7 +182,7 @@ const TitleDetailsPage = () => {
                         <span className="text-sm font-semibold">
                             Média da comunidade:
                         </span>
-                        <RatingStars value={average} />
+                        <RatingStars value={average.average} />
                     </div>
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
@@ -191,12 +206,14 @@ const TitleDetailsPage = () => {
                 </section>
                 <RecentReviews ratings={ratings} />
                 <CommentsSection
+                    titleId={rawTitleId!}
                     comments={
                         comments instanceof Error || !comments ? [] : comments
                     }
                     isLoading={isCommentsLoading}
                     isError={isCommentsError}
                     error={commentsError}
+                    onCommentCreated={refetchComments}
                 />
             </MainContent>
             <Footer />

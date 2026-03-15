@@ -25,7 +25,6 @@ import com.mangareader.domain.manga.entity.Title;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("FilterTitlesUseCase")
 class FilterTitlesUseCaseTest {
-
     @Mock
     private TitleRepositoryPort titleRepository;
 
@@ -36,11 +35,11 @@ class FilterTitlesUseCaseTest {
 
     private List<Title> buildSampleTitles() {
         return List.of(
-                Title.builder().id("1").name("Naruto").popularity("5000").score("8.5")
+                Title.builder().id("1").name("Naruto").popularity("5000").ratingAverage(4.5)
                         .createdAt(LocalDateTime.of(2020, 1, 1, 0, 0)).build(),
-                Title.builder().id("2").name("Bleach").popularity("3000").score("7.8")
+                Title.builder().id("2").name("Bleach").popularity("3000").ratingAverage(3.8)
                         .createdAt(LocalDateTime.of(2022, 6, 15, 0, 0)).build(),
-                Title.builder().id("3").name("Attack on Titan").popularity("8000").score("9.2")
+                Title.builder().id("3").name("Attack on Titan").popularity("8000").ratingAverage(4.8)
                         .createdAt(LocalDateTime.of(2021, 3, 10, 0, 0)).build()
         );
     }
@@ -48,7 +47,6 @@ class FilterTitlesUseCaseTest {
     @Nested
     @DisplayName("Filtro por gêneros")
     class FiltroPorGeneros {
-
         @Test
         @DisplayName("Deve buscar todos os títulos quando nenhum gênero é informado")
         void deveBuscarTodosQuandoSemGeneros() {
@@ -60,6 +58,7 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             assertThat(result.getContent()).hasSize(3);
+
             verify(titleRepository).findAll();
         }
 
@@ -81,9 +80,11 @@ class FilterTitlesUseCaseTest {
         void deveFiltrarPorMultiplosGeneros() {
             // Arrange
             List<String> genres = List.of("Ação", "Aventura");
+
             List<Title> filtered = List.of(
                     Title.builder().id("1").name("Naruto").build()
             );
+
             when(titleRepository.findByGenresContainingAll(genres)).thenReturn(filtered);
 
             // Act
@@ -91,6 +92,7 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             assertThat(result.getContent()).hasSize(1);
+
             verify(titleRepository).findByGenresContainingAll(genres);
         }
     }
@@ -98,7 +100,6 @@ class FilterTitlesUseCaseTest {
     @Nested
     @DisplayName("Ordenação")
     class Ordenacao {
-
         @Test
         @DisplayName("MOST_READ deve ordenar por popularidade decrescente")
         void mostReadDeveOrdenarPorPopularidadeDecrescente() {
@@ -110,13 +111,14 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             List<Title> content = result.getContent();
+
             assertThat(content.get(0).getName()).isEqualTo("Attack on Titan"); // 8000
             assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 5000
             assertThat(content.get(2).getName()).isEqualTo("Bleach");          // 3000
         }
 
         @Test
-        @DisplayName("MOST_RATED deve ordenar por score decrescente")
+        @DisplayName("MOST_RATED deve ordenar por ratingAverage decrescente")
         void mostRatedDeveOrdenarPorScoreDecrescente() {
             // Arrange
             when(titleRepository.findAll()).thenReturn(buildSampleTitles());
@@ -126,9 +128,10 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             List<Title> content = result.getContent();
-            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan"); // 9.2
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 8.5
-            assertThat(content.get(2).getName()).isEqualTo("Bleach");          // 7.8
+
+            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan"); // 4.8
+            assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 4.5
+            assertThat(content.get(2).getName()).isEqualTo("Bleach");          // 3.8
         }
 
         @Test
@@ -142,6 +145,7 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             List<Title> content = result.getContent();
+
             assertThat(content.get(0).getName()).isEqualTo("Bleach");          // 2022
             assertThat(content.get(1).getName()).isEqualTo("Attack on Titan"); // 2021
             assertThat(content.get(2).getName()).isEqualTo("Naruto");          // 2020
@@ -158,6 +162,7 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             List<Title> content = result.getContent();
+
             assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
             assertThat(content.get(1).getName()).isEqualTo("Bleach");
             assertThat(content.get(2).getName()).isEqualTo("Naruto");
@@ -174,6 +179,7 @@ class FilterTitlesUseCaseTest {
 
             // Assert
             List<Title> content = result.getContent();
+
             assertThat(content.get(0).getName()).isEqualTo("Bleach");          // 3000
             assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 5000
             assertThat(content.get(2).getName()).isEqualTo("Attack on Titan"); // 8000
@@ -197,12 +203,12 @@ class FilterTitlesUseCaseTest {
     @Nested
     @DisplayName("Paginação manual")
     class Paginacao {
-
         @Test
         @DisplayName("Deve paginar corretamente os resultados")
         void devePaginarCorretamente() {
             // Arrange
             when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+
             Pageable secondPage = PageRequest.of(1, 2); // página 1, tamanho 2
 
             // Act
@@ -219,6 +225,7 @@ class FilterTitlesUseCaseTest {
         void deveRetornarPaginaVaziaQuandoOffsetExcede() {
             // Arrange
             when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+
             Pageable farPage = PageRequest.of(10, 10); // offset 100 > 3 itens
 
             // Act
@@ -233,7 +240,6 @@ class FilterTitlesUseCaseTest {
     @Nested
     @DisplayName("Valores numéricos inválidos")
     class ValoresNumericos {
-
         @Test
         @DisplayName("Deve tratar popularidade nula como zero na ordenação")
         void deveTratarPopularidadeNulaComoZero() {
@@ -242,6 +248,7 @@ class FilterTitlesUseCaseTest {
                     Title.builder().id("1").name("Com popularidade").popularity("1000").build(),
                     Title.builder().id("2").name("Sem popularidade").popularity(null).build()
             );
+
             when(titleRepository.findAll()).thenReturn(titles);
 
             // Act

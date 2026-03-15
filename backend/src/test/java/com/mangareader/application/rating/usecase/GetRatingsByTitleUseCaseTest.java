@@ -42,9 +42,9 @@ class GetRatingsByTitleUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(0, 20);
             List<MangaRating> ratings = List.of(
-                    MangaRating.builder().id("r1").titleId(TITLE_ID).stars(5.0).userName("User A").build(),
-                    MangaRating.builder().id("r2").titleId(TITLE_ID).stars(3.5).userName("User B").build(),
-                    MangaRating.builder().id("r3").titleId(TITLE_ID).stars(4.0).userName("User C").build()
+                    MangaRating.builder().id("r1").titleId(TITLE_ID).overallRating(5.0).userName("User A").build(),
+                    MangaRating.builder().id("r2").titleId(TITLE_ID).overallRating(3.5).userName("User B").build(),
+                    MangaRating.builder().id("r3").titleId(TITLE_ID).overallRating(4.0).userName("User C").build()
             );
             Page<MangaRating> page = new PageImpl<>(ratings, pageable, 3);
             when(ratingRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(page);

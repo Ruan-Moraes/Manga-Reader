@@ -6,24 +6,27 @@ import {
     showErrorToast,
 } from '@shared/service/util/toastService';
 
+import {
+    deleteComment as deleteCommentService,
+    updateComment,
+    createComment,
+} from '../../service/commentService';
+
 const useCommentCRUD = () => {
     const deleteCommentMutation = useMutation({
-        // TODO: Chamar a API real para deletar o comentário
         mutationFn: async (id: string) => {
+            await deleteCommentService(id);
             return id;
         },
         onSuccess: () => {
             showSuccessToast(`Comentário deletado com sucesso.`, {
                 toastId: 'delete-comment-success',
-            }); // TODO: Atualizar o estado da UI
+            });
         },
-        // TODO: Lidar com o erro na UI
-        onError: error => {
-            console.error('Erro ao deletar comentário:', error);
-
+        onError: () => {
             showErrorToast('Erro ao deletar comentário.', {
                 toastId: 'delete-comment-error',
-            }); // TODO: Atualizar o estado da UI
+            });
         },
     });
 
@@ -31,57 +34,51 @@ const useCommentCRUD = () => {
         mutationFn: async ({
             id,
             newTextContent,
-            newImageContent,
         }: {
             id: string;
             newTextContent: string | null;
             newImageContent: string | null;
         }) => {
-            // TODO: Chamar a API real para editar o comentário
-
-            return { id, newTextContent, newImageContent };
+            return await updateComment(id, newTextContent ?? '');
         },
         onSuccess: () => {
             showSuccessToast('Comentário editado com sucesso.', {
                 toastId: 'edit-comment-success',
-            }); // TODO: Atualizar o estado da UI
+            });
         },
-        // TODO: Lidar com o erro na UI
-        onError: error => {
-            console.error('Erro ao editar comentário:', error);
-
+        onError: () => {
             showErrorToast('Erro ao editar comentário.', {
                 toastId: 'edit-comment-error',
-            }); // TODO: Atualizar o estado da UI
+            });
         },
     });
 
     const replyCommentMutation = useMutation({
         mutationFn: async ({
             id,
+            titleId,
             textContent,
-            imageContent,
         }: {
             id: string;
+            titleId: string;
             textContent: string | null;
             imageContent: string | null;
         }) => {
-            // TODO: Chamar a API real para responder ao comentário
-
-            return { id, textContent, imageContent };
+            return await createComment({
+                titleId,
+                textContent: textContent ?? '',
+                parentCommentId: id,
+            });
         },
         onSuccess: () => {
             showSuccessToast('Resposta adicionada com sucesso.', {
                 toastId: 'reply-comment-success',
-            }); // TODO: Atualizar o estado da UI
+            });
         },
-        // TODO: Lidar com o erro na UI
-        onError: error => {
-            console.error('Erro ao responder comentário:', error);
-
+        onError: () => {
             showErrorToast('Erro ao responder comentário.', {
                 toastId: 'reply-comment-error',
-            }); // TODO: Atualizar o estado da UI
+            });
         },
     });
 
@@ -106,10 +103,11 @@ const useCommentCRUD = () => {
     const replyComment = useCallback(
         (
             id: string,
+            titleId: string,
             textContent: string | null,
             imageContent: string | null,
         ) => {
-            replyCommentMutation.mutate({ id, textContent, imageContent });
+            replyCommentMutation.mutate({ id, titleId, textContent, imageContent });
         },
         [replyCommentMutation],
     );

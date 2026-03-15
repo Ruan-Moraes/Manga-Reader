@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CommentRepositoryAdapter implements CommentRepositoryPort {
-
     private final CommentMongoRepository repository;
 
     @Override
@@ -55,5 +54,15 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     @Override
     public Page<Comment> findByTitleId(String titleId, Pageable pageable) {
         return repository.findByTitleId(titleId, pageable);
+    }
+
+    @Override
+    public Page<Comment> findByUserId(String userId, Pageable pageable) {
+        return repository.findByUserId(userId, pageable);
+    }
+
+    @Override
+    public long countByUserId(String userId) {
+        return repository.countByUserId(userId);
     }
 }

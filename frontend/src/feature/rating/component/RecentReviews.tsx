@@ -13,14 +13,18 @@ import DarkButton from '@shared/component/button/DarkButton.tsx';
 
 const REVIEWS_PER_PAGE = 5;
 
-const CATEGORY_META: Record<string, { icon: string; label: string }> = {
-    Diversion: { icon: '🎉', label: 'Diversão:' },
-    Art: { icon: '🖌️', label: 'Arte:' },
-    Storyline: { icon: '📚', label: 'Enredo:' },
-    Characters: { icon: '🧑‍🤝‍🧑', label: 'Personagens:' },
-    Originality: { icon: '✨', label: 'Originalidade:' },
-    Pacing: { icon: '🏃‍♂️', label: 'Ritmo:' },
-};
+const CATEGORY_META: {
+    key: keyof MangaRating;
+    icon: string;
+    label: string;
+}[] = [
+    { key: 'funRating', icon: '🎉', label: 'Diversão:' },
+    { key: 'artRating', icon: '🖌️', label: 'Arte:' },
+    { key: 'storylineRating', icon: '📚', label: 'Enredo:' },
+    { key: 'charactersRating', icon: '🧑‍🤝‍🧑', label: 'Personagens:' },
+    { key: 'originalityRating', icon: '✨', label: 'Originalidade:' },
+    { key: 'pacingRating', icon: '🏃‍♂️', label: 'Ritmo:' },
+];
 
 type RecentReviewsProps = {
     ratings: MangaRating[];
@@ -71,20 +75,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
             <UserModal />
             <h3 className="text-sm font-bold">Avaliações recentes</h3>
 
-            {visibleItems.map(review => {
-                const categoryEntries = review.categoryRatings
-                    ? Object.entries(review.categoryRatings)
-                    : [];
-
-                const overallAvg =
-                    categoryEntries.length > 0
-                        ? categoryEntries.reduce(
-                              (sum, [, val]) => sum + val,
-                              0,
-                          ) / categoryEntries.length
-                        : review.stars;
-
-                return (
+            {visibleItems.map(review => (
                     <article
                         key={review.id}
                         className="flex flex-col gap-2 p-2 border rounded-xs border-tertiary bg-primary-default"
@@ -95,42 +86,38 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
                             createdAt={review.createdAt}
                             onClickProfile={handleClickProfile}
                         />
-                        {categoryEntries.length > 0 && (
-                            <div className="grid grid-cols-2 pt-1 gap-x-4 gap-y-2">
-                                {categoryEntries.map(([key, value]) => {
-                                    const meta = CATEGORY_META[key];
+                        <div className="grid grid-cols-2 pt-1 gap-x-4 gap-y-2">
+                            {CATEGORY_META.map(meta => {
+                                const value = review[meta.key] as number;
 
-                                    if (!meta) return null;
-
-                                    return (
-                                        <div
-                                            key={key}
-                                            className="flex items-center justify-between gap-1"
-                                        >
-                                            <span className="flex items-center gap-1 text-[0.65rem]">
-                                                <span>{meta.icon}</span>
-                                                <span className="text-tertiary">
-                                                    {meta.label}
-                                                </span>
+                                return (
+                                    <div
+                                        key={meta.key}
+                                        className="flex items-center justify-between gap-1"
+                                    >
+                                        <span className="flex items-center gap-1 text-[0.65rem]">
+                                            <span>{meta.icon}</span>
+                                            <span className="text-tertiary">
+                                                {meta.label}
                                             </span>
-                                            <div className="flex items-center gap-1">
-                                                <RatingStars
-                                                    value={value}
-                                                    size={8}
-                                                />
-                                            </div>
+                                        </span>
+                                        <div className="flex items-center gap-1">
+                                            <RatingStars
+                                                value={value}
+                                                size={8}
+                                            />
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
                         <div className="border border-tertiary rounded-xs"></div>
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold">
                                 Média geral:
                             </span>
                             <div className="flex items-center gap-x-4 gap-y-2">
-                                <RatingStars value={overallAvg} size={12} />
+                                <RatingStars value={review.overallRating} size={12} />
                             </div>
                         </div>
                         {review.comment && (
@@ -139,8 +126,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
                             </p>
                         )}
                     </article>
-                );
-            })}
+                ))}
             {hasMore && (
                 <DarkButton
                     onClick={loadMore}

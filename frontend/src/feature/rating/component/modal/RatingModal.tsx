@@ -2,16 +2,20 @@ import BaseModal from '@shared/component/modal/base/BaseModal';
 
 import RatingWizard from './wizard/RatingWizard';
 
+type RatingSubmitData = {
+    funRating: number;
+    artRating: number;
+    storylineRating: number;
+    charactersRating: number;
+    originalityRating: number;
+    pacingRating: number;
+    comment?: string;
+};
+
 type RatingModalProps = {
     isModalOpen: boolean;
     closeModal: () => void;
-    /* eslint-disable no-unused-vars */
-    onSubmitRating: (
-        rating: number,
-        comment?: string,
-        categoryRatings?: Record<string, number>,
-    ) => void;
-    /* eslint-enable no-unused-vars */
+    onSubmitRating: (data: RatingSubmitData) => void;
     isSubmitting?: boolean;
 };
 
@@ -21,12 +25,8 @@ const RatingModal = ({
     onSubmitRating,
     isSubmitting = false,
 }: RatingModalProps) => {
-    const handleSubmit = (
-        stars: number,
-        comment?: string,
-        categoryRatings?: Record<string, number>,
-    ) => {
-        onSubmitRating(stars, comment, categoryRatings);
+    const handleSubmit = (data: RatingSubmitData) => {
+        onSubmitRating(data);
         closeModal();
     };
 

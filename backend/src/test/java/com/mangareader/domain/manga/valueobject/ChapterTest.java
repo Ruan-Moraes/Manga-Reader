@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ChapterTest {
-
     @Test
     @DisplayName("Deve definir todos os campos via builder")
     void shouldSetAllFieldsViaBuilder() {

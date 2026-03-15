@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,11 +19,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.rating.port.RatingRepositoryPort;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase.SubmitRatingInput;
 import com.mangareader.application.shared.event.RatingEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.rating.entity.MangaRating;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -40,6 +41,9 @@ class SubmitRatingUseCaseTest {
     private UserRepositoryPort userRepository;
 
     @Mock
+    private TitleRepositoryPort titleRepository;
+
+    @Mock
     private EventPublisherPort eventPublisher;
 
     @InjectMocks
@@ -47,6 +51,7 @@ class SubmitRatingUseCaseTest {
 
     private final UUID USER_ID = UUID.randomUUID();
     private final String TITLE_ID = "title-abc-123";
+    private final String TITLE_NAME = "Solo Leveling";
     private final String USER_NAME = "Ruan Silva";
 
     private User buildUser() {
@@ -66,9 +71,10 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve criar avaliação quando usuário nunca avaliou o título")
         void deveCriarAvaliacaoQuandoUsuarioNuncaAvaliou() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.5, "Ótimo mangá!", Map.of("art", 5.0, "story", 4.0));
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 5.0, 3.5, 4.0, 3.0, 4.5, "Ótimo mangá!");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -78,18 +84,25 @@ class SubmitRatingUseCaseTest {
             assertThat(result.getTitleId()).isEqualTo(TITLE_ID);
             assertThat(result.getUserId()).isEqualTo(USER_ID.toString());
             assertThat(result.getUserName()).isEqualTo(USER_NAME);
-            assertThat(result.getStars()).isEqualTo(4.5);
+            assertThat(result.getTitleName()).isEqualTo(TITLE_NAME);
+            assertThat(result.getFunRating()).isEqualTo(4.0);
+            assertThat(result.getArtRating()).isEqualTo(5.0);
+            assertThat(result.getStorylineRating()).isEqualTo(3.5);
+            assertThat(result.getCharactersRating()).isEqualTo(4.0);
+            assertThat(result.getOriginalityRating()).isEqualTo(3.0);
+            assertThat(result.getPacingRating()).isEqualTo(4.5);
+            assertThat(result.getOverallRating()).isEqualTo(4.0); // (4+5+3.5+4+3+4.5)/6 = 4.0
             assertThat(result.getComment()).isEqualTo("Ótimo mangá!");
-            assertThat(result.getCategoryRatings()).containsEntry("art", 5.0).containsEntry("story", 4.0);
         }
 
         @Test
         @DisplayName("Deve preencher userName a partir do User encontrado")
         void devePreencherUserNameDoUsuario() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 3.0, null, null);
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, null);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -103,9 +116,10 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve publicar evento 'rating.submitted' após salvar")
         void devePublicarEventoAposSalvar() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, "Bom", null);
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -132,13 +146,20 @@ class SubmitRatingUseCaseTest {
                     .titleId(TITLE_ID)
                     .userId(USER_ID.toString())
                     .userName("Nome Antigo")
-                    .stars(3.0)
+                    .funRating(2.0)
+                    .artRating(2.0)
+                    .storylineRating(2.0)
+                    .charactersRating(2.0)
+                    .originalityRating(2.0)
+                    .pacingRating(2.0)
+                    .overallRating(2.0)
                     .comment("Comentário antigo")
                     .build();
 
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 5.0, "Agora está ótimo!", Map.of("fun", 5.0));
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 3.5, 4.0, "Agora está ótimo!");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.of(existing));
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -146,35 +167,10 @@ class SubmitRatingUseCaseTest {
 
             // Assert
             assertThat(result.getId()).isEqualTo("rating-existing-id");
-            assertThat(result.getStars()).isEqualTo(5.0);
+            assertThat(result.getFunRating()).isEqualTo(5.0);
+            assertThat(result.getArtRating()).isEqualTo(5.0);
             assertThat(result.getComment()).isEqualTo("Agora está ótimo!");
             assertThat(result.getUserName()).isEqualTo(USER_NAME);
-            assertThat(result.getCategoryRatings()).containsEntry("fun", 5.0);
-        }
-
-        @Test
-        @DisplayName("Deve manter categoryRatings anteriores quando input é null")
-        void deveManterCategoryRatingsQuandoInputNull() {
-            // Arrange
-            Map<String, Double> oldCategories = Map.of("art", 4.0);
-            MangaRating existing = MangaRating.builder()
-                    .titleId(TITLE_ID)
-                    .userId(USER_ID.toString())
-                    .userName(USER_NAME)
-                    .stars(3.0)
-                    .categoryRatings(new java.util.HashMap<>(oldCategories))
-                    .build();
-
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, "Atualizado", null);
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
-            when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.of(existing));
-            when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
-
-            // Act
-            MangaRating result = submitRatingUseCase.execute(input);
-
-            // Assert
-            assertThat(result.getCategoryRatings()).containsEntry("art", 4.0);
         }
     }
 
@@ -186,7 +182,7 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando usuário não existe")
         void deveLancarExcecaoQuandoUsuarioNaoExiste() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, "Bom", null);
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
             // Act & Assert

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
@@ -9,12 +9,12 @@ import type { HighlightCard as HighlightCardProps } from '../../../type/title-ca
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import TitleDetails from '../../information/TitleDetails';
 import AppLink from '@shared/component/link/element/AppLink';
-import { RatingStars, getRatingsAverage } from '@feature/rating';
+
+import { RatingStars } from '@feature/rating';
 
 const HighlightCard = ({
     isError,
     isLoading,
-
     id,
     type,
     cover,
@@ -22,13 +22,11 @@ const HighlightCard = ({
     synopsis,
     chapters,
     popularity,
-    score,
+    ratingAverage,
     author,
     artist,
     publisher,
 }: HighlightCardProps) => {
-    const average = useMemo(() => getRatingsAverage(String(id)), [id]);
-
     const detailsHTML = useRef<HTMLDivElement>(null);
     const synopsisHTML = useRef<HTMLDivElement>(null);
 
@@ -89,7 +87,7 @@ const HighlightCard = ({
                                 id,
                                 name,
                                 popularity,
-                                score,
+                                ratingAverage,
                                 chapters,
                                 author,
                                 artist,
@@ -105,11 +103,7 @@ const HighlightCard = ({
                     >
                         <div className="relative h-44 mobile-md:h-56">
                             <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
-                                <RatingStars
-                                    value={average}
-                                    size={12}
-                                    showValue
-                                />
+                                <RatingStars value={ratingAverage!} size={12} />
                             </div>
                             <AppLink link={`/title/${id}`} className="h-full">
                                 {!imageError ? (
@@ -142,7 +136,7 @@ const HighlightCard = ({
                                 id,
                                 name,
                                 popularity,
-                                score,
+                                ratingAverage,
                                 chapters,
                                 author,
                                 artist,

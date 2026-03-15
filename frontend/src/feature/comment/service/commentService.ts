@@ -116,3 +116,14 @@ export const dislikeComment = async (id: string): Promise<CommentData> => {
 
     return toCommentData(response.data.data);
 };
+
+export const getUserReactions = async (
+    commentIds: string[],
+): Promise<Record<string, string>> => {
+    const response = await api.get<ApiResponse<Record<string, string>>>(
+        `${API_URLS.COMMENTS}/user-reactions`,
+        { params: { commentIds: commentIds.join(',') } },
+    );
+
+    return response.data.data;
+};

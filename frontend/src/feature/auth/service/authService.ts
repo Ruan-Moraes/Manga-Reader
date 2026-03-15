@@ -1,6 +1,7 @@
 import { api } from '@shared/service/http';
 import type { ApiResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
+import type { User, UserRole } from '@feature/user';
 
 // ---------------------------------------------------------------------------
 // Types — espelham os DTOs do backend
@@ -26,6 +27,23 @@ export type SignUpRequest = {
     email: string;
     password: string;
 };
+
+// ---------------------------------------------------------------------------
+// Mapper — AuthResponse → User
+// ---------------------------------------------------------------------------
+
+const ROLE_MAP: Record<string, UserRole> = {
+    ADMIN: 'admin',
+    MODERATOR: 'poster',
+    MEMBER: 'user',
+};
+
+export const mapAuthResponseToUser = (auth: AuthResponse): User => ({
+    id: auth.userId,
+    name: auth.name,
+    photo: auth.photoUrl ?? '',
+    role: ROLE_MAP[auth.role] ?? 'user',
+});
 
 // ---------------------------------------------------------------------------
 // Storage keys

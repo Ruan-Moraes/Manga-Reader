@@ -1,6 +1,5 @@
 package com.mangareader.application.rating.usecase;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -31,9 +30,13 @@ public class UpdateRatingUseCase {
     public record UpdateRatingInput(
             String ratingId,
             UUID userId,
-            Double stars,
-            String comment,
-            Map<String, Double> categoryRatings
+            Double funRating,
+            Double artRating,
+            Double storylineRating,
+            Double charactersRating,
+            Double originalityRating,
+            Double pacingRating,
+            String comment
     ) {}
 
     @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
@@ -45,15 +48,29 @@ public class UpdateRatingUseCase {
             throw new BusinessRuleException("Você só pode editar suas próprias avaliações", 403);
         }
 
-        if (input.stars() != null) {
-            rating.setStars(input.stars());
+        if (input.funRating() != null) {
+            rating.setFunRating(input.funRating());
+        }
+        if (input.artRating() != null) {
+            rating.setArtRating(input.artRating());
+        }
+        if (input.storylineRating() != null) {
+            rating.setStorylineRating(input.storylineRating());
+        }
+        if (input.charactersRating() != null) {
+            rating.setCharactersRating(input.charactersRating());
+        }
+        if (input.originalityRating() != null) {
+            rating.setOriginalityRating(input.originalityRating());
+        }
+        if (input.pacingRating() != null) {
+            rating.setPacingRating(input.pacingRating());
         }
         if (input.comment() != null) {
             rating.setComment(input.comment());
         }
-        if (input.categoryRatings() != null) {
-            rating.setCategoryRatings(input.categoryRatings());
-        }
+
+        rating.setOverallRating(rating.calculateOverallRating());
 
         MangaRating saved = ratingRepository.save(rating);
         eventPublisher.publish("rating.updated", new RatingEvent(rating.getTitleId(), input.userId().toString()));

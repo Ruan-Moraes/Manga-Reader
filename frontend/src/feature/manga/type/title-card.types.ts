@@ -10,7 +10,9 @@ export type CarouselCard = Omit<
     | 'genres'
     | 'chapters'
     | 'popularity'
-    | 'score'
+    | 'ratingAverage'
+    | 'ratingCount'
+    | 'rankingScore'
     | 'author'
     | 'artist'
     | 'publisher'
@@ -22,13 +24,7 @@ export type HighlightCard = Omit<Partial<Title>, 'createdAt' | 'updatedAt'> &
 
 export type VerticalCard = Omit<
     Partial<Title>,
-    | 'synopsis'
-    | 'popularity'
-    | 'score'
-    | 'author'
-    | 'artist'
-    | 'publisher'
-    | 'createdAt'
+    'synopsis' | 'popularity' | 'author' | 'artist' | 'publisher' | 'createdAt'
 > &
     FetchStatus;
 
@@ -36,7 +32,6 @@ export type HorizontalCard = Omit<
     Partial<Title>,
     | 'synopsis'
     | 'popularity'
-    | 'score'
     | 'author'
     | 'artist'
     | 'publisher'

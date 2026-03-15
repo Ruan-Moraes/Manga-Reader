@@ -12,7 +12,6 @@ import com.mangareader.domain.comment.entity.Comment;
  * Spring Data MongoDB repository para comentários.
  */
 public interface CommentMongoRepository extends MongoRepository<Comment, String> {
-
     List<Comment> findByTitleId(String titleId);
 
     List<Comment> findByTitleIdAndParentCommentIdIsNull(String titleId);
@@ -20,4 +19,8 @@ public interface CommentMongoRepository extends MongoRepository<Comment, String>
     List<Comment> findByParentCommentId(String parentCommentId);
 
     Page<Comment> findByTitleId(String titleId, Pageable pageable);
+
+    Page<Comment> findByUserId(String userId, Pageable pageable);
+
+    long countByUserId(String userId);
 }

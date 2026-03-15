@@ -22,8 +22,8 @@ import lombok.Setter;
 /**
  * Título de mangá/manhwa/manhua (MongoDB).
  * <p>
- * Compatível com o frontend ({@code Title} em title.types.ts):
- * <pre>{ id, type, cover, name, synopsis, genres, chapters, popularity, score, author, artist, publisher, createdAt, updatedAt }</pre>
+ * Campos de rating (ratingAverage, ratingCount, rankingScore) são
+ * consolidados por um job periódico a partir das reviews (MangaRating).
  */
 @Document(collection = "titles")
 @Getter
@@ -32,7 +32,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Title {
-
     @Id
     private String id;
 
@@ -56,7 +55,9 @@ public class Title {
     @Indexed
     private String popularity;
 
-    private String score;
+    private Double ratingAverage;
+    private Long ratingCount;
+    private Double rankingScore;
 
     @TextIndexed(weight = 5)
     private String author;

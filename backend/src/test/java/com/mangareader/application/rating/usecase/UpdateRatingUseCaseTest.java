@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,9 +50,14 @@ class UpdateRatingUseCaseTest {
                 .titleId(TITLE_ID)
                 .userId(USER_ID.toString())
                 .userName("Ruan Silva")
-                .stars(3.0)
+                .funRating(3.0)
+                .artRating(3.0)
+                .storylineRating(3.0)
+                .charactersRating(3.0)
+                .originalityRating(3.0)
+                .pacingRating(3.0)
+                .overallRating(3.0)
                 .comment("Comentário original")
-                .categoryRatings(new java.util.HashMap<>(Map.of("art", 3.0)))
                 .build();
     }
 
@@ -62,11 +66,11 @@ class UpdateRatingUseCaseTest {
     class AtualizacaoParcial {
 
         @Test
-        @DisplayName("Deve atualizar apenas stars quando outros campos são null")
-        void deveAtualizarApenasStars() {
+        @DisplayName("Deve atualizar apenas funRating quando outros campos são null")
+        void deveAtualizarApenasFunRating() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -74,9 +78,11 @@ class UpdateRatingUseCaseTest {
             MangaRating result = updateRatingUseCase.execute(input);
 
             // Assert
-            assertThat(result.getStars()).isEqualTo(5.0);
+            assertThat(result.getFunRating()).isEqualTo(5.0);
+            assertThat(result.getArtRating()).isEqualTo(3.0);
             assertThat(result.getComment()).isEqualTo("Comentário original");
-            assertThat(result.getCategoryRatings()).containsEntry("art", 3.0);
+            // overallRating recalculado: (5+3+3+3+3+3)/6 = 3.3
+            assertThat(result.getOverallRating()).isEqualTo(3.3);
         }
 
         @Test
@@ -84,7 +90,7 @@ class UpdateRatingUseCaseTest {
         void deveAtualizarApenasComment() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, "Novo comentário", null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, null, null, null, null, null, "Novo comentário");
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -92,17 +98,17 @@ class UpdateRatingUseCaseTest {
             MangaRating result = updateRatingUseCase.execute(input);
 
             // Assert
-            assertThat(result.getStars()).isEqualTo(3.0);
+            assertThat(result.getFunRating()).isEqualTo(3.0);
             assertThat(result.getComment()).isEqualTo("Novo comentário");
+            assertThat(result.getOverallRating()).isEqualTo(3.0);
         }
 
         @Test
-        @DisplayName("Deve atualizar categoryRatings quando fornecido")
-        void deveAtualizarCategoryRatings() {
+        @DisplayName("Deve atualizar múltiplas categorias simultaneamente")
+        void deveAtualizarMultiplasCategorias() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            Map<String, Double> newCategories = Map.of("fun", 5.0, "storyline", 4.5);
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, null, newCategories);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, 5.0, null, null, 4.5, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -110,7 +116,11 @@ class UpdateRatingUseCaseTest {
             MangaRating result = updateRatingUseCase.execute(input);
 
             // Assert
-            assertThat(result.getCategoryRatings()).containsEntry("fun", 5.0).containsEntry("storyline", 4.5);
+            assertThat(result.getArtRating()).isEqualTo(5.0);
+            assertThat(result.getOriginalityRating()).isEqualTo(4.5);
+            assertThat(result.getFunRating()).isEqualTo(3.0);
+            // overallRating recalculado: (3+5+3+3+4.5+3)/6 = 3.6
+            assertThat(result.getOverallRating()).isEqualTo(3.6);
         }
 
         @Test
@@ -118,7 +128,7 @@ class UpdateRatingUseCaseTest {
         void deveAtualizarTodosCampos() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 4.5, "Atualizado!", Map.of("art", 5.0));
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 4.0, 4.5, "Atualizado!");
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -126,9 +136,15 @@ class UpdateRatingUseCaseTest {
             MangaRating result = updateRatingUseCase.execute(input);
 
             // Assert
-            assertThat(result.getStars()).isEqualTo(4.5);
+            assertThat(result.getFunRating()).isEqualTo(5.0);
+            assertThat(result.getArtRating()).isEqualTo(5.0);
+            assertThat(result.getStorylineRating()).isEqualTo(4.0);
+            assertThat(result.getCharactersRating()).isEqualTo(4.5);
+            assertThat(result.getOriginalityRating()).isEqualTo(4.0);
+            assertThat(result.getPacingRating()).isEqualTo(4.5);
             assertThat(result.getComment()).isEqualTo("Atualizado!");
-            assertThat(result.getCategoryRatings()).containsEntry("art", 5.0);
+            // (5+5+4+4.5+4+4.5)/6 = 4.5
+            assertThat(result.getOverallRating()).isEqualTo(4.5);
         }
     }
 
@@ -141,7 +157,7 @@ class UpdateRatingUseCaseTest {
         void devePublicarEventoRatingUpdated() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -164,7 +180,7 @@ class UpdateRatingUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando avaliação não existe")
         void deveLancarExcecaoQuandoAvaliacaoNaoExiste() {
             // Arrange
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 4.0, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 4.0, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
@@ -179,7 +195,7 @@ class UpdateRatingUseCaseTest {
             // Arrange
             MangaRating existing = buildExistingRating();
             UUID outroUsuario = UUID.randomUUID();
-            var input = new UpdateRatingInput(RATING_ID, outroUsuario, 5.0, null, null);
+            var input = new UpdateRatingInput(RATING_ID, outroUsuario, 5.0, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
 
             // Act & Assert

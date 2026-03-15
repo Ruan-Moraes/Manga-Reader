@@ -10,7 +10,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { UserModalProvider } from '@feature/user';
-import { EmojiModalProvider, CommentSortProvider } from '@feature/comment';
+import { CommentSortProvider } from '@feature/comment';
 
 import { queryClient } from '@shared/service/util/queryCache';
 
@@ -33,13 +33,11 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
             <UserModalProvider>
-                <EmojiModalProvider>
-                    <CommentSortProvider>
-                        <RouterProvider router={routes} />
-                        <ToastProvider />
-                        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-                    </CommentSortProvider>
-                </EmojiModalProvider>
+                <CommentSortProvider>
+                    <RouterProvider router={routes} />
+                    <ToastProvider />
+                    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+                </CommentSortProvider>
             </UserModalProvider>
         </QueryClientProvider>
     </StrictMode>,

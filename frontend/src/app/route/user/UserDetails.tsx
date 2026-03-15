@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import Header from '@app/layout/Header';
@@ -12,8 +12,9 @@ import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 import formatDate from '@shared/service/util/formatDate';
 
-import { getMockUserById } from '@mock/data/users';
 import { useAuth } from '@feature/auth';
+import { getUserProfile } from '@feature/user/service/userService';
+import { type User } from '@feature/user';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 
@@ -22,14 +23,36 @@ const UserDetails = () => {
     const { user: currentUser } = useAuth();
 
     const [isPhotoExpanded, setIsPhotoExpanded] = useState<boolean>(false);
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const user = useMemo(() => {
-        if (!userId) return null;
+    useEffect(() => {
+        if (!userId) return;
 
-        return getMockUserById(userId);
+        setLoading(true);
+        getUserProfile(userId)
+            .then(setUser)
+            .catch(() => setUser(null))
+            .finally(() => setLoading(false));
     }, [userId]);
 
     const targetUser = user ?? currentUser;
+
+    if (loading) {
+        return (
+            <>
+                <Header showSearch={true} />
+                <MainContent>
+                    <TextSection>
+                        <p className="text-sm text-tertiary">
+                            Carregando perfil...
+                        </p>
+                    </TextSection>
+                </MainContent>
+                <Footer showLinks={true} />
+            </>
+        );
+    }
 
     if (!targetUser) {
         return (

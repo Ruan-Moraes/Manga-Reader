@@ -5,8 +5,11 @@ import { type User } from '@feature/user';
 import {
     getCurrentUser,
     getStoredSession,
+    mapAuthResponseToUser,
     signIn,
     signOut,
+    signUp as signUpService,
+    type SignUpRequest,
 } from '../service/authService';
 
 type SignInPayload = { email: string; password: string };
@@ -19,12 +22,26 @@ const useAuth = () => {
 
         if (!session) return;
 
-        getCurrentUser().then(setUser).catch(() => setUser(null));
+        getCurrentUser()
+            .then(auth => {
+                if (auth) setUser(mapAuthResponseToUser(auth));
+                else setUser(null);
+            })
+            .catch(() => setUser(null));
     }, []);
 
     const login = useCallback(async (payload: SignInPayload) => {
         const authResponse = await signIn(payload);
-        const loggedUser = authResponse as unknown as User;
+        const loggedUser = mapAuthResponseToUser(authResponse);
+
+        setUser(loggedUser);
+
+        return loggedUser;
+    }, []);
+
+    const register = useCallback(async (payload: SignUpRequest) => {
+        const authResponse = await signUpService(payload);
+        const loggedUser = mapAuthResponseToUser(authResponse);
 
         setUser(loggedUser);
 
@@ -42,6 +59,7 @@ const useAuth = () => {
         setUser,
         isLoggedIn: Boolean(user),
         login,
+        register,
         logout,
     };
 };

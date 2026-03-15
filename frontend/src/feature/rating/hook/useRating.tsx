@@ -7,12 +7,16 @@ const useRating = (titleId: string) => {
     const { ratings, average, submitRating } = useRatings(titleId);
 
     const submit = useCallback(
-        (
-            rating: number,
-            comment?: string,
-            categoryRatings?: Record<string, number>,
-        ) => {
-            submitRating({ stars: rating, comment, categoryRatings });
+        (data: {
+            funRating: number;
+            artRating: number;
+            storylineRating: number;
+            charactersRating: number;
+            originalityRating: number;
+            pacingRating: number;
+            comment?: string;
+        }) => {
+            submitRating(data);
             showSuccessToast('Avaliação enviada com sucesso.');
         },
         [submitRating],

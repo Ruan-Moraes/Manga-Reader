@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="mangareader@localhost">
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.54">
+    <root id="1">
+      <ServerVersion>8.0.19</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="admin">
+      <LastIntrospectionLocalTimestamp>2026-03-14.13:39:21</LastIntrospectionLocalTimestamp>
+    </schema>
+    <schema id="3" parent="1" name="config">
+      <LastIntrospectionLocalTimestamp>2026-03-14.13:39:21</LastIntrospectionLocalTimestamp>
+    </schema>
+    <schema id="4" parent="1" name="local">
+      <LastIntrospectionLocalTimestamp>2026-03-14.13:39:21</LastIntrospectionLocalTimestamp>
+    </schema>
+    <schema id="5" parent="1" name="mangareader">
+      <Current>1</Current>
+      <LastIntrospectionLocalTimestamp>2026-03-14.13:39:23</LastIntrospectionLocalTimestamp>
+    </schema>
+    <schema id="6" parent="1" name="test">
+      <LastIntrospectionLocalTimestamp>2026-03-14.13:39:21</LastIntrospectionLocalTimestamp>
+    </schema>
+    <table id="7" parent="3" name="system.sessions"/>
+    <table id="8" parent="4" name="startup_log"/>
+    <table id="9" parent="5" name="comments"/>
+    <table id="10" parent="5" name="mongockChangeLog"/>
+    <table id="11" parent="5" name="mongockLock"/>
+    <table id="12" parent="5" name="news"/>
+    <table id="13" parent="5" name="ratings"/>
+    <table id="14" parent="5" name="titles"/>
+    <table id="15" parent="6" name="comments"/>
+    <table id="16" parent="6" name="ratings"/>
+    <table id="17" parent="6" name="titles"/>
+    <column id="18" parent="7" name="_id">
+      <Position>1</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="19" parent="7" name="_id.id">
+      <Position>2</Position>
+      <StoredType>UUID|12s</StoredType>
+    </column>
+    <column id="20" parent="7" name="_id.uid">
+      <Position>3</Position>
+      <StoredType>BinData|12s</StoredType>
+    </column>
+    <column id="21" parent="7" name="lastUse">
+      <Position>4</Position>
+      <StoredType>ISODate|91s</StoredType>
+    </column>
+    <index id="22" parent="7" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="23" parent="7" name="lsidTTLIndex">
+      <ColNames>lastUse</ColNames>
+    </index>
+    <column id="24" parent="8" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="25" parent="8" name="buildinfo">
+      <Position>2</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="26" parent="8" name="buildinfo.allocator">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="27" parent="8" name="buildinfo.bits">
+      <Position>4</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="28" parent="8" name="buildinfo.buildEnvironment">
+      <Position>5</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="29" parent="8" name="buildinfo.buildEnvironment.cc">
+      <Position>6</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="30" parent="8" name="buildinfo.buildEnvironment.ccflags">
+      <Position>7</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="31" parent="8" name="buildinfo.buildEnvironment.cppdefines">
+      <Position>8</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="32" parent="8" name="buildinfo.buildEnvironment.cxx">
+      <Position>9</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="33" parent="8" name="buildinfo.buildEnvironment.cxxflags">
+      <Position>10</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="34" parent="8" name="buildinfo.buildEnvironment.distarch">
+      <Position>11</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="35" parent="8" name="buildinfo.buildEnvironment.distmod">
+      <Position>12</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="36" parent="8" name="buildinfo.buildEnvironment.linkflags">
+      <Position>13</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="37" parent="8" name="buildinfo.buildEnvironment.target_arch">
+      <Position>14</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="38" parent="8" name="buildinfo.buildEnvironment.target_os">
+      <Position>15</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="39" parent="8" name="buildinfo.debug">
+      <Position>16</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="40" parent="8" name="buildinfo.gitVersion">
+      <Position>17</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="41" parent="8" name="buildinfo.javascriptEngine">
+      <Position>18</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="42" parent="8" name="buildinfo.maxBsonObjectSize">
+      <Position>19</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="43" parent="8" name="buildinfo.modules">
+      <Position>20</Position>
+      <StoredType>list|4999545s</StoredType>
+    </column>
+    <column id="44" parent="8" name="buildinfo.openssl">
+      <Position>21</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="45" parent="8" name="buildinfo.openssl.compiled">
+      <Position>22</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="46" parent="8" name="buildinfo.openssl.running">
+      <Position>23</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="47" parent="8" name="buildinfo.storageEngines">
+      <Position>24</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="48" parent="8" name="buildinfo.sysInfo">
+      <Position>25</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="49" parent="8" name="buildinfo.version">
+      <Position>26</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="50" parent="8" name="buildinfo.versionArray">
+      <Position>27</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="51" parent="8" name="cmdLine">
+      <Position>28</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="52" parent="8" name="cmdLine.net">
+      <Position>29</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="53" parent="8" name="cmdLine.net.bindIp">
+      <Position>30</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="54" parent="8" name="hostname">
+      <Position>31</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="55" parent="8" name="pid">
+      <Position>32</Position>
+      <StoredType>Int64|12s</StoredType>
+    </column>
+    <column id="56" parent="8" name="startTime">
+      <Position>33</Position>
+      <StoredType>ISODate|91s</StoredType>
+    </column>
+    <column id="57" parent="8" name="startTimeLocal">
+      <Position>34</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <index id="58" parent="8" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="59" parent="9" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="60" parent="9" name="dislikeCount">
+      <Position>1</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="61" parent="9" name="isHighlighted">
+      <Position>1</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="62" parent="9" name="parentCommentId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="63" parent="9" name="textContent">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="64" parent="9" name="titleId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="65" parent="9" name="userId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="66" parent="9" name="userName">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="67" parent="9" name="userPhoto">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="68" parent="9" name="wasEdited">
+      <Position>1</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="69" parent="9" name="_class">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="70" parent="9" name="likeCount">
+      <Position>2</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <index id="71" parent="9" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="72" parent="9" name="idx_comments_parentCommentId">
+      <ColNames>parentCommentId</ColNames>
+    </index>
+    <index id="73" parent="9" name="idx_comments_titleId">
+      <ColNames>titleId</ColNames>
+    </index>
+    <index id="74" parent="9" name="idx_comments_userId">
+      <ColNames>userId</ColNames>
+    </index>
+    <column id="75" parent="10" name="_id">
+      <Position>1</Position>
+      <StoredType>ObjectId|12s</StoredType>
+    </column>
+    <column id="76" parent="10" name="author">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="77" parent="10" name="changeId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="78" parent="10" name="errorTrace">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="79" parent="10" name="executionHostname">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="80" parent="10" name="metadata">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="81" parent="10" name="state">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="82" parent="10" name="systemChange">
+      <Position>1</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="83" parent="10" name="timestamp">
+      <Position>1</Position>
+      <StoredType>ISODate|91s</StoredType>
+    </column>
+    <column id="84" parent="10" name="type">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="85" parent="10" name="changeLogClass">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="86" parent="10" name="executionId">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="87" parent="10" name="changeSetMethod">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="88" parent="10" name="executionMillis">
+      <Position>3</Position>
+      <StoredType>Int64|12s</StoredType>
+    </column>
+    <index id="89" parent="10" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="90" parent="10" name="executionId_1_author_1_changeId_1">
+      <ColNames>executionId
+author
+changeId</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="91" parent="12" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="92" parent="12" name="_class">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="93" parent="12" name="author">
+      <Position>1</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="94" parent="12" name="author._id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="95" parent="12" name="commentsCount">
+      <Position>1</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="96" parent="12" name="coverImage">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="97" parent="12" name="excerpt">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="98" parent="12" name="gallery">
+      <Position>1</Position>
+      <StoredType>list|4999545s</StoredType>
+    </column>
+    <column id="99" parent="12" name="isExclusive">
+      <Position>1</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="100" parent="12" name="reactions">
+      <Position>1</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="101" parent="12" name="source">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="102" parent="12" name="subtitle">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="103" parent="12" name="tags">
+      <Position>1</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="104" parent="12" name="title">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="105" parent="12" name="trendingScore">
+      <Position>1</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="106" parent="12" name="views">
+      <Position>1</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="107" parent="12" name="author.avatar">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="108" parent="12" name="content">
+      <Position>2</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="109" parent="12" name="isFeatured">
+      <Position>2</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="110" parent="12" name="reactions.excited">
+      <Position>2</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="111" parent="12" name="sourceLogo">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="112" parent="12" name="technicalSheet">
+      <Position>2</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="113" parent="12" name="author.name">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="114" parent="12" name="reactions.like">
+      <Position>3</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="115" parent="12" name="author.profileLink">
+      <Position>4</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="116" parent="12" name="reactions.sad">
+      <Position>4</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="117" parent="12" name="author.role">
+      <Position>5</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="118" parent="12" name="reactions.surprised">
+      <Position>5</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="119" parent="12" name="category">
+      <Position>6</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="120" parent="12" name="readTime">
+      <Position>6</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <index id="121" parent="12" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="122" parent="12" name="idx_news_tags">
+      <ColNames>tags</ColNames>
+    </index>
+    <index id="123" parent="12" name="idx_news_category">
+      <ColNames>category</ColNames>
+    </index>
+    <column id="124" parent="13" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="125" parent="13" name="_class">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="126" parent="13" name="categoryRatings">
+      <Position>1</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="127" parent="13" name="comment">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="128" parent="13" name="stars">
+      <Position>1</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="129" parent="13" name="titleId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="130" parent="13" name="userId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="131" parent="13" name="userName">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="132" parent="13" name="categoryRatings.Art">
+      <Position>2</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="133" parent="13" name="categoryRatings.Characters">
+      <Position>3</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="134" parent="13" name="categoryRatings.Diversion">
+      <Position>4</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="135" parent="13" name="categoryRatings.Originality">
+      <Position>5</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="136" parent="13" name="categoryRatings.Pacing">
+      <Position>6</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="137" parent="13" name="categoryRatings.Storyline">
+      <Position>7</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <index id="138" parent="13" name="idx_rating_title_user">
+      <ColNames>titleId
+userId</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="139" parent="13" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="140" parent="13" name="idx_ratings_titleId">
+      <ColNames>titleId</ColNames>
+    </index>
+    <index id="141" parent="13" name="idx_ratings_userId">
+      <ColNames>userId</ColNames>
+    </index>
+    <column id="142" parent="14" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="143" parent="14" name="_class">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="144" parent="14" name="artist">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="145" parent="14" name="author">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="146" parent="14" name="chapters">
+      <Position>1</Position>
+      <StoredType>list|4999545s</StoredType>
+    </column>
+    <column id="147" parent="14" name="cover">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="148" parent="14" name="genres">
+      <Position>1</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="149" parent="14" name="name">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="150" parent="14" name="popularity">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="151" parent="14" name="score">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="152" parent="14" name="synopsis">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="153" parent="14" name="type">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="154" parent="14" name="chapters.number">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="155" parent="14" name="publisher">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="156" parent="14" name="chapters.pages">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="157" parent="14" name="chapters.releaseDate">
+      <Position>4</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="158" parent="14" name="chapters.title">
+      <Position>5</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <index id="159" parent="14" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="160" parent="14" name="idx_titles_genres">
+      <ColNames>genres</ColNames>
+    </index>
+    <index id="161" parent="14" name="idx_titles_popularity">
+      <ColNames>popularity</ColNames>
+    </index>
+    <column id="162" parent="15" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="163" parent="15" name="dislikeCount">
+      <Position>1</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="164" parent="15" name="isHighlighted">
+      <Position>1</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <column id="165" parent="15" name="parentCommentId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="166" parent="15" name="textContent">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="167" parent="15" name="userId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="168" parent="15" name="userName">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="169" parent="15" name="userPhoto">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="170" parent="15" name="_class">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="171" parent="15" name="likeCount">
+      <Position>2</Position>
+      <StoredType>Int32|4s</StoredType>
+    </column>
+    <column id="172" parent="15" name="titleId">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="173" parent="15" name="wasEdited">
+      <Position>2</Position>
+      <StoredType>Boolean|12s</StoredType>
+    </column>
+    <index id="174" parent="15" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="175" parent="16" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="176" parent="16" name="_class">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="177" parent="16" name="categoryRatings">
+      <Position>1</Position>
+      <StoredType>Object|4999544s</StoredType>
+    </column>
+    <column id="178" parent="16" name="comment">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="179" parent="16" name="stars">
+      <Position>1</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="180" parent="16" name="titleId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="181" parent="16" name="userId">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="182" parent="16" name="userName">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="183" parent="16" name="categoryRatings.Art">
+      <Position>2</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="184" parent="16" name="categoryRatings.Characters">
+      <Position>3</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="185" parent="16" name="categoryRatings.Diversion">
+      <Position>4</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="186" parent="16" name="categoryRatings.Originality">
+      <Position>5</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="187" parent="16" name="categoryRatings.Pacing">
+      <Position>6</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <column id="188" parent="16" name="categoryRatings.Storyline">
+      <Position>7</Position>
+      <StoredType>Double|8s</StoredType>
+    </column>
+    <index id="189" parent="16" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="190" parent="17" name="_id">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="191" parent="17" name="_class">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="192" parent="17" name="chapters">
+      <Position>1</Position>
+      <StoredType>list|4999545s</StoredType>
+    </column>
+    <column id="193" parent="17" name="cover">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="194" parent="17" name="genres">
+      <Position>1</Position>
+      <StoredType>Array|2003s</StoredType>
+    </column>
+    <column id="195" parent="17" name="name">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="196" parent="17" name="popularity">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="197" parent="17" name="synopsis">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="198" parent="17" name="type">
+      <Position>1</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="199" parent="17" name="artist">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="200" parent="17" name="chapters.number">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="201" parent="17" name="publisher">
+      <Position>2</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="202" parent="17" name="author">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="203" parent="17" name="chapters.pages">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="204" parent="17" name="score">
+      <Position>3</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="205" parent="17" name="chapters.releaseDate">
+      <Position>4</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <column id="206" parent="17" name="chapters.title">
+      <Position>5</Position>
+      <StoredType>String|12s</StoredType>
+    </column>
+    <index id="207" parent="17" name="_id_">
+      <ColNames>_id</ColNames>
+      <Unique>1</Unique>
+    </index>
+  </database-model>
+</dataSource>

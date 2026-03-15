@@ -24,7 +24,6 @@ import com.mangareader.domain.manga.entity.Title;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SearchTitlesUseCase")
 class SearchTitlesUseCaseTest {
-
     @Mock
     private TitleRepositoryPort titleRepository;
 
@@ -36,7 +35,6 @@ class SearchTitlesUseCaseTest {
     @Nested
     @DisplayName("Busca com query válida")
     class QueryValida {
-
         @Test
         @DisplayName("Deve buscar títulos por nome quando query é fornecida")
         void deveBuscarTitulosPorNome() {
@@ -44,6 +42,7 @@ class SearchTitlesUseCaseTest {
             List<Title> titles = List.of(
                     Title.builder().id("1").name("Naruto").build()
             );
+
             Page<Title> page = new PageImpl<>(titles, PAGEABLE, 1);
 
             when(titleRepository.searchByName("Naruto", PAGEABLE)).thenReturn(page);
@@ -54,6 +53,7 @@ class SearchTitlesUseCaseTest {
             // Assert
             assertThat(result.getContent()).hasSize(1);
             assertThat(result.getContent().getFirst().getName()).isEqualTo("Naruto");
+
             verify(titleRepository).searchByName("Naruto", PAGEABLE);
         }
 
@@ -62,6 +62,7 @@ class SearchTitlesUseCaseTest {
         void deveFazerTrimNaQuery() {
             // Arrange
             Page<Title> page = new PageImpl<>(List.of(), PAGEABLE, 0);
+
             when(titleRepository.searchByName("Naruto", PAGEABLE)).thenReturn(page);
 
             // Act
@@ -75,12 +76,12 @@ class SearchTitlesUseCaseTest {
     @Nested
     @DisplayName("Busca com query nula ou vazia")
     class QueryNulaOuVazia {
-
         @Test
         @DisplayName("Deve retornar todos os títulos quando query é nula")
         void deveRetornarTodosQuandoQueryNula() {
             // Arrange
             Page<Title> page = new PageImpl<>(List.of(), PAGEABLE, 0);
+
             when(titleRepository.findAll(PAGEABLE)).thenReturn(page);
 
             // Act
@@ -95,6 +96,7 @@ class SearchTitlesUseCaseTest {
         void deveRetornarTodosQuandoQueryVazia() {
             // Arrange
             Page<Title> page = new PageImpl<>(List.of(), PAGEABLE, 0);
+
             when(titleRepository.findAll(PAGEABLE)).thenReturn(page);
 
             // Act
@@ -109,6 +111,7 @@ class SearchTitlesUseCaseTest {
         void deveRetornarTodosQuandoQueryApenasEspacos() {
             // Arrange
             Page<Title> page = new PageImpl<>(List.of(), PAGEABLE, 0);
+
             when(titleRepository.findAll(PAGEABLE)).thenReturn(page);
 
             // Act

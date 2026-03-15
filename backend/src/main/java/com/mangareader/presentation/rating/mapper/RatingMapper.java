@@ -23,10 +23,16 @@ public final class RatingMapper {
         return new RatingResponse(
                 rating.getId(),
                 rating.getTitleId(),
+                rating.getTitleName(),
                 rating.getUserName(),
-                rating.getStars(),
+                rating.getOverallRating(),
+                rating.getFunRating(),
+                rating.getArtRating(),
+                rating.getStorylineRating(),
+                rating.getCharactersRating(),
+                rating.getOriginalityRating(),
+                rating.getPacingRating(),
                 rating.getComment(),
-                rating.getCategoryRatings(),
                 formatDate(rating.getCreatedAt())
         );
     }

@@ -5,23 +5,25 @@ import { ROUTES } from '@shared/constant/ROUTES';
 
 import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
-import { SectionHeader } from '../../../type/section-header.types';
+import { SectionHeader } from '@feature/manga';
 
 import SectionTitle from '@shared/component/title/SectionTitle';
+
 import HorizontalCard from './HorizontalCard';
 
 const HorizontalCardsContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data, status } = useTitlesFetch(QUERY_KEYS.RANDOM_TITLES);
+    const { data, status } = useTitlesFetch(QUERY_KEYS.RANDOM_TITLES, 0, 10);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
-            return Object.values(data).map(
-                ({ id, type, cover, name, chapters }) => (
+            return data?.content.map(
+                ({ id, type, cover, name, chapters, ratingAverage }) => (
                     <HorizontalCard
                         isLoading={false}
                         isError={false}
                         key={id}
                         id={id}
+                        ratingAverage={ratingAverage}
                         chapters={chapters}
                         cover={cover}
                         name={name}

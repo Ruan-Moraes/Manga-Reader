@@ -28,6 +28,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.library.usecase.ChangeReadingListUseCase;
+import com.mangareader.application.library.usecase.GetLibraryCountsUseCase;
+import com.mangareader.application.library.usecase.GetUserLibraryByListUseCase;
 import com.mangareader.application.library.usecase.GetUserLibraryUseCase;
 import com.mangareader.application.library.usecase.RemoveFromLibraryUseCase;
 import com.mangareader.application.library.usecase.SaveToLibraryUseCase;
@@ -45,6 +47,12 @@ class LibraryControllerTest {
 
     @MockitoBean
     private GetUserLibraryUseCase getUserLibraryUseCase;
+
+    @MockitoBean
+    private GetUserLibraryByListUseCase getUserLibraryByListUseCase;
+
+    @MockitoBean
+    private GetLibraryCountsUseCase getLibraryCountsUseCase;
 
     @MockitoBean
     private SaveToLibraryUseCase saveToLibraryUseCase;
@@ -107,6 +115,41 @@ class LibraryControllerTest {
                             .principal(mockAuth()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve filtrar por lista quando parâmetro list é informado")
+        void deveFiltrarPorLista() throws Exception {
+            var items = List.of(buildSavedManga("t1"));
+            when(getUserLibraryByListUseCase.execute(any(UUID.class), any(ReadingListType.class), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(items));
+
+            mockMvc.perform(get("/api/library")
+                            .param("list", "Lendo")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.length()").value(1));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/library/counts")
+    class GetCounts {
+
+        @Test
+        @DisplayName("Deve retornar 200 com contagens da biblioteca")
+        void deveRetornar200ComContagens() throws Exception {
+            when(getLibraryCountsUseCase.execute(any(UUID.class)))
+                    .thenReturn(new GetLibraryCountsUseCase.LibraryCounts(5, 3, 7, 15));
+
+            mockMvc.perform(get("/api/library/counts")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.lendo").value(5))
+                    .andExpect(jsonPath("$.data.queroLer").value(3))
+                    .andExpect(jsonPath("$.data.concluido").value(7))
+                    .andExpect(jsonPath("$.data.total").value(15));
         }
     }
 

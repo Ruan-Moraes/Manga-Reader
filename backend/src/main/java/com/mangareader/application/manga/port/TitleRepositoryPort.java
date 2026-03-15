@@ -12,7 +12,6 @@ import com.mangareader.domain.manga.entity.Title;
  * Port de saída — acesso a dados de Titles (MongoDB).
  */
 public interface TitleRepositoryPort {
-
     List<Title> findAll();
 
     Optional<Title> findById(String id);
@@ -26,8 +25,6 @@ public interface TitleRepositoryPort {
     Title save(Title title);
 
     void deleteById(String id);
-
-    // ── Paginated ────────────────────────────────────────────────────────
 
     Page<Title> findAll(Pageable pageable);
 

@@ -48,7 +48,7 @@ class DeleteRatingUseCaseTest {
                 .titleId(TITLE_ID)
                 .userId(USER_ID.toString())
                 .userName("Ruan Silva")
-                .stars(4.0)
+                .overallRating(4.0)
                 .build();
     }
 

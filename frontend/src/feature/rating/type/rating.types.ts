@@ -1,11 +1,15 @@
-export type CategoryRatings = Record<string, number>;
-
 export type MangaRating = {
     id: string;
     titleId: string;
+    titleName?: string;
     userName: string;
-    stars: number;
+    overallRating: number;
+    funRating: number;
+    artRating: number;
+    storylineRating: number;
+    charactersRating: number;
+    originalityRating: number;
+    pacingRating: number;
     comment?: string;
-    categoryRatings?: CategoryRatings;
     createdAt: string;
 };

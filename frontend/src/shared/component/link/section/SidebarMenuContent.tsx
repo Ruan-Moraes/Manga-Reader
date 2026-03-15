@@ -89,7 +89,7 @@ const SidebarMenuContent = ({
     const libraryItems: MenuItem[] = [
         {
             label: 'Meus Mangás',
-            link: '/saved-mangas',
+            link: '/library',
             badge: `${profile.savedCount ?? 0} salvos`,
         },
         { label: 'Avaliados', link: '/reviews' },

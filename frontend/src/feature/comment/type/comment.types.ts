@@ -17,6 +17,8 @@ export type CommentData = {
 
     dislikeCount: string;
     likeCount: string;
+
+    userReaction?: 'LIKE' | 'DISLIKE' | null;
 };
 
 export type CommentWithChildren = CommentData & {

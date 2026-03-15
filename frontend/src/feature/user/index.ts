@@ -1,8 +1,20 @@
 // Types
-export type { User, UserRole } from './type/user.types';
+export type {
+    User,
+    UserRole,
+    EnrichedProfile,
+    ProfileStats,
+    RecommendedTitle,
+    ViewHistoryItem,
+    CommentSummary,
+    PrivacySettings,
+    VisibilitySetting,
+    SocialLinkResponse,
+} from './type/user.types';
 
 // Hooks
 export { default as useUserProfile } from './hook/useUserProfile';
+export { default as useEnrichedProfile } from './hook/useEnrichedProfile';
 
 // Context
 export { UserModalProvider } from './context/UserModalContext';

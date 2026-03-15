@@ -4,10 +4,17 @@ type CheckboxWithLinkTypes = {
     label: string;
     link: string;
     linkText: string;
+    checked?: boolean;
+    onChange?: (checked: boolean) => void;
 };
 
-// TODO: Terminar a implementação do componente.
-const CheckboxWithLink = ({ label, link, linkText }: CheckboxWithLinkTypes) => {
+const CheckboxWithLink = ({
+    label,
+    link,
+    linkText,
+    checked,
+    onChange,
+}: CheckboxWithLinkTypes) => {
     return (
         <div>
             <label className="flex items-center gap-2 w-max">
@@ -16,6 +23,12 @@ const CheckboxWithLink = ({ label, link, linkText }: CheckboxWithLinkTypes) => {
                         className="w-full h-full transition duration-300 border rounded-xs appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-5 peer checked:bg-quaternary-opacity-50"
                         name="checkboxInput"
                         type="checkbox"
+                        {...(checked !== undefined && { checked })}
+                        {...(onChange && {
+                            onChange: (
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => onChange(e.target.checked),
+                        })}
                     />
                     <div className="absolute transition duration-300 transform -translate-x-1/2 -translate-y-1/2 opacity-0 pointer-events-none top-1/2 left-1/2 peer peer-checked:opacity-100">
                         <svg

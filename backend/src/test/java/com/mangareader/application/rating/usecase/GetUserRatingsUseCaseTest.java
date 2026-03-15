@@ -43,8 +43,8 @@ class GetUserRatingsUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(0, 10);
             List<MangaRating> ratings = List.of(
-                    MangaRating.builder().id("r1").titleId("t1").userId(USER_ID.toString()).stars(4.0).build(),
-                    MangaRating.builder().id("r2").titleId("t2").userId(USER_ID.toString()).stars(5.0).build()
+                    MangaRating.builder().id("r1").titleId("t1").userId(USER_ID.toString()).overallRating(4.0).build(),
+                    MangaRating.builder().id("r2").titleId("t2").userId(USER_ID.toString()).overallRating(5.0).build()
             );
             Page<MangaRating> page = new PageImpl<>(ratings, pageable, 2);
             when(ratingRepository.findByUserId(USER_ID.toString(), pageable)).thenReturn(page);

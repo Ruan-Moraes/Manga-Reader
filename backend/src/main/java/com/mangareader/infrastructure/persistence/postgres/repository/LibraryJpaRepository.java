@@ -25,4 +25,8 @@ public interface LibraryJpaRepository extends JpaRepository<SavedManga, UUID> {
     void deleteByUserIdAndTitleId(UUID userId, String titleId);
 
     Page<SavedManga> findByUserId(UUID userId, Pageable pageable);
+
+    Page<SavedManga> findByUserIdAndList(UUID userId, ReadingListType list, Pageable pageable);
+
+    long countByUserIdAndList(UUID userId, ReadingListType list);
 }

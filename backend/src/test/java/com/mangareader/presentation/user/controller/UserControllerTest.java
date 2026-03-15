@@ -21,12 +21,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mangareader.application.auth.port.TokenPort;
+import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
+import com.mangareader.application.user.usecase.AddRecommendationUseCase;
+import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase;
+import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
+import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
+import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
+import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
+import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.shared.exception.ResourceNotFoundException;
-import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -41,6 +50,33 @@ class UserControllerTest {
 
     @MockitoBean
     private UpdateUserProfileUseCase updateUserProfileUseCase;
+
+    @MockitoBean
+    private GetEnrichedProfileUseCase getEnrichedProfileUseCase;
+
+    @MockitoBean
+    private AddRecommendationUseCase addRecommendationUseCase;
+
+    @MockitoBean
+    private RemoveRecommendationUseCase removeRecommendationUseCase;
+
+    @MockitoBean
+    private ReorderRecommendationsUseCase reorderRecommendationsUseCase;
+
+    @MockitoBean
+    private UpdatePrivacySettingsUseCase updatePrivacySettingsUseCase;
+
+    @MockitoBean
+    private GetUserCommentsUseCase getUserCommentsUseCase;
+
+    @MockitoBean
+    private RecordViewHistoryUseCase recordViewHistoryUseCase;
+
+    @MockitoBean
+    private ViewHistoryRepositoryPort viewHistoryRepository;
+
+    @MockitoBean
+    private UserRepositoryPort userRepository;
 
     @MockitoBean
     private TokenPort tokenPort;

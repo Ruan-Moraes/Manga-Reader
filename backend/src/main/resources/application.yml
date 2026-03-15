@@ -80,7 +80,6 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
   default-produces-media-type: application/json
-# Logging controlado por logback-spring.xml
 app:
   name: Manga Reader
   version: 0.0.1-SNAPSHOT

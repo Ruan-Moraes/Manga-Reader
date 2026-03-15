@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,9 +54,14 @@ class RatingRepositoryAdapterTest {
                 .titleId("title-1")
                 .userId("user-1")
                 .userName("Ruan")
-                .stars(4.5)
+                .funRating(4.0)
+                .artRating(5.0)
+                .storylineRating(4.0)
+                .charactersRating(4.5)
+                .originalityRating(4.0)
+                .pacingRating(4.5)
+                .overallRating(4.3)
                 .comment("Muito bom")
-                .categoryRatings(Map.of("art", 5.0, "storyline", 4.0))
                 .createdAt(LocalDateTime.of(2024, 1, 1, 10, 0))
                 .build());
 
@@ -65,7 +69,13 @@ class RatingRepositoryAdapterTest {
                 .titleId("title-1")
                 .userId("user-2")
                 .userName("Maria")
-                .stars(3.0)
+                .funRating(3.0)
+                .artRating(3.0)
+                .storylineRating(3.0)
+                .charactersRating(3.0)
+                .originalityRating(3.0)
+                .pacingRating(3.0)
+                .overallRating(3.0)
                 .comment("Razoavel")
                 .createdAt(LocalDateTime.of(2024, 1, 2, 10, 0))
                 .build());
@@ -74,7 +84,13 @@ class RatingRepositoryAdapterTest {
                 .titleId("title-2")
                 .userId("user-1")
                 .userName("Ruan")
-                .stars(5.0)
+                .funRating(5.0)
+                .artRating(5.0)
+                .storylineRating(5.0)
+                .charactersRating(5.0)
+                .originalityRating(5.0)
+                .pacingRating(5.0)
+                .overallRating(5.0)
                 .comment("Obra prima")
                 .createdAt(LocalDateTime.of(2024, 1, 3, 10, 0))
                 .build());
@@ -109,7 +125,7 @@ class RatingRepositoryAdapterTest {
         void deveRetornarRatingDeUsuarioParaTitulo() {
             var result = ratingRepository.findByTitleIdAndUserId("title-1", "user-1");
             assertThat(result).isPresent();
-            assertThat(result.get().getStars()).isEqualTo(4.5);
+            assertThat(result.get().getOverallRating()).isEqualTo(4.3);
         }
 
         @Test
@@ -184,25 +200,32 @@ class RatingRepositoryAdapterTest {
                     .titleId("title-3")
                     .userId("user-3")
                     .userName("Carlos")
-                    .stars(4.0)
+                    .funRating(4.0)
+                    .artRating(4.0)
+                    .storylineRating(4.0)
+                    .charactersRating(4.0)
+                    .originalityRating(4.0)
+                    .pacingRating(4.0)
+                    .overallRating(4.0)
                     .createdAt(LocalDateTime.now())
                     .build();
 
             var saved = ratingRepository.save(newRating);
 
             assertThat(saved.getId()).isNotNull();
-            assertThat(saved.getStars()).isEqualTo(4.0);
+            assertThat(saved.getOverallRating()).isEqualTo(4.0);
         }
 
         @Test
         @DisplayName("Deve atualizar rating existente")
         void deveAtualizarRatingExistente() {
-            rating1.setStars(5.0);
+            rating1.setFunRating(5.0);
+            rating1.setOverallRating(rating1.calculateOverallRating());
             ratingRepository.save(rating1);
 
             var updated = ratingRepository.findById(rating1.getId());
             assertThat(updated).isPresent();
-            assertThat(updated.get().getStars()).isEqualTo(5.0);
+            assertThat(updated.get().getFunRating()).isEqualTo(5.0);
         }
 
         @Test
@@ -212,7 +235,7 @@ class RatingRepositoryAdapterTest {
                     .titleId("title-1")
                     .userId("user-1")
                     .userName("Ruan Duplicado")
-                    .stars(1.0)
+                    .overallRating(1.0)
                     .createdAt(LocalDateTime.now())
                     .build();
 

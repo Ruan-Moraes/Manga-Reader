@@ -14,3 +14,10 @@ export type UserSavedLibrary = {
     name: string;
     savedMangas: SavedMangaItem[];
 };
+
+export type LibraryCounts = {
+    lendo: number;
+    queroLer: number;
+    concluido: number;
+    total: number;
+};

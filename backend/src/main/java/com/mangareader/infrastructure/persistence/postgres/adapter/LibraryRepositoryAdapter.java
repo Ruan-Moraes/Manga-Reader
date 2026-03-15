@@ -53,4 +53,14 @@ public class LibraryRepositoryAdapter implements LibraryRepositoryPort {
     public Page<SavedManga> findByUserId(UUID userId, Pageable pageable) {
         return repository.findByUserId(userId, pageable);
     }
+
+    @Override
+    public Page<SavedManga> findByUserIdAndList(UUID userId, ReadingListType list, Pageable pageable) {
+        return repository.findByUserIdAndList(userId, list, pageable);
+    }
+
+    @Override
+    public long countByUserIdAndList(UUID userId, ReadingListType list) {
+        return repository.countByUserIdAndList(userId, list);
+    }
 }

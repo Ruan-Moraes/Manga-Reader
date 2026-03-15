@@ -105,9 +105,13 @@ public class RatingController {
         var input = new SubmitRatingUseCase.SubmitRatingInput(
                 request.titleId(),
                 extractUserId(auth),
-                request.stars(),
-                request.comment(),
-                request.categoryRatings()
+                request.funRating(),
+                request.artRating(),
+                request.storylineRating(),
+                request.charactersRating(),
+                request.originalityRating(),
+                request.pacingRating(),
+                request.comment()
         );
 
         var rating = submitRatingUseCase.execute(input);
@@ -126,9 +130,13 @@ public class RatingController {
         var input = new UpdateRatingUseCase.UpdateRatingInput(
                 id,
                 extractUserId(auth),
-                request.stars(),
-                request.comment(),
-                request.categoryRatings()
+                request.funRating(),
+                request.artRating(),
+                request.storylineRating(),
+                request.charactersRating(),
+                request.originalityRating(),
+                request.pacingRating(),
+                request.comment()
         );
 
         var rating = updateRatingUseCase.execute(input);

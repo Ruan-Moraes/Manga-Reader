@@ -17,14 +17,14 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const navigate = useNavigate();
 
-    const { data, status } = useTitlesFetch(QUERY_KEYS.UPDATED_TITLES);
+    const { data, status } = useTitlesFetch(QUERY_KEYS.UPDATED_TITLES, 0, 10);
 
     const [visible, setVisible] = useState(10);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
-            return Object.values(data).map(
-                ({ id, type, cover, name, chapters, updatedAt }) => (
+            return data?.content.map(
+                ({ id, type, cover, name, ratingAverage, chapters, updatedAt }) => (
                     <VerticalCard
                         isLoading={false}
                         isError={false}
@@ -33,6 +33,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
                         type={type}
                         cover={cover}
                         name={name}
+                        ratingAverage={ratingAverage}
                         chapters={chapters}
                         updatedAt={updatedAt}
                     />

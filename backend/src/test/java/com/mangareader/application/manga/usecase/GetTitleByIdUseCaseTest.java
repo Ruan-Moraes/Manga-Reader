@@ -21,7 +21,6 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetTitleByIdUseCase")
 class GetTitleByIdUseCaseTest {
-
     @Mock
     private TitleRepositoryPort titleRepository;
 
@@ -31,7 +30,6 @@ class GetTitleByIdUseCaseTest {
     @Nested
     @DisplayName("Cenário de sucesso")
     class Sucesso {
-
         @Test
         @DisplayName("Deve retornar título quando ID existe")
         void deveRetornarTituloQuandoIdExiste() {
@@ -58,7 +56,6 @@ class GetTitleByIdUseCaseTest {
     @Nested
     @DisplayName("Cenários de erro")
     class Erro {
-
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")
         void deveLancarExcecaoQuandoTituloNaoExiste() {

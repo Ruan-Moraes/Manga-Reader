@@ -16,10 +16,12 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 
 import { useAuth } from '@feature/auth';
 
-// TODO: Implementar autenticação real
 const Login = () => {
     const navigate = useNavigate();
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [redirectPath, setRedirectPath] = useState<string | null>(null);
 
     const { login } = useAuth();
@@ -38,31 +40,32 @@ const Login = () => {
     }, []);
 
     const handleFormSubmit = useCallback(
-        (event: React.FormEvent<HTMLFormElement>) => {
+        async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
 
-            login();
+            setIsLoading(true);
 
-            if (redirectPath) {
-                localStorage.removeItem('redirectAfterLogin');
+            try {
+                await login({ email: email.trim(), password });
 
-                navigate(redirectPath);
-
-                showSuccessToast(
-                    'Autenticação bem-sucedida! Redirecionando para a página solicitada.',
-                    { toastId: 'auth-success-redirect' },
-                );
-            }
-
-            if (!redirectPath) {
-                navigate('/Manga-Reader');
-
-                showSuccessToast('Autenticação bem-sucedida!', {
-                    toastId: 'auth-success',
-                });
+                if (redirectPath) {
+                    localStorage.removeItem('redirectAfterLogin');
+                    navigate(redirectPath);
+                    showSuccessToast(
+                        'Autenticação bem-sucedida! Redirecionando para a página solicitada.',
+                        { toastId: 'auth-success-redirect' },
+                    );
+                } else {
+                    navigate('/Manga-Reader');
+                    showSuccessToast('Autenticação bem-sucedida!', {
+                        toastId: 'auth-success',
+                    });
+                }
+            } finally {
+                setIsLoading(false);
             }
         },
-        [login, navigate, redirectPath],
+        [login, navigate, redirectPath, email, password],
     );
 
     return (
@@ -80,13 +83,19 @@ const Login = () => {
                         label="Email"
                         type="email"
                         placeholder="Digite seu email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        disabled={isLoading}
                     />
                     <BaseInput
                         label="Senha:"
                         type="password"
                         placeholder="Digite sua senha"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        disabled={isLoading}
                     />
-                    <RaisedButton text="Entrar:" />
+                    <RaisedButton text={isLoading ? 'Entrando...' : 'Entrar'} />
                 </AuthenticationForm>
             </MainContent>
             <Footer showLinks={true} />

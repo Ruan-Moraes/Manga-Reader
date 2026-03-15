@@ -34,7 +34,9 @@ public final class TitleMapper {
                 title.getGenres() != null ? title.getGenres() : Collections.emptyList(),
                 mapChapters(title.getChapters()),
                 title.getPopularity(),
-                title.getScore(),
+                title.getRatingAverage(),
+                title.getRatingCount(),
+                title.getRankingScore(),
                 title.getAuthor(),
                 title.getArtist(),
                 title.getPublisher(),
@@ -45,11 +47,13 @@ public final class TitleMapper {
 
     public static List<TitleResponse> toResponseList(List<Title> titles) {
         if (titles == null) return Collections.emptyList();
+
         return titles.stream().map(TitleMapper::toResponse).toList();
     }
 
     private static List<ChapterResponse> mapChapters(List<Chapter> chapters) {
         if (chapters == null) return Collections.emptyList();
+
         return chapters.stream()
                 .map(ch -> new ChapterResponse(
                         ch.getNumber(),
@@ -62,6 +66,7 @@ public final class TitleMapper {
 
     private static String formatDate(LocalDateTime dateTime) {
         if (dateTime == null) return null;
+
         return dateTime.format(FMT);
     }
 }

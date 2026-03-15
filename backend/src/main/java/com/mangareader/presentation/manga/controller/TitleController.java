@@ -37,7 +37,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Tag(name = "Titles", description = "Catálogo de títulos de manga/manhwa/manhua")
 public class TitleController {
-
     private final GetTitlesUseCase getTitlesUseCase;
     private final GetTitleByIdUseCase getTitleByIdUseCase;
     private final SearchTitlesUseCase searchTitlesUseCase;

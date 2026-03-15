@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class NewsRepositoryAdapter implements NewsRepositoryPort {
-
     private final NewsMongoRepository repository;
 
     @Override

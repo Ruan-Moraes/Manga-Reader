@@ -9,11 +9,17 @@ import { RATING_CATEGORIES } from './ratingCategories';
 type CategoryRatings = Record<string, number>;
 type CategoryComments = Record<string, string>;
 
-type RatingSubmitFn = (
-    stars: number,
-    comment?: string,
-    categoryRatings?: Record<string, number>,
-) => void;
+type RatingSubmitData = {
+    funRating: number;
+    artRating: number;
+    storylineRating: number;
+    charactersRating: number;
+    originalityRating: number;
+    pacingRating: number;
+    comment?: string;
+};
+
+type RatingSubmitFn = (data: RatingSubmitData) => void;
 
 type RatingWizardProps = {
     onSubmit: RatingSubmitFn;
@@ -89,8 +95,6 @@ const RatingWizard = ({
     const handleSubmit = () => {
         if (!allCategoriesRated) return;
 
-        const stars = Math.round(computeAverage() * 10) / 10;
-
         const commentParts = RATING_CATEGORIES.map(
             c => categoryComments[c.key],
         ).filter(Boolean);
@@ -98,13 +102,15 @@ const RatingWizard = ({
         const combinedComment =
             commentParts.length > 0 ? commentParts.join(' | ') : undefined;
 
-        const cleanRatings: Record<string, number> = {};
-
-        RATING_CATEGORIES.forEach(c => {
-            cleanRatings[c.key] = categoryRatings[c.key];
+        onSubmit({
+            funRating: categoryRatings['funRating'],
+            artRating: categoryRatings['artRating'],
+            storylineRating: categoryRatings['storylineRating'],
+            charactersRating: categoryRatings['charactersRating'],
+            originalityRating: categoryRatings['originalityRating'],
+            pacingRating: categoryRatings['pacingRating'],
+            comment: combinedComment,
         });
-
-        onSubmit(stars, combinedComment, cleanRatings);
     };
 
     const handleReset = () => {

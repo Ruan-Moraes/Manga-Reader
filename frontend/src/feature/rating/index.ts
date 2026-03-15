@@ -18,4 +18,4 @@ export {
 } from './service/ratingService';
 
 // Types
-export type { MangaRating, CategoryRatings } from './type/rating.types';
+export type { MangaRating } from './type/rating.types';

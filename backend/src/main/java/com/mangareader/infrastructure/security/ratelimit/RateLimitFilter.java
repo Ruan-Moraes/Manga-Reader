@@ -45,6 +45,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String clientIp = resolveClientIp(request);
+
         Bucket bucket = buckets.computeIfAbsent(clientIp, this::createBucket);
 
         var probe = bucket.tryConsumeAndReturnRemaining(1);

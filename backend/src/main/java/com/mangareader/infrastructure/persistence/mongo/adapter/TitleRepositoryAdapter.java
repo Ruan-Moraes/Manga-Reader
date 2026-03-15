@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class TitleRepositoryAdapter implements TitleRepositoryPort {
-
     private final TitleMongoRepository mongoRepository;
 
     @Override

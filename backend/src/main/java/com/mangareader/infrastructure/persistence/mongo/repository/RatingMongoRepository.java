@@ -13,7 +13,6 @@ import com.mangareader.domain.rating.entity.MangaRating;
  * Spring Data MongoDB repository para avaliações.
  */
 public interface RatingMongoRepository extends MongoRepository<MangaRating, String> {
-
     List<MangaRating> findByTitleId(String titleId);
 
     Optional<MangaRating> findByTitleIdAndUserId(String titleId, String userId);
@@ -25,4 +24,6 @@ public interface RatingMongoRepository extends MongoRepository<MangaRating, Stri
     Page<MangaRating> findByTitleId(String titleId, Pageable pageable);
 
     Page<MangaRating> findByUserId(String userId, Pageable pageable);
+
+    long countByUserId(String userId);
 }

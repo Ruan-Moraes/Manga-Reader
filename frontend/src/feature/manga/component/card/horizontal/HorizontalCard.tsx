@@ -7,20 +7,18 @@ import type { HorizontalCard as HorizontalCardProps } from '../../../type/title-
 
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import AppLink from '@shared/component/link/element/AppLink';
-import { getRatingsAverage, RatingStars } from '@feature/rating';
+import { RatingStars } from '@feature/rating';
 
 const HorizontalCard = ({
     isError,
     isLoading,
-
     id,
     type,
     cover,
+    ratingAverage,
     name,
     chapters,
 }: HorizontalCardProps) => {
-    const average = useMemo(() => getRatingsAverage(String(id)), [id]);
-
     const lastChapter = useMemo(() => {
         if (!chapters || chapters.length === 0) {
             return '...';
@@ -57,7 +55,7 @@ const HorizontalCard = ({
                 {!isLoading && (
                     <>
                         <div className="absolute right-2 bottom-2 z-10 px-2 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
-                            <RatingStars value={average} size={12} showValue />
+                            <RatingStars value={ratingAverage!} size={12} />
                         </div>
                         <AppLink link={`/title/${id}`} className="block h-full">
                             <img

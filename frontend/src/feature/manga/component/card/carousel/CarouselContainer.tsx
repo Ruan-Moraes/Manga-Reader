@@ -15,7 +15,11 @@ import CarouselSlide from './CarouselSlide';
 import AppLink from '@shared/component/link/element/AppLink';
 
 const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data, status } = useTitlesFetch(QUERY_KEYS.TITLES_IN_THE_CAROUSEL);
+    const { data, status } = useTitlesFetch(
+        QUERY_KEYS.TITLES_IN_THE_CAROUSEL,
+        0,
+        10,
+    );
 
     const splideRef = useRef<Splide>(null);
 
@@ -52,19 +56,17 @@ const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
                     }}
                     ref={splideRef}
                 >
-                    {Object.values(data).map(
-                        ({ id, title, cover, synopsis }) => (
-                            <CarouselSlide
-                                isLoading={false}
-                                isError={false}
-                                key={id}
-                                id={id}
-                                name={title}
-                                cover={cover}
-                                synopsis={synopsis}
-                            />
-                        ),
-                    )}
+                    {data?.content.map(({ id, name, cover, synopsis }) => (
+                        <CarouselSlide
+                            isLoading={false}
+                            isError={false}
+                            key={id}
+                            id={id}
+                            name={name}
+                            cover={cover}
+                            synopsis={synopsis}
+                        />
+                    ))}
                 </Splide>
             );
         }

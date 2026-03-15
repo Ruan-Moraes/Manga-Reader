@@ -1,5 +1,7 @@
 package com.mangareader.presentation.comment.controller;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mangareader.application.comment.usecase.CreateCommentUseCase;
 import com.mangareader.application.comment.usecase.DeleteCommentUseCase;
 import com.mangareader.application.comment.usecase.GetCommentsByTitleUseCase;
+import com.mangareader.application.comment.usecase.GetUserReactionsUseCase;
 import com.mangareader.application.comment.usecase.ReactToCommentUseCase;
 import com.mangareader.application.comment.usecase.UpdateCommentUseCase;
+import com.mangareader.domain.comment.valueobject.ReactionType;
 import com.mangareader.presentation.comment.dto.CommentResponse;
 import com.mangareader.presentation.comment.dto.CreateCommentRequest;
 import com.mangareader.presentation.comment.dto.UpdateCommentRequest;
@@ -51,6 +55,7 @@ public class CommentController {
     private final UpdateCommentUseCase updateCommentUseCase;
     private final DeleteCommentUseCase deleteCommentUseCase;
     private final ReactToCommentUseCase reactToCommentUseCase;
+    private final GetUserReactionsUseCase getUserReactionsUseCase;
 
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar comentários", description = "Retorna comentários de um título com paginação")
@@ -105,17 +110,32 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/like")
-    @Operation(summary = "Curtir comentário", description = "Incrementa o contador de likes")
-    public ResponseEntity<ApiResponse<CommentResponse>> like(@PathVariable String id) {
-        var comment = reactToCommentUseCase.execute(id, ReactToCommentUseCase.ReactionType.LIKE);
+    @Operation(summary = "Curtir comentário", description = "Toggle like no comentário")
+    public ResponseEntity<ApiResponse<CommentResponse>> like(@PathVariable String id, Authentication auth) {
+        var comment = reactToCommentUseCase.execute(id, ReactionType.LIKE, extractUserId(auth).toString());
         return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponse(comment)));
     }
 
     @PostMapping("/{id}/dislike")
-    @Operation(summary = "Descurtir comentário", description = "Incrementa o contador de dislikes")
-    public ResponseEntity<ApiResponse<CommentResponse>> dislike(@PathVariable String id) {
-        var comment = reactToCommentUseCase.execute(id, ReactToCommentUseCase.ReactionType.DISLIKE);
+    @Operation(summary = "Descurtir comentário", description = "Toggle dislike no comentário")
+    public ResponseEntity<ApiResponse<CommentResponse>> dislike(@PathVariable String id, Authentication auth) {
+        var comment = reactToCommentUseCase.execute(id, ReactionType.DISLIKE, extractUserId(auth).toString());
         return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponse(comment)));
+    }
+
+    @GetMapping("/user-reactions")
+    @Operation(summary = "Reações do usuário", description = "Retorna as reações do usuário para uma lista de comentários")
+    public ResponseEntity<ApiResponse<Map<String, String>>> getUserReactions(
+            @RequestParam List<String> commentIds,
+            Authentication auth
+    ) {
+        var reactions = getUserReactionsUseCase.execute(commentIds, extractUserId(auth).toString());
+        var mapped = reactions.entrySet().stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().name()
+                ));
+        return ResponseEntity.ok(ApiResponse.success(mapped));
     }
 
     // ── Helper ──────────────────────────────────────────────────────────────

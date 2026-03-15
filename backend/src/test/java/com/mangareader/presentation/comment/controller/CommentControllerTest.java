@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +32,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mangareader.application.comment.usecase.CreateCommentUseCase;
 import com.mangareader.application.comment.usecase.DeleteCommentUseCase;
 import com.mangareader.application.comment.usecase.GetCommentsByTitleUseCase;
+import com.mangareader.application.comment.usecase.GetUserReactionsUseCase;
 import com.mangareader.application.comment.usecase.ReactToCommentUseCase;
 import com.mangareader.application.comment.usecase.UpdateCommentUseCase;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.ReactionType;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(CommentController.class)
@@ -58,6 +61,9 @@ class CommentControllerTest {
 
     @MockitoBean
     private ReactToCommentUseCase reactToCommentUseCase;
+
+    @MockitoBean
+    private GetUserReactionsUseCase getUserReactionsUseCase;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -215,10 +221,11 @@ class CommentControllerTest {
         @DisplayName("Deve retornar 200 ao curtir comentário")
         void deveRetornar200AoCurtir() throws Exception {
             var comment = buildComment("c1");
-            when(reactToCommentUseCase.execute("c1", ReactToCommentUseCase.ReactionType.LIKE))
+            when(reactToCommentUseCase.execute("c1", ReactionType.LIKE, USER_ID.toString()))
                     .thenReturn(comment);
 
-            mockMvc.perform(post("/api/comments/c1/like"))
+            mockMvc.perform(post("/api/comments/c1/like")
+                            .principal(mockAuth()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true));
         }
@@ -227,12 +234,46 @@ class CommentControllerTest {
         @DisplayName("Deve retornar 200 ao descurtir comentário")
         void deveRetornar200AoDescurtir() throws Exception {
             var comment = buildComment("c1");
-            when(reactToCommentUseCase.execute("c1", ReactToCommentUseCase.ReactionType.DISLIKE))
+            when(reactToCommentUseCase.execute("c1", ReactionType.DISLIKE, USER_ID.toString()))
                     .thenReturn(comment);
 
-            mockMvc.perform(post("/api/comments/c1/dislike"))
+            mockMvc.perform(post("/api/comments/c1/dislike")
+                            .principal(mockAuth()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/comments/user-reactions")
+    class UserReactions {
+
+        @Test
+        @DisplayName("Deve retornar 200 com mapa de reações")
+        void deveRetornar200ComReacoes() throws Exception {
+            when(getUserReactionsUseCase.execute(List.of("c1", "c2"), USER_ID.toString()))
+                    .thenReturn(Map.of("c1", ReactionType.LIKE, "c2", ReactionType.DISLIKE));
+
+            mockMvc.perform(get("/api/comments/user-reactions")
+                            .param("commentIds", "c1", "c2")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.c1").value("LIKE"))
+                    .andExpect(jsonPath("$.data.c2").value("DISLIKE"));
+        }
+
+        @Test
+        @DisplayName("Deve retornar 200 com mapa vazio")
+        void deveRetornar200ComMapaVazio() throws Exception {
+            when(getUserReactionsUseCase.execute(List.of("c1"), USER_ID.toString()))
+                    .thenReturn(Map.of());
+
+            mockMvc.perform(get("/api/comments/user-reactions")
+                            .param("commentIds", "c1")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data").isEmpty());
         }
     }
 }

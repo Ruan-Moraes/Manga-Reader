@@ -3,21 +3,24 @@ import { useMemo } from 'react';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
 
-import { SectionHeader } from '../../../type/section-header.types';
-
 import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
+import { SectionHeader } from '@feature/manga';
+
 import SectionTitle from '@shared/component/title/SectionTitle';
+
 import HighlightCard from './HighlightCard';
 
 const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data: titles, status } = useTitlesFetch(
+    const { data, status } = useTitlesFetch(
         QUERY_KEYS.TITLES_ON_THE_RISE,
+        0,
+        5,
     );
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
-            return Object.values(titles).map(
+            return data.content.map(
                 ({
                     id,
                     type,
@@ -27,7 +30,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
                     genres,
                     chapters,
                     popularity,
-                    score,
+                    ratingAverage,
                     author,
                     artist,
                     publisher,
@@ -44,7 +47,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
                         genres={genres}
                         chapters={chapters}
                         popularity={popularity}
-                        score={score}
+                        ratingAverage={ratingAverage}
                         author={author}
                         artist={artist}
                         publisher={publisher}
@@ -60,7 +63,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
         }
 
         return <HighlightCard isError={true} isLoading={false} />;
-    }, [status, titles]);
+    }, [status, data]);
 
     return (
         <section className="flex flex-col gap-4">

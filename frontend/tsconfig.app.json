@@ -18,8 +18,7 @@
             "@/*": ["./src/*"],
             "@feature/*": ["./src/feature/*"],
             "@shared/*": ["./src/shared/*"],
-            "@app/*": ["./src/app/*"],
-            "@mock/*": ["./src/mock/*"]
+            "@app/*": ["./src/app/*"]
         },
         /* Linting */
         "strict": true,

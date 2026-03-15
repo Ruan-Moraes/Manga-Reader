@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import clsx from 'clsx';
 
 import { type CommentData } from '../type/comment.types';
@@ -7,7 +8,7 @@ import useCommentModals from '../hook/internal/useCommentModals';
 
 import DeleteModal from './modal/delete-comment/DeleteModal';
 import EditModal from './modal/edit-comment/EditModal';
-import ReplyModal from './modal/reply-comment/ReplyModal';
+import InlineReplyInput from './InlineReplyInput';
 
 import CommentMetadata from './header/CommentMetadata';
 import CommentUser from './header/CommentUser';
@@ -19,6 +20,9 @@ const Comment = ({
     onClickEdit,
     onClickDelete,
     onClickReply,
+    onLike,
+    onDislike,
+    titleId,
     nestedLevel = 0,
     id,
     user,
@@ -30,6 +34,7 @@ const Comment = ({
     imageContent,
     likeCount,
     dislikeCount,
+    userReaction,
 }: { nestedLevel?: number } & {
     onClickProfile: (user: User) => void;
     onClickEdit: (
@@ -40,10 +45,16 @@ const Comment = ({
     onClickDelete: (id: string) => void;
     onClickReply: (
         id: string,
+        titleId: string,
         textContent: string | null,
         imageContent: string | null,
     ) => void;
+    onLike: (id: string) => void;
+    onDislike: (id: string) => void;
+    titleId: string;
 } & CommentData) => {
+    const [isReplying, setIsReplying] = useState(false);
+
     const {
         isDeleteModalOpen,
         openDeleteModal,
@@ -53,14 +64,9 @@ const Comment = ({
         openEditModal,
         closeEditModal,
         confirmEditComment,
-        isReplyModalOpen,
-        openReplyModal,
-        closeReplyModal,
-        confirmReplyComment,
     } = useCommentModals({
         onDelete: onClickDelete,
         onEdit: onClickEdit,
-        onReply: onClickReply,
         commentId: id,
     });
 
@@ -92,6 +98,14 @@ const Comment = ({
         if (index === 1) return -24;
 
         return -(index * 8 + 8 * (index + 1));
+    };
+
+    const handleReplySubmit = (
+        replyText: string | null,
+        replyImage: string | null,
+    ) => {
+        onClickReply(id, titleId, replyText, replyImage);
+        setIsReplying(false);
     };
 
     return (
@@ -142,12 +156,21 @@ const Comment = ({
                 <CommentActions
                     onDelete={openDeleteModal}
                     onEdit={openEditModal}
-                    onReply={openReplyModal}
+                    onReply={() => setIsReplying(true)}
+                    onLike={() => onLike(id)}
+                    onDislike={() => onDislike(id)}
                     isOwner={isOwner}
                     likeCount={likeCount}
                     dislikeCount={dislikeCount}
+                    userReaction={userReaction}
                 />
             </div>
+            {isReplying && (
+                <InlineReplyInput
+                    onSubmit={handleReplySubmit}
+                    onCancel={() => setIsReplying(false)}
+                />
+            )}
             <DeleteModal
                 isOpen={isDeleteModalOpen}
                 onConfirm={confirmDeleteComment}
@@ -162,12 +185,6 @@ const Comment = ({
                 title="Editar comentário"
                 initialText={textContent}
                 initialImages={imageContent}
-            />
-            <ReplyModal
-                isOpen={isReplyModalOpen}
-                onReply={confirmReplyComment}
-                onCancel={closeReplyModal}
-                title="Responder comentário"
             />
         </div>
     );

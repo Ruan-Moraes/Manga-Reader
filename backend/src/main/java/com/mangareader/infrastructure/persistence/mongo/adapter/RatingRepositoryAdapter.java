@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class RatingRepositoryAdapter implements RatingRepositoryPort {
-
     private final RatingMongoRepository repository;
 
     @Override
@@ -65,5 +64,10 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     @Override
     public Page<MangaRating> findByUserId(String userId, Pageable pageable) {
         return repository.findByUserId(userId, pageable);
+    }
+
+    @Override
+    public long countByUserId(String userId) {
+        return repository.countByUserId(userId);
     }
 }

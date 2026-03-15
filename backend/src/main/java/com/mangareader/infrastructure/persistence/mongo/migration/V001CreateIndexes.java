@@ -19,7 +19,6 @@ import io.mongock.api.annotations.RollbackExecution;
  */
 @ChangeUnit(id = "V001-create-indexes", order = "001", author = "mangareader")
 public class V001CreateIndexes {
-
     private final MongoTemplate mongoTemplate;
 
     public V001CreateIndexes(MongoTemplate mongoTemplate) {
@@ -42,10 +41,6 @@ public class V001CreateIndexes {
         dropCustomIndexes("news");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // titles
-    // ─────────────────────────────────────────────────────────────────────────
-
     private void createTitlesIndexes() {
         var ops = mongoTemplate.indexOps("titles");
 
@@ -62,10 +57,6 @@ public class V001CreateIndexes {
         ops.ensureIndex(new Index().on("popularity", Sort.Direction.ASC).named("idx_titles_popularity"));
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // comments
-    // ─────────────────────────────────────────────────────────────────────────
-
     private void createCommentsIndexes() {
         var ops = mongoTemplate.indexOps("comments");
 
@@ -73,10 +64,6 @@ public class V001CreateIndexes {
         ops.ensureIndex(new Index().on("parentCommentId", Sort.Direction.ASC).named("idx_comments_parentCommentId"));
         ops.ensureIndex(new Index().on("userId", Sort.Direction.ASC).named("idx_comments_userId"));
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // ratings
-    // ─────────────────────────────────────────────────────────────────────────
 
     private void createRatingsIndexes() {
         var ops = mongoTemplate.indexOps("ratings");
@@ -86,16 +73,14 @@ public class V001CreateIndexes {
 
         // Compound unique index: titleId + userId
         var compoundDef = new org.bson.Document();
+
         compoundDef.put("titleId", 1);
         compoundDef.put("userId", 1);
+
         ops.ensureIndex(new CompoundIndexDefinition(compoundDef)
                 .unique()
                 .named("idx_rating_title_user"));
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // news
-    // ─────────────────────────────────────────────────────────────────────────
 
     private void createNewsIndexes() {
         var ops = mongoTemplate.indexOps("news");
@@ -112,15 +97,12 @@ public class V001CreateIndexes {
         ops.ensureIndex(new Index().on("tags", Sort.Direction.ASC).named("idx_news_tags"));
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // helpers
-    // ─────────────────────────────────────────────────────────────────────────
-
     /**
      * Remove todos os índices customizados (mantém _id_ e qualquer outro interno do Mongo).
      */
     private void dropCustomIndexes(String collectionName) {
         var ops = mongoTemplate.indexOps(collectionName);
+
         ops.getIndexInfo().stream()
                 .filter(idx -> !idx.getName().equals("_id_"))
                 .forEach(idx -> ops.dropIndex(idx.getName()));

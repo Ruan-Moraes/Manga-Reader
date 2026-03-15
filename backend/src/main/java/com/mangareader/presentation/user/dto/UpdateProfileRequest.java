@@ -18,6 +18,8 @@ public record UpdateProfileRequest(
 
         String photoUrl,
 
+        String bannerUrl,
+
         List<SocialLinkInput> socialLinks
 ) {
     public record SocialLinkInput(

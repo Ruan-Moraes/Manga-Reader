@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetTitlesUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public Page<Title> execute(Pageable pageable) {

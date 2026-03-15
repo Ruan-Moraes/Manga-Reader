@@ -9,7 +9,9 @@ export type Title = {
     genres: string[];
     chapters: Chapter[];
     popularity: string;
-    score: string;
+    ratingAverage: number;
+    ratingCount: number;
+    rankingScore: number;
     author: string;
     artist: string;
     publisher: string;

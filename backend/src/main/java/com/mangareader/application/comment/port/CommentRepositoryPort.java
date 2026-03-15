@@ -26,4 +26,8 @@ public interface CommentRepositoryPort {
     void deleteById(String id);
 
     Page<Comment> findByTitleId(String titleId, Pageable pageable);
+
+    Page<Comment> findByUserId(String userId, Pageable pageable);
+
+    long countByUserId(String userId);
 }

@@ -12,7 +12,6 @@ import com.mangareader.domain.rating.entity.MangaRating;
  * Port de saída — acesso a dados de Ratings (MongoDB).
  */
 public interface RatingRepositoryPort {
-
     List<MangaRating> findByTitleId(String titleId);
 
     Optional<MangaRating> findByTitleIdAndUserId(String titleId, String userId);
@@ -30,4 +29,6 @@ public interface RatingRepositoryPort {
     Page<MangaRating> findByTitleId(String titleId, Pageable pageable);
 
     Page<MangaRating> findByUserId(String userId, Pageable pageable);
+
+    long countByUserId(String userId);
 }

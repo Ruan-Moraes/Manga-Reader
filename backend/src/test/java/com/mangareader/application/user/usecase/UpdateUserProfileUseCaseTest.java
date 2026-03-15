@@ -76,7 +76,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null, null);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -95,7 +95,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, "Nova bio", null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, "Nova bio", null, null, null);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -118,7 +118,7 @@ class UpdateUserProfileUseCaseTest {
                     new SocialLinkInput("github", "https://github.com/user")
             );
             UpdateProfileInput input = new UpdateProfileInput(
-                    USER_ID, "Novo Nome", "Nova bio", "https://example.com/new.jpg", links);
+                    USER_ID, "Novo Nome", "Nova bio", "https://example.com/new.jpg", null, links);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -155,7 +155,7 @@ class UpdateUserProfileUseCaseTest {
             List<SocialLinkInput> newLinks = List.of(
                     new SocialLinkInput("instagram", "https://instagram.com/user")
             );
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, null, null, newLinks);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, null, null, null, newLinks);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -181,7 +181,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null, null);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -205,7 +205,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
             UpdateProfileInput input = new UpdateProfileInput(
-                    USER_ID, "Nome Atualizado", null, "https://example.com/new.jpg", null);
+                    USER_ID, "Nome Atualizado", null, "https://example.com/new.jpg", null, null);
 
             // Act
             updateUserProfileUseCase.execute(input);
@@ -226,7 +226,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo", null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo", null, null, null, null);
 
             // Act
             updateUserProfileUseCase.execute(input);
@@ -248,7 +248,7 @@ class UpdateUserProfileUseCaseTest {
             // Arrange
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Nome", null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Nome", null, null, null, null);
 
             // Act & Assert
             assertThatThrownBy(() -> updateUserProfileUseCase.execute(input))

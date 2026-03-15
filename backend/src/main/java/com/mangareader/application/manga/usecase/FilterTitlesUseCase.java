@@ -56,7 +56,7 @@ public class FilterTitlesUseCase {
                     .toList();
             case MOST_RATED -> titles.stream()
                     .sorted(Comparator.comparing(
-                            (Title t) -> parseNumeric(t.getScore())).reversed())
+                            (Title t) -> t.getRatingAverage() != null ? t.getRatingAverage() : 0.0).reversed())
                     .toList();
             case MOST_RECENT -> titles.stream()
                     .sorted(Comparator.comparing(

@@ -20,13 +20,21 @@ const useRatings = (titleId: string) => {
     });
 
     const loadRatings = useCallback(async () => {
-        const data = await getRatingsByTitleId(titleId);
-        setRatings(data.content);
+        try {
+            const data = await getRatingsByTitleId(titleId);
+            setRatings(data.content);
+        } catch {
+            setRatings([]);
+        }
     }, [titleId]);
 
     const loadAverage = useCallback(async () => {
-        const data = await getRatingsAverage(titleId);
-        setAverage({ average: data.average, count: data.count });
+        try {
+            const data = await getRatingsAverage(titleId);
+            setAverage({ average: data.average, count: data.count });
+        } catch {
+            setAverage({ average: 0, count: 0 });
+        }
     }, [titleId]);
 
     useEffect(() => {
@@ -35,20 +43,18 @@ const useRatings = (titleId: string) => {
     }, [loadRatings, loadAverage]);
 
     const submitRating = useCallback(
-        async ({
-            stars,
-            comment,
-            categoryRatings,
-        }: {
-            stars: number;
+        async (data: {
+            funRating: number;
+            artRating: number;
+            storylineRating: number;
+            charactersRating: number;
+            originalityRating: number;
+            pacingRating: number;
             comment?: string;
-            categoryRatings?: Record<string, number>;
         }) => {
             await submitRatingService({
                 titleId,
-                stars,
-                comment,
-                categoryRatings,
+                ...data,
             });
             await loadRatings();
             await loadAverage();

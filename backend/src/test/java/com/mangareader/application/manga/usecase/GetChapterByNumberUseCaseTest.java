@@ -23,7 +23,6 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetChapterByNumberUseCase")
 class GetChapterByNumberUseCaseTest {
-
     @Mock
     private TitleRepositoryPort titleRepository;
 
@@ -42,7 +41,6 @@ class GetChapterByNumberUseCaseTest {
     @Nested
     @DisplayName("Cenário de sucesso")
     class Sucesso {
-
         @Test
         @DisplayName("Deve retornar capítulo pelo número")
         void deveRetornarCapituloPeloNumero() {
@@ -63,7 +61,6 @@ class GetChapterByNumberUseCaseTest {
     @Nested
     @DisplayName("Cenários de erro")
     class Erro {
-
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")
         void deveLancarExcecaoQuandoTituloNaoExiste() {

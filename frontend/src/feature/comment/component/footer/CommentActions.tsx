@@ -9,33 +9,53 @@ type CommentActionsProps = {
     onDelete: () => void;
     onEdit: () => void;
     onReply: () => void;
+    onLike: () => void;
+    onDislike: () => void;
 
     isOwner: boolean;
 
     dislikeCount: string;
     likeCount: string;
+
+    userReaction?: 'LIKE' | 'DISLIKE' | null;
 };
 
 const CommentActions = ({
     onDelete,
     onEdit,
     onReply,
+    onLike,
+    onDislike,
 
     isOwner,
 
     dislikeCount,
     likeCount,
+
+    userReaction,
 }: CommentActionsProps) => {
     return (
         <div className="flex justify-between">
             <div className="flex gap-2">
-                <BadgeIconButton onClick={() => {}} dislikeCount={dislikeCount}>
-                    {/* // TODO: Implementar lógica de dislike */}
-                    <AiFillDislike size={13} />
+                <BadgeIconButton onClick={onDislike} dislikeCount={dislikeCount}>
+                    <AiFillDislike
+                        size={13}
+                        className={
+                            userReaction === 'DISLIKE'
+                                ? 'text-red-400'
+                                : undefined
+                        }
+                    />
                 </BadgeIconButton>
-                <BadgeIconButton onClick={() => {}} likeCount={likeCount}>
-                    {/* // TODO: Implementar lógica de like */}
-                    <AiFillLike size={13} />
+                <BadgeIconButton onClick={onLike} likeCount={likeCount}>
+                    <AiFillLike
+                        size={13}
+                        className={
+                            userReaction === 'LIKE'
+                                ? 'text-green-400'
+                                : undefined
+                        }
+                    />
                 </BadgeIconButton>
             </div>
             <div className="flex gap-2">

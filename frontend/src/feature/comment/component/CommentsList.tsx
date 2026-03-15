@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { type User, useUserModalContext, UserModal } from '@feature/user';
 import { type CommentData } from '../type/comment.types';
@@ -6,9 +6,11 @@ import { type CommentData } from '../type/comment.types';
 import useCommentTree from '../hook/internal/useCommentTree';
 import useCommentCRUD from '../hook/internal/useCommentCRUD';
 import useCommentPagination from '../hook/useCommentPagination';
+import useCommentReactions from '../hook/internal/useCommentReactions';
 import Comment from './Comment';
 
 type CommentsListProps = {
+    titleId: string;
     comments?: CommentData[];
     isLoading?: boolean;
     isError?: boolean;
@@ -16,6 +18,7 @@ type CommentsListProps = {
 };
 
 const CommentsList = ({
+    titleId,
     comments,
     isLoading,
     isError,
@@ -31,6 +34,14 @@ const CommentsList = ({
 
     const { visibleItems, hasMore, loadMore } =
         useCommentPagination(commentsTree);
+
+    const commentIds = useMemo(
+        () => (comments ?? []).map(c => c.id),
+        [comments],
+    );
+
+    const { reactionsMap, toggleLike, toggleDislike } =
+        useCommentReactions(commentIds);
 
     const handleClickProfile = useCallback(
         (user: User): void => {
@@ -74,10 +85,13 @@ const CommentsList = ({
             {visibleItems.map(({ comment, nestedLevel }) => (
                 <Comment
                     key={comment.id}
+                    titleId={titleId}
                     onClickProfile={handleClickProfile}
                     onClickEdit={editComment}
                     onClickDelete={deleteComment}
                     onClickReply={replyComment}
+                    onLike={toggleLike}
+                    onDislike={toggleDislike}
                     nestedLevel={nestedLevel}
                     id={comment.id}
                     parentCommentId={comment.parentCommentId}
@@ -90,6 +104,12 @@ const CommentsList = ({
                     imageContent={comment.imageContent}
                     likeCount={comment.likeCount}
                     dislikeCount={comment.dislikeCount}
+                    userReaction={
+                        (reactionsMap[comment.id] as
+                            | 'LIKE'
+                            | 'DISLIKE'
+                            | undefined) ?? null
+                    }
                 />
             ))}
             {hasMore && (

@@ -6,7 +6,6 @@ type RatingStarsProps = {
     value: number;
     onChange?: (rating: number) => void;
     size?: number;
-    showValue?: boolean;
     halfPrecision?: boolean;
 };
 
@@ -14,7 +13,6 @@ const RatingStars = ({
     value,
     onChange,
     size = 16,
-    showValue = false,
     halfPrecision = false,
 }: RatingStarsProps) => {
     const starRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -29,6 +27,7 @@ const RatingStars = ({
 
         if (!halfPrecision) {
             onChange(starValue);
+
             return;
         }
 
@@ -78,11 +77,6 @@ const RatingStars = ({
                     </button>
                 ))}
             </div>
-            {/*{showValue && (*/}
-            {/*    <span className="text-xs font-semibold text-white drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]">*/}
-            {/*        {value.toFixed(1)}*/}
-            {/*    </span>*/}
-            {/*)}*/}
         </div>
     );
 };

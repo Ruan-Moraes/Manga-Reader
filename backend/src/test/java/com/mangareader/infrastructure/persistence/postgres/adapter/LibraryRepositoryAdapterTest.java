@@ -108,6 +108,29 @@ class LibraryRepositoryAdapterTest {
 
             assertThat(queroLer).isEmpty();
         }
+
+        @Test
+        @DisplayName("Deve retornar página filtrada por lista com paginação")
+        void deveRetornarPaginaFiltradaPorLista() {
+            var page = libraryRepository.findByUserIdAndList(user.getId(), ReadingListType.LENDO, PageRequest.of(0, 10));
+
+            assertThat(page.getContent()).hasSize(2);
+            assertThat(page.getContent()).allSatisfy(m ->
+                    assertThat(m.getList()).isEqualTo(ReadingListType.LENDO));
+        }
+    }
+
+    @Nested
+    @DisplayName("countByUserIdAndList")
+    class CountByUserIdAndList {
+
+        @Test
+        @DisplayName("Deve contar mangás por tipo de lista")
+        void deveContarMangasPorTipoDeLista() {
+            assertThat(libraryRepository.countByUserIdAndList(user.getId(), ReadingListType.LENDO)).isEqualTo(2);
+            assertThat(libraryRepository.countByUserIdAndList(user.getId(), ReadingListType.CONCLUIDO)).isEqualTo(1);
+            assertThat(libraryRepository.countByUserIdAndList(user.getId(), ReadingListType.QUERO_LER)).isZero();
+        }
     }
 
     @Nested

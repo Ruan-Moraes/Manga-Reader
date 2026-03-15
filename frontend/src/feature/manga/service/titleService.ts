@@ -4,10 +4,6 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type Title } from '../type/title.types';
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
-
 export const getTitles = async (
     page = 0,
     size = 20,

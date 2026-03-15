@@ -37,7 +37,6 @@ import com.mangareader.application.auth.port.TokenPort;
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("TitleController")
 class TitleControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -71,7 +70,7 @@ class TitleControllerTest {
                         Chapter.builder().number("1").title("Capítulo 1").releaseDate("2024-01-01").pages("20").build()
                 ))
                 .popularity("1000")
-                .score("9.5")
+                .ratingAverage(4.5)
                 .author("Chugong")
                 .artist("DUBU")
                 .publisher("D&C Media")
@@ -83,11 +82,12 @@ class TitleControllerTest {
     @Nested
     @DisplayName("GET /api/titles")
     class GetAll {
-
         @Test
         @DisplayName("Deve retornar 200 com títulos paginados")
+
         void deveRetornar200ComTitulos() throws Exception {
             var titles = List.of(buildTitle("t1"), buildTitle("t2"));
+
             when(getTitlesUseCase.execute(any(Pageable.class)))
                     .thenReturn(new PageImpl<>(titles));
 
@@ -113,7 +113,6 @@ class TitleControllerTest {
     @Nested
     @DisplayName("GET /api/titles/{id}")
     class GetById {
-
         @Test
         @DisplayName("Deve retornar 200 com título encontrado")
         void deveRetornar200() throws Exception {
@@ -140,7 +139,6 @@ class TitleControllerTest {
     @Nested
     @DisplayName("GET /api/titles/search")
     class Search {
-
         @Test
         @DisplayName("Deve retornar 200 com resultados da busca")
         void deveRetornar200() throws Exception {
@@ -169,11 +167,11 @@ class TitleControllerTest {
     @Nested
     @DisplayName("GET /api/titles/genre/{genre}")
     class GetByGenre {
-
         @Test
         @DisplayName("Deve retornar 200 com títulos do gênero")
         void deveRetornar200() throws Exception {
             var titles = List.of(buildTitle("t1"));
+
             when(getTitlesByGenreUseCase.execute(eq("Ação"), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(titles));
 
@@ -198,11 +196,11 @@ class TitleControllerTest {
     @Nested
     @DisplayName("GET /api/titles/filter")
     class Filter {
-
         @Test
         @DisplayName("Deve retornar 200 com filtro por gêneros")
         void deveRetornar200ComFiltro() throws Exception {
             var titles = List.of(buildTitle("t1"));
+
             when(filterTitlesUseCase.execute(any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(titles));
 

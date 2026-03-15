@@ -2,7 +2,6 @@ package com.mangareader.infrastructure.seed;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -164,7 +163,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("7").title("Alvorada Carmesim").releaseDate("2025-07-22").pages("39").build(),
                                 Chapter.builder().number("8").title("O Último Forjador").releaseDate("2025-07-29").pages("45").build()
                         ))
-                        .popularity("98").score("9.2")
+                        .popularity("98").ratingAverage(3.0)
                         .author("Takeshi Yamamoto").artist("Takeshi Yamamoto").publisher("Panini")
                         .build(),
 
@@ -183,7 +182,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("5").title("A Arena de Vidro").releaseDate("2025-05-29").pages("44").build(),
                                 Chapter.builder().number("6").title("Alianças Frágeis").releaseDate("2025-06-05").pages("47").build()
                         ))
-                        .popularity("94").score("8.9")
+                        .popularity("94").ratingAverage(2.9)
                         .author("Park Ji-Won").artist("Lee Soo-Hyun").publisher("NewPOP")
                         .build(),
 
@@ -201,7 +200,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("4").title("Firewall").releaseDate("2025-04-26").pages("36").build(),
                                 Chapter.builder().number("5").title("Florescer no Caos").releaseDate("2025-05-03").pages("44").build()
                         ))
-                        .popularity("87").score("8.5")
+                        .popularity("87").ratingAverage(1.5)
                         .author("Yuki Aoi").artist("Yuki Aoi").publisher("JBC")
                         .build(),
 
@@ -221,7 +220,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("6").title("Estrelas Perdidas").releaseDate("2025-04-05").pages("45").build(),
                                 Chapter.builder().number("7").title("A Cidade Flutuante").releaseDate("2025-04-12").pages("43").build()
                         ))
-                        .popularity("91").score("8.7")
+                        .popularity("91").ratingAverage(3.7)
                         .author("Hiroshi Tanaka").artist("Hiroshi Tanaka").publisher("Panini")
                         .build(),
 
@@ -239,7 +238,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("4").title("A Montanha Sagrada").releaseDate("2025-03-07").pages("46").build(),
                                 Chapter.builder().number("5").title("Duelo ao Amanhecer").releaseDate("2025-03-14").pages("48").build()
                         ))
-                        .popularity("89").score("8.6")
+                        .popularity("89").ratingAverage(2.6)
                         .author("Kim Dae-Sung").artist("Kim Dae-Sung").publisher("NewPOP")
                         .build(),
 
@@ -258,7 +257,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("5").title("A Espada Divina").releaseDate("2025-02-07").pages("52").build(),
                                 Chapter.builder().number("6").title("Ascensão Celestial").releaseDate("2025-02-14").pages("50").build()
                         ))
-                        .popularity("92").score("8.8")
+                        .popularity("92").ratingAverage(1.8)
                         .author("Chen Wei").artist("Liu Xing").publisher("Panini")
                         .build(),
 
@@ -275,7 +274,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("3").title("Fragmentos").releaseDate("2025-04-15").pages("38").build(),
                                 Chapter.builder().number("4").title("O Restaurador").releaseDate("2025-04-22").pages("36").build()
                         ))
-                        .popularity("85").score("8.3")
+                        .popularity("85").ratingAverage(0.3)
                         .author("Sakura Miyazaki").artist("Sakura Miyazaki").publisher("JBC")
                         .build(),
 
@@ -293,7 +292,7 @@ public class DataSeeder implements ApplicationRunner {
                                 Chapter.builder().number("4").title("Override").releaseDate("2025-05-31").pages("42").build(),
                                 Chapter.builder().number("5").title("Protocolo Ativado").releaseDate("2025-06-07").pages("50").build()
                         ))
-                        .popularity("90").score("8.8")
+                        .popularity("90").ratingAverage(2.8)
                         .author("Park Min-Ho").artist("Park Min-Ho").publisher("NewPOP")
                         .build()
         );
@@ -374,8 +373,6 @@ public class DataSeeder implements ApplicationRunner {
                 "Cenários maravilhosos e painéis detalhados."
         };
 
-        String[] categoryKeys = {"Diversion", "Art", "Storyline", "Characters", "Originality", "Pacing"};
-
         for (int titleIdx = 0; titleIdx < 8; titleIdx++) {
             String titleId = String.valueOf(titleIdx + 1);
 
@@ -384,26 +381,27 @@ public class DataSeeder implements ApplicationRunner {
             for (int i = 0; i < amount; i++) {
                 int seed = titleIdx * 100 + i;
 
-                double stars = 1 + (seed % 5);
-
-                Map<String, Double> catRatings = new java.util.HashMap<>();
-
-                for (int k = 0; k < categoryKeys.length; k++) {
-                    double base = ((seed + k * 3) % 9) + 1;
-
-                    double val = base * 0.5;
-
-                    catRatings.put(categoryKeys[k], Math.max(1.0, Math.min(5.0, val)));
-                }
+                double fun = Math.max(1.0, Math.min(5.0, ((seed) % 9 + 1) * 0.5));
+                double art = Math.max(1.0, Math.min(5.0, ((seed + 3) % 9 + 1) * 0.5));
+                double storyline = Math.max(1.0, Math.min(5.0, ((seed + 6) % 9 + 1) * 0.5));
+                double characters = Math.max(1.0, Math.min(5.0, ((seed + 9) % 9 + 1) * 0.5));
+                double originality = Math.max(1.0, Math.min(5.0, ((seed + 12) % 9 + 1) * 0.5));
+                double pacing = Math.max(1.0, Math.min(5.0, ((seed + 15) % 9 + 1) * 0.5));
+                double overall = Math.round((fun + art + storyline + characters + originality + pacing) / 6.0 * 10.0) / 10.0;
 
                 MangaRating rating = MangaRating.builder()
                         .id(titleId + "-" + i)
                         .titleId(titleId)
                         .userId("seed-rating-" + seed)
                         .userName(userNames[seed % userNames.length])
-                        .stars(stars)
+                        .funRating(fun)
+                        .artRating(art)
+                        .storylineRating(storyline)
+                        .charactersRating(characters)
+                        .originalityRating(originality)
+                        .pacingRating(pacing)
+                        .overallRating(overall)
                         .comment(seed % 3 != 0 ? ratingComments[seed % ratingComments.length] : null)
-                        .categoryRatings(catRatings)
                         .build();
 
                 ratingRepository.save(rating);

@@ -1,21 +1,23 @@
 package com.mangareader.presentation.rating.dto;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * DTO de avaliação retornado ao frontend.
- * <p>
- * Compatível com o frontend ({@code MangaRating} em rating.types.ts).
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record RatingResponse(
         String id,
         String titleId,
+        String titleName,
         String userName,
-        double stars,
+        double overallRating,
+        double funRating,
+        double artRating,
+        double storylineRating,
+        double charactersRating,
+        double originalityRating,
+        double pacingRating,
         String comment,
-        Map<String, Double> categoryRatings,
         String createdAt
 ) {}

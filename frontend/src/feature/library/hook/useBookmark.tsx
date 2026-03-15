@@ -1,9 +1,31 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import useSavedMangas from './useSavedMangas';
+import { getStoredSession } from '@feature/auth/service/authService';
+
+import {
+    getUserLibrary,
+    removeSavedManga,
+    saveToLibrary,
+} from '../service/libraryService';
 
 const useBookmark = () => {
-    const { isSaved, toggleFavorite } = useSavedMangas();
+    const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+
+    useEffect(() => {
+        const session = getStoredSession();
+        if (!session) return;
+
+        getUserLibrary(0, 1000)
+            .then(page => {
+                setSavedIds(new Set(page.content.map(m => m.titleId)));
+            })
+            .catch(() => {});
+    }, []);
+
+    const isSaved = useCallback(
+        (titleId: string) => savedIds.has(titleId),
+        [savedIds],
+    );
 
     const toggleBookmark = useCallback(
         async ({
@@ -17,22 +39,40 @@ const useBookmark = () => {
             cover: string;
             type: string;
         }) => {
-            const nowSaved = await toggleFavorite({
-                titleId,
-                name,
-                cover,
-                type,
-            });
+            if (savedIds.has(titleId)) {
+                setSavedIds(prev => {
+                    const next = new Set(prev);
+                    next.delete(titleId);
+                    return next;
+                });
+                try {
+                    await removeSavedManga(titleId);
+                } catch {
+                    setSavedIds(prev => new Set(prev).add(titleId));
+                }
+                return false;
+            }
 
-            return nowSaved;
+            setSavedIds(prev => new Set(prev).add(titleId));
+            try {
+                await saveToLibrary({ titleId, list: 'Quero Ler' });
+            } catch {
+                setSavedIds(prev => {
+                    const next = new Set(prev);
+                    next.delete(titleId);
+                    return next;
+                });
+            }
+            // suppress unused var warnings
+            void name;
+            void cover;
+            void type;
+            return true;
         },
-        [toggleFavorite],
+        [savedIds],
     );
 
-    return {
-        toggleBookmark,
-        isSaved,
-    };
+    return { toggleBookmark, isSaved };
 };
 
 export default useBookmark;

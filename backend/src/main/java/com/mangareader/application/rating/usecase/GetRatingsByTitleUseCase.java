@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetRatingsByTitleUseCase {
-
     private final RatingRepositoryPort ratingRepository;
 
     public Page<MangaRating> execute(String titleId, Pageable pageable) {

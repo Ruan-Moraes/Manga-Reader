@@ -23,7 +23,6 @@ import com.mangareader.domain.manga.entity.Title;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetTitlesByGenreUseCase")
 class GetTitlesByGenreUseCaseTest {
-
     @Mock
     private TitleRepositoryPort titleRepository;
 
@@ -35,10 +34,12 @@ class GetTitlesByGenreUseCaseTest {
     void deveRetornarTitulosFiltradosPorGenero() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
+
         List<Title> titles = List.of(
                 Title.builder().id("1").name("Naruto").genres(List.of("Ação", "Aventura")).build(),
                 Title.builder().id("2").name("Dragon Ball").genres(List.of("Ação", "Comédia")).build()
         );
+
         Page<Title> page = new PageImpl<>(titles, pageable, 2);
 
         when(titleRepository.findByGenresContaining("Ação", pageable)).thenReturn(page);
@@ -51,6 +52,7 @@ class GetTitlesByGenreUseCaseTest {
         assertThat(result.getContent()).allSatisfy(title ->
                 assertThat(title.getGenres()).contains("Ação")
         );
+
         verify(titleRepository).findByGenresContaining("Ação", pageable);
     }
 
@@ -59,6 +61,7 @@ class GetTitlesByGenreUseCaseTest {
     void deveRetornarPaginaVaziaQuandoNenhumTituloPossuiGenero() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
+
         Page<Title> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
         when(titleRepository.findByGenresContaining("Terror", pageable)).thenReturn(emptyPage);

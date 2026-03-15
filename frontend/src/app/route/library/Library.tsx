@@ -2,63 +2,84 @@ import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
-import AppLink from '@shared/component/link/element/AppLink';
-
 import { useSavedMangas } from '@feature/library';
+import LibraryTabs from '@feature/library/component/LibraryTabs';
+import LibraryCard from '@feature/library/component/LibraryCard';
+import LibraryEmptyState from '@feature/library/component/LibraryEmptyState';
+import LibrarySkeleton from '@feature/library/component/LibrarySkeleton';
 
-// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Library = () => {
-    const { savedByList } = useSavedMangas();
+    const {
+        items,
+        counts,
+        activeTab,
+        loading,
+        error,
+        hasMore,
+        changeTab,
+        loadMore,
+        changeList,
+        removeFromSaved,
+        retry,
+    } = useSavedMangas();
 
     return (
         <>
             <Header />
             <MainContent>
-                <section>
+                <section className="flex flex-col gap-1">
                     <h2 className="text-xl font-bold">Minha Biblioteca</h2>
                     <p className="text-sm text-tertiary">
-                        Organizada automaticamente por status de leitura.
+                        Gerencie seus mangás salvos por status de leitura.
                     </p>
                 </section>
 
-                {Object.entries(savedByList).map(([status, mangas]) => (
-                    <section
-                        key={status}
-                        className="p-3 border rounded-xs border-tertiary"
-                    >
-                        <h3 className="mb-3 font-bold">{status}</h3>
-                        <div className="grid grid-cols-1 gap-3 mobile-md:grid-cols-2">
-                            {mangas.length === 0 ? (
-                                <p className="text-sm text-tertiary">
-                                    Nenhum mangá nesta lista.
-                                </p>
-                            ) : (
-                                mangas.map(manga => (
-                                    <article
-                                        key={manga.titleId}
-                                        className="flex items-center gap-2 p-2 border rounded-xs border-tertiary/70 hover:bg-secondary transition-colors"
-                                    >
-                                        <img
-                                            src={manga.cover}
-                                            alt={manga.name}
-                                            className="object-cover w-12 h-16 rounded-xs"
-                                        />
-                                        <div className="flex flex-col">
-                                            <AppLink
-                                                link={`/title/${manga.titleId}`}
-                                                text={manga.name}
-                                                className="text-sm"
-                                            />
-                                            <span className="text-xs text-tertiary">
-                                                {manga.type}
-                                            </span>
-                                        </div>
-                                    </article>
-                                ))
-                            )}
+                <LibraryTabs
+                    activeTab={activeTab}
+                    counts={counts}
+                    onChange={changeTab}
+                />
+
+                {error && (
+                    <div className="flex items-center gap-3 p-3 text-sm border rounded-xs border-quinary-default bg-quinary-default/10">
+                        <span>{error}</span>
+                        <button
+                            onClick={retry}
+                            className="px-3 py-1 text-xs border rounded-xs border-quinary-default hover:bg-quinary-default/20"
+                        >
+                            Tentar novamente
+                        </button>
+                    </div>
+                )}
+
+                {loading ? (
+                    <LibrarySkeleton />
+                ) : items.length === 0 && !error ? (
+                    <LibraryEmptyState tab={activeTab} />
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                            {items.map(manga => (
+                                <LibraryCard
+                                    key={manga.titleId}
+                                    manga={manga}
+                                    onChangeList={changeList}
+                                    onRemove={removeFromSaved}
+                                />
+                            ))}
                         </div>
-                    </section>
-                ))}
+                        {hasMore && (
+                            <div className="flex justify-center">
+                                <button
+                                    onClick={loadMore}
+                                    className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
+                                >
+                                    Carregar mais
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )}
             </MainContent>
             <Footer />
         </>

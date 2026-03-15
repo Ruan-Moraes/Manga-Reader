@@ -39,9 +39,9 @@ class GetRatingAverageUseCaseTest {
         void deveCalcularMediaArredondada() {
             // Arrange
             List<MangaRating> ratings = List.of(
-                    MangaRating.builder().stars(4.0).build(),
-                    MangaRating.builder().stars(5.0).build(),
-                    MangaRating.builder().stars(3.0).build()
+                    MangaRating.builder().overallRating(4.0).build(),
+                    MangaRating.builder().overallRating(5.0).build(),
+                    MangaRating.builder().overallRating(3.0).build()
             );
             when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(ratings);
 
@@ -58,9 +58,9 @@ class GetRatingAverageUseCaseTest {
         void deveArredondarCorretamente() {
             // Arrange — média de (4.5 + 3.7 + 4.2) / 3 = 4.1333... → 4.1
             List<MangaRating> ratings = List.of(
-                    MangaRating.builder().stars(4.5).build(),
-                    MangaRating.builder().stars(3.7).build(),
-                    MangaRating.builder().stars(4.2).build()
+                    MangaRating.builder().overallRating(4.5).build(),
+                    MangaRating.builder().overallRating(3.7).build(),
+                    MangaRating.builder().overallRating(4.2).build()
             );
             when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(ratings);
 
@@ -77,7 +77,7 @@ class GetRatingAverageUseCaseTest {
         void deveRetornarMediaComUmaAvaliacao() {
             // Arrange
             List<MangaRating> ratings = List.of(
-                    MangaRating.builder().stars(4.5).build()
+                    MangaRating.builder().overallRating(4.5).build()
             );
             when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(ratings);
 

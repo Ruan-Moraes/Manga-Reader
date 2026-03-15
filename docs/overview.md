@@ -1,6 +1,6 @@
 # Manga Reader — Visão Geral do Projeto
 
-> Última atualização: 10 de março de 2026
+> Última atualização: 13 de março de 2026
 
 ---
 
@@ -51,11 +51,13 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Redis | 7 | Cache (TTL 5 min) |
 | RabbitMQ | 4 | Mensageria assíncrona |
 | Flyway | — | Migrações PostgreSQL |
-| Mongock | — | Migrações MongoDB |
+| Mongock | 5.5.0 | Migrações MongoDB |
 | jjwt | 0.12.6 | Tokens JWT (HS256) |
 | MapStruct | 1.6.3 | Mapeamento entity-DTO |
 | Bucket4j | 8.10.1 | Rate limiting |
 | Springdoc OpenAPI | 2.8.4 | Documentação Swagger |
+| JaCoCo | 0.8.12 | Cobertura de código |
+| TestContainers | 1.20.5 | Testes de integração MongoDB |
 | BCrypt | — | Hash de senhas |
 
 ### Infraestrutura
@@ -103,14 +105,14 @@ Cada módulo de feature segue a estrutura: `component/`, `hook/`, `service/`, `t
 ```
 com.mangareader/
 ├── presentation/     → 13 REST Controllers (~80 endpoints)
-├── application/      → 60+ Use Cases + Ports (interfaces)
-├── domain/           → 11 domínios de negócio (entidades)
+├── application/      → 65 Use Cases + 14 Ports (interfaces)
+├── domain/           → 12 domínios de negócio (entidades, VOs, enums)
 └── infrastructure/   → Persistência, segurança, email, mensageria
-    ├── persistence/  → JPA (PostgreSQL) + MongoDB adapters
+    ├── persistence/  → JPA (7 adapters PostgreSQL) + MongoDB (4 adapters)
     ├── security/     → JWT, BCrypt, CORS, rate limiting
     ├── email/        → SMTP, Console, Noop adapters
     ├── messaging/    → RabbitMQ publisher/consumer
-    └── seed/         → Dados iniciais
+    └── seed/         → Dados iniciais (DataSeeder, profile != prod)
 ```
 
 Padrão de Use Cases com responsabilidade única e Input/Output baseados em records Java.
@@ -119,49 +121,45 @@ Padrão de Use Cases com responsabilidade única e Input/Output baseados em reco
 
 ## 4. Situação Atual do Projeto
 
-### Estado Geral: **Desenvolvimento Ativo — Fase de Implementação de Funcionalidades**
+### Estado Geral: **Fase 7 — Testes do Backend**
 
-O projeto encontra-se na transição entre a **implementação de funcionalidades** e a **fase de integração** entre frontend e backend.
+O projeto está na fase de **testes e estabilização do backend**. Todas as funcionalidades core estão implementadas. O foco atual é completar a cobertura de testes antes de iniciar a integração frontend ↔ backend.
 
 ### O que já está funcional
 
 | Área | Descrição |
 |------|-----------|
-| **Backend — API REST** | ~80 endpoints implementados em 13 controllers, cobrindo todos os 11 domínios de negócio |
+| **Backend — API REST** | ~80 endpoints implementados em 13 controllers, cobrindo todos os 12 domínios de negócio |
 | **Backend — Schema de Banco** | 14 tabelas PostgreSQL + 4 coleções MongoDB com migrações Flyway/Mongock |
 | **Backend — Segurança** | JWT completo (sign-in, sign-up, refresh, reset password), BCrypt, rate limiting |
 | **Backend — Infraestrutura** | Docker Compose dev/prod, adaptadores de email, RabbitMQ configurado, Redis como cache |
+| **Backend — Testes** | 582 testes passando (98 arquivos) — domain, application, presentation, infra JPA e MongoDB completos |
 | **Backend — Documentação API** | Swagger/OpenAPI auto-gerado e acessível |
 | **Frontend — UI** | 22+ páginas implementadas com design responsivo (mobile-first) |
 | **Frontend — Arquitetura** | 13 módulos de feature com separação clara de responsabilidades |
 | **Frontend — HTTP Client** | Axios configurado com interceptores (token, error handling, 401 redirect) |
-| **Frontend — Roteamento** | 20 rotas públicas + 2 protegidas com AuthGuard e RoleGuard |
-| **Frontend — Layout** | Header, Footer, Main com navegação, busca e exibição de auth |
+| **Frontend — Roteamento** | 24 rotas públicas + 2 protegidas com AuthGuard e RoleGuard |
 
 ### O que está parcialmente implementado
 
 | Área | Status | Observação |
 |------|--------|------------|
-| **Testes Backend** | ~90% | **79 arquivos de teste, 397 testes unitários** (13 domain, 57 use case, 9 controller). Faltam: 3 testes de use case (Store) e 4 testes de controller (News, Rating, Store, User) |
-| **Integração Frontend-Backend** | ~25% | Apenas títulos, tags e comentários buscam dados reais da API; 10 features restantes usam mock data |
-| **Autenticação End-to-End** | ~60% | Serviço frontend definido com endpoints, guards implementados, mas fluxo completo não testado com backend |
-| **Formulários** | ~40% | Estrutura pronta para Login, SignUp, ForgotPassword; falta validação e integração completa |
-| **Operações CRUD** | ~30% | Endpoints backend existem; frontend tem apenas read (GET) implementado para maioria |
-| **Comentários** | ~50% | Listagem funcional com API real; criação, edição, deleção não conectados |
-| **Leitor de Capítulos** | ~70% | Navegação e UI completos; URLs de imagem ainda são stub/placeholder |
+| **Testes Backend** | ~95% | 582 testes passando. Falta: Security integrado (Auth E2E) |
+| **Integração Frontend-Backend** | ~25% | Apenas títulos, tags e comentários (GET) buscam dados reais da API |
+| **Autenticação End-to-End** | ~60% | Serviço frontend definido, guards implementados, mas fluxo completo não testado |
+| **Formulários** | ~40% | Estrutura pronta; falta validação e integração completa |
+| **Operações CRUD** | ~30% | Endpoints backend existem; frontend tem apenas read (GET) para maioria |
 
 ### O que ainda não foi iniciado
 
 | Área | Descrição |
 |------|-----------|
+| **Testes Frontend** | Zero testes (React Testing Library, E2E) |
 | **CI/CD Pipeline** | Nenhum workflow de integração contínua ou deploy automatizado |
-| **Deploy em Produção** | Nenhum ambiente de produção configurado além do Dockerfile e docker-compose.prod.yml |
+| **Deploy em Produção** | Nenhum ambiente de produção (Dockerfile e docker-compose.prod.yml existem) |
 | **Upload de Arquivos** | Sem sistema para upload de capas, avatares ou páginas de capítulos |
 | **Acessibilidade** | Sem ARIA labels, landmarks ou HTML semântico |
-| **Internacionalização** | Strings de UI hardcoded em português; mensagens de erro em português |
-| **Conteúdo Legal** | Páginas de Termos de Uso e DMCA contêm texto placeholder |
-| **Monitoramento** | Actuator configurado, mas sem sistema de logging/alertas em produção |
-| **Testes Frontend** | Zero testes no frontend (React Testing Library, E2E) |
+| **Internacionalização** | Strings de UI hardcoded em português |
 
 ---
 
@@ -175,28 +173,26 @@ O projeto encontra-se na transição entre a **implementação de funcionalidade
     └─ Clean Architecture (backend), Feature-based (frontend), banco de dados modelado
 
 [✅] Implementação de funcionalidades — Backend
-    └─ 60+ use cases, 13 controllers, ~80 endpoints, security, email, messaging
+    └─ 65 use cases, 13 controllers, ~80 endpoints, security, email, messaging
 
-[🔄] Implementação de funcionalidades — Frontend     ← FASE ATUAL
-    └─ 22+ páginas com UI, 13 features com mock data, auth structure
+[✅] Implementação de funcionalidades — Frontend
+    └─ 22+ páginas com UI, 13 features, auth structure, guards
+
+[🔄] Testes do Backend     ← FASE ATUAL
+    └─ 98 arquivos, 582 testes (domain ✅, application ✅, presentation ✅, infra JPA ✅, infra MongoDB ✅)
+    └─ Pendente: Security integrado (Auth E2E)
 
 [🔲] Integração Frontend ↔ Backend
-    └─ Apenas 3/13 features conectadas à API real
+    └─ 3/13 features conectadas à API real
 
-[�] Testes Unitários Backend     ← EM ANDAMENTO
-    └─ 79 arquivos, 397 testes (domain: 13/13, use case: 57/60, controller: 9/13). Faltam 7 arquivos.
+[🔲] Qualidade e Polish
+    └─ Testes frontend, validação de formulários, lazy loading, acessibilidade
 
-[🔲] Testes de Integração / E2E
-    └─ Repositórios, segurança, testes frontend — não iniciados
-
-[🔲] Preparação para Deploy
-    └─ Dockerfile e docker-compose.prod.yml existem, mas sem pipeline CI/CD
-
-[🔲] Produção
-    └─ Não iniciado
+[🔲] Preparação para Produção
+    └─ CI/CD, infraestrutura cloud, deploy, monitoramento
 ```
 
-**Conclusão**: O projeto está na **fase de testes e estabilização do backend**, com 397 testes unitários implementados cobrindo ~90% dos componentes testáveis (domain entities, use cases e controllers). Faltam 7 arquivos de teste para cobertura completa dos testes unitários. O frontend permanece com UI construída mas dependente de dados mock (~25% integrado). As próximas etapas são: (1) completar os 7 testes unitários restantes, (2) integração real frontend ↔ backend, (3) testes de integração/E2E, e (4) preparação para produção.
+**Próximo passo imediato**: Testes de segurança integrados (fluxo Auth E2E com `@SpringBootTest` + TestContainers), seguido pela integração frontend ↔ backend.
 
 ---
 

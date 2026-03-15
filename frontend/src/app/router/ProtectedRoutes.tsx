@@ -5,8 +5,13 @@ import { showErrorToast } from '@shared/service/util/toastService';
 
 import PublishWork from '@app/route/publish-work/PublishWork';
 import Dashboard from '@app/route/dashboard/Dashboard';
+import Library from '@app/route/library/Library';
+import MyReviews from '@app/route/review/MyReviews';
 
-import { getStoredSession } from '@feature/auth/service/authService';
+import {
+    getStoredSession,
+    mapAuthResponseToUser,
+} from '@feature/auth/service/authService';
 import { type UserRole } from '@feature/user';
 
 const AuthGuard = ({ children }: { children: ReactNode }) => {
@@ -41,7 +46,9 @@ const RoleGuard = ({
     allowedRoles: UserRole[];
 }) => {
     const session = getStoredSession();
-    const role = (session?.role ?? 'user') as UserRole;
+    const role = session
+        ? (mapAuthResponseToUser(session).role ?? 'user')
+        : 'user';
 
     if (!session) {
         return <Navigate to="/Manga-Reader/login" replace />;
@@ -59,6 +66,22 @@ const RoleGuard = ({
 };
 
 const protectedRoutes = [
+    {
+        path: 'library',
+        element: (
+            <AuthGuard>
+                <Library />
+            </AuthGuard>
+        ),
+    },
+    {
+        path: 'reviews',
+        element: (
+            <AuthGuard>
+                <MyReviews />
+            </AuthGuard>
+        ),
+    },
     {
         path: 'i-want-to-publish-work',
         element: (

@@ -1,40 +1,40 @@
 export const RATING_CATEGORIES = [
     {
-        key: 'Diversion',
+        key: 'funRating',
         label: 'Diversão',
         icon: '🎉',
         description:
             'Considere a leveza, humor e entretenimento proporcionados pela obra.',
     },
     {
-        key: 'Art',
+        key: 'artRating',
         label: 'Arte',
         icon: '🎨',
         description:
             'Avalie a qualidade dos traços, painéis, cenários e estilo visual.',
     },
     {
-        key: 'Storyline',
+        key: 'storylineRating',
         label: 'Enredo',
         icon: '📖',
         description:
             'Considere a estrutura narrativa, ritmo da história e originalidade.',
     },
     {
-        key: 'Characters',
+        key: 'charactersRating',
         label: 'Personagens',
         icon: '👤',
         description:
             'Avalie o desenvolvimento, carisma e profundidade dos personagens.',
     },
     {
-        key: 'Originality',
+        key: 'originalityRating',
         label: 'Originalidade',
         icon: '💡',
         description: 'Considere o quão inovadora e única é a proposta da obra.',
     },
     {
-        key: 'Pacing',
+        key: 'pacingRating',
         label: 'Ritmo',
         icon: '⏱',
         description:

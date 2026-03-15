@@ -13,7 +13,6 @@ import com.mangareader.domain.news.valueobject.NewsCategory;
  * Repositório MongoDB para notícias.
  */
 public interface NewsMongoRepository extends MongoRepository<NewsItem, String> {
-
     List<NewsItem> findByCategory(NewsCategory category);
 
     List<NewsItem> findByTitleContainingIgnoreCase(String query);
