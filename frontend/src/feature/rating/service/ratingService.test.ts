@@ -161,5 +161,63 @@ describe('ratingService', () => {
 
             await expect(deleteReview('rating-1')).resolves.toBeUndefined();
         });
+
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.delete(`*${API_URLS.RATINGS}/rating-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(deleteReview('rating-1')).rejects.toThrow();
+        });
+    });
+
+    describe('submitRating - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.post(`*${API_URLS.RATINGS}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                submitRating({
+                    titleId: 'title-1',
+                    funRating: 5,
+                    artRating: 4,
+                    storylineRating: 5,
+                    charactersRating: 4,
+                    originalityRating: 4,
+                    pacingRating: 5,
+                }),
+            ).rejects.toThrow();
+        });
+    });
+
+    describe('getUserReviews - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.RATINGS}/user`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(getUserReviews()).rejects.toThrow();
+        });
+    });
+
+    describe('updateReview - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.put(`*${API_URLS.RATINGS}/rating-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                updateReview({ id: 'rating-1', comment: 'Atualizado' }),
+            ).rejects.toThrow();
+        });
     });
 });

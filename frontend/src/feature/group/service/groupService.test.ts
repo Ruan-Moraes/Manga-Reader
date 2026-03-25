@@ -109,6 +109,50 @@ describe('groupService', () => {
         });
     });
 
+    describe('getGroups — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.GROUPS}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getGroups()).rejects.toThrow();
+        });
+    });
+
+    describe('getGroupById — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.GROUPS}/group-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getGroupById('group-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getGroupsByTitleId — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.GROUPS}/title/title-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getGroupsByTitleId('title-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getMemberById — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.GROUPS}/members/member-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getMemberById('member-1')).rejects.toThrow();
+        });
+    });
+
     describe('getGroupStatusLabel', () => {
         it('deve retornar Ativo para active', () => {
             expect(getGroupStatusLabel('active')).toBe('Ativo');

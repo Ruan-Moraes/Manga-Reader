@@ -89,6 +89,22 @@ describe('authService', () => {
             expect(result.name).toBe('New User');
             expect(getStoredSession()?.name).toBe('New User');
         });
+
+        it('deve lançar erro quando API retorna 500 no signUp', async () => {
+            server.use(
+                http.post(`*${API_URLS.AUTH_SIGN_UP}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                signUp({
+                    name: 'New User',
+                    email: 'new@example.com',
+                    password: '123456',
+                }),
+            ).rejects.toThrow();
+        });
     });
 
     describe('refreshToken', () => {
@@ -107,6 +123,18 @@ describe('authService', () => {
 
             expect(result.accessToken).toBe('new-access-token');
             expect(getStoredSession()?.accessToken).toBe('new-access-token');
+        });
+
+        it('deve lançar erro quando API retorna 500 no refreshToken', async () => {
+            server.use(
+                http.post(`*${API_URLS.AUTH_REFRESH}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                refreshToken('refresh-token-456'),
+            ).rejects.toThrow();
         });
     });
 
@@ -182,6 +210,18 @@ describe('authService', () => {
 
             expect(result).toBe('Email enviado');
         });
+
+        it('deve lançar erro quando API retorna 500 no requestPasswordReset', async () => {
+            server.use(
+                http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                requestPasswordReset('test@example.com'),
+            ).rejects.toThrow();
+        });
     });
 
     describe('resetPassword', () => {
@@ -198,6 +238,18 @@ describe('authService', () => {
             const result = await resetPassword('token-123', 'newPass123');
 
             expect(result).toBe('Senha alterada');
+        });
+
+        it('deve lançar erro quando API retorna 500 no resetPassword', async () => {
+            server.use(
+                http.post(`*${API_URLS.AUTH_RESET_PASSWORD}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                resetPassword('token-123', 'newPass123'),
+            ).rejects.toThrow();
         });
     });
 

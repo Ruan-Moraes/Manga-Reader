@@ -98,6 +98,39 @@ describe('eventService', () => {
         });
     });
 
+    describe('getEvents — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.EVENTS}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getEvents()).rejects.toThrow();
+        });
+    });
+
+    describe('getEventById — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.EVENTS}/event-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getEventById('event-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getRelatedEvents — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.EVENTS}/event-1/related`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getRelatedEvents('event-1')).rejects.toThrow();
+        });
+    });
+
     describe('statusLabel', () => {
         it('deve mapear todos os status', () => {
             expect(statusLabel.happening_now).toBe('Acontecendo Agora');

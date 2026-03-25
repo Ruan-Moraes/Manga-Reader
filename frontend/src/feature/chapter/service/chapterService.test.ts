@@ -90,5 +90,15 @@ describe('chapterService', () => {
             expect(result.number).toBe('5');
             expect(result.title).toBe('Capitulo 5');
         });
+
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.CHAPTERS}/title/title-1/5`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(getChapterByNumber('title-1', '5')).rejects.toThrow();
+        });
     });
 });

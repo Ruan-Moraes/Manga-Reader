@@ -1,6 +1,6 @@
 import useCommentsFetch from './data/useCommentsFetch';
 
-const useComments = (id: number, page = 0, size = 20) => {
+const useComments = (id: string, page = 0, size = 20) => {
     const {
         data: pageData,
         isLoading,

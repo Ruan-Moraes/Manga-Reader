@@ -72,6 +72,16 @@ describe('titleService', () => {
             expect(result.id).toBe('abc-123');
             expect(result.name).toBe('One Piece');
         });
+
+        it('deve lançar erro quando API retorna 500 no getTitleById', async () => {
+            server.use(
+                http.get(`*${API_URLS.TITLES}/abc-123`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(getTitleById('abc-123')).rejects.toThrow();
+        });
     });
 
     describe('searchTitles', () => {
@@ -90,6 +100,16 @@ describe('titleService', () => {
 
             expect(result.content[0].name).toBe('Naruto');
         });
+
+        it('deve lançar erro quando API retorna 500 no searchTitles', async () => {
+            server.use(
+                http.get(`*${API_URLS.TITLES_SEARCH}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(searchTitles('naruto')).rejects.toThrow();
+        });
     });
 
     describe('getTitlesByGenre', () => {
@@ -105,6 +125,16 @@ describe('titleService', () => {
             const result = await getTitlesByGenre('action');
 
             expect(result.content).toHaveLength(1);
+        });
+
+        it('deve lançar erro quando API retorna 500 no getTitlesByGenre', async () => {
+            server.use(
+                http.get(`*${API_URLS.TITLES_BY_GENRE}/action`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(getTitlesByGenre('action')).rejects.toThrow();
         });
     });
 
@@ -123,6 +153,18 @@ describe('titleService', () => {
             const result = await filterTitles({ status: 'ONGOING' });
 
             expect(result.content).toHaveLength(1);
+        });
+
+        it('deve lançar erro quando API retorna 500 no filterTitles', async () => {
+            server.use(
+                http.get(`*${API_URLS.TITLES_FILTER}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                filterTitles({ status: 'ONGOING' }),
+            ).rejects.toThrow();
         });
     });
 });

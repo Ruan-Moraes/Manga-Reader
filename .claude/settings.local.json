@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(cmd //c \"npx tsc --noEmit\")",
+      "Bash(where.exe node:*)",
+      "Bash(cmd //c 'where node')",
+      "Bash(where.exe npm:*)",
+      "Bash(cmd //c 'where npm')",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/Ruan/AppData/Local/Microsoft/WinGet/Packages/Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe//**)",
+      "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$HOME/AppData/Roaming/**)",
+      "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$HOME/AppData/Local/**)",
+      "Bash(FNM_DIR=\"/c/Users/Ruan/AppData/Local/Microsoft/WinGet/Packages/Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe\")",
+      "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$FNM_DIR/**)"
+    ]
+  }
+}

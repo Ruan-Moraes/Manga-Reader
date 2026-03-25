@@ -53,5 +53,14 @@ describe('tagService', () => {
 
             expect(result.name).toBe('Action');
         });
+
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.TAGS}/1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getTagById(1)).rejects.toThrow();
+        });
     });
 });

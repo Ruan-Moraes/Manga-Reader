@@ -106,6 +106,21 @@ describe('commentService', () => {
                 parentCommentId: 'parent-1',
             });
         });
+
+        it('deve lançar erro quando API retorna 500 no createComment', async () => {
+            server.use(
+                http.post(`*${API_URLS.COMMENTS}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                createComment({
+                    titleId: 'title-1',
+                    textContent: 'Novo comentario',
+                }),
+            ).rejects.toThrow();
+        });
     });
 
     describe('updateComment', () => {
@@ -126,6 +141,18 @@ describe('commentService', () => {
             expect(result.textContent).toBe('Texto editado');
             expect(result.wasEdited).toBe(true);
         });
+
+        it('deve lançar erro quando API retorna 500 no updateComment', async () => {
+            server.use(
+                http.put(`*${API_URLS.COMMENTS}/comment-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                updateComment('comment-1', 'Texto editado'),
+            ).rejects.toThrow();
+        });
     });
 
     describe('deleteComment', () => {
@@ -137,6 +164,16 @@ describe('commentService', () => {
             );
 
             await expect(deleteComment('comment-1')).resolves.toBeUndefined();
+        });
+
+        it('deve lançar erro quando API retorna 500 no deleteComment', async () => {
+            server.use(
+                http.delete(`*${API_URLS.COMMENTS}/comment-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(deleteComment('comment-1')).rejects.toThrow();
         });
     });
 
@@ -154,6 +191,16 @@ describe('commentService', () => {
 
             expect(result.likeCount).toBe('6');
         });
+
+        it('deve lançar erro quando API retorna 500 no likeComment', async () => {
+            server.use(
+                http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(likeComment('comment-1')).rejects.toThrow();
+        });
     });
 
     describe('dislikeComment', () => {
@@ -169,6 +216,16 @@ describe('commentService', () => {
             const result = await dislikeComment('comment-1');
 
             expect(result.dislikeCount).toBe('2');
+        });
+
+        it('deve lançar erro quando API retorna 500 no dislikeComment', async () => {
+            server.use(
+                http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(dislikeComment('comment-1')).rejects.toThrow();
         });
     });
 

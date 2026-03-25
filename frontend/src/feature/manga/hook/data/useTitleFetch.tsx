@@ -8,12 +8,12 @@ import { Title } from '@feature/manga';
 import validateId from '@shared/service/util/validateId';
 import { getTitleById } from '../../service/titleService';
 
-const useTitleFetch = (id: number): UseQueryResult<Title | Error> => {
+const useTitleFetch = (id: string): UseQueryResult<Title | Error> => {
     return useQuery<Title, Error>({
         queryKey: [QUERY_KEYS.TITLES, id],
         queryFn: async () => {
             try {
-                validateId(id);
+                validateId(Number(id));
 
                 return await getTitleById(id);
             } catch (error) {

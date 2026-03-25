@@ -48,4 +48,22 @@ describe('formatDate', () => {
         expect(typeof resultado).toBe('string');
         expect(resultado.length).toBeGreaterThan(0);
     });
+
+    it('deve lancar RangeError quando string de data e invalida', () => {
+        expect(() => formatDate('not-a-date', { year: 'numeric' })).toThrow(RangeError);
+    });
+
+    it('deve lancar RangeError quando recebe string vazia', () => {
+        expect(() => formatDate('', { year: 'numeric' })).toThrow(RangeError);
+    });
+
+    it('deve formatar data muito antiga corretamente', () => {
+        const resultado = formatDate(new Date('1900-01-15T12:00:00Z'), {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        });
+
+        expect(resultado).toContain('1900');
+    });
 });

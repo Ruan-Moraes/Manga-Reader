@@ -7,6 +7,7 @@ type RatingStarsProps = {
     onChange?: (rating: number) => void;
     size?: number;
     halfPrecision?: boolean;
+    showValue?: boolean;
 };
 
 const RatingStars = ({
@@ -14,6 +15,7 @@ const RatingStars = ({
     onChange,
     size = 16,
     halfPrecision = false,
+    showValue = false,
 }: RatingStarsProps) => {
     const starRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -77,6 +79,11 @@ const RatingStars = ({
                     </button>
                 ))}
             </div>
+            {showValue && (
+                <span className="text-sm font-medium">
+                    {value.toFixed(1)}
+                </span>
+            )}
         </div>
     );
 };

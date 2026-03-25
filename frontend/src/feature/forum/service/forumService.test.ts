@@ -94,6 +94,39 @@ describe('forumService', () => {
         });
     });
 
+    describe('getForumTopics — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.FORUM}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getForumTopics()).rejects.toThrow();
+        });
+    });
+
+    describe('getForumTopicById — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.FORUM}/topic-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getForumTopicById('topic-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getForumCategories — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.FORUM}/categories`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getForumCategories()).rejects.toThrow();
+        });
+    });
+
     describe('filterForumTopics', () => {
         it('deve filtrar por categoria', () => {
             const topics = [

@@ -129,4 +129,56 @@ describe('libraryService', () => {
             expect(result.lendo).toBe(5);
         });
     });
+
+    describe('getUserLibrary - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.LIBRARY}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(getUserLibrary()).rejects.toThrow();
+        });
+    });
+
+    describe('saveToLibrary - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.post(`*${API_URLS.LIBRARY}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                saveToLibrary({ titleId: 'title-1' }),
+            ).rejects.toThrow();
+        });
+    });
+
+    describe('updateSavedMangaList - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.patch(`*${API_URLS.LIBRARY}/title-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(
+                updateSavedMangaList({ titleId: 'title-1', list: 'Concluído' }),
+            ).rejects.toThrow();
+        });
+    });
+
+    describe('removeSavedManga - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.delete(`*${API_URLS.LIBRARY}/title-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(removeSavedManga('title-1')).rejects.toThrow();
+        });
+    });
 });

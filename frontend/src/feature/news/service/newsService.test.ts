@@ -93,6 +93,39 @@ describe('newsService', () => {
         });
     });
 
+    describe('getNews — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.NEWS}`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getNews()).rejects.toThrow();
+        });
+    });
+
+    describe('getNewsById — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.NEWS}/news-1`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getNewsById('news-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getRelatedNews — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.NEWS}/news-1/related`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+            await expect(getRelatedNews('news-1')).rejects.toThrow();
+        });
+    });
+
     describe('isNewsFresh', () => {
         it('deve retornar true para noticia de menos de 24h', () => {
             vi.useFakeTimers();

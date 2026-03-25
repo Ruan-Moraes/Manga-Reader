@@ -1,6 +1,6 @@
 import useTitleFetch from './data/useTitleFetch';
 
-const useTitle = (id: number) => {
+const useTitle = (id: string) => {
     const {
         data: title,
         isLoading,
