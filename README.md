@@ -10,7 +10,7 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ Verde — 762 testes passando (727 backend + 35 frontend), 0 failures |
+| **Build** | ⚠️ 1015 testes (727 backend + 288 frontend) — 280 frontend passando, 8 frontend falhando |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
@@ -20,7 +20,8 @@
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
        ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy, enriched profile)
-       └─ 🔲 9c: Code splitting, Error Boundaries, @Transactional fixes, a11y
+       ├─ ✅ 9c-testes: Testes frontend (37 arquivos, 284 testes — services, hooks, utils)
+       └─ 🔲 9c-polish: Code splitting, Error Boundaries, @Transactional fixes, a11y, fix 8 testes falhando
 [🔲] Fase 10:  Produção (CI/CD, infra cloud, deploy, monitoramento)
 ```
 
@@ -62,6 +63,7 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Componentes compartilhados | **~37** |
 | Arquivos TypeScript | **272** |
 | Testes backend | **727** (127 arquivos — domain, application, presentation, infra JPA + MongoDB + Security E2E) |
+| Testes frontend | **288** (37 arquivos — services, hooks, utils, smoke) |
 
 ---
 
@@ -193,12 +195,19 @@ npm run dev
 ### Testes
 
 ```bash
+# Backend (727 testes)
 cd backend
 mvn test                                    # Todos os 727 testes
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
 mvn test -Dtest=**/application/**/*Test     # Apenas use cases
 mvn test -Dtest=**/presentation/**/*Test    # Apenas controllers
 mvn test -Dtest=**/infrastructure/**/*Test  # JPA + MongoDB + Security
+
+# Frontend (284 testes)
+cd frontend
+npm test                                    # Todos os testes (Vitest)
+npm run test:watch                          # Watch mode
+npm run test:coverage                       # Com cobertura (v8)
 ```
 
 ---
@@ -239,6 +248,7 @@ Manga-Reader/
         ├── feature/                 # 13 módulos (auth, manga, chapter, comment, rating, ...)
         │   └── {feature}/           # component/ + hook/ + service/ + type/ + context/
         ├── shared/                  # ~37 componentes, HTTP client, constantes, tipos
+        ├── test/                    # Infra de testes (setup, testUtils, factories, MSW handlers)
         ├── mock/                    # 11 datasets mock
         ├── asset/                   # Imagens e SVGs
         └── style/                   # Tailwind CSS global
@@ -248,7 +258,7 @@ Manga-Reader/
 
 ## 7. Testes
 
-**131 arquivos de teste · 762 testes · 0 failures · 0 errors**
+**164 arquivos de teste · 1011 testes · 8 frontend failures**
 
 ### Backend — 127 arquivos, 727 testes
 
@@ -263,21 +273,28 @@ Manga-Reader/
 | Security E2E | 1 | 16 | `@SpringBootTest` + `@Import(MongoTestContainerConfig)` | Fluxo Auth completo (sign-up → login → JWT → refresh → /me) |
 | Root | 1 | 1 | `@SpringBootTest` | Smoke test (context loads) |
 
-### Frontend — 4 arquivos, 35 testes
+### Frontend — 37 arquivos, 284 testes (276 passando, 8 falhando)
 
-| Hook | Testes | Abordagem |
-|------|:------:|-----------|
-| useSearchTitles | 6 | React Query wrapper — enabled, placeholderData, error |
-| useAuth | 12 | localStorage, /me recovery, login/register/logout, role mapping |
-| useBookmark | 9 | Optimistic updates, rollback on error, session guard |
-| useCommentCRUD | 8 | React Query mutations, toast notifications, loading states |
+| Camada | Arquivos | Testes | Abordagem |
+|--------|:--------:|:------:|-----------|
+| Services | 13 | ~191 | MSW v2 + Vitest (13 domínios: auth, category, chapter, comment, event, forum, group, library, manga, news, rating, store, user) |
+| Hooks | 17 | ~83 | `renderHookWithProviders` + React Query + MSW (7 domínios: auth, category, chapter, comment, library, manga, rating) |
+| Utilities | 6 | ~60 | JUnit-style puro (apiErrorMessages, checkValidId, formatDate, formatRelativeDate, validateId, validateResponse) |
+| Smoke | 1 | 3 | Setup verification |
 
-Stack: Vitest + @testing-library/react + MSW v2 (intercepta Axios no nível de rede)
+Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta Axios no nível de rede)
+
+**8 testes falhando:**
+- `forumService.test.ts` (3) — timeout em `vi.useRealTimers` no afterEach
+- `newsService.test.ts` (2) — mesmo problema de timers
+- `useBookmark.test.tsx` (1) — assertion de session guard
+- `useCommentCRUD.test.tsx` (2) — toast mock não chamado
 
 ### Pendente
 
 - **Frontend — Componentes**: Testes de componentes (CommentsSection, Library, UserProfile, SearchResults)
 - **Frontend — E2E**: Considerar Playwright para fluxos auth e navegação
+- **Frontend — Fixes**: Corrigir 8 testes falhando (timers, session guard, toast mock)
 
 ### Histórico
 
@@ -291,6 +308,7 @@ Stack: Vitest + @testing-library/react + MSW v2 (intercepta Axios no nível de r
 | 2026-03-14 | Domain completo (25/25 — sub-entities, VOs, enums) + Security E2E (16 testes) |
 | 2026-03-15 | Fase 9a/9b — 7 novos use cases (profile), domain +5 (sub-entities/VOs), application +10, total: 727 testes |
 | 2026-03-25 | Fase 9c — Setup testes frontend (Vitest + RTL + MSW), 4 hooks testados: useSearchTitles, useAuth, useBookmark, useCommentCRUD (35 testes) |
+| 2026-03-26 | Testes frontend expandidos: 13 service tests, 17 hook tests, 6 utility tests — total: 37 arquivos, 284 testes (276 passando, 8 falhando) |
 
 ---
 
@@ -471,7 +489,7 @@ Stack: Vitest + @testing-library/react + MSW v2 (intercepta Axios no nível de r
 | # | Dívida | Impacto |
 |---|--------|---------|
 | 1 | **~23 use cases sem `@Transactional`** | Risco de LazyInitializationException e inconsistência de dados em operações multi-repository |
-| 2 | **0 testes no frontend** | Sem garantia de qualidade no frontend |
+| 2 | **8 testes frontend falhando** + sem testes de componentes | Cobertura de services/hooks/utils existente (284 testes), mas 8 falhas pendentes e componentes sem teste |
 
 ### Importantes
 
@@ -521,7 +539,8 @@ Stack: Vitest + @testing-library/react + MSW v2 (intercepta Axios no nível de r
 [🔄] Fase 9: Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada (tabs, contagens, paginação) + MyReviews + Profile stats
        ├─ ✅ 9b: Perfil enriquecido (recommendations, view history, privacy, enriched profile)
-       └─ 🔲 9c: Code splitting, Error Boundaries, @Transactional fixes, a11y, testes frontend
+       ├─ ✅ 9c-testes: Testes frontend (37 arquivos, 284 testes — services, hooks, utils)
+       └─ 🔲 9c-polish: Code splitting, Error Boundaries, @Transactional fixes, a11y, fix 8 testes falhando
 
 [🔲] Fase 10: Produção
        ├─ CI/CD pipeline (GitHub Actions + JaCoCo)

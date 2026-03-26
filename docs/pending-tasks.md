@@ -1,6 +1,6 @@
 # Manga Reader — Tarefas Pendentes
 
-> Última atualização: 25 de março de 2026
+> Última atualização: 26 de março de 2026
 
 ---
 
@@ -66,9 +66,14 @@ Dividir page components grandes em subcomponentes:
 ### 1.7. Testes Frontend (Prioridade Alta)
 
 - [x] Configurar Vitest + React Testing Library + MSW no projeto
-- [x] Testes de hooks customizados (useAuth, useBookmark, useCommentCRUD, useSearchTitles) — **4 arquivos, 35 testes**
+- [x] Testes de hooks customizados (17 arquivos, ~83 testes — auth, category, chapter, comment, library, manga, rating)
+- [x] Testes de services (13 arquivos, ~191 testes — todos os 13 domínios)
+- [x] Testes de utilities (6 arquivos, ~60 testes — apiErrorMessages, checkValidId, formatDate, formatRelativeDate, validateId, validateResponse)
+- [ ] Corrigir 8 testes falhando (vi.useRealTimers timeout em forum/news, session guard em useBookmark, toast mock em useCommentCRUD)
 - [ ] Testes de componentes (CommentsSection, Library, UserProfile, SearchResults)
 - [ ] Considerar Playwright para testes E2E (fluxo auth, navegação)
+
+**Estado atual**: 37 arquivos, 288 testes (280 passando, 8 falhando)
 
 ### 1.8. Configuração (Prioridade Baixa)
 
@@ -98,10 +103,15 @@ Dividir page components grandes em subcomponentes:
 | **Infrastructure Security** | JwtTokenProvider | ✅ **Concluído** | 1 arquivo, 17 testes (unitário) |
 | **Security E2E** | Auth flow completo | ✅ **Concluído** | 1 arquivo, 16 testes (@SpringBootTest) |
 | **Root** | Smoke test | ✅ **Concluído** | 1 arquivo, 1 teste (context loads) |
-| **Testes frontend — Hooks** | 4 hooks críticos | ✅ **Concluído** | 4 arquivos, 35 testes (Vitest + RTL + MSW) |
+| **Testes frontend — Services** | 13 domínios | ✅ **Concluído** | 13 arquivos, ~191 testes (Vitest + MSW) |
+| **Testes frontend — Hooks** | 7 domínios | ✅ **Concluído** | 17 arquivos, ~83 testes (RTL + MSW) |
+| **Testes frontend — Utils** | 6 utilities | ✅ **Concluído** | 6 arquivos, ~60 testes (Vitest puro) |
+| **Testes frontend — Smoke** | Setup verification | ✅ **Concluído** | 1 arquivo, 3 testes |
+| **Testes frontend — Fixes** | 8 testes falhando | 🔲 Não iniciado | timers, session guard, toast mock |
 | **Testes frontend — Componentes** | Componentes + E2E | 🔲 Não iniciado | Vitest + React Testing Library |
 
 **Total backend**: 127 arquivos, **727 testes passando**, 0 failures, 0 errors.
+**Total frontend**: 37 arquivos, **288 testes** (280 passando, 8 falhando).
 
 ### 2.3. Documentação (Prioridade Alta)
 

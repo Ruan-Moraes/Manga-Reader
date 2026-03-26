@@ -43,4 +43,21 @@ describe('useTagsFetch', () => {
         const data = result.current.data as { id: number; name: string }[];
         expect(data).toHaveLength(2);
     });
+
+    it('deve retornar erro quando API falha', async () => {
+        server.use(
+            http.get(`*${API_URLS.TAGS}`, () =>
+                HttpResponse.json(null, { status: 500 }),
+            ),
+        );
+
+        const { result } = renderHook(
+            () => useTagsFetch(QUERY_KEYS.TAGS),
+            { wrapper },
+        );
+
+        await waitFor(() => {
+            expect(result.current.isError).toBe(true);
+        });
+    });
 });

@@ -54,4 +54,24 @@ describe('useTitles', () => {
         expect(result.current.totalElements).toBe(3);
         expect(typeof result.current.refetchTitles).toBe('function');
     });
+
+    it('deve retornar valores padrao quando API falha', async () => {
+        server.use(
+            http.get(`*${API_URLS.TITLES}`, () =>
+                HttpResponse.json(null, { status: 500 }),
+            ),
+        );
+
+        const { result } = renderHook(
+            () => useTitles(QUERY_KEYS.TITLES),
+            { wrapper },
+        );
+
+        await waitFor(() => {
+            expect(result.current.isError).toBe(true);
+        });
+
+        expect(result.current.titles).toEqual([]);
+        expect(result.current.totalPages).toBe(0);
+    });
 });

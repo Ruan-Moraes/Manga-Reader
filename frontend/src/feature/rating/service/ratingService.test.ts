@@ -207,6 +207,18 @@ describe('ratingService', () => {
         });
     });
 
+    describe('getRatingsAverage - erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(
+                http.get(`*${API_URLS.RATINGS}/title/title-1/average`, () =>
+                    HttpResponse.json(null, { status: 500 }),
+                ),
+            );
+
+            await expect(getRatingsAverage('title-1')).rejects.toThrow();
+        });
+    });
+
     describe('updateReview - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
             server.use(

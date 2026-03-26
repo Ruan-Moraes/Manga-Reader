@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 25 de março de 2026
+> Última atualização: 26 de março de 2026
 
 ---
 
@@ -28,24 +28,23 @@ Este documento lista as dívidas técnicas identificadas no projeto, organizadas
 
 ---
 
-### DT-02: Zero testes no frontend
+## Prioridade Alta
 
-**Descrição**: O frontend não possui nenhum teste — nem unitário, nem de componente, nem E2E. Não há library de teste no `package.json` (jest/vitest, testing-library, etc.).
+### DT-02: 8 testes frontend falhando + sem testes de componentes
+
+**Descrição**: O frontend possui 37 arquivos de teste com 284 testes (Vitest + RTL + MSW), cobrindo services (13 domínios), hooks (7 domínios) e utilities (6 arquivos). Porém **8 testes estão falhando** (timers em forumService/newsService, session guard em useBookmark, toast mock em useCommentCRUD) e **não há testes de componentes nem E2E**.
 
 **Impacto**:
-- Sem garantia de qualidade no frontend
-- Regressões não detectadas
-- Refatorações arriscadas
+- 8 testes falhando reduzem confiança na suite
+- Componentes críticos (CommentsSection, Library, UserProfile) sem cobertura
+- Sem testes E2E para fluxos de navegação
 
 **Recomendação**:
-1. Adicionar Vitest + React Testing Library ao projeto
-2. Priorizar testes de hooks customizados (useAuth, useBookmark, useCommentCRUD)
-3. Testes de componentes críticos (CommentsSection, Library, UserProfile)
-4. Considerar Playwright para testes E2E dos fluxos de auth
+1. Corrigir os 8 testes falhando (vi.useRealTimers timeout, session guard assertion, toast mock)
+2. Adicionar testes de componentes críticos (CommentsSection, Library, UserProfile, SearchResults)
+3. Considerar Playwright para testes E2E dos fluxos de auth e navegação
 
 ---
-
-## Prioridade Alta
 
 ### DT-03: Sem pipeline CI/CD
 
@@ -220,8 +219,8 @@ Este documento lista as dívidas técnicas identificadas no projeto, organizadas
 
 | Prioridade | Quantidade | IDs |
 |-----------|-----------|-----|
-| **Crítica** | 2 | DT-01, DT-02 |
-| **Alta** | 4 | DT-03, DT-04, DT-05, DT-06 |
+| **Crítica** | 1 | DT-01 |
+| **Alta** | 5 | DT-02, DT-03, DT-04, DT-05, DT-06 |
 | **Média** | 6 | DT-07, DT-08, DT-09, DT-10, DT-11, DT-12 |
 | **Baixa** | 3 | DT-13, DT-14, DT-15 |
 | **Total** | **15** | |

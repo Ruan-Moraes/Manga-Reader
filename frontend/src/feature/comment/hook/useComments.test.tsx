@@ -69,4 +69,21 @@ describe('useComments', () => {
         expect(result.current.totalElements).toBe(2);
         expect(typeof result.current.refetchComments).toBe('function');
     });
+
+    it('deve retornar valores padrao quando API falha', async () => {
+        server.use(
+            http.get(`*${API_URLS.COMMENTS}/title/1`, () =>
+                HttpResponse.json(null, { status: 500 }),
+            ),
+        );
+
+        const { result } = renderHook(() => useComments('1'), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isError).toBe(true);
+        });
+
+        expect(result.current.comments).toEqual([]);
+        expect(result.current.totalPages).toBe(0);
+    });
 });
