@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
     FiCalendar,
@@ -12,12 +13,39 @@ import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import { getEventById, getRelatedEvents, statusLabel } from '@feature/event';
+import type { EventData } from '@feature/event';
 
 // TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const EventDetails = () => {
     const { eventId = '' } = useParams();
 
-    const event = getEventById(eventId);
+    const [event, setEvent] = useState<EventData | null>(null);
+    const [relatedEvents, setRelatedEvents] = useState<EventData[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(true);
+        getEventById(eventId)
+            .then(data => {
+                setEvent(data);
+                return getRelatedEvents(data.id);
+            })
+            .then(setRelatedEvents)
+            .catch(console.error)
+            .finally(() => setIsLoading(false));
+    }, [eventId]);
+
+    if (isLoading) {
+        return (
+            <>
+                <Header />
+                <MainContent>
+                    <p>Carregando evento...</p>
+                </MainContent>
+                <Footer />
+            </>
+        );
+    }
 
     if (!event) {
         return (
@@ -36,8 +64,6 @@ const EventDetails = () => {
             </>
         );
     }
-
-    const relatedEvents = getRelatedEvents(event);
 
     return (
         <>

@@ -10,7 +10,7 @@ import validateId from '@shared/service/util/validateId';
 import { getCommentsByTitleId } from '../../service/commentService';
 
 const useCommentsFetch = (
-    id: number,
+    id: string,
     page = 0,
     size = 20,
 ): UseQueryResult<PageResponse<CommentData>, Error> => {
@@ -18,7 +18,7 @@ const useCommentsFetch = (
         queryKey: [QUERY_KEYS.COMMENTS, id, page, size],
         queryFn: async () => {
             try {
-                validateId(id);
+                validateId(Number(id));
 
                 return await getCommentsByTitleId(id, page, size);
             } catch (error) {

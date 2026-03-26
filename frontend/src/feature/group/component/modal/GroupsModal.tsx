@@ -33,7 +33,7 @@ const GroupsModal = ({
         if (titleId && isModalOpen) {
             setIsFetching(true);
             getGroupsByTitleId(String(titleId))
-                .then(setScopedGroups)
+                .then(res => setScopedGroups(res.content))
                 .finally(() => setIsFetching(false));
         }
     }, [groups, titleId, isModalOpen]);

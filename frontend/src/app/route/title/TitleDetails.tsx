@@ -61,7 +61,7 @@ const TitleDetailsPage = () => {
         isLoading: isTitleLoading,
         isError: isTitleError,
         error: titleError,
-    } = useTitle(id);
+    } = useTitle(rawTitleId ?? '');
 
     // Fire-and-forget: registra visualização no histórico do usuário
     useEffect(() => {
@@ -76,7 +76,7 @@ const TitleDetailsPage = () => {
         isError: isCommentsError,
         error: commentsError,
         refetchComments,
-    } = useComments(id);
+    } = useComments(rawTitleId ?? '');
 
     const {
         isAscending,

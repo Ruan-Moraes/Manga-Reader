@@ -23,7 +23,7 @@ const StoresModal = ({
             setIsLoading(true);
 
             getStoresByTitleId(titleId).then(data => {
-                setStores(data);
+                setStores(data.content);
                 setIsLoading(false);
             });
         }
