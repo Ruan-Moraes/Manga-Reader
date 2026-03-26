@@ -13,6 +13,7 @@ import {
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 
 import {
     useNewsDetails,
@@ -92,10 +93,11 @@ const NewsDetails = () => {
                             </p>
                             <div className="flex flex-wrap items-center justify-between gap-4 p-3 rounded-xl bg-primary">
                                 <div className="flex items-center gap-3">
-                                    <img
+                                    <UserAvatar
                                         src={news.author.avatar}
-                                        alt={news.author.name}
-                                        className="w-10 h-10 rounded-full"
+                                        name={news.author.name}
+                                        size="md"
+                                        rounded="full"
                                     />
                                     <div>
                                         <Link

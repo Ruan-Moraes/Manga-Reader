@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import MainSearchInput from '@shared/component/input/MainSearchInput';
 import NavigationMenu from '@shared/component/menu/NavigationMenu';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 
 import { useAuth } from '@feature/auth';
 
@@ -27,17 +28,13 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                                 link={`/users/${user.id}`}
                                 className="shrink-0"
                             >
-                                {user.photo ? (
-                                    <img
-                                        src={user.photo}
-                                        alt={user.name}
-                                        className="object-cover w-8 h-8 border rounded-full border-tertiary"
-                                    />
-                                ) : (
-                                    <div className="flex items-center justify-center w-8 h-8 text-sm font-bold border rounded-full border-tertiary bg-tertiary">
-                                        {user.name.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
+                                <UserAvatar
+                                    src={user.photo}
+                                    name={user.name}
+                                    size="sm"
+                                    rounded="xs"
+                                    className="border border-tertiary"
+                                />
                             </AppLink>
                             <AppLink
                                 enabledColorWhenActive={true}

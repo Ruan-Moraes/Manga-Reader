@@ -1,6 +1,6 @@
 # Manga Reader — Análise Técnica do Backend
 
-> Última atualização: 9 de março de 2026
+> Última atualização: 25 de março de 2026
 
 ---
 
@@ -30,15 +30,16 @@
 | Springdoc OpenAPI | 2.8.4 | Documentação Swagger |
 | BCrypt | — | Hash de senhas |
 
-### Dependências de Teste (disponíveis, pouco utilizadas)
+### Dependências de Teste (todas em uso)
 
 | Dependência | Função |
 |------------|--------|
-| JUnit 5 (Jupiter) | Framework de testes |
-| H2 Database | Banco em memória para testes |
-| TestContainers | Containers Docker para testes de integração |
-| Spring Security Test | Testes de segurança |
-| MockMVC | Testes de controllers |
+| JUnit 5 (Jupiter) | Framework de testes (727 testes) |
+| H2 Database | Banco em memória para testes JPA |
+| TestContainers | Containers Docker para testes MongoDB (mongo:8.0) |
+| Spring Security Test | Testes E2E de segurança |
+| MockMVC | Testes de controllers (@WebMvcTest) |
+| Mockito | Mocks para testes de use cases |
 
 ---
 
@@ -49,11 +50,11 @@
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  PRESENTATION LAYER (Camada de Apresentação)                 │
-│  13 REST Controllers, ~80 endpoints, JSON I/O                │
+│  13 REST Controllers, 74 endpoints, JSON I/O                 │
 │  Responsabilidade: Recebe HTTP, valida input, delega         │
 ├──────────────────────────────────────────────────────────────┤
 │  APPLICATION LAYER (Camada de Aplicação)                     │
-│  60+ Use Cases, port-driven design, DTOs (records)           │
+│  70 Use Cases, port-driven design, DTOs (records)            │
 │  Responsabilidade: Orquestra lógica de negócio               │
 ├──────────────────────────────────────────────────────────────┤
 │  DOMAIN LAYER (Camada de Domínio)                            │
@@ -72,7 +73,7 @@
 
 ---
 
-## 3. Camada de Domínio (11 Domínios)
+## 3. Camada de Domínio (12 Domínios)
 
 ### 3.1. User (PostgreSQL)
 
@@ -84,8 +85,12 @@ User {
   passwordHash: String
   bio: String(500)
   photoUrl: String
+  bannerUrl: String
   role: Enum(MEMBER, ADMIN)
+  commentVisibility: Enum(PUBLIC, FRIENDS_ONLY, PRIVATE)
+  viewHistoryVisibility: Enum(PUBLIC, FRIENDS_ONLY, PRIVATE)
   socialLinks: List<UserSocialLink>
+  recommendations: List<UserRecommendation>
   createdAt, updatedAt: Timestamp
 }
 
@@ -94,6 +99,24 @@ UserSocialLink {
   userId: UUID (FK → users)
   platform: String(50) [github, twitter, etc.]
   url: String(500)
+}
+
+UserRecommendation {
+  id: UUID (PK)
+  userId: UUID (FK → users)
+  titleId: String [ref MongoDB]
+  titleName: String
+  position: Integer [default 0]
+}
+
+ViewHistory (MongoDB — coleção `view_history`) {
+  id: String (ObjectId)
+  userId: String [Indexed]
+  titleId: String
+  titleName: String
+  titleCover: String
+  viewedAt: Timestamp [Indexed]
+  Compound Index: (userId, titleId)
 }
 ```
 
@@ -296,17 +319,16 @@ StoreTitle {
 
 ---
 
-## 4. Camada de Aplicação (60+ Use Cases)
+## 4. Camada de Aplicação (70 Use Cases)
 
 ### Organização por Domínio
 
 | Domínio | Use Cases | Descrição |
 |---------|-----------|-----------|
 | **Auth** | 6 | SignIn, SignUp, RefreshToken, GetCurrentUser, ForgotPassword, ResetPassword |
-| **Manga** | 5 | GetTitles, GetTitleById, SearchTitles, GetTitlesByGenre, FilterTitles |
-| **Chapter** | 2 | GetChaptersByTitle, GetChapterByNumber |
-| **Comment** | 5 | GetCommentsByTitle, CreateComment, UpdateComment, DeleteComment, ReactToComment |
-| **Library** | 4 | GetUserLibrary, SaveToLibrary, ChangeReadingList, RemoveFromLibrary |
+| **Manga** | 7 | GetTitles, GetTitleById, SearchTitles, GetTitlesByGenre, FilterTitles, GetChaptersByTitle, GetChapterByNumber |
+| **Comment** | 6 | GetCommentsByTitle, CreateComment, UpdateComment, DeleteComment, ReactToComment, GetUserReactions |
+| **Library** | 6 | GetUserLibrary, SaveToLibrary, ChangeReadingList, RemoveFromLibrary, GetLibrary, GetLibraryCounts |
 | **Forum** | 7 | GetForumTopics, GetForumTopicById, GetForumTopicsByCategory, CreateForumTopic, CreateForumReply, UpdateForumTopic, DeleteForumTopic |
 | **Group** | 10 | GetGroups, GetGroupById, GetGroupByUsername, GetGroupsByTitleId, CreateGroup, UpdateGroup, JoinGroup, LeaveGroup, AddWorkToGroup, RemoveWorkFromGroup |
 | **Event** | 3 | GetEvents, GetEventById, GetEventsByStatus |
@@ -314,7 +336,7 @@ StoreTitle {
 | **Rating** | 6 | GetRatingsByTitle, GetRatingAverage, SubmitRating, UpdateRating, DeleteRating, GetUserRatings |
 | **Category** | 3 | GetTags, GetTagById, SearchTags |
 | **Store** | 3 | GetStores, GetStoreById, GetStoresByTitleId |
-| **User** | 2 | GetUserProfile, UpdateUserProfile |
+| **User** | 9 | GetUserProfile, UpdateUserProfile, GetEnrichedProfile, AddRecommendation, RemoveRecommendation, ReorderRecommendations, RecordViewHistory, UpdatePrivacySettings, GetUserComments |
 
 ### Port Interfaces
 
@@ -347,9 +369,11 @@ Cada domínio define ports (interfaces) na camada de aplicação que são implem
 - Dialect: PostgreSQLDialect
 - `open-in-view: false` (eager loading explícito)
 
-**Migrações**:
+**Migrações Flyway (4)**:
 - `V1__initial_schema.sql`: 14 tabelas com FKs, indexes e constraints
 - `V2__create_store_titles.sql`: Tabela junction store-title (idempotente)
+- `V3__add_library_user_list_index.sql`: Índice composto (user_id, list) para filtragem de biblioteca
+- `V4__user_profile_enhancements.sql`: Tabela user_recommendations + campos bannerUrl, commentVisibility, viewHistoryVisibility em users
 
 #### MongoDB (Spring Data + Mongock)
 
@@ -358,6 +382,12 @@ Cada domínio define ports (interfaces) na camada de aplicação que são implem
 - `CommentMongoRepository`
 - `NewsMongoRepository`
 - `RatingMongoRepository`
+- `ViewHistoryMongoRepository`
+
+**Migrações Mongock (3)**:
+- `V001CreateIndexes.java`: Indexes para Title, Comment, MangaRating
+- `V002CreateViewHistoryIndexes.java`: Indexes para ViewHistory
+- `V003CreateCommentReactionIndexes.java`: Compound indexes para CommentReaction
 
 **Configuração**:
 - URI: `mongodb://localhost:27017/mangareader` (dev)
@@ -450,11 +480,18 @@ GET  /actuator/health
 
 ### 6.2. User Controller (`/api/users`)
 
-| Método | Endpoint | Acesso |
-|--------|---------|--------|
-| GET | `/api/users/{id}` | Público |
-| GET | `/api/users/me` | Protegido |
-| PATCH | `/api/users/me` | Protegido |
+| Método | Endpoint | Acesso | Descrição |
+|--------|---------|--------|-----------|
+| GET | `/api/users/{id}` | Público | Perfil público |
+| GET | `/api/users/{id}/profile` | Público | Perfil enriquecido (stats, recommendations) |
+| GET | `/api/users/{id}/comments` | Público | Comentários do usuário |
+| GET | `/api/users/{id}/history` | Público | Histórico de visualização |
+| GET | `/api/users/me` | Protegido | Usuário atual |
+| PATCH | `/api/users/me` | Protegido | Atualizar perfil |
+| POST | `/api/users/me/recommendations` | Protegido | Adicionar recomendação |
+| DELETE | `/api/users/me/recommendations/{titleId}` | Protegido | Remover recomendação |
+| PUT | `/api/users/me/recommendations/reorder` | Protegido | Reordenar recomendações |
+| PUT | `/api/users/me/privacy` | Protegido | Configurações de privacidade |
 
 ### 6.3. Title Controller (`/api/titles`)
 
@@ -568,7 +605,7 @@ GET  /actuator/health
 
 ## 7. Schema de Banco de Dados
 
-### 7.1. PostgreSQL (14 tabelas)
+### 7.1. PostgreSQL (15 tabelas)
 
 ```
 ┌─────────────────────────────┐
@@ -582,9 +619,10 @@ GET  /actuator/health
 │ forum_topics                │
 │ user_libraries              │
 ├─────────────────────────────┤
-│   TABELAS JUNCTION (7)      │
+│   TABELAS JUNCTION (8)      │
 ├─────────────────────────────┤
 │ user_social_links (→users)  │
+│ user_recommendations (→users)│
 │ forum_replies (→topics,users)│
 │ event_tickets (→events)     │
 │ event_participants (→events,users)│
@@ -596,7 +634,7 @@ GET  /actuator/health
 
 **Referências Cross-Database**: `user_libraries.title_id`, `group_works.title_id`, `store_titles.title_id` → referem ObjectIds do MongoDB (sem FK, integridade por aplicação).
 
-### 7.2. MongoDB (4 coleções)
+### 7.2. MongoDB (6 coleções)
 
 | Coleção | Indexes |
 |---------|---------|
@@ -604,6 +642,8 @@ GET  /actuator/health
 | `comments` | idx_titleId, idx_parentCommentId, idx_userId |
 | `news` | Text(title:10, excerpt:3) |
 | `ratings` | idx_titleId, idx_userId, Compound UNIQUE(titleId, userId) |
+| `view_history` | idx_userId, idx_viewedAt, Compound(userId, titleId) |
+| `comment_reactions` | Compound(commentId, userId), idx_commentId |
 
 ---
 
@@ -719,15 +759,19 @@ ValidationErrorResponse {
 
 ## 11. Cobertura de Testes
 
-### Estado Atual: Mínimo
+### Estado Atual: Completo — 727 testes, 0 failures
 
-| Item | Status |
-|------|--------|
-| Testes de domínio | 1 arquivo: `UserTest` (4 testes unitários — builder, role override, social links, no-args constructor) |
-| Testes de integração | Nenhum |
-| Testes de controller | Nenhum |
-| Testes de segurança | Nenhum |
-| Infraestrutura de teste | Pronta (JUnit 5, H2, TestContainers, MockMVC) mas não utilizada |
+| Camada | Arquivos | Testes | Abordagem |
+|--------|:--------:|:------:|-----------|
+| Domain | 30 | 192 | JUnit 5 puro (entidades, sub-entities, VOs, enums) |
+| Application | 70 | 245 | Mockito mocks dos ports |
+| Presentation | 13 | 133 | @WebMvcTest + MockMvc + @MockitoBean TokenPort |
+| Infrastructure JPA | 7 | 72 | @DataJpaTest + H2 in-memory |
+| Infrastructure MongoDB | 4 | 51 | @DataMongoTest + TestContainers (mongo:8.0) |
+| Infrastructure Security | 1 | 17 | JwtTokenProvider unitário |
+| Security E2E | 1 | 16 | @SpringBootTest + fluxo Auth completo |
+| Root | 1 | 1 | @SpringBootTest smoke test |
+| **Total** | **127** | **727** | **Build verde** |
 
 ---
 
@@ -744,10 +788,11 @@ ValidationErrorResponse {
 
 ## 13. Lacunas Identificadas
 
-1. **Testes**: Cobertura praticamente inexistente (1 arquivo com 4 testes)
-2. **Referências cross-database**: PostgreSQL→MongoDB sem integridade referencial
-3. **Seed data**: Documentação da estrutura de dados iniciais ausente
-4. **Validação**: Annotations de validação poderiam ser mais consistentes nos DTOs
+1. **@Transactional**: ~23 use cases data-modifying sem `@Transactional` — risco de LazyInitializationException
+2. **UserController**: Injeta repository ports diretamente (violação Clean Architecture)
+3. **Referências cross-database**: PostgreSQL→MongoDB sem integridade referencial
+4. **Seed data**: Documentação da estrutura de dados iniciais ausente
 5. **Logging**: Logback configurado mas sem strategy definida para produção
 6. **Monitoramento**: Actuator habilitado mas sem integração com ferramentas de observabilidade
 7. **Rate limiting**: Configuração de limites específicos por endpoint não documentada
+8. **N+1 Query risk**: GetEnrichedProfileUseCase faz múltiplas chamadas sequenciais a repositories

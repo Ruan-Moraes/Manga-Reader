@@ -11,7 +11,7 @@ Manga Reader — a platform for reading mangás, manhwas, and manhuas. Monorepo 
 ### Backend (from `/backend/`)
 
 ```bash
-# Run all tests (715 tests, JUnit 5 + Mockito + H2 + TestContainers)
+# Run all tests (727 tests, JUnit 5 + Mockito + H2 + TestContainers)
 mvn test
 
 # Run a single test class
@@ -40,6 +40,8 @@ npm run dev        # Dev server on :5173 (proxies API to :8080)
 npm run build      # TypeScript check + production build
 npm run lint       # ESLint
 npm run format     # Prettier
+npm test           # Run all tests (Vitest)
+npm run test:watch # Watch mode
 ```
 
 ### Infrastructure
@@ -60,9 +62,9 @@ domain (entities, value objects, enums — no framework dependencies)
 infrastructure (persistence adapters, security, email, messaging)
 ```
 
-### 11 Business Domains
+### 12 Business Domains
 
-Auth, Manga (titles/chapters), Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store — each domain has its own package in every layer.
+Auth, User, Manga (titles/chapters), Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store — each domain has its own package in every layer.
 
 ### Dual Database
 
@@ -75,8 +77,11 @@ Auth, Manga (titles/chapters), Comment, Rating, Library, Group, News, Event, For
 - **MapStruct**: static final-class mappers for DTO↔entity conversion in controllers
 - **JWT Auth**: `JwtAuthenticationFilter` depends on `TokenPort` — all `@WebMvcTest` tests must mock `TokenPort` via `@MockitoBean`
 - **Test profile**: `application-test.yml` uses H2 in-memory (Flyway disabled, ddl-auto: create-drop)
+- **@Transactional**: All data-modifying use cases that access lazy-loaded collections or perform multi-repository operations **must** have `@Transactional`. Read-only use cases accessing lazy collections must have `@Transactional(readOnly = true)`
 
 ## Test Conventions
+
+### Backend
 
 | Layer | Annotation | Style |
 |-------|-----------|-------|
@@ -85,6 +90,20 @@ Auth, Manga (titles/chapters), Comment, Rating, Library, Group, News, Event, For
 | Presentation | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort tokenPort` required |
 | Infrastructure JPA | `@DataJpaTest` + `@ActiveProfiles("test")` | H2 in-memory DB |
 | Infrastructure MongoDB | `@DataMongoTest` + `@ActiveProfiles("test")` + `@Import(MongoTestContainerConfig.class)` | TestContainers (mongo:8.0) |
+
+### Frontend
+
+| Type | Location | Style |
+|------|----------|-------|
+| Hooks | `feature/{name}/hook/__tests__/` | `renderHook` / `renderHookWithProviders` + MSW handlers |
+| Components | (pending) | `render` + `@testing-library/react` + MSW |
+
+- **Stack**: Vitest (standalone `vitest.config.ts`) + @testing-library/react + MSW v2
+- **vitest.config.ts is standalone** — must NOT extend `vite.config.ts` because it imports `ROUTES` which uses `import.meta.env` (breaks in test context)
+- **MSW handlers**: Use `*/api/...` wildcard pattern (baseURL may be empty in tests)
+- **QueryClient in tests**: Always use `retry: false` and `gcTime: 0` via `createTestQueryClient()` from `src/test/testUtils.tsx`
+- **Auth state isolation**: `localStorage.clear()` runs in `afterEach` (setupTests.ts) to prevent session leakage
+- **Toast mocking**: For hooks using `toastService`, mock via `vi.mock('@shared/service/util/toastService')`
 
 ### Known Test Limitations
 
@@ -123,6 +142,8 @@ Before implementing, verify:
 | New JPA repository method | `@DataJpaTest` integration test |
 | New MongoDB repository method | `@DataMongoTest` + TestContainers integration test |
 | Bug fix | Regression test that fails without the fix |
+| New frontend hook | Hook test with `renderHookWithProviders` + MSW handlers |
+| New frontend component | Component test with `render` + `@testing-library/react` + MSW |
 
 ### Test Structure (Examples)
 
@@ -212,7 +233,32 @@ backend/src/main/java/com/mangareader/
 frontend/src/
 ├── app/          # Layouts, router, route guards
 ├── feature/      # 13 feature modules (component/, hook/, service/, type/)
-├── shared/       # Reusable components, HTTP client, types
-├── mock/         # Mock data (10 features still using mocks)
+├── shared/       # Reusable components (~37), HTTP client, types
+├── mock/         # Mock data (legacy — all features now use real API)
 └── style/        # Global CSS + Tailwind
 ```
+
+## Documentation Policy
+
+Every code change **must** include corresponding documentation updates. No feature is considered complete without updated docs.
+
+| Change Type | Required Documentation |
+|-------------|----------------------|
+| New feature / endpoint | Update `README.md` (endpoints table), `CLAUDE.md` (patterns/conventions) |
+| New use case / entity | Update `README.md` (metrics), `CLAUDE.md` (domain list if applicable) |
+| Bug fix with lesson learned | Update `CLAUDE.md` (Known Test Limitations or equivalent section) |
+| Architecture change | Update `docs/overview.md`, `docs/backend-analysis.md` or `docs/frontend-analysis.md` |
+| New tech debt identified | Add to `docs/tech-debt.md` with priority and impact |
+| Tech debt resolved | Remove from `docs/tech-debt.md`, update `README.md` |
+| New pending task | Add to `docs/pending-tasks.md` |
+| Task completed | Remove from `docs/pending-tasks.md` |
+| Dependency version change | Update `README.md` (Stack table), `docs/overview.md` |
+| Test count change | Update `README.md` and `CLAUDE.md` test counts |
+
+### Documentation Verification Checklist
+
+Before considering any task done:
+1. `README.md` metrics match current state (test count, use case count, endpoint count)
+2. `CLAUDE.md` conventions reflect any new patterns introduced
+3. `docs/tech-debt.md` has no resolved items still listed
+4. `docs/pending-tasks.md` has no completed tasks still listed

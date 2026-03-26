@@ -1,3 +1,5 @@
+import UserAvatar from '@shared/component/avatar/UserAvatar';
+
 type Props = {
     bannerUrl?: string;
     photoUrl?: string;
@@ -23,12 +25,13 @@ const ProfileBanner = ({ bannerUrl, photoUrl, name, onPhotoClick }: Props) => {
                 <button
                     type="button"
                     onClick={onPhotoClick}
-                    className="overflow-hidden border-4 rounded-full border-primary-default w-24 h-24"
+                    className="border-4 rounded-full border-primary-default"
                 >
-                    <img
-                        src={photoUrl ?? '/default-avatar.png'}
-                        alt={`Foto de ${name}`}
-                        className="object-cover w-full h-full"
+                    <UserAvatar
+                        src={photoUrl}
+                        name={name}
+                        size="2xl"
+                        rounded="full"
                     />
                 </button>
             </div>

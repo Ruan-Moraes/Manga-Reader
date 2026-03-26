@@ -1,6 +1,6 @@
 # Manga Reader — Visão Geral do Projeto
 
-> Última atualização: 13 de março de 2026
+> Última atualização: 25 de março de 2026
 
 ---
 
@@ -14,6 +14,7 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 - Fóruns de discussão com categorias e respostas
 - Grupos de tradução com membros e obras
 - Biblioteca pessoal com listas de leitura
+- Perfil enriquecido com recomendações, histórico e configurações de privacidade
 - Sistema de notícias e eventos da comunidade
 - Lojas parceiras com links para compra
 - Autenticação completa com JWT (login, cadastro, recuperação de senha)
@@ -47,7 +48,7 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Spring Boot | 3.4.3 | Framework principal |
 | Java | 23 | Linguagem |
 | PostgreSQL | 17 | Banco relacional (users, groups, events, forum, library, stores, tags) |
-| MongoDB | 8.0 | Banco documental (titles, comments, ratings, news) |
+| MongoDB | 8.0 | Banco documental (titles, comments, ratings, news, view_history) |
 | Redis | 7 | Cache (TTL 5 min) |
 | RabbitMQ | 4 | Mensageria assíncrona |
 | Flyway | — | Migrações PostgreSQL |
@@ -77,23 +78,23 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 
 ```
 src/
-├── app/              → Camada de aplicação (layouts, rotas, router)
+├── app/              → Camada de aplicação (layouts, 29 páginas, router)
 ├── feature/          → 13 módulos de domínio auto-contidos
 │   ├── auth/         → Autenticação e sessão
-│   ├── manga/        → Títulos, cards, detalhes
+│   ├── manga/        → Títulos, cards, detalhes, busca
 │   ├── chapter/      → Leitor de capítulos
-│   ├── comment/      → Comentários hierárquicos + emojis
-│   ├── user/         → Perfis de usuário
+│   ├── comment/      → Comentários hierárquicos + reações
+│   ├── user/         → Perfis de usuário (enriquecido, recommendations, privacy)
 │   ├── rating/       → Avaliações e reviews
 │   ├── group/        → Grupos de tradução
-│   ├── library/      → Biblioteca pessoal
+│   ├── library/      → Biblioteca pessoal (tabs, contagens)
 │   ├── category/     → Tags e filtros
 │   ├── news/         → Notícias
 │   ├── event/        → Eventos da comunidade
 │   ├── forum/        → Fóruns de discussão
 │   └── store/        → Lojas parceiras
-├── shared/           → Componentes, serviços e tipos reutilizáveis
-├── mock/             → Dados mock para desenvolvimento
+├── shared/           → ~37 componentes, serviços e tipos reutilizáveis
+├── mock/             → Dados mock (legacy — todas as features usam API real)
 ├── asset/            → Imagens e SVGs
 └── style/            → CSS global (Tailwind + customizações)
 ```
@@ -104,8 +105,8 @@ Cada módulo de feature segue a estrutura: `component/`, `hook/`, `service/`, `t
 
 ```
 com.mangareader/
-├── presentation/     → 13 REST Controllers (~80 endpoints)
-├── application/      → 65 Use Cases + 14 Ports (interfaces)
+├── presentation/     → 13 REST Controllers (74 endpoints)
+├── application/      → 70 Use Cases + Port interfaces
 ├── domain/           → 12 domínios de negócio (entidades, VOs, enums)
 └── infrastructure/   → Persistência, segurança, email, mensageria
     ├── persistence/  → JPA (7 adapters PostgreSQL) + MongoDB (4 adapters)
@@ -121,45 +122,39 @@ Padrão de Use Cases com responsabilidade única e Input/Output baseados em reco
 
 ## 4. Situação Atual do Projeto
 
-### Estado Geral: **Fase 7 — Testes do Backend**
+### Estado Geral: **Fase 9 — Qualidade e Polish**
 
-O projeto está na fase de **testes e estabilização do backend**. Todas as funcionalidades core estão implementadas. O foco atual é completar a cobertura de testes antes de iniciar a integração frontend ↔ backend.
+O projeto está na fase de **qualidade e polish**. Todas as funcionalidades core estão implementadas, backend totalmente testado (727 testes), e todas as 13 features do frontend integradas com API real.
 
 ### O que já está funcional
 
 | Área | Descrição |
 |------|-----------|
-| **Backend — API REST** | ~80 endpoints implementados em 13 controllers, cobrindo todos os 12 domínios de negócio |
-| **Backend — Schema de Banco** | 14 tabelas PostgreSQL + 4 coleções MongoDB com migrações Flyway/Mongock |
+| **Backend — API REST** | 74 endpoints implementados em 13 controllers, cobrindo todos os 12 domínios de negócio |
+| **Backend — Schema de Banco** | 15 tabelas PostgreSQL + 6 coleções MongoDB com migrações Flyway (4) / Mongock (3) |
 | **Backend — Segurança** | JWT completo (sign-in, sign-up, refresh, reset password), BCrypt, rate limiting |
 | **Backend — Infraestrutura** | Docker Compose dev/prod, adaptadores de email, RabbitMQ configurado, Redis como cache |
-| **Backend — Testes** | 582 testes passando (98 arquivos) — domain, application, presentation, infra JPA e MongoDB completos |
+| **Backend — Testes** | 727 testes passando (127 arquivos) — domain, application, presentation, infra JPA + MongoDB, Security E2E |
 | **Backend — Documentação API** | Swagger/OpenAPI auto-gerado e acessível |
-| **Frontend — UI** | 22+ páginas implementadas com design responsivo (mobile-first) |
+| **Frontend — UI** | 29 páginas implementadas com design responsivo (mobile-first) |
 | **Frontend — Arquitetura** | 13 módulos de feature com separação clara de responsabilidades |
 | **Frontend — HTTP Client** | Axios configurado com interceptores (token, error handling, 401 redirect) |
-| **Frontend — Roteamento** | 24 rotas públicas + 2 protegidas com AuthGuard e RoleGuard |
-
-### O que está parcialmente implementado
-
-| Área | Status | Observação |
-|------|--------|------------|
-| **Testes Backend** | ~95% | 582 testes passando. Falta: Security integrado (Auth E2E) |
-| **Integração Frontend-Backend** | ~25% | Apenas títulos, tags e comentários (GET) buscam dados reais da API |
-| **Autenticação End-to-End** | ~60% | Serviço frontend definido, guards implementados, mas fluxo completo não testado |
-| **Formulários** | ~40% | Estrutura pronta; falta validação e integração completa |
-| **Operações CRUD** | ~30% | Endpoints backend existem; frontend tem apenas read (GET) para maioria |
+| **Frontend — Roteamento** | 23 rotas públicas + 4 protegidas com AuthGuard e RoleGuard |
+| **Frontend — Integração** | 13/13 features conectadas à API real (mocks eliminados) |
+| **Frontend — Perfil** | Perfil enriquecido com recomendações, histórico, privacidade, comentários |
+| **Frontend — Biblioteca** | Tabs unificadas, contagens, paginação, updates otimistas |
+| **Frontend — Testes de Hooks** | 4 arquivos, 35 testes (Vitest + RTL + MSW) — useSearchTitles, useAuth, useBookmark, useCommentCRUD |
 
 ### O que ainda não foi iniciado
 
 | Área | Descrição |
 |------|-----------|
-| **Testes Frontend** | Zero testes (React Testing Library, E2E) |
+| **Testes Frontend — Componentes/E2E** | Hooks testados (35 testes), faltam componentes e E2E |
 | **CI/CD Pipeline** | Nenhum workflow de integração contínua ou deploy automatizado |
 | **Deploy em Produção** | Nenhum ambiente de produção (Dockerfile e docker-compose.prod.yml existem) |
+| **Code Splitting** | Sem lazy loading / React.lazy para rotas |
+| **Error Boundaries** | Sem fallback para erros de componentes |
 | **Upload de Arquivos** | Sem sistema para upload de capas, avatares ou páginas de capítulos |
-| **Acessibilidade** | Sem ARIA labels, landmarks ou HTML semântico |
-| **Internacionalização** | Strings de UI hardcoded em português |
 
 ---
 
@@ -173,26 +168,27 @@ O projeto está na fase de **testes e estabilização do backend**. Todas as fun
     └─ Clean Architecture (backend), Feature-based (frontend), banco de dados modelado
 
 [✅] Implementação de funcionalidades — Backend
-    └─ 65 use cases, 13 controllers, ~80 endpoints, security, email, messaging
+    └─ 70 use cases, 13 controllers, 74 endpoints, security, email, messaging
 
 [✅] Implementação de funcionalidades — Frontend
-    └─ 22+ páginas com UI, 13 features, auth structure, guards
+    └─ 29 páginas com UI, 13 features, auth structure, guards
 
-[🔄] Testes do Backend     ← FASE ATUAL
-    └─ 98 arquivos, 582 testes (domain ✅, application ✅, presentation ✅, infra JPA ✅, infra MongoDB ✅)
-    └─ Pendente: Security integrado (Auth E2E)
+[✅] Testes do Backend (727 testes)
+    └─ 127 arquivos — domain ✅, application ✅, presentation ✅, infra JPA ✅, MongoDB ✅, Security E2E ✅
 
-[🔲] Integração Frontend ↔ Backend
-    └─ 3/13 features conectadas à API real
+[✅] Integração Frontend ↔ Backend (13/13 features)
+    └─ auth, library, rating, comment, user, forum, group, news, event, store, manga, category, chapter
 
-[🔲] Qualidade e Polish
-    └─ Testes frontend, validação de formulários, lazy loading, acessibilidade
+[🔄] Qualidade e Polish     ← FASE ATUAL
+    ├─ ✅ 9a: Biblioteca unificada, MyReviews, Profile stats
+    ├─ ✅ 9b: Perfil enriquecido (recommendations, view history, privacy)
+    └─ 🔲 9c: Code splitting, Error Boundaries, @Transactional fixes, a11y, testes frontend
 
 [🔲] Preparação para Produção
     └─ CI/CD, infraestrutura cloud, deploy, monitoramento
 ```
 
-**Próximo passo imediato**: Testes de segurança integrados (fluxo Auth E2E com `@SpringBootTest` + TestContainers), seguido pela integração frontend ↔ backend.
+**Próximo passo imediato**: Fase 9c — code splitting com React.lazy, Error Boundaries, correção dos `@Transactional` faltantes nos use cases.
 
 ---
 

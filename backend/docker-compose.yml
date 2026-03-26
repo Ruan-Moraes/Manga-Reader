@@ -27,9 +27,10 @@ services:
       - mongo_data:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     restart: unless-stopped
   rabbitmq:
     image: rabbitmq:4-management-alpine

@@ -10,21 +10,17 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ Verde — 656 testes passando, 0 failures |
+| **Build** | ✅ Verde — 762 testes passando (727 backend + 35 frontend), 0 failures |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
-[✅] Fase 6:   Frontend UI (22+ páginas, 13 features, layout, guards)
-[✅] Fase 7:   Testes do backend (656 testes — domain, app, presentation, infra, E2E)
-[✅] Fase 8:   Integração frontend ↔ backend
-       ├─ ✅ authService (sign-in, sign-up, refresh, /me)
-       ├─ ✅ libraryService (CRUD biblioteca pessoal)
-       ├─ ✅ ratingService (CRUD avaliações)
-       ├─ ✅ commentService (CRUD completo)
-       ├─ ✅ userService (get profile, update profile)
-       ├─ ✅ forumService, groupService, newsService, eventService, storeService
-       └─ 🔲 Alinhar tipos e paginação frontend ↔ backend (minor)
-[🔲] Fase 9:   Qualidade (testes frontend, validação, a11y, lazy loading)
+[✅] Fase 6:   Frontend UI (29 páginas, 13 features, layout, guards)
+[✅] Fase 7:   Testes do backend (727 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
+[✅] Fase 8:   Integração frontend ↔ backend (13/13 features com API real)
+[🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
+       ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
+       ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy, enriched profile)
+       └─ 🔲 9c: Code splitting, Error Boundaries, @Transactional fixes, a11y
 [🔲] Fase 10:  Produção (CI/CD, infra cloud, deploy, monitoramento)
 ```
 
@@ -54,15 +50,18 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 
 | Métrica | Valor |
 |---------|-------|
-| Domínios de negócio | **12** (Auth, Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store) |
-| Use Cases | **65** |
+| Domínios de negócio | **12** (Auth, User, Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store) |
+| Use Cases | **70** |
 | REST Controllers | **13** |
-| Endpoints REST | **~80** |
-| Tabelas PostgreSQL | **14** |
-| Coleções MongoDB | **4** |
-| Páginas frontend | **22+** |
+| Endpoints REST | **74** |
+| Tabelas PostgreSQL | **15** (incluindo user_recommendations) |
+| Coleções MongoDB | **6** (incluindo view_history) |
+| Páginas frontend | **29** |
+| Rotas públicas / protegidas | **23** / **4** |
 | Features frontend | **13** (todas integradas com API real) |
-| Testes backend | **656** (112 arquivos — domain, application, presentation, infra JPA + MongoDB + E2E) |
+| Componentes compartilhados | **~37** |
+| Arquivos TypeScript | **272** |
+| Testes backend | **727** (127 arquivos — domain, application, presentation, infra JPA + MongoDB + Security E2E) |
 
 ---
 
@@ -73,10 +72,10 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    presentation/                         │
-│         13 Controllers  ·  ~80 endpoints  ·  DTOs       │
+│         13 Controllers  ·  74 endpoints  ·  DTOs        │
 ├─────────────────────────────────────────────────────────┤
 │                    application/                          │
-│            65 Use Cases  ·  Port Interfaces             │
+│            70 Use Cases  ·  Port Interfaces             │
 ├─────────────────────────────────────────────────────────┤
 │                     domain/                              │
 │     12 Domínios  ·  Entities  ·  Value Objects          │
@@ -90,9 +89,9 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 
 ```
 src/
-├── app/        → Layouts, rotas (24+ públicas, 2 protegidas), router (guards)
+├── app/        → Layouts, rotas (23 públicas, 4 protegidas), router (guards)
 ├── feature/    → 13 módulos (auth, manga, chapter, comment, ...)
-├── shared/     → ~50 componentes, HTTP client, constantes, tipos
+├── shared/     → ~37 componentes, HTTP client, constantes, tipos
 ├── mock/       → (removido — todas as features usam API real)
 └── style/      → Tailwind + customizações
 ```
@@ -101,8 +100,8 @@ src/
 
 | Banco | Dados |
 |-------|-------|
-| **PostgreSQL** (14 tabelas) | Users, SavedManga, Groups, Events, EventTickets, EventParticipants, ForumTopics, ForumReplies, Stores, Tags, UserSocialLinks, GroupMembers, GroupWorks, StoreTitles |
-| **MongoDB** (4 coleções) | Titles, Comments, MangaRatings, NewsItems |
+| **PostgreSQL** (15 tabelas) | Users, SavedManga, Groups, Events, EventTickets, EventParticipants, ForumTopics, ForumReplies, Stores, Tags, UserSocialLinks, GroupMembers, GroupWorks, StoreTitles, UserRecommendations |
+| **MongoDB** (6 coleções) | Titles, Comments, MangaRatings, NewsItems, ViewHistory, CommentReactions |
 
 ---
 
@@ -195,7 +194,7 @@ npm run dev
 
 ```bash
 cd backend
-mvn test                                    # Todos os 656 testes
+mvn test                                    # Todos os 727 testes
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
 mvn test -Dtest=**/application/**/*Test     # Apenas use cases
 mvn test -Dtest=**/presentation/**/*Test    # Apenas controllers
@@ -224,22 +223,22 @@ Manga-Reader/
 │   └── src/
 │       ├── main/java/com/mangareader/
 │       │   ├── domain/              # Entidades, VOs, Enums (12 domínios)
-│       │   ├── application/         # 65 Use Cases + 14 Port interfaces
+│       │   ├── application/         # 70 Use Cases + Port interfaces
 │       │   ├── infrastructure/      # Persistence (7 JPA + 4 Mongo), Security, Email, Messaging, Seed
-│       │   ├── presentation/        # 13 Controllers + DTOs + MapStruct Mappers
+│       │   ├── presentation/        # 13 Controllers (74 endpoints) + DTOs + MapStruct Mappers
 │       │   └── shared/              # ApiResponse, PageResponse, exceptions, configs
 │       └── test/java/com/mangareader/
-│           ├── domain/              # 25 test files — JUnit 5 puro
-│           ├── application/         # 60 test files — Mockito mocks
+│           ├── domain/              # 30 test files — JUnit 5 puro
+│           ├── application/         # 70 test files — Mockito mocks
 │           ├── presentation/        # 13 test files — @WebMvcTest + MockMvc
 │           └── infrastructure/      # 13 test files — H2 (JPA) + TestContainers (Mongo) + JWT + E2E
 │
 └── frontend/
     └── src/
-        ├── app/                     # Layout, 26 rotas, router (AuthGuard, RoleGuard)
+        ├── app/                     # Layout, 27 rotas (23 públicas + 4 protegidas), router (AuthGuard, RoleGuard)
         ├── feature/                 # 13 módulos (auth, manga, chapter, comment, rating, ...)
         │   └── {feature}/           # component/ + hook/ + service/ + type/ + context/
-        ├── shared/                  # ~50 componentes, HTTP client, constantes, tipos
+        ├── shared/                  # ~37 componentes, HTTP client, constantes, tipos
         ├── mock/                    # 11 datasets mock
         ├── asset/                   # Imagens e SVGs
         └── style/                   # Tailwind CSS global
@@ -249,21 +248,36 @@ Manga-Reader/
 
 ## 7. Testes
 
-**112 arquivos de teste · 656 testes · 0 failures · 0 errors**
+**131 arquivos de teste · 762 testes · 0 failures · 0 errors**
+
+### Backend — 127 arquivos, 727 testes
 
 | Camada | Arquivos | Testes | Anotação | Abordagem |
 |--------|:--------:|:------:|----------|-----------|
-| Domain | 25/25 | ~165 | Nenhuma | JUnit 5 puro, sem Spring |
-| Application | 60/60 | ~206 | `@ExtendWith(MockitoExtension)` | Mockito mocks dos ports |
-| Presentation | 13/13 | ~129 | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort` |
-| Infrastructure JPA | 7/7 | ~46 | `@DataJpaTest` + `@ActiveProfiles("test")` | H2 in-memory |
-| Infrastructure MongoDB | 4/4 | ~51 | `@DataMongoTest` + `@Import(MongoTestContainerConfig)` | TestContainers (mongo:8.0) |
-| Infrastructure Security | 1 | ~43 | `@ExtendWith(MockitoExtension)` | JwtTokenProvider unitário |
+| Domain | 30 | 192 | Nenhuma | JUnit 5 puro, sem Spring (entidades, sub-entities, VOs, enums) |
+| Application | 70 | 245 | `@ExtendWith(MockitoExtension)` | Mockito mocks dos ports |
+| Presentation | 13 | 133 | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort` |
+| Infrastructure JPA | 7 | 72 | `@DataJpaTest` + `@ActiveProfiles("test")` | H2 in-memory |
+| Infrastructure MongoDB | 4 | 51 | `@DataMongoTest` + `@Import(MongoTestContainerConfig)` | TestContainers (mongo:8.0) |
+| Infrastructure Security | 1 | 17 | `@ExtendWith(MockitoExtension)` | JwtTokenProvider unitário |
 | Security E2E | 1 | 16 | `@SpringBootTest` + `@Import(MongoTestContainerConfig)` | Fluxo Auth completo (sign-up → login → JWT → refresh → /me) |
+| Root | 1 | 1 | `@SpringBootTest` | Smoke test (context loads) |
+
+### Frontend — 4 arquivos, 35 testes
+
+| Hook | Testes | Abordagem |
+|------|:------:|-----------|
+| useSearchTitles | 6 | React Query wrapper — enabled, placeholderData, error |
+| useAuth | 12 | localStorage, /me recovery, login/register/logout, role mapping |
+| useBookmark | 9 | Optimistic updates, rollback on error, session guard |
+| useCommentCRUD | 8 | React Query mutations, toast notifications, loading states |
+
+Stack: Vitest + @testing-library/react + MSW v2 (intercepta Axios no nível de rede)
 
 ### Pendente
 
-- **Frontend**: Zero testes (React Testing Library / E2E)
+- **Frontend — Componentes**: Testes de componentes (CommentsSection, Library, UserProfile, SearchResults)
+- **Frontend — E2E**: Considerar Playwright para fluxos auth e navegação
 
 ### Histórico
 
@@ -275,6 +289,8 @@ Manga-Reader/
 | 2026-03-12 | Fix controllers (TokenPort mock) + Infrastructure JPA completo (7/7) |
 | 2026-03-13 | Infrastructure MongoDB completo (4/4 via TestContainers) |
 | 2026-03-14 | Domain completo (25/25 — sub-entities, VOs, enums) + Security E2E (16 testes) |
+| 2026-03-15 | Fase 9a/9b — 7 novos use cases (profile), domain +5 (sub-entities/VOs), application +10, total: 727 testes |
+| 2026-03-25 | Fase 9c — Setup testes frontend (Vitest + RTL + MSW), 4 hooks testados: useSearchTitles, useAuth, useBookmark, useCommentCRUD (35 testes) |
 
 ---
 
@@ -318,6 +334,7 @@ Manga-Reader/
 | DELETE | `/api/comments/{id}` | Sim |
 | POST | `/api/comments/{id}/like` | Sim |
 | POST | `/api/comments/{id}/dislike` | Sim |
+| GET | `/api/comments/{id}/reactions` | Sim |
 
 ### Ratings (`/api/ratings`)
 
@@ -335,6 +352,7 @@ Manga-Reader/
 | Método | Endpoint |
 |--------|----------|
 | GET | `/api/library` |
+| GET | `/api/library/counts` |
 | POST | `/api/library` |
 | PATCH | `/api/library/{titleId}` |
 | DELETE | `/api/library/{titleId}` |
@@ -402,11 +420,19 @@ Manga-Reader/
 
 ### Users (`/api/users`)
 
-| Método | Endpoint | Auth |
-|--------|----------|:----:|
-| GET | `/api/users/{id}` | Não |
-| GET | `/api/users/me` | Sim |
-| PATCH | `/api/users/me` | Sim |
+| Método | Endpoint | Auth | Descrição |
+|--------|----------|:----:|-----------|
+| GET | `/api/users/{id}` | Não | Perfil público |
+| GET | `/api/users/{id}/profile` | Não | Perfil enriquecido (stats, recommendations) |
+| GET | `/api/users/{id}/comments` | Não | Comentários do usuário |
+| GET | `/api/users/{id}/history` | Não | Histórico de visualização |
+| GET | `/api/users/me` | Sim | Usuário atual |
+| PATCH | `/api/users/me` | Sim | Atualizar perfil |
+| POST | `/api/users/me/recommendations` | Sim | Adicionar recomendação |
+| DELETE | `/api/users/me/recommendations/{titleId}` | Sim | Remover recomendação |
+| PUT | `/api/users/me/recommendations/reorder` | Sim | Reordenar recomendações |
+| PATCH | `/api/users/me/privacy` | Sim | Atualizar configurações de privacidade |
+| POST | `/api/users/me/history` | Sim | Registrar visualização |
 
 ---
 
@@ -434,7 +460,7 @@ Manga-Reader/
 | **news** | Endpoint `/related` não implementado no backend | Seção "notícias relacionadas" sem dados |
 | **event** | Endpoint `/related` não implementado no backend | Seção "eventos relacionados" sem dados |
 | **group** | Endpoint `/members/{id}` não implementado no backend | Detalhe de membro indisponível |
-| **geral** | Tipos de paginação frontend podem divergir do backend | Ajuste de tipos pendente |
+| **category** | `useCategoryFilters` com `localhost:5000` hardcoded | Filtro de categorias apontando para API errada |
 
 ---
 
@@ -444,28 +470,28 @@ Manga-Reader/
 
 | # | Dívida | Impacto |
 |---|--------|---------|
-| 1 | **Erros de tipo no frontend** (`tsc` falha — ~50 erros em 8 arquivos) | Build não compila; EventDetails, GroupsModal, StoresModal, RatingStars, TextBlock, hooks com tipos desalinhados |
+| 1 | **~23 use cases sem `@Transactional`** | Risco de LazyInitializationException e inconsistência de dados em operações multi-repository |
 | 2 | **0 testes no frontend** | Sem garantia de qualidade no frontend |
-| 3 | **Endpoints faltantes** (news/event `/related`, group `/members/{id}`) | Seções de conteúdo relacionado sem dados |
 
 ### Importantes
 
 | # | Dívida | Impacto |
 |---|--------|---------|
-| 4 | Sem CI/CD pipeline | Deploys manuais, sem verificação automática |
-| 5 | Validação insuficiente em formulários frontend | UX degradada, dados inválidos |
+| 3 | Sem CI/CD pipeline | Deploys manuais, sem verificação automática |
+| 4 | UserController injeta repository ports diretamente | Violação da Clean Architecture (controllers devem depender apenas de use cases) |
+| 5 | Sem Error Boundaries no frontend | Um erro em qualquer componente crasha toda a app |
 
 ### Menores
 
 | # | Dívida |
 |---|--------|
-| 7 | Componentes de página grandes (>100 linhas) |
-| 7 | Sem lazy loading / code splitting para rotas |
-| 8 | Sem acessibilidade (ARIA, HTML semântico) |
-| 9 | Conteúdo placeholder em Termos de Uso e DMCA |
-| 10 | Referências cross-database sem integridade documentada |
-| 11 | Basename `/Manga-Reader` hardcoded |
-| 12 | Sem i18n |
+| 6 | Sem lazy loading / code splitting para rotas |
+| 7 | Sem acessibilidade completa (ARIA, HTML semântico parcial) |
+| 8 | Conteúdo placeholder em Termos de Uso e DMCA |
+| 9 | Referências cross-database sem integridade documentada |
+| 10 | Basename `/Manga-Reader` hardcoded |
+| 11 | Sem i18n |
+| 12 | `localhost:5000` hardcoded em useCategoryFilters |
 
 > Detalhamento completo em [`docs/tech-debt.md`](docs/tech-debt.md).
 
@@ -478,27 +504,24 @@ Manga-Reader/
        Domínios, use cases, endpoints, security, email, messaging, cache, seed data
 
 [✅] Fase 6: Frontend UI
-       22+ páginas, 13 features, layout responsivo, guards, HTTP client
+       29 páginas, 13 features, layout responsivo, guards, HTTP client
 
-[✅] Fase 7: Testes do backend (656 testes)
-       ├─ ✅ Domain (25/25 — entidades, sub-entities, VOs, enums)
-       ├─ ✅ Application (60/60 use cases)
-       ├─ ✅ Presentation (13/13 controllers)
-       ├─ ✅ Infrastructure JPA (7/7) + MongoDB (4/4) + JWT
+[✅] Fase 7: Testes do backend (727 testes)
+       ├─ ✅ Domain (30 files — entidades, sub-entities, VOs, enums)
+       ├─ ✅ Application (70 use cases)
+       ├─ ✅ Presentation (13 controllers)
+       ├─ ✅ Infrastructure JPA (7) + MongoDB (4) + JWT
        └─ ✅ Security E2E (16 testes — fluxo Auth completo)
 
-[✅] Fase 8: Integração frontend ↔ backend
-       ├─ ✅ authService (sign-in, sign-up, refresh, /me)
-       ├─ ✅ libraryService, ratingService, commentService (CRUD)
+[✅] Fase 8: Integração frontend ↔ backend (13/13 features)
+       ├─ ✅ authService, libraryService, ratingService, commentService (CRUD completo)
        ├─ ✅ userService, forumService, groupService
-       ├─ ✅ newsService, eventService, storeService (read-only)
-       └─ 🔲 Alinhar tipos e paginação (minor — lacunas documentadas)
+       └─ ✅ newsService, eventService, storeService (read-only)
 
 [🔄] Fase 9: Qualidade e polish ← ETAPA ATUAL
-       ├─ Testes frontend (React Testing Library)
-       ├─ Validação de formulários
-       ├─ Lazy loading / code splitting
-       └─ Acessibilidade
+       ├─ ✅ 9a: Biblioteca unificada (tabs, contagens, paginação) + MyReviews + Profile stats
+       ├─ ✅ 9b: Perfil enriquecido (recommendations, view history, privacy, enriched profile)
+       └─ 🔲 9c: Code splitting, Error Boundaries, @Transactional fixes, a11y, testes frontend
 
 [🔲] Fase 10: Produção
        ├─ CI/CD pipeline (GitHub Actions + JaCoCo)

@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 10 de março de 2026
+> Última atualização: 25 de março de 2026
 
 ---
 
@@ -12,40 +12,36 @@ Este documento lista as dívidas técnicas identificadas no projeto, organizadas
 
 ## Prioridade Crítica
 
-### DT-01: Cobertura de testes unitários do backend quase completa — faltam 7 arquivos
+### DT-01: Use cases data-modifying sem `@Transactional`
 
-**Descrição**: O backend possui **79 arquivos de teste com 397 testes unitários** (0 erros de compilação), cobrindo:
-- **Domain entities**: 13/13 arquivos (107 testes) — \u2705 completo
-- **Use Cases**: 57/60 arquivos (206 testes) — faltam 3 (Store: GetStores, GetStoresById, GetStoresByTitleId)
-- **Controllers**: 9/13 arquivos (84 testes) — faltam 4 (News, Rating, Store, User)
+**Descrição**: ~23 use cases que modificam dados no banco não possuem `@Transactional`. Isso inclui CreateComment, DeleteComment, UpdateComment, JoinGroup, SaveToLibrary, SubmitRating, AddRecommendation, RecordViewHistory, entre outros.
 
-O frontend possui **zero testes**. Não há testes de integração (repositories) nem testes de segurança (JWT flow, 401/403).
-
-**Impacto**: A cobertura unitária está em ~90%, próxima do completo. **Bloqueantes para produção** são os testes de integração/segurança e testes frontend (E2E) que ainda não foram iniciados.
+**Impacto**:
+- Risco de `LazyInitializationException` quando lazy collections são acessadas fora da transação
+- Inconsistência de dados em operações multi-repository (ex: salvar em dois bancos sem atomicidade)
+- Race conditions em operações concorrentes
 
 **Recomendação**:
-1. Backend: Completar os 7 arquivos de teste unitário restantes (Store use cases + 4 controllers)
-2. Backend: Adicionar testes de integração para controllers e repositórios, testes de segurança para endpoints protegidos
-3. Frontend: Testes de componentes com React Testing Library, testes de hooks customizados, testes E2E para fluxos críticos (auth, navegação)
-4. Meta mínima para deploy: 100% cobertura unitária backend + testes E2E para fluxos críticos
+1. Adicionar `@Transactional` a todos os use cases que fazem write (POST/PUT/DELETE)
+2. Adicionar `@Transactional(readOnly = true)` a use cases de leitura que acessam lazy collections
+3. Documentar a regra no CLAUDE.md (já feito)
 
 ---
 
-### DT-02: Maioria das features do frontend usa dados mock
+### DT-02: Zero testes no frontend
 
-**Descrição**: Apenas 3 de 13 features do frontend estão conectadas à API real do backend (titles, tags, comments parcial). As 10 features restantes (rating, group, library, news, event, forum, store, user, auth parcial, chapter parcial) utilizam dados mock hardcoded em `src/mock/`.
+**Descrição**: O frontend não possui nenhum teste — nem unitário, nem de componente, nem E2E. Não há library de teste no `package.json` (jest/vitest, testing-library, etc.).
 
 **Impacto**:
-- A aplicação não é funcional em cenário real
-- Possíveis divergências entre a estrutura dos dados mock e o schema real do backend
-- CRUD (create, update, delete) não está conectado em nenhuma feature
-- Impossível testar fluxos reais de usuário
+- Sem garantia de qualidade no frontend
+- Regressões não detectadas
+- Refatorações arriscadas
 
 **Recomendação**:
-1. Priorizar integração das features que têm endpoints prontos no backend
-2. Seguir a ordem: auth → library → rating → comment (CRUD) → forum → group → news → event → store → user
-3. Remover dados mock conforme a integração avança
-4. Validar compatibilidade de tipos entre frontend e backend
+1. Adicionar Vitest + React Testing Library ao projeto
+2. Priorizar testes de hooks customizados (useAuth, useBookmark, useCommentCRUD)
+3. Testes de componentes críticos (CommentsSection, Library, UserProfile)
+4. Considerar Playwright para testes E2E dos fluxos de auth
 
 ---
 
@@ -65,60 +61,56 @@ O frontend possui **zero testes**. Não há testes de integração (repositories
 
 ---
 
-### DT-04: Fluxo de autenticação não testado end-to-end
+### DT-04: UserController injeta repository ports diretamente
 
-**Descrição**: O backend tem endpoints de auth implementados (sign-in, sign-up, refresh, forgot/reset password). O frontend tem o `authService` com todos os métodos e guards (AuthGuard, RoleGuard). Porém, o fluxo completo frontend→backend nunca foi testado em conjunto.
+**Descrição**: O `UserController` injeta `ViewHistoryRepositoryPort` e `UserRepositoryPort` diretamente (linhas 69-70), em vez de usar use cases. Isso viola o princípio da Clean Architecture onde controllers devem depender apenas de use cases.
 
 **Impacto**:
-- Não é possível garantir que login, cadastro e refresh token funcionam
-- Guards de rota podem não funcionar corretamente com tokens reais
-- Interceptor de 401 (logout automático) não foi validado
-- Fluxo de reset de senha depende de email funcional
+- Violação arquitetural (controller acessa infraestrutura diretamente)
+- Lógica de negócio espalhada na camada de apresentação
+- Dificulta testes unitários do controller
 
 **Recomendação**:
-1. Testar manualmente o fluxo completo: sign-up → sign-in → me → refresh → protected route
-2. Verificar interceptores HTTP (token injection, 401 handling)
-3. Testar forgot/reset password com console email adapter (dev)
-4. Escrever testes E2E para o fluxo de auth
+1. Criar use cases dedicados para as operações que usam esses ports no controller
+2. Remover injeção de repository ports do controller
+3. Controller deve depender apenas de use case ports
 
 ---
 
-### DT-05: Validação insuficiente em formulários do frontend
+### DT-05: Sem Error Boundaries no frontend
 
-**Descrição**: Formulários de SignUp, PublishWork e outros forms de criação/edição não possuem validação client-side completa. Faltam:
-- Validação de formato de email
-- Validação de força de senha
-- Validação de campos obrigatórios com feedback visual
-- Confirmação de senha
-- Sanitização de inputs
+**Descrição**: O frontend não possui nenhum `ErrorBoundary`. Um erro em qualquer componente causa crash da aplicação inteira.
 
 **Impacto**:
-- UX degradada (sem feedback de erros)
+- UX degradada — tela branca em caso de erro em qualquer componente
+- Sem fallback visual para erros
+- Difícil diagnosticar problemas em produção
+
+**Recomendação**:
+1. Criar `ErrorBoundary` genérico com fallback UI
+2. Envolver rotas principais com ErrorBoundary
+3. Considerar integração com Sentry para error tracking
+
+---
+
+### DT-06: Validação insuficiente em formulários do frontend
+
+**Descrição**: Formulários de SignUp, PublishWork e outros forms de criação/edição não possuem validação client-side completa. Faltam validação de formato de email, força de senha, campos obrigatórios com feedback visual, e sanitização de inputs.
+
+**Impacto**:
+- UX degradada (sem feedback de erros inline)
 - Dados inválidos podem ser enviados ao backend
 - Vulnerabilidade a XSS se inputs não são sanitizados
 
-**Recomendação**: Implementar validação com React Hook Form + Zod ou Yup. Priorizar forms de auth (login, signup, reset password).
+**Recomendação**: Implementar validação com React Hook Form + Zod. Priorizar forms de auth (login, signup, reset password).
 
 ---
 
 ## Prioridade Média
 
-### DT-06: Componentes de página excessivamente longos
-
-**Descrição**: Diversos page components têm mais de 100 linhas e concentram múltiplas responsabilidades. Páginas identificadas: Forum, Groups, News, Events, Library, Profile, Chapter, GroupProfile, SavedMangas.
-
-**Impacto**:
-- Dificulta manutenção e compreensão
-- Dificulta reutilização de seções
-- Aumenta risco de bugs em refatorações
-
-**Recomendação**: Extrair subcomponentes para seções lógicas (filtros, listagem, detalhes, sidebar). Manter page components como composições de subcomponentes.
-
----
-
 ### DT-07: Sem lazy loading / code splitting para rotas
 
-**Descrição**: Todas as 22+ rotas são importadas estaticamente. Não há uso de `React.lazy()` ou dynamic imports para code splitting.
+**Descrição**: Todas as 27 rotas são importadas estaticamente. Não há uso de `React.lazy()` ou dynamic imports para code splitting. Os 272 arquivos TypeScript do frontend carregam no bundle inicial.
 
 **Impacto**:
 - Bundle inicial contém todo o código de todas as páginas
@@ -129,16 +121,15 @@ O frontend possui **zero testes**. Não há testes de integração (repositories
 
 ---
 
-### DT-08: Ausência de acessibilidade (a11y)
+### DT-08: Ausência de acessibilidade completa (a11y)
 
-**Descrição**: Sem ARIA labels, roles, landmarks ou HTML semântico consistente. Sem testes de acessibilidade.
+**Descrição**: Acessibilidade parcial — alguns `aria-label`, `role="search"` e HTML semântico presentes, mas vários botões icon-only sem labels, falta de landmarks consistentes, sem testes de acessibilidade.
 
 **Impacto**:
-- Usuários com deficiência visual ou motora não conseguem usar a aplicação
+- Usuários com deficiência visual ou motora não conseguem usar partes da aplicação
 - Potenciais problemas legais em algumas jurisdições
-- Perda de SEO (bots usam semântica HTML)
 
-**Recomendação**: Adicionar aria-labels em inputs e botões, usar landmarks (`<nav>`, `<main>`, `<aside>`), implementar navegação por teclado.
+**Recomendação**: Adicionar aria-labels em todos os botões icon-only, garantir landmarks (`<nav>`, `<main>`, `<aside>`), implementar navegação por teclado completa.
 
 ---
 
@@ -156,50 +147,44 @@ O frontend possui **zero testes**. Não há testes de integração (repositories
 
 ### DT-10: Referências cross-database sem integridade referencial documentada
 
-**Descrição**: Três tabelas PostgreSQL referenciam ObjectIds do MongoDB:
-- `user_libraries.title_id` → `titles._id` (MongoDB)
-- `group_works.title_id` → `titles._id` (MongoDB)
-- `store_titles.title_id` → `titles._id` (MongoDB)
-
-Não há foreign key entre bancos de dados distintos — a integridade é garantida apenas pela aplicação.
+**Descrição**: Tabelas PostgreSQL referenciam ObjectIds do MongoDB (`user_libraries.title_id`, `group_works.title_id`, `store_titles.title_id`). Sem FK entre bancos — integridade por aplicação.
 
 **Impacto**:
-- IDs órfãos podem existir se um título for deletado do MongoDB
+- IDs órfãos se um título for deletado do MongoDB
 - Sem cascading delete automático
-- Consultas que fazem join lógico entre bancos são complexas
 
 **Recomendação**:
-1. Documentar claramente quais tabelas fazem cross-ref
+1. Documentar quais tabelas fazem cross-ref
 2. Implementar validação na aplicação antes de salvar referências
-3. Criar job de limpeza para detectar referências órfãs
-4. Considerar soft delete para títulos
+3. Criar job de limpeza para referências órfãs
 
 ---
 
 ### DT-11: Logging sem estratégia para produção
 
-**Descrição**: Logback está configurado (`logback-spring.xml`) mas sem rotação de logs, níveis por pacote, ou integração com ferramentas de observabilidade.
+**Descrição**: Logback configurado mas sem rotação de logs, níveis por pacote, ou integração com ferramentas de observabilidade.
 
 **Impacto**:
 - Logs podem crescer sem limite em produção
 - Difícil debugar problemas em produção
-- Sem alertas para erros críticos
 
 **Recomendação**: Configurar logback com rotação, JSON format para produção, e considerar ELK/Grafana Loki.
 
 ---
 
-## Prioridade Baixa
+### DT-12: `localhost:5000` hardcoded em useCategoryFilters
 
-### DT-12: Sem documentação inline (JSDoc/Javadoc)
+**Descrição**: O hook `useCategoryFilters.tsx` (linha 34) possui `http://localhost:5000/search_title_by?` hardcoded, referenciando uma API diferente da principal (porta 5000 vs 8080).
 
-**Descrição**: Código do frontend sem JSDoc. Backend com Javadoc mínimo. A arquitetura é auto-explicativa pelo padrão de nomes, mas métodos públicos de serviço e use cases se beneficiariam de documentação.
+**Impacto**:
+- Filtros de categoria apontam para endpoint errado/inexistente
+- Funcionalidade de busca por categoria quebrada
 
-**Impacto**: Curva de aprendizado mais lenta para novos desenvolvedores.
-
-**Recomendação**: Adicionar JSDoc/Javadoc nos pontos de entrada de cada módulo (barrel files, use cases, controllers).
+**Recomendação**: Migrar para o endpoint correto da API principal (`/api/titles/filter`) ou remover se não for utilizado.
 
 ---
+
+## Prioridade Baixa
 
 ### DT-13: Basename hardcoded para GitHub Pages
 
@@ -236,7 +221,15 @@ Não há foreign key entre bancos de dados distintos — a integridade é garant
 | Prioridade | Quantidade | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 2 | DT-01, DT-02 |
-| **Alta** | 3 | DT-03, DT-04, DT-05 |
-| **Média** | 6 | DT-06, DT-07, DT-08, DT-09, DT-10, DT-11 |
-| **Baixa** | 4 | DT-12, DT-13, DT-14, DT-15 |
+| **Alta** | 4 | DT-03, DT-04, DT-05, DT-06 |
+| **Média** | 6 | DT-07, DT-08, DT-09, DT-10, DT-11, DT-12 |
+| **Baixa** | 3 | DT-13, DT-14, DT-15 |
 | **Total** | **15** | |
+
+### Itens Resolvidos (removidos nesta atualização)
+
+| ID Antigo | Dívida | Data de Resolução |
+|-----------|--------|-------------------|
+| DT-01 (old) | Cobertura de testes backend incompleta | 2026-03-14 (727 testes, 126 arquivos) |
+| DT-02 (old) | Features frontend com dados mock | 2026-03-14 (13/13 integradas com API real) |
+| DT-04 (old) | Fluxo de autenticação não testado E2E | 2026-03-14 (16 testes SecurityIntegrationTest) |

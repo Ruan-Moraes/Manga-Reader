@@ -4,7 +4,6 @@ import { FaUpload } from 'react-icons/fa';
 import useCommentRichEditor from '../../../../hook/internal/useCommentRichEditor';
 
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
-import DarkButton from '@shared/component/button/DarkButton';
 
 type EditModalBodyProps = {
     onEdit: (
@@ -103,8 +102,20 @@ const EditModalBody = ({
                         </BadgeIconButton>
                     </div>
                     <div className="flex gap-2">
-                        <DarkButton onClick={onCancel} text="Cancelar" />
-                        <DarkButton onClick={handleSave} text="Salvar" />
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleSave}
+                            className="px-4 py-2 text-sm text-white border rounded-xs bg-primary border-primary hover:bg-primary/80 transition-colors"
+                        >
+                            Salvar
+                        </button>
                     </div>
                 </div>
             </div>

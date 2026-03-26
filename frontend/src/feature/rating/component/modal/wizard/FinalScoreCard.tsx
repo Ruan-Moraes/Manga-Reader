@@ -144,9 +144,6 @@ const FinalScoreCard = ({
                                     value={isRated ? rating : 0}
                                     size={10}
                                 />
-                                <span className="text-[0.65rem] font-semibold min-w-[1.5rem] text-right">
-                                    {isRated ? rating.toFixed(1) : '—'}
-                                </span>
                             </div>
                         </div>
                     );

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import {
     showSuccessToast,
     showErrorToast,
@@ -13,12 +14,15 @@ import {
 } from '../../service/commentService';
 
 const useCommentCRUD = () => {
+    const queryClient = useQueryClient();
+
     const deleteCommentMutation = useMutation({
         mutationFn: async (id: string) => {
             await deleteCommentService(id);
             return id;
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
             showSuccessToast(`Comentário deletado com sucesso.`, {
                 toastId: 'delete-comment-success',
             });
@@ -42,6 +46,7 @@ const useCommentCRUD = () => {
             return await updateComment(id, newTextContent ?? '');
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
             showSuccessToast('Comentário editado com sucesso.', {
                 toastId: 'edit-comment-success',
             });
@@ -71,6 +76,7 @@ const useCommentCRUD = () => {
             });
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
             showSuccessToast('Resposta adicionada com sucesso.', {
                 toastId: 'reply-comment-success',
             });

@@ -1,6 +1,6 @@
 # Manga Reader — Análise Técnica do Frontend
 
-> Última atualização: 9 de março de 2026
+> Última atualização: 25 de março de 2026
 
 ---
 
@@ -40,7 +40,7 @@ O frontend segue uma **arquitetura modular orientada a domínio**, onde cada fea
 src/
 ├── app/                → Aplicação (layouts, rotas, router)
 │   ├── layout/         → Header, Footer, Main, RootLayout
-│   ├── route/          → 22+ pages organizadas por domínio
+│   ├── route/          → 29 pages organizadas por domínio
 │   └── router/         → PublicRoutes + ProtectedRoutes
 ├── feature/            → 13 módulos de domínio
 │   └── [feature]/
@@ -52,11 +52,11 @@ src/
 │       ├── context/    → Context providers (quando necessário)
 │       └── constant/   → Constantes do módulo
 ├── shared/             → Código reutilizável cross-feature
-│   ├── component/      → 33 componentes compartilhados
+│   ├── component/      → ~37 componentes compartilhados
 │   ├── constant/       → Constantes globais
 │   ├── service/        → HTTP client, utilitários
 │   └── type/           → Tipos globais
-├── mock/               → 11 datasets de dados mock
+├── mock/               → Dados mock (legacy — todas as features usam API real)
 ├── asset/              → Imagens e SVGs
 └── style/              → CSS global + customizações Tailwind
 ```
@@ -94,23 +94,27 @@ QueryClientProvider → UserModalProvider → EmojiModalProvider → CommentSort
 - `resetPassword(token, newPassword)` → `POST /api/auth/reset-password`
 - `getStoredSession()` / `persistSession()` → Gerenciamento via localStorage
 
-**Status**: Estrutura completa. Endpoints definidos, guards implementados, sessão com localStorage. Fluxo não testado end-to-end com backend.
+**Integração API**: ✅ Completa (sign-in, sign-up, refresh, /me, forgot/reset password). Role mapping: MEMBER→user, MODERATOR→poster, ADMIN→admin.
+
+**Status**: Feature completa e testada. Guards funcionais com sessão localStorage. Fluxo Auth E2E testado no backend (16 testes).
 
 ---
 
-### 3.2. `manga` — Títulos (21 arquivos)
+### 3.2. `manga` — Títulos (25 arquivos)
 
-**Exportações**: `useTitle()`, `useTitles()`, `useTitlesFetch()`, `useTitleModals()`; Componentes: `BaseCard`, `CarouselContainer`, `HighlightCardsContainer`, `HorizontalCardsContainer`, `VerticalCardsContainer`, `TitleDetails`, `TitleDescription`, `TitleActions`
+**Exportações**: `useTitle()`, `useTitles()`, `useTitlesFetch()`, `useTitleModals()`, `useSearchTitles()`; Componentes: `BaseCard`, `CarouselContainer`, `HighlightCardsContainer`, `HorizontalCardsContainer`, `VerticalCardsContainer`, `TitleDetails`, `TitleDescription`, `TitleActions`
 
 **5 variantes de card**: Base, Carousel, Highlight, Horizontal, Vertical — todos responsivos.
 
-**Integração API**: ✅ Conectado à API real para busca de títulos (`GET /api/titles`).
+**Integração API**: ✅ Conectado à API real para busca de títulos (`GET /api/titles`, `GET /api/titles/search`).
 
-**Status**: Feature mais madura do frontend. Busca, filtros e exibição funcionais com dados reais. Paginação parcial.
+**Novidades (Fase 9)**: `useSearchTitles` hook + `SearchResults.tsx` page para busca de títulos.
+
+**Status**: Feature mais madura do frontend. Busca, filtros e exibição funcionais com dados reais.
 
 ---
 
-### 3.3. `chapter` — Leitor de Capítulos (6 arquivos)
+### 3.3. `chapter` — Leitor de Capítulos (14 arquivos)
 
 **Exportações**: `ChapterList`, `ChapterFilter`, `ChapterCoverImage`, `ChapterNavigation`, `ChapterPages`, `ChapterBottomBar`; Hooks: `useChapterReader()`, `useChapterSort()`
 
@@ -118,55 +122,65 @@ QueryClientProvider → UserModalProvider → EmojiModalProvider → CommentSort
 
 ---
 
-### 3.4. `comment` — Comentários (35 arquivos — mais complexo)
+### 3.4. `comment` — Comentários (30 arquivos — mais complexo)
 
-**Exportações**: `useComments()`, `useCommentPagination()`, `CommentsSection`, `CommentsList`, `CommentInput`, `SortComments`; Contexts: `CommentSortProvider`, `EmojiModalProvider`
+**Exportações**: `useComments()`, `useCommentPagination()`, `useCommentCRUD()`, `CommentsSection`, `CommentsList`, `CommentInput`, `SortComments`; Contexts: `CommentSortProvider`, `EmojiModalProvider`
 
-**Funcionalidades**: Estrutura hierárquica (replies), emoji picker, ordenação (mais novos, mais antigos, mais curtidos).
+**Funcionalidades**: Estrutura hierárquica (replies), emoji picker, reações (like/dislike), ordenação (mais novos, mais antigos, mais curtidos), edição e exclusão com modais.
 
-**Integração API**: ✅ Listagem conectada à API real (`GET /api/comments/title/{titleId}`). Operações de criação, edição e deleção **não conectadas**.
+**Integração API**: ✅ CRUD completo conectado à API real (GET, POST, PUT, DELETE, react).
 
-**Status**: UI completa com árvore de comentários. CRUD incompleto no frontend.
-
----
-
-### 3.5. `user` — Usuários (3 arquivos)
-
-**Exportações**: `useUserProfile()`, `UserModal`, `UserModalHeader`, `UserModalBody`; Context: `UserModalProvider`
-
-**Tipos**: `User` (id, name, email, bio, role, photo, statistics, member)
-
-**Status**: Modal de usuário e visualização de perfil funcionais. Atualização de perfil não conectada ao backend.
+**Status**: Feature completa com árvore de comentários e CRUD funcional.
 
 ---
 
-### 3.6. `rating` — Avaliações (11 arquivos)
+### 3.5. `user` — Usuários (22 arquivos)
 
-**Exportações**: `useRating()`, `useRatings()`, `RatingStars`, `RatingModal`, `RecentReviews`; Serviços completos de CRUD.
+**Exportações**: `useUserProfile()`, `useEnrichedProfile()`, `UserModal`, `UserModalHeader`, `UserModalBody`; Context: `UserModalProvider`
 
-**Status**: UI com estrelas (1-5), modal de avaliação, lista de reviews. **Usa dados mock**. API real não conectada.
+**Novos Componentes (Fase 9b)**: `ProfileBanner`, `ProfileHeader`, `ProfileStats`, `ProfileTabs`, `Recommendations`, `ProfileComments`, `ViewHistory`, `PrivacySettings`, `EditProfileModal`, `PrivacyBadge`, `ProfileSkeleton`, `EmptyState`
+
+**Serviço** (`userService.ts`): getProfile, updateProfile, getEnrichedProfile, addRecommendation, removeRecommendation, reorderRecommendations, updatePrivacy, getUserComments, getUserHistory
+
+**Tipos**: `User`, `EnrichedProfile` (stats, recommendations, comments, history, privacy)
+
+**Status**: Perfil enriquecido completo com recomendações, histórico de visualização, configurações de privacidade, e stats da biblioteca. Conectado à API real.
 
 ---
 
-### 3.7. `group` — Grupos de Tradução (11 arquivos)
+### 3.6. `rating` — Avaliações (14 arquivos)
+
+**Exportações**: `useRating()`, `useRatings()`, `RatingStars`, `RatingModal`, `RatingWizard`, `FinalScoreCard`, `RecentReviews`; Serviços completos de CRUD.
+
+**Integração API**: ✅ CRUD completo conectado à API real (submit, update, delete, get by title/user, average).
+
+**Status**: Feature completa — wizard de avaliação por categorias, lista de reviews, pontuação final. `titleName` desnormalizado no backend.
+
+---
+
+### 3.7. `group` — Grupos de Tradução (13 arquivos)
 
 **Exportações**: `useGroups()`, `useGroupDetails()`, `useGroupWorks()`, `GroupCard`, `GroupDetailHeader`, `GroupSummaryCard`, `GroupsContainer`, `GroupsModal`, `MemberListModal`
 
-**Status**: Filtros por status, gênero e ordenação. Modal de membros. **Usa dados mock**.
+**Integração API**: ✅ Conectado à API real (CRUD, join/leave, works).
+
+**Status**: Filtros por status, gênero e ordenação. Modal de membros funcional.
 
 ---
 
-### 3.8. `library` — Biblioteca Pessoal (6 arquivos)
+### 3.8. `library` — Biblioteca Pessoal (10 arquivos)
 
 **Exportações**: `useBookmark()`, `useSavedMangas()`, `BookmarkButton`
 
-**Listas de Leitura**: "Lendo", "Quero Ler", "Concluído"
+**Listas de Leitura**: READING, COMPLETED, ON_HOLD, DROPPED, PLANNING (5 tabs)
 
-**Status**: Persistência em localStorage. Botão de bookmark funcional. **Não conectada ao backend.**
+**Integração API**: ✅ CRUD completo conectado à API real (save, remove, change list, get counts).
+
+**Novidades (Fase 9a)**: Tabs unificadas com contagens, paginação, loading/empty/error states, updates otimistas. `useBookmark` desacoplado com Set<string> local.
 
 ---
 
-### 3.9. `category` — Categorias e Tags (7 arquivos)
+### 3.9. `category` — Categorias e Tags (9 arquivos)
 
 **Exportações**: `useTagsFetch()`, `useCategoryFilters()`, `TagSelectInput`
 
@@ -176,56 +190,71 @@ QueryClientProvider → UserModalProvider → EmojiModalProvider → CommentSort
 
 ---
 
-### 3.10. `news` — Notícias (2 arquivos)
+### 3.10. `news` — Notícias (8 arquivos)
 
 **Exportações**: `useNews()`, `useNewsDetails()`, `NewsCard`, `HeroNews`, `NewsFilterPanel`; Serviços de busca e filtragem.
 
-**Status**: Feed de notícias com filtros e artigos relacionados. **Usa dados mock**.
+**Integração API**: ✅ Conectado à API real (GET, search, by category).
+
+**Status**: Feed de notícias com filtros funcional. Endpoint `/related` pendente no backend.
 
 ---
 
-### 3.11. `event` — Eventos (3 arquivos)
+### 3.11. `event` — Eventos (7 arquivos)
 
 **Exportações**: `useEvents()`, `useEventForm()`, `EventCard`, `CreateEventForm`
 
-**Status**: Lista de eventos com filtros por tipo/período/status. Formulário de criação não conectado à API. **Usa dados mock**.
+**Integração API**: ✅ Conectado à API real (GET, by status).
+
+**Status**: Lista de eventos com filtros funcional. Endpoint `/related` pendente no backend.
 
 ---
 
-### 3.12. `forum` — Fórum (10+ arquivos)
+### 3.12. `forum` — Fórum (10 arquivos)
 
 **Exportações**: `useForumPage()`, `useForumTopic()`, `TopicCard`, `Pagination`, `ForumStats`, `ReplyCard`, `RelatedTopicCard`; Serviços completos.
 
-**Status**: Tópicos com respostas, categorias, paginação. **Usa dados mock**.
+**Integração API**: ✅ CRUD completo conectado à API real (topics, replies, categories).
+
+**Status**: Feature completa com tópicos, respostas e categorias funcional.
 
 ---
 
-### 3.13. `store` — Lojas (3 arquivos)
+### 3.13. `store` — Lojas (6 arquivos)
 
 **Exportações**: `StoresModal`, `StoresContainer`
 
-**Status**: Modal e container de lojas. **Sem integração de dados**.
+**Integração API**: ✅ Conectado à API real (GET, by title).
+
+**Status**: Modal e container de lojas funcional.
 
 ---
 
 ## 4. Camada Compartilhada (`shared/`)
 
-### 4.1. Componentes (33 total)
+### 4.1. Componentes (~37 total)
 
 | Categoria | Componentes |
 |-----------|------------|
 | **Botões** | `BaseButton`, `RaisedButton`, `DarkButton`, `BadgeIconButton` |
 | **Formulários** | `AuthenticationForm`, `ContactForm`, `FiltersForm` |
 | **Inputs** | `BaseInput`, `MainSearchInput`, `InlineSearchInput`, `RadioInput`, `CheckboxWithLink` |
-| **Links** | `AppLink`, links de footer e menu |
-| **Modais** | `BaseModal`, `InfoModal`, `ImageLightbox` |
-| **Notificações** | `AlertBanner`, `ToastProvider` |
+| **Links** | `AppLink`, `SidebarMenuContent`, `FooterLinksSection` |
+| **Modais** | `BaseModal`, `InfoModal`, `ImageLightbox`, `UserSettingsModal` |
+| **Notificações** | `AlertBanner`, `Warning`, `ToastProvider` |
 | **Menu** | `NavigationMenu` |
-| **Layout** | `TextSection`, `SectionTitle` |
+| **Layout** | `TextSection`, `SectionTitle`, `TextBlock`, `Overlay` |
 | **Social** | `SocialMediaSection`, `SocialMediaLink` |
-| **UI** | Custom Select |
+| **Avatar** | `UserAvatar` (novo) |
+| **UI** | `StyledSelect`, `GenreTagList` |
 
-### 4.2. Constantes
+### 4.2. Hooks Compartilhados
+
+| Arquivo | Função |
+|---------|--------|
+| `useMenuData.tsx` | Dados de navegação do menu lateral |
+
+### 4.3. Constantes
 
 | Arquivo | Conteúdo |
 |---------|----------|
@@ -238,7 +267,7 @@ QueryClientProvider → UserModalProvider → EmojiModalProvider → CommentSort
 | `TOAST_POSITIONS.ts` | Posições de toast |
 | `USER_SETTINGS_STORAGE_KEY.ts` | Chaves de localStorage |
 
-### 4.3. Serviços
+### 4.4. Serviços
 
 **HTTP Client** (`shared/service/http/`):
 - `httpClient.ts`: Factory de instâncias Axios com `createHttpClient(config)` + singleton `api`
@@ -252,69 +281,57 @@ QueryClientProvider → UserModalProvider → EmojiModalProvider → CommentSort
 - `formatDate.ts` — Formatação de datas
 - `formatRelativeDate.ts` — Tempo relativo ("2 horas atrás")
 - `validateId.ts` — Validação de IDs
+- `checkValidId.ts` — Verificação de IDs válidos
+- `validateResponse.ts` — Validação de respostas da API
 
 ---
 
-## 5. Dados Mock
+## 5. Dados Mock (Legacy)
 
-O projeto utiliza dados mock extensivos em `src/mock/` para desenvolvimento sem dependência do backend:
+O diretório `src/mock/` contém datasets que foram utilizados durante o desenvolvimento. **Todas as 13 features agora usam API real** (migração concluída na Fase 8).
 
-| Dataset | Arquivo | Descrição |
-|---------|---------|-----------|
-| Users | `data/users.ts` | 6 usuários mock (Leitor Demo = usuário logado) |
-| Titles | `data/titles.ts` | Títulos de mangá |
-| Comments | `data/comments.ts` | Threads de comentários hierárquicos |
-| Ratings | `data/ratings.ts` | Reviews e avaliações |
-| Tags | `data/tags.ts` | Tags de categoria |
-| Groups | `data/groups.ts` | Grupos de tradução + membros e obras |
-| News | `data/news.ts` | Artigos de notícia |
-| Events | `data/events.ts` | Eventos da comunidade |
-| Stores | `data/stores.ts` | Links de lojas externas |
-| Library | `data/library.ts` | Listas de mangás salvos |
-| Forums | `data/forums.ts` | Tópicos e respostas do fórum |
-
-**Nota**: Títulos e tags usam **API real**; todos os outros usam dados mock.
+Os mocks permanecem no código como referência de estrutura de dados, mas não são mais utilizados em runtime.
 
 ---
 
 ## 6. Sistema de Rotas
 
-### 6.1. Rotas Públicas (20)
+### 6.1. Rotas Públicas (23)
 
 | Rota | Componente | Status |
 |------|-----------|--------|
 | `/` | Home | ✅ Completo |
 | `/title/:titleId` | TitleDetails | ✅ Completo |
 | `/title/:titleId/:chapter` | Chapter | ✅ Completo (imagens stub) |
+| `/search` | SearchResults | ✅ Completo |
 | `/categories` | CategoryFilters | ✅ Completo |
-| `/forum` | Forum | ✅ Completo |
-| `/forum/:topicId` | ForumTopic | ✅ Completo |
 | `/groups` | Groups | ✅ Completo |
 | `/groups/:groupId` | GroupProfile | ✅ Completo |
+| `/profile` | UserProfile | ✅ Completo |
+| `/users/:userId` | UserProfile | ✅ Completo |
 | `/news` | News | ✅ Completo |
 | `/news/:newsId` | NewsDetails | ✅ Completo |
 | `/events` | Events | ✅ Completo |
 | `/event/:eventId` | EventDetails | ✅ Completo |
-| `/saved-mangas` | SavedMangas | ✅ Completo |
-| `/library` | Library | ✅ Completo |
-| `/profile` | Profile | ✅ Completo |
-| `/reviews` | MyReviews | ✅ Completo |
-| `/users/:userId` | UserDetails | ✅ Completo |
-| `/login` | Login | ⚠️ Parcial (mock auth) |
-| `/sign-up` | SignUp | ⚠️ Parcial (sem validação) |
-| `/forgot-password` | ForgotPassword | ⚠️ Parcial (sem backend) |
-| `/reset-password` | ResetPassword | ⚠️ Parcial (sem backend) |
+| `/forum` | Forum | ✅ Completo |
+| `/forum/:topicId` | ForumTopic | ✅ Completo |
+| `/login` | Login | ✅ Completo (API real) |
+| `/sign-up` | SignUp | ✅ Completo (API real) |
+| `/forgot-password` | ForgotPassword | ✅ Completo (API real) |
+| `/reset-password` | ResetPassword | ✅ Completo (API real) |
 | `/about-us` | AboutUs | ✅ Completo |
 | `/terms-of-use` | TermsOfUse | ⚠️ Placeholder |
 | `/dmca` | Dmca | ⚠️ Placeholder |
 | `*` | NotFound | ✅ Completo |
 
-### 6.2. Rotas Protegidas (2)
+### 6.2. Rotas Protegidas (4)
 
 | Rota | Componente | Requisito | Status |
 |------|-----------|-----------|--------|
-| `/dashboard` | Dashboard | Role: Admin/Poster | ✅ Completo |
-| `/i-want-to-publish-work` | PublishWork | Autenticado | ✅ Completo |
+| `/library` | Library | Autenticado (AuthGuard) | ✅ Completo |
+| `/reviews` | MyReviews | Autenticado (AuthGuard) | ✅ Completo |
+| `/i-want-to-publish-work` | PublishWork | Autenticado (AuthGuard) | ✅ Completo |
+| `/dashboard` | Dashboard | Admin/Poster (AuthGuard + RoleGuard) | ✅ Completo |
 
 ### 6.3. Guards
 
@@ -371,18 +388,20 @@ O projeto utiliza dados mock extensivos em `src/mock/` para desenvolvimento sem 
 
 | Feature | Leitura (GET) | Escrita (POST/PUT/DELETE) | Fonte de Dados |
 |---------|:----:|:----:|----------------|
-| **manga** (titles) | ✅ | ❌ | API real |
-| **category** (tags) | ✅ | ❌ | API real |
-| **comment** | ✅ | ❌ | API real (GET) |
-| **auth** | 🔲 | 🔲 | Endpoints definidos, não testados |
-| **rating** | ❌ | ❌ | Mock data |
-| **group** | ❌ | ❌ | Mock data |
-| **library** | ❌ | ❌ | Mock data (localStorage) |
-| **news** | ❌ | ❌ | Mock data |
-| **event** | ❌ | ❌ | Mock data |
-| **forum** | ❌ | ❌ | Mock data |
-| **store** | ❌ | ❌ | Mock data |
-| **user** | ❌ | ❌ | Mock data |
+| **auth** | ✅ | ✅ | API real (sign-in, sign-up, refresh, /me, forgot/reset password) |
+| **manga** (titles) | ✅ | — | API real (busca, filtros, search) |
+| **category** (tags) | ✅ | — | API real |
+| **comment** | ✅ | ✅ | API real (CRUD completo + reações) |
+| **rating** | ✅ | ✅ | API real (submit, update, delete, average) |
+| **library** | ✅ | ✅ | API real (CRUD + tabs + contagens) |
+| **user** | ✅ | ✅ | API real (profile, enriched, recommendations, privacy, history) |
+| **forum** | ✅ | ✅ | API real (topics CRUD, replies) |
+| **group** | ✅ | ✅ | API real (CRUD, join/leave, works) |
+| **news** | ✅ | — | API real (list, detail, category, search) |
+| **event** | ✅ | — | API real (list, detail, by status) |
+| **store** | ✅ | — | API real (list, detail, by title) |
+
+**13/13 features integradas com API real** ✅
 
 ---
 
@@ -399,11 +418,14 @@ O projeto utiliza dados mock extensivos em `src/mock/` para desenvolvimento sem 
 
 ## 11. Lacunas Identificadas
 
-1. **Integração real**: 10 de 13 features dependem de mock data
-2. **Testes**: Nenhum teste unitário ou de integração
-3. **Validação de formulários**: Forms de signup, publish work sem validação
-4. **Lazy loading**: Sem code splitting para rotas — impacta performance
-5. **Acessibilidade**: Sem ARIA labels ou HTML semântico adequado
-6. **Componentes grandes**: Vários page components > 100 linhas precisam de split
-7. **Conteúdo**: Termos de Uso e DMCA com texto placeholder
-8. **Basename hardcoded**: `WEB_URL = '/Manga-Reader'` específico para GitHub Pages
+1. **Testes**: Nenhum teste unitário ou de integração no frontend
+2. **Code splitting**: Sem `React.lazy()` — bundle inteiro carrega na primeira visita
+3. **Error Boundaries**: Nenhum ErrorBoundary — erro crasha toda a app
+4. **`localhost:5000` hardcoded**: `useCategoryFilters.tsx` aponta para API errada
+5. **Validação de formulários**: Forms de signup, publish work sem validação client-side
+6. **Lazy loading de imagens**: Tags `<img>` sem `loading="lazy"`
+7. **Memoização**: Zero `useMemo`/`React.memo` — re-renders desnecessários
+8. **Acessibilidade**: Parcial — botões icon-only sem `aria-label`, landmarks inconsistentes
+9. **Conteúdo**: Termos de Uso e DMCA com texto placeholder
+10. **Basename hardcoded**: `WEB_URL = '/Manga-Reader'` específico para GitHub Pages
+11. **QUERY_KEYS incompleto**: Faltam chaves para enriched profile, recommendations, privacy, etc.

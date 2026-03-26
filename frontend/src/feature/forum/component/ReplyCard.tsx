@@ -1,5 +1,6 @@
 import { FiCheckCircle, FiThumbsUp, FiMessageCircle } from 'react-icons/fi';
 
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 import {
     formatRelativeDate,
     roleBadgeColor,
@@ -9,10 +10,11 @@ import {
 
 const ReplyCard = ({ reply }: { reply: ForumReply }) => (
     <div className="flex gap-3 p-4 border rounded-lg border-tertiary bg-secondary">
-        <img
+        <UserAvatar
             src={reply.author.avatar}
-            alt={reply.author.name}
-            className="object-cover w-8 h-8 rounded-full shrink-0"
+            name={reply.author.name}
+            size="sm"
+            rounded="full"
         />
         <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 text-xs">

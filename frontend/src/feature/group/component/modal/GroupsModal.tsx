@@ -5,6 +5,8 @@ import GroupSummaryCard from '../card/GroupSummaryCard';
 
 import { Group } from '../../type/group.types';
 import { getGroupsByTitleId } from '../../service/groupService';
+import BaseButton from '@shared/component/button/BaseButton.tsx';
+import DarkButton from '@shared/component/button/DarkButton.tsx';
 
 type GroupsModalProps = {
     isModalOpen: boolean;
@@ -42,18 +44,12 @@ const GroupsModal = ({
 
     return (
         <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
-            <div className="max-w-4xl mx-auto">
-                <div className="flex items-center justify-between pb-3 border-b border-tertiary">
+            <div className="max-w-4xl mx-auto flex flex-col gap-2">
+                <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold">Grupos de Tradução</h2>
-                    <button
-                        onClick={closeModal}
-                        className="text-sm text-tertiary hover:text-white transition-colors cursor-pointer"
-                    >
-                        Fechar
-                    </button>
+                    <DarkButton text="Fechar" onClick={closeModal} />
                 </div>
-
-                <div className="pt-3 max-h-80 overflow-y-auto">
+                <div className="max-h-80 overflow-y-auto">
                     {showLoading && (
                         <div className="flex flex-col gap-3">
                             {Array.from({ length: 3 }).map((_, i) => (

@@ -11,6 +11,7 @@ import {
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 
 import { getEventById, getRelatedEvents, statusLabel } from '@feature/event';
 import type { EventData } from '@feature/event';
@@ -89,10 +90,11 @@ const EventDetails = () => {
                                 {event.title}
                             </h1>
                             <div className="flex items-center gap-3">
-                                <img
+                                <UserAvatar
                                     src={event.organizer.avatar}
-                                    alt={event.organizer.name}
-                                    className="object-cover w-10 h-10 rounded-full"
+                                    name={event.organizer.name}
+                                    size="md"
+                                    rounded="full"
                                 />
                                 <Link
                                     to={event.organizer.profileLink}
@@ -231,10 +233,11 @@ const EventDetails = () => {
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                 <h3 className="font-semibold">Organizador</h3>
                                 <div className="flex items-center gap-2 text-sm">
-                                    <img
+                                    <UserAvatar
                                         src={event.organizer.avatar}
-                                        alt={event.organizer.name}
-                                        className="w-8 h-8 rounded-full"
+                                        name={event.organizer.name}
+                                        size="sm"
+                                        rounded="full"
                                     />
                                     {event.organizer.name}
                                 </div>

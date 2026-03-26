@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { clsx } from 'clsx';
+import { IoLogOutOutline, IoSettingsOutline, IoTrashOutline } from 'react-icons/io5';
 
 import UserSettingsModal from '@shared/component/modal/settings/UserSettingsModal';
 import { clearCache } from '@shared/service/util/queryCache';
@@ -21,13 +21,11 @@ export type MenuProfile = {
     canDownload?: boolean;
     isAdmin?: boolean;
     isPoster?: boolean;
-    isVisitor?: boolean;
 };
 
 type MenuLinkBlockProps = {
     profile: MenuProfile;
     isLoggedIn: boolean;
-    onAuthRoleChange: (_role: 'visitor' | 'user' | 'poster' | 'admin') => void;
     onLogout: () => void;
     onNavigate: () => void;
 };
@@ -69,7 +67,6 @@ const MenuNavLink = ({
 const SidebarMenuContent = ({
     profile,
     isLoggedIn,
-    onAuthRoleChange,
     onLogout,
     onNavigate,
 }: MenuLinkBlockProps) => {
@@ -99,11 +96,11 @@ const SidebarMenuContent = ({
     ];
 
     const communityItems: MenuItem[] = [
-        { label: 'Notícias', link: '/news', badge: profile.newsBadge ?? '+0' },
+        { label: 'Notícias', link: '/news', badge: profile.newsBadge },
         {
             label: 'Eventos',
             link: '/events',
-            badge: profile.eventBadge ?? 'sem próximos',
+            badge: profile.eventBadge,
         },
         { label: 'Grupos de Tradução', link: '/groups' },
         { label: 'Fórum / Discussões', link: '/forum' },
@@ -111,11 +108,15 @@ const SidebarMenuContent = ({
 
     const settingsItems: MenuItem[] = [
         { label: 'Meu Perfil', link: '/profile' },
-        {
-            label: 'Notificações',
-            link: '/profile?tab=notifications',
-            badge: `+${profile.unreadNotifications ?? 0}`,
-        },
+        ...(profile.unreadNotifications
+            ? [
+                  {
+                      label: 'Notificações',
+                      link: '/profile?tab=notifications',
+                      badge: `+${profile.unreadNotifications}`,
+                  },
+              ]
+            : [{ label: 'Notificações', link: '/profile?tab=notifications' }]),
         { label: 'Aparência', link: '/profile?tab=appearance' },
         { label: 'Modo Leitura', link: '/profile?tab=reading' },
         { label: 'Privacidade', link: '/profile?tab=privacy' },
@@ -139,41 +140,7 @@ const SidebarMenuContent = ({
     return (
         <div className="flex flex-col h-full gap-4 px-4 pb-4 overflow-y-auto">
             <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
-                <p className={sectionTitleClass}>Simular autenticação</p>
-                <div className="grid grid-cols-2 gap-2">
-                    <button
-                        type="button"
-                        onClick={() => onAuthRoleChange('user')}
-                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
-                    >
-                        Usuário
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => onAuthRoleChange('poster')}
-                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
-                    >
-                        Postador
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => onAuthRoleChange('admin')}
-                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
-                    >
-                        Admin
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => onAuthRoleChange('visitor')}
-                        className="h-9 px-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20"
-                    >
-                        Visitante
-                    </button>
-                </div>
-            </div>
-
-            <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
-                {isLoggedIn && !profile.isVisitor ? (
+                {isLoggedIn ? (
                     <>
                         <p className={sectionTitleClass}>Conta</p>
                         <p className="text-sm font-semibold">
@@ -228,7 +195,7 @@ const SidebarMenuContent = ({
                 ))}
             </section>
 
-            {isLoggedIn && !profile.isVisitor && (
+            {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
                     <h3 className={sectionTitleClass}>Biblioteca</h3>
                     {libraryItems.map(item => (
@@ -252,7 +219,7 @@ const SidebarMenuContent = ({
                 ))}
             </section>
 
-            {isLoggedIn && !profile.isVisitor && (
+            {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
                     <h3 className={sectionTitleClass}>Configurações</h3>
                     {settingsItems.map(item => (
@@ -278,32 +245,30 @@ const SidebarMenuContent = ({
                 </section>
             )}
 
-            <div className="flex items-center w-full gap-2 p-2 mt-auto border bg-secondary rounded-xs border-tertiary">
-                <button
-                    type="button"
-                    onClick={() => setIsUserSettingsOpen(true)}
-                    className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20"
-                >
-                    Configurações
-                </button>
-
-                <button
-                    type="button"
-                    onClick={clearCache}
-                    className="h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20"
-                >
-                    Limpar cache
-                </button>
-
-                {isLoggedIn && !profile.isVisitor && (
+            <div className="flex flex-col gap-2 p-2 mt-auto border bg-secondary rounded-xs border-tertiary">
+                <div className="flex gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setIsUserSettingsOpen(true)}
+                        className="flex-1 h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20 transition-colors duration-300 flex items-center justify-center gap-2"
+                    >
+                        <IoSettingsOutline /> Configurações
+                    </button>
+                    <button
+                        type="button"
+                        onClick={clearCache}
+                        className="flex-1 h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20 transition-colors duration-300 flex items-center justify-center gap-2"
+                    >
+                        <IoTrashOutline /> Limpar cache
+                    </button>
+                </div>
+                {isLoggedIn && (
                     <button
                         type="button"
                         onClick={onLogout}
-                        className={clsx(
-                            'h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20',
-                        )}
+                        className="w-full h-10 px-4 text-xs font-semibold border rounded-xs border-quinary-default text-quinary-default bg-primary-default hover:bg-quinary-default hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"
                     >
-                        Sair
+                        <IoLogOutOutline /> Sair
                     </button>
                 )}
             </div>
@@ -311,7 +276,7 @@ const SidebarMenuContent = ({
             <UserSettingsModal
                 isOpen={isUserSettingsOpen}
                 onClose={() => setIsUserSettingsOpen(false)}
-                isLoggedIn={isLoggedIn && !profile.isVisitor}
+                isLoggedIn={isLoggedIn}
             />
         </div>
     );

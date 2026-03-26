@@ -1,6 +1,7 @@
 import { IoCloseOutline } from 'react-icons/io5';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 import { GroupMember } from '../../type/group.types';
 import AppLink from '@shared/component/link/element/AppLink';
 
@@ -28,10 +29,12 @@ const GroupMemberModal = ({
                 </header>
 
                 <div className="flex gap-3 items-center mt-3">
-                    <img
+                    <UserAvatar
                         src={user.avatar}
-                        alt={user.name}
-                        className="w-16 h-16 rounded-full border border-quaternary"
+                        name={user.name}
+                        size="xl"
+                        rounded="full"
+                        className="border border-quaternary"
                     />
                     <div>
                         <h4 className="text-lg font-bold">{user.name}</h4>

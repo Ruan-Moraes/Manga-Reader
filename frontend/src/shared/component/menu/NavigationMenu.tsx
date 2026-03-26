@@ -1,82 +1,30 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoMenu } from 'react-icons/io5';
 
 import { clsx } from 'clsx';
 
 import AppLink from '@shared/component/link/element/AppLink';
 import Overlay from '@shared/component/blur/Overlay';
-import SidebarMenuContent, {
-    MenuProfile,
-} from '@shared/component/link/section/SidebarMenuContent';
+import SidebarMenuContent from '@shared/component/link/section/SidebarMenuContent';
 import { showInfoToast } from '@shared/service/util/toastService';
+import useMenuData from '@shared/hook/useMenuData';
 
 import { useAuth } from '@feature/auth';
-
-const menuProfiles: MenuProfile[] = [
-    {
-        id: 'visitor',
-        label: 'Visitante',
-        isVisitor: true,
-    },
-    {
-        id: 'user',
-        label: 'Usuário',
-        fullName: 'Leitor Demo',
-        email: 'leitor.demo@mangareader.com',
-        planBadge: '[Pro]',
-        savedCount: 12,
-        unreadNotifications: 3,
-        newsBadge: '+4',
-        eventBadge: '2 próximos',
-        canDownload: true,
-        isAdmin: false,
-    },
-    {
-        id: 'poster',
-        label: 'Postador',
-        fullName: 'Postador Demo',
-        email: 'postador.demo@mangareader.com',
-        planBadge: '[Postador]',
-        savedCount: 24,
-        unreadNotifications: 6,
-        newsBadge: '+6',
-        eventBadge: '3 próximos',
-        canDownload: true,
-        isAdmin: false,
-        isPoster: true,
-    },
-    {
-        id: 'admin',
-        label: 'Administrador',
-        fullName: 'Admin Demo',
-        email: 'admin@mangareader.com',
-        planBadge: '[Admin]',
-        savedCount: 38,
-        unreadNotifications: 12,
-        newsBadge: '+8',
-        eventBadge: '5 próximos',
-        canDownload: true,
-        isAdmin: true,
-    },
-];
 
 const NavigationMenu = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isSticky, setIsSticky] = useState<boolean>(false);
 
     const [menuHeight, setMenuHeight] = useState<number>(0);
-
-    const [selectedProfileId] = useState<string>('visitor');
+    const [menuSearch, setMenuSearch] = useState('');
 
     const { user, isLoggedIn, logout } = useAuth();
+    const navigate = useNavigate();
+    const { savedCount } = useMenuData(isLoggedIn);
 
     const menuRef = useRef<HTMLDivElement>(null);
     const originalOffset = useRef<number>(0);
-
-    const selectedMockProfile = useMemo(
-        () => menuProfiles.find(profile => profile.id === selectedProfileId),
-        [selectedProfileId],
-    );
 
     const currentProfile = useMemo(() => {
         if (isLoggedIn && user) {
@@ -87,30 +35,27 @@ const NavigationMenu = () => {
                 ? '[Admin]'
                 : isPoster
                   ? '[Postador]'
-                  : '[Pro]';
+                  : '';
 
             return {
-                id: `${role}-real`,
+                id: user.id,
                 label: isAdmin
                     ? 'Administrador'
                     : isPoster
                       ? 'Postador'
                       : 'Usuário',
                 fullName: user.name,
-                email: `${user.name.toLowerCase().replace(/\s+/g, '.')}@mangareader.com`,
-                planBadge,
-                savedCount: 12,
-                unreadNotifications: 4,
-                newsBadge: '+2',
-                eventBadge: '2 próximos',
+                email: user.email,
+                planBadge: planBadge || undefined,
+                savedCount,
                 canDownload: true,
                 isAdmin,
                 isPoster,
-            } satisfies MenuProfile;
+            };
         }
 
-        return selectedMockProfile ?? menuProfiles[0];
-    }, [isLoggedIn, selectedMockProfile, user]);
+        return { id: 'visitor', label: 'Visitante' };
+    }, [isLoggedIn, user, savedCount]);
 
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevOpen => !prevOpen);
@@ -219,12 +164,26 @@ const NavigationMenu = () => {
                         </div>
 
                         <div className="px-4">
-                            <form role="search" className="flex gap-2">
+                            <form
+                                role="search"
+                                className="flex gap-2"
+                                onSubmit={e => {
+                                    e.preventDefault();
+                                    const trimmed = menuSearch.trim();
+                                    if (trimmed) {
+                                        navigate(`/Manga-Reader/search?q=${encodeURIComponent(trimmed)}`);
+                                        closeMenu();
+                                        setMenuSearch('');
+                                    }
+                                }}
+                            >
                                 <input
                                     name="menu-search"
                                     type="search"
                                     placeholder="Buscar mangás, notícias, grupos..."
                                     className="w-full h-10 px-3 text-sm border bg-secondary rounded-xs border-tertiary placeholder:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default"
+                                    value={menuSearch}
+                                    onChange={e => setMenuSearch(e.target.value)}
                                 />
                                 <button
                                     type="submit"
@@ -237,20 +196,6 @@ const NavigationMenu = () => {
                         <SidebarMenuContent
                             profile={currentProfile}
                             isLoggedIn={isLoggedIn}
-                            onAuthRoleChange={async role => {
-                                if (role === 'visitor') {
-                                    await logout();
-                                    showInfoToast(
-                                        'Modo visitante ativado no menu.',
-                                    );
-                                    return;
-                                }
-
-                                // TODO: in production, role switching via mock is disabled
-                                showInfoToast(
-                                    'Troca de perfil via menu será removida em produção.',
-                                );
-                            }}
                             onLogout={() => {
                                 logout();
                                 showInfoToast('Você saiu da sua conta.');

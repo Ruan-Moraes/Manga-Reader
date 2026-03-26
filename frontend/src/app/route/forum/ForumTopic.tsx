@@ -15,6 +15,7 @@ import {
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 import {
     useForumTopic,
     ReplyCard,
@@ -97,10 +98,11 @@ const ForumTopicPage = () => {
 
                     {/* Author + date */}
                     <div className="flex items-center gap-3 mt-3">
-                        <img
+                        <UserAvatar
                             src={topic.author.avatar}
-                            alt={topic.author.name}
-                            className="object-cover w-10 h-10 rounded-full"
+                            name={topic.author.name}
+                            size="md"
+                            rounded="full"
                         />
                         <div>
                             <div className="flex items-center gap-2">

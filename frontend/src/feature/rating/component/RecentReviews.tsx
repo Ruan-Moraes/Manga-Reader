@@ -131,7 +131,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
                 <DarkButton
                     onClick={loadMore}
                     text="Carregar mais avaliações"
-                    className="border border-tertiary"
+                    className=""
                 />
             )}
         </section>

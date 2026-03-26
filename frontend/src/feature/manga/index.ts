@@ -3,6 +3,7 @@ export { default as useTitle } from './hook/useTitle';
 export { default as useTitles } from './hook/useTitles';
 export { default as useTitlesFetch } from './hook/data/useTitlesFetch';
 export { default as useTitleModals } from './hook/useTitleModals';
+export { default as useSearchTitles } from './hook/useSearchTitles';
 
 // Components - Cards
 export { default as BaseCard } from './component/card/base/BaseCard';

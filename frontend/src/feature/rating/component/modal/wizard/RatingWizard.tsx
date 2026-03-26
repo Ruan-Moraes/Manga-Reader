@@ -5,6 +5,7 @@ import RatingStars from '../../RatingStars';
 import FinalScoreCard from './FinalScoreCard';
 
 import { RATING_CATEGORIES } from './ratingCategories';
+import DarkButton from '@shared/component/button/DarkButton.tsx';
 
 type CategoryRatings = Record<string, number>;
 type CategoryComments = Record<string, string>;
@@ -54,7 +55,6 @@ const RatingWizard = ({
     const allCategoriesRated = Object.values(categoryRatings).every(v => v > 0);
 
     const computeAverage = useCallback(() => {
-
         const rated = Object.values(categoryRatings).filter(v => v > 0);
 
         if (rated.length === 0) return 0;
@@ -249,21 +249,19 @@ const RatingWizard = ({
     );
 
     return (
-        <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-tertiary pb-2">
+        <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold leading-none">
-                    Avaliar mangá
+                    Avaliar obra
                 </h2>
-                <button
-                    type="button"
+                <DarkButton
+                    text="Fechar"
                     onClick={() => {
                         handleReset();
+
                         onCancel();
                     }}
-                    className="text-xs text-tertiary hover:text-white transition-colors cursor-pointer"
-                >
-                    Fechar
-                </button>
+                />
             </div>
             {renderStepIndicator()}
             <div

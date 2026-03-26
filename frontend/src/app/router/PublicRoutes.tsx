@@ -19,6 +19,7 @@ import NotFound from '@app/route/error/NotFound';
 import UserProfile from '@app/route/profile/UserProfile';
 import Forum from '@app/route/forum/Forum';
 import ForumTopic from '@app/route/forum/ForumTopic';
+import SearchResults from '@app/route/search/SearchResults';
 
 const publicRoutes = [
     {
@@ -32,6 +33,10 @@ const publicRoutes = [
     {
         path: 'title/:titleId/:chapter',
         element: <Chapter />,
+    },
+    {
+        path: 'search',
+        element: <SearchResults />,
     },
     {
         path: 'categories',

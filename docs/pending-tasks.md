@@ -1,34 +1,26 @@
 # Manga Reader — Tarefas Pendentes
 
-> Última atualização: 10 de março de 2026
+> Última atualização: 25 de março de 2026
 
 ---
 
 ## 1. Frontend — Tarefas Pendentes
 
-### 1.1. Integração com API Real (Prioridade Crítica)
+### 1.1. Code Splitting e Performance (Prioridade Alta)
 
-Conectar as 10 features restantes à API do backend, substituindo dados mock por chamadas reais:
-
-| # | Feature | Endpoints Backend | Operações Pendentes | Complexidade |
-|---|---------|-------------------|---------------------|-------------|
-| 1 | **auth** | `/api/auth/*` | sign-in, sign-up, refresh, me, forgot/reset password | Alta |
-| 2 | **library** | `/api/library` | GET, POST, PATCH, DELETE | Média |
-| 3 | **rating** | `/api/ratings/*` | GET por título, GET average, POST, PUT, DELETE, GET user | Média |
-| 4 | **comment** (CRUD) | `/api/comments/*` | POST, PUT, DELETE, POST react | Média |
-| 5 | **forum** | `/api/forum/*` | GET, POST topic, POST reply, PUT, DELETE | Alta |
-| 6 | **group** | `/api/groups/*` | GET, POST, PUT, join, leave, add/remove work | Alta |
-| 7 | **news** | `/api/news/*` | GET, GET por categoria, search | Baixa |
-| 8 | **event** | `/api/events/*` | GET, GET por status | Baixa |
-| 9 | **store** | `/api/stores/*` | GET, GET por título | Baixa |
-| 10 | **user** | `/api/users/*` | GET por id, GET me, PATCH me | Média |
+- [ ] Implementar `React.lazy()` + `Suspense` para code splitting em todas as rotas
+- [ ] Adicionar `ErrorBoundary` genérico com fallback UI nas rotas principais
+- [ ] Adicionar `loading="lazy"` em tags `<img>` para lazy loading de imagens
+- [ ] Otimizar `useBookmark` — evitar carregar biblioteca inteira (`getUserLibrary(0, 1000)`) no mount
+- [ ] Adicionar `useMemo`/`React.memo` em componentes com re-renders frequentes
+- [ ] Configurar prefetch para rotas frequentes
 
 ### 1.2. Validação de Formulários (Prioridade Alta)
 
 | Formulário | O que falta |
 |-----------|------------|
 | Login | Validação de email e senha, feedback de erros |
-| Sign Up | Validação de todos os campos, confirmação de senha, force de senha |
+| Sign Up | Validação de todos os campos, confirmação de senha, força de senha |
 | Forgot Password | Validação de email, feedback de envio |
 | Reset Password | Validação de token e nova senha |
 | Profile Edit | Validação de bio (limite de caracteres), email |
@@ -36,12 +28,12 @@ Conectar as 10 features restantes à API do backend, substituindo dados mock por
 | Create Event | Validação de datas, campos obrigatórios |
 | Forum Topic | Validação de título e conteúdo |
 
-### 1.3. Melhorias de Performance (Prioridade Média)
+### 1.3. Correções Pendentes (Prioridade Média)
 
-- [ ] Implementar `React.lazy()` + `Suspense` para code splitting em todas as rotas
-- [ ] Adicionar loading skeleton para páginas que buscam dados
-- [ ] Otimizar imagens (lazy loading de imagens, fallback para placeholder)
-- [ ] Configurar prefetch para rotas frequentes
+- [ ] Corrigir `localhost:5000` hardcoded em `useCategoryFilters.tsx` (linha 34) — migrar para API principal
+- [ ] Completar QUERY_KEYS com chaves faltantes (USER_ENRICHED_PROFILE, RECOMMENDATIONS, etc.)
+- [ ] Adicionar `aria-label` em todos os botões icon-only
+- [ ] Implementar scroll position restoration entre navegações
 
 ### 1.4. Refatoração de Componentes (Prioridade Média)
 
@@ -51,27 +43,34 @@ Dividir page components grandes em subcomponentes:
 - [ ] Groups.tsx → GroupFilters, GroupList
 - [ ] News.tsx → NewsFilters, NewsList, NewsHero
 - [ ] Events.tsx → EventFilters, EventList
-- [ ] Library.tsx → LibraryTabs, LibraryList
 - [ ] GroupProfile.tsx → GroupHeader, GroupMembers, GroupWorks
-- [ ] SavedMangas.tsx → SavedMangaFilters, SavedMangaList
 - [ ] Chapter.tsx → ChapterViewer (subcomponentes já existem parcialmente)
+
+> **Nota**: Library.tsx e Profile.tsx já foram refatorados na Fase 9a/9b.
 
 ### 1.5. Acessibilidade (Prioridade Média)
 
-- [ ] Adicionar `aria-label` em todos os botões e inputs
-- [ ] Usar landmarks HTML (`<nav>`, `<main>`, `<aside>`, `<section>`)
+- [ ] Adicionar `aria-label` em todos os botões e inputs icon-only
+- [ ] Usar landmarks HTML (`<nav>`, `<main>`, `<aside>`, `<section>`) de forma consistente
 - [ ] Implementar navegação por teclado (focus management)
 - [ ] Garantir contraste adequado (WCAG AA)
 - [ ] Testar com screen reader
 
 ### 1.6. Conteúdo (Prioridade Média)
 
-- [ ] Redigir Termos de Uso reais (substituir placeholder)
+- [ ] Redigir Termos de Uso reais (substituir placeholder "XX de XXXXXXXX de XXXX")
 - [ ] Redigir DMCA real (substituir placeholder)
 - [ ] Revisar texto do About Us
 - [ ] Substituir URLs de imagem stub no ChapterPages.tsx por URLs reais
 
-### 1.7. Configuração (Prioridade Baixa)
+### 1.7. Testes Frontend (Prioridade Alta)
+
+- [x] Configurar Vitest + React Testing Library + MSW no projeto
+- [x] Testes de hooks customizados (useAuth, useBookmark, useCommentCRUD, useSearchTitles) — **4 arquivos, 35 testes**
+- [ ] Testes de componentes (CommentsSection, Library, UserProfile, SearchResults)
+- [ ] Considerar Playwright para testes E2E (fluxo auth, navegação)
+
+### 1.8. Configuração (Prioridade Baixa)
 
 - [ ] Parametrizar basename via `VITE_BASE_URL` (remover hardcode `/Manga-Reader`)
 - [ ] Descomentar React Query DevTools no main.tsx
@@ -82,38 +81,44 @@ Dividir page components grandes em subcomponentes:
 
 ## 2. Backend — Tarefas Pendentes
 
-### 2.1. Testes (Prioridade Crítica)
+### 2.1. Correções Críticas (Prioridade Crítica)
+
+- [ ] Adicionar `@Transactional` a ~23 use cases data-modifying (ver DT-01 em tech-debt.md)
+- [ ] Remover injeção de repository ports do UserController — criar use cases dedicados (ver DT-04 em tech-debt.md)
+
+### 2.2. Testes (Status Atual)
 
 | Categoria | Escopo | Status | Detalhes |
 |-----------|--------|--------|----------|
-| **Testes unitários — Domain entities** | 13 entidades/VOs | ✅ **Concluído** | 13 arquivos, ~107 testes |
-| **Testes unitários — Use Cases** | 60 use cases | ✅ **Concluído** | 60/60 arquivos, ~206 testes |
-| **Testes unitários — Controllers** | 13 controllers | ✅ **Concluído** | 13/13 arquivos, ~129 testes |
-| **Testes de integração — JPA** | Repositories PostgreSQL | ✅ **Concluído** | 7/7 adapters: User, Library, Tag, Group, Store, Event, Forum (H2) |
-| **Testes de segurança — unitário** | JwtTokenProvider | ✅ **Concluído** | JwtTokenProvider unitário |
-| **Testes de integração — MongoDB** | Repositories MongoDB | 🔲 Não iniciado | 0/4 adapters: Title, Comment, Rating, News (TestContainers) |
-| **Testes de segurança — integrado** | Auth E2E | 🔲 Não iniciado | Fluxo Auth completo com @SpringBootTest + TestContainers |
-| **Testes frontend** | Componentes + hooks + E2E | 🔲 Não iniciado | React Testing Library, testes de hooks, Cypress/Playwright |
+| **Domain** | 30 entidades/VOs/enums | ✅ **Concluído** | 30 arquivos, 192 testes |
+| **Application** | 70 use cases | ✅ **Concluído** | 70 arquivos, 245 testes |
+| **Presentation** | 13 controllers | ✅ **Concluído** | 13 arquivos, 133 testes |
+| **Infrastructure JPA** | 7 adapters PostgreSQL | ✅ **Concluído** | 7 arquivos, 72 testes (H2 in-memory) |
+| **Infrastructure MongoDB** | 4 adapters MongoDB | ✅ **Concluído** | 4 arquivos, 51 testes (TestContainers mongo:8.0) |
+| **Infrastructure Security** | JwtTokenProvider | ✅ **Concluído** | 1 arquivo, 17 testes (unitário) |
+| **Security E2E** | Auth flow completo | ✅ **Concluído** | 1 arquivo, 16 testes (@SpringBootTest) |
+| **Root** | Smoke test | ✅ **Concluído** | 1 arquivo, 1 teste (context loads) |
+| **Testes frontend — Hooks** | 4 hooks críticos | ✅ **Concluído** | 4 arquivos, 35 testes (Vitest + RTL + MSW) |
+| **Testes frontend — Componentes** | Componentes + E2E | 🔲 Não iniciado | Vitest + React Testing Library |
 
-**Resumo de testes**: 95 arquivos, **531 testes passando**, 0 failures, 0 errors. Build verde.
+**Total backend**: 127 arquivos, **727 testes passando**, 0 failures, 0 errors.
 
-### 2.2. Documentação (Prioridade Alta)
+### 2.3. Documentação (Prioridade Alta)
 
 - [ ] Criar `.env.example` com todas as variáveis de ambiente necessárias
 - [ ] Documentar seed data (quais dados são criados, como configurar)
 - [ ] Documentar referências cross-database (PostgreSQL ↔ MongoDB)
-- [ ] Adicionar Javadoc nos controllers e use cases públicos
 - [ ] Documentar configuration properties customizadas (`app.*`)
 
-### 2.3. Funcionalidades Pendentes (Prioridade Média)
+### 2.4. Funcionalidades Pendentes (Prioridade Média)
 
 - [ ] Upload de arquivos (capas de mangá, avatares, páginas de capítulos)
 - [ ] Endpoint admin para gerenciamento de conteúdo (CRUD de títulos, capítulos)
-- [ ] Paginação em endpoints que ainda não suportam (verificar consistência)
+- [ ] Endpoints faltantes: news/event `/related`, group `/members/{id}`
 - [ ] Filtros avançados em endpoints de listagem
 - [ ] Endpoint de busca global (cross-domain)
 
-### 2.4. Infraestrutura (Prioridade Média)
+### 2.5. Infraestrutura (Prioridade Média)
 
 - [ ] Configurar logback para produção (rotação, JSON format, níveis por pacote)
 - [ ] Documentar limites de rate limiting por endpoint
@@ -121,7 +126,7 @@ Dividir page components grandes em subcomponentes:
 - [ ] Implementar job de limpeza para referências cross-database órfãs
 - [ ] Configurar backup automatizado de PostgreSQL e MongoDB
 
-### 2.5. Segurança (Prioridade Média)
+### 2.6. Segurança (Prioridade Média)
 
 - [ ] Implementar rotação de JWT secret
 - [ ] Adicionar auditoria de ações sensíveis (login, mudanças de role)
@@ -133,46 +138,25 @@ Dividir page components grandes em subcomponentes:
 
 ## 3. Integração Frontend ↔ Backend
 
-### 3.1. Fluxos Críticos para Testar (Prioridade Crítica)
+### 3.1. Fluxos Auth (✅ Testados via Security E2E)
 
-| # | Fluxo | Frontend | Backend | Status |
-|---|-------|---------|---------|--------|
-| 1 | **Sign Up** | Form → authService.signUp() | POST /api/auth/sign-up → UserJpa | 🔲 Não testado |
-| 2 | **Login** | Form → authService.signIn() → localStorage | POST /api/auth/sign-in → JWT | 🔲 Não testado |
-| 3 | **Token Refresh** | Interceptor → authService.refreshToken() | POST /api/auth/refresh → new JWT | 🔲 Não testado |
-| 4 | **Protected Route** | AuthGuard → getStoredSession() | JwtFilter → validate claims | 🔲 Não testado |
-| 5 | **Logout (401)** | Interceptor → clear localStorage → redirect | 401 response → client handles | 🔲 Não testado |
-| 6 | **Reset Password** | Form → email → token → new password | Email adapter → token → BCrypt | 🔲 Não testado |
+| # | Fluxo | Status |
+|---|-------|--------|
+| 1 | **Sign Up** → persistência → sign-in | ✅ Testado |
+| 2 | **Login** → JWT access + refresh tokens | ✅ Testado |
+| 3 | **Token Refresh** → novo access token | ✅ Testado |
+| 4 | **Protected Route** → JWT validation | ✅ Testado |
+| 5 | **Erro auth** → email duplicado (409), senha errada (401) | ✅ Testado |
+| 6 | **Endpoints** → público (200) vs protegido (401) | ✅ Testado |
 
-### 3.2. Alinhamento de Tipos (Prioridade Alta)
+### 3.2. Lacunas Remanescentes
 
-Verificar compatibilidade entre os tipos TypeScript do frontend e os DTOs Java do backend:
-
-- [ ] `User` (frontend) ↔ `UserResponse` (backend)
-- [ ] `Title` (frontend) ↔ `TitleResponse` (backend)
-- [ ] `CommentData` (frontend) ↔ `CommentResponse` (backend)
-- [ ] `MangaRating` (frontend) ↔ `RatingResponse` (backend)
-- [ ] `ForumTopic` (frontend) ↔ `ForumTopicResponse` (backend)
-- [ ] `Group` (frontend) ↔ `GroupResponse` (backend)
-- [ ] `NewsItem` (frontend) ↔ `NewsResponse` (backend)
-- [ ] `EventData` (frontend) ↔ `EventResponse` (backend)
-- [ ] `Store` (frontend) ↔ `StoreResponse` (backend)
-- [ ] `SavedMangaItem` (frontend) ↔ `LibraryItemResponse` (backend)
-- [ ] `ApiResponse<T>` (frontend) ↔ `ApiResponse<T>` (backend)
-- [ ] `PageResponse<T>` (frontend) ↔ `PageResponse<T>` (backend)
-
-### 3.3. Paginação Consistente (Prioridade Média)
-
-- [ ] Verificar se todos os endpoints paginados usam o mesmo formato (`page`, `size`, `sort`, `direction`)
-- [ ] Alinhar `PageResponse` do frontend com response do backend
-- [ ] Implementar infinite scroll ou paginação com botões onde necessário
-
-### 3.4. Error Handling Alinhado (Prioridade Média)
-
-- [ ] Mapear todos os error codes do backend para mensagens no frontend
-- [ ] Testar tratamento de `ApiErrorResponse` e `ValidationErrorResponse`
-- [ ] Garantir que field-level errors aparecem nos formulários corretos
-- [ ] Testar handling de timeout (30s configurado no Axios)
+| Feature | Lacuna | Impacto |
+|---------|--------|---------|
+| **news** | Endpoint `/related` não implementado | Seção "notícias relacionadas" sem dados |
+| **event** | Endpoint `/related` não implementado | Seção "eventos relacionados" sem dados |
+| **group** | Endpoint `/members/{id}` não implementado | Detalhe de membro indisponível |
+| **category** | `useCategoryFilters` com `localhost:5000` hardcoded | Filtro de categorias quebrado |
 
 ---
 
@@ -180,29 +164,29 @@ Verificar compatibilidade entre os tipos TypeScript do frontend e os DTOs Java d
 
 ### 4.1. Infraestrutura (Prioridade Alta)
 
-- [ ] Provisionar PostgreSQL 17, MongoDB 8, Redis 7, RabbitMQ 4 em cloud (AWS/GCP/DigitalOcean)
+- [ ] Provisionar PostgreSQL 17, MongoDB 8, Redis 7, RabbitMQ 4 em cloud
 - [ ] Configurar DNS e domínio
-- [ ] Configurar SSL/TLS (HTTPS) — certificado Let's Encrypt ou cloud provider
-- [ ] Configurar reverse proxy (Nginx) para frontend estático + backend API
-- [ ] Definir estratégia de backup (PostgreSQL pg_dump + mongodump, periodicidade)
+- [ ] Configurar SSL/TLS (HTTPS) — certificado Let's Encrypt
+- [ ] Configurar reverse proxy (Nginx)
+- [ ] Definir estratégia de backup
 
 ### 4.2. CI/CD Pipeline (Prioridade Alta)
 
-- [ ] Configurar GitHub Actions (ou GitLab CI) com workflow:
+- [ ] Configurar GitHub Actions com workflow (ver template em `deployment-plan.md`):
   - **Stage 1**: Lint (ESLint + Prettier) + TypeScript check
   - **Stage 2**: Testes backend (Maven test) + Testes frontend
   - **Stage 3**: Build frontend (Vite) + Build backend (Maven + Docker)
   - **Stage 4**: Push Docker image para registry
   - **Stage 5**: Deploy para ambiente de staging/produção
-- [ ] Configurar secrets no CI (DATABASE_URL, JWT_SECRET, etc.)
+- [ ] Configurar secrets no CI
 - [ ] Implementar deploy com rollback automático
 
 ### 4.3. Monitoramento (Prioridade Média)
 
-- [ ] Configurar health checks (backend: `/actuator/health`, frontend: Nginx health)
-- [ ] Integrar métricas (Prometheus + Grafana ou equivalente cloud)
-- [ ] Configurar alertas (email/Slack) para erros 5xx, latência alta, disco cheio
-- [ ] Implementar logging centralizado (ELK, Grafana Loki ou equivalente)
+- [ ] Configurar health checks
+- [ ] Integrar métricas (Prometheus + Grafana)
+- [ ] Configurar alertas (email/Slack)
+- [ ] Implementar logging centralizado
 
 ### 4.4. Segurança de Produção (Prioridade Alta)
 
@@ -211,33 +195,3 @@ Verificar compatibilidade entre os tipos TypeScript do frontend e os DTOs Java d
 - [ ] Configurar rate limiting para endpoints públicos
 - [ ] Desabilitar Swagger em produção ou proteger com autenticação
 - [ ] Configurar headers de segurança (HSTS, X-Content-Type-Options, etc.)
-- [ ] Revisar open-in-view: false (já configurado)
-
----
-
-## 5. Roadmap Resumido
-
-### Fase 1: Integração Core (Estimativa: Semanas 1-3)
-1. Testar e validar fluxo de auth completo (E2E)
-2. Conectar library, rating, comment CRUD à API
-3. Conectar user profile à API
-4. Implementar validação em forms de auth
-
-### Fase 2: Integração Completa (Estimativa: Semanas 4-6)
-5. Conectar forum, group à API
-6. Conectar news, event, store à API
-7. Alinhar tipos e paginação
-8. Implementar validação nos formulários restantes
-
-### Fase 3: Qualidade (Estimativa: Semanas 7-9)
-9. Escrever testes unitários para use cases do backend
-10. Escrever testes de integração para controllers
-11. Escrever testes de componentes no frontend
-12. Implementar lazy loading e code splitting
-
-### Fase 4: Produção (Estimativa: Semanas 10-12)
-13. Configurar CI/CD pipeline
-14. Provisionar infraestrutura cloud
-15. Deploy em staging + testes de carga
-16. Conteúdo legal (Termos, DMCA)
-17. Deploy em produção + monitoramento

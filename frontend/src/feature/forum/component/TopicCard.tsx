@@ -8,6 +8,7 @@ import {
     FiBookmark,
 } from 'react-icons/fi';
 
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 import {
     formatRelativeDate,
     getCategoryColor,
@@ -20,10 +21,11 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => (
         className="flex gap-4 p-4 transition-colors border rounded-lg border-tertiary bg-secondary hover:bg-tertiary/30"
     >
         {/* Avatar */}
-        <img
+        <UserAvatar
             src={topic.author.avatar}
-            alt={topic.author.name}
-            className="object-cover w-10 h-10 rounded-full shrink-0"
+            name={topic.author.name}
+            size="md"
+            rounded="full"
         />
 
         {/* Content */}

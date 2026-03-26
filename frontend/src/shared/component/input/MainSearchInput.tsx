@@ -1,17 +1,31 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoSearchSharp } from 'react-icons/io5';
 
-// TODO: Terminar a implementação do componente.
 const MainSearchInput = () => {
+    const [query, setQuery] = useState('');
+    const navigate = useNavigate();
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const trimmed = query.trim();
+        if (trimmed) {
+            navigate(`/Manga-Reader/search?q=${encodeURIComponent(trimmed)}`);
+        }
+    };
+
     return (
         <div className="w-full">
-            <form role="search">
+            <form role="search" onSubmit={handleSubmit}>
                 <div className="flex items-center h-10 px-4 transition-shadow duration-300 rounded-xs bg-tertiary shadow-default focus:shadow-inside hover:shadow-inside">
                     <input
                         name="search"
-                        type="Search"
+                        type="search"
                         aria-label="Search"
                         placeholder="Pesquisar por obras, autores, gêneros..."
                         className="w-full truncate bg-transparent border-none outline-none appearance-none placeholder-primary-default placeholder:text-sm grow"
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
                     />
                     <div className="flex items-center justify-center">
                         <div className="w-[0.0625rem] h-[1.875rem] bg-secondary"></div>

@@ -5,6 +5,7 @@ import { type User } from '@feature/user';
 import { MdAdminPanelSettings, MdStar } from 'react-icons/md';
 
 import formatRelativeDate from '@shared/service/util/formatRelativeDate';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 
 type CommentUserProps = {
     user: Partial<User> & { name: string };
@@ -68,22 +69,11 @@ const CommentUser = ({
                         'cursor-pointer hover:border-quaternary-opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-opacity-50 transition-all duration-300',
                 )}
             >
-                {user.photo ? (
-                    <img
-                        src={user.photo}
-                        alt={`Foto de perfil de ${user.name}`}
-                        className="block object-cover w-full h-full"
-                    />
-                ) : (
-                    <div
-                        className={clsx(
-                            'flex items-center justify-center w-full h-full font-bold bg-quaternary-opacity-25 text-white',
-                            config.avatarFallback,
-                        )}
-                    >
-                        {user.name.charAt(0).toUpperCase()}
-                    </div>
-                )}
+                <UserAvatar
+                    src={user.photo}
+                    name={user.name}
+                    size={size === 'sm' ? 'sm' : 'lg'}
+                />
             </AvatarTag>
             <div className="flex flex-col justify-center min-w-0 gap-1">
                 <div className="flex flex-col gap-2">

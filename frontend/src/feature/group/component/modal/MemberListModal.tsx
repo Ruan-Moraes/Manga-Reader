@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
+import UserAvatar from '@shared/component/avatar/UserAvatar';
 import { GroupMember, Group } from '../../type/group.types';
 import GroupMemberModal from './GroupMemberModal';
 
@@ -54,10 +55,11 @@ const MemberListModal = ({
                                 onClick={() => setSelectedUser(member)}
                                 className="flex gap-3 items-center p-2 text-left border rounded-xs border-tertiary hover:border-quaternary hover:shadow-default transition-all"
                             >
-                                <img
+                                <UserAvatar
                                     src={member.avatar}
-                                    alt={member.name}
-                                    className="w-10 h-10 rounded-full"
+                                    name={member.name}
+                                    size="md"
+                                    rounded="full"
                                 />
                                 <div>
                                     <p className="text-sm font-bold">
