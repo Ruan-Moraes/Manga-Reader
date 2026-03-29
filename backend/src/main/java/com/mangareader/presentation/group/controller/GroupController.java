@@ -1,6 +1,5 @@
 package com.mangareader.presentation.group.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +31,7 @@ import com.mangareader.application.group.usecase.UpdateGroupUseCase;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.presentation.group.dto.AddWorkRequest;
 import com.mangareader.presentation.group.dto.CreateGroupRequest;
+import com.mangareader.presentation.group.dto.GroupPreviewResponse;
 import com.mangareader.presentation.group.dto.GroupResponse;
 import com.mangareader.presentation.group.dto.UpdateGroupRequest;
 import com.mangareader.presentation.group.mapper.GroupMapper;
@@ -163,11 +163,17 @@ public class GroupController {
     }
 
     @GetMapping("/title/{titleId}")
-    @Operation(summary = "Grupos por título", description = "Retorna grupos que traduzem um título específico")
-    public ResponseEntity<ApiResponse<List<GroupResponse>>> getByTitleId(@PathVariable String titleId) {
-        var groups = getGroupsByTitleIdUseCase.execute(titleId);
+    @Operation(summary = "Grupos por título", description = "Retorna grupos que traduzem um título específico com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<GroupPreviewResponse>>> getByTitleId(
+            @PathVariable String titleId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+        var result = getGroupsByTitleIdUseCase.execute(titleId, pageable);
+        var mapped = result.map(GroupMapper::toPreviewResponse);
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponseList(groups)));
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @PostMapping("/{id}/works")

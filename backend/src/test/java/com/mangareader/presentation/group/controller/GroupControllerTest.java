@@ -202,26 +202,34 @@ class GroupControllerTest {
     class GetByTitleId {
 
         @Test
-        @DisplayName("Deve retornar 200 com lista de grupos por título")
+        @DisplayName("Deve retornar 200 com página de grupos por título")
         void deveRetornar200() throws Exception {
-            when(getGroupsByTitleIdUseCase.execute("title-1"))
-                    .thenReturn(List.of(buildGroup(UUID.randomUUID())));
+            var groups = List.of(buildGroup(UUID.randomUUID()));
+            var page = new org.springframework.data.domain.PageImpl<>(groups,
+                    org.springframework.data.domain.PageRequest.of(0, 20), 1);
+            when(getGroupsByTitleIdUseCase.execute(any(String.class), any(org.springframework.data.domain.Pageable.class)))
+                    .thenReturn(page);
 
             mockMvc.perform(get("/api/groups/title/title-1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.length()").value(1));
+                    .andExpect(jsonPath("$.data.content.length()").value(1))
+                    .andExpect(jsonPath("$.data.totalElements").value(1));
         }
 
         @Test
-        @DisplayName("Deve retornar 200 com lista vazia")
-        void deveRetornarListaVazia() throws Exception {
-            when(getGroupsByTitleIdUseCase.execute("title-x"))
-                    .thenReturn(List.of());
+        @DisplayName("Deve retornar 200 com página vazia")
+        void deveRetornarPaginaVazia() throws Exception {
+            var pageable = org.springframework.data.domain.PageRequest.of(0, 20);
+            org.springframework.data.domain.Page<com.mangareader.domain.group.entity.Group> emptyPage =
+                    new org.springframework.data.domain.PageImpl<>(List.of(), pageable, 0);
+            when(getGroupsByTitleIdUseCase.execute(any(String.class), any(org.springframework.data.domain.Pageable.class)))
+                    .thenReturn(emptyPage);
 
             mockMvc.perform(get("/api/groups/title/title-x"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data").isEmpty());
+                    .andExpect(jsonPath("$.data.content").isEmpty())
+                    .andExpect(jsonPath("$.data.totalElements").value(0));
         }
     }
 

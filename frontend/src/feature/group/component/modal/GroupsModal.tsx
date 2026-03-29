@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
 import GroupSummaryCard from '../card/GroupSummaryCard';
 
-import { Group } from '../../type/group.types';
-import { getGroupsByTitleId } from '../../service/groupService';
-import BaseButton from '@shared/component/button/BaseButton.tsx';
+import BaseModal from '@shared/component/modal/base/BaseModal';
 import DarkButton from '@shared/component/button/DarkButton.tsx';
+
+import { getGroupsByTitleId } from '../../service/groupService';
+
+import { GroupSummary } from '@feature/group';
 
 type GroupsModalProps = {
     isModalOpen: boolean;
     closeModal: () => void;
-    groups?: Group[];
+    groups?: GroupSummary[];
     isLoading?: boolean;
     titleId?: number;
 };
@@ -23,17 +24,22 @@ const GroupsModal = ({
     isLoading = false,
     titleId,
 }: GroupsModalProps) => {
-    const [scopedGroups, setScopedGroups] = useState<Group[]>(groups ?? []);
     const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    const [scopedGroups, setScopedGroups] = useState<GroupSummary[]>(
+        groups ?? [],
+    );
 
     useEffect(() => {
         if (groups) {
             setScopedGroups(groups);
+
             return;
         }
 
         if (titleId && isModalOpen) {
             setIsFetching(true);
+
             getGroupsByTitleId(String(titleId))
                 .then(res => setScopedGroups(res.content))
                 .finally(() => setIsFetching(false));
@@ -70,7 +76,6 @@ const GroupsModal = ({
                             ))}
                         </div>
                     )}
-
                     {!showLoading && scopedGroups.length === 0 && (
                         <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
                             <p className="text-tertiary text-center text-sm">
@@ -79,7 +84,6 @@ const GroupsModal = ({
                             </p>
                         </div>
                     )}
-
                     {!showLoading && scopedGroups.length > 0 && (
                         <div className="flex flex-col gap-3">
                             {scopedGroups.map(group => (

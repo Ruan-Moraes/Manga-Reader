@@ -39,7 +39,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class GroupMember {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

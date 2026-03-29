@@ -59,6 +59,11 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public Page<Group> findByTitleId(String titleId, Pageable pageable) {
+        return repository.findByTitleId(titleId, pageable);
+    }
+
+    @Override
     public Page<Group> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }

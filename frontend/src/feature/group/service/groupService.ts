@@ -2,7 +2,7 @@ import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import { type GroupStatus, type Group } from '../type/group.types';
+import { type GroupStatus, type Group, type GroupSummary } from '../type/group.types';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -34,8 +34,8 @@ export const getGroupsByTitleId = async (
     titleId: string,
     page = 0,
     size = 20,
-): Promise<PageResponse<Group>> => {
-    const response = await api.get<ApiResponse<PageResponse<Group>>>(
+): Promise<PageResponse<GroupSummary>> => {
+    const response = await api.get<ApiResponse<PageResponse<GroupSummary>>>(
         `${API_URLS.GROUPS}/title/${titleId}`,
         { params: { page, size } },
     );

@@ -61,3 +61,21 @@ export type Group = {
     translatedWorks: GroupWork[];
     translatedTitleIds: string[];
 };
+
+export type GroupSummary = {
+    id: string;
+    name: string;
+    username: string;
+    logo: string;
+    banner: string;
+    description: string;
+    website: string;
+    totalTitles: number;
+    foundedYear: number;
+    platformJoinedAt: string;
+    status: GroupStatus;
+    genres: string[];
+    focusTags: string[];
+    rating: number;
+    popularity: number;
+};
