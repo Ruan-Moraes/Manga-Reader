@@ -24,7 +24,9 @@ const Comment = ({
     onDislike,
     titleId,
     nestedLevel = 0,
+    parentUserName = null,
     id,
+    parentCommentId,
     user,
     isOwner,
     isHighlighted,
@@ -35,7 +37,7 @@ const Comment = ({
     likeCount,
     dislikeCount,
     userReaction,
-}: { nestedLevel?: number } & {
+}: { nestedLevel?: number; parentUserName?: string | null } & {
     onClickProfile: (user: User) => void;
     onClickEdit: (
         id: string,
@@ -86,6 +88,12 @@ const Comment = ({
         recommendedTitles: user.recommendedTitles,
     };
 
+    const MAX_VISUAL_DEPTH = 5;
+
+    const isDeepNested = nestedLevel > MAX_VISUAL_DEPTH;
+
+    const visualLevel = isDeepNested ? 0 : nestedLevel;
+
     const getIndentationMargin = (level: number) => {
         if (level === 0) return 0;
         if (level === 1) return 8;
@@ -100,6 +108,42 @@ const Comment = ({
         return -(index * 8 + 8 * (index + 1));
     };
 
+    const handleScrollToParent = () => {
+        if (!parentCommentId) return;
+
+        const parentElement = document.getElementById(
+            `comment-${parentCommentId}`,
+        );
+
+        if (!parentElement) return;
+
+        const cardElement =
+            parentElement.querySelector<HTMLElement>('.comment-card');
+
+        if (!cardElement) return;
+
+        parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        cardElement.style.setProperty('border-color', '#ddda2a', 'important');
+        cardElement.style.setProperty(
+            'transition',
+            'border-color 0.5s ease-out',
+        );
+
+        setTimeout(() => {
+            cardElement.style.setProperty(
+                'border-color',
+                '#727273',
+                'important',
+            );
+        }, 2500);
+
+        setTimeout(() => {
+            cardElement.style.removeProperty('border-color');
+            cardElement.style.removeProperty('transition');
+        }, 3000);
+    };
+
     const handleReplySubmit = (
         replyText: string | null,
         replyImage: string | null,
@@ -110,15 +154,16 @@ const Comment = ({
 
     return (
         <div
+            id={`comment-${id}`}
             style={{
-                marginLeft: getIndentationMargin(nestedLevel) / 16 + 'rem',
+                marginLeft: getIndentationMargin(visualLevel) / 16 + 'rem',
             }}
             className={clsx({
-                [`relative`]: nestedLevel > 0,
+                [`relative`]: visualLevel > 0,
             })}
         >
-            {nestedLevel > 0 &&
-                Array.from({ length: nestedLevel }, (_, index) => (
+            {visualLevel > 0 &&
+                Array.from({ length: visualLevel }, (_, index) => (
                     <div
                         key={index}
                         className="absolute h-full border-l border-quaternary-opacity-25"
@@ -127,21 +172,33 @@ const Comment = ({
                         }}
                     ></div>
                 ))}
-            {nestedLevel > 0 && (
+            {visualLevel > 0 && (
                 <div className="absolute w-[0.9375rem] border-t -left-[0.4453125rem] border-quaternary-opacity-25 top-6"></div>
             )}
             <div
                 style={{
-                    marginLeft: nestedLevel === 0 ? 0 : 0.5 + 'rem',
+                    marginLeft: visualLevel === 0 ? 0 : 0.5 + 'rem',
                 }}
                 className={clsx(
-                    'flex flex-col gap-2 p-2 border rounded-xs rounded-bl-none border-tertiary mt-4',
+                    'comment-card flex flex-col gap-2 p-2 border rounded-xs rounded-bl-none border-tertiary mt-4',
                     {
                         'bg-secondary': !isHighlighted,
                         'bg-quaternary-opacity-25': isHighlighted,
                     },
                 )}
             >
+                {isDeepNested && parentUserName && (
+                    <button
+                        type="button"
+                        onClick={handleScrollToParent}
+                        className="self-start text-xs text-tertiary hover:text-quaternary-default transition-colors cursor-pointer"
+                    >
+                        ↳ Em resposta a{' '}
+                        <span className="font-semibold text-quaternary-default">
+                            {parentUserName}
+                        </span>
+                    </button>
+                )}
                 <CommentMetadata createdAt={createdAt} wasEdited={wasEdited} />
                 <CommentUser
                     onClickProfile={onClickProfile}

@@ -57,7 +57,12 @@ const useCommentTree = (comments: CommentData[] | Error) => {
         (
             comments: CommentWithChildren[],
             level = 0,
-        ): { comment: CommentData; nestedLevel: number }[] => {
+            parentUserName: string | null = null,
+        ): {
+            comment: CommentData;
+            nestedLevel: number;
+            parentUserName: string | null;
+        }[] => {
             if (isError || !comments || comments.length === 0) {
                 return [];
             }
@@ -66,9 +71,14 @@ const useCommentTree = (comments: CommentData[] | Error) => {
                 {
                     comment: { ...comment, children: null },
                     nestedLevel: level,
+                    parentUserName: level > 0 ? parentUserName : null,
                 },
 
-                ...flattenTree(comment.children, level + 1),
+                ...flattenTree(
+                    comment.children,
+                    level + 1,
+                    comment.user.name,
+                ),
             ]);
         },
         [isError],

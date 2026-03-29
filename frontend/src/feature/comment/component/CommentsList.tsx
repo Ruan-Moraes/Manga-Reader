@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { type User, useUserModalContext, UserModal } from '@feature/user';
 import { type CommentData } from '../type/comment.types';
@@ -43,6 +43,20 @@ const CommentsList = ({
     const { reactionsMap, toggleLike, toggleDislike } =
         useCommentReactions(commentIds);
 
+    const [showDeepComments, setShowDeepComments] = useState(false);
+
+    const MAX_VISUAL_DEPTH = 5;
+
+    const deepCount = visibleItems.filter(
+        item => item.nestedLevel > MAX_VISUAL_DEPTH,
+    ).length;
+
+    const displayItems = showDeepComments
+        ? visibleItems
+        : visibleItems.filter(
+              item => item.nestedLevel <= MAX_VISUAL_DEPTH,
+          );
+
     const handleClickProfile = useCallback(
         (user: User): void => {
             setUserData({
@@ -82,7 +96,18 @@ const CommentsList = ({
     return (
         <div className="flex flex-col -mt-8">
             <UserModal />
-            {visibleItems.map(({ comment, nestedLevel }) => (
+            {deepCount > 0 && (
+                <button
+                    type="button"
+                    onClick={() => setShowDeepComments(prev => !prev)}
+                    className="self-start text-xs text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer mt-4"
+                >
+                    {showDeepComments
+                        ? '− Ocultar respostas profundas'
+                        : `+ Mostrar ${deepCount} ${deepCount === 1 ? 'resposta profunda' : 'respostas profundas'}`}
+                </button>
+            )}
+            {displayItems.map(({ comment, nestedLevel, parentUserName }) => (
                 <Comment
                     key={comment.id}
                     titleId={titleId}
@@ -93,6 +118,7 @@ const CommentsList = ({
                     onLike={toggleLike}
                     onDislike={toggleDislike}
                     nestedLevel={nestedLevel}
+                    parentUserName={parentUserName}
                     id={comment.id}
                     parentCommentId={comment.parentCommentId}
                     user={comment.user}

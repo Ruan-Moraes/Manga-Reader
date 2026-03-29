@@ -92,6 +92,8 @@ html {
     }
 }
 
+/* Comment highlight — scroll-to-parent (controlado via JS inline style) */
+
 /* Fade-in for step transitions */
 
 @keyframes fadeIn {
