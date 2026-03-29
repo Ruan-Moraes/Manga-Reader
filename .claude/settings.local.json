@@ -12,7 +12,18 @@
       "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$HOME/AppData/Roaming/**)",
       "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$HOME/AppData/Local/**)",
       "Bash(FNM_DIR=\"/c/Users/Ruan/AppData/Local/Microsoft/WinGet/Packages/Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe\")",
-      "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$FNM_DIR/**)"
+      "Read(//c/Users/Ruan/Documents/meusProjetos/Manga-Reader/$FNM_DIR/**)",
+      "WebSearch",
+      "WebFetch(domain:mongodb.github.io)",
+      "WebFetch(domain:jira.mongodb.org)",
+      "WebFetch(domain:github.com)",
+      "Bash(mvn test:*)",
+      "mcp__plugin_context-mode_context-mode__ctx_doctor",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "mcp__plugin_context-mode_context-mode__ctx_search",
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(npx vitest:*)",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index"
     ]
   }
 }

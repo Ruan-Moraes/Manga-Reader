@@ -41,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Autenticação e gerenciamento de sessão")
 public class AuthController {
-
     private final SignInUseCase signInUseCase;
     private final SignUpUseCase signUpUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
@@ -55,6 +54,7 @@ public class AuthController {
             @Valid @RequestBody SignInRequest request
     ) {
         var input = new SignInUseCase.SignInInput(request.email(), request.password());
+
         var output = signInUseCase.execute(input);
 
         var response = new AuthResponse(
@@ -78,6 +78,7 @@ public class AuthController {
         var input = new SignUpUseCase.SignUpInput(
                 request.name(), request.email(), request.password()
         );
+
         var output = signUpUseCase.execute(input);
 
         var response = new AuthResponse(
@@ -100,6 +101,7 @@ public class AuthController {
             @Valid @RequestBody RefreshTokenRequest request
     ) {
         var input = new RefreshTokenUseCase.RefreshInput(request.refreshToken());
+
         var output = refreshTokenUseCase.execute(input);
 
         var response = new AuthResponse(
@@ -115,6 +117,7 @@ public class AuthController {
     @Operation(summary = "Usuário atual", description = "Retorna os dados do usuário autenticado")
     public ResponseEntity<ApiResponse<AuthResponse>> getCurrentUser(Authentication auth) {
         UUID userId = (UUID) auth.getPrincipal();
+
         User user = getCurrentUserUseCase.execute(userId);
 
         var response = new AuthResponse(
@@ -135,6 +138,7 @@ public class AuthController {
             @Valid @RequestBody ForgotPasswordRequest request
     ) {
         forgotPasswordUseCase.execute(request.email());
+
         return ResponseEntity.ok(ApiResponse.success(
                 "Se o email estiver cadastrado, um link de redefinição será enviado."
         ));
@@ -146,6 +150,7 @@ public class AuthController {
             @Valid @RequestBody ResetPasswordRequest request
     ) {
         resetPasswordUseCase.execute(request.token(), request.newPassword());
+
         return ResponseEntity.ok(ApiResponse.success("Senha redefinida com sucesso."));
     }
 }

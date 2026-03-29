@@ -1,153 +1,178 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
 
-Manga Reader — a platform for reading mangás, manhwas, and manhuas. Monorepo with a Spring Boot backend and React frontend.
+**Manga Reader** — plataforma para leitura de mangás, manhwas e manhuas. Monorepo com Spring Boot (backend) e React (frontend).
 
-## Build & Development Commands
+## Build & Run
 
-### Backend (from `/backend/`)
-
-```bash
-# Run all tests (727 tests, JUnit 5 + Mockito + H2 + TestContainers)
-mvn test
-
-# Run a single test class
-mvn test -Dtest=UserTest
-
-# Run a single test method
-mvn test -Dtest=UserTest#shouldInitializeDefaultValuesWhenUsingBuilder
-
-# Run tests by layer
-mvn test -Dtest=**/domain/**/*Test
-mvn test -Dtest=**/application/**/*Test
-mvn test -Dtest=**/presentation/**/*Test
-mvn test -Dtest=**/infrastructure/**/*Test
-
-# Build JAR (skipping tests)
-mvn package -DskipTests
-
-# Start application (Docker Compose services auto-start)
-mvn spring-boot:run
-```
-
-### Frontend (from `/frontend/`)
+### Backend (`/backend/`)
 
 ```bash
-npm run dev        # Dev server on :5173 (proxies API to :8080)
-npm run build      # TypeScript check + production build
-npm run lint       # ESLint
-npm run format     # Prettier
-npm test           # Run all tests (Vitest)
-npm run test:watch # Watch mode
+mvn test                                        # Todos os testes (727, JUnit 5 + Mockito + H2 + TestContainers)
+mvn test -Dtest=UserTest                        # Classe específica
+mvn test -Dtest=UserTest#shouldInitialize...    # Método específico
+mvn test -Dtest=**/domain/**/*Test              # Por camada (domain/application/presentation/infrastructure)
+mvn package -DskipTests                         # Build JAR
+mvn spring-boot:run                             # Iniciar (Docker Compose sobe automaticamente)
 ```
 
-### Infrastructure
+### Frontend (`/frontend/`)
 
-Docker Compose in `/backend/docker-compose.yml` provides PostgreSQL 17, MongoDB 8.0, RabbitMQ 4, and Redis 7. Spring Boot auto-manages these containers via `spring-boot-docker-compose`.
+```bash
+npm run dev         # Dev server :5173 (proxy API → :8080)
+npm run build       # TypeScript check + production build
+npm run lint        # ESLint
+npm run format      # Prettier
+npm test            # Vitest
+npm run test:watch  # Watch mode
+```
+
+### Infra
+
+Docker Compose em `/backend/docker-compose.yml`: PostgreSQL 17, MongoDB 8.0, RabbitMQ 4, Redis 7. Gerenciado automaticamente via `spring-boot-docker-compose`.
+
+---
 
 ## Architecture
 
-**Clean Architecture with 4 layers** — dependency flows inward:
+**Clean Architecture — 4 camadas, dependência flui para dentro:**
 
 ```
-presentation (REST controllers + DTOs + MapStruct mappers)
-      ↓
-application (use cases — each implements a Port interface)
-      ↓
-domain (entities, value objects, enums — no framework dependencies)
-      ↑
-infrastructure (persistence adapters, security, email, messaging)
+presentation → application → domain ← infrastructure
 ```
 
-### 12 Business Domains
+- **presentation**: REST controllers, DTOs, MapStruct mappers
+- **application**: use cases (cada um implementa uma Port interface)
+- **domain**: entities, value objects, enums — zero dependência de framework
+- **infrastructure**: persistence adapters, security, email, messaging
 
-Auth, User, Manga (titles/chapters), Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store — each domain has its own package in every layer.
+### 12 Domínios
+
+Auth, User, Manga, Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store — cada um com package próprio em todas as camadas.
 
 ### Dual Database
 
-- **PostgreSQL** (JPA/Hibernate + Flyway migrations): users, groups, events, forum, library, stores, tags
-- **MongoDB** (Spring Data Mongo + Mongock migrations): titles, chapters, comments, ratings, news
+| DB | Tech | Responsável por |
+|----|------|----------------|
+| PostgreSQL | JPA/Hibernate + Flyway | users, groups, events, forum, library, stores, tags |
+| MongoDB | Spring Data Mongo + Mongock | titles, chapters, comments, ratings, news |
 
 ### Key Patterns
 
-- **Ports & Adapters**: use cases depend on port interfaces; infrastructure implements them
-- **MapStruct**: static final-class mappers for DTO↔entity conversion in controllers
-- **JWT Auth**: `JwtAuthenticationFilter` depends on `TokenPort` — all `@WebMvcTest` tests must mock `TokenPort` via `@MockitoBean`
-- **Test profile**: `application-test.yml` uses H2 in-memory (Flyway disabled, ddl-auto: create-drop)
-- **@Transactional**: All data-modifying use cases that access lazy-loaded collections or perform multi-repository operations **must** have `@Transactional`. Read-only use cases accessing lazy collections must have `@Transactional(readOnly = true)`
+- **Ports & Adapters**: use cases dependem de port interfaces; infrastructure implementa
+- **MapStruct**: mappers estáticos `final class` para conversão DTO↔entity nos controllers
+- **JWT Auth**: `JwtAuthenticationFilter` depende de `TokenPort` — todo `@WebMvcTest` **deve** mockar `TokenPort` via `@MockitoBean`
+- **@Transactional**: use cases que modificam dados ou acessam lazy collections **devem** ter `@Transactional`. Read-only com lazy collections: `@Transactional(readOnly = true)`
+
+### API Response Patterns
+
+Todas as respostas da API seguem um dos dois padrões:
+
+**Resposta simples** — `ApiResponse<T>`:
+```json
+{ "data": T, "success": true, "message": "...", "statusCode": 200 }
+```
+Frontend acessa: `response.data.data`
+
+**Resposta paginada** — `ApiResponse<PageResponse<T>>`:
+```json
+{
+  "data": {
+    "content": [],
+    "page": 0, "size": 20,
+    "totalElements": 100, "totalPages": 5, "last": false
+  },
+  "success": true
+}
+```
+Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `data.data` no service)
+
+**Regra**: Endpoints de listagem **devem** retornar `ApiResponse<PageResponse<T>>` com paginação. Endpoints de item único retornam `ApiResponse<T>` direto.
+
+---
+
+## Clean Code Guidelines
+
+### Constantes sobre Magic Numbers
+- Substituir valores hard-coded por constantes nomeadas com nomes descritivos
+- Manter constantes no topo do arquivo ou em arquivo dedicado
+
+### Nomes Significativos
+- Variáveis, funções e classes devem revelar seu propósito
+- Evitar abreviações, exceto as universalmente compreendidas
+
+### Comentários Inteligentes
+- Não comentar **o quê** o código faz — tornar o código autoexplicativo
+- Comentar **por quê** algo é feito de determinada forma
+- Documentar APIs, algoritmos complexos e side effects não óbvios
+
+### Responsabilidade Única
+- Cada função faz exatamente uma coisa, pequena e focada
+- Se precisa de comentário para explicar o que faz, deve ser dividida
+
+### DRY (Don't Repeat Yourself)
+- Extrair código repetido em funções reutilizáveis
+- Manter single sources of truth
+
+### Encapsulamento
+- Esconder detalhes de implementação, expor interfaces claras
+- Mover condicionais aninhados para funções bem nomeadas
+
+### Qualidade Contínua
+- Refatorar continuamente; corrigir tech debt cedo
+- Deixar o código mais limpo do que encontrou
+
+---
 
 ## Test Conventions
 
-### Backend
+### Workflow Obrigatório (TDD-like)
 
-| Layer | Annotation | Style |
-|-------|-----------|-------|
-| Domain | None | Pure JUnit 5, no Spring |
-| Application | `@ExtendWith(MockitoExtension.class)` | Mockito mocks of ports |
-| Presentation | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort tokenPort` required |
-| Infrastructure JPA | `@DataJpaTest` + `@ActiveProfiles("test")` | H2 in-memory DB |
+1. Escrever/atualizar testes primeiro (red)
+2. Implementar funcionalidade (green)
+3. Rodar todos os testes após implementação
+
+### Backend — Anotações por Camada
+
+| Camada | Anotação | Estilo |
+|--------|----------|--------|
+| Domain | Nenhuma | JUnit 5 puro, sem Spring |
+| Application | `@ExtendWith(MockitoExtension.class)` | Mockito mocks de ports |
+| Presentation | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort tokenPort` **obrigatório** |
+| Infrastructure JPA | `@DataJpaTest` + `@ActiveProfiles("test")` | H2 in-memory |
 | Infrastructure MongoDB | `@DataMongoTest` + `@ActiveProfiles("test")` + `@Import(MongoTestContainerConfig.class)` | TestContainers (mongo:8.0) |
 
 ### Frontend
 
-| Type | Location | Style |
-|------|----------|-------|
-| Hooks | `feature/{name}/hook/__tests__/` | `renderHook` / `renderHookWithProviders` + MSW handlers |
-| Components | (pending) | `render` + `@testing-library/react` + MSW |
+| Tipo | Local | Estilo |
+|------|-------|--------|
+| Hooks | `feature/{name}/hook/__tests__/` | `renderHookWithProviders` + MSW handlers |
+| Components | (pendente) | `render` + `@testing-library/react` + MSW |
 
 - **Stack**: Vitest (standalone `vitest.config.ts`) + @testing-library/react + MSW v2
-- **vitest.config.ts is standalone** — must NOT extend `vite.config.ts` because it imports `ROUTES` which uses `import.meta.env` (breaks in test context)
-- **MSW handlers**: Use `*/api/...` wildcard pattern (baseURL may be empty in tests)
-- **QueryClient in tests**: Always use `retry: false` and `gcTime: 0` via `createTestQueryClient()` from `src/test/testUtils.tsx`
-- **Auth state isolation**: `localStorage.clear()` runs in `afterEach` (setupTests.ts) to prevent session leakage
-- **Toast mocking**: For hooks using `toastService`, mock via `vi.mock('@shared/service/util/toastService')`
+- **vitest.config.ts é standalone** — NÃO estender `vite.config.ts` (importa `ROUTES` com `import.meta.env`, quebra em testes)
+- **MSW handlers**: padrão `*/api/...` wildcard (baseURL pode ser vazio em testes)
+- **QueryClient em testes**: sempre `retry: false` e `gcTime: 0` via `createTestQueryClient()` de `src/test/testUtils.tsx`
+- **Isolamento de auth**: `localStorage.clear()` roda no `afterEach` (setupTests.ts)
+- **Toast mocking**: `vi.mock('@shared/service/util/toastService')`
 
-### Known Test Limitations
+### Cobertura Exigida por Tipo de Mudança
 
-- **H2 vs PostgreSQL**: H2 doesn't support JSONB — avoid `entityManager.clear()` + re-read on entities with JSONB columns
-- **H2 collation**: ASCII collation differs from PostgreSQL — use ASCII-only labels in test data
-- **Lombok booleans**: getter for `boolean highlighted` is `isHighlighted()`, not `getHighlighted()`
-- **Docker API version**: `docker-java.properties` in test resources sets `api.version=1.44` for Docker 29+ compatibility with TestContainers 1.20.x
-- **MongoDB indexes**: After `mongoTemplate.dropCollection()` in `@BeforeEach`, compound indexes (e.g., MangaRating unique titleId+userId) must be re-created manually via `IndexResolver`
+| Tipo de Mudança | Teste Exigido |
+|-----------------|---------------|
+| Nova entity/VO/enum | Teste de domain (JUnit 5 puro) |
+| Novo use case | Teste de application (happy path + erros + edge cases) |
+| Novo/modificado endpoint | Teste de controller (status codes, response shape, validação) |
+| Novo método JPA repository | `@DataJpaTest` |
+| Novo método MongoDB repository | `@DataMongoTest` + TestContainers |
+| Bug fix | Teste de regressão que falha sem o fix |
+| Novo hook frontend | Hook test com `renderHookWithProviders` + MSW |
+| Novo componente frontend | Component test com `render` + @testing-library/react + MSW |
 
-## Development Policy (Backend)
+### Exemplos de Teste
 
-For any new feature, integration, or code change, follow TDD-like workflow:
-
-1. Write/update tests first (red)
-2. Implement the functionality (green)
-3. Run all tests after implementation
-
-## Acceptance Criteria & Tests (Mandatory)
-
-Every code change **must** include corresponding tests. No feature is considered complete without them.
-
-### Requirements Validation
-
-Before implementing, verify:
-- All specifications are understood (read this file + relevant domain code)
-- Identify which files need creation/modification
-- Map each requirement to at least one test case
-
-### Test Coverage Rules
-
-| Change Type | Required Tests |
-|-------------|---------------|
-| New entity / VO / enum | Domain-layer unit test (pure JUnit 5) |
-| New use case | Application-layer test (`@ExtendWith(MockitoExtension.class)`) with happy path, error cases, and edge cases |
-| New/modified endpoint | Controller test (`@WebMvcTest`) covering status codes, response shape, and validation |
-| New JPA repository method | `@DataJpaTest` integration test |
-| New MongoDB repository method | `@DataMongoTest` + TestContainers integration test |
-| Bug fix | Regression test that fails without the fix |
-| New frontend hook | Hook test with `renderHookWithProviders` + MSW handlers |
-| New frontend component | Component test with `render` + `@testing-library/react` + MSW |
-
-### Test Structure (Examples)
-
-**Domain test** — pure JUnit 5, no Spring:
+**Domain** — JUnit 5 puro:
 ```java
 @DisplayName("UserRecommendation")
 class UserRecommendationTest {
@@ -160,7 +185,7 @@ class UserRecommendationTest {
 }
 ```
 
-**Application test** — Mockito mocks of ports:
+**Application** — Mockito:
 ```java
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AddRecommendationUseCase")
@@ -183,14 +208,14 @@ class AddRecommendationUseCaseTest {
 }
 ```
 
-**Presentation test** — `@WebMvcTest` + MockMvc:
+**Presentation** — WebMvcTest:
 ```java
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
     @Autowired private MockMvc mockMvc;
-    @MockitoBean private TokenPort tokenPort;           // Always required
-    @MockitoBean private GetUserProfileUseCase useCase;  // Mock each injected use case
+    @MockitoBean private TokenPort tokenPort;
+    @MockitoBean private GetUserProfileUseCase useCase;
 
     @Test
     void deveRetornar200ComPerfilPublico() throws Exception {
@@ -202,63 +227,70 @@ class UserControllerTest {
 }
 ```
 
-### Verification Checklist
+### Known Test Limitations
 
-Before considering any task done:
-1. `mvn test` passes with **0 failures, 0 errors**
-2. `cd frontend && npx tsc --noEmit` compiles with **0 errors**
-3. Every new/changed requirement has a corresponding test
-4. No existing tests were broken or deleted without justification
+- **H2 vs PostgreSQL**: H2 não suporta JSONB — evitar `entityManager.clear()` + re-read em entities com colunas JSONB
+- **H2 collation**: collation ASCII difere do PostgreSQL — usar labels ASCII-only em dados de teste
+- **Lombok booleans**: getter de `boolean highlighted` é `isHighlighted()`, não `getHighlighted()`
+- **Docker API version**: `docker-java.properties` em test resources define `api.version=1.44` para compatibilidade Docker 29+ com TestContainers 1.20.x
+- **MongoDB indexes**: após `mongoTemplate.dropCollection()` no `@BeforeEach`, indexes compostos devem ser recriados manualmente via `IndexResolver`
 
 ### Lazy Collections & Transactions
 
-JPA `@OneToMany` associations use `FetchType.LAZY` by default. When a use case returns an entity whose lazy collections will be accessed outside the transaction (e.g., in a controller mapper):
-- Add `@Transactional(readOnly = true)` to the use case method
-- Force initialization inside the method: `entity.getCollection().size()`
+JPA `@OneToMany` usa `FetchType.LAZY` por padrão. Quando um use case retorna entity cujas lazy collections serão acessadas fora da transaction (ex.: no mapper do controller):
+- Adicionar `@Transactional(readOnly = true)` ao método do use case
+- Forçar inicialização dentro do método: `entity.getCollection().size()`
+
+---
+
+## Verification Checklist
+
+Antes de considerar qualquer tarefa concluída:
+
+1. `mvn test` passa com **0 failures, 0 errors**
+2. `cd frontend && npx tsc --noEmit` compila com **0 errors**
+3. Todo requisito novo/alterado tem teste correspondente
+4. Nenhum teste existente foi quebrado ou deletado sem justificativa
+5. Commits pequenos e focados com mensagens claras
+6. Branch names significativos
+
+---
+
+## Documentation Policy
+
+| Tipo de Mudança | Documentação Exigida |
+|-----------------|---------------------|
+| Nova feature/endpoint | Atualizar `README.md` (tabela endpoints), `CLAUDE.md` (patterns) |
+| Novo use case/entity | Atualizar `README.md` (métricas), `CLAUDE.md` (domínios se aplicável) |
+| Bug fix com lição aprendida | Atualizar `CLAUDE.md` (Known Test Limitations) |
+| Mudança de arquitetura | Atualizar `docs/overview.md`, `docs/backend-analysis.md` ou `docs/frontend-analysis.md` |
+| Novo tech debt identificado | Adicionar em `docs/tech-debt.md` com prioridade e impacto |
+| Tech debt resolvido | Remover de `docs/tech-debt.md`, atualizar `README.md` |
+| Nova tarefa pendente | Adicionar em `docs/pending-tasks.md` |
+| Tarefa concluída | Remover de `docs/pending-tasks.md` |
+| Mudança de versão de dependência | Atualizar `README.md` (Stack), `docs/overview.md` |
+| Mudança na contagem de testes | Atualizar `README.md` e `CLAUDE.md` |
+
+---
 
 ## Source Layout
 
 ```
 backend/src/main/java/com/mangareader/
-├── domain/{domain}/entity/          # Entities and VOs
-├── application/{domain}/usecase/    # Use cases
-├── application/{domain}/port/       # Port interfaces (in/out)
-├── infrastructure/persistence/      # postgres/adapter/, mongo/adapter/
-├── infrastructure/security/         # JWT, SecurityConfig, RateLimit
-├── presentation/{domain}/controller/ # REST endpoints
-├── presentation/{domain}/dto/       # Request/Response DTOs
-├── presentation/{domain}/mapper/    # MapStruct mappers
-└── shared/                          # Cross-cutting: configs, exceptions, constants
+├── domain/{domain}/entity/            # Entities e VOs
+├── application/{domain}/usecase/      # Use cases
+├── application/{domain}/port/         # Port interfaces (in/out)
+├── infrastructure/persistence/        # postgres/adapter/, mongo/adapter/
+├── infrastructure/security/           # JWT, SecurityConfig, RateLimit
+├── presentation/{domain}/controller/  # REST endpoints
+├── presentation/{domain}/dto/         # Request/Response DTOs
+├── presentation/{domain}/mapper/      # MapStruct mappers
+└── shared/                            # Cross-cutting: configs, exceptions, constants
 
 frontend/src/
-├── app/          # Layouts, router, route guards
-├── feature/      # 13 feature modules (component/, hook/, service/, type/)
-├── shared/       # Reusable components (~37), HTTP client, types
-├── mock/         # Mock data (legacy — all features now use real API)
-└── style/        # Global CSS + Tailwind
+├── app/      # Layouts, router, route guards
+├── feature/  # 13 feature modules (component/, hook/, service/, type/)
+├── shared/   # Reusable components (~37), HTTP client, types
+├── mock/     # Mock data (legacy — features usam API real)
+└── style/    # Global CSS + Tailwind
 ```
-
-## Documentation Policy
-
-Every code change **must** include corresponding documentation updates. No feature is considered complete without updated docs.
-
-| Change Type | Required Documentation |
-|-------------|----------------------|
-| New feature / endpoint | Update `README.md` (endpoints table), `CLAUDE.md` (patterns/conventions) |
-| New use case / entity | Update `README.md` (metrics), `CLAUDE.md` (domain list if applicable) |
-| Bug fix with lesson learned | Update `CLAUDE.md` (Known Test Limitations or equivalent section) |
-| Architecture change | Update `docs/overview.md`, `docs/backend-analysis.md` or `docs/frontend-analysis.md` |
-| New tech debt identified | Add to `docs/tech-debt.md` with priority and impact |
-| Tech debt resolved | Remove from `docs/tech-debt.md`, update `README.md` |
-| New pending task | Add to `docs/pending-tasks.md` |
-| Task completed | Remove from `docs/pending-tasks.md` |
-| Dependency version change | Update `README.md` (Stack table), `docs/overview.md` |
-| Test count change | Update `README.md` and `CLAUDE.md` test counts |
-
-### Documentation Verification Checklist
-
-Before considering any task done:
-1. `README.md` metrics match current state (test count, use case count, endpoint count)
-2. `CLAUDE.md` conventions reflect any new patterns introduced
-3. `docs/tech-debt.md` has no resolved items still listed
-4. `docs/pending-tasks.md` has no completed tasks still listed
