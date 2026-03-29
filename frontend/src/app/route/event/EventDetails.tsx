@@ -26,9 +26,11 @@ const EventDetails = () => {
 
     useEffect(() => {
         setIsLoading(true);
+
         getEventById(eventId)
             .then(data => {
                 setEvent(data);
+
                 return getRelatedEvents(data.id);
             })
             .then(setRelatedEvents)

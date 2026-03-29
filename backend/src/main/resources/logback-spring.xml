@@ -10,6 +10,7 @@
             <appender-ref ref="CONSOLE"/>
         </root>
         <logger name="com.mangareader" level="DEBUG"/>
+        <logger name="org.mongodb.driver.cluster" level="WARN"/>
     </springProfile>
     <springProfile name="prod">
         <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -20,6 +21,7 @@
         </root>
         <logger name="com.mangareader" level="INFO"/>
         <logger name="org.hibernate.SQL" level="WARN"/>
+        <logger name="org.mongodb.driver.cluster" level="WARN"/>
     </springProfile>
     <springProfile name="test">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

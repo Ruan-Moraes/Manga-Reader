@@ -43,6 +43,7 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.starttls.required: true
+
 # Logging controlado por logback-spring.xml
 app:
   jwt:
