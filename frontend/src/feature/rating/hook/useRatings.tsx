@@ -5,7 +5,8 @@ import {
     getRatingsByTitleId,
     submitRating as submitRatingService,
 } from '../service/ratingService';
-import { MangaRating } from '../type/rating.types';
+
+import { MangaRating } from '@feature/rating';
 
 type RatingAverageResult = {
     average: number;
@@ -22,6 +23,7 @@ const useRatings = (titleId: string) => {
     const loadRatings = useCallback(async () => {
         try {
             const data = await getRatingsByTitleId(titleId);
+
             setRatings(data.content);
         } catch {
             setRatings([]);
@@ -31,6 +33,7 @@ const useRatings = (titleId: string) => {
     const loadAverage = useCallback(async () => {
         try {
             const data = await getRatingsAverage(titleId);
+
             setAverage({ average: data.average, count: data.count });
         } catch {
             setAverage({ average: 0, count: 0 });
@@ -39,6 +42,7 @@ const useRatings = (titleId: string) => {
 
     useEffect(() => {
         loadRatings();
+
         loadAverage();
     }, [loadRatings, loadAverage]);
 
@@ -56,7 +60,9 @@ const useRatings = (titleId: string) => {
                 titleId,
                 ...data,
             });
+
             await loadRatings();
+
             await loadAverage();
         },
         [loadRatings, loadAverage, titleId],

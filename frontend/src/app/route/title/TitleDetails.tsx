@@ -9,6 +9,7 @@ import Loading from '@app/route/loading/Loading';
 
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import {
+    showErrorToast,
     showInfoToast,
     showSuccessToast,
 } from '@shared/service/util/toastService';
@@ -140,6 +141,11 @@ const TitleDetailsPage = () => {
     } = title as Title;
 
     const handleBookmarkClick = async () => {
+        if (!getStoredSession()) {
+            showErrorToast('Faça login para salvar na biblioteca.');
+            return;
+        }
+
         const nowSaved = await toggleBookmark({
             titleId: String(id),
             name,
@@ -186,7 +192,13 @@ const TitleDetailsPage = () => {
                     </div>
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
-                        onLikeClick={openRatingModal}
+                        onLikeClick={() => {
+                            if (!getStoredSession()) {
+                                showErrorToast('Faça login para avaliar.');
+                                return;
+                            }
+                            openRatingModal();
+                        }}
                         onGroupsClick={openGroupsModal}
                         onCartClick={openCartModal}
                         isBookmarked={isSaved(String(id))}

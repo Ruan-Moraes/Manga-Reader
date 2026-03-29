@@ -7,7 +7,7 @@ const useRating = (titleId: string) => {
     const { ratings, average, submitRating } = useRatings(titleId);
 
     const submit = useCallback(
-        (data: {
+        async (data: {
             funRating: number;
             artRating: number;
             storylineRating: number;
@@ -16,8 +16,12 @@ const useRating = (titleId: string) => {
             pacingRating: number;
             comment?: string;
         }) => {
-            submitRating(data);
-            showSuccessToast('Avaliação enviada com sucesso.');
+            try {
+                await submitRating(data);
+                showSuccessToast('Avaliação enviada com sucesso.');
+            } catch {
+                // Error toast já exibido pelo interceptor HTTP
+            }
         },
         [submitRating],
     );
