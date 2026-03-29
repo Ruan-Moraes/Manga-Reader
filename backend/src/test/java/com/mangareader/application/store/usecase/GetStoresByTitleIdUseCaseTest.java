@@ -14,6 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.store.port.StoreRepositoryPort;
 import com.mangareader.domain.store.entity.Store;
@@ -29,6 +33,7 @@ class GetStoresByTitleIdUseCaseTest {
     private GetStoresByTitleIdUseCase getStoresByTitleIdUseCase;
 
     private static final String TITLE_ID = "507f1f77bcf86cd799439011";
+    private static final Pageable PAGEABLE = PageRequest.of(0, 20);
 
     private Store buildStore(String name) {
         return Store.builder()
@@ -43,7 +48,7 @@ class GetStoresByTitleIdUseCaseTest {
     class Sucesso {
 
         @Test
-        @DisplayName("Deve retornar lista de stores que vendem o título")
+        @DisplayName("Deve retornar página de stores que vendem o título")
         void deveRetornarStoresQueVendemOTitulo() {
             // Arrange
             List<Store> stores = List.of(
@@ -51,41 +56,44 @@ class GetStoresByTitleIdUseCaseTest {
                     buildStore("Crunchyroll Store"),
                     buildStore("Book Walker")
             );
-            when(storeRepository.findByTitleId(TITLE_ID)).thenReturn(stores);
+            when(storeRepository.findByTitleId(TITLE_ID, PAGEABLE))
+                    .thenReturn(new PageImpl<>(stores));
 
             // Act
-            List<Store> result = getStoresByTitleIdUseCase.execute(TITLE_ID);
+            Page<Store> result = getStoresByTitleIdUseCase.execute(TITLE_ID, PAGEABLE);
 
             // Assert
-            assertThat(result).hasSize(3);
-            assertThat(result).extracting(Store::getName)
+            assertThat(result.getContent()).hasSize(3);
+            assertThat(result.getContent()).extracting(Store::getName)
                     .containsExactlyInAnyOrder("Amazon", "Crunchyroll Store", "Book Walker");
         }
 
         @Test
-        @DisplayName("Deve retornar lista vazia quando nenhuma store vende o título")
-        void deveRetornarListaVaziaQuandoNenhumaStoreVendeOTitulo() {
+        @DisplayName("Deve retornar página vazia quando nenhuma store vende o título")
+        void deveRetornarPaginaVaziaQuandoNenhumaStoreVendeOTitulo() {
             // Arrange
-            when(storeRepository.findByTitleId(TITLE_ID)).thenReturn(List.of());
+            when(storeRepository.findByTitleId(TITLE_ID, PAGEABLE))
+                    .thenReturn(new PageImpl<>(List.of()));
 
             // Act
-            List<Store> result = getStoresByTitleIdUseCase.execute(TITLE_ID);
+            Page<Store> result = getStoresByTitleIdUseCase.execute(TITLE_ID, PAGEABLE);
 
             // Assert
-            assertThat(result).isEmpty();
+            assertThat(result.getContent()).isEmpty();
         }
 
         @Test
-        @DisplayName("Deve repassar o titleId ao repositório")
-        void deveRepassarTitleIdAoRepositorio() {
+        @DisplayName("Deve repassar o titleId e pageable ao repositório")
+        void deveRepassarTitleIdEPageableAoRepositorio() {
             // Arrange
-            when(storeRepository.findByTitleId(TITLE_ID)).thenReturn(List.of());
+            when(storeRepository.findByTitleId(TITLE_ID, PAGEABLE))
+                    .thenReturn(new PageImpl<>(List.of()));
 
             // Act
-            getStoresByTitleIdUseCase.execute(TITLE_ID);
+            getStoresByTitleIdUseCase.execute(TITLE_ID, PAGEABLE);
 
             // Assert
-            verify(storeRepository).findByTitleId(TITLE_ID);
+            verify(storeRepository).findByTitleId(TITLE_ID, PAGEABLE);
         }
 
         @Test
@@ -93,13 +101,14 @@ class GetStoresByTitleIdUseCaseTest {
         void deveAceitarTitleIdNoFormatoObjectId() {
             // Arrange
             String objectId = "507f191e810c19729de860ea";
-            when(storeRepository.findByTitleId(objectId)).thenReturn(List.of(buildStore("Amazon")));
+            when(storeRepository.findByTitleId(objectId, PAGEABLE))
+                    .thenReturn(new PageImpl<>(List.of(buildStore("Amazon"))));
 
             // Act
-            List<Store> result = getStoresByTitleIdUseCase.execute(objectId);
+            Page<Store> result = getStoresByTitleIdUseCase.execute(objectId, PAGEABLE);
 
             // Assert
-            assertThat(result).hasSize(1);
+            assertThat(result.getContent()).hasSize(1);
         }
     }
 }

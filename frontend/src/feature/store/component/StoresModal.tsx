@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Store } from '../type/store.types';
-import BaseModal from '@shared/component/modal/base/BaseModal';
+
 import StoresContainer from './StoresContainer';
+
 import { getStoresByTitleId } from '../service/storeService';
+
+import BaseModal from '@shared/component/modal/base/BaseModal';
+
+import { Store } from '@feature/store';
 
 type StoresModalTypes = {
     isModalOpen: boolean;
@@ -16,6 +20,7 @@ const StoresModal = ({
     titleId,
 }: StoresModalTypes) => {
     const [stores, setStores] = useState<Store[]>([]);
+
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -24,6 +29,7 @@ const StoresModal = ({
 
             getStoresByTitleId(titleId).then(data => {
                 setStores(data.content);
+
                 setIsLoading(false);
             });
         }

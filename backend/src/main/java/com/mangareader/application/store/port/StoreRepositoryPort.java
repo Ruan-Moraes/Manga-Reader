@@ -27,5 +27,7 @@ public interface StoreRepositoryPort {
      */
     List<Store> findByTitleId(String titleId);
 
+    Page<Store> findByTitleId(String titleId, Pageable pageable);
+
     Page<Store> findAll(Pageable pageable);
 }

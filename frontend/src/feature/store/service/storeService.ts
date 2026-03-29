@@ -2,11 +2,7 @@ import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import { type Store } from '../type/store.types';
-
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
+import { type Store } from '@feature/store';
 
 export const getStores = async (
     page = 0,

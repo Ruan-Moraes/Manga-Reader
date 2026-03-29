@@ -1,6 +1,5 @@
 package com.mangareader.presentation.store.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -58,10 +57,18 @@ public class StoreController {
     }
 
     @GetMapping("/title/{titleId}")
-    public ResponseEntity<ApiResponse<List<StoreResponse>>> getByTitleId(@PathVariable String titleId) {
-        var stores = getStoresByTitleIdUseCase.execute(titleId);
+    public ResponseEntity<ApiResponse<PageResponse<StoreResponse>>> getByTitleId(
+            @PathVariable String titleId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
 
-        return ResponseEntity.ok(ApiResponse.success(StoreMapper.toResponseList(stores)));
+        var result = getStoresByTitleIdUseCase.execute(titleId, pageable);
+
+        var mapped = result.map(StoreMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     private Pageable buildPageable(int page, int size, String sort, String direction) {

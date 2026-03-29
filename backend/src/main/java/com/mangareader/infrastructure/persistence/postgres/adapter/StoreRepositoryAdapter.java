@@ -49,6 +49,11 @@ public class StoreRepositoryAdapter implements StoreRepositoryPort {
     }
 
     @Override
+    public Page<Store> findByTitleId(String titleId, Pageable pageable) {
+        return jpaRepository.findByTitleId(titleId, pageable);
+    }
+
+    @Override
     public Page<Store> findAll(Pageable pageable) {
         return jpaRepository.findAll(pageable);
     }

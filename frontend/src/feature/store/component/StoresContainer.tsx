@@ -1,6 +1,8 @@
 import React from 'react';
-import { Store } from '../type/store.types';
+
 import StoreCard from './StoreCard';
+
+import { Store } from '@feature/store';
 
 interface StoresContainerProps {
     stores: Store[];

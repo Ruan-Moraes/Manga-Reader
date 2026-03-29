@@ -125,30 +125,30 @@ class StoreControllerTest {
     class GetByTitleId {
 
         @Test
-        @DisplayName("Deve retornar 200 com lista de stores para o título")
+        @DisplayName("Deve retornar 200 com stores paginadas para o título")
         void deveRetornar200ComStores() throws Exception {
             var stores = List.of(
                     buildStore(UUID.randomUUID(), "Amazon"),
                     buildStore(UUID.randomUUID(), "Comixology")
             );
-            when(getStoresByTitleIdUseCase.execute("507f1f77bcf86cd799439011"))
-                    .thenReturn(stores);
+            when(getStoresByTitleIdUseCase.execute(any(String.class), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(stores));
 
             mockMvc.perform(get("/api/stores/title/507f1f77bcf86cd799439011"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.length()").value(2));
+                    .andExpect(jsonPath("$.data.content.length()").value(2));
         }
 
         @Test
-        @DisplayName("Deve retornar 200 com lista vazia quando nenhuma store vende o título")
-        void deveRetornarListaVazia() throws Exception {
-            when(getStoresByTitleIdUseCase.execute("titulo-sem-store"))
-                    .thenReturn(List.of());
+        @DisplayName("Deve retornar 200 com página vazia quando nenhuma store vende o título")
+        void deveRetornarPaginaVazia() throws Exception {
+            when(getStoresByTitleIdUseCase.execute(any(String.class), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/stores/title/titulo-sem-store"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data").isEmpty());
+                    .andExpect(jsonPath("$.data.content").isEmpty());
         }
     }
 }
