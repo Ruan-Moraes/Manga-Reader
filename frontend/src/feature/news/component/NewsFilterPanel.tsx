@@ -1,3 +1,5 @@
+import BaseSelect from '@shared/component/input/BaseSelect';
+
 type NewsFilterPanelProps = {
     period: 'all' | 'today' | 'week' | 'month';
     setPeriod: (value: 'all' | 'today' | 'week' | 'month') => void;
@@ -7,6 +9,9 @@ type NewsFilterPanelProps = {
     setSort: (value: 'recent' | 'most-read' | 'trending') => void;
     sources: readonly string[];
 };
+
+const filterSelectClass =
+    'w-full px-3 py-2 border rounded-xs border-tertiary bg-secondary';
 
 const NewsFilterPanel = ({
     period,
@@ -19,7 +24,13 @@ const NewsFilterPanel = ({
 }: NewsFilterPanelProps) => (
     <div className="space-y-3">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <select
+            <BaseSelect
+                options={[
+                    { value: 'all', label: 'Todo período' },
+                    { value: 'today', label: 'Hoje' },
+                    { value: 'week', label: 'Última semana' },
+                    { value: 'month', label: 'Último mês' },
+                ]}
                 value={period}
                 onChange={event =>
                     setPeriod(
@@ -30,30 +41,27 @@ const NewsFilterPanel = ({
                             | 'month',
                     )
                 }
-                className="w-full px-3 py-2 border rounded-lg border-tertiary bg-secondary"
-            >
-                <option value="all">Todo período</option>
-                <option value="today">Hoje</option>
-                <option value="week">Última semana</option>
-                <option value="month">Último mês</option>
-            </select>
+                className={filterSelectClass}
+            />
 
-            <select
+            <BaseSelect
+                options={[
+                    { value: 'all', label: 'Todas as fontes' },
+                    ...sources
+                        .filter(item => item !== 'all')
+                        .map(item => ({ value: item, label: item })),
+                ]}
                 value={source}
                 onChange={event => setSource(event.target.value)}
-                className="w-full px-3 py-2 border rounded-lg border-tertiary bg-secondary"
-            >
-                <option value="all">Todas as fontes</option>
-                {sources
-                    .filter(item => item !== 'all')
-                    .map(item => (
-                        <option key={item} value={item}>
-                            {item}
-                        </option>
-                    ))}
-            </select>
+                className={filterSelectClass}
+            />
 
-            <select
+            <BaseSelect
+                options={[
+                    { value: 'recent', label: 'Mais recentes' },
+                    { value: 'most-read', label: 'Mais lidas' },
+                    { value: 'trending', label: 'Trending' },
+                ]}
                 value={sort}
                 onChange={event =>
                     setSort(
@@ -63,12 +71,8 @@ const NewsFilterPanel = ({
                             | 'trending',
                     )
                 }
-                className="w-full px-3 py-2 border rounded-lg border-tertiary bg-secondary"
-            >
-                <option value="recent">Mais recentes</option>
-                <option value="most-read">Mais lidas</option>
-                <option value="trending">Trending</option>
-            </select>
+                className={filterSelectClass}
+            />
         </div>
     </div>
 );

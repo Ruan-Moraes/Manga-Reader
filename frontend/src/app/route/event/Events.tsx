@@ -4,6 +4,7 @@ import { FiCalendar, FiFilter, FiPlus, FiSearch, FiStar } from 'react-icons/fi';
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import BaseSelect from '@shared/component/input/BaseSelect';
 import {
     useEvents,
     useEventForm,
@@ -99,21 +100,27 @@ const Events = () => {
                                 className="w-full py-2 pl-10 pr-3 border rounded-lg border-tertiary bg-secondary"
                             />
                         </label>
-                        <select
+                        <BaseSelect
+                            options={[
+                                { value: 'all', label: 'Todos os tipos' },
+                                ...eventTypes.map(item => ({
+                                    value: item,
+                                    label: item,
+                                })),
+                            ]}
                             value={type}
                             onChange={event =>
                                 setType(event.target.value as 'all' | EventType)
                             }
-                            className="p-2 border rounded-lg border-tertiary bg-secondary"
-                        >
-                            <option value="all">Todos os tipos</option>
-                            {eventTypes.map(item => (
-                                <option key={item} value={item}>
-                                    {item}
-                                </option>
-                            ))}
-                        </select>
-                        <select
+                            className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                        />
+                        <BaseSelect
+                            options={[
+                                { value: 'all', label: 'Todas as datas' },
+                                { value: 'today', label: 'Hoje' },
+                                { value: 'week', label: 'Esta semana' },
+                                { value: 'month', label: 'Este mês' },
+                            ]}
                             value={period}
                             onChange={event =>
                                 setPeriod(
@@ -124,14 +131,20 @@ const Events = () => {
                                         | 'month',
                                 )
                             }
-                            className="p-2 border rounded-lg border-tertiary bg-secondary"
-                        >
-                            <option value="all">Todas as datas</option>
-                            <option value="today">Hoje</option>
-                            <option value="week">Esta semana</option>
-                            <option value="month">Este mês</option>
-                        </select>
-                        <select
+                            className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                        />
+                        <BaseSelect
+                            options={[
+                                { value: 'date', label: 'Ordenar por data' },
+                                {
+                                    value: 'popularity',
+                                    label: 'Ordenar por popularidade',
+                                },
+                                {
+                                    value: 'relevance',
+                                    label: 'Ordenar por relevância',
+                                },
+                            ]}
                             value={sort}
                             onChange={event =>
                                 setSort(
@@ -141,16 +154,8 @@ const Events = () => {
                                         | 'relevance',
                                 )
                             }
-                            className="p-2 border rounded-lg border-tertiary bg-secondary"
-                        >
-                            <option value="date">Ordenar por data</option>
-                            <option value="popularity">
-                                Ordenar por popularidade
-                            </option>
-                            <option value="relevance">
-                                Ordenar por relevância
-                            </option>
-                        </select>
+                            className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                        />
                     </div>
                 </section>
                 {featured && (

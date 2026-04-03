@@ -1,3 +1,5 @@
+import BaseSelect from '@shared/component/input/BaseSelect';
+
 import { eventTypes } from '../service/eventService';
 import type { DraftEvent } from '../hook/useEventForm';
 import type { EventType } from '../type/event.types';
@@ -36,17 +38,17 @@ const CreateEventForm = ({
                 }
                 className="p-2 border rounded-lg border-tertiary bg-primary"
             />
-            <select
+            <BaseSelect
+                options={eventTypes.map(item => ({
+                    value: item,
+                    label: item,
+                }))}
                 value={draftEvent.type}
                 onChange={event =>
                     updateDraftField('type', event.target.value as EventType)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
-            >
-                {eventTypes.map(item => (
-                    <option key={item}>{item}</option>
-                ))}
-            </select>
+                className="p-2 border rounded-xs border-tertiary bg-primary"
+            />
             <input
                 required
                 type="datetime-local"
@@ -137,16 +139,17 @@ const CreateEventForm = ({
                 }
                 className="p-2 border rounded-lg border-tertiary bg-primary"
             />
-            <select
+            <BaseSelect
+                options={[
+                    { value: 'public', label: 'Público' },
+                    { value: 'members', label: 'Restrito a membros' },
+                ]}
                 value={draftEvent.privacy}
                 onChange={event =>
                     updateDraftField('privacy', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
-            >
-                <option value="public">Público</option>
-                <option value="members">Restrito a membros</option>
-            </select>
+                className="p-2 border rounded-xs border-tertiary bg-primary"
+            />
             <label className="flex items-center gap-2 text-sm lg:col-span-2">
                 <input
                     type="checkbox"

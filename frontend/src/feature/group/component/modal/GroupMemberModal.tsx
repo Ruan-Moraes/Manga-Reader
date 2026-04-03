@@ -54,7 +54,7 @@ const GroupMemberModal = ({
                         {user.groups.map(group => (
                             <AppLink
                                 key={group.id}
-                                link={`/groups/${group.id}`}
+                                link={`groups/${group.id}`}
                                 text={group.name}
                                 className="px-2 py-1 text-xs border rounded-xs border-tertiary"
                             />

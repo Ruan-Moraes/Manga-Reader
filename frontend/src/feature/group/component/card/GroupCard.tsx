@@ -75,7 +75,7 @@ const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
                 </div>
 
                 <AppLink
-                    link={`/groups/${group.id}`}
+                    link={`groups/${group.id}`}
                     text="Ver detalhes"
                     className="text-xs"
                 />

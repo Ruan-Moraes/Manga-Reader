@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import BaseSelect from '@shared/component/input/BaseSelect';
 
 import { GroupCard, useGroups, type GroupStatus } from '@feature/group';
 
@@ -32,35 +33,48 @@ const Groups = () => {
                     </p>
 
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-                        <select
+                        <BaseSelect
+                            options={[
+                                { value: 'all', label: 'Todos os status' },
+                                { value: 'active', label: 'Ativo' },
+                                { value: 'hiatus', label: 'Hiato' },
+                                { value: 'inactive', label: 'Inativo' },
+                            ]}
                             value={status}
                             onChange={event =>
                                 setStatus(
                                     event.target.value as 'all' | GroupStatus,
                                 )
                             }
-                            className="p-2 text-sm rounded-xs border border-tertiary bg-secondary"
-                        >
-                            <option value="all">Todos os status</option>
-                            <option value="active">Ativo</option>
-                            <option value="hiatus">Hiato</option>
-                            <option value="inactive">Inativo</option>
-                        </select>
+                            className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                        />
 
-                        <select
+                        <BaseSelect
+                            options={[
+                                { value: 'all', label: 'Todos os gêneros' },
+                                ...genres.map(item => ({
+                                    value: item,
+                                    label: item,
+                                })),
+                            ]}
                             value={genre}
                             onChange={event => setGenre(event.target.value)}
-                            className="p-2 text-sm rounded-xs border border-tertiary bg-secondary"
-                        >
-                            <option value="all">Todos os gêneros</option>
-                            {genres.map(item => (
-                                <option key={item} value={item}>
-                                    {item}
-                                </option>
-                            ))}
-                        </select>
+                            className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                        />
 
-                        <select
+                        <BaseSelect
+                            options={[
+                                { value: 'popularity', label: 'Popularidade' },
+                                {
+                                    value: 'members',
+                                    label: 'Total de membros',
+                                },
+                                {
+                                    value: 'titles',
+                                    label: 'Obras traduzidas',
+                                },
+                                { value: 'rating', label: 'Avaliação' },
+                            ]}
                             value={sortBy}
                             onChange={event =>
                                 setSortBy(
@@ -71,13 +85,8 @@ const Groups = () => {
                                         | 'rating',
                                 )
                             }
-                            className="p-2 text-sm rounded-xs border border-tertiary bg-secondary"
-                        >
-                            <option value="popularity">Popularidade</option>
-                            <option value="members">Total de membros</option>
-                            <option value="titles">Obras traduzidas</option>
-                            <option value="rating">Avaliação</option>
-                        </select>
+                            className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                        />
                     </div>
                 </section>
 

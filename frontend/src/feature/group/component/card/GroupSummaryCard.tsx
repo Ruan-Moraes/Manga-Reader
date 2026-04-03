@@ -54,7 +54,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
                 </div>
                 <div className="flex flex-col min-w-0">
                     <AppLink
-                        link={`/groups/${group.id}`}
+                        link={`groups/${group.id}`}
                         text={group.name}
                         className="text-sm font-bold truncate"
                     />
@@ -106,7 +106,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
                 </div>
             </div>
             <AppLink
-                link={`/groups/${group.id}`}
+                link={`groups/${group.id}`}
                 text="Ver detalhes do grupo"
                 className="w-full px-3 py-2 text-xs text-center border rounded-xs border-tertiary hover:border-quaternary-default transition-colors"
             />

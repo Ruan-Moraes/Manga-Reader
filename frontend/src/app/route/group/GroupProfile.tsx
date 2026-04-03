@@ -5,6 +5,7 @@ import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
+import BaseSelect from '@shared/component/input/BaseSelect';
 import AppLink from '@shared/component/link/element/AppLink';
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
@@ -90,7 +91,21 @@ const GroupProfile = () => {
                         <section className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
                                 <h3 className="font-bold">Obras traduzidas</h3>
-                                <select
+                                <BaseSelect
+                                    options={[
+                                        {
+                                            value: 'popularity',
+                                            label: 'Popularidade',
+                                        },
+                                        {
+                                            value: 'date',
+                                            label: 'Data de atualização',
+                                        },
+                                        {
+                                            value: 'chapters',
+                                            label: 'Capítulos',
+                                        },
+                                    ]}
                                     value={workSort}
                                     onChange={event =>
                                         setWorkSort(
@@ -99,22 +114,14 @@ const GroupProfile = () => {
                                         )
                                     }
                                     className="p-2 text-xs border rounded-xs border-tertiary bg-secondary"
-                                >
-                                    <option value="popularity">
-                                        Popularidade
-                                    </option>
-                                    <option value="date">
-                                        Data de atualização
-                                    </option>
-                                    <option value="chapters">Capítulos</option>
-                                </select>
+                                />
                             </div>
 
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                 {sortedWorks.map(work => (
                                     <AppLink
                                         key={work.id}
-                                        link={`/title/${work.id}`}
+                                        link={`title/${work.id}`}
                                         className="overflow-hidden transition-all border rounded-xs border-tertiary bg-secondary/40 hover:border-quaternary hover:shadow-default"
                                     >
                                         <img
