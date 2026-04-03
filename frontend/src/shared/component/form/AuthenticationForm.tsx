@@ -1,4 +1,4 @@
-import AppLink from '@shared/component/link/element/AppLink';
+import FormWrapper from '@shared/component/form/FormWrapper';
 
 type AuthenticationFormTypes = {
     onFormSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -18,30 +18,15 @@ const AuthenticationForm = ({
     linkText,
 }: AuthenticationFormTypes) => {
     return (
-        <div className="flex flex-col gap-2">
-            <div>
-                <form onSubmit={onFormSubmit}>
-                    <fieldset className="flex flex-col gap-6 p-4 border-2 rounded-xs border-tertiary">
-                        <legend className="px-2 text-lg font-bold text-shadow-highlight">
-                            {title}
-                        </legend>
-                        {children}
-                    </fieldset>
-                </form>
-            </div>
-            {helperText && link && linkText && (
-                <div>
-                    <p className="text-sm text-center text-tertiary-default">
-                        {helperText}{' '}
-                        <AppLink
-                            link={link}
-                            className="underline"
-                            text={linkText}
-                        />
-                    </p>
-                </div>
-            )}
-        </div>
+        <FormWrapper
+            onFormSubmit={onFormSubmit}
+            title={title}
+            helperText={helperText}
+            link={link}
+            linkText={linkText}
+        >
+            {children}
+        </FormWrapper>
     );
 };
 

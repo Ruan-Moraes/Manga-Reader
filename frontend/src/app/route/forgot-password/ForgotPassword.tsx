@@ -9,8 +9,14 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 import useForgotPassword from '@feature/auth/hook/useForgotPassword';
 
 const ForgotPassword = () => {
-    const { email, isLoading, isSubmitted, handleEmailChange, handleSubmit } =
-        useForgotPassword();
+    const {
+        email,
+        isLoading,
+        isSubmitted,
+        errors,
+        handleEmailChange,
+        handleSubmit,
+    } = useForgotPassword();
 
     return (
         <>
@@ -48,6 +54,8 @@ const ForgotPassword = () => {
                             value={email}
                             onChange={handleEmailChange}
                             disabled={isLoading}
+                            error={errors.email}
+                            name="email"
                         />
                         <RaisedButton
                             text={isLoading ? 'Enviando...' : 'Recuperar senha'}

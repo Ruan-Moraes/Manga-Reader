@@ -14,6 +14,7 @@ const ResetPassword = () => {
         password,
         confirmPassword,
         isLoading,
+        errors,
         handlePasswordChange,
         handleConfirmPasswordChange,
         handleSubmit,
@@ -63,6 +64,8 @@ const ResetPassword = () => {
                         value={password}
                         onChange={handlePasswordChange}
                         disabled={isLoading}
+                        error={errors.password}
+                        name="password"
                     />
                     <BaseInput
                         label="Confirmar senha"
@@ -71,6 +74,8 @@ const ResetPassword = () => {
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
                         disabled={isLoading}
+                        error={errors.confirmPassword}
+                        name="confirmPassword"
                     />
                     <RaisedButton
                         text={isLoading ? 'Redefinindo...' : 'Redefinir senha'}

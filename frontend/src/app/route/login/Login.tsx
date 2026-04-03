@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
+    showErrorToast,
     showInfoToast,
     showSuccessToast,
 } from '@shared/service/util/toastService';
@@ -16,6 +17,13 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 
 import { useAuth } from '@feature/auth';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type FormErrors = {
+    email?: string;
+    password?: string;
+};
+
 const Login = () => {
     const navigate = useNavigate();
 
@@ -23,6 +31,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [redirectPath, setRedirectPath] = useState<string | null>(null);
+    const [errors, setErrors] = useState<FormErrors>({});
 
     const { login } = useAuth();
 
@@ -39,9 +48,39 @@ const Login = () => {
         }
     }, []);
 
+    const validate = useCallback((): FormErrors => {
+        const newErrors: FormErrors = {};
+
+        if (!email.trim()) {
+            newErrors.email = 'Email é obrigatório.';
+        }
+
+        if (!EMAIL_REGEX.test(email.trim())) {
+            newErrors.email = 'Formato de email inválido.';
+        }
+
+        if (!password) {
+            newErrors.password = 'Senha é obrigatória.';
+        }
+
+        return newErrors;
+    }, [email, password]);
+
     const handleFormSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
+
+            const validationErrors = validate();
+
+            setErrors(validationErrors);
+
+            if (Object.keys(validationErrors).length > 0) {
+                showErrorToast('Corrija os erros no formulário.', {
+                    toastId: 'login-validation',
+                });
+
+                return;
+            }
 
             setIsLoading(true);
 
@@ -65,7 +104,7 @@ const Login = () => {
                 setIsLoading(false);
             }
         },
-        [login, navigate, redirectPath, email, password],
+        [login, navigate, redirectPath, email, password, validate],
     );
 
     return (
@@ -86,6 +125,8 @@ const Login = () => {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         disabled={isLoading}
+                        error={errors.email}
+                        name="email"
                     />
                     <BaseInput
                         label="Senha:"
@@ -94,6 +135,8 @@ const Login = () => {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         disabled={isLoading}
+                        error={errors.password}
+                        name="password"
                     />
                     <RaisedButton text={isLoading ? 'Entrando...' : 'Entrar'} />
                 </AuthenticationForm>

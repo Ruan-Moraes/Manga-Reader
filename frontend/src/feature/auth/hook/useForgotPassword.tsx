@@ -7,10 +7,17 @@ import {
     showErrorToast,
 } from '@shared/service/util/toastService';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type FormErrors = {
+    email?: string;
+};
+
 const useForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>({});
 
     const handleEmailChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,14 +26,33 @@ const useForgotPassword = () => {
         [],
     );
 
+    const validate = useCallback((): FormErrors => {
+        const newErrors: FormErrors = {};
+        const trimmed = email.trim();
+
+        if (!trimmed) {
+            newErrors.email = 'Email é obrigatório.';
+        }
+
+        if (!EMAIL_REGEX.test(trimmed)) {
+            newErrors.email = 'Formato de email inválido.';
+        }
+
+        return newErrors;
+    }, [email]);
+
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
-            const trimmedEmail = email.trim();
+            const validationErrors = validate();
 
-            if (!trimmedEmail) {
-                showErrorToast('Por favor, insira seu email.');
+            setErrors(validationErrors);
+
+            if (Object.keys(validationErrors).length > 0) {
+                showErrorToast('Corrija os erros no formulário.', {
+                    toastId: 'forgot-password-validation',
+                });
 
                 return;
             }
@@ -34,7 +60,7 @@ const useForgotPassword = () => {
             setIsLoading(true);
 
             try {
-                const message = await requestPasswordReset(trimmedEmail);
+                const message = await requestPasswordReset(email.trim());
 
                 setIsSubmitted(true);
 
@@ -45,13 +71,14 @@ const useForgotPassword = () => {
                 setIsLoading(false);
             }
         },
-        [email],
+        [email, validate],
     );
 
     return {
         email,
         isLoading,
         isSubmitted,
+        errors,
         handleEmailChange,
         handleSubmit,
     };

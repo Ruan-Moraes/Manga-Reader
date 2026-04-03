@@ -8,6 +8,11 @@ import {
 
 import { resetPassword } from '@feature/auth/service/authService';
 
+type FormErrors = {
+    password?: string;
+    confirmPassword?: string;
+};
+
 const useResetPassword = () => {
     const [searchParams] = useSearchParams();
 
@@ -19,6 +24,7 @@ const useResetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>({});
 
     const handlePasswordChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,24 +40,40 @@ const useResetPassword = () => {
         [],
     );
 
+    const validate = useCallback((): FormErrors => {
+        const newErrors: FormErrors = {};
+
+        if (!password) {
+            newErrors.password = 'Senha é obrigatória.';
+        }
+
+        if (password.length < 6) {
+            newErrors.password = 'A senha deve ter pelo menos 6 caracteres.';
+        }
+
+        if (!confirmPassword) {
+            newErrors.confirmPassword = 'Confirmação de senha é obrigatória.';
+        }
+
+        if (password !== confirmPassword) {
+            newErrors.confirmPassword = 'As senhas não coincidem.';
+        }
+
+        return newErrors;
+    }, [password, confirmPassword]);
+
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
-            if (!password || !confirmPassword) {
-                showErrorToast('Preencha todos os campos.');
+            const validationErrors = validate();
 
-                return;
-            }
+            setErrors(validationErrors);
 
-            if (password.length < 6) {
-                showErrorToast('A senha deve ter pelo menos 6 caracteres.');
-
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showErrorToast('As senhas não coincidem.');
+            if (Object.keys(validationErrors).length > 0) {
+                showErrorToast('Corrija os erros no formulário.', {
+                    toastId: 'reset-password-validation',
+                });
 
                 return;
             }
@@ -61,9 +83,7 @@ const useResetPassword = () => {
             try {
                 const message = await resetPassword(token, password);
 
-                showSuccessToast(
-                    message ?? 'Senha redefinida com sucesso!',
-                );
+                showSuccessToast(message ?? 'Senha redefinida com sucesso!');
 
                 navigate('/Manga-Reader/login');
             } catch {
@@ -72,7 +92,7 @@ const useResetPassword = () => {
                 setIsLoading(false);
             }
         },
-        [password, confirmPassword, token, navigate],
+        [password, token, navigate, validate],
     );
 
     return {
@@ -80,6 +100,7 @@ const useResetPassword = () => {
         password,
         confirmPassword,
         isLoading,
+        errors,
         handlePasswordChange,
         handleConfirmPasswordChange,
         handleSubmit,

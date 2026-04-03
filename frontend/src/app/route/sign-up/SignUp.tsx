@@ -17,6 +17,16 @@ import Checkbox from '@shared/component/input/CheckboxWithLink';
 
 import { useAuth } from '@feature/auth';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type FormErrors = {
+    name?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    terms?: string;
+};
+
 const SignUp = () => {
     const navigate = useNavigate();
     const { register } = useAuth();
@@ -28,30 +38,64 @@ const SignUp = () => {
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [acceptDmca, setAcceptDmca] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    const validate = useCallback((): FormErrors => {
+        const newErrors: FormErrors = {};
+
+        if (!name.trim()) {
+            newErrors.name = 'Nome é obrigatório.';
+        }
+
+        if (name.trim().length < 2) {
+            newErrors.name = 'Nome deve ter pelo menos 2 caracteres.';
+        }
+
+        if (!email.trim()) {
+            newErrors.email = 'Email é obrigatório.';
+        }
+
+        if (!EMAIL_REGEX.test(email.trim())) {
+            newErrors.email = 'Formato de email inválido.';
+        }
+
+        if (!password) {
+            newErrors.password = 'Senha é obrigatória.';
+        }
+
+        if (password.length < 6) {
+            newErrors.password = 'A senha deve ter pelo menos 6 caracteres.';
+        }
+
+        if (!confirmPassword) {
+            newErrors.confirmPassword = 'Confirmação de senha é obrigatória.';
+        }
+
+        if (password !== confirmPassword) {
+            newErrors.confirmPassword = 'As senhas não coincidem.';
+        }
+
+        if (!acceptTerms || !acceptDmca) {
+            newErrors.terms =
+                'Você deve aceitar os Termos de Uso e a política DMCA.';
+        }
+
+        return newErrors;
+    }, [name, email, password, confirmPassword, acceptTerms, acceptDmca]);
 
     const handleFormSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
-            if (password.length < 6) {
-                showErrorToast('A senha deve ter pelo menos 6 caracteres.', {
-                    toastId: 'signup-password-length',
-                });
-                return;
-            }
+            const validationErrors = validate();
 
-            if (password !== confirmPassword) {
-                showErrorToast('As senhas não coincidem.', {
-                    toastId: 'signup-password-mismatch',
-                });
-                return;
-            }
+            setErrors(validationErrors);
 
-            if (!acceptTerms || !acceptDmca) {
-                showErrorToast(
-                    'Você deve aceitar os Termos de Uso e a política DMCA.',
-                    { toastId: 'signup-terms' },
-                );
+            if (Object.keys(validationErrors).length > 0) {
+                showErrorToast('Corrija os erros no formulário.', {
+                    toastId: 'signup-validation',
+                });
+
                 return;
             }
 
@@ -73,16 +117,7 @@ const SignUp = () => {
                 setIsLoading(false);
             }
         },
-        [
-            register,
-            navigate,
-            name,
-            email,
-            password,
-            confirmPassword,
-            acceptTerms,
-            acceptDmca,
-        ],
+        [register, navigate, name, email, password, validate],
     );
 
     return (
@@ -100,6 +135,8 @@ const SignUp = () => {
                         value={name}
                         onChange={e => setName(e.target.value)}
                         disabled={isLoading}
+                        error={errors.name}
+                        name="name"
                     />
                     <BaseInput
                         label="Email:"
@@ -108,6 +145,8 @@ const SignUp = () => {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         disabled={isLoading}
+                        error={errors.email}
+                        name="email"
                     />
                     <BaseInput
                         label="Senha:"
@@ -116,6 +155,8 @@ const SignUp = () => {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         disabled={isLoading}
+                        error={errors.password}
+                        name="password"
                     />
                     <BaseInput
                         label="Confirmar senha:"
@@ -124,6 +165,8 @@ const SignUp = () => {
                         value={confirmPassword}
                         onChange={e => setConfirmPassword(e.target.value)}
                         disabled={isLoading}
+                        error={errors.confirmPassword}
+                        name="confirmPassword"
                     />
                     <div className="flex flex-col gap-2">
                         <Checkbox
@@ -140,6 +183,11 @@ const SignUp = () => {
                             checked={acceptDmca}
                             onChange={setAcceptDmca}
                         />
+                        {errors.terms && (
+                            <span className="text-xs text-red-500">
+                                {errors.terms}
+                            </span>
+                        )}
                     </div>
                     <ButtonHighLight
                         text={isLoading ? 'Cadastrando...' : 'Cadastrar'}
