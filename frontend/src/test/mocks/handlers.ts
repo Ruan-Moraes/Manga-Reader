@@ -1,9 +1,5 @@
 import { http, HttpResponse } from 'msw';
 
-// ---------------------------------------------------------------------------
-// Fixtures — shapes que espelham ApiResponse<T> do backend
-// ---------------------------------------------------------------------------
-
 const wrap = <T>(data: T) => ({ data, success: true });
 
 const wrapPage = <T>(content: T[], page = 0, size = 20) => ({
@@ -73,12 +69,7 @@ export const mockComment = {
     dislikeCount: '0',
 };
 
-// ---------------------------------------------------------------------------
-// Handlers
-// ---------------------------------------------------------------------------
-
 export const handlers = [
-    // ── Auth ──────────────────────────────────────────────────────────────
     http.get('*/api/auth/me', () => {
         return HttpResponse.json(wrap(mockAuthResponse));
     }),
@@ -95,12 +86,10 @@ export const handlers = [
         return new HttpResponse(null, { status: 204 });
     }),
 
-    // ── Titles ────────────────────────────────────────────────────────────
     http.get('*/api/titles/search', () => {
         return HttpResponse.json(wrapPage([mockTitle]));
     }),
 
-    // ── Library ───────────────────────────────────────────────────────────
     http.get('*/api/library', () => {
         return HttpResponse.json(wrapPage([mockLibraryEntry]));
     }),
@@ -113,7 +102,6 @@ export const handlers = [
         return new HttpResponse(null, { status: 204 });
     }),
 
-    // ── Comments ──────────────────────────────────────────────────────────
     http.delete('*/api/comments/:id', () => {
         return new HttpResponse(null, { status: 204 });
     }),
@@ -124,7 +112,19 @@ export const handlers = [
 
     http.post('*/api/comments', () => {
         return HttpResponse.json(
-            wrap({ ...mockComment, id: 'comment-reply-1', parentCommentId: 'comment-1' }),
+            wrap({
+                ...mockComment,
+                id: 'comment-reply-1',
+                parentCommentId: 'comment-1',
+            }),
+        );
+    }),
+
+    http.post('*/api/contact/publish-work', () => {
+        return HttpResponse.json(
+            wrap(
+                'Sua solicitação foi enviada com sucesso! Entraremos em contato em breve.',
+            ),
         );
     }),
 ];

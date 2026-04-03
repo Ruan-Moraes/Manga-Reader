@@ -16,7 +16,9 @@ export function createTestQueryClient() {
 export function createWrapper() {
     const queryClient = createTestQueryClient();
     return ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+            {children}
+        </QueryClientProvider>
     );
 }
 
@@ -28,11 +30,25 @@ export function renderHookWithProviders<TResult, TProps>(
 }
 
 export function seedAuthSession(
-    token = 'fake-access-token',
-    refreshToken = 'fake-refresh-token',
+    overrides: Partial<{
+        accessToken: string;
+        refreshToken: string;
+        userId: string;
+        name: string;
+        email: string;
+        role: string;
+    }> = {},
 ) {
     localStorage.setItem(
         AUTH_STORAGE_KEY,
-        JSON.stringify({ accessToken: token, refreshToken }),
+        JSON.stringify({
+            accessToken: 'fake-access-token',
+            refreshToken: 'fake-refresh-token',
+            userId: 'user-1',
+            name: 'Test User',
+            email: 'test@example.com',
+            role: 'MEMBER',
+            ...overrides,
+        }),
     );
 }

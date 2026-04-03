@@ -30,11 +30,11 @@ Guia de adoção incremental de testes para o frontend do Manga Reader, alinhado
 
 ### O que NÃO está no escopo inicial
 
-| Fora do escopo | Motivo |
-|----------------|--------|
+| Fora do escopo                  | Motivo                                                           |
+| ------------------------------- | ---------------------------------------------------------------- |
 | Testes E2E (Cypress/Playwright) | Serão adicionados em fase futura, após cobertura unitária sólida |
-| Visual regression testing | Complexidade de setup não justifica o ganho neste momento |
-| Snapshot tests | Frágeis e de baixo valor — preferimos testes comportamentais |
+| Visual regression testing       | Complexidade de setup não justifica o ganho neste momento        |
+| Snapshot tests                  | Frágeis e de baixo valor — preferimos testes comportamentais     |
 
 ### Meta
 
@@ -44,15 +44,15 @@ Cobertura incremental por camada, começando pelas funções puras e subindo at�
 
 ## 2. Stack de Testes
 
-| Ferramenta | Propósito | Por quê? |
-|------------|-----------|----------|
-| **Vitest** | Test runner | Nativo ao Vite, zero-config com nosso setup, API compatível com Jest |
-| **@testing-library/react** | Testes de componentes | Queries acessíveis, foco no comportamento do usuário |
-| **@testing-library/user-event** | Simulação de interações | Eventos realistas (click, type, keyboard) |
-| **@testing-library/jest-dom** | Matchers para DOM | `toBeInTheDocument()`, `toHaveTextContent()`, etc. |
-| **jsdom** | Ambiente DOM | Leve e rápido para ambiente de teste |
-| **MSW (Mock Service Worker)** | Mock de HTTP | Intercepta no nível de rede — não acoplado ao Axios |
-| **@vitest/coverage-v8** | Cobertura de código | Relatórios de coverage integrados ao Vitest |
+| Ferramenta                      | Propósito               | Por quê?                                                             |
+| ------------------------------- | ----------------------- | -------------------------------------------------------------------- |
+| **Vitest**                      | Test runner             | Nativo ao Vite, zero-config com nosso setup, API compatível com Jest |
+| **@testing-library/react**      | Testes de componentes   | Queries acessíveis, foco no comportamento do usuário                 |
+| **@testing-library/user-event** | Simulação de interações | Eventos realistas (click, type, keyboard)                            |
+| **@testing-library/jest-dom**   | Matchers para DOM       | `toBeInTheDocument()`, `toHaveTextContent()`, etc.                   |
+| **jsdom**                       | Ambiente DOM            | Leve e rápido para ambiente de teste                                 |
+| **MSW (Mock Service Worker)**   | Mock de HTTP            | Intercepta no nível de rede — não acoplado ao Axios                  |
+| **@vitest/coverage-v8**         | Cobertura de código     | Relatórios de coverage integrados ao Vitest                          |
 
 ---
 
@@ -295,13 +295,13 @@ src/
 
 ### Fase 1 — Utilitários Shared (fundação)
 
-| | |
-|---|---|
-| **Camada** | `shared/service/util/` |
-| **O que testar** | Funções puras: `validateId`, `formatDate`, `formatRelativeDate`, `checkValidId`, `apiErrorMessages` |
-| **Dificuldade** | Baixa — sem React, sem providers, sem mocks HTTP |
-| **Volume estimado** | ~5 arquivos de teste, ~20 casos |
-| **Objetivo** | Validar que o setup funciona e criar familiaridade com Vitest |
+|                     |                                                                                                     |
+| ------------------- | --------------------------------------------------------------------------------------------------- |
+| **Camada**          | `shared/service/util/`                                                                              |
+| **O que testar**    | Funções puras: `validateId`, `formatDate`, `formatRelativeDate`, `checkValidId`, `apiErrorMessages` |
+| **Dificuldade**     | Baixa — sem React, sem providers, sem mocks HTTP                                                    |
+| **Volume estimado** | ~5 arquivos de teste, ~20 casos                                                                     |
+| **Objetivo**        | Validar que o setup funciona e criar familiaridade com Vitest                                       |
 
 ```
 shared/service/util/
@@ -316,42 +316,42 @@ shared/service/util/
 
 ### Fase 2 — Services (camada de API)
 
-| | |
-|---|---|
-| **Camada** | `feature/*/service/` |
-| **O que testar** | Chamadas HTTP corretas, parâmetros, tratamento de erro |
-| **Dificuldade** | Média — requer MSW para interceptar chamadas |
-| **Volume estimado** | 13 services, ~3-5 testes cada = ~50 casos |
-| **Padrão** | Mock via MSW no nível de rede (nunca mock do Axios diretamente) |
+|                     |                                                                 |
+| ------------------- | --------------------------------------------------------------- |
+| **Camada**          | `feature/*/service/`                                            |
+| **O que testar**    | Chamadas HTTP corretas, parâmetros, tratamento de erro          |
+| **Dificuldade**     | Média — requer MSW para interceptar chamadas                    |
+| **Volume estimado** | 13 services, ~3-5 testes cada = ~50 casos                       |
+| **Padrão**          | Mock via MSW no nível de rede (nunca mock do Axios diretamente) |
 
 **Ordem de implementação:**
 
-| Prioridade | Service | Feature |
-|------------|---------|---------|
-| 1 | `authService.ts` | auth |
-| 2 | `titleService.ts` | manga |
-| 3 | `commentService.ts` | comment |
-| 4 | `ratingService.ts` | rating |
-| 5 | `chapterService.ts` | chapter |
-| 6 | `libraryService.ts` | library |
-| 7 | `groupService.ts` | group |
-| 8 | `userService.ts` | user |
-| 9 | `forumService.ts` | forum |
-| 10 | `newsService.ts` | news |
-| 11 | `eventService.ts` | event |
-| 12 | `storeService.ts` | store |
-| 13 | `categoryService.ts` | category |
+| Prioridade | Service              | Feature  |
+| ---------- | -------------------- | -------- |
+| 1          | `authService.ts`     | auth     |
+| 2          | `titleService.ts`    | manga    |
+| 3          | `commentService.ts`  | comment  |
+| 4          | `ratingService.ts`   | rating   |
+| 5          | `chapterService.ts`  | chapter  |
+| 6          | `libraryService.ts`  | library  |
+| 7          | `groupService.ts`    | group    |
+| 8          | `userService.ts`     | user     |
+| 9          | `forumService.ts`    | forum    |
+| 10         | `newsService.ts`     | news     |
+| 11         | `eventService.ts`    | event    |
+| 12         | `storeService.ts`    | store    |
+| 13         | `categoryService.ts` | category |
 
 ---
 
 ### Fase 3 — Hooks (data + facade)
 
-| | |
-|---|---|
-| **Camada** | `feature/*/hook/` e `feature/*/hook/data/` |
-| **O que testar** | Estados (loading, success, error), interface exposta, transformações de dados |
-| **Dificuldade** | Média-alta — requer `renderHook` + QueryClientProvider + MSW |
-| **Volume estimado** | ~34 hooks |
+|                     |                                                                               |
+| ------------------- | ----------------------------------------------------------------------------- |
+| **Camada**          | `feature/*/hook/` e `feature/*/hook/data/`                                    |
+| **O que testar**    | Estados (loading, success, error), interface exposta, transformações de dados |
+| **Dificuldade**     | Média-alta — requer `renderHook` + QueryClientProvider + MSW                  |
+| **Volume estimado** | ~34 hooks                                                                     |
 
 **Padrão de duas camadas:**
 
@@ -364,39 +364,39 @@ shared/service/util/
 
 ### Fase 4 — Componentes por Feature
 
-| | |
-|---|---|
-| **O que testar** | Renderização, interações do usuário, estados condicionais |
-| **Dificuldade** | Alta — requer providers, mock de hooks, simulação de interações |
-| **Padrão** | `renderWithProviders` + `userEvent` + MSW |
+|                  |                                                                 |
+| ---------------- | --------------------------------------------------------------- |
+| **O que testar** | Renderização, interações do usuário, estados condicionais       |
+| **Dificuldade**  | Alta — requer providers, mock de hooks, simulação de interações |
+| **Padrão**       | `renderWithProviders` + `userEvent` + MSW                       |
 
 **Ordem de prioridade (impacto no negócio):**
 
-| # | Feature | Components | Hooks | Criticidade |
-|---|---------|-----------|-------|-------------|
-| 1 | **auth** | 0 | 3 | ALTA — segurança |
-| 2 | **manga** | 13 | 5 | ALTA — domínio core |
-| 3 | **comment** | 17 | 9 | ALTA — core UX |
-| 4 | **rating** | 9 | 2 | ALTA — core UX |
-| 5 | **chapter** | 8 | 2 | ALTA — leitura |
-| 6 | **library** | 5 | 2 | MÉDIA — engajamento |
-| 7 | **group** | 7 | 3 | MÉDIA — comunidade |
-| 8 | **user** | 15 | 2 | MÉDIA — perfil |
-| 9 | **forum** | 5 | 2 | MÉDIA — comunidade |
-| 10 | **news** | 3 | 2 | BAIXA — informativo |
-| 11 | **event** | 2 | 2 | BAIXA — informativo |
-| 12 | **store** | 3 | 0 | BAIXA — informativo |
-| 13 | **category** | 1 | 2 | BAIXA — auxiliar |
+| #   | Feature      | Components | Hooks | Criticidade         |
+| --- | ------------ | ---------- | ----- | ------------------- |
+| 1   | **auth**     | 0          | 3     | ALTA — segurança    |
+| 2   | **manga**    | 13         | 5     | ALTA — domínio core |
+| 3   | **comment**  | 17         | 9     | ALTA — core UX      |
+| 4   | **rating**   | 9          | 2     | ALTA — core UX      |
+| 5   | **chapter**  | 8          | 2     | ALTA — leitura      |
+| 6   | **library**  | 5          | 2     | MÉDIA — engajamento |
+| 7   | **group**    | 7          | 3     | MÉDIA — comunidade  |
+| 8   | **user**     | 15         | 2     | MÉDIA — perfil      |
+| 9   | **forum**    | 5          | 2     | MÉDIA — comunidade  |
+| 10  | **news**     | 3          | 2     | BAIXA — informativo |
+| 11  | **event**    | 2          | 2     | BAIXA — informativo |
+| 12  | **store**    | 3          | 0     | BAIXA — informativo |
+| 13  | **category** | 1          | 2     | BAIXA — auxiliar    |
 
 ---
 
 ### Fase 5 — Shared Components
 
-| | |
-|---|---|
-| **Camada** | `shared/component/` |
+|                  |                                                 |
+| ---------------- | ----------------------------------------------- |
+| **Camada**       | `shared/component/`                             |
 | **O que testar** | Renderização, props, acessibilidade, interações |
-| **Volume** | 36 componentes |
+| **Volume**       | 36 componentes                                  |
 
 **Prioridade por frequência de uso:**
 
@@ -412,13 +412,13 @@ shared/service/util/
 
 Ao decidir **o que testar primeiro** dentro de cada fase, aplique estes critérios (em ordem de peso):
 
-| Critério | Descrição | Exemplo |
-|----------|-----------|---------|
-| **Impacto no negócio** | Features que afetam receita ou retenção | auth, manga, chapter |
-| **Dependentes** | Código shared do qual outras features dependem | `validateId`, `httpClient`, `BaseButton` |
-| **Complexidade** | Hooks/componentes com lógica condicional significativa | `useComments` (9 hooks internos) |
-| **Frequência de mudança** | Arquivos modificados frequentemente no git history | `git log --format='%H' --follow <file> \| wc -l` |
-| **Histórico de bugs** | Áreas que já apresentaram bugs ou erros de TypeScript | services com PageResponse |
+| Critério                  | Descrição                                              | Exemplo                                          |
+| ------------------------- | ------------------------------------------------------ | ------------------------------------------------ |
+| **Impacto no negócio**    | Features que afetam receita ou retenção                | auth, manga, chapter                             |
+| **Dependentes**           | Código shared do qual outras features dependem         | `validateId`, `httpClient`, `BaseButton`         |
+| **Complexidade**          | Hooks/componentes com lógica condicional significativa | `useComments` (9 hooks internos)                 |
+| **Frequência de mudança** | Arquivos modificados frequentemente no git history     | `git log --format='%H' --follow <file> \| wc -l` |
+| **Histórico de bugs**     | Áreas que já apresentaram bugs ou erros de TypeScript  | services com PageResponse                        |
 
 ---
 
@@ -572,10 +572,9 @@ describe('useTitlesFetch', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTitlesFetch(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         // Inicialmente em loading
         expect(result.current.isLoading).toBe(true);
@@ -595,10 +594,9 @@ describe('useTitlesFetch', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTitlesFetch(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isError).toBe(true);
@@ -700,14 +698,14 @@ describe('TitleCard', () => {
 
 ### Metas de cobertura por fase
 
-| Fase | Escopo | Meta |
-|------|--------|------|
-| 0 | Setup funcional | Vitest roda com 0 falhas |
-| 1 | `shared/service/util/` | 90%+ statements |
-| 2 | `feature/*/service/` | 80%+ branches |
-| 3 | `feature/*/hook/` (HIGH) | 80%+ statements |
-| 4 | Componentes HIGH | 70%+ statements |
-| 5 | Cobertura global | 60%+ statements |
+| Fase | Escopo                   | Meta                     |
+| ---- | ------------------------ | ------------------------ |
+| 0    | Setup funcional          | Vitest roda com 0 falhas |
+| 1    | `shared/service/util/`   | 90%+ statements          |
+| 2    | `feature/*/service/`     | 80%+ branches            |
+| 3    | `feature/*/hook/` (HIGH) | 80%+ statements          |
+| 4    | Componentes HIGH         | 70%+ statements          |
+| 5    | Cobertura global         | 60%+ statements          |
 
 ### Integração contínua
 
@@ -718,9 +716,9 @@ describe('TitleCard', () => {
 
 - name: Coverage Gate
   run: |
-    # PR não pode reduzir cobertura global
-    # Configurar threshold no vitest.config.ts:
-    # coverage.thresholds.lines: 60
+      # PR não pode reduzir cobertura global
+      # Configurar threshold no vitest.config.ts:
+      # coverage.thresholds.lines: 60
 ```
 
 ### Evolução futura
@@ -742,20 +740,24 @@ Use este template ao testar cada feature. Uma feature é considerada **testada**
 ## Feature: [nome]
 
 ### Services
+
 - [ ] Happy path de cada função exportada
 - [ ] Tratamento de erro (API retorna 4xx/5xx)
 - [ ] Parâmetros opcionais e valores padrão
 
 ### Data Hooks
+
 - [ ] Estado loading inicial
 - [ ] Estado de sucesso com dados corretos
 - [ ] Estado de erro com mensagem apropriada
 
 ### Facade Hooks
+
 - [ ] Interface exposta (propriedades e funções retornadas)
 - [ ] Transformações de dados aplicadas corretamente
 
 ### Componentes
+
 - [ ] Renderização com props obrigatórias
 - [ ] Renderização com props opcionais / valores padrão
 - [ ] Interações do usuário (click, input, submit)
@@ -763,6 +765,7 @@ Use este template ao testar cada feature. Uma feature é considerada **testada**
 - [ ] Acessibilidade (roles, labels, alt text)
 
 ### Qualidade
+
 - [ ] Nenhum `test.skip` ou `test.todo` pendente
 - [ ] Todos os testes passam: `npm run test`
 - [ ] Coverage da feature dentro da meta da fase atual
@@ -772,10 +775,10 @@ Use este template ao testar cada feature. Uma feature é considerada **testada**
 
 ## Referência Rápida
 
-| Preciso testar... | Ferramenta | Template |
-|-------------------|-----------|----------|
-| Função pura | Vitest puro | [8.1](#81-teste-de-utilitário-função-pura) |
-| Service (API call) | Vitest + MSW | [8.2](#82-teste-de-service-com-msw) |
-| Data hook (useQuery) | renderHook + MSW | [8.3](#83-teste-de-data-hook-usequery--msw) |
-| Facade hook | renderHook + MSW | [8.4](#84-teste-de-facade-hook) |
-| Componente React | renderWithProviders + userEvent | [8.5](#85-teste-de-componente) |
+| Preciso testar...    | Ferramenta                      | Template                                    |
+| -------------------- | ------------------------------- | ------------------------------------------- |
+| Função pura          | Vitest puro                     | [8.1](#81-teste-de-utilitário-função-pura)  |
+| Service (API call)   | Vitest + MSW                    | [8.2](#82-teste-de-service-com-msw)         |
+| Data hook (useQuery) | renderHook + MSW                | [8.3](#83-teste-de-data-hook-usequery--msw) |
+| Facade hook          | renderHook + MSW                | [8.4](#84-teste-de-facade-hook)             |
+| Componente React     | renderWithProviders + userEvent | [8.5](#85-teste-de-componente)              |
