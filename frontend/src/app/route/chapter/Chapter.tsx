@@ -66,7 +66,10 @@ const Chapter = () => {
                                 </h3>
                             </div>
                             <div className="flex flex-col gap-4">
-                                <CommentInput placeholder="Deixe seu comentário" titleId={titleId} />
+                                <CommentInput
+                                    placeholder="Deixe seu comentário"
+                                    titleId={titleId}
+                                />
                                 <SortComments title="Ordernar comentários por:" />
                             </div>
                         </div>

@@ -1,10 +1,11 @@
 import React from 'react';
+
 import { Link, useLocation } from 'react-router-dom';
 
 import clsx from 'clsx';
 
 type CustomLinkBaseTypes = {
-    link?: string;
+    link: string;
     className?: string;
     enabledColorWhenActive?: boolean;
     inlineStyle?: React.CSSProperties;
@@ -15,7 +16,7 @@ type CustomLinkBaseTypes = {
 const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
     (
         {
-            link = '/',
+            link,
             className,
             enabledColorWhenActive,
             inlineStyle,
@@ -30,8 +31,16 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
             );
         }
 
+        if (!link) {
+            throw new Error(
+                'O prop "link" é obrigatório para o componente AppLink. Por favor, forneça um valor para o prop "link" para que o componente funcione corretamente.',
+            );
+        }
+
+        link = link.startsWith('/') ? link.slice(1) : link;
+
         const isExternalLink = link.includes('http');
-        const isActive = useLocation().pathname === `/Manga-Reader${link}`;
+        const isActive = useLocation().pathname === `/Manga-Reader/${link}`;
 
         return (
             <Link
@@ -44,7 +53,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
                     },
                 )}
                 style={inlineStyle}
-                to={isExternalLink ? link : '/Manga-Reader' + link}
+                to={isExternalLink ? link : '/Manga-Reader/' + link}
             >
                 {children ?? text}
             </Link>

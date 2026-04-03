@@ -31,7 +31,7 @@ const publicRoutes = [
         element: <TitleDetailsPage />,
     },
     {
-        path: 'title/:titleId/:chapter',
+        path: 'title/:titleId/chapter/:chapter',
         element: <Chapter />,
     },
     {

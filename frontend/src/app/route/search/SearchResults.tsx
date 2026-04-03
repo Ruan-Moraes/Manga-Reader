@@ -79,7 +79,7 @@ const SearchResults = () => {
                                     className="flex flex-col border rounded-xs border-tertiary"
                                 >
                                     <AppLink
-                                        link={`/title/${title.id}`}
+                                        link={`title/${title.id}`}
                                         className="block"
                                     >
                                         <img
@@ -91,7 +91,7 @@ const SearchResults = () => {
                                     <div className="p-2 border-t border-tertiary">
                                         <h3 className="text-sm font-bold truncate">
                                             <AppLink
-                                                link={`/title/${title.id}`}
+                                                link={`title/${title.id}`}
                                                 text={title.name}
                                             />
                                         </h3>

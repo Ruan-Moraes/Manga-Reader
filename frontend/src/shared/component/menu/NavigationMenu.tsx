@@ -125,7 +125,7 @@ const NavigationMenu = () => {
                                 'pointer-events-none': !isSticky,
                             })}
                         >
-                            <AppLink text="Manga Reader" />
+                            <AppLink text="Manga Reader" link="/" />
                         </h2>
                     </div>
                     <div
@@ -152,7 +152,7 @@ const NavigationMenu = () => {
                     >
                         <div className="flex items-center justify-between gap-2 p-4 border-b-2 border-b-tertiary">
                             <h2 className="text-xl italic font-bold mobile-sm:text-lg mobile-md:text-xl">
-                                <AppLink text="Manga Reader" />
+                                <AppLink text="Manga Reader" link="/" />
                             </h2>
                             <button
                                 type="button"
@@ -171,7 +171,9 @@ const NavigationMenu = () => {
                                     e.preventDefault();
                                     const trimmed = menuSearch.trim();
                                     if (trimmed) {
-                                        navigate(`/Manga-Reader/search?q=${encodeURIComponent(trimmed)}`);
+                                        navigate(
+                                            `/Manga-Reader/search?q=${encodeURIComponent(trimmed)}`,
+                                        );
                                         closeMenu();
                                         setMenuSearch('');
                                     }
@@ -183,7 +185,9 @@ const NavigationMenu = () => {
                                     placeholder="Buscar mangás, notícias, grupos..."
                                     className="w-full h-10 px-3 text-sm border bg-secondary rounded-xs border-tertiary placeholder:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default"
                                     value={menuSearch}
-                                    onChange={e => setMenuSearch(e.target.value)}
+                                    onChange={e =>
+                                        setMenuSearch(e.target.value)
+                                    }
                                 />
                                 <button
                                     type="submit"
