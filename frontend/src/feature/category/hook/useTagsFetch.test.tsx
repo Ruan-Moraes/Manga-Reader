@@ -31,16 +31,16 @@ describe('useTagsFetch', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTagsFetch(QUERY_KEYS.TAGS),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTagsFetch(QUERY_KEYS.TAGS), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true);
         });
 
         const data = result.current.data as { id: number; name: string }[];
+
         expect(data).toHaveLength(2);
     });
 
@@ -51,10 +51,9 @@ describe('useTagsFetch', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTagsFetch(QUERY_KEYS.TAGS),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTagsFetch(QUERY_KEYS.TAGS), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isError).toBe(true);

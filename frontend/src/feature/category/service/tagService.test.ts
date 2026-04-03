@@ -18,7 +18,10 @@ describe('tagService', () => {
             server.use(
                 http.get(`*${API_URLS.TAGS}`, () =>
                     HttpResponse.json({
-                        data: [buildTag(), buildTag({ id: 2, name: 'Romance' })],
+                        data: [
+                            buildTag(),
+                            buildTag({ id: 2, name: 'Romance' }),
+                        ],
                         success: true,
                     }),
                 ),
@@ -27,6 +30,7 @@ describe('tagService', () => {
             const result = await getTags();
 
             expect(result).toHaveLength(2);
+
             expect(result[0].name).toBe('Action');
         });
 

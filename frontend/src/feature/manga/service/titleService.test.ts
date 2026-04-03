@@ -162,9 +162,7 @@ describe('titleService', () => {
                 ),
             );
 
-            await expect(
-                filterTitles({ status: 'ONGOING' }),
-            ).rejects.toThrow();
+            await expect(filterTitles({ status: 'ONGOING' })).rejects.toThrow();
         });
     });
 });

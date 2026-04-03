@@ -42,7 +42,10 @@ const buildPageResponse = (content: unknown[] = []) => ({
 describe('ratingService', () => {
     describe('getRatingsByTitleId', () => {
         it('deve retornar pagina de ratings mapeados', async () => {
-            const ratings = [buildRatingResponse(), buildRatingResponse({ id: 'rating-2' })];
+            const ratings = [
+                buildRatingResponse(),
+                buildRatingResponse({ id: 'rating-2' }),
+            ];
 
             server.use(
                 http.get(`*${API_URLS.RATINGS}/title/title-1`, () =>
@@ -154,8 +157,9 @@ describe('ratingService', () => {
     describe('deleteReview', () => {
         it('deve deletar review sem erro', async () => {
             server.use(
-                http.delete(`*${API_URLS.RATINGS}/rating-1`, () =>
-                    new HttpResponse(null, { status: 204 }),
+                http.delete(
+                    `*${API_URLS.RATINGS}/rating-1`,
+                    () => new HttpResponse(null, { status: 204 }),
                 ),
             );
 

@@ -28,14 +28,24 @@ describe('useBookmark', () => {
     });
 
     it('deve carregar ids salvos quando sessao existe', async () => {
-        localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildSession()));
+        localStorage.setItem(
+            'manga-reader:auth-user',
+            JSON.stringify(buildSession()),
+        );
 
         server.use(
             http.get(`*${API_URLS.LIBRARY}`, () =>
                 HttpResponse.json({
                     data: {
                         content: [
-                            { titleId: 'title-1', name: 'A', cover: '', type: 'MANGA', list: 'Lendo', savedAt: '' },
+                            {
+                                titleId: 'title-1',
+                                name: 'A',
+                                cover: '',
+                                type: 'MANGA',
+                                list: 'Lendo',
+                                savedAt: '',
+                            },
                         ],
                         page: 0,
                         size: 1000,
@@ -56,18 +66,35 @@ describe('useBookmark', () => {
     });
 
     it('deve adicionar bookmark via toggleBookmark', async () => {
-        localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildSession()));
+        localStorage.setItem(
+            'manga-reader:auth-user',
+            JSON.stringify(buildSession()),
+        );
 
         server.use(
             http.get(`*${API_URLS.LIBRARY}`, () =>
                 HttpResponse.json({
-                    data: { content: [], page: 0, size: 1000, totalElements: 0, totalPages: 0, last: true },
+                    data: {
+                        content: [],
+                        page: 0,
+                        size: 1000,
+                        totalElements: 0,
+                        totalPages: 0,
+                        last: true,
+                    },
                     success: true,
                 }),
             ),
             http.post(`*${API_URLS.LIBRARY}`, () =>
                 HttpResponse.json({
-                    data: { titleId: 'title-2', name: 'B', cover: '', type: 'MANGA', list: 'Quero Ler', savedAt: '' },
+                    data: {
+                        titleId: 'title-2',
+                        name: 'B',
+                        cover: '',
+                        type: 'MANGA',
+                        list: 'Quero Ler',
+                        savedAt: '',
+                    },
                     success: true,
                 }),
             ),
@@ -93,14 +120,24 @@ describe('useBookmark', () => {
     });
 
     it('deve remover bookmark via toggleBookmark', async () => {
-        localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildSession()));
+        localStorage.setItem(
+            'manga-reader:auth-user',
+            JSON.stringify(buildSession()),
+        );
 
         server.use(
             http.get(`*${API_URLS.LIBRARY}`, () =>
                 HttpResponse.json({
                     data: {
                         content: [
-                            { titleId: 'title-1', name: 'A', cover: '', type: 'MANGA', list: 'Lendo', savedAt: '' },
+                            {
+                                titleId: 'title-1',
+                                name: 'A',
+                                cover: '',
+                                type: 'MANGA',
+                                list: 'Lendo',
+                                savedAt: '',
+                            },
                         ],
                         page: 0,
                         size: 1000,
@@ -111,8 +148,9 @@ describe('useBookmark', () => {
                     success: true,
                 }),
             ),
-            http.delete(`*${API_URLS.LIBRARY}/title-1`, () =>
-                new HttpResponse(null, { status: 204 }),
+            http.delete(
+                `*${API_URLS.LIBRARY}/title-1`,
+                () => new HttpResponse(null, { status: 204 }),
             ),
         );
 

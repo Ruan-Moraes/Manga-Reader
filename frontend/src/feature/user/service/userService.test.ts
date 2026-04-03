@@ -149,8 +149,9 @@ describe('userService', () => {
     describe('removeRecommendation', () => {
         it('deve remover recomendacao sem erro', async () => {
             server.use(
-                http.delete(`*${API_URLS.USERS}/me/recommendations/title-1`, () =>
-                    new HttpResponse(null, { status: 204 }),
+                http.delete(
+                    `*${API_URLS.USERS}/me/recommendations/title-1`,
+                    () => new HttpResponse(null, { status: 204 }),
                 ),
             );
 
@@ -163,8 +164,18 @@ describe('userService', () => {
     describe('reorderRecommendations', () => {
         it('deve reordenar e retornar lista atualizada', async () => {
             const recs = [
-                { titleId: 't2', titleName: 'B', titleCover: 'b.jpg', position: 0 },
-                { titleId: 't1', titleName: 'A', titleCover: 'a.jpg', position: 1 },
+                {
+                    titleId: 't2',
+                    titleName: 'B',
+                    titleCover: 'b.jpg',
+                    position: 0,
+                },
+                {
+                    titleId: 't1',
+                    titleName: 'A',
+                    titleCover: 'a.jpg',
+                    position: 1,
+                },
             ];
 
             server.use(
@@ -203,7 +214,12 @@ describe('userService', () => {
     describe('getUserComments', () => {
         it('deve retornar pagina de comentarios do usuario', async () => {
             const comments = [
-                { id: 'c1', titleId: 't1', textContent: 'Test', createdAt: '2025-01-01' },
+                {
+                    id: 'c1',
+                    titleId: 't1',
+                    textContent: 'Test',
+                    createdAt: '2025-01-01',
+                },
             ];
 
             server.use(
@@ -224,7 +240,12 @@ describe('userService', () => {
     describe('getUserHistory', () => {
         it('deve retornar pagina de historico', async () => {
             const history = [
-                { titleId: 't1', titleName: 'A', titleCover: 'a.jpg', viewedAt: '2025-01-01' },
+                {
+                    titleId: 't1',
+                    titleName: 'A',
+                    titleCover: 'a.jpg',
+                    viewedAt: '2025-01-01',
+                },
             ];
 
             server.use(
@@ -245,8 +266,9 @@ describe('userService', () => {
     describe('recordView', () => {
         it('deve registrar visualizacao sem erro', async () => {
             server.use(
-                http.post(`*${API_URLS.USERS}/me/history`, () =>
-                    new HttpResponse(null, { status: 204 }),
+                http.post(
+                    `*${API_URLS.USERS}/me/history`,
+                    () => new HttpResponse(null, { status: 204 }),
                 ),
             );
 
@@ -314,8 +336,9 @@ describe('userService', () => {
     describe('removeRecommendation — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
             server.use(
-                http.delete(`*${API_URLS.USERS}/me/recommendations/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
+                http.delete(
+                    `*${API_URLS.USERS}/me/recommendations/title-1`,
+                    () => HttpResponse.json(null, { status: 500 }),
                 ),
             );
             await expect(removeRecommendation('title-1')).rejects.toThrow();
@@ -329,7 +352,9 @@ describe('userService', () => {
                     HttpResponse.json(null, { status: 500 }),
                 ),
             );
-            await expect(reorderRecommendations(['t1', 't2'])).rejects.toThrow();
+            await expect(
+                reorderRecommendations(['t1', 't2']),
+            ).rejects.toThrow();
         });
     });
 
@@ -340,7 +365,9 @@ describe('userService', () => {
                     HttpResponse.json(null, { status: 500 }),
                 ),
             );
-            await expect(updatePrivacySettings({ viewHistoryVisibility: 'PRIVATE' })).rejects.toThrow();
+            await expect(
+                updatePrivacySettings({ viewHistoryVisibility: 'PRIVATE' }),
+            ).rejects.toThrow();
         });
     });
 

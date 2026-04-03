@@ -5,9 +5,24 @@ import type { Chapter } from '@feature/chapter';
 import useChapterSort from './useChapterSort';
 
 const buildChapters = (): Chapter[] => [
-    { number: '3', title: 'Capitulo 3', releaseDate: '2025-01-03', pages: '20' },
-    { number: '1', title: 'Capitulo 1', releaseDate: '2025-01-01', pages: '18' },
-    { number: '2', title: 'Capitulo 2', releaseDate: '2025-01-02', pages: '22' },
+    {
+        number: '3',
+        title: 'Capitulo 3',
+        releaseDate: '2025-01-03',
+        pages: '20',
+    },
+    {
+        number: '1',
+        title: 'Capitulo 1',
+        releaseDate: '2025-01-01',
+        pages: '18',
+    },
+    {
+        number: '2',
+        title: 'Capitulo 2',
+        releaseDate: '2025-01-02',
+        pages: '22',
+    },
 ];
 
 describe('useChapterSort', () => {

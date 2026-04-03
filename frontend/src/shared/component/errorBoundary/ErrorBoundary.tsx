@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import type { ErrorInfo, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import ErrorFallback from './ErrorFallback';
 
@@ -32,7 +32,7 @@ class ErrorBoundary extends Component<Props, State> {
         return { hasError: true, error };
     }
 
-    componentDidCatch(error: Error, _errorInfo: ErrorInfo): void {
+    componentDidCatch(error: Error): void {
         reportError(error.message, error.stack ?? null, 'error-boundary');
     }
 

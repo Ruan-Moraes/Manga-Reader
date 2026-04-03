@@ -86,9 +86,7 @@ export const getForumTopics = async (
     return response.data.data;
 };
 
-export const getForumTopicById = async (
-    id: string,
-): Promise<ForumTopic> => {
+export const getForumTopicById = async (id: string): Promise<ForumTopic> => {
     const response = await api.get<ApiResponse<ForumTopic>>(
         `${API_URLS.FORUM}/${id}`,
     );

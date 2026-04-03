@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { IoLogOutOutline, IoSettingsOutline, IoTrashOutline } from 'react-icons/io5';
+import {
+    IoLogOutOutline,
+    IoSettingsOutline,
+    IoTrashOutline,
+} from 'react-icons/io5';
 
 import UserSettingsModal from '@shared/component/modal/settings/UserSettingsModal';
 import { clearCache } from '@shared/service/util/queryCache';

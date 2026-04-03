@@ -34,7 +34,9 @@ export const updateProfile = async (partial: Partial<User>): Promise<User> => {
 // Enriched Profile
 // ---------------------------------------------------------------------------
 
-export const getEnrichedProfile = async (userId: string): Promise<EnrichedProfile> => {
+export const getEnrichedProfile = async (
+    userId: string,
+): Promise<EnrichedProfile> => {
     const response = await api.get<ApiResponse<EnrichedProfile>>(
         `${API_URLS.USERS}/${userId}/profile`,
     );
@@ -52,7 +54,9 @@ export const getMyEnrichedProfile = async (): Promise<EnrichedProfile> => {
 // Recommendations
 // ---------------------------------------------------------------------------
 
-export const addRecommendation = async (titleId: string): Promise<RecommendedTitle> => {
+export const addRecommendation = async (
+    titleId: string,
+): Promise<RecommendedTitle> => {
     const response = await api.post<ApiResponse<RecommendedTitle>>(
         `${API_URLS.USERS}/me/recommendations`,
         { titleId },
@@ -64,7 +68,9 @@ export const removeRecommendation = async (titleId: string): Promise<void> => {
     await api.delete(`${API_URLS.USERS}/me/recommendations/${titleId}`);
 };
 
-export const reorderRecommendations = async (titleIds: string[]): Promise<RecommendedTitle[]> => {
+export const reorderRecommendations = async (
+    titleIds: string[],
+): Promise<RecommendedTitle[]> => {
     const response = await api.put<ApiResponse<RecommendedTitle[]>>(
         `${API_URLS.USERS}/me/recommendations/order`,
         titleIds,

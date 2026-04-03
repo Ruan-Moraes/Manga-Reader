@@ -58,15 +58,11 @@ describe('ErrorBoundary', () => {
             </ErrorBoundary>,
         );
 
-        expect(
-            screen.getByText('Ops! Algo deu errado.'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Ops! Algo deu errado.')).toBeInTheDocument();
         expect(
             screen.getByText(/Ocorreu um erro inesperado/),
         ).toBeInTheDocument();
-        expect(
-            screen.getByText('Voltar à página inicial'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Voltar à página inicial')).toBeInTheDocument();
     });
 
     it('deve chamar reportError com source error-boundary', () => {

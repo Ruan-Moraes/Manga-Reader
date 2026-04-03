@@ -34,7 +34,10 @@ const buildCommentResponse = (overrides = {}) => ({
 describe('commentService', () => {
     describe('getCommentsByTitleId', () => {
         it('deve retornar pagina de comentarios mapeados', async () => {
-            const comments = [buildCommentResponse(), buildCommentResponse({ id: 'comment-2' })];
+            const comments = [
+                buildCommentResponse(),
+                buildCommentResponse({ id: 'comment-2' }),
+            ];
 
             server.use(
                 http.get(`*${API_URLS.COMMENTS}/title/title-1`, () =>
@@ -72,7 +75,9 @@ describe('commentService', () => {
 
     describe('createComment', () => {
         it('deve criar comentario e retornar dados mapeados', async () => {
-            const comment = buildCommentResponse({ textContent: 'Novo comentario' });
+            const comment = buildCommentResponse({
+                textContent: 'Novo comentario',
+            });
 
             server.use(
                 http.post(`*${API_URLS.COMMENTS}`, () =>
@@ -90,11 +95,16 @@ describe('commentService', () => {
         });
 
         it('deve enviar parentCommentId quando fornecido', async () => {
-            const comment = buildCommentResponse({ parentCommentId: 'parent-1' });
+            const comment = buildCommentResponse({
+                parentCommentId: 'parent-1',
+            });
 
             server.use(
                 http.post(`*${API_URLS.COMMENTS}`, async ({ request }) => {
-                    const body = (await request.json()) as Record<string, unknown>;
+                    const body = (await request.json()) as Record<
+                        string,
+                        unknown
+                    >;
                     expect(body.parentCommentId).toBe('parent-1');
                     return HttpResponse.json({ data: comment, success: true });
                 }),
@@ -158,8 +168,9 @@ describe('commentService', () => {
     describe('deleteComment', () => {
         it('deve deletar comentario sem erro', async () => {
             server.use(
-                http.delete(`*${API_URLS.COMMENTS}/comment-1`, () =>
-                    new HttpResponse(null, { status: 204 }),
+                http.delete(
+                    `*${API_URLS.COMMENTS}/comment-1`,
+                    () => new HttpResponse(null, { status: 204 }),
                 ),
             );
 

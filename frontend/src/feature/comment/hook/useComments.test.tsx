@@ -46,7 +46,10 @@ describe('useComments', () => {
             http.get(`*${API_URLS.COMMENTS}/title/1`, () =>
                 HttpResponse.json({
                     data: {
-                        content: [buildCommentResponse(), buildCommentResponse('c2')],
+                        content: [
+                            buildCommentResponse(),
+                            buildCommentResponse('c2'),
+                        ],
                         page: 0,
                         size: 20,
                         totalElements: 2,

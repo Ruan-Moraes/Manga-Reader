@@ -188,8 +188,18 @@ describe('eventService', () => {
 
         it('deve ordenar por popularidade', () => {
             const events = [
-                buildEvent({ id: 'e1', participants: 100, interested: 50, timeline: 'upcoming' }),
-                buildEvent({ id: 'e2', participants: 500, interested: 200, timeline: 'upcoming' }),
+                buildEvent({
+                    id: 'e1',
+                    participants: 100,
+                    interested: 50,
+                    timeline: 'upcoming',
+                }),
+                buildEvent({
+                    id: 'e2',
+                    participants: 500,
+                    interested: 200,
+                    timeline: 'upcoming',
+                }),
             ];
 
             const result = filterEvents(events, {

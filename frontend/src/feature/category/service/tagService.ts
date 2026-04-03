@@ -15,9 +15,7 @@ export const getTags = async (): Promise<Tag[]> => {
 };
 
 export const getTagById = async (id: number): Promise<Tag> => {
-    const response = await api.get<ApiResponse<Tag>>(
-        `${API_URLS.TAGS}/${id}`,
-    );
+    const response = await api.get<ApiResponse<Tag>>(`${API_URLS.TAGS}/${id}`);
 
     return response.data.data;
 };

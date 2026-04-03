@@ -36,7 +36,10 @@ describe('useAuth', () => {
 
     it('deve restaurar usuario quando sessao existe no localStorage', async () => {
         const authData = buildAuthResponse();
-        localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
+        localStorage.setItem(
+            'manga-reader:auth-user',
+            JSON.stringify(authData),
+        );
 
         server.use(
             http.get(`*${API_URLS.AUTH_ME}`, () =>
@@ -101,7 +104,10 @@ describe('useAuth', () => {
 
     it('deve fazer logout e limpar user', async () => {
         const authData = buildAuthResponse();
-        localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
+        localStorage.setItem(
+            'manga-reader:auth-user',
+            JSON.stringify(authData),
+        );
 
         server.use(
             http.get(`*${API_URLS.AUTH_ME}`, () =>

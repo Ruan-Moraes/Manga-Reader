@@ -27,9 +27,7 @@ describe('validateResponse', () => {
     });
 
     it('deve lancar erro para response null', () => {
-        expect(() =>
-            validateResponse(null as unknown as Response),
-        ).toThrow();
+        expect(() => validateResponse(null as unknown as Response)).toThrow();
     });
 
     it('deve lancar erro para response undefined', () => {

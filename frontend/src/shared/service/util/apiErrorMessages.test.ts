@@ -31,9 +31,7 @@ describe('resolveApiErrorMessage', () => {
     it('deve retornar fallback por HTTP status quando sem code e sem serverMessage', () => {
         const mensagem = resolveApiErrorMessage(undefined, 404);
 
-        expect(mensagem).toBe(
-            'O item que você procura não foi encontrado.',
-        );
+        expect(mensagem).toBe('O item que você procura não foi encontrado.');
     });
 
     it('deve agrupar erros 5xx no fallback de 500', () => {
@@ -59,9 +57,7 @@ describe('resolveApiErrorMessage', () => {
             'Algo deu errado',
         );
 
-        expect(mensagem).toBe(
-            'O item que você procura não foi encontrado.',
-        );
+        expect(mensagem).toBe('O item que você procura não foi encontrado.');
     });
 
     it('deve priorizar serverMessage sobre HTTP status', () => {
@@ -115,15 +111,15 @@ describe('isAuthExpiredError', () => {
     });
 
     it('deve retornar true para AUTH_UNAUTHENTICATED', () => {
-        expect(
-            isAuthExpiredError(API_ERROR_CODES.AUTH_UNAUTHENTICATED),
-        ).toBe(true);
+        expect(isAuthExpiredError(API_ERROR_CODES.AUTH_UNAUTHENTICATED)).toBe(
+            true,
+        );
     });
 
     it('deve retornar false para outros codigos', () => {
-        expect(
-            isAuthExpiredError(API_ERROR_CODES.AUTH_ACCESS_DENIED),
-        ).toBe(false);
+        expect(isAuthExpiredError(API_ERROR_CODES.AUTH_ACCESS_DENIED)).toBe(
+            false,
+        );
     });
 
     it('deve retornar false para undefined', () => {
@@ -133,15 +129,15 @@ describe('isAuthExpiredError', () => {
 
 describe('isValidationError', () => {
     it('deve retornar true para VALIDATION_FIELD_ERROR', () => {
-        expect(
-            isValidationError(API_ERROR_CODES.VALIDATION_FIELD_ERROR),
-        ).toBe(true);
+        expect(isValidationError(API_ERROR_CODES.VALIDATION_FIELD_ERROR)).toBe(
+            true,
+        );
     });
 
     it('deve retornar false para outros codigos de validacao', () => {
-        expect(
-            isValidationError(API_ERROR_CODES.VALIDATION_BAD_REQUEST),
-        ).toBe(false);
+        expect(isValidationError(API_ERROR_CODES.VALIDATION_BAD_REQUEST)).toBe(
+            false,
+        );
     });
 
     it('deve retornar false para undefined', () => {

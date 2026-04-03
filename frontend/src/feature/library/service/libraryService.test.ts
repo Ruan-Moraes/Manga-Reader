@@ -70,8 +70,9 @@ describe('libraryService', () => {
     describe('updateSavedMangaList', () => {
         it('deve atualizar lista sem erro', async () => {
             server.use(
-                http.patch(`*${API_URLS.LIBRARY}/title-1`, () =>
-                    new HttpResponse(null, { status: 204 }),
+                http.patch(
+                    `*${API_URLS.LIBRARY}/title-1`,
+                    () => new HttpResponse(null, { status: 204 }),
                 ),
             );
 
@@ -84,8 +85,9 @@ describe('libraryService', () => {
     describe('removeSavedManga', () => {
         it('deve remover titulo da biblioteca sem erro', async () => {
             server.use(
-                http.delete(`*${API_URLS.LIBRARY}/title-1`, () =>
-                    new HttpResponse(null, { status: 204 }),
+                http.delete(
+                    `*${API_URLS.LIBRARY}/title-1`,
+                    () => new HttpResponse(null, { status: 204 }),
                 ),
             );
 
@@ -117,7 +119,12 @@ describe('libraryService', () => {
             server.use(
                 http.get(`*${API_URLS.LIBRARY}/counts`, () =>
                     HttpResponse.json({
-                        data: { lendo: 5, queroLer: 10, concluido: 3, total: 18 },
+                        data: {
+                            lendo: 5,
+                            queroLer: 10,
+                            concluido: 3,
+                            total: 18,
+                        },
                         success: true,
                     }),
                 ),

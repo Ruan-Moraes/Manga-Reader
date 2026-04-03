@@ -50,7 +50,9 @@ describe('formatDate', () => {
     });
 
     it('deve lancar RangeError quando string de data e invalida', () => {
-        expect(() => formatDate('not-a-date', { year: 'numeric' })).toThrow(RangeError);
+        expect(() => formatDate('not-a-date', { year: 'numeric' })).toThrow(
+            RangeError,
+        );
     });
 
     it('deve lancar RangeError quando recebe string vazia', () => {

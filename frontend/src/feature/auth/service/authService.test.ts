@@ -132,9 +132,7 @@ describe('authService', () => {
                 ),
             );
 
-            await expect(
-                refreshToken('refresh-token-456'),
-            ).rejects.toThrow();
+            await expect(refreshToken('refresh-token-456')).rejects.toThrow();
         });
     });
 

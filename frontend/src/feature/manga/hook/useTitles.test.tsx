@@ -20,10 +20,9 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('useTitles', () => {
     it('deve retornar array vazio e totalPages 0 enquanto carrega', () => {
-        const { result } = renderHook(
-            () => useTitles(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitles(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         expect(result.current.titles).toEqual([]);
         expect(result.current.totalPages).toBe(0);
@@ -40,10 +39,9 @@ describe('useTitles', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTitles(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitles(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false);
@@ -62,10 +60,9 @@ describe('useTitles', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTitles(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitles(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isError).toBe(true);

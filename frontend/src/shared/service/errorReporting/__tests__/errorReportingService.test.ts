@@ -91,7 +91,7 @@ describe('errorReportingService', () => {
         });
 
         // Aguardar um pouco para confirmar que nao chegam mais
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 50));
         expect(capturedBodies).toHaveLength(1);
     });
 

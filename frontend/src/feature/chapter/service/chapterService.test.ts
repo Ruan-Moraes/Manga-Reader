@@ -17,7 +17,10 @@ const buildChapter = (overrides = {}) => ({
 describe('chapterService', () => {
     describe('getChaptersByTitleId', () => {
         it('deve retornar pagina de capitulos', async () => {
-            const chapters = [buildChapter(), buildChapter({ number: '2', title: 'Capitulo 2' })];
+            const chapters = [
+                buildChapter(),
+                buildChapter({ number: '2', title: 'Capitulo 2' }),
+            ];
 
             server.use(
                 http.get(`*${API_URLS.CHAPTERS}/title/title-1`, () =>
@@ -43,22 +46,25 @@ describe('chapterService', () => {
 
         it('deve passar parametros de paginacao', async () => {
             server.use(
-                http.get(`*${API_URLS.CHAPTERS}/title/title-1`, ({ request }) => {
-                    const url = new URL(request.url);
-                    expect(url.searchParams.get('page')).toBe('1');
-                    expect(url.searchParams.get('size')).toBe('25');
-                    return HttpResponse.json({
-                        data: {
-                            content: [],
-                            page: 1,
-                            size: 25,
-                            totalElements: 0,
-                            totalPages: 0,
-                            last: true,
-                        },
-                        success: true,
-                    });
-                }),
+                http.get(
+                    `*${API_URLS.CHAPTERS}/title/title-1`,
+                    ({ request }) => {
+                        const url = new URL(request.url);
+                        expect(url.searchParams.get('page')).toBe('1');
+                        expect(url.searchParams.get('size')).toBe('25');
+                        return HttpResponse.json({
+                            data: {
+                                content: [],
+                                page: 1,
+                                size: 25,
+                                totalElements: 0,
+                                totalPages: 0,
+                                last: true,
+                            },
+                            success: true,
+                        });
+                    },
+                ),
             );
 
             await getChaptersByTitleId('title-1', 1, 25);

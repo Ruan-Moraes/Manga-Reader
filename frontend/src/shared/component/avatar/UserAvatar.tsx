@@ -11,14 +11,15 @@ type UserAvatarProps = {
     className?: string;
 };
 
-const sizeClasses: Record<UserAvatarSize, { container: string; text: string }> = {
-    xs: { container: 'w-6 h-6', text: 'text-[0.6rem]' },
-    sm: { container: 'w-8 h-8', text: 'text-xs' },
-    md: { container: 'w-10 h-10', text: 'text-sm' },
-    lg: { container: 'w-12 h-12', text: 'text-lg' },
-    xl: { container: 'w-16 h-16', text: 'text-xl' },
-    '2xl': { container: 'w-24 h-24', text: 'text-3xl' },
-};
+const sizeClasses: Record<UserAvatarSize, { container: string; text: string }> =
+    {
+        xs: { container: 'w-6 h-6', text: 'text-[0.6rem]' },
+        sm: { container: 'w-8 h-8', text: 'text-xs' },
+        md: { container: 'w-10 h-10', text: 'text-sm' },
+        lg: { container: 'w-12 h-12', text: 'text-lg' },
+        xl: { container: 'w-16 h-16', text: 'text-xl' },
+        '2xl': { container: 'w-24 h-24', text: 'text-3xl' },
+    };
 
 const avatarColors = [
     'bg-indigo-600',

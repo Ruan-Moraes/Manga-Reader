@@ -20,10 +20,9 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 
 describe('useTitlesFetch', () => {
     it('deve iniciar em estado loading', () => {
-        const { result } = renderHook(
-            () => useTitlesFetch(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         expect(result.current.isLoading).toBe(true);
     });
@@ -37,10 +36,9 @@ describe('useTitlesFetch', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTitlesFetch(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true);
@@ -56,10 +54,9 @@ describe('useTitlesFetch', () => {
             ),
         );
 
-        const { result } = renderHook(
-            () => useTitlesFetch(QUERY_KEYS.TITLES),
-            { wrapper },
-        );
+        const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
+            wrapper,
+        });
 
         await waitFor(() => {
             expect(result.current.isError).toBe(true);

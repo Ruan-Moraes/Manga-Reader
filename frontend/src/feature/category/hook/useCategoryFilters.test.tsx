@@ -48,7 +48,9 @@ describe('useCategoryFilters', () => {
 
         expect(result.current.filterUrl).toContain('sort=most_read');
         expect(result.current.filterUrl).toContain('status=ongoing');
-        expect(result.current.filterUrl).toContain('adult_content=no_adult_content');
+        expect(result.current.filterUrl).toContain(
+            'adult_content=no_adult_content',
+        );
     });
 
     it('deve atualizar tags ao chamar handleSelectedTags', () => {
