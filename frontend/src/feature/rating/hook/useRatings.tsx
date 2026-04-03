@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { requireAuth } from '@shared/service/util/requireAuth';
+
 import {
     getRatingsAverage,
     getRatingsByTitleId,
@@ -56,6 +58,8 @@ const useRatings = (titleId: string) => {
             pacingRating: number;
             comment?: string;
         }) => {
+            if (!requireAuth('avaliar')) return;
+
             await submitRatingService({
                 titleId,
                 ...data,

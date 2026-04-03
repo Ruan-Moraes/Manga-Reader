@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import { showErrorToast } from '@shared/service/util/toastService';
+import { requireAuth } from '@shared/service/util/requireAuth';
 import { getStoredSession } from '@feature/auth/service/authService';
 
 import {
@@ -15,7 +15,10 @@ const useCommentReactions = (commentIds: string[]) => {
     const queryClient = useQueryClient();
     const isAuthenticated = !!getStoredSession();
 
-    const stableKey = useMemo(() => [...commentIds].sort().join(','), [commentIds]);
+    const stableKey = useMemo(
+        () => [...commentIds].sort().join(','),
+        [commentIds],
+    );
 
     const { data: serverReactions } = useQuery({
         queryKey: [QUERY_KEYS.COMMENTS, 'reactions', stableKey],
@@ -55,12 +58,7 @@ const useCommentReactions = (commentIds: string[]) => {
 
     const toggleLike = useCallback(
         async (commentId: string) => {
-            if (!isAuthenticated) {
-                showErrorToast('Faça login para curtir.', {
-                    toastId: 'like-auth-error',
-                });
-                return;
-            }
+            if (!requireAuth('curtir')) return;
 
             const current = reactionsMap[commentId] ?? null;
 
@@ -81,12 +79,7 @@ const useCommentReactions = (commentIds: string[]) => {
 
     const toggleDislike = useCallback(
         async (commentId: string) => {
-            if (!isAuthenticated) {
-                showErrorToast('Faça login para descurtir.', {
-                    toastId: 'dislike-auth-error',
-                });
-                return;
-            }
+            if (!requireAuth('descurtir')) return;
 
             const current = reactionsMap[commentId] ?? null;
 

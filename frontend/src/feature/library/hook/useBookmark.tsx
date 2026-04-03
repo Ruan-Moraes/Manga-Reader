@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { getStoredSession } from '@feature/auth/service/authService';
+import { requireAuth } from '@shared/service/util/requireAuth';
 
 import {
     getUserLibrary,
@@ -39,6 +40,8 @@ const useBookmark = () => {
             cover: string;
             type: string;
         }) => {
+            if (!requireAuth('salvar na biblioteca')) return false;
+
             if (savedIds.has(titleId)) {
                 setSavedIds(prev => {
                     const next = new Set(prev);

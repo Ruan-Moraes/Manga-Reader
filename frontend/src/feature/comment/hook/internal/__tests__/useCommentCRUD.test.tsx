@@ -7,20 +7,26 @@ import { renderHookWithProviders } from '@/test/testUtils';
 
 import useCommentCRUD from '../useCommentCRUD';
 
-// Mock toast service para verificar chamadas
 vi.mock('@shared/service/util/toastService', () => ({
     showSuccessToast: vi.fn(),
     showErrorToast: vi.fn(),
 }));
 
-import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
+vi.mock('@shared/service/util/requireAuth', () => ({
+    requireAuth: vi.fn(() => true),
+}));
+
+import { requireAuth } from '@shared/service/util/requireAuth';
+
+import {
+    showSuccessToast,
+    showErrorToast,
+} from '@shared/service/util/toastService';
 
 describe('useCommentCRUD', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
-
-    // ── deleteComment ─────────────────────────────────────────────────────
 
     it('deve deletar comentário e mostrar toast de sucesso', async () => {
         const { result } = renderHookWithProviders(() => useCommentCRUD());
@@ -63,8 +69,6 @@ describe('useCommentCRUD', () => {
         );
     });
 
-    // ── editComment ─────────────────────��─────────────────────────────────
-
     it('deve editar comentário e mostrar toast de sucesso', async () => {
         const { result } = renderHookWithProviders(() => useCommentCRUD());
 
@@ -105,8 +109,6 @@ describe('useCommentCRUD', () => {
             ),
         );
     });
-
-    // ── replyComment ────────────────────────────────────────────────────���─
 
     it('deve responder comentário e mostrar toast de sucesso', async () => {
         const { result } = renderHookWithProviders(() => useCommentCRUD());
@@ -159,8 +161,6 @@ describe('useCommentCRUD', () => {
         );
     });
 
-    // ── Loading states ─────────────────────���─────────────────────────��────
-
     it('deve indicar isDeletingComment como true durante mutation', async () => {
         // Handler lento para capturar o estado de loading
         server.use(
@@ -205,5 +205,27 @@ describe('useCommentCRUD', () => {
         await waitFor(() =>
             expect(result.current.deleteCommentError).not.toBeNull(),
         );
+    });
+
+    it('deve bloquear mutações quando não autenticado', () => {
+        vi.mocked(requireAuth).mockReturnValue(false);
+
+        const { result } = renderHookWithProviders(() => useCommentCRUD());
+
+        act(() => {
+            result.current.deleteComment('comment-1');
+            result.current.editComment('comment-1', 'text', null);
+            result.current.replyComment('comment-1', 'title-1', 'text', null);
+        });
+
+        expect(requireAuth).toHaveBeenCalledWith('deletar comentários');
+        expect(requireAuth).toHaveBeenCalledWith('editar comentários');
+        expect(requireAuth).toHaveBeenCalledWith('responder comentários');
+
+        expect(result.current.isDeletingComment).toBe(false);
+        expect(result.current.isEditingComment).toBe(false);
+        expect(result.current.isReplyingComment).toBe(false);
+
+        vi.mocked(requireAuth).mockReturnValue(true);
     });
 });

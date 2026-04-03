@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 
+import { requireAuth } from '@shared/service/util/requireAuth';
 import { type CommentData } from '../type/comment.types';
 import { type User } from '@feature/user';
 
@@ -213,7 +214,10 @@ const Comment = ({
                 <CommentActions
                     onDelete={openDeleteModal}
                     onEdit={openEditModal}
-                    onReply={() => setIsReplying(true)}
+                    onReply={() => {
+                        if (!requireAuth('responder comentários')) return;
+                        setIsReplying(true);
+                    }}
                     onLike={() => onLike(id)}
                     onDislike={() => onDislike(id)}
                     isOwner={isOwner}

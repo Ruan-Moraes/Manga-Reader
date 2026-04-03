@@ -6,6 +6,7 @@ import {
     showSuccessToast,
     showErrorToast,
 } from '@shared/service/util/toastService';
+import { requireAuth } from '@shared/service/util/requireAuth';
 
 import {
     deleteComment as deleteCommentService,
@@ -90,6 +91,7 @@ const useCommentCRUD = () => {
 
     const deleteComment = useCallback(
         (id: string) => {
+            if (!requireAuth('deletar comentários')) return;
             deleteCommentMutation.mutate(id);
         },
         [deleteCommentMutation],
@@ -101,6 +103,7 @@ const useCommentCRUD = () => {
             newTextContent: string | null,
             newImageContent: string | null,
         ) => {
+            if (!requireAuth('editar comentários')) return;
             editCommentMutation.mutate({ id, newTextContent, newImageContent });
         },
         [editCommentMutation],
@@ -113,7 +116,13 @@ const useCommentCRUD = () => {
             textContent: string | null,
             imageContent: string | null,
         ) => {
-            replyCommentMutation.mutate({ id, titleId, textContent, imageContent });
+            if (!requireAuth('responder comentários')) return;
+            replyCommentMutation.mutate({
+                id,
+                titleId,
+                textContent,
+                imageContent,
+            });
         },
         [replyCommentMutation],
     );
