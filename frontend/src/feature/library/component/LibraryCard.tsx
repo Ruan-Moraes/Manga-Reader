@@ -1,8 +1,12 @@
 import { useState } from 'react';
 
+import BaseSelect from '@shared/component/input/BaseSelect';
 import AppLink from '@shared/component/link/element/AppLink';
 
-import type { ReadingListType, SavedMangaItem } from '../type/saved-library.types';
+import type {
+    ReadingListType,
+    SavedMangaItem,
+} from '../type/saved-library.types';
 
 const listTypes: ReadingListType[] = ['Lendo', 'Quero Ler', 'Concluído'];
 
@@ -17,7 +21,7 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
 
     return (
         <article className="flex gap-3 p-3 border rounded-xs border-tertiary bg-secondary/20 hover:bg-secondary/40 transition-colors">
-            <AppLink link={`/title/${manga.titleId}`}>
+            <AppLink link={`title/${manga.titleId}`}>
                 <img
                     src={manga.cover}
                     alt={manga.name}
@@ -26,27 +30,35 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
             </AppLink>
             <div className="flex flex-col flex-1 gap-2 min-w-0">
                 <AppLink
-                    link={`/title/${manga.titleId}`}
+                    link={`title/${manga.titleId}`}
                     text={manga.name}
                     className="text-sm font-medium truncate"
                 />
                 <span className="text-xs text-tertiary">{manga.type}</span>
-                <select
+                <BaseSelect
+                    options={listTypes.map(list => ({
+                        value: list,
+                        label: list,
+                    }))}
                     value={manga.list}
-                    onChange={e => onChangeList(manga.titleId, e.target.value as ReadingListType)}
+                    onChange={e =>
+                        onChangeList(
+                            manga.titleId,
+                            e.target.value as ReadingListType,
+                        )
+                    }
                     className="px-2 py-1 text-xs border rounded-xs border-tertiary bg-primary-default w-fit"
-                >
-                    {listTypes.map(list => (
-                        <option key={list} value={list}>
-                            {list}
-                        </option>
-                    ))}
-                </select>
+                />
                 {confirming ? (
                     <div className="flex items-center gap-2 text-xs">
-                        <span className="text-quinary-default">Tem certeza?</span>
+                        <span className="text-quinary-default">
+                            Tem certeza?
+                        </span>
                         <button
-                            onClick={() => { onRemove(manga.titleId); setConfirming(false); }}
+                            onClick={() => {
+                                onRemove(manga.titleId);
+                                setConfirming(false);
+                            }}
                             className="px-2 py-0.5 border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default/20"
                         >
                             Confirmar

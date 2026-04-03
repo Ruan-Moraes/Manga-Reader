@@ -37,7 +37,10 @@ const CommentActions = ({
     return (
         <div className="flex justify-between">
             <div className="flex gap-2">
-                <BadgeIconButton onClick={onDislike} dislikeCount={dislikeCount}>
+                <BadgeIconButton
+                    onClick={onDislike}
+                    dislikeCount={dislikeCount}
+                >
                     <AiFillDislike
                         size={13}
                         className={

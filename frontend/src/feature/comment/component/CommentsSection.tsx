@@ -1,3 +1,5 @@
+import { getStoredSession } from '@feature/auth/service/authService';
+
 import { CommentData } from '../type/comment.types';
 
 import CommentInput from './CommentInput';
@@ -28,11 +30,17 @@ const CommentsSection = ({
                     <h3 className="text-xl font-bold">Comentários</h3>
                 </div>
                 <div className="flex flex-col gap-4">
-                    <CommentInput
-                        placeholder="Deixe seu comentário"
-                        titleId={titleId}
-                        onCommentCreated={onCommentCreated}
-                    />
+                    {getStoredSession() ? (
+                        <CommentInput
+                            placeholder="Deixe seu comentário"
+                            titleId={titleId}
+                            onCommentCreated={onCommentCreated}
+                        />
+                    ) : (
+                        <p className="p-3 text-xs border rounded-xs border-tertiary bg-secondary text-tertiary">
+                            Faça login para deixar um comentário.
+                        </p>
+                    )}
                     <SortComments title="Ordernar comentários por:" />
                 </div>
             </div>

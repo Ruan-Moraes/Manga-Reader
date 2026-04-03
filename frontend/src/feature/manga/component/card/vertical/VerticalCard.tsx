@@ -100,7 +100,7 @@ const VerticalCard = ({
                         >
                             {hasChapters ? (
                                 <AppLink
-                                    link={`/title/${id}/${chapter.number}`}
+                                    link={`title/${id}/chapter/${chapter.number}`}
                                     text={chapter.number}
                                 />
                             ) : (
@@ -132,7 +132,7 @@ const VerticalCard = ({
                         <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                             <RatingStars value={ratingAverage!} size={12} />
                         </div>
-                        <AppLink link={`/title/${id}`} className="block h-full">
+                        <AppLink link={`title/${id}`} className="block h-full">
                             {!imageError ? (
                                 <img
                                     alt={`Capa do título: ${name}`}
@@ -163,7 +163,7 @@ const VerticalCard = ({
                         )}
                         {!isLoading && (
                             <h3 className="overflow-x-auto text-nowrap text-shadow-default scrollbar-hidden">
-                                <AppLink link={`/title/${id}`} text={name} />
+                                <AppLink link={`title/${id}`} text={name} />
                             </h3>
                         )}
                     </div>

@@ -12,7 +12,11 @@ type Props = {
     viewHistoryVisibility: string;
 };
 
-const ViewHistorySection = ({ userId, isOwner, viewHistoryVisibility }: Props) => {
+const ViewHistorySection = ({
+    userId,
+    isOwner,
+    viewHistoryVisibility,
+}: Props) => {
     const [items, setItems] = useState<ViewHistoryItem[]>([]);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -31,10 +35,16 @@ const ViewHistorySection = ({ userId, isOwner, viewHistoryVisibility }: Props) =
         }
     }, [userId, page]);
 
-    useEffect(() => { fetch(); }, [fetch]);
+    useEffect(() => {
+        fetch();
+    }, [fetch]);
 
     if (loading) {
-        return <div className="px-4 py-3 animate-pulse"><div className="h-20 bg-tertiary/20 rounded-xs" /></div>;
+        return (
+            <div className="px-4 py-3 animate-pulse">
+                <div className="h-20 bg-tertiary/20 rounded-xs" />
+            </div>
+        );
     }
 
     return (
@@ -61,14 +71,20 @@ const ViewHistorySection = ({ userId, isOwner, viewHistoryVisibility }: Props) =
                                 />
                             ) : (
                                 <div className="flex items-center justify-center w-full h-36 bg-secondary/50">
-                                    <span className="text-xs text-tertiary">Sem capa</span>
+                                    <span className="text-xs text-tertiary">
+                                        Sem capa
+                                    </span>
                                 </div>
                             )}
                             <div className="p-1.5">
-                                <p className="text-xs truncate">{item.titleName}</p>
+                                <p className="text-xs truncate">
+                                    {item.titleName}
+                                </p>
                                 {item.viewedAt && (
                                     <p className="text-[10px] text-tertiary">
-                                        {new Date(item.viewedAt).toLocaleDateString('pt-BR')}
+                                        {new Date(
+                                            item.viewedAt,
+                                        ).toLocaleDateString('pt-BR')}
                                     </p>
                                 )}
                             </div>

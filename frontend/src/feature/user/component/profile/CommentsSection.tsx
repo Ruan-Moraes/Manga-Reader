@@ -31,10 +31,16 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
         }
     }, [userId, page]);
 
-    useEffect(() => { fetch(); }, [fetch]);
+    useEffect(() => {
+        fetch();
+    }, [fetch]);
 
     if (loading) {
-        return <div className="px-4 py-3 animate-pulse"><div className="h-20 bg-tertiary/20 rounded-xs" /></div>;
+        return (
+            <div className="px-4 py-3 animate-pulse">
+                <div className="h-20 bg-tertiary/20 rounded-xs" />
+            </div>
+        );
     }
 
     return (
@@ -48,17 +54,24 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
             ) : (
                 <ul className="space-y-2">
                     {comments.map(c => (
-                        <li key={c.id} className="p-3 border rounded-xs border-tertiary bg-secondary/30">
+                        <li
+                            key={c.id}
+                            className="p-3 border rounded-xs border-tertiary bg-secondary/30"
+                        >
                             <Link
                                 to={`/Manga-Reader/title/${c.titleId}`}
                                 className="text-xs text-quaternary hover:underline"
                             >
                                 Ver titulo
                             </Link>
-                            <p className="mt-1 text-sm line-clamp-2">{c.textContent}</p>
+                            <p className="mt-1 text-sm line-clamp-2">
+                                {c.textContent}
+                            </p>
                             {c.createdAt && (
                                 <p className="mt-1 text-[10px] text-tertiary">
-                                    {new Date(c.createdAt).toLocaleDateString('pt-BR')}
+                                    {new Date(c.createdAt).toLocaleDateString(
+                                        'pt-BR',
+                                    )}
                                 </p>
                             )}
                         </li>

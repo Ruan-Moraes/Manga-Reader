@@ -9,21 +9,34 @@ type Props = {
 
 const roleLabel = (role: string) => {
     switch (role) {
-        case 'admin': return 'Administrador';
-        case 'poster': return 'Postador';
-        default: return 'Leitor';
+        case 'admin':
+            return 'Administrador';
+        case 'poster':
+            return 'Postador';
+        default:
+            return 'Leitor';
     }
 };
 
 const roleBadgeColor = (role: string) => {
     switch (role) {
-        case 'admin': return 'bg-quinary-default/20 text-quinary-default';
-        case 'poster': return 'bg-quaternary/20 text-quaternary';
-        default: return 'bg-tertiary/20 text-tertiary';
+        case 'admin':
+            return 'bg-quinary-default/20 text-quinary-default';
+        case 'poster':
+            return 'bg-quaternary/20 text-quaternary';
+        default:
+            return 'bg-tertiary/20 text-tertiary';
     }
 };
 
-const ProfileHeader = ({ name, role, bio, createdAt, isOwner, onEdit }: Props) => {
+const ProfileHeader = ({
+    name,
+    role,
+    bio,
+    createdAt,
+    isOwner,
+    onEdit,
+}: Props) => {
     const formattedDate = createdAt
         ? new Date(createdAt).toLocaleDateString('pt-BR', {
               year: 'numeric',
@@ -37,7 +50,9 @@ const ProfileHeader = ({ name, role, bio, createdAt, isOwner, onEdit }: Props) =
                 <div>
                     <div className="flex items-center gap-2">
                         <h1 className="text-xl font-bold">{name}</h1>
-                        <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${roleBadgeColor(role)}`}>
+                        <span
+                            className={`px-2 py-0.5 text-xs font-medium rounded-full ${roleBadgeColor(role)}`}
+                        >
                             {roleLabel(role)}
                         </span>
                     </div>
@@ -56,9 +71,7 @@ const ProfileHeader = ({ name, role, bio, createdAt, isOwner, onEdit }: Props) =
                     </button>
                 )}
             </div>
-            {bio && (
-                <p className="mt-3 text-sm text-tertiary">{bio}</p>
-            )}
+            {bio && <p className="mt-3 text-sm text-tertiary">{bio}</p>}
         </div>
     );
 };

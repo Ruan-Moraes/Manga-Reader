@@ -1,4 +1,7 @@
-import type { LibraryCounts, ReadingListType } from '../type/saved-library.types';
+import type {
+    LibraryCounts,
+    ReadingListType,
+} from '../type/saved-library.types';
 
 type ActiveTab = ReadingListType | 'Todos';
 

@@ -74,11 +74,7 @@ const useCommentTree = (comments: CommentData[] | Error) => {
                     parentUserName: level > 0 ? parentUserName : null,
                 },
 
-                ...flattenTree(
-                    comment.children,
-                    level + 1,
-                    comment.user.name,
-                ),
+                ...flattenTree(comment.children, level + 1, comment.user.name),
             ]);
         },
         [isError],

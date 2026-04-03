@@ -15,6 +15,7 @@ import {
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import BaseSelect from '@shared/component/input/BaseSelect';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
 import {
     useForumTopic,
@@ -170,18 +171,19 @@ const ForumTopicPage = () => {
                         <h2 className="text-sm font-bold">
                             Respostas ({topic.replyCount})
                         </h2>
-                        <select
+                        <BaseSelect
+                            options={[
+                                { value: 'recent', label: 'Mais recentes' },
+                                { value: 'likes', label: 'Mais curtidas' },
+                            ]}
                             value={replySort}
                             onChange={e =>
                                 setReplySort(
                                     e.target.value as 'recent' | 'likes',
                                 )
                             }
-                            className="px-3 py-1.5 text-xs border rounded-lg bg-secondary border-tertiary focus:outline-none"
-                        >
-                            <option value="recent">Mais recentes</option>
-                            <option value="likes">Mais curtidas</option>
-                        </select>
+                            className="px-3 py-1.5 text-xs border rounded-xs bg-secondary border-tertiary"
+                        />
                     </div>
 
                     <div className="flex flex-col gap-3">

@@ -1,6 +1,9 @@
 import { useState } from 'react';
 
-import { type PrivacySettings, type VisibilitySetting } from '../../type/user.types';
+import {
+    type PrivacySettings,
+    type VisibilitySetting,
+} from '../../type/user.types';
 import { updatePrivacySettings } from '../../service/userService';
 import { showSuccessToast } from '@shared/service/util/toastService';
 
@@ -9,15 +12,27 @@ type Props = {
     onUpdate: () => void;
 };
 
-const options: { value: VisibilitySetting; label: string; description: string }[] = [
+const options: {
+    value: VisibilitySetting;
+    label: string;
+    description: string;
+}[] = [
     { value: 'PUBLIC', label: 'Publico', description: 'Visivel para todos' },
     { value: 'PRIVATE', label: 'Privado', description: 'Apenas voce pode ver' },
-    { value: 'DO_NOT_TRACK', label: 'Nao rastrear', description: 'Dados nao coletados' },
+    {
+        value: 'DO_NOT_TRACK',
+        label: 'Nao rastrear',
+        description: 'Dados nao coletados',
+    },
 ];
 
 const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
-    const [commentVis, setCommentVis] = useState<VisibilitySetting>(privacySettings.commentVisibility);
-    const [historyVis, setHistoryVis] = useState<VisibilitySetting>(privacySettings.viewHistoryVisibility);
+    const [commentVis, setCommentVis] = useState<VisibilitySetting>(
+        privacySettings.commentVisibility,
+    );
+    const [historyVis, setHistoryVis] = useState<VisibilitySetting>(
+        privacySettings.viewHistoryVisibility,
+    );
     const [saving, setSaving] = useState(false);
 
     const handleSave = async () => {
@@ -49,32 +64,46 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
     return (
         <div className="px-4 py-3 space-y-6">
             <div>
-                <h3 className="text-sm font-semibold mb-3">Visibilidade dos Comentarios</h3>
+                <h3 className="text-sm font-semibold mb-3">
+                    Visibilidade dos Comentarios
+                </h3>
                 <div className="space-y-2">
-                    {options.filter(o => o.value !== 'DO_NOT_TRACK').map(opt => (
-                        <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="radio"
-                                name="commentVis"
-                                value={opt.value}
-                                checked={commentVis === opt.value}
-                                onChange={() => setCommentVis(opt.value)}
-                                className="accent-quaternary"
-                            />
-                            <div>
-                                <span className="text-sm">{opt.label}</span>
-                                <p className="text-[10px] text-tertiary">{opt.description}</p>
-                            </div>
-                        </label>
-                    ))}
+                    {options
+                        .filter(o => o.value !== 'DO_NOT_TRACK')
+                        .map(opt => (
+                            <label
+                                key={opt.value}
+                                className="flex items-center gap-2 cursor-pointer"
+                            >
+                                <input
+                                    type="radio"
+                                    name="commentVis"
+                                    value={opt.value}
+                                    checked={commentVis === opt.value}
+                                    onChange={() => setCommentVis(opt.value)}
+                                    className="accent-quaternary"
+                                />
+                                <div>
+                                    <span className="text-sm">{opt.label}</span>
+                                    <p className="text-[10px] text-tertiary">
+                                        {opt.description}
+                                    </p>
+                                </div>
+                            </label>
+                        ))}
                 </div>
             </div>
 
             <div>
-                <h3 className="text-sm font-semibold mb-3">Visibilidade do Historico</h3>
+                <h3 className="text-sm font-semibold mb-3">
+                    Visibilidade do Historico
+                </h3>
                 <div className="space-y-2">
                     {options.map(opt => (
-                        <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                        <label
+                            key={opt.value}
+                            className="flex items-center gap-2 cursor-pointer"
+                        >
                             <input
                                 type="radio"
                                 name="historyVis"
@@ -85,7 +114,9 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
                             />
                             <div>
                                 <span className="text-sm">{opt.label}</span>
-                                <p className="text-[10px] text-tertiary">{opt.description}</p>
+                                <p className="text-[10px] text-tertiary">
+                                    {opt.description}
+                                </p>
                             </div>
                         </label>
                     ))}

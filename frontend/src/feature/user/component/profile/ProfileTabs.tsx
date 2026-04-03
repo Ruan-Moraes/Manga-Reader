@@ -12,11 +12,21 @@ type Props = {
     hasHistory: boolean;
 };
 
-const ProfileTabs = ({ activeTab, onTabChange, isOwner, hasComments, hasHistory }: Props) => {
+const ProfileTabs = ({
+    activeTab,
+    onTabChange,
+    isOwner,
+    hasComments,
+    hasHistory,
+}: Props) => {
     const tabs: Tab[] = [
         { id: 'about', label: 'Sobre', visible: true },
         { id: 'recommendations', label: 'Recomendados', visible: true },
-        { id: 'comments', label: 'Comentarios', visible: hasComments || isOwner },
+        {
+            id: 'comments',
+            label: 'Comentarios',
+            visible: hasComments || isOwner,
+        },
         { id: 'history', label: 'Historico', visible: hasHistory || isOwner },
         { id: 'settings', label: 'Configuracoes', visible: isOwner },
     ];

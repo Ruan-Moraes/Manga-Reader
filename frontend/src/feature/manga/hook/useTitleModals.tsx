@@ -9,10 +9,7 @@ const useTitleModals = () => {
     const closeRatingModal = useCallback(() => setIsRatingModalOpen(false), []);
 
     const openGroupsModal = useCallback(() => setIsGroupsModalOpen(true), []);
-    const closeGroupsModal = useCallback(
-        () => setIsGroupsModalOpen(false),
-        [],
-    );
+    const closeGroupsModal = useCallback(() => setIsGroupsModalOpen(false), []);
 
     const openCartModal = useCallback(() => setIsCartModalOpen(true), []);
     const closeCartModal = useCallback(() => setIsCartModalOpen(false), []);

@@ -53,9 +53,7 @@ const CommentsList = ({
 
     const displayItems = showDeepComments
         ? visibleItems
-        : visibleItems.filter(
-              item => item.nestedLevel <= MAX_VISUAL_DEPTH,
-          );
+        : visibleItems.filter(item => item.nestedLevel <= MAX_VISUAL_DEPTH);
 
     const handleClickProfile = useCallback(
         (user: User): void => {

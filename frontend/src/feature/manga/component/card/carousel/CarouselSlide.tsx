@@ -40,7 +40,7 @@ const CarouselSlide = ({
             <div className="relative h-full">
                 <div className="h-full">
                     <AppLink
-                        link={`/title/${id}`}
+                        link={`title/${id}`}
                         className="block h-full cursor-default"
                     >
                         <img
@@ -59,7 +59,7 @@ const CarouselSlide = ({
                             WebkitBoxOrient: 'vertical',
                         }}
                     >
-                        <AppLink link={`/title/${id}`} text={name} />
+                        <AppLink link={`title/${id}`} text={name} />
                     </h3>
                     <p
                         className="overflow-hidden text-xs text-shadow-default"

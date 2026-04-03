@@ -57,7 +57,7 @@ const HorizontalCard = ({
                         <div className="absolute right-2 bottom-2 z-10 px-2 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                             <RatingStars value={ratingAverage!} size={12} />
                         </div>
-                        <AppLink link={`/title/${id}`} className="block h-full">
+                        <AppLink link={`title/${id}`} className="block h-full">
                             <img
                                 alt={`Capa do título: ${name}`}
                                 className="object-cover w-full h-full"
@@ -75,7 +75,7 @@ const HorizontalCard = ({
                 ) : (
                     <h3 className="overflow-x-auto text-center text-nowrap">
                         <AppLink
-                            link={`/title/${id}`}
+                            link={`title/${id}`}
                             text={name}
                             className="text-shadow-default"
                         />

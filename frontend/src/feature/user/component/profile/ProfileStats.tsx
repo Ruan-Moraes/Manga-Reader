@@ -22,7 +22,9 @@ const ProfileStats = ({ stats }: Props) => {
                     className="flex flex-col items-center gap-1 p-3 border rounded-xs border-tertiary bg-secondary/30"
                 >
                     <span className="text-xl font-bold">{value}</span>
-                    <span className="text-[10px] text-tertiary text-center">{label}</span>
+                    <span className="text-[10px] text-tertiary text-center">
+                        {label}
+                    </span>
                 </div>
             ))}
         </div>

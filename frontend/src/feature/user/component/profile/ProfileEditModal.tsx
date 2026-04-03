@@ -1,6 +1,9 @@
 import { useState } from 'react';
 
-import { type EnrichedProfile, type SocialLinkResponse } from '../../type/user.types';
+import {
+    type EnrichedProfile,
+    type SocialLinkResponse,
+} from '../../type/user.types';
 import { showSuccessToast } from '@shared/service/util/toastService';
 
 type Props = {
@@ -21,7 +24,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
     const [bio, setBio] = useState(profile.bio ?? '');
     const [photoUrl, setPhotoUrl] = useState(profile.photoUrl ?? '');
     const [bannerUrl, setBannerUrl] = useState(profile.bannerUrl ?? '');
-    const [socialLinks, setSocialLinks] = useState<{ platform: string; url: string }[]>(
+    const [socialLinks, setSocialLinks] = useState<
+        { platform: string; url: string }[]
+    >(
         profile.socialLinks.map((sl: SocialLinkResponse) => ({
             platform: sl.platform,
             url: sl.url,
@@ -39,7 +44,11 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
         setSocialLinks(socialLinks.filter((_, i) => i !== index));
     };
 
-    const handleLinkChange = (index: number, field: 'platform' | 'url', value: string) => {
+    const handleLinkChange = (
+        index: number,
+        field: 'platform' | 'url',
+        value: string,
+    ) => {
         const updated = [...socialLinks];
         updated[index] = { ...updated[index], [field]: value };
         setSocialLinks(updated);
@@ -64,7 +73,10 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
             <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-primary-default border border-tertiary rounded-xs p-4">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold">Editar Perfil</h2>
-                    <button onClick={onClose} className="text-tertiary hover:text-primary-default">
+                    <button
+                        onClick={onClose}
+                        className="text-tertiary hover:text-primary-default"
+                    >
                         X
                     </button>
                 </div>
@@ -90,7 +102,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                             maxLength={500}
                             className="w-full h-20 px-2 py-2 mt-1 text-sm border rounded-xs border-tertiary bg-primary-default"
                         />
-                        <span className="text-[10px] text-tertiary">{bio.length}/500</span>
+                        <span className="text-[10px] text-tertiary">
+                            {bio.length}/500
+                        </span>
                     </label>
 
                     <label className="text-sm">
@@ -113,7 +127,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
 
                     <div>
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium">Redes Sociais</span>
+                            <span className="text-sm font-medium">
+                                Redes Sociais
+                            </span>
                             <button
                                 type="button"
                                 onClick={handleAddLink}
@@ -126,13 +142,25 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                             <div key={i} className="flex gap-2 mb-2">
                                 <input
                                     value={link.platform}
-                                    onChange={e => handleLinkChange(i, 'platform', e.target.value)}
+                                    onChange={e =>
+                                        handleLinkChange(
+                                            i,
+                                            'platform',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Plataforma"
                                     className="flex-1 px-2 py-1.5 text-xs border rounded-xs border-tertiary bg-primary-default"
                                 />
                                 <input
                                     value={link.url}
-                                    onChange={e => handleLinkChange(i, 'url', e.target.value)}
+                                    onChange={e =>
+                                        handleLinkChange(
+                                            i,
+                                            'url',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="URL"
                                     className="flex-[2] px-2 py-1.5 text-xs border rounded-xs border-tertiary bg-primary-default"
                                 />

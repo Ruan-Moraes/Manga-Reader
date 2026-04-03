@@ -76,57 +76,55 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
             <h3 className="text-sm font-bold">Avaliações recentes</h3>
 
             {visibleItems.map(review => (
-                    <article
-                        key={review.id}
-                        className="flex flex-col gap-2 p-2 border rounded-xs border-tertiary bg-primary-default"
-                    >
-                        <CommentUser
-                            size="sm"
-                            user={{ name: review.userName }}
-                            createdAt={review.createdAt}
-                            onClickProfile={handleClickProfile}
-                        />
-                        <div className="grid grid-cols-2 pt-1 gap-x-4 gap-y-2">
-                            {CATEGORY_META.map(meta => {
-                                const value = review[meta.key] as number;
+                <article
+                    key={review.id}
+                    className="flex flex-col gap-2 p-2 border rounded-xs border-tertiary bg-primary-default"
+                >
+                    <CommentUser
+                        size="sm"
+                        user={{ name: review.userName }}
+                        createdAt={review.createdAt}
+                        onClickProfile={handleClickProfile}
+                    />
+                    <div className="grid grid-cols-2 pt-1 gap-x-4 gap-y-2">
+                        {CATEGORY_META.map(meta => {
+                            const value = review[meta.key] as number;
 
-                                return (
-                                    <div
-                                        key={meta.key}
-                                        className="flex items-center justify-between gap-1"
-                                    >
-                                        <span className="flex items-center gap-1 text-[0.65rem]">
-                                            <span>{meta.icon}</span>
-                                            <span className="text-tertiary">
-                                                {meta.label}
-                                            </span>
+                            return (
+                                <div
+                                    key={meta.key}
+                                    className="flex items-center justify-between gap-1"
+                                >
+                                    <span className="flex items-center gap-1 text-[0.65rem]">
+                                        <span>{meta.icon}</span>
+                                        <span className="text-tertiary">
+                                            {meta.label}
                                         </span>
-                                        <div className="flex items-center gap-1">
-                                            <RatingStars
-                                                value={value}
-                                                size={8}
-                                            />
-                                        </div>
+                                    </span>
+                                    <div className="flex items-center gap-1">
+                                        <RatingStars value={value} size={8} />
                                     </div>
-                                );
-                            })}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="border border-tertiary rounded-xs"></div>
+                    <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold">Média geral:</span>
+                        <div className="flex items-center gap-x-4 gap-y-2">
+                            <RatingStars
+                                value={review.overallRating}
+                                size={12}
+                            />
                         </div>
-                        <div className="border border-tertiary rounded-xs"></div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold">
-                                Média geral:
-                            </span>
-                            <div className="flex items-center gap-x-4 gap-y-2">
-                                <RatingStars value={review.overallRating} size={12} />
-                            </div>
-                        </div>
-                        {review.comment && (
-                            <p className="pt-1 text-xs text-tertiary">
-                                {review.comment}
-                            </p>
-                        )}
-                    </article>
-                ))}
+                    </div>
+                    {review.comment && (
+                        <p className="pt-1 text-xs text-tertiary">
+                            {review.comment}
+                        </p>
+                    )}
+                </article>
+            ))}
             {hasMore && (
                 <DarkButton
                     onClick={loadMore}

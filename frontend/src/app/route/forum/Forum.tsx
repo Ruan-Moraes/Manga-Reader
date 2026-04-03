@@ -3,6 +3,7 @@ import { FiMessageSquare, FiSearch } from 'react-icons/fi';
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import BaseSelect from '@shared/component/input/BaseSelect';
 
 import {
     useForumPage,
@@ -91,19 +92,14 @@ const Forum = () => {
                         <span className="text-xs text-shadow-secondary">
                             Ordenar:
                         </span>
-                        <select
+                        <BaseSelect
+                            options={forumSortOptions}
                             value={sort}
                             onChange={e =>
                                 updateSort(e.target.value as ForumSort)
                             }
-                            className="px-3 py-1.5 text-xs border rounded-lg bg-secondary border-tertiary focus:outline-none"
-                        >
-                            {forumSortOptions.map(opt => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
+                            className="px-3 py-1.5 text-xs border rounded-xs bg-secondary border-tertiary"
+                        />
 
                         <span className="ml-auto text-xs text-shadow-secondary">
                             {allTopics.length} tópico

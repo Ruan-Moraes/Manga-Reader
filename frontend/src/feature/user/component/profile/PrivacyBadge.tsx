@@ -10,7 +10,9 @@ const PrivacyBadge = ({ visibility }: Props) => {
             : 'bg-tertiary/20 text-tertiary';
 
     return (
-        <span className={`inline-block px-2 py-0.5 text-[10px] font-medium rounded-full ${color}`}>
+        <span
+            className={`inline-block px-2 py-0.5 text-[10px] font-medium rounded-full ${color}`}
+        >
             {label}
         </span>
     );

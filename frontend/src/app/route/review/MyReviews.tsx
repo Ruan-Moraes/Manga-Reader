@@ -5,7 +5,10 @@ import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 import AppLink from '@shared/component/link/element/AppLink';
-import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
+import {
+    showSuccessToast,
+    showErrorToast,
+} from '@shared/service/util/toastService';
 
 import {
     RatingStars,
@@ -45,7 +48,7 @@ const ReviewCard = ({
         <article className="p-3 border rounded-xs border-tertiary">
             <div className="flex items-center justify-between gap-2">
                 <AppLink
-                    link={`/title/${review.titleId}`}
+                    link={`title/${review.titleId}`}
                     text={review.titleName ?? `Obra #${review.titleId}`}
                     className="text-sm font-medium"
                 />
@@ -70,9 +73,14 @@ const ReviewCard = ({
                 </div>
                 {confirming ? (
                     <div className="flex items-center gap-2 text-xs">
-                        <span className="text-quinary-default">Tem certeza?</span>
+                        <span className="text-quinary-default">
+                            Tem certeza?
+                        </span>
                         <button
-                            onClick={() => { onDelete(review.id); setConfirming(false); }}
+                            onClick={() => {
+                                onDelete(review.id);
+                                setConfirming(false);
+                            }}
                             className="px-2 py-0.5 border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default/20"
                         >
                             Confirmar
@@ -107,7 +115,9 @@ const MyReviews = () => {
         try {
             if (!append) setLoading(true);
             const result = await getUserReviews(page);
-            setReviews(prev => append ? [...prev, ...result.content] : result.content);
+            setReviews(prev =>
+                append ? [...prev, ...result.content] : result.content,
+            );
             setCurrentPage(page);
             setHasMore(!result.last);
         } catch {
@@ -123,7 +133,9 @@ const MyReviews = () => {
 
     const handleUpdate = async (id: string, comment: string) => {
         await updateReview({ id, comment });
-        setReviews(prev => prev.map(r => r.id === id ? { ...r, comment } : r));
+        setReviews(prev =>
+            prev.map(r => (r.id === id ? { ...r, comment } : r)),
+        );
     };
 
     const handleDelete = async (id: string) => {
@@ -152,14 +164,18 @@ const MyReviews = () => {
                 {loading ? (
                     <div className="flex flex-col gap-3">
                         {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="h-32 border rounded-xs border-tertiary animate-pulse bg-tertiary/10" />
+                            <div
+                                key={i}
+                                className="h-32 border rounded-xs border-tertiary animate-pulse bg-tertiary/10"
+                            />
                         ))}
                     </div>
                 ) : reviews.length === 0 ? (
                     <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                         <span className="text-4xl">&#9997;</span>
                         <p className="text-sm text-tertiary">
-                            Nenhuma avaliação ainda. Avalie seus títulos favoritos!
+                            Nenhuma avaliação ainda. Avalie seus títulos
+                            favoritos!
                         </p>
                     </div>
                 ) : (
@@ -177,7 +193,9 @@ const MyReviews = () => {
                         {hasMore && (
                             <div className="flex justify-center">
                                 <button
-                                    onClick={() => loadReviews(currentPage + 1, true)}
+                                    onClick={() =>
+                                        loadReviews(currentPage + 1, true)
+                                    }
                                     className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                                 >
                                     Carregar mais

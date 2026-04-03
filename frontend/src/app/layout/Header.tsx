@@ -25,7 +25,7 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                     {isLoggedIn && user ? (
                         <>
                             <AppLink
-                                link={`/users/${user.id}`}
+                                link={`users/${user.id}`}
                                 className="shrink-0"
                             >
                                 <UserAvatar
@@ -38,7 +38,7 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                             </AppLink>
                             <AppLink
                                 enabledColorWhenActive={true}
-                                link={`/users/${user.id}`}
+                                link={`users/${user.id}`}
                                 text={user.name}
                             />
                             <span className="font-bold">|</span>
@@ -56,13 +56,13 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                         <>
                             <AppLink
                                 enabledColorWhenActive={true}
-                                link="/sign-up"
+                                link="sign-up"
                                 text="Cadastro"
                             />
                             <span className="font-bold">|</span>
                             <AppLink
                                 enabledColorWhenActive={true}
-                                link="/login"
+                                link="login"
                                 text="Login"
                             />
                         </>
@@ -73,8 +73,9 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                 <div>
                     <h1>
                         <AppLink
-                            className="text-2xl italic"
                             text="Manga Reader"
+                            link="/"
+                            className="text-2xl italic"
                         />
                     </h1>
                 </div>

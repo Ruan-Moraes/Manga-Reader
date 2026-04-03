@@ -105,7 +105,7 @@ const HighlightCard = ({
                             <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                                 <RatingStars value={ratingAverage!} size={12} />
                             </div>
-                            <AppLink link={`/title/${id}`} className="h-full">
+                            <AppLink link={`title/${id}`} className="h-full">
                                 {!imageError ? (
                                     <img
                                         alt={`Capa do título: ${name}`}

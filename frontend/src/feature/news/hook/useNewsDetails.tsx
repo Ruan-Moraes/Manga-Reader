@@ -14,7 +14,9 @@ const useNewsDetails = (newsId: string | undefined) => {
             return;
         }
 
-        getNewsById(newsId).then(setNews).catch(() => setNews(undefined));
+        getNewsById(newsId)
+            .then(setNews)
+            .catch(() => setNews(undefined));
     }, [newsId]);
 
     useEffect(() => {

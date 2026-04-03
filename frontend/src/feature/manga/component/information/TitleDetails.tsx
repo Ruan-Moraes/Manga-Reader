@@ -32,7 +32,7 @@ const TitleDetails = ({
                 ) : (
                     <h3 className="overflow-x-auto scrollbar-hidden">
                         <AppLink
-                            link={`/title/${id}`}
+                            link={`title/${id}`}
                             text={name}
                             className="text-nowrap text-shadow-default"
                         />

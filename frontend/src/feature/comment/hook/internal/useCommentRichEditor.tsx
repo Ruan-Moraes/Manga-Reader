@@ -192,9 +192,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
         }
 
         const placeholderEl = textarea.querySelector('#textarea_placeholder');
-        const text = placeholderEl
-            ? null
-            : textarea.innerText.trim() || null;
+        const text = placeholderEl ? null : textarea.innerText.trim() || null;
 
         const imgElements = textarea.querySelectorAll(
             '[contenteditable="false"] img',

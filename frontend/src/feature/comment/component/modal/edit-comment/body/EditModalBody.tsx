@@ -22,11 +22,10 @@ const EditModalBody = ({
     initialImages,
 }: EditModalBodyProps) => {
     const editTextareaRef = useRef<HTMLDivElement | null>(null);
-    const { textareaRef, addImage, removePlaceholder } =
-        useCommentRichEditor({
-            placeholder: 'Edite seu comentário',
-            externalRef: editTextareaRef,
-        });
+    const { textareaRef, addImage, removePlaceholder } = useCommentRichEditor({
+        placeholder: 'Edite seu comentário',
+        externalRef: editTextareaRef,
+    });
 
     const initialValuesProcessed = useRef(false);
 

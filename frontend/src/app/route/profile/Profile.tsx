@@ -101,7 +101,9 @@ const Profile = () => {
                                         className="w-full px-2 py-2 mt-1 text-sm border rounded-xs border-tertiary bg-primary-default"
                                     />
                                     {nameError && (
-                                        <span className="text-xs text-quinary-default">{nameError}</span>
+                                        <span className="text-xs text-quinary-default">
+                                            {nameError}
+                                        </span>
                                     )}
                                 </label>
                                 <label className="text-sm">
@@ -111,18 +113,24 @@ const Profile = () => {
                                         onChange={e => setBio(e.target.value)}
                                         className="w-full h-24 px-2 py-2 mt-1 text-sm border rounded-xs border-tertiary bg-primary-default"
                                     />
-                                    <span className={`text-xs ${bio.length > 500 ? 'text-quinary-default' : 'text-tertiary'}`}>
+                                    <span
+                                        className={`text-xs ${bio.length > 500 ? 'text-quinary-default' : 'text-tertiary'}`}
+                                    >
                                         {bio.length}/500
                                     </span>
                                     {bioError && (
-                                        <span className="text-xs text-quinary-default block">{bioError}</span>
+                                        <span className="text-xs text-quinary-default block">
+                                            {bioError}
+                                        </span>
                                     )}
                                 </label>
                                 <button
                                     disabled={submitting}
                                     className="px-3 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors disabled:opacity-50"
                                 >
-                                    {submitting ? 'Salvando...' : 'Salvar alterações'}
+                                    {submitting
+                                        ? 'Salvando...'
+                                        : 'Salvar alterações'}
                                 </button>
                             </form>
                         </div>
@@ -142,19 +150,23 @@ const Profile = () => {
                                     key={label}
                                     className="flex flex-col items-center gap-1 p-3 border rounded-xs border-tertiary bg-secondary/30"
                                 >
-                                    <span className="text-2xl font-bold">{value}</span>
-                                    <span className="text-xs text-tertiary">{label}</span>
+                                    <span className="text-2xl font-bold">
+                                        {value}
+                                    </span>
+                                    <span className="text-xs text-tertiary">
+                                        {label}
+                                    </span>
                                 </div>
                             ))}
                         </div>
                         <div className="flex gap-3">
                             <AppLink
-                                link="/library"
+                                link="library"
                                 text="Ver Biblioteca"
                                 className="text-sm text-quaternary hover:underline"
                             />
                             <AppLink
-                                link="/reviews"
+                                link="reviews"
                                 text="Ver Avaliações"
                                 className="text-sm text-quaternary hover:underline"
                             />

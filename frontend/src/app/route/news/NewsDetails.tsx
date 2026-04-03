@@ -13,6 +13,7 @@ import {
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import BaseSelect from '@shared/component/input/BaseSelect';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
 
 import {
@@ -247,7 +248,17 @@ const NewsDetails = () => {
                                         Comentários
                                     </h2>
                                     <div className="flex gap-2">
-                                        <select
+                                        <BaseSelect
+                                            options={[
+                                                {
+                                                    value: 'recent',
+                                                    label: 'Mais recentes',
+                                                },
+                                                {
+                                                    value: 'relevant',
+                                                    label: 'Mais relevantes',
+                                                },
+                                            ]}
                                             value={commentSort}
                                             onChange={event =>
                                                 setCommentSort(
@@ -255,15 +266,8 @@ const NewsDetails = () => {
                                                         .value as typeof commentSort,
                                                 )
                                             }
-                                            className="px-2 py-1 text-sm border rounded-lg border-tertiary bg-secondary"
-                                        >
-                                            <option value="recent">
-                                                Mais recentes
-                                            </option>
-                                            <option value="relevant">
-                                                Mais relevantes
-                                            </option>
-                                        </select>
+                                            className="px-2 py-1 text-sm border rounded-xs border-tertiary bg-secondary"
+                                        />
                                         <button
                                             type="button"
                                             onClick={() =>

@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { type RecommendedTitle } from '../../type/user.types';
-import { addRecommendation, removeRecommendation } from '../../service/userService';
+import {
+    addRecommendation,
+    removeRecommendation,
+} from '../../service/userService';
 import ProfileEmptyState from './ProfileEmptyState';
 
 type Props = {
@@ -11,7 +14,11 @@ type Props = {
     onUpdate: () => void;
 };
 
-const RecommendationsSection = ({ recommendations, isOwner, onUpdate }: Props) => {
+const RecommendationsSection = ({
+    recommendations,
+    isOwner,
+    onUpdate,
+}: Props) => {
     const [titleIdInput, setTitleIdInput] = useState('');
     const [adding, setAdding] = useState(false);
 
@@ -77,10 +84,14 @@ const RecommendationsSection = ({ recommendations, isOwner, onUpdate }: Props) =
                                 />
                             ) : (
                                 <div className="flex items-center justify-center w-full h-40 bg-secondary/50">
-                                    <span className="text-xs text-tertiary">Sem capa</span>
+                                    <span className="text-xs text-tertiary">
+                                        Sem capa
+                                    </span>
                                 </div>
                             )}
-                            <p className="p-1.5 text-xs truncate">{rec.titleName}</p>
+                            <p className="p-1.5 text-xs truncate">
+                                {rec.titleName}
+                            </p>
                         </Link>
                         {isOwner && (
                             <button

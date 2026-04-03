@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getForumTopicById, getForumTopics, filterForumTopics } from '@feature/forum';
+import {
+    getForumTopicById,
+    getForumTopics,
+    filterForumTopics,
+} from '@feature/forum';
 import type { ForumTopic } from '../type/forum.types';
 
 const useForumTopic = () => {
@@ -15,7 +19,9 @@ const useForumTopic = () => {
             return;
         }
 
-        getForumTopicById(topicId).then(setTopic).catch(() => setTopic(undefined));
+        getForumTopicById(topicId)
+            .then(setTopic)
+            .catch(() => setTopic(undefined));
     }, [topicId]);
 
     useEffect(() => {

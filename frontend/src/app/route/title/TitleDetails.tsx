@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -36,9 +36,12 @@ import { ChapterFilter, ChapterList, useChapterSort } from '@feature/chapter';
 import { GroupsModal } from '@feature/group';
 import { StoresModal } from '@feature/store';
 import { getStoredSession } from '@feature/auth/service/authService';
+import { requireAuth } from '@shared/service/util/requireAuth';
 import { recordView } from '@feature/user/service/userService';
 
 const TitleDetailsPage = () => {
+    const navigate = useNavigate();
+
     const { titleId: rawTitleId } = useParams();
 
     const id = Number(rawTitleId);
@@ -141,10 +144,7 @@ const TitleDetailsPage = () => {
     } = title as Title;
 
     const handleBookmarkClick = async () => {
-        if (!getStoredSession()) {
-            showErrorToast('Faça login para salvar na biblioteca.');
-            return;
-        }
+        if (!requireAuth('salvar na biblioteca')) return;
 
         const nowSaved = await toggleBookmark({
             titleId: String(id),
@@ -193,10 +193,7 @@ const TitleDetailsPage = () => {
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
                         onLikeClick={() => {
-                            if (!getStoredSession()) {
-                                showErrorToast('Faça login para avaliar.');
-                                return;
-                            }
+                            if (!requireAuth('avaliar')) return;
                             openRatingModal();
                         }}
                         onGroupsClick={openGroupsModal}
@@ -213,7 +210,13 @@ const TitleDetailsPage = () => {
                     <ChapterList
                         key={`${isAscending ? 'ASC' : 'DESC'}-${searchTerm}`}
                         chapters={filteredAndSortedChapters}
-                        onChapterClick={() => undefined}
+                        onChapterClick={chapterNumber => {
+                            const basePath = import.meta.env.BASE_URL;
+
+                            navigate(
+                                `${basePath}/title/${id}/chapter/${chapterNumber}`,
+                            );
+                        }}
                     />
                 </section>
                 <RecentReviews ratings={ratings} />

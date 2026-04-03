@@ -9,6 +9,7 @@ import {
     showErrorToast,
     showSuccessToast,
 } from '@shared/service/util/toastService';
+import { requireAuth } from '@shared/service/util/requireAuth';
 
 type CommentInputProps = {
     placeholder: string;
@@ -31,6 +32,8 @@ const CommentInput = ({
     } = useCommentRichEditor(placeholder);
 
     const handleSend = async () => {
+        if (!requireAuth('comentar')) return;
+
         const { textContent, imageContent } = getContent();
 
         if (!textContent && !imageContent) {
@@ -81,10 +84,7 @@ const CommentInput = ({
                             </BadgeIconButton>
                         </div>
                         <div>
-                            <DarkButton
-                                onClick={handleSend}
-                                text={'Enviar'}
-                            />
+                            <DarkButton onClick={handleSend} text={'Enviar'} />
                         </div>
                     </div>
                 </div>

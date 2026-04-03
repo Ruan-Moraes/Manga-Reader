@@ -90,7 +90,9 @@ const UserProfile = () => {
             <>
                 <Header />
                 <MainContent>
-                    <ProfileEmptyState message={error ?? 'Perfil nao encontrado.'} />
+                    <ProfileEmptyState
+                        message={error ?? 'Perfil nao encontrado.'}
+                    />
                 </MainContent>
                 <Footer />
             </>
@@ -137,14 +139,20 @@ const UserProfile = () => {
                                 <div className="px-4 py-3 space-y-4">
                                     {profile.bio && (
                                         <div>
-                                            <h3 className="text-sm font-semibold mb-2">Bio</h3>
-                                            <p className="text-sm text-tertiary">{profile.bio}</p>
+                                            <h3 className="text-sm font-semibold mb-2">
+                                                Bio
+                                            </h3>
+                                            <p className="text-sm text-tertiary">
+                                                {profile.bio}
+                                            </p>
                                         </div>
                                     )}
 
                                     {profile.socialLinks.length > 0 && (
                                         <div>
-                                            <h3 className="text-sm font-semibold mb-2">Redes Sociais</h3>
+                                            <h3 className="text-sm font-semibold mb-2">
+                                                Redes Sociais
+                                            </h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {profile.socialLinks.map(sl => (
                                                     <SocialMediaLink
@@ -164,8 +172,12 @@ const UserProfile = () => {
 
                                     {profile.isOwner && profile.email && (
                                         <div>
-                                            <h3 className="text-sm font-semibold mb-1">Email</h3>
-                                            <p className="text-sm text-tertiary">{profile.email}</p>
+                                            <h3 className="text-sm font-semibold mb-1">
+                                                Email
+                                            </h3>
+                                            <p className="text-sm text-tertiary">
+                                                {profile.email}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
@@ -184,7 +196,8 @@ const UserProfile = () => {
                                     userId={profile.id}
                                     isOwner={profile.isOwner}
                                     commentVisibility={
-                                        profile.privacySettings?.commentVisibility ?? 'PUBLIC'
+                                        profile.privacySettings
+                                            ?.commentVisibility ?? 'PUBLIC'
                                     }
                                 />
                             )}
@@ -194,17 +207,21 @@ const UserProfile = () => {
                                     userId={profile.id}
                                     isOwner={profile.isOwner}
                                     viewHistoryVisibility={
-                                        profile.privacySettings?.viewHistoryVisibility ?? 'PUBLIC'
+                                        profile.privacySettings
+                                            ?.viewHistoryVisibility ?? 'PUBLIC'
                                     }
                                 />
                             )}
 
-                            {activeTab === 'settings' && profile.privacySettings && (
-                                <PrivacySettingsForm
-                                    privacySettings={profile.privacySettings}
-                                    onUpdate={refetch}
-                                />
-                            )}
+                            {activeTab === 'settings' &&
+                                profile.privacySettings && (
+                                    <PrivacySettingsForm
+                                        privacySettings={
+                                            profile.privacySettings
+                                        }
+                                        onUpdate={refetch}
+                                    />
+                                )}
                         </div>
                     </div>
                 </div>

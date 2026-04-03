@@ -80,9 +80,7 @@ const RatingStars = ({
                 ))}
             </div>
             {showValue && (
-                <span className="text-sm font-medium">
-                    {value.toFixed(1)}
-                </span>
+                <span className="text-sm font-medium">{value.toFixed(1)}</span>
             )}
         </div>
     );

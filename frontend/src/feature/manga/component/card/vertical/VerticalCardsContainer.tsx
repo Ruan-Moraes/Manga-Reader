@@ -24,7 +24,15 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return data?.content.map(
-                ({ id, type, cover, name, ratingAverage, chapters, updatedAt }) => (
+                ({
+                    id,
+                    type,
+                    cover,
+                    name,
+                    ratingAverage,
+                    chapters,
+                    updatedAt,
+                }) => (
                     <VerticalCard
                         isLoading={false}
                         isError={false}
