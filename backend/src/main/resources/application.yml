@@ -92,3 +92,4 @@ app:
   mail:
     from: noreply@mangareader.dev
     base-url: http://localhost:5173
+    admin-email: admin@mangareader.dev

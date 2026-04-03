@@ -53,3 +53,4 @@ app:
   mail:
     from: ${MAIL_FROM:noreply@mangareader.com}
     base-url: ${APP_BASE_URL:https://mangareader.com}
+    admin-email: ${MAIL_ADMIN:admin@mangareader.com}

@@ -42,4 +42,6 @@ export const API_URLS = {
     USERS: `${BASE}/api/users`,
 
     ERROR_LOGS: `${BASE}/api/error-logs`,
+
+    CONTACT_PUBLISH_WORK: `${BASE}/api/contact/publish-work`,
 } as const;
