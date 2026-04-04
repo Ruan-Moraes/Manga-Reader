@@ -16,5 +16,6 @@ public record AuthResponse(
         String name,
         String email,
         String role,
-        String photoUrl
+        String photoUrl,
+        String adultContentPreference
 ) {}

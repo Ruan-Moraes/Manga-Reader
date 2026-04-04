@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
@@ -38,7 +39,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -75,6 +75,11 @@ public class User {
     @Column(name = "view_history_visibility", nullable = false, length = 20)
     @Builder.Default
     private VisibilitySetting viewHistoryVisibility = VisibilitySetting.PUBLIC;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "adult_content_preference", nullable = false, length = 20)
+    @Builder.Default
+    private AdultContentPreference adultContentPreference = AdultContentPreference.BLUR;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

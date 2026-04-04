@@ -64,7 +64,8 @@ public class AuthController {
                 output.name(),
                 output.email(),
                 output.role(),
-                output.photoUrl()
+                output.photoUrl(),
+                null
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -88,6 +89,7 @@ public class AuthController {
                 output.name(),
                 output.email(),
                 output.role(),
+                null,
                 null
         );
 
@@ -107,7 +109,7 @@ public class AuthController {
         var response = new AuthResponse(
                 output.accessToken(),
                 output.refreshToken(),
-                null, null, null, null, null
+                null, null, null, null, null, null
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -134,7 +136,8 @@ public class AuthController {
                 user.getName(),
                 user.getEmail(),
                 user.getRole().name(),
-                user.getPhotoUrl()
+                user.getPhotoUrl(),
+                user.getAdultContentPreference().name()
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
