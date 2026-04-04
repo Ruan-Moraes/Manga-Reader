@@ -17,6 +17,8 @@ public interface TagRepositoryPort {
 
     Optional<Tag> findById(Long id);
 
+    Optional<Tag> findByLabelIgnoreCase(String label);
+
     List<Tag> findByLabelContainingIgnoreCase(String query);
 
     Tag save(Tag tag);

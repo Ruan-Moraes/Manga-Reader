@@ -33,6 +33,11 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
     }
 
     @Override
+    public Optional<Tag> findByLabelIgnoreCase(String label) {
+        return jpaRepository.findByLabelIgnoreCase(label);
+    }
+
+    @Override
     public List<Tag> findByLabelContainingIgnoreCase(String query) {
         return jpaRepository.findByLabelContainingIgnoreCase(query);
     }
