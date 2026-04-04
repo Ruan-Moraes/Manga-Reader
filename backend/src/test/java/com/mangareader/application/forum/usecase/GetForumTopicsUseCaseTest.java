@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
+import com.mangareader.domain.user.entity.User;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetForumTopicsUseCase")
@@ -35,9 +36,10 @@ class GetForumTopicsUseCaseTest {
     void deveRetornarPaginaComTopicos() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
+        User author = User.builder().id(java.util.UUID.randomUUID()).name("Autor").build();
         List<ForumTopic> topics = List.of(
-                ForumTopic.builder().title("Tópico 1").category(ForumCategory.GERAL).build(),
-                ForumTopic.builder().title("Tópico 2").category(ForumCategory.TEORIAS).build()
+                ForumTopic.builder().title("Tópico 1").category(ForumCategory.GERAL).author(author).build(),
+                ForumTopic.builder().title("Tópico 2").category(ForumCategory.TEORIAS).author(author).build()
         );
         Page<ForumTopic> page = new PageImpl<>(topics, pageable, 2);
         when(forumRepository.findAll(pageable)).thenReturn(page);

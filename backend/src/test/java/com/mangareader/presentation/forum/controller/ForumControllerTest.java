@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mangareader.application.forum.usecase.CreateForumReplyUseCase;
 import com.mangareader.application.forum.usecase.CreateForumTopicUseCase;
 import com.mangareader.application.forum.usecase.DeleteForumTopicUseCase;
+import com.mangareader.application.forum.usecase.GetAuthorPostCountUseCase;
 import com.mangareader.application.forum.usecase.GetForumTopicByIdUseCase;
 import com.mangareader.application.forum.usecase.GetForumTopicsByCategoryUseCase;
 import com.mangareader.application.forum.usecase.GetForumTopicsUseCase;
@@ -58,6 +59,9 @@ class ForumControllerTest {
 
     @MockitoBean
     private GetForumTopicsByCategoryUseCase getForumTopicsByCategoryUseCase;
+
+    @MockitoBean
+    private GetAuthorPostCountUseCase getAuthorPostCountUseCase;
 
     @MockitoBean
     private CreateForumTopicUseCase createForumTopicUseCase;

@@ -3,6 +3,7 @@ package com.mangareader.application.forum.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumReply;
@@ -25,6 +26,7 @@ public class CreateForumReplyUseCase {
 
     public record CreateReplyInput(UUID topicId, UUID userId, String content) {}
 
+    @Transactional
     public ForumTopic execute(CreateReplyInput input) {
         ForumTopic topic = forumRepository.findById(input.topicId())
                 .orElseThrow(() -> new ResourceNotFoundException("ForumTopic", "id", input.topicId()));
@@ -41,6 +43,10 @@ public class CreateForumReplyUseCase {
         topic.getReplies().add(reply);
         topic.setReplyCount(topic.getReplyCount() + 1);
 
-        return forumRepository.save(topic);
+        ForumTopic saved = forumRepository.save(topic);
+        saved.getAuthor().getName();
+        saved.getReplies().forEach(r -> r.getAuthor().getName());
+
+        return saved;
     }
 }

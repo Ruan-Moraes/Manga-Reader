@@ -24,5 +24,7 @@ public interface ForumRepositoryPort {
 
     ForumTopic save(ForumTopic topic);
 
+    long countByAuthorId(UUID authorId);
+
     void deleteById(UUID id);
 }

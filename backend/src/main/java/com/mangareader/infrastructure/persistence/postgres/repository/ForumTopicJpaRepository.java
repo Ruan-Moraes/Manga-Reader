@@ -17,4 +17,6 @@ public interface ForumTopicJpaRepository extends JpaRepository<ForumTopic, UUID>
     Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable);
 
     Page<ForumTopic> findByTitleContainingIgnoreCase(String query, Pageable pageable);
+
+    long countByAuthorId(java.util.UUID authorId);
 }

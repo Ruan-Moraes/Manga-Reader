@@ -49,6 +49,11 @@ public class ForumRepositoryAdapter implements ForumRepositoryPort {
     }
 
     @Override
+    public long countByAuthorId(UUID authorId) {
+        return repository.countByAuthorId(authorId);
+    }
+
+    @Override
     public void deleteById(UUID id) {
         repository.deleteById(id);
     }

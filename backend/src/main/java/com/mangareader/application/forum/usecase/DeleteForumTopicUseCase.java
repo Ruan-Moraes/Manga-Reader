@@ -3,6 +3,7 @@ package com.mangareader.application.forum.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
@@ -22,6 +23,7 @@ public class DeleteForumTopicUseCase {
 
     private final ForumRepositoryPort forumRepository;
 
+    @Transactional
     public void execute(UUID topicId, UUID userId) {
         ForumTopic topic = forumRepository.findById(topicId)
                 .orElseThrow(() -> new ResourceNotFoundException("ForumTopic", "id", topicId));

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mangareader.application.forum.usecase.CreateForumReplyUseCase;
 import com.mangareader.application.forum.usecase.CreateForumTopicUseCase;
 import com.mangareader.application.forum.usecase.DeleteForumTopicUseCase;
+import com.mangareader.application.forum.usecase.GetAuthorPostCountUseCase;
 import com.mangareader.application.forum.usecase.GetForumTopicByIdUseCase;
 import com.mangareader.application.forum.usecase.GetForumTopicsByCategoryUseCase;
 import com.mangareader.application.forum.usecase.GetForumTopicsUseCase;
@@ -55,6 +56,7 @@ public class ForumController {
     private final GetForumTopicsUseCase getForumTopicsUseCase;
     private final GetForumTopicByIdUseCase getForumTopicByIdUseCase;
     private final GetForumTopicsByCategoryUseCase getForumTopicsByCategoryUseCase;
+    private final GetAuthorPostCountUseCase getAuthorPostCountUseCase;
     private final CreateForumTopicUseCase createForumTopicUseCase;
     private final CreateForumReplyUseCase createForumReplyUseCase;
     private final UpdateForumTopicUseCase updateForumTopicUseCase;
@@ -72,7 +74,7 @@ public class ForumController {
 
         var result = getForumTopicsUseCase.execute(pageable);
 
-        var mapped = result.map(ForumMapper::toResponse);
+        var mapped = result.map(t -> ForumMapper.toResponse(t, getAuthorPostCountUseCase::execute));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -82,7 +84,7 @@ public class ForumController {
     public ResponseEntity<ApiResponse<ForumTopicResponse>> getById(@PathVariable UUID id) {
         var topic = getForumTopicByIdUseCase.execute(id);
 
-        return ResponseEntity.ok(ApiResponse.success(ForumMapper.toResponse(topic)));
+        return ResponseEntity.ok(ApiResponse.success(ForumMapper.toResponse(topic, getAuthorPostCountUseCase::execute)));
     }
 
     @GetMapping("/category/{category}")
@@ -98,7 +100,7 @@ public class ForumController {
 
         var result = getForumTopicsByCategoryUseCase.execute(cat, pageable);
 
-        var mapped = result.map(ForumMapper::toResponse);
+        var mapped = result.map(t -> ForumMapper.toResponse(t, getAuthorPostCountUseCase::execute));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -122,7 +124,7 @@ public class ForumController {
         var topic = createForumTopicUseCase.execute(input);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(ForumMapper.toResponse(topic)));
+                .body(ApiResponse.created(ForumMapper.toResponse(topic, getAuthorPostCountUseCase::execute)));
     }
 
     @PostMapping("/{id}/replies")
@@ -137,7 +139,7 @@ public class ForumController {
         var topic = createForumReplyUseCase.execute(input);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(ForumMapper.toResponse(topic)));
+                .body(ApiResponse.created(ForumMapper.toResponse(topic, getAuthorPostCountUseCase::execute)));
     }
 
     @PutMapping("/{id}")
@@ -156,7 +158,7 @@ public class ForumController {
 
         var topic = updateForumTopicUseCase.execute(input);
 
-        return ResponseEntity.ok(ApiResponse.success(ForumMapper.toResponse(topic)));
+        return ResponseEntity.ok(ApiResponse.success(ForumMapper.toResponse(topic, getAuthorPostCountUseCase::execute)));
     }
 
     @DeleteMapping("/{id}")

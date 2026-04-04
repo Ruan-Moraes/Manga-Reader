@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
+import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,9 +35,11 @@ class GetForumTopicByIdUseCaseTest {
     void deveRetornarTopicoQuandoEncontrado() {
         // Arrange
         UUID topicId = UUID.randomUUID();
+        User author = User.builder().id(UUID.randomUUID()).name("Autor").build();
         ForumTopic topic = ForumTopic.builder()
                 .title("Tópico de teste")
                 .category(ForumCategory.GERAL)
+                .author(author)
                 .build();
         when(forumRepository.findById(topicId)).thenReturn(Optional.of(topic));
 
