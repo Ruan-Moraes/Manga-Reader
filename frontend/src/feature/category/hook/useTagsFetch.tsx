@@ -4,14 +4,14 @@ import { Tag } from '../type/tag.types';
 
 import { getTags } from '../service/tagService';
 
-const useTagsFetch = (queryKey: string): UseQueryResult<Tag[] | Error> => {
-    return useQuery<Tag[] | Error>({
-        queryKey: [queryKey],
-        queryFn: async () => {
-            return await getTags();
-        },
+const THREE_DAYS_MS = 1000 * 60 * 60 * 24 * 3;
 
-        staleTime: 1000 * 60 * 60 * 24,
+const useTagsFetch = (): UseQueryResult<Tag[]> => {
+    return useQuery<Tag[]>({
+        queryKey: ['tags'],
+        queryFn: getTags,
+        staleTime: THREE_DAYS_MS,
+        gcTime: THREE_DAYS_MS,
     });
 };
 

@@ -158,7 +158,7 @@ const TagSelectInput = ({
                     dropdownIndicator: baseStyles => ({
                         ...baseStyles,
                         padding: '0.125rem',
-                        margin: '0 0 0 0.5rem',
+                        margin: '0 0.25rem 0 0.25rem',
                         borderRadius: '0.125rem',
                         cursor: 'pointer',
                         transition: 'background-color 0.3s',

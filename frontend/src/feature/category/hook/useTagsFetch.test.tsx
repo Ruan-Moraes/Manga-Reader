@@ -7,7 +7,6 @@ import type { ReactNode } from 'react';
 import { server } from '@/test/mocks/server';
 import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
 import { API_URLS } from '@shared/constant/API_URLS';
-import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import useTagsFetch from './useTagsFetch';
 
@@ -22,16 +21,23 @@ describe('useTagsFetch', () => {
         server.use(
             http.get(`*${API_URLS.TAGS}`, () =>
                 HttpResponse.json({
-                    data: [
-                        { id: 1, name: 'Action' },
-                        { id: 2, name: 'Romance' },
-                    ],
+                    data: {
+                        content: [
+                            { value: 1, label: 'Action' },
+                            { value: 2, label: 'Romance' },
+                        ],
+                        page: 0,
+                        size: 1000,
+                        totalElements: 2,
+                        totalPages: 1,
+                        last: true,
+                    },
                     success: true,
                 }),
             ),
         );
 
-        const { result } = renderHook(() => useTagsFetch(QUERY_KEYS.TAGS), {
+        const { result } = renderHook(() => useTagsFetch(), {
             wrapper,
         });
 
@@ -39,9 +45,8 @@ describe('useTagsFetch', () => {
             expect(result.current.isSuccess).toBe(true);
         });
 
-        const data = result.current.data as { id: number; name: string }[];
-
-        expect(data).toHaveLength(2);
+        expect(result.current.data).toHaveLength(2);
+        expect(result.current.data![0].label).toBe('Action');
     });
 
     it('deve retornar erro quando API falha', async () => {
@@ -51,7 +56,7 @@ describe('useTagsFetch', () => {
             ),
         );
 
-        const { result } = renderHook(() => useTagsFetch(QUERY_KEYS.TAGS), {
+        const { result } = renderHook(() => useTagsFetch(), {
             wrapper,
         });
 

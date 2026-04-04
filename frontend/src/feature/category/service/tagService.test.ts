@@ -7,8 +7,8 @@ import { API_URLS } from '@shared/constant/API_URLS';
 import { getTags, getTagById } from './tagService';
 
 const buildTag = (overrides = {}) => ({
-    id: 1,
-    name: 'Action',
+    value: 1,
+    label: 'Action',
     ...overrides,
 });
 
@@ -18,10 +18,17 @@ describe('tagService', () => {
             server.use(
                 http.get(`*${API_URLS.TAGS}`, () =>
                     HttpResponse.json({
-                        data: [
-                            buildTag(),
-                            buildTag({ id: 2, name: 'Romance' }),
-                        ],
+                        data: {
+                            content: [
+                                buildTag(),
+                                buildTag({ value: 2, label: 'Romance' }),
+                            ],
+                            page: 0,
+                            size: 1000,
+                            totalElements: 2,
+                            totalPages: 1,
+                            last: true,
+                        },
                         success: true,
                     }),
                 ),
@@ -30,8 +37,7 @@ describe('tagService', () => {
             const result = await getTags();
 
             expect(result).toHaveLength(2);
-
-            expect(result[0].name).toBe('Action');
+            expect(result[0].label).toBe('Action');
         });
 
         it('deve propagar erro quando API falha', async () => {
@@ -49,13 +55,16 @@ describe('tagService', () => {
         it('deve retornar tag pelo id', async () => {
             server.use(
                 http.get(`*${API_URLS.TAGS}/1`, () =>
-                    HttpResponse.json({ data: buildTag(), success: true }),
+                    HttpResponse.json({
+                        data: buildTag(),
+                        success: true,
+                    }),
                 ),
             );
 
             const result = await getTagById(1);
 
-            expect(result.name).toBe('Action');
+            expect(result.label).toBe('Action');
         });
 
         it('deve lançar erro quando API retorna 500', async () => {
