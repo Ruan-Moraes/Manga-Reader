@@ -7,6 +7,7 @@ type GroupFilters = {
     status: 'all' | GroupStatus;
     genre: 'all' | string;
     sortBy: 'popularity' | 'members' | 'titles' | 'rating';
+    query?: string;
 };
 
 const sortGroups = (groups: Group[], sortBy: GroupFilters['sortBy']) => {
@@ -42,17 +43,21 @@ const useGroups = (filters: GroupFilters) => {
     );
 
     const groups = useMemo(() => {
+        const q = filters.query?.toLowerCase().trim() ?? '';
+
         const filtered = allGroups.filter(group => {
             const statusMatch =
                 filters.status === 'all' || group.status === filters.status;
             const genreMatch =
                 filters.genre === 'all' || group.genres.includes(filters.genre);
+            const queryMatch =
+                !q || group.name.toLowerCase().includes(q);
 
-            return statusMatch && genreMatch;
+            return statusMatch && genreMatch && queryMatch;
         });
 
         return sortGroups(filtered, filters.sortBy);
-    }, [allGroups, filters.genre, filters.sortBy, filters.status]);
+    }, [allGroups, filters.genre, filters.query, filters.sortBy, filters.status]);
 
     return {
         groups,

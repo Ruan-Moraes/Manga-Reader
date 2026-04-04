@@ -50,19 +50,16 @@ const Forum = () => {
                 </section>
                 <ForumStats topics={allTopics} />
                 <section className="flex flex-col gap-3">
-                    <div className="relative">
-                        <FiSearch
-                            className="absolute -translate-y-1/2 left-3 top-1/2 text-shadow-secondary"
-                            size={16}
-                        />
+                    <label className="relative">
+                        <FiSearch className="absolute -translate-y-1/2 left-3 top-1/2 text-tertiary" />
                         <input
                             type="text"
                             placeholder="Buscar tópicos..."
                             value={query}
                             onChange={e => updateQuery(e.target.value)}
-                            className="w-full py-2 pl-10 pr-4 text-sm border rounded-lg bg-secondary border-tertiary focus:outline-none focus:border-quaternary-default"
+                            className="w-full py-2 pl-10 pr-3 text-sm border rounded-lg border-tertiary bg-secondary"
                         />
-                    </div>
+                    </label>
                     <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => updateCategory('all')}

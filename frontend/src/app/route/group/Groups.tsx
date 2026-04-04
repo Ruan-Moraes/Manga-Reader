@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiSearch } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -11,6 +12,7 @@ import { GroupCard, useGroups, type GroupStatus } from '@feature/group';
 const Groups = () => {
     const [status, setStatus] = useState<'all' | GroupStatus>('all');
     const [genre, setGenre] = useState<'all' | string>('all');
+    const [query, setQuery] = useState('');
     const [sortBy, setSortBy] = useState<
         'popularity' | 'members' | 'titles' | 'rating'
     >('popularity');
@@ -19,6 +21,7 @@ const Groups = () => {
         status,
         genre,
         sortBy,
+        query,
     });
 
     return (
@@ -31,6 +34,16 @@ const Groups = () => {
                         Explore equipes, filtros de status/gênero e ordene por
                         popularidade.
                     </p>
+
+                    <label className="relative">
+                        <FiSearch className="absolute -translate-y-1/2 left-3 top-1/2 text-tertiary" />
+                        <input
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            placeholder="Buscar por nome do grupo"
+                            className="w-full py-2 pl-10 pr-3 text-sm border rounded-lg border-tertiary bg-secondary"
+                        />
+                    </label>
 
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
                         <BaseSelect
