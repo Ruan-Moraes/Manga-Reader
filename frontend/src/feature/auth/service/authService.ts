@@ -7,6 +7,8 @@ import type { User, UserRole } from '@feature/user';
 // Types — espelham os DTOs do backend
 // ---------------------------------------------------------------------------
 
+export type AdultContentPreference = 'BLUR' | 'SHOW' | 'HIDE';
+
 export type AuthResponse = {
     accessToken: string;
     refreshToken: string;
@@ -15,6 +17,7 @@ export type AuthResponse = {
     email: string;
     role: string;
     photoUrl?: string;
+    adultContentPreference?: AdultContentPreference;
 };
 
 export type SignInRequest = {
@@ -43,6 +46,7 @@ export const mapAuthResponseToUser = (auth: AuthResponse): User => ({
     name: auth.name,
     photo: auth.photoUrl ?? '',
     role: ROLE_MAP[auth.role] ?? 'user',
+    adultContentPreference: auth.adultContentPreference ?? 'BLUR',
 });
 
 // ---------------------------------------------------------------------------

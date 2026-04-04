@@ -2,12 +2,15 @@ export type UserRole = 'user' | 'poster' | 'admin';
 
 export type VisibilitySetting = 'PUBLIC' | 'PRIVATE' | 'DO_NOT_TRACK';
 
+export type AdultContentPreference = 'BLUR' | 'SHOW' | 'HIDE';
+
 export type User = {
     id: string;
     photo: string;
     name: string;
     email?: string;
     role?: UserRole;
+    adultContentPreference?: AdultContentPreference;
     bio?: string;
     bannerUrl?: string;
     createdAt?: string;
