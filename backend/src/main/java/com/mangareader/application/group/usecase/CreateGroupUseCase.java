@@ -3,6 +3,7 @@ package com.mangareader.application.group.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -37,6 +38,7 @@ public class CreateGroupUseCase {
             Integer foundedYear
     ) {}
 
+    @Transactional
     public Group execute(CreateGroupInput input) {
         if (groupRepository.existsByUsername(input.username())) {
             throw new DuplicateResourceException("Group", "username", input.username());

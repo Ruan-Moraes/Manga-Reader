@@ -37,7 +37,7 @@ public final class GroupMapper {
                 group.getFoundedYear(),
                 formatDate(group.getPlatformJoinedAt()),
                 group.getStatus().name().toLowerCase(),
-                mapMembers(group.getMembers()),
+                mapMembers(group.getMembers()), // Com problema.
                 group.getGenres(),
                 group.getFocusTags(),
                 group.getRating(),

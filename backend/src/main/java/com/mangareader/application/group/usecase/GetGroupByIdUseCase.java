@@ -3,6 +3,7 @@ package com.mangareader.application.group.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
@@ -19,8 +20,14 @@ public class GetGroupByIdUseCase {
 
     private final GroupRepositoryPort groupRepository;
 
+    @Transactional(readOnly = true)
     public Group execute(UUID id) {
-        return groupRepository.findById(id)
+        Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", id));
+
+        group.getMembers().size();
+        group.getTranslatedWorks().size();
+
+        return group;
     }
 }

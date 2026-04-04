@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
@@ -37,6 +38,7 @@ public class AddWorkToGroupUseCase {
             List<String> genres
     ) {}
 
+    @Transactional
     public Group execute(AddWorkInput input) {
         Group group = groupRepository.findById(input.groupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", input.groupId()));

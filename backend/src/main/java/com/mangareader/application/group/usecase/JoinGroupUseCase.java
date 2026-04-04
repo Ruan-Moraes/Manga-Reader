@@ -3,6 +3,7 @@ package com.mangareader.application.group.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -27,6 +28,7 @@ public class JoinGroupUseCase {
 
     public record JoinGroupInput(UUID groupId, UUID userId, GroupRole role) {}
 
+    @Transactional
     public Group execute(JoinGroupInput input) {
         Group group = groupRepository.findById(input.groupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", input.groupId()));

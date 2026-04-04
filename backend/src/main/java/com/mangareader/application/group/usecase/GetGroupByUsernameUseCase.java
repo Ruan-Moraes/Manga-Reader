@@ -1,6 +1,7 @@
 package com.mangareader.application.group.usecase;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
@@ -17,8 +18,14 @@ public class GetGroupByUsernameUseCase {
 
     private final GroupRepositoryPort groupRepository;
 
+    @Transactional(readOnly = true)
     public Group execute(String username) {
-        return groupRepository.findByUsername(username)
+        Group group = groupRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "username", username));
+
+        group.getMembers().size();
+        group.getTranslatedWorks().size();
+
+        return group;
     }
 }
