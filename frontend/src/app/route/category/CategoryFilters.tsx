@@ -7,35 +7,51 @@ import TextBlock from '@shared/component/paragraph/TextBlock';
 import FiltersForm from '@shared/component/form/FiltersForm';
 import RadioInput from '@shared/component/input/RadioInput';
 import RaisedButton from '@shared/component/button/RaisedButton';
+import Pagination from '@shared/component/navigation/Pagination';
 
 import {
     type Tag,
     useTagsFetch,
     useCategoryFilters,
+    useFilterResults,
     TagSelectInput,
 } from '@feature/category';
 
-const CategoryFilters = () => {
-    const { data } = useTagsFetch('tags');
+import VerticalCard from '@feature/manga/component/card/vertical/VerticalCard';
 
-    const tags: Tag[] | undefined = Array.isArray(data) ? data : undefined;
+const CategoryFilters = () => {
+    const { data: tags } = useTagsFetch();
 
     const {
+        selectedTags,
+        selectedSort,
+        selectedStatus,
+        selectedAdultContent,
+        page,
         handleSelectedTags,
         handleSortChange,
         handleStatusChange,
         handleAdultContentChange,
+        handlePageChange,
     } = useCategoryFilters();
+
+    const { data: results, isLoading, isError } = useFilterResults({
+        genres: selectedTags,
+        sort: selectedSort,
+        status: selectedStatus,
+        adultContent: selectedAdultContent,
+        page,
+    });
 
     return (
         <>
             <Header />
             <MainContent>
-                <SectionTitle title="Filtros">
+                <SectionTitle title="Filtrar Obras">
                     <TextBlock
                         paragraphContent={[
                             {
-                                text: 'Aplique filtros para encontrar as obras que você deseja ler. Você pode filtrar por categorias, ordenar por mais lidos, maior nota, ordem alfabética, entre outros. Além disso, você pode filtrar por status da obra e se deseja exibir conteúdo maior de 18 anos.',
+                                text: 'Aplique filtros para encontrar as obras que você deseja ler. Você pode filtrar por categorias, ordenar por mais lidos, maior nota, ordem alfabética, entre outros.',
                             },
                         ]}
                     />
@@ -66,7 +82,7 @@ const CategoryFilters = () => {
                         fieldName="sort"
                         onChange={handleSortChange}
                         value="ascension"
-                        labelText="Ancensão"
+                        labelText="Ascensão"
                     />
                     <RadioInput
                         fieldName="sort"
@@ -136,7 +152,63 @@ const CategoryFilters = () => {
                         labelText="Não"
                     />
                 </FiltersForm>
-                <RaisedButton text="Aplicar Filtros" />
+
+                <section className="flex flex-col gap-4 mt-4">
+                    {results && (
+                        <span className="text-sm text-secondary">
+                            {results.totalElements} resultado(s)
+                        </span>
+                    )}
+
+                    {isLoading && (
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-5">
+                            {Array.from({ length: 10 }).map((_, i) => (
+                                <VerticalCard
+                                    key={i}
+                                    isLoading={true}
+                                    isError={false}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {isError && (
+                        <p className="py-8 text-sm text-center text-secondary">
+                            Erro ao carregar resultados. Tente novamente.
+                        </p>
+                    )}
+
+                    {results && results.content.length === 0 && (
+                        <p className="py-8 text-sm text-center text-secondary">
+                            Nenhuma obra encontrada com os filtros selecionados.
+                        </p>
+                    )}
+
+                    {results && results.content.length > 0 && (
+                        <>
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-5">
+                                {results.content.map(title => (
+                                    <VerticalCard
+                                        key={title.id}
+                                        isLoading={false}
+                                        isError={false}
+                                        id={title.id}
+                                        type={title.type}
+                                        cover={title.cover}
+                                        name={title.name}
+                                        ratingAverage={title.ratingAverage}
+                                        chapters={title.chapters}
+                                    />
+                                ))}
+                            </div>
+                            <Pagination
+                                page={page + 1}
+                                totalPages={results.totalPages}
+                                onPageChange={(p) => handlePageChange(p - 1)}
+                            />
+                        </>
+                    )}
+                </section>
             </MainContent>
             <Footer />
         </>
