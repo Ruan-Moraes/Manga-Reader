@@ -12,6 +12,8 @@ export type Title = {
     ratingAverage: number;
     ratingCount: number;
     rankingScore: number;
+    adult: boolean;
+    status: string;
     author: string;
     artist: string;
     publisher: string;

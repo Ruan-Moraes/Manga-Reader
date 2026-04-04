@@ -51,7 +51,7 @@ export const getTitlesByGenre = async (
 };
 
 export const filterTitles = async (
-    params: Record<string, string | number>,
+    params: Record<string, string | string[] | number | boolean>,
     page = 0,
     size = 20,
 ): Promise<PageResponse<Title>> => {
