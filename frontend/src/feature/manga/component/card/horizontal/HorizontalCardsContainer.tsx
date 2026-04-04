@@ -47,7 +47,7 @@ const HorizontalCardsContainer = ({ title, subTitle }: SectionHeader) => {
             <SectionTitle
                 title={title}
                 subTitle={subTitle}
-                subLink={ROUTES.CATEGORIES_RANDOM}
+                subLink={ROUTES.FILTER_RANDOM}
             />
             <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">
                 {allChildren}

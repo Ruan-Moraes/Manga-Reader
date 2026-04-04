@@ -70,7 +70,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
             <SectionTitle
                 title={title}
                 subTitle={subTitle}
-                subLink={ROUTES.CATEGORIES_ASCENSION}
+                subLink={ROUTES.FILTER_ASCENSION}
             />
             <div className="flex flex-col gap-4">{allChildren}</div>
         </section>

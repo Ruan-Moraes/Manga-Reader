@@ -81,7 +81,7 @@ const SidebarMenuContent = ({
         { label: 'Home', link: '/' },
         {
             label: 'Trending',
-            link: '/categories?sort=trending',
+            link: '/filter?sort=most_read',
             badge: 'em alta',
         },
         { label: 'Novidades', link: '/news?filter=new' },
@@ -112,18 +112,6 @@ const SidebarMenuContent = ({
 
     const settingsItems: MenuItem[] = [
         { label: 'Meu Perfil', link: '/profile' },
-        ...(profile.unreadNotifications
-            ? [
-                  {
-                      label: 'Notificações',
-                      link: '/profile?tab=notifications',
-                      badge: `+${profile.unreadNotifications}`,
-                  },
-              ]
-            : [{ label: 'Notificações', link: '/profile?tab=notifications' }]),
-        { label: 'Aparência', link: '/profile?tab=appearance' },
-        { label: 'Modo Leitura', link: '/profile?tab=reading' },
-        { label: 'Privacidade', link: '/profile?tab=privacy' },
     ];
 
     const roleItems: MenuItem[] = [
@@ -225,7 +213,7 @@ const SidebarMenuContent = ({
 
             {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>Configurações</h3>
+                    <h3 className={sectionTitleClass}>Usuário</h3>
                     {settingsItems.map(item => (
                         <MenuNavLink
                             key={item.label}

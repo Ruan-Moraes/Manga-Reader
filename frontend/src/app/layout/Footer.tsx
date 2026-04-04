@@ -21,7 +21,7 @@ const Footer = ({ styles, showLinks }: FooterTypes) => {
                         className="col-span-4"
                         links={[
                             { url: '/', text: 'Home' },
-                            { url: '/categories', text: 'Categorias' },
+                            { url: '/filter', text: 'Filtrar' },
                             { url: '/news', text: 'Notícias' },
                             { url: '/events', text: 'Eventos' },
                             { url: '/forum', text: 'Fórum' },

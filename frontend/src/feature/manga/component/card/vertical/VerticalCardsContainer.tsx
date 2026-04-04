@@ -62,7 +62,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     const handleClick = useCallback(() => {
         if (visible >= allChildren.length) {
-            navigate(ROUTES.WEB_URL + ROUTES.CATEGORIES_MOST_RECENT);
+            navigate(ROUTES.WEB_URL + ROUTES.FILTER_MOST_RECENT);
         }
 
         if (visible < allChildren.length) {
@@ -75,7 +75,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
             <SectionTitle
                 title={title}
                 subTitle={subTitle}
-                subLink={ROUTES.CATEGORIES_MOST_RECENT}
+                subLink={ROUTES.FILTER_MOST_RECENT}
             />
             <div
                 className={clsx('grid gap-x-2 gap-y-4', {

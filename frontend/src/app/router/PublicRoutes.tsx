@@ -39,7 +39,7 @@ const publicRoutes = [
         element: <SearchResults />,
     },
     {
-        path: 'categories',
+        path: 'filter',
         element: <CategoryFilters />,
     },
     {
