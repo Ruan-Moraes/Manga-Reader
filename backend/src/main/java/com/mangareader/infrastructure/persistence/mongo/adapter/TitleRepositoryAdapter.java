@@ -1,10 +1,14 @@
 package com.mangareader.infrastructure.persistence.mongo.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -20,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TitleRepositoryAdapter implements TitleRepositoryPort {
     private final TitleMongoRepository mongoRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public List<Title> findAll() {
@@ -44,6 +49,28 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     @Override
     public List<Title> findByGenresContainingAll(List<String> genres) {
         return mongoRepository.findByGenresContainingAll(genres);
+    }
+
+    @Override
+    public List<Title> findByFilters(List<String> genres, String status, Boolean adult) {
+        List<Criteria> conditions = new ArrayList<>();
+
+        if (genres != null && !genres.isEmpty()) {
+            conditions.add(Criteria.where("genres").all(genres));
+        }
+        if (status != null && !"ALL".equalsIgnoreCase(status)) {
+            conditions.add(Criteria.where("status").is(status.toUpperCase()));
+        }
+        if (adult != null) {
+            conditions.add(Criteria.where("adult").is(adult));
+        }
+
+        Query query = new Query();
+        if (!conditions.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(conditions.toArray(new Criteria[0])));
+        }
+
+        return mongoTemplate.find(query, Title.class);
     }
 
     @Override

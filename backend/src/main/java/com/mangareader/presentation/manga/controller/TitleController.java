@@ -100,9 +100,11 @@ public class TitleController {
     }
 
     @GetMapping("/filter")
-    @Operation(summary = "Busca avançada", description = "Filtra títulos por múltiplos gêneros/tags e critério de ordenação")
+    @Operation(summary = "Busca avançada", description = "Filtra títulos por gêneros, status, conteúdo adulto e critério de ordenação")
     public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> filter(
             @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Boolean adult,
             @RequestParam(required = false, defaultValue = "MOST_READ") String sort,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
@@ -117,7 +119,7 @@ public class TitleController {
 
         var pageable = buildPageable(page, size, "name", "asc");
 
-        var result = filterTitlesUseCase.execute(genres, sortCriteria, pageable);
+        var result = filterTitlesUseCase.execute(genres, status, adult, sortCriteria, pageable);
 
         var mapped = result.map(TitleMapper::toResponse);
 

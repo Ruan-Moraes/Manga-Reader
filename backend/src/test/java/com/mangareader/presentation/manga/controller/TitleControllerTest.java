@@ -201,7 +201,7 @@ class TitleControllerTest {
         void deveRetornar200ComFiltro() throws Exception {
             var titles = List.of(buildTitle("t1"));
 
-            when(filterTitlesUseCase.execute(any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/filter")
@@ -215,12 +215,28 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve usar MOST_READ como fallback para sort inválido")
         void deveUsarFallbackParaSortInvalido() throws Exception {
-            when(filterTitlesUseCase.execute(any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/titles/filter").param("sort", "INVALIDO"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve filtrar por status e adult")
+        void deveFiltrarPorStatusEAdult() throws Exception {
+            var titles = List.of(buildTitle("t1"));
+
+            when(filterTitlesUseCase.execute(any(), eq("ONGOING"), eq(false), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(titles));
+
+            mockMvc.perform(get("/api/titles/filter")
+                            .param("status", "ONGOING")
+                            .param("adult", "false")
+                            .param("sort", "MOST_READ"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.length()").value(1));
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.mangareader.application.manga.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,50 +52,104 @@ class FilterTitlesUseCaseTest {
         @Test
         @DisplayName("Deve buscar todos os títulos quando nenhum gênero é informado")
         void deveBuscarTodosQuandoSemGeneros() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, null, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, null, PAGEABLE);
 
-            // Assert
             assertThat(result.getContent()).hasSize(3);
-
-            verify(titleRepository).findAll();
+            verify(titleRepository).findByFilters(isNull(), isNull(), isNull());
         }
 
         @Test
         @DisplayName("Deve buscar todos quando lista de gêneros é vazia")
         void deveBuscarTodosQuandoListaVazia() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(any(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(List.of(), null, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(List.of(), null, null, null, PAGEABLE);
 
-            // Assert
             assertThat(result.getContent()).hasSize(3);
         }
 
         @Test
         @DisplayName("Deve filtrar por múltiplos gêneros")
         void deveFiltrarPorMultiplosGeneros() {
-            // Arrange
             List<String> genres = List.of("Ação", "Aventura");
+            List<Title> filtered = List.of(Title.builder().id("1").name("Naruto").build());
 
-            List<Title> filtered = List.of(
-                    Title.builder().id("1").name("Naruto").build()
-            );
+            when(titleRepository.findByFilters(genres, null, null)).thenReturn(filtered);
 
-            when(titleRepository.findByGenresContainingAll(genres)).thenReturn(filtered);
+            Page<Title> result = filterTitlesUseCase.execute(genres, null, null, null, PAGEABLE);
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(genres, null, PAGEABLE);
-
-            // Assert
             assertThat(result.getContent()).hasSize(1);
+            verify(titleRepository).findByFilters(genres, null, null);
+        }
+    }
 
-            verify(titleRepository).findByGenresContainingAll(genres);
+    @Nested
+    @DisplayName("Filtro por status")
+    class FiltroPorStatus {
+        @Test
+        @DisplayName("Deve filtrar por status ONGOING")
+        void deveFiltrarPorStatusOngoing() {
+            List<Title> filtered = List.of(
+                    Title.builder().id("1").name("Naruto").status("ONGOING").build()
+            );
+            when(titleRepository.findByFilters(isNull(), any(), isNull())).thenReturn(filtered);
+
+            Page<Title> result = filterTitlesUseCase.execute(null, "ONGOING", null, null, PAGEABLE);
+
+            assertThat(result.getContent()).hasSize(1);
+        }
+    }
+
+    @Nested
+    @DisplayName("Filtro por conteúdo adulto")
+    class FiltroPorAdult {
+        @Test
+        @DisplayName("Deve filtrar somente adulto quando adult=true")
+        void deveFiltrarSomenteAdulto() {
+            List<Title> filtered = List.of(
+                    Title.builder().id("1").name("Titulo Adulto").adult(true).build()
+            );
+            when(titleRepository.findByFilters(isNull(), isNull(), any())).thenReturn(filtered);
+
+            Page<Title> result = filterTitlesUseCase.execute(null, null, true, null, PAGEABLE);
+
+            assertThat(result.getContent()).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("Deve excluir adulto quando adult=false")
+        void deveExcluirAdulto() {
+            List<Title> filtered = List.of(
+                    Title.builder().id("1").name("Titulo Normal").adult(false).build()
+            );
+            when(titleRepository.findByFilters(isNull(), isNull(), any())).thenReturn(filtered);
+
+            Page<Title> result = filterTitlesUseCase.execute(null, null, false, null, PAGEABLE);
+
+            assertThat(result.getContent()).hasSize(1);
+        }
+    }
+
+    @Nested
+    @DisplayName("Filtros combinados")
+    class FiltrosCombinados {
+        @Test
+        @DisplayName("Deve combinar gêneros, status e adult")
+        void deveCombinarFiltros() {
+            List<String> genres = List.of("Ação");
+            List<Title> filtered = List.of(
+                    Title.builder().id("1").name("Naruto").status("ONGOING").adult(false).build()
+            );
+            when(titleRepository.findByFilters(genres, "ONGOING", false)).thenReturn(filtered);
+
+            Page<Title> result = filterTitlesUseCase.execute(genres, "ONGOING", false, SortCriteria.MOST_READ, PAGEABLE);
+
+            assertThat(result.getContent()).hasSize(1);
+            verify(titleRepository).findByFilters(genres, "ONGOING", false);
         }
     }
 
@@ -103,66 +159,54 @@ class FilterTitlesUseCaseTest {
         @Test
         @DisplayName("MOST_READ deve ordenar por popularidade decrescente")
         void mostReadDeveOrdenarPorPopularidadeDecrescente() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.MOST_READ, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_READ, PAGEABLE);
 
-            // Assert
             List<Title> content = result.getContent();
-
-            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan"); // 8000
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 5000
-            assertThat(content.get(2).getName()).isEqualTo("Bleach");          // 3000
+            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
+            assertThat(content.get(1).getName()).isEqualTo("Naruto");
+            assertThat(content.get(2).getName()).isEqualTo("Bleach");
         }
 
         @Test
         @DisplayName("MOST_RATED deve ordenar por ratingAverage decrescente")
         void mostRatedDeveOrdenarPorScoreDecrescente() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.MOST_RATED, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_RATED, PAGEABLE);
 
-            // Assert
             List<Title> content = result.getContent();
-
-            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan"); // 4.8
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 4.5
-            assertThat(content.get(2).getName()).isEqualTo("Bleach");          // 3.8
+            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
+            assertThat(content.get(1).getName()).isEqualTo("Naruto");
+            assertThat(content.get(2).getName()).isEqualTo("Bleach");
         }
 
         @Test
         @DisplayName("MOST_RECENT deve ordenar por data de criação decrescente")
         void mostRecentDeveOrdenarPorDataDecrescente() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.MOST_RECENT, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_RECENT, PAGEABLE);
 
-            // Assert
             List<Title> content = result.getContent();
-
-            assertThat(content.get(0).getName()).isEqualTo("Bleach");          // 2022
-            assertThat(content.get(1).getName()).isEqualTo("Attack on Titan"); // 2021
-            assertThat(content.get(2).getName()).isEqualTo("Naruto");          // 2020
+            assertThat(content.get(0).getName()).isEqualTo("Bleach");
+            assertThat(content.get(1).getName()).isEqualTo("Attack on Titan");
+            assertThat(content.get(2).getName()).isEqualTo("Naruto");
         }
 
         @Test
         @DisplayName("ALPHABETICAL deve ordenar por nome (case-insensitive)")
         void alphabeticalDeveOrdenarPorNome() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.ALPHABETICAL, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.ALPHABETICAL, PAGEABLE);
 
-            // Assert
             List<Title> content = result.getContent();
-
             assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
             assertThat(content.get(1).getName()).isEqualTo("Bleach");
             assertThat(content.get(2).getName()).isEqualTo("Naruto");
@@ -171,30 +215,25 @@ class FilterTitlesUseCaseTest {
         @Test
         @DisplayName("ASCENSION deve ordenar por popularidade crescente")
         void ascensionDeveOrdenarPorPopularidadeCrescente() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.ASCENSION, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.ASCENSION, PAGEABLE);
 
-            // Assert
             List<Title> content = result.getContent();
-
-            assertThat(content.get(0).getName()).isEqualTo("Bleach");          // 3000
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");          // 5000
-            assertThat(content.get(2).getName()).isEqualTo("Attack on Titan"); // 8000
+            assertThat(content.get(0).getName()).isEqualTo("Bleach");
+            assertThat(content.get(1).getName()).isEqualTo("Naruto");
+            assertThat(content.get(2).getName()).isEqualTo("Attack on Titan");
         }
 
         @Test
         @DisplayName("RANDOM deve retornar todos os títulos (ordem indeterminada)")
         void randomDeveRetornarTodosOsTitulos() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.RANDOM, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.RANDOM, PAGEABLE);
 
-            // Assert
             assertThat(result.getContent()).hasSize(3);
             assertThat(result.getTotalElements()).isEqualTo(3);
         }
@@ -206,16 +245,14 @@ class FilterTitlesUseCaseTest {
         @Test
         @DisplayName("Deve paginar corretamente os resultados")
         void devePaginarCorretamente() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            Pageable secondPage = PageRequest.of(1, 2); // página 1, tamanho 2
+            Pageable secondPage = PageRequest.of(1, 2);
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, null, secondPage);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, null, secondPage);
 
-            // Assert
-            assertThat(result.getContent()).hasSize(1); // 3 itens total, página 2 tem só 1
+            assertThat(result.getContent()).hasSize(1);
             assertThat(result.getTotalElements()).isEqualTo(3);
             assertThat(result.getTotalPages()).isEqualTo(2);
         }
@@ -223,15 +260,13 @@ class FilterTitlesUseCaseTest {
         @Test
         @DisplayName("Deve retornar página vazia quando offset excede total")
         void deveRetornarPaginaVaziaQuandoOffsetExcede() {
-            // Arrange
-            when(titleRepository.findAll()).thenReturn(buildSampleTitles());
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
+                    .thenReturn(buildSampleTitles());
 
-            Pageable farPage = PageRequest.of(10, 10); // offset 100 > 3 itens
+            Pageable farPage = PageRequest.of(10, 10);
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, null, farPage);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, null, farPage);
 
-            // Assert
             assertThat(result.getContent()).isEmpty();
             assertThat(result.getTotalElements()).isEqualTo(3);
         }
@@ -243,18 +278,15 @@ class FilterTitlesUseCaseTest {
         @Test
         @DisplayName("Deve tratar popularidade nula como zero na ordenação")
         void deveTratarPopularidadeNulaComoZero() {
-            // Arrange
             List<Title> titles = List.of(
                     Title.builder().id("1").name("Com popularidade").popularity("1000").build(),
                     Title.builder().id("2").name("Sem popularidade").popularity(null).build()
             );
 
-            when(titleRepository.findAll()).thenReturn(titles);
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull())).thenReturn(titles);
 
-            // Act
-            Page<Title> result = filterTitlesUseCase.execute(null, SortCriteria.MOST_READ, PAGEABLE);
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_READ, PAGEABLE);
 
-            // Assert
             assertThat(result.getContent().get(0).getName()).isEqualTo("Com popularidade");
             assertThat(result.getContent().get(1).getName()).isEqualTo("Sem popularidade");
         }

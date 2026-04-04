@@ -37,6 +37,8 @@ public final class TitleMapper {
                 title.getRatingAverage(),
                 title.getRatingCount(),
                 title.getRankingScore(),
+                title.isAdult(),
+                title.getStatus(),
                 title.getAuthor(),
                 title.getArtist(),
                 title.getPublisher(),

@@ -22,6 +22,8 @@ public interface TitleRepositoryPort {
 
     List<Title> findByGenresContainingAll(List<String> genres);
 
+    List<Title> findByFilters(List<String> genres, String status, Boolean adult);
+
     Title save(Title title);
 
     void deleteById(String id);

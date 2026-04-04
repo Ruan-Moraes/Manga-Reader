@@ -1,6 +1,7 @@
 package com.mangareader.domain.manga.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -131,6 +132,38 @@ class TitleTest {
         assertTrue(title.getGenres().isEmpty());
         assertNotNull(title.getChapters());
         assertTrue(title.getChapters().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Deve inicializar adult como false via @Builder.Default")
+    void shouldInitializeAdultAsFalse() {
+        Title title = Title.builder().name("Test").build();
+
+        assertFalse(title.isAdult());
+    }
+
+    @Test
+    @DisplayName("Deve permitir definir adult como true via builder")
+    void shouldSetAdultViaBuilder() {
+        Title title = Title.builder().name("Test").adult(true).build();
+
+        assertTrue(title.isAdult());
+    }
+
+    @Test
+    @DisplayName("Deve inicializar status como null via builder padrão")
+    void shouldInitializeStatusAsNull() {
+        Title title = Title.builder().name("Test").build();
+
+        assertNull(title.getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve permitir definir status via builder")
+    void shouldSetStatusViaBuilder() {
+        Title title = Title.builder().name("Test").status("ONGOING").build();
+
+        assertEquals("ONGOING", title.getStatus());
     }
 
     @Test

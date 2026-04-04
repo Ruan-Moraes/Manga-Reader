@@ -15,9 +15,7 @@ import com.mangareader.domain.manga.entity.Title;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Filtra títulos por múltiplos gêneros/tags e aplica ordenação.
- * <p>
- * Implementa a busca avançada da tela de Category/Filtros.
+ * Filtra títulos por gêneros, status e conteúdo adulto, e aplica ordenação.
  */
 @Service
 @RequiredArgsConstructor
@@ -25,18 +23,12 @@ public class FilterTitlesUseCase {
 
     private final TitleRepositoryPort titleRepository;
 
-    public Page<Title> execute(List<String> genres, SortCriteria sort, Pageable pageable) {
-        List<Title> titles;
-
-        if (genres == null || genres.isEmpty()) {
-            titles = titleRepository.findAll();
-        } else {
-            titles = titleRepository.findByGenresContainingAll(genres);
-        }
+    public Page<Title> execute(List<String> genres, String status, Boolean adult,
+                               SortCriteria sort, Pageable pageable) {
+        List<Title> titles = titleRepository.findByFilters(genres, status, adult);
 
         List<Title> sorted = applySort(titles, sort);
 
-        // In-memory pagination (sort criteria depend on string fields)
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), sorted.size());
         var content = start < sorted.size() ? sorted.subList(start, end) : List.<Title>of();

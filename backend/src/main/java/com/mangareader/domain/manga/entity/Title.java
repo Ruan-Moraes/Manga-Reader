@@ -59,6 +59,12 @@ public class Title {
     private Long ratingCount;
     private Double rankingScore;
 
+    @Builder.Default
+    private boolean adult = false;
+
+    @Indexed
+    private String status;
+
     @TextIndexed(weight = 5)
     private String author;
 
