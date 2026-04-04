@@ -16,7 +16,6 @@ import com.mangareader.presentation.event.dto.EventTicketResponse;
  * Mapper para converter entidades de Event em DTOs de resposta.
  */
 public final class EventMapper {
-
     private static final DateTimeFormatter FMT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private EventMapper() {}
@@ -53,11 +52,13 @@ public final class EventMapper {
 
     public static List<EventResponse> toResponseList(List<Event> events) {
         if (events == null) return Collections.emptyList();
+
         return events.stream().map(EventMapper::toResponse).toList();
     }
 
     private static EventResponse.LocationResponse mapLocation(EventLocation loc) {
         if (loc == null) return null;
+
         return new EventResponse.LocationResponse(
                 loc.getLabel(),
                 loc.getAddress(),
@@ -70,6 +71,7 @@ public final class EventMapper {
 
     private static EventResponse.OrganizerResponse mapOrganizer(EventOrganizer org) {
         if (org == null) return null;
+
         return new EventResponse.OrganizerResponse(
                 org.getOrganizerId(),
                 org.getOrganizerName(),
@@ -81,6 +83,7 @@ public final class EventMapper {
 
     private static List<EventTicketResponse> mapTickets(List<EventTicket> tickets) {
         if (tickets == null) return Collections.emptyList();
+
         return tickets.stream()
                 .map(t -> new EventTicketResponse(
                         t.getId().toString(),
@@ -93,6 +96,7 @@ public final class EventMapper {
 
     private static String formatDateTime(LocalDateTime dateTime) {
         if (dateTime == null) return null;
+
         return dateTime.format(FMT);
     }
 }

@@ -30,7 +30,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class EventTicket {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
