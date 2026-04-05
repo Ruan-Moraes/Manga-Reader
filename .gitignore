@@ -124,4 +124,5 @@ sketch
 # Build / Cache
 # =====================================================
 cmake-build-*/
+node-compile-cache/
 coverage/
