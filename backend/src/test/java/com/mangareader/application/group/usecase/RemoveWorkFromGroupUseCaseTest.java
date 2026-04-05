@@ -20,9 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -48,10 +49,10 @@ class RemoveWorkFromGroupUseCaseTest {
                 .name("Scan Test")
                 .username("scan-test")
                 .totalTitles(1)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .build();
-        group.getMembers().add(GroupMember.builder().group(group).user(leader).role(GroupRole.LIDER).build());
+        group.getGroupUsers().add(GroupUser.builder().group(group).user(leader).type(GroupUserType.MEMBER).role(GroupRole.LIDER).build());
         group.getTranslatedWorks().add(
                 GroupWork.builder().group(group).titleId(TITLE_ID).title("Obra Removível").build()
         );
@@ -133,7 +134,7 @@ class RemoveWorkFromGroupUseCaseTest {
             Group group = buildGroupWithLeaderAndWork();
             UUID membroId = UUID.randomUUID();
             User membro = User.builder().id(membroId).name("Membro").email("m@e.com").passwordHash("h").build();
-            group.getMembers().add(GroupMember.builder().group(group).user(membro).role(GroupRole.TRADUTOR).build());
+            group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 

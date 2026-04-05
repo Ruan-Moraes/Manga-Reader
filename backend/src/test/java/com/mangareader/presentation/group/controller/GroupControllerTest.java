@@ -37,6 +37,8 @@ import com.mangareader.application.group.usecase.GetGroupsUseCase;
 import com.mangareader.application.group.usecase.JoinGroupUseCase;
 import com.mangareader.application.group.usecase.LeaveGroupUseCase;
 import com.mangareader.application.group.usecase.RemoveWorkFromGroupUseCase;
+import com.mangareader.application.group.usecase.SupportGroupUseCase;
+import com.mangareader.application.group.usecase.UnsupportGroupUseCase;
 import com.mangareader.application.group.usecase.UpdateGroupUseCase;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.valueobject.GroupStatus;
@@ -82,6 +84,12 @@ class GroupControllerTest {
     private RemoveWorkFromGroupUseCase removeWorkFromGroupUseCase;
 
     @MockitoBean
+    private SupportGroupUseCase supportGroupUseCase;
+
+    @MockitoBean
+    private UnsupportGroupUseCase unsupportGroupUseCase;
+
+    @MockitoBean
     private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();
@@ -103,7 +111,7 @@ class GroupControllerTest {
                 .website("https://example.com")
                 .foundedYear(2020)
                 .status(GroupStatus.ACTIVE)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .genres(List.of("Ação", "Aventura"))
                 .focusTags(List.of("manhwa"))
@@ -413,6 +421,43 @@ class GroupControllerTest {
                     .andExpect(status().isNoContent());
 
             verify(removeWorkFromGroupUseCase).execute(id, USER_ID, "title-1");
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /api/groups/{id}/support")
+    class Support {
+
+        @Test
+        @DisplayName("Deve retornar 201 ao apoiar grupo")
+        void deveRetornar201() throws Exception {
+            var id = UUID.randomUUID();
+            var group = buildGroup(id);
+            when(supportGroupUseCase.execute(id, USER_ID)).thenReturn(group);
+
+            mockMvc.perform(post("/api/groups/{id}/support", id)
+                            .principal(mockAuth()))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.name").value("Scan Traduções"));
+        }
+    }
+
+    @Nested
+    @DisplayName("DELETE /api/groups/{id}/support")
+    class Unsupport {
+
+        @Test
+        @DisplayName("Deve retornar 200 ao deixar de apoiar grupo")
+        void deveRetornar200() throws Exception {
+            var id = UUID.randomUUID();
+            var group = buildGroup(id);
+            when(unsupportGroupUseCase.execute(id, USER_ID)).thenReturn(group);
+
+            mockMvc.perform(delete("/api/groups/{id}/support", id)
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
         }
     }
 }

@@ -18,9 +18,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 
 @DataJpaTest
@@ -57,12 +58,13 @@ class GroupRepositoryAdapterTest {
         groupA = entityManager.persistAndFlush(groupA);
 
         // Adicionar membro ao grupo A
-        var member = GroupMember.builder()
+        var member = GroupUser.builder()
                 .group(groupA)
                 .user(leader)
+                .type(GroupUserType.MEMBER)
                 .role(GroupRole.LIDER)
                 .build();
-        groupA.getMembers().add(member);
+        groupA.getGroupUsers().add(member);
 
         // Adicionar work ao grupo A (cross-DB ref para MongoDB)
         var work = GroupWork.builder()

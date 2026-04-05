@@ -22,8 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.group.usecase.UpdateGroupUseCase.UpdateGroupInput;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -51,10 +52,10 @@ class UpdateGroupUseCaseTest {
                 .logo("old-logo.png")
                 .banner("old-banner.png")
                 .website("https://old.com")
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .build();
-        GroupMember leaderMember = GroupMember.builder().group(group).user(leader).role(GroupRole.LIDER).build();
-        group.getMembers().add(leaderMember);
+        GroupUser leaderMember = GroupUser.builder().group(group).user(leader).type(GroupUserType.MEMBER).role(GroupRole.LIDER).build();
+        group.getGroupUsers().add(leaderMember);
         return group;
     }
 
@@ -157,7 +158,7 @@ class UpdateGroupUseCaseTest {
             Group group = buildGroupWithLeader();
             UUID membroId = UUID.randomUUID();
             User membro = User.builder().id(membroId).name("Membro").email("m@e.com").passwordHash("h").build();
-            group.getMembers().add(GroupMember.builder().group(group).user(membro).role(GroupRole.TRADUTOR).build());
+            group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
             var input = new UpdateGroupInput(GROUP_ID, membroId, "Novo", null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));

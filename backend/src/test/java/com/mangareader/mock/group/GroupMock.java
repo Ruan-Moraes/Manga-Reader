@@ -1,10 +1,11 @@
 package com.mangareader.mock.group;
 
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupStatus;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.group.valueobject.GroupWorkStatus;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.mock.title.TitleMock;
@@ -42,13 +43,13 @@ public final class GroupMock {
                 .focusTags(new ArrayList<>(List.of("Shonen", "Seinen")))
                 .rating(4.5)
                 .popularity(850)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .build();
 
-        group.getMembers().add(leader(group, UserMock.admin()));
-        group.getMembers().add(translator(group, UserMock.poster()));
-        group.getMembers().add(member(group, UserMock.reader()));
+        group.getGroupUsers().add(leader(group, UserMock.admin()));
+        group.getGroupUsers().add(translator(group, UserMock.poster()));
+        group.getGroupUsers().add(member(group, UserMock.reader()));
 
         group.getTranslatedWorks().add(ongoingWork(group));
         group.getTranslatedWorks().add(completedWork(group));
@@ -69,7 +70,7 @@ public final class GroupMock {
                 .focusTags(new ArrayList<>())
                 .rating(3.0)
                 .popularity(120)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .build();
     }
@@ -87,7 +88,7 @@ public final class GroupMock {
                 .focusTags(new ArrayList<>(List.of("Josei")))
                 .rating(4.0)
                 .popularity(300)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .build();
     }
@@ -98,7 +99,7 @@ public final class GroupMock {
                 .name("Novo Grupo")
                 .username("novo-grupo")
                 .status(GroupStatus.ACTIVE)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .genres(new ArrayList<>())
                 .focusTags(new ArrayList<>())
@@ -107,39 +108,52 @@ public final class GroupMock {
 
     // ── Members ────────────────────────────────────────────────────────────
 
-    public static GroupMember leader(Group group, User user) {
-        return GroupMember.builder()
+    public static GroupUser leader(Group group, User user) {
+        return GroupUser.builder()
                 .id(UUID.randomUUID())
                 .group(group)
                 .user(user)
+                .type(GroupUserType.MEMBER)
                 .role(GroupRole.LIDER)
                 .build();
     }
 
-    public static GroupMember translator(Group group, User user) {
-        return GroupMember.builder()
+    public static GroupUser translator(Group group, User user) {
+        return GroupUser.builder()
                 .id(UUID.randomUUID())
                 .group(group)
                 .user(user)
+                .type(GroupUserType.MEMBER)
                 .role(GroupRole.TRADUTOR)
                 .build();
     }
 
-    public static GroupMember moderatorMember(Group group, User user) {
-        return GroupMember.builder()
+    public static GroupUser moderatorMember(Group group, User user) {
+        return GroupUser.builder()
                 .id(UUID.randomUUID())
                 .group(group)
                 .user(user)
+                .type(GroupUserType.MEMBER)
                 .role(GroupRole.QC)
                 .build();
     }
 
-    public static GroupMember member(Group group, User user) {
-        return GroupMember.builder()
+    public static GroupUser member(Group group, User user) {
+        return GroupUser.builder()
                 .id(UUID.randomUUID())
                 .group(group)
                 .user(user)
+                .type(GroupUserType.MEMBER)
                 .role(GroupRole.REVISOR)
+                .build();
+    }
+
+    public static GroupUser supporter(Group group, User user) {
+        return GroupUser.builder()
+                .id(UUID.randomUUID())
+                .group(group)
+                .user(user)
+                .type(GroupUserType.SUPPORTER)
                 .build();
     }
 

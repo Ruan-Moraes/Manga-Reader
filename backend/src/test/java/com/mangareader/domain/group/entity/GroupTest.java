@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupStatus;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.group.valueobject.GroupWorkStatus;
 import com.mangareader.domain.user.entity.User;
 
@@ -47,8 +48,8 @@ class GroupTest {
             assertTrue(group.getGenres().isEmpty());
             assertNotNull(group.getFocusTags());
             assertTrue(group.getFocusTags().isEmpty());
-            assertNotNull(group.getMembers());
-            assertTrue(group.getMembers().isEmpty());
+            assertNotNull(group.getGroupUsers());
+            assertTrue(group.getGroupUsers().isEmpty());
             assertNotNull(group.getTranslatedWorks());
             assertTrue(group.getTranslatedWorks().isEmpty());
         }
@@ -94,8 +95,8 @@ class GroupTest {
     }
 
     @Nested
-    @DisplayName("Gestão de membros")
-    class MemberManagementTests {
+    @DisplayName("Gestão de usuários do grupo")
+    class GroupUserManagementTests {
 
         @Test
         @DisplayName("Deve permitir adicionar membro ao grupo")
@@ -107,17 +108,18 @@ class GroupTest {
 
             User user = createTestUser("Translator");
 
-            GroupMember member = GroupMember.builder()
+            GroupUser groupUser = GroupUser.builder()
                     .group(group)
                     .user(user)
+                    .type(GroupUserType.MEMBER)
                     .role(GroupRole.TRADUTOR)
                     .build();
 
-            group.getMembers().add(member);
+            group.getGroupUsers().add(groupUser);
 
-            assertEquals(1, group.getMembers().size());
-            assertEquals(GroupRole.TRADUTOR, group.getMembers().getFirst().getRole());
-            assertEquals(user, group.getMembers().getFirst().getUser());
+            assertEquals(1, group.getGroupUsers().size());
+            assertEquals(GroupRole.TRADUTOR, group.getGroupUsers().getFirst().getRole());
+            assertEquals(user, group.getGroupUsers().getFirst().getUser());
         }
 
         @Test
@@ -128,27 +130,53 @@ class GroupTest {
                     .username("big-team")
                     .build();
 
-            GroupMember leader = GroupMember.builder()
+            GroupUser leader = GroupUser.builder()
                     .group(group)
                     .user(createTestUser("Leader"))
+                    .type(GroupUserType.MEMBER)
                     .role(GroupRole.LIDER)
                     .build();
 
-            GroupMember translator = GroupMember.builder()
+            GroupUser translator = GroupUser.builder()
                     .group(group)
                     .user(createTestUser("Translator"))
+                    .type(GroupUserType.MEMBER)
                     .role(GroupRole.TRADUTOR)
                     .build();
 
-            GroupMember reviewer = GroupMember.builder()
+            GroupUser reviewer = GroupUser.builder()
                     .group(group)
                     .user(createTestUser("Reviewer"))
+                    .type(GroupUserType.MEMBER)
                     .role(GroupRole.REVISOR)
                     .build();
 
-            group.getMembers().addAll(List.of(leader, translator, reviewer));
+            group.getGroupUsers().addAll(List.of(leader, translator, reviewer));
 
-            assertEquals(3, group.getMembers().size());
+            assertEquals(3, group.getGroupUsers().size());
+        }
+
+        @Test
+        @DisplayName("Deve permitir adicionar supporter ao grupo")
+        void shouldAddSupporterToGroup() {
+            Group group = Group.builder()
+                    .name("Team")
+                    .username("team")
+                    .build();
+
+            User user = createTestUser("Supporter");
+
+            GroupUser supporter = GroupUser.builder()
+                    .group(group)
+                    .user(user)
+                    .type(GroupUserType.SUPPORTER)
+                    .build();
+
+            group.getGroupUsers().add(supporter);
+
+            assertEquals(1, group.getGroupUsers().size());
+            assertEquals(GroupUserType.SUPPORTER, group.getGroupUsers().getFirst().getType());
+            assertNull(group.getGroupUsers().getFirst().getRole());
         }
     }
 

@@ -3,7 +3,6 @@ package com.mangareader.application.group.usecase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -28,22 +27,22 @@ import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("LeaveGroupUseCase")
-class LeaveGroupUseCaseTest {
+@DisplayName("UnsupportGroupUseCase")
+class UnsupportGroupUseCaseTest {
 
     @Mock
     private GroupRepositoryPort groupRepository;
 
     @InjectMocks
-    private LeaveGroupUseCase leaveGroupUseCase;
+    private UnsupportGroupUseCase unsupportGroupUseCase;
 
     private final UUID GROUP_ID = UUID.randomUUID();
     private final UUID LEADER_ID = UUID.randomUUID();
-    private final UUID MEMBER_ID = UUID.randomUUID();
+    private final UUID SUPPORTER_ID = UUID.randomUUID();
 
-    private Group buildGroupWithLeaderAndMember() {
+    private Group buildGroupWithSupporter() {
         User leader = User.builder().id(LEADER_ID).name("Líder").email("l@e.com").passwordHash("h").build();
-        User member = User.builder().id(MEMBER_ID).name("Tradutor").email("t@e.com").passwordHash("h").build();
+        User supporter = User.builder().id(SUPPORTER_ID).name("Apoiador").email("a@e.com").passwordHash("h").build();
 
         Group group = Group.builder()
                 .id(GROUP_ID)
@@ -52,44 +51,30 @@ class LeaveGroupUseCaseTest {
                 .groupUsers(new ArrayList<>())
                 .build();
 
-        group.getGroupUsers().add(GroupUser.builder().group(group).user(leader).type(GroupUserType.MEMBER).role(GroupRole.LIDER).build());
-        group.getGroupUsers().add(GroupUser.builder().group(group).user(member).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
+        group.getGroupUsers().add(
+                GroupUser.builder().group(group).user(leader).type(GroupUserType.MEMBER).role(GroupRole.LIDER).build()
+        );
+        group.getGroupUsers().add(
+                GroupUser.builder().group(group).user(supporter).type(GroupUserType.SUPPORTER).build()
+        );
         return group;
     }
 
     @Nested
-    @DisplayName("Saída com sucesso")
+    @DisplayName("Remoção de apoio com sucesso")
     class Sucesso {
 
         @Test
-        @DisplayName("Deve remover membro não-líder do grupo")
-        void deveRemoverMembroNaoLider() {
-            // Arrange
-            Group group = buildGroupWithLeaderAndMember();
+        @DisplayName("Deve remover apoiador do grupo")
+        void deveRemoverApoiador() {
+            Group group = buildGroupWithSupporter();
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            // Act
-            Group result = leaveGroupUseCase.execute(GROUP_ID, MEMBER_ID);
+            Group result = unsupportGroupUseCase.execute(GROUP_ID, SUPPORTER_ID);
 
-            // Assert
             assertThat(result.getGroupUsers()).hasSize(1);
-            assertThat(result.getGroupUsers().get(0).getRole()).isEqualTo(GroupRole.LIDER);
-        }
-
-        @Test
-        @DisplayName("Deve persistir grupo após remoção do membro")
-        void devePersistirAposRemocao() {
-            // Arrange
-            Group group = buildGroupWithLeaderAndMember();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
-            when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
-
-            // Act
-            leaveGroupUseCase.execute(GROUP_ID, MEMBER_ID);
-
-            // Assert
-            verify(groupRepository).save(group);
+            assertThat(result.getGroupUsers().get(0).getType()).isEqualTo(GroupUserType.MEMBER);
         }
     }
 
@@ -100,40 +85,33 @@ class LeaveGroupUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
-            // Arrange
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
 
-            // Act & Assert
-            assertThatThrownBy(() -> leaveGroupUseCase.execute(GROUP_ID, MEMBER_ID))
+            assertThatThrownBy(() -> unsupportGroupUseCase.execute(GROUP_ID, SUPPORTER_ID))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("Group");
         }
 
         @Test
-        @DisplayName("Deve lançar BusinessRuleException 400 quando usuário não é membro")
-        void deveLancarExcecaoQuandoNaoEMembro() {
-            // Arrange
-            Group group = buildGroupWithLeaderAndMember();
+        @DisplayName("Deve lançar BusinessRuleException 400 quando usuário não é apoiador")
+        void deveLancarExcecaoQuandoNaoEApoiador() {
+            Group group = buildGroupWithSupporter();
             UUID estranho = UUID.randomUUID();
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 
-            // Act & Assert
-            assertThatThrownBy(() -> leaveGroupUseCase.execute(GROUP_ID, estranho))
+            assertThatThrownBy(() -> unsupportGroupUseCase.execute(GROUP_ID, estranho))
                     .isInstanceOf(BusinessRuleException.class)
                     .satisfies(ex -> assertThat(((BusinessRuleException) ex).getStatusCode()).isEqualTo(400));
         }
 
         @Test
-        @DisplayName("Deve lançar BusinessRuleException 400 quando líder tenta sair")
-        void deveLancarExcecaoQuandoLiderTentaSair() {
-            // Arrange
-            Group group = buildGroupWithLeaderAndMember();
+        @DisplayName("Deve lançar BusinessRuleException 400 quando membro tenta usar unsupport")
+        void deveLancarExcecaoQuandoMembroTentaUnsupport() {
+            Group group = buildGroupWithSupporter();
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 
-            // Act & Assert
-            assertThatThrownBy(() -> leaveGroupUseCase.execute(GROUP_ID, LEADER_ID))
+            assertThatThrownBy(() -> unsupportGroupUseCase.execute(GROUP_ID, LEADER_ID))
                     .isInstanceOf(BusinessRuleException.class)
-                    .hasMessageContaining("líder")
                     .satisfies(ex -> assertThat(((BusinessRuleException) ex).getStatusCode()).isEqualTo(400));
         }
     }

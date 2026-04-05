@@ -37,7 +37,7 @@ class GetGroupByUsernameUseCaseTest {
         void deveRetornarGrupoQuandoEncontrado() {
             // Arrange
             Group group = Group.builder().name("Scan Brasil").username("scan-brasil").build();
-            when(groupRepository.findByUsername("scan-brasil")).thenReturn(Optional.of(group));
+            when(groupRepository.findByUsernameWithUsers("scan-brasil")).thenReturn(Optional.of(group));
 
             // Act
             Group result = getGroupByUsernameUseCase.execute("scan-brasil");
@@ -56,7 +56,7 @@ class GetGroupByUsernameUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando username não existe")
         void deveLancarExcecaoQuandoNaoExiste() {
             // Arrange
-            when(groupRepository.findByUsername("inexistente")).thenReturn(Optional.empty());
+            when(groupRepository.findByUsernameWithUsers("inexistente")).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> getGroupByUsernameUseCase.execute("inexistente"))

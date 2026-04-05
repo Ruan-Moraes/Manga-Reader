@@ -21,9 +21,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.group.usecase.AddWorkToGroupUseCase.AddWorkInput;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.group.valueobject.GroupWorkStatus;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
@@ -49,10 +50,10 @@ class AddWorkToGroupUseCaseTest {
                 .name("Scan Test")
                 .username("scan-test")
                 .totalTitles(0)
-                .members(new ArrayList<>())
+                .groupUsers(new ArrayList<>())
                 .translatedWorks(new ArrayList<>())
                 .build();
-        group.getMembers().add(GroupMember.builder().group(group).user(member).role(GroupRole.TRADUTOR).build());
+        group.getGroupUsers().add(GroupUser.builder().group(group).user(member).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
         return group;
     }
 

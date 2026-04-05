@@ -40,7 +40,7 @@ class GetGroupByIdUseCaseTest {
         void deveRetornarGrupoQuandoEncontrado() {
             // Arrange
             Group group = Group.builder().id(GROUP_ID).name("Scan Brasil").username("scan-brasil").build();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act
             Group result = getGroupByIdUseCase.execute(GROUP_ID);
@@ -59,7 +59,7 @@ class GetGroupByIdUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoNaoExiste() {
             // Arrange
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> getGroupByIdUseCase.execute(GROUP_ID))

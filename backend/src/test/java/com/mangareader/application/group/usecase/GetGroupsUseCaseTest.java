@@ -39,7 +39,7 @@ class GetGroupsUseCaseTest {
                 Group.builder().name("Grupo B").username("grupo-b").build()
         );
         Page<Group> page = new PageImpl<>(groups, pageable, 2);
-        when(groupRepository.findAll(pageable)).thenReturn(page);
+        when(groupRepository.findAllWithUsers(pageable)).thenReturn(page);
 
         // Act
         Page<Group> result = getGroupsUseCase.execute(pageable);
@@ -55,7 +55,7 @@ class GetGroupsUseCaseTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         Page<Group> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(groupRepository.findAll(pageable)).thenReturn(emptyPage);
+        when(groupRepository.findAllWithUsers(pageable)).thenReturn(emptyPage);
 
         // Act
         Page<Group> result = getGroupsUseCase.execute(pageable);

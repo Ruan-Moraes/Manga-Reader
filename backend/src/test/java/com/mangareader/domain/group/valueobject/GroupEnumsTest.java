@@ -68,4 +68,22 @@ class GroupEnumsTest {
             assertEquals(GroupWorkStatus.COMPLETED, GroupWorkStatus.values()[1]);
         }
     }
+
+    @Nested
+    @DisplayName("GroupUserType")
+    class GroupUserTypeTests {
+
+        @Test
+        @DisplayName("Deve conter 2 valores")
+        void shouldHaveTwoValues() {
+            assertEquals(2, GroupUserType.values().length);
+        }
+
+        @Test
+        @DisplayName("Deve conter MEMBER e SUPPORTER")
+        void shouldContainExpectedValues() {
+            assertEquals(GroupUserType.MEMBER, GroupUserType.values()[0]);
+            assertEquals(GroupUserType.SUPPORTER, GroupUserType.values()[1]);
+        }
+    }
 }

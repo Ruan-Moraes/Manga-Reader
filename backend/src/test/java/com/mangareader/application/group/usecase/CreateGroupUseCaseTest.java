@@ -80,9 +80,9 @@ class CreateGroupUseCaseTest {
             assertThat(result.getName()).isEqualTo("Scan Brasil");
             assertThat(result.getUsername()).isEqualTo("scan-brasil");
             assertThat(result.getStatus()).isEqualTo(GroupStatus.ACTIVE);
-            assertThat(result.getMembers()).hasSize(1);
-            assertThat(result.getMembers().get(0).getRole()).isEqualTo(GroupRole.LIDER);
-            assertThat(result.getMembers().get(0).getUser().getId()).isEqualTo(USER_ID);
+            assertThat(result.getGroupUsers()).hasSize(1);
+            assertThat(result.getGroupUsers().get(0).getRole()).isEqualTo(GroupRole.LIDER);
+            assertThat(result.getGroupUsers().get(0).getUser().getId()).isEqualTo(USER_ID);
         }
 
         @Test
