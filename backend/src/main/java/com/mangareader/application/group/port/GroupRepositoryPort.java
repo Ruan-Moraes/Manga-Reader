@@ -13,12 +13,17 @@ import com.mangareader.domain.group.entity.Group;
  * Port de saída — acesso a dados de Groups (PostgreSQL).
  */
 public interface GroupRepositoryPort {
-
     List<Group> findAll();
 
     Optional<Group> findById(UUID id);
 
     Optional<Group> findByUsername(String username);
+
+    Optional<Group> findByIdWithUsers(UUID id);
+
+    Optional<Group> findByUsernameWithUsers(String username);
+
+    Page<Group> findAllWithUsers(Pageable pageable);
 
     boolean existsByUsername(String username);
 
@@ -26,9 +31,6 @@ public interface GroupRepositoryPort {
 
     void deleteById(UUID id);
 
-    /**
-     * Busca grupos que traduzem um determinado título.
-     */
     List<Group> findByTitleId(String titleId);
 
     Page<Group> findByTitleId(String titleId, Pageable pageable);
