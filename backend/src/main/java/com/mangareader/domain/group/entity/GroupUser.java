@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -27,10 +28,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Membro de um grupo (PostgreSQL — tabela de junção com atributos).
+ * Vínculo entre um usuário e um grupo (PostgreSQL — tabela de junção com atributos).
+ * <p>
+ * Representa tanto membros efetivos quanto apoiadores, diferenciados pelo campo {@code type}.
  */
 @Entity
-@Table(name = "group_members", uniqueConstraints = {
+@Table(name = "group_users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"group_id", "user_id"})
 })
 @Getter
@@ -38,7 +41,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GroupMember {
+public class GroupUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -52,7 +55,12 @@ public class GroupMember {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private GroupUserType type = GroupUserType.MEMBER;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     private GroupRole role;
 
     @Column(name = "joined_at")
