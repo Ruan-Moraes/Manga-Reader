@@ -10,12 +10,12 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ⚠️ 1015 testes (727 backend + 288 frontend) — 280 frontend passando, 8 frontend falhando |
+| **Build** | ⚠️ 1134 testes (817 backend + 317 frontend) — 316 frontend passando, 1 frontend falhando, 2 backend falhando |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
 [✅] Fase 6:   Frontend UI (29 páginas, 13 features, layout, guards)
-[✅] Fase 7:   Testes do backend (727 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
+[✅] Fase 7:   Testes do backend (817 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
 [✅] Fase 8:   Integração frontend ↔ backend (13/13 features com API real)
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
@@ -52,9 +52,9 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Métrica | Valor |
 |---------|-------|
 | Domínios de negócio | **12** (Auth, User, Manga, Chapter, Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store) |
-| Use Cases | **70** |
+| Use Cases | **72** |
 | REST Controllers | **13** |
-| Endpoints REST | **74** |
+| Endpoints REST | **76** |
 | Tabelas PostgreSQL | **15** (incluindo user_recommendations) |
 | Coleções MongoDB | **6** (incluindo view_history) |
 | Páginas frontend | **29** |
@@ -62,8 +62,8 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Features frontend | **13** (todas integradas com API real) |
 | Componentes compartilhados | **~37** |
 | Arquivos TypeScript | **272** |
-| Testes backend | **727** (127 arquivos — domain, application, presentation, infra JPA + MongoDB + Security E2E) |
-| Testes frontend | **288** (37 arquivos — services, hooks, utils, smoke) |
+| Testes backend | **817** (129 arquivos — domain, application, presentation, infra JPA + MongoDB + Security E2E) |
+| Testes frontend | **317** (37 arquivos — services, hooks, utils, smoke) |
 
 ---
 
@@ -195,15 +195,15 @@ npm run dev
 ### Testes
 
 ```bash
-# Backend (727 testes)
+# Backend (817 testes)
 cd backend
-mvn test                                    # Todos os 727 testes
+mvn test                                    # Todos os 817 testes
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
 mvn test -Dtest=**/application/**/*Test     # Apenas use cases
 mvn test -Dtest=**/presentation/**/*Test    # Apenas controllers
 mvn test -Dtest=**/infrastructure/**/*Test  # JPA + MongoDB + Security
 
-# Frontend (284 testes)
+# Frontend (317 testes)
 cd frontend
 npm test                                    # Todos os testes (Vitest)
 npm run test:watch                          # Watch mode
@@ -258,22 +258,22 @@ Manga-Reader/
 
 ## 7. Testes
 
-**164 arquivos de teste · 1011 testes · 8 frontend failures**
+**166 arquivos de teste · 1134 testes · 1 frontend failure · 2 backend failures**
 
-### Backend — 127 arquivos, 727 testes
+### Backend — 129 arquivos, 817 testes
 
 | Camada | Arquivos | Testes | Anotação | Abordagem |
 |--------|:--------:|:------:|----------|-----------|
-| Domain | 30 | 192 | Nenhuma | JUnit 5 puro, sem Spring (entidades, sub-entities, VOs, enums) |
-| Application | 70 | 245 | `@ExtendWith(MockitoExtension)` | Mockito mocks dos ports |
-| Presentation | 13 | 133 | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort` |
+| Domain | 31 | 197 | Nenhuma | JUnit 5 puro, sem Spring (entidades, sub-entities, VOs, enums) |
+| Application | 72 | 277 | `@ExtendWith(MockitoExtension)` | Mockito mocks dos ports |
+| Presentation | 13 | 155 | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | MockMvc + `@MockitoBean TokenPort` |
 | Infrastructure JPA | 7 | 72 | `@DataJpaTest` + `@ActiveProfiles("test")` | H2 in-memory |
 | Infrastructure MongoDB | 4 | 51 | `@DataMongoTest` + `@Import(MongoTestContainerConfig)` | TestContainers (mongo:8.0) |
 | Infrastructure Security | 1 | 17 | `@ExtendWith(MockitoExtension)` | JwtTokenProvider unitário |
 | Security E2E | 1 | 16 | `@SpringBootTest` + `@Import(MongoTestContainerConfig)` | Fluxo Auth completo (sign-up → login → JWT → refresh → /me) |
 | Root | 1 | 1 | `@SpringBootTest` | Smoke test (context loads) |
 
-### Frontend — 37 arquivos, 284 testes (276 passando, 8 falhando)
+### Frontend — 37 arquivos, 317 testes (316 passando, 1 falhando)
 
 | Camada | Arquivos | Testes | Abordagem |
 |--------|:--------:|:------:|-----------|
@@ -284,11 +284,8 @@ Manga-Reader/
 
 Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta Axios no nível de rede)
 
-**8 testes falhando:**
-- `forumService.test.ts` (3) — timeout em `vi.useRealTimers` no afterEach
-- `newsService.test.ts` (2) — mesmo problema de timers
+**1 teste falhando:**
 - `useBookmark.test.tsx` (1) — assertion de session guard
-- `useCommentCRUD.test.tsx` (2) — toast mock não chamado
 
 ### Pendente
 
@@ -306,9 +303,10 @@ Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta A
 | 2026-03-12 | Fix controllers (TokenPort mock) + Infrastructure JPA completo (7/7) |
 | 2026-03-13 | Infrastructure MongoDB completo (4/4 via TestContainers) |
 | 2026-03-14 | Domain completo (25/25 — sub-entities, VOs, enums) + Security E2E (16 testes) |
-| 2026-03-15 | Fase 9a/9b — 7 novos use cases (profile), domain +5 (sub-entities/VOs), application +10, total: 727 testes |
+| 2026-03-15 | Fase 9a/9b — 7 novos use cases (profile), domain +5 (sub-entities/VOs), application +10, total: 817 testes |
 | 2026-03-25 | Fase 9c — Setup testes frontend (Vitest + RTL + MSW), 4 hooks testados: useSearchTitles, useAuth, useBookmark, useCommentCRUD (35 testes) |
 | 2026-03-26 | Testes frontend expandidos: 13 service tests, 17 hook tests, 6 utility tests — total: 37 arquivos, 284 testes (276 passando, 8 falhando) |
+| 2026-04-05 | GroupMember → GroupUser refactoring: supporters system, 2 novos use cases (Support/Unsupport), 2 novos endpoints, +90 backend testes, +29 frontend testes |
 
 ---
 
@@ -389,6 +387,8 @@ Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta A
 | DELETE | `/api/groups/{id}/leave` | Sim |
 | POST | `/api/groups/{id}/works` | Sim |
 | DELETE | `/api/groups/{id}/works/{titleId}` | Sim |
+| POST | `/api/groups/{id}/support` | Sim |
+| DELETE | `/api/groups/{id}/support` | Sim |
 
 ### News (`/api/news`)
 
@@ -524,7 +524,7 @@ Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta A
 [✅] Fase 6: Frontend UI
        29 páginas, 13 features, layout responsivo, guards, HTTP client
 
-[✅] Fase 7: Testes do backend (727 testes)
+[✅] Fase 7: Testes do backend (817 testes)
        ├─ ✅ Domain (30 files — entidades, sub-entities, VOs, enums)
        ├─ ✅ Application (70 use cases)
        ├─ ✅ Presentation (13 controllers)

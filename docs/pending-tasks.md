@@ -69,11 +69,11 @@ Dividir page components grandes em subcomponentes:
 - [x] Testes de hooks customizados (17 arquivos, ~83 testes — auth, category, chapter, comment, library, manga, rating)
 - [x] Testes de services (13 arquivos, ~191 testes — todos os 13 domínios)
 - [x] Testes de utilities (6 arquivos, ~60 testes — apiErrorMessages, checkValidId, formatDate, formatRelativeDate, validateId, validateResponse)
-- [ ] Corrigir 8 testes falhando (vi.useRealTimers timeout em forum/news, session guard em useBookmark, toast mock em useCommentCRUD)
+- [ ] Corrigir 1 teste falhando (session guard em useBookmark)
 - [ ] Testes de componentes (CommentsSection, Library, UserProfile, SearchResults)
 - [ ] Considerar Playwright para testes E2E (fluxo auth, navegação)
 
-**Estado atual**: 37 arquivos, 288 testes (280 passando, 8 falhando)
+**Estado atual**: 37 arquivos, 317 testes (316 passando, 1 falhando)
 
 ### 1.8. Configuração (Prioridade Baixa)
 
@@ -95,9 +95,9 @@ Dividir page components grandes em subcomponentes:
 
 | Categoria | Escopo | Status | Detalhes |
 |-----------|--------|--------|----------|
-| **Domain** | 30 entidades/VOs/enums | ✅ **Concluído** | 30 arquivos, 192 testes |
-| **Application** | 70 use cases | ✅ **Concluído** | 70 arquivos, 245 testes |
-| **Presentation** | 13 controllers | ✅ **Concluído** | 13 arquivos, 133 testes |
+| **Domain** | 31 entidades/VOs/enums | ✅ **Concluído** | 31 arquivos, 197 testes |
+| **Application** | 72 use cases | ✅ **Concluído** | 72 arquivos, 277 testes |
+| **Presentation** | 13 controllers | ✅ **Concluído** | 13 arquivos, 155 testes |
 | **Infrastructure JPA** | 7 adapters PostgreSQL | ✅ **Concluído** | 7 arquivos, 72 testes (H2 in-memory) |
 | **Infrastructure MongoDB** | 4 adapters MongoDB | ✅ **Concluído** | 4 arquivos, 51 testes (TestContainers mongo:8.0) |
 | **Infrastructure Security** | JwtTokenProvider | ✅ **Concluído** | 1 arquivo, 17 testes (unitário) |
@@ -107,11 +107,11 @@ Dividir page components grandes em subcomponentes:
 | **Testes frontend — Hooks** | 7 domínios | ✅ **Concluído** | 17 arquivos, ~83 testes (RTL + MSW) |
 | **Testes frontend — Utils** | 6 utilities | ✅ **Concluído** | 6 arquivos, ~60 testes (Vitest puro) |
 | **Testes frontend — Smoke** | Setup verification | ✅ **Concluído** | 1 arquivo, 3 testes |
-| **Testes frontend — Fixes** | 8 testes falhando | 🔲 Não iniciado | timers, session guard, toast mock |
+| **Testes frontend — Fixes** | 1 teste falhando | 🔲 Não iniciado | session guard em useBookmark |
 | **Testes frontend — Componentes** | Componentes + E2E | 🔲 Não iniciado | Vitest + React Testing Library |
 
-**Total backend**: 127 arquivos, **727 testes passando**, 0 failures, 0 errors.
-**Total frontend**: 37 arquivos, **288 testes** (280 passando, 8 falhando).
+**Total backend**: 129 arquivos, **817 testes passando**, 2 failures (AuthSecurityIntegrationTest), 0 errors.
+**Total frontend**: 37 arquivos, **317 testes** (316 passando, 1 falhando).
 
 ### 2.3. Documentação (Prioridade Alta)
 

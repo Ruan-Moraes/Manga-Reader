@@ -9,7 +9,7 @@
 ### Backend (`/backend/`)
 
 ```bash
-mvn test                                        # Todos os testes (791, JUnit 5 + Mockito + H2 + TestContainers)
+mvn test                                        # Todos os testes (817, JUnit 5 + Mockito + H2 + TestContainers)
 mvn test -Dtest=UserTest                        # Classe específica
 mvn test -Dtest=UserTest#shouldInitialize...    # Método específico
 mvn test -Dtest=**/domain/**/*Test              # Por camada (domain/application/presentation/infrastructure)
