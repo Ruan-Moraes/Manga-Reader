@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,29 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     @Override
     public Optional<Group> findByUsername(String username) {
         return repository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<Group> findByIdWithUsers(UUID id) {
+        return repository.findByIdWithUsers(id);
+    }
+
+    @Override
+    public Optional<Group> findByUsernameWithUsers(String username) {
+        return repository.findByUsernameWithUsers(username);
+    }
+
+    @Override
+    public Page<Group> findAllWithUsers(Pageable pageable) {
+        Page<UUID> idsPage = repository.findAllIds(pageable);
+
+        if (idsPage.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+
+        List<Group> groups = repository.findAllWithUsersByIds(idsPage.getContent());
+
+        return new PageImpl<>(groups, pageable, idsPage.getTotalElements());
     }
 
     @Override

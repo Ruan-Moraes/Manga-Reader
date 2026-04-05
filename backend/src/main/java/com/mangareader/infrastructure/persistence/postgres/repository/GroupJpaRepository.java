@@ -21,6 +21,18 @@ public interface GroupJpaRepository extends JpaRepository<Group, UUID> {
 
     boolean existsByUsername(String username);
 
+    @Query("SELECT DISTINCT g FROM Group g LEFT JOIN FETCH g.groupUsers gu LEFT JOIN FETCH gu.user WHERE g.id = :id")
+    Optional<Group> findByIdWithUsers(@Param("id") UUID id);
+
+    @Query("SELECT DISTINCT g FROM Group g LEFT JOIN FETCH g.groupUsers gu LEFT JOIN FETCH gu.user WHERE g.username = :username")
+    Optional<Group> findByUsernameWithUsers(@Param("username") String username);
+
+    @Query("SELECT g.id FROM Group g")
+    Page<UUID> findAllIds(Pageable pageable);
+
+    @Query("SELECT DISTINCT g FROM Group g LEFT JOIN FETCH g.groupUsers gu LEFT JOIN FETCH gu.user WHERE g.id IN :ids")
+    List<Group> findAllWithUsersByIds(@Param("ids") List<UUID> ids);
+
     @Query("SELECT DISTINCT g FROM Group g JOIN g.translatedWorks w WHERE w.titleId = :titleId")
     List<Group> findByTitleId(@Param("titleId") String titleId);
 
