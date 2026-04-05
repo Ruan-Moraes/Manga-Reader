@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupStatus;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.DuplicateResourceException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -23,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
     private final UserRepositoryPort userRepository;
 
@@ -59,13 +59,14 @@ public class CreateGroupUseCase {
                 .build();
 
         // O criador é o líder
-        GroupMember leader = GroupMember.builder()
+        GroupUser leader = GroupUser.builder()
                 .group(group)
                 .user(creator)
+                .type(GroupUserType.MEMBER)
                 .role(GroupRole.LIDER)
                 .build();
 
-        group.getMembers().add(leader);
+        group.getGroupUsers().add(leader);
 
         return groupRepository.save(group);
     }

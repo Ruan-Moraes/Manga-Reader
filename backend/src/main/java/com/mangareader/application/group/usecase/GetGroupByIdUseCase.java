@@ -22,10 +22,9 @@ public class GetGroupByIdUseCase {
 
     @Transactional(readOnly = true)
     public Group execute(UUID id) {
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findByIdWithUsers(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", id));
 
-        group.getMembers().size();
         group.getTranslatedWorks().size();
 
         return group;

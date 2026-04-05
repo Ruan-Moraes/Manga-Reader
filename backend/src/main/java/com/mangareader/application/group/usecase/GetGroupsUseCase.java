@@ -21,10 +21,9 @@ public class GetGroupsUseCase {
 
     @Transactional(readOnly = true)
     public Page<Group> execute(Pageable pageable) {
-        Page<Group> page = groupRepository.findAll(pageable);
+        Page<Group> page = groupRepository.findAllWithUsers(pageable);
 
         page.getContent().forEach(group -> {
-            group.getMembers().size();
             group.getTranslatedWorks().size();
         });
 

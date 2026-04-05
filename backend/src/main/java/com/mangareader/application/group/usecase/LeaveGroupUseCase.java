@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -22,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class LeaveGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     @Transactional
@@ -30,8 +30,8 @@ public class LeaveGroupUseCase {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
 
-        GroupMember member = group.getMembers().stream()
-                .filter(m -> m.getUser().getId().equals(userId))
+        GroupUser member = group.getGroupUsers().stream()
+                .filter(gu -> gu.getType() == GroupUserType.MEMBER && gu.getUser().getId().equals(userId))
                 .findFirst()
                 .orElseThrow(() -> new BusinessRuleException("Você não é membro deste grupo", 400));
 
@@ -40,7 +40,7 @@ public class LeaveGroupUseCase {
                     "O líder não pode sair do grupo. Transfira a liderança antes.", 400);
         }
 
-        group.getMembers().remove(member);
+        group.getGroupUsers().remove(member);
         return groupRepository.save(group);
     }
 }

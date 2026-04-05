@@ -8,6 +8,7 @@ import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -21,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RemoveWorkFromGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     public Group execute(UUID groupId, UUID userId, String titleId) {
@@ -42,8 +42,10 @@ public class RemoveWorkFromGroupUseCase {
     }
 
     private void verifyLeader(Group group, UUID userId) {
-        boolean isLeader = group.getMembers().stream()
-                .anyMatch(m -> m.getUser().getId().equals(userId) && m.getRole() == GroupRole.LIDER);
+        boolean isLeader = group.getGroupUsers().stream()
+                .anyMatch(gu -> gu.getType() == GroupUserType.MEMBER
+                        && gu.getUser().getId().equals(userId)
+                        && gu.getRole() == GroupRole.LIDER);
         if (!isLeader) {
             throw new BusinessRuleException("Somente o líder pode remover obras do grupo", 403);
         }

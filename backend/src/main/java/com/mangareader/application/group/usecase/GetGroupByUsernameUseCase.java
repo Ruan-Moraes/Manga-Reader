@@ -20,10 +20,9 @@ public class GetGroupByUsernameUseCase {
 
     @Transactional(readOnly = true)
     public Group execute(String username) {
-        Group group = groupRepository.findByUsername(username)
+        Group group = groupRepository.findByUsernameWithUsers(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "username", username));
 
-        group.getMembers().size();
         group.getTranslatedWorks().size();
 
         return group;

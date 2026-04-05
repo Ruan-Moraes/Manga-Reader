@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
 import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupWorkStatus;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -71,8 +71,9 @@ public class AddWorkToGroupUseCase {
     }
 
     private void verifyMembership(Group group, UUID userId) {
-        boolean isMember = group.getMembers().stream()
-                .anyMatch(m -> m.getUser().getId().equals(userId));
+        boolean isMember = group.getGroupUsers().stream()
+                .anyMatch(gu -> gu.getType() == GroupUserType.MEMBER
+                        && gu.getUser().getId().equals(userId));
         if (!isMember) {
             throw new BusinessRuleException("Você precisa ser membro do grupo para adicionar obras", 403);
         }

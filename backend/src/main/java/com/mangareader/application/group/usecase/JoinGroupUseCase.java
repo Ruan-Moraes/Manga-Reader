@@ -8,8 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.domain.group.entity.GroupMember;
+import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupRole;
+import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -36,20 +37,21 @@ public class JoinGroupUseCase {
         User user = userRepository.findById(input.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", input.userId()));
 
-        boolean alreadyMember = group.getMembers().stream()
-                .anyMatch(m -> m.getUser().getId().equals(input.userId()));
+        boolean alreadyLinked = group.getGroupUsers().stream()
+                .anyMatch(gu -> gu.getUser().getId().equals(input.userId()));
 
-        if (alreadyMember) {
-            throw new BusinessRuleException("Usuário já é membro deste grupo.", 409);
+        if (alreadyLinked) {
+            throw new BusinessRuleException("Usuário já possui vínculo com este grupo.", 409);
         }
 
-        GroupMember member = GroupMember.builder()
+        GroupUser member = GroupUser.builder()
                 .group(group)
                 .user(user)
+                .type(GroupUserType.MEMBER)
                 .role(input.role() != null ? input.role() : GroupRole.TRADUTOR)
                 .build();
 
-        group.getMembers().add(member);
+        group.getGroupUsers().add(member);
 
         return groupRepository.save(group);
     }
