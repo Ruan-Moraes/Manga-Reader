@@ -27,6 +27,8 @@ import com.mangareader.application.group.usecase.GetGroupsUseCase;
 import com.mangareader.application.group.usecase.JoinGroupUseCase;
 import com.mangareader.application.group.usecase.LeaveGroupUseCase;
 import com.mangareader.application.group.usecase.RemoveWorkFromGroupUseCase;
+import com.mangareader.application.group.usecase.SupportGroupUseCase;
+import com.mangareader.application.group.usecase.UnsupportGroupUseCase;
 import com.mangareader.application.group.usecase.UpdateGroupUseCase;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.presentation.group.dto.AddWorkRequest;
@@ -63,6 +65,8 @@ public class GroupController {
     private final LeaveGroupUseCase leaveGroupUseCase;
     private final AddWorkToGroupUseCase addWorkToGroupUseCase;
     private final RemoveWorkFromGroupUseCase removeWorkFromGroupUseCase;
+    private final SupportGroupUseCase supportGroupUseCase;
+    private final UnsupportGroupUseCase unsupportGroupUseCase;
 
     @GetMapping
     @Operation(summary = "Listar grupos", description = "Retorna grupos de tradução com paginação")
@@ -205,6 +209,29 @@ public class GroupController {
         removeWorkFromGroupUseCase.execute(id, extractUserId(auth), titleId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/support")
+    @Operation(summary = "Apoiar grupo", description = "Adiciona o usuário logado como apoiador do grupo")
+    public ResponseEntity<ApiResponse<GroupResponse>> support(
+            @PathVariable UUID id,
+            Authentication auth
+    ) {
+        var group = supportGroupUseCase.execute(id, extractUserId(auth));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.created(GroupMapper.toResponse(group)));
+    }
+
+    @DeleteMapping("/{id}/support")
+    @Operation(summary = "Deixar de apoiar grupo", description = "Remove o apoio do usuário logado ao grupo")
+    public ResponseEntity<ApiResponse<GroupResponse>> unsupport(
+            @PathVariable UUID id,
+            Authentication auth
+    ) {
+        var group = unsupportGroupUseCase.execute(id, extractUserId(auth));
+
+        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
     }
 
     // TODO: Retirar essa lógica do controller

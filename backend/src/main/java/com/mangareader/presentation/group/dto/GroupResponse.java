@@ -23,6 +23,7 @@ public record GroupResponse(
         String platformJoinedAt,
         String status,
         List<GroupMemberResponse> members,
+        List<GroupSupporterResponse> supporters,
         List<String> genres,
         List<String> focusTags,
         double rating,
