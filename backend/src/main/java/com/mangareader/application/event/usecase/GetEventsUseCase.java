@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetEventsUseCase {
-
     private final EventRepositoryPort eventRepository;
 
     @Transactional(readOnly = true)

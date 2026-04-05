@@ -58,6 +58,7 @@ public class EventController {
     @Operation(summary = "Buscar evento por ID")
     public ResponseEntity<ApiResponse<EventResponse>> getById(@PathVariable UUID id) {
         var event = getEventByIdUseCase.execute(id);
+
         return ResponseEntity.ok(ApiResponse.success(EventMapper.toResponse(event)));
     }
 
