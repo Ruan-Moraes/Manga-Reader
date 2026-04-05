@@ -10,7 +10,6 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 import Pagination from '@shared/component/navigation/Pagination';
 
 import {
-    type Tag,
     useTagsFetch,
     useCategoryFilters,
     useFilterResults,
@@ -35,7 +34,11 @@ const CategoryFilters = () => {
         handlePageChange,
     } = useCategoryFilters();
 
-    const { data: results, isLoading, isError } = useFilterResults({
+    const {
+        data: results,
+        isLoading,
+        isError,
+    } = useFilterResults({
         genres: selectedTags,
         sort: selectedSort,
         status: selectedStatus,
@@ -204,7 +207,7 @@ const CategoryFilters = () => {
                             <Pagination
                                 page={page + 1}
                                 totalPages={results.totalPages}
-                                onPageChange={(p) => handlePageChange(p - 1)}
+                                onPageChange={p => handlePageChange(p - 1)}
                             />
                         </>
                     )}
