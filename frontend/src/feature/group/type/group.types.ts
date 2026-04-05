@@ -30,6 +30,13 @@ export type GroupMember = {
     recentPosts: UserPost[];
 };
 
+export type GroupSupporter = {
+    id: string;
+    name: string;
+    avatar: string;
+    joinedAt: string;
+};
+
 export type GroupWork = {
     id: string;
     title: string;
@@ -54,6 +61,7 @@ export type Group = {
     platformJoinedAt: string;
     status: GroupStatus;
     members: GroupMember[];
+    supporters: GroupSupporter[];
     genres: string[];
     focusTags: string[];
     rating: number;

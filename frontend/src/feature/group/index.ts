@@ -15,5 +15,6 @@ export type {
     GroupSummary,
     GroupStatus,
     GroupMember,
+    GroupSupporter,
     GroupWork,
 } from './type/group.types';

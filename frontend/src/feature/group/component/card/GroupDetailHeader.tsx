@@ -58,7 +58,7 @@ const GroupDetailHeader = ({
                     </a>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-4 text-sm mobile-lg:grid-cols-4">
+                <div className="grid grid-cols-2 gap-2 mt-4 text-sm mobile-lg:grid-cols-5">
                     <button
                         onClick={onOpenMembers}
                         className="flex gap-2 justify-center items-center p-2 border rounded-xs border-tertiary hover:border-quaternary transition-colors"
@@ -66,6 +66,9 @@ const GroupDetailHeader = ({
                         <IoPeopleOutline />
                         {group.members.length} membros
                     </button>
+                    <div className="p-2 text-center border rounded-xs border-tertiary">
+                        {group.supporters?.length ?? 0} apoiadores
+                    </div>
                     <div className="p-2 text-center border rounded-xs border-tertiary">
                         {group.totalTitles} obras
                     </div>

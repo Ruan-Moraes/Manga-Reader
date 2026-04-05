@@ -10,6 +10,8 @@ import {
     getGroupsByTitleId,
     getMemberById,
     getGroupStatusLabel,
+    supportGroup,
+    unsupportGroup,
 } from './groupService';
 
 const buildGroup = (overrides = {}) => ({
@@ -25,6 +27,7 @@ const buildGroup = (overrides = {}) => ({
     platformJoinedAt: '2020-01-01',
     status: 'active' as const,
     members: [],
+    supporters: [],
     genres: ['Action'],
     focusTags: ['shounen'],
     rating: 4.8,
@@ -164,6 +167,34 @@ describe('groupService', () => {
 
         it('deve retornar Hiato para hiatus', () => {
             expect(getGroupStatusLabel('hiatus')).toBe('Hiato');
+        });
+    });
+
+    describe('supportGroup', () => {
+        it('deve apoiar grupo com sucesso', async () => {
+            server.use(
+                http.post(`*${API_URLS.GROUPS}/group-1/support`, () =>
+                    HttpResponse.json({ data: buildGroup(), success: true }),
+                ),
+            );
+
+            const result = await supportGroup('group-1');
+
+            expect(result.id).toBe('group-1');
+        });
+    });
+
+    describe('unsupportGroup', () => {
+        it('deve deixar de apoiar grupo com sucesso', async () => {
+            server.use(
+                http.delete(`*${API_URLS.GROUPS}/group-1/support`, () =>
+                    HttpResponse.json({ data: buildGroup(), success: true }),
+                ),
+            );
+
+            const result = await unsupportGroup('group-1');
+
+            expect(result.id).toBe('group-1');
         });
     });
 });

@@ -53,6 +53,22 @@ export const getMemberById = async (memberId: string) => {
     return response.data.data;
 };
 
+export const supportGroup = async (groupId: string): Promise<Group> => {
+    const response = await api.post<ApiResponse<Group>>(
+        `${API_URLS.GROUPS}/${groupId}/support`,
+    );
+
+    return response.data.data;
+};
+
+export const unsupportGroup = async (groupId: string): Promise<Group> => {
+    const response = await api.delete<ApiResponse<Group>>(
+        `${API_URLS.GROUPS}/${groupId}/support`,
+    );
+
+    return response.data.data;
+};
+
 export const getGroupStatusLabel = (status: GroupStatus): string => {
     if (status === 'active') return 'Ativo';
     if (status === 'inactive') return 'Inativo';
