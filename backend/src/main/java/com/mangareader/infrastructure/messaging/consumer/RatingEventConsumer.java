@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class RatingEventConsumer {
-
     private final CacheManager cacheManager;
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_RATING_RECALCULATE)
@@ -35,8 +34,10 @@ public class RatingEventConsumer {
 
     private void evictCache(String cacheName, Object key) {
         var cache = cacheManager.getCache(cacheName);
+
         if (cache != null) {
             cache.evict(key);
+
             log.debug("Evicted cache [{}] key [{}]", cacheName, key);
         }
     }

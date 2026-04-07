@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class RateLimitFilter extends OncePerRequestFilter {
-
     private static final int REQUESTS_PER_MINUTE = 100;
     private static final int BURST_CAPACITY = 120;
 

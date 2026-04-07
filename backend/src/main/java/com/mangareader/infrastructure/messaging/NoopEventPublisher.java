@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 @Profile("test")
 @Slf4j
 public class NoopEventPublisher implements EventPublisherPort {
-
     @Override
     public void publish(String routingKey, Object event) {
         log.debug("Noop event [{}]: {}", routingKey, event);

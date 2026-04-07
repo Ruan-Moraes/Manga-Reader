@@ -11,7 +11,6 @@ import com.mangareader.application.shared.port.EmailPort;
 @Component
 @Profile("test")
 public class NoopEmailAdapter implements EmailPort {
-
     @Override
     public void send(String to, String subject, String body) {
         // No-op

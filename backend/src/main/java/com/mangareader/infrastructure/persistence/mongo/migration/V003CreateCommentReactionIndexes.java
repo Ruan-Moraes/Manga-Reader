@@ -11,7 +11,6 @@ import io.mongock.api.annotations.RollbackExecution;
 
 @ChangeUnit(id = "V003-create-comment-reaction-indexes", order = "003", author = "mangareader")
 public class V003CreateCommentReactionIndexes {
-
     private final MongoTemplate mongoTemplate;
 
     public V003CreateCommentReactionIndexes(MongoTemplate mongoTemplate) {
@@ -37,6 +36,7 @@ public class V003CreateCommentReactionIndexes {
     @RollbackExecution
     public void rollback() {
         var ops = mongoTemplate.indexOps("comment_reactions");
+
         ops.getIndexInfo().stream()
                 .filter(idx -> !idx.getName().equals("_id_"))
                 .forEach(idx -> ops.dropIndex(idx.getName()));

@@ -13,7 +13,6 @@ import com.mangareader.domain.category.entity.Tag;
  * Spring Data JPA Repository para Tags.
  */
 public interface TagJpaRepository extends JpaRepository<Tag, Long> {
-
     Optional<Tag> findByLabelIgnoreCase(String label);
 
     List<Tag> findByLabelContainingIgnoreCase(String query);

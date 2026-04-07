@@ -1,7 +1,3 @@
--- =============================================================================
--- V7: user_social_links + user_libraries + user_recommendations
--- =============================================================================
-
 CREATE TABLE user_social_links (
     id          UUID            NOT NULL PRIMARY KEY,
     user_id     UUID            NOT NULL,

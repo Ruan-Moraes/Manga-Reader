@@ -78,9 +78,11 @@ public class JwtTokenProvider implements TokenPort {
     public boolean isTokenValid(String token) {
         try {
             extractClaims(token);
+
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.debug("Token inválido: {}", e.getMessage());
+
             return false;
         }
     }
@@ -88,6 +90,7 @@ public class JwtTokenProvider implements TokenPort {
     @Override
     public String generatePasswordResetToken(UUID userId, String email) {
         long passwordResetExpiration = 15 * 60 * 1000L; // 15 minutos
+
         return Jwts.builder()
                 .subject(userId.toString())
                 .claim("email", email)

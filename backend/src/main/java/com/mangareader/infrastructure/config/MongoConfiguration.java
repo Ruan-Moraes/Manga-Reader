@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class MongoConfiguration extends AbstractMongoClientConfiguration {
-
     @Value("${spring.data.mongodb.uri}")
     private String mongoUri;
 
     @Override
     protected String getDatabaseName() {
         ConnectionString connectionString = new ConnectionString(mongoUri);
+
         return connectionString.getDatabase();
     }
 

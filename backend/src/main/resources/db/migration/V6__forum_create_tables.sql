@@ -1,7 +1,3 @@
--- =============================================================================
--- V6: forum_topics + forum_replies
--- =============================================================================
-
 CREATE TABLE forum_topics (
     id                  UUID            NOT NULL PRIMARY KEY,
     author_id           UUID            NOT NULL,

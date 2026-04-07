@@ -1,7 +1,3 @@
--- =============================================================================
--- V1: users — Tabela base referenciada por muitas outras
--- =============================================================================
-
 CREATE TABLE users (
     id                          UUID            NOT NULL PRIMARY KEY,
     name                        VARCHAR(100)    NOT NULL,

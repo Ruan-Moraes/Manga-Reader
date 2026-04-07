@@ -15,7 +15,6 @@ import com.mangareader.domain.store.entity.Store;
  * Spring Data JPA Repository para Stores.
  */
 public interface StoreJpaRepository extends JpaRepository<Store, UUID> {
-
     @Query("SELECT DISTINCT s FROM Store s JOIN s.titles t WHERE t.titleId = :titleId")
     List<Store> findByTitleId(@Param("titleId") String titleId);
 

@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepositoryPort {
-
     private final UserJpaRepository jpaRepository;
 
     @Override

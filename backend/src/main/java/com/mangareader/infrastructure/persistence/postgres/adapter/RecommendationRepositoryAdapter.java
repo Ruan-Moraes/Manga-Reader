@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class RecommendationRepositoryAdapter implements RecommendationRepositoryPort {
-
     private final RecommendationJpaRepository repository;
 
     @Override

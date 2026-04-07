@@ -12,7 +12,6 @@ import com.mangareader.domain.user.entity.ViewHistory;
  * Spring Data MongoDB repository para histórico de visualização.
  */
 public interface ViewHistoryMongoRepository extends MongoRepository<ViewHistory, String> {
-
     Page<ViewHistory> findByUserIdOrderByViewedAtDesc(String userId, Pageable pageable);
 
     Optional<ViewHistory> findByUserIdAndTitleId(String userId, String titleId);

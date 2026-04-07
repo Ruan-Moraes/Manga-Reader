@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class ForumRepositoryAdapter implements ForumRepositoryPort {
-
     private final ForumTopicJpaRepository repository;
 
     @Override

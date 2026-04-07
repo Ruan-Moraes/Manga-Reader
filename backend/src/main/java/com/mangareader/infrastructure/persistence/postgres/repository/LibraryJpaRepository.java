@@ -15,7 +15,6 @@ import com.mangareader.domain.library.valueobject.ReadingListType;
  * Spring Data JPA repository para a biblioteca do usuário.
  */
 public interface LibraryJpaRepository extends JpaRepository<SavedManga, UUID> {
-
     List<SavedManga> findByUserId(UUID userId);
 
     List<SavedManga> findByUserIdAndList(UUID userId, ReadingListType list);

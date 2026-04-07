@@ -13,7 +13,6 @@ import com.mangareader.domain.forum.valueobject.ForumCategory;
  * Repositório JPA para tópicos do fórum.
  */
 public interface ForumTopicJpaRepository extends JpaRepository<ForumTopic, UUID> {
-
     Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable);
 
     Page<ForumTopic> findByTitleContainingIgnoreCase(String query, Pageable pageable);

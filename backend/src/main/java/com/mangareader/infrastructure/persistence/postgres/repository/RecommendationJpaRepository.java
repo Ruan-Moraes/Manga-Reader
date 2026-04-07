@@ -12,7 +12,6 @@ import com.mangareader.domain.user.entity.UserRecommendation;
  * Spring Data JPA repository para recomendações de usuários.
  */
 public interface RecommendationJpaRepository extends JpaRepository<UserRecommendation, UUID> {
-
     List<UserRecommendation> findByUserIdOrderByPosition(UUID userId);
 
     Optional<UserRecommendation> findByUserIdAndTitleId(UUID userId, String titleId);

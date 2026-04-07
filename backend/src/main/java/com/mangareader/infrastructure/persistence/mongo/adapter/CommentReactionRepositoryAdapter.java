@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CommentReactionRepositoryAdapter implements CommentReactionRepositoryPort {
-
     private final CommentReactionMongoRepository repository;
 
     @Override

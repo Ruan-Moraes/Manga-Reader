@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class EventRepositoryAdapter implements EventRepositoryPort {
-
     private final EventJpaRepository repository;
 
     @Override

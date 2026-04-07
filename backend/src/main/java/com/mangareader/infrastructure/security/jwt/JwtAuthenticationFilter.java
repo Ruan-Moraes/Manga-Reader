@@ -40,8 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && tokenPort.isTokenValid(token)) {
             // Ignora tokens que não são access tokens (refresh, password_reset)
             String tokenType = tokenPort.extractType(token);
+
             if (tokenType != null) {
                 filterChain.doFilter(request, response);
+
                 return;
             }
 
@@ -51,7 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Extrai role real do claim JWT
             String role = tokenPort.extractRole(token);
+
             String authority = "ROLE_" + (role != null ? role.toUpperCase() : "USER");
+
             var authorities = List.of(new SimpleGrantedAuthority(authority));
 
             var authentication = new UsernamePasswordAuthenticationToken(

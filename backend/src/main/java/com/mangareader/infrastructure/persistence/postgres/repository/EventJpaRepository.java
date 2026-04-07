@@ -14,7 +14,6 @@ import com.mangareader.domain.event.valueobject.EventStatus;
  * Repositório JPA para eventos.
  */
 public interface EventJpaRepository extends JpaRepository<Event, UUID> {
-
     List<Event> findByStatus(EventStatus status);
 
     List<Event> findAllByOrderByStartDateDesc();

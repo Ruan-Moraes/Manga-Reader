@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class GroupRepositoryAdapter implements GroupRepositoryPort {
-
     private final GroupJpaRepository repository;
 
     @Override

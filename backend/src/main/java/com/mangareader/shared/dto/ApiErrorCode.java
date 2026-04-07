@@ -18,11 +18,8 @@ package com.mangareader.shared.dto;
  * </ul>
  */
 public final class ApiErrorCode {
-
     private ApiErrorCode() {
     }
-
-    // ── Auth ────────────────────────────────────────────────────────────────
 
     /** Credenciais inválidas (email ou senha incorretos). */
     public static final String AUTH_INVALID_CREDENTIALS = "AUTH_INVALID_CREDENTIALS";
@@ -45,15 +42,11 @@ public final class ApiErrorCode {
     /** E-mail já cadastrado. */
     public static final String AUTH_EMAIL_ALREADY_EXISTS = "AUTH_EMAIL_ALREADY_EXISTS";
 
-    // ── Resource ────────────────────────────────────────────────────────────
-
     /** Recurso não encontrado pelo identificador fornecido. */
     public static final String RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND";
 
     /** Tentativa de criar recurso que viola restrição de unicidade. */
     public static final String RESOURCE_DUPLICATE = "RESOURCE_DUPLICATE";
-
-    // ── Validation ──────────────────────────────────────────────────────────
 
     /** Dados de entrada inválidos (erros de campo). */
     public static final String VALIDATION_FIELD_ERROR = "VALIDATION_FIELD_ERROR";
@@ -64,17 +57,11 @@ public final class ApiErrorCode {
     /** Tipo de argumento inválido (ex.: UUID inválido na URL). */
     public static final String VALIDATION_TYPE_MISMATCH = "VALIDATION_TYPE_MISMATCH";
 
-    // ── Business ────────────────────────────────────────────────────────────
-
     /** Regra de negócio genérica violada. */
     public static final String BUSINESS_RULE_VIOLATION = "BUSINESS_RULE_VIOLATION";
 
-    // ── Rate Limit ──────────────────────────────────────────────────────────
-
     /** Limite de requisições excedido. */
     public static final String RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED";
-
-    // ── Internal ────────────────────────────────────────────────────────────
 
     /** Erro interno não tratado. */
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";

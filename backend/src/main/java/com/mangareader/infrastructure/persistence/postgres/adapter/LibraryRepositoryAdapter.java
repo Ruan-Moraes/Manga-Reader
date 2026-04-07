@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class LibraryRepositoryAdapter implements LibraryRepositoryPort {
-
     private final LibraryJpaRepository repository;
 
     @Override

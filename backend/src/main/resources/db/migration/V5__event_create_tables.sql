@@ -1,7 +1,3 @@
--- =============================================================================
--- V5: events + event_tickets + event_participants
--- =============================================================================
-
 CREATE TABLE events (
     id                      UUID            NOT NULL PRIMARY KEY,
     title                   VARCHAR(200)    NOT NULL,

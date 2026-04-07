@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Profile("dev | default")
 public class ConsoleEmailAdapter implements EmailPort {
-
     @Override
     public void send(String to, String subject, String body) {
         log.info("""

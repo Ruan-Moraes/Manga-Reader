@@ -27,6 +27,7 @@ public class CommentSeed implements EntitySeeder {
     public void seed() {
         if (commentRepository.count() > 0) {
             log.info("Comentários já existem — seed de comments ignorado.");
+
             return;
         }
 

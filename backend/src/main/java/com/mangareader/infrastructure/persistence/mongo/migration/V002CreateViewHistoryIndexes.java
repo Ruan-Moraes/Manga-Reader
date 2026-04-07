@@ -29,6 +29,7 @@ public class V002CreateViewHistoryIndexes {
         var uniqueCompound = new org.bson.Document();
         uniqueCompound.put("userId", 1);
         uniqueCompound.put("titleId", 1);
+
         ops.ensureIndex(new CompoundIndexDefinition(uniqueCompound)
                 .unique()
                 .named("idx_view_history_user_title"));
@@ -36,6 +37,7 @@ public class V002CreateViewHistoryIndexes {
         var sortCompound = new org.bson.Document();
         sortCompound.put("userId", 1);
         sortCompound.put("viewedAt", -1);
+
         ops.ensureIndex(new CompoundIndexDefinition(sortCompound)
                 .named("idx_view_history_user_viewedAt"));
     }
@@ -43,6 +45,7 @@ public class V002CreateViewHistoryIndexes {
     @RollbackExecution
     public void rollback() {
         var ops = mongoTemplate.indexOps("view_history");
+
         ops.getIndexInfo().stream()
                 .filter(idx -> !idx.getName().equals("_id_"))
                 .forEach(idx -> ops.dropIndex(idx.getName()));

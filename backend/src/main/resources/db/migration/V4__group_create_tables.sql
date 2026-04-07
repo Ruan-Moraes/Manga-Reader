@@ -1,7 +1,3 @@
--- =============================================================================
--- V4: groups + group_users + group_works
--- =============================================================================
-
 CREATE TABLE groups (
     id                  UUID            NOT NULL PRIMARY KEY,
     name                VARCHAR(100)    NOT NULL,

@@ -11,7 +11,6 @@ import com.mangareader.domain.user.entity.User;
  * Spring Data JPA Repository para Users.
  */
 public interface UserJpaRepository extends JpaRepository<User, UUID> {
-
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);

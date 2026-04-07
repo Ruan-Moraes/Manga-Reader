@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class SecurityExceptionHandler implements AuthenticationEntryPoint, AccessDeniedHandler {
-
     private final ObjectMapper objectMapper;
 
     /**
@@ -61,6 +60,7 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
         response.setCharacterEncoding("UTF-8");
 
         var body = new ApiErrorResponse(code, message, status.value());
+
         objectMapper.writeValue(response.getOutputStream(), body);
     }
 }

@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class ViewHistoryRepositoryAdapter implements ViewHistoryRepositoryPort {
-
     private final ViewHistoryMongoRepository repository;
 
     @Override

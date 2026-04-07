@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class StoreRepositoryAdapter implements StoreRepositoryPort {
-
     private final StoreJpaRepository jpaRepository;
 
     @Override

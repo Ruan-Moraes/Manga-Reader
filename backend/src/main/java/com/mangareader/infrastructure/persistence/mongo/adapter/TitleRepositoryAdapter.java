@@ -58,14 +58,17 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
         if (genres != null && !genres.isEmpty()) {
             conditions.add(Criteria.where("genres").all(genres));
         }
+
         if (status != null && !"ALL".equalsIgnoreCase(status)) {
             conditions.add(Criteria.where("status").is(status.toUpperCase()));
         }
+
         if (adult != null) {
             conditions.add(Criteria.where("adult").is(adult));
         }
 
         Query query = new Query();
+
         if (!conditions.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(conditions.toArray(new Criteria[0])));
         }
