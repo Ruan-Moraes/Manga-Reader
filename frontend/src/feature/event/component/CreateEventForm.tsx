@@ -1,4 +1,7 @@
+import BaseInput from '@shared/component/input/BaseInput';
+import BaseTextArea from '@shared/component/input/BaseTextArea';
 import BaseSelect from '@shared/component/input/BaseSelect';
+import BaseCheckbox from '@shared/component/input/BaseCheckbox';
 
 import { eventTypes } from '../service/eventService';
 import type { DraftEvent } from '../hook/useEventForm';
@@ -16,6 +19,16 @@ type CreateEventFormProps = {
     onCancel: () => void;
 };
 
+const EVENT_TYPE_OPTIONS = eventTypes.map(item => ({
+    value: item,
+    label: item,
+}));
+
+const PRIVACY_OPTIONS = [
+    { value: 'public', label: 'Público' },
+    { value: 'members', label: 'Restrito a membros' },
+];
+
 const CreateEventForm = ({
     draftEvent,
     updateDraftField,
@@ -29,140 +42,146 @@ const CreateEventForm = ({
             className="grid grid-cols-1 gap-3 lg:grid-cols-2"
             onSubmit={onSubmit}
         >
-            <input
-                required
+            <BaseInput
+                label="Título"
                 placeholder="Título do evento"
+                type="text"
                 value={draftEvent.title}
                 onChange={event =>
                     updateDraftField('title', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="title"
             />
             <BaseSelect
-                options={eventTypes.map(item => ({
-                    value: item,
-                    label: item,
-                }))}
+                label="Tipo"
+                options={EVENT_TYPE_OPTIONS}
                 value={draftEvent.type}
                 onChange={event =>
                     updateDraftField('type', event.target.value as EventType)
                 }
-                className="p-2 border rounded-xs border-tertiary bg-primary"
+                name="type"
             />
-            <input
-                required
+            <BaseInput
+                label="Data de início"
+                placeholder=""
                 type="datetime-local"
-                min={new Date().toISOString().slice(0, 16)}
                 value={draftEvent.startDate}
                 onChange={event =>
                     updateDraftField('startDate', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="startDate"
             />
-            <input
-                required
+            <BaseInput
+                label="Data de término"
+                placeholder=""
                 type="datetime-local"
-                min={
-                    draftEvent.startDate ||
-                    new Date().toISOString().slice(0, 16)
-                }
                 value={draftEvent.endDate}
                 onChange={event =>
                     updateDraftField('endDate', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="endDate"
             />
-            <input
-                required
+            <BaseInput
+                label="Local"
                 placeholder="Local físico ou link online"
+                type="text"
                 value={draftEvent.location}
                 onChange={event =>
                     updateDraftField('location', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="location"
             />
-            <input
-                placeholder="URL da imagem de capa (mock upload + crop)"
+            <BaseInput
+                label="Imagem de capa"
+                placeholder="URL da imagem de capa"
+                type="url"
                 value={draftEvent.image}
                 onChange={event =>
                     updateDraftField('image', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="image"
             />
-            <textarea
-                required
-                placeholder="Descrição do evento (rich text simplificado)"
-                value={draftEvent.description}
-                onChange={event =>
-                    updateDraftField('description', event.target.value)
-                }
-                className="p-2 border rounded-lg border-tertiary bg-primary lg:col-span-2"
-                rows={4}
-            />
-            <input
+            <div className="lg:col-span-2">
+                <BaseTextArea
+                    label="Descrição"
+                    placeholder="Descrição do evento"
+                    value={draftEvent.description}
+                    onChange={event =>
+                        updateDraftField('description', event.target.value)
+                    }
+                    name="description"
+                    rows={4}
+                />
+            </div>
+            <BaseInput
+                label="Preço/ingresso"
                 placeholder="Preço/ingresso"
+                type="text"
                 value={draftEvent.ticketPrice}
                 onChange={event =>
                     updateDraftField('ticketPrice', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="ticketPrice"
             />
-            <input
+            <BaseInput
+                label="Site oficial"
                 placeholder="Site oficial"
+                type="url"
                 value={draftEvent.website}
                 onChange={event =>
                     updateDraftField('website', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="website"
             />
-            <input
+            <BaseInput
+                label="Instagram / Twitter"
                 placeholder="Instagram / Twitter"
+                type="text"
                 value={draftEvent.instagram}
                 onChange={event =>
                     updateDraftField('instagram', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="instagram"
             />
-            <input
+            <BaseInput
+                label="Contato"
                 placeholder="Contato do organizador"
+                type="text"
                 value={draftEvent.contact}
                 onChange={event =>
                     updateDraftField('contact', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="contact"
             />
-            <input
+            <BaseInput
+                label="Máximo de participantes"
                 placeholder="Máximo de participantes"
+                type="text"
                 value={draftEvent.maxParticipants}
                 onChange={event =>
                     updateDraftField('maxParticipants', event.target.value)
                 }
-                className="p-2 border rounded-lg border-tertiary bg-primary"
+                name="maxParticipants"
             />
             <BaseSelect
-                options={[
-                    { value: 'public', label: 'Público' },
-                    { value: 'members', label: 'Restrito a membros' },
-                ]}
+                label="Privacidade"
+                options={PRIVACY_OPTIONS}
                 value={draftEvent.privacy}
                 onChange={event =>
                     updateDraftField('privacy', event.target.value)
                 }
-                className="p-2 border rounded-xs border-tertiary bg-primary"
+                name="privacy"
             />
-            <label className="flex items-center gap-2 text-sm lg:col-span-2">
-                <input
-                    type="checkbox"
+            <div className="lg:col-span-2">
+                <BaseCheckbox
+                    label="Exigir aprovação para participar"
                     checked={draftEvent.approvalRequired}
-                    onChange={event =>
-                        updateDraftField(
-                            'approvalRequired',
-                            event.target.checked,
-                        )
+                    onChange={checked =>
+                        updateDraftField('approvalRequired', checked)
                     }
+                    name="approvalRequired"
                 />
-                Exigir aprovação para participar
-            </label>
+            </div>
             <div className="flex flex-wrap gap-2 lg:col-span-2">
                 <button
                     type="submit"

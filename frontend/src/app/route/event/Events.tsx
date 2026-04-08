@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { FiCalendar, FiFilter, FiPlus, FiSearch, FiStar } from 'react-icons/fi';
+import { FiCalendar, FiFilter, FiPlus, FiStar } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import BaseSelect from '@shared/component/input/BaseSelect';
+import SearchInput from '@shared/component/input/SearchInput';
 import {
     useEvents,
     useEventForm,
@@ -91,15 +92,11 @@ const Events = () => {
                         ))}
                     </div>
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-                        <label className="relative">
-                            <FiSearch className="absolute -translate-y-1/2 left-3 top-1/2 text-tertiary" />
-                            <input
-                                value={query}
-                                onChange={event => setQuery(event.target.value)}
-                                placeholder="Buscar por nome ou local"
-                                className="w-full py-2 pl-10 pr-3 border rounded-lg border-tertiary bg-secondary"
-                            />
-                        </label>
+                        <SearchInput
+                            value={query}
+                            onChange={setQuery}
+                            placeholder="Buscar por nome ou local"
+                        />
                         <BaseSelect
                             options={[
                                 { value: 'all', label: 'Todos os tipos' },

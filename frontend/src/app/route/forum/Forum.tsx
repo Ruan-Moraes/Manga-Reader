@@ -1,9 +1,10 @@
-import { FiMessageSquare, FiSearch } from 'react-icons/fi';
+import { FiMessageSquare } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import BaseSelect from '@shared/component/input/BaseSelect';
+import SearchInput from '@shared/component/input/SearchInput';
 
 import {
     useForumPage,
@@ -50,16 +51,11 @@ const Forum = () => {
                 </section>
                 <ForumStats topics={allTopics} />
                 <section className="flex flex-col gap-3">
-                    <label className="relative">
-                        <FiSearch className="absolute -translate-y-1/2 left-3 top-1/2 text-tertiary" />
-                        <input
-                            type="text"
-                            placeholder="Buscar tópicos..."
-                            value={query}
-                            onChange={e => updateQuery(e.target.value)}
-                            className="w-full py-2 pl-10 pr-3 text-sm border rounded-lg border-tertiary bg-secondary"
-                        />
-                    </label>
+                    <SearchInput
+                        value={query}
+                        onChange={updateQuery}
+                        placeholder="Buscar tópicos..."
+                    />
                     <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => updateCategory('all')}

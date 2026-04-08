@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { FiSearch } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import BaseSelect from '@shared/component/input/BaseSelect';
+import SearchInput from '@shared/component/input/SearchInput';
 
 import { GroupCard, useGroups, type GroupStatus } from '@feature/group';
 
@@ -35,15 +35,11 @@ const Groups = () => {
                         popularidade.
                     </p>
 
-                    <label className="relative">
-                        <FiSearch className="absolute -translate-y-1/2 left-3 top-1/2 text-tertiary" />
-                        <input
-                            value={query}
-                            onChange={e => setQuery(e.target.value)}
-                            placeholder="Buscar por nome do grupo"
-                            className="w-full py-2 pl-10 pr-3 text-sm border rounded-lg border-tertiary bg-secondary"
-                        />
-                    </label>
+                    <SearchInput
+                        value={query}
+                        onChange={setQuery}
+                        placeholder="Buscar por nome do grupo"
+                    />
 
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
                         <BaseSelect

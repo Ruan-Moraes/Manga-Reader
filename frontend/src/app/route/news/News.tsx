@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { FiClock, FiFilter, FiBell, FiSearch } from 'react-icons/fi';
+import { FiClock, FiFilter, FiBell } from 'react-icons/fi';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
+import SearchInput from '@shared/component/input/SearchInput';
 
 import {
     useNews,
@@ -87,15 +88,11 @@ const News = () => {
                     </div>
 
                     <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_auto]">
-                        <label className="relative">
-                            <FiSearch className="absolute -translate-y-1/2 left-3 top-1/2 text-tertiary" />
-                            <input
-                                value={query}
-                                onChange={event => setQuery(event.target.value)}
-                                placeholder="Buscar por título, conteúdo, obra ou autor"
-                                className="w-full py-2 pl-10 pr-3 border rounded-lg border-tertiary bg-secondary"
-                            />
-                        </label>
+                        <SearchInput
+                            value={query}
+                            onChange={setQuery}
+                            placeholder="Buscar por título, conteúdo, obra ou autor"
+                        />
                         <button
                             type="button"
                             onClick={toggleMobileFilters}

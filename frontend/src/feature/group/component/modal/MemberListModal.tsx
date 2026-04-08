@@ -3,6 +3,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
+import SearchInput from '@shared/component/input/SearchInput';
 import { GroupMember, Group } from '../../type/group.types';
 import GroupMemberModal from './GroupMemberModal';
 
@@ -41,11 +42,11 @@ const MemberListModal = ({
                         </button>
                     </header>
 
-                    <input
+                    <SearchInput
                         value={search}
-                        onChange={event => setSearch(event.target.value)}
+                        onChange={setSearch}
                         placeholder="Buscar membro"
-                        className="px-3 py-2 mt-3 w-full text-sm rounded-xs border border-tertiary bg-primary"
+                        className="mt-3"
                     />
 
                     <div className="grid grid-cols-1 gap-2 mt-3 max-h-80 overflow-y-auto sm:grid-cols-2">
