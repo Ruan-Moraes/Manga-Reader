@@ -59,6 +59,11 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     }
 
     @Override
+    public Page<Event> searchByTitle(String query, Pageable pageable) {
+        return repository.findByTitleContainingIgnoreCase(query, pageable);
+    }
+
+    @Override
     public long count() {
         return repository.count();
     }

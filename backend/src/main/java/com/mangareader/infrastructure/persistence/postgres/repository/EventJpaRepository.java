@@ -19,4 +19,6 @@ public interface EventJpaRepository extends JpaRepository<Event, UUID> {
     List<Event> findAllByOrderByStartDateDesc();
 
     Page<Event> findByStatus(EventStatus status, Pageable pageable);
+
+    Page<Event> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }

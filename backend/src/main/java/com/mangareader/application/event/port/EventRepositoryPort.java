@@ -29,5 +29,7 @@ public interface EventRepositoryPort {
 
     Page<Event> findByStatus(EventStatus status, Pageable pageable);
 
+    Page<Event> searchByTitle(String query, Pageable pageable);
+
     long count();
 }

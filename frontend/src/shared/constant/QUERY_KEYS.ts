@@ -57,5 +57,11 @@ export enum QUERY_KEYS {
     // Admin
     ADMIN_USERS = 'adminUsers',
     ADMIN_USER_DETAIL = 'adminUserDetail',
+    ADMIN_TITLES = 'adminTitles',
+    ADMIN_TITLE_DETAIL = 'adminTitleDetail',
+    ADMIN_NEWS = 'adminNews',
+    ADMIN_NEWS_DETAIL = 'adminNewsDetail',
+    ADMIN_EVENTS = 'adminEvents',
+    ADMIN_EVENT_DETAIL = 'adminEventDetail',
     ADMIN_DASHBOARD_METRICS = 'adminDashboardMetrics',
 }

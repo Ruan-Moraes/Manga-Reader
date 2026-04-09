@@ -30,3 +30,123 @@ export type BanUserRequest = {
 export type ChangeRoleRequest = {
     role: string;
 };
+
+export type AdminTitle = {
+    id: string;
+    name: string;
+    type: string;
+    cover: string | null;
+    synopsis: string | null;
+    genres: string[];
+    status: string | null;
+    author: string | null;
+    artist: string | null;
+    publisher: string | null;
+    adult: boolean;
+    ratingAverage: number | null;
+    ratingCount: number | null;
+    chaptersCount: number;
+    createdAt: string;
+    updatedAt: string | null;
+};
+
+export type CreateTitleRequest = {
+    name: string;
+    type: string;
+    cover?: string;
+    synopsis?: string;
+    genres?: string[];
+    status?: string;
+    author?: string;
+    artist?: string;
+    publisher?: string;
+    adult: boolean;
+};
+
+export type UpdateTitleRequest = Partial<CreateTitleRequest>;
+
+export type AdminNews = {
+    id: string;
+    title: string;
+    subtitle: string | null;
+    excerpt: string | null;
+    coverImage: string | null;
+    category: string;
+    tags: string[];
+    authorName: string | null;
+    source: string | null;
+    readTime: number;
+    views: number;
+    isExclusive: boolean;
+    isFeatured: boolean;
+    publishedAt: string;
+    updatedAt: string | null;
+};
+
+export type CreateNewsRequest = {
+    title: string;
+    category: string;
+    subtitle?: string;
+    excerpt?: string;
+    content?: string[];
+    coverImage?: string;
+    tags?: string[];
+    authorName?: string;
+    authorAvatar?: string;
+    source?: string;
+    readTime: number;
+    isExclusive: boolean;
+    isFeatured: boolean;
+};
+
+export type UpdateNewsRequest = Partial<CreateNewsRequest>;
+
+export type AdminEvent = {
+    id: string;
+    title: string;
+    subtitle: string | null;
+    description: string | null;
+    image: string | null;
+    startDate: string;
+    endDate: string;
+    timezone: string | null;
+    timeline: string;
+    status: string;
+    type: string;
+    locationLabel: string | null;
+    locationCity: string | null;
+    locationIsOnline: boolean;
+    organizerName: string | null;
+    priceLabel: string | null;
+    participants: number;
+    interested: number;
+    isFeatured: boolean;
+    createdAt: string;
+    updatedAt: string | null;
+};
+
+export type CreateEventRequest = {
+    title: string;
+    startDate: string;
+    endDate: string;
+    timeline: string;
+    status: string;
+    type: string;
+    subtitle?: string;
+    description?: string;
+    image?: string;
+    timezone?: string;
+    locationLabel?: string;
+    locationAddress?: string;
+    locationCity?: string;
+    locationIsOnline: boolean;
+    locationMapLink?: string;
+    organizerName?: string;
+    organizerContact?: string;
+    priceLabel?: string;
+    isFeatured: boolean;
+    schedule?: string[];
+    specialGuests?: string[];
+};
+
+export type UpdateEventRequest = Partial<CreateEventRequest>;

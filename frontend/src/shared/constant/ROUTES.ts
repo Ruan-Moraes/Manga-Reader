@@ -12,4 +12,13 @@ export enum ROUTES {
     DASHBOARD = '/dashboard',
     DASHBOARD_USERS = '/dashboard/users',
     DASHBOARD_USER_DETAIL = '/dashboard/users/:userId',
+    DASHBOARD_TITLES = '/dashboard/titles',
+    DASHBOARD_TITLE_FORM = '/dashboard/titles/new',
+    DASHBOARD_TITLE_EDIT = '/dashboard/titles/:titleId/edit',
+    DASHBOARD_NEWS = '/dashboard/news',
+    DASHBOARD_NEWS_FORM = '/dashboard/news/new',
+    DASHBOARD_NEWS_EDIT = '/dashboard/news/:newsId/edit',
+    DASHBOARD_EVENTS = '/dashboard/events',
+    DASHBOARD_EVENT_FORM = '/dashboard/events/new',
+    DASHBOARD_EVENT_EDIT = '/dashboard/events/:eventId/edit',
 }
