@@ -8,4 +8,8 @@ export enum ROUTES {
 
     FORUM = '/forum',
     FORUM_TOPIC = '/forum/:topicId',
+
+    DASHBOARD = '/dashboard',
+    DASHBOARD_USERS = '/dashboard/users',
+    DASHBOARD_USER_DETAIL = '/dashboard/users/:userId',
 }

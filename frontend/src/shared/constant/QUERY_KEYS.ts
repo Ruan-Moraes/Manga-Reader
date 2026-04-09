@@ -53,4 +53,9 @@ export enum QUERY_KEYS {
     // Users
     USER_PROFILE = 'userProfile',
     AUTH_ME = 'authMe',
+
+    // Admin
+    ADMIN_USERS = 'adminUsers',
+    ADMIN_USER_DETAIL = 'adminUserDetail',
+    ADMIN_DASHBOARD_METRICS = 'adminDashboardMetrics',
 }

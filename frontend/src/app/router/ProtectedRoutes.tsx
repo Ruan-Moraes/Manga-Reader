@@ -4,9 +4,12 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { showErrorToast } from '@shared/service/util/toastService';
 
 import PublishWork from '@app/route/publish-work/PublishWork';
-import Dashboard from '@app/route/dashboard/Dashboard';
 import Library from '@app/route/library/Library';
 import MyReviews from '@app/route/review/MyReviews';
+import AdminLayout from '@app/layout/AdminLayout';
+import DashboardOverview from '@app/route/dashboard/DashboardOverview';
+import DashboardUsers from '@app/route/dashboard/DashboardUsers';
+import DashboardUserDetail from '@app/route/dashboard/DashboardUserDetail';
 
 import {
     getStoredSession,
@@ -95,10 +98,15 @@ const protectedRoutes = [
         element: (
             <AuthGuard>
                 <RoleGuard allowedRoles={['admin', 'poster']}>
-                    <Dashboard />
+                    <AdminLayout />
                 </RoleGuard>
             </AuthGuard>
         ),
+        children: [
+            { index: true, element: <DashboardOverview /> },
+            { path: 'users', element: <DashboardUsers /> },
+            { path: 'users/:userId', element: <DashboardUserDetail /> },
+        ],
     },
 ];
 

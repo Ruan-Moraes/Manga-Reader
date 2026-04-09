@@ -44,4 +44,7 @@ export const API_URLS = {
     ERROR_LOGS: `${BASE}/api/error-logs`,
 
     CONTACT_PUBLISH_WORK: `${BASE}/api/contact/publish-work`,
+
+    ADMIN_USERS: `${BASE}/api/admin/users`,
+    ADMIN_DASHBOARD_METRICS: `${BASE}/api/admin/dashboard/metrics`,
 } as const;
