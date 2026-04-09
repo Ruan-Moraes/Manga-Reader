@@ -66,4 +66,9 @@ public class NewsRepositoryAdapter implements NewsRepositoryPort {
     public Page<NewsItem> searchByTitle(String query, Pageable pageable) {
         return repository.findByTitleContainingIgnoreCase(query, pageable);
     }
+
+    @Override
+    public long count() {
+        return repository.count();
+    }
 }

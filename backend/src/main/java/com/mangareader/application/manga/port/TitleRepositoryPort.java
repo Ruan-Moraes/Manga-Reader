@@ -35,4 +35,6 @@ public interface TitleRepositoryPort {
     Page<Title> searchByName(String query, Pageable pageable);
 
     Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);
+
+    long count();
 }

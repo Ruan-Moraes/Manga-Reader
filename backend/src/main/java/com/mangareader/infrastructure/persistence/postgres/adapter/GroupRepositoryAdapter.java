@@ -90,4 +90,9 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     public Page<Group> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
+
+    @Override
+    public long count() {
+        return repository.count();
+    }
 }

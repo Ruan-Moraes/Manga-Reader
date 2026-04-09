@@ -57,4 +57,9 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     public Page<Event> findByStatus(EventStatus status, Pageable pageable) {
         return repository.findByStatus(status, pageable);
     }
+
+    @Override
+    public long count() {
+        return repository.count();
+    }
 }

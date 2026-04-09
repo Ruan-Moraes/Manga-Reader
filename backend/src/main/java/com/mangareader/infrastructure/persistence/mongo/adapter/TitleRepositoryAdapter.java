@@ -105,4 +105,9 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     public Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable) {
         return mongoRepository.findByGenresContainingAll(genres, pageable);
     }
+
+    @Override
+    public long count() {
+        return mongoRepository.count();
+    }
 }

@@ -36,4 +36,6 @@ public interface GroupRepositoryPort {
     Page<Group> findByTitleId(String titleId, Pageable pageable);
 
     Page<Group> findAll(Pageable pageable);
+
+    long count();
 }

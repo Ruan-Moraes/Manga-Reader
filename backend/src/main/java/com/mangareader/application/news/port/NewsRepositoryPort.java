@@ -31,4 +31,6 @@ public interface NewsRepositoryPort {
     Page<NewsItem> findByCategory(NewsCategory category, Pageable pageable);
 
     Page<NewsItem> searchByTitle(String query, Pageable pageable);
+
+    long count();
 }

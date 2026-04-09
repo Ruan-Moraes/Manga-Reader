@@ -28,4 +28,6 @@ public interface EventRepositoryPort {
     Page<Event> findAll(Pageable pageable);
 
     Page<Event> findByStatus(EventStatus status, Pageable pageable);
+
+    long count();
 }

@@ -1,0 +1,4 @@
+ALTER TABLE users ADD COLUMN banned        BOOLEAN         NOT NULL DEFAULT FALSE;
+ALTER TABLE users ADD COLUMN banned_at     TIMESTAMP;
+ALTER TABLE users ADD COLUMN banned_reason VARCHAR(500);
+ALTER TABLE users ADD COLUMN banned_until  TIMESTAMP;

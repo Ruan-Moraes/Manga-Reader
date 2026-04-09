@@ -1,6 +1,7 @@
 package com.mangareader.domain.user.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -138,6 +139,21 @@ class UserTest {
         assertEquals(1, user.getSocialLinks().size());
         assertEquals("github", user.getSocialLinks().getFirst().getPlatform());
         assertEquals(user, user.getSocialLinks().getFirst().getUser());
+    }
+
+    @Test
+    @DisplayName("Deve iniciar banned como false no builder padrão")
+    void shouldInitializeBannedAsFalse() {
+        User user = User.builder()
+                .name("User Test")
+                .email("user@test.com")
+                .passwordHash("hash")
+                .build();
+
+        assertFalse(user.isBanned());
+        assertNull(user.getBannedAt());
+        assertNull(user.getBannedReason());
+        assertNull(user.getBannedUntil());
     }
 
     @Test

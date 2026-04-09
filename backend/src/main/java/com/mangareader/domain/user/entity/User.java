@@ -89,6 +89,19 @@ public class User {
     @Builder.Default
     private List<UserRecommendation> recommendations = new ArrayList<>();
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean banned = false;
+
+    @Column(name = "banned_at")
+    private LocalDateTime bannedAt;
+
+    @Column(name = "banned_reason", length = 500)
+    private String bannedReason;
+
+    @Column(name = "banned_until")
+    private LocalDateTime bannedUntil;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
