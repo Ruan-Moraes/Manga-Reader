@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -56,9 +58,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/forum").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tags/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tags").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/tags").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/tags/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/tags/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/tags").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/tags/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/tags/**").hasRole("ADMIN")
+
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}").permitAll()

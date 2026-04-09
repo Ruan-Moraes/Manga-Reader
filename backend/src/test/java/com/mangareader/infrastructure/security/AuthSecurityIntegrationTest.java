@@ -291,22 +291,22 @@ class AuthSecurityIntegrationTest {
         }
 
         @Test
-        @DisplayName("GET /me sem token deve falhar (endpoint permitAll mas controller requer Authentication)")
+        @DisplayName("GET /me sem token deve retornar 401")
         void meWithoutTokenShouldFail() throws Exception {
-            // /api/auth/me matches /api/auth/** (permitAll), so Spring Security
-            // doesn't block the request. The controller receives null Authentication → 500.
+            // /api/auth/me matches /api/auth/** (permitAll), mas o controller
+            // recebe null Authentication → SecurityExceptionHandler retorna 401.
             mockMvc.perform(get(ME_URL))
-                    .andExpect(status().isInternalServerError());
+                    .andExpect(status().isUnauthorized());
         }
 
         @Test
-        @DisplayName("GET /me com token malformado deve falhar (token invalido, sem auth context)")
+        @DisplayName("GET /me com token malformado deve retornar 401")
         void meWithMalformedTokenShouldFail() throws Exception {
-            // Malformed token is ignored by JwtAuthenticationFilter → no auth context.
-            // Controller receives null Authentication → 500.
+            // Token malformado é ignorado pelo JwtAuthenticationFilter → sem auth context.
+            // SecurityExceptionHandler retorna 401.
             mockMvc.perform(get(ME_URL)
                             .header("Authorization", "Bearer token.malformado.xyz"))
-                    .andExpect(status().isInternalServerError());
+                    .andExpect(status().isUnauthorized());
         }
     }
 
