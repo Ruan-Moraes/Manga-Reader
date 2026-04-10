@@ -10,6 +10,12 @@ import AdminLayout from '@app/layout/AdminLayout';
 import DashboardOverview from '@app/route/dashboard/DashboardOverview';
 import DashboardUsers from '@app/route/dashboard/DashboardUsers';
 import DashboardUserDetail from '@app/route/dashboard/DashboardUserDetail';
+import DashboardTitles from '@app/route/dashboard/DashboardTitles';
+import DashboardTitleForm from '@app/route/dashboard/DashboardTitleForm';
+import DashboardNews from '@app/route/dashboard/DashboardNews';
+import DashboardNewsForm from '@app/route/dashboard/DashboardNewsForm';
+import DashboardEvents from '@app/route/dashboard/DashboardEvents';
+import DashboardEventForm from '@app/route/dashboard/DashboardEventForm';
 
 import {
     getStoredSession,
@@ -106,6 +112,15 @@ const protectedRoutes = [
             { index: true, element: <DashboardOverview /> },
             { path: 'users', element: <DashboardUsers /> },
             { path: 'users/:userId', element: <DashboardUserDetail /> },
+            { path: 'titles', element: <DashboardTitles /> },
+            { path: 'titles/new', element: <DashboardTitleForm /> },
+            { path: 'titles/:titleId/edit', element: <DashboardTitleForm /> },
+            { path: 'news', element: <DashboardNews /> },
+            { path: 'news/new', element: <DashboardNewsForm /> },
+            { path: 'news/:newsId/edit', element: <DashboardNewsForm /> },
+            { path: 'events', element: <DashboardEvents /> },
+            { path: 'events/new', element: <DashboardEventForm /> },
+            { path: 'events/:eventId/edit', element: <DashboardEventForm /> },
         ],
     },
 ];
