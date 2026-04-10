@@ -49,5 +49,7 @@ export const API_URLS = {
     ADMIN_TITLES: `${BASE}/api/admin/titles`,
     ADMIN_NEWS: `${BASE}/api/admin/news`,
     ADMIN_EVENTS: `${BASE}/api/admin/events`,
+    ADMIN_GROUPS: `${BASE}/api/admin/groups`,
     ADMIN_DASHBOARD_METRICS: `${BASE}/api/admin/dashboard/metrics`,
+    ADMIN_DASHBOARD_CONTENT_METRICS: `${BASE}/api/admin/dashboard/content-metrics`,
 } as const;

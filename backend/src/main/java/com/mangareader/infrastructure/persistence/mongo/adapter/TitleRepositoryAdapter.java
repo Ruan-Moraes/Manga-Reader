@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -109,5 +110,19 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     @Override
     public long count() {
         return mongoRepository.count();
+    }
+
+    @Override
+    public long countByStatus(String status) {
+        Query query = new Query(Criteria.where("status").is(status));
+        return mongoTemplate.count(query, Title.class);
+    }
+
+    @Override
+    public List<Title> findTopByRankingScore(int limit) {
+        Query query = new Query()
+                .with(Sort.by(Sort.Direction.DESC, "rankingScore"))
+                .limit(limit);
+        return mongoTemplate.find(query, Title.class);
     }
 }

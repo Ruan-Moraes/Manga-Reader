@@ -150,3 +150,66 @@ export type CreateEventRequest = {
 };
 
 export type UpdateEventRequest = Partial<CreateEventRequest>;
+
+export type GroupMember = {
+    userId: string;
+    userName: string;
+    userEmail: string;
+    type: string | null;
+    role: string | null;
+    joinedAt: string | null;
+};
+
+export type AdminGroup = {
+    id: string;
+    name: string;
+    username: string;
+    logo: string | null;
+    description: string | null;
+    status: string;
+    totalTitles: number;
+    membersCount: number;
+    rating: number;
+    popularity: number;
+    platformJoinedAt: string | null;
+    members: GroupMember[];
+};
+
+export type ChangeGroupMemberRoleRequest = {
+    role: string;
+};
+
+export type TopTitle = {
+    id: string;
+    name: string;
+    cover: string | null;
+    type: string | null;
+    rankingScore: number | null;
+    ratingAverage: number | null;
+    ratingCount: number | null;
+};
+
+export type ContentMetrics = {
+    titlesByStatus: Record<string, number>;
+    eventsByStatus: Record<string, number>;
+    topTitles: TopTitle[];
+};
+
+    id: string;
+    userId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    paymentMethod: string | null;
+    description: string | null;
+    referenceType: string | null;
+    referenceId: string | null;
+    paidAt: string | null;
+    createdAt: string;
+    updatedAt: string | null;
+};
+
+    status: string;
+};
+
+};

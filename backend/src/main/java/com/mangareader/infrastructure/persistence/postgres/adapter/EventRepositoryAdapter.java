@@ -67,4 +67,9 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     public long count() {
         return repository.count();
     }
+
+    @Override
+    public long countByStatus(EventStatus status) {
+        return repository.countByStatus(status);
+    }
 }

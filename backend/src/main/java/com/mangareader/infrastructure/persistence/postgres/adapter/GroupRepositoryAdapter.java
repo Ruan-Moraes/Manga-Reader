@@ -92,6 +92,11 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public Page<Group> searchByName(String query, Pageable pageable) {
+        return repository.findByNameContainingIgnoreCase(query, pageable);
+    }
+
+    @Override
     public long count() {
         return repository.count();
     }

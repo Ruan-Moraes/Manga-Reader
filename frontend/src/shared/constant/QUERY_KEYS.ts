@@ -63,5 +63,8 @@ export enum QUERY_KEYS {
     ADMIN_NEWS_DETAIL = 'adminNewsDetail',
     ADMIN_EVENTS = 'adminEvents',
     ADMIN_EVENT_DETAIL = 'adminEventDetail',
+    ADMIN_GROUPS = 'adminGroups',
+    ADMIN_GROUP_DETAIL = 'adminGroupDetail',
     ADMIN_DASHBOARD_METRICS = 'adminDashboardMetrics',
+    ADMIN_DASHBOARD_CONTENT_METRICS = 'adminDashboardContentMetrics',
 }

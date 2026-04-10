@@ -13,6 +13,11 @@ export type {
     AdminEvent,
     CreateEventRequest,
     UpdateEventRequest,
+    AdminGroup,
+    GroupMember,
+    ChangeGroupMemberRoleRequest,
+    TopTitle,
+    ContentMetrics,
 } from './type/admin.types';
 
 // Hooks — Users
@@ -33,6 +38,14 @@ export { default as useAdminNewsActions } from './hook/useAdminNewsActions';
 export { default as useAdminEvents } from './hook/useAdminEvents';
 export { default as useAdminEventActions } from './hook/useAdminEventActions';
 
+// Hooks — Groups
+export { default as useAdminGroups } from './hook/useAdminGroups';
+export { default as useAdminGroupDetail } from './hook/useAdminGroupDetail';
+export { default as useAdminGroupActions } from './hook/useAdminGroupActions';
+
+// Hooks — Dashboard Content Metrics
+export { default as useContentMetrics } from './hook/useContentMetrics';
+
 // Components
 export { default as AdminDashboardOverview } from './component/AdminDashboardOverview';
 export { default as AdminUserList } from './component/AdminUserList';
@@ -40,5 +53,10 @@ export { default as AdminUserDetail } from './component/AdminUserDetail';
 export { default as AdminTitleList } from './component/AdminTitleList';
 export { default as AdminNewsList } from './component/AdminNewsList';
 export { default as AdminEventList } from './component/AdminEventList';
+export { default as AdminGroupList } from './component/AdminGroupList';
+export { default as AdminGroupDetail } from './component/AdminGroupDetail';
+export { default as MetricsCard } from './component/MetricsCard';
+export { default as ContentMetricsPanel } from './component/ContentMetricsPanel';
 export { default as BanUserModal } from './component/modal/BanUserModal';
 export { default as ChangeRoleModal } from './component/modal/ChangeRoleModal';
+export { default as ChangeGroupRoleModal } from './component/modal/ChangeGroupRoleModal';

@@ -1,8 +1,15 @@
 import AdminDashboardOverview from '@feature/admin/component/AdminDashboardOverview';
+import ContentMetricsPanel from '@feature/admin/component/ContentMetricsPanel';
+import useContentMetrics from '@feature/admin/hook/useContentMetrics';
 import useDashboardMetrics from '@feature/admin/hook/useDashboardMetrics';
 
 const DashboardOverview = () => {
     const { metrics, isLoading, isError, refetch } = useDashboardMetrics();
+    const {
+        metrics: contentMetrics,
+        isLoading: isLoadingContent,
+        isError: isErrorContent,
+    } = useContentMetrics();
 
     if (isLoading) {
         return (
@@ -40,6 +47,20 @@ const DashboardOverview = () => {
         <div className="flex flex-col gap-4">
             <h1 className="text-lg font-bold">Visão Geral</h1>
             <AdminDashboardOverview metrics={metrics} />
+
+            <h2 className="mt-2 text-base font-bold">Conteúdo</h2>
+            {isLoadingContent ? (
+                <div className="grid gap-4 lg:grid-cols-2">
+                    <div className="h-48 rounded-xs bg-tertiary/30 animate-pulse" />
+                    <div className="h-48 rounded-xs bg-tertiary/30 animate-pulse" />
+                </div>
+            ) : isErrorContent || !contentMetrics ? (
+                <p className="text-sm text-tertiary">
+                    Erro ao carregar métricas de conteúdo.
+                </p>
+            ) : (
+                <ContentMetricsPanel metrics={contentMetrics} />
+            )}
         </div>
     );
 };

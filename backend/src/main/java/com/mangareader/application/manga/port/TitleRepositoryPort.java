@@ -37,4 +37,8 @@ public interface TitleRepositoryPort {
     Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);
 
     long count();
+
+    long countByStatus(String status);
+
+    List<Title> findTopByRankingScore(int limit);
 }

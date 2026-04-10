@@ -16,6 +16,8 @@ import DashboardNews from '@app/route/dashboard/DashboardNews';
 import DashboardNewsForm from '@app/route/dashboard/DashboardNewsForm';
 import DashboardEvents from '@app/route/dashboard/DashboardEvents';
 import DashboardEventForm from '@app/route/dashboard/DashboardEventForm';
+import DashboardGroups from '@app/route/dashboard/DashboardGroups';
+import DashboardGroupDetail from '@app/route/dashboard/DashboardGroupDetail';
 
 import {
     getStoredSession,
@@ -121,6 +123,8 @@ const protectedRoutes = [
             { path: 'events', element: <DashboardEvents /> },
             { path: 'events/new', element: <DashboardEventForm /> },
             { path: 'events/:eventId/edit', element: <DashboardEventForm /> },
+            { path: 'groups', element: <DashboardGroups /> },
+            { path: 'groups/:groupId', element: <DashboardGroupDetail /> },
         ],
     },
 ];
