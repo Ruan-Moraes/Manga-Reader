@@ -67,4 +67,7 @@ export enum QUERY_KEYS {
     ADMIN_GROUP_DETAIL = 'adminGroupDetail',
     ADMIN_DASHBOARD_METRICS = 'adminDashboardMetrics',
     ADMIN_DASHBOARD_CONTENT_METRICS = 'adminDashboardContentMetrics',
+    ADMIN_PAYMENTS = 'adminPayments',
+    ADMIN_PAYMENT_DETAIL = 'adminPaymentDetail',
+    ADMIN_FINANCIAL_SUMMARY = 'adminFinancialSummary',
 }

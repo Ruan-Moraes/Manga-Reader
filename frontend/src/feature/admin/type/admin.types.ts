@@ -195,6 +195,7 @@ export type ContentMetrics = {
     topTitles: TopTitle[];
 };
 
+export type AdminPayment = {
     id: string;
     userId: string;
     amount: number;
@@ -209,7 +210,14 @@ export type ContentMetrics = {
     updatedAt: string | null;
 };
 
+export type UpdatePaymentStatusRequest = {
     status: string;
 };
 
+export type FinancialSummary = {
+    totalPayments: number;
+    totalRevenue: number;
+    pendingRevenue: number;
+    countsByStatus: Record<string, number>;
+    amountsByStatus: Record<string, number>;
 };

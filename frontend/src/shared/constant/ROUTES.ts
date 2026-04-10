@@ -23,4 +23,5 @@ export enum ROUTES {
     DASHBOARD_EVENT_EDIT = '/dashboard/events/:eventId/edit',
     DASHBOARD_GROUPS = '/dashboard/groups',
     DASHBOARD_GROUP_DETAIL = '/dashboard/groups/:groupId',
+    DASHBOARD_FINANCIAL = '/dashboard/financial',
 }
