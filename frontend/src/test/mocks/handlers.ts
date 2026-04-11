@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw';
 
+import { buildAuthResponse } from '@/test/factories';
+
 const wrap = <T>(data: T) => ({ data, success: true });
 
 const wrapPage = <T>(content: T[], page = 0, size = 20) => ({
@@ -14,7 +16,9 @@ const wrapPage = <T>(content: T[], page = 0, size = 20) => ({
     success: true,
 });
 
-export const mockAuthResponse = {
+// Pin valores conhecidos por testes existentes (useAuth.test, etc).
+// Internamente delega ao factory para garantir shape correto.
+export const mockAuthResponse = buildAuthResponse({
     accessToken: 'fake-access-token',
     refreshToken: 'fake-refresh-token',
     userId: 'user-1',
@@ -22,7 +26,7 @@ export const mockAuthResponse = {
     email: 'test@example.com',
     role: 'MEMBER',
     photoUrl: 'https://example.com/photo.jpg',
-};
+});
 
 export const mockTitle = {
     id: 'title-1',
