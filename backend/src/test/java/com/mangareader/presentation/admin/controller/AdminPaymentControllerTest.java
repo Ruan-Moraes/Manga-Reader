@@ -29,6 +29,7 @@ import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.payment.usecase.admin.GetFinancialSummaryUseCase;
 import com.mangareader.application.payment.usecase.admin.GetFinancialSummaryUseCase.FinancialSummary;
 import com.mangareader.application.payment.usecase.admin.GetPaymentDetailsUseCase;
+import com.mangareader.application.payment.usecase.admin.GetRevenueTimeSeriesUseCase;
 import com.mangareader.application.payment.usecase.admin.ListPaymentsUseCase;
 import com.mangareader.application.payment.usecase.admin.UpdatePaymentStatusUseCase;
 import com.mangareader.domain.payment.entity.Payment;
@@ -56,6 +57,9 @@ class AdminPaymentControllerTest {
 
     @MockitoBean
     private GetFinancialSummaryUseCase getFinancialSummaryUseCase;
+
+    @MockitoBean
+    private GetRevenueTimeSeriesUseCase getRevenueTimeSeriesUseCase;
 
     private final UUID PAYMENT_ID = UUID.fromString("00000000-0000-0000-0000-000000000010");
     private final UUID USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000020");
