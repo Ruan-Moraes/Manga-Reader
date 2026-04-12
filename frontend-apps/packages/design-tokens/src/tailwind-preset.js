@@ -1,10 +1,7 @@
 import plugin from 'tailwindcss/plugin';
+
 import { colors, screens, boxShadow, textShadow, animation, keyframes } from './index.js';
 
-/**
- * Tailwind CSS preset with Manga Reader brand tokens.
- * Usage: import preset in tailwind.config.js and add to `presets: [mangaReaderPreset]`.
- */
 const mangaReaderPreset = {
     theme: {
         extend: {

@@ -1,7 +1,3 @@
-/**
- * Manga Reader brand color tokens.
- * Single source of truth for all frontend projects.
- */
 export const colors = {
     primary: {
         default: '#161616',
