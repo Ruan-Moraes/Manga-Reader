@@ -16,7 +16,7 @@ export default function LanguageSwitcher() {
                 <button
                     key={code}
                     onClick={() => i18n.changeLanguage(code)}
-                    className={`rounded px-2 py-1 text-xs font-semibold transition-colors ${
+                    className={`rounded px-2 py-1 text-xs font-semibold transition-colors cursor-pointer ${
                         currentLang === code
                             ? 'bg-accent text-primary'
                             : 'text-tertiary hover:text-white'
