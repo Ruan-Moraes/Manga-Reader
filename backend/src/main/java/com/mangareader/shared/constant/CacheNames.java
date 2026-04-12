@@ -13,4 +13,6 @@ public final class CacheNames {
     public static final String TITLE = "title";
     public static final String TAG = "tag";
     public static final String RATING_AVERAGE = "rating-average";
+    public static final String PUBLIC_STATS = "public-stats";
+    public static final String SUBSCRIPTION_PLANS = "subscription-plans";
 }

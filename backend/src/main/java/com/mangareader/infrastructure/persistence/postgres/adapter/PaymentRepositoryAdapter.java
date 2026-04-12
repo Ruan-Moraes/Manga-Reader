@@ -1,6 +1,8 @@
 package com.mangareader.infrastructure.persistence.postgres.adapter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,5 +64,10 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     public BigDecimal sumAmountByStatus(PaymentStatus status) {
         BigDecimal sum = repository.sumAmountByStatus(status);
         return sum != null ? sum : BigDecimal.ZERO;
+    }
+
+    @Override
+    public List<Object[]> getMonthlyRevenue(LocalDateTime since) {
+        return repository.getMonthlyRevenue(since);
     }
 }

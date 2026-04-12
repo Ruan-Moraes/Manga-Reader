@@ -1,6 +1,8 @@
 package com.mangareader.infrastructure.persistence.postgres.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -22,4 +24,10 @@ public interface PaymentJpaRepository extends JpaRepository<Payment, UUID> {
 
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = :status")
     BigDecimal sumAmountByStatus(PaymentStatus status);
+
+    @Query("SELECT YEAR(p.paidAt), MONTH(p.paidAt), COALESCE(SUM(p.amount), 0), COUNT(p) "
+            + "FROM Payment p WHERE p.status = 'COMPLETED' AND p.paidAt >= :since "
+            + "GROUP BY YEAR(p.paidAt), MONTH(p.paidAt) "
+            + "ORDER BY YEAR(p.paidAt), MONTH(p.paidAt)")
+    List<Object[]> getMonthlyRevenue(LocalDateTime since);
 }

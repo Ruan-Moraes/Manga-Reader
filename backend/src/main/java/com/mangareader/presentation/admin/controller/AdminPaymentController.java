@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.payment.usecase.admin.GetFinancialSummaryUseCase;
 import com.mangareader.application.payment.usecase.admin.GetPaymentDetailsUseCase;
+import com.mangareader.application.payment.usecase.admin.GetRevenueTimeSeriesUseCase;
 import com.mangareader.application.payment.usecase.admin.ListPaymentsUseCase;
 import com.mangareader.application.payment.usecase.admin.UpdatePaymentStatusUseCase;
 import com.mangareader.domain.payment.valueobject.PaymentStatus;
 import com.mangareader.presentation.admin.dto.AdminPaymentResponse;
 import com.mangareader.presentation.admin.dto.FinancialSummaryResponse;
+import com.mangareader.presentation.admin.dto.RevenueTimeSeriesResponse;
 import com.mangareader.presentation.admin.dto.UpdatePaymentStatusRequest;
 import com.mangareader.presentation.admin.mapper.AdminPaymentMapper;
 import com.mangareader.shared.dto.ApiResponse;
@@ -41,6 +43,7 @@ public class AdminPaymentController {
     private final GetPaymentDetailsUseCase getPaymentDetailsUseCase;
     private final UpdatePaymentStatusUseCase updatePaymentStatusUseCase;
     private final GetFinancialSummaryUseCase getFinancialSummaryUseCase;
+    private final GetRevenueTimeSeriesUseCase getRevenueTimeSeriesUseCase;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<AdminPaymentResponse>>> listPayments(
@@ -86,5 +89,20 @@ public class AdminPaymentController {
         var payment = updatePaymentStatusUseCase.execute(id, newStatus);
 
         return ResponseEntity.ok(ApiResponse.success(AdminPaymentMapper.toResponse(payment)));
+    }
+
+    @GetMapping("/revenue-series")
+    public ResponseEntity<ApiResponse<RevenueTimeSeriesResponse>> getRevenueSeries(
+            @RequestParam(defaultValue = "12") int months
+    ) {
+        var series = getRevenueTimeSeriesUseCase.execute(Math.min(months, 24));
+
+        var entries = series.entries().stream()
+                .map(e -> new RevenueTimeSeriesResponse.MonthlyRevenueEntry(
+                        e.yearMonth(), e.revenue(), e.count(), e.growthPercent()))
+                .toList();
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new RevenueTimeSeriesResponse(entries, series.totalRevenue(), series.totalTransactions())));
     }
 }

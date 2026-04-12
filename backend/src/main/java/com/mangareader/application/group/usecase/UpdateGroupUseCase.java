@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     public record UpdateGroupInput(
@@ -45,15 +44,19 @@ public class UpdateGroupUseCase {
         if (input.name() != null) {
             group.setName(input.name());
         }
+
         if (input.description() != null) {
             group.setDescription(input.description());
         }
+
         if (input.logo() != null) {
             group.setLogo(input.logo());
         }
+
         if (input.banner() != null) {
             group.setBanner(input.banner());
         }
+
         if (input.website() != null) {
             group.setWebsite(input.website());
         }
@@ -66,6 +69,7 @@ public class UpdateGroupUseCase {
                 .anyMatch(gu -> gu.getType() == GroupUserType.MEMBER
                         && gu.getUser().getId().equals(userId)
                         && gu.getRole() == GroupRole.LIDER);
+
         if (!isLeader) {
             throw new BusinessRuleException("Somente o líder pode editar o grupo", 403);
         }

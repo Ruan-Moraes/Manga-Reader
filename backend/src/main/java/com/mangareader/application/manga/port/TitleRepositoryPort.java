@@ -40,5 +40,11 @@ public interface TitleRepositoryPort {
 
     long countByStatus(String status);
 
+    /**
+     * Conta o total de capítulos somando o tamanho do array {@code chapters}
+     * de todos os documentos da collection {@code titles} (MongoDB aggregate).
+     */
+    long countTotalChapters();
+
     List<Title> findTopByRankingScore(int limit);
 }
