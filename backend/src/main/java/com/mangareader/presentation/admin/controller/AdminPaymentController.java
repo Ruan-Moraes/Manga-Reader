@@ -38,7 +38,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/payments")
 @RequiredArgsConstructor
 public class AdminPaymentController {
-
     private final ListPaymentsUseCase listPaymentsUseCase;
     private final GetPaymentDetailsUseCase getPaymentDetailsUseCase;
     private final UpdatePaymentStatusUseCase updatePaymentStatusUseCase;
@@ -54,6 +53,7 @@ public class AdminPaymentController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
         PaymentStatus statusFilter = (status != null && !status.isBlank())
@@ -86,6 +86,7 @@ public class AdminPaymentController {
             @Valid @RequestBody UpdatePaymentStatusRequest request
     ) {
         PaymentStatus newStatus = PaymentStatus.valueOf(request.status().toUpperCase());
+
         var payment = updatePaymentStatusUseCase.execute(id, newStatus);
 
         return ResponseEntity.ok(ApiResponse.success(AdminPaymentMapper.toResponse(payment)));

@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class GiftCodeRepositoryAdapter implements GiftCodeRepositoryPort {
-
     private final GiftCodeJpaRepository repository;
 
     @Override

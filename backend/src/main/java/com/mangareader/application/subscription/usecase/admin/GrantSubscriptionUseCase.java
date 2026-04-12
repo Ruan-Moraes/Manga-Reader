@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GrantSubscriptionUseCase {
-
     private final SubscriptionRepositoryPort subscriptionRepository;
     private final SubscriptionPlanRepositoryPort planRepository;
     private final SubscriptionAuditPort auditPort;
@@ -45,7 +44,9 @@ public class GrantSubscriptionUseCase {
                 .build();
 
         var saved = subscriptionRepository.save(subscription);
+
         auditPort.log(saved.getId(), userId, "GRANTED", null, "Admin granted subscription with plan " + plan.getPeriod());
+
         return saved;
     }
 

@@ -44,7 +44,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
-
     private final EventRepositoryPort eventRepository;
     private final CreateEventUseCase createEventUseCase;
     private final UpdateEventUseCase updateEventUseCase;
@@ -59,6 +58,7 @@ public class AdminEventController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
         var result = (search != null && !search.isBlank())
@@ -158,6 +158,7 @@ public class AdminEventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
         deleteEventUseCase.execute(id);
+
         return ResponseEntity.noContent().build();
     }
 }

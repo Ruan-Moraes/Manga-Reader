@@ -36,7 +36,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/groups")
 @RequiredArgsConstructor
 public class AdminGroupController {
-
     private final AdminListGroupsUseCase listGroupsUseCase;
     private final AdminGetGroupDetailsUseCase getGroupDetailsUseCase;
     private final AdminChangeGroupMemberRoleUseCase changeGroupMemberRoleUseCase;
@@ -51,6 +50,7 @@ public class AdminGroupController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
         var result = listGroupsUseCase.execute(search, pageable);
@@ -73,6 +73,7 @@ public class AdminGroupController {
             @Valid @RequestBody ChangeGroupMemberRoleRequest request
     ) {
         GroupRole newRole = GroupRole.valueOf(request.role().toUpperCase());
+
         var group = changeGroupMemberRoleUseCase.execute(groupId, userId, newRole);
 
         return ResponseEntity.ok(ApiResponse.success(AdminGroupMapper.toDetailResponse(group)));

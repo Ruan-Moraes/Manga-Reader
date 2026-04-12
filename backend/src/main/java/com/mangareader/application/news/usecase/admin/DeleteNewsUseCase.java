@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeleteNewsUseCase {
-
     private final NewsRepositoryPort newsRepository;
 
     public void execute(String newsId) {

@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionRepositoryAdapter implements SubscriptionRepositoryPort {
-
     private final SubscriptionJpaRepository repository;
 
     @Override
@@ -64,9 +63,11 @@ public class SubscriptionRepositoryAdapter implements SubscriptionRepositoryPort
     @Override
     public Map<SubscriptionStatus, Long> countByStatus() {
         Map<SubscriptionStatus, Long> result = new EnumMap<>(SubscriptionStatus.class);
+
         for (Object[] row : repository.countGroupByStatus()) {
             result.put((SubscriptionStatus) row[0], (Long) row[1]);
         }
+
         return result;
     }
 

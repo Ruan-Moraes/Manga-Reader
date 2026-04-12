@@ -13,7 +13,6 @@ import com.mangareader.domain.subscription.entity.SubscriptionPlan;
  * Port de saída — acesso a dados de SubscriptionPlans (PostgreSQL).
  */
 public interface SubscriptionPlanRepositoryPort {
-
     List<SubscriptionPlan> findAllActive();
 
     Page<SubscriptionPlan> findAll(Pageable pageable);

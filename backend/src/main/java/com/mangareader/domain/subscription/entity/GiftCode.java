@@ -36,15 +36,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class GiftCode {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    /**
-     * Código público que o destinatário utiliza para resgatar a assinatura.
-     * Gerado como UUID aleatório para garantir unicidade e imprevisibilidade.
-     */
     @Column(nullable = false, unique = true, length = 36)
     private String code;
 

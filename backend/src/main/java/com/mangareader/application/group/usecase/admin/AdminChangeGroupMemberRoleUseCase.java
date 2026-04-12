@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AdminChangeGroupMemberRoleUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     @Transactional

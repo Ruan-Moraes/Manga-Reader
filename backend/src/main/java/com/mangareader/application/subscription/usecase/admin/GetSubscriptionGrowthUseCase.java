@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetSubscriptionGrowthUseCase {
-
     private final SubscriptionRepositoryPort subscriptionRepository;
 
     @Transactional(readOnly = true)
@@ -31,6 +30,7 @@ public class GetSubscriptionGrowthUseCase {
         Map<String, Long> cancelledMap = toMap(subscriptionRepository.countCancelledSubscriptionsByMonth(since));
 
         List<MonthlyGrowthEntry> entries = new ArrayList<>();
+
         long totalNew = 0;
         long totalCancelled = 0;
 
@@ -39,10 +39,12 @@ public class GetSubscriptionGrowthUseCase {
 
         while (!current.isAfter(end)) {
             String key = current.toString();
+
             long newSubs = newMap.getOrDefault(key, 0L);
             long cancelled = cancelledMap.getOrDefault(key, 0L);
 
             entries.add(new MonthlyGrowthEntry(key, newSubs, cancelled, newSubs - cancelled));
+
             totalNew += newSubs;
             totalCancelled += cancelled;
 
@@ -54,12 +56,16 @@ public class GetSubscriptionGrowthUseCase {
 
     private Map<String, Long> toMap(List<Object[]> rows) {
         Map<String, Long> map = new LinkedHashMap<>();
+
         for (Object[] row : rows) {
             int year = ((Number) row[0]).intValue();
             int month = ((Number) row[1]).intValue();
+
             String key = String.format("%d-%02d", year, month);
+
             map.put(key, ((Number) row[2]).longValue());
         }
+
         return map;
     }
 

@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetSubscriptionAuditLogsUseCase {
-
     private final SubscriptionAuditLogRepositoryPort auditLogRepository;
 
     @Transactional(readOnly = true)

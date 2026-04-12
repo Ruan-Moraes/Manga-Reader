@@ -37,7 +37,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class SubscriptionPlan {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

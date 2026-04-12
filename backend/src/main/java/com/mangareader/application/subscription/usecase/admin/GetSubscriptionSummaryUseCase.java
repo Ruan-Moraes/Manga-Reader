@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetSubscriptionSummaryUseCase {
-
     private final SubscriptionRepositoryPort subscriptionRepository;
 
     @Transactional(readOnly = true)

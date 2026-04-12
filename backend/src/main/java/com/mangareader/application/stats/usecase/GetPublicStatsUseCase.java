@@ -18,13 +18,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetPublicStatsUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     @Cacheable(CacheNames.PUBLIC_STATS)
     public PublicStatsResponse execute() {
         long totalTitles = titleRepository.count();
         long totalChapters = titleRepository.countTotalChapters();
+
         return new PublicStatsResponse(totalTitles, totalChapters);
     }
 }

@@ -19,7 +19,6 @@ import com.mangareader.application.subscription.port.PaymentGatewayPort;
  */
 @Component
 public class StripeAdapter implements PaymentGatewayPort {
-
     private static final Logger log = LoggerFactory.getLogger(StripeAdapter.class);
     private static final String MOCK_ID_PREFIX = "stripe-mock-";
 

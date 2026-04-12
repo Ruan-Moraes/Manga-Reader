@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetFinancialSummaryUseCase {
-
     private final PaymentRepositoryPort paymentRepository;
 
     @Transactional(readOnly = true)
@@ -32,6 +31,7 @@ public class GetFinancialSummaryUseCase {
         }
 
         long totalPayments = paymentRepository.count();
+
         BigDecimal totalRevenue = amountsByStatus.get(PaymentStatus.COMPLETED);
         BigDecimal pendingRevenue = amountsByStatus.get(PaymentStatus.PENDING);
 

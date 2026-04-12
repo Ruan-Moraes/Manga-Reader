@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionAuditLogRepositoryAdapter implements SubscriptionAuditLogRepositoryPort {
-
     private final SubscriptionAuditLogJpaRepository repository;
 
     @Override

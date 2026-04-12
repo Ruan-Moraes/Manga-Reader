@@ -36,7 +36,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/titles")
 @RequiredArgsConstructor
 public class AdminTitleController {
-
     private final TitleRepositoryPort titleRepository;
     private final CreateTitleUseCase createTitleUseCase;
     private final UpdateTitleUseCase updateTitleUseCase;
@@ -51,6 +50,7 @@ public class AdminTitleController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
         var result = (search != null && !search.isBlank())
@@ -101,6 +101,7 @@ public class AdminTitleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTitle(@PathVariable String id) {
         deleteTitleUseCase.execute(id);
+
         return ResponseEntity.noContent().build();
     }
 }

@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetMySubscriptionHistoryUseCase {
-
     private final SubscriptionRepositoryPort subscriptionRepository;
 
     @Transactional(readOnly = true)

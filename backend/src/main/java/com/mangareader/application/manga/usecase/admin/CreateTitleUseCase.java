@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateTitleUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public Title execute(String name, String type, String cover, String synopsis,

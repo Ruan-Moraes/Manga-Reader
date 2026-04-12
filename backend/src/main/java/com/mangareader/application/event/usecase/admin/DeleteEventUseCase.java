@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeleteEventUseCase {
-
     private final EventRepositoryPort eventRepository;
 
     @Transactional

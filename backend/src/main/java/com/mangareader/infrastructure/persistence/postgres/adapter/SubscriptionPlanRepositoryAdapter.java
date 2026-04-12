@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionPlanRepositoryAdapter implements SubscriptionPlanRepositoryPort {
-
     private final SubscriptionPlanJpaRepository repository;
 
     @Override

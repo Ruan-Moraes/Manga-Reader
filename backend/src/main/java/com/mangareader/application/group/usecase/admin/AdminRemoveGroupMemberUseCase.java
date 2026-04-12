@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AdminRemoveGroupMemberUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     @Transactional

@@ -16,7 +16,6 @@ import com.mangareader.domain.subscription.valueobject.SubscriptionStatus;
  * Port de saída — acesso a dados de Subscriptions (PostgreSQL).
  */
 public interface SubscriptionRepositoryPort {
-
     Subscription save(Subscription subscription);
 
     Optional<Subscription> findById(UUID id);
@@ -27,10 +26,8 @@ public interface SubscriptionRepositoryPort {
 
     void updateStatus(UUID subscriptionId, SubscriptionStatus status);
 
-    /** Admin: lista todas as assinaturas, com filtro opcional por status. */
     Page<Subscription> findAll(SubscriptionStatus status, Pageable pageable);
 
-    /** Admin: contagem de assinaturas agrupadas por status. */
     Map<SubscriptionStatus, Long> countByStatus();
 
     /** Monthly new subscriptions: returns [year, month, count] since the given date. */

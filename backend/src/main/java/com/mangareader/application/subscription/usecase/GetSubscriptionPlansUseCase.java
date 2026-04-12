@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetSubscriptionPlansUseCase {
-
     private final SubscriptionPlanRepositoryPort planRepository;
 
     @Cacheable(CacheNames.SUBSCRIPTION_PLANS)

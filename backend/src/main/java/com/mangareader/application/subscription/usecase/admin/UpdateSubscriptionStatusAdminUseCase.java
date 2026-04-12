@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateSubscriptionStatusAdminUseCase {
-
     private final SubscriptionRepositoryPort subscriptionRepository;
 
     @Transactional

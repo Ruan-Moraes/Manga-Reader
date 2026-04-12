@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateSubscriptionPlanUseCase {
-
     private final SubscriptionPlanRepositoryPort planRepository;
 
     @Transactional

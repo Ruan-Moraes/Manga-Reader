@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RedeemGiftCodeUseCase {
-
     private static final int DAILY_DURATION_DAYS = 1;
     private static final int MONTHLY_DURATION_MONTHS = 1;
     private static final int ANNUAL_DURATION_YEARS = 1;
@@ -55,6 +54,7 @@ public class RedeemGiftCodeUseCase {
         giftCode.setStatus(GiftCodeStatus.REDEEMED);
         giftCode.setRedeemedByUserId(userId);
         giftCode.setRedeemedAt(now);
+
         giftCodeRepository.save(giftCode);
 
         return saved;
@@ -64,6 +64,7 @@ public class RedeemGiftCodeUseCase {
         if (giftCode.getStatus() == GiftCodeStatus.REDEEMED) {
             throw new BusinessRuleException("Este código de presente já foi utilizado.");
         }
+
         if (giftCode.getStatus() == GiftCodeStatus.EXPIRED
                 || giftCode.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new BusinessRuleException("Este código de presente está expirado.");

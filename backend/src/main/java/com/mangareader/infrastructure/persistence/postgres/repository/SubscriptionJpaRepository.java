@@ -16,7 +16,6 @@ import com.mangareader.domain.subscription.entity.Subscription;
 import com.mangareader.domain.subscription.valueobject.SubscriptionStatus;
 
 public interface SubscriptionJpaRepository extends JpaRepository<Subscription, UUID> {
-
     Optional<Subscription> findByUserIdAndStatus(UUID userId, SubscriptionStatus status);
 
     Page<Subscription> findByUserId(UUID userId, Pageable pageable);

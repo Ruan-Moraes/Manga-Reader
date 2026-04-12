@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateGiftCodeUseCase {
-
     /** Validade padrão do código de presente: 1 ano a partir da criação. */
     private static final int GIFT_CODE_VALIDITY_YEARS = 1;
 

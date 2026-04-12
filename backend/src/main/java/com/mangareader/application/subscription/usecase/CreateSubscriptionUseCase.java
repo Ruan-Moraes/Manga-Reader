@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateSubscriptionUseCase {
-
     private static final int DAILY_DURATION_DAYS = 1;
     private static final int MONTHLY_DURATION_MONTHS = 1;
     private static final int ANNUAL_DURATION_YEARS = 1;

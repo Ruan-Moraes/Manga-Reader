@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeleteTitleUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public void execute(String titleId) {

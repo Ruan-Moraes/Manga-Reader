@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetContentMetricsUseCase {
-
     private static final int TOP_TITLES_LIMIT = 10;
+    // TODO: Refinar estes estatutos para refletir os estados reais dos títulos no sistema e transformar em enums
     private static final List<String> TITLE_STATUSES = List.of(
             "ONGOING", "COMPLETED", "HIATUS", "CANCELLED"
     );
@@ -32,11 +32,13 @@ public class GetContentMetricsUseCase {
 
     public ContentMetricsResponse execute() {
         Map<String, Long> titlesByStatus = new LinkedHashMap<>();
+
         for (String status : TITLE_STATUSES) {
             titlesByStatus.put(status, titleRepository.countByStatus(status));
         }
 
         Map<String, Long> eventsByStatus = new LinkedHashMap<>();
+
         for (EventStatus status : EventStatus.values()) {
             eventsByStatus.put(status.name(), eventRepository.countByStatus(status));
         }

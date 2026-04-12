@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RevokeSubscriptionUseCase {
-
     private final SubscriptionRepositoryPort subscriptionRepository;
     private final SubscriptionAuditPort auditPort;
 
@@ -29,8 +28,11 @@ public class RevokeSubscriptionUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Subscription", "id", subscriptionId));
 
         subscription.setStatus(SubscriptionStatus.CANCELLED);
+
         var saved = subscriptionRepository.save(subscription);
+
         auditPort.log(saved.getId(), saved.getUserId(), "REVOKED", null, "Admin revoked subscription");
+
         return saved;
     }
 }

@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdatePaymentStatusUseCase {
-
     private final PaymentRepositoryPort paymentRepository;
 
     @Transactional

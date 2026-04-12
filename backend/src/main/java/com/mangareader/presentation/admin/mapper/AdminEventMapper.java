@@ -7,7 +7,6 @@ import com.mangareader.presentation.admin.dto.AdminEventResponse;
  * Mapper estático Event → AdminEventResponse.
  */
 public final class AdminEventMapper {
-
     private AdminEventMapper() {
     }
 

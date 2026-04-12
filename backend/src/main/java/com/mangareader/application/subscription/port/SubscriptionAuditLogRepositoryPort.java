@@ -11,7 +11,6 @@ import com.mangareader.domain.subscription.entity.SubscriptionAuditLog;
  * Port de saída — acesso a dados de SubscriptionAuditLogs (PostgreSQL).
  */
 public interface SubscriptionAuditLogRepositoryPort {
-
     SubscriptionAuditLog save(SubscriptionAuditLog log);
 
     Page<SubscriptionAuditLog> findBySubscriptionId(UUID subscriptionId, Pageable pageable);

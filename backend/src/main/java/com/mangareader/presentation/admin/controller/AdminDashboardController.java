@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/dashboard")
 @RequiredArgsConstructor
 public class AdminDashboardController {
-
     private final GetDashboardMetricsUseCase getDashboardMetricsUseCase;
     private final GetContentMetricsUseCase getContentMetricsUseCase;
 

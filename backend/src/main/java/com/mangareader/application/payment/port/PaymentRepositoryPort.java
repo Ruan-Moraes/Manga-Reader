@@ -16,7 +16,6 @@ import com.mangareader.domain.payment.valueobject.PaymentStatus;
  * Port de saída — acesso a dados de Payments (PostgreSQL).
  */
 public interface PaymentRepositoryPort {
-
     Optional<Payment> findById(UUID id);
 
     Payment save(Payment payment);

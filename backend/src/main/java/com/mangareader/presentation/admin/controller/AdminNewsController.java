@@ -39,7 +39,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/news")
 @RequiredArgsConstructor
 public class AdminNewsController {
-
     private final NewsRepositoryPort newsRepository;
     private final CreateNewsUseCase createNewsUseCase;
     private final UpdateNewsUseCase updateNewsUseCase;
@@ -54,6 +53,7 @@ public class AdminNewsController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
         var result = (search != null && !search.isBlank())
@@ -124,6 +124,7 @@ public class AdminNewsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNews(@PathVariable String id) {
         deleteNewsUseCase.execute(id);
+
         return ResponseEntity.noContent().build();
     }
 }

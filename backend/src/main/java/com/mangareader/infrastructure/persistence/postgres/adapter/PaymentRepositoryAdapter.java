@@ -63,6 +63,7 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     @Override
     public BigDecimal sumAmountByStatus(PaymentStatus status) {
         BigDecimal sum = repository.sumAmountByStatus(status);
+
         return sum != null ? sum : BigDecimal.ZERO;
     }
 

@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetPaymentDetailsUseCase {
-
     private final PaymentRepositoryPort paymentRepository;
 
     @Transactional(readOnly = true)

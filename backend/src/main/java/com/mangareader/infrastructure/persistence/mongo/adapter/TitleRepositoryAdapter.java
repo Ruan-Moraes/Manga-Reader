@@ -119,6 +119,7 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     @Override
     public long countByStatus(String status) {
         Query query = new Query(Criteria.where("status").is(status));
+
         return mongoTemplate.count(query, Title.class);
     }
 
@@ -127,6 +128,7 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
         Query query = new Query()
                 .with(Sort.by(Sort.Direction.DESC, "rankingScore"))
                 .limit(limit);
+
         return mongoTemplate.find(query, Title.class);
     }
 
@@ -140,6 +142,7 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
                 mongoTemplate.aggregate(aggregation, "titles", ChapterCountResult.class);
 
         ChapterCountResult result = results.getUniqueMappedResult();
+
         return result != null ? result.total() : 0L;
     }
 

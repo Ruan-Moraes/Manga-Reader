@@ -7,7 +7,6 @@ package com.mangareader.application.subscription.port;
  * Trocar de gateway exige apenas uma nova implementação, sem alterar use cases.
  */
 public interface PaymentGatewayPort {
-
     /**
      * Cria uma intenção de pagamento no gateway externo.
      *

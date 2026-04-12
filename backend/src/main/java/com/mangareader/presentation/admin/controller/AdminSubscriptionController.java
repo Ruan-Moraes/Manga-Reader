@@ -50,7 +50,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/subscriptions")
 @RequiredArgsConstructor
 public class AdminSubscriptionController {
-
     private final ListSubscriptionsAdminUseCase listSubscriptionsUseCase;
     private final UpdateSubscriptionStatusAdminUseCase updateStatusUseCase;
     private final GetSubscriptionSummaryUseCase summaryUseCase;
@@ -71,18 +70,24 @@ public class AdminSubscriptionController {
             @RequestParam(defaultValue = "desc") String direction
     ) {
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
+
         SubscriptionStatus statusFilter = (status != null && !status.isBlank())
                 ? SubscriptionStatus.valueOf(status.toUpperCase())
                 : null;
+
         var result = listSubscriptionsUseCase.execute(statusFilter, pageable);
+
         var mapped = result.map(AdminSubscriptionMapper::toResponse);
+
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<SubscriptionSummaryResponse>> getSummary() {
         var counts = summaryUseCase.execute();
+
         return ResponseEntity.ok(ApiResponse.success(AdminSubscriptionMapper.toSummaryResponse(counts)));
     }
 
@@ -92,7 +97,9 @@ public class AdminSubscriptionController {
             @Valid @RequestBody UpdateSubscriptionStatusRequest request
     ) {
         SubscriptionStatus newStatus = SubscriptionStatus.valueOf(request.status().toUpperCase());
+
         var subscription = updateStatusUseCase.execute(id, newStatus);
+
         return ResponseEntity.ok(ApiResponse.success(AdminSubscriptionMapper.toResponse(subscription)));
     }
 
@@ -101,6 +108,7 @@ public class AdminSubscriptionController {
             @Valid @RequestBody GrantSubscriptionRequest request
     ) {
         var subscription = grantUseCase.execute(request.userId(), request.planId());
+
         return ResponseEntity.status(201).body(ApiResponse.created(AdminSubscriptionMapper.toResponse(subscription)));
     }
 
@@ -112,16 +120,17 @@ public class AdminSubscriptionController {
         return ResponseEntity.ok(ApiResponse.success(AdminSubscriptionMapper.toResponse(subscription)));
     }
 
-    // ── Plans ──────────────────────────────────────────────────────────
-
     @GetMapping("/plans")
     public ResponseEntity<ApiResponse<PageResponse<SubscriptionPlanResponse>>> listPlans(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "period"));
+
         var result = listPlansUseCase.execute(pageable);
+
         var mapped = result.map(AdminSubscriptionMapper::toPlanResponse);
+
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
@@ -131,6 +140,7 @@ public class AdminSubscriptionController {
     ) {
         var plan = createPlanUseCase.execute(
                 request.period(), request.priceInCents(), request.description(), request.features());
+
         return ResponseEntity.status(201).body(ApiResponse.created(AdminSubscriptionMapper.toPlanResponse(plan)));
     }
 
@@ -141,10 +151,9 @@ public class AdminSubscriptionController {
     ) {
         var plan = updatePlanUseCase.execute(
                 id, request.priceInCents(), request.description(), request.features(), request.active());
+
         return ResponseEntity.ok(ApiResponse.success(AdminSubscriptionMapper.toPlanResponse(plan)));
     }
-
-    // ── Audit Logs ─────────────────────────────────────────────────────
 
     @GetMapping("/{id}/logs")
     public ResponseEntity<ApiResponse<PageResponse<SubscriptionAuditLogResponse>>> getAuditLogs(
@@ -153,12 +162,13 @@ public class AdminSubscriptionController {
             @RequestParam(defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
         var result = auditLogsUseCase.executeBySubscription(id, pageable);
+
         var mapped = result.map(AdminSubscriptionMapper::toAuditLogResponse);
+
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
-
-    // ── Growth Series ──────────────────────────────────────────────────
 
     @GetMapping("/growth-series")
     public ResponseEntity<ApiResponse<SubscriptionGrowthResponse>> getGrowthSeries(

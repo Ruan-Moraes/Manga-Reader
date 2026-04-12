@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateNewsUseCase {
-
     private final NewsRepositoryPort newsRepository;
 
     public NewsItem execute(String newsId, String title, String subtitle, String excerpt,
