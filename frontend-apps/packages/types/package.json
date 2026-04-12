@@ -5,7 +5,11 @@
   "type": "module",
   "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./api": "./src/api.ts",
+    "./stats": "./src/stats.ts",
+    "./subscription": "./src/subscription.ts",
+    "./gift-code": "./src/gift-code.ts"
   },
   "files": ["src"]
 }
