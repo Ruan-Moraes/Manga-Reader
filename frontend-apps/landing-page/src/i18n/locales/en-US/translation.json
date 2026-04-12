@@ -1,0 +1,136 @@
+{
+  "nav": {
+    "plans": "Plans",
+    "benefits": "Benefits",
+    "faq": "FAQ",
+    "cta": "Subscribe Now"
+  },
+  "hero": {
+    "headline": "Read. Explore. No limits.",
+    "subheadline": "The largest manga, manhwa, and manhua library in your language. Read on any device, anywhere, anytime.",
+    "cta_primary": "Subscribe Now",
+    "cta_secondary": "View Plans",
+    "badge_works": "titles",
+    "badge_chapters": "chapters"
+  },
+  "benefits": {
+    "title": "Why Manga Reader?",
+    "items": {
+      "library": {
+        "title": "Vast Library",
+        "description": "Over {count} titles from the biggest names in Asian comics."
+      },
+      "updates": {
+        "title": "Daily Updates",
+        "description": "New chapters every day so you always have something fresh to read."
+      },
+      "multiplatform": {
+        "title": "Multi-platform",
+        "description": "Read on the web, iOS, or Android. Synced across all your devices."
+      },
+      "offline": {
+        "title": "Offline Reading",
+        "description": "Download your favorite chapters and read without an internet connection."
+      }
+    }
+  },
+  "catalog": {
+    "title": "A library that grows every day",
+    "works_label": "Available titles",
+    "chapters_label": "Chapters to read",
+    "loading": "Loading..."
+  },
+  "features": {
+    "title": "Everything you need",
+    "badges": {
+      "web": "Web",
+      "ios": "iOS",
+      "android": "Android",
+      "offline": "Offline",
+      "no_ads": "No Ads",
+      "hd": "HD Reading"
+    }
+  },
+  "plans": {
+    "title": "Choose your plan",
+    "subtitle": "Cancel anytime. No hidden fees.",
+    "period": {
+      "daily": "Daily",
+      "monthly": "Monthly",
+      "annual": "Annual"
+    },
+    "discount_badge": "Save 33%",
+    "cta": "Subscribe",
+    "feature_list_title": "Included:",
+    "per_day": "/day",
+    "per_month": "/month",
+    "per_year": "/year",
+    "most_popular": "Most Popular"
+  },
+  "gift": {
+    "title": "Gift a loved one",
+    "subtitle": "Give the gift of unlimited reading.",
+    "tab_give": "Give Gift",
+    "tab_redeem": "Redeem",
+    "give": {
+      "description": "Choose a plan and gift someone special with unlimited access to the platform. The gift code will be generated in your account.",
+      "cta": "Gift in the App"
+    },
+    "redeem": {
+      "code_label": "Gift code",
+      "code_placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "cta": "Redeem in the App"
+    }
+  },
+  "testimonials": {
+    "title": "What our readers say",
+    "items": [
+      {
+        "name": "Ana Lima",
+        "text": "Finally a platform that has everything I love and works offline. Perfect for trips!"
+      },
+      {
+        "name": "Carlos Matos",
+        "text": "The image quality is impressive. I carry my entire collection in my pocket."
+      },
+      {
+        "name": "Julia Santos",
+        "text": "I gifted my brother and he loved it. The gift code system is super simple."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "Can I cancel my subscription at any time?",
+        "answer": "Yes. You can cancel anytime from your user dashboard, no hassle."
+      },
+      {
+        "question": "Does the daily plan really cost cents?",
+        "answer": "Yes! The daily plan is perfect for testing the platform before committing to a longer plan."
+      },
+      {
+        "question": "How does the gift code work?",
+        "answer": "You buy a gift code and send it by email to whoever you want. They use the code to activate the subscription on their account."
+      },
+      {
+        "question": "Does it work on mobile?",
+        "answer": "Yes! We have native apps for iOS and Android, plus a responsive web version."
+      },
+      {
+        "question": "Can I read offline?",
+        "answer": "Yes. With the app, you can download chapters and read without internet on Monthly and Annual plans."
+      },
+      {
+        "question": "How often are new chapters released?",
+        "answer": "Our team updates the library daily with new chapters for ongoing series."
+      }
+    ]
+  },
+  "footer_cta": {
+    "headline": "Start reading now",
+    "subheadline": "Join thousands of readers. First month with satisfaction guarantee.",
+    "cta": "Subscribe Now"
+  }
+}

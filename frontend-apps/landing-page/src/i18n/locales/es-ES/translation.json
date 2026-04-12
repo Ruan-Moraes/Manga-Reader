@@ -1,0 +1,136 @@
+{
+  "nav": {
+    "plans": "Planes",
+    "benefits": "Beneficios",
+    "faq": "FAQ",
+    "cta": "Suscríbete"
+  },
+  "hero": {
+    "headline": "Lee. Explora. Sin límites.",
+    "subheadline": "La mayor biblioteca de manga, manhwa y manhua en tu idioma. Lee en cualquier dispositivo, en cualquier lugar.",
+    "cta_primary": "Suscribirme",
+    "cta_secondary": "Ver Planes",
+    "badge_works": "obras",
+    "badge_chapters": "capítulos"
+  },
+  "benefits": {
+    "title": "¿Por qué Manga Reader?",
+    "items": {
+      "library": {
+        "title": "Biblioteca Vasta",
+        "description": "Más de {count} obras de los mejores nombres del cómic asiático."
+      },
+      "updates": {
+        "title": "Actualizaciones Diarias",
+        "description": "Nuevos capítulos cada día para que siempre tengas algo nuevo que leer."
+      },
+      "multiplatform": {
+        "title": "Multiplataforma",
+        "description": "Lee en la web, iOS o Android. Sincronizado en todos tus dispositivos."
+      },
+      "offline": {
+        "title": "Lectura sin conexión",
+        "description": "Descarga tus capítulos favoritos y lee sin necesitar internet."
+      }
+    }
+  },
+  "catalog": {
+    "title": "Una biblioteca que crece cada día",
+    "works_label": "Obras disponibles",
+    "chapters_label": "Capítulos para leer",
+    "loading": "Cargando..."
+  },
+  "features": {
+    "title": "Todo lo que necesitas",
+    "badges": {
+      "web": "Web",
+      "ios": "iOS",
+      "android": "Android",
+      "offline": "Sin conexión",
+      "no_ads": "Sin anuncios",
+      "hd": "Lectura en HD"
+    }
+  },
+  "plans": {
+    "title": "Elige tu plan",
+    "subtitle": "Cancela cuando quieras. Sin cargos ocultos.",
+    "period": {
+      "daily": "Diario",
+      "monthly": "Mensual",
+      "annual": "Anual"
+    },
+    "discount_badge": "Ahorra 33%",
+    "cta": "Suscribirme",
+    "feature_list_title": "Incluye:",
+    "per_day": "/día",
+    "per_month": "/mes",
+    "per_year": "/año",
+    "most_popular": "Más Popular"
+  },
+  "gift": {
+    "title": "Regala a quien amas",
+    "subtitle": "Da el regalo de la lectura ilimitada.",
+    "tab_give": "Regalar",
+    "tab_redeem": "Canjear",
+    "give": {
+      "description": "Elige un plan y regala a alguien especial acceso ilimitado a la plataforma. El código de regalo se generará en tu cuenta.",
+      "cta": "Regalar en la App"
+    },
+    "redeem": {
+      "code_label": "Código de regalo",
+      "code_placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "cta": "Canjear en la App"
+    }
+  },
+  "testimonials": {
+    "title": "Lo que dicen nuestros lectores",
+    "items": [
+      {
+        "name": "Ana Lima",
+        "text": "¡Por fin una plataforma que tiene todo lo que me gusta y funciona sin conexión!"
+      },
+      {
+        "name": "Carlos Matos",
+        "text": "La calidad de las imágenes es impresionante. Llevo mi colección en el bolsillo."
+      },
+      {
+        "name": "Julia Santos",
+        "text": "Le regalé a mi hermano y le encantó. El sistema de código regalo es muy sencillo."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "items": [
+      {
+        "question": "¿Puedo cancelar la suscripción en cualquier momento?",
+        "answer": "Sí. Puedes cancelar cuando quieras desde el panel de usuario, sin complicaciones."
+      },
+      {
+        "question": "¿El plan diario realmente cuesta centavos?",
+        "answer": "¡Sí! El plan diario es ideal para probar la plataforma antes de suscribirte a un plan más largo."
+      },
+      {
+        "question": "¿Cómo funciona el código regalo?",
+        "answer": "Compras un código regalo y lo envías por email a quien quieras. El destinatario lo usa para activar la suscripción en su cuenta."
+      },
+      {
+        "question": "¿Funciona en el móvil?",
+        "answer": "¡Sí! Tenemos apps nativas para iOS y Android, además de la versión web responsiva."
+      },
+      {
+        "question": "¿Puedo leer sin conexión?",
+        "answer": "Sí. Con la app puedes descargar capítulos y leer sin internet en los planes Mensual y Anual."
+      },
+      {
+        "question": "¿Con qué frecuencia salen nuevos capítulos?",
+        "answer": "Nuestro equipo actualiza la biblioteca a diario con nuevos capítulos de las series en curso."
+      }
+    ]
+  },
+  "footer_cta": {
+    "headline": "Empieza a leer ahora",
+    "subheadline": "Únete a miles de lectores. Primer mes con garantía de satisfacción.",
+    "cta": "Suscribirme"
+  }
+}
