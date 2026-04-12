@@ -9,7 +9,7 @@
 ### Backend (`/backend/`)
 
 ```bash
-mvn test                                        # Todos os testes (817, JUnit 5 + Mockito + H2 + TestContainers)
+mvn test                                        # Todos os testes (946, JUnit 5 + Mockito + H2 + TestContainers)
 mvn test -Dtest=UserTest                        # Classe específica
 mvn test -Dtest=UserTest#shouldInitialize...    # Método específico
 mvn test -Dtest=**/domain/**/*Test              # Por camada (domain/application/presentation/infrastructure)
@@ -122,6 +122,15 @@ Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `d
 ### Qualidade Contínua
 - Refatorar continuamente; corrigir tech debt cedo
 - Deixar o código mais limpo do que encontrou
+
+### Mobile-First
+- CSS: estilos base para mobile, media-queries para telas maiores (sm → md → lg)
+- Tailwind: escrever classes base sem prefixo, adicionar `sm:`, `md:`, `lg:` para breakpoints maiores
+- Admin sidebar: colapsável em mobile (`<md`), hamburger no header, overlay com backdrop
+- Tabelas: `overflow-x-auto` + colunas opcionais com `hiddenOnMobile: true` (escondidas em `<sm`)
+- Grids: `grid-cols-1` base, expandir com `sm:grid-cols-2`, `md:grid-cols-3`, `lg:grid-cols-4`
+- Textos longos (nomes, labels): usar `hidden sm:inline` para versões completas em mobile
+- Breakpoints customizados: `mobile-sm` (320px), `mobile-md` (375px), `mobile-lg` (425px)
 
 ---
 
