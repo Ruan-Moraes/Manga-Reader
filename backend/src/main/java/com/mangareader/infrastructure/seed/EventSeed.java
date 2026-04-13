@@ -164,8 +164,168 @@ public class EventSeed implements EntitySeeder {
                 .participants(60).interested(200)
                 .build();
 
-        eventRepository.saveAll(List.of(animeCon, autografos, live, workshop));
+        var meetup = Event.builder()
+                .title("Meetup Leitores MangaReader — Rio de Janeiro")
+                .subtitle("Encontro informal de leitores no Rio")
+                .description("Encontro presencial para leitores da comunidade MangaReader. Traga seus volumes favoritos para trocar e discutir!")
+                .image("https://picsum.photos/1200/600?random=507")
+                .startDate(now.plusDays(14))
+                .endDate(now.plusDays(14).plusHours(4))
+                .timezone("America/Sao_Paulo")
+                .timeline(EventTimeline.UPCOMING)
+                .status(EventStatus.REGISTRATIONS_OPEN)
+                .type(EventType.MEETUP)
+                .location(EventLocation.builder()
+                        .label("Café Otaku").address("Rua da Glória, 322")
+                        .city("Rio de Janeiro").isOnline(false)
+                        .mapLink("https://maps.google.com/?q=Cafe+Otaku+RJ").build())
+                .organizer(EventOrganizer.builder()
+                        .organizerId("org-5").organizerName("Comunidade MangaReader RJ")
+                        .organizerAvatar("https://i.pravatar.cc/100?img=44")
+                        .organizerProfileLink("/profile/mangareader-rj")
+                        .organizerContact("rj@mangareader.com").build())
+                .priceLabel("Gratuito")
+                .participants(25).interested(80)
+                .build();
 
-        log.info("✓ 4 eventos de demonstração criados.");
+        var liveOnline = Event.builder()
+                .title("Live: Debate — Melhores Manhwas de Ação")
+                .subtitle("Discussão ao vivo sobre os top manhwas de 2025-2026")
+                .description("Junte-se para debater os melhores manhwas de ação dos últimos dois anos.")
+                .image("https://picsum.photos/1200/600?random=508")
+                .startDate(now.plusDays(7))
+                .endDate(now.plusDays(7).plusHours(2))
+                .timezone("America/Sao_Paulo")
+                .timeline(EventTimeline.UPCOMING)
+                .status(EventStatus.COMING_SOON)
+                .type(EventType.LIVE)
+                .location(EventLocation.builder()
+                        .label("Discord MangaReader").address("Online")
+                        .city("Online").isOnline(true)
+                        .mapLink("https://discord.gg/mangareader").build())
+                .organizer(EventOrganizer.builder()
+                        .organizerId("org-3").organizerName("MangaReader")
+                        .organizerAvatar("https://i.pravatar.cc/100?img=42")
+                        .organizerProfileLink("/profile/mangareader")
+                        .organizerContact("live@mangareader.com").build())
+                .priceLabel("Gratuito")
+                .participants(0).interested(450).isFeatured(true)
+                .build();
+
+        var convencaoPassada = Event.builder()
+                .title("Manga Fest BH 2025")
+                .subtitle("Festival de mangá e cultura japonesa")
+                .description("Edição 2025 do Manga Fest em Belo Horizonte com expositores, artistas e cosplay.")
+                .image("https://picsum.photos/1200/600?random=509")
+                .startDate(now.minusDays(60))
+                .endDate(now.minusDays(58))
+                .timezone("America/Sao_Paulo")
+                .timeline(EventTimeline.PAST)
+                .status(EventStatus.ENDED)
+                .type(EventType.CONVENCAO)
+                .location(EventLocation.builder()
+                        .label("Expominas").address("Av. Amazonas, 6200")
+                        .city("Belo Horizonte").isOnline(false)
+                        .mapLink("https://maps.google.com/?q=Expominas+BH").build())
+                .organizer(EventOrganizer.builder()
+                        .organizerId("org-6").organizerName("Manga Fest")
+                        .organizerAvatar("https://i.pravatar.cc/100?img=45")
+                        .organizerProfileLink("/profile/mangafest")
+                        .organizerContact("contato@mangafest.com.br").build())
+                .priceLabel("R$ 60,00")
+                .participants(800).interested(2500)
+                .schedule(List.of(
+                        "09:00 - Abertura",
+                        "10:00 - Painel: Mangás de Horror",
+                        "14:00 - Cosplay Championship",
+                        "18:00 - Encerramento"
+                ))
+                .build();
+
+        convencaoPassada.getTickets().addAll(List.of(
+                EventTicket.builder().event(convencaoPassada).name("Ingresso Unitário").price("R$ 60,00").available(0).build(),
+                EventTicket.builder().event(convencaoPassada).name("Passaporte Completo").price("R$ 130,00").available(0).build()
+        ));
+
+        var workshopOnline = Event.builder()
+                .title("Workshop Online: Colorização Digital de Mangá")
+                .subtitle("Aprenda técnicas de colorização com tablet e Photoshop")
+                .description("Workshop prático online para artistas que querem aprender colorização digital no estilo mangá.")
+                .image("https://picsum.photos/1200/600?random=510")
+                .startDate(now.plusDays(21))
+                .endDate(now.plusDays(21).plusHours(3))
+                .timezone("America/Sao_Paulo")
+                .timeline(EventTimeline.UPCOMING)
+                .status(EventStatus.REGISTRATIONS_OPEN)
+                .type(EventType.WORKSHOP)
+                .location(EventLocation.builder()
+                        .label("Zoom").address("Online")
+                        .city("Online").isOnline(true)
+                        .mapLink("https://zoom.us/mangareader-workshop").build())
+                .organizer(EventOrganizer.builder()
+                        .organizerId("org-3").organizerName("MangaReader")
+                        .organizerAvatar("https://i.pravatar.cc/100?img=42")
+                        .organizerProfileLink("/profile/mangareader")
+                        .organizerContact("workshops@mangareader.com").build())
+                .priceLabel("R$ 39,90")
+                .participants(40).interested(180)
+                .build();
+
+        workshopOnline.getTickets().add(
+                EventTicket.builder().event(workshopOnline).name("Acesso ao Workshop").price("R$ 39,90").available(60).build()
+        );
+
+        var lancamentoOngoing = Event.builder()
+                .title("Lançamento: Noites Vermelhas — Vol. 1")
+                .subtitle("Evento de lançamento do mangá de horror mais aguardado")
+                .description("Lançamento presencial com sessão de autógrafos do autor Kazuki Morimoto.")
+                .image("https://picsum.photos/1200/600?random=511")
+                .startDate(now.minusHours(2))
+                .endDate(now.plusHours(3))
+                .timezone("America/Sao_Paulo")
+                .timeline(EventTimeline.ONGOING)
+                .status(EventStatus.HAPPENING_NOW)
+                .type(EventType.LANCAMENTO)
+                .location(EventLocation.builder()
+                        .label("Livraria Saraiva — Shopping Eldorado")
+                        .address("Av. Rebouças, 3970").city("São Paulo")
+                        .isOnline(false).mapLink("https://maps.google.com/?q=Saraiva+Eldorado").build())
+                .organizer(EventOrganizer.builder()
+                        .organizerId("org-2").organizerName("Panini Comics")
+                        .organizerAvatar("https://i.pravatar.cc/100?img=41")
+                        .organizerProfileLink("/profile/panini")
+                        .organizerContact("eventos@panini.com.br").build())
+                .priceLabel("Gratuito")
+                .participants(55).interested(300).isFeatured(true)
+                .specialGuests(List.of("Kazuki Morimoto"))
+                .build();
+
+        var meetupPassado = Event.builder()
+                .title("Meetup Tradutores de Mangá — SP")
+                .subtitle("Encontro da comunidade de tradutores amadores")
+                .description("Encontro para tradutores e revisores de scanlation para networking e troca de experiências.")
+                .image("https://picsum.photos/1200/600?random=512")
+                .startDate(now.minusDays(30))
+                .endDate(now.minusDays(30).plusHours(3))
+                .timezone("America/Sao_Paulo")
+                .timeline(EventTimeline.PAST)
+                .status(EventStatus.ENDED)
+                .type(EventType.MEETUP)
+                .location(EventLocation.builder()
+                        .label("WeWork Paulista").address("Av. Paulista, 1374")
+                        .city("São Paulo").isOnline(false)
+                        .mapLink("https://maps.google.com/?q=WeWork+Paulista").build())
+                .organizer(EventOrganizer.builder()
+                        .organizerId("org-7").organizerName("Scanlation Brasil")
+                        .organizerAvatar("https://i.pravatar.cc/100?img=46")
+                        .organizerProfileLink("/profile/scanlation-br")
+                        .organizerContact("contato@scanlationbr.com").build())
+                .priceLabel("Gratuito")
+                .participants(35).interested(90)
+                .build();
+
+        eventRepository.saveAll(List.of(animeCon, autografos, live, workshop, meetup, liveOnline, convencaoPassada, workshopOnline, lancamentoOngoing, meetupPassado));
+
+        log.info("✓ 10 eventos de demonstração criados.");
     }
 }

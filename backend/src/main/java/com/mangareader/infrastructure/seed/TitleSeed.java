@@ -181,6 +181,37 @@ public class TitleSeed implements EntitySeeder {
                         ))
                         .popularity("90").ratingAverage(2.8)
                         .author("Park Min-Ho").artist("Park Min-Ho").publisher("NewPOP")
+                        .build(),
+
+                Title.builder()
+                        .id("9")
+                        .type("Mangá")
+                        .name("Noites Vermelhas")
+                        .cover("https://picsum.photos/300/450?random=109")
+                        .synopsis("Em uma cidade tomada por cultos sobrenaturais, um detetive desacreditado investiga desaparecimentos que levam a rituais ancestrais de sangue.")
+                        .genres(List.of("Horror", "Suspense", "Seinen", "+18"))
+                        .adult(true)
+                        .chapters(List.of(
+                                Chapter.builder().number("1").title("O Primeiro Rito").releaseDate("2025-08-01").pages("46").build(),
+                                Chapter.builder().number("2").title("Sangue na Lua").releaseDate("2025-08-08").pages("42").build(),
+                                Chapter.builder().number("3").title("O Culto Desperta").releaseDate("2025-08-15").pages("48").build()
+                        ))
+                        .popularity("72").ratingAverage(4.2)
+                        .status("ongoing")
+                        .author("Kazuki Morimoto").artist("Kazuki Morimoto").publisher("Panini")
+                        .build(),
+
+                Title.builder()
+                        .id("10")
+                        .type("Manhua")
+                        .name("Espelho do Vazio")
+                        .cover("https://picsum.photos/300/450?random=110")
+                        .synopsis("Um monge errante busca fragmentos de um espelho místico que reflete verdades ocultas, enquanto enfrenta seus próprios demônios internos.")
+                        .genres(List.of("Fantasia", "Filosófico", "Aventura"))
+                        .chapters(List.of())
+                        .popularity("10").ratingAverage(0.0)
+                        .status("hiatus")
+                        .author("Zhang Liang").artist("Zhang Liang").publisher("JBC")
                         .build()
         );
 

@@ -103,6 +103,23 @@ public class StoreSeed implements EntitySeeder {
                         .availability(StoreAvailability.IN_STOCK)
                         .rating(3.9)
                         .features(List.of("Frete grátis", "Cupons"))
+                        .build(),
+                Store.builder()
+                        .name("Mercado Livre")
+                        .icon("default")
+                        .description("Marketplace com grande variedade, mas estoque esgotado para edições populares.")
+                        .website("https://mercadolivre.com.br")
+                        .availability(StoreAvailability.OUT_OF_STOCK)
+                        .rating(3.5)
+                        .features(List.of("Marketplace", "Vendedores terceiros"))
+                        .build(),
+                Store.builder()
+                        .name("Saraiva")
+                        .icon("default")
+                        .description("Livraria com pré-venda de lançamentos e edições especiais.")
+                        .website("https://saraiva.com.br")
+                        .availability(StoreAvailability.PRE_ORDER)
+                        .features(List.of("Pré-venda", "Edições especiais"))
                         .build()
         );
 

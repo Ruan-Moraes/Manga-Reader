@@ -1,4 +1,3 @@
--- Tabela de auditoria para ações em assinaturas
 CREATE TABLE subscription_audit_logs (
     id              UUID            NOT NULL DEFAULT gen_random_uuid(),
     subscription_id UUID            NOT NULL,

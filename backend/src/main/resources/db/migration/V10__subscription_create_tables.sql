@@ -1,7 +1,3 @@
--- V10: Subscription tables
--- Creates subscription_plans, subscriptions, and gift_codes tables.
--- Subscription plans are seeded with 3 initial plans (daily, monthly, annual).
-
 CREATE TABLE subscription_plans (
     id            UUID         NOT NULL DEFAULT gen_random_uuid(),
     period        VARCHAR(20)  NOT NULL,
@@ -54,28 +50,3 @@ CREATE INDEX idx_subscriptions_user_id ON subscriptions (user_id);
 CREATE INDEX idx_subscriptions_status ON subscriptions (status);
 CREATE INDEX idx_gift_codes_code ON gift_codes (code);
 CREATE INDEX idx_gift_codes_sender ON gift_codes (sender_user_id);
-
--- Seed: planos iniciais
-INSERT INTO subscription_plans (period, price_in_cents, description, features, active)
-VALUES
-    (
-        'DAILY',
-        39,
-        'Acesso completo por 1 dia. Ideal para experimentar a plataforma.',
-        '["Acesso a todo o catálogo", "Leitura em HD", "Sem anúncios"]',
-        TRUE
-    ),
-    (
-        'MONTHLY',
-        1990,
-        'Acesso ilimitado por 30 dias. O plano mais popular.',
-        '["Acesso a todo o catálogo", "Leitura em HD", "Sem anúncios", "Leitura offline", "Multi-dispositivo"]',
-        TRUE
-    ),
-    (
-        'ANNUAL',
-        15990,
-        'Acesso ilimitado por 1 ano com o melhor custo-benefício.',
-        '["Acesso a todo o catálogo", "Leitura em HD", "Sem anúncios", "Leitura offline", "Multi-dispositivo", "Suporte prioritário"]',
-        TRUE
-    );
