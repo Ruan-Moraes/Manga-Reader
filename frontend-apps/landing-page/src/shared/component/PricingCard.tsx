@@ -78,13 +78,13 @@ export default function PricingCard({
                                 clipRule="evenodd"
                             />
                         </svg>
-                        {feature.label}
+                        {feature as unknown as string}
                     </li>
                 ))}
             </ul>
             <button
                 onClick={() => onSelect(plan)}
-                className={`w-full rounded-lg py-3 font-bold text-sm transition-colors ${
+                className={`w-full rounded-lg py-3 font-bold text-sm transition-colors cursor-pointer ${
                     isHighlighted
                         ? 'bg-accent text-primary hover:bg-accent-hover'
                         : 'bg-transparent border border-accent text-accent hover:bg-accent-subtle'
