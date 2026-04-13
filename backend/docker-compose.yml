@@ -16,6 +16,11 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
   mongodb:
     image: mongo:8.0
     container_name: mangareader-mongodb
@@ -23,6 +28,7 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: mangareader
+    command: mongod --wiredTigerCacheSizeGB 0.25
     volumes:
       - mongo_data:/data/db
     healthcheck:
@@ -32,6 +38,11 @@ services:
       retries: 10
       start_period: 30s
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
   rabbitmq:
     image: rabbitmq:4-management-alpine
     container_name: mangareader-rabbitmq
@@ -49,6 +60,11 @@ services:
       timeout: 10s
       retries: 5
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
   redis:
     image: redis:7-alpine
     container_name: mangareader-redis
@@ -61,6 +77,11 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: "0.5"
 volumes:
   postgres_data:
     driver: local

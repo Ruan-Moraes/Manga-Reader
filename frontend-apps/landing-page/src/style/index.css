@@ -33,7 +33,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Animations */
 @keyframes fade-up {
     from {
         opacity: 0;
