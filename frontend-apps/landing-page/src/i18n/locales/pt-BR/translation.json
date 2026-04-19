@@ -1,0 +1,142 @@
+{
+    "nav": {
+        "plans": "Planos",
+        "benefits": "Benefícios",
+        "faq": "FAQ",
+        "cta": "Assine Agora",
+        "menu_toggle": "Abrir menu"
+    },
+    "hero": {
+        "headline": "Leia. Explore. Sem limites.",
+        "subheadline": "O maior acervo de mangás, manhwas e manhuas em português. Acesse de qualquer dispositivo, quando e onde quiser.",
+        "cta_primary": "Assinar Agora",
+        "cta_secondary": "Ver Planos",
+        "badge_works": "obras",
+        "badge_chapters": "capítulos"
+    },
+    "benefits": {
+        "title": "Por que o Manga Reader?",
+        "items": {
+            "library": {
+                "title": "Biblioteca Vasta",
+                "description": "Mais de {count} obras dos maiores nomes dos quadrinhos asiáticos."
+            },
+            "updates": {
+                "title": "Atualizações Diárias",
+                "description": "Novos capítulos todos os dias para você sempre ter algo novo para ler."
+            },
+            "multiplatform": {
+                "title": "Multi-plataforma",
+                "description": "Leia no navegador, no aplicativo iOS ou Android. Sincronizado em todos."
+            },
+            "offline": {
+                "title": "Leitura Offline",
+                "description": "Baixe seus capítulos favoritos e leia sem precisar de internet."
+            }
+        }
+    },
+    "catalog": {
+        "title": "Um acervo que cresce todo dia",
+        "works_label": "Obras disponíveis",
+        "chapters_label": "Capítulos para ler",
+        "loading": "Carregando...",
+        "error": "Não foi possível carregar as estatísticas. Tente novamente mais tarde."
+    },
+    "features": {
+        "title": "Tudo o que você precisa",
+        "badges": {
+            "web": "Web",
+            "ios": "iOS",
+            "android": "Android",
+            "offline": "Offline",
+            "no_ads": "Sem Anúncios",
+            "hd": "Leitura em HD"
+        }
+    },
+    "plans": {
+        "title": "Escolha seu plano",
+        "subtitle": "Cancele quando quiser. Sem taxas escondidas.",
+        "period": {
+            "daily": "Diário",
+            "monthly": "Mensal",
+            "annual": "Anual"
+        },
+        "discount_badge": "Economize 33%",
+        "cta": "Assinar",
+        "feature_list_title": "Incluído:",
+        "per_day": "/dia",
+        "per_month": "/mês",
+        "per_year": "/ano",
+        "most_popular": "Mais Popular",
+        "error": "Não foi possível carregar os planos. Tente novamente mais tarde."
+    },
+    "gift": {
+        "title": "Presenteie quem você ama",
+        "subtitle": "Dê o presente de leituras ilimitadas.",
+        "tab_give": "Presentear",
+        "tab_redeem": "Resgatar",
+        "give": {
+            "description": "Escolha um plano e presenteie alguém especial com acesso ilimitado à plataforma. O código de presente será enviado diretamente na sua conta.",
+            "cta": "Presentear no App"
+        },
+        "redeem": {
+            "code_label": "Código do presente",
+            "code_placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "cta": "Resgatar no App"
+        }
+    },
+    "testimonials": {
+        "title": "O que dizem nossos leitores",
+        "items": [
+            {
+                "name": "Ana Lima",
+                "text": "Finalmente uma plataforma que tem tudo que eu gosto e funciona offline. Perfeita para viagens!"
+            },
+            {
+                "name": "Carlos Matos",
+                "text": "A qualidade das imagens é impressionante. Levo minha coleção no bolso."
+            },
+            {
+                "name": "Julia Santos",
+                "text": "Presenteei meu irmão e ele amou. O sistema de gift code é muito simples e prático."
+            }
+        ]
+    },
+    "faq": {
+        "title": "Perguntas Frequentes",
+        "items": [
+            {
+                "question": "Posso cancelar a assinatura a qualquer momento?",
+                "answer": "Sim. Você pode cancelar a qualquer momento diretamente pelo painel do usuário, sem burocracia."
+            },
+            {
+                "question": "O plano diário realmente custa centavos?",
+                "answer": "Sim! O plano diário é ideal para testar a plataforma antes de assinar um plano mais longo."
+            },
+            {
+                "question": "Como funciona o gift code?",
+                "answer": "Você compra um código de presente e envia por e-mail para quem quiser. O destinatário usa o código para ativar a assinatura na conta dele."
+            },
+            {
+                "question": "Funciona no celular?",
+                "answer": "Sim! Temos aplicativos nativos para iOS e Android, além da versão web responsiva."
+            },
+            {
+                "question": "Posso ler offline?",
+                "answer": "Sim. Com o app, você pode baixar capítulos e ler sem internet nos planos Mensal e Anual."
+            },
+            {
+                "question": "Com que frequência saem novos capítulos?",
+                "answer": "Nossa equipe atualiza o acervo diariamente com novos capítulos das séries em andamento."
+            }
+        ]
+    },
+    "footer_cta": {
+        "headline": "Comece a ler agora",
+        "subheadline": "Junte-se a milhares de leitores. Primeiro mês com garantia de satisfação.",
+        "cta": "Assinar Agora"
+    },
+    "footer": {
+        "rights_reserved": "Todos os direitos reservados."
+    }
+}

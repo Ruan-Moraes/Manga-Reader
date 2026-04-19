@@ -39,9 +39,11 @@ public class CacheConfig {
                 .entryTtl(Duration.ofMinutes(5));
 
         Map<String, RedisCacheConfiguration> perCacheTtl = Map.of(
-                CacheNames.TITLE,             defaultConfig.entryTtl(Duration.ofMinutes(10)),
-                CacheNames.TAG,               defaultConfig.entryTtl(Duration.ofMinutes(30)),
-                CacheNames.RATING_AVERAGE,    defaultConfig.entryTtl(Duration.ofMinutes(2))
+                CacheNames.TITLE,               defaultConfig.entryTtl(Duration.ofMinutes(10)),
+                CacheNames.TAG,                 defaultConfig.entryTtl(Duration.ofMinutes(30)),
+                CacheNames.RATING_AVERAGE,      defaultConfig.entryTtl(Duration.ofMinutes(2)),
+                CacheNames.PUBLIC_STATS,        defaultConfig.entryTtl(Duration.ofMinutes(30)),
+                CacheNames.SUBSCRIPTION_PLANS,  defaultConfig.entryTtl(Duration.ofHours(1))
         );
 
         return RedisCacheManager.builder(connectionFactory)

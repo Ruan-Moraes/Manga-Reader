@@ -67,7 +67,11 @@ public class CommentSeed implements EntitySeeder {
                 Comment.builder().id("c-5-1").titleId("5").parentCommentId(null)
                         .userId("seed-user-5").userName("Rui Oliveira").userPhoto("https://i.pravatar.cc/100?img=33")
                         .textContent("Artes marciais + drama pesado = combinação perfeita. Nota 10!")
-                        .likeCount(22).dislikeCount(0).build()
+                        .likeCount(22).dislikeCount(0).build(),
+                Comment.builder().id("c-1-5").titleId("1").parentCommentId("c-1-2")
+                        .userId("seed-user-3").userName("Carlos Henrique").userPhoto("https://i.pravatar.cc/100?img=15")
+                        .textContent("Sim! E o capítulo 7 superou tudo. O clímax da batalha foi insano.")
+                        .likeCount(6).dislikeCount(0).build()
         );
 
         commentRepository.saveAll(comments);

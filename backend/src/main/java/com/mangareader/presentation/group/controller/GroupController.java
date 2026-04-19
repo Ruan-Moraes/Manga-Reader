@@ -174,7 +174,9 @@ public class GroupController {
             @RequestParam(defaultValue = "20") int size
     ) {
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+
         var result = getGroupsByTitleIdUseCase.execute(titleId, pageable);
+
         var mapped = result.map(GroupMapper::toPreviewResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));

@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.auth.port.TokenPort;
+import com.mangareader.application.user.usecase.admin.GetContentMetricsUseCase;
 import com.mangareader.application.user.usecase.admin.GetDashboardMetricsUseCase;
+import com.mangareader.presentation.admin.dto.ContentMetricsResponse;
+import com.mangareader.presentation.admin.dto.ContentMetricsResponse.TopTitleResponse;
 import com.mangareader.presentation.admin.dto.DashboardMetricsResponse;
 
 @WebMvcTest(AdminDashboardController.class)
@@ -32,6 +36,9 @@ class AdminDashboardControllerTest {
 
     @MockitoBean
     private GetDashboardMetricsUseCase getDashboardMetricsUseCase;
+
+    @MockitoBean
+    private GetContentMetricsUseCase getContentMetricsUseCase;
 
     @Test
     @DisplayName("Deve retornar 200 com métricas do dashboard")
@@ -53,5 +60,26 @@ class AdminDashboardControllerTest {
                 .andExpect(jsonPath("$.data.totalEvents").value(10))
                 .andExpect(jsonPath("$.data.bannedUsers").value(3))
                 .andExpect(jsonPath("$.data.usersByRole.ADMIN").value(2));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 200 com métricas de conteúdo")
+    void deveRetornar200ComMetricasDeConteudo() throws Exception {
+        var topTitle = new TopTitleResponse(
+                "t1", "Top Title", "cover.jpg", "MANGA", 9.5, 4.8, 100L
+        );
+        var metrics = new ContentMetricsResponse(
+                Map.of("ONGOING", 50L, "COMPLETED", 30L),
+                Map.of("HAPPENING_NOW", 2L, "COMING_SOON", 5L),
+                List.of(topTitle)
+        );
+        when(getContentMetricsUseCase.execute()).thenReturn(metrics);
+
+        mockMvc.perform(get("/api/admin/dashboard/content-metrics"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.titlesByStatus.ONGOING").value(50))
+                .andExpect(jsonPath("$.data.eventsByStatus.HAPPENING_NOW").value(2))
+                .andExpect(jsonPath("$.data.topTitles[0].name").value("Top Title"));
     }
 }

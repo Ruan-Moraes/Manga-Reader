@@ -1,0 +1,12 @@
+{
+  "name": "@manga-reader/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./tailwind-preset": "./src/tailwind-preset.js"
+  },
+  "files": ["src"]
+}

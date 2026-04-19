@@ -46,6 +46,10 @@ public class GroupSeed implements EntitySeeder {
         var carlos = users.get(2);
         var mika = users.get(1);
         var demo = users.get(0);
+        var roberta = users.size() > 4 ? users.get(4) : null;
+        var yuki = users.size() > 7 ? users.get(7) : null;
+        var sofia = users.size() > 8 ? users.get(8) : null;
+        var diego = users.size() > 9 ? users.get(9) : null;
 
         var sakura = Group.builder()
                 .name("Sakura Scans")
@@ -148,8 +152,157 @@ public class GroupSeed implements EntitySeeder {
                         .genres(List.of("Aventura", "Fantasia", "Histórico")).build()
         );
 
-        groupRepository.saveAll(List.of(sakura, tempest, polaris));
+        var aurora = Group.builder()
+                .name("Aurora Manga")
+                .username("aurora-manga")
+                .logo("https://i.pravatar.cc/150?img=66")
+                .banner("https://picsum.photos/1200/300?random=204")
+                .description("Grupo com equipe completa cobrindo todos os papéis de scanlation.")
+                .website("https://auroramanga.example.com")
+                .totalTitles(6)
+                .foundedYear(2019)
+                .status(GroupStatus.ACTIVE)
+                .genres(List.of("Ação", "Aventura", "Fantasia"))
+                .focusTags(List.of("Scanlation", "Equipe Completa"))
+                .rating(4.8)
+                .popularity(90)
+                .build();
 
-        log.info("✓ 3 grupos de tradução de demonstração criados.");
+        if (roberta != null && yuki != null && sofia != null && diego != null) {
+            aurora.getGroupUsers().addAll(List.of(
+                    GroupUser.builder().group(aurora).user(admin).role(GroupRole.LIDER).build(),
+                    GroupUser.builder().group(aurora).user(roberta).role(GroupRole.TRADUTOR).build(),
+                    GroupUser.builder().group(aurora).user(carlos).role(GroupRole.REVISOR).build(),
+                    GroupUser.builder().group(aurora).user(yuki).role(GroupRole.QC).build(),
+                    GroupUser.builder().group(aurora).user(sofia).role(GroupRole.CLEANER).build(),
+                    GroupUser.builder().group(aurora).user(diego).role(GroupRole.TYPESETTER).build()
+            ));
+        }
+
+        aurora.getTranslatedWorks().add(
+                GroupWork.builder()
+                        .group(aurora).titleId("5").title("Vento Cortante")
+                        .cover("https://picsum.photos/300/450?random=105").chapters(5)
+                        .status(GroupWorkStatus.ONGOING).popularity(89)
+                        .genres(List.of("Ação", "Artes Marciais", "Drama")).build()
+        );
+
+        var eclipse = Group.builder()
+                .name("Eclipse Scans")
+                .username("eclipse-scans")
+                .logo("https://i.pravatar.cc/150?img=67")
+                .banner("https://picsum.photos/1200/300?random=205")
+                .description("Grupo inativo desde 2023. Traduzia mangás de suspense e horror.")
+                .totalTitles(8)
+                .foundedYear(2018)
+                .status(GroupStatus.INACTIVE)
+                .genres(List.of("Horror", "Suspense", "Seinen"))
+                .focusTags(List.of("Horror", "Dark"))
+                .rating(4.0)
+                .popularity(55)
+                .build();
+
+        eclipse.getGroupUsers().add(
+                GroupUser.builder().group(eclipse).user(carlos).role(GroupRole.LIDER).build()
+        );
+
+        var vortex = Group.builder()
+                .name("Vortex Translations")
+                .username("vortex-tl")
+                .logo("https://i.pravatar.cc/150?img=68")
+                .description("Grupo recém-criado, ainda sem membros ativos.")
+                .totalTitles(0)
+                .foundedYear(2025)
+                .status(GroupStatus.INACTIVE)
+                .genres(List.of("Romance", "Slice of Life"))
+                .focusTags(List.of("Iniciante"))
+                .rating(0.0)
+                .popularity(5)
+                .build();
+
+        var phoenix = Group.builder()
+                .name("Phoenix Manga")
+                .username("phoenix-manga")
+                .logo("https://i.pravatar.cc/150?img=69")
+                .banner("https://picsum.photos/1200/300?random=206")
+                .description("Grupo novato focado em manhuas de cultivo e fantasia chinesa.")
+                .website("https://phoenixmanga.example.com")
+                .totalTitles(2)
+                .foundedYear(2026)
+                .status(GroupStatus.ACTIVE)
+                .genres(List.of("Fantasia", "Sobrenatural", "Aventura"))
+                .focusTags(List.of("Manhua", "Cultivo"))
+                .rating(3.5)
+                .popularity(30)
+                .build();
+
+        phoenix.getGroupUsers().addAll(List.of(
+                GroupUser.builder().group(phoenix).user(demo).role(GroupRole.LIDER).build(),
+                GroupUser.builder().group(phoenix).user(mika).role(GroupRole.TRADUTOR).build()
+        ));
+
+        phoenix.getTranslatedWorks().add(
+                GroupWork.builder()
+                        .group(phoenix).titleId("6").title("Guardião Celestial")
+                        .cover("https://picsum.photos/300/450?random=106").chapters(6)
+                        .status(GroupWorkStatus.ONGOING).popularity(92)
+                        .genres(List.of("Fantasia", "Sobrenatural", "Aventura")).build()
+        );
+
+        var solar = Group.builder()
+                .name("Solar Scans")
+                .username("solar-scans")
+                .logo("https://i.pravatar.cc/150?img=70")
+                .description("Grupo em hiato temporário por falta de equipe de tradução.")
+                .totalTitles(3)
+                .foundedYear(2021)
+                .status(GroupStatus.HIATUS)
+                .genres(List.of("Ficção Científica", "Drama"))
+                .focusTags(List.of("Sci-Fi"))
+                .rating(2.0)
+                .popularity(35)
+                .build();
+
+        solar.getGroupUsers().add(
+                GroupUser.builder().group(solar).user(mika).role(GroupRole.LIDER).build()
+        );
+
+        var lunar = Group.builder()
+                .name("Lunar TL")
+                .username("lunar-tl")
+                .logo("https://i.pravatar.cc/150?img=71")
+                .banner("https://picsum.photos/1200/300?random=207")
+                .description("Pequeno grupo de tradução com foco em qualidade sobre velocidade.")
+                .website("https://lunartl.example.com")
+                .totalTitles(1)
+                .foundedYear(2024)
+                .status(GroupStatus.ACTIVE)
+                .genres(List.of("Shoujo", "Romance"))
+                .focusTags(List.of("Qualidade", "Romance"))
+                .rating(4.9)
+                .popularity(20)
+                .build();
+
+        lunar.getGroupUsers().add(
+                GroupUser.builder().group(lunar).user(demo).role(GroupRole.LIDER).build()
+        );
+
+        var quantum = Group.builder()
+                .name("Quantum Scans")
+                .username("quantum-scans")
+                .logo("https://i.pravatar.cc/150?img=72")
+                .description("Grupo encerrado. Acervo transferido para outros grupos.")
+                .totalTitles(0)
+                .foundedYear(2020)
+                .status(GroupStatus.INACTIVE)
+                .genres(List.of("Ação", "Seinen"))
+                .focusTags(List.of("Encerrado"))
+                .rating(3.2)
+                .popularity(12)
+                .build();
+
+        groupRepository.saveAll(List.of(sakura, tempest, polaris, aurora, eclipse, vortex, phoenix, solar, lunar, quantum));
+
+        log.info("✓ 10 grupos de tradução de demonstração criados.");
     }
 }

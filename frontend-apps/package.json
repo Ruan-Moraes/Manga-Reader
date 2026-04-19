@@ -1,0 +1,23 @@
+{
+  "name": "manga-reader-frontend-workspace",
+  "private": true,
+  "scripts": {
+    "dev:app": "pnpm --filter manga-reader dev",
+    "dev:landing": "pnpm --filter landing-page dev",
+    "build": "pnpm --filter './packages/**' build && pnpm -r --filter !./packages/** build",
+    "build:app": "pnpm --filter manga-reader build",
+    "build:landing": "pnpm --filter landing-page build",
+    "test": "pnpm -r test",
+    "test:app": "pnpm --filter manga-reader test",
+    "test:landing": "pnpm --filter landing-page test",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

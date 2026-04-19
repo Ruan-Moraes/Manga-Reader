@@ -140,8 +140,109 @@ public class NewsSeed implements EntitySeeder {
                         .build()
         );
 
-        newsRepository.saveAll(news);
+        var authorFreelancer = NewsAuthor.builder()
+                .id("author-3").name("Lucas Andrade")
+                .avatar("https://i.pravatar.cc/100?img=30")
+                .role("Freelancer").profileLink("/profile/lucas-andrade").build();
 
-        log.info("✓ {} notícias de demonstração criadas.", news.size());
+        var moreNews = List.of(
+                NewsItem.builder()
+                        .id("news-6")
+                        .title("Shueisha registra crescimento de 30% em receita digital")
+                        .subtitle("Manga Plus e Jump+ impulsionam números globais")
+                        .excerpt("A editora japonesa consolida sua estratégia digital com números recordes.")
+                        .content(List.of(
+                                "A Shueisha reportou crescimento de 30% na receita de suas plataformas digitais de mangá.",
+                                "O Manga Plus ultrapassou 70 milhões de usuários ativos mensais.",
+                                "A empresa planeja expandir traduções simultâneas para mais idiomas."
+                        ))
+                        .coverImage("https://picsum.photos/800/450?random=306")
+                        .source("Shueisha").sourceLogo("https://picsum.photos/50/50?random=406")
+                        .category(NewsCategory.INDUSTRIA)
+                        .tags(List.of("Shueisha", "Digital", "Mercado"))
+                        .author(authorRedacao)
+                        .readTime(5).views(1800).commentsCount(22).trendingScore(65)
+                        .reactions(NewsReaction.builder().like(88).excited(34).sad(0).surprised(12).build())
+                        .build(),
+                NewsItem.builder()
+                        .id("news-7")
+                        .title("AnimeCon SP 2026: tudo que sabemos até agora")
+                        .subtitle("Convidados confirmados, ingressos e programação")
+                        .excerpt("O maior evento otaku do Brasil revela detalhes da edição de 2026.")
+                        .content(List.of(
+                                "A AnimeCon SP 2026 acontecerá no São Paulo Expo com duração de 3 dias.",
+                                "Convidados internacionais incluem mangakás e dubladores japoneses.",
+                                "Ingressos VIP já estão esgotados; lote regular disponível."
+                        ))
+                        .coverImage("https://picsum.photos/800/450?random=307")
+                        .source("AnimeCon").sourceLogo("https://picsum.photos/50/50?random=407")
+                        .category(NewsCategory.EVENTOS)
+                        .tags(List.of("AnimeCon", "Evento", "São Paulo"))
+                        .author(authorColunista)
+                        .readTime(4).views(6200).commentsCount(89).trendingScore(91)
+                        .isFeatured(true)
+                        .reactions(NewsReaction.builder().like(320).excited(210).sad(2).surprised(18).build())
+                        .build(),
+                NewsItem.builder()
+                        .id("news-8")
+                        .title("10 curiosidades sobre a criação de mangás que você não sabia")
+                        .subtitle("Do papel ao digital: segredos dos bastidores")
+                        .content(List.of(
+                                "Mangakás profissionais trabalham em média 16 horas por dia durante prazos apertados.",
+                                "O processo de screentone ainda é feito manualmente por muitos artistas.",
+                                "Editores de mangá frequentemente sugerem mudanças drásticas na história."
+                        ))
+                        .coverImage("https://picsum.photos/800/450?random=308")
+                        .source("MangaReader")
+                        .category(NewsCategory.CURIOSIDADES)
+                        .tags(List.of("Curiosidades", "Bastidores", "Mangá"))
+                        .author(authorFreelancer)
+                        .readTime(7).views(0).commentsCount(0).trendingScore(10)
+                        .reactions(NewsReaction.builder().like(0).excited(0).sad(0).surprised(0).build())
+                        .build(),
+                NewsItem.builder()
+                        .id("news-9")
+                        .title("Mercado brasileiro de mangás cresce 45% e se torna o 3º maior do mundo")
+                        .subtitle("Dados de 2025 confirmam o Brasil como potência no consumo de mangá")
+                        .excerpt("O país ultrapassou a França em volume de vendas de mangás traduzidos.")
+                        .content(List.of(
+                                "O Brasil vendeu mais de 15 milhões de volumes de mangá em 2025.",
+                                "As editoras Panini, JBC e NewPOP lideram o mercado nacional.",
+                                "O crescimento é impulsionado por adaptações de anime em plataformas de streaming."
+                        ))
+                        .coverImage("https://picsum.photos/800/450?random=309")
+                        .source("PublishNews").sourceLogo("https://picsum.photos/50/50?random=409")
+                        .category(NewsCategory.MERCADO)
+                        .tags(List.of("Mercado", "Brasil", "Vendas"))
+                        .author(authorRedacao)
+                        .readTime(5).views(1_000_000).commentsCount(230).trendingScore(99)
+                        .isExclusive(true).isFeatured(true)
+                        .reactions(NewsReaction.builder().like(890).excited(560).sad(0).surprised(120).build())
+                        .build(),
+                NewsItem.builder()
+                        .id("news-10")
+                        .title("Japão aprova nova lei de proteção a direitos autorais de mangás digitais")
+                        .subtitle("Lei visa combater pirataria e proteger artistas independentes")
+                        .excerpt("A legislação entra em vigor em 2027 e afeta plataformas globais.")
+                        .content(List.of(
+                                "O parlamento japonês aprovou uma lei que fortalece a proteção de direitos autorais no meio digital.",
+                                "Plataformas de leitura ilegais serão obrigadas a remover conteúdo em até 24 horas.",
+                                "Artistas independentes terão acesso a um fundo de compensação por pirataria."
+                        ))
+                        .coverImage("https://picsum.photos/800/450?random=310")
+                        .source("NHK World").sourceLogo("https://picsum.photos/50/50?random=410")
+                        .category(NewsCategory.INTERNACIONAL)
+                        .tags(List.of("Japão", "Legislação", "Pirataria", "Internacional"))
+                        .author(authorColunista)
+                        .readTime(6).views(3400).commentsCount(67).trendingScore(78)
+                        .reactions(NewsReaction.builder().like(145).excited(30).sad(15).surprised(88).build())
+                        .build()
+        );
+
+        var allNews = new java.util.ArrayList<>(news);
+        allNews.addAll(moreNews);
+        newsRepository.saveAll(allNews);
+
+        log.info("✓ {} notícias de demonstração criadas.", allNews.size());
     }
 }

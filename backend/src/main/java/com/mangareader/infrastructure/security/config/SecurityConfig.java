@@ -72,6 +72,9 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/api/error-logs").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/api/subscription-plans").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
+
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -79,7 +82,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // Actuator: apenas health público, demais requerem autenticação
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/actuator/**").authenticated()
 

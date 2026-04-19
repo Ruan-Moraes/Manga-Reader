@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.seed;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.context.annotation.Profile;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
+import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -68,6 +70,62 @@ public class UserSeed implements EntitySeeder {
                         .bio("Tradutora amadora e revisora voluntária.")
                         .photoUrl("https://i.pravatar.cc/100?img=21")
                         .role(UserRole.ADMIN)
+                        .build(),
+                User.builder()
+                        .name("Roberta Lima")
+                        .email("roberta@mangareader.com")
+                        .passwordHash(hash)
+                        .bio("Moderadora do fórum e entusiasta de webtoons coreanos.")
+                        .photoUrl("https://i.pravatar.cc/100?img=25")
+                        .role(UserRole.MODERATOR)
+                        .build(),
+                User.builder()
+                        .name("Tomás Nogueira")
+                        .email("tomas@mangareader.com")
+                        .passwordHash(hash)
+                        .bio("Leitor casual de mangás de ação.")
+                        .photoUrl("https://i.pravatar.cc/100?img=56")
+                        .role(UserRole.MEMBER)
+                        .banned(true)
+                        .bannedAt(LocalDateTime.now().minusDays(30))
+                        .bannedReason("Spam reiterado em comentários e flood no fórum.")
+                        .build(),
+                User.builder()
+                        .name("Pedro Silva")
+                        .email("pedro@mangareader.com")
+                        .passwordHash(hash)
+                        .bio("Fã de seinen e horror.")
+                        .photoUrl("https://i.pravatar.cc/100?img=60")
+                        .role(UserRole.MEMBER)
+                        .banned(true)
+                        .bannedAt(LocalDateTime.now().minusDays(2))
+                        .bannedReason("Linguagem ofensiva em comentários.")
+                        .bannedUntil(LocalDateTime.now().plusDays(5))
+                        .build(),
+                User.builder()
+                        .name("Yuki Sato")
+                        .email("yuki@mangareader.com")
+                        .passwordHash(hash)
+                        .role(UserRole.MEMBER)
+                        .build(),
+                User.builder()
+                        .name("Sofia Cardoso")
+                        .email("sofia@mangareader.com")
+                        .passwordHash(hash)
+                        .bio("Leitora ávida de romance e fantasia. Prefere manter perfil discreto.")
+                        .photoUrl("https://i.pravatar.cc/100?img=29")
+                        .role(UserRole.MEMBER)
+                        .commentVisibility(VisibilitySetting.PRIVATE)
+                        .viewHistoryVisibility(VisibilitySetting.DO_NOT_TRACK)
+                        .build(),
+                User.builder()
+                        .name("Diego Martins")
+                        .email("diego@mangareader.com")
+                        .passwordHash(hash)
+                        .bio("Moderador e curador de conteúdo. Especialista em mangás clássicos.")
+                        .photoUrl("https://i.pravatar.cc/100?img=68")
+                        .bannerUrl("https://picsum.photos/1200/300?random=901")
+                        .role(UserRole.MODERATOR)
                         .build()
         );
 

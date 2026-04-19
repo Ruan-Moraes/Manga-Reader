@@ -37,4 +37,6 @@ public interface GroupJpaRepository extends JpaRepository<Group, UUID> {
 
     @Query("SELECT DISTINCT g FROM Group g JOIN g.translatedWorks w WHERE w.titleId = :titleId")
     Page<Group> findByTitleId(@Param("titleId") String titleId, Pageable pageable);
+
+    Page<Group> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

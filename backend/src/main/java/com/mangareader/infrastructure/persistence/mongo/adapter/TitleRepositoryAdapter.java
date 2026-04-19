@@ -6,7 +6,12 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
@@ -110,4 +115,36 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     public long count() {
         return mongoRepository.count();
     }
+
+    @Override
+    public long countByStatus(String status) {
+        Query query = new Query(Criteria.where("status").is(status));
+
+        return mongoTemplate.count(query, Title.class);
+    }
+
+    @Override
+    public List<Title> findTopByRankingScore(int limit) {
+        Query query = new Query()
+                .with(Sort.by(Sort.Direction.DESC, "rankingScore"))
+                .limit(limit);
+
+        return mongoTemplate.find(query, Title.class);
+    }
+
+    @Override
+    public long countTotalChapters() {
+        UnwindOperation unwind = Aggregation.unwind("chapters", true);
+        GroupOperation group = Aggregation.group().count().as("total");
+        Aggregation aggregation = Aggregation.newAggregation(unwind, group);
+
+        AggregationResults<ChapterCountResult> results =
+                mongoTemplate.aggregate(aggregation, "titles", ChapterCountResult.class);
+
+        ChapterCountResult result = results.getUniqueMappedResult();
+
+        return result != null ? result.total() : 0L;
+    }
+
+    private record ChapterCountResult(long total) {}
 }

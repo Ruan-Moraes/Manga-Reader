@@ -9,7 +9,7 @@
 ### Backend (`/backend/`)
 
 ```bash
-mvn test                                        # Todos os testes (817, JUnit 5 + Mockito + H2 + TestContainers)
+mvn test                                        # Todos os testes (946, JUnit 5 + Mockito + H2 + TestContainers)
 mvn test -Dtest=UserTest                        # Classe específica
 mvn test -Dtest=UserTest#shouldInitialize...    # Método específico
 mvn test -Dtest=**/domain/**/*Test              # Por camada (domain/application/presentation/infrastructure)
@@ -122,6 +122,24 @@ Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `d
 ### Qualidade Contínua
 - Refatorar continuamente; corrigir tech debt cedo
 - Deixar o código mais limpo do que encontrou
+
+### Mobile-First
+- CSS: estilos base para mobile, media-queries para telas maiores (sm → md → lg)
+- Tailwind: escrever classes base sem prefixo, adicionar `sm:`, `md:`, `lg:` para breakpoints maiores
+- Admin sidebar: colapsável em mobile (`<md`), hamburger no header, overlay com backdrop
+- Tabelas: `overflow-x-auto` + colunas opcionais com `hiddenOnMobile: true` (escondidas em `<sm`)
+- Grids: `grid-cols-1` base, expandir com `sm:grid-cols-2`, `md:grid-cols-3`, `lg:grid-cols-4`
+- Textos longos (nomes, labels): usar `hidden sm:inline` para versões completas em mobile
+- Breakpoints customizados: `mobile-sm` (320px), `mobile-md` (375px), `mobile-lg` (425px)
+
+### Internationalization (i18n) — Obrigatório em Novas Telas
+- **Toda tela nova** deve implementar suporte a i18n (português, inglês, espanhol, mínimo)
+- **Nenhum texto hardcoded** em componentes — usar chaves de tradução
+- **Padrão**: `i18n('chave.traducao')` ou `t('chave.traducao')` dependendo da biblioteca
+- **Estrutura de arquivos**: `locales/{lang}.json` com namespaces por feature
+- **Validação**: Verificar se todas as chaves estão presentes em todos os idiomas suportados
+- **Exceções permitidas**: Labels de API, nomes próprios, códigos técnicos (mas com fallback i18n)
+- **Datas, números, moedas**: Usar formatadores localizados (Intl API ou biblioteca i18n)
 
 ---
 
@@ -253,6 +271,7 @@ Antes de considerar qualquer tarefa concluída:
 4. Nenhum teste existente foi quebrado ou deletado sem justificativa
 5. Commits pequenos e focados com mensagens claras
 6. Branch names significativos
+7. **[Nova tela]** i18n implementado — sem textos hardcoded, todas as chaves presentes em todos os idiomas suportados
 
 ---
 
@@ -262,6 +281,7 @@ Antes de considerar qualquer tarefa concluída:
 |-----------------|---------------------|
 | Nova feature/endpoint | Atualizar `README.md` (tabela endpoints), `CLAUDE.md` (patterns) |
 | Novo use case/entity | Atualizar `README.md` (métricas), `CLAUDE.md` (domínios se aplicável) |
+| Nova tela/página | Implementar i18n obrigatoriamente; documentar chaves em `locales/README.md` |
 | Bug fix com lição aprendida | Atualizar `CLAUDE.md` (Known Test Limitations) |
 | Mudança de arquitetura | Atualizar `docs/overview.md`, `docs/backend-analysis.md` ou `docs/frontend-analysis.md` |
 | Novo tech debt identificado | Adicionar em `docs/tech-debt.md` com prioridade e impacto |
@@ -270,6 +290,7 @@ Antes de considerar qualquer tarefa concluída:
 | Tarefa concluída | Remover de `docs/pending-tasks.md` |
 | Mudança de versão de dependência | Atualizar `README.md` (Stack), `docs/overview.md` |
 | Mudança na contagem de testes | Atualizar `README.md` e `CLAUDE.md` |
+| Adição/modificação de strings i18n | Atualizar todos os idiomas suportados (pt, en, es) em `locales/` |
 
 ---
 

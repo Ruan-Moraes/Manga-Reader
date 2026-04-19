@@ -12,7 +12,6 @@ CREATE TABLE events (
     status                  VARCHAR(30)     NOT NULL,
     type                    VARCHAR(20)     NOT NULL,
 
-    -- @Embedded EventLocation
     label                   VARCHAR(255),
     address                 VARCHAR(255),
     city                    VARCHAR(255),
@@ -20,7 +19,6 @@ CREATE TABLE events (
     map_link                VARCHAR(255),
     directions              VARCHAR(255),
 
-    -- @Embedded EventOrganizer
     organizer_id            VARCHAR(255),
     organizer_name          VARCHAR(255),
     organizer_avatar        VARCHAR(255),
