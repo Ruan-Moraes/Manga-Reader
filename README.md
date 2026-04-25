@@ -21,6 +21,11 @@
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
        ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy, enriched profile)
        ├─ ✅ 9c-testes: Testes frontend (37 arquivos, 284 testes — services, hooks, utils)
+       ├─ 🔄 9d-i18n: Internacionalização completa (pt-BR, en-US, es-ES)
+       │      ├─ ✅ Infra frontend (i18next + LanguageSwitcher + 16 namespaces)
+       │      ├─ ✅ Backend (MessageSource + DTOs + SecurityExceptionHandler + emails)
+       │      ├─ ✅ Layout + auth + comment + rating + user + library (~27 componentes)
+       │      └─ 🔲 Restante: manga, chapter, news, event, group, forum, category, contact, store, admin
        └─ 🔲 9c-polish: Code splitting, Error Boundaries, @Transactional fixes, a11y, fix 8 testes falhando
 [🔲] Fase 10:  Produção (CI/CD, infra cloud, deploy, monitoramento)
 ```
@@ -508,7 +513,7 @@ Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta A
 | 8 | Conteúdo placeholder em Termos de Uso e DMCA |
 | 9 | Referências cross-database sem integridade documentada |
 | 10 | Basename `/Manga-Reader` hardcoded |
-| 11 | Sem i18n |
+| 11 | i18n em andamento (Fase 9d — ver Roadmap) |
 | 12 | `localhost:5000` hardcoded em useCategoryFilters |
 
 > Detalhamento completo em [`docs/tech-debt.md`](docs/tech-debt.md).
@@ -540,6 +545,13 @@ Stack: Vitest 4.1.1 + @testing-library/react 16.3.2 + MSW v2.12.14 (intercepta A
        ├─ ✅ 9a: Biblioteca unificada (tabs, contagens, paginação) + MyReviews + Profile stats
        ├─ ✅ 9b: Perfil enriquecido (recommendations, view history, privacy, enriched profile)
        ├─ ✅ 9c-testes: Testes frontend (37 arquivos, 284 testes — services, hooks, utils)
+       ├─ 🔄 9d-i18n: Internacionalização (pt-BR, en-US, es-ES)
+       │      ├─ ✅ Infra frontend: i18next + LanguageDetector + LanguageSwitcher + 16 namespaces
+       │      ├─ ✅ Backend: MessageSource + AcceptHeaderLocaleResolver + messages_{lang}.properties
+       │      ├─ ✅ DTOs de validação com chaves {validation.*}
+       │      ├─ ✅ SecurityExceptionHandler + EmailTemplateBuilder localizados
+       │      ├─ ✅ Componentes refatorados: layout (Header/Footer), auth, comment, rating, user, library
+       │      └─ 🔲 Pendente: manga, chapter, news, event, group, forum, category, contact, store, admin
        └─ 🔲 9c-polish: Code splitting, Error Boundaries, @Transactional fixes, a11y, fix 8 testes falhando
 
 [🔲] Fase 10: Produção
