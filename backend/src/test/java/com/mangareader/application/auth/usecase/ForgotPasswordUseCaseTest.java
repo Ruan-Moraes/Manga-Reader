@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.mangareader.application.auth.port.TokenPort;
@@ -39,6 +40,9 @@ class ForgotPasswordUseCaseTest {
     @Mock
     private EmailPort emailPort;
 
+    @Mock
+    private MessageSource messageSource;
+
     @InjectMocks
     private ForgotPasswordUseCase forgotPasswordUseCase;
 
@@ -50,6 +54,9 @@ class ForgotPasswordUseCaseTest {
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(forgotPasswordUseCase, "baseUrl", BASE_URL);
+        org.mockito.Mockito.lenient()
+                .when(messageSource.getMessage(eq("email.footer.tagline"), any(), any()))
+                .thenReturn("Manga Reader — Sua plataforma de mangás");
     }
 
     private User buildUser() {
