@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
     IoLogOutOutline,
@@ -9,8 +10,6 @@ import {
 
 import UserSettingsModal from '@shared/component/modal/settings/UserSettingsModal';
 import { clearCache } from '@shared/service/util/queryCache';
-
-// TODO: Refatorar para usar o AppLink e evitar duplicação de código, além de garantir consistência visual e funcional em toda a aplicação.
 
 export type MenuProfile = {
     id: string;
@@ -74,57 +73,87 @@ const SidebarMenuContent = ({
     onLogout,
     onNavigate,
 }: MenuLinkBlockProps) => {
+    const { t } = useTranslation('layout');
     const [isUserSettingsOpen, setIsUserSettingsOpen] =
         useState<boolean>(false);
 
     const feedItems: MenuItem[] = [
-        { label: 'Home', link: '/' },
+        { label: t('sidebar.feed.home'), link: '/' },
         {
-            label: 'Trending',
+            label: t('sidebar.feed.trending'),
             link: '/filter?sort=most_read',
-            badge: 'em alta',
+            badge: t('sidebar.feed.trendingBadge'),
         },
-        { label: 'Novidades', link: '/news?filter=new' },
+        { label: t('sidebar.feed.new'), link: '/news?filter=new' },
     ];
 
     const libraryItems: MenuItem[] = [
         {
-            label: 'Meus Mangás',
+            label: t('sidebar.library.myMangas'),
             link: '/library',
-            badge: `${profile.savedCount ?? 0} salvos`,
+            badge: t('sidebar.library.savedBadge', {
+                count: profile.savedCount ?? 0,
+            }),
         },
-        { label: 'Avaliados', link: '/reviews' },
+        { label: t('sidebar.library.reviews'), link: '/reviews' },
         ...(profile.canDownload
-            ? [{ label: 'Downloads', link: '/library?tab=downloads' }]
+            ? [
+                  {
+                      label: t('sidebar.library.downloads'),
+                      link: '/library?tab=downloads',
+                  },
+              ]
             : []),
     ];
 
     const communityItems: MenuItem[] = [
-        { label: 'Notícias', link: '/news', badge: profile.newsBadge },
         {
-            label: 'Eventos',
+            label: t('sidebar.community.news'),
+            link: '/news',
+            badge: profile.newsBadge,
+        },
+        {
+            label: t('sidebar.community.events'),
             link: '/events',
             badge: profile.eventBadge,
         },
-        { label: 'Grupos de Tradução', link: '/groups' },
-        { label: 'Fórum / Discussões', link: '/forum' },
+        {
+            label: t('sidebar.community.translationGroups'),
+            link: '/groups',
+        },
+        { label: t('sidebar.community.forum'), link: '/forum' },
     ];
 
     const settingsItems: MenuItem[] = [
-        { label: 'Meu Perfil', link: '/profile' },
+        { label: t('sidebar.user.profile'), link: '/profile' },
     ];
 
     const roleItems: MenuItem[] = [
         ...(profile.isPoster || profile.isAdmin
-            ? [{ label: 'Dashboard', link: '/dashboard' }]
+            ? [{ label: t('sidebar.admin.dashboard'), link: '/dashboard' }]
             : []),
         ...(profile.isAdmin
             ? [
-                  { label: 'Gerenciar Notícias', link: '/news?tab=manage' },
-                  { label: 'Gerenciar Eventos', link: '/events?tab=manage' },
-                  { label: 'Gerenciar Grupos', link: '/groups?tab=manage' },
-                  { label: 'Gerenciar Usuários', link: '/profile?tab=users' },
-                  { label: 'Configurações do Site', link: '/profile?tab=site' },
+                  {
+                      label: t('sidebar.admin.manageNews'),
+                      link: '/news?tab=manage',
+                  },
+                  {
+                      label: t('sidebar.admin.manageEvents'),
+                      link: '/events?tab=manage',
+                  },
+                  {
+                      label: t('sidebar.admin.manageGroups'),
+                      link: '/groups?tab=manage',
+                  },
+                  {
+                      label: t('sidebar.admin.manageUsers'),
+                      link: '/profile?tab=users',
+                  },
+                  {
+                      label: t('sidebar.admin.siteSettings'),
+                      link: '/profile?tab=site',
+                  },
               ]
             : []),
     ];
@@ -134,7 +163,9 @@ const SidebarMenuContent = ({
             <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
                 {isLoggedIn ? (
                     <>
-                        <p className={sectionTitleClass}>Conta</p>
+                        <p className={sectionTitleClass}>
+                            {t('sidebar.section.account')}
+                        </p>
                         <p className="text-sm font-semibold">
                             {profile.fullName}
                         </p>
@@ -152,9 +183,11 @@ const SidebarMenuContent = ({
                     </>
                 ) : (
                     <>
-                        <p className={sectionTitleClass}>Bem-vindo</p>
+                        <p className={sectionTitleClass}>
+                            {t('sidebar.section.welcome')}
+                        </p>
                         <p className="text-sm font-semibold">
-                            Faça parte da comunidade
+                            {t('sidebar.welcomeMessage')}
                         </p>
                         <div className="flex gap-2 pt-1">
                             <Link
@@ -162,14 +195,14 @@ const SidebarMenuContent = ({
                                 onClick={onNavigate}
                                 className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
                             >
-                                Entrar
+                                {t('sidebar.loginCta')}
                             </Link>
                             <Link
                                 to="/Manga-Reader/sign-up"
                                 onClick={onNavigate}
                                 className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
                             >
-                                Cadastrar
+                                {t('sidebar.signUpCta')}
                             </Link>
                         </div>
                     </>
@@ -177,7 +210,9 @@ const SidebarMenuContent = ({
             </div>
 
             <section className="flex flex-col gap-1.5">
-                <h3 className={sectionTitleClass}>Feed</h3>
+                <h3 className={sectionTitleClass}>
+                    {t('sidebar.section.feed')}
+                </h3>
                 {feedItems.map(item => (
                     <MenuNavLink
                         key={item.label}
@@ -189,7 +224,9 @@ const SidebarMenuContent = ({
 
             {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>Biblioteca</h3>
+                    <h3 className={sectionTitleClass}>
+                        {t('sidebar.section.library')}
+                    </h3>
                     {libraryItems.map(item => (
                         <MenuNavLink
                             key={item.label}
@@ -201,7 +238,9 @@ const SidebarMenuContent = ({
             )}
 
             <section className="flex flex-col gap-1.5">
-                <h3 className={sectionTitleClass}>Comunidade</h3>
+                <h3 className={sectionTitleClass}>
+                    {t('sidebar.section.community')}
+                </h3>
                 {communityItems.map(item => (
                     <MenuNavLink
                         key={item.label}
@@ -213,7 +252,9 @@ const SidebarMenuContent = ({
 
             {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>Usuário</h3>
+                    <h3 className={sectionTitleClass}>
+                        {t('sidebar.section.user')}
+                    </h3>
                     {settingsItems.map(item => (
                         <MenuNavLink
                             key={item.label}
@@ -226,7 +267,9 @@ const SidebarMenuContent = ({
 
             {(profile.isPoster || profile.isAdmin) && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>Painel</h3>
+                    <h3 className={sectionTitleClass}>
+                        {t('sidebar.section.panel')}
+                    </h3>
                     {roleItems.map(item => (
                         <MenuNavLink
                             key={item.label}
@@ -244,14 +287,14 @@ const SidebarMenuContent = ({
                         onClick={() => setIsUserSettingsOpen(true)}
                         className="flex-1 h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20 transition-colors duration-300 flex items-center justify-center gap-2"
                     >
-                        <IoSettingsOutline /> Configurações
+                        <IoSettingsOutline /> {t('sidebar.action.settings')}
                     </button>
                     <button
                         type="button"
                         onClick={clearCache}
                         className="flex-1 h-10 px-4 text-xs font-semibold border rounded-xs border-tertiary bg-primary-default hover:bg-tertiary/20 transition-colors duration-300 flex items-center justify-center gap-2"
                     >
-                        <IoTrashOutline /> Limpar cache
+                        <IoTrashOutline /> {t('sidebar.action.clearCache')}
                     </button>
                 </div>
                 {isLoggedIn && (
@@ -260,7 +303,7 @@ const SidebarMenuContent = ({
                         onClick={onLogout}
                         className="w-full h-10 px-4 text-xs font-semibold border rounded-xs border-quinary-default text-quinary-default bg-primary-default hover:bg-quinary-default hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"
                     >
-                        <IoLogOutOutline /> Sair
+                        <IoLogOutOutline /> {t('sidebar.action.logout')}
                     </button>
                 )}
             </div>

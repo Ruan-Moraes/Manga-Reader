@@ -1,4 +1,5 @@
 import { FormEvent, useCallback, useState } from 'react';
+import i18next from 'i18next';
 
 import {
     showErrorToast,
@@ -64,62 +65,64 @@ const usePublishWorkForm = () => {
 
     const validate = useCallback((): FormErrors => {
         const e: FormErrors = {};
+        const t = (key: string) =>
+            i18next.t(key, { ns: 'contact' }) as string;
 
         if (!draft.name.trim()) {
-            e.name = 'Nome é obrigatório.';
+            e.name = t('form.errors.nameRequired');
         }
 
         if (draft.name.trim().length < 2) {
-            e.name = 'Nome deve ter pelo menos 2 caracteres.';
+            e.name = t('form.errors.nameMin');
         } else if (!draft.email.trim()) {
-            e.email = 'Email é obrigatório.';
+            e.email = t('form.errors.emailRequired');
         }
 
         if (!EMAIL_REGEX.test(draft.email.trim())) {
-            e.email = 'Formato de email inválido.';
+            e.email = t('form.errors.emailInvalid');
         }
 
         if (!draft.workType) {
-            e.workType = 'Tipo de trabalho é obrigatório.';
+            e.workType = t('form.errors.workTypeRequired');
         }
 
         if (!draft.workTitle.trim()) {
-            e.workTitle = 'Título do trabalho é obrigatório.';
+            e.workTitle = t('form.errors.workTitleRequired');
         }
 
         if (draft.workTitle.trim().length < 2) {
-            e.workTitle = 'Título deve ter pelo menos 2 caracteres.';
+            e.workTitle = t('form.errors.workTitleMin');
         }
 
         if (!draft.synopsis.trim()) {
-            e.synopsis = 'Sinopse é obrigatória.';
+            e.synopsis = t('form.errors.synopsisRequired');
         }
 
         if (draft.synopsis.trim().length < 10) {
-            e.synopsis = 'Sinopse deve ter pelo menos 10 caracteres.';
+            e.synopsis = t('form.errors.synopsisMin');
         }
 
         if (draft.synopsis.trim().length > 2000) {
-            e.synopsis = 'Sinopse deve ter no máximo 2000 caracteres.';
+            e.synopsis = t('form.errors.synopsisMax');
         }
 
         if (
             draft.portfolioLink.trim() &&
             !URL_REGEX.test(draft.portfolioLink.trim())
         ) {
-            e.portfolioLink = 'URL inválida. Use o formato http:// ou https://';
+            e.portfolioLink = t('form.errors.portfolioLinkInvalid');
         }
 
         if (!draft.message.trim()) {
-            e.message = 'Mensagem é obrigatória.';
+            e.message = t('form.errors.messageRequired');
         }
 
         if (draft.message.trim().length < 10) {
-            e.message = 'Mensagem deve ter pelo menos 10 caracteres.';
+            e.message = t('form.errors.messageMin');
         }
 
         if (draft.message.trim().length > 5000) {
-            e.message = 'Mensagem deve ter no máximo 5000 caracteres.';
+            e.message = t('form.errors.messageMax');
         }
 
         return e;
@@ -134,9 +137,14 @@ const usePublishWorkForm = () => {
             setErrors(validationErrors);
 
             if (Object.keys(validationErrors).length > 0) {
-                showErrorToast('Corrija os erros no formulário.', {
-                    toastId: 'publish-work-validation',
-                });
+                showErrorToast(
+                    i18next.t('form.toasts.validationFailed', {
+                        ns: 'contact',
+                    }),
+                    {
+                        toastId: 'publish-work-validation',
+                    },
+                );
 
                 return;
             }
@@ -158,7 +166,7 @@ const usePublishWorkForm = () => {
 
                 showSuccessToast(
                     responseMessage ??
-                        'Sua solicitação foi enviada com sucesso!',
+                        i18next.t('form.toasts.success', { ns: 'contact' }),
                     { toastId: 'publish-work-success' },
                 );
 

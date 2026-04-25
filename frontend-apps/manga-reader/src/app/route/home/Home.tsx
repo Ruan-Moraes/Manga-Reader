@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 
@@ -18,14 +20,16 @@ import {
 } from '@feature/manga';
 
 const Home = () => {
+    const { t } = useTranslation('manga');
+
     return (
         <>
             <Header />
             <MainContent>
                 <AlertBanner
                     color={THEME_COLORS.QUATERNARY}
-                    title="Atenção!"
-                    message="Site em desenvolvimento, algumas funcionalidades podem não estar disponíveis."
+                    title={t('home.alertTitle')}
+                    message={t('home.alertMessage')}
                 />
                 <SocialMediaSection>
                     <SocialMediaLink
@@ -52,20 +56,20 @@ const Home = () => {
                     />
                 </SocialMediaSection>
                 <CarouselContainer
-                    title="Obras mais vistas"
-                    subTitle="Últimos 30 dias"
+                    title={t('home.carouselTitle')}
+                    subTitle={t('home.carouselSubtitle')}
                 />
                 <HighlightCardsContainer
-                    title="Tops 5 obras em ascensão"
-                    subTitle="Quero ver mais..."
+                    title={t('home.risingTitle')}
+                    subTitle={t('home.seeMore')}
                 />
                 <RowCardsContainer
-                    title="10 Obras aleatórias"
-                    subTitle="Quero ver mais..."
+                    title={t('home.randomTitle')}
+                    subTitle={t('home.seeMore')}
                 />
                 <GridCardsContainer
-                    title="Obras Atualizadas"
-                    subTitle="Quero ver mais..."
+                    title={t('home.updatedTitle')}
+                    subTitle={t('home.seeMore')}
                 />
             </MainContent>
             <Footer />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IoImageOutline } from 'react-icons/io5';
 
 import { type Title } from '@feature/manga/type/title.types';
@@ -15,6 +16,8 @@ const ChapterCoverImage = ({
     imageError,
     onImageError,
 }: ChapterCoverImageProps) => {
+    const { t } = useTranslation('manga');
+
     return (
         <section>
             <div className="flex flex-col gap-4">
@@ -26,14 +29,14 @@ const ChapterCoverImage = ({
                                 className="text-tertiary"
                             />
                             <span className="mt-2 text-sm text-center text-tertiary">
-                                Não foi possível carregar a imagem
+                                {t('chapter.coverError')}
                             </span>
                         </div>
                     )}
                     {!imageError && isLoading && (
                         <div>
                             <span className="object-cover w-full rounded-md h-80">
-                                Carregando imagem do título...
+                                {t('chapter.coverLoading')}
                             </span>
                         </div>
                     )}

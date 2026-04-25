@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import StyledSelect, { MultiValue } from 'react-select';
 
 import { Tag } from '../type/tag.types';
@@ -17,6 +18,7 @@ const TagSelectInput = ({
     onChange,
     placeholder,
 }: TagSelectInputProps) => {
+    const { t } = useTranslation('category');
     const [searchParams] = useSearchParams();
     const [selectedValues, setSelectedValues] = useState<Tag[]>([]);
 
@@ -71,7 +73,7 @@ const TagSelectInput = ({
                 blurInputOnSelect={false}
                 closeMenuOnSelect={false}
                 isMulti
-                noOptionsMessage={() => 'Carregando...'}
+                noOptionsMessage={() => t('tagSelect.loading')}
                 onChange={handleChange}
                 options={options}
                 value={selectedValues}

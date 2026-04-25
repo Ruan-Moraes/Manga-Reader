@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoImageOutline } from 'react-icons/io5';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
@@ -27,6 +28,8 @@ const HighlightCard = ({
     artist,
     publisher,
 }: HighlightCardProps) => {
+    const { t } = useTranslation('manga');
+
     const detailsHTML = useRef<HTMLDivElement>(null);
     const synopsisHTML = useRef<HTMLDivElement>(null);
 
@@ -35,7 +38,7 @@ const HighlightCard = ({
     useEffect(() => {
         if (detailsHTML.current && synopsisHTML.current) {
             const descriptionElementHeight =
-                (detailsHTML.current.clientHeight * 2) / 3; // 2/3 do tamanho do elemento
+                (detailsHTML.current.clientHeight * 2) / 3;
 
             synopsisHTML.current.style.height = `${descriptionElementHeight / 16}rem`;
 
@@ -60,7 +63,7 @@ const HighlightCard = ({
         return (
             <AlertBanner
                 color={THEME_COLORS.QUINARY}
-                title="Ops! Algo deu errado."
+                title={t('errorTitle')}
                 message={ERROR_MESSAGES.FETCH_ERROR_BASE}
             />
         );
@@ -76,7 +79,7 @@ const HighlightCard = ({
                     <div className="flex flex-col w-2/4 border rounded-xs rounded-tl-none border-tertiary">
                         <div className="flex items-center justify-center h-44 mobile-md:h-56">
                             <span className="font-bold text-center text-tertiary">
-                                Carregando...
+                                {t('loading')}
                             </span>
                         </div>
                         <TitleDetails
@@ -108,7 +111,7 @@ const HighlightCard = ({
                             <AppLink link={`title/${id}`} className="h-full">
                                 {!imageError ? (
                                     <img
-                                        alt={`Capa do título: ${name}`}
+                                        alt={t('coverAlt', { name })}
                                         src={cover}
                                         onError={handleImageError}
                                         className="object-cover w-full h-full aspect-square"
@@ -121,7 +124,7 @@ const HighlightCard = ({
                                                 className="text-tertiary"
                                             />
                                             <span className="mt-2 text-xs text-center text-tertiary">
-                                                Imagem não disponível
+                                                {t('imageUnavailable')}
                                             </span>
                                         </div>
                                     </div>
@@ -148,7 +151,7 @@ const HighlightCard = ({
                 <div className="w-2/4 overflow-hidden">
                     {isLoading && (
                         <div className="text-center text-tertiary">
-                            Estamos carregando a sinopse...
+                            {t('synopsisLoading')}
                         </div>
                     )}
                     {!isLoading && (

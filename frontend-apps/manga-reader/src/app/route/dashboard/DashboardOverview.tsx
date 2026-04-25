@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 import AdminDashboardOverview from '@feature/admin/component/AdminDashboardOverview';
 import ContentMetricsPanel from '@feature/admin/component/ContentMetricsPanel';
 import useContentMetrics from '@feature/admin/hook/useContentMetrics';
 import useDashboardMetrics from '@feature/admin/hook/useDashboardMetrics';
 
 const DashboardOverview = () => {
+    const { t } = useTranslation('admin');
     const { metrics, isLoading, isError, refetch } = useDashboardMetrics();
     const {
         metrics: contentMetrics,
@@ -31,13 +34,13 @@ const DashboardOverview = () => {
         return (
             <div className="py-8 text-center">
                 <p className="mb-2 text-sm text-tertiary">
-                    Erro ao carregar métricas.
+                    {t('dashboard.overview.errorMetrics')}
                 </p>
                 <button
                     onClick={() => refetch()}
                     className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
                 >
-                    Tentar novamente
+                    {t('common.retry')}
                 </button>
             </div>
         );
@@ -45,10 +48,14 @@ const DashboardOverview = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">Visão Geral</h1>
+            <h1 className="text-lg font-bold">
+                {t('dashboard.overview.title')}
+            </h1>
             <AdminDashboardOverview metrics={metrics} />
 
-            <h2 className="mt-2 text-base font-bold">Conteúdo</h2>
+            <h2 className="mt-2 text-base font-bold">
+                {t('dashboard.overview.contentSection')}
+            </h2>
             {isLoadingContent ? (
                 <div className="grid gap-4 lg:grid-cols-2">
                     <div className="h-48 rounded-xs bg-tertiary/30 animate-pulse" />
@@ -56,7 +63,7 @@ const DashboardOverview = () => {
                 </div>
             ) : isErrorContent || !contentMetrics ? (
                 <p className="text-sm text-tertiary">
-                    Erro ao carregar métricas de conteúdo.
+                    {t('dashboard.overview.errorContentMetrics')}
                 </p>
             ) : (
                 <ContentMetricsPanel metrics={contentMetrics} />

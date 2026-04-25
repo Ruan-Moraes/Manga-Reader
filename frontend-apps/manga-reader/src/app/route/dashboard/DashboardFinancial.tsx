@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AdminPaymentList from '@feature/admin/component/AdminPaymentList';
 import RevenueChart from '@feature/admin/component/chart/RevenueChart';
@@ -20,6 +21,15 @@ const STATUS_OPTIONS = [
 ] as const;
 
 const DashboardFinancial = () => {
+    const { t } = useTranslation('admin');
+
+    const statusLabels = useMemo<Record<string, string>>(
+        () => ({
+            '': t('dashboard.financial.statusAll'),
+        }),
+        [t],
+    );
+
     const {
         payments,
         page,
@@ -55,7 +65,9 @@ const DashboardFinancial = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">Financeiro</h1>
+            <h1 className="text-lg font-bold">
+                {t('dashboard.financial.title')}
+            </h1>
 
             {isLoadingSummary ? (
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -68,7 +80,7 @@ const DashboardFinancial = () => {
                 </div>
             ) : isErrorSummary || !summary ? (
                 <p className="text-sm text-tertiary">
-                    Erro ao carregar resumo financeiro.
+                    {t('dashboard.financial.errorSummary')}
                 </p>
             ) : (
                 <FinancialDashboard summary={summary} />
@@ -84,14 +96,18 @@ const DashboardFinancial = () => {
             ) : null}
 
             <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
-                <h2 className="text-base font-bold">Pagamentos</h2>
+                <h2 className="text-base font-bold">
+                    {t('dashboard.financial.payments')}
+                </h2>
                 <span className="text-sm text-tertiary">
-                    {totalElements} pagamentos
+                    {t('dashboard.financial.count', { count: totalElements })}
                 </span>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-                <label className="text-sm text-tertiary">Status:</label>
+                <label className="text-sm text-tertiary">
+                    {t('dashboard.financial.statusLabel')}
+                </label>
                 <select
                     value={statusFilter}
                     onChange={e => {
@@ -102,7 +118,7 @@ const DashboardFinancial = () => {
                 >
                     {STATUS_OPTIONS.map(option => (
                         <option key={option || 'all'} value={option}>
-                            {option || 'Todos'}
+                            {statusLabels[option] ?? option}
                         </option>
                     ))}
                 </select>

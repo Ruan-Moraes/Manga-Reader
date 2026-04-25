@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AdminSubscriptionList from '@feature/admin/component/AdminSubscriptionList';
 import AdminPlanList from '@feature/admin/component/AdminPlanList';
@@ -29,23 +30,39 @@ import {
 
 const STATUS_OPTIONS = ['', 'ACTIVE', 'EXPIRED', 'CANCELLED'] as const;
 
-const STATUS_LABELS: Record<string, string> = {
-    '': 'Todos',
-    ACTIVE: 'Ativa',
-    EXPIRED: 'Expirada',
-    CANCELLED: 'Cancelada',
-};
-
 type Tab = 'subscriptions' | 'plans' | 'logs';
 
-const TABS: { key: Tab; label: string }[] = [
-    { key: 'subscriptions', label: 'Assinaturas' },
-    { key: 'plans', label: 'Planos' },
-    { key: 'logs', label: 'Logs' },
-];
-
 const DashboardSubscriptions = () => {
+    const { t } = useTranslation('admin');
     const [activeTab, setActiveTab] = useState<Tab>('subscriptions');
+
+    const statusLabels = useMemo<Record<string, string>>(
+        () => ({
+            '': t('dashboard.subscriptions.statusAll'),
+            ACTIVE: t('dashboard.subscriptions.statusActive'),
+            EXPIRED: t('dashboard.subscriptions.statusExpired'),
+            CANCELLED: t('dashboard.subscriptions.statusCancelled'),
+        }),
+        [t],
+    );
+
+    const tabs = useMemo<{ key: Tab; label: string }[]>(
+        () => [
+            {
+                key: 'subscriptions',
+                label: t('dashboard.subscriptions.tabs.subscriptions'),
+            },
+            {
+                key: 'plans',
+                label: t('dashboard.subscriptions.tabs.plans'),
+            },
+            {
+                key: 'logs',
+                label: t('dashboard.subscriptions.tabs.logs'),
+            },
+        ],
+        [t],
+    );
 
     // ── Subscriptions state ────────────────────────
     const {
@@ -91,29 +108,29 @@ const DashboardSubscriptions = () => {
             setIsGrantSubmitting(true);
             try {
                 await grantSubscription({ userId, planId });
-                showSuccessToast('Assinatura concedida com sucesso.');
+                showSuccessToast(t('dashboard.subscriptions.grantSuccess'));
                 setIsGrantOpen(false);
                 refetchSubscriptions();
             } catch {
-                showErrorToast('Erro ao conceder assinatura.');
+                showErrorToast(t('dashboard.subscriptions.grantError'));
             } finally {
                 setIsGrantSubmitting(false);
             }
         },
-        [refetchSubscriptions],
+        [refetchSubscriptions, t],
     );
 
     const handleRevoke = useCallback(
         async (sub: AdminSubscription) => {
             try {
                 await revokeSubscription(sub.id);
-                showSuccessToast('Assinatura revogada com sucesso.');
+                showSuccessToast(t('dashboard.subscriptions.revokeSuccess'));
                 refetchSubscriptions();
             } catch {
-                showErrorToast('Erro ao revogar assinatura.');
+                showErrorToast(t('dashboard.subscriptions.revokeError'));
             }
         },
-        [refetchSubscriptions],
+        [refetchSubscriptions, t],
     );
 
     // ── Plans state ────────────────────────────────
@@ -162,7 +179,9 @@ const DashboardSubscriptions = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">Assinaturas</h1>
+            <h1 className="text-lg font-bold">
+                {t('dashboard.subscriptions.title')}
+            </h1>
 
             {isLoadingSummary ? (
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -175,7 +194,7 @@ const DashboardSubscriptions = () => {
                 </div>
             ) : isErrorSummary || !summary ? (
                 <p className="text-sm text-tertiary">
-                    Erro ao carregar resumo de assinaturas.
+                    {t('dashboard.subscriptions.errorSummary')}
                 </p>
             ) : (
                 <SubscriptionSummaryCards summary={summary} />
@@ -187,9 +206,8 @@ const DashboardSubscriptions = () => {
                 <SubscriptionGrowthChart entries={growthData.entries} />
             ) : null}
 
-            {/* Sub-tabs */}
             <div className="flex gap-1 overflow-x-auto border-b border-b-tertiary">
-                {TABS.map(tab => (
+                {tabs.map(tab => (
                     <button
                         key={tab.key}
                         type="button"
@@ -205,13 +223,12 @@ const DashboardSubscriptions = () => {
                 ))}
             </div>
 
-            {/* ── Tab: Assinaturas ── */}
             {activeTab === 'subscriptions' && (
                 <>
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-2">
                             <label className="text-sm text-tertiary">
-                                Status:
+                                {t('dashboard.subscriptions.statusLabel')}
                             </label>
                             <select
                                 value={statusFilter}
@@ -226,12 +243,14 @@ const DashboardSubscriptions = () => {
                                         key={option || 'all'}
                                         value={option}
                                     >
-                                        {STATUS_LABELS[option] ?? option}
+                                        {statusLabels[option] ?? option}
                                     </option>
                                 ))}
                             </select>
                             <span className="text-sm text-tertiary">
-                                {totalElements} assinaturas
+                                {t('dashboard.subscriptions.count', {
+                                    count: totalElements,
+                                })}
                             </span>
                         </div>
                         <button
@@ -239,7 +258,7 @@ const DashboardSubscriptions = () => {
                             onClick={() => setIsGrantOpen(true)}
                             className="px-3 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                         >
-                            Conceder
+                            {t('dashboard.subscriptions.grant')}
                         </button>
                     </div>
 
@@ -252,7 +271,11 @@ const DashboardSubscriptions = () => {
                         onRowClick={sub => {
                             if (sub.status === 'ACTIVE') {
                                 if (
-                                    confirm('Deseja revogar esta assinatura?')
+                                    confirm(
+                                        t(
+                                            'dashboard.subscriptions.revokeConfirm',
+                                        ),
+                                    )
                                 ) {
                                     handleRevoke(sub);
                                     return;
@@ -280,12 +303,11 @@ const DashboardSubscriptions = () => {
                 </>
             )}
 
-            {/* ── Tab: Planos ── */}
             {activeTab === 'plans' && (
                 <>
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="text-sm text-tertiary">
-                            Gerenciar planos de assinatura
+                            {t('dashboard.subscriptions.plansManage')}
                         </span>
                         <button
                             type="button"
@@ -295,7 +317,7 @@ const DashboardSubscriptions = () => {
                             }}
                             className="px-3 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                         >
-                            Novo Plano
+                            {t('dashboard.subscriptions.planNew')}
                         </button>
                     </div>
 
@@ -324,12 +346,11 @@ const DashboardSubscriptions = () => {
                 </>
             )}
 
-            {/* ── Tab: Logs ── */}
             {activeTab === 'logs' && (
                 <>
                     <div className="flex flex-col gap-2">
                         <label className="text-sm text-tertiary">
-                            ID da Assinatura:
+                            {t('dashboard.subscriptions.logSubIdLabel')}
                         </label>
                         <input
                             type="text"
@@ -337,7 +358,9 @@ const DashboardSubscriptions = () => {
                             onChange={e =>
                                 setSelectedLogSubId(e.target.value || null)
                             }
-                            placeholder="Cole o UUID da assinatura"
+                            placeholder={t(
+                                'dashboard.subscriptions.logSubIdPlaceholder',
+                            )}
                             className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                         />
                     </div>

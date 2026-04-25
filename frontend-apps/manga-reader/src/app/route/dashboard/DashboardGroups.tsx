@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiSearch } from 'react-icons/fi';
 
 import AdminGroupList from '@feature/admin/component/AdminGroupList';
 import useAdminGroups from '@feature/admin/hook/useAdminGroups';
 
 const DashboardGroups = () => {
+    const { t } = useTranslation('admin');
     const {
         groups,
         page,
@@ -27,9 +29,11 @@ const DashboardGroups = () => {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-lg font-bold">Grupos</h1>
+                <h1 className="text-lg font-bold">
+                    {t('dashboard.groups.title')}
+                </h1>
                 <span className="text-sm text-tertiary">
-                    {totalElements} grupos
+                    {t('dashboard.groups.count', { count: totalElements })}
                 </span>
             </div>
 
@@ -43,7 +47,7 @@ const DashboardGroups = () => {
                         type="text"
                         value={searchInput}
                         onChange={e => setSearchInput(e.target.value)}
-                        placeholder="Buscar por nome..."
+                        placeholder={t('dashboard.groups.search')}
                         className="w-full py-2 pl-9 pr-3 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
                 </div>
@@ -51,7 +55,7 @@ const DashboardGroups = () => {
                     type="submit"
                     className="px-4 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/30"
                 >
-                    Buscar
+                    {t('common.search')}
                 </button>
             </form>
 

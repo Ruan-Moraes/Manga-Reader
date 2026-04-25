@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -6,7 +8,6 @@ import SectionTitle from '@shared/component/title/SectionTitle';
 import TextBlock from '@shared/component/paragraph/TextBlock';
 import FiltersForm from '@shared/component/form/FiltersForm';
 import RadioInput from '@shared/component/input/RadioInput';
-import RaisedButton from '@shared/component/button/RaisedButton';
 import Pagination from '@shared/component/navigation/Pagination';
 
 import {
@@ -19,6 +20,7 @@ import {
 import VerticalCard from '@feature/manga/component/card/vertical/VerticalCard';
 
 const CategoryFilters = () => {
+    const { t } = useTranslation('category');
     const { data: tags } = useTagsFetch();
 
     const {
@@ -50,86 +52,84 @@ const CategoryFilters = () => {
         <>
             <Header />
             <MainContent>
-                <SectionTitle title="Filtrar Obras">
+                <SectionTitle title={t('filters.title')}>
                     <TextBlock
                         paragraphContent={[
-                            {
-                                text: 'Aplique filtros para encontrar as obras que você deseja ler. Você pode filtrar por categorias, ordenar por mais lidos, maior nota, ordem alfabética, entre outros.',
-                            },
+                            { text: t('filters.description') },
                         ]}
                     />
                 </SectionTitle>
-                <FiltersForm title="Categorias">
+                <FiltersForm title={t('filters.categoriesTitle')}>
                     <TagSelectInput
                         urlParameterName="tags"
                         options={tags}
                         onChange={handleSelectedTags}
-                        placeholder="Seleciona uma ou mais categorias"
+                        placeholder={t('filters.categoriesPlaceholder')}
                     />
                 </FiltersForm>
-                <FiltersForm isGrid={true} title="Ordenar por">
+                <FiltersForm isGrid={true} title={t('filters.sortTitle')}>
                     <RadioInput
                         fieldName="sort"
                         onChange={handleSortChange}
                         defaultValue={true}
                         value="most_read"
-                        labelText="Mais lidos"
+                        labelText={t('filters.sort.mostRead')}
                     />
                     <RadioInput
                         fieldName="sort"
                         onChange={handleSortChange}
                         value="most_rated"
-                        labelText="Maior Nota"
+                        labelText={t('filters.sort.mostRated')}
                     />
                     <RadioInput
                         fieldName="sort"
                         onChange={handleSortChange}
                         value="ascension"
-                        labelText="Ascensão"
+                        labelText={t('filters.sort.ascension')}
                     />
                     <RadioInput
                         fieldName="sort"
                         onChange={handleSortChange}
                         value="most_recent"
-                        labelText="Mais Recente"
+                        labelText={t('filters.sort.mostRecent')}
                     />
                     <RadioInput
                         fieldName="sort"
                         onChange={handleSortChange}
                         value="random"
-                        labelText="Aleatório"
+                        labelText={t('filters.sort.random')}
                     />
                     <RadioInput
                         fieldName="sort"
                         onChange={handleSortChange}
                         value="alphabetical"
-                        labelText="Alfabética"
+                        labelText={t('filters.sort.alphabetical')}
                     />
                 </FiltersForm>
-                <FiltersForm isGrid={true} title="Status">
+                <FiltersForm isGrid={true} title={t('filters.statusTitle')}>
                     <RadioInput
                         fieldName="status"
                         onChange={handleStatusChange}
                         value="complete"
-                        labelText="Completo"
+                        labelText={t('filters.status.complete')}
                     />
                     <RadioInput
                         fieldName="status"
                         onChange={handleStatusChange}
                         value="ongoing"
-                        labelText="Em andamento"
+                        labelText={t('filters.status.ongoing')}
                     />
                     <RadioInput
                         fieldName="status"
                         onChange={handleStatusChange}
                         value="hiatus"
-                        labelText="Hiato"
+                        labelText={t('filters.status.hiatus')}
                     />
                     <RadioInput
                         fieldName="status"
                         onChange={handleStatusChange}
                         value="cancelled"
-                        labelText="Cancelado"
+                        labelText={t('filters.status.cancelled')}
                     />
                     <RadioInput
                         className="col-span-full"
@@ -137,29 +137,31 @@ const CategoryFilters = () => {
                         defaultValue={true}
                         onChange={handleStatusChange}
                         value="all"
-                        labelText="Todos"
+                        labelText={t('filters.status.all')}
                     />
                 </FiltersForm>
-                <FiltersForm isGrid={true} title="Exibir conteúdo +18">
+                <FiltersForm isGrid={true} title={t('filters.adultTitle')}>
                     <RadioInput
                         fieldName="adult_content"
                         onChange={handleAdultContentChange}
                         value="adult_content"
-                        labelText="Sim"
+                        labelText={t('filters.adult.yes')}
                     />
                     <RadioInput
                         defaultValue={true}
                         fieldName="adult_content"
                         onChange={handleAdultContentChange}
                         value="no_adult_content"
-                        labelText="Não"
+                        labelText={t('filters.adult.no')}
                     />
                 </FiltersForm>
 
                 <section className="flex flex-col gap-4 mt-4">
                     {results && (
                         <span className="text-sm text-secondary">
-                            {results.totalElements} resultado(s)
+                            {t('filters.resultsCount', {
+                                count: results.totalElements,
+                            })}
                         </span>
                     )}
 
@@ -177,13 +179,13 @@ const CategoryFilters = () => {
 
                     {isError && (
                         <p className="py-8 text-sm text-center text-secondary">
-                            Erro ao carregar resultados. Tente novamente.
+                            {t('filters.errorMessage')}
                         </p>
                     )}
 
                     {results && results.content.length === 0 && (
                         <p className="py-8 text-sm text-center text-secondary">
-                            Nenhuma obra encontrada com os filtros selecionados.
+                            {t('filters.emptyResults')}
                         </p>
                     )}
 

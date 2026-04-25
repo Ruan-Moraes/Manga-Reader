@@ -1,13 +1,17 @@
+import { useTranslation } from 'react-i18next';
+
 type SocialMediaSectionTypes = {
     children: React.ReactNode;
 };
 
 const SocialMediaSection = ({ children }: SocialMediaSectionTypes) => {
+    const { t } = useTranslation('layout');
+
     return (
         <div>
             <div className="p-2 rounded-t-xs bg-tertiary">
                 <h2 className="text-sm font-bold text-center text-shadow-default">
-                    Fique por dentro das nossas redes sociais
+                    {t('socialMedia.heading')}
                 </h2>
             </div>
             <div className="grid grid-cols-2 text-center rounded-b-xs">

@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 type Tab = {
     id: string;
-    label: string;
+    i18nKey: string;
     visible: boolean;
 };
 
@@ -19,22 +21,28 @@ const ProfileTabs = ({
     hasComments,
     hasHistory,
 }: Props) => {
+    const { t } = useTranslation('user');
+
     const tabs: Tab[] = [
-        { id: 'about', label: 'Sobre', visible: true },
-        { id: 'recommendations', label: 'Recomendados', visible: true },
+        { id: 'about', i18nKey: 'about', visible: true },
+        { id: 'recommendations', i18nKey: 'recommendations', visible: true },
         {
             id: 'comments',
-            label: 'Comentarios',
+            i18nKey: 'comments',
             visible: hasComments || isOwner,
         },
-        { id: 'history', label: 'Historico', visible: hasHistory || isOwner },
-        { id: 'settings', label: 'Configuracoes', visible: isOwner },
+        {
+            id: 'history',
+            i18nKey: 'history',
+            visible: hasHistory || isOwner,
+        },
+        { id: 'settings', i18nKey: 'settings', visible: isOwner },
     ];
 
     return (
         <div className="flex gap-1 px-4 overflow-x-auto border-b border-tertiary">
             {tabs
-                .filter(t => t.visible)
+                .filter(tab => tab.visible)
                 .map(tab => (
                     <button
                         key={tab.id}
@@ -45,7 +53,7 @@ const ProfileTabs = ({
                                 : 'border-transparent text-tertiary hover:text-primary-default'
                         }`}
                     >
-                        {tab.label}
+                        {t(`profile.tabs.${tab.i18nKey}`)}
                     </button>
                 ))}
         </div>

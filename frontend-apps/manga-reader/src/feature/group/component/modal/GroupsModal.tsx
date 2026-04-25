@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import GroupSummaryCard from '../card/GroupSummaryCard';
 
@@ -24,6 +25,7 @@ const GroupsModal = ({
     isLoading = false,
     titleId,
 }: GroupsModalProps) => {
+    const { t } = useTranslation('group');
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
     const [scopedGroups, setScopedGroups] = useState<GroupSummary[]>(
@@ -52,8 +54,11 @@ const GroupsModal = ({
         <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
             <div className="max-w-4xl mx-auto flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-bold">Grupos de Tradução</h2>
-                    <DarkButton text="Fechar" onClick={closeModal} />
+                    <h2 className="text-lg font-bold">{t('modal.title')}</h2>
+                    <DarkButton
+                        text={t('modal.close')}
+                        onClick={closeModal}
+                    />
                 </div>
                 <div className="max-h-80 overflow-y-auto">
                     {showLoading && (
@@ -79,8 +84,7 @@ const GroupsModal = ({
                     {!showLoading && scopedGroups.length === 0 && (
                         <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
                             <p className="text-tertiary text-center text-sm">
-                                Nenhum grupo de tradução encontrado para esta
-                                obra.
+                                {t('modal.empty')}
                             </p>
                         </div>
                     )}

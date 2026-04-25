@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { FaSortNumericDown, FaSortNumericUpAlt } from 'react-icons/fa';
 import { IoSearchSharp } from 'react-icons/io5';
@@ -14,6 +15,7 @@ const ChapterFilter = ({
     onSearchSubmit,
     isAscending,
 }: ChapterFilterProps) => {
+    const { t } = useTranslation('manga');
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -32,7 +34,7 @@ const ChapterFilter = ({
         <div className="flex flex-col gap-2">
             <div>
                 <h3 className="text-xl font-bold leading-none text-shadow-default">
-                    Capítulos:
+                    {t('chapter.heading')}
                 </h3>
             </div>
             <div className="flex items-stretch gap-2">
@@ -42,7 +44,7 @@ const ChapterFilter = ({
                         onClick={onSortClick}
                     >
                         <span className="text-xs font-bold w-max">
-                            Ordenar por:
+                            {t('chapter.sortBy')}
                         </span>
                         <span>
                             {isAscending ? (
@@ -60,7 +62,7 @@ const ChapterFilter = ({
                             id="chapter-search"
                             name="chapter-search"
                             type="search"
-                            placeholder="Pesquisar Capítulo"
+                            placeholder={t('chapter.searchPlaceholder')}
                             onKeyDown={handleSearchKeyDown}
                             className="w-full h-full p-2 border rounded-r-none appearance-none rounded-xs 1 border-tertiary bg-secondary outline-none"
                         />

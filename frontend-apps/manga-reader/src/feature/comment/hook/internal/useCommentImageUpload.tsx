@@ -5,8 +5,14 @@ import { showErrorToast } from '@shared/service/util/toastService';
 const MAX_IMAGES = 3;
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
-const useCommentImageUpload = () => {
-    const [images, setImages] = useState<string[]>([]);
+const useCommentImageUpload = (initialImages?: string) => {
+    const [images, setImages] = useState<string[]>(() => {
+        if (!initialImages) return [];
+        return initialImages
+            .split(',')
+            .map(u => u.trim())
+            .filter(Boolean);
+    });
 
     const addImage = useCallback(() => {
         if (images.length >= MAX_IMAGES) {

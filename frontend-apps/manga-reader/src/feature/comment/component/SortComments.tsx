@@ -48,12 +48,12 @@ const SortComments = ({ title }: SortCommentsProps) => {
                     <AiFillLike size={13} />
                 </BadgeIconButton>
                 <SortOldestButton
-                    onClick={() => handleSortClick('newest')}
-                    className={`h-8 ${sortType === 'newest' ? 'bg-quaternary-opacity-50' : ''}`}
-                />
-                <SortNewestButton
                     onClick={() => handleSortClick('oldest')}
                     className={`h-8 ${sortType === 'oldest' ? 'bg-quaternary-opacity-50' : ''}`}
+                />
+                <SortNewestButton
+                    onClick={() => handleSortClick('newest')}
+                    className={`h-8 ${sortType === 'newest' ? 'bg-quaternary-opacity-50' : ''}`}
                 />
             </div>
         </div>

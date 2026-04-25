@@ -1,4 +1,5 @@
 import { IoCloseOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
@@ -16,13 +17,15 @@ const GroupMemberModal = ({
     user,
     closeModal,
 }: GroupMemberModalProps) => {
+    const { t, i18n } = useTranslation('group');
+
     if (!user) return null;
 
     return (
         <BaseModal isModalOpen={isOpen} closeModal={closeModal}>
             <section className="mx-auto w-full max-w-2xl animate-in fade-in zoom-in-95 duration-200">
                 <header className="flex justify-between items-center pb-2 border-b border-tertiary">
-                    <h3 className="font-bold">Perfil de membro</h3>
+                    <h3 className="font-bold">{t('member.profileTitle')}</h3>
                     <button onClick={closeModal}>
                         <IoCloseOutline size={20} />
                     </button>
@@ -44,12 +47,17 @@ const GroupMemberModal = ({
 
                 <p className="mt-3 text-sm text-tertiary">{user.bio}</p>
                 <p className="mt-1 text-xs text-tertiary">
-                    Entrou na plataforma em{' '}
-                    {new Date(user.joinedAt).toLocaleDateString('pt-BR')}
+                    {t('member.joinedAt', {
+                        date: new Date(user.joinedAt).toLocaleDateString(
+                            i18n.language,
+                        ),
+                    })}
                 </p>
 
                 <div className="mt-4">
-                    <h5 className="text-sm font-bold">Grupos que participa</h5>
+                    <h5 className="text-sm font-bold">
+                        {t('member.participatesIn')}
+                    </h5>
                     <div className="flex flex-wrap gap-2 mt-2">
                         {user.groups.map(group => (
                             <AppLink
@@ -64,7 +72,7 @@ const GroupMemberModal = ({
 
                 <div className="mt-4">
                     <h5 className="text-sm font-bold">
-                        Últimos posts/comentários
+                        {t('member.recentActivity')}
                     </h5>
                     <div className="flex flex-col gap-2 mt-2 max-h-56 overflow-y-auto pr-1">
                         {user.recentPosts.slice(0, 5).map(post => (
@@ -77,8 +85,9 @@ const GroupMemberModal = ({
                                 <p className="text-[0.7rem] text-tertiary mt-1">
                                     {new Date(
                                         post.createdAt,
-                                    ).toLocaleDateString('pt-BR')}{' '}
-                                    • {post.titleName ?? 'Sem obra vinculada'}
+                                    ).toLocaleDateString(i18n.language)}{' '}
+                                    •{' '}
+                                    {post.titleName ?? t('member.noTitle')}
                                 </p>
                             </a>
                         ))}

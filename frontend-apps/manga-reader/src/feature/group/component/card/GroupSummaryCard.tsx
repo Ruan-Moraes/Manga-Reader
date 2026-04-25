@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { IoImageOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 import AppLink from '@shared/component/link/element/AppLink';
 
-import { getGroupStatusLabel } from '../../service/groupService';
+import { getGroupStatusLabelKey } from '../../service/groupService';
 
 import { GroupSummary } from '@feature/group';
 import { RatingStars } from '@feature/rating';
@@ -27,6 +28,7 @@ type GroupSummaryCardProps = {
 const MAX_TAGS = 5;
 
 const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
+    const { t } = useTranslation('group');
     const [avatarError, setAvatarError] = useState(false);
 
     const displayTags =
@@ -39,7 +41,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
                     {!avatarError ? (
                         <img
                             src={group.logo}
-                            alt={`Avatar do grupo ${group.name}`}
+                            alt={t('card.avatarAlt', { name: group.name })}
                             onError={() => setAvatarError(true)}
                             className="object-cover w-full h-full"
                         />
@@ -66,7 +68,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
                 <div className="flex flex-col gap-1">
                     <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">
-                        Status
+                        {t('summary.statusLabel')}
                     </span>
                     <span
                         className={`flex items-center gap-1.5 ${statusTextMap[group.status] ?? 'text-tertiary'}`}
@@ -74,12 +76,12 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
                         <span
                             className={`inline-block w-2 h-2 rounded-full ${statusColorMap[group.status] ?? 'bg-tertiary'}`}
                         />
-                        {getGroupStatusLabel(group.status)}
+                        {t(getGroupStatusLabelKey(group.status))}
                     </span>
                 </div>
                 <div className="flex flex-col gap-1">
                     <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">
-                        Tags de foco
+                        {t('summary.focusTags')}
                     </span>
                     {displayTags ? (
                         <div className="flex flex-wrap gap-1">
@@ -94,20 +96,20 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
                         </div>
                     ) : (
                         <span className="text-tertiary italic">
-                            Sem tags definidas
+                            {t('summary.noTags')}
                         </span>
                     )}
                 </div>
                 <div className="flex flex-col gap-1">
                     <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">
-                        Nota
+                        {t('summary.rating')}
                     </span>
                     <RatingStars value={group.rating} size={12} showValue />
                 </div>
             </div>
             <AppLink
                 link={`groups/${group.id}`}
-                text="Ver detalhes do grupo"
+                text={t('card.viewDetailsLong')}
                 className="w-full px-3 py-2 text-xs text-center border rounded-xs border-tertiary hover:border-quaternary-default transition-colors"
             />
         </article>

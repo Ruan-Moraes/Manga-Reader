@@ -1,6 +1,9 @@
+import { useRef } from 'react';
 import { FaUpload } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
-import useCommentRichEditor from '../hook/internal/useCommentRichEditor';
+import useEasyMDE from '../hook/internal/useEasyMDE';
+import useCommentImageUpload from '../hook/internal/useCommentImageUpload';
 import { createComment } from '../service/commentService';
 
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
@@ -22,22 +25,24 @@ const CommentInput = ({
     titleId,
     onCommentCreated,
 }: CommentInputProps) => {
-    const {
+    const { t } = useTranslation('comment');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const { getValue, clearValue } = useEasyMDE({
         textareaRef,
-        addImage,
-        removePlaceholder,
-        addPlaceholder,
-        getContent,
-        clearContent,
-    } = useCommentRichEditor(placeholder);
+        placeholder,
+        minHeight: '4rem',
+    });
+    const { images, addImage, removeImage, clearImages } =
+        useCommentImageUpload();
 
     const handleSend = async () => {
-        if (!requireAuth('comentar')) return;
+        if (!requireAuth(t('validation.loginRequired'))) return;
 
-        const { textContent, imageContent } = getContent();
+        const trimmed = getValue().trim();
+        const imageContent = images.join(',') || null;
 
-        if (!textContent && !imageContent) {
-            showErrorToast('Escreva algo antes de enviar.', {
+        if (!trimmed && !imageContent) {
+            showErrorToast(t('validation.empty'), {
                 toastId: 'empty-comment-error',
             });
             return;
@@ -46,19 +51,20 @@ const CommentInput = ({
         try {
             await createComment({
                 titleId,
-                textContent: textContent ?? '',
+                textContent: trimmed || '',
                 parentCommentId: null,
             });
 
-            clearContent();
+            clearValue();
+            clearImages();
 
-            showSuccessToast('Comentário enviado com sucesso.', {
+            showSuccessToast(t('toast.created'), {
                 toastId: 'create-comment-success',
             });
 
             onCommentCreated?.();
         } catch {
-            showErrorToast('Erro ao enviar comentário.', {
+            showErrorToast(t('toast.createError'), {
                 toastId: 'create-comment-error',
             });
         }
@@ -68,23 +74,41 @@ const CommentInput = ({
         <div className="flex flex-col gap-4">
             <form onSubmit={e => e.preventDefault()}>
                 <div className="text-xs border rounded-xs bg-secondary border-tertiary">
-                    <div className="flex p-2">
-                        <div
-                            ref={textareaRef}
-                            onClick={removePlaceholder}
-                            onBlur={addPlaceholder}
-                            contentEditable="true"
-                            className="flex flex-col w-full h-full gap-2 p-2 outline-none resize-none rounded-xs bg-primary-default scrollbar-hidden min-h-[4rem]"
-                        />
+                    <div className="p-2">
+                        <textarea ref={textareaRef} />
                     </div>
+                    {images.length > 0 && (
+                        <div className="flex flex-wrap gap-2 px-2 pb-2">
+                            {images.map((src, i) => (
+                                <div key={i} className="relative inline-block">
+                                    <img
+                                        src={src}
+                                        alt={t('actions.imageAlt', { index: i + 1 })}
+                                        className="object-cover rounded-xs max-h-[10rem]"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeImage(i)}
+                                        aria-label={t('actions.removeImage')}
+                                        className="absolute top-0 right-0 px-1.5 py-0.5 text-xs text-white bg-red-500 rounded-bl-xs rounded-tr-xs opacity-75 hover:opacity-100 cursor-pointer"
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
-                        <div className="flex gap-2">
-                            <BadgeIconButton onClick={addImage}>
+                        <div className="flex items-center gap-2">
+                            <BadgeIconButton
+                                onClick={addImage}
+                                className="h-full w-full"
+                            >
                                 <FaUpload />
                             </BadgeIconButton>
                         </div>
                         <div>
-                            <DarkButton onClick={handleSend} text={'Enviar'} />
+                            <DarkButton onClick={handleSend} text={t('actions.send')} />
                         </div>
                     </div>
                 </div>

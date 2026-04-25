@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
     showErrorToast,
@@ -25,6 +26,7 @@ type FormErrors = {
 };
 
 const Login = () => {
+    const { t } = useTranslation('auth');
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -41,30 +43,29 @@ const Login = () => {
         if (storedPath) {
             setRedirectPath(storedPath);
 
-            showInfoToast(
-                'Após o login, você será redirecionado para a página que tentou acessar.',
-                { toastId: 'redirect-info' },
-            );
+            showInfoToast(t('login.redirectInfo'), {
+                toastId: 'redirect-info',
+            });
         }
-    }, []);
+    }, [t]);
 
     const validate = useCallback((): FormErrors => {
         const newErrors: FormErrors = {};
 
         if (!email.trim()) {
-            newErrors.email = 'Email é obrigatório.';
+            newErrors.email = t('validation.emailRequired');
         }
 
         if (!EMAIL_REGEX.test(email.trim())) {
-            newErrors.email = 'Formato de email inválido.';
+            newErrors.email = t('validation.emailInvalid');
         }
 
         if (!password) {
-            newErrors.password = 'Senha é obrigatória.';
+            newErrors.password = t('validation.passwordRequired');
         }
 
         return newErrors;
-    }, [email, password]);
+    }, [email, password, t]);
 
     const handleFormSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -75,7 +76,7 @@ const Login = () => {
             setErrors(validationErrors);
 
             if (Object.keys(validationErrors).length > 0) {
-                showErrorToast('Corrija os erros no formulário.', {
+                showErrorToast(t('validation.fixErrors'), {
                     toastId: 'login-validation',
                 });
 
@@ -90,13 +91,12 @@ const Login = () => {
                 if (redirectPath) {
                     localStorage.removeItem('redirectAfterLogin');
                     navigate(redirectPath);
-                    showSuccessToast(
-                        'Autenticação bem-sucedida! Redirecionando para a página solicitada.',
-                        { toastId: 'auth-success-redirect' },
-                    );
+                    showSuccessToast(t('login.successRedirect'), {
+                        toastId: 'auth-success-redirect',
+                    });
                 } else {
                     navigate('/Manga-Reader');
-                    showSuccessToast('Autenticação bem-sucedida!', {
+                    showSuccessToast(t('login.success'), {
                         toastId: 'auth-success',
                     });
                 }
@@ -104,7 +104,7 @@ const Login = () => {
                 setIsLoading(false);
             }
         },
-        [login, navigate, redirectPath, email, password, validate],
+        [login, navigate, redirectPath, email, password, validate, t],
     );
 
     return (
@@ -113,15 +113,15 @@ const Login = () => {
             <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
-                    title="Login de usuário"
-                    helperText="Esqueceu sua senha?"
+                    title={t('login.title')}
+                    helperText={t('login.helperText')}
                     link="/forgot-password"
-                    linkText="Clique aqui"
+                    linkText={t('login.linkText')}
                 >
                     <BaseInput
-                        label="Email"
+                        label={t('login.emailLabel')}
                         type="email"
-                        placeholder="Digite seu email"
+                        placeholder={t('login.emailPlaceholder')}
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         disabled={isLoading}
@@ -129,16 +129,22 @@ const Login = () => {
                         name="email"
                     />
                     <BaseInput
-                        label="Senha:"
+                        label={t('login.passwordLabel')}
                         type="password"
-                        placeholder="Digite sua senha"
+                        placeholder={t('login.passwordPlaceholder')}
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         disabled={isLoading}
                         error={errors.password}
                         name="password"
                     />
-                    <RaisedButton text={isLoading ? 'Entrando...' : 'Entrar'} />
+                    <RaisedButton
+                        text={
+                            isLoading
+                                ? t('login.submitLoading')
+                                : t('login.submit')
+                        }
+                    />
                 </AuthenticationForm>
             </MainContent>
             <Footer showLinks={true} />

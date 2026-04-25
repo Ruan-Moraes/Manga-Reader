@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     type PrivacySettings,
@@ -12,21 +13,31 @@ type Props = {
     onUpdate: () => void;
 };
 
-const options: {
+const OPTIONS: {
     value: VisibilitySetting;
-    label: string;
-    description: string;
+    labelKey: string;
+    descriptionKey: string;
 }[] = [
-    { value: 'PUBLIC', label: 'Publico', description: 'Visivel para todos' },
-    { value: 'PRIVATE', label: 'Privado', description: 'Apenas voce pode ver' },
+    {
+        value: 'PUBLIC',
+        labelKey: 'public',
+        descriptionKey: 'publicDescription',
+    },
+    {
+        value: 'PRIVATE',
+        labelKey: 'private',
+        descriptionKey: 'privateDescription',
+    },
     {
         value: 'DO_NOT_TRACK',
-        label: 'Nao rastrear',
-        description: 'Dados nao coletados',
+        labelKey: 'doNotTrack',
+        descriptionKey: 'doNotTrackDescription',
     },
 ];
 
 const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
+    const { t } = useTranslation('user');
+
     const [commentVis, setCommentVis] = useState<VisibilitySetting>(
         privacySettings.commentVisibility,
     );
@@ -41,7 +52,7 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
             privacySettings.viewHistoryVisibility !== 'DO_NOT_TRACK'
         ) {
             const confirmed = window.confirm(
-                'Ao selecionar "Nao rastrear", todo o seu historico de visualizacao sera permanentemente deletado. Deseja continuar?',
+                t('profile.privacy.doNotTrackConfirm'),
             );
             if (!confirmed) return;
         }
@@ -52,7 +63,7 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
                 commentVisibility: commentVis,
                 viewHistoryVisibility: historyVis,
             });
-            showSuccessToast('Configuracoes de privacidade atualizadas.');
+            showSuccessToast(t('profile.privacy.savedMessage'));
             onUpdate();
         } catch {
             // handled by interceptor
@@ -65,12 +76,11 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
         <div className="px-4 py-3 space-y-6">
             <div>
                 <h3 className="text-sm font-semibold mb-3">
-                    Visibilidade dos Comentarios
+                    {t('profile.privacy.commentVisibility')}
                 </h3>
                 <div className="space-y-2">
-                    {options
-                        .filter(o => o.value !== 'DO_NOT_TRACK')
-                        .map(opt => (
+                    {OPTIONS.filter(o => o.value !== 'DO_NOT_TRACK').map(
+                        opt => (
                             <label
                                 key={opt.value}
                                 className="flex items-center gap-2 cursor-pointer"
@@ -84,22 +94,29 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
                                     className="accent-quaternary"
                                 />
                                 <div>
-                                    <span className="text-sm">{opt.label}</span>
+                                    <span className="text-sm">
+                                        {t(
+                                            `profile.privacy.${opt.labelKey}`,
+                                        )}
+                                    </span>
                                     <p className="text-[10px] text-tertiary">
-                                        {opt.description}
+                                        {t(
+                                            `profile.privacy.${opt.descriptionKey}`,
+                                        )}
                                     </p>
                                 </div>
                             </label>
-                        ))}
+                        ),
+                    )}
                 </div>
             </div>
 
             <div>
                 <h3 className="text-sm font-semibold mb-3">
-                    Visibilidade do Historico
+                    {t('profile.privacy.historyVisibility')}
                 </h3>
                 <div className="space-y-2">
-                    {options.map(opt => (
+                    {OPTIONS.map(opt => (
                         <label
                             key={opt.value}
                             className="flex items-center gap-2 cursor-pointer"
@@ -113,9 +130,13 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
                                 className="accent-quaternary"
                             />
                             <div>
-                                <span className="text-sm">{opt.label}</span>
+                                <span className="text-sm">
+                                    {t(`profile.privacy.${opt.labelKey}`)}
+                                </span>
                                 <p className="text-[10px] text-tertiary">
-                                    {opt.description}
+                                    {t(
+                                        `profile.privacy.${opt.descriptionKey}`,
+                                    )}
                                 </p>
                             </div>
                         </label>
@@ -128,7 +149,9 @@ const PrivacySettingsForm = ({ privacySettings, onUpdate }: Props) => {
                 disabled={saving}
                 className="px-4 py-2 text-sm font-medium border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors disabled:opacity-50"
             >
-                {saving ? 'Salvando...' : 'Salvar configuracoes'}
+                {saving
+                    ? t('profile.privacy.saving')
+                    : t('profile.privacy.save')}
             </button>
         </div>
     );

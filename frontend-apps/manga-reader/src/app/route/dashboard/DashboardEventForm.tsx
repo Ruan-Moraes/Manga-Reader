@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,6 +19,7 @@ const STATUSES = [
 const TYPES = ['CONVENCAO', 'LANCAMENTO', 'LIVE', 'WORKSHOP', 'MEETUP'];
 
 const DashboardEventForm = () => {
+    const { t } = useTranslation('admin');
     const { eventId } = useParams<{ eventId: string }>();
     const navigate = useNavigate();
     const isEditing = Boolean(eventId);
@@ -86,8 +88,7 @@ const DashboardEventForm = () => {
     };
 
     const handleDeleteClick = async () => {
-        if (!eventId || !confirm('Tem certeza que deseja excluir este evento?'))
-            return;
+        if (!eventId || !confirm(t('dashboard.events.deleteConfirm'))) return;
         await handleDelete(eventId);
         navigate('/Manga-Reader/dashboard/events');
     };
@@ -108,17 +109,21 @@ const DashboardEventForm = () => {
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />
-                Voltar para lista
+                {t('common.back')}
             </button>
 
             <h1 className="text-lg font-bold">
-                {isEditing ? 'Editar Evento' : 'Novo Evento'}
+                {isEditing
+                    ? t('dashboard.events.editTitle')
+                    : t('dashboard.events.newTitle')}
             </h1>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Titulo *</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.title')} *
+                        </span>
                         <input
                             required
                             value={form.title}
@@ -129,7 +134,9 @@ const DashboardEventForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Subtitulo</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.subtitle')}
+                        </span>
                         <input
                             value={form.subtitle}
                             onChange={e =>
@@ -144,7 +151,9 @@ const DashboardEventForm = () => {
                 </div>
 
                 <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">Descricao</span>
+                    <span className="text-sm text-tertiary">
+                        {t('dashboard.events.form.description')}
+                    </span>
                     <textarea
                         rows={3}
                         value={form.description}
@@ -161,7 +170,7 @@ const DashboardEventForm = () => {
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Data inicio *
+                            {t('dashboard.events.form.startDate')} *
                         </span>
                         <input
                             type="datetime-local"
@@ -178,7 +187,7 @@ const DashboardEventForm = () => {
                     </label>
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Data fim *
+                            {t('dashboard.events.form.endDate')} *
                         </span>
                         <input
                             type="datetime-local"
@@ -198,7 +207,7 @@ const DashboardEventForm = () => {
                 <div className="grid gap-3 sm:grid-cols-3">
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Timeline *
+                            {t('dashboard.events.form.timeline')} *
                         </span>
                         <select
                             value={form.timeline}
@@ -210,15 +219,17 @@ const DashboardEventForm = () => {
                             }
                             className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                         >
-                            {TIMELINES.map(t => (
-                                <option key={t} value={t}>
-                                    {t}
+                            {TIMELINES.map(tl => (
+                                <option key={tl} value={tl}>
+                                    {tl}
                                 </option>
                             ))}
                         </select>
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Status *</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.status')} *
+                        </span>
                         <select
                             value={form.status}
                             onChange={e =>
@@ -237,7 +248,9 @@ const DashboardEventForm = () => {
                         </select>
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Tipo *</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.type')} *
+                        </span>
                         <select
                             value={form.type}
                             onChange={e =>
@@ -245,9 +258,9 @@ const DashboardEventForm = () => {
                             }
                             className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                         >
-                            {TYPES.map(t => (
-                                <option key={t} value={t}>
-                                    {t}
+                            {TYPES.map(ty => (
+                                <option key={ty} value={ty}>
+                                    {ty}
                                 </option>
                             ))}
                         </select>
@@ -256,7 +269,9 @@ const DashboardEventForm = () => {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Local</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.location')}
+                        </span>
                         <input
                             value={form.locationLabel}
                             onChange={e =>
@@ -269,7 +284,9 @@ const DashboardEventForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Cidade</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.city')}
+                        </span>
                         <input
                             value={form.locationCity}
                             onChange={e =>
@@ -286,7 +303,7 @@ const DashboardEventForm = () => {
                 <div className="grid gap-3 sm:grid-cols-3">
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Organizador
+                            {t('dashboard.events.form.organizer')}
                         </span>
                         <input
                             value={form.organizerName}
@@ -300,7 +317,9 @@ const DashboardEventForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Preco</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.events.form.price')}
+                        </span>
                         <input
                             value={form.priceLabel}
                             onChange={e =>
@@ -309,13 +328,15 @@ const DashboardEventForm = () => {
                                     priceLabel: e.target.value,
                                 }))
                             }
-                            placeholder="R$ 50,00"
+                            placeholder={t(
+                                'dashboard.events.form.pricePlaceholder',
+                            )}
                             className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                         />
                     </label>
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Imagem URL
+                            {t('dashboard.events.form.image')}
                         </span>
                         <input
                             value={form.image}
@@ -339,7 +360,9 @@ const DashboardEventForm = () => {
                                 }))
                             }
                         />
-                        <span className="text-sm">Online</span>
+                        <span className="text-sm">
+                            {t('dashboard.events.form.online')}
+                        </span>
                     </label>
                     <label className="flex items-center gap-2">
                         <input
@@ -352,7 +375,9 @@ const DashboardEventForm = () => {
                                 }))
                             }
                         />
-                        <span className="text-sm">Destaque</span>
+                        <span className="text-sm">
+                            {t('dashboard.events.form.featured')}
+                        </span>
                     </label>
                 </div>
 
@@ -363,10 +388,10 @@ const DashboardEventForm = () => {
                         className="px-4 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-dark disabled:opacity-50"
                     >
                         {isSubmitting
-                            ? 'Salvando...'
+                            ? t('common.saving')
                             : isEditing
-                              ? 'Salvar'
-                              : 'Criar'}
+                              ? t('common.save')
+                              : t('common.create')}
                     </button>
                     {isEditing && (
                         <button
@@ -375,7 +400,7 @@ const DashboardEventForm = () => {
                             disabled={isSubmitting}
                             className="px-4 py-2 text-sm font-semibold text-red-300 border rounded-xs border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
                         >
-                            Excluir
+                            {t('common.delete')}
                         </button>
                     )}
                 </div>

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
@@ -18,6 +19,7 @@ const MemberListModal = ({
     closeModal,
     group,
 }: MemberListModalProps) => {
+    const { t } = useTranslation('group');
     const [search, setSearch] = useState<string>('');
     const [selectedUser, setSelectedUser] = useState<GroupMember | null>(null);
 
@@ -35,7 +37,10 @@ const MemberListModal = ({
                 <section className="mx-auto w-full max-w-3xl animate-in fade-in zoom-in-95 duration-200">
                     <header className="flex justify-between items-center pb-2 border-b border-tertiary">
                         <h3 className="font-bold">
-                            {group.name} • {group.members.length} membros
+                            {t('member.membersHeader', {
+                                name: group.name,
+                                count: group.members.length,
+                            })}
                         </h3>
                         <button onClick={closeModal}>
                             <IoCloseOutline size={20} />
@@ -45,7 +50,7 @@ const MemberListModal = ({
                     <SearchInput
                         value={search}
                         onChange={setSearch}
-                        placeholder="Buscar membro"
+                        placeholder={t('member.searchPlaceholder')}
                         className="mt-3"
                     />
 

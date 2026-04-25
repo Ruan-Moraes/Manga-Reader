@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 
 import AdminUserDetail from '@feature/admin/component/AdminUserDetail';
 import useAdminUserDetail from '@feature/admin/hook/useAdminUserDetail';
 
 const DashboardUserDetail = () => {
+    const { t } = useTranslation('admin');
     const { userId } = useParams<{ userId: string }>();
     const navigate = useNavigate();
     const { user, isLoading, isError, refetch } = useAdminUserDetail(
@@ -28,13 +30,13 @@ const DashboardUserDetail = () => {
         return (
             <div className="py-8 text-center">
                 <p className="mb-2 text-sm text-tertiary">
-                    Erro ao carregar detalhes do usuário.
+                    {t('dashboard.users.errorDetail')}
                 </p>
                 <button
                     onClick={() => refetch()}
                     className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
                 >
-                    Tentar novamente
+                    {t('common.retry')}
                 </button>
             </div>
         );
@@ -47,7 +49,7 @@ const DashboardUserDetail = () => {
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />
-                Voltar para lista
+                {t('common.back')}
             </button>
             <AdminUserDetail user={user} />
         </div>

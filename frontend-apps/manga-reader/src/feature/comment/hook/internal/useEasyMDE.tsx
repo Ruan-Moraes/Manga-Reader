@@ -1,4 +1,5 @@
 import { useEffect, useRef, type RefObject } from 'react';
+
 import EasyMDE from 'easymde';
 
 type UseEasyMDEOptions = {
@@ -46,6 +47,7 @@ const useEasyMDE = ({
 
     useEffect(() => {
         const textarea = textareaRef.current;
+
         if (!textarea || editorRef.current) return;
 
         const instance = new EasyMDE({
@@ -90,4 +92,5 @@ const useEasyMDE = ({
 };
 
 export { COMPACT_TOOLBAR, DEFAULT_TOOLBAR };
+
 export default useEasyMDE;

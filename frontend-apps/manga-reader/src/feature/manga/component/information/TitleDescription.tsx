@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import GenreTagList from '@shared/component/box/GenreTagList';
 
@@ -14,6 +15,7 @@ const TitleDescription = ({
     genres,
     synopsis,
 }: TitleDescriptionTypes) => {
+    const { t } = useTranslation('manga');
     const synopsisRef = useRef<HTMLParagraphElement>(null);
 
     const [isClamped, setIsClamped] = useState(false);
@@ -32,7 +34,7 @@ const TitleDescription = ({
             <div className="flex flex-col gap-2">
                 <div>
                     <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">
-                        Sinopse
+                        {t('synopsis')}
                     </h3>
                 </div>
                 <div>
@@ -53,7 +55,7 @@ const TitleDescription = ({
                             onClick={() => setIsModalOpen(true)}
                             className="mt-1 text-xs font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
                         >
-                            Ler mais
+                            {t('readMore')}
                         </button>
                     )}
                 </div>
@@ -61,7 +63,7 @@ const TitleDescription = ({
             <div className="flex flex-col gap-2">
                 <div>
                     <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">
-                        Gêneros
+                        {t('genres')}
                     </h3>
                 </div>
                 <GenreTagList genres={genres} />

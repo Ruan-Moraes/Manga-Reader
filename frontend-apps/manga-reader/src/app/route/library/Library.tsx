@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -9,6 +11,7 @@ import LibraryEmptyState from '@feature/library/component/LibraryEmptyState';
 import LibrarySkeleton from '@feature/library/component/LibrarySkeleton';
 
 const Library = () => {
+    const { t } = useTranslation('library');
     const {
         items,
         counts,
@@ -28,9 +31,9 @@ const Library = () => {
             <Header />
             <MainContent>
                 <section className="flex flex-col gap-1">
-                    <h2 className="text-xl font-bold">Minha Biblioteca</h2>
+                    <h2 className="text-xl font-bold">{t('page.title')}</h2>
                     <p className="text-sm text-tertiary">
-                        Gerencie seus mangás salvos por status de leitura.
+                        {t('page.subtitle')}
                     </p>
                 </section>
 
@@ -47,7 +50,7 @@ const Library = () => {
                             onClick={retry}
                             className="px-3 py-1 text-xs border rounded-xs border-quinary-default hover:bg-quinary-default/20"
                         >
-                            Tentar novamente
+                            {t('page.retry')}
                         </button>
                     </div>
                 )}
@@ -74,7 +77,7 @@ const Library = () => {
                                     onClick={loadMore}
                                     className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                                 >
-                                    Carregar mais
+                                    {t('page.loadMore')}
                                 </button>
                             </div>
                         )}

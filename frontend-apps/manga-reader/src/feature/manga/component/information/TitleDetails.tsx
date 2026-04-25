@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { TitleDetails as TitleDetailsProps } from '../../type/title-card.types';
 
@@ -17,12 +18,13 @@ const TitleDetails = ({
     artist,
     publisher,
 }: TitleDetailsProps) => {
+    const { t } = useTranslation('manga');
+
     const isDataLoading = shouldLoadCardData && isLoading;
 
-    // Todo: provavelmente, vou ter que alterar isso para pegar o último capítulo
     const lastChapter = useMemo(() => {
-        return chapters ? [chapters?.length - 1] : 'N/A';
-    }, [chapters]);
+        return chapters ? [chapters?.length - 1] : t('details.notAvailable');
+    }, [chapters, t]);
 
     return (
         <div>
@@ -42,7 +44,9 @@ const TitleDetails = ({
             <div className="flex flex-col w-full gap-1 p-2 text-xs">
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Popularidade: </span>
+                        <span className="font-bold">
+                            {t('details.popularity')}{' '}
+                        </span>
                         <span className={isDataLoading ? 'text-tertiary' : ''}>
                             {isDataLoading ? '...' : popularity + 'º'}
                         </span>
@@ -50,7 +54,9 @@ const TitleDetails = ({
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Capítulos: </span>
+                        <span className="font-bold">
+                            {t('details.chapters')}{' '}
+                        </span>
                         <span className={isDataLoading ? 'text-tertiary' : ''}>
                             {isDataLoading ? '...' : lastChapter}
                         </span>
@@ -58,32 +64,46 @@ const TitleDetails = ({
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Autor: </span>
+                        <span className="font-bold">
+                            {t('details.author')}{' '}
+                        </span>
                         <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading ? '...' : author || 'N/A'}
+                            {isDataLoading
+                                ? '...'
+                                : author || t('details.notAvailable')}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Artista:</span>{' '}
+                        <span className="font-bold">
+                            {t('details.artist')}
+                        </span>{' '}
                         <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading ? '...' : artist || 'N/A'}
+                            {isDataLoading
+                                ? '...'
+                                : artist || t('details.notAvailable')}
                         </span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">Editora:</span>{' '}
+                        <span className="font-bold">
+                            {t('details.publisher')}
+                        </span>{' '}
                         <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading ? '...' : publisher || 'N/A'}
+                            {isDataLoading
+                                ? '...'
+                                : publisher || t('details.notAvailable')}
                         </span>
                     </p>
                 </div>
                 {showType && type && (
                     <div>
                         <p className="truncate">
-                            <span className="font-bold">Tipo:</span>{' '}
+                            <span className="font-bold">
+                                {t('details.type')}
+                            </span>{' '}
                             <span
                                 className={isDataLoading ? 'text-tertiary' : ''}
                             >

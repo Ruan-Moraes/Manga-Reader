@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { type RecommendedTitle } from '../../type/user.types';
@@ -19,6 +20,7 @@ const RecommendationsSection = ({
     isOwner,
     onUpdate,
 }: Props) => {
+    const { t } = useTranslation('user');
     const [titleIdInput, setTitleIdInput] = useState('');
     const [adding, setAdding] = useState(false);
 
@@ -46,7 +48,11 @@ const RecommendationsSection = ({
     };
 
     if (recommendations.length === 0 && !isOwner) {
-        return <ProfileEmptyState message="Nenhuma recomendacao ainda." />;
+        return (
+            <ProfileEmptyState
+                message={t('profile.recommendations.empty')}
+            />
+        );
     }
 
     return (
@@ -56,7 +62,7 @@ const RecommendationsSection = ({
                     <input
                         value={titleIdInput}
                         onChange={e => setTitleIdInput(e.target.value)}
-                        placeholder="ID do titulo"
+                        placeholder={t('profile.recommendations.addPlaceholder')}
                         className="flex-1 px-2 py-1.5 text-sm border rounded-xs border-tertiary bg-primary-default"
                     />
                     <button
@@ -64,7 +70,9 @@ const RecommendationsSection = ({
                         disabled={adding}
                         className="px-3 py-1.5 text-xs font-medium border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors disabled:opacity-50"
                     >
-                        {adding ? 'Adicionando...' : 'Adicionar'}
+                        {adding
+                            ? t('profile.recommendations.adding')
+                            : t('profile.recommendations.add')}
                     </button>
                 </div>
             )}
@@ -85,7 +93,7 @@ const RecommendationsSection = ({
                             ) : (
                                 <div className="flex items-center justify-center w-full h-40 bg-secondary/50">
                                     <span className="text-xs text-tertiary">
-                                        Sem capa
+                                        {t('profile.recommendations.noCover')}
                                     </span>
                                 </div>
                             )}
@@ -106,7 +114,9 @@ const RecommendationsSection = ({
             </div>
 
             {recommendations.length === 0 && isOwner && (
-                <ProfileEmptyState message="Adicione ate 10 titulos recomendados ao seu perfil." />
+                <ProfileEmptyState
+                    message={t('profile.recommendations.emptyOwner')}
+                />
             )}
         </div>
     );

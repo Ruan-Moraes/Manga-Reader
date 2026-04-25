@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoImageOutline } from 'react-icons/io5';
 
 import type { BaseCard as BaseCardProps } from '../../../type/title-card.types';
@@ -25,6 +26,7 @@ const BaseCard = ({
     artist,
     publisher,
 }: BaseCardProps) => {
+    const { t } = useTranslation('manga');
     const [imageError, setImageError] = useState<boolean>(false);
     const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
@@ -41,11 +43,11 @@ const BaseCard = ({
                             type="button"
                             onClick={() => setIsLightboxOpen(true)}
                             className="w-full h-full cursor-zoom-in"
-                            aria-label={`Ampliar capa: ${name}`}
+                            aria-label={t('zoomCoverAria', { name })}
                         >
                             <img
                                 src={cover}
-                                alt={`Capa do título: ${name}`}
+                                alt={t('coverAlt', { name })}
                                 onError={handleImageError}
                                 className="object-cover w-full h-full aspect-square text-center leading-8"
                             />
@@ -58,7 +60,7 @@ const BaseCard = ({
                                     className="text-tertiary"
                                 />
                                 <span className="mt-2 text-xs text-center text-tertiary">
-                                    Imagem não disponível
+                                    {t('imageUnavailable')}
                                 </span>
                             </div>
                         </div>
@@ -94,7 +96,7 @@ const BaseCard = ({
                 isOpen={isLightboxOpen}
                 onClose={() => setIsLightboxOpen(false)}
                 src={cover}
-                alt={`Capa do título: ${name}`}
+                alt={t('coverAlt', { name })}
             />
         </div>
     );

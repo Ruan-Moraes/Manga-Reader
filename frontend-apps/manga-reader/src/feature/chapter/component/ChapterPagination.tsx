@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trans } from 'react-i18next';
 
 interface ChapterPaginationProps {
     currentPage: number;
@@ -16,7 +17,6 @@ const ChapterPagination: React.FC<ChapterPaginationProps> = ({
 
         pageNumbers.push(1);
 
-        // Show pages around current page
         for (
             let i = Math.max(2, currentPage - 2);
             i <= Math.min(totalPages - 1, currentPage + 2);
@@ -57,8 +57,15 @@ const ChapterPagination: React.FC<ChapterPaginationProps> = ({
             </div>
             <div className="text-center">
                 <p className="text-sm">
-                    Página <span className="font-bold">{currentPage}</span> de{' '}
-                    <span className="font-bold">{totalPages}</span>
+                    <Trans
+                        ns="manga"
+                        i18nKey="chapter.pagination.pageLabel"
+                        values={{ current: currentPage, total: totalPages }}
+                        components={{
+                            1: <span className="font-bold" />,
+                            2: <span className="font-bold" />,
+                        }}
+                    />
                 </p>
             </div>
         </div>

@@ -13,7 +13,7 @@ export {
     getRelatedEvents,
     filterEvents,
     eventTypes,
-    statusLabel,
+    statusLabelKey,
     formatEventDate,
 } from './service/eventService';
 

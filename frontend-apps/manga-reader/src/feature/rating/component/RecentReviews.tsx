@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { type MangaRating } from '../type/rating.types';
 
@@ -16,14 +17,14 @@ const REVIEWS_PER_PAGE = 5;
 const CATEGORY_META: {
     key: keyof MangaRating;
     icon: string;
-    label: string;
+    i18nKey: string;
 }[] = [
-    { key: 'funRating', icon: '🎉', label: 'Diversão:' },
-    { key: 'artRating', icon: '🖌️', label: 'Arte:' },
-    { key: 'storylineRating', icon: '📚', label: 'Enredo:' },
-    { key: 'charactersRating', icon: '🧑‍🤝‍🧑', label: 'Personagens:' },
-    { key: 'originalityRating', icon: '✨', label: 'Originalidade:' },
-    { key: 'pacingRating', icon: '🏃‍♂️', label: 'Ritmo:' },
+    { key: 'funRating', icon: '🎉', i18nKey: 'fun' },
+    { key: 'artRating', icon: '🖌️', i18nKey: 'art' },
+    { key: 'storylineRating', icon: '📚', i18nKey: 'storyline' },
+    { key: 'charactersRating', icon: '🧑‍🤝‍🧑', i18nKey: 'characters' },
+    { key: 'originalityRating', icon: '✨', i18nKey: 'originality' },
+    { key: 'pacingRating', icon: '🏃‍♂️', i18nKey: 'pacing' },
 ];
 
 type RecentReviewsProps = {
@@ -31,6 +32,7 @@ type RecentReviewsProps = {
 };
 
 const RecentReviews = ({ ratings }: RecentReviewsProps) => {
+    const { t } = useTranslation('rating');
     const { visibleItems, hasMore, loadMore } = useCommentPagination(
         ratings,
         REVIEWS_PER_PAGE,
@@ -60,10 +62,10 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
     if (ratings.length === 0) {
         return (
             <section className="flex flex-col gap-2 p-4 border rounded-xs border-tertiary">
-                <h3 className="text-sm font-bold">Avaliações recentes</h3>
+                <h3 className="text-sm font-bold">{t('recent.title')}</h3>
                 <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
                     <p className="text-xs text-center text-tertiary">
-                        Nenhuma avaliação ainda. Seja o primeiro!
+                        {t('recent.empty')}
                     </p>
                 </div>
             </section>
@@ -73,7 +75,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
     return (
         <section className="flex flex-col gap-2 p-2 rounded-xs bg-secondary border border-tertiary">
             <UserModal />
-            <h3 className="text-sm font-bold">Avaliações recentes</h3>
+            <h3 className="text-sm font-bold">{t('recent.title')}</h3>
 
             {visibleItems.map(review => (
                 <article
@@ -98,7 +100,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
                                     <span className="flex items-center gap-1 text-[0.65rem]">
                                         <span>{meta.icon}</span>
                                         <span className="text-tertiary">
-                                            {meta.label}
+                                            {t(`categories.${meta.i18nKey}`)}
                                         </span>
                                     </span>
                                     <div className="flex items-center gap-1">
@@ -110,7 +112,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
                     </div>
                     <div className="border border-tertiary rounded-xs"></div>
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold">Média geral:</span>
+                        <span className="text-xs font-bold">{t('recent.overallAverage')}</span>
                         <div className="flex items-center gap-x-4 gap-y-2">
                             <RatingStars
                                 value={review.overallRating}
@@ -128,7 +130,7 @@ const RecentReviews = ({ ratings }: RecentReviewsProps) => {
             {hasMore && (
                 <DarkButton
                     onClick={loadMore}
-                    text="Carregar mais avaliações"
+                    text={t('recent.loadMore')}
                     className=""
                 />
             )}

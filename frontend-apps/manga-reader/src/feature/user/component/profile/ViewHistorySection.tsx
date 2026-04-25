@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { type ViewHistoryItem } from '../../type/user.types';
@@ -17,6 +18,7 @@ const ViewHistorySection = ({
     isOwner,
     viewHistoryVisibility,
 }: Props) => {
+    const { t, i18n } = useTranslation('user');
     const [items, setItems] = useState<ViewHistoryItem[]>([]);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -54,7 +56,7 @@ const ViewHistorySection = ({
             )}
 
             {items.length === 0 ? (
-                <ProfileEmptyState message="Nenhum historico de visualizacao." />
+                <ProfileEmptyState message={t('profile.history.empty')} />
             ) : (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                     {items.map(item => (
@@ -72,7 +74,7 @@ const ViewHistorySection = ({
                             ) : (
                                 <div className="flex items-center justify-center w-full h-36 bg-secondary/50">
                                     <span className="text-xs text-tertiary">
-                                        Sem capa
+                                        {t('profile.history.noCover')}
                                     </span>
                                 </div>
                             )}
@@ -84,7 +86,7 @@ const ViewHistorySection = ({
                                     <p className="text-[10px] text-tertiary">
                                         {new Date(
                                             item.viewedAt,
-                                        ).toLocaleDateString('pt-BR')}
+                                        ).toLocaleDateString(i18n.language)}
                                     </p>
                                 )}
                             </div>
@@ -100,7 +102,7 @@ const ViewHistorySection = ({
                         disabled={page === 0}
                         className="px-2 py-1 text-xs border rounded-xs border-tertiary disabled:opacity-30"
                     >
-                        Anterior
+                        {t('profile.history.previous')}
                     </button>
                     <span className="text-xs text-tertiary self-center">
                         {page + 1} / {totalPages}
@@ -110,7 +112,7 @@ const ViewHistorySection = ({
                         disabled={page >= totalPages - 1}
                         className="px-2 py-1 text-xs border rounded-xs border-tertiary disabled:opacity-30"
                     >
-                        Proximo
+                        {t('profile.history.next')}
                     </button>
                 </div>
             )}

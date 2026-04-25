@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
@@ -56,6 +57,7 @@ const Comment = ({
     onDislike: (id: string) => void;
     titleId: string;
 } & CommentData) => {
+    const { t } = useTranslation('comment');
     const [isReplying, setIsReplying] = useState(false);
 
     const {
@@ -194,7 +196,7 @@ const Comment = ({
                         onClick={handleScrollToParent}
                         className="self-start text-xs text-tertiary hover:text-quaternary-default transition-colors cursor-pointer"
                     >
-                        ↳ Em resposta a{' '}
+                        {t('reply.replyingTo')}{' '}
                         <span className="font-semibold text-quaternary-default">
                             {parentUserName}
                         </span>
@@ -215,7 +217,7 @@ const Comment = ({
                     onDelete={openDeleteModal}
                     onEdit={openEditModal}
                     onReply={() => {
-                        if (!requireAuth('responder comentários')) return;
+                        if (!requireAuth(t('reply.authAction'))) return;
                         setIsReplying(true);
                     }}
                     onLike={() => onLike(id)}
@@ -236,14 +238,14 @@ const Comment = ({
                 isOpen={isDeleteModalOpen}
                 onConfirm={confirmDeleteComment}
                 onCancel={closeDeleteModal}
-                title="Deletar comentário"
-                message="Você tem certeza que deseja deletar este comentário? Essa ação deletará os comentários relacionados a ele."
+                title={t('delete.title')}
+                message={t('delete.message')}
             />
             <EditModal
                 isOpen={isEditModalOpen}
                 onEdit={confirmEditComment}
                 onCancel={closeEditModal}
-                title="Editar comentário"
+                title={t('edit.title')}
                 initialText={textContent}
                 initialImages={imageContent}
             />

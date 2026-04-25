@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import UserAvatar from '@shared/component/avatar/UserAvatar';
 
@@ -11,12 +12,13 @@ type AdminUserDetailProps = {
     user: AdminUser;
 };
 
-const formatDateTime = (date: string | null) => {
+const formatDateTime = (date: string | null, locale: string) => {
     if (!date) return '—';
-    return new Date(date).toLocaleString('pt-BR');
+    return new Date(date).toLocaleString(locale);
 };
 
 const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
+    const { t, i18n } = useTranslation('admin');
     const { isSubmitting, handleChangeRole, handleBan, handleUnban } =
         useAdminUserActions();
     const [showBanModal, setShowBanModal] = useState(false);
@@ -54,7 +56,9 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                                     : 'bg-green-500/20 text-green-300'
                             }`}
                         >
-                            {user.banned ? 'Banido' : 'Ativo'}
+                            {user.banned
+                                ? t('status.banned')
+                                : t('status.active')}
                         </span>
                     </div>
                 </div>
@@ -62,19 +66,31 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="p-4 border rounded-xs bg-secondary border-tertiary">
-                    <h3 className="mb-2 text-sm font-semibold">Informações</h3>
+                    <h3 className="mb-2 text-sm font-semibold">
+                        {t('userDetail.info')}
+                    </h3>
                     <dl className="flex flex-col gap-1 text-sm">
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">ID</dt>
+                            <dt className="text-tertiary">
+                                {t('userDetail.id')}
+                            </dt>
                             <dd className="font-mono text-xs">{user.id}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Cadastro</dt>
-                            <dd>{formatDateTime(user.createdAt)}</dd>
+                            <dt className="text-tertiary">
+                                {t('userDetail.createdAt')}
+                            </dt>
+                            <dd>
+                                {formatDateTime(user.createdAt, i18n.language)}
+                            </dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Atualizado</dt>
-                            <dd>{formatDateTime(user.updatedAt)}</dd>
+                            <dt className="text-tertiary">
+                                {t('userDetail.updatedAt')}
+                            </dt>
+                            <dd>
+                                {formatDateTime(user.updatedAt, i18n.language)}
+                            </dd>
                         </div>
                     </dl>
                 </div>
@@ -82,23 +98,37 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                 {user.banned && (
                     <div className="p-4 border border-red-500/30 rounded-xs bg-red-500/10">
                         <h3 className="mb-2 text-sm font-semibold text-red-300">
-                            Detalhes do Ban
+                            {t('userDetail.banDetails')}
                         </h3>
                         <dl className="flex flex-col gap-1 text-sm">
                             <div className="flex justify-between">
-                                <dt className="text-tertiary">Motivo</dt>
+                                <dt className="text-tertiary">
+                                    {t('userDetail.banReason')}
+                                </dt>
                                 <dd>{user.bannedReason ?? '—'}</dd>
                             </div>
                             <div className="flex justify-between">
-                                <dt className="text-tertiary">Banido em</dt>
-                                <dd>{formatDateTime(user.bannedAt)}</dd>
+                                <dt className="text-tertiary">
+                                    {t('userDetail.bannedAt')}
+                                </dt>
+                                <dd>
+                                    {formatDateTime(
+                                        user.bannedAt,
+                                        i18n.language,
+                                    )}
+                                </dd>
                             </div>
                             <div className="flex justify-between">
-                                <dt className="text-tertiary">Expira em</dt>
+                                <dt className="text-tertiary">
+                                    {t('userDetail.expiresAt')}
+                                </dt>
                                 <dd>
                                     {user.bannedUntil
-                                        ? formatDateTime(user.bannedUntil)
-                                        : 'Permanente'}
+                                        ? formatDateTime(
+                                              user.bannedUntil,
+                                              i18n.language,
+                                          )
+                                        : t('status.permanent')}
                                 </dd>
                             </div>
                         </dl>
@@ -111,7 +141,7 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                     onClick={() => setShowRoleModal(true)}
                     className="px-4 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/30"
                 >
-                    Alterar Role
+                    {t('userDetail.changeRole')}
                 </button>
                 {user.banned ? (
                     <button
@@ -119,7 +149,9 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                         disabled={isSubmitting}
                         className="px-4 py-2 text-sm font-semibold text-green-300 border border-green-500/30 rounded-xs bg-green-500/10 hover:bg-green-500/20 disabled:opacity-50"
                     >
-                        {isSubmitting ? 'Removendo...' : 'Remover Ban'}
+                        {isSubmitting
+                            ? t('userDetail.unbanning')
+                            : t('userDetail.unban')}
                     </button>
                 ) : (
                     <button
@@ -127,7 +159,7 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                         disabled={user.role === 'ADMIN'}
                         className="px-4 py-2 text-sm font-semibold text-red-300 border border-red-500/30 rounded-xs bg-red-500/10 hover:bg-red-500/20 disabled:opacity-50"
                     >
-                        Banir
+                        {t('userDetail.ban')}
                     </button>
                 )}
             </div>

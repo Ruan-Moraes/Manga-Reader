@@ -27,7 +27,7 @@ const BadgeIconButton = ({
         <button
             type="button"
             onClick={onClick}
-            className={`px-3 h-full w-full py-2 transition-colors duration-300 rounded-xs bg-primary-default hover:bg-quaternary-opacity-25
+            className={`px-3 py-2 transition-colors duration-300 rounded-xs bg-primary-default hover:bg-quaternary-opacity-25
             ${clsx(
                 className && className,
                 (likeCount || dislikeCount) && 'relative',

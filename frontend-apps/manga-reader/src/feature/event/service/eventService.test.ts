@@ -9,7 +9,7 @@ import {
     getEvents,
     getEventById,
     getRelatedEvents,
-    statusLabel,
+    statusLabelKey,
     formatEventDate,
     filterEvents,
 } from './eventService';
@@ -131,12 +131,14 @@ describe('eventService', () => {
         });
     });
 
-    describe('statusLabel', () => {
-        it('deve mapear todos os status', () => {
-            expect(statusLabel.happening_now).toBe('Acontecendo Agora');
-            expect(statusLabel.registrations_open).toBe('Inscrições Abertas');
-            expect(statusLabel.coming_soon).toBe('Em Breve');
-            expect(statusLabel.ended).toBe('Encerrado');
+    describe('statusLabelKey', () => {
+        it('deve mapear todos os status para chaves i18n', () => {
+            expect(statusLabelKey.happening_now).toBe('status.happening_now');
+            expect(statusLabelKey.registrations_open).toBe(
+                'status.registrations_open',
+            );
+            expect(statusLabelKey.coming_soon).toBe('status.coming_soon');
+            expect(statusLabelKey.ended).toBe('status.ended');
         });
     });
 

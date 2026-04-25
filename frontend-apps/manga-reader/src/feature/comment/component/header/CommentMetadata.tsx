@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import formatDate from '@shared/service/util/formatDate';
 
 type CommentMetadataProps = {
@@ -6,6 +8,8 @@ type CommentMetadataProps = {
 };
 
 const CommentMetadata = ({ createdAt, wasEdited }: CommentMetadataProps) => {
+    const { t } = useTranslation('comment');
+
     return (
         <div className="flex justify-end gap-2 text-[0.5625rem]">
             <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
@@ -21,7 +25,9 @@ const CommentMetadata = ({ createdAt, wasEdited }: CommentMetadataProps) => {
             </div>
             {wasEdited && (
                 <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
-                    <span className=" text-shadow-default">Editado</span>
+                    <span className=" text-shadow-default">
+                        {t('metadata.edited')}
+                    </span>
                 </div>
             )}
         </div>

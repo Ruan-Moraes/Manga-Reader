@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { AdminGroup, GroupMember } from '../type/admin.types';
 import useAdminGroupActions from '../hook/useAdminGroupActions';
@@ -8,9 +9,9 @@ type AdminGroupDetailProps = {
     group: AdminGroup;
 };
 
-const formatDateTime = (date: string | null) => {
+const formatDateTime = (date: string | null, locale: string) => {
     if (!date) return '—';
-    return new Date(date).toLocaleString('pt-BR');
+    return new Date(date).toLocaleString(locale);
 };
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -49,6 +50,7 @@ const RoleBadge = ({ role }: { role: string | null }) => {
 };
 
 const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
+    const { t, i18n } = useTranslation('admin');
     const { isSubmitting, handleChangeRole, handleRemoveMember } =
         useAdminGroupActions();
     const [editingMember, setEditingMember] = useState<GroupMember | null>(
@@ -63,7 +65,11 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
     };
 
     const confirmRemove = (userId: string, userName: string) => {
-        if (window.confirm(`Remover ${userName} do grupo?`)) {
+        if (
+            window.confirm(
+                t('groupDetail.removeConfirm', { name: userName }),
+            )
+        ) {
             handleRemoveMember(group.id, userId);
         }
     };
@@ -89,31 +95,50 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="p-4 border rounded-xs bg-secondary border-tertiary">
-                    <h3 className="mb-2 text-sm font-semibold">Informações</h3>
+                    <h3 className="mb-2 text-sm font-semibold">
+                        {t('groupDetail.info')}
+                    </h3>
                     <dl className="flex flex-col gap-1 text-sm">
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">ID</dt>
+                            <dt className="text-tertiary">
+                                {t('groupDetail.id')}
+                            </dt>
                             <dd className="font-mono text-xs">{group.id}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Membros</dt>
+                            <dt className="text-tertiary">
+                                {t('groupDetail.members')}
+                            </dt>
                             <dd>{group.membersCount}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Títulos</dt>
+                            <dt className="text-tertiary">
+                                {t('groupDetail.titles')}
+                            </dt>
                             <dd>{group.totalTitles}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Rating</dt>
+                            <dt className="text-tertiary">
+                                {t('groupDetail.rating')}
+                            </dt>
                             <dd>{group.rating.toFixed(1)}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Popularidade</dt>
+                            <dt className="text-tertiary">
+                                {t('groupDetail.popularity')}
+                            </dt>
                             <dd>{group.popularity}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-tertiary">Entrada</dt>
-                            <dd>{formatDateTime(group.platformJoinedAt)}</dd>
+                            <dt className="text-tertiary">
+                                {t('groupDetail.joinedAt')}
+                            </dt>
+                            <dd>
+                                {formatDateTime(
+                                    group.platformJoinedAt,
+                                    i18n.language,
+                                )}
+                            </dd>
                         </div>
                     </dl>
                 </div>
@@ -121,7 +146,7 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                 {group.description && (
                     <div className="p-4 border rounded-xs bg-secondary border-tertiary">
                         <h3 className="mb-2 text-sm font-semibold">
-                            Descrição
+                            {t('groupDetail.description')}
                         </h3>
                         <p className="text-sm text-tertiary">
                             {group.description}
@@ -132,33 +157,37 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
 
             <div className="p-4 border rounded-xs bg-secondary border-tertiary">
                 <h3 className="mb-3 text-sm font-semibold">
-                    Membros ({group.members.length})
+                    {t('groupDetail.membersCount', {
+                        count: group.members.length,
+                    })}
                 </h3>
 
                 {group.members.length === 0 ? (
-                    <p className="text-sm text-tertiary">Nenhum membro.</p>
+                    <p className="text-sm text-tertiary">
+                        {t('groupDetail.empty')}
+                    </p>
                 ) : (
                     <div className="overflow-x-auto border rounded-xs border-tertiary">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b bg-secondary border-b-tertiary">
                                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-tertiary">
-                                        Nome
+                                        {t('groupDetail.table.name')}
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-tertiary hidden sm:table-cell">
-                                        Email
+                                        {t('groupDetail.table.email')}
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-tertiary hidden sm:table-cell">
-                                        Tipo
+                                        {t('groupDetail.table.type')}
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-tertiary">
-                                        Role
+                                        {t('groupDetail.table.role')}
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-tertiary hidden sm:table-cell">
-                                        Entrada
+                                        {t('groupDetail.table.joinedAt')}
                                     </th>
                                     <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-tertiary">
-                                        Ações
+                                        {t('groupDetail.table.actions')}
                                     </th>
                                 </tr>
                             </thead>
@@ -181,7 +210,10 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                                             <RoleBadge role={member.role} />
                                         </td>
                                         <td className="px-4 py-3 text-xs text-tertiary hidden sm:table-cell">
-                                            {formatDateTime(member.joinedAt)}
+                                            {formatDateTime(
+                                                member.joinedAt,
+                                                i18n.language,
+                                            )}
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
@@ -191,7 +223,9 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                                                     }
                                                     className="px-2 py-1 text-xs border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                                                 >
-                                                    Role
+                                                    {t(
+                                                        'groupDetail.actions.role',
+                                                    )}
                                                 </button>
                                                 <button
                                                     onClick={() =>
@@ -203,7 +237,9 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                                                     disabled={isSubmitting}
                                                     className="px-2 py-1 text-xs text-red-400 border rounded-xs border-red-500/30 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                                                 >
-                                                    Remover
+                                                    {t(
+                                                        'groupDetail.actions.remove',
+                                                    )}
                                                 </button>
                                             </div>
                                         </td>

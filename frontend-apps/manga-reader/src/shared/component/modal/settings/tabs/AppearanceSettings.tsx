@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import BaseSelect from '@shared/component/input/BaseSelect';
 
 import {
@@ -7,13 +10,18 @@ import {
     type UserSettings,
 } from '../settings.constants';
 
-const themeOptions = [
-    { value: 'system', label: 'Sistema' },
-    { value: 'light', label: 'Claro' },
-    { value: 'dark', label: 'Escuro' },
-];
-
 const AppearanceSettings = ({ settings, onUpdate }: SettingsTabProps) => {
+    const { t } = useTranslation('user');
+
+    const themeOptions = useMemo(
+        () => [
+            { value: 'system', label: t('settings.appearance.theme.system') },
+            { value: 'light', label: t('settings.appearance.theme.light') },
+            { value: 'dark', label: t('settings.appearance.theme.dark') },
+        ],
+        [t],
+    );
+
     const updateAppearance = <K extends keyof UserSettings['appearance']>(
         key: K,
         value: UserSettings['appearance'][K],
@@ -26,10 +34,12 @@ const AppearanceSettings = ({ settings, onUpdate }: SettingsTabProps) => {
 
     return (
         <div className="space-y-4">
-            <h3 className={sectionTitleClass}>Aparência</h3>
+            <h3 className={sectionTitleClass}>
+                {t('settings.appearance.title')}
+            </h3>
 
             <BaseSelect
-                label="Tema"
+                label={t('settings.appearance.themeLabel')}
                 options={themeOptions}
                 value={settings.appearance.theme}
                 onChange={e =>
@@ -49,7 +59,7 @@ const AppearanceSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                         updateAppearance('compactMode', e.target.checked)
                     }
                 />
-                Layout compacto na biblioteca/listagens
+                {t('settings.appearance.compactMode')}
             </label>
 
             <label className={checkboxLabelClass}>
@@ -64,7 +74,7 @@ const AppearanceSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                         )
                     }
                 />
-                Aplicar blur em miniaturas maduras
+                {t('settings.appearance.matureBlur')}
             </label>
         </div>
     );

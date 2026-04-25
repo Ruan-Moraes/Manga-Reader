@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 const CHAPTER_PAGE_PLACEHOLDER = 'https://placehold.co/600x800/png';
 
-// TODO: Substituir por URLs reais vindas do backend
 const TOTAL_PAGES = 10;
 
 const ChapterPages = () => {
+    const { t } = useTranslation('manga');
+
     return (
         <section>
             <div className="flex flex-col justify-center gap-0.5">
@@ -11,7 +14,7 @@ const ChapterPages = () => {
                     <div key={i}>
                         <img
                             src={CHAPTER_PAGE_PLACEHOLDER}
-                            alt={`Página ${i + 1}`}
+                            alt={t('chapter.pageAlt', { number: i + 1 })}
                         />
                     </div>
                 ))}

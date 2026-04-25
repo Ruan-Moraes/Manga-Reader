@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaUpload } from 'react-icons/fa';
 
-import useCommentRichEditor from '../../../../hook/internal/useCommentRichEditor';
+import useEasyMDE from '../../../../hook/internal/useEasyMDE';
+import useCommentImageUpload from '../../../../hook/internal/useCommentImageUpload';
 
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
 
@@ -21,81 +23,52 @@ const EditModalBody = ({
     initialText,
     initialImages,
 }: EditModalBodyProps) => {
-    const editTextareaRef = useRef<HTMLDivElement | null>(null);
-    const { textareaRef, addImage, removePlaceholder } = useCommentRichEditor({
-        placeholder: 'Edite seu comentário',
-        externalRef: editTextareaRef,
+    const { t } = useTranslation('comment');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const { getValue } = useEasyMDE({
+        textareaRef,
+        placeholder: t('edit.placeholder'),
+        initialValue: initialText ?? '',
+        minHeight: '4rem',
     });
-
-    const initialValuesProcessed = useRef(false);
-
-    useEffect(() => {
-        const textarea = textareaRef.current;
-
-        if (textarea && !initialValuesProcessed.current) {
-            initialValuesProcessed.current = true;
-
-            if (initialText) {
-                removePlaceholder();
-
-                textarea.innerHTML = initialText;
-            }
-
-            if (initialImages) {
-                removePlaceholder();
-
-                const imageUrls = initialImages.split(',');
-
-                imageUrls.forEach(imageUrl => {
-                    if (imageUrl.trim()) {
-                        const imgHTML = `
-                        <div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
-                            <img src="${imageUrl}" style="max-height: 30rem; border-radius: 0.125rem; display: block; object-fit: cover;" />
-                            <button type="button" class="remove-img-btn" style="position: absolute; top: 0; right: 0; background: #f56565; color: white; font-size: 0.75rem; padding: 0.125rem 0.375rem; border: none; border-radius: 0 0.125rem 0 0.125rem; opacity: 0.75;">
-                                X
-                            </button>
-                        </div>
-                        <br/>`;
-
-                        if (textarea.innerHTML !== '') {
-                            textarea.innerHTML += imgHTML;
-                        }
-
-                        if (textarea.innerHTML === '') {
-                            textarea.innerHTML = imgHTML;
-                        }
-                    }
-                });
-            }
-        }
-    }, [initialText, initialImages, removePlaceholder, textareaRef]);
+    const { images, addImage, removeImage } = useCommentImageUpload(
+        initialImages ?? undefined,
+    );
 
     const handleSave = () => {
-        if (textareaRef.current) {
-            const newText = textareaRef.current.innerText.trim();
-
-            const imgElements = textareaRef.current.querySelectorAll('img');
-            const imgSources = Array.from(imgElements)
-                .map(img => img.getAttribute('src'))
-                .filter(Boolean)
-                .join(',');
-
-            onEdit(newText || null, imgSources || null);
-        }
+        const trimmed = getValue().trim() || null;
+        const imageContent = images.join(',') || null;
+        onEdit(trimmed, imageContent);
     };
 
     return (
         <div className="flex flex-col gap-4">
             <div className="text-xs border rounded-xs bg-secondary border-tertiary">
-                <div className="flex p-2">
-                    <div
-                        ref={textareaRef}
-                        contentEditable="true"
-                        className="flex flex-col w-full h-full gap-2 p-2 outline-none resize-none rounded-xs bg-primary-default scrollbar-hidden min-h-[4rem]"
-                    />
+                <div className="p-2">
+                    <textarea ref={textareaRef} />
                 </div>
+                {images.length > 0 && (
+                    <div className="flex flex-wrap gap-2 px-2 pb-2">
+                        {images.map((src, i) => (
+                            <div key={i} className="relative inline-block">
+                                <img
+                                    src={src}
+                                    alt={t('edit.imageAlt', { index: i + 1 })}
+                                    className="object-cover rounded-xs max-h-[10rem]"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeImage(i)}
+                                    className="absolute top-0 right-0 px-1.5 py-0.5 text-xs text-white bg-red-500 rounded-bl-xs rounded-tr-xs opacity-75 hover:opacity-100 cursor-pointer"
+                                >
+                                    {t('edit.removeImage')}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                         <BadgeIconButton onClick={addImage}>
                             <FaUpload />
                         </BadgeIconButton>
@@ -104,16 +77,16 @@ const EditModalBody = ({
                         <button
                             type="button"
                             onClick={onCancel}
-                            className="px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors"
+                            className="px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors cursor-pointer"
                         >
-                            Cancelar
+                            {t('edit.cancel')}
                         </button>
                         <button
                             type="button"
                             onClick={handleSave}
-                            className="px-4 py-2 text-sm text-white border rounded-xs bg-primary border-primary hover:bg-primary/80 transition-colors"
+                            className="px-4 py-2 text-sm text-white border rounded-xs bg-primary border-primary hover:bg-primary/80 transition-colors cursor-pointer"
                         >
-                            Salvar
+                            {t('edit.save')}
                         </button>
                     </div>
                 </div>

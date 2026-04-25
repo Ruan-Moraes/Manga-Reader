@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -9,6 +11,7 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 import useForgotPassword from '@feature/auth/hook/useForgotPassword';
 
 const ForgotPassword = () => {
+    const { t } = useTranslation('auth');
     const {
         email,
         isLoading,
@@ -25,32 +28,30 @@ const ForgotPassword = () => {
                 {isSubmitted ? (
                     <section className="flex flex-col items-center justify-center max-w-md gap-4 mx-auto text-center">
                         <h2 className="text-2xl font-bold text-shadow-default">
-                            Email enviado!
+                            {t('forgotPassword.submittedTitle')}
                         </h2>
                         <p className="text-sm">
-                            Se o email informado estiver cadastrado, você
-                            receberá um link para redefinir sua senha. Verifique
-                            sua caixa de entrada e spam.
+                            {t('forgotPassword.submittedMessage')}
                         </p>
                         <a
                             href="/Manga-Reader/login"
                             className="text-sm font-bold text-link hover:underline"
                         >
-                            Voltar para o login
+                            {t('forgotPassword.backToLogin')}
                         </a>
                     </section>
                 ) : (
                     <AuthenticationForm
                         onFormSubmit={handleSubmit}
-                        title="Recuperação de senha"
-                        helperText="Lembrou da senha?"
+                        title={t('forgotPassword.title')}
+                        helperText={t('forgotPassword.helperText')}
                         link="/login"
-                        linkText="Clique aqui"
+                        linkText={t('forgotPassword.linkText')}
                     >
                         <BaseInput
-                            label="Email"
+                            label={t('forgotPassword.emailLabel')}
                             type="email"
-                            placeholder="Digite seu email"
+                            placeholder={t('forgotPassword.emailPlaceholder')}
                             value={email}
                             onChange={handleEmailChange}
                             disabled={isLoading}
@@ -58,7 +59,11 @@ const ForgotPassword = () => {
                             name="email"
                         />
                         <RaisedButton
-                            text={isLoading ? 'Enviando...' : 'Recuperar senha'}
+                            text={
+                                isLoading
+                                    ? t('forgotPassword.submitLoading')
+                                    : t('forgotPassword.submit')
+                            }
                         />
                     </AuthenticationForm>
                 )}

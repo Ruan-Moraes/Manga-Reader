@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import StoreCard from './StoreCard';
 
@@ -15,6 +16,8 @@ const StoresContainer: React.FC<StoresContainerProps> = ({
     isLoading,
     title,
 }) => {
+    const { t } = useTranslation('store');
+
     if (isLoading) {
         return (
             <div className="flex flex-col gap-3">
@@ -31,7 +34,7 @@ const StoresContainer: React.FC<StoresContainerProps> = ({
 
     if (!stores.length) {
         return (
-            <p className="text-sm text-tertiary">Nenhum parceiro disponível.</p>
+            <p className="text-sm text-tertiary">{t('container.empty')}</p>
         );
     }
 

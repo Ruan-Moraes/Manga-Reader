@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -8,6 +10,7 @@ import TextSection from '@shared/component/paragraph/TextSection';
 import { useAuth } from '@feature/auth';
 
 const Dashboard = () => {
+    const { t } = useTranslation('admin');
     const { user } = useAuth();
 
     const role = user?.role ?? 'user';
@@ -16,36 +19,31 @@ const Dashboard = () => {
 
     const posterCards = [
         {
-            title: 'Minhas publicações',
-            description:
-                'Gerencie capítulos enviados, status e histórico de revisão.',
+            title: t('dashboard.home.cards.publications.title'),
+            description: t('dashboard.home.cards.publications.description'),
         },
         {
-            title: 'Fila de envio',
-            description:
-                'Acompanhe os conteúdos pendentes e os próximos agendamentos.',
+            title: t('dashboard.home.cards.queue.title'),
+            description: t('dashboard.home.cards.queue.description'),
         },
         {
-            title: 'Métricas de leitura',
-            description:
-                'Visualize alcance, retenção e curtidas dos seus lançamentos.',
+            title: t('dashboard.home.cards.metrics.title'),
+            description: t('dashboard.home.cards.metrics.description'),
         },
     ];
 
     const adminOnlyCards = [
         {
-            title: 'Moderação global',
-            description: 'Aprove/reprove publicações, comentários e denúncias.',
+            title: t('dashboard.home.cards.moderation.title'),
+            description: t('dashboard.home.cards.moderation.description'),
         },
         {
-            title: 'Gestão de usuários',
-            description:
-                'Promova postadores, suspenda contas e revise permissões.',
+            title: t('dashboard.home.cards.userManagement.title'),
+            description: t('dashboard.home.cards.userManagement.description'),
         },
         {
-            title: 'Configuração da plataforma',
-            description:
-                'Ajuste destaques, eventos e parâmetros gerais do sistema.',
+            title: t('dashboard.home.cards.platformConfig.title'),
+            description: t('dashboard.home.cards.platformConfig.description'),
         },
     ];
 
@@ -53,23 +51,24 @@ const Dashboard = () => {
         ? [...posterCards, ...adminOnlyCards]
         : posterCards;
 
+    const title = isAdmin
+        ? t('dashboard.home.titleAdmin')
+        : isPoster
+          ? t('dashboard.home.titlePoster')
+          : t('dashboard.home.titleDefault');
+
+    const description = isAdmin
+        ? t('dashboard.home.adminDescription')
+        : t('dashboard.home.posterDescription');
+
     return (
         <>
             <Header showSearch={true} />
             <MainContent>
                 <TextSection>
-                    <SectionTitle
-                        titleStyleClasses="text-lg"
-                        title={`Dashboard ${
-                            isAdmin ? 'Admin' : isPoster ? 'Postador' : ''
-                        }`.trim()}
-                    />
+                    <SectionTitle titleStyleClasses="text-lg" title={title} />
 
-                    <p className="mb-4 text-sm text-tertiary">
-                        {isAdmin
-                            ? 'Você possui acesso completo ao painel (incluindo tudo do Postador).'
-                            : 'Você possui acesso ao painel de conteúdo e publicação.'}
-                    </p>
+                    <p className="mb-4 text-sm text-tertiary">{description}</p>
 
                     <div className="grid gap-3 md:grid-cols-2">
                         {dashboardCards.map(card => (

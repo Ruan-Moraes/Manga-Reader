@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 
 type BookmarkButtonProps = {
@@ -11,6 +12,8 @@ const BookmarkButton = ({
     onClick,
     isLoading = false,
 }: BookmarkButtonProps) => {
+    const { t } = useTranslation('library');
+
     return (
         <button
             type="button"
@@ -28,7 +31,7 @@ const BookmarkButton = ({
             ) : (
                 <BsBookmark />
             )}
-            {isSaved ? 'Na biblioteca' : 'Salvar na biblioteca'}
+            {isSaved ? t('bookmark.saved') : t('bookmark.save')}
         </button>
     );
 };

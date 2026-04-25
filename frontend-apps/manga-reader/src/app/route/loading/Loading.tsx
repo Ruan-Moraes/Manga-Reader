@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 
 const Loading = () => {
+    const { t } = useTranslation('common');
+
     return (
         <>
             <Header />
@@ -12,10 +16,10 @@ const Loading = () => {
                         <span className="loader"></span>
                     </div>
                     <div className="text-center">
-                        <h2 className="text-xl font-bold">Carregando...</h2>
-                        <p className="text-sm">
-                            Por favor, aguarde um momento.
-                        </p>
+                        <h2 className="text-xl font-bold">
+                            {t('label.loading')}
+                        </h2>
+                        <p className="text-sm">{t('label.loadingMessage')}</p>
                     </div>
                 </div>
             </MainContent>
