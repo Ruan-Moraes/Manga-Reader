@@ -10,10 +10,10 @@ import jakarta.validation.constraints.Size;
  * Campos nulos são ignorados (PATCH semântico).
  */
 public record UpdateProfileRequest(
-        @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
+        @Size(min = 2, max = 100, message = "{validation.name.size}")
         String name,
 
-        @Size(max = 500, message = "Bio deve ter no máximo 500 caracteres")
+        @Size(max = 500, message = "{validation.user.bio.size}")
         String bio,
 
         String photoUrl,

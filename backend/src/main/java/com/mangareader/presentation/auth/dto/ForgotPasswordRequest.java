@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
  * Request para solicitação de recuperação de senha.
  */
 public record ForgotPasswordRequest(
-        @NotBlank(message = "Email é obrigatório")
-        @Email(message = "Email inválido")
+        @NotBlank(message = "{validation.email.required}")
+        @Email(message = "{validation.email.invalid}")
         String email
 ) {}

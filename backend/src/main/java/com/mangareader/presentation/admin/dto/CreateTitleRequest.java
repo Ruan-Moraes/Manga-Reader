@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotBlank;
  * Request para criação de título (admin).
  */
 public record CreateTitleRequest(
-        @NotBlank(message = "Nome é obrigatório") String name,
-        @NotBlank(message = "Tipo é obrigatório") String type,
+        @NotBlank(message = "{validation.title.name.required}") String name,
+        @NotBlank(message = "{validation.title.type.required}") String type,
         String cover,
         String synopsis,
         List<String> genres,

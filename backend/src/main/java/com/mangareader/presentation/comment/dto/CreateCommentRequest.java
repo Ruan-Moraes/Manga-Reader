@@ -7,17 +7,17 @@ import jakarta.validation.constraints.Size;
  * Request para criar um comentário.
  */
 public record CreateCommentRequest(
-        @NotBlank(message = "ID do título é obrigatório.")
-        @Size(max = 100, message = "ID do título deve ter no máximo 100 caracteres.")
+        @NotBlank(message = "{validation.comment.titleId.required}")
+        @Size(max = 100, message = "{validation.rating.titleId.size}")
         String titleId,
 
-        @NotBlank(message = "Conteúdo do comentário é obrigatório.")
-        @Size(max = 5000, message = "Conteúdo deve ter no máximo 5000 caracteres.")
+        @NotBlank(message = "{validation.comment.content.required}")
+        @Size(max = 5000, message = "{validation.comment.content.size}")
         String textContent,
 
-        @Size(max = 2000, message = "URL da imagem deve ter no máximo 2000 caracteres.")
+        @Size(max = 2000, message = "{validation.rating.comment.size}")
         String imageContent,
 
-        @Size(max = 100, message = "ID do comentário pai deve ter no máximo 100 caracteres.")
+        @Size(max = 100, message = "{validation.rating.titleId.size}")
         String parentCommentId
 ) {}

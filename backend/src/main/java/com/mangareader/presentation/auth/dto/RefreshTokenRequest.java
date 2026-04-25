@@ -6,6 +6,6 @@ import jakarta.validation.constraints.NotBlank;
  * Request de renovação de token (Refresh).
  */
 public record RefreshTokenRequest(
-        @NotBlank(message = "Refresh token é obrigatório.")
+        @NotBlank(message = "{validation.refreshToken.required}")
         String refreshToken
 ) {}

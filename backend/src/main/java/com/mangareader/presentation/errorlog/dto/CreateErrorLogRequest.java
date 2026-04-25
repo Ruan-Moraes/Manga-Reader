@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotBlank;
  * Payload para criação de um registro de erro.
  */
 public record CreateErrorLogRequest(
-        @NotBlank(message = "A mensagem de erro é obrigatória.")
+        @NotBlank(message = "{validation.errorLog.message.required}")
         String message,
 
         String stackTrace,
 
-        @NotBlank(message = "A origem do erro é obrigatória.")
+        @NotBlank(message = "{validation.errorLog.source.required}")
         String source,
 
         String url,

@@ -10,16 +10,16 @@ import jakarta.validation.constraints.NotNull;
  * Request para criação de evento (admin).
  */
 public record CreateEventRequest(
-        @NotBlank(message = "Título é obrigatório") String title,
+        @NotBlank(message = "{validation.event.title.required}") String title,
         String subtitle,
         String description,
         String image,
-        @NotNull(message = "Data de início é obrigatória") LocalDateTime startDate,
-        @NotNull(message = "Data de fim é obrigatória") LocalDateTime endDate,
+        @NotNull(message = "{validation.event.startDate.required}") LocalDateTime startDate,
+        @NotNull(message = "{validation.event.endDate.required}") LocalDateTime endDate,
         String timezone,
-        @NotNull(message = "Timeline é obrigatória") String timeline,
-        @NotNull(message = "Status é obrigatório") String status,
-        @NotNull(message = "Tipo é obrigatório") String type,
+        @NotNull(message = "{validation.event.timeline.required}") String timeline,
+        @NotNull(message = "{validation.status.required}") String status,
+        @NotNull(message = "{validation.event.type.required}") String type,
         String locationLabel,
         String locationAddress,
         String locationCity,

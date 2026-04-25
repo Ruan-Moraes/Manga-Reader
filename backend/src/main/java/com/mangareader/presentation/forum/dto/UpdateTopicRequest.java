@@ -10,13 +10,13 @@ import jakarta.validation.constraints.Size;
  * Campos nulos são ignorados (PATCH semântico).
  */
 public record UpdateTopicRequest(
-        @Size(max = 300, message = "Título deve ter no máximo 300 caracteres")
+        @Size(max = 300, message = "{validation.forum.topic.title.size}")
         String title,
 
-        @Size(max = 10000, message = "Conteúdo deve ter no máximo 10000 caracteres")
+        @Size(max = 10000, message = "{validation.forum.topic.content.size}")
         String content,
 
-        @Size(max = 100, message = "Categoria deve ter no máximo 100 caracteres")
+        @Size(max = 100, message = "{validation.forum.topic.category.size}")
         String category,
 
         List<String> tags
