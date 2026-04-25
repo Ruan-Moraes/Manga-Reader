@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateTagUseCase {
-
     private final TagRepositoryPort tagRepository;
 
     @Transactional
@@ -32,6 +31,7 @@ public class UpdateTagUseCase {
         });
 
         tag.setLabel(trimmed);
+
         return tagRepository.save(tag);
     }
 }

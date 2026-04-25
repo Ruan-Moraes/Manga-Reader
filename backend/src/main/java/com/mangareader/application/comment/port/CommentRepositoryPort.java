@@ -12,7 +12,6 @@ import com.mangareader.domain.comment.entity.Comment;
  * Port de saída — acesso a dados de Comments (MongoDB).
  */
 public interface CommentRepositoryPort {
-
     List<Comment> findByTitleId(String titleId);
 
     List<Comment> findByTitleIdAndParentCommentIdIsNull(String titleId);

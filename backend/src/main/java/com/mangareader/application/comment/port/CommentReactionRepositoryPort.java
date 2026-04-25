@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.mangareader.domain.comment.entity.CommentReaction;
 
 public interface CommentReactionRepositoryPort {
-
     Optional<CommentReaction> findByCommentIdAndUserId(String commentId, String userId);
 
     List<CommentReaction> findByCommentIdInAndUserId(List<String> commentIds, String userId);

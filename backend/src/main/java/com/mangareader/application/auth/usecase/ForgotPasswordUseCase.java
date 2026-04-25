@@ -1,6 +1,8 @@
 package com.mangareader.application.auth.usecase;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.auth.port.TokenPort;
@@ -26,6 +28,7 @@ public class ForgotPasswordUseCase {
     private final UserRepositoryPort userRepository;
     private final TokenPort tokenPort;
     private final EmailPort emailPort;
+    private final MessageSource messageSource;
 
     @Value("${app.mail.base-url:http://localhost:5173}")
     private String baseUrl;
@@ -46,6 +49,8 @@ public class ForgotPasswordUseCase {
     }
 
     private String buildResetEmailHtml(String username, String resetUrl) {
+        String footer = messageSource.getMessage("email.footer.tagline", null, LocaleContextHolder.getLocale());
+
         return EmailTemplateBuilder.create()
                 .title("\uD83D\uDD12 Recuperação de Senha")
                 .paragraph("Olá, <strong>" + username + "</strong>!")
@@ -53,6 +58,7 @@ public class ForgotPasswordUseCase {
                 .paragraph("Clique no botão abaixo para criar uma nova senha:")
                 .button("Redefinir Senha", resetUrl)
                 .paragraph("<span style=\"color: #666; font-size: 14px;\">Se você não solicitou esta ação, ignore este email. O link expira em 15 minutos.</span>")
+                .footer(footer)
                 .build();
     }
 }

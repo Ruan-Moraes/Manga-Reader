@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetTagsUseCase {
-
     private final TagRepositoryPort tagRepository;
 
     public Page<Tag> execute(Pageable pageable) {

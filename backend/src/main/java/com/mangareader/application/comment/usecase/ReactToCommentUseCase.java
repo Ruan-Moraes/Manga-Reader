@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ReactToCommentUseCase {
-
     private final CommentRepositoryPort commentRepository;
     private final CommentReactionRepositoryPort reactionRepository;
 
@@ -27,7 +26,6 @@ public class ReactToCommentUseCase {
         Optional<CommentReaction> existing = reactionRepository.findByCommentIdAndUserId(commentId, userId);
 
         if (existing.isEmpty()) {
-            // New reaction
             reactionRepository.save(CommentReaction.builder()
                     .commentId(commentId)
                     .userId(userId)
@@ -40,7 +38,6 @@ public class ReactToCommentUseCase {
                 comment.setDislikeCount(comment.getDislikeCount() + 1);
             }
         } else if (existing.get().getReactionType() == type) {
-            // Toggle off — same type
             reactionRepository.delete(existing.get());
 
             if (type == ReactionType.LIKE) {
@@ -49,7 +46,6 @@ public class ReactToCommentUseCase {
                 comment.setDislikeCount(Math.max(0, comment.getDislikeCount() - 1));
             }
         } else {
-            // Switch — opposite type
             CommentReaction reaction = existing.get();
             ReactionType oldType = reaction.getReactionType();
             reaction.setReactionType(type);
