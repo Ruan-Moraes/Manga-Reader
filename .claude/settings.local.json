@@ -31,7 +31,8 @@
       "Bash(git commit -m 'refactor\\(frontend\\): integrate i18n into all pages and components *)",
       "Bash(git commit -m 'feat\\(frontend\\): add utility services and enhance test setup *)",
       "Bash(git commit -m 'chore\\(dependencies\\): update npm and pnpm lock files *)",
-      "Bash(git commit -m 'docs: update project documentation with i18n guidelines and implementation details *)"
+      "Bash(git commit -m 'docs: update project documentation with i18n guidelines and implementation details *)",
+      "Bash(git commit *)"
     ]
   }
 }
