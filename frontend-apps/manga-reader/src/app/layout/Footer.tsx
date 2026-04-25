@@ -18,7 +18,7 @@ const Footer = ({ styles, showLinks }: FooterTypes) => {
             style={styles}
         >
             {!showLinks && (
-                <div className="grid items-center grid-cols-1 gap-4 p-4 border-t-2 sm:grid-cols-8 border-t-tertiary">
+                <div className="flex flex-wrap justify-around items-center gap-4 p-4 border-t-2 border-t-tertiary">
                     <LinksSection
                         title="Links úteis"
                         className="sm:col-span-4"
