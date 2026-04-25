@@ -1,0 +1,70 @@
+{
+    "stats": {
+        "topics": "Topics",
+        "replies": "Replies",
+        "views": "Views",
+        "activeMembers": "Active members"
+    },
+    "topic": {
+        "authoredBy": "by {{name}}",
+        "replies_one": "{{count}} reply",
+        "replies_other": "{{count}} replies"
+    },
+    "reply": {
+        "edited": "(edited)",
+        "bestAnswer": "Best answer",
+        "reply": "Reply"
+    },
+    "role": {
+        "admin": "Admin",
+        "moderator": "Moderator",
+        "member": "Member"
+    },
+    "page": {
+        "title": "Forum",
+        "subtitle": "Join discussions, share recommendations and connect with other manga readers.",
+        "searchPlaceholder": "Search topics...",
+        "allCategories": "All",
+        "sortLabel": "Sort:",
+        "foundTopics_one": "{{count}} topic found",
+        "foundTopics_other": "{{count}} topics found",
+        "emptyState": "No topics found."
+    },
+    "categories": {
+        "Geral": "General",
+        "Recomendações": "Recommendations",
+        "Spoilers": "Spoilers",
+        "Suporte": "Support",
+        "Off-topic": "Off-topic",
+        "Teorias": "Theories",
+        "Fanart": "Fanart",
+        "Notícias": "News"
+    },
+    "sort": {
+        "recent": "Most recent",
+        "popular": "Most popular",
+        "most-replies": "Most replies",
+        "oldest": "Oldest"
+    },
+    "topicPage": {
+        "notFound": "Topic not found.",
+        "backToForum": "Back to forum",
+        "pinned": "Pinned",
+        "locked": "Locked",
+        "solved": "Solved",
+        "postsCount": "{{count}} posts",
+        "views": "{{count}} views",
+        "likes": "{{count}} likes",
+        "replies_one": "{{count}} reply",
+        "replies_other": "{{count}} replies",
+        "share": "Share",
+        "repliesHeading": "Replies ({{count}})",
+        "sortRecent": "Most recent",
+        "sortLikes": "Most liked",
+        "emptyReplies": "No replies yet. Be the first to reply!",
+        "writeReply": "Write a reply",
+        "replyPlaceholder": "Share your opinion...",
+        "sendReply": "Send reply",
+        "relatedTopics": "Related topics"
+    }
+}

@@ -1,0 +1,208 @@
+{
+    "modal": {
+        "close": "cerrar",
+        "openProfileAria": "Abrir perfil de {{name}}",
+        "photoAlt": "Foto de perfil de {{name}}",
+        "moderatorSince": "Moderador desde {{date}}",
+        "memberSince": "Miembro desde {{date}}",
+        "badges": {
+            "moderator": "Moderador",
+            "member": "Miembro"
+        },
+        "body": {
+            "bio": "Biografía:",
+            "socialMedia": "Redes sociales:",
+            "statistics": "Estadísticas:",
+            "commentsCount": "{{count}} Comentarios",
+            "likesCount": "{{count}} Me gusta",
+            "dislikesCount": "{{count}} No me gusta",
+            "recommendedWorks": "Obras que recomiendo:",
+            "workAlt": "Imagen de una obra"
+        }
+    },
+    "details": {
+        "loadingProfile": "Cargando perfil...",
+        "notFoundTitle": "Usuario no encontrado",
+        "notFoundMessage": "No se pudo cargar el perfil solicitado.",
+        "profileTitle": "Perfil de {{name}}",
+        "photoAlt": "Foto de perfil de {{name}}",
+        "accountSection": "Cuenta",
+        "roleLabel": "Cargo:",
+        "memberSince": "Miembro desde:",
+        "moderatorSince": "Moderador desde:",
+        "commentsLabel": "comentarios",
+        "likesLabel": "me gusta",
+        "dislikesLabel": "no me gusta",
+        "socialMediaSection": "Redes sociales",
+        "recommendedSection": "Obras recomendadas",
+        "recommendedAlt": "Obra recomendada",
+        "roles": {
+            "admin": "Administrador",
+            "poster": "Publicador",
+            "reader": "Lector"
+        }
+    },
+    "page": {
+        "title": "Perfil de Usuario",
+        "nameLabel": "Nombre",
+        "bioLabel": "Bio",
+        "nameEmptyError": "El nombre no puede estar vacío.",
+        "bioMaxError": "Máximo 500 caracteres ({{length}}/500).",
+        "save": "Guardar cambios",
+        "saving": "Guardando...",
+        "loginPrompt": "Inicia sesión para ver tu perfil.",
+        "updateSuccess": "Perfil actualizado con éxito.",
+        "myLibraryTitle": "Mi Biblioteca",
+        "viewLibrary": "Ver Biblioteca",
+        "viewReviews": "Ver Reseñas",
+        "stats": {
+            "reading": "Leyendo",
+            "wantToRead": "Quiero Leer",
+            "completed": "Completado",
+            "total": "Total"
+        }
+    },
+    "profile": {
+        "banner": {
+            "alt": "Banner del perfil"
+        },
+        "header": {
+            "memberSince": "Miembro desde {{date}}",
+            "edit": "Editar perfil",
+            "roles": {
+                "admin": "Administrador",
+                "poster": "Publicador",
+                "reader": "Lector"
+            }
+        },
+        "stats": {
+            "reading": "Leyendo",
+            "wantToRead": "Quiero Leer",
+            "completed": "Completado",
+            "total": "Total",
+            "comments": "Comentarios",
+            "ratings": "Valoraciones"
+        },
+        "tabs": {
+            "about": "Acerca de",
+            "recommendations": "Recomendados",
+            "comments": "Comentarios",
+            "history": "Historial",
+            "settings": "Configuración"
+        },
+        "privacy": {
+            "doNotTrack": "No rastreado",
+            "private": "Privado",
+            "public": "Público",
+            "publicDescription": "Visible para todos",
+            "privateDescription": "Solo tú puedes verlo",
+            "doNotTrackDescription": "Datos no recopilados",
+            "commentVisibility": "Visibilidad de Comentarios",
+            "historyVisibility": "Visibilidad del Historial",
+            "save": "Guardar configuración",
+            "saving": "Guardando...",
+            "savedMessage": "Configuración de privacidad actualizada.",
+            "doNotTrackConfirm": "Al seleccionar \"No rastrear\", todo tu historial de visualización será eliminado permanentemente. ¿Deseas continuar?"
+        },
+        "recommendations": {
+            "empty": "Aún no hay recomendaciones.",
+            "emptyOwner": "Añade hasta 10 títulos recomendados a tu perfil.",
+            "addPlaceholder": "ID del título",
+            "add": "Añadir",
+            "adding": "Añadiendo...",
+            "noCover": "Sin portada"
+        },
+        "comments": {
+            "empty": "No se encontraron comentarios.",
+            "viewTitle": "Ver título",
+            "previous": "Anterior",
+            "next": "Siguiente"
+        },
+        "history": {
+            "empty": "No hay historial de visualización.",
+            "previous": "Anterior",
+            "next": "Siguiente",
+            "noCover": "Sin portada"
+        },
+        "edit": {
+            "title": "Editar Perfil",
+            "nameLabel": "Nombre",
+            "bioLabel": "Biografía",
+            "photoUrlLabel": "URL de la Foto",
+            "bannerUrlLabel": "URL del Banner",
+            "socialLinksLabel": "Redes Sociales",
+            "addLink": "+ Añadir",
+            "platformPlaceholder": "Plataforma",
+            "urlPlaceholder": "URL",
+            "save": "Guardar",
+            "saving": "Guardando...",
+            "savedMessage": "Perfil actualizado con éxito."
+        }
+    },
+    "settings": {
+        "descriptionGuest": "Las opciones se guardan localmente hasta que inicies sesión.",
+        "privacy": {
+            "title": "Privacidad",
+            "description": "Controla lo que otros usuarios pueden ver en tu perfil.",
+            "showReadingHistory": "Mostrar historial de lectura en el perfil",
+            "showOnlineStatus": "Mostrar estado en línea",
+            "adultContentLabel": "Contenido adulto",
+            "adultContent": {
+                "hide": "Ocultar",
+                "blur": "Desenfocar",
+                "show": "Mostrar"
+            }
+        },
+        "reading": {
+            "title": "Modo de lectura",
+            "modeLabel": "Modo",
+            "directionLabel": "Dirección",
+            "imageQualityLabel": "Calidad de imagen",
+            "preloadPages": "Pre-carga de páginas: {{count}}",
+            "autoNextChapter": "Abrir siguiente capítulo automáticamente",
+            "showPageNumber": "Mostrar número de página",
+            "mode": {
+                "continuous": "Continuo",
+                "paged": "Paginado"
+            },
+            "direction": {
+                "ltr": "Izquierda → derecha",
+                "rtl": "Derecha → izquierda",
+                "vertical": "Desplazamiento vertical"
+            },
+            "imageQuality": {
+                "auto": "Automática",
+                "high": "Alta",
+                "dataSaver": "Ahorro de datos"
+            }
+        },
+        "notifications": {
+            "title": "Notificaciones",
+            "description": "Define qué eventos deben generar alertas en tu cuenta.",
+            "items": {
+                "newChapterFromFollowed": "Nuevos capítulos de mangas seguidos",
+                "recommendations": "Recomendaciones personalizadas",
+                "communityNews": "Noticias de la comunidad",
+                "events": "Eventos y lanzamientos",
+                "email": "Notificaciones por email",
+                "push": "Notificaciones push en el navegador"
+            }
+        },
+        "appearance": {
+            "title": "Apariencia",
+            "themeLabel": "Tema",
+            "compactMode": "Diseño compacto en biblioteca/listados",
+            "matureBlur": "Aplicar desenfoque a miniaturas maduras",
+            "theme": {
+                "system": "Sistema",
+                "light": "Claro",
+                "dark": "Oscuro"
+            }
+        },
+        "language": {
+            "title": "Idioma",
+            "uiLanguageLabel": "Idioma de la interfaz",
+            "preferredContentLanguageLabel": "Idioma preferido de los capítulos"
+        }
+    }
+}

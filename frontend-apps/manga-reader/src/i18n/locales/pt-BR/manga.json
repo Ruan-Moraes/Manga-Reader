@@ -1,0 +1,84 @@
+{
+    "loading": "Carregando...",
+    "loadingCover": "Carregando imagem do título...",
+    "imageUnavailable": "Imagem não disponível",
+    "coverLoadError": "Não foi possível carregar a imagem",
+    "coverAlt": "Capa do título: {{name}}",
+    "zoomCoverAria": "Ampliar capa: {{name}}",
+    "errorTitle": "Ops! Algo deu errado.",
+    "carouselError": "Ocorreu um erro ao buscar os dados. Tente novamente mais tarde.",
+    "synopsisLoading": "Estamos carregando a sinopse...",
+    "synopsis": "Sinopse",
+    "synopsisModalTitle": "Sinopse de {{name}}",
+    "readMore": "Ler mais",
+    "close": "Fechar",
+    "genres": "Gêneros",
+    "details": {
+        "popularity": "Popularidade:",
+        "chapters": "Capítulos:",
+        "author": "Autor:",
+        "artist": "Artista:",
+        "publisher": "Editora:",
+        "type": "Tipo:",
+        "notAvailable": "N/A"
+    },
+    "card": {
+        "chaptersCount": "({{count}} Capítulos)",
+        "chapterLabelShort": "Cap:",
+        "chapterLabelFull": "Capítulo:",
+        "loadMore": "Ver Mais"
+    },
+    "actions": {
+        "bookmark": "Salvar",
+        "bookmarked": "Salvo",
+        "like": "Curtir",
+        "groups": "Grupos",
+        "cart": "Carrinho"
+    },
+    "titleDetails": {
+        "invalidIdTitle": "ID inválido",
+        "errorTitle": "Ops! Ocorreu um erro.",
+        "communityAverage": "Média da comunidade:",
+        "authActionBookmark": "salvar na biblioteca",
+        "authActionRate": "avaliar",
+        "savedToLibrary": "Mangá salvo na sua biblioteca.",
+        "removedFromLibrary": "Mangá removido da sua biblioteca."
+    },
+    "home": {
+        "alertTitle": "Atenção!",
+        "alertMessage": "Site em desenvolvimento, algumas funcionalidades podem não estar disponíveis.",
+        "carouselTitle": "Obras mais vistas",
+        "carouselSubtitle": "Últimos 30 dias",
+        "risingTitle": "Tops 5 obras em ascensão",
+        "randomTitle": "10 Obras aleatórias",
+        "updatedTitle": "Obras Atualizadas",
+        "seeMore": "Quero ver mais..."
+    },
+    "chapterPage": {
+        "notFoundTitle": "Capítulo não encontrado",
+        "notFoundMessage": "O capítulo que você está tentando acessar não existe.",
+        "backToTitle": "Voltar para página do título",
+        "commentsHeading": "Comentários"
+    },
+    "chapter": {
+        "heading": "Capítulos:",
+        "sortBy": "Ordenar por:",
+        "searchPlaceholder": "Pesquisar Capítulo",
+        "optionLabel": "Capítulo {{number}}",
+        "loadingOptions": "Carregando...",
+        "previous": "Anterior",
+        "next": "Próximo",
+        "item": {
+            "chapterLabel": "Capítulo:",
+            "titleLabel": "Título:",
+            "dateLabel": "Data:",
+            "pagesLabel": "Páginas:"
+        },
+        "pagination": {
+            "pageLabel": "Página <1>{{current}}</1> de <2>{{total}}</2>"
+        },
+        "coverLoading": "Carregando imagem do título...",
+        "coverError": "Não foi possível carregar a imagem",
+        "pageAlt": "Página {{number}}"
+    }
+}

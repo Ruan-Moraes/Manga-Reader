@@ -1,0 +1,103 @@
+{
+    "status": {
+        "happening_now": "Sucediendo Ahora",
+        "registrations_open": "Inscripciones Abiertas",
+        "coming_soon": "Próximamente",
+        "ended": "Finalizado"
+    },
+    "loading": "Cargando evento...",
+    "notFound": "Evento no encontrado.",
+    "backToEvents": "Volver a eventos",
+    "details": {
+        "schedule": "Fecha y programación",
+        "startAt": "Inicio: {{date}}",
+        "endAt": "Fin: {{date}}",
+        "timezone": "Zona horaria: {{timezone}}",
+        "location": "Ubicación",
+        "mapMock": "Mapa integrado (mock)",
+        "openMaps": "Abrir en Google Maps",
+        "openWaze": "Abrir en Waze",
+        "description": "Descripción",
+        "galleryAlt": "Galería del evento",
+        "guests": "Invitados:",
+        "comments": "Comentarios y novedades",
+        "tickets": "Entradas e inscripción",
+        "ticketSlots": "Plazas: {{count}}",
+        "register": "Inscribirme",
+        "organizer": "Organizador",
+        "contact": "Contacto: {{value}}",
+        "otherEvents": "Otros eventos del organizador",
+        "related": "Eventos relacionados"
+    },
+    "page": {
+        "title": "Eventos",
+        "subtitle": "Mantente al día con los principales eventos del mundo del manga, convenciones, lanzamientos y actividades de la comunidad.",
+        "create": "Crear Evento",
+        "searchPlaceholder": "Buscar por nombre o lugar",
+        "typeAll": "Todos los tipos",
+        "periodAll": "Todas las fechas",
+        "periodToday": "Hoy",
+        "periodWeek": "Esta semana",
+        "periodMonth": "Este mes",
+        "sortDate": "Ordenar por fecha",
+        "sortPopularity": "Ordenar por popularidad",
+        "sortRelevance": "Ordenar por relevancia",
+        "featured": "Evento destacado",
+        "viewDetails": "Ver detalles",
+        "emptyState": "No se encontraron eventos con los filtros actuales."
+    },
+    "card": {
+        "organizer": "Organizador:",
+        "participantsCount": "{{count}} participantes",
+        "save": "Guardar",
+        "confirmed": "Confirmado",
+        "interested": "Me Interesa"
+    },
+    "form": {
+        "sectionTitle": "Crear / Editar Evento",
+        "privacy": {
+            "public": "Público",
+            "members": "Solo miembros"
+        },
+        "labels": {
+            "title": "Título",
+            "type": "Tipo",
+            "startDate": "Fecha de inicio",
+            "endDate": "Fecha de finalización",
+            "location": "Ubicación",
+            "cover": "Imagen de portada",
+            "description": "Descripción",
+            "ticketPrice": "Precio/entrada",
+            "website": "Sitio oficial",
+            "socials": "Instagram / Twitter",
+            "contact": "Contacto",
+            "maxParticipants": "Máximo de participantes",
+            "privacy": "Privacidad",
+            "approval": "Requerir aprobación para participar"
+        },
+        "placeholders": {
+            "title": "Título del evento",
+            "location": "Lugar físico o enlace en línea",
+            "cover": "URL de la imagen de portada",
+            "description": "Descripción del evento",
+            "ticketPrice": "Precio/entrada",
+            "website": "Sitio oficial",
+            "socials": "Instagram / Twitter",
+            "contact": "Contacto del organizador",
+            "maxParticipants": "Máximo de participantes"
+        },
+        "actions": {
+            "submit": "Publicar evento",
+            "draftSaved": "Borrador guardado",
+            "saveDraft": "Guardar como borrador",
+            "cancel": "Cancelar"
+        },
+        "preview": {
+            "title": "Vista previa en vivo",
+            "placeholderTitle": "Título del evento",
+            "placeholderDescription": "La descripción aparecerá aquí.",
+            "startAt": "Inicio: {{date}}",
+            "pickDateTime": "Define fecha y hora"
+        }
+    }
+}

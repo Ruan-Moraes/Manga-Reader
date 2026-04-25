@@ -1,0 +1,76 @@
+{
+    "recent": {
+        "title": "Avaliações recentes",
+        "empty": "Nenhuma avaliação ainda. Seja o primeiro!",
+        "loadMore": "Carregar mais avaliações",
+        "overallAverage": "Média geral:"
+    },
+    "categories": {
+        "fun": "Diversão:",
+        "art": "Arte:",
+        "storyline": "Enredo:",
+        "characters": "Personagens:",
+        "originality": "Originalidade:",
+        "pacing": "Ritmo:"
+    },
+    "modal": {
+        "instructions": "Classifique o título em cada categoria abaixo. A nota final será calculada com base nas suas avaliações.",
+        "finalScore": "Nota Final:",
+        "selectPlaceholder": "Selecione uma nota",
+        "notRated": "Não avaliado",
+        "scoreOption": "Nota: {{value}}",
+        "categories": {
+            "fun": "Diversão",
+            "art": "Arte",
+            "storyline": "Enredo",
+            "characters": "Personagens",
+            "originality": "Originalidade",
+            "pacing": "Ritmo"
+        }
+    },
+    "myReviews": {
+        "title": "Minhas Avaliações",
+        "subtitle": "Edite ou remova seus reviews a qualquer momento.",
+        "workPlaceholder": "Obra #{{id}}",
+        "saving": "Salvando...",
+        "save": "Salvar",
+        "confirmPrompt": "Tem certeza?",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "delete": "Excluir",
+        "emptyState": "Nenhuma avaliação ainda. Avalie seus títulos favoritos!",
+        "loadMore": "Carregar mais",
+        "commentUpdated": "Comentário atualizado.",
+        "commentUpdateError": "Erro ao salvar comentário.",
+        "reviewRemoved": "Avaliação removida.",
+        "reviewRemoveError": "Erro ao remover avaliação."
+    },
+    "wizard": {
+        "title": "Avaliar obra",
+        "close": "Fechar",
+        "cancel": "Cancelar",
+        "back": "Voltar",
+        "next": "Próximo",
+        "finalStepLabel": "Nota",
+        "rateLabel": "Avalie: {{label}}",
+        "commentPlaceholder": "Comentário opcional...",
+        "submitting": "Enviando...",
+        "confirm": "Confirmar avaliação",
+        "categoryLabels": {
+            "funRating": "Diversão",
+            "artRating": "Arte",
+            "storylineRating": "Enredo",
+            "charactersRating": "Personagens",
+            "originalityRating": "Originalidade",
+            "pacingRating": "Ritmo"
+        },
+        "categoryDescriptions": {
+            "funRating": "Considere a leveza, humor e entretenimento proporcionados pela obra.",
+            "artRating": "Avalie a qualidade dos traços, painéis, cenários e estilo visual.",
+            "storylineRating": "Considere a estrutura narrativa, ritmo da história e originalidade.",
+            "charactersRating": "Avalie o desenvolvimento, carisma e profundidade dos personagens.",
+            "originalityRating": "Considere o quão inovadora e única é a proposta da obra.",
+            "pacingRating": "Avalie o andamento dos capítulos, se é bem distribuído e envolvente."
+        }
+    }
+}

@@ -1,0 +1,55 @@
+{
+    "form": {
+        "title": "Formulario de Publicación",
+        "subtitle": "Rellena los campos a continuación para enviar tu solicitud de publicación.",
+        "labels": {
+            "name": "Nombre:",
+            "email": "Email:",
+            "workType": "Tipo de trabajo:",
+            "workTitle": "Título del trabajo:",
+            "synopsis": "Sinopsis:",
+            "portfolioLink": "Enlace del portafolio (opcional):",
+            "message": "Mensaje:"
+        },
+        "placeholders": {
+            "name": "Tu nombre completo",
+            "email": "tu@email.com",
+            "workTitle": "Nombre de tu obra",
+            "synopsis": "Describe brevemente la historia o el concepto de tu trabajo",
+            "portfolioLink": "https://tu-portafolio.com",
+            "message": "Cuéntanos más sobre tu trabajo y por qué deseas publicarlo con nosotros"
+        },
+        "workTypes": {
+            "placeholder": "Selecciona el tipo de trabajo",
+            "manga": "Manga",
+            "webtoon": "Webtoon",
+            "fanfic": "Fanfic",
+            "fanart": "Fanart",
+            "other": "Otro"
+        },
+        "actions": {
+            "submit": "Enviar solicitud",
+            "submitting": "Enviando..."
+        },
+        "errors": {
+            "nameRequired": "El nombre es obligatorio.",
+            "nameMin": "El nombre debe tener al menos 2 caracteres.",
+            "emailRequired": "El email es obligatorio.",
+            "emailInvalid": "Formato de email inválido.",
+            "workTypeRequired": "El tipo de trabajo es obligatorio.",
+            "workTitleRequired": "El título del trabajo es obligatorio.",
+            "workTitleMin": "El título debe tener al menos 2 caracteres.",
+            "synopsisRequired": "La sinopsis es obligatoria.",
+            "synopsisMin": "La sinopsis debe tener al menos 10 caracteres.",
+            "synopsisMax": "La sinopsis debe tener como máximo 2000 caracteres.",
+            "portfolioLinkInvalid": "URL inválida. Usa el formato http:// o https://",
+            "messageRequired": "El mensaje es obligatorio.",
+            "messageMin": "El mensaje debe tener al menos 10 caracteres.",
+            "messageMax": "El mensaje debe tener como máximo 5000 caracteres."
+        },
+        "toasts": {
+            "validationFailed": "Corrige los errores del formulario.",
+            "success": "¡Tu solicitud se envió con éxito!"
+        }
+    }
+}

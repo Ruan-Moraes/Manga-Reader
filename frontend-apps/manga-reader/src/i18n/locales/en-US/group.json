@@ -1,0 +1,78 @@
+{
+    "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "hiatus": "On hiatus"
+    },
+    "container": {
+        "defaultTitle": "Translation Groups",
+        "empty": "No translation group found for this title."
+    },
+    "card": {
+        "avatarAlt": "Avatar of group {{name}}",
+        "openSite": "Open official site",
+        "membersCount_one": "{{count}} member",
+        "membersCount_other": "{{count}} members",
+        "worksCount_one": "{{count}} work",
+        "worksCount_other": "{{count}} works",
+        "viewDetails": "View details",
+        "viewDetailsLong": "View group details"
+    },
+    "summary": {
+        "statusLabel": "Status",
+        "focusTags": "Focus tags",
+        "noTags": "No tags set",
+        "rating": "Rating"
+    },
+    "header": {
+        "bannerAlt": "Banner of group {{name}}",
+        "avatarAlt": "Avatar of {{name}}",
+        "officialSite": "Official site",
+        "supporters_one": "{{count}} supporter",
+        "supporters_other": "{{count}} supporters"
+    },
+    "modal": {
+        "title": "Translation Groups",
+        "close": "Close",
+        "empty": "No translation group found for this title."
+    },
+    "member": {
+        "profileTitle": "Member profile",
+        "joinedAt": "Joined the platform on {{date}}",
+        "participatesIn": "Groups joined",
+        "recentActivity": "Recent posts/comments",
+        "noTitle": "No linked work",
+        "searchPlaceholder": "Search member",
+        "membersHeader": "{{name}} • {{count}} members"
+    },
+    "listing": {
+        "title": "Translation Groups",
+        "subtitle": "Explore teams, filter by status/genre and sort by popularity.",
+        "searchPlaceholder": "Search by group name",
+        "statusAll": "All statuses",
+        "statusActive": "Active",
+        "statusHiatus": "On hiatus",
+        "statusInactive": "Inactive",
+        "genreAll": "All genres",
+        "sortPopularity": "Popularity",
+        "sortMembers": "Total members",
+        "sortTitles": "Translated works",
+        "sortRating": "Rating"
+    },
+    "profile": {
+        "notFoundTitle": "Group not found",
+        "notFoundMessage": "Could not locate the requested profile.",
+        "backToGroups": "Back to Groups",
+        "aboutTitle": "About the group",
+        "foundationInfo": "Founded: {{year}} • Joined the platform: {{joinedAt}}",
+        "translatedWorks": "Translated works",
+        "sortPopularity": "Popularity",
+        "sortDate": "Last updated",
+        "sortChapters": "Chapters",
+        "chaptersCount_one": "{{count}} chapter",
+        "chaptersCount_other": "{{count}} chapters",
+        "statusOngoing": "Ongoing",
+        "statusCompleted": "Completed",
+        "loading": "Loading group profile..."
+    }
+}

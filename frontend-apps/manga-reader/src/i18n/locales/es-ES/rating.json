@@ -1,0 +1,76 @@
+{
+    "recent": {
+        "title": "Reseñas recientes",
+        "empty": "Aún no hay reseñas. ¡Sé el primero!",
+        "loadMore": "Cargar más reseñas",
+        "overallAverage": "Promedio general:"
+    },
+    "categories": {
+        "fun": "Diversión:",
+        "art": "Arte:",
+        "storyline": "Historia:",
+        "characters": "Personajes:",
+        "originality": "Originalidad:",
+        "pacing": "Ritmo:"
+    },
+    "modal": {
+        "instructions": "Califica el título en cada categoría a continuación. La nota final se calculará según tus valoraciones.",
+        "finalScore": "Nota Final:",
+        "selectPlaceholder": "Selecciona una nota",
+        "notRated": "Sin valorar",
+        "scoreOption": "Nota: {{value}}",
+        "categories": {
+            "fun": "Diversión",
+            "art": "Arte",
+            "storyline": "Historia",
+            "characters": "Personajes",
+            "originality": "Originalidad",
+            "pacing": "Ritmo"
+        }
+    },
+    "myReviews": {
+        "title": "Mis Reseñas",
+        "subtitle": "Edita o elimina tus reseñas en cualquier momento.",
+        "workPlaceholder": "Obra #{{id}}",
+        "saving": "Guardando...",
+        "save": "Guardar",
+        "confirmPrompt": "¿Estás seguro?",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "emptyState": "Aún no hay reseñas. ¡Valora tus títulos favoritos!",
+        "loadMore": "Cargar más",
+        "commentUpdated": "Comentario actualizado.",
+        "commentUpdateError": "Error al guardar el comentario.",
+        "reviewRemoved": "Reseña eliminada.",
+        "reviewRemoveError": "Error al eliminar la reseña."
+    },
+    "wizard": {
+        "title": "Valorar obra",
+        "close": "Cerrar",
+        "cancel": "Cancelar",
+        "back": "Volver",
+        "next": "Siguiente",
+        "finalStepLabel": "Nota",
+        "rateLabel": "Valora: {{label}}",
+        "commentPlaceholder": "Comentario opcional...",
+        "submitting": "Enviando...",
+        "confirm": "Confirmar valoración",
+        "categoryLabels": {
+            "funRating": "Diversión",
+            "artRating": "Arte",
+            "storylineRating": "Historia",
+            "charactersRating": "Personajes",
+            "originalityRating": "Originalidad",
+            "pacingRating": "Ritmo"
+        },
+        "categoryDescriptions": {
+            "funRating": "Considera la ligereza, el humor y el entretenimiento que ofrece la obra.",
+            "artRating": "Evalúa la calidad de los trazos, paneles, escenarios y estilo visual.",
+            "storylineRating": "Considera la estructura narrativa, el ritmo de la historia y la originalidad.",
+            "charactersRating": "Evalúa el desarrollo, carisma y profundidad de los personajes.",
+            "originalityRating": "Considera cuán innovadora y única es la propuesta de la obra.",
+            "pacingRating": "Evalúa el desarrollo de los capítulos — si están bien distribuidos y son envolventes."
+        }
+    }
+}

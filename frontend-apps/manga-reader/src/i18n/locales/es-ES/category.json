@@ -1,0 +1,36 @@
+{
+    "tagSelect": {
+        "loading": "Cargando..."
+    },
+    "filters": {
+        "title": "Filtrar Obras",
+        "description": "Aplica filtros para encontrar las obras que deseas leer. Puedes filtrar por categorías, ordenar por más leídos, mejor valoración, orden alfabético, entre otros.",
+        "categoriesTitle": "Categorías",
+        "categoriesPlaceholder": "Selecciona una o más categorías",
+        "sortTitle": "Ordenar por",
+        "sort": {
+            "mostRead": "Más leídos",
+            "mostRated": "Mejor valoración",
+            "ascension": "En ascenso",
+            "mostRecent": "Más recientes",
+            "random": "Aleatorio",
+            "alphabetical": "Alfabético"
+        },
+        "statusTitle": "Estado",
+        "status": {
+            "complete": "Completo",
+            "ongoing": "En curso",
+            "hiatus": "En pausa",
+            "cancelled": "Cancelado",
+            "all": "Todos"
+        },
+        "adultTitle": "Mostrar contenido +18",
+        "adult": {
+            "yes": "Sí",
+            "no": "No"
+        },
+        "resultsCount": "{{count}} resultado(s)",
+        "errorMessage": "Error al cargar resultados. Inténtalo de nuevo.",
+        "emptyResults": "No se encontraron obras con los filtros seleccionados."
+    }
+}

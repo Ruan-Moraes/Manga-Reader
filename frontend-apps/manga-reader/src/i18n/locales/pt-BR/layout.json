@@ -1,0 +1,101 @@
+{
+    "header": {
+        "brand": "Manga Reader",
+        "signUp": "Cadastro",
+        "login": "Login",
+        "logout": "Sair",
+        "sessionEnded": "Sessão encerrada."
+    },
+    "footer": {
+        "usefulLinks": "Links úteis",
+        "socialMedia": "Redes sociais",
+        "otherLinks": "Outros links",
+        "links": {
+            "home": "Home",
+            "filter": "Filtrar",
+            "news": "Notícias",
+            "events": "Eventos",
+            "forum": "Fórum",
+            "groups": "Grupos",
+            "publishWork": "Quero publicar obra",
+            "donate": "Doe para o projeto",
+            "aboutUs": "Quem somos",
+            "dmca": "DMCA",
+            "termsOfUse": "Termos de uso"
+        },
+        "copyright": "© {{year}} Manga Reader. Todos os direitos reservados."
+    },
+    "socialMedia": {
+        "heading": "Fique por dentro das nossas redes sociais"
+    },
+    "search": {
+        "placeholder": "Pesquisar por obras, autores, gêneros...",
+        "ariaLabel": "Pesquisar",
+        "menuPlaceholder": "Buscar mangás, notícias, grupos...",
+        "submit": "Buscar"
+    },
+    "navigation": {
+        "openMenu": "Abrir menu",
+        "closeMenu": "Fechar menu",
+        "close": "Fechar",
+        "mainMenu": "Menu principal",
+        "dialogLabel": "Menu principal"
+    },
+    "sidebar": {
+        "section": {
+            "account": "Conta",
+            "welcome": "Bem-vindo",
+            "feed": "Feed",
+            "library": "Biblioteca",
+            "community": "Comunidade",
+            "user": "Usuário",
+            "panel": "Painel"
+        },
+        "welcomeMessage": "Faça parte da comunidade",
+        "loginCta": "Entrar",
+        "signUpCta": "Cadastrar",
+        "feed": {
+            "home": "Home",
+            "trending": "Trending",
+            "trendingBadge": "em alta",
+            "new": "Novidades"
+        },
+        "library": {
+            "myMangas": "Meus Mangás",
+            "savedBadge": "{{count}} salvos",
+            "reviews": "Avaliados",
+            "downloads": "Downloads"
+        },
+        "community": {
+            "news": "Notícias",
+            "events": "Eventos",
+            "translationGroups": "Grupos de Tradução",
+            "forum": "Fórum / Discussões"
+        },
+        "user": {
+            "profile": "Meu Perfil"
+        },
+        "admin": {
+            "dashboard": "Dashboard",
+            "manageNews": "Gerenciar Notícias",
+            "manageEvents": "Gerenciar Eventos",
+            "manageGroups": "Gerenciar Grupos",
+            "manageUsers": "Gerenciar Usuários",
+            "siteSettings": "Configurações do Site"
+        },
+        "action": {
+            "settings": "Configurações",
+            "clearCache": "Limpar cache",
+            "logout": "Sair"
+        },
+        "logoutMessage": "Você saiu da sua conta.",
+        "role": {
+            "admin": "Administrador",
+            "adminBadge": "[Admin]",
+            "poster": "Postador",
+            "posterBadge": "[Postador]",
+            "user": "Usuário",
+            "visitor": "Visitante"
+        }
+    }
+}

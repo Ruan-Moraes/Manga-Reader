@@ -1,0 +1,89 @@
+{
+    "card": {
+        "readMinutes": "{{count}} min",
+        "new": "Nova",
+        "trending": "Trending"
+    },
+    "hero": {
+        "exclusive": "Exclusivo",
+        "highlight": "Destaque",
+        "views": "{{count}} visualizações"
+    },
+    "filter": {
+        "period": {
+            "all": "Todo período",
+            "today": "Hoje",
+            "week": "Última semana",
+            "month": "Último mês"
+        },
+        "source": {
+            "all": "Todas as fontes"
+        },
+        "sort": {
+            "recent": "Mais recentes",
+            "mostRead": "Mais lidas",
+            "trending": "Trending"
+        }
+    },
+    "tabs": {
+        "Principais": "Principais",
+        "Lançamentos": "Lançamentos",
+        "Adaptações": "Adaptações",
+        "Indústria": "Indústria",
+        "Eventos": "Eventos",
+        "Curiosidades": "Curiosidades",
+        "Entrevistas": "Entrevistas",
+        "Mercado": "Mercado",
+        "Internacional": "Internacional"
+    },
+    "myNewsTabs": {
+        "Salvas": "Salvas",
+        "Lidas": "Lidas",
+        "Recomendadas": "Recomendadas"
+    },
+    "page": {
+        "title": "Notícias",
+        "subtitle": "Fique por dentro das últimas novidades do mundo dos mangás, animes, lançamentos e adaptações.",
+        "unread": "{{count}} não lidas",
+        "filters": "Filtros",
+        "searchPlaceholder": "Buscar por título, conteúdo, obra ou autor",
+        "loadMore": "Carregar mais notícias",
+        "sidebar": {
+            "mostRead": "Mais lidas",
+            "myNews": "Minhas Notícias",
+            "savedDescription": "{{count}} notícias salvas para ler depois.",
+            "readDescription": "{{count}} notícias lidas no histórico recente.",
+            "recommendedDescription": "Recomendações baseadas em {{count}} leituras e categorias favoritas.",
+            "alertsTitle": "Alertas e notificações",
+            "alertsDescription": "Receba notificações de novas notícias das categorias preferidas e autores seguidos.",
+            "lastUpdate": "Última atualização: agora"
+        },
+        "myNewsTabs": {
+            "saved": "Salvas",
+            "read": "Lidas",
+            "recommended": "Recomendadas"
+        }
+    },
+    "details": {
+        "notFound": "Notícia não encontrada",
+        "back": "Voltar para notícias",
+        "updated": "Atualizada {{date}}",
+        "galleryAlt": "Imagem complementar",
+        "galleryCaption": "Bastidores e materiais de divulgação da produção.",
+        "videoTitle": "Vídeo incorporado",
+        "galleryImageAlt": "Galeria",
+        "technicalSheet": "Ficha técnica",
+        "reactions": "Reações e engajamento",
+        "commentsCount": "{{count}} comentários",
+        "share": "Compartilhar",
+        "save": "Salvar notícia",
+        "comments": "Comentários",
+        "sortRecent": "Mais recentes",
+        "sortRelevant": "Mais relevantes",
+        "showSpoilers": "Mostrar spoilers",
+        "hideSpoilers": "Ocultar spoilers",
+        "reply": "responder",
+        "relatedTitle": "Notícias relacionadas",
+        "readAlso": "Leia também"
+    }
+}

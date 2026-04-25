@@ -1,0 +1,12 @@
+{
+    "card": {
+        "access": "Acessar"
+    },
+    "container": {
+        "empty": "Nenhum parceiro disponível."
+    },
+    "modal": {
+        "title": "Onde Comprar",
+        "subtitle": "Escolha uma loja parceira e siga para o site oficial."
+    }
+}

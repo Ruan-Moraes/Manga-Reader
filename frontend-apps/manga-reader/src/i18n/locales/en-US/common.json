@@ -1,0 +1,53 @@
+{
+    "action": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "edit": "Edit",
+        "close": "Close",
+        "submit": "Submit",
+        "search": "Search",
+        "filter": "Filter",
+        "back": "Back",
+        "next": "Next",
+        "previous": "Previous",
+        "loadMore": "Load more",
+        "reset": "Reset",
+        "apply": "Apply",
+        "yes": "Yes",
+        "no": "No",
+        "ok": "OK"
+    },
+    "label": {
+        "loading": "Loading...",
+        "loadingMessage": "Please wait a moment.",
+        "empty": "No results found.",
+        "error": "An error occurred. Please try again.",
+        "required": "Required",
+        "optional": "Optional"
+    },
+    "validation": {
+        "required": "This field is required.",
+        "email": "Invalid email address.",
+        "minLength": "At least {{count}} characters.",
+        "maxLength": "At most {{count}} characters."
+    },
+    "toast": {
+        "success": "Operation completed successfully.",
+        "error": "An error occurred.",
+        "warning": "Warning.",
+        "info": "Info."
+    },
+    "notFound": {
+        "title": "Oops! Page not found.",
+        "message": "There's nothing here. Are you lost? Click the link below to return to the home page.",
+        "linkText": "Back to home page"
+    },
+    "language": {
+        "switchTo": "Switch language to {{language}}",
+        "pt-BR": "Portuguese (Brazil)",
+        "en-US": "English",
+        "es-ES": "Spanish"
+    }
+}

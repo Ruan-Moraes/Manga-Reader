@@ -1,0 +1,101 @@
+{
+    "header": {
+        "brand": "Manga Reader",
+        "signUp": "Sign up",
+        "login": "Login",
+        "logout": "Logout",
+        "sessionEnded": "Session ended."
+    },
+    "footer": {
+        "usefulLinks": "Useful links",
+        "socialMedia": "Social media",
+        "otherLinks": "Other links",
+        "links": {
+            "home": "Home",
+            "filter": "Filter",
+            "news": "News",
+            "events": "Events",
+            "forum": "Forum",
+            "groups": "Groups",
+            "publishWork": "I want to publish",
+            "donate": "Donate to the project",
+            "aboutUs": "About us",
+            "dmca": "DMCA",
+            "termsOfUse": "Terms of use"
+        },
+        "copyright": "© {{year}} Manga Reader. All rights reserved."
+    },
+    "socialMedia": {
+        "heading": "Stay tuned to our social media"
+    },
+    "search": {
+        "placeholder": "Search titles, authors, genres...",
+        "ariaLabel": "Search",
+        "menuPlaceholder": "Search mangas, news, groups...",
+        "submit": "Search"
+    },
+    "navigation": {
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "close": "Close",
+        "mainMenu": "Main menu",
+        "dialogLabel": "Main menu"
+    },
+    "sidebar": {
+        "section": {
+            "account": "Account",
+            "welcome": "Welcome",
+            "feed": "Feed",
+            "library": "Library",
+            "community": "Community",
+            "user": "User",
+            "panel": "Panel"
+        },
+        "welcomeMessage": "Join the community",
+        "loginCta": "Sign in",
+        "signUpCta": "Sign up",
+        "feed": {
+            "home": "Home",
+            "trending": "Trending",
+            "trendingBadge": "trending",
+            "new": "What's new"
+        },
+        "library": {
+            "myMangas": "My Mangas",
+            "savedBadge": "{{count}} saved",
+            "reviews": "Reviews",
+            "downloads": "Downloads"
+        },
+        "community": {
+            "news": "News",
+            "events": "Events",
+            "translationGroups": "Translation Groups",
+            "forum": "Forum / Discussions"
+        },
+        "user": {
+            "profile": "My Profile"
+        },
+        "admin": {
+            "dashboard": "Dashboard",
+            "manageNews": "Manage News",
+            "manageEvents": "Manage Events",
+            "manageGroups": "Manage Groups",
+            "manageUsers": "Manage Users",
+            "siteSettings": "Site Settings"
+        },
+        "action": {
+            "settings": "Settings",
+            "clearCache": "Clear cache",
+            "logout": "Logout"
+        },
+        "logoutMessage": "You have logged out.",
+        "role": {
+            "admin": "Administrator",
+            "adminBadge": "[Admin]",
+            "poster": "Poster",
+            "posterBadge": "[Poster]",
+            "user": "User",
+            "visitor": "Visitor"
+        }
+    }
+}

@@ -1,0 +1,292 @@
+{
+    "common": {
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "save": "Salvar",
+        "saving": "Salvando...",
+        "create": "Criar",
+        "edit": "Editar",
+        "remove": "Remover",
+        "delete": "Excluir",
+        "close": "Fechar",
+        "empty": "—",
+        "back": "Voltar para lista",
+        "search": "Buscar",
+        "retry": "Tentar novamente"
+    },
+    "planList": {
+        "columnPeriod": "Período",
+        "columnPrice": "Preço",
+        "columnDescription": "Descrição",
+        "columnStatus": "Status",
+        "columnActions": "Ações",
+        "statusActive": "Ativo",
+        "statusInactive": "Inativo",
+        "editAriaLabel": "Editar plano",
+        "descriptionTooltip": "Descrição do plano",
+        "empty": "Nenhum plano encontrado.",
+        "periodDaily": "Diário",
+        "periodMonthly": "Mensal",
+        "periodAnnual": "Anual"
+    },
+    "planForm": {
+        "editTitle": "Editar Plano",
+        "newTitle": "Novo Plano",
+        "periodLabel": "Período",
+        "periodDaily": "Diário",
+        "periodMonthly": "Mensal",
+        "periodAnnual": "Anual",
+        "priceLabel": "Preço (R$)",
+        "pricePlaceholder": "19.90",
+        "descriptionLabel": "Descrição",
+        "descriptionPlaceholder": "Descrição do plano",
+        "featuresLabel": "Features (uma por linha)",
+        "featuresPlaceholder": "Uma feature por linha",
+        "activeLabel": "Ativo",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "saving": "Salvando..."
+    },
+    "status": {
+        "active": "Ativo",
+        "banned": "Banido",
+        "permanent": "Permanente"
+    },
+    "userDetail": {
+        "info": "Informações",
+        "id": "ID",
+        "createdAt": "Cadastro",
+        "updatedAt": "Atualizado",
+        "banDetails": "Detalhes do Ban",
+        "banReason": "Motivo",
+        "bannedAt": "Banido em",
+        "expiresAt": "Expira em",
+        "changeRole": "Alterar Role",
+        "ban": "Banir",
+        "unban": "Remover Ban",
+        "unbanning": "Removendo..."
+    },
+    "groupDetail": {
+        "info": "Informações",
+        "id": "ID",
+        "members": "Membros",
+        "titles": "Títulos",
+        "rating": "Rating",
+        "popularity": "Popularidade",
+        "joinedAt": "Entrada",
+        "description": "Descrição",
+        "membersCount": "Membros ({{count}})",
+        "empty": "Nenhum membro.",
+        "removeConfirm": "Remover {{name}} do grupo?",
+        "table": {
+            "name": "Nome",
+            "email": "Email",
+            "type": "Tipo",
+            "role": "Role",
+            "joinedAt": "Entrada",
+            "actions": "Ações"
+        },
+        "actions": {
+            "role": "Role",
+            "remove": "Remover"
+        }
+    },
+    "grantSubscription": {
+        "title": "Conceder Assinatura",
+        "userIdLabel": "User ID (UUID)",
+        "planIdLabel": "Plan ID (UUID)",
+        "userIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "planIdPlaceholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "confirm": "Conceder",
+        "confirming": "Concedendo..."
+    },
+    "updatePaymentStatus": {
+        "title": "Atualizar status do pagamento",
+        "paymentId": "Pagamento:",
+        "currentStatus": "Status atual:"
+    },
+    "revenueChart": {
+        "title": "Receita Mensal",
+        "revenue": "Receita: {{value}}",
+        "transactions": "{{count}} transações",
+        "growthVsPrevious": "{{value}}% vs mês anterior"
+    },
+    "dashboard": {
+        "home": {
+            "titleAdmin": "Dashboard Admin",
+            "titlePoster": "Dashboard Postador",
+            "titleDefault": "Dashboard",
+            "adminDescription": "Você possui acesso completo ao painel (incluindo tudo do Postador).",
+            "posterDescription": "Você possui acesso ao painel de conteúdo e publicação.",
+            "cards": {
+                "publications": {
+                    "title": "Minhas publicações",
+                    "description": "Gerencie capítulos enviados, status e histórico de revisão."
+                },
+                "queue": {
+                    "title": "Fila de envio",
+                    "description": "Acompanhe os conteúdos pendentes e os próximos agendamentos."
+                },
+                "metrics": {
+                    "title": "Métricas de leitura",
+                    "description": "Visualize alcance, retenção e curtidas dos seus lançamentos."
+                },
+                "moderation": {
+                    "title": "Moderação global",
+                    "description": "Aprove/reprove publicações, comentários e denúncias."
+                },
+                "userManagement": {
+                    "title": "Gestão de usuários",
+                    "description": "Promova postadores, suspenda contas e revise permissões."
+                },
+                "platformConfig": {
+                    "title": "Configuração da plataforma",
+                    "description": "Ajuste destaques, eventos e parâmetros gerais do sistema."
+                }
+            }
+        },
+        "overview": {
+            "title": "Visão Geral",
+            "errorMetrics": "Erro ao carregar métricas.",
+            "contentSection": "Conteúdo",
+            "errorContentMetrics": "Erro ao carregar métricas de conteúdo."
+        },
+        "tags": {
+            "title": "Tags",
+            "search": "Buscar tags...",
+            "count_one": "{{count}} tag",
+            "count_other": "{{count}} tags",
+            "new": "Nova Tag",
+            "deleteTitle": "Excluir Tag",
+            "deleteConfirm": "Tem certeza que deseja excluir a tag \"{{label}}\"?"
+        },
+        "users": {
+            "title": "Usuários",
+            "count_one": "{{count}} usuário",
+            "count_other": "{{count}} usuários",
+            "search": "Buscar por nome ou email...",
+            "errorDetail": "Erro ao carregar detalhes do usuário."
+        },
+        "groups": {
+            "title": "Grupos",
+            "count_one": "{{count}} grupo",
+            "count_other": "{{count}} grupos",
+            "search": "Buscar por nome...",
+            "errorDetail": "Erro ao carregar detalhes do grupo."
+        },
+        "titles": {
+            "title": "Títulos",
+            "count_one": "{{count}} título",
+            "count_other": "{{count}} títulos",
+            "search": "Buscar por nome...",
+            "new": "Novo",
+            "editTitle": "Editar Título",
+            "newTitle": "Novo Título",
+            "deleteConfirm": "Tem certeza que deseja excluir este título?",
+            "form": {
+                "name": "Nome",
+                "type": "Tipo",
+                "synopsis": "Sinopse",
+                "cover": "Cover URL",
+                "status": "Status",
+                "statusPlaceholder": "ONGOING, COMPLETED, HIATUS...",
+                "genres": "Gêneros (separados por vírgula)",
+                "genresPlaceholder": "Action, Adventure, Fantasy",
+                "author": "Autor",
+                "artist": "Artista",
+                "publisher": "Editora",
+                "adult": "Conteúdo adulto",
+                "typeManga": "Mangá",
+                "typeManhwa": "Manhwa",
+                "typeManhua": "Manhua"
+            }
+        },
+        "events": {
+            "title": "Eventos",
+            "count_one": "{{count}} evento",
+            "count_other": "{{count}} eventos",
+            "search": "Buscar por título...",
+            "new": "Novo",
+            "editTitle": "Editar Evento",
+            "newTitle": "Novo Evento",
+            "deleteConfirm": "Tem certeza que deseja excluir este evento?",
+            "form": {
+                "title": "Título",
+                "subtitle": "Subtítulo",
+                "description": "Descrição",
+                "startDate": "Data início",
+                "endDate": "Data fim",
+                "timeline": "Timeline",
+                "status": "Status",
+                "type": "Tipo",
+                "location": "Local",
+                "city": "Cidade",
+                "organizer": "Organizador",
+                "price": "Preço",
+                "pricePlaceholder": "R$ 50,00",
+                "image": "Imagem URL",
+                "online": "Online",
+                "featured": "Destaque"
+            }
+        },
+        "news": {
+            "title": "Notícias",
+            "count_one": "{{count}} notícia",
+            "count_other": "{{count}} notícias",
+            "search": "Buscar por título...",
+            "new": "Nova",
+            "editTitle": "Editar Notícia",
+            "newTitle": "Nova Notícia",
+            "deleteConfirm": "Tem certeza que deseja excluir esta notícia?",
+            "form": {
+                "title": "Título",
+                "category": "Categoria",
+                "subtitle": "Subtítulo",
+                "excerpt": "Resumo",
+                "cover": "Cover URL",
+                "source": "Fonte",
+                "author": "Autor",
+                "readTime": "Tempo de leitura (min)",
+                "tags": "Tags (separadas por vírgula)",
+                "tagsPlaceholder": "manga, anime, lançamento",
+                "exclusive": "Exclusiva",
+                "featured": "Destaque"
+            }
+        },
+        "subscriptions": {
+            "title": "Assinaturas",
+            "count_one": "{{count}} assinatura",
+            "count_other": "{{count}} assinaturas",
+            "grant": "Conceder",
+            "tabs": {
+                "subscriptions": "Assinaturas",
+                "plans": "Planos",
+                "logs": "Logs"
+            },
+            "statusLabel": "Status:",
+            "statusAll": "Todos",
+            "statusActive": "Ativa",
+            "statusExpired": "Expirada",
+            "statusCancelled": "Cancelada",
+            "errorSummary": "Erro ao carregar resumo de assinaturas.",
+            "revokeConfirm": "Deseja revogar esta assinatura?",
+            "grantSuccess": "Assinatura concedida com sucesso.",
+            "grantError": "Erro ao conceder assinatura.",
+            "revokeSuccess": "Assinatura revogada com sucesso.",
+            "revokeError": "Erro ao revogar assinatura.",
+            "plansManage": "Gerenciar planos de assinatura",
+            "planNew": "Novo Plano",
+            "logSubIdLabel": "ID da Assinatura:",
+            "logSubIdPlaceholder": "Cole o UUID da assinatura"
+        },
+        "financial": {
+            "title": "Financeiro",
+            "errorSummary": "Erro ao carregar resumo financeiro.",
+            "payments": "Pagamentos",
+            "count_one": "{{count}} pagamento",
+            "count_other": "{{count}} pagamentos",
+            "statusLabel": "Status:",
+            "statusAll": "Todos"
+        }
+    }
+}
