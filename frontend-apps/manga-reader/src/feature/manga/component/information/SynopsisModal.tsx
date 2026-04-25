@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 
@@ -15,6 +16,8 @@ const SynopsisModal = ({
     title,
     synopsis,
 }: SynopsisModalProps) => {
+    const { t } = useTranslation('manga');
+
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -39,7 +42,7 @@ const SynopsisModal = ({
             <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-center pb-2 border-b border-tertiary">
                     <h3 className="text-sm font-bold leading-tight">
-                        Sinopse de {title}
+                        {t('synopsisModalTitle', { name: title })}
                     </h3>
                 </div>
                 <div className="max-h-[60vh] overflow-y-auto pr-1">
@@ -53,7 +56,7 @@ const SynopsisModal = ({
                         onClick={onClose}
                         className="w-full px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors cursor-pointer"
                     >
-                        Fechar
+                        {t('close')}
                     </button>
                 </div>
             </div>

@@ -1,0 +1,68 @@
+{
+    "section": {
+        "title": "Comments",
+        "loginPrompt": "Sign in to leave a comment.",
+        "placeholder": "Leave your comment",
+        "sortLabel": "Sort comments by:"
+    },
+    "reply": {
+        "placeholder": "Write your reply...",
+        "action": "Reply",
+        "cancel": "Cancel",
+        "replyingTo": "↳ In reply to",
+        "authAction": "reply to comments"
+    },
+    "actions": {
+        "send": "Send",
+        "reply": "Reply",
+        "edit": "Edit",
+        "delete": "Delete",
+        "report": "Report",
+        "imageAlt": "Image {{index}}",
+        "removeImage": "Remove image"
+    },
+    "validation": {
+        "empty": "Write something before sending.",
+        "loginRequired": "comment"
+    },
+    "toast": {
+        "created": "Comment sent successfully.",
+        "createError": "Error sending comment.",
+        "updated": "Comment updated successfully.",
+        "updateError": "Error updating comment.",
+        "deleted": "Comment deleted.",
+        "deleteError": "Error deleting comment."
+    },
+    "delete": {
+        "title": "Delete comment",
+        "message": "Are you sure you want to delete this comment? This action will also delete related replies.",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+    },
+    "edit": {
+        "title": "Edit comment",
+        "placeholder": "Edit your comment",
+        "cancel": "Cancel",
+        "save": "Save",
+        "imageAlt": "Image {{index}}",
+        "removeImage": "X"
+    },
+    "metadata": {
+        "edited": "Edited"
+    },
+    "user": {
+        "viewProfileAria": "View {{name}}'s profile",
+        "memberBadge": "Member",
+        "moderatorBadge": "Moderator",
+        "imageAlt": "Image from {{name}}'s comment"
+    },
+    "list": {
+        "loading": "Loading comments...",
+        "unknownError": "Unknown error",
+        "hideDeep": "− Hide deep replies",
+        "showDeep_one": "+ Show {{count}} deep reply",
+        "showDeep_other": "+ Show {{count}} deep replies",
+        "loadMore": "Load more comments",
+        "empty": "No comments found."
+    }
+}

@@ -1,0 +1,76 @@
+{
+    "recent": {
+        "title": "Recent reviews",
+        "empty": "No reviews yet. Be the first!",
+        "loadMore": "Load more reviews",
+        "overallAverage": "Overall average:"
+    },
+    "categories": {
+        "fun": "Fun:",
+        "art": "Art:",
+        "storyline": "Storyline:",
+        "characters": "Characters:",
+        "originality": "Originality:",
+        "pacing": "Pacing:"
+    },
+    "modal": {
+        "instructions": "Rate the title in each category below. The final score will be calculated based on your ratings.",
+        "finalScore": "Final Score:",
+        "selectPlaceholder": "Select a score",
+        "notRated": "Not rated",
+        "scoreOption": "Score: {{value}}",
+        "categories": {
+            "fun": "Fun",
+            "art": "Art",
+            "storyline": "Storyline",
+            "characters": "Characters",
+            "originality": "Originality",
+            "pacing": "Pacing"
+        }
+    },
+    "myReviews": {
+        "title": "My Reviews",
+        "subtitle": "Edit or remove your reviews at any time.",
+        "workPlaceholder": "Title #{{id}}",
+        "saving": "Saving...",
+        "save": "Save",
+        "confirmPrompt": "Are you sure?",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "emptyState": "No reviews yet. Rate your favorite titles!",
+        "loadMore": "Load more",
+        "commentUpdated": "Comment updated.",
+        "commentUpdateError": "Error saving comment.",
+        "reviewRemoved": "Review removed.",
+        "reviewRemoveError": "Error removing review."
+    },
+    "wizard": {
+        "title": "Rate title",
+        "close": "Close",
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "finalStepLabel": "Score",
+        "rateLabel": "Rate: {{label}}",
+        "commentPlaceholder": "Optional comment...",
+        "submitting": "Submitting...",
+        "confirm": "Confirm rating",
+        "categoryLabels": {
+            "funRating": "Fun",
+            "artRating": "Art",
+            "storylineRating": "Storyline",
+            "charactersRating": "Characters",
+            "originalityRating": "Originality",
+            "pacingRating": "Pacing"
+        },
+        "categoryDescriptions": {
+            "funRating": "Consider the lightness, humor and entertainment the work provides.",
+            "artRating": "Rate the quality of the line work, panels, backgrounds and visual style.",
+            "storylineRating": "Consider the narrative structure, pacing of the story and originality.",
+            "charactersRating": "Rate the development, charisma and depth of the characters.",
+            "originalityRating": "Consider how innovative and unique the premise of the work is.",
+            "pacingRating": "Rate how chapters flow — whether they are well distributed and engaging."
+        }
+    }
+}

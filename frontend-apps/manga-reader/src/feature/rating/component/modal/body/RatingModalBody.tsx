@@ -1,4 +1,5 @@
-﻿import { useCallback, useEffect, useRef, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import StyledSelect, { SelectOption } from '@shared/component/ui/StyledSelect';
 
@@ -15,6 +16,7 @@ const RatingModalBody = ({
     onRatingChange,
     onAllCategoriesRated,
 }: RatingModalBodyProps) => {
+    const { t } = useTranslation('rating');
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const selectRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -28,24 +30,30 @@ const RatingModalBody = ({
         Pacing: -1,
     });
 
-    const categories = [
-        { key: 'Diversion', label: 'Diversão', icon: '🎉' },
-        { key: 'Art', label: 'Arte', icon: '🎨' },
-        { key: 'Storyline', label: 'Enredo', icon: '📖' },
-        { key: 'Characters', label: 'Personagens', icon: '👤' },
-        { key: 'Originality', label: 'Originalidade', icon: '💡' },
-        { key: 'Pacing', label: 'Ritmo', icon: '⏱' },
-    ];
+    const categories = useMemo(
+        () => [
+            { key: 'Diversion', label: t('modal.categories.fun'), icon: '🎉' },
+            { key: 'Art', label: t('modal.categories.art'), icon: '🎨' },
+            { key: 'Storyline', label: t('modal.categories.storyline'), icon: '📖' },
+            { key: 'Characters', label: t('modal.categories.characters'), icon: '👤' },
+            { key: 'Originality', label: t('modal.categories.originality'), icon: '💡' },
+            { key: 'Pacing', label: t('modal.categories.pacing'), icon: '⏱' },
+        ],
+        [t],
+    );
 
-    const ratingOptions = [
-        { value: -1, label: 'Não avaliado', selected: false, disabled: true },
-        { value: 0, label: 'Nota: 0' },
-        { value: 1, label: 'Nota: 1' },
-        { value: 2, label: 'Nota: 2' },
-        { value: 3, label: 'Nota: 3' },
-        { value: 4, label: 'Nota: 4' },
-        { value: 5, label: 'Nota: 5' },
-    ];
+    const ratingOptions = useMemo(
+        () => [
+            { value: -1, label: t('modal.notRated'), selected: false, disabled: true },
+            { value: 0, label: t('modal.scoreOption', { value: 0 }) },
+            { value: 1, label: t('modal.scoreOption', { value: 1 }) },
+            { value: 2, label: t('modal.scoreOption', { value: 2 }) },
+            { value: 3, label: t('modal.scoreOption', { value: 3 }) },
+            { value: 4, label: t('modal.scoreOption', { value: 4 }) },
+            { value: 5, label: t('modal.scoreOption', { value: 5 }) },
+        ],
+        [t],
+    );
 
     const handleCategoryChange = (category: string, value: number) => {
         setCategoryRatings(prev => ({
@@ -118,8 +126,7 @@ const RatingModalBody = ({
         <div className="flex flex-col gap-4 pb-2">
             <div>
                 <p className="text-xs text-center">
-                    Classifique o título em cada categoria abaixo. A nota final
-                    será calculada com base nas suas avaliações.
+                    {t('modal.instructions')}
                 </p>
             </div>
             <div
@@ -175,7 +182,7 @@ const RatingModalBody = ({
                                 onMenuOpen={() => handleMenuOpen(category.key)}
                                 onMenuClose={handleMenuClose}
                                 isSearchable={false}
-                                placeholder="Selecione uma nota"
+                                placeholder={t('modal.selectPlaceholder')}
                             />
                         </div>
                     );
@@ -183,7 +190,7 @@ const RatingModalBody = ({
             </div>
             <div className="border-t border-tertiary pt-4">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold">Nota Final:</span>
+                    <span className="text-sm font-bold">{t('modal.finalScore')}</span>
                     <span className="text-sm font-bold">
                         {(totalScore / 2).toFixed(2)} / 5
                     </span>

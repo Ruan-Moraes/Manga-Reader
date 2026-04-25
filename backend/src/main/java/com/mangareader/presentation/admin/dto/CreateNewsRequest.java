@@ -9,12 +9,12 @@ import jakarta.validation.constraints.NotNull;
  * Request para criação de notícia (admin).
  */
 public record CreateNewsRequest(
-        @NotBlank(message = "Título é obrigatório") String title,
+        @NotBlank(message = "{validation.news.title.required}") String title,
         String subtitle,
         String excerpt,
         List<String> content,
         String coverImage,
-        @NotNull(message = "Categoria é obrigatória") String category,
+        @NotNull(message = "{validation.news.category.required}") String category,
         List<String> tags,
         String authorName,
         String authorAvatar,

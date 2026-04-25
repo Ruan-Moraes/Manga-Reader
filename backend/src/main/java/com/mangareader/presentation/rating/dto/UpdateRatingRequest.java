@@ -10,30 +10,30 @@ import jakarta.validation.constraints.Size;
  * Campos nulos são ignorados (PATCH semântico).
  */
 public record UpdateRatingRequest(
-        @Min(value = 1, message = "Nota mínima é 1.")
-        @Max(value = 5, message = "Nota máxima é 5.")
+        @Min(value = 1, message = "{validation.rating.min}")
+        @Max(value = 5, message = "{validation.rating.max}")
         Double funRating,
 
-        @Min(value = 1, message = "Nota mínima é 1.")
-        @Max(value = 5, message = "Nota máxima é 5.")
+        @Min(value = 1, message = "{validation.rating.min}")
+        @Max(value = 5, message = "{validation.rating.max}")
         Double artRating,
 
-        @Min(value = 1, message = "Nota mínima é 1.")
-        @Max(value = 5, message = "Nota máxima é 5.")
+        @Min(value = 1, message = "{validation.rating.min}")
+        @Max(value = 5, message = "{validation.rating.max}")
         Double storylineRating,
 
-        @Min(value = 1, message = "Nota mínima é 1.")
-        @Max(value = 5, message = "Nota máxima é 5.")
+        @Min(value = 1, message = "{validation.rating.min}")
+        @Max(value = 5, message = "{validation.rating.max}")
         Double charactersRating,
 
-        @Min(value = 1, message = "Nota mínima é 1.")
-        @Max(value = 5, message = "Nota máxima é 5.")
+        @Min(value = 1, message = "{validation.rating.min}")
+        @Max(value = 5, message = "{validation.rating.max}")
         Double originalityRating,
 
-        @Min(value = 1, message = "Nota mínima é 1.")
-        @Max(value = 5, message = "Nota máxima é 5.")
+        @Min(value = 1, message = "{validation.rating.min}")
+        @Max(value = 5, message = "{validation.rating.max}")
         Double pacingRating,
 
-        @Size(max = 2000, message = "Comentário deve ter no máximo 2000 caracteres.")
+        @Size(max = 2000, message = "{validation.rating.comment.size}")
         String comment
 ) {}

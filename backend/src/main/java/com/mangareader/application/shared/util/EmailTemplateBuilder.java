@@ -15,9 +15,10 @@ package com.mangareader.application.shared.util;
  */
 public final class EmailTemplateBuilder {
     private static final String BRAND_COLOR = "#7c3aed";
-    private static final String FOOTER_TEXT = "Manga Reader — Sua plataforma de mangás";
+    private static final String DEFAULT_FOOTER_TEXT = "Manga Reader — Sua plataforma de mangás";
 
     private String title;
+    private String footerText = DEFAULT_FOOTER_TEXT;
     private final StringBuilder bodyContent = new StringBuilder();
 
     private EmailTemplateBuilder() {
@@ -29,6 +30,14 @@ public final class EmailTemplateBuilder {
 
     public EmailTemplateBuilder title(String title) {
         this.title = title;
+
+        return this;
+    }
+
+    public EmailTemplateBuilder footer(String text) {
+        if (text != null && !text.isBlank()) {
+            this.footerText = text;
+        }
 
         return this;
     }
@@ -85,6 +94,6 @@ public final class EmailTemplateBuilder {
                     <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
                     <p style="color: #999; font-size: 12px;">%s</p>
                 </div>
-                """.formatted(titleHtml, bodyContent.toString(), FOOTER_TEXT);
+                """.formatted(titleHtml, bodyContent.toString(), footerText);
     }
 }

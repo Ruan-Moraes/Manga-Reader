@@ -9,7 +9,7 @@ import {
     getGroupById,
     getGroupsByTitleId,
     getMemberById,
-    getGroupStatusLabel,
+    getGroupStatusLabelKey,
     supportGroup,
     unsupportGroup,
 } from './groupService';
@@ -156,17 +156,17 @@ describe('groupService', () => {
         });
     });
 
-    describe('getGroupStatusLabel', () => {
-        it('deve retornar Ativo para active', () => {
-            expect(getGroupStatusLabel('active')).toBe('Ativo');
+    describe('getGroupStatusLabelKey', () => {
+        it('deve retornar status.active para active', () => {
+            expect(getGroupStatusLabelKey('active')).toBe('status.active');
         });
 
-        it('deve retornar Inativo para inactive', () => {
-            expect(getGroupStatusLabel('inactive')).toBe('Inativo');
+        it('deve retornar status.inactive para inactive', () => {
+            expect(getGroupStatusLabelKey('inactive')).toBe('status.inactive');
         });
 
-        it('deve retornar Hiato para hiatus', () => {
-            expect(getGroupStatusLabel('hiatus')).toBe('Hiato');
+        it('deve retornar status.hiatus para hiatus', () => {
+            expect(getGroupStatusLabelKey('hiatus')).toBe('status.hiatus');
         });
     });
 

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
     showSuccessToast,
@@ -14,6 +15,7 @@ type FormErrors = {
 };
 
 const useResetPassword = () => {
+    const { t } = useTranslation('auth');
     const [searchParams] = useSearchParams();
 
     const navigate = useNavigate();
@@ -44,23 +46,25 @@ const useResetPassword = () => {
         const newErrors: FormErrors = {};
 
         if (!password) {
-            newErrors.password = 'Senha é obrigatória.';
+            newErrors.password = t('validation.passwordRequired');
         }
 
         if (password.length < 6) {
-            newErrors.password = 'A senha deve ter pelo menos 6 caracteres.';
+            newErrors.password = t('validation.passwordMin');
         }
 
         if (!confirmPassword) {
-            newErrors.confirmPassword = 'Confirmação de senha é obrigatória.';
+            newErrors.confirmPassword = t(
+                'validation.confirmPasswordRequired',
+            );
         }
 
         if (password !== confirmPassword) {
-            newErrors.confirmPassword = 'As senhas não coincidem.';
+            newErrors.confirmPassword = t('validation.passwordsDoNotMatch');
         }
 
         return newErrors;
-    }, [password, confirmPassword]);
+    }, [password, confirmPassword, t]);
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,7 +75,7 @@ const useResetPassword = () => {
             setErrors(validationErrors);
 
             if (Object.keys(validationErrors).length > 0) {
-                showErrorToast('Corrija os erros no formulário.', {
+                showErrorToast(t('validation.fixErrors'), {
                     toastId: 'reset-password-validation',
                 });
 
@@ -83,16 +87,16 @@ const useResetPassword = () => {
             try {
                 const message = await resetPassword(token, password);
 
-                showSuccessToast(message ?? 'Senha redefinida com sucesso!');
+                showSuccessToast(message ?? t('resetPassword.success'));
 
                 navigate('/Manga-Reader/login');
             } catch {
-                showErrorToast('Ocorreu um erro inesperado. Tente novamente.');
+                showErrorToast(t('validation.unexpectedError'));
             } finally {
                 setIsLoading(false);
             }
         },
-        [password, token, navigate, validate],
+        [password, token, navigate, validate, t],
     );
 
     return {

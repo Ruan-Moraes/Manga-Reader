@@ -1,0 +1,103 @@
+{
+    "status": {
+        "happening_now": "Happening Now",
+        "registrations_open": "Registrations Open",
+        "coming_soon": "Coming Soon",
+        "ended": "Ended"
+    },
+    "loading": "Loading event...",
+    "notFound": "Event not found.",
+    "backToEvents": "Back to events",
+    "details": {
+        "schedule": "Date and schedule",
+        "startAt": "Starts: {{date}}",
+        "endAt": "Ends: {{date}}",
+        "timezone": "Timezone: {{timezone}}",
+        "location": "Location",
+        "mapMock": "Embedded map (mock)",
+        "openMaps": "Open in Google Maps",
+        "openWaze": "Open in Waze",
+        "description": "Description",
+        "galleryAlt": "Event gallery",
+        "guests": "Guests:",
+        "comments": "Comments and feed",
+        "tickets": "Tickets and registration",
+        "ticketSlots": "Slots: {{count}}",
+        "register": "Register",
+        "organizer": "Organizer",
+        "contact": "Contact: {{value}}",
+        "otherEvents": "Other events from this organizer",
+        "related": "Related events"
+    },
+    "page": {
+        "title": "Events",
+        "subtitle": "Stay up to date with the main events in the manga world, conventions, releases and community activities.",
+        "create": "Create Event",
+        "searchPlaceholder": "Search by name or venue",
+        "typeAll": "All types",
+        "periodAll": "All dates",
+        "periodToday": "Today",
+        "periodWeek": "This week",
+        "periodMonth": "This month",
+        "sortDate": "Sort by date",
+        "sortPopularity": "Sort by popularity",
+        "sortRelevance": "Sort by relevance",
+        "featured": "Featured event",
+        "viewDetails": "View details",
+        "emptyState": "No events found with the current filters."
+    },
+    "card": {
+        "organizer": "Organizer:",
+        "participantsCount": "{{count}} participants",
+        "save": "Save",
+        "confirmed": "Confirmed",
+        "interested": "I'm Interested"
+    },
+    "form": {
+        "sectionTitle": "Create / Edit Event",
+        "privacy": {
+            "public": "Public",
+            "members": "Members only"
+        },
+        "labels": {
+            "title": "Title",
+            "type": "Type",
+            "startDate": "Start date",
+            "endDate": "End date",
+            "location": "Location",
+            "cover": "Cover image",
+            "description": "Description",
+            "ticketPrice": "Price/ticket",
+            "website": "Official website",
+            "socials": "Instagram / Twitter",
+            "contact": "Contact",
+            "maxParticipants": "Maximum participants",
+            "privacy": "Privacy",
+            "approval": "Require approval to join"
+        },
+        "placeholders": {
+            "title": "Event title",
+            "location": "Venue or online link",
+            "cover": "Cover image URL",
+            "description": "Event description",
+            "ticketPrice": "Price/ticket",
+            "website": "Official website",
+            "socials": "Instagram / Twitter",
+            "contact": "Organizer contact",
+            "maxParticipants": "Maximum participants"
+        },
+        "actions": {
+            "submit": "Publish event",
+            "draftSaved": "Draft saved",
+            "saveDraft": "Save as draft",
+            "cancel": "Cancel"
+        },
+        "preview": {
+            "title": "Live preview",
+            "placeholderTitle": "Event title",
+            "placeholderDescription": "Description will appear here.",
+            "startAt": "Starts: {{date}}",
+            "pickDateTime": "Set date and time"
+        }
+    }
+}

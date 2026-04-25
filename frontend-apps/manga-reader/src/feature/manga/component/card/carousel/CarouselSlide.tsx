@@ -1,5 +1,6 @@
 // @ts-expect-error - ignore import error
 import { SplideSlide } from '@splidejs/react-splide';
+import { useTranslation } from 'react-i18next';
 
 import { CarouselCard } from '../../../type/title-card.types';
 
@@ -14,12 +15,13 @@ const CarouselSlide = ({
     cover,
     synopsis,
 }: CarouselCard) => {
+    const { t } = useTranslation('manga');
+
     if (isError) {
         return (
             <div className="flex items-center justify-center h-full">
                 <p className="p-4 font-bold text-center text-quinary-default">
-                    Ocorreu um erro ao buscar os dados. Tente novamente mais
-                    tarde.
+                    {t('carouselError')}
                 </p>
             </div>
         );
@@ -29,7 +31,7 @@ const CarouselSlide = ({
         return (
             <div className="flex items-center justify-center h-full p-4">
                 <p className="font-bold text-center text-tertiary">
-                    Carregando...
+                    {t('loading')}
                 </p>
             </div>
         );
@@ -44,7 +46,7 @@ const CarouselSlide = ({
                         className="block h-full cursor-default"
                     >
                         <img
-                            alt={`Capa do título: ${name}`}
+                            alt={t('coverAlt', { name })}
                             src={cover}
                             className="w-full h-full object-fit"
                         />

@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -16,6 +18,8 @@ import {
 } from '@feature/chapter';
 
 const Chapter = () => {
+    const { t } = useTranslation('manga');
+    const { t: tComment } = useTranslation('comment');
     const {
         titleId,
         chapterId,
@@ -33,10 +37,10 @@ const Chapter = () => {
             <MainContent>
                 <AlertBanner
                     color={THEME_COLORS.QUINARY}
-                    title="Capítulo não encontrado"
-                    message="O capítulo que você está tentando acessar não existe."
+                    title={t('chapterPage.notFoundTitle')}
+                    message={t('chapterPage.notFoundMessage')}
                     link={`/title/${titleId}`}
-                    linkText="Voltar para página do título"
+                    linkText={t('chapterPage.backToTitle')}
                 />
             </MainContent>
         );
@@ -62,15 +66,15 @@ const Chapter = () => {
                         <div className="flex flex-col gap-2">
                             <div>
                                 <h3 className="text-xl font-bold">
-                                    Comentários
+                                    {t('chapterPage.commentsHeading')}
                                 </h3>
                             </div>
                             <div className="flex flex-col gap-4">
                                 <CommentInput
-                                    placeholder="Deixe seu comentário"
+                                    placeholder={tComment('section.placeholder')}
                                     titleId={titleId}
                                 />
-                                <SortComments title="Ordernar comentários por:" />
+                                <SortComments title={tComment('section.sortLabel')} />
                             </div>
                         </div>
                         <div className="flex flex-col -mt-4">

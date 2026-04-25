@@ -1,0 +1,68 @@
+{
+    "section": {
+        "title": "Comentarios",
+        "loginPrompt": "Inicia sesión para dejar un comentario.",
+        "placeholder": "Deja tu comentario",
+        "sortLabel": "Ordenar comentarios por:"
+    },
+    "reply": {
+        "placeholder": "Escribe tu respuesta...",
+        "action": "Responder",
+        "cancel": "Cancelar",
+        "replyingTo": "↳ En respuesta a",
+        "authAction": "responder comentarios"
+    },
+    "actions": {
+        "send": "Enviar",
+        "reply": "Responder",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "report": "Denunciar",
+        "imageAlt": "Imagen {{index}}",
+        "removeImage": "Eliminar imagen"
+    },
+    "validation": {
+        "empty": "Escribe algo antes de enviar.",
+        "loginRequired": "comentar"
+    },
+    "toast": {
+        "created": "Comentario enviado con éxito.",
+        "createError": "Error al enviar el comentario.",
+        "updated": "Comentario actualizado con éxito.",
+        "updateError": "Error al actualizar el comentario.",
+        "deleted": "Comentario eliminado.",
+        "deleteError": "Error al eliminar el comentario."
+    },
+    "delete": {
+        "title": "Eliminar comentario",
+        "message": "¿Estás seguro de que quieres eliminar este comentario? Esta acción también eliminará las respuestas relacionadas.",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+    },
+    "edit": {
+        "title": "Editar comentario",
+        "placeholder": "Edita tu comentario",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "imageAlt": "Imagen {{index}}",
+        "removeImage": "X"
+    },
+    "metadata": {
+        "edited": "Editado"
+    },
+    "user": {
+        "viewProfileAria": "Ver perfil de {{name}}",
+        "memberBadge": "Miembro",
+        "moderatorBadge": "Moderador",
+        "imageAlt": "Imagen del comentario de {{name}}"
+    },
+    "list": {
+        "loading": "Cargando comentarios...",
+        "unknownError": "Error desconocido",
+        "hideDeep": "− Ocultar respuestas profundas",
+        "showDeep_one": "+ Mostrar {{count}} respuesta profunda",
+        "showDeep_other": "+ Mostrar {{count}} respuestas profundas",
+        "loadMore": "Ver más comentarios",
+        "empty": "No se encontraron comentarios."
+    }
+}

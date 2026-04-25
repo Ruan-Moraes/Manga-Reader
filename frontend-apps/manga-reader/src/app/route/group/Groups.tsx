@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -8,8 +9,8 @@ import SearchInput from '@shared/component/input/SearchInput';
 
 import { GroupCard, useGroups, type GroupStatus } from '@feature/group';
 
-// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Groups = () => {
+    const { t } = useTranslation('group');
     const [status, setStatus] = useState<'all' | GroupStatus>('all');
     const [genre, setGenre] = useState<'all' | string>('all');
     const [query, setQuery] = useState('');
@@ -24,31 +25,53 @@ const Groups = () => {
         query,
     });
 
+    const statusOptions = useMemo(
+        () => [
+            { value: 'all', label: t('listing.statusAll') },
+            { value: 'active', label: t('listing.statusActive') },
+            { value: 'hiatus', label: t('listing.statusHiatus') },
+            { value: 'inactive', label: t('listing.statusInactive') },
+        ],
+        [t],
+    );
+
+    const genreOptions = useMemo(
+        () => [
+            { value: 'all', label: t('listing.genreAll') },
+            ...genres.map(item => ({ value: item, label: item })),
+        ],
+        [genres, t],
+    );
+
+    const sortOptions = useMemo(
+        () => [
+            { value: 'popularity', label: t('listing.sortPopularity') },
+            { value: 'members', label: t('listing.sortMembers') },
+            { value: 'titles', label: t('listing.sortTitles') },
+            { value: 'rating', label: t('listing.sortRating') },
+        ],
+        [t],
+    );
+
     return (
         <>
             <Header />
             <MainContent>
                 <section className="flex flex-col gap-4">
-                    <h2 className="text-xl font-bold">Grupos de Tradução</h2>
+                    <h2 className="text-xl font-bold">{t('listing.title')}</h2>
                     <p className="text-sm text-tertiary">
-                        Explore equipes, filtros de status/gênero e ordene por
-                        popularidade.
+                        {t('listing.subtitle')}
                     </p>
 
                     <SearchInput
                         value={query}
                         onChange={setQuery}
-                        placeholder="Buscar por nome do grupo"
+                        placeholder={t('listing.searchPlaceholder')}
                     />
 
                     <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
                         <BaseSelect
-                            options={[
-                                { value: 'all', label: 'Todos os status' },
-                                { value: 'active', label: 'Ativo' },
-                                { value: 'hiatus', label: 'Hiato' },
-                                { value: 'inactive', label: 'Inativo' },
-                            ]}
+                            options={statusOptions}
                             value={status}
                             onChange={event =>
                                 setStatus(
@@ -59,31 +82,14 @@ const Groups = () => {
                         />
 
                         <BaseSelect
-                            options={[
-                                { value: 'all', label: 'Todos os gêneros' },
-                                ...genres.map(item => ({
-                                    value: item,
-                                    label: item,
-                                })),
-                            ]}
+                            options={genreOptions}
                             value={genre}
                             onChange={event => setGenre(event.target.value)}
                             className="w-full p-2 text-sm border rounded-xs border-tertiary bg-secondary"
                         />
 
                         <BaseSelect
-                            options={[
-                                { value: 'popularity', label: 'Popularidade' },
-                                {
-                                    value: 'members',
-                                    label: 'Total de membros',
-                                },
-                                {
-                                    value: 'titles',
-                                    label: 'Obras traduzidas',
-                                },
-                                { value: 'rating', label: 'Avaliação' },
-                            ]}
+                            options={sortOptions}
                             value={sortBy}
                             onChange={event =>
                                 setSortBy(

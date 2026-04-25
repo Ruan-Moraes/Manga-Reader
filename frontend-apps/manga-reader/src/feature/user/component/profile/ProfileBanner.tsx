@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import UserAvatar from '@shared/component/avatar/UserAvatar';
 
 type Props = {
@@ -8,13 +10,15 @@ type Props = {
 };
 
 const ProfileBanner = ({ bannerUrl, photoUrl, name, onPhotoClick }: Props) => {
+    const { t } = useTranslation('user');
+
     return (
         <div className="relative">
             <div className="h-40 overflow-hidden rounded-t-xs sm:h-52">
                 {bannerUrl ? (
                     <img
                         src={bannerUrl}
-                        alt="Banner do perfil"
+                        alt={t('profile.banner.alt')}
                         className="object-cover w-full h-full"
                     />
                 ) : (

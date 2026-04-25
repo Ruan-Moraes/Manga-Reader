@@ -1,0 +1,208 @@
+{
+    "modal": {
+        "close": "close",
+        "openProfileAria": "Open {{name}}'s profile",
+        "photoAlt": "{{name}}'s profile picture",
+        "moderatorSince": "Moderator since {{date}}",
+        "memberSince": "Member since {{date}}",
+        "badges": {
+            "moderator": "Moderator",
+            "member": "Member"
+        },
+        "body": {
+            "bio": "Bio:",
+            "socialMedia": "Social media:",
+            "statistics": "Statistics:",
+            "commentsCount": "{{count}} Comments",
+            "likesCount": "{{count}} Likes",
+            "dislikesCount": "{{count}} Dislikes",
+            "recommendedWorks": "Works I recommend:",
+            "workAlt": "Work image"
+        }
+    },
+    "details": {
+        "loadingProfile": "Loading profile...",
+        "notFoundTitle": "User not found",
+        "notFoundMessage": "Could not load the requested profile.",
+        "profileTitle": "{{name}}'s Profile",
+        "photoAlt": "{{name}}'s profile photo",
+        "accountSection": "Account",
+        "roleLabel": "Role:",
+        "memberSince": "Member since:",
+        "moderatorSince": "Moderator since:",
+        "commentsLabel": "comments",
+        "likesLabel": "likes",
+        "dislikesLabel": "dislikes",
+        "socialMediaSection": "Social media",
+        "recommendedSection": "Recommended titles",
+        "recommendedAlt": "Recommended title",
+        "roles": {
+            "admin": "Administrator",
+            "poster": "Poster",
+            "reader": "Reader"
+        }
+    },
+    "page": {
+        "title": "User Profile",
+        "nameLabel": "Name",
+        "bioLabel": "Bio",
+        "nameEmptyError": "Name cannot be empty.",
+        "bioMaxError": "Maximum 500 characters ({{length}}/500).",
+        "save": "Save changes",
+        "saving": "Saving...",
+        "loginPrompt": "Sign in to view your profile.",
+        "updateSuccess": "Profile updated successfully.",
+        "myLibraryTitle": "My Library",
+        "viewLibrary": "View Library",
+        "viewReviews": "View Reviews",
+        "stats": {
+            "reading": "Reading",
+            "wantToRead": "Want to Read",
+            "completed": "Completed",
+            "total": "Total"
+        }
+    },
+    "profile": {
+        "banner": {
+            "alt": "Profile banner"
+        },
+        "header": {
+            "memberSince": "Member since {{date}}",
+            "edit": "Edit profile",
+            "roles": {
+                "admin": "Administrator",
+                "poster": "Poster",
+                "reader": "Reader"
+            }
+        },
+        "stats": {
+            "reading": "Reading",
+            "wantToRead": "Want to Read",
+            "completed": "Completed",
+            "total": "Total",
+            "comments": "Comments",
+            "ratings": "Ratings"
+        },
+        "tabs": {
+            "about": "About",
+            "recommendations": "Recommended",
+            "comments": "Comments",
+            "history": "History",
+            "settings": "Settings"
+        },
+        "privacy": {
+            "doNotTrack": "Not tracked",
+            "private": "Private",
+            "public": "Public",
+            "publicDescription": "Visible to everyone",
+            "privateDescription": "Only you can see it",
+            "doNotTrackDescription": "Data not collected",
+            "commentVisibility": "Comment Visibility",
+            "historyVisibility": "History Visibility",
+            "save": "Save settings",
+            "saving": "Saving...",
+            "savedMessage": "Privacy settings updated.",
+            "doNotTrackConfirm": "By selecting \"Do not track\", all your view history will be permanently deleted. Do you want to continue?"
+        },
+        "recommendations": {
+            "empty": "No recommendations yet.",
+            "emptyOwner": "Add up to 10 recommended titles to your profile.",
+            "addPlaceholder": "Title ID",
+            "add": "Add",
+            "adding": "Adding...",
+            "noCover": "No cover"
+        },
+        "comments": {
+            "empty": "No comments found.",
+            "viewTitle": "View title",
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "history": {
+            "empty": "No view history.",
+            "previous": "Previous",
+            "next": "Next",
+            "noCover": "No cover"
+        },
+        "edit": {
+            "title": "Edit Profile",
+            "nameLabel": "Name",
+            "bioLabel": "Bio",
+            "photoUrlLabel": "Photo URL",
+            "bannerUrlLabel": "Banner URL",
+            "socialLinksLabel": "Social Links",
+            "addLink": "+ Add",
+            "platformPlaceholder": "Platform",
+            "urlPlaceholder": "URL",
+            "save": "Save",
+            "saving": "Saving...",
+            "savedMessage": "Profile updated successfully."
+        }
+    },
+    "settings": {
+        "descriptionGuest": "Options are saved locally until you log in.",
+        "privacy": {
+            "title": "Privacy",
+            "description": "Control what other users can see on your profile.",
+            "showReadingHistory": "Show reading history on profile",
+            "showOnlineStatus": "Show online status",
+            "adultContentLabel": "Adult content",
+            "adultContent": {
+                "hide": "Hide",
+                "blur": "Blur",
+                "show": "Show"
+            }
+        },
+        "reading": {
+            "title": "Reading mode",
+            "modeLabel": "Mode",
+            "directionLabel": "Direction",
+            "imageQualityLabel": "Image quality",
+            "preloadPages": "Page preloading: {{count}}",
+            "autoNextChapter": "Open next chapter automatically",
+            "showPageNumber": "Show page number",
+            "mode": {
+                "continuous": "Continuous",
+                "paged": "Paged"
+            },
+            "direction": {
+                "ltr": "Left → right",
+                "rtl": "Right → left",
+                "vertical": "Vertical scroll"
+            },
+            "imageQuality": {
+                "auto": "Automatic",
+                "high": "High",
+                "dataSaver": "Data saver"
+            }
+        },
+        "notifications": {
+            "title": "Notifications",
+            "description": "Choose which events should trigger alerts on your account.",
+            "items": {
+                "newChapterFromFollowed": "New chapters from followed manga",
+                "recommendations": "Personalized recommendations",
+                "communityNews": "Community news",
+                "events": "Events and releases",
+                "email": "Email notifications",
+                "push": "Browser push notifications"
+            }
+        },
+        "appearance": {
+            "title": "Appearance",
+            "themeLabel": "Theme",
+            "compactMode": "Compact layout on library/listings",
+            "matureBlur": "Apply blur to mature thumbnails",
+            "theme": {
+                "system": "System",
+                "light": "Light",
+                "dark": "Dark"
+            }
+        },
+        "language": {
+            "title": "Language",
+            "uiLanguageLabel": "Interface language",
+            "preferredContentLanguageLabel": "Preferred chapter language"
+        }
+    }
+}

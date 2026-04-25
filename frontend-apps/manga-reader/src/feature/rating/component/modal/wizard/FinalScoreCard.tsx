@@ -1,16 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import RatingStars from '../../RatingStars';
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 type Category = {
     readonly key: string;
-    readonly label: string;
     readonly icon: string;
-    readonly description: string;
 };
 
 type FinalScoreCardProps = {
@@ -23,24 +18,16 @@ type FinalScoreCardProps = {
     allCategoriesRated: boolean;
 };
 
-// ---------------------------------------------------------------------------
-// SVG Circle constants
-// ---------------------------------------------------------------------------
-
 const CIRCLE_RADIUS = 44;
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 const CIRCLE_SIZE = 120;
 const STROKE_WIDTH = 6;
 
 const getScoreColor = (score: number): string => {
-    if (score < 2) return '#FF784F'; // quinary
-    if (score <= 3.5) return '#ddda2a'; // quaternary
-    return '#22c55e'; // green-500
+    if (score < 2) return '#FF784F';
+    if (score <= 3.5) return '#ddda2a';
+    return '#22c55e';
 };
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 const FinalScoreCard = ({
     average,
@@ -51,6 +38,7 @@ const FinalScoreCard = ({
     isSubmitting,
     allCategoriesRated,
 }: FinalScoreCardProps) => {
+    const { t } = useTranslation('rating');
     const [animatedOffset, setAnimatedOffset] = useState(CIRCLE_CIRCUMFERENCE);
 
     const displayScore = Math.round(average * 10) / 10;
@@ -59,9 +47,7 @@ const FinalScoreCard = ({
         CIRCLE_CIRCUMFERENCE - (CIRCLE_CIRCUMFERENCE * displayScore) / 5;
     const scoreColor = getScoreColor(displayScore);
 
-    // Animate on mount and when average changes
     useEffect(() => {
-        // Start from full offset, then animate to target
         setAnimatedOffset(CIRCLE_CIRCUMFERENCE);
         const timer = setTimeout(() => {
             setAnimatedOffset(targetOffset);
@@ -71,14 +57,12 @@ const FinalScoreCard = ({
 
     return (
         <div className="flex flex-col gap-4 items-center">
-            {/* Animated SVG Circle */}
             <div className="relative flex items-center justify-center">
                 <svg
                     width={CIRCLE_SIZE}
                     height={CIRCLE_SIZE}
                     viewBox={`0 0 ${CIRCLE_SIZE} ${CIRCLE_SIZE}`}
                 >
-                    {/* Background circle */}
                     <circle
                         cx={CIRCLE_SIZE / 2}
                         cy={CIRCLE_SIZE / 2}
@@ -88,7 +72,6 @@ const FinalScoreCard = ({
                         strokeWidth={STROKE_WIDTH}
                         opacity={0.3}
                     />
-                    {/* Score circle */}
                     <circle
                         cx={CIRCLE_SIZE / 2}
                         cy={CIRCLE_SIZE / 2}
@@ -119,10 +102,8 @@ const FinalScoreCard = ({
                 </div>
             </div>
 
-            {/* Stars under circle */}
             <RatingStars value={displayScore} size={18} showValue={false} />
 
-            {/* Category grid */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 w-full">
                 {categories.map(cat => {
                     const rating = categoryRatings[cat.key];
@@ -136,7 +117,7 @@ const FinalScoreCard = ({
                             <span className="flex items-center gap-1 text-xs">
                                 <span>{cat.icon}</span>
                                 <span className="text-tertiary">
-                                    {cat.label}
+                                    {t(`wizard.categoryLabels.${cat.key}`)}
                                 </span>
                             </span>
                             <div className="flex items-center gap-1">
@@ -150,7 +131,6 @@ const FinalScoreCard = ({
                 })}
             </div>
 
-            {/* Actions */}
             <div className="flex gap-2 w-full pt-2 border-t border-tertiary">
                 <button
                     type="button"
@@ -158,7 +138,7 @@ const FinalScoreCard = ({
                     disabled={isSubmitting}
                     className="flex-1 px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
-                    Voltar
+                    {t('wizard.back')}
                 </button>
                 <button
                     type="button"
@@ -166,7 +146,9 @@ const FinalScoreCard = ({
                     disabled={!allCategoriesRated || isSubmitting}
                     className="flex-1 px-4 py-2 text-sm font-bold border rounded-xs bg-quaternary-opacity-75 text-primary-default border-quaternary-default hover:bg-quaternary-default disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
-                    {isSubmitting ? 'Enviando...' : 'Confirmar avaliação'}
+                    {isSubmitting
+                        ? t('wizard.submitting')
+                        : t('wizard.confirm')}
                 </button>
             </div>
         </div>

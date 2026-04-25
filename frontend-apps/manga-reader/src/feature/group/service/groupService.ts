@@ -69,8 +69,8 @@ export const unsupportGroup = async (groupId: string): Promise<Group> => {
     return response.data.data;
 };
 
-export const getGroupStatusLabel = (status: GroupStatus): string => {
-    if (status === 'active') return 'Ativo';
-    if (status === 'inactive') return 'Inativo';
-    return 'Hiato';
+export const getGroupStatusLabelKey = (status: GroupStatus): string => {
+    if (status === 'active') return 'status.active';
+    if (status === 'inactive') return 'status.inactive';
+    return 'status.hiatus';
 };

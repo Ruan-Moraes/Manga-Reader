@@ -1,6 +1,8 @@
 package com.mangareader.application.contact.usecase;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.shared.port.EmailPort;
@@ -19,9 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PublishWorkContactUseCase {
     private final EmailPort emailPort;
+    private final MessageSource messageSource;
 
     @Value("${app.mail.admin-email:admin@mangareader.com}")
     private String adminEmail;
+
+    private String resolveFooter() {
+        return messageSource.getMessage("email.footer.tagline", null, LocaleContextHolder.getLocale());
+    }
 
     public void execute(PublishWorkInput input) {
         log.info("Nova solicitação de publicação recebida de: {}", input.email());
@@ -46,6 +53,7 @@ public class PublishWorkContactUseCase {
                 .divider()
                 .paragraph("<strong>Mensagem:</strong>")
                 .paragraph(input.message())
+                .footer(resolveFooter())
                 .build();
 
         emailPort.sendHtml(
@@ -63,6 +71,7 @@ public class PublishWorkContactUseCase {
                 .paragraph("Nossa equipe analisará seu envio e entrará em contato em breve.")
                 .divider()
                 .paragraph("<span style=\"color: #666; font-size: 14px;\">Se você não realizou esta solicitação, ignore este email.</span>")
+                .footer(resolveFooter())
                 .build();
 
         emailPort.sendHtml(

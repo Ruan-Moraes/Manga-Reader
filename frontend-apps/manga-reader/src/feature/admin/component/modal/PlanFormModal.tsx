@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import BaseCheckbox from '@shared/component/input/BaseCheckbox';
 import BaseInput from '@shared/component/input/BaseInput';
@@ -23,11 +24,6 @@ type PlanFormModalProps = {
 };
 
 const PERIOD_OPTIONS = ['DAILY', 'MONTHLY', 'ANNUAL'] as const;
-const PERIOD_LABELS: Record<string, string> = {
-    DAILY: 'Diário',
-    MONTHLY: 'Mensal',
-    ANNUAL: 'Anual',
-};
 
 const PlanFormModal = ({
     isOpen,
@@ -36,11 +32,21 @@ const PlanFormModal = ({
     plan,
     isSubmitting,
 }: PlanFormModalProps) => {
+    const { t } = useTranslation('admin');
     const [period, setPeriod] = useState('MONTHLY');
     const [priceReais, setPriceReais] = useState('');
     const [description, setDescription] = useState('');
     const [features, setFeatures] = useState('');
     const [active, setActive] = useState(true);
+
+    const periodLabels = useMemo<Record<string, string>>(
+        () => ({
+            DAILY: t('planForm.periodDaily'),
+            MONTHLY: t('planForm.periodMonthly'),
+            ANNUAL: t('planForm.periodAnnual'),
+        }),
+        [t],
+    );
 
     useEffect(() => {
         if (plan) {
@@ -81,16 +87,18 @@ const PlanFormModal = ({
         <BaseModal isModalOpen={isOpen} closeModal={onClose}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-2">
                 <h3 className="text-sm font-bold">
-                    {plan ? 'Editar Plano' : 'Novo Plano'}
+                    {plan
+                        ? t('planForm.editTitle')
+                        : t('planForm.newTitle')}
                 </h3>
 
                 {!plan && (
                     <BaseSelect
-                        label="Período"
+                        label={t('planForm.periodLabel')}
                         variant="outlined"
                         options={PERIOD_OPTIONS.map(p => ({
                             value: p,
-                            label: PERIOD_LABELS[p],
+                            label: periodLabels[p],
                         }))}
                         value={period}
                         onChange={e => setPeriod(e.target.value)}
@@ -98,38 +106,38 @@ const PlanFormModal = ({
                 )}
 
                 <BaseInput
-                    label="Preço (R$)"
+                    label={t('planForm.priceLabel')}
                     variant="outlined"
                     type="number"
                     step="0.01"
                     min="0.01"
                     value={priceReais}
                     onChange={e => setPriceReais(e.target.value)}
-                    placeholder="19.90"
+                    placeholder={t('planForm.pricePlaceholder')}
                 />
 
                 <BaseInput
-                    label="Descrição"
+                    label={t('planForm.descriptionLabel')}
                     variant="outlined"
                     type="text"
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                     maxLength={300}
-                    placeholder="Descrição do plano"
+                    placeholder={t('planForm.descriptionPlaceholder')}
                 />
 
                 <BaseTextArea
-                    label="Features (uma por linha)"
+                    label={t('planForm.featuresLabel')}
                     variant="outlined"
                     value={features}
                     onChange={e => setFeatures(e.target.value)}
                     rows={3}
-                    placeholder="Uma feature por linha"
+                    placeholder={t('planForm.featuresPlaceholder')}
                 />
 
                 {plan && (
                     <BaseCheckbox
-                        label="Ativo"
+                        label={t('planForm.activeLabel')}
                         checked={active}
                         onChange={setActive}
                     />
@@ -141,14 +149,16 @@ const PlanFormModal = ({
                         onClick={onClose}
                         className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30"
                     >
-                        Cancelar
+                        {t('planForm.cancel')}
                     </button>
                     <button
                         type="submit"
                         disabled={isSubmitting || !priceReais || !description}
                         className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
                     >
-                        {isSubmitting ? 'Salvando...' : 'Salvar'}
+                        {isSubmitting
+                            ? t('planForm.saving')
+                            : t('planForm.save')}
                     </button>
                 </div>
             </form>

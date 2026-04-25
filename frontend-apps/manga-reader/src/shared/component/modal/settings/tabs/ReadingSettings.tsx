@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import BaseSelect from '@shared/component/input/BaseSelect';
 
 import {
@@ -7,24 +10,41 @@ import {
     type UserSettings,
 } from '../settings.constants';
 
-const modeOptions = [
-    { value: 'continuous', label: 'Contínuo' },
-    { value: 'paged', label: 'Paginado' },
-];
-
-const directionOptions = [
-    { value: 'ltr', label: 'Esquerda → direita' },
-    { value: 'rtl', label: 'Direita → esquerda' },
-    { value: 'vertical', label: 'Rolagem vertical' },
-];
-
-const imageQualityOptions = [
-    { value: 'auto', label: 'Automática' },
-    { value: 'high', label: 'Alta' },
-    { value: 'data-saver', label: 'Economia de dados' },
-];
-
 const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
+    const { t } = useTranslation('user');
+
+    const modeOptions = useMemo(
+        () => [
+            { value: 'continuous', label: t('settings.reading.mode.continuous') },
+            { value: 'paged', label: t('settings.reading.mode.paged') },
+        ],
+        [t],
+    );
+
+    const directionOptions = useMemo(
+        () => [
+            { value: 'ltr', label: t('settings.reading.direction.ltr') },
+            { value: 'rtl', label: t('settings.reading.direction.rtl') },
+            {
+                value: 'vertical',
+                label: t('settings.reading.direction.vertical'),
+            },
+        ],
+        [t],
+    );
+
+    const imageQualityOptions = useMemo(
+        () => [
+            { value: 'auto', label: t('settings.reading.imageQuality.auto') },
+            { value: 'high', label: t('settings.reading.imageQuality.high') },
+            {
+                value: 'data-saver',
+                label: t('settings.reading.imageQuality.dataSaver'),
+            },
+        ],
+        [t],
+    );
+
     const updateReading = <K extends keyof UserSettings['reading']>(
         key: K,
         value: UserSettings['reading'][K],
@@ -37,10 +57,10 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
 
     return (
         <div className="space-y-4">
-            <h3 className={sectionTitleClass}>Modo de leitura</h3>
+            <h3 className={sectionTitleClass}>{t('settings.reading.title')}</h3>
 
             <BaseSelect
-                label="Modo"
+                label={t('settings.reading.modeLabel')}
                 options={modeOptions}
                 value={settings.reading.mode}
                 onChange={e =>
@@ -52,7 +72,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
             />
 
             <BaseSelect
-                label="Direção"
+                label={t('settings.reading.directionLabel')}
                 options={directionOptions}
                 value={settings.reading.direction}
                 onChange={e =>
@@ -64,7 +84,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
             />
 
             <BaseSelect
-                label="Qualidade de imagem"
+                label={t('settings.reading.imageQualityLabel')}
                 options={imageQualityOptions}
                 value={settings.reading.imageQuality}
                 onChange={e =>
@@ -77,7 +97,9 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
             />
 
             <label className="block text-xs font-bold">
-                Pré-carregamento de páginas: {settings.reading.preloadPages}
+                {t('settings.reading.preloadPages', {
+                    count: settings.reading.preloadPages,
+                })}
             </label>
             <input
                 type="range"
@@ -99,7 +121,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                         updateReading('autoNextChapter', e.target.checked)
                     }
                 />
-                Abrir próximo capítulo automaticamente
+                {t('settings.reading.autoNextChapter')}
             </label>
 
             <label className={checkboxLabelClass}>
@@ -111,7 +133,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                         updateReading('showPageNumber', e.target.checked)
                     }
                 />
-                Exibir número da página
+                {t('settings.reading.showPageNumber')}
             </label>
         </div>
     );

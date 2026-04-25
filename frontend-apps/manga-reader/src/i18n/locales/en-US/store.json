@@ -1,0 +1,12 @@
+{
+    "card": {
+        "access": "Visit"
+    },
+    "container": {
+        "empty": "No partner available."
+    },
+    "modal": {
+        "title": "Where to Buy",
+        "subtitle": "Pick a partner store and continue to their official site."
+    }
+}

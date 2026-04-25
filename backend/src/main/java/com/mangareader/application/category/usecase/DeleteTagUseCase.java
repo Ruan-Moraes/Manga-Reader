@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeleteTagUseCase {
-
     private final TagRepositoryPort tagRepository;
 
     @Transactional

@@ -1,6 +1,7 @@
 import { AiFillDislike, AiFillLike } from 'react-icons/ai';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
 import DarkButton from '@shared/component/button/DarkButton';
@@ -34,6 +35,8 @@ const CommentActions = ({
 
     userReaction,
 }: CommentActionsProps) => {
+    const { t } = useTranslation('comment');
+
     return (
         <div className="flex justify-between">
             <div className="flex gap-2">
@@ -72,7 +75,7 @@ const CommentActions = ({
                         </BadgeIconButton>
                     </>
                 )}
-                <DarkButton onClick={onReply} text="Responder" />
+                <DarkButton onClick={onReply} text={t('actions.reply')} />
             </div>
         </div>
     );

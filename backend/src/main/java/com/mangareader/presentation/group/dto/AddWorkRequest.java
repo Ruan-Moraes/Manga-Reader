@@ -9,11 +9,11 @@ import jakarta.validation.constraints.Size;
  * Request para adicionar uma obra ao portfólio do grupo.
  */
 public record AddWorkRequest(
-        @NotBlank(message = "ID do título é obrigatório")
+        @NotBlank(message = "{validation.group.work.titleId.required}")
         String titleId,
 
-        @NotBlank(message = "Título da obra é obrigatório")
-        @Size(max = 200, message = "Título deve ter no máximo 200 caracteres")
+        @NotBlank(message = "{validation.group.work.title.required}")
+        @Size(max = 200, message = "{validation.group.work.title.size}")
         String title,
 
         String cover,

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import clsx from 'clsx';
@@ -15,6 +16,7 @@ import VerticalCard from './VerticalCard';
 import RaisedButton from '@shared/component/button/RaisedButton';
 
 const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
+    const { t } = useTranslation('manga');
     const navigate = useNavigate();
 
     const { data, status } = useTitlesFetch(QUERY_KEYS.UPDATED_TITLES, 0, 10);
@@ -85,7 +87,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
             >
                 {allChildren.slice(0, visible)}
             </div>
-            <RaisedButton onClick={handleClick} text="Ver Mais" />
+            <RaisedButton onClick={handleClick} text={t('card.loadMore')} />
         </section>
     );
 };

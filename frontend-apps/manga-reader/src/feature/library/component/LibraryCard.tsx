@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import BaseSelect from '@shared/component/input/BaseSelect';
 import AppLink from '@shared/component/link/element/AppLink';
@@ -8,7 +9,11 @@ import type {
     SavedMangaItem,
 } from '../type/saved-library.types';
 
-const listTypes: ReadingListType[] = ['Lendo', 'Quero Ler', 'Concluído'];
+const listTypes: { id: ReadingListType; i18nKey: string }[] = [
+    { id: 'Lendo', i18nKey: 'reading' },
+    { id: 'Quero Ler', i18nKey: 'wantToRead' },
+    { id: 'Concluído', i18nKey: 'completed' },
+];
 
 type Props = {
     manga: SavedMangaItem;
@@ -17,6 +22,7 @@ type Props = {
 };
 
 const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
+    const { t } = useTranslation('library');
     const [confirming, setConfirming] = useState(false);
 
     return (
@@ -37,8 +43,8 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
                 <span className="text-xs text-tertiary">{manga.type}</span>
                 <BaseSelect
                     options={listTypes.map(list => ({
-                        value: list,
-                        label: list,
+                        value: list.id,
+                        label: t(`tabs.${list.i18nKey}`),
                     }))}
                     value={manga.list}
                     onChange={e =>
@@ -52,7 +58,7 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
                 {confirming ? (
                     <div className="flex items-center gap-2 text-xs">
                         <span className="text-quinary-default">
-                            Tem certeza?
+                            {t('card.confirmPrompt')}
                         </span>
                         <button
                             onClick={() => {
@@ -61,13 +67,13 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
                             }}
                             className="px-2 py-0.5 border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default/20"
                         >
-                            Confirmar
+                            {t('card.confirm')}
                         </button>
                         <button
                             onClick={() => setConfirming(false)}
                             className="px-2 py-0.5 border rounded-xs border-tertiary hover:bg-tertiary/20"
                         >
-                            Cancelar
+                            {t('card.cancel')}
                         </button>
                     </div>
                 ) : (
@@ -75,7 +81,7 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
                         onClick={() => setConfirming(true)}
                         className="px-2 py-1 text-xs border rounded-xs border-tertiary hover:bg-quinary-default/10 text-quinary-default w-fit"
                     >
-                        Remover
+                        {t('card.remove')}
                     </button>
                 )}
             </div>

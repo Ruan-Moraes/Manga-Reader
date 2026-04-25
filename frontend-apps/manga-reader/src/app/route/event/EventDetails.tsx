@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     FiCalendar,
     FiClock,
@@ -13,12 +14,17 @@ import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
 
-import { getEventById, getRelatedEvents, statusLabel } from '@feature/event';
+import {
+    getEventById,
+    getRelatedEvents,
+    statusLabelKey,
+} from '@feature/event';
 import type { EventData } from '@feature/event';
 
 // TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const EventDetails = () => {
     const { eventId = '' } = useParams();
+    const { t, i18n } = useTranslation('event');
 
     const [event, setEvent] = useState<EventData | null>(null);
     const [relatedEvents, setRelatedEvents] = useState<EventData[]>([]);
@@ -43,7 +49,7 @@ const EventDetails = () => {
             <>
                 <Header />
                 <MainContent>
-                    <p>Carregando evento...</p>
+                    <p>{t('loading')}</p>
                 </MainContent>
                 <Footer />
             </>
@@ -55,12 +61,12 @@ const EventDetails = () => {
             <>
                 <Header />
                 <MainContent>
-                    <p>Evento não encontrado.</p>
+                    <p>{t('notFound')}</p>
                     <Link
                         to="/Manga-Reader/events"
                         className="text-purple-400 underline"
                     >
-                        Voltar para eventos
+                        {t('backToEvents')}
                     </Link>
                 </MainContent>
                 <Footer />
@@ -82,7 +88,7 @@ const EventDetails = () => {
                         <div className="p-5 space-y-3">
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className="px-2 py-1 text-xs font-semibold text-white bg-purple-600 rounded-full">
-                                    {statusLabel[event.status]}
+                                    {t(statusLabelKey[event.status])}
                                 </span>
                                 <span className="px-2 py-1 text-xs border rounded-full border-tertiary">
                                     {event.type}
@@ -111,22 +117,28 @@ const EventDetails = () => {
                         <div className="space-y-4 xl:col-span-2">
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                 <h2 className="text-xl font-semibold">
-                                    Data e programação
+                                    {t('details.schedule')}
                                 </h2>
                                 <p className="inline-flex items-center gap-2 text-sm text-tertiary">
-                                    <FiClock /> Início:{' '}
-                                    {new Date(event.startDate).toLocaleString(
-                                        'pt-BR',
-                                    )}
+                                    <FiClock />{' '}
+                                    {t('details.startAt', {
+                                        date: new Date(
+                                            event.startDate,
+                                        ).toLocaleString(i18n.language),
+                                    })}
                                 </p>
                                 <p className="inline-flex items-center gap-2 ml-4 text-sm text-tertiary">
-                                    <FiCalendar /> Término:{' '}
-                                    {new Date(event.endDate).toLocaleString(
-                                        'pt-BR',
-                                    )}
+                                    <FiCalendar />{' '}
+                                    {t('details.endAt', {
+                                        date: new Date(
+                                            event.endDate,
+                                        ).toLocaleString(i18n.language),
+                                    })}
                                 </p>
                                 <p className="text-sm text-tertiary">
-                                    Fuso horário: {event.timezone}
+                                    {t('details.timezone', {
+                                        timezone: event.timezone,
+                                    })}
                                 </p>
                                 <ul className="pl-5 text-sm list-disc">
                                     {event.schedule.map(item => (
@@ -137,27 +149,27 @@ const EventDetails = () => {
 
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                 <h2 className="text-xl font-semibold">
-                                    Localização
+                                    {t('details.location')}
                                 </h2>
                                 <p className="inline-flex items-center gap-2 text-sm">
                                     <FiMapPin /> {event.location.address} -{' '}
                                     {event.location.city}
                                 </p>
                                 <div className="p-4 text-sm border border-dashed rounded-lg border-tertiary">
-                                    Mapa integrado (mock)
+                                    {t('details.mapMock')}
                                 </div>
                                 <div className="flex gap-3 text-sm">
                                     <a
                                         href={event.location.mapLink}
                                         className="text-purple-400 underline"
                                     >
-                                        Abrir no Google Maps
+                                        {t('details.openMaps')}
                                     </a>
                                     <a
                                         href={event.location.mapLink}
                                         className="text-purple-400 underline"
                                     >
-                                        Abrir no Waze
+                                        {t('details.openWaze')}
                                     </a>
                                 </div>
                                 <p className="text-sm text-tertiary">
@@ -168,7 +180,7 @@ const EventDetails = () => {
 
                             <div className="p-4 space-y-3 border rounded-xl border-tertiary bg-secondary">
                                 <h2 className="text-xl font-semibold">
-                                    Descrição
+                                    {t('details.description')}
                                 </h2>
                                 <p>{event.description}</p>
                                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -176,20 +188,20 @@ const EventDetails = () => {
                                         <img
                                             key={image}
                                             src={image}
-                                            alt="Galeria do evento"
+                                            alt={t('details.galleryAlt')}
                                             className="object-cover w-full rounded-lg h-36"
                                         />
                                     ))}
                                 </div>
                                 <p className="text-sm">
-                                    <strong>Convidados:</strong>{' '}
+                                    <strong>{t('details.guests')}</strong>{' '}
                                     {event.specialGuests.join(', ')}
                                 </p>
                             </div>
 
                             <div className="p-4 space-y-3 border rounded-xl border-tertiary bg-secondary">
                                 <h2 className="text-xl font-semibold">
-                                    Comentários e feed
+                                    {t('details.comments')}
                                 </h2>
                                 {event.comments.map(comment => (
                                     <div
@@ -208,7 +220,7 @@ const EventDetails = () => {
                         <aside className="space-y-4">
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                 <h3 className="font-semibold">
-                                    Ingressos e inscrição
+                                    {t('details.tickets')}
                                 </h3>
                                 {event.tickets.map(ticket => (
                                     <div
@@ -220,7 +232,9 @@ const EventDetails = () => {
                                         </p>
                                         <p>{ticket.price}</p>
                                         <p className="text-tertiary">
-                                            Vagas: {ticket.available}
+                                            {t('details.ticketSlots', {
+                                                count: ticket.available,
+                                            })}
                                         </p>
                                     </div>
                                 ))}
@@ -228,12 +242,14 @@ const EventDetails = () => {
                                     type="button"
                                     className="w-full py-2 mt-2 font-medium text-purple-900 bg-white rounded-lg"
                                 >
-                                    Fazer inscrição
+                                    {t('details.register')}
                                 </button>
                             </div>
 
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
-                                <h3 className="font-semibold">Organizador</h3>
+                                <h3 className="font-semibold">
+                                    {t('details.organizer')}
+                                </h3>
                                 <div className="flex items-center gap-2 text-sm">
                                     <UserAvatar
                                         src={event.organizer.avatar}
@@ -244,19 +260,21 @@ const EventDetails = () => {
                                     {event.organizer.name}
                                 </div>
                                 <p className="text-sm text-tertiary">
-                                    Contato: {event.organizer.contact}
+                                    {t('details.contact', {
+                                        value: event.organizer.contact,
+                                    })}
                                 </p>
                                 <Link
                                     to="/Manga-Reader/events"
                                     className="text-sm text-purple-400 underline"
                                 >
-                                    Outros eventos do organizador
+                                    {t('details.otherEvents')}
                                 </Link>
                             </div>
 
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                 <h3 className="font-semibold">
-                                    Eventos relacionados
+                                    {t('details.related')}
                                 </h3>
                                 {relatedEvents.map(item => (
                                     <Link

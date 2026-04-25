@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoImageOutline } from 'react-icons/io5';
 
 import type { VerticalCard as VerticalCardProps } from '../../../type/title-card.types';
@@ -22,6 +23,8 @@ const VerticalCard = ({
     ratingAverage,
     chapters,
 }: VerticalCardProps) => {
+    const { t } = useTranslation('manga');
+
     const listOfChapters = useMemo(() => {
         if (!chapters || chapters.length === 0) {
             return [];
@@ -59,7 +62,7 @@ const VerticalCard = ({
         return (
             <AlertBanner
                 color={THEME_COLORS.QUINARY}
-                title="Ops! Algo deu errado."
+                title={t('errorTitle')}
                 message={ERROR_MESSAGES.FETCH_ERROR_BASE}
             />
         );
@@ -81,8 +84,12 @@ const VerticalCard = ({
                     hasBorder ? 'border-b border-tertiary' : ''
                 }`}
             >
-                <span className="block mobile-md:hidden">Cap:</span>
-                <span className="mobile-md:block hidden">Capítulo:</span>
+                <span className="block mobile-md:hidden">
+                    {t('card.chapterLabelShort')}
+                </span>
+                <span className="mobile-md:block hidden">
+                    {t('card.chapterLabelFull')}
+                </span>
                 <span className="flex items-center gap-2">
                     {hasChapters && index === 0 && (
                         <span className="p-1 text-[0.5rem] rounded-xs bg-tertiary">
@@ -123,7 +130,7 @@ const VerticalCard = ({
                 {isLoading && (
                     <div className="flex items-center justify-center h-44 mobile-md:h-56">
                         <span className="font-bold text-tertiary">
-                            Carregando...
+                            {t('loading')}
                         </span>
                     </div>
                 )}
@@ -135,7 +142,7 @@ const VerticalCard = ({
                         <AppLink link={`title/${id}`} className="block h-full">
                             {!imageError ? (
                                 <img
-                                    alt={`Capa do título: ${name}`}
+                                    alt={t('coverAlt', { name })}
                                     className="object-cover w-full h-44 mobile-md:h-56 spect-square"
                                     src={cover}
                                     onError={handleImageError}
@@ -148,7 +155,7 @@ const VerticalCard = ({
                                             className="text-tertiary"
                                         />
                                         <span className="mt-2 text-xs text-center text-tertiary">
-                                            Imagem não disponível
+                                            {t('imageUnavailable')}
                                         </span>
                                     </div>
                                 </div>

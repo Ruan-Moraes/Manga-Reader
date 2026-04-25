@@ -1,0 +1,89 @@
+{
+    "card": {
+        "readMinutes": "{{count}} min",
+        "new": "Nueva",
+        "trending": "Trending"
+    },
+    "hero": {
+        "exclusive": "Exclusivo",
+        "highlight": "Destacado",
+        "views": "{{count}} vistas"
+    },
+    "filter": {
+        "period": {
+            "all": "Todo el período",
+            "today": "Hoy",
+            "week": "Última semana",
+            "month": "Último mes"
+        },
+        "source": {
+            "all": "Todas las fuentes"
+        },
+        "sort": {
+            "recent": "Más recientes",
+            "mostRead": "Más leídas",
+            "trending": "Trending"
+        }
+    },
+    "tabs": {
+        "Principais": "Principales",
+        "Lançamentos": "Lanzamientos",
+        "Adaptações": "Adaptaciones",
+        "Indústria": "Industria",
+        "Eventos": "Eventos",
+        "Curiosidades": "Curiosidades",
+        "Entrevistas": "Entrevistas",
+        "Mercado": "Mercado",
+        "Internacional": "Internacional"
+    },
+    "myNewsTabs": {
+        "Salvas": "Guardadas",
+        "Lidas": "Leídas",
+        "Recomendadas": "Recomendadas"
+    },
+    "page": {
+        "title": "Noticias",
+        "subtitle": "Mantente al día con las últimas novedades del mundo del manga, anime, lanzamientos y adaptaciones.",
+        "unread": "{{count}} sin leer",
+        "filters": "Filtros",
+        "searchPlaceholder": "Buscar por título, contenido, obra o autor",
+        "loadMore": "Cargar más noticias",
+        "sidebar": {
+            "mostRead": "Más leídas",
+            "myNews": "Mis Noticias",
+            "savedDescription": "{{count}} noticias guardadas para leer después.",
+            "readDescription": "{{count}} noticias leídas en el historial reciente.",
+            "recommendedDescription": "Recomendaciones basadas en {{count}} lecturas y categorías favoritas.",
+            "alertsTitle": "Alertas y notificaciones",
+            "alertsDescription": "Recibe notificaciones de nuevas noticias de tus categorías favoritas y autores seguidos.",
+            "lastUpdate": "Última actualización: ahora"
+        },
+        "myNewsTabs": {
+            "saved": "Guardadas",
+            "read": "Leídas",
+            "recommended": "Recomendadas"
+        }
+    },
+    "details": {
+        "notFound": "Noticia no encontrada",
+        "back": "Volver a noticias",
+        "updated": "Actualizada {{date}}",
+        "galleryAlt": "Imagen adicional",
+        "galleryCaption": "Detrás de escena y materiales promocionales.",
+        "videoTitle": "Video incorporado",
+        "galleryImageAlt": "Galería",
+        "technicalSheet": "Ficha técnica",
+        "reactions": "Reacciones e interacción",
+        "commentsCount": "{{count}} comentarios",
+        "share": "Compartir",
+        "save": "Guardar noticia",
+        "comments": "Comentarios",
+        "sortRecent": "Más recientes",
+        "sortRelevant": "Más relevantes",
+        "showSpoilers": "Mostrar spoilers",
+        "hideSpoilers": "Ocultar spoilers",
+        "reply": "responder",
+        "relatedTitle": "Noticias relacionadas",
+        "readAlso": "Lee también"
+    }
+}

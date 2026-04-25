@@ -8,29 +8,29 @@ import jakarta.validation.constraints.Size;
  * Request para solicitação de publicação de trabalho.
  */
 public record PublishWorkRequest(
-        @NotBlank(message = "Nome é obrigatório")
-        @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
+        @NotBlank(message = "{validation.name.required}")
+        @Size(min = 2, max = 100, message = "{validation.name.size}")
         String name,
 
-        @NotBlank(message = "Email é obrigatório")
-        @Email(message = "Formato de email inválido")
+        @NotBlank(message = "{validation.email.required}")
+        @Email(message = "{validation.contact.emailFormat}")
         String email,
 
-        @NotBlank(message = "Tipo de trabalho é obrigatório")
+        @NotBlank(message = "{validation.contact.workType.required}")
         String workType,
 
-        @NotBlank(message = "Título do trabalho é obrigatório")
-        @Size(min = 2, max = 200, message = "Título deve ter entre 2 e 200 caracteres")
+        @NotBlank(message = "{validation.contact.workTitle.required}")
+        @Size(min = 2, max = 200, message = "{validation.contact.workTitle.size}")
         String workTitle,
 
-        @NotBlank(message = "Sinopse é obrigatória")
-        @Size(min = 10, max = 2000, message = "Sinopse deve ter entre 10 e 2000 caracteres")
+        @NotBlank(message = "{validation.contact.synopsis.required}")
+        @Size(min = 10, max = 2000, message = "{validation.contact.synopsis.size}")
         String synopsis,
 
         String portfolioLink,
 
-        @NotBlank(message = "Mensagem é obrigatória")
-        @Size(min = 10, max = 5000, message = "Mensagem deve ter entre 10 e 5000 caracteres")
+        @NotBlank(message = "{validation.contact.message.required}")
+        @Size(min = 10, max = 5000, message = "{validation.contact.message.size}")
         String message
 ) {
 }

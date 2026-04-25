@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import RatingStars from '../../RatingStars';
 
@@ -28,13 +29,14 @@ type RatingWizardProps = {
     isSubmitting?: boolean;
 };
 
-const TOTAL_STEPS = RATING_CATEGORIES.length + 1; // 6 categories + final
+const TOTAL_STEPS = RATING_CATEGORIES.length + 1;
 
 const RatingWizard = ({
     onSubmit,
     onCancel,
     isSubmitting = false,
 }: RatingWizardProps) => {
+    const { t } = useTranslation('rating');
     const [currentStep, setCurrentStep] = useState(0);
     const [categoryRatings, setCategoryRatings] = useState<CategoryRatings>(
         () =>
@@ -154,7 +156,7 @@ const RatingWizard = ({
                                 {isCompleted && !isCurrent ? '✓' : `${i + 1}`}
                             </span>
                             <span className="hidden mobile-md:inline">
-                                {cat.label}
+                                {t(`wizard.categoryLabels.${cat.key}`)}
                             </span>
                         </button>
                     );
@@ -172,7 +174,7 @@ const RatingWizard = ({
                               : 'text-tertiary opacity-60'
                     }`}
                 >
-                    <span>Nota</span>
+                    <span>{t('wizard.finalStepLabel')}</span>
                 </button>
             </div>
         </div>
@@ -188,15 +190,21 @@ const RatingWizard = ({
 
         const canAdvance = isRated;
 
+        const categoryLabel = t(
+            `wizard.categoryLabels.${currentCategory.key}`,
+        );
+
         return (
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col items-center gap-2 pt-2">
                     <span className="text-2xl">{currentCategory.icon}</span>
                     <h3 className="text-sm font-bold text-shadow-default">
-                        Avalie: {currentCategory.label}
+                        {t('wizard.rateLabel', { label: categoryLabel })}
                     </h3>
                     <p className="text-xs text-tertiary text-center max-w-xs">
-                        {currentCategory.description}
+                        {t(
+                            `wizard.categoryDescriptions.${currentCategory.key}`,
+                        )}
                     </p>
                 </div>
                 <div className="flex justify-center py-2">
@@ -211,7 +219,7 @@ const RatingWizard = ({
                 <textarea
                     value={currentComment}
                     onChange={e => handleCategoryComment(e.target.value)}
-                    placeholder="Comentário opcional..."
+                    placeholder={t('wizard.commentPlaceholder')}
                     rows={2}
                     className="w-full p-2 text-xs border rounded-xs resize-none bg-primary-default border-tertiary placeholder:text-tertiary focus:border-quaternary-default focus:outline-none transition-colors"
                 />
@@ -221,7 +229,9 @@ const RatingWizard = ({
                         onClick={currentStep === 0 ? onCancel : handleBack}
                         className="flex-1 px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors cursor-pointer"
                     >
-                        {currentStep === 0 ? 'Cancelar' : 'Voltar'}
+                        {currentStep === 0
+                            ? t('wizard.cancel')
+                            : t('wizard.back')}
                     </button>
                     <button
                         type="button"
@@ -229,7 +239,7 @@ const RatingWizard = ({
                         disabled={!canAdvance}
                         className="flex-1 px-4 py-2 text-sm border rounded-xs bg-primary-default border-primary-default hover:bg-primary-opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     >
-                        Próximo
+                        {t('wizard.next')}
                     </button>
                 </div>
             </div>
@@ -252,10 +262,10 @@ const RatingWizard = ({
         <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold leading-none">
-                    Avaliar obra
+                    {t('wizard.title')}
                 </h2>
                 <DarkButton
-                    text="Fechar"
+                    text={t('wizard.close')}
                     onClick={() => {
                         handleReset();
 

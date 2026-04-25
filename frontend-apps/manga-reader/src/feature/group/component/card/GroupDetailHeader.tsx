@@ -1,6 +1,7 @@
 import { IoOpenOutline, IoPeopleOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
-import { getGroupStatusLabel } from '../../service/groupService';
+import { getGroupStatusLabelKey } from '../../service/groupService';
 import { Group } from '../../type/group.types';
 
 type GroupDetailHeaderProps = {
@@ -18,12 +19,14 @@ const GroupDetailHeader = ({
     group,
     onOpenMembers,
 }: GroupDetailHeaderProps) => {
+    const { t } = useTranslation('group');
+
     return (
         <section className="overflow-hidden border rounded-xs border-tertiary bg-secondary/40">
             <div className="relative h-40 mobile-lg:h-52">
                 <img
                     src={group.banner}
-                    alt={`Banner do grupo ${group.name}`}
+                    alt={t('header.bannerAlt', { name: group.name })}
                     className="object-cover w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/70 to-transparent" />
@@ -34,7 +37,7 @@ const GroupDetailHeader = ({
                     <div className="flex gap-4 items-end">
                         <img
                             src={group.logo}
-                            alt={`Avatar de ${group.name}`}
+                            alt={t('header.avatarAlt', { name: group.name })}
                             className="object-cover w-20 h-20 rounded-full border-2 border-quaternary"
                         />
 
@@ -43,7 +46,7 @@ const GroupDetailHeader = ({
                             <span
                                 className={`inline-flex mt-1 px-2 py-1 text-xs border rounded-xs ${statusClassMap[group.status]}`}
                             >
-                                {getGroupStatusLabel(group.status)}
+                                {t(getGroupStatusLabelKey(group.status))}
                             </span>
                         </div>
                     </div>
@@ -54,7 +57,7 @@ const GroupDetailHeader = ({
                         rel="noreferrer"
                         className="flex gap-2 items-center text-sm text-tertiary transition-colors hover:text-quaternary"
                     >
-                        Site oficial <IoOpenOutline />
+                        {t('header.officialSite')} <IoOpenOutline />
                     </a>
                 </div>
 
@@ -64,13 +67,17 @@ const GroupDetailHeader = ({
                         className="flex gap-2 justify-center items-center p-2 border rounded-xs border-tertiary hover:border-quaternary transition-colors"
                     >
                         <IoPeopleOutline />
-                        {group.members.length} membros
+                        {t('card.membersCount', {
+                            count: group.members.length,
+                        })}
                     </button>
                     <div className="p-2 text-center border rounded-xs border-tertiary">
-                        {group.supporters?.length ?? 0} apoiadores
+                        {t('header.supporters', {
+                            count: group.supporters?.length ?? 0,
+                        })}
                     </div>
                     <div className="p-2 text-center border rounded-xs border-tertiary">
-                        {group.totalTitles} obras
+                        {t('card.worksCount', { count: group.totalTitles })}
                     </div>
                     <div className="p-2 text-center border rounded-xs border-tertiary">
                         ⭐ {group.rating.toFixed(1)}

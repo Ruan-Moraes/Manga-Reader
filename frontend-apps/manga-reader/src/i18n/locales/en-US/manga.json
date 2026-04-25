@@ -1,0 +1,84 @@
+{
+    "loading": "Loading...",
+    "loadingCover": "Loading title image...",
+    "imageUnavailable": "Image unavailable",
+    "coverLoadError": "Could not load image",
+    "coverAlt": "Title cover: {{name}}",
+    "zoomCoverAria": "Zoom cover: {{name}}",
+    "errorTitle": "Oops! Something went wrong.",
+    "carouselError": "An error occurred while fetching data. Please try again later.",
+    "synopsisLoading": "We are loading the synopsis...",
+    "synopsis": "Synopsis",
+    "synopsisModalTitle": "Synopsis of {{name}}",
+    "readMore": "Read more",
+    "close": "Close",
+    "genres": "Genres",
+    "details": {
+        "popularity": "Popularity:",
+        "chapters": "Chapters:",
+        "author": "Author:",
+        "artist": "Artist:",
+        "publisher": "Publisher:",
+        "type": "Type:",
+        "notAvailable": "N/A"
+    },
+    "card": {
+        "chaptersCount": "({{count}} Chapters)",
+        "chapterLabelShort": "Ch:",
+        "chapterLabelFull": "Chapter:",
+        "loadMore": "Load More"
+    },
+    "actions": {
+        "bookmark": "Save",
+        "bookmarked": "Saved",
+        "like": "Like",
+        "groups": "Groups",
+        "cart": "Cart"
+    },
+    "titleDetails": {
+        "invalidIdTitle": "Invalid ID",
+        "errorTitle": "Oops! An error occurred.",
+        "communityAverage": "Community average:",
+        "authActionBookmark": "save to library",
+        "authActionRate": "rate",
+        "savedToLibrary": "Manga saved to your library.",
+        "removedFromLibrary": "Manga removed from your library."
+    },
+    "home": {
+        "alertTitle": "Notice!",
+        "alertMessage": "Site under development, some features may not be available.",
+        "carouselTitle": "Most viewed titles",
+        "carouselSubtitle": "Last 30 days",
+        "risingTitle": "Top 5 rising titles",
+        "randomTitle": "10 Random titles",
+        "updatedTitle": "Updated titles",
+        "seeMore": "See more..."
+    },
+    "chapterPage": {
+        "notFoundTitle": "Chapter not found",
+        "notFoundMessage": "The chapter you are trying to access does not exist.",
+        "backToTitle": "Back to title page",
+        "commentsHeading": "Comments"
+    },
+    "chapter": {
+        "heading": "Chapters:",
+        "sortBy": "Sort by:",
+        "searchPlaceholder": "Search Chapter",
+        "optionLabel": "Chapter {{number}}",
+        "loadingOptions": "Loading...",
+        "previous": "Previous",
+        "next": "Next",
+        "item": {
+            "chapterLabel": "Chapter:",
+            "titleLabel": "Title:",
+            "dateLabel": "Date:",
+            "pagesLabel": "Pages:"
+        },
+        "pagination": {
+            "pageLabel": "Page <1>{{current}}</1> of <2>{{total}}</2>"
+        },
+        "coverLoading": "Loading title image...",
+        "coverError": "Could not load image",
+        "pageAlt": "Page {{number}}"
+    }
+}

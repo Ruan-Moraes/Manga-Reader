@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotNull;
  * Request para salvar um título na biblioteca.
  */
 public record SaveToLibraryRequest(
-        @NotBlank(message = "ID do título é obrigatório.")
+        @NotBlank(message = "{validation.library.titleId.required}")
         String titleId,
 
-        @NotNull(message = "Tipo de lista é obrigatório.")
+        @NotNull(message = "{validation.library.listType.required}")
         String list
 ) {}

@@ -1,0 +1,89 @@
+{
+    "card": {
+        "readMinutes": "{{count}} min",
+        "new": "New",
+        "trending": "Trending"
+    },
+    "hero": {
+        "exclusive": "Exclusive",
+        "highlight": "Featured",
+        "views": "{{count}} views"
+    },
+    "filter": {
+        "period": {
+            "all": "All time",
+            "today": "Today",
+            "week": "Last week",
+            "month": "Last month"
+        },
+        "source": {
+            "all": "All sources"
+        },
+        "sort": {
+            "recent": "Most recent",
+            "mostRead": "Most read",
+            "trending": "Trending"
+        }
+    },
+    "tabs": {
+        "Principais": "Top",
+        "Lançamentos": "Releases",
+        "Adaptações": "Adaptations",
+        "Indústria": "Industry",
+        "Eventos": "Events",
+        "Curiosidades": "Curiosities",
+        "Entrevistas": "Interviews",
+        "Mercado": "Market",
+        "Internacional": "International"
+    },
+    "myNewsTabs": {
+        "Salvas": "Saved",
+        "Lidas": "Read",
+        "Recomendadas": "Recommended"
+    },
+    "page": {
+        "title": "News",
+        "subtitle": "Stay up to date with the latest news from the world of manga, anime, releases and adaptations.",
+        "unread": "{{count}} unread",
+        "filters": "Filters",
+        "searchPlaceholder": "Search by title, content, work or author",
+        "loadMore": "Load more news",
+        "sidebar": {
+            "mostRead": "Most read",
+            "myNews": "My News",
+            "savedDescription": "{{count}} news saved for later.",
+            "readDescription": "{{count}} news read in recent history.",
+            "recommendedDescription": "Recommendations based on {{count}} reads and favorite categories.",
+            "alertsTitle": "Alerts and notifications",
+            "alertsDescription": "Receive notifications for new articles in your preferred categories and followed authors.",
+            "lastUpdate": "Last update: now"
+        },
+        "myNewsTabs": {
+            "saved": "Saved",
+            "read": "Read",
+            "recommended": "Recommended"
+        }
+    },
+    "details": {
+        "notFound": "News not found",
+        "back": "Back to news",
+        "updated": "Updated {{date}}",
+        "galleryAlt": "Additional image",
+        "galleryCaption": "Behind the scenes and promotional materials.",
+        "videoTitle": "Embedded video",
+        "galleryImageAlt": "Gallery",
+        "technicalSheet": "Technical sheet",
+        "reactions": "Reactions and engagement",
+        "commentsCount": "{{count}} comments",
+        "share": "Share",
+        "save": "Save news",
+        "comments": "Comments",
+        "sortRecent": "Most recent",
+        "sortRelevant": "Most relevant",
+        "showSpoilers": "Show spoilers",
+        "hideSpoilers": "Hide spoilers",
+        "reply": "reply",
+        "relatedTitle": "Related news",
+        "readAlso": "Read also"
+    }
+}

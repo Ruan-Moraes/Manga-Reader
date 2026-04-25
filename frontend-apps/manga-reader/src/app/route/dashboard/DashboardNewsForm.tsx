@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
 
@@ -21,6 +22,7 @@ const CATEGORIES = [
 ];
 
 const DashboardNewsForm = () => {
+    const { t } = useTranslation('admin');
     const { newsId } = useParams<{ newsId: string }>();
     const navigate = useNavigate();
     const isEditing = Boolean(newsId);
@@ -75,7 +77,7 @@ const DashboardNewsForm = () => {
             ...form,
             tags: tagsInput
                 .split(',')
-                .map(t => t.trim())
+                .map(tag => tag.trim())
                 .filter(Boolean),
         };
 
@@ -89,8 +91,7 @@ const DashboardNewsForm = () => {
     };
 
     const handleDeleteClick = async () => {
-        if (!newsId || !confirm('Tem certeza que deseja excluir esta noticia?'))
-            return;
+        if (!newsId || !confirm(t('dashboard.news.deleteConfirm'))) return;
         await handleDelete(newsId);
         navigate('/Manga-Reader/dashboard/news');
     };
@@ -111,17 +112,21 @@ const DashboardNewsForm = () => {
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />
-                Voltar para lista
+                {t('common.back')}
             </button>
 
             <h1 className="text-lg font-bold">
-                {isEditing ? 'Editar Noticia' : 'Nova Noticia'}
+                {isEditing
+                    ? t('dashboard.news.editTitle')
+                    : t('dashboard.news.newTitle')}
             </h1>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Titulo *</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.news.form.title')} *
+                        </span>
                         <input
                             required
                             value={form.title}
@@ -133,7 +138,7 @@ const DashboardNewsForm = () => {
                     </label>
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Categoria *
+                            {t('dashboard.news.form.category')} *
                         </span>
                         <select
                             value={form.category}
@@ -155,7 +160,9 @@ const DashboardNewsForm = () => {
                 </div>
 
                 <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">Subtitulo</span>
+                    <span className="text-sm text-tertiary">
+                        {t('dashboard.news.form.subtitle')}
+                    </span>
                     <input
                         value={form.subtitle}
                         onChange={e =>
@@ -166,7 +173,9 @@ const DashboardNewsForm = () => {
                 </label>
 
                 <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">Resumo</span>
+                    <span className="text-sm text-tertiary">
+                        {t('dashboard.news.form.excerpt')}
+                    </span>
                     <textarea
                         rows={2}
                         value={form.excerpt}
@@ -179,7 +188,9 @@ const DashboardNewsForm = () => {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Cover URL</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.news.form.cover')}
+                        </span>
                         <input
                             value={form.coverImage}
                             onChange={e =>
@@ -192,7 +203,9 @@ const DashboardNewsForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Fonte</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.news.form.source')}
+                        </span>
                         <input
                             value={form.source}
                             onChange={e =>
@@ -205,7 +218,9 @@ const DashboardNewsForm = () => {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Autor</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.news.form.author')}
+                        </span>
                         <input
                             value={form.authorName}
                             onChange={e =>
@@ -219,7 +234,7 @@ const DashboardNewsForm = () => {
                     </label>
                     <label className="flex flex-col gap-1">
                         <span className="text-sm text-tertiary">
-                            Tempo de leitura (min)
+                            {t('dashboard.news.form.readTime')}
                         </span>
                         <input
                             type="number"
@@ -238,12 +253,12 @@ const DashboardNewsForm = () => {
 
                 <label className="flex flex-col gap-1">
                     <span className="text-sm text-tertiary">
-                        Tags (separadas por virgula)
+                        {t('dashboard.news.form.tags')}
                     </span>
                     <input
                         value={tagsInput}
                         onChange={e => setTagsInput(e.target.value)}
-                        placeholder="manga, anime, lancamento"
+                        placeholder={t('dashboard.news.form.tagsPlaceholder')}
                         className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
                 </label>
@@ -260,7 +275,9 @@ const DashboardNewsForm = () => {
                                 }))
                             }
                         />
-                        <span className="text-sm">Exclusiva</span>
+                        <span className="text-sm">
+                            {t('dashboard.news.form.exclusive')}
+                        </span>
                     </label>
                     <label className="flex items-center gap-2">
                         <input
@@ -273,7 +290,9 @@ const DashboardNewsForm = () => {
                                 }))
                             }
                         />
-                        <span className="text-sm">Destaque</span>
+                        <span className="text-sm">
+                            {t('dashboard.news.form.featured')}
+                        </span>
                     </label>
                 </div>
 
@@ -284,10 +303,10 @@ const DashboardNewsForm = () => {
                         className="px-4 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-dark disabled:opacity-50"
                     >
                         {isSubmitting
-                            ? 'Salvando...'
+                            ? t('common.saving')
                             : isEditing
-                              ? 'Salvar'
-                              : 'Criar'}
+                              ? t('common.save')
+                              : t('common.create')}
                     </button>
                     {isEditing && (
                         <button
@@ -296,7 +315,7 @@ const DashboardNewsForm = () => {
                             disabled={isSubmitting}
                             className="px-4 py-2 text-sm font-semibold text-red-300 border rounded-xs border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
                         >
-                            Excluir
+                            {t('common.delete')}
                         </button>
                     )}
                 </div>

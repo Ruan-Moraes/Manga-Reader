@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
  * Request para banir um usuário.
  */
 public record BanUserRequest(
-        @NotBlank(message = "Motivo do ban é obrigatório")
+        @NotBlank(message = "{validation.ban.reason.required}")
         String reason,
         LocalDateTime bannedUntil
 ) {

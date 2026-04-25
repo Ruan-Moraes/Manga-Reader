@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     type EnrichedProfile,
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
+    const { t } = useTranslation('user');
     const [name, setName] = useState(profile.name);
     const [bio, setBio] = useState(profile.bio ?? '');
     const [photoUrl, setPhotoUrl] = useState(profile.photoUrl ?? '');
@@ -59,7 +61,7 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
         setSaving(true);
         try {
             await onSave({ name, bio, photoUrl, bannerUrl, socialLinks });
-            showSuccessToast('Perfil atualizado com sucesso.');
+            showSuccessToast(t('profile.edit.savedMessage'));
             onClose();
         } catch {
             // handled by interceptor
@@ -72,7 +74,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
             <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-primary-default border border-tertiary rounded-xs p-4">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold">Editar Perfil</h2>
+                    <h2 className="text-lg font-bold">
+                        {t('profile.edit.title')}
+                    </h2>
                     <button
                         onClick={onClose}
                         className="text-tertiary hover:text-primary-default"
@@ -83,7 +87,7 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                     <label className="text-sm">
-                        Nome
+                        {t('profile.edit.nameLabel')}
                         <input
                             value={name}
                             onChange={e => setName(e.target.value)}
@@ -95,7 +99,7 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                     </label>
 
                     <label className="text-sm">
-                        Bio
+                        {t('profile.edit.bioLabel')}
                         <textarea
                             value={bio}
                             onChange={e => setBio(e.target.value)}
@@ -108,7 +112,7 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                     </label>
 
                     <label className="text-sm">
-                        URL da Foto
+                        {t('profile.edit.photoUrlLabel')}
                         <input
                             value={photoUrl}
                             onChange={e => setPhotoUrl(e.target.value)}
@@ -117,7 +121,7 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                     </label>
 
                     <label className="text-sm">
-                        URL do Banner
+                        {t('profile.edit.bannerUrlLabel')}
                         <input
                             value={bannerUrl}
                             onChange={e => setBannerUrl(e.target.value)}
@@ -128,14 +132,14 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                     <div>
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium">
-                                Redes Sociais
+                                {t('profile.edit.socialLinksLabel')}
                             </span>
                             <button
                                 type="button"
                                 onClick={handleAddLink}
                                 className="text-xs text-quaternary hover:underline"
                             >
-                                + Adicionar
+                                {t('profile.edit.addLink')}
                             </button>
                         </div>
                         {socialLinks.map((link, i) => (
@@ -149,7 +153,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                                             e.target.value,
                                         )
                                     }
-                                    placeholder="Plataforma"
+                                    placeholder={t(
+                                        'profile.edit.platformPlaceholder',
+                                    )}
                                     className="flex-1 px-2 py-1.5 text-xs border rounded-xs border-tertiary bg-primary-default"
                                 />
                                 <input
@@ -161,7 +167,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                                             e.target.value,
                                         )
                                     }
-                                    placeholder="URL"
+                                    placeholder={t(
+                                        'profile.edit.urlPlaceholder',
+                                    )}
                                     className="flex-[2] px-2 py-1.5 text-xs border rounded-xs border-tertiary bg-primary-default"
                                 />
                                 <button
@@ -180,7 +188,9 @@ const ProfileEditModal = ({ profile, isOpen, onClose, onSave }: Props) => {
                         disabled={saving}
                         className="px-3 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors disabled:opacity-50"
                     >
-                        {saving ? 'Salvando...' : 'Salvar'}
+                        {saving
+                            ? t('profile.edit.saving')
+                            : t('profile.edit.save')}
                     </button>
                 </form>
             </div>

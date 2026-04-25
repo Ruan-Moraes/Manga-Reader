@@ -12,7 +12,6 @@ import com.mangareader.domain.category.entity.Tag;
  * Port de saída — acesso a dados de Tags (PostgreSQL).
  */
 public interface TagRepositoryPort {
-
     List<Tag> findAll();
 
     Optional<Tag> findById(Long id);

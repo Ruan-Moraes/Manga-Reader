@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -18,8 +19,8 @@ import {
     type WorkSortOption,
 } from '@feature/group';
 
-// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const GroupProfile = () => {
+    const { t, i18n } = useTranslation('group');
     const { groupId } = useParams();
 
     const [isMemberListModalOpen, setIsMemberListModalOpen] =
@@ -30,15 +31,24 @@ const GroupProfile = () => {
     const { workSort, setWorkSort, activeGenre, toggleGenre, sortedWorks } =
         useGroupWorks(group?.translatedWorks ?? []);
 
+    const sortOptions = useMemo(
+        () => [
+            { value: 'popularity', label: t('profile.sortPopularity') },
+            { value: 'date', label: t('profile.sortDate') },
+            { value: 'chapters', label: t('profile.sortChapters') },
+        ],
+        [t],
+    );
+
     if (!isLoading && !group) {
         return (
             <MainContent>
                 <AlertBanner
                     color={THEME_COLORS.QUINARY}
-                    title="Grupo não encontrado"
-                    message="Não foi possível localizar o perfil solicitado."
+                    title={t('profile.notFoundTitle')}
+                    message={t('profile.notFoundMessage')}
                     link="/groups"
-                    linkText="Voltar para Grupos"
+                    linkText={t('profile.backToGroups')}
                 />
             </MainContent>
         );
@@ -57,7 +67,9 @@ const GroupProfile = () => {
 
                         <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                             <article className="flex flex-col gap-3 p-4 border rounded-xs border-tertiary bg-secondary/40 lg:col-span-2">
-                                <h3 className="font-bold">Sobre o grupo</h3>
+                                <h3 className="font-bold">
+                                    {t('profile.aboutTitle')}
+                                </h3>
                                 <p className="text-sm text-tertiary">
                                     {group.description}
                                 </p>
@@ -79,33 +91,23 @@ const GroupProfile = () => {
                                 </div>
 
                                 <p className="text-xs text-tertiary">
-                                    Fundação: {group.foundedYear} • Entrada na
-                                    plataforma:{' '}
-                                    {new Date(
-                                        group.platformJoinedAt,
-                                    ).toLocaleDateString('pt-BR')}
+                                    {t('profile.foundationInfo', {
+                                        year: group.foundedYear,
+                                        joinedAt: new Date(
+                                            group.platformJoinedAt,
+                                        ).toLocaleDateString(i18n.language),
+                                    })}
                                 </p>
                             </article>
                         </section>
 
                         <section className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
-                                <h3 className="font-bold">Obras traduzidas</h3>
+                                <h3 className="font-bold">
+                                    {t('profile.translatedWorks')}
+                                </h3>
                                 <BaseSelect
-                                    options={[
-                                        {
-                                            value: 'popularity',
-                                            label: 'Popularidade',
-                                        },
-                                        {
-                                            value: 'date',
-                                            label: 'Data de atualização',
-                                        },
-                                        {
-                                            value: 'chapters',
-                                            label: 'Capítulos',
-                                        },
-                                    ]}
+                                    options={sortOptions}
                                     value={workSort}
                                     onChange={event =>
                                         setWorkSort(
@@ -134,7 +136,9 @@ const GroupProfile = () => {
                                                 {work.title}
                                             </h4>
                                             <p className="text-xs text-tertiary">
-                                                {work.chapters} capítulos
+                                                {t('profile.chaptersCount', {
+                                                    count: work.chapters,
+                                                })}
                                             </p>
                                             <span
                                                 className={`w-fit px-2 py-1 text-[0.65rem] border rounded-xs ${
@@ -144,8 +148,12 @@ const GroupProfile = () => {
                                                 }`}
                                             >
                                                 {work.status === 'ongoing'
-                                                    ? 'Em andamento'
-                                                    : 'Completo'}
+                                                    ? t(
+                                                          'profile.statusOngoing',
+                                                      )
+                                                    : t(
+                                                          'profile.statusCompleted',
+                                                      )}
                                             </span>
                                         </div>
                                     </AppLink>
@@ -163,9 +171,7 @@ const GroupProfile = () => {
 
                 {isLoading && (
                     <section className="p-4 border rounded-xs border-tertiary animate-pulse">
-                        <p className="text-tertiary">
-                            Carregando perfil do grupo...
-                        </p>
+                        <p className="text-tertiary">{t('profile.loading')}</p>
                     </section>
                 )}
             </MainContent>

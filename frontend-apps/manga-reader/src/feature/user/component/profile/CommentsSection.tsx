@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { type CommentSummary } from '../../type/user.types';
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
+    const { t, i18n } = useTranslation('user');
     const [comments, setComments] = useState<CommentSummary[]>([]);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -50,7 +52,7 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
             )}
 
             {comments.length === 0 ? (
-                <ProfileEmptyState message="Nenhum comentario encontrado." />
+                <ProfileEmptyState message={t('profile.comments.empty')} />
             ) : (
                 <ul className="space-y-2">
                     {comments.map(c => (
@@ -62,7 +64,7 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
                                 to={`/Manga-Reader/title/${c.titleId}`}
                                 className="text-xs text-quaternary hover:underline"
                             >
-                                Ver titulo
+                                {t('profile.comments.viewTitle')}
                             </Link>
                             <p className="mt-1 text-sm line-clamp-2">
                                 {c.textContent}
@@ -70,7 +72,7 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
                             {c.createdAt && (
                                 <p className="mt-1 text-[10px] text-tertiary">
                                     {new Date(c.createdAt).toLocaleDateString(
-                                        'pt-BR',
+                                        i18n.language,
                                     )}
                                 </p>
                             )}
@@ -86,7 +88,7 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
                         disabled={page === 0}
                         className="px-2 py-1 text-xs border rounded-xs border-tertiary disabled:opacity-30"
                     >
-                        Anterior
+                        {t('profile.comments.previous')}
                     </button>
                     <span className="text-xs text-tertiary self-center">
                         {page + 1} / {totalPages}
@@ -96,7 +98,7 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
                         disabled={page >= totalPages - 1}
                         className="px-2 py-1 text-xs border rounded-xs border-tertiary disabled:opacity-30"
                     >
-                        Proximo
+                        {t('profile.comments.next')}
                     </button>
                 </div>
             )}

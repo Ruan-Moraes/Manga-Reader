@@ -1,0 +1,68 @@
+{
+    "section": {
+        "title": "Comentários",
+        "loginPrompt": "Faça login para deixar um comentário.",
+        "placeholder": "Deixe seu comentário",
+        "sortLabel": "Ordernar comentários por:"
+    },
+    "reply": {
+        "placeholder": "Escreva sua resposta...",
+        "action": "Responder",
+        "cancel": "Cancelar",
+        "replyingTo": "↳ Em resposta a",
+        "authAction": "responder comentários"
+    },
+    "actions": {
+        "send": "Enviar",
+        "reply": "Responder",
+        "edit": "Editar",
+        "delete": "Excluir",
+        "report": "Denunciar",
+        "imageAlt": "Imagem {{index}}",
+        "removeImage": "Remover imagem"
+    },
+    "validation": {
+        "empty": "Escreva algo antes de enviar.",
+        "loginRequired": "comentar"
+    },
+    "toast": {
+        "created": "Comentário enviado com sucesso.",
+        "createError": "Erro ao enviar comentário.",
+        "updated": "Comentário atualizado com sucesso.",
+        "updateError": "Erro ao atualizar comentário.",
+        "deleted": "Comentário excluído.",
+        "deleteError": "Erro ao excluir comentário."
+    },
+    "delete": {
+        "title": "Deletar comentário",
+        "message": "Você tem certeza que deseja deletar este comentário? Essa ação deletará os comentários relacionados a ele.",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+    },
+    "edit": {
+        "title": "Editar comentário",
+        "placeholder": "Edite seu comentário",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "imageAlt": "Imagem {{index}}",
+        "removeImage": "X"
+    },
+    "metadata": {
+        "edited": "Editado"
+    },
+    "user": {
+        "viewProfileAria": "Ver perfil de {{name}}",
+        "memberBadge": "Membro",
+        "moderatorBadge": "Moderador",
+        "imageAlt": "Imagem do comentário de {{name}}"
+    },
+    "list": {
+        "loading": "Carregando comentários...",
+        "unknownError": "Erro desconhecido",
+        "hideDeep": "− Ocultar respostas profundas",
+        "showDeep_one": "+ Mostrar {{count}} resposta profunda",
+        "showDeep_other": "+ Mostrar {{count}} respostas profundas",
+        "loadMore": "Ver mais comentários",
+        "empty": "Nenhum comentário encontrado."
+    }
+}

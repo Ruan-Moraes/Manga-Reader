@@ -9,6 +9,7 @@ import {
     FiShare2,
     FiSmile,
 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -22,8 +23,8 @@ import {
     formatNewsDate,
 } from '@feature/news';
 
-// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const NewsDetails = () => {
+    const { t, i18n } = useTranslation('news');
     const { newsId } = useParams();
 
     const {
@@ -44,13 +45,13 @@ const NewsDetails = () => {
                 <MainContent>
                     <section className="p-6 border rounded-xl border-tertiary bg-secondary">
                         <h1 className="text-2xl font-bold">
-                            Notícia não encontrada
+                            {t('details.notFound')}
                         </h1>
                         <Link
                             to="/Manga-Reader/news"
                             className="inline-block mt-3 text-purple-300 underline"
                         >
-                            Voltar para notícias
+                            {t('details.back')}
                         </Link>
                     </section>
                 </MainContent>
@@ -77,15 +78,20 @@ const NewsDetails = () => {
                         <div className="p-4 space-y-3">
                             <div className="flex flex-wrap items-center gap-2 text-sm">
                                 <span className="px-2 py-1 text-purple-200 rounded-full bg-purple-600/20">
-                                    {news.category}
+                                    {t(`tabs.${news.category}`, {
+                                        defaultValue: news.category,
+                                    })}
                                 </span>
                                 <span>{formatNewsDate(news.publishedAt)}</span>
                                 <span className="inline-flex items-center gap-1">
-                                    <FiClock /> {news.readTime} min
+                                    <FiClock />{' '}
+                                    {t('card.readMinutes', {
+                                        count: news.readTime,
+                                    })}
                                 </span>
                                 <span className="inline-flex items-center gap-1">
                                     <FiEye />{' '}
-                                    {news.views.toLocaleString('pt-BR')}
+                                    {news.views.toLocaleString(i18n.language)}
                                 </span>
                             </div>
                             <h1 className="text-3xl font-bold">{news.title}</h1>
@@ -116,8 +122,11 @@ const NewsDetails = () => {
                                     <p>{news.source}</p>
                                     {news.updatedAt && (
                                         <p>
-                                            Atualizada{' '}
-                                            {formatRelativeDate(news.updatedAt)}
+                                            {t('details.updated', {
+                                                date: formatRelativeDate(
+                                                    news.updatedAt,
+                                                ),
+                                            })}
                                         </p>
                                     )}
                                 </div>
@@ -145,19 +154,18 @@ const NewsDetails = () => {
                                 <figure className="space-y-2">
                                     <img
                                         src={news.gallery[0]}
-                                        alt="Imagem complementar"
+                                        alt={t('details.galleryAlt')}
                                         className="object-cover w-full rounded-lg"
                                     />
                                     <figcaption className="text-xs text-tertiary">
-                                        Bastidores e materiais de divulgação da
-                                        produção.
+                                        {t('details.galleryCaption')}
                                     </figcaption>
                                 </figure>
 
                                 {news.videoUrl && (
                                     <div className="overflow-hidden rounded-xl aspect-video">
                                         <iframe
-                                            title="Vídeo incorporado"
+                                            title={t('details.videoTitle')}
                                             src={news.videoUrl}
                                             className="w-full h-full"
                                             allowFullScreen
@@ -170,7 +178,7 @@ const NewsDetails = () => {
                                         <img
                                             key={image}
                                             src={image}
-                                            alt="Galeria"
+                                            alt={t('details.galleryImageAlt')}
                                             className="object-cover w-full rounded-lg h-40"
                                         />
                                     ))}
@@ -180,7 +188,7 @@ const NewsDetails = () => {
                             {news.technicalSheet && (
                                 <section className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                     <h2 className="text-xl font-semibold">
-                                        Ficha técnica
+                                        {t('details.technicalSheet')}
                                     </h2>
                                     {Object.entries(news.technicalSheet).map(
                                         ([key, value]) => (
@@ -194,7 +202,7 @@ const NewsDetails = () => {
 
                             <section className="p-4 space-y-3 border rounded-xl border-tertiary bg-secondary">
                                 <h2 className="text-xl font-semibold">
-                                    Reações e engajamento
+                                    {t('details.reactions')}
                                 </h2>
                                 <div className="flex flex-wrap gap-2 text-sm">
                                     <button
@@ -224,20 +232,22 @@ const NewsDetails = () => {
                                 </div>
                                 <div className="flex flex-wrap gap-2 text-sm text-tertiary">
                                     <span className="inline-flex items-center gap-1">
-                                        <FiMessageCircle /> {news.commentsCount}{' '}
-                                        comentários
+                                        <FiMessageCircle />{' '}
+                                        {t('details.commentsCount', {
+                                            count: news.commentsCount,
+                                        })}
                                     </span>
                                     <button
                                         type="button"
                                         className="inline-flex items-center gap-1"
                                     >
-                                        <FiShare2 /> Compartilhar
+                                        <FiShare2 /> {t('details.share')}
                                     </button>
                                     <button
                                         type="button"
                                         className="inline-flex items-center gap-1"
                                     >
-                                        <FiBookmark /> Salvar notícia
+                                        <FiBookmark /> {t('details.save')}
                                     </button>
                                 </div>
                             </section>
@@ -245,18 +255,22 @@ const NewsDetails = () => {
                             <section className="p-4 space-y-3 border rounded-xl border-tertiary bg-secondary">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                     <h2 className="text-xl font-semibold">
-                                        Comentários
+                                        {t('details.comments')}
                                     </h2>
                                     <div className="flex gap-2">
                                         <BaseSelect
                                             options={[
                                                 {
                                                     value: 'recent',
-                                                    label: 'Mais recentes',
+                                                    label: t(
+                                                        'details.sortRecent',
+                                                    ),
                                                 },
                                                 {
                                                     value: 'relevant',
-                                                    label: 'Mais relevantes',
+                                                    label: t(
+                                                        'details.sortRelevant',
+                                                    ),
                                                 },
                                             ]}
                                             value={commentSort}
@@ -276,8 +290,8 @@ const NewsDetails = () => {
                                             className="px-3 py-1 text-sm rounded-lg bg-primary"
                                         >
                                             {showSpoilers
-                                                ? 'Ocultar spoilers'
-                                                : 'Mostrar spoilers'}
+                                                ? t('details.hideSpoilers')
+                                                : t('details.showSpoilers')}
                                         </button>
                                     </div>
                                 </div>
@@ -311,7 +325,8 @@ const NewsDetails = () => {
                                                 <FiHeart /> {comment.likes}
                                             </span>
                                             <span className="inline-flex items-center gap-1">
-                                                <FiSmile /> responder
+                                                <FiSmile />{' '}
+                                                {t('details.reply')}
                                             </span>
                                         </div>
                                         {comment.replies?.map(reply => (
@@ -331,7 +346,7 @@ const NewsDetails = () => {
                         <aside className="space-y-4">
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                                 <h3 className="font-semibold">
-                                    Notícias relacionadas
+                                    {t('details.relatedTitle')}
                                 </h3>
                                 <div className="flex gap-3 overflow-x-auto xl:block xl:space-y-2">
                                     {relatedNews.map(item => (
@@ -344,7 +359,10 @@ const NewsDetails = () => {
                                                 {item.title}
                                             </p>
                                             <p className="text-xs text-tertiary">
-                                                {item.category} ·{' '}
+                                                {t(`tabs.${item.category}`, {
+                                                    defaultValue: item.category,
+                                                })}{' '}
+                                                ·{' '}
                                                 {formatRelativeDate(
                                                     item.publishedAt,
                                                 )}
@@ -355,7 +373,9 @@ const NewsDetails = () => {
                             </div>
 
                             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
-                                <h3 className="font-semibold">Leia também</h3>
+                                <h3 className="font-semibold">
+                                    {t('details.readAlso')}
+                                </h3>
                                 {relatedNews.slice(0, 4).map(item => (
                                     <Link
                                         key={`${item.id}-extra`}

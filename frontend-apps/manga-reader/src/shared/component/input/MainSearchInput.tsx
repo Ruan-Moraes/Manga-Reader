@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { IoSearchSharp } from 'react-icons/io5';
 
 const MainSearchInput = () => {
+    const { t } = useTranslation('layout');
     const [query, setQuery] = useState('');
     const navigate = useNavigate();
 
@@ -21,8 +23,8 @@ const MainSearchInput = () => {
                     <input
                         name="search"
                         type="search"
-                        aria-label="Search"
-                        placeholder="Pesquisar por obras, autores, gêneros..."
+                        aria-label={t('search.ariaLabel')}
+                        placeholder={t('search.placeholder')}
                         className="w-full truncate bg-transparent border-none outline-none appearance-none placeholder-primary-default placeholder:text-sm grow"
                         value={query}
                         onChange={e => setQuery(e.target.value)}

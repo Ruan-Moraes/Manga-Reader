@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import BaseSelect from '@shared/component/input/BaseSelect';
 
 type NewsFilterPanelProps = {
@@ -21,60 +23,70 @@ const NewsFilterPanel = ({
     sort,
     setSort,
     sources,
-}: NewsFilterPanelProps) => (
-    <div className="space-y-3">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <BaseSelect
-                options={[
-                    { value: 'all', label: 'Todo período' },
-                    { value: 'today', label: 'Hoje' },
-                    { value: 'week', label: 'Última semana' },
-                    { value: 'month', label: 'Último mês' },
-                ]}
-                value={period}
-                onChange={event =>
-                    setPeriod(
-                        event.target.value as
-                            | 'all'
-                            | 'today'
-                            | 'week'
-                            | 'month',
-                    )
-                }
-                className={filterSelectClass}
-            />
+}: NewsFilterPanelProps) => {
+    const { t } = useTranslation('news');
 
-            <BaseSelect
-                options={[
-                    { value: 'all', label: 'Todas as fontes' },
-                    ...sources
-                        .filter(item => item !== 'all')
-                        .map(item => ({ value: item, label: item })),
-                ]}
-                value={source}
-                onChange={event => setSource(event.target.value)}
-                className={filterSelectClass}
-            />
+    return (
+        <div className="space-y-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <BaseSelect
+                    options={[
+                        { value: 'all', label: t('filter.period.all') },
+                        { value: 'today', label: t('filter.period.today') },
+                        { value: 'week', label: t('filter.period.week') },
+                        { value: 'month', label: t('filter.period.month') },
+                    ]}
+                    value={period}
+                    onChange={event =>
+                        setPeriod(
+                            event.target.value as
+                                | 'all'
+                                | 'today'
+                                | 'week'
+                                | 'month',
+                        )
+                    }
+                    className={filterSelectClass}
+                />
 
-            <BaseSelect
-                options={[
-                    { value: 'recent', label: 'Mais recentes' },
-                    { value: 'most-read', label: 'Mais lidas' },
-                    { value: 'trending', label: 'Trending' },
-                ]}
-                value={sort}
-                onChange={event =>
-                    setSort(
-                        event.target.value as
-                            | 'recent'
-                            | 'most-read'
-                            | 'trending',
-                    )
-                }
-                className={filterSelectClass}
-            />
+                <BaseSelect
+                    options={[
+                        { value: 'all', label: t('filter.source.all') },
+                        ...sources
+                            .filter(item => item !== 'all')
+                            .map(item => ({ value: item, label: item })),
+                    ]}
+                    value={source}
+                    onChange={event => setSource(event.target.value)}
+                    className={filterSelectClass}
+                />
+
+                <BaseSelect
+                    options={[
+                        { value: 'recent', label: t('filter.sort.recent') },
+                        {
+                            value: 'most-read',
+                            label: t('filter.sort.mostRead'),
+                        },
+                        {
+                            value: 'trending',
+                            label: t('filter.sort.trending'),
+                        },
+                    ]}
+                    value={sort}
+                    onChange={event =>
+                        setSort(
+                            event.target.value as
+                                | 'recent'
+                                | 'most-read'
+                                | 'trending',
+                        )
+                    }
+                    className={filterSelectClass}
+                />
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default NewsFilterPanel;

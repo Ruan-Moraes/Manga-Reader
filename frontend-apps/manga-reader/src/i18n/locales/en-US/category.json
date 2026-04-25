@@ -1,0 +1,36 @@
+{
+    "tagSelect": {
+        "loading": "Loading..."
+    },
+    "filters": {
+        "title": "Filter Titles",
+        "description": "Apply filters to find titles you want to read. You can filter by categories, sort by most read, top rated, alphabetical order, and more.",
+        "categoriesTitle": "Categories",
+        "categoriesPlaceholder": "Select one or more categories",
+        "sortTitle": "Sort by",
+        "sort": {
+            "mostRead": "Most read",
+            "mostRated": "Top rated",
+            "ascension": "Rising",
+            "mostRecent": "Most recent",
+            "random": "Random",
+            "alphabetical": "Alphabetical"
+        },
+        "statusTitle": "Status",
+        "status": {
+            "complete": "Complete",
+            "ongoing": "Ongoing",
+            "hiatus": "Hiatus",
+            "cancelled": "Cancelled",
+            "all": "All"
+        },
+        "adultTitle": "Show +18 content",
+        "adult": {
+            "yes": "Yes",
+            "no": "No"
+        },
+        "resultsCount": "{{count}} result(s)",
+        "errorMessage": "Error loading results. Please try again.",
+        "emptyResults": "No titles found with the selected filters."
+    }
+}

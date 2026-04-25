@@ -1,0 +1,12 @@
+{
+    "card": {
+        "access": "Acceder"
+    },
+    "container": {
+        "empty": "Ningún socio disponible."
+    },
+    "modal": {
+        "title": "Dónde Comprar",
+        "subtitle": "Elige una tienda asociada y continúa al sitio oficial."
+    }
+}

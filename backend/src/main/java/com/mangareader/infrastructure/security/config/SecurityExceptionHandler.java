@@ -2,6 +2,8 @@ package com.mangareader.infrastructure.security.config;
 
 import java.io.IOException;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityExceptionHandler implements AuthenticationEntryPoint, AccessDeniedHandler {
     private final ObjectMapper objectMapper;
+    private final MessageSource messageSource;
 
     /**
      * 401 — Usuário não autenticado (token ausente, expirado ou inválido).
@@ -38,7 +41,7 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
                          AuthenticationException authException) throws IOException {
         writeError(response, HttpStatus.UNAUTHORIZED,
                 ApiErrorCode.AUTH_UNAUTHENTICATED,
-                "Autenticação necessária. Faça login para acessar este recurso.");
+                resolveMessage("security.unauthorized"));
     }
 
     /**
@@ -50,7 +53,11 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
                        AccessDeniedException accessDeniedException) throws IOException {
         writeError(response, HttpStatus.FORBIDDEN,
                 ApiErrorCode.AUTH_ACCESS_DENIED,
-                "Acesso negado. Você não tem permissão para acessar este recurso.");
+                resolveMessage("security.forbidden"));
+    }
+
+    private String resolveMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 
     private void writeError(HttpServletResponse response, HttpStatus status, String code, String message)

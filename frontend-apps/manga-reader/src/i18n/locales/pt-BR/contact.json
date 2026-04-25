@@ -1,0 +1,55 @@
+{
+    "form": {
+        "title": "Formulário de Publicação",
+        "subtitle": "Preencha os campos abaixo para enviar sua solicitação de publicação.",
+        "labels": {
+            "name": "Nome:",
+            "email": "Email:",
+            "workType": "Tipo de trabalho:",
+            "workTitle": "Título do trabalho:",
+            "synopsis": "Sinopse:",
+            "portfolioLink": "Link do portfólio (opcional):",
+            "message": "Mensagem:"
+        },
+        "placeholders": {
+            "name": "Seu nome completo",
+            "email": "seu@email.com",
+            "workTitle": "Nome da sua obra",
+            "synopsis": "Descreva brevemente a história ou conceito do seu trabalho",
+            "portfolioLink": "https://seu-portfolio.com",
+            "message": "Conte-nos mais sobre seu trabalho e por que deseja publicá-lo conosco"
+        },
+        "workTypes": {
+            "placeholder": "Selecione o tipo de trabalho",
+            "manga": "Manga",
+            "webtoon": "Webtoon",
+            "fanfic": "Fanfic",
+            "fanart": "Fanart",
+            "other": "Outro"
+        },
+        "actions": {
+            "submit": "Enviar solicitação",
+            "submitting": "Enviando..."
+        },
+        "errors": {
+            "nameRequired": "Nome é obrigatório.",
+            "nameMin": "Nome deve ter pelo menos 2 caracteres.",
+            "emailRequired": "Email é obrigatório.",
+            "emailInvalid": "Formato de email inválido.",
+            "workTypeRequired": "Tipo de trabalho é obrigatório.",
+            "workTitleRequired": "Título do trabalho é obrigatório.",
+            "workTitleMin": "Título deve ter pelo menos 2 caracteres.",
+            "synopsisRequired": "Sinopse é obrigatória.",
+            "synopsisMin": "Sinopse deve ter pelo menos 10 caracteres.",
+            "synopsisMax": "Sinopse deve ter no máximo 2000 caracteres.",
+            "portfolioLinkInvalid": "URL inválida. Use o formato http:// ou https://",
+            "messageRequired": "Mensagem é obrigatória.",
+            "messageMin": "Mensagem deve ter pelo menos 10 caracteres.",
+            "messageMax": "Mensagem deve ter no máximo 5000 caracteres."
+        },
+        "toasts": {
+            "validationFailed": "Corrija os erros no formulário.",
+            "success": "Sua solicitação foi enviada com sucesso!"
+        }
+    }
+}

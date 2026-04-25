@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import {
     sectionTitleClass,
     checkboxLabelClass,
@@ -5,31 +7,34 @@ import {
     type UserSettings,
 } from '../settings.constants';
 
-const notificationItems: Array<[keyof UserSettings['notifications'], string]> =
-    [
-        ['newChapterFromFollowed', 'Novos capítulos dos mangás seguidos'],
-        ['recommendations', 'Recomendações personalizadas'],
-        ['communityNews', 'Notícias da comunidade'],
-        ['events', 'Eventos e lançamentos'],
-        ['email', 'Notificações por e-mail'],
-        ['push', 'Notificações push no navegador'],
-    ];
+const notificationKeys: Array<keyof UserSettings['notifications']> = [
+    'newChapterFromFollowed',
+    'recommendations',
+    'communityNews',
+    'events',
+    'email',
+    'push',
+];
 
 const NotificationSettings = ({
     settings,
     onUpdate,
     isLoggedIn,
 }: SettingsTabProps) => {
+    const { t } = useTranslation('user');
+
     return (
         <div className="space-y-4">
-            <h3 className={sectionTitleClass}>Notificações</h3>
+            <h3 className={sectionTitleClass}>
+                {t('settings.notifications.title')}
+            </h3>
             <p className="text-xs text-tertiary">
                 {isLoggedIn
-                    ? 'Defina quais eventos devem gerar alertas na sua conta.'
-                    : 'As opções ficam salvas localmente até você entrar na conta.'}
+                    ? t('settings.notifications.description')
+                    : t('settings.descriptionGuest')}
             </p>
 
-            {notificationItems.map(([key, label]) => (
+            {notificationKeys.map(key => (
                 <label className={checkboxLabelClass} key={key}>
                     <input
                         type="checkbox"
@@ -45,7 +50,7 @@ const NotificationSettings = ({
                             }))
                         }
                     />
-                    {label}
+                    {t(`settings.notifications.items.${key}`)}
                 </label>
             ))}
         </div>

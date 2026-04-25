@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import LinksSection from '@shared/component/link/section/FooterLinksSection';
 
@@ -8,6 +9,8 @@ type FooterTypes = {
 };
 
 const Footer = ({ styles, showLinks }: FooterTypes) => {
+    const { t } = useTranslation('layout');
+
     const getYear = useMemo(() => {
         return new Date().getFullYear();
     }, []);
@@ -18,22 +21,31 @@ const Footer = ({ styles, showLinks }: FooterTypes) => {
             style={styles}
         >
             {!showLinks && (
-                <div className="grid items-center grid-cols-1 gap-4 p-4 border-t-2 sm:grid-cols-8 border-t-tertiary">
+                <div className="grid grid-cols-8 items-center gap-4 p-4 border-t-2 border-t-tertiary">
                     <LinksSection
-                        title="Links úteis"
-                        className="sm:col-span-4"
+                        title={t('footer.usefulLinks')}
+                        className="col-span-4"
                         links={[
-                            { url: '/', text: 'Home' },
-                            { url: '/filter', text: 'Filtrar' },
-                            { url: '/news', text: 'Notícias' },
-                            { url: '/events', text: 'Eventos' },
-                            { url: '/forum', text: 'Fórum' },
-                            { url: '/groups', text: 'Grupos' },
+                            { url: '/', text: t('footer.links.home') },
+                            {
+                                url: '/filter',
+                                text: t('footer.links.filter'),
+                            },
+                            { url: '/news', text: t('footer.links.news') },
+                            {
+                                url: '/events',
+                                text: t('footer.links.events'),
+                            },
+                            { url: '/forum', text: t('footer.links.forum') },
+                            {
+                                url: '/groups',
+                                text: t('footer.links.groups'),
+                            },
                         ]}
                     />
                     <LinksSection
-                        className="sm:col-span-4"
-                        title="Redes sociais"
+                        className="col-span-4"
+                        title={t('footer.socialMedia')}
                         links={[
                             { url: '#', text: 'Discord' },
                             { url: '#', text: 'X (Twitter)' },
@@ -42,29 +54,32 @@ const Footer = ({ styles, showLinks }: FooterTypes) => {
                         ]}
                     />
                     <LinksSection
-                        className="sm:col-span-6 sm:col-start-2"
-                        title="Outros links"
+                        className="col-span-6 col-start-2"
+                        title={t('footer.otherLinks')}
                         links={[
                             {
                                 url: '/i-want-to-publish-work',
-                                text: 'Quero publicar obra',
+                                text: t('footer.links.publishWork'),
                             },
                             {
                                 url: 'https://ko-fi.com/',
-                                text: 'Doe para o projeto',
+                                text: t('footer.links.donate'),
                             },
-                            { url: '/about-us', text: 'Quem somos' },
-                            { url: '/dmca', text: 'DMCA' },
-                            { url: '/terms-of-use', text: 'Termos de uso' },
+                            {
+                                url: '/about-us',
+                                text: t('footer.links.aboutUs'),
+                            },
+                            { url: '/dmca', text: t('footer.links.dmca') },
+                            {
+                                url: '/terms-of-use',
+                                text: t('footer.links.termsOfUse'),
+                            },
                         ]}
                     />
                 </div>
             )}
             <div className="p-2 text-xs text-center border-t-2 bg-primary-default border-t-tertiary text-shadow-default">
-                <p>
-                    &copy; {`${getYear}`} Manga Reader. Todos os direitos
-                    reservados.
-                </p>
+                <p>{t('footer.copyright', { year: getYear })}</p>
             </div>
         </footer>
     );

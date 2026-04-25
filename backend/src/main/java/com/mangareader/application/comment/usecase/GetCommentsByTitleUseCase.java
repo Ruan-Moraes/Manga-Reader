@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetCommentsByTitleUseCase {
-
     private final CommentRepositoryPort commentRepository;
 
     /**

@@ -1,0 +1,30 @@
+{
+    "tabs": {
+        "all": "Todos",
+        "reading": "Lendo",
+        "wantToRead": "Quero Ler",
+        "completed": "Concluído"
+    },
+    "empty": {
+        "all": "Sua biblioteca está vazia. Explore títulos e salve seus favoritos!",
+        "reading": "Nenhum título em andamento. Comece a ler algo novo!",
+        "wantToRead": "Nenhum título na lista de desejos. Descubra novas obras!",
+        "completed": "Nenhum título concluído ainda. Continue lendo!"
+    },
+    "bookmark": {
+        "saved": "Na biblioteca",
+        "save": "Salvar na biblioteca"
+    },
+    "card": {
+        "remove": "Remover",
+        "confirmPrompt": "Tem certeza?",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+    },
+    "page": {
+        "title": "Minha Biblioteca",
+        "subtitle": "Gerencie seus mangás salvos por status de leitura.",
+        "retry": "Tentar novamente",
+        "loadMore": "Carregar mais"
+    }
+}

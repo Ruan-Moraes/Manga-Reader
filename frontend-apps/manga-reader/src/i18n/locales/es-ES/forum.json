@@ -1,0 +1,70 @@
+{
+    "stats": {
+        "topics": "Temas",
+        "replies": "Respuestas",
+        "views": "Visualizaciones",
+        "activeMembers": "Miembros activos"
+    },
+    "topic": {
+        "authoredBy": "por {{name}}",
+        "replies_one": "{{count}} respuesta",
+        "replies_other": "{{count}} respuestas"
+    },
+    "reply": {
+        "edited": "(editado)",
+        "bestAnswer": "Mejor respuesta",
+        "reply": "Responder"
+    },
+    "role": {
+        "admin": "Admin",
+        "moderator": "Moderador",
+        "member": "Miembro"
+    },
+    "page": {
+        "title": "Foro",
+        "subtitle": "Participa en las discusiones, comparte recomendaciones y conéctate con otros lectores de manga.",
+        "searchPlaceholder": "Buscar temas...",
+        "allCategories": "Todos",
+        "sortLabel": "Ordenar:",
+        "foundTopics_one": "{{count}} tema encontrado",
+        "foundTopics_other": "{{count}} temas encontrados",
+        "emptyState": "No se encontraron temas."
+    },
+    "categories": {
+        "Geral": "General",
+        "Recomendações": "Recomendaciones",
+        "Spoilers": "Spoilers",
+        "Suporte": "Soporte",
+        "Off-topic": "Off-topic",
+        "Teorias": "Teorías",
+        "Fanart": "Fanart",
+        "Notícias": "Noticias"
+    },
+    "sort": {
+        "recent": "Más recientes",
+        "popular": "Más populares",
+        "most-replies": "Más respuestas",
+        "oldest": "Más antiguos"
+    },
+    "topicPage": {
+        "notFound": "Tema no encontrado.",
+        "backToForum": "Volver al foro",
+        "pinned": "Fijado",
+        "locked": "Bloqueado",
+        "solved": "Resuelto",
+        "postsCount": "{{count}} posts",
+        "views": "{{count}} visualizaciones",
+        "likes": "{{count}} me gusta",
+        "replies_one": "{{count}} respuesta",
+        "replies_other": "{{count}} respuestas",
+        "share": "Compartir",
+        "repliesHeading": "Respuestas ({{count}})",
+        "sortRecent": "Más recientes",
+        "sortLikes": "Más valoradas",
+        "emptyReplies": "Aún no hay respuestas. ¡Sé el primero en responder!",
+        "writeReply": "Escribir respuesta",
+        "replyPlaceholder": "Comparte tu opinión...",
+        "sendReply": "Enviar respuesta",
+        "relatedTopics": "Temas relacionados"
+    }
+}

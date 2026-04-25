@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
     showErrorToast,
@@ -28,6 +29,7 @@ type FormErrors = {
 };
 
 const SignUp = () => {
+    const { t } = useTranslation('auth');
     const navigate = useNavigate();
     const { register } = useAuth();
 
@@ -44,44 +46,45 @@ const SignUp = () => {
         const newErrors: FormErrors = {};
 
         if (!name.trim()) {
-            newErrors.name = 'Nome é obrigatório.';
+            newErrors.name = t('validation.nameRequired');
         }
 
         if (name.trim().length < 2) {
-            newErrors.name = 'Nome deve ter pelo menos 2 caracteres.';
+            newErrors.name = t('validation.nameMin');
         }
 
         if (!email.trim()) {
-            newErrors.email = 'Email é obrigatório.';
+            newErrors.email = t('validation.emailRequired');
         }
 
         if (!EMAIL_REGEX.test(email.trim())) {
-            newErrors.email = 'Formato de email inválido.';
+            newErrors.email = t('validation.emailInvalid');
         }
 
         if (!password) {
-            newErrors.password = 'Senha é obrigatória.';
+            newErrors.password = t('validation.passwordRequired');
         }
 
         if (password.length < 6) {
-            newErrors.password = 'A senha deve ter pelo menos 6 caracteres.';
+            newErrors.password = t('validation.passwordMin');
         }
 
         if (!confirmPassword) {
-            newErrors.confirmPassword = 'Confirmação de senha é obrigatória.';
+            newErrors.confirmPassword = t(
+                'validation.confirmPasswordRequired',
+            );
         }
 
         if (password !== confirmPassword) {
-            newErrors.confirmPassword = 'As senhas não coincidem.';
+            newErrors.confirmPassword = t('validation.passwordsDoNotMatch');
         }
 
         if (!acceptTerms || !acceptDmca) {
-            newErrors.terms =
-                'Você deve aceitar os Termos de Uso e a política DMCA.';
+            newErrors.terms = t('validation.acceptTermsAndDmca');
         }
 
         return newErrors;
-    }, [name, email, password, confirmPassword, acceptTerms, acceptDmca]);
+    }, [name, email, password, confirmPassword, acceptTerms, acceptDmca, t]);
 
     const handleFormSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -92,7 +95,7 @@ const SignUp = () => {
             setErrors(validationErrors);
 
             if (Object.keys(validationErrors).length > 0) {
-                showErrorToast('Corrija os erros no formulário.', {
+                showErrorToast(t('validation.fixErrors'), {
                     toastId: 'signup-validation',
                 });
 
@@ -108,7 +111,7 @@ const SignUp = () => {
                     password,
                 });
 
-                showSuccessToast('Conta criada com sucesso!', {
+                showSuccessToast(t('signUp.success'), {
                     toastId: 'signup-success',
                 });
 
@@ -117,7 +120,7 @@ const SignUp = () => {
                 setIsLoading(false);
             }
         },
-        [register, navigate, name, email, password, validate],
+        [register, navigate, name, email, password, validate, t],
     );
 
     return (
@@ -126,12 +129,12 @@ const SignUp = () => {
             <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleFormSubmit}
-                    title="Cadastro de usuário"
+                    title={t('signUp.title')}
                 >
                     <BaseInput
-                        label="Nome:"
+                        label={t('signUp.nameLabel')}
                         type="text"
-                        placeholder="Nome de usuário"
+                        placeholder={t('signUp.namePlaceholder')}
                         value={name}
                         onChange={e => setName(e.target.value)}
                         disabled={isLoading}
@@ -139,9 +142,9 @@ const SignUp = () => {
                         name="name"
                     />
                     <BaseInput
-                        label="Email:"
+                        label={t('signUp.emailLabel')}
                         type="email"
-                        placeholder="Digite seu email"
+                        placeholder={t('signUp.emailPlaceholder')}
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         disabled={isLoading}
@@ -149,9 +152,9 @@ const SignUp = () => {
                         name="email"
                     />
                     <BaseInput
-                        label="Senha:"
+                        label={t('signUp.passwordLabel')}
                         type="password"
-                        placeholder="Digite sua senha"
+                        placeholder={t('signUp.passwordPlaceholder')}
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         disabled={isLoading}
@@ -159,9 +162,9 @@ const SignUp = () => {
                         name="password"
                     />
                     <BaseInput
-                        label="Confirmar senha:"
+                        label={t('signUp.confirmPasswordLabel')}
                         type="password"
-                        placeholder="Confirme sua senha"
+                        placeholder={t('signUp.confirmPasswordPlaceholder')}
                         value={confirmPassword}
                         onChange={e => setConfirmPassword(e.target.value)}
                         disabled={isLoading}
@@ -170,16 +173,16 @@ const SignUp = () => {
                     />
                     <div className="flex flex-col gap-2">
                         <Checkbox
-                            label="Eu aceito os"
+                            label={t('signUp.acceptTerms')}
                             link="/terms-of-use"
-                            linkText="Termos de uso."
+                            linkText={t('signUp.termsLink')}
                             checked={acceptTerms}
                             onChange={setAcceptTerms}
                         />
                         <Checkbox
-                            label="Eu aceito as políticas de "
+                            label={t('signUp.acceptDmca')}
                             link="/dmca"
-                            linkText="DMCA."
+                            linkText={t('signUp.dmcaLink')}
                             checked={acceptDmca}
                             onChange={setAcceptDmca}
                         />
@@ -190,7 +193,11 @@ const SignUp = () => {
                         )}
                     </div>
                     <ButtonHighLight
-                        text={isLoading ? 'Cadastrando...' : 'Cadastrar'}
+                        text={
+                            isLoading
+                                ? t('signUp.submitLoading')
+                                : t('signUp.submit')
+                        }
                     />
                 </AuthenticationForm>
             </MainContent>

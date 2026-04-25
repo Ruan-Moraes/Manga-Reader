@@ -178,10 +178,10 @@ export const paginateTopics = (
     };
 };
 
-export const roleLabel: Record<string, string> = {
-    admin: 'Admin',
-    moderator: 'Moderador',
-    member: 'Membro',
+export const roleLabelKey: Record<string, string> = {
+    admin: 'role.admin',
+    moderator: 'role.moderator',
+    member: 'role.member',
 };
 
 export const roleBadgeColor: Record<string, string> = {

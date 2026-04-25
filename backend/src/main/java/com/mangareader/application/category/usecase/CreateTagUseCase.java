@@ -30,6 +30,7 @@ public class CreateTagUseCase {
         });
 
         Tag tag = Tag.builder().label(trimmed).build();
+        
         return tagRepository.save(tag);
     }
 }

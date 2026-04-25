@@ -1,0 +1,84 @@
+{
+    "loading": "Cargando...",
+    "loadingCover": "Cargando imagen del título...",
+    "imageUnavailable": "Imagen no disponible",
+    "coverLoadError": "No se pudo cargar la imagen",
+    "coverAlt": "Portada del título: {{name}}",
+    "zoomCoverAria": "Ampliar portada: {{name}}",
+    "errorTitle": "¡Ups! Algo salió mal.",
+    "carouselError": "Ocurrió un error al obtener los datos. Inténtalo de nuevo más tarde.",
+    "synopsisLoading": "Estamos cargando la sinopsis...",
+    "synopsis": "Sinopsis",
+    "synopsisModalTitle": "Sinopsis de {{name}}",
+    "readMore": "Leer más",
+    "close": "Cerrar",
+    "genres": "Géneros",
+    "details": {
+        "popularity": "Popularidad:",
+        "chapters": "Capítulos:",
+        "author": "Autor:",
+        "artist": "Artista:",
+        "publisher": "Editorial:",
+        "type": "Tipo:",
+        "notAvailable": "N/D"
+    },
+    "card": {
+        "chaptersCount": "({{count}} Capítulos)",
+        "chapterLabelShort": "Cap:",
+        "chapterLabelFull": "Capítulo:",
+        "loadMore": "Ver más"
+    },
+    "actions": {
+        "bookmark": "Guardar",
+        "bookmarked": "Guardado",
+        "like": "Me gusta",
+        "groups": "Grupos",
+        "cart": "Carrito"
+    },
+    "titleDetails": {
+        "invalidIdTitle": "ID inválido",
+        "errorTitle": "¡Vaya! Ocurrió un error.",
+        "communityAverage": "Promedio de la comunidad:",
+        "authActionBookmark": "guardar en la biblioteca",
+        "authActionRate": "valorar",
+        "savedToLibrary": "Manga guardado en tu biblioteca.",
+        "removedFromLibrary": "Manga eliminado de tu biblioteca."
+    },
+    "home": {
+        "alertTitle": "¡Atención!",
+        "alertMessage": "Sitio en desarrollo, algunas funcionalidades pueden no estar disponibles.",
+        "carouselTitle": "Obras más vistas",
+        "carouselSubtitle": "Últimos 30 días",
+        "risingTitle": "Top 5 obras en ascenso",
+        "randomTitle": "10 Obras aleatorias",
+        "updatedTitle": "Obras actualizadas",
+        "seeMore": "Ver más..."
+    },
+    "chapterPage": {
+        "notFoundTitle": "Capítulo no encontrado",
+        "notFoundMessage": "El capítulo al que intentas acceder no existe.",
+        "backToTitle": "Volver a la página del título",
+        "commentsHeading": "Comentarios"
+    },
+    "chapter": {
+        "heading": "Capítulos:",
+        "sortBy": "Ordenar por:",
+        "searchPlaceholder": "Buscar Capítulo",
+        "optionLabel": "Capítulo {{number}}",
+        "loadingOptions": "Cargando...",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "item": {
+            "chapterLabel": "Capítulo:",
+            "titleLabel": "Título:",
+            "dateLabel": "Fecha:",
+            "pagesLabel": "Páginas:"
+        },
+        "pagination": {
+            "pageLabel": "Página <1>{{current}}</1> de <2>{{total}}</2>"
+        },
+        "coverLoading": "Cargando imagen del título...",
+        "coverError": "No se pudo cargar la imagen",
+        "pageAlt": "Página {{number}}"
+    }
+}

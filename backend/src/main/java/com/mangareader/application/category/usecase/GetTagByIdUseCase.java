@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetTagByIdUseCase {
-
     private final TagRepositoryPort tagRepository;
 
     @Cacheable(value = CacheNames.TAG, key = "#id")

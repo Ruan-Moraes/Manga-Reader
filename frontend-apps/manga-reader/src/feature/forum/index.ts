@@ -9,7 +9,7 @@ export {
     paginateTopics,
     forumCategories,
     forumSortOptions,
-    roleLabel,
+    roleLabelKey,
     roleBadgeColor,
     TOPICS_PER_PAGE,
 } from './service/forumService';

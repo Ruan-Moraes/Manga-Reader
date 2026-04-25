@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateCommentUseCase {
-
     private final CommentRepositoryPort commentRepository;
 
     public record UpdateCommentInput(String commentId, String textContent, UUID userId) {}

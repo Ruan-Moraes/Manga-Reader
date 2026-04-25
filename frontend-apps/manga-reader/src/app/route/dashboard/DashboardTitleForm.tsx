@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
 
@@ -9,6 +10,7 @@ import useAdminTitleActions from '@feature/admin/hook/useAdminTitleActions';
 import type { CreateTitleRequest } from '@feature/admin/type/admin.types';
 
 const DashboardTitleForm = () => {
+    const { t } = useTranslation('admin');
     const { titleId } = useParams<{ titleId: string }>();
     const navigate = useNavigate();
     const isEditing = Boolean(titleId);
@@ -75,8 +77,7 @@ const DashboardTitleForm = () => {
     };
 
     const handleDeleteClick = async () => {
-        if (!titleId || !confirm('Tem certeza que deseja excluir este titulo?'))
-            return;
+        if (!titleId || !confirm(t('dashboard.titles.deleteConfirm'))) return;
         await handleDelete(titleId);
         navigate('/Manga-Reader/dashboard/titles');
     };
@@ -97,17 +98,21 @@ const DashboardTitleForm = () => {
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />
-                Voltar para lista
+                {t('common.back')}
             </button>
 
             <h1 className="text-lg font-bold">
-                {isEditing ? 'Editar Titulo' : 'Novo Titulo'}
+                {isEditing
+                    ? t('dashboard.titles.editTitle')
+                    : t('dashboard.titles.newTitle')}
             </h1>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Nome *</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.name')} *
+                        </span>
                         <input
                             required
                             value={form.name}
@@ -118,7 +123,9 @@ const DashboardTitleForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Tipo *</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.type')} *
+                        </span>
                         <select
                             value={form.type}
                             onChange={e =>
@@ -126,15 +133,23 @@ const DashboardTitleForm = () => {
                             }
                             className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                         >
-                            <option value="manga">Manga</option>
-                            <option value="manhwa">Manhwa</option>
-                            <option value="manhua">Manhua</option>
+                            <option value="manga">
+                                {t('dashboard.titles.form.typeManga')}
+                            </option>
+                            <option value="manhwa">
+                                {t('dashboard.titles.form.typeManhwa')}
+                            </option>
+                            <option value="manhua">
+                                {t('dashboard.titles.form.typeManhua')}
+                            </option>
                         </select>
                     </label>
                 </div>
 
                 <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">Sinopse</span>
+                    <span className="text-sm text-tertiary">
+                        {t('dashboard.titles.form.synopsis')}
+                    </span>
                     <textarea
                         rows={3}
                         value={form.synopsis}
@@ -147,7 +162,9 @@ const DashboardTitleForm = () => {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Cover URL</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.cover')}
+                        </span>
                         <input
                             value={form.cover}
                             onChange={e =>
@@ -157,13 +174,17 @@ const DashboardTitleForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Status</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.status')}
+                        </span>
                         <input
                             value={form.status}
                             onChange={e =>
                                 setForm(f => ({ ...f, status: e.target.value }))
                             }
-                            placeholder="ONGOING, COMPLETED, HIATUS..."
+                            placeholder={t(
+                                'dashboard.titles.form.statusPlaceholder',
+                            )}
                             className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                         />
                     </label>
@@ -171,19 +192,23 @@ const DashboardTitleForm = () => {
 
                 <label className="flex flex-col gap-1">
                     <span className="text-sm text-tertiary">
-                        Generos (separados por virgula)
+                        {t('dashboard.titles.form.genres')}
                     </span>
                     <input
                         value={genresInput}
                         onChange={e => setGenresInput(e.target.value)}
-                        placeholder="Action, Adventure, Fantasy"
+                        placeholder={t(
+                            'dashboard.titles.form.genresPlaceholder',
+                        )}
                         className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
                 </label>
 
                 <div className="grid gap-3 sm:grid-cols-3">
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Autor</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.author')}
+                        </span>
                         <input
                             value={form.author}
                             onChange={e =>
@@ -193,7 +218,9 @@ const DashboardTitleForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Artista</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.artist')}
+                        </span>
                         <input
                             value={form.artist}
                             onChange={e =>
@@ -203,7 +230,9 @@ const DashboardTitleForm = () => {
                         />
                     </label>
                     <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">Editora</span>
+                        <span className="text-sm text-tertiary">
+                            {t('dashboard.titles.form.publisher')}
+                        </span>
                         <input
                             value={form.publisher}
                             onChange={e =>
@@ -225,7 +254,9 @@ const DashboardTitleForm = () => {
                             setForm(f => ({ ...f, adult: e.target.checked }))
                         }
                     />
-                    <span className="text-sm">Conteudo adulto</span>
+                    <span className="text-sm">
+                        {t('dashboard.titles.form.adult')}
+                    </span>
                 </label>
 
                 <div className="flex gap-2 pt-2">
@@ -235,10 +266,10 @@ const DashboardTitleForm = () => {
                         className="px-4 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-dark disabled:opacity-50"
                     >
                         {isSubmitting
-                            ? 'Salvando...'
+                            ? t('common.saving')
                             : isEditing
-                              ? 'Salvar'
-                              : 'Criar'}
+                              ? t('common.save')
+                              : t('common.create')}
                     </button>
                     {isEditing && (
                         <button
@@ -247,7 +278,7 @@ const DashboardTitleForm = () => {
                             disabled={isSubmitting}
                             className="px-4 py-2 text-sm font-semibold text-red-300 border rounded-xs border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
                         >
-                            Excluir
+                            {t('common.delete')}
                         </button>
                     )}
                 </div>

@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     FiArrowLeft,
     FiCheckCircle,
@@ -24,13 +26,20 @@ import {
     formatRelativeDate,
     getCategoryColor,
     roleBadgeColor,
-    roleLabel,
 } from '@feature/forum';
 
-// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const ForumTopicPage = () => {
+    const { t } = useTranslation('forum');
     const { topic, replySort, setReplySort, sortedReplies, relatedTopics } =
         useForumTopic();
+
+    const replySortOptions = useMemo(
+        () => [
+            { value: 'recent', label: t('topicPage.sortRecent') },
+            { value: 'likes', label: t('topicPage.sortLikes') },
+        ],
+        [t],
+    );
 
     if (!topic) {
         return (
@@ -39,13 +48,13 @@ const ForumTopicPage = () => {
                 <MainContent>
                     <div className="py-16 text-center">
                         <p className="text-lg text-shadow-secondary">
-                            Tópico não encontrado.
+                            {t('topicPage.notFound')}
                         </p>
                         <Link
                             to="/Manga-Reader/forum"
                             className="inline-block mt-4 text-sm underline text-quaternary-default"
                         >
-                            Voltar para o fórum
+                            {t('topicPage.backToForum')}
                         </Link>
                     </div>
                 </MainContent>
@@ -58,46 +67,43 @@ const ForumTopicPage = () => {
         <>
             <Header />
             <MainContent>
-                {/* Breadcrumb */}
                 <Link
                     to="/Manga-Reader/forum"
                     className="flex items-center gap-1 text-xs transition-colors text-shadow-secondary hover:text-quaternary-default"
                 >
-                    <FiArrowLeft size={14} /> Voltar para o fórum
+                    <FiArrowLeft size={14} /> {t('topicPage.backToForum')}
                 </Link>
 
-                {/* Topic header */}
                 <section className="p-4 border rounded-lg bg-secondary border-tertiary">
-                    {/* Badges row */}
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                         {topic.isPinned && (
                             <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400">
-                                <FiBookmark size={10} /> Fixado
+                                <FiBookmark size={10} /> {t('topicPage.pinned')}
                             </span>
                         )}
                         {topic.isLocked && (
                             <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">
-                                <FiLock size={10} /> Trancado
+                                <FiLock size={10} /> {t('topicPage.locked')}
                             </span>
                         )}
                         {topic.isSolved && (
                             <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
-                                <FiCheckCircle size={10} /> Resolvido
+                                <FiCheckCircle size={10} /> {t('topicPage.solved')}
                             </span>
                         )}
                         <span
                             className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getCategoryColor(topic.category)}`}
                         >
-                            {topic.category}
+                            {t(`categories.${topic.category}`, {
+                                defaultValue: topic.category,
+                            })}
                         </span>
                     </div>
 
-                    {/* Title */}
                     <h1 className="text-xl font-bold text-shadow-default">
                         {topic.title}
                     </h1>
 
-                    {/* Author + date */}
                     <div className="flex items-center gap-3 mt-3">
                         <UserAvatar
                             src={topic.author.avatar}
@@ -113,7 +119,9 @@ const ForumTopicPage = () => {
                                 <span
                                     className={`px-1.5 py-0.5 rounded text-[10px] ${roleBadgeColor[topic.author.role]}`}
                                 >
-                                    {roleLabel[topic.author.role]}
+                                    {t(`role.${topic.author.role}`, {
+                                        defaultValue: topic.author.role,
+                                    })}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-shadow-secondary">
@@ -123,17 +131,19 @@ const ForumTopicPage = () => {
                                 </span>
                                 <span>·</span>
                                 <FiUser size={11} />
-                                <span>{topic.author.postCount} posts</span>
+                                <span>
+                                    {t('topicPage.postsCount', {
+                                        count: topic.author.postCount,
+                                    })}
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Content */}
                     <div className="mt-4 text-sm whitespace-pre-line text-shadow-default">
                         {topic.content}
                     </div>
 
-                    {/* Tags */}
                     {topic.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-4">
                             {topic.tags.map(tag => (
@@ -147,35 +157,34 @@ const ForumTopicPage = () => {
                         </div>
                     )}
 
-                    {/* Stats row */}
                     <div className="flex items-center gap-4 pt-4 mt-4 text-xs border-t border-tertiary text-shadow-secondary">
                         <span className="flex items-center gap-1">
-                            <FiEye size={13} /> {topic.viewCount} visualizações
+                            <FiEye size={13} />{' '}
+                            {t('topicPage.views', { count: topic.viewCount })}
                         </span>
                         <span className="flex items-center gap-1">
-                            <FiHeart size={13} /> {topic.likeCount} curtidas
+                            <FiHeart size={13} />{' '}
+                            {t('topicPage.likes', { count: topic.likeCount })}
                         </span>
                         <span className="flex items-center gap-1">
-                            <FiMessageCircle size={13} /> {topic.replyCount}{' '}
-                            respostas
+                            <FiMessageCircle size={13} />{' '}
+                            {t('topicPage.replies', { count: topic.replyCount })}
                         </span>
                         <button className="flex items-center gap-1 ml-auto transition-colors hover:text-quaternary-default">
-                            <FiShare2 size={13} /> Compartilhar
+                            <FiShare2 size={13} /> {t('topicPage.share')}
                         </button>
                     </div>
                 </section>
 
-                {/* Replies section */}
                 <section>
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-bold">
-                            Respostas ({topic.replyCount})
+                            {t('topicPage.repliesHeading', {
+                                count: topic.replyCount,
+                            })}
                         </h2>
                         <BaseSelect
-                            options={[
-                                { value: 'recent', label: 'Mais recentes' },
-                                { value: 'likes', label: 'Mais curtidas' },
-                            ]}
+                            options={replySortOptions}
                             value={replySort}
                             onChange={e =>
                                 setReplySort(
@@ -189,8 +198,7 @@ const ForumTopicPage = () => {
                     <div className="flex flex-col gap-3">
                         {sortedReplies.length === 0 ? (
                             <p className="py-8 text-sm text-center text-shadow-secondary">
-                                Nenhuma resposta ainda. Seja o primeiro a
-                                responder!
+                                {t('topicPage.emptyReplies')}
                             </p>
                         ) : (
                             sortedReplies.map(reply => (
@@ -199,35 +207,33 @@ const ForumTopicPage = () => {
                         )}
                     </div>
 
-                    {/* Reply form placeholder */}
                     {!topic.isLocked && (
                         <div className="p-4 mt-4 border rounded-lg border-tertiary bg-secondary">
                             <h3 className="mb-2 text-sm font-semibold">
-                                Escrever resposta
+                                {t('topicPage.writeReply')}
                             </h3>
                             <textarea
-                                placeholder="Compartilhe sua opinião..."
+                                placeholder={t('topicPage.replyPlaceholder')}
                                 rows={4}
                                 className="w-full p-3 text-sm border rounded-lg resize-none bg-primary-default border-tertiary focus:outline-none focus:border-quaternary-default"
                             />
                             <div className="flex justify-end mt-2">
                                 <button className="px-4 py-2 text-xs font-bold transition-colors rounded-lg bg-quaternary-default text-primary-default hover:bg-quaternary-default/80">
-                                    Enviar resposta
+                                    {t('topicPage.sendReply')}
                                 </button>
                             </div>
                         </div>
                     )}
                 </section>
 
-                {/* Related topics sidebar */}
                 {relatedTopics.length > 0 && (
                     <section>
                         <h2 className="mb-3 text-sm font-bold">
-                            Tópicos relacionados
+                            {t('topicPage.relatedTopics')}
                         </h2>
                         <div className="flex flex-col gap-2">
-                            {relatedTopics.map(t => (
-                                <RelatedTopicCard key={t.id} topic={t} />
+                            {relatedTopics.map(rt => (
+                                <RelatedTopicCard key={rt.id} topic={rt} />
                             ))}
                         </div>
                     </section>

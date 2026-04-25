@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -40,6 +41,7 @@ import { requireAuth } from '@shared/service/util/requireAuth';
 import { recordView } from '@feature/user/service/userService';
 
 const TitleDetailsPage = () => {
+    const { t } = useTranslation('manga');
     const navigate = useNavigate();
 
     const { titleId: rawTitleId } = useParams();
@@ -99,7 +101,7 @@ const TitleDetailsPage = () => {
         return (
             <MainContent>
                 <AlertBanner
-                    title="ID inválido"
+                    title={t('titleDetails.invalidIdTitle')}
                     message={ERROR_MESSAGES.INVALID_ID_ERROR}
                     color={THEME_COLORS.QUINARY}
                 />
@@ -111,7 +113,7 @@ const TitleDetailsPage = () => {
         return (
             <MainContent>
                 <AlertBanner
-                    title="Ops! Ocorreu um erro."
+                    title={t('titleDetails.errorTitle')}
                     message={
                         titleError instanceof Error
                             ? titleError.message
@@ -144,7 +146,7 @@ const TitleDetailsPage = () => {
     } = title as Title;
 
     const handleBookmarkClick = async () => {
-        if (!requireAuth('salvar na biblioteca')) return;
+        if (!requireAuth(t('titleDetails.authActionBookmark'))) return;
 
         const nowSaved = await toggleBookmark({
             titleId: String(id),
@@ -154,9 +156,9 @@ const TitleDetailsPage = () => {
         });
 
         if (nowSaved) {
-            showSuccessToast('Mangá salvo na sua biblioteca.');
+            showSuccessToast(t('titleDetails.savedToLibrary'));
         } else {
-            showInfoToast('Mangá removido da sua biblioteca.');
+            showInfoToast(t('titleDetails.removedFromLibrary'));
         }
     };
 
@@ -186,14 +188,14 @@ const TitleDetailsPage = () => {
                     />
                     <div className="flex items-center justify-between px-2 py-2 border border-tertiary bg-primary-default rounded-tr-xs">
                         <span className="text-sm font-semibold">
-                            Média da comunidade:
+                            {t('titleDetails.communityAverage')}
                         </span>
                         <RatingStars value={average.average} />
                     </div>
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
                         onLikeClick={() => {
-                            if (!requireAuth('avaliar')) return;
+                            if (!requireAuth(t('titleDetails.authActionRate'))) return;
                             openRatingModal();
                         }}
                         onGroupsClick={openGroupsModal}

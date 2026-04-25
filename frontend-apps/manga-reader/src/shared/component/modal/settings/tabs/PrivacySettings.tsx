@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import BaseSelect from '@shared/component/input/BaseSelect';
 
 import {
@@ -7,17 +10,22 @@ import {
     type UserSettings,
 } from '../settings.constants';
 
-const adultContentOptions = [
-    { value: 'hide', label: 'Ocultar' },
-    { value: 'blur', label: 'Desfocar' },
-    { value: 'show', label: 'Exibir' },
-];
-
 const PrivacySettings = ({
     settings,
     onUpdate,
     isLoggedIn,
 }: SettingsTabProps) => {
+    const { t } = useTranslation('user');
+
+    const adultContentOptions = useMemo(
+        () => [
+            { value: 'hide', label: t('settings.privacy.adultContent.hide') },
+            { value: 'blur', label: t('settings.privacy.adultContent.blur') },
+            { value: 'show', label: t('settings.privacy.adultContent.show') },
+        ],
+        [t],
+    );
+
     const updatePrivacy = <K extends keyof UserSettings['privacy']>(
         key: K,
         value: UserSettings['privacy'][K],
@@ -30,11 +38,11 @@ const PrivacySettings = ({
 
     return (
         <div className="space-y-4">
-            <h3 className={sectionTitleClass}>Privacidade</h3>
+            <h3 className={sectionTitleClass}>{t('settings.privacy.title')}</h3>
             <p className="text-xs text-tertiary">
                 {isLoggedIn
-                    ? 'Controle o que outros usuários podem ver no seu perfil.'
-                    : 'As opções ficam salvas localmente até você entrar na conta.'}
+                    ? t('settings.privacy.description')
+                    : t('settings.descriptionGuest')}
             </p>
 
             <label className={checkboxLabelClass}>
@@ -46,7 +54,7 @@ const PrivacySettings = ({
                         updatePrivacy('showReadingHistory', e.target.checked)
                     }
                 />
-                Exibir histórico de leitura no perfil
+                {t('settings.privacy.showReadingHistory')}
             </label>
 
             <label className={checkboxLabelClass}>
@@ -58,11 +66,11 @@ const PrivacySettings = ({
                         updatePrivacy('showOnlineStatus', e.target.checked)
                     }
                 />
-                Mostrar status online
+                {t('settings.privacy.showOnlineStatus')}
             </label>
 
             <BaseSelect
-                label="Conteúdo adulto"
+                label={t('settings.privacy.adultContentLabel')}
                 options={adultContentOptions}
                 value={settings.privacy.adultContent}
                 onChange={e =>

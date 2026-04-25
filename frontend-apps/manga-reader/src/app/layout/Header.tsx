@@ -1,7 +1,6 @@
+import { useTranslation } from 'react-i18next';
+
 import AppLink from '@shared/component/link/element/AppLink';
-
-import clsx from 'clsx';
-
 import MainSearchInput from '@shared/component/input/MainSearchInput';
 import NavigationMenu from '@shared/component/menu/NavigationMenu';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
@@ -16,6 +15,7 @@ type HeaderTypes = {
 };
 
 const Header = ({ showAuth, showSearch }: HeaderTypes) => {
+    const { t } = useTranslation('layout');
     const { user, isLoggedIn, logout } = useAuth();
 
     return (
@@ -45,11 +45,11 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                             <button
                                 onClick={() => {
                                     logout();
-                                    showInfoToast('Sessão encerrada.');
+                                    showInfoToast(t('header.sessionEnded'));
                                 }}
                                 className="font-bold cursor-pointer hover:text-quaternary-default"
                             >
-                                Sair
+                                {t('header.logout')}
                             </button>
                         </>
                     ) : (
@@ -57,13 +57,13 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                             <AppLink
                                 enabledColorWhenActive={true}
                                 link="sign-up"
-                                text="Cadastro"
+                                text={t('header.signUp')}
                             />
                             <span className="font-bold">|</span>
                             <AppLink
                                 enabledColorWhenActive={true}
                                 link="login"
-                                text="Login"
+                                text={t('header.login')}
                             />
                         </>
                     )}
@@ -73,7 +73,7 @@ const Header = ({ showAuth, showSearch }: HeaderTypes) => {
                 <div>
                     <h1>
                         <AppLink
-                            text="Manga Reader"
+                            text={t('header.brand')}
                             link="/"
                             className="text-2xl italic"
                         />

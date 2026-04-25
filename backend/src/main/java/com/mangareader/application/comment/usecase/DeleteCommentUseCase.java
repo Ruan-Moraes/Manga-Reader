@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeleteCommentUseCase {
-
     private final CommentRepositoryPort commentRepository;
 
     public void execute(String commentId, UUID userId) {

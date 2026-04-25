@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -13,6 +14,7 @@ import { getLibraryCounts } from '@feature/library/service/libraryService';
 import type { LibraryCounts } from '@feature/library/type/saved-library.types';
 
 const Profile = () => {
+    const { t } = useTranslation('user');
     const { user, setUser } = useAuth();
     const { updateProfile } = useUserProfile(setUser);
     const [name, setName] = useState(user?.name ?? '');
@@ -38,13 +40,13 @@ const Profile = () => {
     const validate = () => {
         let valid = true;
         if (!name.trim()) {
-            setNameError('Nome não pode ser vazio.');
+            setNameError(t('page.nameEmptyError'));
             valid = false;
         } else {
             setNameError('');
         }
         if (bio.length > 500) {
-            setBioError(`Máximo 500 caracteres (${bio.length}/500).`);
+            setBioError(t('page.bioMaxError', { length: bio.length }));
             valid = false;
         } else {
             setBioError('');
@@ -59,7 +61,7 @@ const Profile = () => {
         setSubmitting(true);
         try {
             await updateProfile({ name: name.trim(), bio });
-            showSuccessToast('Perfil atualizado com sucesso.');
+            showSuccessToast(t('page.updateSuccess'));
         } finally {
             setSubmitting(false);
         }
@@ -67,10 +69,10 @@ const Profile = () => {
 
     const statCards = counts
         ? [
-              { label: 'Lendo', value: counts.lendo },
-              { label: 'Quero Ler', value: counts.queroLer },
-              { label: 'Concluído', value: counts.concluido },
-              { label: 'Total', value: counts.total },
+              { label: t('page.stats.reading'), value: counts.lendo },
+              { label: t('page.stats.wantToRead'), value: counts.queroLer },
+              { label: t('page.stats.completed'), value: counts.concluido },
+              { label: t('page.stats.total'), value: counts.total },
           ]
         : null;
 
@@ -80,7 +82,7 @@ const Profile = () => {
             <MainContent>
                 <section className="p-4 border rounded-xs border-tertiary bg-secondary/30">
                     <h2 className="mb-4 text-xl font-bold">
-                        Perfil do Usuário
+                        {t('page.title')}
                     </h2>
                     {user ? (
                         <div className="grid gap-4 mobile-md:grid-cols-[120px_1fr] items-start">
@@ -94,7 +96,7 @@ const Profile = () => {
                                 onSubmit={handleSubmit}
                             >
                                 <label className="text-sm">
-                                    Nome
+                                    {t('page.nameLabel')}
                                     <input
                                         value={name}
                                         onChange={e => setName(e.target.value)}
@@ -107,7 +109,7 @@ const Profile = () => {
                                     )}
                                 </label>
                                 <label className="text-sm">
-                                    Bio
+                                    {t('page.bioLabel')}
                                     <textarea
                                         value={bio}
                                         onChange={e => setBio(e.target.value)}
@@ -129,21 +131,23 @@ const Profile = () => {
                                     className="px-3 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors disabled:opacity-50"
                                 >
                                     {submitting
-                                        ? 'Salvando...'
-                                        : 'Salvar alterações'}
+                                        ? t('page.saving')
+                                        : t('page.save')}
                                 </button>
                             </form>
                         </div>
                     ) : (
                         <p className="text-sm text-tertiary">
-                            Faça login para visualizar seu perfil.
+                            {t('page.loginPrompt')}
                         </p>
                     )}
                 </section>
 
                 {statCards && (
                     <section className="flex flex-col gap-3">
-                        <h3 className="text-lg font-bold">Minha Biblioteca</h3>
+                        <h3 className="text-lg font-bold">
+                            {t('page.myLibraryTitle')}
+                        </h3>
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                             {statCards.map(({ label, value }) => (
                                 <div
@@ -162,12 +166,12 @@ const Profile = () => {
                         <div className="flex gap-3">
                             <AppLink
                                 link="library"
-                                text="Ver Biblioteca"
+                                text={t('page.viewLibrary')}
                                 className="text-sm text-quaternary hover:underline"
                             />
                             <AppLink
                                 link="reviews"
-                                text="Ver Avaliações"
+                                text={t('page.viewReviews')}
                                 className="text-sm text-quaternary hover:underline"
                             />
                         </div>

@@ -8,15 +8,15 @@ import jakarta.validation.constraints.Size;
  * Request de cadastro (Sign Up).
  */
 public record SignUpRequest(
-        @NotBlank(message = "Nome é obrigatório.")
-        @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres.")
+        @NotBlank(message = "{validation.name.required}")
+        @Size(min = 2, max = 100, message = "{validation.name.size}")
         String name,
 
-        @NotBlank(message = "E-mail é obrigatório.")
-        @Email(message = "E-mail inválido.")
+        @NotBlank(message = "{validation.email.required}")
+        @Email(message = "{validation.email.invalid}")
         String email,
 
-        @NotBlank(message = "Senha é obrigatória.")
-        @Size(min = 6, max = 128, message = "Senha deve ter entre 6 e 128 caracteres.")
+        @NotBlank(message = "{validation.password.required}")
+        @Size(min = 6, max = 128, message = "{validation.password.size}")
         String password
 ) {}

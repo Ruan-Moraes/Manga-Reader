@@ -1,0 +1,78 @@
+{
+    "status": {
+        "active": "Ativo",
+        "inactive": "Inativo",
+        "hiatus": "Hiato"
+    },
+    "container": {
+        "defaultTitle": "Grupos de Tradução",
+        "empty": "Nenhum grupo de tradução encontrado para esta obra."
+    },
+    "card": {
+        "avatarAlt": "Avatar do grupo {{name}}",
+        "openSite": "Abrir site oficial",
+        "membersCount_one": "{{count}} membro",
+        "membersCount_other": "{{count}} membros",
+        "worksCount_one": "{{count}} obra",
+        "worksCount_other": "{{count}} obras",
+        "viewDetails": "Ver detalhes",
+        "viewDetailsLong": "Ver detalhes do grupo"
+    },
+    "summary": {
+        "statusLabel": "Status",
+        "focusTags": "Tags de foco",
+        "noTags": "Sem tags definidas",
+        "rating": "Nota"
+    },
+    "header": {
+        "bannerAlt": "Banner do grupo {{name}}",
+        "avatarAlt": "Avatar de {{name}}",
+        "officialSite": "Site oficial",
+        "supporters_one": "{{count}} apoiador",
+        "supporters_other": "{{count}} apoiadores"
+    },
+    "modal": {
+        "title": "Grupos de Tradução",
+        "close": "Fechar",
+        "empty": "Nenhum grupo de tradução encontrado para esta obra."
+    },
+    "member": {
+        "profileTitle": "Perfil de membro",
+        "joinedAt": "Entrou na plataforma em {{date}}",
+        "participatesIn": "Grupos que participa",
+        "recentActivity": "Últimos posts/comentários",
+        "noTitle": "Sem obra vinculada",
+        "searchPlaceholder": "Buscar membro",
+        "membersHeader": "{{name}} • {{count}} membros"
+    },
+    "listing": {
+        "title": "Grupos de Tradução",
+        "subtitle": "Explore equipes, filtros de status/gênero e ordene por popularidade.",
+        "searchPlaceholder": "Buscar por nome do grupo",
+        "statusAll": "Todos os status",
+        "statusActive": "Ativo",
+        "statusHiatus": "Hiato",
+        "statusInactive": "Inativo",
+        "genreAll": "Todos os gêneros",
+        "sortPopularity": "Popularidade",
+        "sortMembers": "Total de membros",
+        "sortTitles": "Obras traduzidas",
+        "sortRating": "Avaliação"
+    },
+    "profile": {
+        "notFoundTitle": "Grupo não encontrado",
+        "notFoundMessage": "Não foi possível localizar o perfil solicitado.",
+        "backToGroups": "Voltar para Grupos",
+        "aboutTitle": "Sobre o grupo",
+        "foundationInfo": "Fundação: {{year}} • Entrada na plataforma: {{joinedAt}}",
+        "translatedWorks": "Obras traduzidas",
+        "sortPopularity": "Popularidade",
+        "sortDate": "Data de atualização",
+        "sortChapters": "Capítulos",
+        "chaptersCount_one": "{{count}} capítulo",
+        "chaptersCount_other": "{{count}} capítulos",
+        "statusOngoing": "Em andamento",
+        "statusCompleted": "Completo",
+        "loading": "Carregando perfil do grupo..."
+    }
+}

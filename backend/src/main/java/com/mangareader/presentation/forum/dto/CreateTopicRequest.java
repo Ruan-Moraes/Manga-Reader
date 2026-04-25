@@ -10,16 +10,16 @@ import jakarta.validation.constraints.Size;
  * Request para criar um novo tópico no fórum.
  */
 public record CreateTopicRequest(
-        @NotBlank(message = "Título é obrigatório.")
-        @Size(max = 300, message = "Título deve ter no máximo 300 caracteres.")
+        @NotBlank(message = "{validation.forum.topic.title.required}")
+        @Size(max = 300, message = "{validation.forum.topic.title.size}")
         String title,
 
-        @NotBlank(message = "Conteúdo é obrigatório.")
-        @Size(max = 10000, message = "Conteúdo deve ter no máximo 10000 caracteres.")
+        @NotBlank(message = "{validation.forum.topic.content.required}")
+        @Size(max = 10000, message = "{validation.forum.topic.content.size}")
         String content,
 
-        @NotNull(message = "Categoria é obrigatória.")
-        @Size(max = 100, message = "Categoria deve ter no máximo 100 caracteres.")
+        @NotNull(message = "{validation.forum.topic.category.required}")
+        @Size(max = 100, message = "{validation.forum.topic.category.size}")
         String category,
 
         List<String> tags

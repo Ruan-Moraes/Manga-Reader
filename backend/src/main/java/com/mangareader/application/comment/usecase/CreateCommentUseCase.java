@@ -18,7 +18,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CreateCommentUseCase {
-
     private final CommentRepositoryPort commentRepository;
     private final UserRepositoryPort userRepository;
 

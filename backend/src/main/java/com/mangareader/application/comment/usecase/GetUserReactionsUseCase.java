@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetUserReactionsUseCase {
-
     private final CommentReactionRepositoryPort reactionRepository;
 
     public Map<String, ReactionType> execute(List<String> commentIds, String userId) {

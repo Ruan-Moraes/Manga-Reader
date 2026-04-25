@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MultiValue, SingleValue } from 'react-select';
 
 import StyledSelect, {
@@ -21,6 +22,8 @@ const ChapterNavigation = ({
     variant = 'default',
     menuPlacement,
 }: ChapterNavigationProps) => {
+    const { t } = useTranslation('manga');
+
     return (
         <div className="flex flex-col gap-2">
             <div>
@@ -31,11 +34,13 @@ const ChapterNavigation = ({
                         onChange={onChapterChange}
                         defaultValue={{
                             value: chapterId,
-                            label: `Capítulo ${chapterId}`,
+                            label: t('chapter.optionLabel', {
+                                number: chapterId,
+                            }),
                         }}
                         isClearable={false}
                         isSearchable={false}
-                        noOptionsMessage={() => 'Carregando...'}
+                        noOptionsMessage={() => t('chapter.loadingOptions')}
                         options={CHAPTER_OPTIONS}
                         {...(menuPlacement && { menuPlacement })}
                     />
@@ -43,10 +48,10 @@ const ChapterNavigation = ({
             </div>
             <div className="flex gap-2">
                 <button className="p-2 border rounded-xs bg-secondary border-tertiary grow">
-                    Anterior
+                    {t('chapter.previous')}
                 </button>
                 <button className="p-2 border rounded-xs bg-secondary border-tertiary grow">
-                    Próximo
+                    {t('chapter.next')}
                 </button>
             </div>
         </div>

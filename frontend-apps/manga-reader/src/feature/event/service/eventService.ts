@@ -59,11 +59,11 @@ export const eventTypes: EventType[] = [
     'Meetup',
 ];
 
-export const statusLabel: Record<EventData['status'], string> = {
-    happening_now: 'Acontecendo Agora',
-    registrations_open: 'Inscrições Abertas',
-    coming_soon: 'Em Breve',
-    ended: 'Encerrado',
+export const statusLabelKey: Record<EventData['status'], string> = {
+    happening_now: 'status.happening_now',
+    registrations_open: 'status.registrations_open',
+    coming_soon: 'status.coming_soon',
+    ended: 'status.ended',
 };
 
 export const formatEventDate = (date: string) =>

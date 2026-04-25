@@ -5,6 +5,7 @@ import {
     IoStorefrontOutline,
 } from 'react-icons/io5';
 import { SiBookmeter } from 'react-icons/si';
+import { useTranslation } from 'react-i18next';
 
 import { Store } from '../type/store.types';
 
@@ -14,6 +15,8 @@ interface StoreCardProps {
 }
 
 const StoreCard: React.FC<StoreCardProps> = ({ store, isLoading }) => {
+    const { t } = useTranslation('store');
+
     if (isLoading) {
         return (
             <div className="flex gap-2 p-3 border border-tertiary rounded-xs bg-secondary animate-pulse">
@@ -47,7 +50,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, isLoading }) => {
                 <p className="text-xs text-tertiary">{store.description}</p>
             </div>
             <div className="flex items-center gap-1 text-xs font-semibold">
-                <span>Acessar</span>
+                <span>{t('card.access')}</span>
                 <IoOpenOutline size={14} />
             </div>
         </a>

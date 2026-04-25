@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { FiMessageSquare } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -16,8 +18,8 @@ import {
     type ForumSort,
 } from '@feature/forum';
 
-// TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
 const Forum = () => {
+    const { t } = useTranslation('forum');
     const {
         activeCategory,
         sort,
@@ -32,6 +34,15 @@ const Forum = () => {
         updateQuery,
     } = useForumPage();
 
+    const translatedSortOptions = useMemo(
+        () =>
+            forumSortOptions.map(option => ({
+                value: option.value,
+                label: t(`sort.${option.value}`, { defaultValue: option.label }),
+            })),
+        [t],
+    );
+
     return (
         <>
             <Header />
@@ -42,11 +53,12 @@ const Forum = () => {
                             className="text-quaternary-default"
                             size={28}
                         />
-                        <h1 className="text-2xl font-bold">Fórum</h1>
+                        <h1 className="text-2xl font-bold">
+                            {t('page.title')}
+                        </h1>
                     </div>
                     <p className="max-w-xl mx-auto text-sm text-shadow-secondary">
-                        Participe das discussões, compartilhe recomendações e
-                        conecte-se com outros leitores de mangá.
+                        {t('page.subtitle')}
                     </p>
                 </section>
                 <ForumStats topics={allTopics} />
@@ -54,7 +66,7 @@ const Forum = () => {
                     <SearchInput
                         value={query}
                         onChange={updateQuery}
-                        placeholder="Buscar tópicos..."
+                        placeholder={t('page.searchPlaceholder')}
                     />
                     <div className="flex flex-wrap gap-2">
                         <button
@@ -65,7 +77,7 @@ const Forum = () => {
                                     : 'bg-secondary border border-tertiary hover:bg-tertiary'
                             }`}
                         >
-                            Todos
+                            {t('page.allCategories')}
                         </button>
                         {forumCategories.map(cat => (
                             <button
@@ -77,16 +89,16 @@ const Forum = () => {
                                         : 'bg-secondary border border-tertiary hover:bg-tertiary'
                                 }`}
                             >
-                                {cat}
+                                {t(`categories.${cat}`, { defaultValue: cat })}
                             </button>
                         ))}
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-shadow-secondary">
-                            Ordenar:
+                            {t('page.sortLabel')}
                         </span>
                         <BaseSelect
-                            options={forumSortOptions}
+                            options={translatedSortOptions}
                             value={sort}
                             onChange={e =>
                                 updateSort(e.target.value as ForumSort)
@@ -95,9 +107,7 @@ const Forum = () => {
                         />
 
                         <span className="ml-auto text-xs text-shadow-secondary">
-                            {allTopics.length} tópico
-                            {allTopics.length !== 1 ? 's' : ''} encontrado
-                            {allTopics.length !== 1 ? 's' : ''}
+                            {t('page.foundTopics', { count: allTopics.length })}
                         </span>
                     </div>
                 </section>
@@ -109,7 +119,7 @@ const Forum = () => {
                                 size={40}
                             />
                             <p className="text-sm text-shadow-secondary">
-                                Nenhum tópico encontrado.
+                                {t('page.emptyState')}
                             </p>
                         </div>
                     ) : (

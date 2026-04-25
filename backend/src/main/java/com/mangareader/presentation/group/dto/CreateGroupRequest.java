@@ -7,12 +7,12 @@ import jakarta.validation.constraints.Size;
  * Request para criar um novo grupo.
  */
 public record CreateGroupRequest(
-        @NotBlank(message = "Nome do grupo é obrigatório.")
-        @Size(max = 100, message = "Nome do grupo deve ter no máximo 100 caracteres.")
+        @NotBlank(message = "{validation.group.name.required}")
+        @Size(max = 100, message = "{validation.group.name.size}")
         String name,
 
-        @NotBlank(message = "Username do grupo é obrigatório.")
-        @Size(max = 50, message = "Username deve ter no máximo 50 caracteres.")
+        @NotBlank(message = "{validation.group.username.required}")
+        @Size(max = 50, message = "{validation.group.username.size}")
         String username,
 
         String description,

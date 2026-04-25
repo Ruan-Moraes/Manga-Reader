@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AdminTagList from '@feature/admin/component/AdminTagList';
 import TagFormModal from '@feature/admin/component/modal/TagFormModal';
@@ -8,6 +9,7 @@ import { useAdminTagActions } from '@/feature/admin';
 import type { AdminTag } from '@feature/admin/type/admin.types';
 
 const DashboardTags = () => {
+    const { t } = useTranslation('admin');
     const {
         tags,
         page,
@@ -55,7 +57,7 @@ const DashboardTags = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">Tags</h1>
+            <h1 className="text-lg font-bold">{t('dashboard.tags.title')}</h1>
 
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2">
@@ -66,11 +68,11 @@ const DashboardTags = () => {
                             setSearch(e.target.value);
                             setPage(0);
                         }}
-                        placeholder="Buscar tags..."
+                        placeholder={t('dashboard.tags.search')}
                         className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
                     <span className="text-sm text-tertiary">
-                        {totalElements} tags
+                        {t('dashboard.tags.count', { count: totalElements })}
                     </span>
                 </div>
                 <button
@@ -78,7 +80,7 @@ const DashboardTags = () => {
                     onClick={openCreateForm}
                     className="px-3 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                 >
-                    Nova Tag
+                    {t('dashboard.tags.new')}
                 </button>
             </div>
 
@@ -107,8 +109,10 @@ const DashboardTags = () => {
                 isOpen={deletingTag !== null}
                 onClose={() => setDeletingTag(null)}
                 onConfirm={confirmDelete}
-                title="Excluir Tag"
-                message={`Tem certeza que deseja excluir a tag "${deletingTag?.label}"?`}
+                title={t('dashboard.tags.deleteTitle')}
+                message={t('dashboard.tags.deleteConfirm', {
+                    label: deletingTag?.label ?? '',
+                })}
                 isSubmitting={isSubmitting}
             />
         </div>

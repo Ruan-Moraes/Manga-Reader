@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -27,6 +28,7 @@ const ReviewCard = ({
     onUpdate: (id: string, comment: string) => Promise<void>;
     onDelete: (id: string) => void;
 }) => {
+    const { t } = useTranslation('rating');
     const [comment, setComment] = useState(review.comment ?? '');
     const [saving, setSaving] = useState(false);
     const [confirming, setConfirming] = useState(false);
@@ -36,9 +38,9 @@ const ReviewCard = ({
         setSaving(true);
         try {
             await onUpdate(review.id, comment);
-            showSuccessToast('Comentário atualizado.');
+            showSuccessToast(t('myReviews.commentUpdated'));
         } catch {
-            showErrorToast('Erro ao salvar comentário.');
+            showErrorToast(t('myReviews.commentUpdateError'));
         } finally {
             setSaving(false);
         }
@@ -49,7 +51,10 @@ const ReviewCard = ({
             <div className="flex items-center justify-between gap-2">
                 <AppLink
                     link={`title/${review.titleId}`}
-                    text={review.titleName ?? `Obra #${review.titleId}`}
+                    text={
+                        review.titleName ??
+                        t('myReviews.workPlaceholder', { id: review.titleId })
+                    }
                     className="text-sm font-medium"
                 />
                 <RatingStars value={review.overallRating} />
@@ -67,14 +72,16 @@ const ReviewCard = ({
                             disabled={saving}
                             className="px-3 py-1 text-xs border rounded-xs border-quaternary text-quaternary hover:bg-quaternary/20 disabled:opacity-50"
                         >
-                            {saving ? 'Salvando...' : 'Salvar'}
+                            {saving
+                                ? t('myReviews.saving')
+                                : t('myReviews.save')}
                         </button>
                     )}
                 </div>
                 {confirming ? (
                     <div className="flex items-center gap-2 text-xs">
                         <span className="text-quinary-default">
-                            Tem certeza?
+                            {t('myReviews.confirmPrompt')}
                         </span>
                         <button
                             onClick={() => {
@@ -83,13 +90,13 @@ const ReviewCard = ({
                             }}
                             className="px-2 py-0.5 border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default/20"
                         >
-                            Confirmar
+                            {t('myReviews.confirm')}
                         </button>
                         <button
                             onClick={() => setConfirming(false)}
                             className="px-2 py-0.5 border rounded-xs border-tertiary hover:bg-tertiary/20"
                         >
-                            Cancelar
+                            {t('myReviews.cancel')}
                         </button>
                     </div>
                 ) : (
@@ -97,7 +104,7 @@ const ReviewCard = ({
                         onClick={() => setConfirming(true)}
                         className="px-3 py-1 text-xs border rounded-xs border-quinary-default hover:bg-quinary-default/20 text-quinary-default"
                     >
-                        Excluir
+                        {t('myReviews.delete')}
                     </button>
                 )}
             </div>
@@ -106,6 +113,7 @@ const ReviewCard = ({
 };
 
 const MyReviews = () => {
+    const { t } = useTranslation('rating');
     const [reviews, setReviews] = useState<MangaRating[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
@@ -143,10 +151,10 @@ const MyReviews = () => {
         setReviews(reviews.filter(r => r.id !== id));
         try {
             await deleteReview(id);
-            showSuccessToast('Avaliação removida.');
+            showSuccessToast(t('myReviews.reviewRemoved'));
         } catch {
             setReviews(prev);
-            showErrorToast('Erro ao remover avaliação.');
+            showErrorToast(t('myReviews.reviewRemoveError'));
         }
     };
 
@@ -155,9 +163,11 @@ const MyReviews = () => {
             <Header />
             <MainContent>
                 <section>
-                    <h2 className="text-xl font-bold">Minhas Avaliações</h2>
+                    <h2 className="text-xl font-bold">
+                        {t('myReviews.title')}
+                    </h2>
                     <p className="text-sm text-tertiary">
-                        Edite ou remova seus reviews a qualquer momento.
+                        {t('myReviews.subtitle')}
                     </p>
                 </section>
 
@@ -174,8 +184,7 @@ const MyReviews = () => {
                     <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                         <span className="text-4xl">&#9997;</span>
                         <p className="text-sm text-tertiary">
-                            Nenhuma avaliação ainda. Avalie seus títulos
-                            favoritos!
+                            {t('myReviews.emptyState')}
                         </p>
                     </div>
                 ) : (
@@ -198,7 +207,7 @@ const MyReviews = () => {
                                     }
                                     className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                                 >
-                                    Carregar mais
+                                    {t('myReviews.loadMore')}
                                 </button>
                             </div>
                         )}

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
@@ -19,6 +20,8 @@ const HorizontalCard = ({
     name,
     chapters,
 }: HorizontalCardProps) => {
+    const { t } = useTranslation('manga');
+
     const lastChapter = useMemo(() => {
         if (!chapters || chapters.length === 0) {
             return '...';
@@ -31,7 +34,7 @@ const HorizontalCard = ({
         return (
             <AlertBanner
                 color={THEME_COLORS.QUINARY}
-                title="Ops! Algo deu errado."
+                title={t('errorTitle')}
                 message={ERROR_MESSAGES.FETCH_ERROR_BASE}
             />
         );
@@ -42,14 +45,18 @@ const HorizontalCard = ({
             <div className="flex flex-col px-3 py-1 text-center rounded-b-none rounded-xs bg-tertiary">
                 <span className="font-bold">{isLoading ? '...' : type}</span>
                 <span className="text-xs">
-                    ({lastChapter === '...' ? lastChapter : lastChapter.number}{' '}
-                    Capítulos)
+                    {t('card.chaptersCount', {
+                        count:
+                            lastChapter === '...'
+                                ? lastChapter
+                                : lastChapter.number,
+                    })}
                 </span>
             </div>
             <div className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-xs overflow-hidden">
                 {isLoading && (
                     <span className="flex items-center justify-center h-full font-bold text-tertiary">
-                        Carregando...
+                        {t('loading')}
                     </span>
                 )}
                 {!isLoading && (
@@ -59,7 +66,7 @@ const HorizontalCard = ({
                         </div>
                         <AppLink link={`title/${id}`} className="block h-full">
                             <img
-                                alt={`Capa do título: ${name}`}
+                                alt={t('coverAlt', { name })}
                                 className="object-cover w-full h-full"
                                 src={cover}
                             />

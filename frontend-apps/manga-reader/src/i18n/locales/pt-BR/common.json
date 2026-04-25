@@ -1,0 +1,53 @@
+{
+    "action": {
+        "save": "Salvar",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "delete": "Excluir",
+        "edit": "Editar",
+        "close": "Fechar",
+        "submit": "Enviar",
+        "search": "Pesquisar",
+        "filter": "Filtrar",
+        "back": "Voltar",
+        "next": "Próximo",
+        "previous": "Anterior",
+        "loadMore": "Carregar mais",
+        "reset": "Redefinir",
+        "apply": "Aplicar",
+        "yes": "Sim",
+        "no": "Não",
+        "ok": "OK"
+    },
+    "label": {
+        "loading": "Carregando...",
+        "loadingMessage": "Por favor, aguarde um momento.",
+        "empty": "Nenhum resultado encontrado.",
+        "error": "Ocorreu um erro. Tente novamente.",
+        "required": "Obrigatório",
+        "optional": "Opcional"
+    },
+    "validation": {
+        "required": "Este campo é obrigatório.",
+        "email": "E-mail inválido.",
+        "minLength": "Mínimo de {{count}} caracteres.",
+        "maxLength": "Máximo de {{count}} caracteres."
+    },
+    "toast": {
+        "success": "Operação concluída com sucesso.",
+        "error": "Ocorreu um erro.",
+        "warning": "Atenção.",
+        "info": "Informação."
+    },
+    "notFound": {
+        "title": "Ops! Página não encontrada.",
+        "message": "Não há nada aqui, você está perdido? Clique no link abaixo para voltar para a página inicial.",
+        "linkText": "Voltar para a página inicial"
+    },
+    "language": {
+        "switchTo": "Mudar idioma para {{language}}",
+        "pt-BR": "Português (Brasil)",
+        "en-US": "Inglês",
+        "es-ES": "Espanhol"
+    }
+}

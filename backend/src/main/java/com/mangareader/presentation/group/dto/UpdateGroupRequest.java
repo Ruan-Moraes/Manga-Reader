@@ -8,10 +8,10 @@ import jakarta.validation.constraints.Size;
  * Campos nulos são ignorados (PATCH semântico).
  */
 public record UpdateGroupRequest(
-        @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
+        @Size(min = 2, max = 100, message = "{validation.name.size}")
         String name,
 
-        @Size(max = 2000, message = "Descrição deve ter no máximo 2000 caracteres")
+        @Size(max = 2000, message = "{validation.group.description.size}")
         String description,
 
         String logo,

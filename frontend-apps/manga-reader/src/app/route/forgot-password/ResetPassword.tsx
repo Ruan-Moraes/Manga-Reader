@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
@@ -9,6 +11,7 @@ import RaisedButton from '@shared/component/button/RaisedButton';
 import useResetPassword from '@feature/auth/hook/useResetPassword';
 
 const ResetPassword = () => {
+    const { t } = useTranslation('auth');
     const {
         token,
         password,
@@ -27,17 +30,16 @@ const ResetPassword = () => {
                 <MainContent>
                     <section className="flex flex-col items-center justify-center gap-4 p-8 mx-auto mt-12 max-w-md text-center">
                         <h2 className="text-2xl font-bold text-shadow-default">
-                            Link inválido
+                            {t('resetPassword.invalidLinkTitle')}
                         </h2>
                         <p className="text-sm text-primary-default">
-                            O link de recuperação de senha é inválido ou
-                            expirou. Solicite um novo link.
+                            {t('resetPassword.invalidLinkMessage')}
                         </p>
                         <a
                             href="/Manga-Reader/forgot-password"
                             className="text-sm font-bold text-link hover:underline"
                         >
-                            Solicitar novo link
+                            {t('resetPassword.requestNewLink')}
                         </a>
                     </section>
                 </MainContent>
@@ -52,15 +54,15 @@ const ResetPassword = () => {
             <MainContent>
                 <AuthenticationForm
                     onFormSubmit={handleSubmit}
-                    title="Redefinir senha"
-                    helperText="Lembrou da senha?"
+                    title={t('resetPassword.title')}
+                    helperText={t('resetPassword.helperText')}
                     link="/login"
-                    linkText="Clique aqui"
+                    linkText={t('resetPassword.linkText')}
                 >
                     <BaseInput
-                        label="Nova senha"
+                        label={t('resetPassword.passwordLabel')}
                         type="password"
-                        placeholder="Digite sua nova senha"
+                        placeholder={t('resetPassword.passwordPlaceholder')}
                         value={password}
                         onChange={handlePasswordChange}
                         disabled={isLoading}
@@ -68,9 +70,11 @@ const ResetPassword = () => {
                         name="password"
                     />
                     <BaseInput
-                        label="Confirmar senha"
+                        label={t('resetPassword.confirmPasswordLabel')}
                         type="password"
-                        placeholder="Confirme sua nova senha"
+                        placeholder={t(
+                            'resetPassword.confirmPasswordPlaceholder',
+                        )}
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
                         disabled={isLoading}
@@ -78,7 +82,11 @@ const ResetPassword = () => {
                         name="confirmPassword"
                     />
                     <RaisedButton
-                        text={isLoading ? 'Redefinindo...' : 'Redefinir senha'}
+                        text={
+                            isLoading
+                                ? t('resetPassword.submitLoading')
+                                : t('resetPassword.submit')
+                        }
                     />
                 </AuthenticationForm>
             </MainContent>

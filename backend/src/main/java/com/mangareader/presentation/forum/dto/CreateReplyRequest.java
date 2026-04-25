@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
  * Request para criar uma resposta em um tópico.
  */
 public record CreateReplyRequest(
-        @NotBlank(message = "Conteúdo da resposta é obrigatório.")
-        @Size(max = 10000, message = "Conteúdo deve ter no máximo 10000 caracteres.")
+        @NotBlank(message = "{validation.forum.reply.content.required}")
+        @Size(max = 10000, message = "{validation.forum.topic.content.size}")
         String content
 ) {}

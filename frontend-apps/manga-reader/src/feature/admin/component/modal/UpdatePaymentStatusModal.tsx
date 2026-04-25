@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 
@@ -26,17 +27,20 @@ const UpdatePaymentStatusModal = ({
     currentStatus,
     isSubmitting,
 }: UpdatePaymentStatusModalProps) => {
+    const { t } = useTranslation('admin');
     const [selectedStatus, setSelectedStatus] = useState<string>(currentStatus);
 
     return (
         <BaseModal isModalOpen={isOpen} closeModal={onClose}>
-            <h3 className="text-sm font-bold">Atualizar status do pagamento</h3>
+            <h3 className="text-sm font-bold">
+                {t('updatePaymentStatus.title')}
+            </h3>
             <p className="text-xs text-tertiary">
-                Pagamento:{' '}
+                {t('updatePaymentStatus.paymentId')}{' '}
                 <span className="font-mono">{paymentId.slice(0, 8)}</span>
             </p>
             <p className="text-xs text-tertiary">
-                Status atual:{' '}
+                {t('updatePaymentStatus.currentStatus')}{' '}
                 <span className="font-semibold">{currentStatus}</span>
             </p>
 
@@ -68,14 +72,16 @@ const UpdatePaymentStatusModal = ({
                     onClick={onClose}
                     className="flex-1 p-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
                 >
-                    Cancelar
+                    {t('common.cancel')}
                 </button>
                 <button
                     onClick={() => onConfirm(selectedStatus)}
                     disabled={selectedStatus === currentStatus || isSubmitting}
                     className="flex-1 p-2 text-sm font-semibold border rounded-xs bg-quaternary-opacity-25 border-quaternary-default hover:bg-quaternary-opacity-50 disabled:opacity-50"
                 >
-                    {isSubmitting ? 'Salvando...' : 'Confirmar'}
+                    {isSubmitting
+                        ? t('common.saving')
+                        : t('common.confirm')}
                 </button>
             </div>
         </BaseModal>

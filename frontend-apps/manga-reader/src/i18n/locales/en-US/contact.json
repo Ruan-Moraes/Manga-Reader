@@ -1,0 +1,55 @@
+{
+    "form": {
+        "title": "Publishing Form",
+        "subtitle": "Fill out the fields below to send your publishing request.",
+        "labels": {
+            "name": "Name:",
+            "email": "Email:",
+            "workType": "Work type:",
+            "workTitle": "Work title:",
+            "synopsis": "Synopsis:",
+            "portfolioLink": "Portfolio link (optional):",
+            "message": "Message:"
+        },
+        "placeholders": {
+            "name": "Your full name",
+            "email": "you@email.com",
+            "workTitle": "Name of your work",
+            "synopsis": "Briefly describe the story or concept of your work",
+            "portfolioLink": "https://your-portfolio.com",
+            "message": "Tell us more about your work and why you want to publish it with us"
+        },
+        "workTypes": {
+            "placeholder": "Select work type",
+            "manga": "Manga",
+            "webtoon": "Webtoon",
+            "fanfic": "Fanfic",
+            "fanart": "Fanart",
+            "other": "Other"
+        },
+        "actions": {
+            "submit": "Send request",
+            "submitting": "Sending..."
+        },
+        "errors": {
+            "nameRequired": "Name is required.",
+            "nameMin": "Name must be at least 2 characters.",
+            "emailRequired": "Email is required.",
+            "emailInvalid": "Invalid email format.",
+            "workTypeRequired": "Work type is required.",
+            "workTitleRequired": "Work title is required.",
+            "workTitleMin": "Title must be at least 2 characters.",
+            "synopsisRequired": "Synopsis is required.",
+            "synopsisMin": "Synopsis must be at least 10 characters.",
+            "synopsisMax": "Synopsis must be at most 2000 characters.",
+            "portfolioLinkInvalid": "Invalid URL. Use the http:// or https:// format",
+            "messageRequired": "Message is required.",
+            "messageMin": "Message must be at least 10 characters.",
+            "messageMax": "Message must be at most 5000 characters."
+        },
+        "toasts": {
+            "validationFailed": "Please fix the errors in the form.",
+            "success": "Your request was sent successfully!"
+        }
+    }
+}

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { type User, useUserModalContext, UserModal } from '@feature/user';
 import { type CommentData } from '../type/comment.types';
@@ -24,6 +25,7 @@ const CommentsList = ({
     isError,
     error,
 }: CommentsListProps) => {
+    const { t } = useTranslation('comment');
     const { openUserModal, setUserData } = useUserModalContext();
 
     const { deleteComment, editComment, replyComment } = useCommentCRUD();
@@ -78,7 +80,7 @@ const CommentsList = ({
     if (isLoading) {
         return (
             <div className="text-center text-tertiary">
-                Carregando comentários...
+                {t('list.loading')}
             </div>
         );
     }
@@ -86,7 +88,7 @@ const CommentsList = ({
     if (isError) {
         return (
             <div className="text-center text-quinary-default">
-                {error!.message || 'Erro desconhecido'}
+                {error!.message || t('list.unknownError')}
             </div>
         );
     }
@@ -101,8 +103,8 @@ const CommentsList = ({
                     className="self-start text-xs text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer mt-4"
                 >
                     {showDeepComments
-                        ? '− Ocultar respostas profundas'
-                        : `+ Mostrar ${deepCount} ${deepCount === 1 ? 'resposta profunda' : 'respostas profundas'}`}
+                        ? t('list.hideDeep')
+                        : t('list.showDeep', { count: deepCount })}
                 </button>
             )}
             {displayItems.map(({ comment, nestedLevel, parentUserName }) => (
@@ -142,12 +144,12 @@ const CommentsList = ({
                     onClick={loadMore}
                     className="mt-4 self-center text-sm font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
                 >
-                    Ver mais comentários
+                    {t('list.loadMore')}
                 </button>
             )}
             {commentsTree.length === 0 && !isLoading && !isError && (
                 <div className="text-gray-400 text-center mt-12 font-bold">
-                    Nenhum comentário encontrado.
+                    {t('list.empty')}
                 </div>
             )}
         </div>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     FiEye,
     FiHeart,
@@ -15,7 +16,10 @@ import {
     type ForumTopic,
 } from '@feature/forum';
 
-const TopicCard = ({ topic }: { topic: ForumTopic }) => (
+const TopicCard = ({ topic }: { topic: ForumTopic }) => {
+    const { t } = useTranslation('forum');
+
+    return (
     <Link
         to={`/Manga-Reader/forum/${topic.id}`}
         className="flex gap-4 p-4 transition-colors border rounded-lg border-tertiary bg-secondary hover:bg-tertiary/30"
@@ -59,7 +63,9 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => (
                 >
                     {topic.category}
                 </span>
-                <span>por {topic.author.name}</span>
+                <span>
+                    {t('topic.authoredBy', { name: topic.author.name })}
+                </span>
                 <span>·</span>
                 <span>{formatRelativeDate(topic.createdAt)}</span>
             </div>
@@ -97,6 +103,7 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => (
             </span>
         </div>
     </Link>
-);
+    );
+};
 
 export default TopicCard;

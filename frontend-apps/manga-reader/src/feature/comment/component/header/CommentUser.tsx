@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { type User } from '@feature/user';
@@ -41,6 +42,7 @@ const CommentUser = ({
     createdAt,
     size = 'md',
 }: CommentUserProps) => {
+    const { t } = useTranslation('comment');
     const config = sizeConfig[size];
     const isInteractive = !!onClickProfile;
 
@@ -60,7 +62,9 @@ const CommentUser = ({
             <AvatarTag
                 onClick={isInteractive ? handleProfileClick : undefined}
                 aria-label={
-                    isInteractive ? `Ver perfil de ${user.name}` : undefined
+                    isInteractive
+                        ? t('user.viewProfileAria', { name: user.name })
+                        : undefined
                 }
                 className={clsx(
                     'shrink-0 rounded-xs border border-tertiary bg-secondary p-0 overflow-hidden',
@@ -97,10 +101,12 @@ const CommentUser = ({
                                         'flex items-center gap-1 font-bold rounded-xs bg-quaternary-opacity-25',
                                         config.badge,
                                     )}
-                                    title="Membro"
+                                    title={t('user.memberBadge')}
                                 >
                                     <MdStar size={config.iconSize} />
-                                    <span className="leading-none">Membro</span>
+                                    <span className="leading-none">
+                                        {t('user.memberBadge')}
+                                    </span>
                                 </span>
                             )}
                             {user.moderator?.isModerator && (
@@ -109,13 +115,13 @@ const CommentUser = ({
                                         'flex items-center gap-1 font-bold rounded-xs bg-quaternary-opacity-25',
                                         config.badge,
                                     )}
-                                    title="Moderador"
+                                    title={t('user.moderatorBadge')}
                                 >
                                     <MdAdminPanelSettings
                                         size={config.iconSize}
                                     />
                                     <span className="leading-none">
-                                        Moderador
+                                        {t('user.moderatorBadge')}
                                     </span>
                                 </span>
                             )}

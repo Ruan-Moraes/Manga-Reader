@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -19,6 +20,7 @@ import { type User } from '@feature/user';
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 
 const UserDetails = () => {
+    const { t } = useTranslation('user');
     const { userId } = useParams();
     const { user: currentUser } = useAuth();
 
@@ -45,7 +47,7 @@ const UserDetails = () => {
                 <MainContent>
                     <TextSection>
                         <p className="text-sm text-tertiary">
-                            Carregando perfil...
+                            {t('details.loadingProfile')}
                         </p>
                     </TextSection>
                 </MainContent>
@@ -62,10 +64,10 @@ const UserDetails = () => {
                     <TextSection>
                         <SectionTitle
                             titleStyleClasses="text-lg"
-                            title="Usuário não encontrado"
+                            title={t('details.notFoundTitle')}
                         />
                         <p className="text-sm text-tertiary">
-                            Não foi possível carregar o perfil solicitado.
+                            {t('details.notFoundMessage')}
                         </p>
                     </TextSection>
                 </MainContent>
@@ -81,10 +83,10 @@ const UserDetails = () => {
 
     const roleLabel =
         targetUser.role === 'admin'
-            ? 'Administrador'
+            ? t('details.roles.admin')
             : targetUser.role === 'poster'
-              ? 'Postador'
-              : 'Leitor';
+              ? t('details.roles.poster')
+              : t('details.roles.reader');
 
     return (
         <>
@@ -93,7 +95,7 @@ const UserDetails = () => {
                 <TextSection>
                     <SectionTitle
                         titleStyleClasses="text-lg"
-                        title={`Perfil de ${targetUser.name}`}
+                        title={t('details.profileTitle', { name: targetUser.name })}
                     />
 
                     <div className="grid gap-4 md:grid-cols-[240px_1fr]">
@@ -105,26 +107,26 @@ const UserDetails = () => {
                             >
                                 <img
                                     src={targetUser.photo}
-                                    alt={`Foto de perfil de ${targetUser.name}`}
+                                    alt={t('details.photoAlt', { name: targetUser.name })}
                                     className="object-cover w-full h-full min-h-56"
                                 />
                             </button>
 
                             <div className="p-3 border rounded-xs border-tertiary bg-secondary/40">
                                 <h4 className="mb-2 text-sm font-semibold">
-                                    Conta
+                                    {t('details.accountSection')}
                                 </h4>
                                 <ul className="space-y-1 text-xs text-tertiary">
                                     <li>
                                         <span className="font-semibold text-primary-default">
-                                            Cargo:
+                                            {t('details.roleLabel')}
                                         </span>{' '}
                                         {roleLabel}
                                     </li>
                                     {targetUser.member?.isMember && (
                                         <li>
                                             <span className="font-semibold text-primary-default">
-                                                Membro desde:
+                                                {t('details.memberSince')}
                                             </span>{' '}
                                             {formatDate(
                                                 targetUser.member.since,
@@ -135,7 +137,7 @@ const UserDetails = () => {
                                     {targetUser.moderator?.isModerator && (
                                         <li>
                                             <span className="font-semibold text-primary-default">
-                                                Moderação desde:
+                                                {t('details.moderatorSince')}
                                             </span>{' '}
                                             {formatDate(
                                                 targetUser.moderator.since,
@@ -162,14 +164,15 @@ const UserDetails = () => {
                             <div className="grid gap-2 text-xs sm:grid-cols-3">
                                 <div className="p-2 border rounded-xs border-tertiary bg-secondary/40">
                                     {targetUser.statistics?.comments ?? 0}{' '}
-                                    comentários
+                                    {t('details.commentsLabel')}
                                 </div>
                                 <div className="p-2 border rounded-xs border-tertiary bg-secondary/40">
-                                    {targetUser.statistics?.likes ?? 0} likes
+                                    {targetUser.statistics?.likes ?? 0}{' '}
+                                    {t('details.likesLabel')}
                                 </div>
                                 <div className="p-2 border rounded-xs border-tertiary bg-secondary/40">
                                     {targetUser.statistics?.dislikes ?? 0}{' '}
-                                    dislikes
+                                    {t('details.dislikesLabel')}
                                 </div>
                             </div>
 
@@ -177,7 +180,7 @@ const UserDetails = () => {
                                 targetUser.socialMediasLinks.length > 0 && (
                                     <div>
                                         <h4 className="mb-2 text-sm font-semibold">
-                                            Redes sociais
+                                            {t('details.socialMediaSection')}
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
                                             {targetUser.socialMediasLinks.map(
@@ -202,7 +205,7 @@ const UserDetails = () => {
                                 targetUser.recommendedTitles.length > 0 && (
                                     <div>
                                         <h4 className="mb-2 text-sm font-semibold">
-                                            Obras recomendadas
+                                            {t('details.recommendedSection')}
                                         </h4>
                                         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                                             {targetUser.recommendedTitles.map(
@@ -214,7 +217,7 @@ const UserDetails = () => {
                                                     >
                                                         <img
                                                             src={title.image}
-                                                            alt="Obra recomendada"
+                                                            alt={t('details.recommendedAlt')}
                                                             className="object-cover w-full h-36"
                                                         />
                                                     </Link>
@@ -232,7 +235,7 @@ const UserDetails = () => {
                 isOpen={isPhotoExpanded}
                 onClose={() => setIsPhotoExpanded(false)}
                 src={targetUser.photo}
-                alt={`Foto de perfil de ${targetUser.name}`}
+                alt={t('details.photoAlt', { name: targetUser.name })}
             />
 
             <Footer showLinks={true} />

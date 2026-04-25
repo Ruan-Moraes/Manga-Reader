@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 type Props = {
     name: string;
     role: string;
@@ -7,14 +9,14 @@ type Props = {
     onEdit?: () => void;
 };
 
-const roleLabel = (role: string) => {
+const roleKey = (role: string): string => {
     switch (role) {
         case 'admin':
-            return 'Administrador';
+            return 'admin';
         case 'poster':
-            return 'Postador';
+            return 'poster';
         default:
-            return 'Leitor';
+            return 'reader';
     }
 };
 
@@ -37,8 +39,10 @@ const ProfileHeader = ({
     isOwner,
     onEdit,
 }: Props) => {
+    const { t, i18n } = useTranslation('user');
+
     const formattedDate = createdAt
-        ? new Date(createdAt).toLocaleDateString('pt-BR', {
+        ? new Date(createdAt).toLocaleDateString(i18n.language, {
               year: 'numeric',
               month: 'long',
           })
@@ -53,12 +57,14 @@ const ProfileHeader = ({
                         <span
                             className={`px-2 py-0.5 text-xs font-medium rounded-full ${roleBadgeColor(role)}`}
                         >
-                            {roleLabel(role)}
+                            {t(`profile.header.roles.${roleKey(role)}`)}
                         </span>
                     </div>
                     {formattedDate && (
                         <p className="text-xs text-tertiary mt-1">
-                            Membro desde {formattedDate}
+                            {t('profile.header.memberSince', {
+                                date: formattedDate,
+                            })}
                         </p>
                     )}
                 </div>
@@ -67,7 +73,7 @@ const ProfileHeader = ({
                         onClick={onEdit}
                         className="px-3 py-1.5 text-xs font-medium border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                     >
-                        Editar perfil
+                        {t('profile.header.edit')}
                     </button>
                 )}
             </div>
