@@ -29,6 +29,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(StoreController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.store.mapper.StoreMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("StoreController")
 class StoreControllerTest {
@@ -47,6 +48,9 @@ class StoreControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
 
     private Store buildStore(UUID id, String name) {
         return Store.builder()

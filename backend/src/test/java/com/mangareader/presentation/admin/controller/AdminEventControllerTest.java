@@ -143,7 +143,9 @@ class AdminEventControllerTest {
         Event updated = buildEvent();
         updated.setTitle("Updated Expo");
         when(updateEventUseCase.execute(
-                eq(EVENT_ID), any(), any(), any(), any(), any(), any(), any(),
+                eq(EVENT_ID), any(), any(), any(),
+                any(), any(), any(),
+                any(), any(), any(), any(),
                 any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 

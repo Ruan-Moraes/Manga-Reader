@@ -38,6 +38,7 @@ import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
 import com.mangareader.domain.subscription.valueobject.SubscriptionStatus;
 
 @WebMvcTest(SubscriptionController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.subscription.mapper.SubscriptionMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("SubscriptionController")
 class SubscriptionControllerTest {
@@ -47,6 +48,9 @@ class SubscriptionControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
 
     @MockitoBean
     private GetSubscriptionPlansUseCase getPlansUseCase;

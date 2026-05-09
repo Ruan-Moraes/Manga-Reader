@@ -35,6 +35,9 @@ class CreateForumReplyUseCaseTest {
     @Mock
     private UserJpaRepository userRepository;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+
     @InjectMocks
     private CreateForumReplyUseCase createForumReplyUseCase;
 

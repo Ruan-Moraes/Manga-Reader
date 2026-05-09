@@ -47,8 +47,9 @@ class UpdateNewsUseCaseTest {
         when(newsRepository.save(any(NewsItem.class))).thenAnswer(inv -> inv.getArgument(0));
 
         NewsItem result = updateNewsUseCase.execute(
-                "news-1", "Updated Title", null, null, null, null,
-                null, null, null, null, null, null, null
+                "news-1", "Updated Title", null, null, null,
+                null, null, null, null,
+                null, null, null, null, null, null, null, null
         );
 
         assertThat(result.getTitle()).isEqualTo("Updated Title");
@@ -63,8 +64,9 @@ class UpdateNewsUseCaseTest {
         when(newsRepository.findById("invalid")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> updateNewsUseCase.execute(
-                "invalid", "Title", null, null, null, null,
-                null, null, null, null, null, null, null
+                "invalid", "Title", null, null, null,
+                null, null, null, null,
+                null, null, null, null, null, null, null, null
         ))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("News");

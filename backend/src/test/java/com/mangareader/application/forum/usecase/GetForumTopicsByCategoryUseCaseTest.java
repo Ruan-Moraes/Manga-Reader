@@ -28,6 +28,9 @@ class GetForumTopicsByCategoryUseCaseTest {
     @Mock
     private ForumRepositoryPort forumRepository;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+
     @InjectMocks
     private GetForumTopicsByCategoryUseCase getForumTopicsByCategoryUseCase;
 
@@ -43,7 +46,7 @@ class GetForumTopicsByCategoryUseCaseTest {
                 ForumTopic.builder().title("Recomendação 2").category(category).author(author).build()
         );
         Page<ForumTopic> page = new PageImpl<>(topics, pageable, 2);
-        when(forumRepository.findByCategory(category, pageable)).thenReturn(page);
+        when(forumRepository.findByCategoryAndLanguage(category, null, pageable)).thenReturn(page);
 
         // Act
         Page<ForumTopic> result = getForumTopicsByCategoryUseCase.execute(category, pageable);
@@ -61,7 +64,7 @@ class GetForumTopicsByCategoryUseCaseTest {
         ForumCategory category = ForumCategory.FANART;
         Pageable pageable = PageRequest.of(0, 10);
         Page<ForumTopic> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(forumRepository.findByCategory(category, pageable)).thenReturn(emptyPage);
+        when(forumRepository.findByCategoryAndLanguage(category, null, pageable)).thenReturn(emptyPage);
 
         // Act
         Page<ForumTopic> result = getForumTopicsByCategoryUseCase.execute(category, pageable);

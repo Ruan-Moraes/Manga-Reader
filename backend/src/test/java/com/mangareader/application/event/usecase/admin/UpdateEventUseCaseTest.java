@@ -56,7 +56,9 @@ class UpdateEventUseCaseTest {
         when(eventRepository.save(any(Event.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Event result = updateEventUseCase.execute(
-                EVENT_ID, "Updated Title", null, null, null,
+                EVENT_ID, "Updated Title", null, null,
+                null, null, null,
+                null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null
         );
@@ -75,7 +77,9 @@ class UpdateEventUseCaseTest {
         when(eventRepository.save(any(Event.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Event result = updateEventUseCase.execute(
-                EVENT_ID, null, null, null, null,
+                EVENT_ID, null, null, null,
+                null, null, null,
+                null,
                 null, null, null,
                 EventTimeline.ONGOING, EventStatus.HAPPENING_NOW, null,
                 null, null, null, null, null, null
@@ -92,7 +96,9 @@ class UpdateEventUseCaseTest {
         when(eventRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> updateEventUseCase.execute(
-                invalidId, "Title", null, null, null,
+                invalidId, "Title", null, null,
+                null, null, null,
+                null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null
         ))

@@ -132,8 +132,9 @@ class AdminNewsControllerTest {
         NewsItem updated = buildNews();
         updated.setTitle("Updated News");
         when(updateNewsUseCase.execute(
-                eq("news-1"), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any()
+                eq("news-1"), any(), any(), any(), any(),
+                any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/news/news-1")

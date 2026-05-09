@@ -33,6 +33,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(EventController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.event.mapper.EventMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("EventController")
 class EventControllerTest {
@@ -51,6 +52,12 @@ class EventControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+
+    @MockitoBean
+    private com.mangareader.application.label.service.DomainLabelService domainLabelService;
 
     private Event buildEvent() {
         return Event.builder()

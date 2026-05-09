@@ -46,6 +46,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(GroupController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.group.mapper.GroupMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("GroupController")
 class GroupControllerTest {
@@ -91,6 +92,9 @@ class GroupControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
 
     private final UUID USER_ID = UUID.randomUUID();
 

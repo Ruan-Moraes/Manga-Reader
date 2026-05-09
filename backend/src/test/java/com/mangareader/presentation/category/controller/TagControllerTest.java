@@ -37,6 +37,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(TagController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.category.mapper.TagMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("TagController")
 class TagControllerTest {
@@ -64,6 +65,9 @@ class TagControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
 
     @Nested
     @DisplayName("GET /api/tags")
@@ -154,7 +158,7 @@ class TagControllerTest {
         @DisplayName("Deve retornar 201 ao criar tag")
         void deveRetornar201AoCriarTag() throws Exception {
             var tag = Tag.builder().id(1L).label("Nova Tag").build();
-            when(createTagUseCase.execute("Nova Tag")).thenReturn(tag);
+            when(createTagUseCase.execute(eq("Nova Tag"), any())).thenReturn(tag);
 
             mockMvc.perform(post("/api/tags")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -182,7 +186,7 @@ class TagControllerTest {
         @DisplayName("Deve retornar 200 ao atualizar tag")
         void deveRetornar200AoAtualizarTag() throws Exception {
             var tag = Tag.builder().id(1L).label("Atualizada").build();
-            when(updateTagUseCase.execute(eq(1L), eq("Atualizada"))).thenReturn(tag);
+            when(updateTagUseCase.execute(eq(1L), eq("Atualizada"), any())).thenReturn(tag);
 
             mockMvc.perform(put("/api/tags/1")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -194,7 +198,7 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 404 quando tag nao existe")
         void deveRetornar404QuandoTagNaoExiste() throws Exception {
-            when(updateTagUseCase.execute(eq(999L), eq("Qualquer")))
+            when(updateTagUseCase.execute(eq(999L), eq("Qualquer"), any()))
                     .thenThrow(new ResourceNotFoundException("Tag", "id", "999"));
 
             mockMvc.perform(put("/api/tags/999")

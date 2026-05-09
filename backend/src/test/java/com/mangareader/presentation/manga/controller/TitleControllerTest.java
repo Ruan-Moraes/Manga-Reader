@@ -34,6 +34,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(TitleController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.manga.mapper.TitleMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("TitleController")
 class TitleControllerTest {
@@ -57,6 +58,9 @@ class TitleControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
 
     private Title buildTitle(String id) {
         return Title.builder()

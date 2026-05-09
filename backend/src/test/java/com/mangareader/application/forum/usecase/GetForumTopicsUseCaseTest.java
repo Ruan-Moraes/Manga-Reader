@@ -28,6 +28,9 @@ class GetForumTopicsUseCaseTest {
     @Mock
     private ForumRepositoryPort forumRepository;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+
     @InjectMocks
     private GetForumTopicsUseCase getForumTopicsUseCase;
 
@@ -42,7 +45,7 @@ class GetForumTopicsUseCaseTest {
                 ForumTopic.builder().title("Tópico 2").category(ForumCategory.TEORIAS).author(author).build()
         );
         Page<ForumTopic> page = new PageImpl<>(topics, pageable, 2);
-        when(forumRepository.findAll(pageable)).thenReturn(page);
+        when(forumRepository.findByLanguage(null, pageable)).thenReturn(page);
 
         // Act
         Page<ForumTopic> result = getForumTopicsUseCase.execute(pageable);
@@ -58,7 +61,7 @@ class GetForumTopicsUseCaseTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         Page<ForumTopic> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(forumRepository.findAll(pageable)).thenReturn(emptyPage);
+        when(forumRepository.findByLanguage(null, pageable)).thenReturn(emptyPage);
 
         // Act
         Page<ForumTopic> result = getForumTopicsUseCase.execute(pageable);

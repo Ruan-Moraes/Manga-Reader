@@ -46,6 +46,9 @@ class SubmitRatingUseCaseTest {
     @Mock
     private EventPublisherPort eventPublisher;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+
     @InjectMocks
     private SubmitRatingUseCase submitRatingUseCase;
 

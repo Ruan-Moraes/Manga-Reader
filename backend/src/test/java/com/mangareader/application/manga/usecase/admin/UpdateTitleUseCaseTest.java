@@ -48,7 +48,7 @@ class UpdateTitleUseCaseTest {
         when(titleRepository.save(any(Title.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Title result = updateTitleUseCase.execute(
-                "title-1", "New Name", null, null, null, null, null, null, null, null, null
+                "title-1", "New Name", null, null, null, null, null, null, null, null, null, null, null
         );
 
         assertThat(result.getName()).isEqualTo("New Name");
@@ -66,6 +66,7 @@ class UpdateTitleUseCaseTest {
 
         Title result = updateTitleUseCase.execute(
                 "title-1", "New", "manhwa", "new-cover.jpg", "New synopsis",
+                null, null,
                 List.of("Romance"), "COMPLETED", "New Author", "New Artist", "New Publisher", true
         );
 
@@ -81,7 +82,7 @@ class UpdateTitleUseCaseTest {
         when(titleRepository.findById("invalid")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> updateTitleUseCase.execute(
-                "invalid", "Name", null, null, null, null, null, null, null, null, null
+                "invalid", "Name", null, null, null, null, null, null, null, null, null, null, null
         ))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Title");

@@ -30,6 +30,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(NewsController.class)
+@org.springframework.context.annotation.Import({com.mangareader.presentation.news.mapper.NewsMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("NewsController")
 class NewsControllerTest {
@@ -51,6 +52,12 @@ class NewsControllerTest {
 
     @MockitoBean
     private TokenPort tokenPort;
+
+    @MockitoBean
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+
+    @MockitoBean
+    private com.mangareader.application.label.service.DomainLabelService domainLabelService;
 
     private NewsItem buildNews(String id, String title) {
         return NewsItem.builder()

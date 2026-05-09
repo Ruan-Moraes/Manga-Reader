@@ -1,7 +1,6 @@
 package com.mangareader.application.comment.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetCommentsByTitleUseCase")
@@ -27,47 +27,40 @@ class GetCommentsByTitleUseCaseTest {
     @Mock
     private CommentRepositoryPort commentRepository;
 
+    @Mock
+    private LocaleResolutionService localeResolver;
+
     @InjectMocks
     private GetCommentsByTitleUseCase getCommentsByTitleUseCase;
 
     private final String TITLE_ID = "title-abc123";
 
     @Test
-    @DisplayName("Deve retornar página de comentários do título")
-    void deveRetornarPaginaDeComentarios() {
-        // Arrange
+    @DisplayName("Deve retornar comentários particionados pelo idioma do usuário")
+    void deveRetornarComentariosFiltradosPorIdioma() {
         Pageable pageable = PageRequest.of(0, 10);
-        List<Comment> comments = List.of(
-                Comment.builder().id("c1").titleId(TITLE_ID).textContent("Ótimo!").build(),
-                Comment.builder().id("c2").titleId(TITLE_ID).textContent("Muito bom!").build()
-        );
-        Page<Comment> page = new PageImpl<>(comments, pageable, 2);
+        Comment c = Comment.builder().id("c1").titleId(TITLE_ID).language("pt-BR").build();
+        Page<Comment> page = new PageImpl<>(List.of(c), pageable, 1);
 
-        when(commentRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(page);
+        when(localeResolver.currentLanguageTag()).thenReturn("pt-BR");
+        when(commentRepository.findByTitleIdAndLanguage(TITLE_ID, "pt-BR", pageable)).thenReturn(page);
 
-        // Act
         Page<Comment> result = getCommentsByTitleUseCase.execute(TITLE_ID, pageable);
 
-        // Assert
-        assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getTotalElements()).isEqualTo(2);
-        verify(commentRepository).findByTitleId(TITLE_ID, pageable);
+        assertThat(result.getContent()).containsExactly(c);
     }
 
     @Test
-    @DisplayName("Deve retornar página vazia quando título não possui comentários")
+    @DisplayName("Deve retornar página vazia quando não há comentários no idioma ativo")
     void deveRetornarPaginaVaziaQuandoSemComentarios() {
-        // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         Page<Comment> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(commentRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(emptyPage);
+        when(localeResolver.currentLanguageTag()).thenReturn("en-US");
+        when(commentRepository.findByTitleIdAndLanguage(TITLE_ID, "en-US", pageable)).thenReturn(emptyPage);
 
-        // Act
         Page<Comment> result = getCommentsByTitleUseCase.execute(TITLE_ID, pageable);
 
-        // Assert
         assertThat(result.getContent()).isEmpty();
-        assertThat(result.getTotalElements()).isZero();
     }
 }

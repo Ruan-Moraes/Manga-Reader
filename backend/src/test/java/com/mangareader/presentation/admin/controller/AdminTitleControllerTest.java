@@ -139,7 +139,9 @@ class AdminTitleControllerTest {
         Title updated = buildTitle();
         updated.setName("Naruto Shippuden");
         when(updateTitleUseCase.execute(
-                eq("title-1"), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                eq("title-1"), any(), any(), any(), any(),
+                any(), any(),
+                any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/titles/title-1")

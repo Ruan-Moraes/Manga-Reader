@@ -68,7 +68,7 @@ class UpdateGroupUseCaseTest {
         void deveAtualizarApenasNome() {
             // Arrange
             Group group = buildGroupWithLeader();
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Novo Nome", null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Novo Nome", null, null, null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -87,7 +87,8 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new UpdateGroupInput(GROUP_ID, LEADER_ID,
-                    "Novo Nome", "Nova desc", "new-logo.png", "new-banner.png", "https://new.com");
+                    "Novo Nome", "Nova desc", null, null,
+                    "new-logo.png", "new-banner.png", "https://new.com");
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -107,7 +108,7 @@ class UpdateGroupUseCaseTest {
         void devePersistirAlteracoes() {
             // Arrange
             Group group = buildGroupWithLeader();
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Atualizado", null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Atualizado", null, null, null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -127,7 +128,7 @@ class UpdateGroupUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Novo", null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Novo", null, null, null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
@@ -142,7 +143,7 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             UUID outroUsuario = UUID.randomUUID();
-            var input = new UpdateGroupInput(GROUP_ID, outroUsuario, "Novo", null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, outroUsuario, "Novo", null, null, null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
@@ -160,7 +161,7 @@ class UpdateGroupUseCaseTest {
             User membro = User.builder().id(membroId).name("Membro").email("m@e.com").passwordHash("h").build();
             group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
-            var input = new UpdateGroupInput(GROUP_ID, membroId, "Novo", null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, membroId, "Novo", null, null, null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
