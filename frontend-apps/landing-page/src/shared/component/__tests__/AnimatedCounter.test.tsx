@@ -22,6 +22,7 @@ describe('AnimatedCounter', () => {
         );
 
         const span = container.firstChild as HTMLElement;
+
         expect(span.className).toContain('text-accent');
     });
 });

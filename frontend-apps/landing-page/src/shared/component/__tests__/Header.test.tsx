@@ -40,6 +40,7 @@ describe('Header', () => {
 
     it('opens mobile menu on hamburger click', async () => {
         const user = userEvent.setup();
+
         render(
             <TestProviders>
                 <Header />
@@ -47,6 +48,7 @@ describe('Header', () => {
         );
 
         const button = screen.getByLabelText('Abrir menu');
+
         await user.click(button);
 
         expect(button).toHaveAttribute('aria-expanded', 'true');

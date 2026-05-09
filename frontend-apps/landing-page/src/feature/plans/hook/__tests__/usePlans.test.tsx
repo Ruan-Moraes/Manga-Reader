@@ -26,6 +26,7 @@ describe('usePlans', () => {
         });
 
         const periods = result.current.data!.map(p => p.period);
+
         expect(periods).toContain('DAILY');
         expect(periods).toContain('MONTHLY');
         expect(periods).toContain('ANNUAL');

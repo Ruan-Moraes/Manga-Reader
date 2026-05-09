@@ -15,11 +15,9 @@ export default function Gift() {
     function handleRedeemRedirect() {
         const trimmed = code.trim();
 
-        const target = trimmed
+        window.location.href = trimmed
             ? `${APP_URL}/subscription/redeem?code=${encodeURIComponent(trimmed)}`
             : `${APP_URL}/subscription/redeem`;
-
-        window.location.href = target;
     }
 
     return (

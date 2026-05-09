@@ -28,6 +28,7 @@ describe('LanguageSwitcher', () => {
 
     it('changes language on click', async () => {
         const user = userEvent.setup();
+
         renderSwitcher();
 
         const enButton = screen.getByLabelText('Switch language to EN');

@@ -7,6 +7,7 @@ import type {
     Subscription,
     SubscriptionPlan,
 } from '@manga-reader/types';
+
 import httpClient from '@/shared/service/httpClient';
 
 export async function fetchSubscriptionPlans(): Promise<SubscriptionPlan[]> {

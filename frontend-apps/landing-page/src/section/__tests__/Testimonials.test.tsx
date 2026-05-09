@@ -25,6 +25,7 @@ describe('Testimonials', () => {
         );
 
         const quotes = container.querySelectorAll('blockquote');
+
         expect(quotes.length).toBeGreaterThan(0);
     });
 });

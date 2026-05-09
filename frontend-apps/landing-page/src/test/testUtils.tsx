@@ -20,6 +20,7 @@ export function createTestQueryClient() {
 
 export function TestProviders({ children }: { children: ReactNode }) {
     const queryClient = createTestQueryClient();
+
     return (
         <I18nextProvider i18n={i18n}>
             <QueryClientProvider client={queryClient}>

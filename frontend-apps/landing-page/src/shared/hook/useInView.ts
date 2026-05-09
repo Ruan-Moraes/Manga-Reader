@@ -12,17 +12,22 @@ export default function useInView({
     triggerOnce = true,
 }: UseInViewOptions = {}) {
     const ref = useRef<HTMLElement>(null);
+
     const [inView, setInView] = useState(false);
 
     useEffect(() => {
         const element = ref.current;
+
         if (!element) return;
 
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
                     setInView(true);
-                    if (triggerOnce) observer.unobserve(element);
+
+                    if (triggerOnce) {
+                        observer.unobserve(element);
+                    }
                 } else if (!triggerOnce) {
                     setInView(false);
                 }

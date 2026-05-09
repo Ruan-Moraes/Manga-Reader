@@ -1,18 +1,92 @@
 {
+    "sidebar": {
+        "brand": "Admin Panel",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "sectionGeneral": "General",
+        "sectionContent": "Content",
+        "sectionCommunity": "Community",
+        "sectionMonetization": "Monetization",
+        "overview": "Overview",
+        "users": "Users",
+        "groups": "Groups",
+        "titles": "Titles",
+        "tags": "Tags",
+        "news": "News",
+        "events": "Events",
+        "financial": "Financial",
+        "subscriptions": "Subscriptions"
+    },
     "common": {
         "cancel": "Cancel",
         "confirm": "Confirm",
+        "confirming": "Confirming...",
         "save": "Save",
         "saving": "Saving...",
         "create": "Create",
         "edit": "Edit",
         "remove": "Remove",
         "delete": "Delete",
+        "deleting": "Deleting...",
+        "deleteIdPrompt": "Type the ID to confirm:",
         "close": "Close",
         "empty": "—",
         "back": "Back to list",
         "search": "Search",
         "retry": "Try again"
+    },
+    "banUser": {
+        "title": "Ban {{name}}",
+        "reasonLabel": "Ban reason",
+        "reasonPlaceholder": "Describe the reason...",
+        "durationLabel": "Duration",
+        "durationPermanent": "Permanent",
+        "durationTemporary": "Temporary (days)",
+        "daysLabel": "Days",
+        "daysPlaceholder": "7",
+        "cancel": "Cancel",
+        "confirm": "Confirm Ban",
+        "confirming": "Banning..."
+    },
+    "changeRole": {
+        "title": "Change role of {{name}}",
+        "currentRole": "Current role:",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "confirming": "Saving...",
+        "roles": {
+            "MEMBER": "Member",
+            "MODERATOR": "Moderator",
+            "ADMIN": "Administrator"
+        }
+    },
+    "changeGroupRole": {
+        "title": "Change role of {{name}}",
+        "currentRole": "Current role:",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "confirming": "Saving...",
+        "roles": {
+            "LIDER": "Leader",
+            "TRADUTOR": "Translator",
+            "REVISOR": "Reviewer",
+            "QC": "QC",
+            "CLEANER": "Cleaner",
+            "TYPESETTER": "Typesetter"
+        }
+    },
+    "updateSubscriptionStatus": {
+        "title": "Update subscription status",
+        "subscription": "Subscription:",
+        "currentStatus": "Current status:",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "confirming": "Saving...",
+        "statuses": {
+            "ACTIVE": "Active",
+            "EXPIRED": "Expired",
+            "CANCELLED": "Cancelled"
+        }
     },
     "planList": {
         "columnPeriod": "Period",
@@ -28,6 +102,84 @@
         "periodDaily": "Daily",
         "periodMonthly": "Monthly",
         "periodAnnual": "Annual"
+    },
+    "titleForm": {
+        "editTitle": "Edit Title",
+        "newTitle": "New Title",
+        "name": "Name",
+        "namePlaceholder": "Title name",
+        "type": "Type",
+        "typePlaceholder": "manga | manhwa | manhua",
+        "cover": "Cover (URL)",
+        "synopsis": "Synopsis",
+        "synopsisPlaceholder": "Synopsis...",
+        "genres": "Genres (comma-separated)",
+        "status": "Status",
+        "author": "Author",
+        "artist": "Artist",
+        "publisher": "Publisher",
+        "adult": "Adult content"
+    },
+    "tagList": {
+        "columnId": "ID",
+        "columnName": "Name",
+        "columnActions": "Actions",
+        "editAriaLabel": "Edit tag",
+        "deleteAriaLabel": "Delete tag",
+        "empty": "No tags found."
+    },
+    "tagForm": {
+        "editTitle": "Edit Tag",
+        "newTitle": "New Tag",
+        "label": "Tag name",
+        "placeholder": "Tag name",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving..."
+    },
+    "groupForm": {
+        "editTitle": "Edit Group",
+        "newTitle": "New Group",
+        "name": "Name",
+        "description": "Description",
+        "logo": "Logo (URL)",
+        "banner": "Banner (URL)",
+        "website": "Website"
+    },
+    "newsForm": {
+        "editTitle": "Edit News",
+        "newTitle": "New News",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "excerpt": "Excerpt",
+        "content": "Content (paragraphs separated by blank line)",
+        "category": "Category",
+        "coverImage": "Cover image (URL)",
+        "tags": "Tags (comma-separated)",
+        "author": "Author",
+        "source": "Source",
+        "readTime": "Read time (min)",
+        "exclusive": "Exclusive",
+        "featured": "Featured"
+    },
+    "eventForm": {
+        "editTitle": "Edit Event",
+        "newTitle": "New Event",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "description": "Description",
+        "startDate": "Start (local ISO)",
+        "endDate": "End (local ISO)",
+        "timeline": "Timeline",
+        "status": "Status",
+        "type": "Type",
+        "image": "Image (URL)",
+        "locationLabel": "Location",
+        "locationCity": "City",
+        "online": "Online",
+        "organizer": "Organizer",
+        "price": "Price (label)",
+        "featured": "Featured"
     },
     "planForm": {
         "editTitle": "Edit Plan",
@@ -45,7 +197,8 @@
         "activeLabel": "Active",
         "cancel": "Cancel",
         "save": "Save",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "addCurrency": "Add currency"
     },
     "status": {
         "active": "Active",
@@ -103,7 +256,16 @@
     "updatePaymentStatus": {
         "title": "Update payment status",
         "paymentId": "Payment:",
-        "currentStatus": "Current status:"
+        "currentStatus": "Current status:",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "confirming": "Saving...",
+        "statuses": {
+            "PENDING": "Pending",
+            "COMPLETED": "Completed",
+            "FAILED": "Failed",
+            "REFUNDED": "Refunded"
+        }
     },
     "revenueChart": {
         "title": "Monthly Revenue",
@@ -149,7 +311,27 @@
             "title": "Overview",
             "errorMetrics": "Error loading metrics.",
             "contentSection": "Content",
-            "errorContentMetrics": "Error loading content metrics."
+            "errorContentMetrics": "Error loading content metrics.",
+            "metrics": {
+                "users": "Users",
+                "titles": "Titles",
+                "groups": "Groups",
+                "news": "News",
+                "events": "Events",
+                "banned": "Banned",
+                "roleDistribution": "Distribution by Role",
+                "titlesByStatus": "Titles by Status",
+                "eventsByStatus": "Events by Status",
+                "top10titles": "Top 10 Titles by Ranking",
+                "noTitlesAvailable": "No titles available.",
+                "columns": {
+                    "rank": "#",
+                    "title": "Title",
+                    "type": "Type",
+                    "rankingScore": "Ranking",
+                    "rating": "Rating"
+                }
+            }
         },
         "tags": {
             "title": "Tags",
@@ -165,14 +347,41 @@
             "count_one": "{{count}} user",
             "count_other": "{{count}} users",
             "search": "Search by name or email...",
-            "errorDetail": "Error loading user details."
+            "errorDetail": "Error loading user details.",
+            "columnId": "ID",
+            "columnName": "Name",
+            "columnEmail": "Email",
+            "columnRole": "Role",
+            "columnStatus": "Status",
+            "columnCreatedAt": "Registered",
+            "columnActions": "Actions",
+            "empty": "No users found.",
+            "statusActive": "Active",
+            "statusBanned": "Banned",
+            "editAriaLabel": "Edit user",
+            "deleteAriaLabel": "Delete user",
+            "deleteTitle": "Delete User",
+            "deleteConfirm": "This action is irreversible. The user will be permanently removed from the platform."
         },
         "groups": {
             "title": "Groups",
             "count_one": "{{count}} group",
             "count_other": "{{count}} groups",
             "search": "Search by name...",
-            "errorDetail": "Error loading group details."
+            "errorDetail": "Error loading group details.",
+            "columnId": "ID",
+            "columnName": "Name",
+            "columnUsername": "Username",
+            "columnStatus": "Status",
+            "columnMembers": "Members",
+            "columnTitles": "Titles",
+            "columnJoinedAt": "Joined",
+            "columnActions": "Actions",
+            "empty": "No groups found.",
+            "editAriaLabel": "Edit group",
+            "deleteAriaLabel": "Delete group",
+            "deleteTitle": "Delete Group",
+            "deleteConfirm": "This action is irreversible. The group will be permanently removed from the platform."
         },
         "titles": {
             "title": "Titles",
@@ -182,7 +391,18 @@
             "new": "New",
             "editTitle": "Edit Title",
             "newTitle": "New Title",
-            "deleteConfirm": "Are you sure you want to delete this title?",
+            "deleteTitle": "Delete Title",
+            "deleteConfirm": "This action is irreversible. The title and its chapters will be permanently removed.",
+            "columnId": "ID",
+            "columnName": "Name",
+            "columnType": "Type",
+            "columnStatus": "Status",
+            "columnChapters": "Chapters",
+            "columnCreatedAt": "Created at",
+            "columnActions": "Actions",
+            "empty": "No titles found.",
+            "editAriaLabel": "Edit title",
+            "deleteAriaLabel": "Delete title",
             "form": {
                 "name": "Name",
                 "type": "Type",
@@ -209,7 +429,19 @@
             "new": "New",
             "editTitle": "Edit Event",
             "newTitle": "New Event",
-            "deleteConfirm": "Are you sure you want to delete this event?",
+            "deleteTitle": "Delete Event",
+            "deleteConfirm": "This action is irreversible. The event will be permanently removed.",
+            "columnId": "ID",
+            "columnTitle": "Title",
+            "columnType": "Type",
+            "columnStatus": "Status",
+            "columnLocation": "Location",
+            "columnStart": "Start",
+            "columnActions": "Actions",
+            "empty": "No events found.",
+            "locationOnline": "Online",
+            "editAriaLabel": "Edit event",
+            "deleteAriaLabel": "Delete event",
             "form": {
                 "title": "Title",
                 "subtitle": "Subtitle",
@@ -237,7 +469,20 @@
             "new": "New",
             "editTitle": "Edit News",
             "newTitle": "New News",
-            "deleteConfirm": "Are you sure you want to delete this news?",
+            "deleteTitle": "Delete News",
+            "deleteConfirm": "This action is irreversible. The article will be permanently removed.",
+            "columnId": "ID",
+            "columnTitle": "Title",
+            "columnCategory": "Category",
+            "columnViews": "Views",
+            "columnFeatured": "Featured",
+            "columnPublishedAt": "Published at",
+            "columnActions": "Actions",
+            "empty": "No news found.",
+            "featuredYes": "Yes",
+            "featuredNo": "No",
+            "editAriaLabel": "Edit news",
+            "deleteAriaLabel": "Delete news",
             "form": {
                 "title": "Title",
                 "category": "Category",
@@ -258,6 +503,27 @@
             "count_one": "{{count}} subscription",
             "count_other": "{{count}} subscriptions",
             "grant": "Grant",
+            "summary": {
+                "active": "Active Subscriptions",
+                "expired": "Expired",
+                "cancelled": "Cancelled"
+            },
+            "columnId": "ID",
+            "columnUserId": "User",
+            "columnPlan": "Plan",
+            "columnStatus": "Status",
+            "columnStart": "Start",
+            "columnEnd": "End",
+            "columnActions": "Actions",
+            "empty": "No subscriptions found.",
+            "periodDaily": "Daily",
+            "periodMonthly": "Monthly",
+            "periodAnnual": "Annual",
+            "editAriaLabel": "Edit subscription",
+            "deleteAriaLabel": "Revoke subscription",
+            "editTitle": "Update Status",
+            "deleteTitle": "Revoke Subscription",
+            "deleteConfirm": "This action will revoke the subscription, changing its status to Cancelled.",
             "tabs": {
                 "subscriptions": "Subscriptions",
                 "plans": "Plans",
@@ -286,7 +552,31 @@
             "count_one": "{{count}} payment",
             "count_other": "{{count}} payments",
             "statusLabel": "Status:",
-            "statusAll": "All"
+            "statusAll": "All",
+            "summary": {
+                "totalPayments": "Total payments",
+                "confirmedRevenue": "Confirmed revenue",
+                "pendingRevenue": "Pending revenue",
+                "distributionByStatus": "Distribution by status",
+                "quantity": "Quantity",
+                "totalAmount": "Total amount",
+                "monthRevenue": "Monthly Revenue",
+                "monthlyVariation": "Monthly Variation",
+                "annualRevenue": "Annual Revenue"
+            },
+            "columnId": "ID",
+            "columnAmount": "Amount",
+            "columnStatus": "Status",
+            "columnMethod": "Method",
+            "columnReference": "Reference",
+            "columnCreatedAt": "Created at",
+            "columnActions": "Actions",
+            "empty": "No payments found.",
+            "editAriaLabel": "Update payment status",
+            "deleteAriaLabel": "Mark payment as failed",
+            "editTitle": "Update Status",
+            "deleteTitle": "Mark as Failed",
+            "deleteConfirm": "This action will mark the payment as Failed."
         }
     }
 }

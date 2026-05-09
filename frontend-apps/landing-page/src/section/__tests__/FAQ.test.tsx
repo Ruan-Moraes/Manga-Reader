@@ -23,6 +23,7 @@ describe('FAQ', () => {
         );
 
         const buttons = screen.getAllByRole('button');
+
         expect(buttons.length).toBeGreaterThan(0);
     });
 });

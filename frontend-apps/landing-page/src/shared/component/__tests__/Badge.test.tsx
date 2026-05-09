@@ -15,6 +15,7 @@ describe('Badge', () => {
         const { container } = render(<Badge icon="★" label="Default" />);
 
         const badge = container.firstChild as HTMLElement;
+
         expect(badge.className).toContain('bg-secondary');
         expect(badge.className).toContain('border-tertiary');
     });
@@ -25,6 +26,7 @@ describe('Badge', () => {
         );
 
         const badge = container.firstChild as HTMLElement;
+
         expect(badge.className).toContain('bg-accent-subtle');
         expect(badge.className).toContain('border-accent');
     });

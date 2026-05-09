@@ -1,4 +1,5 @@
 import type { SubscriptionPlan } from '@manga-reader/types';
+
 import { useTranslation } from 'react-i18next';
 
 interface PricingCardProps {

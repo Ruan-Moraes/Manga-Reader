@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
 export default defineConfig({
+    publicDir: path.resolve(__dirname, '../packages/assets/icons'),
     plugins: [react(), tailwindcss()],
     resolve: {
         alias: {

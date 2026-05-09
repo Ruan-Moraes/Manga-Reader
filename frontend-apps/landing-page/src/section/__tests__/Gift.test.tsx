@@ -20,6 +20,7 @@ describe('Gift', () => {
 
     it('switches to redeem tab on click', async () => {
         const user = userEvent.setup();
+
         render(
             <TestProviders>
                 <Gift />
@@ -27,6 +28,7 @@ describe('Gift', () => {
         );
 
         const redeemTab = screen.getAllByText(/Resgatar/i)[0];
+
         await user.click(redeemTab);
 
         expect(screen.getByPlaceholderText(/xxxx/i)).toBeInTheDocument();
@@ -34,6 +36,7 @@ describe('Gift', () => {
 
     it('renders code input on redeem tab', async () => {
         const user = userEvent.setup();
+
         render(
             <TestProviders>
                 <Gift />
@@ -41,9 +44,11 @@ describe('Gift', () => {
         );
 
         const redeemTab = screen.getAllByText(/Resgatar/i)[0];
+
         await user.click(redeemTab);
 
         const input = screen.getByPlaceholderText(/xxxx/i);
+
         expect(input).toHaveAttribute('type', 'text');
     });
 });

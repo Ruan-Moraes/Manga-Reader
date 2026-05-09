@@ -18,7 +18,7 @@ export default function Header() {
         <header className="sticky top-0 z-50 border-b border-secondary bg-primary-90 backdrop-blur-sm">
             <nav className="flex items-center justify-between max-w-6xl px-4 py-3 mx-auto">
                 <span className="text-xl font-extrabold text-accent">
-                    Manga Reader
+                    <a href="#">Manga Reader</a>
                 </span>
 
                 <div className="items-center hidden gap-6 text-sm sm:flex text-tertiary">
