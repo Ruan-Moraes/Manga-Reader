@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetUserProfileUseCase {
-
     private final UserRepositoryPort userRepository;
 
     public User execute(UUID userId) {

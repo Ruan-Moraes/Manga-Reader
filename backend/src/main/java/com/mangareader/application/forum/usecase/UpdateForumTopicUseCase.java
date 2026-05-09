@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateForumTopicUseCase {
-
     private final ForumRepositoryPort forumRepository;
 
     public record UpdateTopicInput(
@@ -50,12 +49,15 @@ public class UpdateForumTopicUseCase {
         if (input.title() != null) {
             topic.setTitle(input.title());
         }
+
         if (input.content() != null) {
             topic.setContent(input.content());
         }
+
         if (input.category() != null) {
             topic.setCategory(input.category());
         }
+
         if (input.tags() != null) {
             topic.setTags(input.tags());
         }

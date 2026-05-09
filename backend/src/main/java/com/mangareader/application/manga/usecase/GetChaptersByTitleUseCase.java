@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetChaptersByTitleUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public List<Chapter> execute(String titleId) {
         var title = titleRepository.findById(titleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Title", "id", titleId));
+
         return title.getChapters();
     }
 }

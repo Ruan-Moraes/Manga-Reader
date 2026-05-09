@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetStoreByIdUseCase {
-
     private final StoreRepositoryPort storeRepository;
 
     public Store execute(UUID id) {

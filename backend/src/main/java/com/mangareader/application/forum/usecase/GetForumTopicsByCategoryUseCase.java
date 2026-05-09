@@ -8,21 +8,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 import lombok.RequiredArgsConstructor;
 
 /**
- * Filtra tópicos do fórum por categoria com paginação.
+ * Filtra tópicos do fórum por categoria com paginação, particionado por idioma.
  */
 @Service
 @RequiredArgsConstructor
 public class GetForumTopicsByCategoryUseCase {
-
     private final ForumRepositoryPort forumRepository;
+    private final LocaleResolutionService localeResolver;
 
     @Transactional(readOnly = true)
     public Page<ForumTopic> execute(ForumCategory category, Pageable pageable) {
-        Page<ForumTopic> page = forumRepository.findByCategory(category, pageable);
+        Page<ForumTopic> page = forumRepository.findByCategoryAndLanguage(
+                category, localeResolver.currentLanguageTag(), pageable);
 
         page.getContent().forEach(topic -> {
             topic.getAuthor().getName();

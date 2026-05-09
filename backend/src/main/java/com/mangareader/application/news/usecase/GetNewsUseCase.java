@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetNewsUseCase {
-
     private final NewsRepositoryPort newsRepository;
 
     public Page<NewsItem> execute(Pageable pageable) {

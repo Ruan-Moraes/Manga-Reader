@@ -10,6 +10,7 @@ import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRepository;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateForumTopicUseCase {
-
     private final ForumRepositoryPort forumRepository;
     private final UserJpaRepository userRepository;
+    private final LocaleResolutionService localeResolver;
 
     public record CreateTopicInput(UUID userId, String title, String content, ForumCategory category, java.util.List<String> tags) {}
 
@@ -37,6 +38,7 @@ public class CreateForumTopicUseCase {
                 .content(input.content())
                 .category(input.category())
                 .tags(input.tags() != null ? input.tags() : new java.util.ArrayList<>())
+                .language(localeResolver.currentLanguageTag())
                 .build();
 
         ForumTopic saved = forumRepository.save(topic);

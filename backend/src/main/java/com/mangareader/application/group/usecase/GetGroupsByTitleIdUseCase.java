@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetGroupsByTitleIdUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     public Page<Group> execute(String titleId, Pageable pageable) {

@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BanUserUseCase {
-
     private final UserRepositoryPort userRepository;
 
     @Transactional

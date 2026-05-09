@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ChangeReadingListUseCase {
-
     private final LibraryRepositoryPort libraryRepository;
 
     public record ChangeListInput(UUID userId, String titleId, ReadingListType newList) {}
@@ -27,6 +26,7 @@ public class ChangeReadingListUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("SavedManga", "titleId", input.titleId()));
 
         saved.setList(input.newList());
+
         return libraryRepository.save(saved);
     }
 }

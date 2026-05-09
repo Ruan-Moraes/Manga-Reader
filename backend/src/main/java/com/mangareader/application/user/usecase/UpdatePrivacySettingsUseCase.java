@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdatePrivacySettingsUseCase {
-
     private final UserRepositoryPort userRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
 

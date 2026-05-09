@@ -10,6 +10,7 @@ import com.mangareader.domain.forum.entity.ForumReply;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRepository;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateForumReplyUseCase {
-
     private final ForumRepositoryPort forumRepository;
     private final UserJpaRepository userRepository;
+    private final LocaleResolutionService localeResolver;
 
     public record CreateReplyInput(UUID topicId, UUID userId, String content) {}
 
@@ -38,6 +39,7 @@ public class CreateForumReplyUseCase {
                 .topic(topic)
                 .author(author)
                 .content(input.content())
+                .language(localeResolver.currentLanguageTag())
                 .build();
 
         topic.getReplies().add(reply);

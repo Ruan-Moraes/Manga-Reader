@@ -6,21 +6,22 @@ import org.springframework.stereotype.Service;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 import lombok.RequiredArgsConstructor;
 
 /**
- * Retorna os comentários de um título (raiz + respostas).
+ * Retorna os comentários de um título (raiz + respostas) particionados pelo
+ * idioma de exibição do usuário (UGC i18n — Etapa 3).
  */
 @Service
 @RequiredArgsConstructor
 public class GetCommentsByTitleUseCase {
     private final CommentRepositoryPort commentRepository;
+    private final LocaleResolutionService localeResolver;
 
-    /**
-     * Retorna todos os comentários do título, ordenados por data (mais recente primeiro).
-     */
     public Page<Comment> execute(String titleId, Pageable pageable) {
-        return commentRepository.findByTitleId(titleId, pageable);
+        return commentRepository.findByTitleIdAndLanguage(
+                titleId, localeResolver.currentLanguageTag(), pageable);
     }
 }

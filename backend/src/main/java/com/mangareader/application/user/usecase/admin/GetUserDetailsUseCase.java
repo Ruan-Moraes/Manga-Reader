@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetUserDetailsUseCase {
-
     private final UserRepositoryPort userRepository;
 
     @Transactional(readOnly = true)

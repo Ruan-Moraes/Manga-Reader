@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SearchTitlesUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public Page<Title> execute(String query, Pageable pageable) {
         if (query == null || query.isBlank()) {
             return titleRepository.findAll(pageable);
         }
+
         return titleRepository.searchByName(query.trim(), pageable);
     }
 }

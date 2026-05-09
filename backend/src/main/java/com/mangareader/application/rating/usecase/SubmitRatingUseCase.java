@@ -12,6 +12,7 @@ import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.rating.entity.MangaRating;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -25,11 +26,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SubmitRatingUseCase {
-
     private final RatingRepositoryPort ratingRepository;
     private final UserRepositoryPort userRepository;
     private final TitleRepositoryPort titleRepository;
     private final EventPublisherPort eventPublisher;
+    private final LocaleResolutionService localeResolver;
 
     public record SubmitRatingInput(
             String titleId,
@@ -55,6 +56,7 @@ public class SubmitRatingUseCase {
                         .titleId(input.titleId())
                         .userId(input.userId().toString())
                         .userName(user.getName())
+                        .language(localeResolver.currentLanguageTag())
                         .build()
                 );
 
@@ -71,10 +73,13 @@ public class SubmitRatingUseCase {
         String titleName = titleRepository.findById(input.titleId())
                 .map(t -> t.getName())
                 .orElse(input.titleId());
+
         rating.setTitleName(titleName);
 
         MangaRating saved = ratingRepository.save(rating);
+
         eventPublisher.publish("rating.submitted", new RatingEvent(input.titleId(), input.userId().toString()));
+
         return saved;
     }
 }

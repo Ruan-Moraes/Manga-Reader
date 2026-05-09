@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AddRecommendationUseCase {
-
     private static final int MAX_RECOMMENDATIONS = 10;
 
     private final UserRepositoryPort userRepository;
@@ -37,6 +36,7 @@ public class AddRecommendationUseCase {
         }
 
         long count = recommendationRepository.countByUserId(userId);
+
         if (count >= MAX_RECOMMENDATIONS) {
             throw new IllegalStateException("Máximo de " + MAX_RECOMMENDATIONS + " recomendações atingido");
         }

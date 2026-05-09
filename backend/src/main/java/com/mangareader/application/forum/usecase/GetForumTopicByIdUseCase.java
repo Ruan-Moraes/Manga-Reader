@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetForumTopicByIdUseCase {
-
     private final ForumRepositoryPort forumRepository;
 
     @Transactional(readOnly = true)

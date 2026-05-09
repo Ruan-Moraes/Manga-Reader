@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ForgotPasswordUseCase {
-
     private final UserRepositoryPort userRepository;
     private final TokenPort tokenPort;
     private final EmailPort emailPort;

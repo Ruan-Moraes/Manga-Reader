@@ -6,6 +6,7 @@ import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class CreateCommentUseCase {
     private final CommentRepositoryPort commentRepository;
     private final UserRepositoryPort userRepository;
+    private final LocaleResolutionService localeResolver;
 
     public record CreateCommentInput(
             String titleId,
@@ -51,6 +53,7 @@ public class CreateCommentUseCase {
                 .wasEdited(false)
                 .likeCount(0)
                 .dislikeCount(0)
+                .language(localeResolver.currentLanguageTag())
                 .build();
 
         return commentRepository.save(comment);

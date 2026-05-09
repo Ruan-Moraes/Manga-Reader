@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetUserCommentsUseCase {
-
     private final UserRepositoryPort userRepository;
     private final CommentRepositoryPort commentRepository;
 

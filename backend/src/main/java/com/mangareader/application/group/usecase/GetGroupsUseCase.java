@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetGroupsUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     @Transactional(readOnly = true)

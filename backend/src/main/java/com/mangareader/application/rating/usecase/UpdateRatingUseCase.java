@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateRatingUseCase {
-
     private final RatingRepositoryPort ratingRepository;
     private final EventPublisherPort eventPublisher;
 
@@ -51,21 +50,27 @@ public class UpdateRatingUseCase {
         if (input.funRating() != null) {
             rating.setFunRating(input.funRating());
         }
+
         if (input.artRating() != null) {
             rating.setArtRating(input.artRating());
         }
+
         if (input.storylineRating() != null) {
             rating.setStorylineRating(input.storylineRating());
         }
+
         if (input.charactersRating() != null) {
             rating.setCharactersRating(input.charactersRating());
         }
+
         if (input.originalityRating() != null) {
             rating.setOriginalityRating(input.originalityRating());
         }
+
         if (input.pacingRating() != null) {
             rating.setPacingRating(input.pacingRating());
         }
+
         if (input.comment() != null) {
             rating.setComment(input.comment());
         }
@@ -73,7 +78,9 @@ public class UpdateRatingUseCase {
         rating.setOverallRating(rating.calculateOverallRating());
 
         MangaRating saved = ratingRepository.save(rating);
+
         eventPublisher.publish("rating.updated", new RatingEvent(rating.getTitleId(), input.userId().toString()));
+
         return saved;
     }
 }

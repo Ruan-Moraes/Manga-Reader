@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RecordViewHistoryUseCase {
-
     private final UserRepositoryPort userRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final TitleRepositoryPort titleRepository;
@@ -42,11 +41,14 @@ public class RecordViewHistoryUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Title", "id", titleId));
 
         String userIdStr = userId.toString();
+
         var existing = viewHistoryRepository.findByUserIdAndTitleId(userIdStr, titleId);
 
         if (existing.isPresent()) {
             ViewHistory vh = existing.get();
+
             vh.setViewedAt(LocalDateTime.now());
+
             viewHistoryRepository.save(vh);
         } else {
             ViewHistory vh = ViewHistory.builder()
@@ -56,6 +58,7 @@ public class RecordViewHistoryUseCase {
                     .titleCover(title.getCover())
                     .viewedAt(LocalDateTime.now())
                     .build();
+
             viewHistoryRepository.save(vh);
         }
     }

@@ -1,5 +1,6 @@
 package com.mangareader.application.group.usecase;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupUserType;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -29,6 +31,8 @@ public class UpdateGroupUseCase {
             UUID userId,
             String name,
             String description,
+            Map<String, String> nameI18n,
+            Map<String, String> descriptionI18n,
             String logo,
             String banner,
             String website
@@ -47,6 +51,14 @@ public class UpdateGroupUseCase {
 
         if (input.description() != null) {
             group.setDescription(input.description());
+        }
+
+        if (input.nameI18n() != null) {
+            group.setNameI18n(LocalizedString.of(input.nameI18n()));
+        }
+
+        if (input.descriptionI18n() != null) {
+            group.setDescriptionI18n(LocalizedString.of(input.descriptionI18n()));
         }
 
         if (input.logo() != null) {

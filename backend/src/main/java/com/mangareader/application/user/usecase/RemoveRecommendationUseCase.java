@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RemoveRecommendationUseCase {
-
     private final RecommendationRepositoryPort recommendationRepository;
 
     @Transactional

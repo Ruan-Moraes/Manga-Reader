@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetUserLibraryByListUseCase {
-
     private final LibraryRepositoryPort libraryRepository;
 
     public Page<SavedManga> execute(UUID userId, ReadingListType list, Pageable pageable) {

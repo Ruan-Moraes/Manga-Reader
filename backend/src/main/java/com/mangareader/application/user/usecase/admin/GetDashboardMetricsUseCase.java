@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetDashboardMetricsUseCase {
-
     private final UserRepositoryPort userRepository;
     private final TitleRepositoryPort titleRepository;
     private final GroupRepositoryPort groupRepository;
@@ -30,6 +29,7 @@ public class GetDashboardMetricsUseCase {
 
     public DashboardMetricsResponse execute() {
         Map<String, Long> usersByRole = new LinkedHashMap<>();
+
         for (UserRole role : UserRole.values()) {
             usersByRole.put(role.name(), userRepository.countByRole(role));
         }

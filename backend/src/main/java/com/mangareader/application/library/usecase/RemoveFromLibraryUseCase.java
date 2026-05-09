@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RemoveFromLibraryUseCase {
-
     private final LibraryRepositoryPort libraryRepository;
 
     @Transactional

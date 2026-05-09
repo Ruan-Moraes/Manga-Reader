@@ -46,6 +46,7 @@ public class RemoveWorkFromGroupUseCase {
                 .anyMatch(gu -> gu.getType() == GroupUserType.MEMBER
                         && gu.getUser().getId().equals(userId)
                         && gu.getRole() == GroupRole.LIDER);
+
         if (!isLeader) {
             throw new BusinessRuleException("Somente o líder pode remover obras do grupo", 403);
         }

@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetAuthorPostCountUseCase {
-
     private final ForumRepositoryPort forumRepository;
 
     @Transactional(readOnly = true)

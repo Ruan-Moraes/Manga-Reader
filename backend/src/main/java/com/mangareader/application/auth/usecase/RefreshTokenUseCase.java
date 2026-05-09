@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenUseCase {
-
     private final TokenPort tokenPort;
     private final UserRepositoryPort userRepository;
 
@@ -41,6 +40,7 @@ public class RefreshTokenUseCase {
         String newAccessToken = tokenPort.generateAccessToken(
                 user.getId(), user.getEmail(), user.getRole().name()
         );
+
         String newRefreshToken = tokenPort.generateRefreshToken(user.getId());
 
         return new RefreshOutput(newAccessToken, newRefreshToken);

@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UnsupportGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     @Transactional

@@ -22,6 +22,12 @@ public class ListSubscriptionsAdminUseCase {
 
     @Transactional(readOnly = true)
     public Page<Subscription> execute(SubscriptionStatus status, Pageable pageable) {
-        return subscriptionRepository.findAll(status, pageable);
+        Page<Subscription> page = subscriptionRepository.findAll(status, pageable);
+        page.getContent().forEach(s -> {
+            if (s.getPlan() != null) {
+                s.getPlan().getPeriod();
+            }
+        });
+        return page;
     }
 }

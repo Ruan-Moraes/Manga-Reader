@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeleteRatingUseCase {
-
     private final RatingRepositoryPort ratingRepository;
     private final EventPublisherPort eventPublisher;
 

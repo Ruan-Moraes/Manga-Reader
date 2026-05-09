@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetStoresByTitleIdUseCase {
-
     private final StoreRepositoryPort storeRepository;
 
     public Page<Store> execute(String titleId, Pageable pageable) {

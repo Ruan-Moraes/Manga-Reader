@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ListUsersUseCase {
-
     private final UserRepositoryPort userRepository;
 
     public Page<User> execute(String search, Pageable pageable) {

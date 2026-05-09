@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SaveToLibraryUseCase {
-
     private final LibraryRepositoryPort libraryRepository;
     private final UserRepositoryPort userRepository;
     private final TitleRepositoryPort titleRepository;
@@ -30,7 +29,6 @@ public class SaveToLibraryUseCase {
     public record SaveToLibraryInput(UUID userId, String titleId, ReadingListType list) {}
 
     public SavedManga execute(SaveToLibraryInput input) {
-        // Verifica se já existe
         libraryRepository.findByUserIdAndTitleId(input.userId(), input.titleId())
                 .ifPresent(existing -> {
                     throw new DuplicateResourceException("SavedManga", "titleId", input.titleId());

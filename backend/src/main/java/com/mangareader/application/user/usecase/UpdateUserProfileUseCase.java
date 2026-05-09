@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UpdateUserProfileUseCase {
-
     private final UserRepositoryPort userRepository;
     private final EventPublisherPort eventPublisher;
 
@@ -45,12 +44,15 @@ public class UpdateUserProfileUseCase {
         if (input.name() != null) {
             user.setName(input.name());
         }
+
         if (input.bio() != null) {
             user.setBio(input.bio());
         }
+
         if (input.photoUrl() != null) {
             user.setPhotoUrl(input.photoUrl());
         }
+
         if (input.bannerUrl() != null) {
             user.setBannerUrl(input.bannerUrl());
         }

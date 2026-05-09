@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AddWorkToGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
 
     public record AddWorkInput(
@@ -48,6 +47,7 @@ public class AddWorkToGroupUseCase {
         // Verifica se o título já está no grupo
         boolean alreadyExists = group.getTranslatedWorks().stream()
                 .anyMatch(w -> w.getTitleId().equals(input.titleId()));
+
         if (alreadyExists) {
             throw new BusinessRuleException("Este título já está no portfólio do grupo", 409);
         }
@@ -74,6 +74,7 @@ public class AddWorkToGroupUseCase {
         boolean isMember = group.getGroupUsers().stream()
                 .anyMatch(gu -> gu.getType() == GroupUserType.MEMBER
                         && gu.getUser().getId().equals(userId));
+
         if (!isMember) {
             throw new BusinessRuleException("Você precisa ser membro do grupo para adicionar obras", 403);
         }
@@ -81,6 +82,7 @@ public class AddWorkToGroupUseCase {
 
     private GroupWorkStatus parseStatus(String status) {
         if (status == null) return GroupWorkStatus.ONGOING;
+
         try {
             return GroupWorkStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {

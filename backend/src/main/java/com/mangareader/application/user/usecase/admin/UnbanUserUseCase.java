@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UnbanUserUseCase {
-
     private final UserRepositoryPort userRepository;
 
     @Transactional

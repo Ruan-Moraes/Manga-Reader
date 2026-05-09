@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ChangeUserRoleUseCase {
-
     private final UserRepositoryPort userRepository;
 
     @Transactional

@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class JoinGroupUseCase {
-
     private final GroupRepositoryPort groupRepository;
     private final UserRepositoryPort userRepository;
 

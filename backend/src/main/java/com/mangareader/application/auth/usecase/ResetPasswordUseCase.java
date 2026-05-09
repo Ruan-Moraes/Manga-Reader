@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ResetPasswordUseCase {
-
     private final TokenPort tokenPort;
     private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -33,6 +32,7 @@ public class ResetPasswordUseCase {
         }
 
         String type = tokenPort.extractType(token);
+
         if (!"password_reset".equals(type)) {
             throw new BusinessRuleException("Token não é do tipo password_reset", 400);
         }
@@ -43,6 +43,7 @@ public class ResetPasswordUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         user.setPasswordHash(passwordEncoder.encode(newPassword));
+
         userRepository.save(user);
     }
 }

@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SignUpUseCase {
-
     private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenPort tokenPort;
@@ -52,6 +51,7 @@ public class SignUpUseCase {
         String accessToken = tokenPort.generateAccessToken(
                 user.getId(), user.getEmail(), user.getRole().name()
         );
+
         String refreshToken = tokenPort.generateRefreshToken(user.getId());
 
         return new SignUpOutput(

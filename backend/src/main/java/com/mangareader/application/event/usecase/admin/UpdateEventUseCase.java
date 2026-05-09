@@ -2,6 +2,7 @@ package com.mangareader.application.event.usecase.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -14,12 +15,14 @@ import com.mangareader.domain.event.valueobject.EventOrganizer;
 import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.event.valueobject.EventTimeline;
 import com.mangareader.domain.event.valueobject.EventType;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 /**
- * Atualiza um evento existente (admin).
+ * Atualiza um evento existente (admin). Aceita campos legados String e os
+ * novos mapas *I18n; quando ambos presentes, *I18n prevalece para o campo i18n.
  */
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,9 @@ public class UpdateEventUseCase {
 
     @Transactional
     public Event execute(UUID eventId, String title, String subtitle, String description,
+                         Map<String, String> titleI18n,
+                         Map<String, String> subtitleI18n,
+                         Map<String, String> descriptionI18n,
                          String image, LocalDateTime startDate, LocalDateTime endDate,
                          String timezone, EventTimeline timeline, EventStatus status,
                          EventType type, EventLocation location, EventOrganizer organizer,
@@ -39,6 +45,9 @@ public class UpdateEventUseCase {
         if (title != null) event.setTitle(title);
         if (subtitle != null) event.setSubtitle(subtitle);
         if (description != null) event.setDescription(description);
+        if (titleI18n != null) event.setTitleI18n(LocalizedString.of(titleI18n));
+        if (subtitleI18n != null) event.setSubtitleI18n(LocalizedString.of(subtitleI18n));
+        if (descriptionI18n != null) event.setDescriptionI18n(LocalizedString.of(descriptionI18n));
         if (image != null) event.setImage(image);
         if (startDate != null) event.setStartDate(startDate);
         if (endDate != null) event.setEndDate(endDate);

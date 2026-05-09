@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetTitleByIdUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     @Cacheable(value = CacheNames.TITLE, key = "#id")

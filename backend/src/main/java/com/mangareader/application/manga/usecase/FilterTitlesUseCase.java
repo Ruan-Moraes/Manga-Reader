@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class FilterTitlesUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public Page<Title> execute(List<String> genres, String status, Boolean adult,

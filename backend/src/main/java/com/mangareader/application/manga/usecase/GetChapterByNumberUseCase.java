@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetChapterByNumberUseCase {
-
     private final TitleRepositoryPort titleRepository;
 
     public Chapter execute(String titleId, String chapterNumber) {
