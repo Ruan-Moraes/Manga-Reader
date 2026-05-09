@@ -32,7 +32,16 @@
       "Bash(git commit -m 'feat\\(frontend\\): add utility services and enhance test setup *)",
       "Bash(git commit -m 'chore\\(dependencies\\): update npm and pnpm lock files *)",
       "Bash(git commit -m 'docs: update project documentation with i18n guidelines and implementation details *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(mvn test-compile *)",
+      "Skill(update-config)",
+      "Bash(/usr/bin/mvn test-compile *)",
+      "Bash(find /home/ruan/Documentos/Projetos/Ruan/Manga-Reader/frontend* -path \"*shared/service/http*\" -type f)",
+      "Bash(git -C /home/ruan/Documentos/Projetos/Ruan/Manga-Reader status --short)",
+      "Bash(npx vite *)",
+      "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")"
     ]
   }
 }
