@@ -66,6 +66,25 @@ Auth, User, Manga, Comment, Rating, Library, Group, News, Event, Forum, Category
 - **@Transactional**: use cases que modificam dados ou acessam lazy collections **devem** ter `@Transactional`. Read-only com lazy collections: `@Transactional(readOnly = true)`
 - **I18n**: `I18nConfig` expõe `MessageSource` + `LocaleResolver` (Accept-Language) + `LocalValidatorFactoryBean`. Mensagens em `src/main/resources/messages/messages*.properties` (pt-BR default, en-US, es-ES). DTOs usam chaves: `@NotBlank(message = "{validation.email.required}")`. `SecurityExceptionHandler` e use cases de email resolvem via `messageSource.getMessage(key, null, LocaleContextHolder.getLocale())`. Frontend usa `react-i18next` com namespaces por feature em `src/i18n/locales/<lang>/<feature>.json` (ver `src/i18n/locales/README.md`).
 
+### i18n Architecture — DB-backed Domain Labels
+
+**Regra obrigatória**: Labels de entidades de negócio (status, categorias, tipos, tags, gêneros, moedas, classificações) devem ser armazenadas no banco com `LocalizedString` JSONB e resolvidas pelo backend conforme o `Accept-Language` do request.
+
+**Quando usar `t('...')`**: apenas para textos estáticos de UI — botões, placeholders, mensagens fixas, alerts, validações, títulos de tela.
+
+**Não usar `t('...')` para**: enums de negócio, dados dinâmicos, conteúdos administrativos, qualquer dado persistido.
+
+**Padrão**: entidade `DomainLabel { type, value, labelI18n }` em PostgreSQL.
+- Endpoint público: `GET /api/labels?type={type}` → `[{ value, label }]` (locale-resolved, cache 3 dias no frontend)
+- Endpoint admin: `GET /api/labels/admin?type={type}` → `[{ value, labelI18n: Map }]` (todos os idiomas)
+- Frontend: hook `useDomainLabels(type)` + queryKey `[QUERY_KEYS.DOMAIN_LABELS, type, i18n.language]`
+- Mesmo padrão de `Tag` e `LocalizedMappingHelper.resolveOrFallback()`
+- Mappers que retornam labels de negócio **devem** injetar `DomainLabelService` e usar `resolveLabel(type, value, fallback)`
+- `@WebMvcTest` que importa mapper com `DomainLabelService` **deve** adicionar `@MockitoBean DomainLabelService domainLabelService`
+- Novas entidades de negócio com labels exibíveis **devem** seguir esse padrão
+
+**Tipos seed disponíveis**: `publication_status`, `news_category`, `event_type`, `event_status`, `event_timeline`, `currency`
+
 ### API Response Patterns
 
 Todas as respostas da API seguem um dos dois padrões:
