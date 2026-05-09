@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import BaseInput from '@shared/component/input/BaseInput';
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import AdminModal from './AdminModal';
+import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 
 import type { AdminTag } from '../type/admin.types';
 
 type TagFormModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (label: string) => void;
+    onSubmit: (label: string, labelI18n: LocalizedString) => void;
     tag?: AdminTag | null;
     isSubmitting: boolean;
 };
@@ -20,35 +22,50 @@ const TagFormModal = ({
     tag,
     isSubmitting,
 }: TagFormModalProps) => {
-    const [label, setLabel] = useState('');
+    const { t } = useTranslation('admin');
+
+    const [labelI18n, setLabelI18n] = useState<LocalizedString>({});
 
     useEffect(() => {
-        setLabel(tag?.label ?? '');
+        if (!tag) {
+            setLabelI18n({});
+
+            return;
+        }
+
+        if (tag.labelI18n && Object.keys(tag.labelI18n).length) {
+            setLabelI18n(tag.labelI18n);
+        } else {
+            setLabelI18n({ [DEFAULT_LANGUAGE]: tag.label });
+        }
     }, [tag, isOpen]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const trimmed = label.trim();
-        if (trimmed) {
-            onSubmit(trimmed);
-        }
+
+        const ptBR = (labelI18n[DEFAULT_LANGUAGE] ?? '').trim();
+
+        if (!ptBR) return;
+
+        onSubmit(ptBR, labelI18n);
     };
 
+    const ptBR = (labelI18n[DEFAULT_LANGUAGE] ?? '').trim();
+
     return (
-        <BaseModal isModalOpen={isOpen} closeModal={onClose}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-2">
+        <AdminModal isOpen={isOpen} onClose={onClose}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-2">
                 <h3 className="text-sm font-bold">
-                    {tag ? 'Editar Tag' : 'Nova Tag'}
+                    {tag
+                        ? t('tagForm.editTitle', 'Editar Tag')
+                        : t('tagForm.newTitle', 'Nova Tag')}
                 </h3>
-                <BaseInput
-                    label="Nome da tag"
-                    variant="outlined"
-                    type="text"
-                    value={label}
-                    onChange={e => setLabel(e.target.value)}
-                    placeholder="Nome da tag"
+                <LocalizedTextInput
+                    label={t('tagForm.label', 'Nome da tag')}
+                    value={labelI18n}
+                    onChange={setLabelI18n}
+                    placeholder={t('tagForm.placeholder', 'Nome da tag')}
                     maxLength={60}
-                    autoFocus
                 />
                 <div className="flex justify-end gap-2">
                     <button
@@ -56,18 +73,20 @@ const TagFormModal = ({
                         onClick={onClose}
                         className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30"
                     >
-                        Cancelar
+                        {t('tagForm.cancel', 'Cancelar')}
                     </button>
                     <button
                         type="submit"
-                        disabled={isSubmitting || !label.trim()}
+                        disabled={isSubmitting || !ptBR}
                         className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
                     >
-                        {isSubmitting ? 'Salvando...' : 'Salvar'}
+                        {isSubmitting
+                            ? t('tagForm.saving', 'Salvando...')
+                            : t('tagForm.save', 'Salvar')}
                     </button>
                 </div>
             </form>
-        </BaseModal>
+        </AdminModal>
     );
 };
 

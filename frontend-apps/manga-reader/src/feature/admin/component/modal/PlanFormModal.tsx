@@ -1,13 +1,25 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FiPlus, FiTrash2 } from 'react-icons/fi';
 
 import BaseCheckbox from '@shared/component/input/BaseCheckbox';
 import BaseInput from '@shared/component/input/BaseInput';
 import BaseSelect from '@shared/component/input/BaseSelect';
 import BaseTextArea from '@shared/component/input/BaseTextArea';
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import AdminModal from './AdminModal';
+import {
+    DEFAULT_LANGUAGE,
+    type LocalizedString,
+    type LocalizedStringList,
+    SUPPORTED_LANGUAGES,
+    type LanguageTag,
+} from '@shared/type/i18n';
+import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 
 import type { AdminPlan } from '../type/admin.types';
+
+type PriceRow = { currency: string; amount: string };
 
 type PlanFormModalProps = {
     isOpen: boolean;
@@ -17,13 +29,35 @@ type PlanFormModalProps = {
         priceInCents: number;
         description: string;
         features: string[];
+        descriptionI18n: LocalizedString;
+        featuresI18n: LocalizedStringList;
         active?: boolean;
+        prices: Record<string, number>;
     }) => void;
     plan?: AdminPlan | null;
     isSubmitting: boolean;
 };
 
 const PERIOD_OPTIONS = ['DAILY', 'MONTHLY', 'ANNUAL'] as const;
+
+const featuresMapToText = (map: LocalizedStringList, lang: LanguageTag) =>
+    (map[lang] ?? []).join('\n');
+
+const featuresTextToList = (text: string): string[] =>
+    text.split('\n').map(f => f.trim()).filter(Boolean);
+
+const buildInitialPrices = (plan: AdminPlan | null | undefined): PriceRow[] => {
+    if (plan?.prices && Object.keys(plan.prices).length > 0) {
+        return Object.entries(plan.prices).map(([currency, cents]) => ({
+            currency,
+            amount: (cents / 100).toFixed(2),
+        }));
+    }
+    if (plan?.priceInCents) {
+        return [{ currency: 'BRL', amount: (plan.priceInCents / 100).toFixed(2) }];
+    }
+    return [{ currency: 'BRL', amount: '' }];
+};
 
 const PlanFormModal = ({
     isOpen,
@@ -34,10 +68,13 @@ const PlanFormModal = ({
 }: PlanFormModalProps) => {
     const { t } = useTranslation('admin');
     const [period, setPeriod] = useState('MONTHLY');
-    const [priceReais, setPriceReais] = useState('');
-    const [description, setDescription] = useState('');
-    const [features, setFeatures] = useState('');
+    const [priceRows, setPriceRows] = useState<PriceRow[]>([{ currency: 'BRL', amount: '' }]);
+    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
+    const [featuresI18n, setFeaturesI18n] = useState<LocalizedStringList>({});
+    const [featuresTab, setFeaturesTab] = useState<LanguageTag>(DEFAULT_LANGUAGE);
     const [active, setActive] = useState(true);
+
+    const { data: currencyOptions = [] } = useDomainLabels(LABEL_TYPES.CURRENCY);
 
     const periodLabels = useMemo<Record<string, string>>(
         () => ({
@@ -51,45 +88,75 @@ const PlanFormModal = ({
     useEffect(() => {
         if (plan) {
             setPeriod(plan.period);
-            setPriceReais((plan.priceInCents / 100).toFixed(2));
-            setDescription(plan.description);
-            setFeatures(plan.features.join('\n'));
+            setPriceRows(buildInitialPrices(plan));
+            setDescriptionI18n({ [DEFAULT_LANGUAGE]: plan.description });
+            setFeaturesI18n({ [DEFAULT_LANGUAGE]: plan.features });
             setActive(plan.active);
         } else {
             setPeriod('MONTHLY');
-            setPriceReais('');
-            setDescription('');
-            setFeatures('');
+            setPriceRows([{ currency: 'BRL', amount: '' }]);
+            setDescriptionI18n({});
+            setFeaturesI18n({});
             setActive(true);
         }
+        setFeaturesTab(DEFAULT_LANGUAGE);
     }, [plan, isOpen]);
+
+    const usedCurrencies = priceRows.map(r => r.currency);
+    const availableCurrencyOptions = currencyOptions.filter(
+        opt => !usedCurrencies.includes(opt.value),
+    );
+
+    const addPriceRow = () => {
+        const next = currencyOptions.find(opt => !usedCurrencies.includes(opt.value));
+        if (next) setPriceRows(rows => [...rows, { currency: next.value, amount: '' }]);
+    };
+
+    const updatePriceRow = (idx: number, patch: Partial<PriceRow>) => {
+        setPriceRows(rows => rows.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+    };
+
+    const removePriceRow = (idx: number) => {
+        setPriceRows(rows => rows.filter((_, i) => i !== idx));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const priceInCents = Math.round(parseFloat(priceReais) * 100);
-        if (isNaN(priceInCents) || priceInCents <= 0) return;
 
-        const featureList = features
-            .split('\n')
-            .map(f => f.trim())
-            .filter(Boolean);
+        const prices: Record<string, number> = {};
+        for (const row of priceRows) {
+            const cents = Math.round(parseFloat(row.amount) * 100);
+            if (isNaN(cents) || cents <= 0) return;
+            prices[row.currency] = cents;
+        }
+        if (Object.keys(prices).length === 0) return;
+
+        const ptDescription = descriptionI18n[DEFAULT_LANGUAGE]?.trim() ?? '';
+        if (!ptDescription) return;
+
+        const ptFeatures = featuresI18n[DEFAULT_LANGUAGE] ?? [];
+        const priceInCents = prices['BRL'] ?? Object.values(prices)[0];
 
         onSubmit({
             ...(plan ? {} : { period }),
             priceInCents,
-            description,
-            features: featureList,
+            description: ptDescription,
+            features: ptFeatures,
+            descriptionI18n,
+            featuresI18n,
+            prices,
             ...(plan ? { active } : {}),
         });
     };
 
+    const ptDescription = descriptionI18n[DEFAULT_LANGUAGE]?.trim() ?? '';
+    const hasValidPrices = priceRows.length > 0 && priceRows.every(r => r.amount !== '');
+
     return (
-        <BaseModal isModalOpen={isOpen} closeModal={onClose}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-2">
+        <AdminModal isOpen={isOpen} onClose={onClose}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-2">
                 <h3 className="text-sm font-bold">
-                    {plan
-                        ? t('planForm.editTitle')
-                        : t('planForm.newTitle')}
+                    {plan ? t('planForm.editTitle') : t('planForm.newTitle')}
                 </h3>
 
                 {!plan && (
@@ -105,35 +172,109 @@ const PlanFormModal = ({
                     />
                 )}
 
-                <BaseInput
-                    label={t('planForm.priceLabel')}
-                    variant="outlined"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    value={priceReais}
-                    onChange={e => setPriceReais(e.target.value)}
-                    placeholder={t('planForm.pricePlaceholder')}
-                />
+                <div className="flex flex-col gap-2">
+                    <span className="text-xs font-bold">
+                        {t('planForm.priceLabel')}
+                        <span className="ml-1 text-red-500">*</span>
+                    </span>
 
-                <BaseInput
+                    {priceRows.map((row, idx) => (
+                        <div key={idx} className="flex gap-2 items-start">
+                            <div className="w-36 shrink-0">
+                                <BaseSelect
+                                    variant="outlined"
+                                    value={row.currency}
+                                    onChange={e => updatePriceRow(idx, { currency: e.target.value })}
+                                    options={[
+                                        ...currencyOptions.filter(opt => opt.value === row.currency),
+                                        ...availableCurrencyOptions,
+                                    ]}
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <BaseInput
+                                    variant="outlined"
+                                    type="number"
+                                    step="0.01"
+                                    min="0.01"
+                                    value={row.amount}
+                                    onChange={e => updatePriceRow(idx, { amount: e.target.value })}
+                                    placeholder="0.00"
+                                />
+                            </div>
+                            {priceRows.length > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={() => removePriceRow(idx)}
+                                    className="mt-1.5 p-1.5 text-red-400 border border-red-500/30 rounded-xs hover:bg-red-500/10"
+                                >
+                                    <FiTrash2 size={14} />
+                                </button>
+                            )}
+                        </div>
+                    ))}
+
+                    {availableCurrencyOptions.length > 0 && (
+                        <button
+                            type="button"
+                            onClick={addPriceRow}
+                            className="flex items-center gap-1.5 text-xs text-tertiary hover:text-primary w-fit"
+                        >
+                            <FiPlus size={12} />
+                            {t('planForm.addCurrency')}
+                        </button>
+                    )}
+                </div>
+
+                <LocalizedTextInput
                     label={t('planForm.descriptionLabel')}
-                    variant="outlined"
-                    type="text"
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    maxLength={300}
+                    value={descriptionI18n}
+                    onChange={setDescriptionI18n}
                     placeholder={t('planForm.descriptionPlaceholder')}
+                    maxLength={300}
                 />
 
-                <BaseTextArea
-                    label={t('planForm.featuresLabel')}
-                    variant="outlined"
-                    value={features}
-                    onChange={e => setFeatures(e.target.value)}
-                    rows={3}
-                    placeholder={t('planForm.featuresPlaceholder')}
-                />
+                <div className="flex flex-col gap-1.5">
+                    <span className="text-xs font-bold">
+                        {t('planForm.featuresLabel')}
+                        <span className="ml-1 text-red-500">*</span>
+                    </span>
+                    <div className="flex gap-1 border-b border-tertiary">
+                        {SUPPORTED_LANGUAGES.map(lang => {
+                            const filled = (featuresI18n[lang] ?? []).length > 0;
+                            const isActive = featuresTab === lang;
+                            return (
+                                <button
+                                    key={lang}
+                                    type="button"
+                                    onClick={() => setFeaturesTab(lang)}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+                                        isActive
+                                            ? 'border-b-2 border-quaternary-default text-quaternary-default'
+                                            : 'text-tertiary hover:text-primary'
+                                    }`}
+                                >
+                                    {lang}
+                                    {filled && (
+                                        <span className="text-quaternary-default">●</span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <BaseTextArea
+                        variant="outlined"
+                        rows={3}
+                        value={featuresMapToText(featuresI18n, featuresTab)}
+                        onChange={e =>
+                            setFeaturesI18n({
+                                ...featuresI18n,
+                                [featuresTab]: featuresTextToList(e.target.value),
+                            })
+                        }
+                        placeholder={t('planForm.featuresPlaceholder')}
+                    />
+                </div>
 
                 {plan && (
                     <BaseCheckbox
@@ -153,16 +294,14 @@ const PlanFormModal = ({
                     </button>
                     <button
                         type="submit"
-                        disabled={isSubmitting || !priceReais || !description}
+                        disabled={isSubmitting || !hasValidPrices || !ptDescription}
                         className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
                     >
-                        {isSubmitting
-                            ? t('planForm.saving')
-                            : t('planForm.save')}
+                        {isSubmitting ? t('planForm.saving') : t('planForm.save')}
                     </button>
                 </div>
             </form>
-        </BaseModal>
+        </AdminModal>
     );
 };
 
