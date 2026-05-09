@@ -13,7 +13,6 @@ import com.mangareader.domain.user.valueobject.UserRole;
  * Port de saída — acesso a dados de Users (PostgreSQL).
  */
 public interface UserRepositoryPort {
-
     Optional<User> findById(UUID id);
 
     Optional<User> findByEmail(String email);

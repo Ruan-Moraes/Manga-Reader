@@ -11,7 +11,6 @@ import com.mangareader.domain.user.entity.ViewHistory;
  * Port de saída — acesso a dados de ViewHistory (MongoDB).
  */
 public interface ViewHistoryRepositoryPort {
-
     Page<ViewHistory> findByUserIdOrderByViewedAtDesc(String userId, Pageable pageable);
 
     Optional<ViewHistory> findByUserIdAndTitleId(String userId, String titleId);

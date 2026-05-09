@@ -14,7 +14,6 @@ import com.mangareader.domain.library.valueobject.ReadingListType;
  * Port de saída — acesso a dados de Library / SavedManga (PostgreSQL).
  */
 public interface LibraryRepositoryPort {
-
     List<SavedManga> findByUserId(UUID userId);
 
     List<SavedManga> findByUserIdAndList(UUID userId, ReadingListType list);

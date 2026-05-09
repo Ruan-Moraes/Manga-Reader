@@ -10,7 +10,6 @@ package com.mangareader.application.shared.port;
  * @see com.mangareader.infrastructure.messaging.NoopEventPublisher
  */
 public interface EventPublisherPort {
-
     /**
      * Publica um evento de domínio.
      *

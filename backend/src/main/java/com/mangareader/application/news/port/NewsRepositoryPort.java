@@ -13,7 +13,6 @@ import com.mangareader.domain.news.valueobject.NewsCategory;
  * Port de saída — acesso a dados de News (MongoDB).
  */
 public interface NewsRepositoryPort {
-
     List<NewsItem> findAll();
 
     Optional<NewsItem> findById(String id);

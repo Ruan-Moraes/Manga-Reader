@@ -10,7 +10,6 @@ import com.mangareader.domain.user.entity.UserRecommendation;
  * Port de saída — acesso a dados de UserRecommendation (PostgreSQL).
  */
 public interface RecommendationRepositoryPort {
-
     List<UserRecommendation> findByUserIdOrderByPosition(UUID userId);
 
     Optional<UserRecommendation> findByUserIdAndTitleId(UUID userId, String titleId);

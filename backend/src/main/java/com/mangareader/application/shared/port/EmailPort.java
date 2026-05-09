@@ -11,7 +11,6 @@ package com.mangareader.application.shared.port;
  * </ul>
  */
 public interface EmailPort {
-
     /**
      * Envia um email simples (texto plano).
      */

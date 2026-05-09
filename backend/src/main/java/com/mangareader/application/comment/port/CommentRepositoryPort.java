@@ -26,6 +26,9 @@ public interface CommentRepositoryPort {
 
     Page<Comment> findByTitleId(String titleId, Pageable pageable);
 
+    /** Listagem particionada por idioma (UGC). Retorna apenas comentários no idioma informado. */
+    Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable);
+
     Page<Comment> findByUserId(String userId, Pageable pageable);
 
     long countByUserId(String userId);

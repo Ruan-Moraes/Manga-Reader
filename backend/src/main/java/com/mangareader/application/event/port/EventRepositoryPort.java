@@ -14,7 +14,6 @@ import com.mangareader.domain.event.valueobject.EventStatus;
  * Port de saída — acesso a dados de Events (PostgreSQL).
  */
 public interface EventRepositoryPort {
-
     List<Event> findAll();
 
     Optional<Event> findById(UUID id);
