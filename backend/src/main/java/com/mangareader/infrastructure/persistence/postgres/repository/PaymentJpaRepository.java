@@ -17,7 +17,6 @@ import com.mangareader.domain.payment.valueobject.PaymentStatus;
  * Repositório JPA para pagamentos.
  */
 public interface PaymentJpaRepository extends JpaRepository<Payment, UUID> {
-
     Page<Payment> findByStatus(PaymentStatus status, Pageable pageable);
 
     long countByStatus(PaymentStatus status);

@@ -33,13 +33,28 @@ public class ForumRepositoryAdapter implements ForumRepositoryPort {
     }
 
     @Override
+    public Page<ForumTopic> findByLanguage(String language, Pageable pageable) {
+        return repository.findByLanguage(language, pageable);
+    }
+
+    @Override
     public Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable) {
         return repository.findByCategory(category, pageable);
     }
 
     @Override
+    public Page<ForumTopic> findByCategoryAndLanguage(ForumCategory category, String language, Pageable pageable) {
+        return repository.findByCategoryAndLanguage(category, language, pageable);
+    }
+
+    @Override
     public Page<ForumTopic> searchByTitle(String query, Pageable pageable) {
         return repository.findByTitleContainingIgnoreCase(query, pageable);
+    }
+
+    @Override
+    public Page<ForumTopic> searchByTitleAndLanguage(String query, String language, Pageable pageable) {
+        return repository.findByTitleContainingIgnoreCaseAndLanguage(query, language, pageable);
     }
 
     @Override

@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.mangareader.domain.subscription.entity.SubscriptionPlan;
 
 public interface SubscriptionPlanJpaRepository extends JpaRepository<SubscriptionPlan, UUID> {
-
     List<SubscriptionPlan> findByActiveTrue();
 }

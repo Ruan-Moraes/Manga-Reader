@@ -57,6 +57,11 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     }
 
     @Override
+    public Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable) {
+        return repository.findByTitleIdAndLanguage(titleId, language, pageable);
+    }
+
+    @Override
     public Page<Comment> findByUserId(String userId, Pageable pageable) {
         return repository.findByUserId(userId, pageable);
     }

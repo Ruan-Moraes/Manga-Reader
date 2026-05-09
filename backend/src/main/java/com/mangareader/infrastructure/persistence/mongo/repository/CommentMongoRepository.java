@@ -20,6 +20,8 @@ public interface CommentMongoRepository extends MongoRepository<Comment, String>
 
     Page<Comment> findByTitleId(String titleId, Pageable pageable);
 
+    Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable);
+
     Page<Comment> findByUserId(String userId, Pageable pageable);
 
     long countByUserId(String userId);

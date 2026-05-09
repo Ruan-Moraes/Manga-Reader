@@ -15,7 +15,13 @@ import com.mangareader.domain.forum.valueobject.ForumCategory;
 public interface ForumTopicJpaRepository extends JpaRepository<ForumTopic, UUID> {
     Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable);
 
+    Page<ForumTopic> findByLanguage(String language, Pageable pageable);
+
+    Page<ForumTopic> findByCategoryAndLanguage(ForumCategory category, String language, Pageable pageable);
+
     Page<ForumTopic> findByTitleContainingIgnoreCase(String query, Pageable pageable);
+
+    Page<ForumTopic> findByTitleContainingIgnoreCaseAndLanguage(String query, String language, Pageable pageable);
 
     long countByAuthorId(java.util.UUID authorId);
 }
