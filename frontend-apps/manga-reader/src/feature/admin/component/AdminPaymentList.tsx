@@ -1,3 +1,7 @@
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
@@ -9,7 +13,8 @@ type AdminPaymentListProps = {
     totalPages: number;
     isLoading: boolean;
     onPageChange: (page: number) => void;
-    onRowClick: (payment: AdminPayment) => void;
+    onEdit: (payment: AdminPayment) => void;
+    onDelete: (payment: AdminPayment) => void;
 };
 
 const formatDate = (date: string | null) => {
@@ -44,10 +49,14 @@ const StatusBadge = ({ status }: { status: string }) => (
     </span>
 );
 
-const columns: Column<AdminPayment>[] = [
+const buildColumns = (
+    t: TFunction,
+    onEdit: (payment: AdminPayment) => void,
+    onDelete: (payment: AdminPayment) => void,
+): Column<AdminPayment>[] => [
     {
         key: 'id',
-        header: 'ID',
+        header: t('dashboard.financial.columnId'),
         hiddenOnMobile: true,
         render: payment => (
             <span className="font-mono text-xs text-tertiary">
@@ -57,7 +66,7 @@ const columns: Column<AdminPayment>[] = [
     },
     {
         key: 'amount',
-        header: 'Valor',
+        header: t('dashboard.financial.columnAmount'),
         sortable: true,
         render: payment => (
             <span className="font-medium">
@@ -67,13 +76,13 @@ const columns: Column<AdminPayment>[] = [
     },
     {
         key: 'status',
-        header: 'Status',
+        header: t('dashboard.financial.columnStatus'),
         sortable: true,
         render: payment => <StatusBadge status={payment.status} />,
     },
     {
         key: 'paymentMethod',
-        header: 'Método',
+        header: t('dashboard.financial.columnMethod'),
         hiddenOnMobile: true,
         sortable: true,
         render: payment => (
@@ -84,7 +93,7 @@ const columns: Column<AdminPayment>[] = [
     },
     {
         key: 'referenceType',
-        header: 'Referência',
+        header: t('dashboard.financial.columnReference'),
         hiddenOnMobile: true,
         render: payment => (
             <span className="text-xs text-tertiary">
@@ -94,12 +103,42 @@ const columns: Column<AdminPayment>[] = [
     },
     {
         key: 'createdAt',
-        header: 'Criado em',
+        header: t('dashboard.financial.columnCreatedAt'),
         sortable: true,
         render: payment => (
             <span className="text-xs text-tertiary">
                 {formatDate(payment.createdAt)}
             </span>
+        ),
+    },
+    {
+        key: 'actions',
+        header: t('dashboard.financial.columnActions'),
+        render: payment => (
+            <div className="flex items-center justify-end gap-2">
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onEdit(payment);
+                    }}
+                    className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
+                    aria-label={t('dashboard.financial.editAriaLabel')}
+                >
+                    <FiEdit2 size={14} />
+                </button>
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onDelete(payment);
+                    }}
+                    className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                    aria-label={t('dashboard.financial.deleteAriaLabel')}
+                >
+                    <FiTrash2 size={14} />
+                </button>
+            </div>
         ),
     },
 ];
@@ -110,22 +149,23 @@ const AdminPaymentList = ({
     totalPages,
     isLoading,
     onPageChange,
-    onRowClick,
+    onEdit,
+    onDelete,
 }: AdminPaymentListProps) => {
+    const { t } = useTranslation('admin');
     const { sortedData, sortBy, sortDirection, handleSort } =
         useSortableData(payments);
 
     return (
         <DataTable
-            columns={columns}
+            columns={buildColumns(t, onEdit, onDelete)}
             data={sortedData}
             keyExtractor={payment => payment.id}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}
             isLoading={isLoading}
-            emptyMessage="Nenhum pagamento encontrado."
-            onRowClick={onRowClick}
+            emptyMessage={t('dashboard.financial.empty')}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSort={handleSort}

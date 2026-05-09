@@ -1,7 +1,10 @@
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
+import type { LanguageTag } from '@shared/type/i18n';
 import type { AdminTag } from '../type/admin.types';
 
 type AdminTagListProps = {
@@ -14,13 +17,15 @@ type AdminTagListProps = {
     onDelete: (tag: AdminTag) => void;
 };
 
-const columns = (
+const buildColumns = (
+    t: TFunction,
+    lang: LanguageTag,
     onEdit: (tag: AdminTag) => void,
     onDelete: (tag: AdminTag) => void,
 ): Column<AdminTag>[] => [
     {
         key: 'value',
-        header: 'ID',
+        header: t('tagList.columnId'),
         hiddenOnMobile: true,
         render: tag => (
             <span className="font-mono text-xs text-tertiary">{tag.value}</span>
@@ -28,13 +33,17 @@ const columns = (
     },
     {
         key: 'label',
-        header: 'Nome',
+        header: t('tagList.columnName'),
         sortable: true,
-        render: tag => <span className="font-medium">{tag.label}</span>,
+        render: tag => (
+            <span className="font-medium">
+                {tag.labelI18n?.[lang] ?? tag.label}
+            </span>
+        ),
     },
     {
         key: 'actions',
-        header: 'Ações',
+        header: t('tagList.columnActions'),
         render: tag => (
             <div className="flex items-center justify-end gap-2">
                 <button
@@ -44,7 +53,7 @@ const columns = (
                         onEdit(tag);
                     }}
                     className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                    aria-label="Editar tag"
+                    aria-label={t('tagList.editAriaLabel')}
                 >
                     <FiEdit2 size={14} />
                 </button>
@@ -55,7 +64,7 @@ const columns = (
                         onDelete(tag);
                     }}
                     className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
-                    aria-label="Excluir tag"
+                    aria-label={t('tagList.deleteAriaLabel')}
                 >
                     <FiTrash2 size={14} />
                 </button>
@@ -73,19 +82,21 @@ const AdminTagList = ({
     onEdit,
     onDelete,
 }: AdminTagListProps) => {
+    const { t, i18n } = useTranslation('admin');
+    const lang = i18n.language as LanguageTag;
     const { sortedData, sortBy, sortDirection, handleSort } =
         useSortableData(tags);
 
     return (
         <DataTable
-            columns={columns(onEdit, onDelete)}
+            columns={buildColumns(t, lang, onEdit, onDelete)}
             data={sortedData}
             keyExtractor={tag => String(tag.value)}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}
             isLoading={isLoading}
-            emptyMessage="Nenhuma tag encontrada."
+            emptyMessage={t('tagList.empty')}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSort={handleSort}

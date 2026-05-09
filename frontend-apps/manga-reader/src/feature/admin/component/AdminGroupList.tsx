@@ -1,7 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
+import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminGroup } from '../type/admin.types';
 
@@ -11,6 +14,8 @@ type AdminGroupListProps = {
     totalPages: number;
     isLoading: boolean;
     onPageChange: (page: number) => void;
+    onEdit: (group: AdminGroup) => void;
+    onDelete: (group: AdminGroup) => void;
 };
 
 const formatDate = (date: string | null) => {
@@ -38,16 +43,35 @@ const StatusBadge = ({ status }: { status: string }) => {
     );
 };
 
-const columns: Column<AdminGroup>[] = [
+const buildColumns = (
+    t: TFunction,
+    lang: LanguageTag,
+    onEdit: (group: AdminGroup) => void,
+    onDelete: (group: AdminGroup) => void,
+): Column<AdminGroup>[] => [
+    {
+        key: 'id',
+        header: t('dashboard.groups.columnId'),
+        hiddenOnMobile: true,
+        render: group => (
+            <span className="font-mono text-xs text-tertiary">
+                {group.id.slice(0, 8)}
+            </span>
+        ),
+    },
     {
         key: 'name',
-        header: 'Nome',
+        header: t('dashboard.groups.columnName'),
         sortable: true,
-        render: group => <span className="font-medium">{group.name}</span>,
+        render: group => (
+            <span className="font-medium">
+                {group.nameI18n?.[lang] ?? group.nameI18n?.['pt-BR'] ?? group.name}
+            </span>
+        ),
     },
     {
         key: 'username',
-        header: 'Username',
+        header: t('dashboard.groups.columnUsername'),
         sortable: true,
         render: group => (
             <span className="text-tertiary">@{group.username}</span>
@@ -55,13 +79,13 @@ const columns: Column<AdminGroup>[] = [
     },
     {
         key: 'status',
-        header: 'Status',
+        header: t('dashboard.groups.columnStatus'),
         sortable: true,
         render: group => <StatusBadge status={group.status} />,
     },
     {
         key: 'membersCount',
-        header: 'Membros',
+        header: t('dashboard.groups.columnMembers'),
         sortable: true,
         render: group => (
             <span className="text-xs text-tertiary">{group.membersCount}</span>
@@ -69,7 +93,7 @@ const columns: Column<AdminGroup>[] = [
     },
     {
         key: 'totalTitles',
-        header: 'Títulos',
+        header: t('dashboard.groups.columnTitles'),
         sortable: true,
         render: group => (
             <span className="text-xs text-tertiary">{group.totalTitles}</span>
@@ -77,12 +101,42 @@ const columns: Column<AdminGroup>[] = [
     },
     {
         key: 'platformJoinedAt',
-        header: 'Entrada',
+        header: t('dashboard.groups.columnJoinedAt'),
         sortable: true,
         render: group => (
             <span className="text-xs text-tertiary">
                 {formatDate(group.platformJoinedAt)}
             </span>
+        ),
+    },
+    {
+        key: 'actions',
+        header: t('dashboard.groups.columnActions'),
+        render: group => (
+            <div className="flex items-center justify-end gap-2">
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onEdit(group);
+                    }}
+                    className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
+                    aria-label={t('dashboard.groups.editAriaLabel')}
+                >
+                    <FiEdit2 size={14} />
+                </button>
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onDelete(group);
+                    }}
+                    className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                    aria-label={t('dashboard.groups.deleteAriaLabel')}
+                >
+                    <FiTrash2 size={14} />
+                </button>
+            </div>
         ),
     },
 ];
@@ -93,24 +147,24 @@ const AdminGroupList = ({
     totalPages,
     isLoading,
     onPageChange,
+    onEdit,
+    onDelete,
 }: AdminGroupListProps) => {
-    const navigate = useNavigate();
+    const { t, i18n } = useTranslation('admin');
+    const lang = i18n.language as LanguageTag;
     const { sortedData, sortBy, sortDirection, handleSort } =
         useSortableData(groups);
 
     return (
         <DataTable
-            columns={columns}
+            columns={buildColumns(t, lang, onEdit, onDelete)}
             data={sortedData}
             keyExtractor={group => group.id}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}
             isLoading={isLoading}
-            emptyMessage="Nenhum grupo encontrado."
-            onRowClick={group =>
-                navigate(`/Manga-Reader/dashboard/groups/${group.id}`)
-            }
+            emptyMessage={t('dashboard.groups.empty')}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSort={handleSort}

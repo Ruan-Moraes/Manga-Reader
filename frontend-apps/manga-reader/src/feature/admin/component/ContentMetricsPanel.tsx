@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import type { ContentMetrics } from '../type/admin.types';
 
 type ContentMetricsPanelProps = {
@@ -15,7 +17,7 @@ const EVENT_STATUS_COLORS: Record<string, string> = {
     HAPPENING_NOW: 'bg-green-500/20 text-green-300',
     REGISTRATIONS_OPEN: 'bg-blue-500/20 text-blue-300',
     COMING_SOON: 'bg-yellow-500/20 text-yellow-300',
-    ENDED: 'bg-tertiary/30 text-tertiary',
+    ENDED: 'bg-red-500/20 text-red-300',
 };
 
 const StatusBar = ({
@@ -54,10 +56,13 @@ const StatusBar = ({
 };
 
 const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
+    const { t } = useTranslation('admin');
+
     const totalTitles = Object.values(metrics.titlesByStatus).reduce(
         (a, b) => a + b,
         0,
     );
+
     const totalEvents = Object.values(metrics.eventsByStatus).reduce(
         (a, b) => a + b,
         0,
@@ -67,7 +72,7 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
         <div className="grid gap-4 lg:grid-cols-2">
             <div className="p-4 border rounded-xs bg-secondary border-tertiary">
                 <h3 className="mb-3 text-sm font-semibold">
-                    Obras por Status ({totalTitles})
+                    {t('dashboard.overview.metrics.titlesByStatus')} ({totalTitles})
                 </h3>
                 <div className="flex flex-col gap-2">
                     {Object.entries(metrics.titlesByStatus).map(
@@ -89,7 +94,7 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
 
             <div className="p-4 border rounded-xs bg-secondary border-tertiary">
                 <h3 className="mb-3 text-sm font-semibold">
-                    Eventos por Status ({totalEvents})
+                    {t('dashboard.overview.metrics.eventsByStatus')} ({totalEvents})
                 </h3>
                 <div className="flex flex-col gap-2">
                     {Object.entries(metrics.eventsByStatus).map(
@@ -111,11 +116,11 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
 
             <div className="p-4 border rounded-xs bg-secondary border-tertiary lg:col-span-2">
                 <h3 className="mb-3 text-sm font-semibold">
-                    Top 10 Obras por Ranking
+                    {t('dashboard.overview.metrics.top10titles')}
                 </h3>
                 {metrics.topTitles.length === 0 ? (
                     <p className="text-sm text-tertiary">
-                        Nenhuma obra disponível.
+                        {t('dashboard.overview.metrics.noTitlesAvailable')}
                     </p>
                 ) : (
                     <div className="overflow-x-auto">
@@ -123,19 +128,19 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
                             <thead>
                                 <tr className="border-b border-tertiary">
                                     <th className="py-2 text-left font-medium text-tertiary w-8">
-                                        #
+                                        {t('dashboard.overview.metrics.columns.rank')}
                                     </th>
                                     <th className="py-2 text-left font-medium text-tertiary">
-                                        Obra
+                                        {t('dashboard.overview.metrics.columns.title')}
                                     </th>
                                     <th className="py-2 text-left font-medium text-tertiary">
-                                        Tipo
+                                        {t('dashboard.overview.metrics.columns.type')}
                                     </th>
                                     <th className="py-2 text-right font-medium text-tertiary">
-                                        Ranking
+                                        {t('dashboard.overview.metrics.columns.rankingScore')}
                                     </th>
                                     <th className="py-2 text-right font-medium text-tertiary">
-                                        Rating
+                                        {t('dashboard.overview.metrics.columns.rating')}
                                     </th>
                                 </tr>
                             </thead>

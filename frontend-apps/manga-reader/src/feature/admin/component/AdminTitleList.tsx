@@ -1,7 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
+import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminTitle } from '../type/admin.types';
 
@@ -11,6 +14,8 @@ type AdminTitleListProps = {
     totalPages: number;
     isLoading: boolean;
     onPageChange: (page: number) => void;
+    onEdit: (title: AdminTitle) => void;
+    onDelete: (title: AdminTitle) => void;
 };
 
 const formatDate = (date: string | null) => {
@@ -38,22 +43,41 @@ const TypeBadge = ({ type }: { type: string }) => {
     );
 };
 
-const columns: Column<AdminTitle>[] = [
+const buildColumns = (
+    t: TFunction,
+    lang: LanguageTag,
+    onEdit: (title: AdminTitle) => void,
+    onDelete: (title: AdminTitle) => void,
+): Column<AdminTitle>[] => [
+    {
+        key: 'id',
+        header: t('dashboard.titles.columnId'),
+        hiddenOnMobile: true,
+        render: title => (
+            <span className="font-mono text-xs text-tertiary">
+                {title.id.slice(0, 8)}
+            </span>
+        ),
+    },
     {
         key: 'name',
-        header: 'Nome',
+        header: t('dashboard.titles.columnName'),
         sortable: true,
-        render: title => <span className="font-medium">{title.name}</span>,
+        render: title => (
+            <span className="font-medium">
+                {title.nameI18n?.[lang] ?? title.nameI18n?.['pt-BR'] ?? title.name}
+            </span>
+        ),
     },
     {
         key: 'type',
-        header: 'Tipo',
+        header: t('dashboard.titles.columnType'),
         sortable: true,
         render: title => <TypeBadge type={title.type} />,
     },
     {
         key: 'status',
-        header: 'Status',
+        header: t('dashboard.titles.columnStatus'),
         sortable: true,
         render: title => (
             <span className="text-xs text-tertiary">{title.status ?? '—'}</span>
@@ -61,7 +85,7 @@ const columns: Column<AdminTitle>[] = [
     },
     {
         key: 'chaptersCount',
-        header: 'Capítulos',
+        header: t('dashboard.titles.columnChapters'),
         sortable: true,
         render: title => (
             <span className="text-xs text-tertiary">{title.chaptersCount}</span>
@@ -69,12 +93,42 @@ const columns: Column<AdminTitle>[] = [
     },
     {
         key: 'createdAt',
-        header: 'Criado em',
+        header: t('dashboard.titles.columnCreatedAt'),
         sortable: true,
         render: title => (
             <span className="text-xs text-tertiary">
                 {formatDate(title.createdAt)}
             </span>
+        ),
+    },
+    {
+        key: 'actions',
+        header: t('dashboard.titles.columnActions'),
+        render: title => (
+            <div className="flex items-center justify-end gap-2">
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onEdit(title);
+                    }}
+                    className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
+                    aria-label={t('dashboard.titles.editAriaLabel')}
+                >
+                    <FiEdit2 size={14} />
+                </button>
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onDelete(title);
+                    }}
+                    className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                    aria-label={t('dashboard.titles.deleteAriaLabel')}
+                >
+                    <FiTrash2 size={14} />
+                </button>
+            </div>
         ),
     },
 ];
@@ -85,24 +139,24 @@ const AdminTitleList = ({
     totalPages,
     isLoading,
     onPageChange,
+    onEdit,
+    onDelete,
 }: AdminTitleListProps) => {
-    const navigate = useNavigate();
+    const { t, i18n } = useTranslation('admin');
+    const lang = i18n.language as LanguageTag;
     const { sortedData, sortBy, sortDirection, handleSort } =
         useSortableData(titles);
 
     return (
         <DataTable
-            columns={columns}
+            columns={buildColumns(t, lang, onEdit, onDelete)}
             data={sortedData}
             keyExtractor={title => title.id}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}
             isLoading={isLoading}
-            emptyMessage="Nenhum título encontrado."
-            onRowClick={title =>
-                navigate(`/Manga-Reader/dashboard/titles/${title.id}/edit`)
-            }
+            emptyMessage={t('dashboard.titles.empty')}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSort={handleSort}

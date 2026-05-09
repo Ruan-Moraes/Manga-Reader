@@ -6,13 +6,18 @@ import {
     FiCalendar,
     FiAlertCircle,
 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
-import type { DashboardMetrics } from '../type/admin.types';
+import type { DashboardMetrics } from '@feature/admin';
 
 type MetricCardProps = {
     label: string;
     value: number;
     icon: React.ReactNode;
+};
+
+type AdminDashboardOverviewProps = {
+    metrics: DashboardMetrics;
 };
 
 const MetricCard = ({ label, value, icon }: MetricCardProps) => (
@@ -27,39 +32,37 @@ const MetricCard = ({ label, value, icon }: MetricCardProps) => (
     </div>
 );
 
-type AdminDashboardOverviewProps = {
-    metrics: DashboardMetrics;
-};
-
 const AdminDashboardOverview = ({ metrics }: AdminDashboardOverviewProps) => {
+    const { t } = useTranslation('admin');
+
     const cards: MetricCardProps[] = [
         {
-            label: 'Usuários',
+            label: t('dashboard.overview.metrics.users'),
             value: metrics.totalUsers,
             icon: <FiUsers size={20} />,
         },
         {
-            label: 'Obras',
+            label: t('dashboard.overview.metrics.titles'),
             value: metrics.totalTitles,
             icon: <FiBook size={20} />,
         },
         {
-            label: 'Grupos',
+            label: t('dashboard.overview.metrics.groups'),
             value: metrics.totalGroups,
             icon: <FiLayers size={20} />,
         },
         {
-            label: 'Notícias',
+            label: t('dashboard.overview.metrics.news'),
             value: metrics.totalNews,
             icon: <FiFileText size={20} />,
         },
         {
-            label: 'Eventos',
+            label: t('dashboard.overview.metrics.events'),
             value: metrics.totalEvents,
             icon: <FiCalendar size={20} />,
         },
         {
-            label: 'Banidos',
+            label: t('dashboard.overview.metrics.banned'),
             value: metrics.bannedUsers,
             icon: <FiAlertCircle size={20} />,
         },
@@ -75,7 +78,7 @@ const AdminDashboardOverview = ({ metrics }: AdminDashboardOverviewProps) => {
 
             <div className="p-4 border rounded-xs bg-secondary border-tertiary">
                 <h3 className="mb-3 text-sm font-semibold">
-                    Distribuição por Role
+                    {t('dashboard.overview.metrics.roleDistribution')}
                 </h3>
                 <div className="flex flex-wrap gap-4">
                     {Object.entries(metrics.usersByRole).map(

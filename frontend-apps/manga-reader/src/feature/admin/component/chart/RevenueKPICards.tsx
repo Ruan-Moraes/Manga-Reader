@@ -1,4 +1,5 @@
 import { FiTrendingUp, FiTrendingDown, FiDollarSign } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 import MetricsCard from '../MetricsCard';
 import type { RevenueTimeSeries } from '../../type/admin.types';
@@ -14,6 +15,7 @@ const formatCurrency = (valueInCents: number) =>
     }).format(valueInCents / 100);
 
 const RevenueKPICards = ({ data }: Props) => {
+    const { t } = useTranslation('admin');
     const currentMonth = data.entries.at(-1);
 
     const currentRevenue = currentMonth?.revenue ?? 0;
@@ -27,13 +29,13 @@ const RevenueKPICards = ({ data }: Props) => {
     return (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <MetricsCard
-                label="Receita do Mês"
+                label={t('dashboard.financial.summary.monthRevenue')}
                 value={formatCurrency(currentRevenue)}
                 icon={<FiDollarSign />}
                 accent="success"
             />
             <MetricsCard
-                label="Variação Mensal"
+                label={t('dashboard.financial.summary.monthlyVariation')}
                 value={momLabel}
                 icon={
                     growthPercent >= 0 ? <FiTrendingUp /> : <FiTrendingDown />
@@ -41,7 +43,7 @@ const RevenueKPICards = ({ data }: Props) => {
                 accent={growthPercent >= 0 ? 'success' : 'danger'}
             />
             <MetricsCard
-                label="Receita Anual"
+                label={t('dashboard.financial.summary.annualRevenue')}
                 value={formatCurrency(data.totalRevenue)}
                 icon={<FiDollarSign />}
             />

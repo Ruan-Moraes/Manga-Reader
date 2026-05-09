@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import type { FinancialSummary } from '../type/admin.types';
 import MetricsCard from './MetricsCard';
 
@@ -19,22 +21,23 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const FinancialDashboard = ({ summary }: FinancialDashboardProps) => {
+    const { t } = useTranslation('admin');
     const statuses = Object.keys(summary.countsByStatus);
 
     return (
         <div className="flex flex-col gap-4">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <MetricsCard
-                    label="Total de pagamentos"
+                    label={t('dashboard.financial.summary.totalPayments')}
                     value={summary.totalPayments}
                 />
                 <MetricsCard
-                    label="Receita confirmada"
+                    label={t('dashboard.financial.summary.confirmedRevenue')}
                     value={formatCurrency(summary.totalRevenue)}
                     accent="success"
                 />
                 <MetricsCard
-                    label="Receita pendente"
+                    label={t('dashboard.financial.summary.pendingRevenue')}
                     value={formatCurrency(summary.pendingRevenue)}
                     accent="warning"
                 />
@@ -42,20 +45,20 @@ const FinancialDashboard = ({ summary }: FinancialDashboardProps) => {
 
             <div className="p-4 border rounded-xs bg-secondary border-tertiary">
                 <h3 className="mb-3 text-sm font-semibold">
-                    Distribuição por status
+                    {t('dashboard.financial.summary.distributionByStatus')}
                 </h3>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-tertiary">
                                 <th className="py-2 text-left font-medium text-tertiary">
-                                    Status
+                                    {t('dashboard.financial.columnStatus')}
                                 </th>
                                 <th className="py-2 text-right font-medium text-tertiary">
-                                    Quantidade
+                                    {t('dashboard.financial.summary.quantity')}
                                 </th>
                                 <th className="py-2 text-right font-medium text-tertiary">
-                                    Valor total
+                                    {t('dashboard.financial.summary.totalAmount')}
                                 </th>
                             </tr>
                         </thead>

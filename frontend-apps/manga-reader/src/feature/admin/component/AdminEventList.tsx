@@ -1,7 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
+import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminEvent } from '../type/admin.types';
 
@@ -11,6 +14,8 @@ type AdminEventListProps = {
     totalPages: number;
     isLoading: boolean;
     onPageChange: (page: number) => void;
+    onEdit: (event: AdminEvent) => void;
+    onDelete: (event: AdminEvent) => void;
 };
 
 const formatDate = (date: string | null) => {
@@ -22,33 +27,41 @@ const formatDate = (date: string | null) => {
     });
 };
 
-const StatusBadge = ({ status }: { status: string }) => {
-    const colors: Record<string, string> = {
-        HAPPENING_NOW: 'bg-green-500/20 text-green-300',
-        REGISTRATIONS_OPEN: 'bg-blue-500/20 text-blue-300',
-        COMING_SOON: 'bg-yellow-500/20 text-yellow-300',
-        ENDED: 'bg-tertiary/30 text-tertiary',
-    };
+const StatusBadge = ({ status }: { status: string }) => (
+    <span className="px-2 py-0.5 text-xs font-semibold rounded-xs bg-tertiary/30">
+        {status}
+    </span>
+);
 
-    return (
-        <span
-            className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[status] ?? 'bg-tertiary/30'}`}
-        >
-            {status}
-        </span>
-    );
-};
-
-const columns: Column<AdminEvent>[] = [
+const buildColumns = (
+    t: TFunction,
+    lang: LanguageTag,
+    onEdit: (event: AdminEvent) => void,
+    onDelete: (event: AdminEvent) => void,
+): Column<AdminEvent>[] => [
+    {
+        key: 'id',
+        header: t('dashboard.events.columnId'),
+        hiddenOnMobile: true,
+        render: event => (
+            <span className="font-mono text-xs text-tertiary">
+                {event.id.slice(0, 8)}
+            </span>
+        ),
+    },
     {
         key: 'title',
-        header: 'Titulo',
+        header: t('dashboard.events.columnTitle'),
         sortable: true,
-        render: event => <span className="font-medium">{event.title}</span>,
+        render: event => (
+            <span className="font-medium">
+                {event.titleI18n?.[lang] ?? event.titleI18n?.['pt-BR'] ?? event.title}
+            </span>
+        ),
     },
     {
         key: 'type',
-        header: 'Tipo',
+        header: t('dashboard.events.columnType'),
         sortable: true,
         render: event => (
             <span className="text-xs text-tertiary">{event.type}</span>
@@ -56,29 +69,59 @@ const columns: Column<AdminEvent>[] = [
     },
     {
         key: 'status',
-        header: 'Status',
+        header: t('dashboard.events.columnStatus'),
         sortable: true,
         render: event => <StatusBadge status={event.status} />,
     },
     {
         key: 'location',
-        header: 'Local',
+        header: t('dashboard.events.columnLocation'),
         render: event => (
             <span className="text-xs text-tertiary">
                 {event.locationIsOnline
-                    ? 'Online'
+                    ? t('dashboard.events.locationOnline')
                     : (event.locationCity ?? '—')}
             </span>
         ),
     },
     {
         key: 'startDate',
-        header: 'Inicio',
+        header: t('dashboard.events.columnStart'),
         sortable: true,
         render: event => (
             <span className="text-xs text-tertiary">
                 {formatDate(event.startDate)}
             </span>
+        ),
+    },
+    {
+        key: 'actions',
+        header: t('dashboard.events.columnActions'),
+        render: event => (
+            <div className="flex items-center justify-end gap-2">
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onEdit(event);
+                    }}
+                    className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
+                    aria-label={t('dashboard.events.editAriaLabel')}
+                >
+                    <FiEdit2 size={14} />
+                </button>
+                <button
+                    type="button"
+                    onClick={e => {
+                        e.stopPropagation();
+                        onDelete(event);
+                    }}
+                    className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                    aria-label={t('dashboard.events.deleteAriaLabel')}
+                >
+                    <FiTrash2 size={14} />
+                </button>
+            </div>
         ),
     },
 ];
@@ -89,24 +132,24 @@ const AdminEventList = ({
     totalPages,
     isLoading,
     onPageChange,
+    onEdit,
+    onDelete,
 }: AdminEventListProps) => {
-    const navigate = useNavigate();
+    const { t, i18n } = useTranslation('admin');
+    const lang = i18n.language as LanguageTag;
     const { sortedData, sortBy, sortDirection, handleSort } =
         useSortableData(events);
 
     return (
         <DataTable
-            columns={columns}
+            columns={buildColumns(t, lang, onEdit, onDelete)}
             data={sortedData}
             keyExtractor={event => event.id}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}
             isLoading={isLoading}
-            emptyMessage="Nenhum evento encontrado."
-            onRowClick={event =>
-                navigate(`/Manga-Reader/dashboard/events/${event.id}/edit`)
-            }
+            emptyMessage={t('dashboard.events.empty')}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSort={handleSort}
