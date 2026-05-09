@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiSearch } from 'react-icons/fi';
 
 import AdminGroupList from '@feature/admin/component/AdminGroupList';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import useAdminGroups from '@feature/admin/hook/useAdminGroups';
+import { useAdminGroupActions } from '@/feature/admin';
+import type { AdminGroup } from '@feature/admin/type/admin.types';
 
 const DashboardGroups = () => {
     const { t } = useTranslation('admin');
@@ -17,13 +21,23 @@ const DashboardGroups = () => {
         setSearch,
         setPage,
     } = useAdminGroups();
+    const { isSubmitting, handleDelete } = useAdminGroupActions();
 
+    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState(search);
+    const [deletingGroup, setDeletingGroup] = useState<AdminGroup | null>(null);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setSearch(searchInput);
         setPage(0);
+    };
+
+    const confirmDelete = async () => {
+        if (deletingGroup) {
+            await handleDelete(deletingGroup.id);
+            setDeletingGroup(null);
+        }
     };
 
     return (
@@ -65,6 +79,20 @@ const DashboardGroups = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
+                onEdit={group =>
+                    navigate(`/Manga-Reader/dashboard/groups/${group.id}`)
+                }
+                onDelete={setDeletingGroup}
+            />
+
+            <ConfirmDeleteWithIdModal
+                isOpen={deletingGroup !== null}
+                onClose={() => setDeletingGroup(null)}
+                onConfirm={confirmDelete}
+                entityId={deletingGroup?.id ?? ''}
+                title={t('dashboard.groups.deleteTitle')}
+                message={t('dashboard.groups.deleteConfirm')}
+                isSubmitting={isSubmitting}
             />
         </div>
     );

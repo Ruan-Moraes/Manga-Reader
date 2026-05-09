@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { FiSearch, FiPlus } from 'react-icons/fi';
 
 import AdminNewsList from '@feature/admin/component/AdminNewsList';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import useAdminNews from '@feature/admin/hook/useAdminNews';
+import { useAdminNewsActions } from '@/feature/admin';
+import type { AdminNews } from '@feature/admin/type/admin.types';
 
 const DashboardNews = () => {
     const { t } = useTranslation('admin');
@@ -18,14 +21,23 @@ const DashboardNews = () => {
         setSearch,
         setPage,
     } = useAdminNews();
+    const { isSubmitting, handleDelete } = useAdminNewsActions();
 
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState(search);
+    const [deletingNews, setDeletingNews] = useState<AdminNews | null>(null);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setSearch(searchInput);
         setPage(0);
+    };
+
+    const confirmDelete = async () => {
+        if (deletingNews) {
+            await handleDelete(deletingNews.id);
+            setDeletingNews(null);
+        }
     };
 
     return (
@@ -78,6 +90,20 @@ const DashboardNews = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
+                onEdit={n =>
+                    navigate(`/Manga-Reader/dashboard/news/${n.id}/edit`)
+                }
+                onDelete={setDeletingNews}
+            />
+
+            <ConfirmDeleteWithIdModal
+                isOpen={deletingNews !== null}
+                onClose={() => setDeletingNews(null)}
+                onConfirm={confirmDelete}
+                entityId={deletingNews?.id ?? ''}
+                title={t('dashboard.news.deleteTitle')}
+                message={t('dashboard.news.deleteConfirm')}
+                isSubmitting={isSubmitting}
             />
         </div>
     );

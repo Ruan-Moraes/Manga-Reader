@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiSearch } from 'react-icons/fi';
 
 import AdminUserList from '@feature/admin/component/AdminUserList';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import useAdminUsers from '@feature/admin/hook/useAdminUsers';
+import useAdminUserActions from '@feature/admin/hook/useAdminUserActions';
+import type { AdminUser } from '@feature/admin/type/admin.types';
 
 const DashboardUsers = () => {
     const { t } = useTranslation('admin');
@@ -17,13 +21,23 @@ const DashboardUsers = () => {
         setSearch,
         setPage,
     } = useAdminUsers();
+    const { isSubmitting, handleDelete } = useAdminUserActions();
 
+    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState(search);
+    const [deletingUser, setDeletingUser] = useState<AdminUser | null>(null);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setSearch(searchInput);
         setPage(0);
+    };
+
+    const confirmDelete = async () => {
+        if (deletingUser) {
+            await handleDelete(deletingUser.id);
+            setDeletingUser(null);
+        }
     };
 
     return (
@@ -65,6 +79,20 @@ const DashboardUsers = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
+                onEdit={user =>
+                    navigate(`/Manga-Reader/dashboard/users/${user.id}`)
+                }
+                onDelete={setDeletingUser}
+            />
+
+            <ConfirmDeleteWithIdModal
+                isOpen={deletingUser !== null}
+                onClose={() => setDeletingUser(null)}
+                onConfirm={confirmDelete}
+                entityId={deletingUser?.id ?? ''}
+                title={t('dashboard.users.deleteTitle')}
+                message={t('dashboard.users.deleteConfirm')}
+                isSubmitting={isSubmitting}
             />
         </div>
     );

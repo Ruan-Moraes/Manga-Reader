@@ -6,11 +6,13 @@ import RevenueChart from '@feature/admin/component/chart/RevenueChart';
 import RevenueKPICards from '@feature/admin/component/chart/RevenueKPICards';
 import FinancialDashboard from '@feature/admin/component/FinancialDashboard';
 import UpdatePaymentStatusModal from '@feature/admin/component/modal/UpdatePaymentStatusModal';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import useAdminPaymentActions from '@feature/admin/hook/useAdminPaymentActions';
 import useAdminPayments from '@feature/admin/hook/useAdminPayments';
 import useFinancialSummary from '@feature/admin/hook/useFinancialSummary';
 import useRevenueSeries from '@feature/admin/hook/useRevenueSeries';
 import type { AdminPayment } from '@feature/admin/type/admin.types';
+import BaseSelect from '@shared/component/input/BaseSelect';
 
 const STATUS_OPTIONS = [
     '',
@@ -55,11 +57,21 @@ const DashboardFinancial = () => {
     const [editingPayment, setEditingPayment] = useState<AdminPayment | null>(
         null,
     );
+    const [deletingPayment, setDeletingPayment] = useState<AdminPayment | null>(
+        null,
+    );
 
     const confirmUpdate = async (status: string) => {
         if (editingPayment) {
             await handleUpdateStatus(editingPayment.id, status);
             setEditingPayment(null);
+        }
+    };
+
+    const confirmDelete = async () => {
+        if (deletingPayment) {
+            await handleUpdateStatus(deletingPayment.id, 'FAILED');
+            setDeletingPayment(null);
         }
     };
 
@@ -105,23 +117,23 @@ const DashboardFinancial = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-                <label className="text-sm text-tertiary">
+                <span className="text-sm text-tertiary">
                     {t('dashboard.financial.statusLabel')}
-                </label>
-                <select
-                    value={statusFilter}
-                    onChange={e => {
-                        setStatusFilter(e.target.value);
-                        setPage(0);
-                    }}
-                    className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                >
-                    {STATUS_OPTIONS.map(option => (
-                        <option key={option || 'all'} value={option}>
-                            {statusLabels[option] ?? option}
-                        </option>
-                    ))}
-                </select>
+                </span>
+                <div className="min-w-[10rem]">
+                    <BaseSelect
+                        variant="outlined"
+                        value={statusFilter}
+                        onChange={e => {
+                            setStatusFilter(e.target.value);
+                            setPage(0);
+                        }}
+                        options={STATUS_OPTIONS.map(option => ({
+                            value: option,
+                            label: statusLabels[option] ?? option,
+                        }))}
+                    />
+                </div>
             </div>
 
             <AdminPaymentList
@@ -130,7 +142,8 @@ const DashboardFinancial = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
-                onRowClick={setEditingPayment}
+                onEdit={setEditingPayment}
+                onDelete={setDeletingPayment}
             />
 
             <UpdatePaymentStatusModal
@@ -139,6 +152,16 @@ const DashboardFinancial = () => {
                 onConfirm={confirmUpdate}
                 paymentId={editingPayment?.id ?? ''}
                 currentStatus={editingPayment?.status ?? 'PENDING'}
+                isSubmitting={isSubmitting}
+            />
+
+            <ConfirmDeleteWithIdModal
+                isOpen={deletingPayment !== null}
+                onClose={() => setDeletingPayment(null)}
+                onConfirm={confirmDelete}
+                entityId={deletingPayment?.id ?? ''}
+                title={t('dashboard.financial.deleteTitle')}
+                message={t('dashboard.financial.deleteConfirm')}
                 isSubmitting={isSubmitting}
             />
         </div>

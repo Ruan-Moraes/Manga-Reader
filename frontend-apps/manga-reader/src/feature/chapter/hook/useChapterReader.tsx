@@ -7,6 +7,7 @@ import { useTitles } from '@feature/manga';
 
 const useChapterReader = () => {
     const navigate = useNavigate();
+
     const { title: titleId = '', chapter: chapterId = '' } = useParams();
 
     const { titles, isLoading } = useTitles(titleId);
@@ -20,6 +21,7 @@ const useChapterReader = () => {
     const isInvalidChapter = isNaN(Number(chapterId));
 
     const bottomNavRef = useRef<HTMLDivElement | null>(null);
+
     const [isBottomNavVisible, setIsBottomNavVisible] = useState(false);
     const [windowHeight, setWindowHeight] = useState(window.innerHeight);
     const [imageError, setImageError] = useState(false);

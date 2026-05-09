@@ -7,8 +7,10 @@ import SubscriptionGrowthChart from '@feature/admin/component/chart/Subscription
 import SubscriptionSummaryCards from '@feature/admin/component/SubscriptionSummaryCards';
 import SubscriptionAuditLog from '@feature/admin/component/SubscriptionAuditLog';
 import UpdateSubscriptionStatusModal from '@feature/admin/component/modal/UpdateSubscriptionStatusModal';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import PlanFormModal from '@feature/admin/component/modal/PlanFormModal';
 import GrantSubscriptionModal from '@feature/admin/component/modal/GrantSubscriptionModal';
+import BaseSelect from '@shared/component/input/BaseSelect';
 import useAdminSubscriptionActions from '@feature/admin/hook/useAdminSubscriptionActions';
 import useAdminSubscriptions from '@feature/admin/hook/useAdminSubscriptions';
 import useAdminSubscriptionSummary from '@feature/admin/hook/useAdminSubscriptionSummary';
@@ -90,6 +92,8 @@ const DashboardSubscriptions = () => {
 
     const [editingSubscription, setEditingSubscription] =
         useState<AdminSubscription | null>(null);
+    const [deletingSubscription, setDeletingSubscription] =
+        useState<AdminSubscription | null>(null);
     const [isGrantOpen, setIsGrantOpen] = useState(false);
     const [isGrantSubmitting, setIsGrantSubmitting] = useState(false);
     const [selectedLogSubId, setSelectedLogSubId] = useState<string | null>(
@@ -120,18 +124,17 @@ const DashboardSubscriptions = () => {
         [refetchSubscriptions, t],
     );
 
-    const handleRevoke = useCallback(
-        async (sub: AdminSubscription) => {
-            try {
-                await revokeSubscription(sub.id);
-                showSuccessToast(t('dashboard.subscriptions.revokeSuccess'));
-                refetchSubscriptions();
-            } catch {
-                showErrorToast(t('dashboard.subscriptions.revokeError'));
-            }
-        },
-        [refetchSubscriptions, t],
-    );
+    const handleRevoke = useCallback(async () => {
+        if (!deletingSubscription) return;
+        try {
+            await revokeSubscription(deletingSubscription.id);
+            showSuccessToast(t('dashboard.subscriptions.revokeSuccess'));
+            setDeletingSubscription(null);
+            refetchSubscriptions();
+        } catch {
+            showErrorToast(t('dashboard.subscriptions.revokeError'));
+        }
+    }, [deletingSubscription, refetchSubscriptions, t]);
 
     // ── Plans state ────────────────────────────────
     const {
@@ -156,14 +159,20 @@ const DashboardSubscriptions = () => {
         priceInCents: number;
         description: string;
         features: string[];
+        descriptionI18n: import('@shared/type/i18n').LocalizedString;
+        featuresI18n: import('@shared/type/i18n').LocalizedStringList;
         active?: boolean;
+        prices: Record<string, number>;
     }) => {
         if (editingPlan) {
             await handleUpdatePlan(editingPlan.id, {
                 priceInCents: data.priceInCents,
                 description: data.description,
                 features: data.features,
+                descriptionI18n: data.descriptionI18n,
+                featuresI18n: data.featuresI18n,
                 active: data.active,
+                prices: data.prices,
             });
         } else {
             await handleCreatePlan({
@@ -171,6 +180,9 @@ const DashboardSubscriptions = () => {
                 priceInCents: data.priceInCents,
                 description: data.description,
                 features: data.features,
+                descriptionI18n: data.descriptionI18n,
+                featuresI18n: data.featuresI18n,
+                prices: data.prices,
             });
         }
         setIsPlanFormOpen(false);
@@ -227,26 +239,23 @@ const DashboardSubscriptions = () => {
                 <>
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-2">
-                            <label className="text-sm text-tertiary">
+                            <span className="text-sm text-tertiary">
                                 {t('dashboard.subscriptions.statusLabel')}
-                            </label>
-                            <select
-                                value={statusFilter}
-                                onChange={e => {
-                                    setStatusFilter(e.target.value);
-                                    setPage(0);
-                                }}
-                                className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                            >
-                                {STATUS_OPTIONS.map(option => (
-                                    <option
-                                        key={option || 'all'}
-                                        value={option}
-                                    >
-                                        {statusLabels[option] ?? option}
-                                    </option>
-                                ))}
-                            </select>
+                            </span>
+                            <div className="min-w-[10rem]">
+                                <BaseSelect
+                                    variant="outlined"
+                                    value={statusFilter}
+                                    onChange={e => {
+                                        setStatusFilter(e.target.value);
+                                        setPage(0);
+                                    }}
+                                    options={STATUS_OPTIONS.map(option => ({
+                                        value: option,
+                                        label: statusLabels[option] ?? option,
+                                    }))}
+                                />
+                            </div>
                             <span className="text-sm text-tertiary">
                                 {t('dashboard.subscriptions.count', {
                                     count: totalElements,
@@ -268,21 +277,8 @@ const DashboardSubscriptions = () => {
                         totalPages={totalPages}
                         isLoading={isLoading}
                         onPageChange={setPage}
-                        onRowClick={sub => {
-                            if (sub.status === 'ACTIVE') {
-                                if (
-                                    confirm(
-                                        t(
-                                            'dashboard.subscriptions.revokeConfirm',
-                                        ),
-                                    )
-                                ) {
-                                    handleRevoke(sub);
-                                    return;
-                                }
-                            }
-                            setEditingSubscription(sub);
-                        }}
+                        onEdit={setEditingSubscription}
+                        onDelete={setDeletingSubscription}
                     />
 
                     <UpdateSubscriptionStatusModal
@@ -299,6 +295,16 @@ const DashboardSubscriptions = () => {
                         onClose={() => setIsGrantOpen(false)}
                         onSubmit={handleGrant}
                         isSubmitting={isGrantSubmitting}
+                    />
+
+                    <ConfirmDeleteWithIdModal
+                        isOpen={deletingSubscription !== null}
+                        onClose={() => setDeletingSubscription(null)}
+                        onConfirm={handleRevoke}
+                        entityId={deletingSubscription?.id ?? ''}
+                        title={t('dashboard.subscriptions.deleteTitle')}
+                        message={t('dashboard.subscriptions.deleteConfirm')}
+                        isSubmitting={false}
                     />
                 </>
             )}

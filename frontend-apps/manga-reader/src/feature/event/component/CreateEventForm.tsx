@@ -1,3 +1,4 @@
+import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import BaseInput from '@shared/component/input/BaseInput';
@@ -5,10 +6,10 @@ import BaseTextArea from '@shared/component/input/BaseTextArea';
 import BaseSelect from '@shared/component/input/BaseSelect';
 import BaseCheckbox from '@shared/component/input/BaseCheckbox';
 
-import { eventTypes } from '../service/eventService';
 import type { DraftEvent } from '../hook/useEventForm';
-import type { EventType } from '../type/event.types';
-import type { FormEvent } from 'react';
+
+import { eventTypes } from '@feature/event';
+import type { EventType } from '@feature/event';
 
 type CreateEventFormProps = {
     draftEvent: DraftEvent;
@@ -42,9 +43,7 @@ const CreateEventForm = ({
 
     return (
         <section className="p-5 space-y-4 border rounded-2xl bg-secondary border-tertiary">
-            <h3 className="text-xl font-semibold">
-                {t('form.sectionTitle')}
-            </h3>
+            <h3 className="text-xl font-semibold">{t('form.sectionTitle')}</h3>
             <form
                 className="grid grid-cols-1 gap-3 lg:grid-cols-2"
                 onSubmit={onSubmit}
@@ -117,10 +116,7 @@ const CreateEventForm = ({
                         placeholder={t('form.placeholders.description')}
                         value={draftEvent.description}
                         onChange={event =>
-                            updateDraftField(
-                                'description',
-                                event.target.value,
-                            )
+                            updateDraftField('description', event.target.value)
                         }
                         name="description"
                         rows={4}
@@ -172,10 +168,7 @@ const CreateEventForm = ({
                     type="text"
                     value={draftEvent.maxParticipants}
                     onChange={event =>
-                        updateDraftField(
-                            'maxParticipants',
-                            event.target.value,
-                        )
+                        updateDraftField('maxParticipants', event.target.value)
                     }
                     name="maxParticipants"
                 />
@@ -224,9 +217,7 @@ const CreateEventForm = ({
                 </div>
             </form>
             <div className="p-4 text-sm border rounded-lg border-tertiary bg-primary">
-                <p className="mb-2 font-semibold">
-                    {t('form.preview.title')}
-                </p>
+                <p className="mb-2 font-semibold">{t('form.preview.title')}</p>
                 <p className="font-medium">
                     {draftEvent.title || t('form.preview.placeholderTitle')}
                 </p>

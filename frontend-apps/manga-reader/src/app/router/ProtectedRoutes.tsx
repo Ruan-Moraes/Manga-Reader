@@ -18,6 +18,7 @@ import DashboardEvents from '@app/route/dashboard/DashboardEvents';
 import DashboardEventForm from '@app/route/dashboard/DashboardEventForm';
 import DashboardGroups from '@app/route/dashboard/DashboardGroups';
 import DashboardGroupDetail from '@app/route/dashboard/DashboardGroupDetail';
+import DashboardGroupForm from '@app/route/dashboard/DashboardGroupForm';
 import DashboardFinancial from '@app/route/dashboard/DashboardFinancial';
 import DashboardSubscriptions from '@app/route/dashboard/DashboardSubscriptions';
 import DashboardTags from '@app/route/dashboard/DashboardTags';
@@ -129,6 +130,7 @@ const protectedRoutes = [
             { path: 'events/:eventId/edit', element: <DashboardEventForm /> },
             { path: 'groups', element: <DashboardGroups /> },
             { path: 'groups/:groupId', element: <DashboardGroupDetail /> },
+            { path: 'groups/:groupId/edit', element: <DashboardGroupForm /> },
             { path: 'tags', element: <DashboardTags /> },
             { path: 'financial', element: <DashboardFinancial /> },
             { path: 'subscriptions', element: <DashboardSubscriptions /> },

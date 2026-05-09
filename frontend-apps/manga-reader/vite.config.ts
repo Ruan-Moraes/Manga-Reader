@@ -8,6 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     base: ROUTES.WEB_URL,
+    publicDir: path.resolve(__dirname, '../packages/assets/icons'),
     plugins: [react(), tailwindcss()],
     resolve: {
         alias: {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import AdminTagList from '@feature/admin/component/AdminTagList';
 import TagFormModal from '@feature/admin/component/modal/TagFormModal';
-import ConfirmDeleteModal from '@shared/component/modal/ConfirmDeleteModal';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import useAdminTags from '@feature/admin/hook/useAdminTags';
 import { useAdminTagActions } from '@/feature/admin';
 import type { AdminTag } from '@feature/admin/type/admin.types';
@@ -20,7 +20,6 @@ const DashboardTags = () => {
         setSearch,
         setPage,
     } = useAdminTags();
-
     const { isSubmitting, handleCreate, handleUpdate, handleDelete } =
         useAdminTagActions();
 
@@ -38,13 +37,18 @@ const DashboardTags = () => {
         setIsFormOpen(true);
     };
 
-    const handleFormSubmit = async (label: string) => {
+    const handleFormSubmit = async (
+        label: string,
+        labelI18n: import('@shared/type/i18n').LocalizedString,
+    ) => {
         if (editingTag) {
-            await handleUpdate(editingTag.value, { label });
+            await handleUpdate(editingTag.value, { label, labelI18n });
         } else {
-            await handleCreate({ label });
+            await handleCreate({ label, labelI18n });
         }
+
         setIsFormOpen(false);
+
         setEditingTag(null);
     };
 
@@ -105,10 +109,11 @@ const DashboardTags = () => {
                 isSubmitting={isSubmitting}
             />
 
-            <ConfirmDeleteModal
+            <ConfirmDeleteWithIdModal
                 isOpen={deletingTag !== null}
                 onClose={() => setDeletingTag(null)}
                 onConfirm={confirmDelete}
+                entityId={deletingTag ? String(deletingTag.value) : ''}
                 title={t('dashboard.tags.deleteTitle')}
                 message={t('dashboard.tags.deleteConfirm', {
                     label: deletingTag?.label ?? '',

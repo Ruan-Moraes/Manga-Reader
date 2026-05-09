@@ -9,19 +9,20 @@ import { getAdminEventDetail } from '@feature/admin/service/adminEventService';
 import useAdminEventActions from '@feature/admin/hook/useAdminEventActions';
 import type { CreateEventRequest } from '@feature/admin/type/admin.types';
 
-const TIMELINES = ['UPCOMING', 'ONGOING', 'PAST'];
-const STATUSES = [
-    'HAPPENING_NOW',
-    'REGISTRATIONS_OPEN',
-    'COMING_SOON',
-    'ENDED',
-];
-const TYPES = ['CONVENCAO', 'LANCAMENTO', 'LIVE', 'WORKSHOP', 'MEETUP'];
+import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import BaseInput from '@shared/component/input/BaseInput';
+import BaseSelect from '@shared/component/input/BaseSelect';
+import BaseCheckbox from '@shared/component/input/BaseCheckbox';
+import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
+import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 
 const DashboardEventForm = () => {
     const { t } = useTranslation('admin');
+
     const { eventId } = useParams<{ eventId: string }>();
+
     const navigate = useNavigate();
+
     const isEditing = Boolean(eventId);
 
     const { handleCreate, handleUpdate, handleDelete, isSubmitting } =
@@ -32,6 +33,10 @@ const DashboardEventForm = () => {
         queryFn: () => getAdminEventDetail(eventId!),
         enabled: isEditing,
     });
+
+    const { data: timelineOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_TIMELINE);
+    const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_STATUS);
+    const { data: typeOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_TYPE);
 
     const [form, setForm] = useState<CreateEventRequest>({
         title: '',
@@ -53,6 +58,10 @@ const DashboardEventForm = () => {
         isFeatured: false,
     });
 
+    const [titleI18n, setTitleI18n] = useState<LocalizedString>({});
+    const [subtitleI18n, setSubtitleI18n] = useState<LocalizedString>({});
+    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
+
     useEffect(() => {
         if (existing) {
             setForm({
@@ -73,23 +82,67 @@ const DashboardEventForm = () => {
                 priceLabel: existing.priceLabel ?? '',
                 isFeatured: existing.isFeatured,
             });
+
+            setTitleI18n(
+                existing.titleI18n && Object.keys(existing.titleI18n).length
+                    ? existing.titleI18n
+                    : { [DEFAULT_LANGUAGE]: existing.title },
+            );
+
+            setSubtitleI18n(
+                existing.subtitleI18n &&
+                    Object.keys(existing.subtitleI18n).length
+                    ? existing.subtitleI18n
+                    : existing.subtitle
+                      ? { [DEFAULT_LANGUAGE]: existing.subtitle }
+                      : {},
+            );
+
+            setDescriptionI18n(
+                existing.descriptionI18n &&
+                    Object.keys(existing.descriptionI18n).length
+                    ? existing.descriptionI18n
+                    : existing.description
+                      ? { [DEFAULT_LANGUAGE]: existing.description }
+                      : {},
+            );
         }
     }, [existing]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const ptTitle =
+            (titleI18n[DEFAULT_LANGUAGE] ?? '').trim() || form.title;
+
+        if (!ptTitle) return;
+
+        const data = {
+            ...form,
+            title: ptTitle,
+            subtitle: subtitleI18n[DEFAULT_LANGUAGE] ?? form.subtitle,
+            description: descriptionI18n[DEFAULT_LANGUAGE] ?? form.description,
+            titleI18n,
+            ...(Object.keys(subtitleI18n).length ? { subtitleI18n } : {}),
+            ...(Object.keys(descriptionI18n).length ? { descriptionI18n } : {}),
+        };
+
         if (isEditing && eventId) {
-            const result = await handleUpdate(eventId, form);
+            const result = await handleUpdate(eventId, data);
+
             if (result) navigate('/Manga-Reader/dashboard/events');
         } else {
-            const result = await handleCreate(form);
+            const result = await handleCreate(data);
+
             if (result) navigate('/Manga-Reader/dashboard/events');
         }
     };
 
     const handleDeleteClick = async () => {
         if (!eventId || !confirm(t('dashboard.events.deleteConfirm'))) return;
+
         await handleDelete(eventId);
+
         navigate('/Manga-Reader/dashboard/events');
     };
 
@@ -118,267 +171,175 @@ const DashboardEventForm = () => {
                     : t('dashboard.events.newTitle')}
             </h1>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.title')} *
-                        </span>
-                        <input
-                            required
-                            value={form.title}
-                            onChange={e =>
-                                setForm(f => ({ ...f, title: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.subtitle')}
-                        </span>
-                        <input
-                            value={form.subtitle}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    subtitle: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                </div>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <LocalizedTextInput
+                    label={t('dashboard.events.form.title')}
+                    value={titleI18n}
+                    onChange={setTitleI18n}
+                    maxLength={200}
+                />
 
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">
-                        {t('dashboard.events.form.description')}
-                    </span>
-                    <textarea
-                        rows={3}
-                        value={form.description}
+                <LocalizedTextInput
+                    label={t('dashboard.events.form.subtitle')}
+                    value={subtitleI18n}
+                    onChange={setSubtitleI18n}
+                    requiredLanguages={[]}
+                    maxLength={500}
+                />
+
+                <LocalizedTextInput
+                    label={t('dashboard.events.form.description')}
+                    value={descriptionI18n}
+                    onChange={setDescriptionI18n}
+                    multiline
+                    rows={4}
+                    requiredLanguages={[]}
+                />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <BaseInput
+                        label={`${t('dashboard.events.form.startDate')} *`}
+                        variant="outlined"
+                        type="datetime-local"
+                        placeholder=""
+                        value={form.startDate}
                         onChange={e =>
                             setForm(f => ({
                                 ...f,
-                                description: e.target.value,
+                                startDate: e.target.value,
                             }))
                         }
-                        className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
-                </label>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.startDate')} *
-                        </span>
-                        <input
-                            type="datetime-local"
-                            required
-                            value={form.startDate}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    startDate: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.endDate')} *
-                        </span>
-                        <input
-                            type="datetime-local"
-                            required
-                            value={form.endDate}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    endDate: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
+                    <BaseInput
+                        label={`${t('dashboard.events.form.endDate')} *`}
+                        variant="outlined"
+                        type="datetime-local"
+                        placeholder=""
+                        value={form.endDate}
+                        onChange={e =>
+                            setForm(f => ({
+                                ...f,
+                                endDate: e.target.value,
+                            }))
+                        }
+                    />
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.timeline')} *
-                        </span>
-                        <select
-                            value={form.timeline}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    timeline: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        >
-                            {TIMELINES.map(tl => (
-                                <option key={tl} value={tl}>
-                                    {tl}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.status')} *
-                        </span>
-                        <select
-                            value={form.status}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    status: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        >
-                            {STATUSES.map(s => (
-                                <option key={s} value={s}>
-                                    {s}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.type')} *
-                        </span>
-                        <select
-                            value={form.type}
-                            onChange={e =>
-                                setForm(f => ({ ...f, type: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        >
-                            {TYPES.map(ty => (
-                                <option key={ty} value={ty}>
-                                    {ty}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                <div className="grid gap-4 sm:grid-cols-3">
+                    <BaseSelect
+                        label={`${t('dashboard.events.form.timeline')} *`}
+                        variant="outlined"
+                        value={form.timeline}
+                        onChange={e =>
+                            setForm(f => ({ ...f, timeline: e.target.value }))
+                        }
+                        options={timelineOptions}
+                    />
+                    <BaseSelect
+                        label={`${t('dashboard.events.form.status')} *`}
+                        variant="outlined"
+                        value={form.status}
+                        onChange={e =>
+                            setForm(f => ({ ...f, status: e.target.value }))
+                        }
+                        options={statusOptions}
+                    />
+                    <BaseSelect
+                        label={`${t('dashboard.events.form.type')} *`}
+                        variant="outlined"
+                        value={form.type}
+                        onChange={e =>
+                            setForm(f => ({ ...f, type: e.target.value }))
+                        }
+                        options={typeOptions}
+                    />
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.location')}
-                        </span>
-                        <input
-                            value={form.locationLabel}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    locationLabel: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.city')}
-                        </span>
-                        <input
-                            value={form.locationCity}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    locationCity: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <BaseInput
+                        label={t('dashboard.events.form.location')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.locationLabel ?? ''}
+                        onChange={e =>
+                            setForm(f => ({
+                                ...f,
+                                locationLabel: e.target.value,
+                            }))
+                        }
+                    />
+                    <BaseInput
+                        label={t('dashboard.events.form.city')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.locationCity ?? ''}
+                        onChange={e =>
+                            setForm(f => ({
+                                ...f,
+                                locationCity: e.target.value,
+                            }))
+                        }
+                    />
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.organizer')}
-                        </span>
-                        <input
-                            value={form.organizerName}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    organizerName: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.price')}
-                        </span>
-                        <input
-                            value={form.priceLabel}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    priceLabel: e.target.value,
-                                }))
-                            }
-                            placeholder={t(
-                                'dashboard.events.form.pricePlaceholder',
-                            )}
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.events.form.image')}
-                        </span>
-                        <input
-                            value={form.image}
-                            onChange={e =>
-                                setForm(f => ({ ...f, image: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
+                <div className="grid gap-4 sm:grid-cols-3">
+                    <BaseInput
+                        label={t('dashboard.events.form.organizer')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.organizerName ?? ''}
+                        onChange={e =>
+                            setForm(f => ({
+                                ...f,
+                                organizerName: e.target.value,
+                            }))
+                        }
+                    />
+                    <BaseInput
+                        label={t('dashboard.events.form.price')}
+                        variant="outlined"
+                        type="text"
+                        placeholder={t(
+                            'dashboard.events.form.pricePlaceholder',
+                        )}
+                        value={form.priceLabel ?? ''}
+                        onChange={e =>
+                            setForm(f => ({
+                                ...f,
+                                priceLabel: e.target.value,
+                            }))
+                        }
+                    />
+                    <BaseInput
+                        label={t('dashboard.events.form.image')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.image ?? ''}
+                        onChange={e =>
+                            setForm(f => ({ ...f, image: e.target.value }))
+                        }
+                    />
                 </div>
 
-                <div className="flex gap-4">
-                    <label className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            checked={form.locationIsOnline}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    locationIsOnline: e.target.checked,
-                                }))
-                            }
-                        />
-                        <span className="text-sm">
-                            {t('dashboard.events.form.online')}
-                        </span>
-                    </label>
-                    <label className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            checked={form.isFeatured}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    isFeatured: e.target.checked,
-                                }))
-                            }
-                        />
-                        <span className="text-sm">
-                            {t('dashboard.events.form.featured')}
-                        </span>
-                    </label>
+                <div className="flex flex-wrap gap-4">
+                    <BaseCheckbox
+                        label={t('dashboard.events.form.online')}
+                        checked={form.locationIsOnline}
+                        onChange={checked =>
+                            setForm(f => ({ ...f, locationIsOnline: checked }))
+                        }
+                    />
+                    <BaseCheckbox
+                        label={t('dashboard.events.form.featured')}
+                        checked={form.isFeatured}
+                        onChange={checked =>
+                            setForm(f => ({ ...f, isFeatured: checked }))
+                        }
+                    />
                 </div>
 
                 <div className="flex gap-2 pt-2">

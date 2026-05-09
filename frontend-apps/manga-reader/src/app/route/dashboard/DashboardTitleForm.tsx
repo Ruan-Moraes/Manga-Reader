@@ -8,6 +8,14 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { getAdminTitleDetail } from '@feature/admin/service/adminTitleService';
 import useAdminTitleActions from '@feature/admin/hook/useAdminTitleActions';
 import type { CreateTitleRequest } from '@feature/admin/type/admin.types';
+import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import BaseInput from '@shared/component/input/BaseInput';
+import BaseSelect from '@shared/component/input/BaseSelect';
+import BaseCheckbox from '@shared/component/input/BaseCheckbox';
+import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
+import { useDomainLabels, LABEL_TYPES } from '@feature/label';
+import { useTagsFetch, TagSelectInput } from '@feature/category';
+import type { Tag } from '@feature/category/type/tag.types';
 
 const DashboardTitleForm = () => {
     const { t } = useTranslation('admin');
@@ -24,6 +32,9 @@ const DashboardTitleForm = () => {
         enabled: isEditing,
     });
 
+    const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.PUBLICATION_STATUS);
+    const { data: allTags = [] } = useTagsFetch();
+
     const [form, setForm] = useState<CreateTitleRequest>({
         name: '',
         type: 'manga',
@@ -37,7 +48,9 @@ const DashboardTitleForm = () => {
         adult: false,
     });
 
-    const [genresInput, setGenresInput] = useState('');
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [nameI18n, setNameI18n] = useState<LocalizedString>({});
+    const [synopsisI18n, setSynopsisI18n] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (existing) {
@@ -53,18 +66,37 @@ const DashboardTitleForm = () => {
                 publisher: existing.publisher ?? '',
                 adult: existing.adult,
             });
-            setGenresInput(existing.genres.join(', '));
+            const matched = existing.genres
+                .map(g => allTags.find(t => t.label.toLowerCase() === g.toLowerCase()))
+                .filter((t): t is Tag => t !== undefined);
+            setSelectedTags(matched);
+            setNameI18n(
+                existing.nameI18n && Object.keys(existing.nameI18n).length
+                    ? existing.nameI18n
+                    : { [DEFAULT_LANGUAGE]: existing.name },
+            );
+            setSynopsisI18n(
+                existing.synopsisI18n && Object.keys(existing.synopsisI18n).length
+                    ? existing.synopsisI18n
+                    : existing.synopsis
+                      ? { [DEFAULT_LANGUAGE]: existing.synopsis }
+                      : {},
+            );
         }
     }, [existing]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const ptName = (nameI18n[DEFAULT_LANGUAGE] ?? '').trim() || form.name;
+        if (!ptName) return;
+
         const data = {
             ...form,
-            genres: genresInput
-                .split(',')
-                .map(g => g.trim())
-                .filter(Boolean),
+            name: ptName,
+            synopsis: synopsisI18n[DEFAULT_LANGUAGE] ?? form.synopsis,
+            nameI18n,
+            ...(Object.keys(synopsisI18n).length ? { synopsisI18n } : {}),
+            genres: selectedTags.map(t => t.label),
         };
 
         if (isEditing && titleId) {
@@ -107,157 +139,119 @@ const DashboardTitleForm = () => {
                     : t('dashboard.titles.newTitle')}
             </h1>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.name')} *
-                        </span>
-                        <input
-                            required
-                            value={form.name}
-                            onChange={e =>
-                                setForm(f => ({ ...f, name: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.type')} *
-                        </span>
-                        <select
-                            value={form.type}
-                            onChange={e =>
-                                setForm(f => ({ ...f, type: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        >
-                            <option value="manga">
-                                {t('dashboard.titles.form.typeManga')}
-                            </option>
-                            <option value="manhwa">
-                                {t('dashboard.titles.form.typeManhwa')}
-                            </option>
-                            <option value="manhua">
-                                {t('dashboard.titles.form.typeManhua')}
-                            </option>
-                        </select>
-                    </label>
-                </div>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <LocalizedTextInput
+                    label={t('dashboard.titles.form.name')}
+                    value={nameI18n}
+                    onChange={setNameI18n}
+                    maxLength={200}
+                />
 
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">
-                        {t('dashboard.titles.form.synopsis')}
-                    </span>
-                    <textarea
-                        rows={3}
-                        value={form.synopsis}
+                <BaseSelect
+                    label={t('dashboard.titles.form.type')}
+                    variant="outlined"
+                    value={form.type}
+                    onChange={e =>
+                        setForm(f => ({ ...f, type: e.target.value }))
+                    }
+                    options={[
+                        {
+                            value: 'manga',
+                            label: t('dashboard.titles.form.typeManga'),
+                        },
+                        {
+                            value: 'manhwa',
+                            label: t('dashboard.titles.form.typeManhwa'),
+                        },
+                        {
+                            value: 'manhua',
+                            label: t('dashboard.titles.form.typeManhua'),
+                        },
+                    ]}
+                />
+
+                <LocalizedTextInput
+                    label={t('dashboard.titles.form.synopsis')}
+                    value={synopsisI18n}
+                    onChange={setSynopsisI18n}
+                    multiline
+                    rows={4}
+                    requiredLanguages={[]}
+                />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <BaseInput
+                        label={t('dashboard.titles.form.cover')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.cover ?? ''}
                         onChange={e =>
-                            setForm(f => ({ ...f, synopsis: e.target.value }))
+                            setForm(f => ({ ...f, cover: e.target.value }))
                         }
-                        className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
-                </label>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.cover')}
-                        </span>
-                        <input
-                            value={form.cover}
-                            onChange={e =>
-                                setForm(f => ({ ...f, cover: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.status')}
-                        </span>
-                        <input
-                            value={form.status}
-                            onChange={e =>
-                                setForm(f => ({ ...f, status: e.target.value }))
-                            }
-                            placeholder={t(
-                                'dashboard.titles.form.statusPlaceholder',
-                            )}
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
+                    <BaseSelect
+                        label={t('dashboard.titles.form.status')}
+                        variant="outlined"
+                        value={form.status ?? ''}
+                        onChange={e =>
+                            setForm(f => ({ ...f, status: e.target.value }))
+                        }
+                        options={statusOptions}
+                    />
                 </div>
 
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm text-tertiary">
+                <div className="flex flex-col gap-1.5">
+                    <span className="text-xs font-bold">
                         {t('dashboard.titles.form.genres')}
                     </span>
-                    <input
-                        value={genresInput}
-                        onChange={e => setGenresInput(e.target.value)}
-                        placeholder={t(
-                            'dashboard.titles.form.genresPlaceholder',
-                        )}
-                        className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
+                    <TagSelectInput
+                        options={allTags}
+                        onChange={setSelectedTags}
+                        placeholder={t('dashboard.titles.form.genresPlaceholder')}
                     />
-                </label>
-
-                <div className="grid gap-3 sm:grid-cols-3">
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.author')}
-                        </span>
-                        <input
-                            value={form.author}
-                            onChange={e =>
-                                setForm(f => ({ ...f, author: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.artist')}
-                        </span>
-                        <input
-                            value={form.artist}
-                            onChange={e =>
-                                setForm(f => ({ ...f, artist: e.target.value }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                        <span className="text-sm text-tertiary">
-                            {t('dashboard.titles.form.publisher')}
-                        </span>
-                        <input
-                            value={form.publisher}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    publisher: e.target.value,
-                                }))
-                            }
-                            className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                        />
-                    </label>
                 </div>
 
-                <label className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        checked={form.adult}
+                <div className="grid gap-4 sm:grid-cols-3">
+                    <BaseInput
+                        label={t('dashboard.titles.form.author')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.author ?? ''}
                         onChange={e =>
-                            setForm(f => ({ ...f, adult: e.target.checked }))
+                            setForm(f => ({ ...f, author: e.target.value }))
                         }
                     />
-                    <span className="text-sm">
-                        {t('dashboard.titles.form.adult')}
-                    </span>
-                </label>
+                    <BaseInput
+                        label={t('dashboard.titles.form.artist')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.artist ?? ''}
+                        onChange={e =>
+                            setForm(f => ({ ...f, artist: e.target.value }))
+                        }
+                    />
+                    <BaseInput
+                        label={t('dashboard.titles.form.publisher')}
+                        variant="outlined"
+                        type="text"
+                        placeholder=""
+                        value={form.publisher ?? ''}
+                        onChange={e =>
+                            setForm(f => ({ ...f, publisher: e.target.value }))
+                        }
+                    />
+                </div>
+
+                <BaseCheckbox
+                    label={t('dashboard.titles.form.adult')}
+                    checked={form.adult}
+                    onChange={checked =>
+                        setForm(f => ({ ...f, adult: checked }))
+                    }
+                />
 
                 <div className="flex gap-2 pt-2">
                     <button

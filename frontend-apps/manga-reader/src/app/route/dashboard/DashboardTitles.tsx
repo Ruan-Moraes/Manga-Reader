@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { FiSearch, FiPlus } from 'react-icons/fi';
 
 import AdminTitleList from '@feature/admin/component/AdminTitleList';
+import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
 import useAdminTitles from '@feature/admin/hook/useAdminTitles';
+import { useAdminTitleActions } from '@/feature/admin';
+import type { AdminTitle } from '@feature/admin/type/admin.types';
 
 const DashboardTitles = () => {
     const { t } = useTranslation('admin');
@@ -18,14 +21,23 @@ const DashboardTitles = () => {
         setSearch,
         setPage,
     } = useAdminTitles();
+    const { isSubmitting, handleDelete } = useAdminTitleActions();
 
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState(search);
+    const [deletingTitle, setDeletingTitle] = useState<AdminTitle | null>(null);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setSearch(searchInput);
         setPage(0);
+    };
+
+    const confirmDelete = async () => {
+        if (deletingTitle) {
+            await handleDelete(deletingTitle.id);
+            setDeletingTitle(null);
+        }
     };
 
     return (
@@ -78,6 +90,20 @@ const DashboardTitles = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
+                onEdit={title =>
+                    navigate(`/Manga-Reader/dashboard/titles/${title.id}/edit`)
+                }
+                onDelete={setDeletingTitle}
+            />
+
+            <ConfirmDeleteWithIdModal
+                isOpen={deletingTitle !== null}
+                onClose={() => setDeletingTitle(null)}
+                onConfirm={confirmDelete}
+                entityId={deletingTitle?.id ?? ''}
+                title={t('dashboard.titles.deleteTitle')}
+                message={t('dashboard.titles.deleteConfirm')}
+                isSubmitting={isSubmitting}
             />
         </div>
     );

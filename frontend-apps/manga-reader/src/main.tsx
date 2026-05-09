@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './style/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import './i18n/config';
+import i18n from './i18n/config';
 
 import { QueryClientProvider } from '@tanstack/react-query';
 
@@ -28,6 +28,13 @@ import publicRoutes from '@app/router/PublicRoutes';
 import protectedRoutes from '@app/router/ProtectedRoutes';
 
 initGlobalErrorHandler();
+
+// i18n — ao trocar idioma, invalida cache React Query.
+// Backend resolve LocalizedString por Accept-Language e particiona UGC,
+// então respostas em cache do idioma anterior não servem.
+i18n.on('languageChanged', () => {
+    queryClient.invalidateQueries();
+});
 
 const routes = createBrowserRouter([
     {
