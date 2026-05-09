@@ -9,7 +9,10 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import {
     changeGroupMemberRole,
+    deleteGroup,
     removeGroupMember,
+    updateAdminGroup,
+    type UpdateGroupRequest,
 } from '../service/adminGroupService';
 
 const useAdminGroupActions = () => {
@@ -57,10 +60,46 @@ const useAdminGroupActions = () => {
         [invalidateGroups],
     );
 
+    const handleUpdate = useCallback(
+        async (groupId: string, data: UpdateGroupRequest) => {
+            setIsSubmitting(true);
+            try {
+                const result = await updateAdminGroup(groupId, data);
+                showSuccessToast('Grupo atualizado com sucesso.');
+                invalidateGroups();
+                return result;
+            } catch {
+                showErrorToast('Erro ao atualizar grupo.');
+                return null;
+            } finally {
+                setIsSubmitting(false);
+            }
+        },
+        [invalidateGroups],
+    );
+
+    const handleDelete = useCallback(
+        async (groupId: string) => {
+            setIsSubmitting(true);
+            try {
+                await deleteGroup(groupId);
+                showSuccessToast('Grupo removido com sucesso.');
+                invalidateGroups();
+            } catch {
+                showErrorToast('Erro ao remover grupo.');
+            } finally {
+                setIsSubmitting(false);
+            }
+        },
+        [invalidateGroups],
+    );
+
     return {
         isSubmitting,
         handleChangeRole,
         handleRemoveMember,
+        handleUpdate,
+        handleDelete,
     };
 };
 

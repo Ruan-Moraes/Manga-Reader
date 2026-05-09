@@ -10,6 +10,7 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import {
     banUser,
     changeUserRole,
+    deleteUser,
     unbanUser,
 } from '../service/adminUserService';
 import type { BanUserRequest } from '../type/admin.types';
@@ -78,11 +79,28 @@ const useAdminUserActions = () => {
         [invalidateUsers],
     );
 
+    const handleDelete = useCallback(
+        async (userId: string) => {
+            setIsSubmitting(true);
+            try {
+                await deleteUser(userId);
+                showSuccessToast('Usuário removido com sucesso.');
+                invalidateUsers();
+            } catch {
+                showErrorToast('Erro ao remover usuário.');
+            } finally {
+                setIsSubmitting(false);
+            }
+        },
+        [invalidateUsers],
+    );
+
     return {
         isSubmitting,
         handleChangeRole,
         handleBan,
         handleUnban,
+        handleDelete,
     };
 };
 

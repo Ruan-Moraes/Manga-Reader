@@ -8,18 +8,34 @@ import type {
     UpdateTagRequest,
 } from '../type/admin.types';
 
+type AdminTagApi = {
+    value: number;
+    label: Record<string, string>;
+};
+
+const fromAdminTagApi = (raw: AdminTagApi): AdminTag => {
+    const ptBR = raw.label['pt-BR'] ?? Object.values(raw.label)[0] ?? '';
+    return { value: raw.value, label: ptBR, labelI18n: raw.label };
+};
+
 export const getAdminTags = async (
     page = 0,
     size = 20,
     search?: string,
 ): Promise<PageResponse<AdminTag>> => {
-    const url = search ? `${API_URLS.TAGS}/search` : API_URLS.TAGS;
-    const params = search ? { q: search, page, size } : { page, size };
-
-    const response = await api.get<ApiResponse<PageResponse<AdminTag>>>(url, {
-        params,
-    });
-    return response.data.data;
+    if (search) {
+        const response = await api.get<ApiResponse<PageResponse<AdminTag>>>(
+            `${API_URLS.TAGS}/search`,
+            { params: { q: search, page, size } },
+        );
+        return response.data.data;
+    }
+    const response = await api.get<ApiResponse<PageResponse<AdminTagApi>>>(
+        `${API_URLS.TAGS}/admin`,
+        { params: { page, size } },
+    );
+    const data = response.data.data;
+    return { ...data, content: data.content.map(fromAdminTagApi) };
 };
 
 export const createTag = async (data: CreateTagRequest): Promise<AdminTag> => {

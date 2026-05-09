@@ -59,3 +59,7 @@ export const unbanUser = async (userId: string): Promise<AdminUser> => {
     );
     return response.data.data;
 };
+
+export const deleteUser = async (userId: string): Promise<void> => {
+    await api.delete(`${API_URLS.ADMIN_USERS}/${userId}`);
+};

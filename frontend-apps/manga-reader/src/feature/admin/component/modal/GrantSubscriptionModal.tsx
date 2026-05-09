@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import BaseInput from '@shared/component/input/BaseInput';
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import AdminModal from './AdminModal';
 
 type GrantSubscriptionModalProps = {
     isOpen: boolean;
@@ -29,8 +29,8 @@ const GrantSubscriptionModal = ({
     };
 
     return (
-        <BaseModal isModalOpen={isOpen} closeModal={onClose}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-2">
+        <AdminModal isOpen={isOpen} onClose={onClose}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-2">
                 <h3 className="text-sm font-bold">
                     {t('grantSubscription.title')}
                 </h3>
@@ -74,7 +74,7 @@ const GrantSubscriptionModal = ({
                     </button>
                 </div>
             </form>
-        </BaseModal>
+        </AdminModal>
     );
 };
 

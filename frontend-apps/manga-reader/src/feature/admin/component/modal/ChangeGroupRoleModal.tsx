@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import BaseRadioGroup from '@shared/component/input/BaseRadioGroup';
+import AdminModal from './AdminModal';
 
 type ChangeGroupRoleModalProps = {
     isOpen: boolean;
@@ -28,57 +30,65 @@ const ChangeGroupRoleModal = ({
     currentRole,
     isSubmitting,
 }: ChangeGroupRoleModalProps) => {
+    const { t } = useTranslation('admin');
     const [selectedRole, setSelectedRole] = useState(
         currentRole ?? GROUP_ROLES[0],
     );
 
     return (
-        <BaseModal isModalOpen={isOpen} closeModal={onClose}>
-            <h3 className="text-sm font-bold">Alterar role de {memberName}</h3>
-            <p className="text-xs text-tertiary">
-                Role atual:{' '}
-                <span className="font-semibold">{currentRole ?? '—'}</span>
-            </p>
+        <AdminModal isOpen={isOpen} onClose={onClose}>
+            <div className="flex flex-col gap-4 p-2">
+                <div className="flex flex-col gap-1">
+                    <h3 className="text-sm font-bold">
+                        {t('changeGroupRole.title', { name: memberName })}
+                    </h3>
+                    <p className="text-xs text-tertiary">
+                        {t('changeGroupRole.currentRole')}{' '}
+                        <span className="font-semibold">
+                            {currentRole
+                                ? t(
+                                      `changeGroupRole.roles.${currentRole}`,
+                                      currentRole,
+                                  )
+                                : '—'}
+                        </span>
+                    </p>
+                </div>
 
-            <div className="flex flex-col gap-2 mt-2 max-h-64 overflow-y-auto">
-                {GROUP_ROLES.map(role => (
-                    <label
-                        key={role}
-                        className={`flex items-center gap-2 p-2 text-sm border rounded-xs cursor-pointer transition-colors ${
-                            selectedRole === role
-                                ? 'border-quaternary-default bg-quaternary-opacity-25'
-                                : 'border-tertiary hover:bg-tertiary/20'
-                        }`}
+                <div className="max-h-64 overflow-y-auto">
+                    <BaseRadioGroup
+                        name="group-role"
+                        orientation="vertical"
+                        value={selectedRole}
+                        onChange={setSelectedRole}
+                        options={GROUP_ROLES.map(role => ({
+                            value: role,
+                            label: t(`changeGroupRole.roles.${role}`, role),
+                        }))}
+                    />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-3 py-1.5 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
                     >
-                        <input
-                            type="radio"
-                            name="group-role"
-                            value={role}
-                            checked={selectedRole === role}
-                            onChange={() => setSelectedRole(role)}
-                            className="accent-quaternary-default"
-                        />
-                        {role}
-                    </label>
-                ))}
+                        {t('changeGroupRole.cancel')}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onConfirm(selectedRole)}
+                        disabled={selectedRole === currentRole || isSubmitting}
+                        className="px-3 py-1.5 text-sm font-semibold border rounded-xs bg-quaternary-opacity-25 border-quaternary-default hover:bg-quaternary-opacity-50 disabled:opacity-50"
+                    >
+                        {isSubmitting
+                            ? t('changeGroupRole.confirming')
+                            : t('changeGroupRole.confirm')}
+                    </button>
+                </div>
             </div>
-
-            <div className="flex gap-2 mt-3">
-                <button
-                    onClick={onClose}
-                    className="flex-1 p-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
-                >
-                    Cancelar
-                </button>
-                <button
-                    onClick={() => onConfirm(selectedRole)}
-                    disabled={selectedRole === currentRole || isSubmitting}
-                    className="flex-1 p-2 text-sm font-semibold border rounded-xs bg-quaternary-opacity-25 border-quaternary-default hover:bg-quaternary-opacity-50 disabled:opacity-50"
-                >
-                    {isSubmitting ? 'Salvando...' : 'Confirmar'}
-                </button>
-            </div>
-        </BaseModal>
+        </AdminModal>
     );
 };
 

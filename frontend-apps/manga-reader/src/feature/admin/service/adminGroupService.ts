@@ -6,6 +6,17 @@ import type {
     AdminGroup,
     ChangeGroupMemberRoleRequest,
 } from '../type/admin.types';
+import type { LocalizedString } from '@shared/type/i18n';
+
+export type UpdateGroupRequest = {
+    name?: string;
+    description?: string;
+    nameI18n?: LocalizedString;
+    descriptionI18n?: LocalizedString;
+    logo?: string;
+    banner?: string;
+    website?: string;
+};
 
 export const getAdminGroups = async (
     page = 0,
@@ -42,6 +53,17 @@ export const changeGroupMemberRole = async (
     return response.data.data;
 };
 
+export const updateAdminGroup = async (
+    groupId: string,
+    data: UpdateGroupRequest,
+): Promise<AdminGroup> => {
+    const response = await api.patch<ApiResponse<AdminGroup>>(
+        `/api/groups/${groupId}`,
+        data,
+    );
+    return response.data.data;
+};
+
 export const removeGroupMember = async (
     groupId: string,
     userId: string,
@@ -50,4 +72,8 @@ export const removeGroupMember = async (
         `${API_URLS.ADMIN_GROUPS}/${groupId}/members/${userId}`,
     );
     return response.data.data;
+};
+
+export const deleteGroup = async (groupId: string): Promise<void> => {
+    await api.delete(`${API_URLS.ADMIN_GROUPS}/${groupId}`);
 };

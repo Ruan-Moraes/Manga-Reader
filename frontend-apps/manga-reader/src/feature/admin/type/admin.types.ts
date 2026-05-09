@@ -31,12 +31,16 @@ export type ChangeRoleRequest = {
     role: string;
 };
 
+import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
+
 export type AdminTitle = {
     id: string;
     name: string;
     type: string;
     cover: string | null;
     synopsis: string | null;
+    nameI18n: LocalizedString;
+    synopsisI18n: LocalizedString;
     genres: string[];
     status: string | null;
     author: string | null;
@@ -55,6 +59,8 @@ export type CreateTitleRequest = {
     type: string;
     cover?: string;
     synopsis?: string;
+    nameI18n?: LocalizedString;
+    synopsisI18n?: LocalizedString;
     genres?: string[];
     status?: string;
     author?: string;
@@ -70,6 +76,10 @@ export type AdminNews = {
     title: string;
     subtitle: string | null;
     excerpt: string | null;
+    titleI18n: LocalizedString;
+    subtitleI18n: LocalizedString;
+    excerptI18n: LocalizedString;
+    contentI18n: LocalizedStringList;
     coverImage: string | null;
     category: string;
     tags: string[];
@@ -89,6 +99,10 @@ export type CreateNewsRequest = {
     subtitle?: string;
     excerpt?: string;
     content?: string[];
+    titleI18n?: LocalizedString;
+    subtitleI18n?: LocalizedString;
+    excerptI18n?: LocalizedString;
+    contentI18n?: LocalizedStringList;
     coverImage?: string;
     tags?: string[];
     authorName?: string;
@@ -106,6 +120,9 @@ export type AdminEvent = {
     title: string;
     subtitle: string | null;
     description: string | null;
+    titleI18n: LocalizedString;
+    subtitleI18n: LocalizedString;
+    descriptionI18n: LocalizedString;
     image: string | null;
     startDate: string;
     endDate: string;
@@ -134,6 +151,9 @@ export type CreateEventRequest = {
     type: string;
     subtitle?: string;
     description?: string;
+    titleI18n?: LocalizedString;
+    subtitleI18n?: LocalizedString;
+    descriptionI18n?: LocalizedString;
     image?: string;
     timezone?: string;
     locationLabel?: string;
@@ -166,6 +186,8 @@ export type AdminGroup = {
     username: string;
     logo: string | null;
     description: string | null;
+    nameI18n: LocalizedString;
+    descriptionI18n: LocalizedString;
     status: string;
     totalTitles: number;
     membersCount: number;
@@ -246,14 +268,17 @@ export type UpdateSubscriptionStatusRequest = {
 export type AdminTag = {
     value: number;
     label: string;
+    labelI18n?: LocalizedString;
 };
 
 export type CreateTagRequest = {
     label: string;
+    labelI18n?: LocalizedString;
 };
 
 export type UpdateTagRequest = {
     label: string;
+    labelI18n?: LocalizedString;
 };
 
 export type AdminPlan = {
@@ -263,6 +288,7 @@ export type AdminPlan = {
     description: string;
     features: string[];
     active: boolean;
+    prices?: Record<string, number>;
 };
 
 export type CreatePlanRequest = {
@@ -270,13 +296,19 @@ export type CreatePlanRequest = {
     priceInCents: number;
     description: string;
     features?: string[];
+    descriptionI18n?: LocalizedString;
+    featuresI18n?: LocalizedStringList;
+    prices?: Record<string, number>;
 };
 
 export type UpdatePlanRequest = {
     priceInCents?: number;
     description?: string;
     features?: string[];
+    descriptionI18n?: LocalizedString;
+    featuresI18n?: LocalizedStringList;
     active?: boolean;
+    prices?: Record<string, number>;
 };
 
 export type GrantSubscriptionRequest = {
