@@ -13,7 +13,6 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 @Configuration
 public class I18nConfig {
-
     public static final Locale DEFAULT_LOCALE = Locale.forLanguageTag("pt-BR");
 
     public static final List<Locale> SUPPORTED_LOCALES = List.of(
@@ -30,6 +29,7 @@ public class I18nConfig {
         source.setFallbackToSystemLocale(false);
         source.setUseCodeAsDefaultMessage(true);
         source.setCacheSeconds(0);
+
         return source;
     }
 
@@ -38,6 +38,7 @@ public class I18nConfig {
         AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
         resolver.setDefaultLocale(DEFAULT_LOCALE);
         resolver.setSupportedLocales(SUPPORTED_LOCALES);
+
         return resolver;
     }
 
@@ -45,6 +46,7 @@ public class I18nConfig {
     public LocalValidatorFactoryBean validatorFactoryBean(MessageSource messageSource) {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource);
+
         return bean;
     }
 }
