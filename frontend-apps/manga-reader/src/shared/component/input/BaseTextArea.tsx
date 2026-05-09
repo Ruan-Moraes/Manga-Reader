@@ -1,7 +1,7 @@
 type BaseTextAreaVariant = 'default' | 'outlined';
 
 type BaseTextAreaTypes = {
-    label: string;
+    label?: string;
     placeholder: string;
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -34,8 +34,8 @@ const BaseTextArea = ({
 
     return (
         <div>
-            <label className="flex flex-col gap-1">
-                <span className="text-xs font-bold">{label}</span>
+            <label className="flex flex-col gap-1.5">
+                {label && <span className="text-xs font-bold">{label}</span>}
                 <textarea
                     className={textareaClass}
                     placeholder={placeholder}

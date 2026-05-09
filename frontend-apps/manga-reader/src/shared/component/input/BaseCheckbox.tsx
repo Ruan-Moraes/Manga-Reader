@@ -17,11 +17,11 @@ const BaseCheckbox = ({
 }: BaseCheckboxTypes) => {
     return (
         <label
-            className={`flex items-center gap-2 w-max cursor-pointer ${className ?? ''}`}
+            className={`flex items-center gap-2 py-1 w-max cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className ?? ''}`}
         >
-            <div className="relative w-5 h-5">
+            <div className="relative w-5 h-5 shrink-0">
                 <input
-                    className="w-full h-full transition duration-300 border rounded-xs appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-50 peer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-full transition duration-300 border rounded-xs appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-50 checked:border-quaternary-default peer focus-visible:ring-2 focus-visible:ring-quaternary-default focus-visible:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
                     type="checkbox"
                     {...(checked !== undefined && { checked })}
                     {...(onChange && {

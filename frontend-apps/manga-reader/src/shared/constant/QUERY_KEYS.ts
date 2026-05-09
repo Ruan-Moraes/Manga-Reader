@@ -79,4 +79,7 @@ export enum QUERY_KEYS {
     ADMIN_SUBSCRIPTION_LOGS = 'adminSubscriptionLogs',
     MY_SUBSCRIPTION = 'mySubscription',
     MY_SUBSCRIPTION_HISTORY = 'mySubscriptionHistory',
+
+    // Domain Labels
+    DOMAIN_LABELS = 'domainLabels',
 }

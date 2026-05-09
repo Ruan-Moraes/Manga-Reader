@@ -5,6 +5,8 @@ import type {
     InternalAxiosRequestConfig,
 } from 'axios';
 
+import i18n from '@/i18n/config';
+
 import { showErrorToast } from '@shared/service/util/toastService';
 import { resolveApiErrorMessage } from '@shared/service/util/apiErrorMessages';
 
@@ -30,6 +32,17 @@ const onRequest = (
         }
     } catch {
         // Se o parse falhar, segue sem token.
+    }
+
+    // i18n — idioma ativo do usuário. Backend usa para resolver LocalizedString
+    // e particionar UGC. Vary: Accept-Language no servidor garante cache correto.
+    try {
+        const lang = i18n.language;
+        if (lang) {
+            config.headers.set('Accept-Language', lang);
+        }
+    } catch {
+        // Silencia se i18n não inicializou.
     }
 
     return config;

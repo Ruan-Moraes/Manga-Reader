@@ -44,7 +44,7 @@ const BaseInput = ({
 
     return (
         <div>
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1.5">
                 <span className="text-xs font-bold">{label}</span>
                 <input
                     className={inputClass}

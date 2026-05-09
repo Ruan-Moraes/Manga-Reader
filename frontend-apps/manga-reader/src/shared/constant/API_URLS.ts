@@ -31,6 +31,8 @@ export const API_URLS = {
 
     TAGS: `${BASE}/api/tags`,
 
+    LABELS: `${BASE}/api/labels`,
+
     NEWS: `${BASE}/api/news`,
 
     EVENTS: `${BASE}/api/events`,
