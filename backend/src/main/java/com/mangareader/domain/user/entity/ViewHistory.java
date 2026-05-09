@@ -25,7 +25,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ViewHistory {
-
     @Id
     private String id;
 

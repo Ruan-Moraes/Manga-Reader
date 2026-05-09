@@ -42,7 +42,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class SavedManga {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

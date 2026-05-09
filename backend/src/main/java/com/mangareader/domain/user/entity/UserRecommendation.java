@@ -34,7 +34,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class UserRecommendation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

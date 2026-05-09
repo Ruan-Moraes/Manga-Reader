@@ -15,9 +15,12 @@ import com.mangareader.domain.event.valueobject.EventOrganizer;
 import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.event.valueobject.EventTimeline;
 import com.mangareader.domain.event.valueobject.EventType;
+import com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringJsonConverter;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -53,11 +56,29 @@ public class Event {
     @Column(nullable = false, length = 200)
     private String title;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "title_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString titleI18n = LocalizedString.empty();
+
     @Column(length = 500)
     private String subtitle;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "subtitle_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString subtitleI18n = LocalizedString.empty();
+
     @Column(length = 5000)
     private String description;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "description_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString descriptionI18n = LocalizedString.empty();
 
     private String image;
 

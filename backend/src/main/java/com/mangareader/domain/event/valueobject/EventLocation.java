@@ -19,7 +19,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class EventLocation {
-
     private String label;
     private String address;
     private String city;

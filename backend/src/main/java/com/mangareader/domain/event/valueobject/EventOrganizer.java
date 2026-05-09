@@ -19,7 +19,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class EventOrganizer {
-
     private String organizerId;
     private String organizerName;
     private String organizerAvatar;

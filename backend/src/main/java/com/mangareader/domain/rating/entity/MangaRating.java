@@ -52,6 +52,13 @@ public class MangaRating {
 
     private String comment;
 
+    /**
+     * Idioma de exibição do usuário no momento da criação (BCP 47).
+     * UGC é particionado por idioma. Etapa 2 i18n.
+     */
+    @Builder.Default
+    private String language = "pt-BR";
+
     @CreatedDate
     private LocalDateTime createdAt;
 

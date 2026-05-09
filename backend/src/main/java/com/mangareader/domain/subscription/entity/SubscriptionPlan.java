@@ -1,15 +1,21 @@
 package com.mangareader.domain.subscription.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
+import com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringJsonConverter;
+import com.mangareader.shared.domain.i18n.LocalizedString;
+import com.mangareader.shared.domain.i18n.LocalizedStringList;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -52,6 +58,12 @@ public class SubscriptionPlan {
     @Column(nullable = false, length = 300)
     private String description;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "description_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString descriptionI18n = LocalizedString.empty();
+
     /**
      * Lista de funcionalidades inclusas no plano.
      * Armazenada como JSONB para flexibilidade sem migrations extras.
@@ -61,7 +73,24 @@ public class SubscriptionPlan {
     @Builder.Default
     private List<String> features = new ArrayList<>();
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringListJsonConverter.class)
+    @Column(name = "features_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedStringList featuresI18n = LocalizedStringList.empty();
+
     @Column(nullable = false)
     @Builder.Default
     private boolean active = true;
+
+    /**
+     * Preços em múltiplas moedas (currency code ISO 4217 → centavos).
+     * Exemplo: {@code {"BRL": 1990, "USD": 399}}.
+     * <p>
+     * {@link #priceInCents} mantém o valor BRL para compatibilidade retroativa.
+     */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private Map<String, Long> prices = new HashMap<>();
 }

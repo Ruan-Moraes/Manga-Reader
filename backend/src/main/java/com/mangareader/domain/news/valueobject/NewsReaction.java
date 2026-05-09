@@ -17,7 +17,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class NewsReaction {
-
     private int like;
     private int excited;
     private int sad;

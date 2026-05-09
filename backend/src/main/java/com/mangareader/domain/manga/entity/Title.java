@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mangareader.domain.manga.valueobject.Chapter;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,10 +41,18 @@ public class Title {
     @TextIndexed(weight = 10)
     private String name;
 
+    /** Versão multilíngue de {@link #name} (mapa BCP 47 → texto). Etapa 2 i18n — Fase A. */
+    @Builder.Default
+    private LocalizedString nameI18n = LocalizedString.empty();
+
     private String cover;
 
     @TextIndexed(weight = 3)
     private String synopsis;
+
+    /** Versão multilíngue de {@link #synopsis}. Etapa 2 i18n — Fase A. */
+    @Builder.Default
+    private LocalizedString synopsisI18n = LocalizedString.empty();
 
     @Indexed
     @Builder.Default

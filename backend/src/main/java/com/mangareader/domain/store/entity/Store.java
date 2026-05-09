@@ -8,9 +8,12 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.mangareader.domain.store.valueobject.StoreAvailability;
+import com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringJsonConverter;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,7 +41,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Store {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -46,11 +48,23 @@ public class Store {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "name_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString nameI18n = LocalizedString.empty();
+
     private String logo;
     private String icon;
 
     @Column(length = 2000)
     private String description;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "description_i18n", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString descriptionI18n = LocalizedString.empty();
 
     @Column(nullable = false)
     private String website;

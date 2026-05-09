@@ -45,7 +45,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ForumTopic {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -59,6 +58,14 @@ public class ForumTopic {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    /**
+     * Idioma do post (BCP 47). UGC é particionado — listagens filtram por
+     * este campo para evitar contaminação cross-language. Etapa 2/3 i18n.
+     */
+    @Column(nullable = false, length = 10)
+    @Builder.Default
+    private String language = "pt-BR";
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)

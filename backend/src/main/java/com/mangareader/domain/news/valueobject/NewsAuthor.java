@@ -17,7 +17,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class NewsAuthor {
-
     private String id;
     private String name;
     private String avatar;

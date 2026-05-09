@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.domain.news.valueobject.NewsReaction;
+import com.mangareader.shared.domain.i18n.LocalizedString;
+import com.mangareader.shared.domain.i18n.LocalizedStringList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,20 +37,35 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class NewsItem {
-
     @Id
     private String id;
 
     @TextIndexed(weight = 10)
     private String title;
 
+    /** Versão multilíngue de {@link #title}. Etapa 2 i18n — Fase A. */
+    @Builder.Default
+    private LocalizedString titleI18n = LocalizedString.empty();
+
     private String subtitle;
+
+    /** Versão multilíngue de {@link #subtitle}. Etapa 2 i18n — Fase A. */
+    @Builder.Default
+    private LocalizedString subtitleI18n = LocalizedString.empty();
 
     @TextIndexed(weight = 3)
     private String excerpt;
 
+    /** Versão multilíngue de {@link #excerpt}. Etapa 2 i18n — Fase A. */
+    @Builder.Default
+    private LocalizedString excerptI18n = LocalizedString.empty();
+
     @Builder.Default
     private List<String> content = new ArrayList<>();
+
+    /** Versão multilíngue de {@link #content}. Etapa 2 i18n — Fase A. */
+    @Builder.Default
+    private LocalizedStringList contentI18n = LocalizedStringList.empty();
 
     private String coverImage;
 

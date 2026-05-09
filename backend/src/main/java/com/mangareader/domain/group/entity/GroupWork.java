@@ -41,7 +41,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class GroupWork {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

@@ -26,7 +26,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Comment {
-
     @Id
     private String id;
 
@@ -51,6 +50,15 @@ public class Comment {
 
     private String textContent;
     private String imageContent;
+
+    /**
+     * Idioma de exibição configurado pelo usuário no momento da criação (BCP 47).
+     * UGC é particionado por idioma — listagens filtram por este campo.
+     * Etapa 2 i18n.
+     */
+    @Indexed
+    @Builder.Default
+    private String language = "pt-BR";
 
     @Builder.Default
     private int likeCount = 0;

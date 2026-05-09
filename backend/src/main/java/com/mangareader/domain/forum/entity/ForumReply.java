@@ -35,7 +35,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ForumReply {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -50,6 +49,11 @@ public class ForumReply {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    /** Idioma do post (BCP 47). UGC particionado por idioma. Etapa 2/3 i18n. */
+    @Column(nullable = false, length = 10)
+    @Builder.Default
+    private String language = "pt-BR";
 
     @Builder.Default
     private int likes = 0;

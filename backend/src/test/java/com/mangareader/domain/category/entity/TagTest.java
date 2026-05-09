@@ -63,7 +63,7 @@ class TagTest {
         @Test
         @DisplayName("Deve criar tag via AllArgsConstructor")
         void shouldCreateViaAllArgs() {
-            Tag tag = new Tag(5L, "Fantasy");
+            Tag tag = new Tag(5L, "Fantasy", com.mangareader.shared.domain.i18n.LocalizedString.empty());
 
             assertEquals(5L, tag.getId());
             assertEquals("Fantasy", tag.getLabel());

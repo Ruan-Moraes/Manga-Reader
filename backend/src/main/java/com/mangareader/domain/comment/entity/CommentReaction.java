@@ -22,7 +22,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class CommentReaction {
-
     @Id
     private String id;
 
