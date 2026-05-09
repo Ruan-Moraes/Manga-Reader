@@ -46,13 +46,14 @@ public class SubscriptionController {
     private final RedeemGiftCodeUseCase redeemGiftCodeUseCase;
     private final GetMySubscriptionUseCase getMySubscriptionUseCase;
     private final GetMySubscriptionHistoryUseCase getMySubscriptionHistoryUseCase;
+    private final SubscriptionMapper subscriptionMapper;
 
     /** Lista todos os planos ativos — público, sem autenticação. */
     @GetMapping("/api/subscription-plans")
     public ResponseEntity<ApiResponse<List<SubscriptionPlanResponse>>> getPlans() {
         List<SubscriptionPlanResponse> plans = getPlansUseCase.execute()
                 .stream()
-                .map(SubscriptionMapper::toPlanResponse)
+                .map(subscriptionMapper::toPlanResponse)
                 .toList();
         return ResponseEntity.ok(ApiResponse.success(plans));
     }
@@ -65,7 +66,7 @@ public class SubscriptionController {
     ) {
         UUID userId = extractUserId(auth);
         var subscription = createSubscriptionUseCase.execute(userId, request.planId());
-        return ResponseEntity.status(201).body(ApiResponse.created(SubscriptionMapper.toSubscriptionResponse(subscription)));
+        return ResponseEntity.status(201).body(ApiResponse.created(subscriptionMapper.toSubscriptionResponse(subscription)));
     }
 
     /** Cria um gift code para presentear alguém — requer autenticação. */
@@ -76,7 +77,7 @@ public class SubscriptionController {
     ) {
         UUID userId = extractUserId(auth);
         var giftCode = createGiftCodeUseCase.execute(userId, request.planId(), request.recipientEmail());
-        return ResponseEntity.status(201).body(ApiResponse.created(SubscriptionMapper.toGiftCodeResponse(giftCode)));
+        return ResponseEntity.status(201).body(ApiResponse.created(subscriptionMapper.toGiftCodeResponse(giftCode)));
     }
 
     /** Resgata um gift code — requer autenticação. */
@@ -87,7 +88,7 @@ public class SubscriptionController {
     ) {
         UUID userId = extractUserId(auth);
         var subscription = redeemGiftCodeUseCase.execute(userId, request.code());
-        return ResponseEntity.status(201).body(ApiResponse.created(SubscriptionMapper.toSubscriptionResponse(subscription)));
+        return ResponseEntity.status(201).body(ApiResponse.created(subscriptionMapper.toSubscriptionResponse(subscription)));
     }
 
     /** Retorna a assinatura ativa do usuário autenticado. */
@@ -95,7 +96,7 @@ public class SubscriptionController {
     public ResponseEntity<ApiResponse<SubscriptionResponse>> getMySubscription(Authentication auth) {
         UUID userId = extractUserId(auth);
         return getMySubscriptionUseCase.execute(userId)
-                .map(sub -> ResponseEntity.ok(ApiResponse.success(SubscriptionMapper.toSubscriptionResponse(sub))))
+                .map(sub -> ResponseEntity.ok(ApiResponse.success(subscriptionMapper.toSubscriptionResponse(sub))))
                 .orElseGet(() -> ResponseEntity.ok(ApiResponse.success(null)));
     }
 
@@ -109,7 +110,7 @@ public class SubscriptionController {
         UUID userId = extractUserId(auth);
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         var result = getMySubscriptionHistoryUseCase.execute(userId, pageable);
-        var mapped = result.map(SubscriptionMapper::toSubscriptionResponse);
+        var mapped = result.map(subscriptionMapper::toSubscriptionResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 

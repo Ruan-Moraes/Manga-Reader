@@ -36,6 +36,7 @@ public class EventController {
     private final GetEventsUseCase getEventsUseCase;
     private final GetEventByIdUseCase getEventByIdUseCase;
     private final GetEventsByStatusUseCase getEventsByStatusUseCase;
+    private final EventMapper eventMapper;
 
     @GetMapping
     @Operation(summary = "Listar eventos", description = "Retorna eventos com paginação")
@@ -49,7 +50,7 @@ public class EventController {
 
         var result = getEventsUseCase.execute(pageable);
 
-        var mapped = result.map(EventMapper::toResponse);
+        var mapped = result.map(eventMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -59,7 +60,7 @@ public class EventController {
     public ResponseEntity<ApiResponse<EventResponse>> getById(@PathVariable UUID id) {
         var event = getEventByIdUseCase.execute(id);
 
-        return ResponseEntity.ok(ApiResponse.success(EventMapper.toResponse(event)));
+        return ResponseEntity.ok(ApiResponse.success(eventMapper.toResponse(event)));
     }
 
     @GetMapping("/status/{status}")
@@ -75,7 +76,7 @@ public class EventController {
 
         var result = getEventsByStatusUseCase.execute(eventStatus, pageable);
 
-        var mapped = result.map(EventMapper::toResponse);
+        var mapped = result.map(eventMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

@@ -47,7 +47,8 @@ public final class AdminSubscriptionMapper {
                 plan.getPriceInCents(),
                 plan.getDescription(),
                 plan.getFeatures(),
-                plan.isActive()
+                plan.isActive(),
+                plan.getPrices()
         );
     }
 

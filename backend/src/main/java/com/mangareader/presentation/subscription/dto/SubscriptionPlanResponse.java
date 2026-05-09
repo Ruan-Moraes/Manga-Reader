@@ -1,6 +1,7 @@
 package com.mangareader.presentation.subscription.dto;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
@@ -14,5 +15,6 @@ public record SubscriptionPlanResponse(
         long priceInCents,
         String description,
         List<String> features,
-        boolean active
+        boolean active,
+        Map<String, Long> prices
 ) {}

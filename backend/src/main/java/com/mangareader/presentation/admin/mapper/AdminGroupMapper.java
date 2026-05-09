@@ -1,10 +1,12 @@
 package com.mangareader.presentation.admin.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.presentation.admin.dto.AdminGroupResponse;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 /**
  * Mapper estático Group → AdminGroupResponse.
@@ -33,6 +35,8 @@ public final class AdminGroupMapper {
                 group.getUsername(),
                 group.getLogo(),
                 group.getDescription(),
+                values(group.getNameI18n()),
+                values(group.getDescriptionI18n()),
                 group.getStatus() != null ? group.getStatus().name() : null,
                 group.getTotalTitles(),
                 group.getGroupUsers() != null ? group.getGroupUsers().size() : 0,
@@ -41,6 +45,10 @@ public final class AdminGroupMapper {
                 group.getPlatformJoinedAt(),
                 members
         );
+    }
+
+    private static Map<String, String> values(LocalizedString s) {
+        return s == null ? Map.of() : s.values();
     }
 
     private static AdminGroupResponse.GroupMemberResponse toMemberResponse(GroupUser gu) {

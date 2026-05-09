@@ -1,6 +1,7 @@
 package com.mangareader.presentation.admin.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
 
@@ -13,5 +14,8 @@ public record CreateSubscriptionPlanRequest(
         @NotNull SubscriptionPeriod period,
         @Min(1) long priceInCents,
         @NotBlank @Size(max = 300) String description,
-        List<String> features
+        List<String> features,
+        Map<String, String> descriptionI18n,
+        Map<String, List<String>> featuresI18n,
+        Map<String, Long> prices
 ) {}

@@ -1,10 +1,13 @@
 package com.mangareader.presentation.admin.mapper;
 
+import java.util.Map;
+
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 /**
- * Mapper estático Title → AdminTitleResponse.
+ * Mapper estático Title → AdminTitleResponse. Inclui mapas *I18n.
  */
 public final class AdminTitleMapper {
 
@@ -18,6 +21,8 @@ public final class AdminTitleMapper {
                 title.getType(),
                 title.getCover(),
                 title.getSynopsis(),
+                values(title.getNameI18n()),
+                values(title.getSynopsisI18n()),
                 title.getGenres(),
                 title.getStatus(),
                 title.getAuthor(),
@@ -30,5 +35,9 @@ public final class AdminTitleMapper {
                 title.getCreatedAt(),
                 title.getUpdatedAt()
         );
+    }
+
+    private static Map<String, String> values(LocalizedString s) {
+        return s == null ? Map.of() : s.values();
     }
 }

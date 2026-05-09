@@ -1,10 +1,13 @@
 package com.mangareader.presentation.admin.mapper;
 
+import java.util.Map;
+
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.presentation.admin.dto.AdminEventResponse;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 /**
- * Mapper estático Event → AdminEventResponse.
+ * Mapper estático Event → AdminEventResponse. Inclui todas as traduções *I18n.
  */
 public final class AdminEventMapper {
     private AdminEventMapper() {
@@ -16,6 +19,9 @@ public final class AdminEventMapper {
                 event.getTitle(),
                 event.getSubtitle(),
                 event.getDescription(),
+                values(event.getTitleI18n()),
+                values(event.getSubtitleI18n()),
+                values(event.getDescriptionI18n()),
                 event.getImage(),
                 event.getStartDate(),
                 event.getEndDate(),
@@ -34,5 +40,9 @@ public final class AdminEventMapper {
                 event.getCreatedAt(),
                 event.getUpdatedAt()
         );
+    }
+
+    private static Map<String, String> values(LocalizedString s) {
+        return s == null ? Map.of() : s.values();
     }
 }

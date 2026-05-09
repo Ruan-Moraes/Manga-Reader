@@ -42,6 +42,7 @@ public class TitleController {
     private final SearchTitlesUseCase searchTitlesUseCase;
     private final GetTitlesByGenreUseCase getTitlesByGenreUseCase;
     private final FilterTitlesUseCase filterTitlesUseCase;
+    private final TitleMapper titleMapper;
 
     @GetMapping
     @Operation(summary = "Listar títulos", description = "Retorna todos os títulos do catálogo com paginação")
@@ -55,7 +56,7 @@ public class TitleController {
 
         var result = getTitlesUseCase.execute(pageable);
 
-        var mapped = result.map(TitleMapper::toResponse);
+        var mapped = result.map(titleMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -64,7 +65,7 @@ public class TitleController {
     @Operation(summary = "Buscar título por ID", description = "Retorna os detalhes de um título específico")
     public ResponseEntity<ApiResponse<TitleResponse>> getById(@PathVariable String id) {
         var title = getTitleByIdUseCase.execute(id);
-        return ResponseEntity.ok(ApiResponse.success(TitleMapper.toResponse(title)));
+        return ResponseEntity.ok(ApiResponse.success(titleMapper.toResponse(title)));
     }
 
     @GetMapping("/search")
@@ -78,7 +79,7 @@ public class TitleController {
 
         var result = searchTitlesUseCase.execute(q, pageable);
 
-        var mapped = result.map(TitleMapper::toResponse);
+        var mapped = result.map(titleMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -94,7 +95,7 @@ public class TitleController {
 
         var result = getTitlesByGenreUseCase.execute(genre, pageable);
 
-        var mapped = result.map(TitleMapper::toResponse);
+        var mapped = result.map(titleMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -121,7 +122,7 @@ public class TitleController {
 
         var result = filterTitlesUseCase.execute(genres, status, adult, sortCriteria, pageable);
 
-        var mapped = result.map(TitleMapper::toResponse);
+        var mapped = result.map(titleMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

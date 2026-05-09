@@ -32,6 +32,7 @@ public class StoreController {
     private final GetStoresUseCase getStoresUseCase;
     private final GetStoreByIdUseCase getStoreByIdUseCase;
     private final GetStoresByTitleIdUseCase getStoresByTitleIdUseCase;
+    private final StoreMapper storeMapper;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<StoreResponse>>> getAll(
@@ -44,7 +45,7 @@ public class StoreController {
 
         var result = getStoresUseCase.execute(pageable);
 
-        var mapped = result.map(StoreMapper::toResponse);
+        var mapped = result.map(storeMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -53,7 +54,7 @@ public class StoreController {
     public ResponseEntity<ApiResponse<StoreResponse>> getById(@PathVariable UUID id) {
         var store = getStoreByIdUseCase.execute(id);
 
-        return ResponseEntity.ok(ApiResponse.success(StoreMapper.toResponse(store)));
+        return ResponseEntity.ok(ApiResponse.success(storeMapper.toResponse(store)));
     }
 
     @GetMapping("/title/{titleId}")
@@ -66,7 +67,7 @@ public class StoreController {
 
         var result = getStoresByTitleIdUseCase.execute(titleId, pageable);
 
-        var mapped = result.map(StoreMapper::toResponse);
+        var mapped = result.map(storeMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

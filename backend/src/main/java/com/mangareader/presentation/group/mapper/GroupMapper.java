@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.entity.GroupWork;
@@ -14,16 +16,22 @@ import com.mangareader.presentation.group.dto.GroupPreviewResponse;
 import com.mangareader.presentation.group.dto.GroupResponse;
 import com.mangareader.presentation.group.dto.GroupSupporterResponse;
 import com.mangareader.presentation.group.dto.GroupWorkResponse;
+import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
- * Mapper para converter entidades de Group em DTOs de resposta.
+ * Mapper Group → DTOs públicos. Resolve {@code name} e {@code description}
+ * pelo locale do request via {@link LocaleResolutionService}.
  */
-public final class GroupMapper {
+@Component
+@RequiredArgsConstructor
+public class GroupMapper {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ISO_LOCAL_DATE;
 
-    private GroupMapper() {}
+    private final LocalizedMappingHelper i18n;
 
-    public static GroupResponse toResponse(Group group) {
+    public GroupResponse toResponse(Group group) {
         if (group == null) return null;
 
         var groupUsers = group.getGroupUsers();
@@ -32,11 +40,11 @@ public final class GroupMapper {
 
         return new GroupResponse(
                 group.getId().toString(),
-                group.getName(),
+                i18n.resolveOrFallback(group.getNameI18n(), group.getName()),
                 group.getUsername(),
                 group.getLogo(),
                 group.getBanner(),
-                group.getDescription(),
+                i18n.resolveOrFallback(group.getDescriptionI18n(), group.getDescription()),
                 group.getWebsite(),
                 group.getTotalTitles(),
                 group.getFoundedYear(),
@@ -52,16 +60,16 @@ public final class GroupMapper {
         );
     }
 
-    public static GroupPreviewResponse toPreviewResponse(Group group) {
+    public GroupPreviewResponse toPreviewResponse(Group group) {
         if (group == null) return null;
 
         return new GroupPreviewResponse(
                 group.getId() == null ? null : group.getId().toString(),
-                group.getName(),
+                i18n.resolveOrFallback(group.getNameI18n(), group.getName()),
                 group.getUsername(),
                 group.getLogo(),
                 group.getBanner(),
-                group.getDescription(),
+                i18n.resolveOrFallback(group.getDescriptionI18n(), group.getDescription()),
                 group.getWebsite(),
                 group.getTotalTitles(),
                 group.getFoundedYear(),

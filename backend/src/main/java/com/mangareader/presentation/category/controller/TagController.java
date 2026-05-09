@@ -21,6 +21,7 @@ import com.mangareader.application.category.usecase.GetTagByIdUseCase;
 import com.mangareader.application.category.usecase.GetTagsUseCase;
 import com.mangareader.application.category.usecase.SearchTagsUseCase;
 import com.mangareader.application.category.usecase.UpdateTagUseCase;
+import com.mangareader.presentation.category.dto.TagAdminResponse;
 import com.mangareader.presentation.category.dto.TagRequest;
 import com.mangareader.presentation.category.dto.TagResponse;
 import com.mangareader.presentation.category.mapper.TagMapper;
@@ -44,6 +45,7 @@ public class TagController {
     private final CreateTagUseCase createTagUseCase;
     private final UpdateTagUseCase updateTagUseCase;
     private final DeleteTagUseCase deleteTagUseCase;
+    private final TagMapper tagMapper;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<TagResponse>>> getAll(
@@ -54,14 +56,48 @@ public class TagController {
     ) {
         var pageable = buildPageable(page, size, sort, direction);
         var result = getTagsUseCase.execute(pageable);
-        var mapped = result.map(TagMapper::toResponse);
+        var mapped = result.map(tagMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TagResponse>> getById(@PathVariable Long id) {
         var tag = getTagByIdUseCase.execute(id);
-        return ResponseEntity.ok(ApiResponse.success(TagMapper.toResponse(tag)));
+        return ResponseEntity.ok(ApiResponse.success(tagMapper.toResponse(tag)));
+    }
+
+    /** Admin: lista com mapas i18n para edição multilíngue. */
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse<PageResponse<TagAdminResponse>>> getAllAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "label") String sort,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        var pageable = buildPageable(page, size, sort, direction);
+        var result = getTagsUseCase.execute(pageable);
+        var mapped = result.map(tagMapper::toAdminResponse);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
+    }
+
+    /** Admin: detalhe com mapa i18n para edição. */
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<ApiResponse<TagAdminResponse>> getByIdAdmin(@PathVariable Long id) {
+        var tag = getTagByIdUseCase.execute(id);
+        return ResponseEntity.ok(ApiResponse.success(tagMapper.toAdminResponse(tag)));
+    }
+
+    /** Admin: busca paginada com mapas i18n. */
+    @GetMapping("/admin/search")
+    public ResponseEntity<ApiResponse<PageResponse<TagAdminResponse>>> searchAdmin(
+            @RequestParam("q") String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        var pageable = buildPageable(page, size, "label", "asc");
+        var result = searchTagsUseCase.execute(query, pageable);
+        var mapped = result.map(tagMapper::toAdminResponse);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @GetMapping("/search")
@@ -72,15 +108,15 @@ public class TagController {
     ) {
         var pageable = buildPageable(page, size, "label", "asc");
         var result = searchTagsUseCase.execute(query, pageable);
-        var mapped = result.map(TagMapper::toResponse);
+        var mapped = result.map(tagMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<TagResponse>> create(@Valid @RequestBody TagRequest request) {
-        var tag = createTagUseCase.execute(request.label());
+        var tag = createTagUseCase.execute(request.label(), request.labelI18n());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(TagMapper.toResponse(tag)));
+                .body(ApiResponse.success(tagMapper.toResponse(tag)));
     }
 
     @PutMapping("/{id}")
@@ -88,8 +124,8 @@ public class TagController {
             @PathVariable Long id,
             @Valid @RequestBody TagRequest request
     ) {
-        var tag = updateTagUseCase.execute(id, request.label());
-        return ResponseEntity.ok(ApiResponse.success(TagMapper.toResponse(tag)));
+        var tag = updateTagUseCase.execute(id, request.label(), request.labelI18n());
+        return ResponseEntity.ok(ApiResponse.success(tagMapper.toResponse(tag)));
     }
 
     @DeleteMapping("/{id}")

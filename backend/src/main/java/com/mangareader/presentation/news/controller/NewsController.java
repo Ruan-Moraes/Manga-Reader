@@ -37,6 +37,7 @@ public class NewsController {
     private final GetNewsByIdUseCase getNewsByIdUseCase;
     private final GetNewsByCategoryUseCase getNewsByCategoryUseCase;
     private final SearchNewsUseCase searchNewsUseCase;
+    private final NewsMapper newsMapper;
 
     @GetMapping
     @Operation(summary = "Listar notícias", description = "Retorna notícias com paginação")
@@ -50,7 +51,7 @@ public class NewsController {
 
         var result = getNewsUseCase.execute(pageable);
 
-        var mapped = result.map(NewsMapper::toResponse);
+        var mapped = result.map(newsMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -59,7 +60,7 @@ public class NewsController {
     @Operation(summary = "Buscar notícia por ID")
     public ResponseEntity<ApiResponse<NewsResponse>> getById(@PathVariable String id) {
         var news = getNewsByIdUseCase.execute(id);
-        return ResponseEntity.ok(ApiResponse.success(NewsMapper.toResponse(news)));
+        return ResponseEntity.ok(ApiResponse.success(newsMapper.toResponse(news)));
     }
 
     @GetMapping("/category/{category}")
@@ -75,7 +76,7 @@ public class NewsController {
 
         var result = getNewsByCategoryUseCase.execute(cat, pageable);
 
-        var mapped = result.map(NewsMapper::toResponse);
+        var mapped = result.map(newsMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -91,7 +92,7 @@ public class NewsController {
 
         var result = searchNewsUseCase.execute(q, pageable);
 
-        var mapped = result.map(NewsMapper::toResponse);
+        var mapped = result.map(newsMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

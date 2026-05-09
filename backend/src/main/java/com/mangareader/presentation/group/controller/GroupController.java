@@ -67,6 +67,7 @@ public class GroupController {
     private final RemoveWorkFromGroupUseCase removeWorkFromGroupUseCase;
     private final SupportGroupUseCase supportGroupUseCase;
     private final UnsupportGroupUseCase unsupportGroupUseCase;
+    private final GroupMapper groupMapper;
 
     @GetMapping
     @Operation(summary = "Listar grupos", description = "Retorna grupos de tradução com paginação")
@@ -80,7 +81,7 @@ public class GroupController {
 
         var result = getGroupsUseCase.execute(pageable);
 
-        var mapped = result.map(GroupMapper::toResponse);
+        var mapped = result.map(groupMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -90,7 +91,7 @@ public class GroupController {
     public ResponseEntity<ApiResponse<GroupResponse>> getById(@PathVariable UUID id) {
         var group = getGroupByIdUseCase.execute(id);
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
+        return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
     @GetMapping("/username/{username}")
@@ -98,7 +99,7 @@ public class GroupController {
     public ResponseEntity<ApiResponse<GroupResponse>> getByUsername(@PathVariable String username) {
         var group = getGroupByUsernameUseCase.execute(username);
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
+        return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
     @PostMapping
@@ -121,7 +122,7 @@ public class GroupController {
         var group = createGroupUseCase.execute(input);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(GroupMapper.toResponse(group)));
+                .body(ApiResponse.created(groupMapper.toResponse(group)));
     }
 
     @PostMapping("/{id}/join")
@@ -134,7 +135,7 @@ public class GroupController {
 
         var group = joinGroupUseCase.execute(input);
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
+        return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
     @PutMapping("/{id}")
@@ -147,12 +148,13 @@ public class GroupController {
         var input = new UpdateGroupUseCase.UpdateGroupInput(
                 id, extractUserId(auth),
                 request.name(), request.description(),
+                request.nameI18n(), request.descriptionI18n(),
                 request.logo(), request.banner(), request.website()
         );
 
         var group = updateGroupUseCase.execute(input);
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
+        return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
     @DeleteMapping("/{id}/leave")
@@ -163,7 +165,7 @@ public class GroupController {
     ) {
         var group = leaveGroupUseCase.execute(id, extractUserId(auth));
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
+        return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
     @GetMapping("/title/{titleId}")
@@ -177,7 +179,7 @@ public class GroupController {
 
         var result = getGroupsByTitleIdUseCase.execute(titleId, pageable);
 
-        var mapped = result.map(GroupMapper::toPreviewResponse);
+        var mapped = result.map(groupMapper::toPreviewResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -198,7 +200,7 @@ public class GroupController {
         var group = addWorkToGroupUseCase.execute(input);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(GroupMapper.toResponse(group)));
+                .body(ApiResponse.created(groupMapper.toResponse(group)));
     }
 
     @DeleteMapping("/{id}/works/{titleId}")
@@ -222,7 +224,7 @@ public class GroupController {
         var group = supportGroupUseCase.execute(id, extractUserId(auth));
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(GroupMapper.toResponse(group)));
+                .body(ApiResponse.created(groupMapper.toResponse(group)));
     }
 
     @DeleteMapping("/{id}/support")
@@ -233,7 +235,7 @@ public class GroupController {
     ) {
         var group = unsupportGroupUseCase.execute(id, extractUserId(auth));
 
-        return ResponseEntity.ok(ApiResponse.success(GroupMapper.toResponse(group)));
+        return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
     // TODO: Retirar essa lógica do controller

@@ -2,10 +2,11 @@ package com.mangareader.presentation.admin.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
- * Resposta de um grupo para o painel admin.
+ * Resposta admin de grupo. Mapas *I18n trazem todas as traduções.
  */
 public record AdminGroupResponse(
         UUID id,
@@ -13,6 +14,8 @@ public record AdminGroupResponse(
         String username,
         String logo,
         String description,
+        Map<String, String> nameI18n,
+        Map<String, String> descriptionI18n,
         String status,
         int totalTitles,
         int membersCount,

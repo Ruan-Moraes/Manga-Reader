@@ -2,9 +2,10 @@ package com.mangareader.presentation.admin.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Resposta de um título para o painel admin.
+ * Resposta admin de título. Mapas *I18n trazem todas as traduções.
  */
 public record AdminTitleResponse(
         String id,
@@ -12,6 +13,8 @@ public record AdminTitleResponse(
         String type,
         String cover,
         String synopsis,
+        Map<String, String> nameI18n,
+        Map<String, String> synopsisI18n,
         List<String> genres,
         String status,
         String author,

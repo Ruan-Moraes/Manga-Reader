@@ -139,7 +139,8 @@ public class AdminSubscriptionController {
             @Valid @RequestBody CreateSubscriptionPlanRequest request
     ) {
         var plan = createPlanUseCase.execute(
-                request.period(), request.priceInCents(), request.description(), request.features());
+                request.period(), request.priceInCents(), request.description(), request.features(),
+                request.descriptionI18n(), request.featuresI18n(), request.prices());
 
         return ResponseEntity.status(201).body(ApiResponse.created(AdminSubscriptionMapper.toPlanResponse(plan)));
     }
@@ -150,7 +151,8 @@ public class AdminSubscriptionController {
             @Valid @RequestBody UpdateSubscriptionPlanRequest request
     ) {
         var plan = updatePlanUseCase.execute(
-                id, request.priceInCents(), request.description(), request.features(), request.active());
+                id, request.priceInCents(), request.description(), request.features(),
+                request.descriptionI18n(), request.featuresI18n(), request.active(), request.prices());
 
         return ResponseEntity.ok(ApiResponse.success(AdminSubscriptionMapper.toPlanResponse(plan)));
     }

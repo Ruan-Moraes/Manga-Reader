@@ -5,32 +5,37 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.manga.valueobject.Chapter;
 import com.mangareader.presentation.manga.dto.ChapterResponse;
 import com.mangareader.presentation.manga.dto.TitleResponse;
+import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
- * Mapper manual para converter entidades de domínio em DTOs de apresentação.
- * <p>
- * Optamos por mapper estático para simplificar, evitando configuração MapStruct
- * por enquanto neste módulo (MapStruct será utilizado quando houver mais DTOs).
+ * Mapper Title → TitleResponse (público). Resolve {@code name} e {@code synopsis}
+ * pelo locale do request via {@link LocaleResolutionService}.
  */
-public final class TitleMapper {
+@Component
+@RequiredArgsConstructor
+public class TitleMapper {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ISO_LOCAL_DATE;
 
-    private TitleMapper() {}
+    private final LocalizedMappingHelper i18n;
 
-    public static TitleResponse toResponse(Title title) {
+    public TitleResponse toResponse(Title title) {
         if (title == null) return null;
 
         return new TitleResponse(
                 title.getId(),
                 title.getType(),
                 title.getCover(),
-                title.getName(),
-                title.getSynopsis(),
+                i18n.resolveOrFallback(title.getNameI18n(), title.getName()),
+                i18n.resolveOrFallback(title.getSynopsisI18n(), title.getSynopsis()),
                 title.getGenres() != null ? title.getGenres() : Collections.emptyList(),
                 mapChapters(title.getChapters()),
                 title.getPopularity(),
@@ -47,10 +52,10 @@ public final class TitleMapper {
         );
     }
 
-    public static List<TitleResponse> toResponseList(List<Title> titles) {
+    public List<TitleResponse> toResponseList(List<Title> titles) {
         if (titles == null) return Collections.emptyList();
 
-        return titles.stream().map(TitleMapper::toResponse).toList();
+        return titles.stream().map(this::toResponse).toList();
     }
 
     private static List<ChapterResponse> mapChapters(List<Chapter> chapters) {

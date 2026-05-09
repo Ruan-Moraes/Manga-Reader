@@ -5,37 +5,57 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+import com.mangareader.application.label.service.DomainLabelService;
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.domain.event.entity.EventTicket;
 import com.mangareader.domain.event.valueobject.EventLocation;
 import com.mangareader.domain.event.valueobject.EventOrganizer;
 import com.mangareader.presentation.event.dto.EventResponse;
 import com.mangareader.presentation.event.dto.EventTicketResponse;
+import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
- * Mapper para converter entidades de Event em DTOs de resposta.
+ * Mapper para converter entidades de Event em DTOs de resposta públicos.
+ * Campos textuais resolvidos pelo locale do request. Tipo/status/timeline
+ * resolvidos via {@link DomainLabelService}.
  */
-public final class EventMapper {
+@Component
+@RequiredArgsConstructor
+public class EventMapper {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final String LABEL_TYPE_EVENT_TYPE     = "event_type";
+    private static final String LABEL_TYPE_EVENT_STATUS   = "event_status";
+    private static final String LABEL_TYPE_EVENT_TIMELINE = "event_timeline";
 
-    private EventMapper() {}
+    private final LocalizedMappingHelper i18n;
+    private final DomainLabelService domainLabels;
 
-    public static EventResponse toResponse(Event event) {
+    public EventResponse toResponse(Event event) {
         if (event == null) return null;
 
         return new EventResponse(
                 event.getId().toString(),
-                event.getTitle(),
-                event.getSubtitle(),
-                event.getDescription(),
+                i18n.resolveOrFallback(event.getTitleI18n(), event.getTitle()),
+                i18n.resolveOrFallback(event.getSubtitleI18n(), event.getSubtitle()),
+                i18n.resolveOrFallback(event.getDescriptionI18n(), event.getDescription()),
                 event.getImage(),
                 event.getGallery(),
                 formatDateTime(event.getStartDate()),
                 formatDateTime(event.getEndDate()),
                 event.getTimezone(),
-                event.getTimeline() != null ? event.getTimeline().name().toLowerCase() : null,
-                event.getStatus() != null ? event.getStatus().getValue() : null,
-                event.getType() != null ? event.getType().getDisplayName() : null,
+                event.getTimeline() != null
+                        ? domainLabels.resolveLabel(LABEL_TYPE_EVENT_TIMELINE, event.getTimeline().name(), event.getTimeline().name().toLowerCase())
+                        : null,
+                event.getStatus() != null
+                        ? domainLabels.resolveLabel(LABEL_TYPE_EVENT_STATUS, event.getStatus().name(), event.getStatus().getValue())
+                        : null,
+                event.getType() != null
+                        ? domainLabels.resolveLabel(LABEL_TYPE_EVENT_TYPE, event.getType().name(), event.getType().getDisplayName())
+                        : null,
                 mapLocation(event.getLocation()),
                 mapOrganizer(event.getOrganizer()),
                 event.getPriceLabel(),
@@ -50,10 +70,10 @@ public final class EventMapper {
         );
     }
 
-    public static List<EventResponse> toResponseList(List<Event> events) {
+    public List<EventResponse> toResponseList(List<Event> events) {
         if (events == null) return Collections.emptyList();
 
-        return events.stream().map(EventMapper::toResponse).toList();
+        return events.stream().map(this::toResponse).toList();
     }
 
     private static EventResponse.LocationResponse mapLocation(EventLocation loc) {

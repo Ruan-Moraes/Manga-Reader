@@ -2,24 +2,31 @@ package com.mangareader.presentation.store.mapper;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.mangareader.domain.store.entity.Store;
+import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 import com.mangareader.presentation.store.dto.StoreResponse;
 
+import lombok.RequiredArgsConstructor;
+
 /**
- * Mapper estático Store → StoreResponse.
+ * Mapper Store → StoreResponse (público). Resolve campos i18n via
+ * {@link LocalizedMappingHelper#resolveOrFallback}.
  */
-public final class StoreMapper {
+@Component
+@RequiredArgsConstructor
+public class StoreMapper {
 
-    private StoreMapper() {
-    }
+    private final LocalizedMappingHelper i18n;
 
-    public static StoreResponse toResponse(Store store) {
+    public StoreResponse toResponse(Store store) {
         return new StoreResponse(
                 store.getId().toString(),
-                store.getName(),
+                i18n.resolveOrFallback(store.getNameI18n(), store.getName()),
                 store.getLogo(),
                 store.getIcon(),
-                store.getDescription(),
+                i18n.resolveOrFallback(store.getDescriptionI18n(), store.getDescription()),
                 store.getWebsite(),
                 store.getAvailability() != null
                         ? store.getAvailability().name().toLowerCase()
@@ -29,7 +36,7 @@ public final class StoreMapper {
         );
     }
 
-    public static List<StoreResponse> toResponseList(List<Store> stores) {
-        return stores.stream().map(StoreMapper::toResponse).toList();
+    public List<StoreResponse> toResponseList(List<Store> stores) {
+        return stores.stream().map(this::toResponse).toList();
     }
 }
