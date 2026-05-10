@@ -54,6 +54,9 @@ public class RatingController {
     private final DeleteRatingUseCase deleteRatingUseCase;
     private final GetUserRatingsUseCase getUserRatingsUseCase;
 
+    private static final java.util.Set<String> SORTABLE_FIELDS =
+            java.util.Set.of("createdAt", "updatedAt", "overallRating");
+
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar avaliações", description = "Retorna avaliações de um título com paginação")
     public ResponseEntity<ApiResponse<PageResponse<RatingResponse>>> getByTitle(
@@ -63,6 +66,7 @@ public class RatingController {
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String direction
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
 
         var result = getRatingsByTitleUseCase.execute(titleId, pageable);

@@ -57,6 +57,8 @@ public class CommentController {
     private final ReactToCommentUseCase reactToCommentUseCase;
     private final GetUserReactionsUseCase getUserReactionsUseCase;
 
+    private static final java.util.Set<String> SORTABLE_FIELDS = java.util.Set.of("createdAt", "updatedAt");
+
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar comentários", description = "Retorna comentários de um título com paginação. language=all (admin) lista todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<CommentResponse>>> getByTitle(
@@ -67,6 +69,7 @@ public class CommentController {
             @RequestParam(defaultValue = "desc") String direction,
             @RequestParam(required = false) String language
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
         var result = getCommentsByTitleUseCase.execute(titleId, pageable, "all".equalsIgnoreCase(language));
         var mapped = result.map(CommentMapper::toResponse);

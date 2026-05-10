@@ -47,6 +47,9 @@ public class AdminUserController {
     private final BanUserUseCase banUserUseCase;
     private final UnbanUserUseCase unbanUserUseCase;
 
+    private static final java.util.Set<String> SORTABLE_FIELDS =
+            java.util.Set.of("createdAt", "updatedAt", "name", "email", "role");
+
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<AdminUserResponse>>> listUsers(
             @RequestParam(required = false) String search,
@@ -55,6 +58,7 @@ public class AdminUserController {
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String direction
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 

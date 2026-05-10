@@ -62,6 +62,9 @@ public class ForumController {
     private final UpdateForumTopicUseCase updateForumTopicUseCase;
     private final DeleteForumTopicUseCase deleteForumTopicUseCase;
 
+    private static final java.util.Set<String> SORTABLE_FIELDS =
+            java.util.Set.of("createdAt", "updatedAt", "title");
+
     @GetMapping
     @Operation(summary = "Listar tópicos", description = "Retorna tópicos do fórum com paginação. Use language=all (admin) para listar todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<ForumTopicResponse>>> getAll(
@@ -71,6 +74,7 @@ public class ForumController {
             @RequestParam(defaultValue = "desc") String direction,
             @RequestParam(required = false) String language
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
 
         var result = getForumTopicsUseCase.execute(pageable, "all".equalsIgnoreCase(language));
