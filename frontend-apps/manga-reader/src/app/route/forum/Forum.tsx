@@ -7,6 +7,7 @@ import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import BaseSelect from '@shared/component/input/BaseSelect';
 import SearchInput from '@shared/component/input/SearchInput';
+import useAuth from '@feature/auth/hook/useAuth';
 
 import {
     useForumPage,
@@ -20,6 +21,8 @@ import {
 
 const Forum = () => {
     const { t } = useTranslation('forum');
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'ADMIN' || user?.role === 'MODERATOR';
     const {
         activeCategory,
         sort,
@@ -29,6 +32,8 @@ const Forum = () => {
         allTopics,
         topics,
         totalPages,
+        crossLanguage,
+        toggleCrossLanguage,
         updateCategory,
         updateSort,
         updateQuery,
@@ -105,6 +110,18 @@ const Forum = () => {
                             }
                             className="px-3 py-1.5 text-xs border rounded-xs bg-secondary border-tertiary"
                         />
+
+                        {isAdmin && (
+                            <label className="flex items-center gap-1.5 ml-2 text-xs cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={crossLanguage}
+                                    onChange={toggleCrossLanguage}
+                                    className="accent-quaternary-default"
+                                />
+                                <span>{t('page.crossLanguage', { defaultValue: 'Todos idiomas (admin)' })}</span>
+                            </label>
+                        )}
 
                         <span className="ml-auto text-xs text-shadow-secondary">
                             {t('page.foundTopics', { count: allTopics.length })}

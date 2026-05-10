@@ -34,6 +34,7 @@ export type ForumTopic = {
     author: ForumAuthor;
     category: ForumCategory;
     tags: string[];
+    language?: string;
     createdAt: string;
     lastActivityAt: string;
     viewCount: number;

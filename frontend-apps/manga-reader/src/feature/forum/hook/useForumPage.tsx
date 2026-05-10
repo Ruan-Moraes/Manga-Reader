@@ -16,10 +16,12 @@ const useForumPage = () => {
     const [sort, setSort] = useState<ForumSort>('recent');
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
+    const [crossLanguage, setCrossLanguage] = useState(false);
 
     useEffect(() => {
-        getForumTopics(0, 200).then(res => setAllTopicsRaw(res.content));
-    }, []);
+        getForumTopics(0, 200, { crossLanguage })
+            .then(res => setAllTopicsRaw(res.content));
+    }, [crossLanguage]);
 
     const allTopics = useMemo(
         () =>
@@ -51,6 +53,11 @@ const useForumPage = () => {
         setPage(1);
     }, []);
 
+    const toggleCrossLanguage = useCallback(() => {
+        setCrossLanguage(prev => !prev);
+        setPage(1);
+    }, []);
+
     return {
         activeCategory,
         sort,
@@ -60,6 +67,8 @@ const useForumPage = () => {
         allTopics,
         topics,
         totalPages,
+        crossLanguage,
+        toggleCrossLanguage,
         updateCategory,
         updateSort,
         updateQuery,

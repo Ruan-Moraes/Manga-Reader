@@ -18,6 +18,8 @@ export type CommentData = {
     dislikeCount: string;
     likeCount: string;
 
+    language?: string;
+
     userReaction?: 'LIKE' | 'DISLIKE' | null;
 };
 

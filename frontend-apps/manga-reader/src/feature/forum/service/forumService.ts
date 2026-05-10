@@ -77,10 +77,13 @@ const sortTopics = (topics: ForumTopic[], sort: ForumSort): ForumTopic[] => {
 export const getForumTopics = async (
     page = 0,
     size = 20,
+    options: { crossLanguage?: boolean } = {},
 ): Promise<PageResponse<ForumTopic>> => {
+    const params: Record<string, string | number> = { page, size };
+    if (options.crossLanguage) params.language = 'all';
     const response = await api.get<ApiResponse<PageResponse<ForumTopic>>>(
         API_URLS.FORUM,
-        { params: { page, size } },
+        { params },
     );
 
     return response.data.data;

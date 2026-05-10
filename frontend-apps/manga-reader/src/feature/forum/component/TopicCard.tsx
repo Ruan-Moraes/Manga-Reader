@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fi';
 
 import UserAvatar from '@shared/component/avatar/UserAvatar';
+import LanguageBadge from '@shared/component/badge/LanguageBadge';
 import {
     formatRelativeDate,
     getCategoryColor,
@@ -54,6 +55,7 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => {
                 <h3 className="text-sm font-semibold truncate text-shadow-default">
                     {topic.title}
                 </h3>
+                <LanguageBadge language={topic.language} />
             </div>
 
             {/* Meta row */}

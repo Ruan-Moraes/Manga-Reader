@@ -22,6 +22,7 @@ type CommentResponse = {
     imageContent: string | null;
     likeCount: string;
     dislikeCount: string;
+    language?: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -44,6 +45,7 @@ const toCommentData = (c: CommentResponse): CommentData => ({
     imageContent: c.imageContent,
     likeCount: c.likeCount,
     dislikeCount: c.dislikeCount,
+    language: c.language,
 });
 
 // ---------------------------------------------------------------------------
@@ -54,10 +56,13 @@ export const getCommentsByTitleId = async (
     titleId: string,
     page = 0,
     size = 20,
+    options: { crossLanguage?: boolean } = {},
 ): Promise<PageResponse<CommentData>> => {
+    const params: Record<string, string | number> = { page, size };
+    if (options.crossLanguage) params.language = 'all';
     const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(
         `${API_URLS.COMMENTS}/title/${titleId}`,
-        { params: { page, size } },
+        { params },
     );
 
     const pageData = response.data.data;
