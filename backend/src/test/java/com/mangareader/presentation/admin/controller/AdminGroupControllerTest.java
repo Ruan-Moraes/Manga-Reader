@@ -145,4 +145,22 @@ class AdminGroupControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.members").isEmpty());
     }
+
+    @Test
+    @DisplayName("PATCH /api/admin/groups/{groupId} — deve retornar 200 ao atualizar grupo")
+    void deveRetornar200AoAtualizarGrupo() throws Exception {
+        Group updated = buildGroup();
+        updated.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Updated Group"));
+        when(updateAdminGroupUseCase.execute(any(
+                com.mangareader.application.group.usecase.admin.UpdateAdminGroupUseCase.UpdateAdminGroupInput.class
+        ))).thenReturn(updated);
+
+        mockMvc.perform(patch("/api/admin/groups/" + GROUP_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name": {"pt-BR": "Updated Group"}, "logo": "new-logo.png"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.name['pt-BR']").value("Updated Group"));
+    }
 }

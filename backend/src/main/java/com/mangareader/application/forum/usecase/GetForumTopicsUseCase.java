@@ -23,8 +23,19 @@ public class GetForumTopicsUseCase {
 
     @Transactional(readOnly = true)
     public Page<ForumTopic> execute(Pageable pageable) {
-        Page<ForumTopic> page = forumRepository.findByLanguage(
-                localeResolver.currentLanguageTag(), pageable);
+        return execute(pageable, false);
+    }
+
+    /**
+     * @param crossLanguage quando {@code true}, retorna tópicos de todos os idiomas
+     *                      (uso admin/moderação). Quando {@code false}, particiona
+     *                      pelo idioma do usuário ativo.
+     */
+    @Transactional(readOnly = true)
+    public Page<ForumTopic> execute(Pageable pageable, boolean crossLanguage) {
+        Page<ForumTopic> page = crossLanguage
+                ? forumRepository.findAll(pageable)
+                : forumRepository.findByLanguage(localeResolver.currentLanguageTag(), pageable);
 
         page.getContent().forEach(topic -> {
             topic.getAuthor().getName();

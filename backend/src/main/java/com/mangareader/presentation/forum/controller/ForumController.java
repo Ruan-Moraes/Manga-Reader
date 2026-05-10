@@ -63,16 +63,17 @@ public class ForumController {
     private final DeleteForumTopicUseCase deleteForumTopicUseCase;
 
     @GetMapping
-    @Operation(summary = "Listar tópicos", description = "Retorna tópicos do fórum com paginação")
+    @Operation(summary = "Listar tópicos", description = "Retorna tópicos do fórum com paginação. Use language=all (admin) para listar todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<ForumTopicResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @RequestParam(defaultValue = "desc") String direction,
+            @RequestParam(required = false) String language
     ) {
         var pageable = buildPageable(page, size, sort, direction);
 
-        var result = getForumTopicsUseCase.execute(pageable);
+        var result = getForumTopicsUseCase.execute(pageable, "all".equalsIgnoreCase(language));
 
         var mapped = result.map(t -> ForumMapper.toResponse(t, getAuthorPostCountUseCase::execute));
 
