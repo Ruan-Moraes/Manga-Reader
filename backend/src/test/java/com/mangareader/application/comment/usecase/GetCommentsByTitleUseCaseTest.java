@@ -63,4 +63,39 @@ class GetCommentsByTitleUseCaseTest {
 
         assertThat(result.getContent()).isEmpty();
     }
+
+    @Test
+    @DisplayName("crossLanguage=true deve bypassar partição e retornar todos idiomas")
+    void crossLanguageRetornaTodos() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Comment pt = Comment.builder().id("c-pt").titleId(TITLE_ID).language("pt-BR").build();
+        Comment en = Comment.builder().id("c-en").titleId(TITLE_ID).language("en-US").build();
+        Comment es = Comment.builder().id("c-es").titleId(TITLE_ID).language("es-ES").build();
+        Page<Comment> page = new PageImpl<>(List.of(pt, en, es), pageable, 3);
+
+        when(commentRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(page);
+
+        Page<Comment> result = getCommentsByTitleUseCase.execute(TITLE_ID, pageable, true);
+
+        assertThat(result.getContent()).extracting(Comment::getLanguage)
+                .containsExactly("pt-BR", "en-US", "es-ES");
+        org.mockito.Mockito.verifyNoInteractions(localeResolver);
+    }
+
+    @Test
+    @DisplayName("crossLanguage=false mantém partição (comportamento default)")
+    void crossLanguageFalseMantemParticao() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Comment> page = new PageImpl<>(List.of(), pageable, 0);
+
+        when(localeResolver.currentLanguageTag()).thenReturn("pt-BR");
+        when(commentRepository.findByTitleIdAndLanguage(TITLE_ID, "pt-BR", pageable)).thenReturn(page);
+
+        getCommentsByTitleUseCase.execute(TITLE_ID, pageable, false);
+
+        org.mockito.Mockito.verify(commentRepository)
+                .findByTitleIdAndLanguage(TITLE_ID, "pt-BR", pageable);
+        org.mockito.Mockito.verify(commentRepository, org.mockito.Mockito.never())
+                .findByTitleId(TITLE_ID, pageable);
+    }
 }

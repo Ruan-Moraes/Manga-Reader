@@ -70,4 +70,40 @@ class GetForumTopicsUseCaseTest {
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
     }
+
+    @Test
+    @DisplayName("crossLanguage=true bypassa partição e usa findAll")
+    void crossLanguageBypassaParticao() {
+        Pageable pageable = PageRequest.of(0, 10);
+        User author = User.builder().id(java.util.UUID.randomUUID()).name("Autor").build();
+        List<ForumTopic> topics = List.of(
+                ForumTopic.builder().title("PT").language("pt-BR").author(author).build(),
+                ForumTopic.builder().title("EN").language("en-US").author(author).build(),
+                ForumTopic.builder().title("ES").language("es-ES").author(author).build()
+        );
+        Page<ForumTopic> page = new PageImpl<>(topics, pageable, 3);
+        when(forumRepository.findAll(pageable)).thenReturn(page);
+
+        Page<ForumTopic> result = getForumTopicsUseCase.execute(pageable, true);
+
+        assertThat(result.getContent()).extracting(ForumTopic::getLanguage)
+                .containsExactly("pt-BR", "en-US", "es-ES");
+        org.mockito.Mockito.verifyNoInteractions(localeResolver);
+        org.mockito.Mockito.verify(forumRepository, org.mockito.Mockito.never())
+                .findByLanguage(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.eq(pageable));
+    }
+
+    @Test
+    @DisplayName("crossLanguage=false mantém partição")
+    void crossLanguageFalseMantemParticao() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ForumTopic> page = new PageImpl<>(List.of(), pageable, 0);
+        when(localeResolver.currentLanguageTag()).thenReturn("en-US");
+        when(forumRepository.findByLanguage("en-US", pageable)).thenReturn(page);
+
+        getForumTopicsUseCase.execute(pageable, false);
+
+        org.mockito.Mockito.verify(forumRepository).findByLanguage("en-US", pageable);
+        org.mockito.Mockito.verify(forumRepository, org.mockito.Mockito.never()).findAll(pageable);
+    }
 }

@@ -73,4 +73,39 @@ class GetForumTopicsByCategoryUseCaseTest {
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
     }
+
+    @Test
+    @DisplayName("crossLanguage=true bypassa partição usando findByCategory")
+    void crossLanguageBypassaParticao() {
+        ForumCategory category = ForumCategory.GERAL;
+        Pageable pageable = PageRequest.of(0, 10);
+        User author = User.builder().id(java.util.UUID.randomUUID()).name("Autor").build();
+        List<ForumTopic> topics = List.of(
+                ForumTopic.builder().title("PT").language("pt-BR").category(category).author(author).build(),
+                ForumTopic.builder().title("EN").language("en-US").category(category).author(author).build()
+        );
+        Page<ForumTopic> page = new PageImpl<>(topics, pageable, 2);
+        when(forumRepository.findByCategory(category, pageable)).thenReturn(page);
+
+        Page<ForumTopic> result = getForumTopicsByCategoryUseCase.execute(category, pageable, true);
+
+        assertThat(result.getContent()).extracting(ForumTopic::getLanguage)
+                .containsExactly("pt-BR", "en-US");
+        org.mockito.Mockito.verifyNoInteractions(localeResolver);
+    }
+
+    @Test
+    @DisplayName("crossLanguage=false mantém partição (default)")
+    void crossLanguageFalseMantemParticao() {
+        ForumCategory category = ForumCategory.RECOMENDACOES;
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ForumTopic> page = new PageImpl<>(List.of(), pageable, 0);
+        when(localeResolver.currentLanguageTag()).thenReturn("es-ES");
+        when(forumRepository.findByCategoryAndLanguage(category, "es-ES", pageable)).thenReturn(page);
+
+        getForumTopicsByCategoryUseCase.execute(category, pageable, false);
+
+        org.mockito.Mockito.verify(forumRepository).findByCategoryAndLanguage(category, "es-ES", pageable);
+        org.mockito.Mockito.verify(forumRepository, org.mockito.Mockito.never()).findByCategory(category, pageable);
+    }
 }
