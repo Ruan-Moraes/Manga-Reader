@@ -15,6 +15,9 @@ type CommentsSectionProps = {
     isError: boolean;
     error: Error | null;
     onCommentCreated?: () => void;
+    crossLanguage?: boolean;
+    /** Quando definido, renderiza toggle admin de moderação cross-language. */
+    onToggleCrossLanguage?: () => void;
 };
 
 const CommentsSection = ({
@@ -24,14 +27,31 @@ const CommentsSection = ({
     isError,
     error,
     onCommentCreated,
+    crossLanguage = false,
+    onToggleCrossLanguage,
 }: CommentsSectionProps) => {
     const { t } = useTranslation('comment');
 
     return (
         <section className="flex flex-col gap-8">
             <div className="flex flex-col gap-2">
-                <div>
+                <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold">{t('section.title')}</h3>
+                    {onToggleCrossLanguage && (
+                        <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={crossLanguage}
+                                onChange={onToggleCrossLanguage}
+                                className="accent-quaternary-default"
+                            />
+                            <span>
+                                {t('section.crossLanguage', {
+                                    defaultValue: 'Todos idiomas (admin)',
+                                })}
+                            </span>
+                        </label>
+                    )}
                 </div>
                 <div className="flex flex-col gap-4">
                     {getStoredSession() ? (

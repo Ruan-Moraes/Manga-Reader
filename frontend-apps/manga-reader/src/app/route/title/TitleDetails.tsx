@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+
+import useAuth from '@feature/auth/hook/useAuth';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -76,13 +78,17 @@ const TitleDetailsPage = () => {
         }
     }, [rawTitleId]);
 
+    const { user: authUser } = useAuth();
+    const isCommentsAdmin =
+        authUser?.role === 'ADMIN' || authUser?.role === 'MODERATOR';
+    const [commentsCrossLanguage, setCommentsCrossLanguage] = useState(false);
     const {
         comments,
         isLoading: isCommentsLoading,
         isError: isCommentsError,
         error: commentsError,
         refetchComments,
-    } = useComments(rawTitleId ?? '');
+    } = useComments(rawTitleId ?? '', 0, 20, { crossLanguage: commentsCrossLanguage });
 
     const {
         isAscending,
@@ -231,6 +237,12 @@ const TitleDetailsPage = () => {
                     isError={isCommentsError}
                     error={commentsError}
                     onCommentCreated={refetchComments}
+                    crossLanguage={commentsCrossLanguage}
+                    onToggleCrossLanguage={
+                        isCommentsAdmin
+                            ? () => setCommentsCrossLanguage(v => !v)
+                            : undefined
+                    }
                 />
             </MainContent>
             <Footer />

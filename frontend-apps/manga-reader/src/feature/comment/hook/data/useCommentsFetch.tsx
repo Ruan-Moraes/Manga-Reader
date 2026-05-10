@@ -13,14 +13,16 @@ const useCommentsFetch = (
     id: string,
     page = 0,
     size = 20,
+    options: { crossLanguage?: boolean } = {},
 ): UseQueryResult<PageResponse<CommentData>, Error> => {
+    const { crossLanguage = false } = options;
     return useQuery<PageResponse<CommentData>, Error>({
-        queryKey: [QUERY_KEYS.COMMENTS, id, page, size],
+        queryKey: [QUERY_KEYS.COMMENTS, id, page, size, crossLanguage],
         queryFn: async () => {
             try {
                 validateId(Number(id));
 
-                return await getCommentsByTitleId(id, page, size);
+                return await getCommentsByTitleId(id, page, size, { crossLanguage });
             } catch (error) {
                 console.error('Erro ao buscar comentários:', error);
 
