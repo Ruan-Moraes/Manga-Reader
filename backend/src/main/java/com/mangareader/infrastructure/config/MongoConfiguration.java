@@ -3,11 +3,11 @@ package com.mangareader.infrastructure.config;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
@@ -48,10 +48,10 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
     }
 
     /**
-     * Set by {@link #customConversions()} or by test configurations that
+     * Flipped by {@link #customConversions()} or by test configurations that
      * provide their own {@link MongoCustomConversions} bean (e.g.
      * {@code MongoTestContainerConfig#mongoCustomConversions}). Verified
-     * post-construct.
+     * after context refresh.
      */
     public static volatile boolean localizedStringConvertersRegistered = false;
 
@@ -69,15 +69,18 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
     }
 
     /**
-     * Fail-fast startup guard: ensures the bean factory actually invoked
-     * {@link #customConversions()} and registered the LocalizedString
-     * converters. Without these, Spring Data Mongo would silently serialize
+     * Fail-fast startup guard: ensures bean factory invoked
+     * {@link #customConversions()} and registered LocalizedString converters.
+     * Without these, Spring Data Mongo would silently serialize
      * {@code LocalizedString} as {@code {"values": {...}}} instead of the
      * expected flat document — corrupting data while leaving boot apparently
-     * healthy. Triggered if a future override of {@link AbstractMongoClientConfiguration}
-     * forgets the converters.
+     * healthy.
+     *
+     * <p>Runs at {@link ContextRefreshedEvent} (após todos beans wired) — não
+     * @PostConstruct, pois @Bean factory methods do mesmo @Configuration
+     * podem não ter sido invocados quando @PostConstruct dispara.
      */
-    @PostConstruct
+    @EventListener(ContextRefreshedEvent.class)
     void verifyLocalizedStringConvertersRegistered() {
         if (!localizedStringConvertersRegistered) {
             throw new IllegalStateException(
