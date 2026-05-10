@@ -48,10 +48,6 @@ public final class LocalizedString {
         return values.isEmpty();
     }
 
-    public boolean has(String tag) {
-        return values.containsKey(tag) && !values.get(tag).isBlank();
-    }
-
     /**
      * Resolve para o locale informado. Aplica cadeia de fallback:
      * <ol>

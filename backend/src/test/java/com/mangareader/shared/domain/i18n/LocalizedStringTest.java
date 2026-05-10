@@ -130,16 +130,6 @@ class LocalizedStringTest {
         }
 
         @Test
-        @DisplayName("has() deve indicar presença ignorando branco")
-        void hasIgnoraBranco() {
-            var ls = LocalizedString.of(Map.of("pt-BR", "Olá", "en-US", "  "));
-
-            assertThat(ls.has("pt-BR")).isTrue();
-            assertThat(ls.has("en-US")).isFalse();
-            assertThat(ls.has("es-ES")).isFalse();
-        }
-
-        @Test
         @DisplayName("equals/hashCode baseados no mapa")
         void equalsHashCode() {
             var a = LocalizedString.of(Map.of("pt-BR", "Olá"));

@@ -60,6 +60,9 @@ class AdminGroupControllerTest {
     @MockitoBean
     private AdminRemoveGroupMemberUseCase removeGroupMemberUseCase;
 
+    @MockitoBean
+    private com.mangareader.application.group.usecase.admin.UpdateAdminGroupUseCase updateAdminGroupUseCase;
+
     private final UUID GROUP_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private final UUID USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
 

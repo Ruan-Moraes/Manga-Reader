@@ -56,7 +56,7 @@ export const updateAdminGroup = async (
     data: UpdateGroupRequest,
 ): Promise<AdminGroup> => {
     const response = await api.patch<ApiResponse<AdminGroup>>(
-        `/api/groups/${groupId}`,
+        `${API_URLS.ADMIN_GROUPS}/${groupId}`,
         data,
     );
     return response.data.data;

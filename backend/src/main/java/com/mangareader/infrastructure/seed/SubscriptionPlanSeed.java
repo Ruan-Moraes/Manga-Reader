@@ -1,6 +1,8 @@
 package com.mangareader.infrastructure.seed;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -36,6 +38,7 @@ public class SubscriptionPlanSeed implements EntitySeeder {
                 SubscriptionPlan.builder()
                         .period(SubscriptionPeriod.DAILY)
                         .priceInCents(39)
+                        .prices(new HashMap<>(Map.of("BRL", 39L, "USD", 9L, "EUR", 9L)))
                         .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Acesso diário a todos os títulos premium por 24h."))
                         .features(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of("Leitura ilimitada por 24h", "Sem anúncios")))
                         .active(true)
@@ -43,6 +46,7 @@ public class SubscriptionPlanSeed implements EntitySeeder {
                 SubscriptionPlan.builder()
                         .period(SubscriptionPeriod.MONTHLY)
                         .priceInCents(1990)
+                        .prices(new HashMap<>(Map.of("BRL", 1990L, "USD", 399L, "EUR", 379L)))
                         .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Assinatura mensal com acesso completo ao catálogo premium."))
                         .features(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of("Leitura ilimitada", "Sem anúncios", "Download offline", "Lançamentos antecipados")))
                         .active(true)
@@ -50,6 +54,7 @@ public class SubscriptionPlanSeed implements EntitySeeder {
                 SubscriptionPlan.builder()
                         .period(SubscriptionPeriod.ANNUAL)
                         .priceInCents(19900)
+                        .prices(new HashMap<>(Map.of("BRL", 19900L, "USD", 3990L, "EUR", 3790L)))
                         .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Plano anual com desconto — equivale a 10 meses."))
                         .features(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of("Leitura ilimitada", "Sem anúncios", "Download offline", "Lançamentos antecipados", "Badge exclusivo", "Acesso a eventos VIP")))
                         .active(true)

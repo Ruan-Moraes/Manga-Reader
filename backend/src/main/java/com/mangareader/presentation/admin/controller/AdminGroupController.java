@@ -19,9 +19,11 @@ import com.mangareader.application.group.usecase.admin.AdminChangeGroupMemberRol
 import com.mangareader.application.group.usecase.admin.AdminGetGroupDetailsUseCase;
 import com.mangareader.application.group.usecase.admin.AdminListGroupsUseCase;
 import com.mangareader.application.group.usecase.admin.AdminRemoveGroupMemberUseCase;
+import com.mangareader.application.group.usecase.admin.UpdateAdminGroupUseCase;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.presentation.admin.dto.AdminGroupResponse;
 import com.mangareader.presentation.admin.dto.ChangeGroupMemberRoleRequest;
+import com.mangareader.presentation.admin.dto.UpdateAdminGroupRequest;
 import com.mangareader.presentation.admin.mapper.AdminGroupMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
@@ -40,6 +42,7 @@ public class AdminGroupController {
     private final AdminGetGroupDetailsUseCase getGroupDetailsUseCase;
     private final AdminChangeGroupMemberRoleUseCase changeGroupMemberRoleUseCase;
     private final AdminRemoveGroupMemberUseCase removeGroupMemberUseCase;
+    private final UpdateAdminGroupUseCase updateAdminGroupUseCase;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<AdminGroupResponse>>> listGroups(
@@ -86,6 +89,18 @@ public class AdminGroupController {
     ) {
         var group = removeGroupMemberUseCase.execute(groupId, userId);
 
+        return ResponseEntity.ok(ApiResponse.success(AdminGroupMapper.toDetailResponse(group)));
+    }
+
+    @PatchMapping("/{groupId}")
+    public ResponseEntity<ApiResponse<AdminGroupResponse>> updateGroup(
+            @PathVariable UUID groupId,
+            @RequestBody UpdateAdminGroupRequest request
+    ) {
+        var group = updateAdminGroupUseCase.execute(new UpdateAdminGroupUseCase.UpdateAdminGroupInput(
+                groupId, request.name(), request.description(),
+                request.logo(), request.banner(), request.website()
+        ));
         return ResponseEntity.ok(ApiResponse.success(AdminGroupMapper.toDetailResponse(group)));
     }
 }
