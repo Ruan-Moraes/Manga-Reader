@@ -21,7 +21,16 @@ public class GetCommentsByTitleUseCase {
     private final LocaleResolutionService localeResolver;
 
     public Page<Comment> execute(String titleId, Pageable pageable) {
-        return commentRepository.findByTitleIdAndLanguage(
-                titleId, localeResolver.currentLanguageTag(), pageable);
+        return execute(titleId, pageable, false);
+    }
+
+    /**
+     * @param crossLanguage {@code true} bypassa partição UGC (admin moderação).
+     */
+    public Page<Comment> execute(String titleId, Pageable pageable, boolean crossLanguage) {
+        return crossLanguage
+                ? commentRepository.findByTitleId(titleId, pageable)
+                : commentRepository.findByTitleIdAndLanguage(
+                        titleId, localeResolver.currentLanguageTag(), pageable);
     }
 }

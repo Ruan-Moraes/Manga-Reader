@@ -89,17 +89,18 @@ public class ForumController {
     }
 
     @GetMapping("/category/{category}")
-    @Operation(summary = "Filtrar tópicos por categoria")
+    @Operation(summary = "Filtrar tópicos por categoria", description = "language=all (admin) lista todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<ForumTopicResponse>>> getByCategory(
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String language
     ) {
         var cat = parseCategory(category);
 
         var pageable = buildPageable(page, size, "createdAt", "desc");
 
-        var result = getForumTopicsByCategoryUseCase.execute(cat, pageable);
+        var result = getForumTopicsByCategoryUseCase.execute(cat, pageable, "all".equalsIgnoreCase(language));
 
         var mapped = result.map(t -> ForumMapper.toResponse(t, getAuthorPostCountUseCase::execute));
 

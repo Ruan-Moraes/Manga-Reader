@@ -97,7 +97,7 @@ class CommentControllerTest {
         @DisplayName("Deve retornar 200 com comentários paginados")
         void deveRetornar200ComComentarios() throws Exception {
             var comments = List.of(buildComment("c1"), buildComment("c2"));
-            when(getCommentsByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+            when(getCommentsByTitleUseCase.execute(eq("title-1"), any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
                     .thenReturn(new PageImpl<>(comments));
 
             mockMvc.perform(get("/api/comments/title/title-1"))
@@ -110,7 +110,7 @@ class CommentControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getCommentsByTitleUseCase.execute(eq("title-x"), any(Pageable.class)))
+            when(getCommentsByTitleUseCase.execute(eq("title-x"), any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/comments/title/title-x"))

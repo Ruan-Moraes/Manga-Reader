@@ -171,7 +171,7 @@ class ForumControllerTest {
         @DisplayName("Deve retornar 200 com tópicos da categoria")
         void deveRetornar200() throws Exception {
             var topics = List.of(buildTopic(UUID.randomUUID()));
-            when(getForumTopicsByCategoryUseCase.execute(eq(ForumCategory.GERAL), any(Pageable.class)))
+            when(getForumTopicsByCategoryUseCase.execute(eq(ForumCategory.GERAL), any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
                     .thenReturn(new PageImpl<>(topics));
 
             mockMvc.perform(get("/api/forum/category/Geral"))
@@ -183,7 +183,7 @@ class ForumControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com página vazia para categoria sem tópicos")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getForumTopicsByCategoryUseCase.execute(eq(ForumCategory.SPOILERS), any(Pageable.class)))
+            when(getForumTopicsByCategoryUseCase.execute(eq(ForumCategory.SPOILERS), any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/forum/category/Spoilers"))

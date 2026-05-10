@@ -58,16 +58,17 @@ public class CommentController {
     private final GetUserReactionsUseCase getUserReactionsUseCase;
 
     @GetMapping("/title/{titleId}")
-    @Operation(summary = "Listar comentários", description = "Retorna comentários de um título com paginação")
+    @Operation(summary = "Listar comentários", description = "Retorna comentários de um título com paginação. language=all (admin) lista todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<CommentResponse>>> getByTitle(
             @PathVariable String titleId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @RequestParam(defaultValue = "desc") String direction,
+            @RequestParam(required = false) String language
     ) {
         var pageable = buildPageable(page, size, sort, direction);
-        var result = getCommentsByTitleUseCase.execute(titleId, pageable);
+        var result = getCommentsByTitleUseCase.execute(titleId, pageable, "all".equalsIgnoreCase(language));
         var mapped = result.map(CommentMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

@@ -23,8 +23,15 @@ public class GetForumTopicsByCategoryUseCase {
 
     @Transactional(readOnly = true)
     public Page<ForumTopic> execute(ForumCategory category, Pageable pageable) {
-        Page<ForumTopic> page = forumRepository.findByCategoryAndLanguage(
-                category, localeResolver.currentLanguageTag(), pageable);
+        return execute(category, pageable, false);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ForumTopic> execute(ForumCategory category, Pageable pageable, boolean crossLanguage) {
+        Page<ForumTopic> page = crossLanguage
+                ? forumRepository.findByCategory(category, pageable)
+                : forumRepository.findByCategoryAndLanguage(
+                        category, localeResolver.currentLanguageTag(), pageable);
 
         page.getContent().forEach(topic -> {
             topic.getAuthor().getName();
