@@ -55,6 +55,15 @@ class EventControllerTest {
 
     @MockitoBean
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+    @org.junit.jupiter.api.BeforeEach
+    void stubLocaleResolver() {
+        org.mockito.Mockito.when(localeResolver.resolve(org.mockito.ArgumentMatchers.any(com.mangareader.shared.domain.i18n.LocalizedString.class)))
+                .thenAnswer(inv -> {
+                    com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
+                    return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+    }
+
 
     @MockitoBean
     private com.mangareader.application.label.service.DomainLabelService domainLabelService;
@@ -62,7 +71,7 @@ class EventControllerTest {
     private Event buildEvent() {
         return Event.builder()
                 .id(UUID.randomUUID())
-                .title("Anime Friends 2026")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Friends 2026"))
                 .status(EventStatus.COMING_SOON)
                 .timeline(EventTimeline.UPCOMING)
                 .type(EventType.CONVENCAO)
@@ -111,7 +120,7 @@ class EventControllerTest {
         void deveRetornar200() throws Exception {
             UUID eventId = UUID.randomUUID();
             var event = Event.builder()
-                    .id(eventId).title("CCXP 2026")
+                    .id(eventId).title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("CCXP 2026"))
                     .status(EventStatus.REGISTRATIONS_OPEN)
                     .timeline(EventTimeline.UPCOMING).type(EventType.CONVENCAO)
                     .startDate(LocalDateTime.of(2026, 12, 5, 10, 0))

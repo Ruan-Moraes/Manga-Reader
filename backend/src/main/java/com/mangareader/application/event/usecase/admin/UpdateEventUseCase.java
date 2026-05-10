@@ -21,8 +21,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Atualiza um evento existente (admin). Aceita campos legados String e os
- * novos mapas *I18n; quando ambos presentes, *I18n prevalece para o campo i18n.
+ * Atualiza um evento existente (admin). Mapas BCP 47 → texto para campos i18n.
  */
 @Service
 @RequiredArgsConstructor
@@ -30,10 +29,10 @@ public class UpdateEventUseCase {
     private final EventRepositoryPort eventRepository;
 
     @Transactional
-    public Event execute(UUID eventId, String title, String subtitle, String description,
-                         Map<String, String> titleI18n,
-                         Map<String, String> subtitleI18n,
-                         Map<String, String> descriptionI18n,
+    public Event execute(UUID eventId,
+                         Map<String, String> title,
+                         Map<String, String> subtitle,
+                         Map<String, String> description,
                          String image, LocalDateTime startDate, LocalDateTime endDate,
                          String timezone, EventTimeline timeline, EventStatus status,
                          EventType type, EventLocation location, EventOrganizer organizer,
@@ -42,12 +41,9 @@ public class UpdateEventUseCase {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event", "id", eventId));
 
-        if (title != null) event.setTitle(title);
-        if (subtitle != null) event.setSubtitle(subtitle);
-        if (description != null) event.setDescription(description);
-        if (titleI18n != null) event.setTitleI18n(LocalizedString.of(titleI18n));
-        if (subtitleI18n != null) event.setSubtitleI18n(LocalizedString.of(subtitleI18n));
-        if (descriptionI18n != null) event.setDescriptionI18n(LocalizedString.of(descriptionI18n));
+        if (title != null) event.setTitle(LocalizedString.of(title));
+        if (subtitle != null) event.setSubtitle(LocalizedString.of(subtitle));
+        if (description != null) event.setDescription(LocalizedString.of(description));
         if (image != null) event.setImage(image);
         if (startDate != null) event.setStartDate(startDate);
         if (endDate != null) event.setEndDate(endDate);

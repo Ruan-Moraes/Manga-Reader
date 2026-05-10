@@ -20,7 +20,7 @@ class EventTicketTest {
         @DisplayName("Deve criar instância com todos os campos via builder")
         void shouldBuildWithAllFields() {
             UUID id = UUID.randomUUID();
-            Event event = Event.builder().title("Anime Expo").build();
+            Event event = Event.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Expo")).build();
 
             EventTicket ticket = EventTicket.builder()
                     .id(id)

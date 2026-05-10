@@ -29,7 +29,7 @@ class EventTest {
         @DisplayName("Deve iniciar com defaults corretos no builder")
         void shouldInitializeDefaults() {
             Event event = Event.builder()
-                    .title("Anime Expo 2025")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Expo 2025"))
                     .startDate(LocalDateTime.of(2025, 7, 3, 10, 0))
                     .endDate(LocalDateTime.of(2025, 7, 6, 22, 0))
                     .timeline(EventTimeline.UPCOMING)
@@ -78,9 +78,9 @@ class EventTest {
                     .build();
 
             Event event = Event.builder()
-                    .title("MangaCon Brasil 2025")
-                    .subtitle("O maior evento de mangá do Brasil")
-                    .description("Descrição completa do evento")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("MangaCon Brasil 2025"))
+                    .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O maior evento de mangá do Brasil"))
+                    .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Descrição completa do evento"))
                     .image("https://example.com/event.jpg")
                     .gallery(List.of("img1.jpg", "img2.jpg"))
                     .startDate(LocalDateTime.of(2025, 8, 15, 9, 0))
@@ -100,8 +100,8 @@ class EventTest {
                     .relatedEventIds(List.of("event-2", "event-3"))
                     .build();
 
-            assertEquals("MangaCon Brasil 2025", event.getTitle());
-            assertEquals("O maior evento de mangá do Brasil", event.getSubtitle());
+            assertEquals("MangaCon Brasil 2025", event.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR")));
+            assertEquals("O maior evento de mangá do Brasil", event.getSubtitle().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertEquals(EventTimeline.UPCOMING, event.getTimeline());
             assertEquals(EventStatus.REGISTRATIONS_OPEN, event.getStatus());
             assertEquals(EventType.CONVENCAO, event.getType());
@@ -179,7 +179,7 @@ class EventTest {
         @DisplayName("Deve permitir adicionar tickets ao evento")
         void shouldAddTicketsToEvent() {
             Event event = Event.builder()
-                    .title("Evento teste")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Evento teste"))
                     .startDate(LocalDateTime.now())
                     .endDate(LocalDateTime.now().plusDays(1))
                     .timeline(EventTimeline.UPCOMING)
@@ -262,7 +262,7 @@ class EventTest {
             Event event = new Event();
 
             assertNull(event.getId());
-            assertNull(event.getTitle());
+            assertTrue(event.getTitle().isEmpty());
             assertNull(event.getStartDate());
             assertNull(event.getEndDate());
             assertNull(event.getTimeline());

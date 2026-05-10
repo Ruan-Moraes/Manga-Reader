@@ -7,7 +7,7 @@ import com.mangareader.presentation.admin.dto.AdminEventResponse;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
 /**
- * Mapper estático Event → AdminEventResponse. Inclui todas as traduções *I18n.
+ * Mapper estático Event → AdminEventResponse.
  */
 public final class AdminEventMapper {
     private AdminEventMapper() {
@@ -16,12 +16,9 @@ public final class AdminEventMapper {
     public static AdminEventResponse toResponse(Event event) {
         return new AdminEventResponse(
                 event.getId(),
-                event.getTitle(),
-                event.getSubtitle(),
-                event.getDescription(),
-                values(event.getTitleI18n()),
-                values(event.getSubtitleI18n()),
-                values(event.getDescriptionI18n()),
+                values(event.getTitle()),
+                values(event.getSubtitle()),
+                values(event.getDescription()),
                 event.getImage(),
                 event.getStartDate(),
                 event.getEndDate(),

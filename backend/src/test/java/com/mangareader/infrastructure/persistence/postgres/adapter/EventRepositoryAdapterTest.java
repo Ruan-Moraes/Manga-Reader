@@ -41,7 +41,7 @@ class EventRepositoryAdapterTest {
 
     private Event buildEvent(String title, EventStatus status, LocalDateTime start) {
         return Event.builder()
-                .title(title)
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(title))
                 .startDate(start)
                 .endDate(start.plusDays(2))
                 .timeline(EventTimeline.UPCOMING)
@@ -70,8 +70,8 @@ class EventRepositoryAdapterTest {
             var events = eventRepository.findAll();
 
             assertThat(events).hasSize(2);
-            assertThat(events.get(0).getTitle()).isEqualTo("Anime Expo");
-            assertThat(events.get(1).getTitle()).isEqualTo("Manga Fest");
+            assertThat(events.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Anime Expo");
+            assertThat(events.get(1).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Manga Fest");
         }
     }
 
@@ -85,7 +85,7 @@ class EventRepositoryAdapterTest {
             var result = eventRepository.findById(eventHappening.getId());
 
             assertThat(result).isPresent();
-            assertThat(result.get().getTitle()).isEqualTo("Anime Expo");
+            assertThat(result.get().getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Anime Expo");
         }
 
         @Test
@@ -105,7 +105,7 @@ class EventRepositoryAdapterTest {
             var result = eventRepository.findByStatus(EventStatus.HAPPENING_NOW);
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getTitle()).isEqualTo("Anime Expo");
+            assertThat(result.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Anime Expo");
         }
 
         @Test
@@ -122,7 +122,7 @@ class EventRepositoryAdapterTest {
             var page = eventRepository.findByStatus(EventStatus.ENDED, PageRequest.of(0, 10));
 
             assertThat(page.getContent()).hasSize(1);
-            assertThat(page.getContent().get(0).getTitle()).isEqualTo("Manga Fest");
+            assertThat(page.getContent().get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Manga Fest");
         }
     }
 
@@ -153,18 +153,18 @@ class EventRepositoryAdapterTest {
             var persisted = eventRepository.save(newEvent);
 
             assertThat(persisted.getId()).isNotNull();
-            assertThat(persisted.getTitle()).isEqualTo("Comic Con");
+            assertThat(persisted.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Comic Con");
             assertThat(persisted.getStatus()).isEqualTo(EventStatus.COMING_SOON);
         }
 
         @Test
         @DisplayName("Deve atualizar evento existente")
         void deveAtualizarEvento() {
-            eventHappening.setTitle("Anime Expo 2026");
+            eventHappening.setTitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Expo 2026"));
             var updated = eventRepository.save(eventHappening);
             entityManager.flush();
 
-            assertThat(updated.getTitle()).isEqualTo("Anime Expo 2026");
+            assertThat(updated.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Anime Expo 2026");
         }
     }
 

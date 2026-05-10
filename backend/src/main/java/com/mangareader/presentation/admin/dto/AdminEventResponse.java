@@ -5,17 +5,14 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Resposta admin de evento. Campos *I18n trazem todas as traduções para edição
- * multilíngue. Campos String legados continuam preenchidos via fallback do mapper.
+ * Resposta admin de evento. Campos title/subtitle/description expostos como
+ * mapas multilíngues para edição.
  */
 public record AdminEventResponse(
         UUID id,
-        String title,
-        String subtitle,
-        String description,
-        Map<String, String> titleI18n,
-        Map<String, String> subtitleI18n,
-        Map<String, String> descriptionI18n,
+        Map<String, String> title,
+        Map<String, String> subtitle,
+        Map<String, String> description,
         String image,
         LocalDateTime startDate,
         LocalDateTime endDate,

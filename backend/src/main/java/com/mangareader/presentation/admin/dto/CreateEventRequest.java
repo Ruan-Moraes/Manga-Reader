@@ -2,17 +2,20 @@ package com.mangareader.presentation.admin.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
-import jakarta.validation.constraints.NotBlank;
+import com.mangareader.shared.application.i18n.RequiredLanguages;
+
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Request para criação de evento (admin).
+ * Request para criação de evento (admin). Campos textuais multilíngues
+ * (mapa BCP 47 → texto). pt-BR obrigatório no title.
  */
 public record CreateEventRequest(
-        @NotBlank(message = "{validation.event.title.required}") String title,
-        String subtitle,
-        String description,
+        @NotNull @RequiredLanguages Map<String, String> title,
+        Map<String, String> subtitle,
+        Map<String, String> description,
         String image,
         @NotNull(message = "{validation.event.startDate.required}") LocalDateTime startDate,
         @NotNull(message = "{validation.event.endDate.required}") LocalDateTime endDate,

@@ -40,7 +40,7 @@ class DeleteEventUseCaseTest {
     void deveExcluirEventoExistente() {
         Event event = Event.builder()
                 .id(EVENT_ID)
-                .title("Test Event")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test Event"))
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(1))
                 .timeline(EventTimeline.UPCOMING)

@@ -66,9 +66,9 @@ class AdminEventControllerTest {
     private Event buildEvent() {
         return Event.builder()
                 .id(EVENT_ID)
-                .title("Anime Expo")
-                .subtitle("Subtitle")
-                .description("Description")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Expo"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Subtitle"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Description"))
                 .image("image.jpg")
                 .startDate(LocalDateTime.of(2026, 5, 1, 10, 0))
                 .endDate(LocalDateTime.of(2026, 5, 3, 18, 0))
@@ -96,7 +96,7 @@ class AdminEventControllerTest {
         mockMvc.perform(get("/api/admin/events"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content[0].title").value("Anime Expo"));
+                .andExpect(jsonPath("$.data.content[0].title['pt-BR']").value("Anime Expo"));
     }
 
     @Test
@@ -106,7 +106,7 @@ class AdminEventControllerTest {
 
         mockMvc.perform(get("/api/admin/events/" + EVENT_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.title").value("Anime Expo"))
+                .andExpect(jsonPath("$.data.title['pt-BR']").value("Anime Expo"))
                 .andExpect(jsonPath("$.data.status").value("COMING_SOON"));
     }
 
@@ -123,7 +123,7 @@ class AdminEventControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "title": "Anime Expo",
+                                    "title": {"pt-BR": "Anime Expo"},
                                     "startDate": "2026-05-01T10:00:00",
                                     "endDate": "2026-05-03T18:00:00",
                                     "timeline": "UPCOMING",
@@ -134,17 +134,16 @@ class AdminEventControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.title").value("Anime Expo"));
+                .andExpect(jsonPath("$.data.title['pt-BR']").value("Anime Expo"));
     }
 
     @Test
     @DisplayName("PATCH /api/admin/events/{id} — deve retornar 200 ao atualizar")
     void deveRetornar200AoAtualizar() throws Exception {
         Event updated = buildEvent();
-        updated.setTitle("Updated Expo");
+        updated.setTitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Updated Expo"));
         when(updateEventUseCase.execute(
                 eq(EVENT_ID), any(), any(), any(),
-                any(), any(), any(),
                 any(), any(), any(), any(),
                 any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
@@ -152,10 +151,10 @@ class AdminEventControllerTest {
         mockMvc.perform(patch("/api/admin/events/" + EVENT_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"title": "Updated Expo"}
+                                {"title": {"pt-BR": "Updated Expo"}}
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.title").value("Updated Expo"));
+                .andExpect(jsonPath("$.data.title['pt-BR']").value("Updated Expo"));
     }
 
     @Test

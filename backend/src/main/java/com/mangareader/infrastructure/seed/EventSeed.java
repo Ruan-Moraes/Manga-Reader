@@ -41,9 +41,9 @@ public class EventSeed implements EntitySeeder {
         var now = LocalDateTime.now();
 
         var animeCon = Event.builder()
-                .title("AnimeCon SP 2026")
-                .subtitle("O maior evento de anime e mangá do Brasil")
-                .description("A AnimeCon SP reúne milhares de fãs para celebrar a cultura otaku com painéis, cosplay, artistas convidados e lançamentos exclusivos.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("AnimeCon SP 2026"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O maior evento de anime e mangá do Brasil"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A AnimeCon SP reúne milhares de fãs para celebrar a cultura otaku com painéis, cosplay, artistas convidados e lançamentos exclusivos."))
                 .image("https://picsum.photos/1200/600?random=501")
                 .gallery(List.of("https://picsum.photos/800/450?random=502", "https://picsum.photos/800/450?random=503"))
                 .startDate(now.plusDays(30))
@@ -81,9 +81,9 @@ public class EventSeed implements EntitySeeder {
         ));
 
         var autografos = Event.builder()
-                .title("Noite de Autógrafos — Hiroshi Tanaka")
-                .subtitle("Sessão exclusiva com o autor de Crônicas de Polaris")
-                .description("Hiroshi Tanaka estará presente para uma sessão de autógrafos e bate-papo sobre a criação de Crônicas de Polaris.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Noite de Autógrafos — Hiroshi Tanaka"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Sessão exclusiva com o autor de Crônicas de Polaris"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Hiroshi Tanaka estará presente para uma sessão de autógrafos e bate-papo sobre a criação de Crônicas de Polaris."))
                 .image("https://picsum.photos/1200/600?random=504")
                 .startDate(now.plusDays(45))
                 .endDate(now.plusDays(45).plusHours(3))
@@ -117,9 +117,9 @@ public class EventSeed implements EntitySeeder {
         );
 
         var live = Event.builder()
-                .title("Live: Análise dos Lançamentos de Março")
-                .subtitle("Resenha ao vivo dos principais lançamentos do mês")
-                .description("Junte-se à equipe MangaReader para uma análise ao vivo dos mangás lançados em março de 2026.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Live: Análise dos Lançamentos de Março"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Resenha ao vivo dos principais lançamentos do mês"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Junte-se à equipe MangaReader para uma análise ao vivo dos mangás lançados em março de 2026."))
                 .image("https://picsum.photos/1200/600?random=505")
                 .startDate(now.minusHours(1))
                 .endDate(now.plusHours(2))
@@ -141,9 +141,9 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         var workshop = Event.builder()
-                .title("Workshop: Introdução ao Desenho de Mangá")
-                .subtitle("Aprenda as bases do estilo mangá com profissionais")
-                .description("Workshop prático para iniciantes que querem aprender a desenhar no estilo mangá.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Workshop: Introdução ao Desenho de Mangá"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aprenda as bases do estilo mangá com profissionais"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Workshop prático para iniciantes que querem aprender a desenhar no estilo mangá."))
                 .image("https://picsum.photos/1200/600?random=506")
                 .startDate(now.minusDays(15))
                 .endDate(now.minusDays(15).plusHours(4))
@@ -165,9 +165,9 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         var meetup = Event.builder()
-                .title("Meetup Leitores MangaReader — Rio de Janeiro")
-                .subtitle("Encontro informal de leitores no Rio")
-                .description("Encontro presencial para leitores da comunidade MangaReader. Traga seus volumes favoritos para trocar e discutir!")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Meetup Leitores MangaReader — Rio de Janeiro"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Encontro informal de leitores no Rio"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Encontro presencial para leitores da comunidade MangaReader. Traga seus volumes favoritos para trocar e discutir!"))
                 .image("https://picsum.photos/1200/600?random=507")
                 .startDate(now.plusDays(14))
                 .endDate(now.plusDays(14).plusHours(4))
@@ -189,9 +189,9 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         var liveOnline = Event.builder()
-                .title("Live: Debate — Melhores Manhwas de Ação")
-                .subtitle("Discussão ao vivo sobre os top manhwas de 2025-2026")
-                .description("Junte-se para debater os melhores manhwas de ação dos últimos dois anos.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Live: Debate — Melhores Manhwas de Ação"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Discussão ao vivo sobre os top manhwas de 2025-2026"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Junte-se para debater os melhores manhwas de ação dos últimos dois anos."))
                 .image("https://picsum.photos/1200/600?random=508")
                 .startDate(now.plusDays(7))
                 .endDate(now.plusDays(7).plusHours(2))
@@ -213,9 +213,9 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         var convencaoPassada = Event.builder()
-                .title("Manga Fest BH 2025")
-                .subtitle("Festival de mangá e cultura japonesa")
-                .description("Edição 2025 do Manga Fest em Belo Horizonte com expositores, artistas e cosplay.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Manga Fest BH 2025"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Festival de mangá e cultura japonesa"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Edição 2025 do Manga Fest em Belo Horizonte com expositores, artistas e cosplay."))
                 .image("https://picsum.photos/1200/600?random=509")
                 .startDate(now.minusDays(60))
                 .endDate(now.minusDays(58))
@@ -248,9 +248,9 @@ public class EventSeed implements EntitySeeder {
         ));
 
         var workshopOnline = Event.builder()
-                .title("Workshop Online: Colorização Digital de Mangá")
-                .subtitle("Aprenda técnicas de colorização com tablet e Photoshop")
-                .description("Workshop prático online para artistas que querem aprender colorização digital no estilo mangá.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Workshop Online: Colorização Digital de Mangá"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aprenda técnicas de colorização com tablet e Photoshop"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Workshop prático online para artistas que querem aprender colorização digital no estilo mangá."))
                 .image("https://picsum.photos/1200/600?random=510")
                 .startDate(now.plusDays(21))
                 .endDate(now.plusDays(21).plusHours(3))
@@ -276,9 +276,9 @@ public class EventSeed implements EntitySeeder {
         );
 
         var lancamentoOngoing = Event.builder()
-                .title("Lançamento: Noites Vermelhas — Vol. 1")
-                .subtitle("Evento de lançamento do mangá de horror mais aguardado")
-                .description("Lançamento presencial com sessão de autógrafos do autor Kazuki Morimoto.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lançamento: Noites Vermelhas — Vol. 1"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Evento de lançamento do mangá de horror mais aguardado"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lançamento presencial com sessão de autógrafos do autor Kazuki Morimoto."))
                 .image("https://picsum.photos/1200/600?random=511")
                 .startDate(now.minusHours(2))
                 .endDate(now.plusHours(3))
@@ -301,9 +301,9 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         var meetupPassado = Event.builder()
-                .title("Meetup Tradutores de Mangá — SP")
-                .subtitle("Encontro da comunidade de tradutores amadores")
-                .description("Encontro para tradutores e revisores de scanlation para networking e troca de experiências.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Meetup Tradutores de Mangá — SP"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Encontro da comunidade de tradutores amadores"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Encontro para tradutores e revisores de scanlation para networking e troca de experiências."))
                 .image("https://picsum.photos/1200/600?random=512")
                 .startDate(now.minusDays(30))
                 .endDate(now.minusDays(30).plusHours(3))

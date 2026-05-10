@@ -39,9 +39,9 @@ public class EventMapper {
 
         return new EventResponse(
                 event.getId().toString(),
-                i18n.resolveOrFallback(event.getTitleI18n(), event.getTitle()),
-                i18n.resolveOrFallback(event.getSubtitleI18n(), event.getSubtitle()),
-                i18n.resolveOrFallback(event.getDescriptionI18n(), event.getDescription()),
+                i18n.toResolvedString(event.getTitle()),
+                i18n.toResolvedString(event.getSubtitle()),
+                i18n.toResolvedString(event.getDescription()),
                 event.getImage(),
                 event.getGallery(),
                 formatDateTime(event.getStartDate()),

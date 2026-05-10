@@ -39,7 +39,7 @@ class UpdateEventUseCaseTest {
     private Event buildEvent() {
         return Event.builder()
                 .id(EVENT_ID)
-                .title("Original Event")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Original Event"))
                 .startDate(LocalDateTime.of(2026, 5, 1, 10, 0))
                 .endDate(LocalDateTime.of(2026, 5, 3, 18, 0))
                 .timeline(EventTimeline.UPCOMING)
@@ -56,14 +56,13 @@ class UpdateEventUseCaseTest {
         when(eventRepository.save(any(Event.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Event result = updateEventUseCase.execute(
-                EVENT_ID, "Updated Title", null, null,
-                null, null, null,
+                EVENT_ID, java.util.Map.of("pt-BR", "Updated Title"), null, null,
                 null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null
         );
 
-        assertThat(result.getTitle()).isEqualTo("Updated Title");
+        assertThat(result.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Updated Title");
         assertThat(result.getTimeline()).isEqualTo(EventTimeline.UPCOMING);
         assertThat(result.getStatus()).isEqualTo(EventStatus.COMING_SOON);
         verify(eventRepository).save(event);
@@ -78,7 +77,6 @@ class UpdateEventUseCaseTest {
 
         Event result = updateEventUseCase.execute(
                 EVENT_ID, null, null, null,
-                null, null, null,
                 null,
                 null, null, null,
                 EventTimeline.ONGOING, EventStatus.HAPPENING_NOW, null,
@@ -96,8 +94,7 @@ class UpdateEventUseCaseTest {
         when(eventRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> updateEventUseCase.execute(
-                invalidId, "Title", null, null,
-                null, null, null,
+                invalidId, java.util.Map.of("pt-BR", "Title"), null, null,
                 null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null

@@ -23,7 +23,7 @@ class EventParticipantTest {
         @DisplayName("Deve criar instância com todos os campos via builder")
         void shouldBuildWithAllFields() {
             UUID id = UUID.randomUUID();
-            Event event = Event.builder().title("Anime Expo").build();
+            Event event = Event.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Expo")).build();
             User user = User.builder().name("Ruan").email("ruan@test.com").build();
             LocalDateTime joinedAt = LocalDateTime.now();
 

@@ -146,7 +146,6 @@ public class AdminEventController {
 
         var event = updateEventUseCase.execute(
                 id, request.title(), request.subtitle(), request.description(),
-                request.titleI18n(), request.subtitleI18n(), request.descriptionI18n(),
                 request.image(),
                 request.startDate(), request.endDate(), request.timezone(),
                 timeline, status, type, location, organizer,

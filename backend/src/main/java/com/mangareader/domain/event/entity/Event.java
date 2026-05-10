@@ -53,32 +53,23 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 200)
-    private String title;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = LocalizedStringJsonConverter.class)
+    @Column(name = "title", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private LocalizedString title = LocalizedString.empty();
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "title_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "subtitle", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedString titleI18n = LocalizedString.empty();
-
-    @Column(length = 500)
-    private String subtitle;
+    private LocalizedString subtitle = LocalizedString.empty();
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "subtitle_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "description", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedString subtitleI18n = LocalizedString.empty();
-
-    @Column(length = 5000)
-    private String description;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "description_i18n", columnDefinition = "jsonb", nullable = false)
-    @Builder.Default
-    private LocalizedString descriptionI18n = LocalizedString.empty();
+    private LocalizedString description = LocalizedString.empty();
 
     private String image;
 

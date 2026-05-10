@@ -112,9 +112,9 @@ public final class EventMock {
     public static Event upcomingPresential() {
         Event event = Event.builder()
                 .id(EVENT_1_ID)
-                .title("Manga Fest 2026")
-                .subtitle("O maior evento de manga do Brasil")
-                .description("Tres dias de paineis, cosplay, sessoes de autografos e lancamentos exclusivos.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Manga Fest 2026"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O maior evento de manga do Brasil"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tres dias de paineis, cosplay, sessoes de autografos e lancamentos exclusivos."))
                 .image("https://picsum.photos/800/400?random=e1")
                 .gallery(new ArrayList<>(List.of(
                         "https://picsum.photos/800/400?random=e1a",
@@ -151,9 +151,9 @@ public final class EventMock {
     public static Event ongoingOnline() {
         Event event = Event.builder()
                 .id(EVENT_2_ID)
-                .title("Maratona de Leitura Online")
-                .subtitle("24 horas de leitura coletiva")
-                .description("Leia junto com a comunidade durante 24 horas. Premios para quem ler mais capitulos.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Maratona de Leitura Online"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("24 horas de leitura coletiva"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Leia junto com a comunidade durante 24 horas. Premios para quem ler mais capitulos."))
                 .image("https://picsum.photos/800/400?random=e2")
                 .gallery(new ArrayList<>())
                 .startDate(LocalDateTime.of(2026, 3, 14, 0, 0))
@@ -184,9 +184,9 @@ public final class EventMock {
     public static Event pastEvent() {
         Event event = Event.builder()
                 .id(EVENT_3_ID)
-                .title("Workshop de Desenho Manga")
-                .subtitle("Aprenda tecnicas basicas de desenho manga")
-                .description("Workshop presencial com artistas profissionais.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Workshop de Desenho Manga"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aprenda tecnicas basicas de desenho manga"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Workshop presencial com artistas profissionais."))
                 .image("https://picsum.photos/800/400?random=e3")
                 .gallery(new ArrayList<>(List.of(
                         "https://picsum.photos/800/400?random=e3a",
@@ -221,8 +221,8 @@ public final class EventMock {
     public static Event cancelledEvent() {
         return Event.builder()
                 .id(EVENT_4_ID)
-                .title("Encontro de Colecionadores")
-                .description("Cancelado por falta de inscricoes.")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Encontro de Colecionadores"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Cancelado por falta de inscricoes."))
                 .image("https://picsum.photos/800/400?random=e4")
                 .gallery(new ArrayList<>())
                 .startDate(LocalDateTime.of(2026, 5, 1, 10, 0))

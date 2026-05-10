@@ -2,6 +2,7 @@ package com.mangareader.application.event.usecase.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import com.mangareader.domain.event.valueobject.EventOrganizer;
 import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.event.valueobject.EventTimeline;
 import com.mangareader.domain.event.valueobject.EventType;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,16 +27,17 @@ public class CreateEventUseCase {
     private final EventRepositoryPort eventRepository;
 
     @Transactional
-    public Event execute(String title, String subtitle, String description, String image,
+    public Event execute(Map<String, String> title, Map<String, String> subtitle,
+                         Map<String, String> description, String image,
                          LocalDateTime startDate, LocalDateTime endDate, String timezone,
                          EventTimeline timeline, EventStatus status, EventType type,
                          EventLocation location, EventOrganizer organizer,
                          String priceLabel, boolean isFeatured,
                          List<String> schedule, List<String> specialGuests) {
         Event event = Event.builder()
-                .title(title)
-                .subtitle(subtitle)
-                .description(description)
+                .title(toLocalized(title))
+                .subtitle(toLocalized(subtitle))
+                .description(toLocalized(description))
                 .image(image)
                 .startDate(startDate)
                 .endDate(endDate)
@@ -51,5 +54,9 @@ public class CreateEventUseCase {
                 .build();
 
         return eventRepository.save(event);
+    }
+
+    private static LocalizedString toLocalized(Map<String, String> map) {
+        return (map == null || map.isEmpty()) ? LocalizedString.empty() : LocalizedString.of(map);
     }
 }

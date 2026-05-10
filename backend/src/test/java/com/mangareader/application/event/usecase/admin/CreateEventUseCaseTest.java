@@ -44,14 +44,14 @@ class CreateEventUseCaseTest {
         EventOrganizer organizer = EventOrganizer.builder().organizerName("MangaCon").build();
 
         Event result = createEventUseCase.execute(
-                "Anime Expo", "Subtitle", "Description", "image.jpg",
+                java.util.Map.of("pt-BR", "Anime Expo"), java.util.Map.of("pt-BR", "Subtitle"), java.util.Map.of("pt-BR", "Description"), "image.jpg",
                 start, end, "America/Sao_Paulo",
                 EventTimeline.UPCOMING, EventStatus.COMING_SOON, EventType.CONVENCAO,
                 location, organizer, "R$ 50,00", true,
                 List.of("10h - Abertura"), List.of("Guest 1")
         );
 
-        assertThat(result.getTitle()).isEqualTo("Anime Expo");
+        assertThat(result.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Anime Expo");
         assertThat(result.getTimeline()).isEqualTo(EventTimeline.UPCOMING);
         assertThat(result.getLocation().getCity()).isEqualTo("São Paulo");
         assertThat(result.isFeatured()).isTrue();
@@ -64,7 +64,7 @@ class CreateEventUseCaseTest {
         when(eventRepository.save(any(Event.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Event result = createEventUseCase.execute(
-                "Test", null, null, null,
+                java.util.Map.of("pt-BR", "Test"), null, null, null,
                 LocalDateTime.now(), LocalDateTime.now().plusDays(1), null,
                 EventTimeline.UPCOMING, EventStatus.COMING_SOON, EventType.MEETUP,
                 null, null, null, false, null, null

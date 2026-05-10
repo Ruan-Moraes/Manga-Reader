@@ -40,7 +40,7 @@ class GetEventsUseCaseTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Event> events = List.of(
                 Event.builder()
-                        .title("Anime Friends 2026")
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Anime Friends 2026"))
                         .status(EventStatus.COMING_SOON)
                         .timeline(EventTimeline.UPCOMING)
                         .type(EventType.CONVENCAO)
@@ -48,7 +48,7 @@ class GetEventsUseCaseTest {
                         .endDate(LocalDateTime.of(2026, 7, 13, 22, 0))
                         .build(),
                 Event.builder()
-                        .title("Live de Lançamento")
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Live de Lançamento"))
                         .status(EventStatus.HAPPENING_NOW)
                         .timeline(EventTimeline.ONGOING)
                         .type(EventType.LIVE)

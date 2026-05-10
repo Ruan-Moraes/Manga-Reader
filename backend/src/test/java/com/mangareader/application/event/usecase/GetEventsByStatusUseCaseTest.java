@@ -41,7 +41,7 @@ class GetEventsByStatusUseCaseTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Event> events = List.of(
                 Event.builder()
-                        .title("Maratona de Leitura")
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Maratona de Leitura"))
                         .status(status)
                         .timeline(EventTimeline.ONGOING)
                         .type(EventType.MEETUP)

@@ -39,7 +39,7 @@ class GetEventByIdUseCaseTest {
         UUID eventId = UUID.randomUUID();
         Event event = Event.builder()
                 .id(eventId)
-                .title("CCXP 2026")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("CCXP 2026"))
                 .status(EventStatus.REGISTRATIONS_OPEN)
                 .timeline(EventTimeline.UPCOMING)
                 .type(EventType.CONVENCAO)
@@ -54,7 +54,7 @@ class GetEventByIdUseCaseTest {
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(eventId);
-        assertThat(result.getTitle()).isEqualTo("CCXP 2026");
+        assertThat(result.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("CCXP 2026");
         assertThat(result.getStatus()).isEqualTo(EventStatus.REGISTRATIONS_OPEN);
         assertThat(result.getType()).isEqualTo(EventType.CONVENCAO);
     }
