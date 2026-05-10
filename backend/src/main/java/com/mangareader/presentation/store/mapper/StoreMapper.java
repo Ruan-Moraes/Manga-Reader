@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Mapper Store → StoreResponse (público). Resolve campos i18n via
- * {@link LocalizedMappingHelper#resolveOrFallback}.
+ * {@link LocalizedMappingHelper#toResolvedString}.
  */
 @Component
 @RequiredArgsConstructor

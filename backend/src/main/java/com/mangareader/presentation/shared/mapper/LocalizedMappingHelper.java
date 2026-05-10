@@ -35,21 +35,14 @@ public class LocalizedMappingHelper {
     }
 
     /**
-     * Resolve para o locale ativo; se {@code i18n} estiver vazio/nulo, cai
-     * para o campo legado {@code legacy}. Usado durante Fase A da migração.
+     * Resolve para o locale ativo; se {@code i18n} vazio/nulo, cai para o
+     * fallback {@code legacy}. Usado por DomainLabel (fallback para o slug).
      */
     public String resolveOrFallback(LocalizedString i18n, String legacy) {
         if (i18n != null && !i18n.isEmpty()) {
             return resolver.resolve(i18n);
         }
         return legacy;
-    }
-
-    public List<String> resolveOrFallback(LocalizedStringList i18n, List<String> legacy) {
-        if (i18n != null && !i18n.isEmpty()) {
-            return resolver.resolve(i18n);
-        }
-        return legacy != null ? legacy : List.of();
     }
 
     /** Expõe todas as traduções — usado em DTOs admin. */

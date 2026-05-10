@@ -14,7 +14,8 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Mapper de assinatura → DTOs públicos. Resolve description/features pelo
- * locale do request via {@link LocalizedMappingHelper#resolveOrFallback}.
+ * locale do request via {@link LocalizedMappingHelper#toResolvedString} e
+ * {@link LocalizedMappingHelper#toResolvedList}.
  */
 @Component
 @RequiredArgsConstructor
