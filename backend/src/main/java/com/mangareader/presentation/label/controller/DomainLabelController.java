@@ -37,7 +37,7 @@ public class DomainLabelController {
         var labels = getLabelsUseCase.execute(type).stream()
                 .map(label -> new DomainLabelResponse(
                         label.getValue(),
-                        i18n.resolveOrFallback(label.getLabelI18n(), label.getValue())
+                        i18n.resolveOrSlug(label.getLabelI18n(), label.getValue())
                 ))
                 .toList();
         return ResponseEntity.ok(ApiResponse.success(labels));

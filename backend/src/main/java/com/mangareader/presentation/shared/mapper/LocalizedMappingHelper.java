@@ -36,13 +36,18 @@ public class LocalizedMappingHelper {
 
     /**
      * Resolve para o locale ativo; se {@code i18n} vazio/nulo, cai para o
-     * fallback {@code legacy}. Usado por DomainLabel (fallback para o slug).
+     * {@code slug} (chave técnica imutável). Usado exclusivamente por
+     * DomainLabel — value enum acompanha tradução, exibido cru quando
+     * tradução ausente.
+     *
+     * <p><b>Não usar como fallback de migração</b> — Phase B i18n já consolidou
+     * campos canônicos; entidades pós-Fase B não devem ter "legacy String".
      */
-    public String resolveOrFallback(LocalizedString i18n, String legacy) {
+    public String resolveOrSlug(LocalizedString i18n, String slug) {
         if (i18n != null && !i18n.isEmpty()) {
             return resolver.resolve(i18n);
         }
-        return legacy;
+        return slug;
     }
 
     /** Expõe todas as traduções — usado em DTOs admin. */

@@ -34,7 +34,7 @@ public class DomainLabelService {
      */
     public String resolveLabel(String type, String value, String fallback) {
         return repository.findByTypeAndValue(type, value)
-                .map(label -> i18n.resolveOrFallback(label.getLabelI18n(), fallback))
+                .map(label -> i18n.resolveOrSlug(label.getLabelI18n(), fallback))
                 .orElse(fallback);
     }
 
