@@ -41,12 +41,13 @@ public final class AdminSubscriptionMapper {
     }
 
     public static SubscriptionPlanResponse toPlanResponse(SubscriptionPlan plan) {
+        var locale = java.util.Locale.forLanguageTag("pt-BR");
         return new SubscriptionPlanResponse(
                 plan.getId(),
                 plan.getPeriod(),
                 plan.getPriceInCents(),
-                plan.getDescription(),
-                plan.getFeatures(),
+                plan.getDescription() != null ? plan.getDescription().resolve(locale) : "",
+                plan.getFeatures() != null ? plan.getFeatures().resolve(locale) : java.util.List.of(),
                 plan.isActive(),
                 plan.getPrices()
         );

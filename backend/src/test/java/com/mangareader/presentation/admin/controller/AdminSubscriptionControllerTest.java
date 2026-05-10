@@ -91,8 +91,8 @@ class AdminSubscriptionControllerTest {
                 .id(UUID.randomUUID())
                 .period(SubscriptionPeriod.MONTHLY)
                 .priceInCents(1990L)
-                .description("Mensal")
-                .features(List.of("HD", "Offline"))
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Mensal"))
+                .features(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of("HD", "Offline")))
                 .build();
     }
 

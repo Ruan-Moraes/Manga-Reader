@@ -55,29 +55,17 @@ public class SubscriptionPlan {
     @Column(name = "price_in_cents", nullable = false)
     private long priceInCents;
 
-    @Column(nullable = false, length = 300)
-    private String description;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "description_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "description", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedString descriptionI18n = LocalizedString.empty();
-
-    /**
-     * Lista de funcionalidades inclusas no plano.
-     * Armazenada como JSONB para flexibilidade sem migrations extras.
-     */
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    @Builder.Default
-    private List<String> features = new ArrayList<>();
+    private LocalizedString description = LocalizedString.empty();
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringListJsonConverter.class)
-    @Column(name = "features_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "features", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedStringList featuresI18n = LocalizedStringList.empty();
+    private LocalizedStringList features = LocalizedStringList.empty();
 
     @Column(nullable = false)
     @Builder.Default

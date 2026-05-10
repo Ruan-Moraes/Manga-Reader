@@ -75,11 +75,11 @@ class SubscriptionDomainTest {
             var plan = SubscriptionPlan.builder()
                     .period(SubscriptionPeriod.MONTHLY)
                     .priceInCents(1990L)
-                    .description("Plano Mensal")
+                    .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Plano Mensal"))
                     .build();
 
             assertThat(plan.isActive()).isTrue();
-            assertThat(plan.getFeatures()).isNotNull().isEmpty();
+            assertThat(plan.getFeatures().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isNotNull().isEmpty();
         }
 
         @Test
@@ -88,11 +88,11 @@ class SubscriptionDomainTest {
             var plan = SubscriptionPlan.builder()
                     .period(SubscriptionPeriod.ANNUAL)
                     .priceInCents(15990L)
-                    .description("Plano Anual")
-                    .features(List.of("HD", "Offline"))
+                    .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Plano Anual"))
+                    .features(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of("HD", "Offline")))
                     .build();
 
-            assertThat(plan.getFeatures()).containsExactly("HD", "Offline");
+            assertThat(plan.getFeatures().resolve(java.util.Locale.forLanguageTag("pt-BR"))).containsExactly("HD", "Offline");
         }
     }
 

@@ -27,8 +27,8 @@ public class SubscriptionMapper {
                 plan.getId(),
                 plan.getPeriod(),
                 plan.getPriceInCents(),
-                i18n.resolveOrFallback(plan.getDescriptionI18n(), plan.getDescription()),
-                i18n.resolveOrFallback(plan.getFeaturesI18n(), plan.getFeatures()),
+                i18n.toResolvedString(plan.getDescription()),
+                i18n.toResolvedList(plan.getFeatures()),
                 plan.isActive(),
                 plan.getPrices()
         );

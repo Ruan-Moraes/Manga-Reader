@@ -5,10 +5,8 @@ import java.util.Map;
 
 public record UpdateSubscriptionPlanRequest(
         Long priceInCents,
-        String description,
-        List<String> features,
-        Map<String, String> descriptionI18n,
-        Map<String, List<String>> featuresI18n,
+        Map<String, String> description,
+        Map<String, List<String>> features,
         Boolean active,
         Map<String, Long> prices
 ) {}
