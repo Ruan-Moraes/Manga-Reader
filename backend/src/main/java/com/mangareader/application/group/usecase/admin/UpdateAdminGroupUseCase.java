@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.group.usecase.GroupPatcher;
 import com.mangareader.domain.group.entity.Group;
-import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -36,11 +36,8 @@ public class UpdateAdminGroupUseCase {
         Group group = groupRepository.findById(input.groupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", input.groupId()));
 
-        if (input.name() != null) group.setName(LocalizedString.of(input.name()));
-        if (input.description() != null) group.setDescription(LocalizedString.of(input.description()));
-        if (input.logo() != null) group.setLogo(input.logo());
-        if (input.banner() != null) group.setBanner(input.banner());
-        if (input.website() != null) group.setWebsite(input.website());
+        GroupPatcher.apply(group, input.name(), input.description(),
+                input.logo(), input.banner(), input.website());
 
         return groupRepository.save(group);
     }

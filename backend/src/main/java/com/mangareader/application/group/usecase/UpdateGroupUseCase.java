@@ -10,7 +10,6 @@ import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupUserType;
-import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -41,25 +40,8 @@ public class UpdateGroupUseCase {
 
         verifyLeader(group, input.userId());
 
-        if (input.name() != null) {
-            group.setName(LocalizedString.of(input.name()));
-        }
-
-        if (input.description() != null) {
-            group.setDescription(LocalizedString.of(input.description()));
-        }
-
-        if (input.logo() != null) {
-            group.setLogo(input.logo());
-        }
-
-        if (input.banner() != null) {
-            group.setBanner(input.banner());
-        }
-
-        if (input.website() != null) {
-            group.setWebsite(input.website());
-        }
+        GroupPatcher.apply(group, input.name(), input.description(),
+                input.logo(), input.banner(), input.website());
 
         return groupRepository.save(group);
     }
