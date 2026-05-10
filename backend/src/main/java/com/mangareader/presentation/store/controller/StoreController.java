@@ -34,6 +34,9 @@ public class StoreController {
     private final GetStoresByTitleIdUseCase getStoresByTitleIdUseCase;
     private final StoreMapper storeMapper;
 
+    /** Whitelist sort fields — exclude JSONB name/description from ORDER BY. */
+    private static final java.util.Set<String> SORTABLE_FIELDS = java.util.Set.of("id", "rating");
+
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<StoreResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -41,6 +44,7 @@ public class StoreController {
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
 
         var result = getStoresUseCase.execute(pageable);

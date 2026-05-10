@@ -47,6 +47,9 @@ public class TagController {
     private final DeleteTagUseCase deleteTagUseCase;
     private final TagMapper tagMapper;
 
+    /** Whitelist sort fields — exclude JSONB {@code label} from ORDER BY. */
+    private static final java.util.Set<String> SORTABLE_FIELDS = java.util.Set.of("id");
+
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<TagResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -54,6 +57,7 @@ public class TagController {
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
         var result = getTagsUseCase.execute(pageable);
         var mapped = result.map(tagMapper::toResponse);
@@ -74,6 +78,7 @@ public class TagController {
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
         var result = getTagsUseCase.execute(pageable);
         var mapped = result.map(tagMapper::toAdminResponse);

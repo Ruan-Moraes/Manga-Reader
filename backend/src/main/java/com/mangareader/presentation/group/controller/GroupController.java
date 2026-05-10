@@ -69,6 +69,10 @@ public class GroupController {
     private final UnsupportGroupUseCase unsupportGroupUseCase;
     private final GroupMapper groupMapper;
 
+    /** Whitelist sort fields — exclude JSONB name/description from ORDER BY. */
+    private static final java.util.Set<String> SORTABLE_FIELDS =
+            java.util.Set.of("id", "platformJoinedAt", "totalTitles", "rating", "popularity");
+
     @GetMapping
     @Operation(summary = "Listar grupos", description = "Retorna grupos de tradução com paginação")
     public ResponseEntity<ApiResponse<PageResponse<GroupResponse>>> getAll(
@@ -77,6 +81,7 @@ public class GroupController {
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
+        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
         var pageable = buildPageable(page, size, sort, direction);
 
         var result = getGroupsUseCase.execute(pageable);
