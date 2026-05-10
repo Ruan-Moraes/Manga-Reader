@@ -1,12 +1,14 @@
 package com.mangareader.infrastructure.seed;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.domain.category.entity.Tag;
 import com.mangareader.infrastructure.persistence.postgres.repository.TagJpaRepository;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,34 +34,40 @@ public class TagSeed implements EntitySeeder {
         }
 
         var tags = List.of(
-                Tag.builder().label("Ação").build(),
-                Tag.builder().label("Aventura").build(),
-                Tag.builder().label("Comédia").build(),
-                Tag.builder().label("Drama").build(),
-                Tag.builder().label("Fantasia").build(),
-                Tag.builder().label("Ficção Científica").build(),
-                Tag.builder().label("Horror").build(),
-                Tag.builder().label("Mistério").build(),
-                Tag.builder().label("Romance").build(),
-                Tag.builder().label("Seinen").build(),
-                Tag.builder().label("Shoujo").build(),
-                Tag.builder().label("Shounen").build(),
-                Tag.builder().label("Slice of Life").build(),
-                Tag.builder().label("Sobrenatural").build(),
-                Tag.builder().label("Suspense").build(),
-                Tag.builder().label("Esportes").build(),
-                Tag.builder().label("Artes Marciais").build(),
-                Tag.builder().label("Histórico").build(),
-                Tag.builder().label("Culinária").build(),
-                Tag.builder().label("Urbano").build(),
-                Tag.builder().label("RPG").build(),
-                Tag.builder().label("Escolar").build(),
-                Tag.builder().label("Mecha").build(),
-                Tag.builder().label("Musical").build()
+                tag("Ação", "Action", "Acción"),
+                tag("Aventura", "Adventure", "Aventura"),
+                tag("Comédia", "Comedy", "Comedia"),
+                tag("Drama", "Drama", "Drama"),
+                tag("Fantasia", "Fantasy", "Fantasía"),
+                tag("Ficção Científica", "Science Fiction", "Ciencia Ficción"),
+                tag("Horror", "Horror", "Horror"),
+                tag("Mistério", "Mystery", "Misterio"),
+                tag("Romance", "Romance", "Romance"),
+                tag("Seinen", "Seinen", "Seinen"),
+                tag("Shoujo", "Shoujo", "Shoujo"),
+                tag("Shounen", "Shounen", "Shounen"),
+                tag("Slice of Life", "Slice of Life", "Slice of Life"),
+                tag("Sobrenatural", "Supernatural", "Sobrenatural"),
+                tag("Suspense", "Thriller", "Suspense"),
+                tag("Esportes", "Sports", "Deportes"),
+                tag("Artes Marciais", "Martial Arts", "Artes Marciales"),
+                tag("Histórico", "Historical", "Histórico"),
+                tag("Culinária", "Culinary", "Culinaria"),
+                tag("Urbano", "Urban", "Urbano"),
+                tag("RPG", "RPG", "RPG"),
+                tag("Escolar", "School", "Escolar"),
+                tag("Mecha", "Mecha", "Mecha"),
+                tag("Musical", "Musical", "Musical")
         );
 
         tagRepository.saveAll(tags);
 
         log.info("✓ {} tags de demonstração criadas.", tags.size());
+    }
+
+    private static Tag tag(String pt, String en, String es) {
+        return Tag.builder()
+                .label(LocalizedString.of(Map.of("pt-BR", pt, "en-US", en, "es-ES", es)))
+                .build();
     }
 }

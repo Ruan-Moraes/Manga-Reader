@@ -24,52 +24,43 @@ class TagI18nRepositoryTest {
     private TagJpaRepository tagRepository;
 
     @Test
-    @DisplayName("Deve persistir e recuperar labelI18n com 3 idiomas")
+    @DisplayName("Deve persistir e recuperar label com 3 idiomas")
     void roundTrip3Idiomas() {
-        var labelI18n = LocalizedString.of(Map.of(
+        var label = LocalizedString.of(Map.of(
                 "pt-BR", "Ação",
                 "en-US", "Action",
                 "es-ES", "Acción"));
 
-        var tag = Tag.builder()
-                .label("Ação")
-                .labelI18n(labelI18n)
-                .build();
+        var tag = Tag.builder().label(label).build();
 
         Long id = tagRepository.saveAndFlush(tag).getId();
 
         var reloaded = tagRepository.findById(id).orElseThrow();
 
-        assertThat(reloaded.getLabelI18n()).isEqualTo(labelI18n);
-        assertThat(reloaded.getLabelI18n().resolve(Locale.forLanguageTag("en-US"))).isEqualTo("Action");
-        assertThat(reloaded.getLabelI18n().resolve(Locale.forLanguageTag("es-ES"))).isEqualTo("Acción");
+        assertThat(reloaded.getLabel()).isEqualTo(label);
+        assertThat(reloaded.getLabel().resolve(Locale.forLanguageTag("en-US"))).isEqualTo("Action");
+        assertThat(reloaded.getLabel().resolve(Locale.forLanguageTag("es-ES"))).isEqualTo("Acción");
     }
 
     @Test
     @DisplayName("Deve aplicar fallback pt-BR quando idioma solicitado não existe")
     void fallbackPtBr() {
-        var tag = Tag.builder()
-                .label("Drama")
-                .labelI18n(LocalizedString.ofDefault("Drama"))
-                .build();
+        var tag = Tag.builder().label(LocalizedString.ofDefault("Drama")).build();
 
         var saved = tagRepository.saveAndFlush(tag);
         var reloaded = tagRepository.findById(saved.getId()).orElseThrow();
 
-        assertThat(reloaded.getLabelI18n().resolve(Locale.forLanguageTag("ja-JP"))).isEqualTo("Drama");
+        assertThat(reloaded.getLabel().resolve(Locale.forLanguageTag("ja-JP"))).isEqualTo("Drama");
     }
 
     @Test
     @DisplayName("LocalizedString vazia deve persistir como objeto JSON vazio")
     void persisteVazia() {
-        var tag = Tag.builder()
-                .label("Vazia")
-                .labelI18n(LocalizedString.empty())
-                .build();
+        var tag = Tag.builder().label(LocalizedString.empty()).build();
 
         var saved = tagRepository.saveAndFlush(tag);
         var reloaded = tagRepository.findById(saved.getId()).orElseThrow();
 
-        assertThat(reloaded.getLabelI18n().isEmpty()).isTrue();
+        assertThat(reloaded.getLabel().isEmpty()).isTrue();
     }
 }

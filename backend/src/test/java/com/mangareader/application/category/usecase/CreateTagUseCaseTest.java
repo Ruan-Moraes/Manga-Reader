@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CreateTagUseCase")
@@ -37,17 +40,17 @@ class CreateTagUseCaseTest {
             return t;
         });
 
-        Tag result = useCase.execute("Acao");
+        Tag result = useCase.execute(Map.of("pt-BR", "Acao"));
 
         assertThat(result).isNotNull();
-        assertThat(result.getLabel()).isEqualTo("Acao");
+        assertThat(result.getLabel().resolve(Locale.forLanguageTag("pt-BR"))).isEqualTo("Acao");
         assertThat(result.getId()).isEqualTo(1L);
     }
 
     @Test
     @DisplayName("Deve lancar excecao quando label esta em branco")
     void deveLancarExcecaoQuandoLabelEmBranco() {
-        assertThatThrownBy(() -> useCase.execute("   "))
+        assertThatThrownBy(() -> useCase.execute(Map.of("pt-BR", "   ")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("branco");
     }
@@ -56,9 +59,9 @@ class CreateTagUseCaseTest {
     @DisplayName("Deve lancar excecao quando label ja existe")
     void deveLancarExcecaoQuandoLabelDuplicada() {
         when(tagRepository.findByLabelIgnoreCase("Acao"))
-                .thenReturn(Optional.of(Tag.builder().id(1L).label("Acao").build()));
+                .thenReturn(Optional.of(Tag.builder().id(1L).label(LocalizedString.ofDefault("Acao")).build()));
 
-        assertThatThrownBy(() -> useCase.execute("Acao"))
+        assertThatThrownBy(() -> useCase.execute(Map.of("pt-BR", "Acao")))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("duplicada");
     }

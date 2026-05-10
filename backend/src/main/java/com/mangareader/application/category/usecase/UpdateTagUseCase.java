@@ -13,8 +13,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Atualiza uma tag existente. Aceita label legado (String) e/ou mapa
- * multilíngue {@code labelI18n}. pt-BR sempre derivado para campo legado.
+ * Atualiza uma tag existente. Mapa BCP 47 → texto; pt-BR é fallback obrigatório.
  */
 @Service
 @RequiredArgsConstructor
@@ -22,17 +21,12 @@ public class UpdateTagUseCase {
     private final TagRepositoryPort tagRepository;
 
     @Transactional
-    public Tag execute(Long id, String newLabel) {
-        return execute(id, newLabel, null);
-    }
-
-    @Transactional
-    public Tag execute(Long id, String newLabel, Map<String, String> labelI18n) {
+    public Tag execute(Long id, Map<String, String> label) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id.toString()));
 
-        String resolvedLabel = resolveLabel(newLabel, labelI18n);
-        String trimmed = resolvedLabel.trim();
+        String ptBR = resolvePtBR(label);
+        String trimmed = ptBR.trim();
 
         tagRepository.findByLabelIgnoreCase(trimmed).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {
@@ -40,30 +34,19 @@ public class UpdateTagUseCase {
             }
         });
 
-        tag.setLabel(trimmed);
-
-        if (labelI18n != null && !labelI18n.isEmpty()) {
-            tag.setLabelI18n(LocalizedString.of(labelI18n));
-        } else {
-            tag.setLabelI18n(LocalizedString.ofDefault(trimmed));
-        }
+        tag.setLabel(LocalizedString.of(label));
 
         return tagRepository.save(tag);
     }
 
-    private String resolveLabel(String label, Map<String, String> labelI18n) {
-        if (label != null && !label.isBlank()) {
-            return label;
+    private String resolvePtBR(Map<String, String> label) {
+        if (label == null) {
+            throw new IllegalArgumentException("Label da tag não pode estar em branco");
         }
-
-        if (labelI18n != null) {
-            String ptBR = labelI18n.get(LocalizedString.DEFAULT_TAG);
-
-            if (ptBR != null && !ptBR.isBlank()) {
-                return ptBR;
-            }
+        String ptBR = label.get(LocalizedString.DEFAULT_TAG);
+        if (ptBR == null || ptBR.isBlank()) {
+            throw new IllegalArgumentException("Label da tag não pode estar em branco");
         }
-
-        throw new IllegalArgumentException("Label da tag não pode estar em branco");
+        return ptBR;
     }
 }

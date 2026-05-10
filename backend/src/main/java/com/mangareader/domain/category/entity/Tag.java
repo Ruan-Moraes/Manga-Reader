@@ -22,8 +22,7 @@ import lombok.Setter;
 /**
  * Tag / gênero disponível no sistema (PostgreSQL).
  * <p>
- * Compatível com o frontend ({@code Tag} em tag.types.ts):
- * <pre>{ value: number, label: string }</pre>
+ * Após Fase B i18n: campo único {@code label} multilíngue (JSONB).
  */
 @Entity
 @Table(name = "tags")
@@ -37,17 +36,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 60)
-    private String label;
-
-    /**
-     * Versão multilíngue de {@link #label} (mapa BCP 47 → texto).
-     * Adicionada na V12 (Etapa 2 i18n). Coexiste com {@code label} até a Fase B
-     * (refatoração de callers + drop da coluna antiga).
-     */
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "label_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "label", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedString labelI18n = LocalizedString.empty();
+    private LocalizedString label = LocalizedString.empty();
 }

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetTagsUseCase")
@@ -35,9 +36,9 @@ class GetTagsUseCaseTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 20);
         List<Tag> tags = List.of(
-                Tag.builder().id(1L).label("Ação").build(),
-                Tag.builder().id(2L).label("Aventura").build(),
-                Tag.builder().id(3L).label("Romance").build()
+                Tag.builder().id(1L).label(LocalizedString.ofDefault("Ação")).build(),
+                Tag.builder().id(2L).label(LocalizedString.ofDefault("Aventura")).build(),
+                Tag.builder().id(3L).label(LocalizedString.ofDefault("Romance")).build()
         );
         Page<Tag> page = new PageImpl<>(tags, pageable, 3);
         when(tagRepository.findAll(pageable)).thenReturn(page);

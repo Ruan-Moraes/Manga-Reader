@@ -15,10 +15,7 @@ import lombok.RequiredArgsConstructor;
  * Mapper Tag → DTOs.
  *
  * <p>{@link #toResponse(Tag)} resolve o label para o locale do request (DTO público).
- * <p>{@link #toAdminResponse(Tag)} expõe todas as traduções (DTO admin para edição).
- *
- * <p>Durante a Fase A da migração i18n, se {@code labelI18n} estiver vazio,
- * cai para {@link Tag#getLabel()} via {@link LocalizedMappingHelper#resolveOrFallback}.
+ * <p>{@link #toAdminResponse(Tag)} expõe todas as traduções (DTO admin).
  */
 @Component
 @RequiredArgsConstructor
@@ -27,9 +24,7 @@ public class TagMapper {
     private final LocalizedMappingHelper i18n;
 
     public TagResponse toResponse(Tag tag) {
-        return new TagResponse(
-                tag.getId(),
-                i18n.resolveOrFallback(tag.getLabelI18n(), tag.getLabel()));
+        return new TagResponse(tag.getId(), i18n.toResolvedString(tag.getLabel()));
     }
 
     public List<TagResponse> toResponseList(List<Tag> tags) {
@@ -37,6 +32,6 @@ public class TagMapper {
     }
 
     public TagAdminResponse toAdminResponse(Tag tag) {
-        return new TagAdminResponse(tag.getId(), i18n.toMap(tag.getLabelI18n()));
+        return new TagAdminResponse(tag.getId(), i18n.toMap(tag.getLabel()));
     }
 }

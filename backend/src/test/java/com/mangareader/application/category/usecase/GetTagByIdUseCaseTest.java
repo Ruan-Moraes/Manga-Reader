@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,28 +32,23 @@ class GetTagByIdUseCaseTest {
     @Test
     @DisplayName("Deve retornar tag quando encontrada")
     void deveRetornarTagQuandoEncontrada() {
-        // Arrange
         Long tagId = 1L;
-        Tag tag = Tag.builder().id(tagId).label("Ação").build();
+        Tag tag = Tag.builder().id(tagId).label(LocalizedString.ofDefault("Ação")).build();
         when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
 
-        // Act
         Tag result = getTagByIdUseCase.execute(tagId);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(tagId);
-        assertThat(result.getLabel()).isEqualTo("Ação");
+        assertThat(result.getLabel().resolve(Locale.forLanguageTag("pt-BR"))).isEqualTo("Ação");
     }
 
     @Test
     @DisplayName("Deve lançar ResourceNotFoundException quando tag não existe")
     void deveLancarExcecaoQuandoTagNaoExiste() {
-        // Arrange
         Long tagId = 999L;
         when(tagRepository.findById(tagId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThatThrownBy(() -> getTagByIdUseCase.execute(tagId))
                 .isInstanceOf(ResourceNotFoundException.class);
     }

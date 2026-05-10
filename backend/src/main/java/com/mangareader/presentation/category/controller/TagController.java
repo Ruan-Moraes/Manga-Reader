@@ -51,7 +51,7 @@ public class TagController {
     public ResponseEntity<ApiResponse<PageResponse<TagResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "label") String sort,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
         var pageable = buildPageable(page, size, sort, direction);
@@ -71,7 +71,7 @@ public class TagController {
     public ResponseEntity<ApiResponse<PageResponse<TagAdminResponse>>> getAllAdmin(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "label") String sort,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
         var pageable = buildPageable(page, size, sort, direction);
@@ -94,7 +94,7 @@ public class TagController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        var pageable = buildPageable(page, size, "label", "asc");
+        var pageable = buildPageable(page, size, "id", "asc");
         var result = searchTagsUseCase.execute(query, pageable);
         var mapped = result.map(tagMapper::toAdminResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -106,7 +106,7 @@ public class TagController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        var pageable = buildPageable(page, size, "label", "asc");
+        var pageable = buildPageable(page, size, "id", "asc");
         var result = searchTagsUseCase.execute(query, pageable);
         var mapped = result.map(tagMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -114,7 +114,7 @@ public class TagController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<TagResponse>> create(@Valid @RequestBody TagRequest request) {
-        var tag = createTagUseCase.execute(request.label(), request.labelI18n());
+        var tag = createTagUseCase.execute(request.label());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(tagMapper.toResponse(tag)));
     }
@@ -124,7 +124,7 @@ public class TagController {
             @PathVariable Long id,
             @Valid @RequestBody TagRequest request
     ) {
-        var tag = updateTagUseCase.execute(id, request.label(), request.labelI18n());
+        var tag = updateTagUseCase.execute(id, request.label());
         return ResponseEntity.ok(ApiResponse.success(tagMapper.toResponse(tag)));
     }
 

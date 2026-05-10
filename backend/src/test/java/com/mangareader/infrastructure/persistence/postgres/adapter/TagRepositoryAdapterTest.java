@@ -2,6 +2,9 @@ package com.mangareader.infrastructure.persistence.postgres.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Locale;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -23,6 +27,8 @@ import com.mangareader.domain.category.entity.Tag;
 @Import(TagRepositoryAdapter.class)
 @DisplayName("TagRepositoryAdapter — Integração JPA")
 class TagRepositoryAdapterTest {
+
+    private static final Locale PT_BR = Locale.forLanguageTag("pt-BR");
 
     @Autowired
     private TagRepositoryPort tagRepository;
@@ -32,9 +38,13 @@ class TagRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        entityManager.persistAndFlush(Tag.builder().label("Action").build());
-        entityManager.persistAndFlush(Tag.builder().label("Adventure").build());
-        entityManager.persistAndFlush(Tag.builder().label("Romance").build());
+        entityManager.persistAndFlush(tag("Action"));
+        entityManager.persistAndFlush(tag("Adventure"));
+        entityManager.persistAndFlush(tag("Romance"));
+    }
+
+    private static Tag tag(String label) {
+        return Tag.builder().label(LocalizedString.of(Map.of("pt-BR", label))).build();
     }
 
     @Nested
@@ -47,9 +57,9 @@ class TagRepositoryAdapterTest {
             var tags = tagRepository.findAll();
 
             assertThat(tags).hasSize(3);
-            assertThat(tags.get(0).getLabel()).isEqualTo("Action");
-            assertThat(tags.get(1).getLabel()).isEqualTo("Adventure");
-            assertThat(tags.get(2).getLabel()).isEqualTo("Romance");
+            assertThat(tags.get(0).getLabel().resolve(PT_BR)).isEqualTo("Action");
+            assertThat(tags.get(1).getLabel().resolve(PT_BR)).isEqualTo("Adventure");
+            assertThat(tags.get(2).getLabel().resolve(PT_BR)).isEqualTo("Romance");
         }
     }
 
@@ -66,7 +76,8 @@ class TagRepositoryAdapterTest {
             var result = tagRepository.findById(firstTag.getId());
 
             assertThat(result).isPresent();
-            assertThat(result.get().getLabel()).isEqualTo(firstTag.getLabel());
+            assertThat(result.get().getLabel().resolve(PT_BR))
+                    .isEqualTo(firstTag.getLabel().resolve(PT_BR));
         }
 
         @Test
@@ -86,7 +97,7 @@ class TagRepositoryAdapterTest {
             var result = tagRepository.findByLabelContainingIgnoreCase("ven");
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getLabel()).isEqualTo("Adventure");
+            assertThat(result.get(0).getLabel().resolve(PT_BR)).isEqualTo("Adventure");
         }
 
         @Test
@@ -104,7 +115,7 @@ class TagRepositoryAdapterTest {
 
             assertThat(page.getContent()).hasSizeLessThanOrEqualTo(2);
             assertThat(page.getContent()).allSatisfy(tag ->
-                    assertThat(tag.getLabel().toLowerCase()).contains("a")
+                    assertThat(tag.getLabel().resolve(PT_BR).toLowerCase()).contains("a")
             );
         }
     }
@@ -131,7 +142,7 @@ class TagRepositoryAdapterTest {
         @Test
         @DisplayName("Deve persistir nova tag")
         void devePersistirNovaTag() {
-            var newTag = tagRepository.save(Tag.builder().label("Comédia").build());
+            var newTag = tagRepository.save(tag("Comédia"));
 
             assertThat(newTag.getId()).isNotNull();
             assertThat(tagRepository.findAll()).hasSize(4);

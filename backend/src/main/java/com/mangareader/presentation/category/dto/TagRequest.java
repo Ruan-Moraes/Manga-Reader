@@ -2,16 +2,17 @@ package com.mangareader.presentation.category.dto;
 
 import java.util.Map;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.mangareader.shared.application.i18n.RequiredLanguages;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * DTO de criação/atualização de tag.
  *
- * <p>{@code label} (legado) é obrigatório — frontend deriva do slot pt-BR.
- * {@code labelI18n} (mapa BCP 47) é opcional; se presente, sobrescreve.
+ * <p>Mapa BCP 47 → texto. {@code pt-BR} obrigatório (fallback).
  */
 public record TagRequest(
-        @NotBlank @Size(max = 60) String label,
-        Map<String, String> labelI18n
+        @NotNull
+        @RequiredLanguages
+        Map<String, String> label
 ) {}

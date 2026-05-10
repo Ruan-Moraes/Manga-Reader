@@ -1,7 +1,9 @@
 package com.mangareader.domain.category.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mangareader.domain.category.valueobject.PublicationStatus;
 import com.mangareader.domain.category.valueobject.SortCriteria;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 class TagTest {
 
@@ -20,10 +23,10 @@ class TagTest {
         @DisplayName("Deve criar tag com label via builder")
         void shouldCreateTagWithLabel() {
             Tag tag = Tag.builder()
-                    .label("Action")
+                    .label(LocalizedString.ofDefault("Action"))
                     .build();
 
-            assertEquals("Action", tag.getLabel());
+            assertEquals("Action", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertNull(tag.getId());
         }
 
@@ -32,11 +35,19 @@ class TagTest {
         void shouldCreateTagWithIdAndLabel() {
             Tag tag = Tag.builder()
                     .id(1L)
-                    .label("Romance")
+                    .label(LocalizedString.ofDefault("Romance"))
                     .build();
 
             assertEquals(1L, tag.getId());
-            assertEquals("Romance", tag.getLabel());
+            assertEquals("Romance", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
+        }
+
+        @Test
+        @DisplayName("Builder sem label deve usar default empty")
+        void builderDefaultEmpty() {
+            Tag tag = Tag.builder().build();
+            assertNotNull(tag.getLabel());
+            assertTrue(tag.getLabel().isEmpty());
         }
     }
 
@@ -48,11 +59,11 @@ class TagTest {
         @DisplayName("Deve permitir alterar label via setter")
         void shouldAllowLabelUpdate() {
             Tag tag = Tag.builder()
-                    .label("Ação")
+                    .label(LocalizedString.ofDefault("Ação"))
                     .build();
 
-            tag.setLabel("Action");
-            assertEquals("Action", tag.getLabel());
+            tag.setLabel(LocalizedString.ofDefault("Action"));
+            assertEquals("Action", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
         }
     }
 
@@ -63,10 +74,10 @@ class TagTest {
         @Test
         @DisplayName("Deve criar tag via AllArgsConstructor")
         void shouldCreateViaAllArgs() {
-            Tag tag = new Tag(5L, "Fantasy", com.mangareader.shared.domain.i18n.LocalizedString.empty());
+            Tag tag = new Tag(5L, LocalizedString.ofDefault("Fantasy"));
 
             assertEquals(5L, tag.getId());
-            assertEquals("Fantasy", tag.getLabel());
+            assertEquals("Fantasy", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
         }
     }
 
@@ -75,12 +86,11 @@ class TagTest {
     class NoArgsConstructorTests {
 
         @Test
-        @DisplayName("Construtor vazio deve manter campos nulos")
-        void shouldKeepFieldsNullOnNoArgsConstructor() {
+        @DisplayName("Construtor vazio deve manter id nulo")
+        void shouldKeepIdNullOnNoArgsConstructor() {
             Tag tag = new Tag();
 
             assertNull(tag.getId());
-            assertNull(tag.getLabel());
         }
     }
 

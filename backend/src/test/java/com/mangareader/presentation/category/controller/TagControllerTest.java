@@ -1,6 +1,7 @@
 package com.mangareader.presentation.category.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.category.usecase.CreateTagUseCase;
 import com.mangareader.application.category.usecase.DeleteTagUseCase;
 import com.mangareader.application.category.usecase.GetTagByIdUseCase;
@@ -33,11 +36,14 @@ import com.mangareader.application.category.usecase.GetTagsUseCase;
 import com.mangareader.application.category.usecase.SearchTagsUseCase;
 import com.mangareader.application.category.usecase.UpdateTagUseCase;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
-import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(TagController.class)
-@org.springframework.context.annotation.Import({com.mangareader.presentation.category.mapper.TagMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
+@org.springframework.context.annotation.Import({
+        com.mangareader.presentation.category.mapper.TagMapper.class,
+        com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class
+})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("TagController")
 class TagControllerTest {
@@ -69,6 +75,19 @@ class TagControllerTest {
     @MockitoBean
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
 
+    @BeforeEach
+    void stubLocaleResolver() {
+        when(localeResolver.resolve(any(LocalizedString.class)))
+                .thenAnswer(inv -> {
+                    LocalizedString s = inv.getArgument(0);
+                    return s == null ? "" : s.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+    }
+
+    private static Tag tag(Long id, String pt) {
+        return Tag.builder().id(id).label(LocalizedString.ofDefault(pt)).build();
+    }
+
     @Nested
     @DisplayName("GET /api/tags")
     class GetAll {
@@ -76,9 +95,7 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com página de tags")
         void deveRetornar200ComPagina() throws Exception {
-            var tags = List.of(
-                    Tag.builder().id(1L).label("Ação").build(),
-                    Tag.builder().id(2L).label("Aventura").build());
+            var tags = List.of(tag(1L, "Ação"), tag(2L, "Aventura"));
             when(getTagsUseCase.execute(any(Pageable.class)))
                     .thenReturn(new PageImpl<>(tags));
 
@@ -111,8 +128,7 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com tag encontrada")
         void deveRetornar200ComTag() throws Exception {
-            var tag = Tag.builder().id(1L).label("Romance").build();
-            when(getTagByIdUseCase.execute(1L)).thenReturn(tag);
+            when(getTagByIdUseCase.execute(1L)).thenReturn(tag(1L, "Romance"));
 
             mockMvc.perform(get("/api/tags/1"))
                     .andExpect(status().isOk())
@@ -139,7 +155,7 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com resultados da busca")
         void deveRetornar200ComResultados() throws Exception {
-            var tags = List.of(Tag.builder().id(1L).label("Aventura").build());
+            var tags = List.of(tag(1L, "Aventura"));
             when(searchTagsUseCase.execute(eq("aven"), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(tags));
 
@@ -157,23 +173,22 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 201 ao criar tag")
         void deveRetornar201AoCriarTag() throws Exception {
-            var tag = Tag.builder().id(1L).label("Nova Tag").build();
-            when(createTagUseCase.execute(eq("Nova Tag"), any())).thenReturn(tag);
+            when(createTagUseCase.execute(anyMap())).thenReturn(tag(1L, "Nova Tag"));
 
             mockMvc.perform(post("/api/tags")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"label\":\"Nova Tag\"}"))
+                            .content("{\"label\":{\"pt-BR\":\"Nova Tag\"}}"))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.data.value").value(1))
                     .andExpect(jsonPath("$.data.label").value("Nova Tag"));
         }
 
         @Test
-        @DisplayName("Deve retornar 400 quando label em branco")
-        void deveRetornar400QuandoLabelEmBranco() throws Exception {
+        @DisplayName("Deve retornar 400 quando label ausente")
+        void deveRetornar400QuandoLabelAusente() throws Exception {
             mockMvc.perform(post("/api/tags")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"label\":\"\"}"))
+                            .content("{}"))
                     .andExpect(status().isBadRequest());
         }
     }
@@ -185,12 +200,11 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 200 ao atualizar tag")
         void deveRetornar200AoAtualizarTag() throws Exception {
-            var tag = Tag.builder().id(1L).label("Atualizada").build();
-            when(updateTagUseCase.execute(eq(1L), eq("Atualizada"), any())).thenReturn(tag);
+            when(updateTagUseCase.execute(eq(1L), anyMap())).thenReturn(tag(1L, "Atualizada"));
 
             mockMvc.perform(put("/api/tags/1")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"label\":\"Atualizada\"}"))
+                            .content("{\"label\":{\"pt-BR\":\"Atualizada\"}}"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.label").value("Atualizada"));
         }
@@ -198,12 +212,12 @@ class TagControllerTest {
         @Test
         @DisplayName("Deve retornar 404 quando tag nao existe")
         void deveRetornar404QuandoTagNaoExiste() throws Exception {
-            when(updateTagUseCase.execute(eq(999L), eq("Qualquer"), any()))
+            when(updateTagUseCase.execute(eq(999L), anyMap()))
                     .thenThrow(new ResourceNotFoundException("Tag", "id", "999"));
 
             mockMvc.perform(put("/api/tags/999")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"label\":\"Qualquer\"}"))
+                            .content("{\"label\":{\"pt-BR\":\"Qualquer\"}}"))
                     .andExpect(status().isNotFound());
         }
     }

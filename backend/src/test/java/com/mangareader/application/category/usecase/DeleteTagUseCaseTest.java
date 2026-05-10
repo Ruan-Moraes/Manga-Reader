@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +32,7 @@ class DeleteTagUseCaseTest {
     @DisplayName("Deve deletar tag com sucesso")
     void deveDeletarTagComSucesso() {
         when(tagRepository.findById(1L))
-                .thenReturn(Optional.of(Tag.builder().id(1L).label("Acao").build()));
+                .thenReturn(Optional.of(Tag.builder().id(1L).label(LocalizedString.ofDefault("Acao")).build()));
 
         useCase.execute(1L);
 

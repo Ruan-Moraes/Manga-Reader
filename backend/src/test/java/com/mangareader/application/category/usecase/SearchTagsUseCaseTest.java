@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
 import com.mangareader.domain.category.entity.Tag;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SearchTagsUseCase")
@@ -32,36 +34,31 @@ class SearchTagsUseCaseTest {
     @Test
     @DisplayName("Deve retornar tags que correspondem à busca")
     void deveRetornarTagsCorrespondentes() {
-        // Arrange
         String query = "aven";
         Pageable pageable = PageRequest.of(0, 20);
         List<Tag> tags = List.of(
-                Tag.builder().id(1L).label("Aventura").build()
+                Tag.builder().id(1L).label(LocalizedString.ofDefault("Aventura")).build()
         );
         Page<Tag> page = new PageImpl<>(tags, pageable, 1);
         when(tagRepository.findByLabelContainingIgnoreCase(query, pageable)).thenReturn(page);
 
-        // Act
         Page<Tag> result = searchTagsUseCase.execute(query, pageable);
 
-        // Assert
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().get(0).getLabel()).isEqualTo("Aventura");
+        assertThat(result.getContent().get(0).getLabel().resolve(Locale.forLanguageTag("pt-BR")))
+                .isEqualTo("Aventura");
     }
 
     @Test
     @DisplayName("Deve retornar página vazia quando busca não encontra resultados")
     void deveRetornarPaginaVaziaParaBuscaSemResultados() {
-        // Arrange
         String query = "xyz";
         Pageable pageable = PageRequest.of(0, 20);
         Page<Tag> emptyPage = new PageImpl<>(List.of(), pageable, 0);
         when(tagRepository.findByLabelContainingIgnoreCase(query, pageable)).thenReturn(emptyPage);
 
-        // Act
         Page<Tag> result = searchTagsUseCase.execute(query, pageable);
 
-        // Assert
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
     }
