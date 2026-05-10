@@ -95,6 +95,15 @@ class GroupControllerTest {
 
     @MockitoBean
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+    @org.junit.jupiter.api.BeforeEach
+    void stubLocaleResolver() {
+        org.mockito.Mockito.when(localeResolver.resolve(org.mockito.ArgumentMatchers.any(com.mangareader.shared.domain.i18n.LocalizedString.class)))
+                .thenAnswer(inv -> {
+                    com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
+                    return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+    }
+
 
     private final UUID USER_ID = UUID.randomUUID();
 
@@ -107,9 +116,9 @@ class GroupControllerTest {
     private Group buildGroup(UUID id) {
         return Group.builder()
                 .id(id)
-                .name("Scan Traduções")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Traduções"))
                 .username("scan-traducoes")
-                .description("Grupo de tradução")
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo de tradução"))
                 .logo("logo.png")
                 .banner("banner.png")
                 .website("https://example.com")
@@ -258,7 +267,7 @@ class GroupControllerTest {
             mockMvc.perform(post("/api/groups")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"name": "Novo Grupo", "username": "novo-grupo", "description": "Desc", "foundedYear": 2024}
+                                    {"name": {"pt-BR": "Novo Grupo"}, "username": "novo-grupo", "description": {"pt-BR": "Desc"}, "foundedYear": 2024}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isCreated())
@@ -272,7 +281,7 @@ class GroupControllerTest {
             mockMvc.perform(post("/api/groups")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"name": "", "username": "grupo"}
+                                    {"name": {}, "username": "grupo"}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -284,7 +293,7 @@ class GroupControllerTest {
             mockMvc.perform(post("/api/groups")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"name": "Grupo X", "username": ""}
+                                    {"name": {"pt-BR": "Grupo X"}, "username": ""}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -324,7 +333,7 @@ class GroupControllerTest {
             mockMvc.perform(put("/api/groups/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"name": "Nome Atualizado", "description": "Nova descrição"}
+                                    {"name": {"pt-BR": "Nome Atualizado"}, "description": {"pt-BR": "Nova descrição"}}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isOk())

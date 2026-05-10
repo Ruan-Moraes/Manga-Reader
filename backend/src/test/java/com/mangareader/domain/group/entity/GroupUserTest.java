@@ -26,7 +26,7 @@ class GroupUserTest {
         @DisplayName("Deve criar instância com todos os campos via builder")
         void shouldBuildWithAllFields() {
             UUID id = UUID.randomUUID();
-            Group group = Group.builder().name("Scan Group").build();
+            Group group = Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Group")).build();
             User user = User.builder().name("Ruan").email("ruan@test.com").build();
             LocalDateTime joinedAt = LocalDateTime.now();
 

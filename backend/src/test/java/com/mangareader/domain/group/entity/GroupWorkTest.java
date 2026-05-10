@@ -64,7 +64,7 @@ class GroupWorkTest {
         @DisplayName("Deve criar instância com todos os campos via builder")
         void shouldBuildWithAllFields() {
             UUID id = UUID.randomUUID();
-            Group group = Group.builder().name("Scan BR").build();
+            Group group = Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan BR")).build();
 
             GroupWork work = GroupWork.builder()
                     .id(id)

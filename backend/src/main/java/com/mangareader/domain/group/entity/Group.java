@@ -47,14 +47,11 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "name_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "name", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedString nameI18n = LocalizedString.empty();
+    private LocalizedString name = LocalizedString.empty();
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
@@ -62,14 +59,11 @@ public class Group {
     private String logo;
     private String banner;
 
-    @Column(length = 2000)
-    private String description;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)
-    @Column(name = "description_i18n", columnDefinition = "jsonb", nullable = false)
+    @Column(name = "description", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
-    private LocalizedString descriptionI18n = LocalizedString.empty();
+    private LocalizedString description = LocalizedString.empty();
 
     private String website;
 

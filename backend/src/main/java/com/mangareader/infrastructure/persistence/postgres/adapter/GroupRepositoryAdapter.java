@@ -93,7 +93,22 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
 
     @Override
     public Page<Group> searchByName(String query, Pageable pageable) {
-        return repository.findByNameContainingIgnoreCase(query, pageable);
+        if (query == null || query.isBlank()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+        var lower = query.toLowerCase();
+        var matches = repository.findAll().stream()
+                .filter(g -> matchesAnyLocale(g, lower))
+                .toList();
+        int from = (int) Math.min(pageable.getOffset(), matches.size());
+        int to = Math.min(from + pageable.getPageSize(), matches.size());
+        return new PageImpl<>(matches.subList(from, to), pageable, matches.size());
+    }
+
+    private static boolean matchesAnyLocale(Group g, String lowerQuery) {
+        if (g.getName() == null) return false;
+        return g.getName().values().values().stream()
+                .anyMatch(v -> v != null && v.toLowerCase().contains(lowerQuery));
     }
 
     @Override

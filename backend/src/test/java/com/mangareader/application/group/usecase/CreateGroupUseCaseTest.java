@@ -54,8 +54,11 @@ class CreateGroupUseCaseTest {
 
     private CreateGroupInput buildInput() {
         return new CreateGroupInput(
-                USER_ID, "Scan Brasil", "scan-brasil",
-                "Melhor grupo de scanlation", "logo.png", "banner.png",
+                USER_ID,
+                java.util.Map.of("pt-BR", "Scan Brasil"),
+                "scan-brasil",
+                java.util.Map.of("pt-BR", "Melhor grupo de scanlation"),
+                "logo.png", "banner.png",
                 "https://scan-brasil.com", 2020
         );
     }
@@ -77,7 +80,7 @@ class CreateGroupUseCaseTest {
             Group result = createGroupUseCase.execute(input);
 
             // Assert
-            assertThat(result.getName()).isEqualTo("Scan Brasil");
+            assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan Brasil");
             assertThat(result.getUsername()).isEqualTo("scan-brasil");
             assertThat(result.getStatus()).isEqualTo(GroupStatus.ACTIVE);
             assertThat(result.getGroupUsers()).hasSize(1);
@@ -98,7 +101,7 @@ class CreateGroupUseCaseTest {
             Group result = createGroupUseCase.execute(input);
 
             // Assert
-            assertThat(result.getDescription()).isEqualTo("Melhor grupo de scanlation");
+            assertThat(result.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Melhor grupo de scanlation");
             assertThat(result.getLogo()).isEqualTo("logo.png");
             assertThat(result.getBanner()).isEqualTo("banner.png");
             assertThat(result.getWebsite()).isEqualTo("https://scan-brasil.com");
@@ -120,7 +123,7 @@ class CreateGroupUseCaseTest {
             // Assert
             ArgumentCaptor<Group> captor = ArgumentCaptor.forClass(Group.class);
             verify(groupRepository).save(captor.capture());
-            assertThat(captor.getValue().getName()).isEqualTo("Scan Brasil");
+            assertThat(captor.getValue().getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan Brasil");
         }
     }
 

@@ -34,7 +34,7 @@ class AdminListGroupsUseCaseTest {
     @Test
     @DisplayName("Deve listar todos os grupos sem filtro")
     void deveListarTodosSemFiltro() {
-        var page = new PageImpl<>(List.of(Group.builder().name("Group 1").build()));
+        var page = new PageImpl<>(List.of(Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Group 1")).build()));
         Pageable pageable = PageRequest.of(0, 20);
         when(groupRepository.findAll(pageable)).thenReturn(page);
 
@@ -47,7 +47,7 @@ class AdminListGroupsUseCaseTest {
     @Test
     @DisplayName("Deve buscar grupos por nome")
     void deveBuscarPorNome() {
-        var page = new PageImpl<>(List.of(Group.builder().name("Scan Team").build()));
+        var page = new PageImpl<>(List.of(Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Team")).build()));
         Pageable pageable = PageRequest.of(0, 20);
         when(groupRepository.searchByName(eq("scan"), any(Pageable.class))).thenReturn(page);
 

@@ -31,12 +31,10 @@ public final class AdminGroupMapper {
 
         return new AdminGroupResponse(
                 group.getId(),
-                group.getName(),
+                values(group.getName()),
                 group.getUsername(),
                 group.getLogo(),
-                group.getDescription(),
-                values(group.getNameI18n()),
-                values(group.getDescriptionI18n()),
+                values(group.getDescription()),
                 group.getStatus() != null ? group.getStatus().name() : null,
                 group.getTotalTitles(),
                 group.getGroupUsers() != null ? group.getGroupUsers().size() : 0,

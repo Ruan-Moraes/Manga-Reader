@@ -46,7 +46,7 @@ class RemoveWorkFromGroupUseCaseTest {
         User leader = User.builder().id(LEADER_ID).name("Líder").email("l@e.com").passwordHash("h").build();
         Group group = Group.builder()
                 .id(GROUP_ID)
-                .name("Scan Test")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))
                 .username("scan-test")
                 .totalTitles(1)
                 .groupUsers(new ArrayList<>())

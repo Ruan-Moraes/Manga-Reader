@@ -1,5 +1,6 @@
 package com.mangareader.application.group.usecase;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupStatus;
 import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.DuplicateResourceException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -29,9 +31,9 @@ public class CreateGroupUseCase {
 
     public record CreateGroupInput(
             UUID userId,
-            String name,
+            Map<String, String> name,
             String username,
-            String description,
+            Map<String, String> description,
             String logo,
             String banner,
             String website,
@@ -48,9 +50,9 @@ public class CreateGroupUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", input.userId()));
 
         Group group = Group.builder()
-                .name(input.name())
+                .name(toLocalized(input.name()))
                 .username(input.username())
-                .description(input.description())
+                .description(toLocalized(input.description()))
                 .logo(input.logo())
                 .banner(input.banner())
                 .website(input.website())
@@ -58,7 +60,6 @@ public class CreateGroupUseCase {
                 .status(GroupStatus.ACTIVE)
                 .build();
 
-        // O criador é o líder
         GroupUser leader = GroupUser.builder()
                 .group(group)
                 .user(creator)
@@ -69,5 +70,9 @@ public class CreateGroupUseCase {
         group.getGroupUsers().add(leader);
 
         return groupRepository.save(group);
+    }
+
+    private static LocalizedString toLocalized(Map<String, String> map) {
+        return (map == null || map.isEmpty()) ? LocalizedString.empty() : LocalizedString.of(map);
     }
 }

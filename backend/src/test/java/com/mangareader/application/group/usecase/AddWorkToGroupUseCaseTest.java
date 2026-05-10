@@ -47,7 +47,7 @@ class AddWorkToGroupUseCaseTest {
         User member = User.builder().id(MEMBER_ID).name("Membro").email("m@e.com").passwordHash("h").build();
         Group group = Group.builder()
                 .id(GROUP_ID)
-                .name("Scan Test")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))
                 .username("scan-test")
                 .totalTitles(0)
                 .groupUsers(new ArrayList<>())

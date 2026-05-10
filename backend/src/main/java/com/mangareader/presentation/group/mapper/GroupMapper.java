@@ -40,11 +40,11 @@ public class GroupMapper {
 
         return new GroupResponse(
                 group.getId().toString(),
-                i18n.resolveOrFallback(group.getNameI18n(), group.getName()),
+                i18n.toResolvedString(group.getName()),
                 group.getUsername(),
                 group.getLogo(),
                 group.getBanner(),
-                i18n.resolveOrFallback(group.getDescriptionI18n(), group.getDescription()),
+                i18n.toResolvedString(group.getDescription()),
                 group.getWebsite(),
                 group.getTotalTitles(),
                 group.getFoundedYear(),
@@ -65,11 +65,11 @@ public class GroupMapper {
 
         return new GroupPreviewResponse(
                 group.getId() == null ? null : group.getId().toString(),
-                i18n.resolveOrFallback(group.getNameI18n(), group.getName()),
+                i18n.toResolvedString(group.getName()),
                 group.getUsername(),
                 group.getLogo(),
                 group.getBanner(),
-                i18n.resolveOrFallback(group.getDescriptionI18n(), group.getDescription()),
+                i18n.toResolvedString(group.getDescription()),
                 group.getWebsite(),
                 group.getTotalTitles(),
                 group.getFoundedYear(),

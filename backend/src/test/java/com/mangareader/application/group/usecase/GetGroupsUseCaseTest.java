@@ -35,8 +35,8 @@ class GetGroupsUseCaseTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         List<Group> groups = List.of(
-                Group.builder().name("Grupo A").username("grupo-a").build(),
-                Group.builder().name("Grupo B").username("grupo-b").build()
+                Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo A")).username("grupo-a").build(),
+                Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo B")).username("grupo-b").build()
         );
         Page<Group> page = new PageImpl<>(groups, pageable, 2);
         when(groupRepository.findAllWithUsers(pageable)).thenReturn(page);

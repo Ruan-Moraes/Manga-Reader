@@ -41,7 +41,7 @@ class AdminChangeGroupMemberRoleUseCaseTest {
     void deveAlterarRoleDoMembro() {
         User user = User.builder().id(USER_ID).name("User").email("u@test.com").build();
         GroupUser gu = GroupUser.builder().user(user).role(GroupRole.TRADUTOR).build();
-        Group group = Group.builder().id(GROUP_ID).name("G").username("g")
+        Group group = Group.builder().id(GROUP_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("G")).username("g")
                 .groupUsers(new ArrayList<>()).build();
         group.getGroupUsers().add(gu);
 
@@ -56,7 +56,7 @@ class AdminChangeGroupMemberRoleUseCaseTest {
     @Test
     @DisplayName("Deve lançar exceção quando membro não encontrado")
     void deveLancarExcecaoQuandoMembroNaoEncontrado() {
-        Group group = Group.builder().id(GROUP_ID).name("G").username("g")
+        Group group = Group.builder().id(GROUP_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("G")).username("g")
                 .groupUsers(new ArrayList<>()).build();
         when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 

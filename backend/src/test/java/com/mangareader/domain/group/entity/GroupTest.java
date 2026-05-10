@@ -36,7 +36,7 @@ class GroupTest {
         @DisplayName("Deve iniciar com defaults corretos no builder")
         void shouldInitializeDefaults() {
             Group group = Group.builder()
-                    .name("Scanlation Team")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scanlation Team"))
                     .username("scan-team")
                     .build();
 
@@ -63,11 +63,11 @@ class GroupTest {
         @DisplayName("Deve permitir definir todos os campos via builder")
         void shouldSetAllFieldsViaBuilder() {
             Group group = Group.builder()
-                    .name("Alpha Scans")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Alpha Scans"))
                     .username("alpha-scans")
                     .logo("https://example.com/logo.png")
                     .banner("https://example.com/banner.png")
-                    .description("Grupo de tradução focado em manhwa")
+                    .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo de tradução focado em manhwa"))
                     .website("https://alphascans.com")
                     .totalTitles(25)
                     .foundedYear(2020)
@@ -78,11 +78,11 @@ class GroupTest {
                     .popularity(1000)
                     .build();
 
-            assertEquals("Alpha Scans", group.getName());
+            assertEquals("Alpha Scans", group.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertEquals("alpha-scans", group.getUsername());
             assertEquals("https://example.com/logo.png", group.getLogo());
             assertEquals("https://example.com/banner.png", group.getBanner());
-            assertEquals("Grupo de tradução focado em manhwa", group.getDescription());
+            assertEquals("Grupo de tradução focado em manhwa", group.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertEquals("https://alphascans.com", group.getWebsite());
             assertEquals(25, group.getTotalTitles());
             assertEquals(2020, group.getFoundedYear());
@@ -102,7 +102,7 @@ class GroupTest {
         @DisplayName("Deve permitir adicionar membro ao grupo")
         void shouldAddMemberToGroup() {
             Group group = Group.builder()
-                    .name("Team")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Team"))
                     .username("team")
                     .build();
 
@@ -126,7 +126,7 @@ class GroupTest {
         @DisplayName("Deve permitir adicionar múltiplos membros com roles diferentes")
         void shouldAddMultipleMembersWithDifferentRoles() {
             Group group = Group.builder()
-                    .name("Big Team")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Big Team"))
                     .username("big-team")
                     .build();
 
@@ -160,7 +160,7 @@ class GroupTest {
         @DisplayName("Deve permitir adicionar supporter ao grupo")
         void shouldAddSupporterToGroup() {
             Group group = Group.builder()
-                    .name("Team")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Team"))
                     .username("team")
                     .build();
 
@@ -188,7 +188,7 @@ class GroupTest {
         @DisplayName("Deve permitir adicionar trabalho traduzido ao grupo")
         void shouldAddTranslatedWork() {
             Group group = Group.builder()
-                    .name("Team")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Team"))
                     .username("team")
                     .build();
 
@@ -218,7 +218,7 @@ class GroupTest {
         @DisplayName("Deve permitir mudar status do grupo")
         void shouldChangeGroupStatus() {
             Group group = Group.builder()
-                    .name("Team")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Team"))
                     .username("team")
                     .build();
 
@@ -301,9 +301,9 @@ class GroupTest {
             Group group = new Group();
 
             assertNull(group.getId());
-            assertNull(group.getName());
+            assertTrue(group.getName().isEmpty());
             assertNull(group.getUsername());
-            assertNull(group.getDescription());
+            assertTrue(group.getDescription().isEmpty());
             assertNull(group.getFoundedYear());
             assertNull(group.getPlatformJoinedAt());
         }

@@ -74,7 +74,7 @@ public class GroupController {
     public ResponseEntity<ApiResponse<PageResponse<GroupResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
         var pageable = buildPageable(page, size, sort, direction);
@@ -148,7 +148,6 @@ public class GroupController {
         var input = new UpdateGroupUseCase.UpdateGroupInput(
                 id, extractUserId(auth),
                 request.name(), request.description(),
-                request.nameI18n(), request.descriptionI18n(),
                 request.logo(), request.banner(), request.website()
         );
 
@@ -175,7 +174,7 @@ public class GroupController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
 
         var result = getGroupsByTitleIdUseCase.execute(titleId, pageable);
 

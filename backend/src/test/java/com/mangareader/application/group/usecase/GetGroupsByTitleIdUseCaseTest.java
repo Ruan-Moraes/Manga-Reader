@@ -38,8 +38,8 @@ class GetGroupsByTitleIdUseCaseTest {
         String titleId = "title-mongo-123";
         Pageable pageable = PageRequest.of(0, 20);
         List<Group> groups = List.of(
-                Group.builder().name("Scan A").username("scan-a").build(),
-                Group.builder().name("Scan B").username("scan-b").build()
+                Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan A")).username("scan-a").build(),
+                Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan B")).username("scan-b").build()
         );
         Page<Group> page = new PageImpl<>(groups, pageable, 2);
         when(groupRepository.findByTitleId(eq(titleId), any(Pageable.class))).thenReturn(page);
@@ -49,7 +49,7 @@ class GetGroupsByTitleIdUseCaseTest {
 
         // Assert
         assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getContent().get(0).getName()).isEqualTo("Scan A");
+        assertThat(result.getContent().get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan A");
         assertThat(result.getTotalElements()).isEqualTo(2);
     }
 

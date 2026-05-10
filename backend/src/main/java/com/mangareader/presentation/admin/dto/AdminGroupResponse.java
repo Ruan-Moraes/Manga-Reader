@@ -6,16 +6,15 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Resposta admin de grupo. Mapas *I18n trazem todas as traduções.
+ * Resposta admin de grupo. Mapas {@code name}/{@code description} expõem
+ * todas as traduções para edição multilíngue.
  */
 public record AdminGroupResponse(
         UUID id,
-        String name,
+        Map<String, String> name,
         String username,
         String logo,
-        String description,
-        Map<String, String> nameI18n,
-        Map<String, String> descriptionI18n,
+        Map<String, String> description,
         String status,
         int totalTitles,
         int membersCount,

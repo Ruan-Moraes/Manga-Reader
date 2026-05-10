@@ -17,9 +17,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Atualiza informações de um grupo.
- * <p>
- * Somente o líder do grupo pode editá-lo.
+ * Atualiza informações de um grupo. Apenas o líder pode editar.
  */
 @Service
 @RequiredArgsConstructor
@@ -29,10 +27,8 @@ public class UpdateGroupUseCase {
     public record UpdateGroupInput(
             UUID groupId,
             UUID userId,
-            String name,
-            String description,
-            Map<String, String> nameI18n,
-            Map<String, String> descriptionI18n,
+            Map<String, String> name,
+            Map<String, String> description,
             String logo,
             String banner,
             String website
@@ -46,19 +42,11 @@ public class UpdateGroupUseCase {
         verifyLeader(group, input.userId());
 
         if (input.name() != null) {
-            group.setName(input.name());
+            group.setName(LocalizedString.of(input.name()));
         }
 
         if (input.description() != null) {
-            group.setDescription(input.description());
-        }
-
-        if (input.nameI18n() != null) {
-            group.setNameI18n(LocalizedString.of(input.nameI18n()));
-        }
-
-        if (input.descriptionI18n() != null) {
-            group.setDescriptionI18n(LocalizedString.of(input.descriptionI18n()));
+            group.setDescription(LocalizedString.of(input.description()));
         }
 
         if (input.logo() != null) {

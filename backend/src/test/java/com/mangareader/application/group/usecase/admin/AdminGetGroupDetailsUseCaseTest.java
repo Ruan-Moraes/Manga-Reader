@@ -33,12 +33,12 @@ class AdminGetGroupDetailsUseCaseTest {
     @Test
     @DisplayName("Deve retornar grupo com detalhes")
     void deveRetornarGrupoComDetalhes() {
-        Group group = Group.builder().id(GROUP_ID).name("Test Group").username("test").build();
+        Group group = Group.builder().id(GROUP_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test Group")).username("test").build();
         when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
         Group result = useCase.execute(GROUP_ID);
 
-        assertThat(result.getName()).isEqualTo("Test Group");
+        assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Test Group");
     }
 
     @Test

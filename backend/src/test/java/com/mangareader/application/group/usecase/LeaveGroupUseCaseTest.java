@@ -47,7 +47,7 @@ class LeaveGroupUseCaseTest {
 
         Group group = Group.builder()
                 .id(GROUP_ID)
-                .name("Scan Test")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))
                 .username("scan-test")
                 .groupUsers(new ArrayList<>())
                 .build();

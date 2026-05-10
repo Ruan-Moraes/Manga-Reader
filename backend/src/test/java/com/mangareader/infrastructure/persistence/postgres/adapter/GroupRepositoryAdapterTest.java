@@ -52,7 +52,7 @@ class GroupRepositoryAdapterTest {
         );
 
         groupA = Group.builder()
-                .name("Scan One Piece")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan One Piece"))
                 .username("scan-op")
                 .build();
         groupA = entityManager.persistAndFlush(groupA);
@@ -77,7 +77,7 @@ class GroupRepositoryAdapterTest {
 
         groupB = entityManager.persistAndFlush(
                 Group.builder()
-                        .name("Scan Naruto")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Naruto"))
                         .username("scan-naruto")
                         .build()
         );
@@ -106,7 +106,7 @@ class GroupRepositoryAdapterTest {
             var result = groupRepository.findById(groupA.getId());
 
             assertThat(result).isPresent();
-            assertThat(result.get().getName()).isEqualTo("Scan One Piece");
+            assertThat(result.get().getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan One Piece");
             assertThat(result.get().getUsername()).isEqualTo("scan-op");
         }
 
@@ -127,7 +127,7 @@ class GroupRepositoryAdapterTest {
             var result = groupRepository.findByUsername("scan-op");
 
             assertThat(result).isPresent();
-            assertThat(result.get().getName()).isEqualTo("Scan One Piece");
+            assertThat(result.get().getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan One Piece");
         }
 
         @Test
@@ -164,7 +164,7 @@ class GroupRepositoryAdapterTest {
             var result = groupRepository.findByTitleId("title-mongo-456");
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getName()).isEqualTo("Scan One Piece");
+            assertThat(result.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan One Piece");
         }
 
         @Test
@@ -199,24 +199,24 @@ class GroupRepositoryAdapterTest {
         @DisplayName("Deve persistir novo grupo e gerar UUID")
         void devePersistirNovoGrupo() {
             var newGroup = Group.builder()
-                    .name("Scan Bleach")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Bleach"))
                     .username("scan-bleach")
                     .build();
 
             var persisted = groupRepository.save(newGroup);
 
             assertThat(persisted.getId()).isNotNull();
-            assertThat(persisted.getName()).isEqualTo("Scan Bleach");
+            assertThat(persisted.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan Bleach");
         }
 
         @Test
         @DisplayName("Deve atualizar grupo existente")
         void deveAtualizarGrupo() {
-            groupB.setName("Scan Naruto Shippuden");
+            groupB.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Naruto Shippuden"));
             var updated = groupRepository.save(groupB);
             entityManager.flush();
 
-            assertThat(updated.getName()).isEqualTo("Scan Naruto Shippuden");
+            assertThat(updated.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan Naruto Shippuden");
         }
     }
 

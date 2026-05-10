@@ -36,7 +36,7 @@ class GetGroupByUsernameUseCaseTest {
         @DisplayName("Deve retornar grupo quando encontrado pelo username")
         void deveRetornarGrupoQuandoEncontrado() {
             // Arrange
-            Group group = Group.builder().name("Scan Brasil").username("scan-brasil").build();
+            Group group = Group.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Brasil")).username("scan-brasil").build();
             when(groupRepository.findByUsernameWithUsers("scan-brasil")).thenReturn(Optional.of(group));
 
             // Act
@@ -44,7 +44,7 @@ class GetGroupByUsernameUseCaseTest {
 
             // Assert
             assertThat(result.getUsername()).isEqualTo("scan-brasil");
-            assertThat(result.getName()).isEqualTo("Scan Brasil");
+            assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Scan Brasil");
         }
     }
 

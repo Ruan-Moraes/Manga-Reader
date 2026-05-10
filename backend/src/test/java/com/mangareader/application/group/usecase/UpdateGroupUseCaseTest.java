@@ -46,9 +46,9 @@ class UpdateGroupUseCaseTest {
         User leader = User.builder().id(LEADER_ID).name("Líder").email("lider@email.com").passwordHash("h").build();
         Group group = Group.builder()
                 .id(GROUP_ID)
-                .name("Grupo Original")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo Original"))
                 .username("grupo-original")
-                .description("Descrição antiga")
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Descrição antiga"))
                 .logo("old-logo.png")
                 .banner("old-banner.png")
                 .website("https://old.com")
@@ -68,7 +68,7 @@ class UpdateGroupUseCaseTest {
         void deveAtualizarApenasNome() {
             // Arrange
             Group group = buildGroupWithLeader();
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Novo Nome", null, null, null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Novo Nome"), null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -76,8 +76,8 @@ class UpdateGroupUseCaseTest {
             Group result = updateGroupUseCase.execute(input);
 
             // Assert
-            assertThat(result.getName()).isEqualTo("Novo Nome");
-            assertThat(result.getDescription()).isEqualTo("Descrição antiga");
+            assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo Nome");
+            assertThat(result.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Descrição antiga");
             assertThat(result.getLogo()).isEqualTo("old-logo.png");
         }
 
@@ -86,9 +86,7 @@ class UpdateGroupUseCaseTest {
         void deveAtualizarTodosCampos() {
             // Arrange
             Group group = buildGroupWithLeader();
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID,
-                    "Novo Nome", "Nova desc", null, null,
-                    "new-logo.png", "new-banner.png", "https://new.com");
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Novo Nome"), java.util.Map.of("pt-BR", "Nova desc"), "new-logo.png", "new-banner.png", "https://new.com");
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -96,8 +94,8 @@ class UpdateGroupUseCaseTest {
             Group result = updateGroupUseCase.execute(input);
 
             // Assert
-            assertThat(result.getName()).isEqualTo("Novo Nome");
-            assertThat(result.getDescription()).isEqualTo("Nova desc");
+            assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo Nome");
+            assertThat(result.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Nova desc");
             assertThat(result.getLogo()).isEqualTo("new-logo.png");
             assertThat(result.getBanner()).isEqualTo("new-banner.png");
             assertThat(result.getWebsite()).isEqualTo("https://new.com");
@@ -108,7 +106,7 @@ class UpdateGroupUseCaseTest {
         void devePersistirAlteracoes() {
             // Arrange
             Group group = buildGroupWithLeader();
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Atualizado", null, null, null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Atualizado"), null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -128,7 +126,7 @@ class UpdateGroupUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
-            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, "Novo", null, null, null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
@@ -143,7 +141,7 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             UUID outroUsuario = UUID.randomUUID();
-            var input = new UpdateGroupInput(GROUP_ID, outroUsuario, "Novo", null, null, null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, outroUsuario, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
@@ -161,7 +159,7 @@ class UpdateGroupUseCaseTest {
             User membro = User.builder().id(membroId).name("Membro").email("m@e.com").passwordHash("h").build();
             group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
-            var input = new UpdateGroupInput(GROUP_ID, membroId, "Novo", null, null, null, null, null, null);
+            var input = new UpdateGroupInput(GROUP_ID, membroId, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert

@@ -66,10 +66,10 @@ class AdminGroupControllerTest {
     private Group buildGroup() {
         return Group.builder()
                 .id(GROUP_ID)
-                .name("Scan Group")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Group"))
                 .username("scangroup")
                 .logo("logo.png")
-                .description("A scan group")
+                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A scan group"))
                 .status(GroupStatus.ACTIVE)
                 .totalTitles(5)
                 .rating(4.5)
@@ -101,7 +101,7 @@ class AdminGroupControllerTest {
         mockMvc.perform(get("/api/admin/groups"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content[0].name").value("Scan Group"));
+                .andExpect(jsonPath("$.data.content[0].name['pt-BR']").value("Scan Group"));
     }
 
     @Test
@@ -111,7 +111,7 @@ class AdminGroupControllerTest {
 
         mockMvc.perform(get("/api/admin/groups/" + GROUP_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.name").value("Scan Group"))
+                .andExpect(jsonPath("$.data.name['pt-BR']").value("Scan Group"))
                 .andExpect(jsonPath("$.data.members[0].userName").value("Member"))
                 .andExpect(jsonPath("$.data.members[0].role").value("TRADUTOR"));
     }
