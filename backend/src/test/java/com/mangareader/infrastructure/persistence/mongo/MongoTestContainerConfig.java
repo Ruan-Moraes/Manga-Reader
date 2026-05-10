@@ -21,11 +21,13 @@ public class MongoTestContainerConfig {
 
     @Bean
     public MongoCustomConversions mongoCustomConversions() {
-        return new MongoCustomConversions(List.of(
+        var conversions = new MongoCustomConversions(List.of(
                 new LocalizedStringMongoConverters.LocalizedStringWriter(),
                 new LocalizedStringMongoConverters.LocalizedStringReader(),
                 new LocalizedStringMongoConverters.LocalizedStringListWriter(),
                 new LocalizedStringMongoConverters.LocalizedStringListReader()
         ));
+        com.mangareader.infrastructure.config.MongoConfiguration.localizedStringConvertersRegistered = true;
+        return conversions;
     }
 }
