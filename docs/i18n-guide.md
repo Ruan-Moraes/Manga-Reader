@@ -145,14 +145,36 @@ Lê do `LocalizedString` direto, com fallback para pt-BR:
 {foo.name?.[lang] ?? foo.name?.['pt-BR'] ?? ''}
 ```
 
+## Quando NÃO traduzir (campos sempre mono)
+
+Critério: campos traduzíveis = **conteúdo apresentável editável pelo admin**. Os demais ficam mono-idioma:
+
+| Categoria | Tradução? | Exemplo |
+|---|---|---|
+| Texto livre apresentável (titulo, descrição, sinopse, label) | ✅ `LocalizedString` | `Title.name`, `Tag.label` |
+| Lista de texto apresentável (features, content paragraphs) | ✅ `LocalizedStringList` | `SubscriptionPlan.features`, `NewsItem.content` |
+| Identificadores de domínio (slug enum, código) | ❌ String | `DomainLabel.value`, `SubscriptionPeriod` |
+| URLs / paths | ❌ String | `Title.cover`, `Group.logo`, `Store.website` |
+| Nomes próprios (autor, editora, organizador) | ❌ String | `Title.author`, `Event.organizer.name` |
+| Endereços físicos / cidades | ❌ String | `Event.location.city`, `Event.location.address` |
+| Códigos / formatos pré-formatados | ❌ String | `Event.timezone`, `priceLabel`, currency |
+| Username / handle | ❌ String | `Group.username` |
+| Conteúdo gerado por usuário (UGC) | ❌ String + `language` partition | `Comment.text`, `ForumTopic.body` |
+| Datas, números, booleanos | ❌ — | — |
+
+**Quando em dúvida**: o admin edita esse campo via input multi-idioma (abas pt/en/es) na UI? Sim → `LocalizedString`. Não → mono.
+
+UGC nunca traduz — particiona por idioma. Ver §UGC abaixo.
+
 ## Anti-padrões (não fazer)
 
 - ❌ `private String name; private LocalizedString nameI18n;` — campos duplicados.
 - ❌ `findByNameContainingIgnoreCase(String name)` derived query em campo JSONB.
-- ❌ `Sort.by(Direction.ASC, "name")` em campo JSONB / subdoc.
+- ❌ `Sort.by(Direction.ASC, "name")` em campo JSONB / subdoc — use `SortValidator.validate` com whitelist de colunas escalares.
 - ❌ DTO admin com `Map<String, String> nameI18n` — usar nome canônico (`name`).
-- ❌ `i18n.resolveOrFallback(field, legacy)` quando legacy = String — só DomainLabel ainda usa (fallback para slug).
+- ❌ `i18n.resolveOrSlug(field, legacy)` quando legacy = String migration — método existe só para fallback de slug enum (DomainLabel). Phase B já consolidou; legacy String não deve aparecer em entities pós-Fase B.
 - ❌ Frontend `name: string` em `Admin*` — admin sempre vê `LocalizedString`.
+- ❌ Esquecer `MongoCustomConversions` em config nova — startup falha rápido com mensagem clara (post-F3).
 
 ## MongoDB — converter obrigatório
 
