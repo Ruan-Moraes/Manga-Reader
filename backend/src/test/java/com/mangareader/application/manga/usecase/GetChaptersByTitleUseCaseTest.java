@@ -42,7 +42,7 @@ class GetChaptersByTitleUseCaseTest {
                     Chapter.builder().number("3").title("O Confronto").build()
             );
 
-            Title title = Title.builder().id("abc123").name("Naruto").chapters(chapters).build();
+            Title title = Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).chapters(chapters).build();
 
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
 
@@ -59,7 +59,7 @@ class GetChaptersByTitleUseCaseTest {
         @DisplayName("Deve retornar lista vazia quando título não possui capítulos")
         void deveRetornarListaVaziaQuandoSemCapitulos() {
             // Arrange
-            Title title = Title.builder().id("abc123").name("Novo Mangá").build();
+            Title title = Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo Mangá")).build();
 
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
 

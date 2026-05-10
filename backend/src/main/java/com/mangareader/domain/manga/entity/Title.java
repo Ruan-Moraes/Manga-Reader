@@ -38,21 +38,13 @@ public class Title {
 
     private String type;
 
-    @TextIndexed(weight = 10)
-    private String name;
-
-    /** Versão multilíngue de {@link #name} (mapa BCP 47 → texto). Etapa 2 i18n — Fase A. */
     @Builder.Default
-    private LocalizedString nameI18n = LocalizedString.empty();
+    private LocalizedString name = LocalizedString.empty();
 
     private String cover;
 
-    @TextIndexed(weight = 3)
-    private String synopsis;
-
-    /** Versão multilíngue de {@link #synopsis}. Etapa 2 i18n — Fase A. */
     @Builder.Default
-    private LocalizedString synopsisI18n = LocalizedString.empty();
+    private LocalizedString synopsis = LocalizedString.empty();
 
     @Indexed
     @Builder.Default

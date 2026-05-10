@@ -47,7 +47,7 @@ public class AddRecommendationUseCase {
         UserRecommendation recommendation = UserRecommendation.builder()
                 .user(user)
                 .titleId(titleId)
-                .titleName(title.getName())
+                .titleName(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
                 .titleCover(title.getCover())
                 .position((int) count)
                 .build();

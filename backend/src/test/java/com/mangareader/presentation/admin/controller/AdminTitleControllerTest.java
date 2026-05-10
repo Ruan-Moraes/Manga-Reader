@@ -59,10 +59,10 @@ class AdminTitleControllerTest {
     private Title buildTitle() {
         return Title.builder()
                 .id("title-1")
-                .name("Naruto")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto"))
                 .type("manga")
                 .cover("cover.jpg")
-                .synopsis("A ninja story")
+                .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A ninja story"))
                 .genres(List.of("Action", "Adventure"))
                 .status("ONGOING")
                 .author("Kishimoto")
@@ -85,7 +85,7 @@ class AdminTitleControllerTest {
         mockMvc.perform(get("/api/admin/titles"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content[0].name").value("Naruto"))
+                .andExpect(jsonPath("$.data.content[0].name['pt-BR']").value("Naruto"))
                 .andExpect(jsonPath("$.data.content[0].type").value("manga"));
     }
 
@@ -97,7 +97,7 @@ class AdminTitleControllerTest {
 
         mockMvc.perform(get("/api/admin/titles").param("search", "naruto"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].name").value("Naruto"));
+                .andExpect(jsonPath("$.data.content[0].name['pt-BR']").value("Naruto"));
     }
 
     @Test
@@ -107,7 +107,7 @@ class AdminTitleControllerTest {
 
         mockMvc.perform(get("/api/admin/titles/title-1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.name").value("Naruto"))
+                .andExpect(jsonPath("$.data.name['pt-BR']").value("Naruto"))
                 .andExpect(jsonPath("$.data.genres[0]").value("Action"));
     }
 
@@ -116,41 +116,40 @@ class AdminTitleControllerTest {
     void deveRetornar201AoCriarTitulo() throws Exception {
         Title created = buildTitle();
         when(createTitleUseCase.execute(
-                anyString(), anyString(), any(), any(), any(), any(), any(), any(), any(), any(boolean.class)
+                any(), anyString(), any(), any(), any(), any(), any(), any(), any(), any(boolean.class)
         )).thenReturn(created);
 
         mockMvc.perform(post("/api/admin/titles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "name": "Naruto",
+                                    "name": {"pt-BR": "Naruto"},
                                     "type": "manga",
                                     "genres": ["Action"],
                                     "adult": false
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.name").value("Naruto"));
+                .andExpect(jsonPath("$.data.name['pt-BR']").value("Naruto"));
     }
 
     @Test
     @DisplayName("PATCH /api/admin/titles/{id} — deve retornar 200 ao atualizar")
     void deveRetornar200AoAtualizar() throws Exception {
         Title updated = buildTitle();
-        updated.setName("Naruto Shippuden");
+        updated.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto Shippuden"));
         when(updateTitleUseCase.execute(
                 eq("title-1"), any(), any(), any(), any(),
-                any(), any(),
                 any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/titles/title-1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"name": "Naruto Shippuden"}
+                                {"name": {"pt-BR": "Naruto Shippuden"}}
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.name").value("Naruto Shippuden"));
+                .andExpect(jsonPath("$.data.name['pt-BR']").value("Naruto Shippuden"));
     }
 
     @Test

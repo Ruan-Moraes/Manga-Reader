@@ -40,7 +40,7 @@ class SearchTitlesUseCaseTest {
         void deveBuscarTitulosPorNome() {
             // Arrange
             List<Title> titles = List.of(
-                    Title.builder().id("1").name("Naruto").build()
+                    Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).build()
             );
 
             Page<Title> page = new PageImpl<>(titles, PAGEABLE, 1);
@@ -52,7 +52,7 @@ class SearchTitlesUseCaseTest {
 
             // Assert
             assertThat(result.getContent()).hasSize(1);
-            assertThat(result.getContent().getFirst().getName()).isEqualTo("Naruto");
+            assertThat(result.getContent().getFirst().getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
 
             verify(titleRepository).searchByName("Naruto", PAGEABLE);
         }

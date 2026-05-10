@@ -54,7 +54,7 @@ public class RecordViewHistoryUseCase {
             ViewHistory vh = ViewHistory.builder()
                     .userId(userIdStr)
                     .titleId(titleId)
-                    .titleName(title.getName())
+                    .titleName(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
                     .titleCover(title.getCover())
                     .viewedAt(LocalDateTime.now())
                     .build();

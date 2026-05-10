@@ -77,7 +77,7 @@ class SubmitRatingUseCaseTest {
             var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 5.0, 3.5, 4.0, 3.0, 4.5, "Ótimo mangá!");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
-            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -105,7 +105,7 @@ class SubmitRatingUseCaseTest {
             var input = new SubmitRatingInput(TITLE_ID, USER_ID, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, null);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
-            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -122,7 +122,7 @@ class SubmitRatingUseCaseTest {
             var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
-            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -162,7 +162,7 @@ class SubmitRatingUseCaseTest {
             var input = new SubmitRatingInput(TITLE_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 3.5, 4.0, "Agora está ótimo!");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.of(existing));
-            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(TITLE_NAME).build()));
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act

@@ -36,7 +36,7 @@ class GetTitleByIdUseCaseTest {
             // Arrange
             Title title = Title.builder()
                     .id("abc123")
-                    .name("Naruto")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto"))
                     .author("Masashi Kishimoto")
                     .build();
 
@@ -48,7 +48,7 @@ class GetTitleByIdUseCaseTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo("abc123");
-            assertThat(result.getName()).isEqualTo("Naruto");
+            assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
             assertThat(result.getAuthor()).isEqualTo("Masashi Kishimoto");
         }
     }

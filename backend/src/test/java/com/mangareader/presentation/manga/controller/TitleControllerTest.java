@@ -61,14 +61,23 @@ class TitleControllerTest {
 
     @MockitoBean
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+    @org.junit.jupiter.api.BeforeEach
+    void stubLocaleResolver() {
+        org.mockito.Mockito.when(localeResolver.resolve(org.mockito.ArgumentMatchers.any(com.mangareader.shared.domain.i18n.LocalizedString.class)))
+                .thenAnswer(inv -> {
+                    com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
+                    return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+    }
+
 
     private Title buildTitle(String id) {
         return Title.builder()
                 .id(id)
-                .name("Solo Leveling")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling"))
                 .type("Manhwa")
                 .cover("cover.png")
-                .synopsis("Um caçador fraco se torna o mais forte")
+                .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um caçador fraco se torna o mais forte"))
                 .genres(List.of("Ação", "Aventura"))
                 .chapters(List.of(
                         Chapter.builder().number("1").title("Capítulo 1").releaseDate("2024-01-01").pages("20").build()

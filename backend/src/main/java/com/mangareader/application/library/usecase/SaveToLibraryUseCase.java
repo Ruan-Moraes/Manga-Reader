@@ -43,7 +43,7 @@ public class SaveToLibraryUseCase {
         SavedManga saved = SavedManga.builder()
                 .user(user)
                 .titleId(input.titleId())
-                .name(title.getName())
+                .name(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
                 .cover(title.getCover())
                 .type(title.getType())
                 .list(input.list())

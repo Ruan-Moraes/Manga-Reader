@@ -71,7 +71,7 @@ public class SubmitRatingUseCase {
         rating.setUserName(user.getName());
 
         String titleName = titleRepository.findById(input.titleId())
-                .map(t -> t.getName())
+                .map(t -> t.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
                 .orElse(input.titleId());
 
         rating.setTitleName(titleName);

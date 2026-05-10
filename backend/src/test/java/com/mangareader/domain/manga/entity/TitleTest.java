@@ -18,7 +18,7 @@ class TitleTest {
     @DisplayName("Deve iniciar com listas vazias de genres e chapters no builder padrão")
     void shouldInitializeDefaultListsWhenUsingBuilder() {
         Title title = Title.builder()
-                .name("Solo Leveling")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling"))
                 .type("manhwa")
                 .build();
 
@@ -41,9 +41,9 @@ class TitleTest {
         Title title = Title.builder()
                 .id("abc123")
                 .type("manga")
-                .name("One Piece")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("One Piece"))
                 .cover("https://example.com/cover.jpg")
-                .synopsis("Aventura pirata épica")
+                .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aventura pirata épica"))
                 .genres(List.of("Action", "Adventure"))
                 .chapters(List.of(ch1))
                 .popularity("1")
@@ -57,9 +57,9 @@ class TitleTest {
 
         assertEquals("abc123", title.getId());
         assertEquals("manga", title.getType());
-        assertEquals("One Piece", title.getName());
+        assertEquals("One Piece", title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
         assertEquals("https://example.com/cover.jpg", title.getCover());
-        assertEquals("Aventura pirata épica", title.getSynopsis());
+        assertEquals("Aventura pirata épica", title.getSynopsis().resolve(java.util.Locale.forLanguageTag("pt-BR")));
         assertEquals(2, title.getGenres().size());
         assertEquals("Action", title.getGenres().get(0));
         assertEquals(1, title.getChapters().size());
@@ -79,7 +79,7 @@ class TitleTest {
         List<String> genres = List.of("Romance", "Drama", "Slice of Life");
 
         Title title = Title.builder()
-                .name("Fruits Basket")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Fruits Basket"))
                 .genres(genres)
                 .build();
 
@@ -93,7 +93,7 @@ class TitleTest {
     @DisplayName("Deve permitir adicionar capítulos à lista padrão após construção")
     void shouldAllowAddingChaptersAfterConstruction() {
         Title title = Title.builder()
-                .name("Naruto")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto"))
                 .build();
 
         Chapter ch = Chapter.builder()
@@ -113,10 +113,10 @@ class TitleTest {
         Title title = new Title();
 
         assertNull(title.getId());
-        assertNull(title.getName());
+        assertTrue(title.getName().isEmpty());
         assertNull(title.getType());
         assertNull(title.getCover());
-        assertNull(title.getSynopsis());
+        assertTrue(title.getSynopsis().isEmpty());
         assertNull(title.getAuthor());
         assertNull(title.getArtist());
         assertNull(title.getPublisher());
@@ -137,7 +137,7 @@ class TitleTest {
     @Test
     @DisplayName("Deve inicializar adult como false via @Builder.Default")
     void shouldInitializeAdultAsFalse() {
-        Title title = Title.builder().name("Test").build();
+        Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).build();
 
         assertFalse(title.isAdult());
     }
@@ -145,7 +145,7 @@ class TitleTest {
     @Test
     @DisplayName("Deve permitir definir adult como true via builder")
     void shouldSetAdultViaBuilder() {
-        Title title = Title.builder().name("Test").adult(true).build();
+        Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).adult(true).build();
 
         assertTrue(title.isAdult());
     }
@@ -153,7 +153,7 @@ class TitleTest {
     @Test
     @DisplayName("Deve inicializar status como null via builder padrão")
     void shouldInitializeStatusAsNull() {
-        Title title = Title.builder().name("Test").build();
+        Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).build();
 
         assertNull(title.getStatus());
     }
@@ -161,7 +161,7 @@ class TitleTest {
     @Test
     @DisplayName("Deve permitir definir status via builder")
     void shouldSetStatusViaBuilder() {
-        Title title = Title.builder().name("Test").status("ONGOING").build();
+        Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).status("ONGOING").build();
 
         assertEquals("ONGOING", title.getStatus());
     }
@@ -170,16 +170,16 @@ class TitleTest {
     @DisplayName("Deve suportar mutação via setters")
     void shouldSupportMutationViaSetters() {
         Title title = Title.builder()
-                .name("Original")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Original"))
                 .build();
 
-        title.setName("Atualizado");
+        title.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Atualizado"));
         title.setRatingAverage(3.0);
         title.setRatingCount(50L);
         title.setRankingScore(2.8);
         title.setPopularity("5");
 
-        assertEquals("Atualizado", title.getName());
+        assertEquals("Atualizado", title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
         assertEquals(3.0, title.getRatingAverage());
         assertEquals(50L, title.getRatingCount());
         assertEquals(2.8, title.getRankingScore());

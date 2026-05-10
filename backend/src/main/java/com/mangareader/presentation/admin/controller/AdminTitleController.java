@@ -91,7 +91,6 @@ public class AdminTitleController {
     ) {
         var title = updateTitleUseCase.execute(
                 id, request.name(), request.type(), request.cover(), request.synopsis(),
-                request.nameI18n(), request.synopsisI18n(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult()
         );

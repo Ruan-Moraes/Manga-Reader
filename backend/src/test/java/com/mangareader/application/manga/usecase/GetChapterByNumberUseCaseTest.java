@@ -35,7 +35,7 @@ class GetChapterByNumberUseCaseTest {
                 Chapter.builder().number("2").title("A Jornada").releaseDate("2020-01-15").pages("22").build(),
                 Chapter.builder().number("3").title("O Confronto").releaseDate("2020-02-01").pages("26").build()
         );
-        return Title.builder().id("abc123").name("Naruto").chapters(chapters).build();
+        return Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).chapters(chapters).build();
     }
 
     @Nested

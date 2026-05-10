@@ -33,7 +33,7 @@ class UpdateTitleUseCaseTest {
     private Title buildTitle() {
         return Title.builder()
                 .id("title-1")
-                .name("Original")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Original"))
                 .type("manga")
                 .status("ONGOING")
                 .genres(List.of("Action"))
@@ -48,10 +48,10 @@ class UpdateTitleUseCaseTest {
         when(titleRepository.save(any(Title.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Title result = updateTitleUseCase.execute(
-                "title-1", "New Name", null, null, null, null, null, null, null, null, null, null, null
+                "title-1", java.util.Map.of("pt-BR", "New Name"), null, null, null, null, null, null, null, null, null
         );
 
-        assertThat(result.getName()).isEqualTo("New Name");
+        assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("New Name");
         assertThat(result.getType()).isEqualTo("manga");
         assertThat(result.getStatus()).isEqualTo("ONGOING");
         verify(titleRepository).save(title);
@@ -65,12 +65,11 @@ class UpdateTitleUseCaseTest {
         when(titleRepository.save(any(Title.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Title result = updateTitleUseCase.execute(
-                "title-1", "New", "manhwa", "new-cover.jpg", "New synopsis",
-                null, null,
+                "title-1", java.util.Map.of("pt-BR", "New"), "manhwa", "new-cover.jpg", java.util.Map.of("pt-BR", "New synopsis"),
                 List.of("Romance"), "COMPLETED", "New Author", "New Artist", "New Publisher", true
         );
 
-        assertThat(result.getName()).isEqualTo("New");
+        assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("New");
         assertThat(result.getType()).isEqualTo("manhwa");
         assertThat(result.isAdult()).isTrue();
         assertThat(result.getGenres()).containsExactly("Romance");
@@ -82,7 +81,7 @@ class UpdateTitleUseCaseTest {
         when(titleRepository.findById("invalid")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> updateTitleUseCase.execute(
-                "invalid", "Name", null, null, null, null, null, null, null, null, null, null, null
+                "invalid", java.util.Map.of("pt-BR", "Name"), null, null, null, null, null, null, null, null, null
         ))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Title");

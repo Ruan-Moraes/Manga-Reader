@@ -15,14 +15,10 @@ import com.mangareader.domain.manga.entity.Title;
 public interface TitleMongoRepository extends MongoRepository<Title, String> {
     List<Title> findByGenresContaining(String genre);
 
-    List<Title> findByNameContainingIgnoreCase(String name);
-
     @Query("{ 'genres': { $all: ?0 } }")
     List<Title> findByGenresContainingAll(List<String> genres);
 
     Page<Title> findByGenresContaining(String genre, Pageable pageable);
-
-    Page<Title> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     @Query("{ 'genres': { $all: ?0 } }")
     Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);

@@ -7,7 +7,7 @@ import com.mangareader.presentation.admin.dto.AdminTitleResponse;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
 /**
- * Mapper estático Title → AdminTitleResponse. Inclui mapas *I18n.
+ * Mapper estático Title → AdminTitleResponse.
  */
 public final class AdminTitleMapper {
 
@@ -17,12 +17,10 @@ public final class AdminTitleMapper {
     public static AdminTitleResponse toResponse(Title title) {
         return new AdminTitleResponse(
                 title.getId(),
-                title.getName(),
+                values(title.getName()),
                 title.getType(),
                 title.getCover(),
-                title.getSynopsis(),
-                values(title.getNameI18n()),
-                values(title.getSynopsisI18n()),
+                values(title.getSynopsis()),
                 title.getGenres(),
                 title.getStatus(),
                 title.getAuthor(),

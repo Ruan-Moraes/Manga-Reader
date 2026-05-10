@@ -5,16 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Resposta admin de título. Mapas *I18n trazem todas as traduções.
+ * Resposta admin de título. Mapas multilíngues para name/synopsis.
  */
 public record AdminTitleResponse(
         String id,
-        String name,
+        Map<String, String> name,
         String type,
         String cover,
-        String synopsis,
-        Map<String, String> nameI18n,
-        Map<String, String> synopsisI18n,
+        Map<String, String> synopsis,
         List<String> genres,
         String status,
         String author,

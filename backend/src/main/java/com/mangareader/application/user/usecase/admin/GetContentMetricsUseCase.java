@@ -55,7 +55,7 @@ public class GetContentMetricsUseCase {
     private TopTitleResponse toTopTitleResponse(Title title) {
         return new TopTitleResponse(
                 title.getId(),
-                title.getName(),
+                title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")),
                 title.getCover(),
                 title.getType(),
                 title.getRankingScore(),

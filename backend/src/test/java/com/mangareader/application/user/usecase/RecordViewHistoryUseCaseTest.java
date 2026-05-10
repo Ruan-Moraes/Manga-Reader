@@ -67,7 +67,7 @@ class RecordViewHistoryUseCaseTest {
         void deveCriarNovaEntrada() {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
-                    Title.builder().id(TITLE_ID).name("Solo Leveling").cover("cover.jpg").build()));
+                    Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).cover("cover.jpg").build()));
             when(viewHistoryRepository.findByUserIdAndTitleId(USER_ID.toString(), TITLE_ID))
                     .thenReturn(Optional.empty());
 
@@ -91,7 +91,7 @@ class RecordViewHistoryUseCaseTest {
         void deveAtualizarViewedAtQuandoExiste() {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
-                    Title.builder().id(TITLE_ID).name("Solo Leveling").build()));
+                    Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).build()));
 
             ViewHistory existing = ViewHistory.builder()
                     .id("vh-existing")

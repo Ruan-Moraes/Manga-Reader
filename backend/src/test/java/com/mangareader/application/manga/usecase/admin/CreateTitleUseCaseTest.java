@@ -37,12 +37,12 @@ class CreateTitleUseCaseTest {
         });
 
         Title result = createTitleUseCase.execute(
-                "Naruto", "manga", "cover.jpg", "Synopsis here",
+                java.util.Map.of("pt-BR", "Naruto"), "manga", "cover.jpg", java.util.Map.of("pt-BR", "Synopsis here"),
                 List.of("Action", "Adventure"), "ONGOING", "Kishimoto",
                 "Kishimoto", "Shueisha", false
         );
 
-        assertThat(result.getName()).isEqualTo("Naruto");
+        assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
         assertThat(result.getType()).isEqualTo("manga");
         assertThat(result.getGenres()).containsExactly("Action", "Adventure");
         assertThat(result.isAdult()).isFalse();
@@ -55,7 +55,7 @@ class CreateTitleUseCaseTest {
         when(titleRepository.save(any(Title.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Title result = createTitleUseCase.execute(
-                "Test", "manhwa", null, null, null, null, null, null, null, false
+                java.util.Map.of("pt-BR", "Test"), "manhwa", null, null, null, null, null, null, null, false
         );
 
         assertThat(result.getGenres()).isEmpty();

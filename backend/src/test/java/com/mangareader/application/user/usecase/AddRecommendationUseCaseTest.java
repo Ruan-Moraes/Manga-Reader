@@ -64,7 +64,7 @@ class AddRecommendationUseCaseTest {
             when(recommendationRepository.findByUserIdAndTitleId(USER_ID, TITLE_ID)).thenReturn(Optional.empty());
             when(recommendationRepository.countByUserId(USER_ID)).thenReturn(3L);
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
-                    Title.builder().id(TITLE_ID).name("Solo Leveling").cover("cover.jpg").build()));
+                    Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).cover("cover.jpg").build()));
             when(recommendationRepository.save(any(UserRecommendation.class))).thenAnswer(inv -> inv.getArgument(0));
 
             UserRecommendation result = addRecommendationUseCase.execute(USER_ID, TITLE_ID);

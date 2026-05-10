@@ -30,7 +30,7 @@ class DeleteTitleUseCaseTest {
     @Test
     @DisplayName("Deve excluir título existente")
     void deveExcluirTituloExistente() {
-        Title title = Title.builder().id("title-1").name("Test").build();
+        Title title = Title.builder().id("title-1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).build();
         when(titleRepository.findById("title-1")).thenReturn(Optional.of(title));
 
         deleteTitleUseCase.execute("title-1");

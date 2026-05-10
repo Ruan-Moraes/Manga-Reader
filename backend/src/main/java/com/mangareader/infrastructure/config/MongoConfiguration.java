@@ -1,16 +1,19 @@
 package com.mangareader.infrastructure.config;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
-import java.util.concurrent.TimeUnit;
+import com.mangareader.infrastructure.persistence.mongo.converter.LocalizedStringMongoConverters;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 @Configuration
 public class MongoConfiguration extends AbstractMongoClientConfiguration {
@@ -42,8 +45,14 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
         return MongoClients.create(mongoClientSettings);
     }
 
+    @Override
     @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), getDatabaseName());
+    public MongoCustomConversions customConversions() {
+        return new MongoCustomConversions(List.of(
+                new LocalizedStringMongoConverters.LocalizedStringWriter(),
+                new LocalizedStringMongoConverters.LocalizedStringReader(),
+                new LocalizedStringMongoConverters.LocalizedStringListWriter(),
+                new LocalizedStringMongoConverters.LocalizedStringListReader()
+        ));
     }
 }

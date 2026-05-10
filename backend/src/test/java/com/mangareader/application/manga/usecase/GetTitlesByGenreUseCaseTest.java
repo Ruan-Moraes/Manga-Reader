@@ -36,8 +36,8 @@ class GetTitlesByGenreUseCaseTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         List<Title> titles = List.of(
-                Title.builder().id("1").name("Naruto").genres(List.of("Ação", "Aventura")).build(),
-                Title.builder().id("2").name("Dragon Ball").genres(List.of("Ação", "Comédia")).build()
+                Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).genres(List.of("Ação", "Aventura")).build(),
+                Title.builder().id("2").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Dragon Ball")).genres(List.of("Ação", "Comédia")).build()
         );
 
         Page<Title> page = new PageImpl<>(titles, pageable, 2);

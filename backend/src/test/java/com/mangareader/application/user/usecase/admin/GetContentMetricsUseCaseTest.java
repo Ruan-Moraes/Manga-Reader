@@ -49,7 +49,7 @@ class GetContentMetricsUseCaseTest {
     void deveRetornarTopTitulos() {
         Title title = Title.builder()
                 .id("t1")
-                .name("Top Manga")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Top Manga"))
                 .cover("cover.jpg")
                 .type("MANGA")
                 .rankingScore(9.5)

@@ -63,7 +63,7 @@ class SaveToLibraryUseCaseTest {
     private Title buildTitle() {
         return Title.builder()
                 .id(TITLE_ID)
-                .name("Naruto")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto"))
                 .cover("https://example.com/naruto.jpg")
                 .type("Mangá")
                 .build();

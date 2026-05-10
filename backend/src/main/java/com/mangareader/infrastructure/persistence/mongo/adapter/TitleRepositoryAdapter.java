@@ -48,7 +48,18 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
 
     @Override
     public List<Title> searchByName(String query) {
-        return mongoRepository.findByNameContainingIgnoreCase(query);
+        if (query == null || query.isBlank()) return List.of();
+        return mongoTemplate.find(buildNameSearchQuery(query), Title.class);
+    }
+
+    private static Query buildNameSearchQuery(String query) {
+        var regex = java.util.regex.Pattern.quote(query);
+        var crit = new Criteria().orOperator(
+                Criteria.where("name.pt-BR").regex(regex, "i"),
+                Criteria.where("name.en-US").regex(regex, "i"),
+                Criteria.where("name.es-ES").regex(regex, "i")
+        );
+        return new Query(crit);
     }
 
     @Override
@@ -103,7 +114,13 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
 
     @Override
     public Page<Title> searchByName(String query, Pageable pageable) {
-        return mongoRepository.findByNameContainingIgnoreCase(query, pageable);
+        if (query == null || query.isBlank()) {
+            return new org.springframework.data.domain.PageImpl<>(List.of(), pageable, 0);
+        }
+        Query q = buildNameSearchQuery(query);
+        long total = mongoTemplate.count(q, Title.class);
+        var results = mongoTemplate.find(q.with(pageable), Title.class);
+        return new org.springframework.data.domain.PageImpl<>(results, pageable, total);
     }
 
     @Override

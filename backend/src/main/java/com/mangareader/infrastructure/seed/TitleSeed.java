@@ -36,9 +36,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("1")
                         .type("Mangá")
-                        .name("Reino de Aço")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Reino de Aço"))
                         .cover("https://picsum.photos/300/450?random=101")
-                        .synopsis("Em um mundo onde armaduras vivas dominam os campos de batalha, um ferreiro órfão descobre que seu sangue pode despertar a lendária Armadura Negra.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em um mundo onde armaduras vivas dominam os campos de batalha, um ferreiro órfão descobre que seu sangue pode despertar a lendária Armadura Negra."))
                         .genres(List.of("Ação", "Fantasia", "Aventura"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("O Despertar da Forja").releaseDate("2025-06-10").pages("42").build(),
@@ -57,9 +57,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("2")
                         .type("Manhwa")
-                        .name("Lâmina do Amanhã")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lâmina do Amanhã"))
                         .cover("https://picsum.photos/300/450?random=102")
-                        .synopsis("Após acordar 500 anos no futuro, um espadachim medieval precisa dominar tecnologia avançada para sobreviver em uma sociedade que erradicou a violência.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Após acordar 500 anos no futuro, um espadachim medieval precisa dominar tecnologia avançada para sobreviver em uma sociedade que erradicou a violência."))
                         .genres(List.of("Ação", "Ficção Científica", "Drama"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("Tempo Perdido").releaseDate("2025-05-01").pages("50").build(),
@@ -76,9 +76,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("3")
                         .type("Mangá")
-                        .name("Flores de Neon")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Flores de Neon"))
                         .cover("https://picsum.photos/300/450?random=103")
-                        .synopsis("Em Tóquio, uma florista de dia e hacker de noite se vê envolvida em uma conspiração corporativa quando suas duas vidas colidem.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em Tóquio, uma florista de dia e hacker de noite se vê envolvida em uma conspiração corporativa quando suas duas vidas colidem."))
                         .genres(List.of("Suspense", "Seinen", "Urbano"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("Pétalas Digitais").releaseDate("2025-04-05").pages("40").build(),
@@ -94,9 +94,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("4")
                         .type("Mangá")
-                        .name("Crônicas de Polaris")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Crônicas de Polaris"))
                         .cover("https://picsum.photos/300/450?random=104")
-                        .synopsis("Um grupo de exploradores parte rumo à estrela Polaris seguindo mapas antigos que prometem revelar a origem da humanidade.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um grupo de exploradores parte rumo à estrela Polaris seguindo mapas antigos que prometem revelar a origem da humanidade."))
                         .genres(List.of("Aventura", "Fantasia", "Histórico"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("O Mapa Estelar").releaseDate("2025-03-01").pages("46").build(),
@@ -114,9 +114,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("5")
                         .type("Manhwa")
-                        .name("Vento Cortante")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Vento Cortante"))
                         .cover("https://picsum.photos/300/450?random=105")
-                        .synopsis("Um jovem artista marcial descobre que possui a habilidade rara de cortar o vento, tornando-se alvo de clãs rivais que desejam dominar essa técnica lendária.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um jovem artista marcial descobre que possui a habilidade rara de cortar o vento, tornando-se alvo de clãs rivais que desejam dominar essa técnica lendária."))
                         .genres(List.of("Ação", "Artes Marciais", "Drama"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("O Primeiro Corte").releaseDate("2025-02-14").pages("44").build(),
@@ -132,9 +132,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("6")
                         .type("Manhua")
-                        .name("Guardião Celestial")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Guardião Celestial"))
                         .cover("https://picsum.photos/300/450?random=106")
-                        .synopsis("Quando os portões celestiais se abrem, um jovem monge é escolhido como o último guardião entre o mundo mortal e o reino dos deuses.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Quando os portões celestiais se abrem, um jovem monge é escolhido como o último guardião entre o mundo mortal e o reino dos deuses."))
                         .genres(List.of("Fantasia", "Sobrenatural", "Aventura"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("Os Portões Abertos").releaseDate("2025-01-10").pages("50").build(),
@@ -151,9 +151,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("7")
                         .type("Mangá")
-                        .name("Coração de Porcelana")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Coração de Porcelana"))
                         .cover("https://picsum.photos/300/450?random=107")
-                        .synopsis("Uma jovem artesã de porcelana descobre que suas criações ganham vida própria, revelando sentimentos que ela há muito tempo tentava esconder.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Uma jovem artesã de porcelana descobre que suas criações ganham vida própria, revelando sentimentos que ela há muito tempo tentava esconder."))
                         .genres(List.of("Romance", "Shoujo", "Slice of Life"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("A Primeira Peça").releaseDate("2025-04-01").pages("36").build(),
@@ -168,9 +168,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("8")
                         .type("Manhwa")
-                        .name("Protocolo Zero")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Protocolo Zero"))
                         .cover("https://picsum.photos/300/450?random=108")
-                        .synopsis("Em um futuro distópico, um programador descobre que a IA governante esconde um protocolo secreto que pode libertar ou destruir a humanidade.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em um futuro distópico, um programador descobre que a IA governante esconde um protocolo secreto que pode libertar ou destruir a humanidade."))
                         .genres(List.of("Ficção Científica", "Thriller", "Seinen"))
                         .chapters(List.of(
                                 Chapter.builder().number("1").title("Linha de Código").releaseDate("2025-05-10").pages("48").build(),
@@ -186,9 +186,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("9")
                         .type("Mangá")
-                        .name("Noites Vermelhas")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Noites Vermelhas"))
                         .cover("https://picsum.photos/300/450?random=109")
-                        .synopsis("Em uma cidade tomada por cultos sobrenaturais, um detetive desacreditado investiga desaparecimentos que levam a rituais ancestrais de sangue.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em uma cidade tomada por cultos sobrenaturais, um detetive desacreditado investiga desaparecimentos que levam a rituais ancestrais de sangue."))
                         .genres(List.of("Horror", "Suspense", "Seinen", "+18"))
                         .adult(true)
                         .chapters(List.of(
@@ -204,9 +204,9 @@ public class TitleSeed implements EntitySeeder {
                 Title.builder()
                         .id("10")
                         .type("Manhua")
-                        .name("Espelho do Vazio")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Espelho do Vazio"))
                         .cover("https://picsum.photos/300/450?random=110")
-                        .synopsis("Um monge errante busca fragmentos de um espelho místico que reflete verdades ocultas, enquanto enfrenta seus próprios demônios internos.")
+                        .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um monge errante busca fragmentos de um espelho místico que reflete verdades ocultas, enquanto enfrenta seus próprios demônios internos."))
                         .genres(List.of("Fantasia", "Filosófico", "Aventura"))
                         .chapters(List.of())
                         .popularity("10").ratingAverage(0.0)

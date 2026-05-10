@@ -1,11 +1,13 @@
 package com.mangareader.application.manga.usecase.admin;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,14 +19,15 @@ import lombok.RequiredArgsConstructor;
 public class CreateTitleUseCase {
     private final TitleRepositoryPort titleRepository;
 
-    public Title execute(String name, String type, String cover, String synopsis,
+    public Title execute(Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis,
                          List<String> genres, String status, String author,
                          String artist, String publisher, boolean adult) {
         Title title = Title.builder()
-                .name(name)
+                .name(toLocalized(name))
                 .type(type)
                 .cover(cover)
-                .synopsis(synopsis)
+                .synopsis(toLocalized(synopsis))
                 .genres(genres != null ? genres : List.of())
                 .status(status)
                 .author(author)
@@ -34,5 +37,9 @@ public class CreateTitleUseCase {
                 .build();
 
         return titleRepository.save(title);
+    }
+
+    private static LocalizedString toLocalized(Map<String, String> map) {
+        return (map == null || map.isEmpty()) ? LocalizedString.empty() : LocalizedString.of(map);
     }
 }

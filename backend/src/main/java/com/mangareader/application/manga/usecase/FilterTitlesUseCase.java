@@ -55,7 +55,7 @@ public class FilterTitlesUseCase {
                     .toList();
             case ALPHABETICAL -> titles.stream()
                     .sorted(Comparator.comparing(
-                            Title::getName, String.CASE_INSENSITIVE_ORDER))
+                            t -> t.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")), String.CASE_INSENSITIVE_ORDER))
                     .toList();
             case ASCENSION -> titles.stream()
                     .sorted(Comparator.comparing(

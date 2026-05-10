@@ -37,11 +37,11 @@ class FilterTitlesUseCaseTest {
 
     private List<Title> buildSampleTitles() {
         return List.of(
-                Title.builder().id("1").name("Naruto").popularity("5000").ratingAverage(4.5)
+                Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).popularity("5000").ratingAverage(4.5)
                         .createdAt(LocalDateTime.of(2020, 1, 1, 0, 0)).build(),
-                Title.builder().id("2").name("Bleach").popularity("3000").ratingAverage(3.8)
+                Title.builder().id("2").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Bleach")).popularity("3000").ratingAverage(3.8)
                         .createdAt(LocalDateTime.of(2022, 6, 15, 0, 0)).build(),
-                Title.builder().id("3").name("Attack on Titan").popularity("8000").ratingAverage(4.8)
+                Title.builder().id("3").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Attack on Titan")).popularity("8000").ratingAverage(4.8)
                         .createdAt(LocalDateTime.of(2021, 3, 10, 0, 0)).build()
         );
     }
@@ -76,7 +76,7 @@ class FilterTitlesUseCaseTest {
         @DisplayName("Deve filtrar por múltiplos gêneros")
         void deveFiltrarPorMultiplosGeneros() {
             List<String> genres = List.of("Ação", "Aventura");
-            List<Title> filtered = List.of(Title.builder().id("1").name("Naruto").build());
+            List<Title> filtered = List.of(Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).build());
 
             when(titleRepository.findByFilters(genres, null, null)).thenReturn(filtered);
 
@@ -94,7 +94,7 @@ class FilterTitlesUseCaseTest {
         @DisplayName("Deve filtrar por status ONGOING")
         void deveFiltrarPorStatusOngoing() {
             List<Title> filtered = List.of(
-                    Title.builder().id("1").name("Naruto").status("ONGOING").build()
+                    Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).status("ONGOING").build()
             );
             when(titleRepository.findByFilters(isNull(), any(), isNull())).thenReturn(filtered);
 
@@ -111,7 +111,7 @@ class FilterTitlesUseCaseTest {
         @DisplayName("Deve filtrar somente adulto quando adult=true")
         void deveFiltrarSomenteAdulto() {
             List<Title> filtered = List.of(
-                    Title.builder().id("1").name("Titulo Adulto").adult(true).build()
+                    Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Titulo Adulto")).adult(true).build()
             );
             when(titleRepository.findByFilters(isNull(), isNull(), any())).thenReturn(filtered);
 
@@ -124,7 +124,7 @@ class FilterTitlesUseCaseTest {
         @DisplayName("Deve excluir adulto quando adult=false")
         void deveExcluirAdulto() {
             List<Title> filtered = List.of(
-                    Title.builder().id("1").name("Titulo Normal").adult(false).build()
+                    Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Titulo Normal")).adult(false).build()
             );
             when(titleRepository.findByFilters(isNull(), isNull(), any())).thenReturn(filtered);
 
@@ -142,7 +142,7 @@ class FilterTitlesUseCaseTest {
         void deveCombinarFiltros() {
             List<String> genres = List.of("Ação");
             List<Title> filtered = List.of(
-                    Title.builder().id("1").name("Naruto").status("ONGOING").adult(false).build()
+                    Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).status("ONGOING").adult(false).build()
             );
             when(titleRepository.findByFilters(genres, "ONGOING", false)).thenReturn(filtered);
 
@@ -165,9 +165,9 @@ class FilterTitlesUseCaseTest {
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_READ, PAGEABLE);
 
             List<Title> content = result.getContent();
-            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");
-            assertThat(content.get(2).getName()).isEqualTo("Bleach");
+            assertThat(content.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Attack on Titan");
+            assertThat(content.get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
+            assertThat(content.get(2).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bleach");
         }
 
         @Test
@@ -179,9 +179,9 @@ class FilterTitlesUseCaseTest {
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_RATED, PAGEABLE);
 
             List<Title> content = result.getContent();
-            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");
-            assertThat(content.get(2).getName()).isEqualTo("Bleach");
+            assertThat(content.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Attack on Titan");
+            assertThat(content.get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
+            assertThat(content.get(2).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bleach");
         }
 
         @Test
@@ -193,9 +193,9 @@ class FilterTitlesUseCaseTest {
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_RECENT, PAGEABLE);
 
             List<Title> content = result.getContent();
-            assertThat(content.get(0).getName()).isEqualTo("Bleach");
-            assertThat(content.get(1).getName()).isEqualTo("Attack on Titan");
-            assertThat(content.get(2).getName()).isEqualTo("Naruto");
+            assertThat(content.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bleach");
+            assertThat(content.get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Attack on Titan");
+            assertThat(content.get(2).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
         }
 
         @Test
@@ -207,9 +207,9 @@ class FilterTitlesUseCaseTest {
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.ALPHABETICAL, PAGEABLE);
 
             List<Title> content = result.getContent();
-            assertThat(content.get(0).getName()).isEqualTo("Attack on Titan");
-            assertThat(content.get(1).getName()).isEqualTo("Bleach");
-            assertThat(content.get(2).getName()).isEqualTo("Naruto");
+            assertThat(content.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Attack on Titan");
+            assertThat(content.get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bleach");
+            assertThat(content.get(2).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
         }
 
         @Test
@@ -221,9 +221,9 @@ class FilterTitlesUseCaseTest {
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.ASCENSION, PAGEABLE);
 
             List<Title> content = result.getContent();
-            assertThat(content.get(0).getName()).isEqualTo("Bleach");
-            assertThat(content.get(1).getName()).isEqualTo("Naruto");
-            assertThat(content.get(2).getName()).isEqualTo("Attack on Titan");
+            assertThat(content.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bleach");
+            assertThat(content.get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
+            assertThat(content.get(2).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Attack on Titan");
         }
 
         @Test
@@ -279,16 +279,16 @@ class FilterTitlesUseCaseTest {
         @DisplayName("Deve tratar popularidade nula como zero na ordenação")
         void deveTratarPopularidadeNulaComoZero() {
             List<Title> titles = List.of(
-                    Title.builder().id("1").name("Com popularidade").popularity("1000").build(),
-                    Title.builder().id("2").name("Sem popularidade").popularity(null).build()
+                    Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Com popularidade")).popularity("1000").build(),
+                    Title.builder().id("2").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Sem popularidade")).popularity(null).build()
             );
 
             when(titleRepository.findByFilters(isNull(), isNull(), isNull())).thenReturn(titles);
 
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_READ, PAGEABLE);
 
-            assertThat(result.getContent().get(0).getName()).isEqualTo("Com popularidade");
-            assertThat(result.getContent().get(1).getName()).isEqualTo("Sem popularidade");
+            assertThat(result.getContent().get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Com popularidade");
+            assertThat(result.getContent().get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Sem popularidade");
         }
     }
 }

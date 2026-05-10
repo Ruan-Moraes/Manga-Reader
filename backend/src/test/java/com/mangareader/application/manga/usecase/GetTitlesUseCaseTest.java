@@ -36,8 +36,8 @@ class GetTitlesUseCaseTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         List<Title> titles = List.of(
-                Title.builder().id("1").name("Naruto").build(),
-                Title.builder().id("2").name("One Piece").build()
+                Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).build(),
+                Title.builder().id("2").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("One Piece")).build()
         );
 
         Page<Title> page = new PageImpl<>(titles, pageable, 2);

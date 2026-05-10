@@ -40,7 +40,7 @@ class TitleRepositoryAdapterTest {
         mongoTemplate.dropCollection(Title.class);
 
         naruto = mongoTemplate.save(Title.builder()
-                .name("Naruto")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto"))
                 .type("manga")
                 .genres(List.of("Action", "Adventure"))
                 .author("Masashi Kishimoto")
@@ -49,7 +49,7 @@ class TitleRepositoryAdapterTest {
                 .build());
 
         onePiece = mongoTemplate.save(Title.builder()
-                .name("One Piece")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("One Piece"))
                 .type("manga")
                 .genres(List.of("Action", "Adventure", "Comedy"))
                 .author("Eiichiro Oda")
@@ -58,7 +58,7 @@ class TitleRepositoryAdapterTest {
                 .build());
 
         deathNote = mongoTemplate.save(Title.builder()
-                .name("Death Note")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Death Note"))
                 .type("manga")
                 .genres(List.of("Mystery", "Thriller"))
                 .author("Tsugumi Ohba")
@@ -98,7 +98,7 @@ class TitleRepositoryAdapterTest {
             var result = titleRepository.findById(naruto.getId());
 
             assertThat(result).isPresent();
-            assertThat(result.get().getName()).isEqualTo("Naruto");
+            assertThat(result.get().getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
         }
 
         @Test
@@ -119,7 +119,7 @@ class TitleRepositoryAdapterTest {
             var result = titleRepository.findByGenresContaining("Action");
 
             assertThat(result).hasSize(2)
-                    .extracting(Title::getName)
+                    .extracting(t -> t.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
                     .containsExactlyInAnyOrder("Naruto", "One Piece");
         }
 
@@ -142,7 +142,7 @@ class TitleRepositoryAdapterTest {
             var result = titleRepository.searchByName("naruto");
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getName()).isEqualTo("Naruto");
+            assertThat(result.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Naruto");
         }
 
         @Test
@@ -151,7 +151,7 @@ class TitleRepositoryAdapterTest {
             var page = titleRepository.searchByName("note", PageRequest.of(0, 10));
 
             assertThat(page.getContent()).hasSize(1);
-            assertThat(page.getContent().get(0).getName()).isEqualTo("Death Note");
+            assertThat(page.getContent().get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Death Note");
         }
 
         @Test
@@ -172,7 +172,7 @@ class TitleRepositoryAdapterTest {
             var result = titleRepository.findByGenresContainingAll(List.of("Action", "Comedy"));
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getName()).isEqualTo("One Piece");
+            assertThat(result.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("One Piece");
         }
 
         @Test
@@ -193,7 +193,7 @@ class TitleRepositoryAdapterTest {
         @DisplayName("Deve persistir novo título e gerar ID")
         void devePersistirNovoTitulo() {
             var newTitle = Title.builder()
-                    .name("Bleach")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Bleach"))
                     .type("manga")
                     .genres(List.of("Action", "Supernatural"))
                     .author("Tite Kubo")
@@ -203,7 +203,7 @@ class TitleRepositoryAdapterTest {
             var saved = titleRepository.save(newTitle);
 
             assertThat(saved.getId()).isNotNull();
-            assertThat(saved.getName()).isEqualTo("Bleach");
+            assertThat(saved.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bleach");
         }
 
         @Test
