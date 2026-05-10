@@ -7,14 +7,10 @@ import java.util.Map;
  * Request admin para atualização de notícia. Campos nulos ignorados (PATCH).
  */
 public record UpdateNewsRequest(
-        String title,
-        String subtitle,
-        String excerpt,
-        List<String> content,
-        Map<String, String> titleI18n,
-        Map<String, String> subtitleI18n,
-        Map<String, String> excerptI18n,
-        Map<String, List<String>> contentI18n,
+        Map<String, String> title,
+        Map<String, String> subtitle,
+        Map<String, String> excerpt,
+        Map<String, List<String>> content,
         String coverImage,
         String category,
         List<String> tags,

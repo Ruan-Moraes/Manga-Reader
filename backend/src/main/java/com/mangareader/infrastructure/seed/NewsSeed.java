@@ -47,14 +47,14 @@ public class NewsSeed implements EntitySeeder {
         var news = List.of(
                 NewsItem.builder()
                         .id("news-1")
-                        .title("Novo mangá de fantasia 'Reino de Aço' bate recordes de vendas")
-                        .subtitle("A obra ultrapassou 500 mil cópias vendidas em apenas 3 meses")
-                        .excerpt("O mangá de estreia de Takeshi Yamamoto se consolida como o grande sucesso do ano.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo mangá de fantasia 'Reino de Aço' bate recordes de vendas"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A obra ultrapassou 500 mil cópias vendidas em apenas 3 meses"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O mangá de estreia de Takeshi Yamamoto se consolida como o grande sucesso do ano."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "O mangá 'Reino de Aço' alcançou a marca de 500 mil cópias vendidas, confirmando-se como um dos maiores lançamentos do ano.",
                                 "A obra, que narra a jornada de um ferreiro órfão em um mundo dominado por armaduras vivas, vem conquistando leitores com sua arte detalhada e história envolvente.",
                                 "Segundo a editora Panini, uma adaptação para anime já está em negociação com estúdios japoneses."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=301")
                         .source("Panini Comics").sourceLogo("https://picsum.photos/50/50?random=401")
                         .category(NewsCategory.LANCAMENTOS)
@@ -66,14 +66,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-2")
-                        .title("Solo Leveling confirma 3ª temporada do anime para 2026")
-                        .subtitle("A-1 Pictures retorna para animar o arco mais aguardado")
-                        .excerpt("Fãs comemoram a confirmação da terceira temporada com trailer inédito.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling confirma 3ª temporada do anime para 2026"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A-1 Pictures retorna para animar o arco mais aguardado"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Fãs comemoram a confirmação da terceira temporada com trailer inédito."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "A Crunchyroll confirmou oficialmente que a terceira temporada de Solo Leveling será produzida pela A-1 Pictures.",
                                 "O novo arco adaptará os volumes 8 a 11 da light novel, incluindo o aguardado 'Arco da Ilha Jeju'.",
                                 "A estreia está prevista para outubro de 2026."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=302")
                         .source("Crunchyroll").sourceLogo("https://picsum.photos/50/50?random=402")
                         .category(NewsCategory.ADAPTACOES)
@@ -85,14 +85,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-3")
-                        .title("Guia: os melhores mangás de 2025 segundo os leitores")
-                        .subtitle("Votação aberta elegeu os favoritos do público brasileiro")
-                        .excerpt("Confira a lista completa com os 10 mangás mais votados.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Guia: os melhores mangás de 2025 segundo os leitores"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Votação aberta elegeu os favoritos do público brasileiro"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Confira a lista completa com os 10 mangás mais votados."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "A comunidade MangaReader elegeu os 10 melhores mangás de 2025 em votação aberta que reuniu mais de 50 mil participantes.",
                                 "No topo da lista está 'Reino de Aço', seguido por 'Flores de Neon' e 'Crônicas de Polaris'.",
                                 "A lista completa inclui obras de diversos gêneros, mostrando a diversidade do público leitor."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=303")
                         .source("MangaReader").sourceLogo("https://picsum.photos/50/50?random=403")
                         .category(NewsCategory.PRINCIPAIS)
@@ -103,14 +103,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-4")
-                        .title("Editora NewPOP anuncia 5 novos manhwas para o catálogo brasileiro")
-                        .subtitle("Lançamentos incluem obras de ação, romance e fantasia")
-                        .excerpt("A editora continua expandindo seu catálogo de webtoons coreanos traduzidos.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Editora NewPOP anuncia 5 novos manhwas para o catálogo brasileiro"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lançamentos incluem obras de ação, romance e fantasia"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A editora continua expandindo seu catálogo de webtoons coreanos traduzidos."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "A NewPOP anunciou a adição de 5 novos manhwas ao seu catálogo, com lançamentos previstos para o segundo semestre de 2026.",
                                 "Entre os títulos confirmados estão obras dos gêneros ação, romance e fantasia, com foco no público jovem adulto.",
                                 "Os volumes físicos terão edição especial com capa variante no primeiro mês."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=304")
                         .source("NewPOP").sourceLogo("https://picsum.photos/50/50?random=404")
                         .category(NewsCategory.LANCAMENTOS)
@@ -121,14 +121,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-5")
-                        .title("Entrevista exclusiva: Hiroshi Tanaka fala sobre Crônicas de Polaris")
-                        .subtitle("Autor revela inspirações e adianta novidades sobre o arco final")
-                        .excerpt("Em entrevista ao MangaReader, o criador de Crônicas de Polaris compartilha os bastidores da obra.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Entrevista exclusiva: Hiroshi Tanaka fala sobre Crônicas de Polaris"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Autor revela inspirações e adianta novidades sobre o arco final"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em entrevista ao MangaReader, o criador de Crônicas de Polaris compartilha os bastidores da obra."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "Em uma entrevista exclusiva, Hiroshi Tanaka revelou que a inspiração para Crônicas de Polaris veio de viagens pela América do Sul.",
                                 "O autor confirmou que a obra terá um arco final com 30 capítulos, previsto para começar no próximo trimestre.",
                                 "Tanaka também mencionou interesse em colaborações com outros mangakás brasileiros para projetos futuros."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=305")
                         .source("MangaReader").sourceLogo("https://picsum.photos/50/50?random=405")
                         .category(NewsCategory.ENTREVISTAS)
@@ -148,14 +148,14 @@ public class NewsSeed implements EntitySeeder {
         var moreNews = List.of(
                 NewsItem.builder()
                         .id("news-6")
-                        .title("Shueisha registra crescimento de 30% em receita digital")
-                        .subtitle("Manga Plus e Jump+ impulsionam números globais")
-                        .excerpt("A editora japonesa consolida sua estratégia digital com números recordes.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Shueisha registra crescimento de 30% em receita digital"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Manga Plus e Jump+ impulsionam números globais"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A editora japonesa consolida sua estratégia digital com números recordes."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "A Shueisha reportou crescimento de 30% na receita de suas plataformas digitais de mangá.",
                                 "O Manga Plus ultrapassou 70 milhões de usuários ativos mensais.",
                                 "A empresa planeja expandir traduções simultâneas para mais idiomas."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=306")
                         .source("Shueisha").sourceLogo("https://picsum.photos/50/50?random=406")
                         .category(NewsCategory.INDUSTRIA)
@@ -166,14 +166,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-7")
-                        .title("AnimeCon SP 2026: tudo que sabemos até agora")
-                        .subtitle("Convidados confirmados, ingressos e programação")
-                        .excerpt("O maior evento otaku do Brasil revela detalhes da edição de 2026.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("AnimeCon SP 2026: tudo que sabemos até agora"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Convidados confirmados, ingressos e programação"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O maior evento otaku do Brasil revela detalhes da edição de 2026."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "A AnimeCon SP 2026 acontecerá no São Paulo Expo com duração de 3 dias.",
                                 "Convidados internacionais incluem mangakás e dubladores japoneses.",
                                 "Ingressos VIP já estão esgotados; lote regular disponível."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=307")
                         .source("AnimeCon").sourceLogo("https://picsum.photos/50/50?random=407")
                         .category(NewsCategory.EVENTOS)
@@ -185,13 +185,13 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-8")
-                        .title("10 curiosidades sobre a criação de mangás que você não sabia")
-                        .subtitle("Do papel ao digital: segredos dos bastidores")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("10 curiosidades sobre a criação de mangás que você não sabia"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Do papel ao digital: segredos dos bastidores"))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "Mangakás profissionais trabalham em média 16 horas por dia durante prazos apertados.",
                                 "O processo de screentone ainda é feito manualmente por muitos artistas.",
                                 "Editores de mangá frequentemente sugerem mudanças drásticas na história."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=308")
                         .source("MangaReader")
                         .category(NewsCategory.CURIOSIDADES)
@@ -202,14 +202,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-9")
-                        .title("Mercado brasileiro de mangás cresce 45% e se torna o 3º maior do mundo")
-                        .subtitle("Dados de 2025 confirmam o Brasil como potência no consumo de mangá")
-                        .excerpt("O país ultrapassou a França em volume de vendas de mangás traduzidos.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Mercado brasileiro de mangás cresce 45% e se torna o 3º maior do mundo"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Dados de 2025 confirmam o Brasil como potência no consumo de mangá"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O país ultrapassou a França em volume de vendas de mangás traduzidos."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "O Brasil vendeu mais de 15 milhões de volumes de mangá em 2025.",
                                 "As editoras Panini, JBC e NewPOP lideram o mercado nacional.",
                                 "O crescimento é impulsionado por adaptações de anime em plataformas de streaming."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=309")
                         .source("PublishNews").sourceLogo("https://picsum.photos/50/50?random=409")
                         .category(NewsCategory.MERCADO)
@@ -221,14 +221,14 @@ public class NewsSeed implements EntitySeeder {
                         .build(),
                 NewsItem.builder()
                         .id("news-10")
-                        .title("Japão aprova nova lei de proteção a direitos autorais de mangás digitais")
-                        .subtitle("Lei visa combater pirataria e proteger artistas independentes")
-                        .excerpt("A legislação entra em vigor em 2027 e afeta plataformas globais.")
-                        .content(List.of(
+                        .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Japão aprova nova lei de proteção a direitos autorais de mangás digitais"))
+                        .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lei visa combater pirataria e proteger artistas independentes"))
+                        .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A legislação entra em vigor em 2027 e afeta plataformas globais."))
+                        .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of(
                                 "O parlamento japonês aprovou uma lei que fortalece a proteção de direitos autorais no meio digital.",
                                 "Plataformas de leitura ilegais serão obrigadas a remover conteúdo em até 24 horas.",
                                 "Artistas independentes terão acesso a um fundo de compensação por pirataria."
-                        ))
+                        )))
                         .coverImage("https://picsum.photos/800/450?random=310")
                         .source("NHK World").sourceLogo("https://picsum.photos/50/50?random=410")
                         .category(NewsCategory.INTERNACIONAL)

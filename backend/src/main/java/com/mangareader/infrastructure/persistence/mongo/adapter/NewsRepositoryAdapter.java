@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
@@ -21,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NewsRepositoryAdapter implements NewsRepositoryPort {
     private final NewsMongoRepository repository;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public List<NewsItem> findAll() {
@@ -39,7 +44,8 @@ public class NewsRepositoryAdapter implements NewsRepositoryPort {
 
     @Override
     public List<NewsItem> searchByTitle(String query) {
-        return repository.findByTitleContainingIgnoreCase(query);
+        if (query == null || query.isBlank()) return List.of();
+        return mongoTemplate.find(buildTitleSearchQuery(query), NewsItem.class);
     }
 
     @Override
@@ -64,11 +70,27 @@ public class NewsRepositoryAdapter implements NewsRepositoryPort {
 
     @Override
     public Page<NewsItem> searchByTitle(String query, Pageable pageable) {
-        return repository.findByTitleContainingIgnoreCase(query, pageable);
+        if (query == null || query.isBlank()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+        Query q = buildTitleSearchQuery(query);
+        long total = mongoTemplate.count(q, NewsItem.class);
+        var results = mongoTemplate.find(q.with(pageable), NewsItem.class);
+        return new PageImpl<>(results, pageable, total);
     }
 
     @Override
     public long count() {
         return repository.count();
+    }
+
+    private static Query buildTitleSearchQuery(String query) {
+        var regex = java.util.regex.Pattern.quote(query);
+        var crit = new Criteria().orOperator(
+                Criteria.where("title.pt-BR").regex(regex, "i"),
+                Criteria.where("title.en-US").regex(regex, "i"),
+                Criteria.where("title.es-ES").regex(regex, "i")
+        );
+        return new Query(crit);
     }
 }

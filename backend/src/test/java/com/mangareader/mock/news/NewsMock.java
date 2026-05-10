@@ -74,17 +74,17 @@ public final class NewsMock {
     public static NewsItem featuredRelease() {
         return NewsItem.builder()
                 .id(NEWS_1_ID)
-                .title("Novo capitulo de Reino de Aco bate recorde de visualizacoes")
-                .subtitle("Capitulo 8 teve mais de 50 mil leituras em 24 horas")
-                .excerpt("O mais recente capitulo da saga surpreendeu fas com um plot twist inesperado.")
-                .content(new ArrayList<>(List.of(
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capitulo de Reino de Aco bate recorde de visualizacoes"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capitulo 8 teve mais de 50 mil leituras em 24 horas"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O mais recente capitulo da saga surpreendeu fas com um plot twist inesperado."))
+                .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(new ArrayList<>(List.of(
                         "O capitulo 8 de Reino de Aco, lancado na ultima segunda-feira, "
                                 + "alcancou a marca de 50 mil leituras em apenas 24 horas.",
                         "O autor Takeshi Yamamoto revelou em entrevista que este arco "
                                 + "estava planejado desde o inicio da serie.",
                         "Os fas reagiram com surpresa ao plot twist final, que muda "
                                 + "completamente a direcao da historia."
-                )))
+                ))))
                 .coverImage("https://picsum.photos/800/400?random=n1")
                 .gallery(new ArrayList<>(List.of(
                         "https://picsum.photos/800/400?random=n1a",
@@ -109,14 +109,14 @@ public final class NewsMock {
     public static NewsItem exclusiveInterview() {
         return NewsItem.builder()
                 .id(NEWS_2_ID)
-                .title("Entrevista exclusiva com Park Min-jun, criador de Lamina do Amanha")
-                .subtitle("O artista fala sobre inspiracoes e planos futuros")
-                .excerpt("Em entrevista ao Manga Reader, Park Min-jun revela detalhes sobre o proximo arco.")
-                .content(new ArrayList<>(List.of(
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Entrevista exclusiva com Park Min-jun, criador de Lamina do Amanha"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O artista fala sobre inspiracoes e planos futuros"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em entrevista ao Manga Reader, Park Min-jun revela detalhes sobre o proximo arco."))
+                .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(new ArrayList<>(List.of(
                         "Park Min-jun nos recebeu em seu estudio em Seul para uma conversa exclusiva.",
                         "O manhwa Lamina do Amanha nasceu de um sonho recorrente que o autor tinha.",
                         "Sobre o futuro da serie, Park revelou que planeja mais 3 arcos."
-                )))
+                ))))
                 .coverImage("https://picsum.photos/800/400?random=n2")
                 .gallery(new ArrayList<>())
                 .source("Manga Reader")
@@ -138,14 +138,14 @@ public final class NewsMock {
     public static NewsItem industryAnalysis() {
         return NewsItem.builder()
                 .id(NEWS_3_ID)
-                .title("Mercado de manga no Brasil cresce 30% em 2025")
-                .subtitle("Dados da ABDR mostram expansao historica")
-                .excerpt("O setor de manga no Brasil vive seu melhor momento com crescimento recorde.")
-                .content(new ArrayList<>(List.of(
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Mercado de manga no Brasil cresce 30% em 2025"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Dados da ABDR mostram expansao historica"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O setor de manga no Brasil vive seu melhor momento com crescimento recorde."))
+                .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(new ArrayList<>(List.of(
                         "Segundo dados da Associacao Brasileira de Direitos Reprograficos, "
                                 + "o mercado de manga cresceu 30% em relacao a 2024.",
                         "Os generos mais vendidos foram acao, romance e fantasia."
-                )))
+                ))))
                 .coverImage("https://picsum.photos/800/400?random=n3")
                 .gallery(new ArrayList<>())
                 .source("ABDR")
@@ -167,14 +167,14 @@ public final class NewsMock {
     public static NewsItem eventCoverage() {
         return NewsItem.builder()
                 .id(NEWS_4_ID)
-                .title("Cobertura completa do Manga Fest 2025")
-                .subtitle("Tudo o que aconteceu no maior evento de manga do ano")
-                .excerpt("Confira os destaques dos tres dias de evento.")
-                .content(new ArrayList<>(List.of(
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Cobertura completa do Manga Fest 2025"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tudo o que aconteceu no maior evento de manga do ano"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Confira os destaques dos tres dias de evento."))
+                .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(new ArrayList<>(List.of(
                         "O Manga Fest 2025 reuniu mais de 15 mil pessoas.",
                         "O concurso de cosplay teve 200 participantes.",
                         "Autores japoneses e coreanos participaram de paineis."
-                )))
+                ))))
                 .coverImage("https://picsum.photos/800/400?random=n4")
                 .gallery(new ArrayList<>(List.of(
                         "https://picsum.photos/800/400?random=n4a",
@@ -207,9 +207,9 @@ public final class NewsMock {
     public static NewsItem minimalNews() {
         return NewsItem.builder()
                 .id(NEWS_5_ID)
-                .title("Nota rapida: Manutencao programada")
-                .excerpt("O site ficara fora do ar por 2 horas.")
-                .content(new ArrayList<>(List.of("Manutencao programada para as 3h da manha.")))
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Nota rapida: Manutencao programada"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O site ficara fora do ar por 2 horas."))
+                .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(new ArrayList<>(List.of("Manutencao programada para as 3h da manha."))))
                 .coverImage("https://picsum.photos/800/400?random=n5")
                 .category(NewsCategory.PRINCIPAIS)
                 .tags(new ArrayList<>())

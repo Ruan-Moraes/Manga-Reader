@@ -37,8 +37,8 @@ class SearchNewsUseCaseTest {
         String query = "One Piece";
         Pageable pageable = PageRequest.of(0, 20);
         List<NewsItem> items = List.of(
-                NewsItem.builder().title("One Piece capítulo 1120").category(NewsCategory.LANCAMENTOS).build(),
-                NewsItem.builder().title("One Piece: novo arco confirmado").category(NewsCategory.PRINCIPAIS).build()
+                NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("One Piece capítulo 1120")).category(NewsCategory.LANCAMENTOS).build(),
+                NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("One Piece: novo arco confirmado")).category(NewsCategory.PRINCIPAIS).build()
         );
         Page<NewsItem> page = new PageImpl<>(items, pageable, 2);
         when(newsRepository.searchByTitle(query, pageable)).thenReturn(page);

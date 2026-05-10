@@ -37,8 +37,8 @@ class GetNewsByCategoryUseCaseTest {
         NewsCategory category = NewsCategory.INDUSTRIA;
         Pageable pageable = PageRequest.of(0, 20);
         List<NewsItem> items = List.of(
-                NewsItem.builder().title("Mercado de mangás cresce").category(category).build(),
-                NewsItem.builder().title("Nova editora no Brasil").category(category).build()
+                NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Mercado de mangás cresce")).category(category).build(),
+                NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Nova editora no Brasil")).category(category).build()
         );
         Page<NewsItem> page = new PageImpl<>(items, pageable, 2);
         when(newsRepository.findByCategory(category, pageable)).thenReturn(page);

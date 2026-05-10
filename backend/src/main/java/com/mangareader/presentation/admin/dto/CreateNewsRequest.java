@@ -1,18 +1,20 @@
 package com.mangareader.presentation.admin.dto;
 
 import java.util.List;
+import java.util.Map;
 
-import jakarta.validation.constraints.NotBlank;
+import com.mangareader.shared.application.i18n.RequiredLanguages;
+
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Request para criação de notícia (admin).
+ * Request para criação de notícia (admin). Campos textuais multilíngues.
  */
 public record CreateNewsRequest(
-        @NotBlank(message = "{validation.news.title.required}") String title,
-        String subtitle,
-        String excerpt,
-        List<String> content,
+        @NotNull @RequiredLanguages Map<String, String> title,
+        Map<String, String> subtitle,
+        Map<String, String> excerpt,
+        Map<String, List<String>> content,
         String coverImage,
         @NotNull(message = "{validation.news.category.required}") String category,
         List<String> tags,

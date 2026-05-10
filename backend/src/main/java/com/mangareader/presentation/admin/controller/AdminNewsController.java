@@ -114,8 +114,6 @@ public class AdminNewsController {
         var news = updateNewsUseCase.execute(
                 id, request.title(), request.subtitle(), request.excerpt(),
                 request.content(),
-                request.titleI18n(), request.subtitleI18n(),
-                request.excerptI18n(), request.contentI18n(),
                 request.coverImage(), category,
                 request.tags(), author, request.source(),
                 request.readTime(), request.isExclusive(), request.isFeatured()

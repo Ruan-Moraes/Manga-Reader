@@ -40,32 +40,17 @@ public class NewsItem {
     @Id
     private String id;
 
-    @TextIndexed(weight = 10)
-    private String title;
-
-    /** Versão multilíngue de {@link #title}. Etapa 2 i18n — Fase A. */
     @Builder.Default
-    private LocalizedString titleI18n = LocalizedString.empty();
-
-    private String subtitle;
-
-    /** Versão multilíngue de {@link #subtitle}. Etapa 2 i18n — Fase A. */
-    @Builder.Default
-    private LocalizedString subtitleI18n = LocalizedString.empty();
-
-    @TextIndexed(weight = 3)
-    private String excerpt;
-
-    /** Versão multilíngue de {@link #excerpt}. Etapa 2 i18n — Fase A. */
-    @Builder.Default
-    private LocalizedString excerptI18n = LocalizedString.empty();
+    private LocalizedString title = LocalizedString.empty();
 
     @Builder.Default
-    private List<String> content = new ArrayList<>();
+    private LocalizedString subtitle = LocalizedString.empty();
 
-    /** Versão multilíngue de {@link #content}. Etapa 2 i18n — Fase A. */
     @Builder.Default
-    private LocalizedStringList contentI18n = LocalizedStringList.empty();
+    private LocalizedString excerpt = LocalizedString.empty();
+
+    @Builder.Default
+    private LocalizedStringList content = LocalizedStringList.empty();
 
     private String coverImage;
 

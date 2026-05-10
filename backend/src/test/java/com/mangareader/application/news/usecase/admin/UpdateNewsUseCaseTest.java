@@ -33,7 +33,7 @@ class UpdateNewsUseCaseTest {
     private NewsItem buildNews() {
         return NewsItem.builder()
                 .id("news-1")
-                .title("Original Title")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Original Title"))
                 .category(NewsCategory.PRINCIPAIS)
                 .readTime(3)
                 .build();
@@ -47,12 +47,11 @@ class UpdateNewsUseCaseTest {
         when(newsRepository.save(any(NewsItem.class))).thenAnswer(inv -> inv.getArgument(0));
 
         NewsItem result = updateNewsUseCase.execute(
-                "news-1", "Updated Title", null, null, null,
-                null, null, null, null,
+                "news-1", java.util.Map.of("pt-BR", "Updated Title"), null, null, null,
                 null, null, null, null, null, null, null, null
         );
 
-        assertThat(result.getTitle()).isEqualTo("Updated Title");
+        assertThat(result.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Updated Title");
         assertThat(result.getCategory()).isEqualTo(NewsCategory.PRINCIPAIS);
         assertThat(result.getReadTime()).isEqualTo(3);
         verify(newsRepository).save(news);
@@ -64,8 +63,7 @@ class UpdateNewsUseCaseTest {
         when(newsRepository.findById("invalid")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> updateNewsUseCase.execute(
-                "invalid", "Title", null, null, null,
-                null, null, null, null,
+                "invalid", java.util.Map.of("pt-BR", "Title"), null, null, null,
                 null, null, null, null, null, null, null, null
         ))
                 .isInstanceOf(ResourceNotFoundException.class)

@@ -44,9 +44,9 @@ class NewsRepositoryAdapterTest {
         mongoTemplate.dropCollection(NewsItem.class);
 
         news1 = mongoTemplate.save(NewsItem.builder()
-                .title("Novo capitulo de Naruto")
-                .subtitle("Lancamento surpresa")
-                .excerpt("O mangaka anunciou...")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capitulo de Naruto"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lancamento surpresa"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O mangaka anunciou..."))
                 .category(NewsCategory.LANCAMENTOS)
                 .tags(List.of("naruto", "manga"))
                 .author(NewsAuthor.builder()
@@ -65,8 +65,8 @@ class NewsRepositoryAdapterTest {
                 .build());
 
         news2 = mongoTemplate.save(NewsItem.builder()
-                .title("Adaptacao anime de One Piece")
-                .subtitle("Netflix confirma")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Adaptacao anime de One Piece"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Netflix confirma"))
                 .category(NewsCategory.ADAPTACOES)
                 .tags(List.of("one-piece", "anime"))
                 .publishedAt(LocalDateTime.of(2024, 2, 1, 10, 0))
@@ -75,8 +75,8 @@ class NewsRepositoryAdapterTest {
                 .build());
 
         news3 = mongoTemplate.save(NewsItem.builder()
-                .title("Evento manga expo 2024")
-                .subtitle("Tudo sobre o evento")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Evento manga expo 2024"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tudo sobre o evento"))
                 .category(NewsCategory.EVENTOS)
                 .tags(List.of("evento", "expo"))
                 .publishedAt(LocalDateTime.of(2024, 3, 1, 10, 0))
@@ -94,8 +94,8 @@ class NewsRepositoryAdapterTest {
         void deveRetornarNoticiasOrdenadasDesc() {
             var result = newsRepository.findAll();
             assertThat(result).hasSize(3);
-            assertThat(result.get(0).getTitle()).isEqualTo("Evento manga expo 2024");
-            assertThat(result.get(2).getTitle()).isEqualTo("Novo capitulo de Naruto");
+            assertThat(result.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Evento manga expo 2024");
+            assertThat(result.get(2).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capitulo de Naruto");
         }
 
         @Test
@@ -116,7 +116,7 @@ class NewsRepositoryAdapterTest {
         void deveRetornarNoticiaQuandoIdExiste() {
             var result = newsRepository.findById(news1.getId());
             assertThat(result).isPresent();
-            assertThat(result.get().getTitle()).isEqualTo("Novo capitulo de Naruto");
+            assertThat(result.get().getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capitulo de Naruto");
         }
 
         @Test
@@ -136,7 +136,7 @@ class NewsRepositoryAdapterTest {
         void deveRetornarNoticiasPorCategoria() {
             var result = newsRepository.findByCategory(NewsCategory.LANCAMENTOS);
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getTitle()).isEqualTo("Novo capitulo de Naruto");
+            assertThat(result.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capitulo de Naruto");
         }
 
         @Test
@@ -164,7 +164,7 @@ class NewsRepositoryAdapterTest {
         void deveBuscarPorTituloCaseInsensitive() {
             var result = newsRepository.searchByTitle("naruto");
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getTitle()).isEqualTo("Novo capitulo de Naruto");
+            assertThat(result.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capitulo de Naruto");
         }
 
         @Test
@@ -172,7 +172,7 @@ class NewsRepositoryAdapterTest {
         void deveBuscarPorTituloParcialPaginado() {
             var page = newsRepository.searchByTitle("anime", PageRequest.of(0, 10));
             assertThat(page.getContent()).hasSize(1);
-            assertThat(page.getContent().get(0).getTitle()).isEqualTo("Adaptacao anime de One Piece");
+            assertThat(page.getContent().get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Adaptacao anime de One Piece");
         }
 
         @Test
@@ -191,7 +191,7 @@ class NewsRepositoryAdapterTest {
         @DisplayName("Deve persistir nova notícia com objetos embedded")
         void devePersistirNovaNoticiaComEmbedded() {
             var newNews = NewsItem.builder()
-                    .title("Nova noticia teste")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Nova noticia teste"))
                     .category(NewsCategory.CURIOSIDADES)
                     .author(NewsAuthor.builder()
                             .id("author-2")

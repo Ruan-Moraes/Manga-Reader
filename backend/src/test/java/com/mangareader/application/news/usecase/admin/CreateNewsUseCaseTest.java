@@ -41,13 +41,13 @@ class CreateNewsUseCaseTest {
         NewsAuthor author = NewsAuthor.builder().name("Editor").build();
 
         NewsItem result = createNewsUseCase.execute(
-                "Breaking News", "Subtitle", "Excerpt here",
-                List.of("Paragraph 1", "Paragraph 2"), "cover.jpg",
+                java.util.Map.of("pt-BR", "Breaking News"), java.util.Map.of("pt-BR", "Subtitle"), java.util.Map.of("pt-BR", "Excerpt here"),
+                java.util.Map.of("pt-BR", List.of("Paragraph 1", "Paragraph 2")), "cover.jpg",
                 NewsCategory.PRINCIPAIS, List.of("manga", "anime"),
                 author, "source.com", 5, false, true
         );
 
-        assertThat(result.getTitle()).isEqualTo("Breaking News");
+        assertThat(result.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Breaking News");
         assertThat(result.getCategory()).isEqualTo(NewsCategory.PRINCIPAIS);
         assertThat(result.isFeatured()).isTrue();
         assertThat(result.getTags()).containsExactly("manga", "anime");
@@ -60,11 +60,11 @@ class CreateNewsUseCaseTest {
         when(newsRepository.save(any(NewsItem.class))).thenAnswer(inv -> inv.getArgument(0));
 
         NewsItem result = createNewsUseCase.execute(
-                "Test", null, null, null, null,
+                java.util.Map.of("pt-BR", "Test"), null, null, null, null,
                 NewsCategory.LANCAMENTOS, null, null, null, 0, false, false
         );
 
-        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEmpty();
         assertThat(result.getTags()).isEmpty();
     }
 }

@@ -27,11 +27,11 @@ class NewsItemTest {
         @DisplayName("Deve iniciar com defaults corretos no builder")
         void shouldInitializeDefaults() {
             NewsItem news = NewsItem.builder()
-                    .title("Nova serialização anunciada")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Nova serialização anunciada"))
                     .category(NewsCategory.LANCAMENTOS)
                     .build();
 
-            assertNotNull(news.getContent());
+            assertNotNull(news.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertTrue(news.getContent().isEmpty());
             assertNotNull(news.getGallery());
             assertTrue(news.getGallery().isEmpty());
@@ -73,10 +73,10 @@ class NewsItemTest {
 
             NewsItem news = NewsItem.builder()
                     .id("news-abc")
-                    .title("One Piece ganha adaptação live action S2")
-                    .subtitle("Netflix anuncia segunda temporada")
-                    .excerpt("A Netflix confirmou oficialmente...")
-                    .content(List.of("Parágrafo 1", "Parágrafo 2", "Parágrafo 3"))
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("One Piece ganha adaptação live action S2"))
+                    .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Netflix anuncia segunda temporada"))
+                    .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A Netflix confirmou oficialmente..."))
+                    .content(com.mangareader.shared.domain.i18n.LocalizedStringList.ofDefault(List.of("Parágrafo 1", "Parágrafo 2", "Parágrafo 3")))
                     .coverImage("https://example.com/cover.jpg")
                     .gallery(List.of("img1.jpg", "img2.jpg"))
                     .source("Netflix Brasil")
@@ -96,10 +96,10 @@ class NewsItemTest {
                     .build();
 
             assertEquals("news-abc", news.getId());
-            assertEquals("One Piece ganha adaptação live action S2", news.getTitle());
-            assertEquals("Netflix anuncia segunda temporada", news.getSubtitle());
+            assertEquals("One Piece ganha adaptação live action S2", news.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR")));
+            assertEquals("Netflix anuncia segunda temporada", news.getSubtitle().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertEquals(NewsCategory.ADAPTACOES, news.getCategory());
-            assertEquals(3, news.getContent().size());
+            assertEquals(3, news.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR")).size());
             assertEquals(3, news.getTags().size());
             assertEquals(5, news.getReadTime());
             assertEquals(10000, news.getViews());
@@ -209,7 +209,7 @@ class NewsItemTest {
         @DisplayName("Deve incrementar views e trending score")
         void shouldIncrementViewsAndTrending() {
             NewsItem news = NewsItem.builder()
-                    .title("Notícia teste")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Notícia teste"))
                     .category(NewsCategory.PRINCIPAIS)
                     .build();
 
@@ -225,7 +225,7 @@ class NewsItemTest {
         @DisplayName("Deve marcar como featured e exclusive")
         void shouldMarkAsFeaturedAndExclusive() {
             NewsItem news = NewsItem.builder()
-                    .title("Notícia especial")
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Notícia especial"))
                     .category(NewsCategory.ENTREVISTAS)
                     .build();
 
@@ -250,9 +250,9 @@ class NewsItemTest {
             NewsItem news = new NewsItem();
 
             assertNull(news.getId());
-            assertNull(news.getTitle());
-            assertNull(news.getSubtitle());
-            assertNull(news.getExcerpt());
+            assertTrue(news.getTitle().isEmpty());
+            assertTrue(news.getSubtitle().isEmpty());
+            assertTrue(news.getExcerpt().isEmpty());
             assertNull(news.getCategory());
             assertNull(news.getAuthor());
             assertNull(news.getPublishedAt());

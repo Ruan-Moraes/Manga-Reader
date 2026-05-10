@@ -55,6 +55,20 @@ class NewsControllerTest {
 
     @MockitoBean
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+    @org.junit.jupiter.api.BeforeEach
+    void stubLocaleResolver() {
+        org.mockito.Mockito.when(localeResolver.resolve(org.mockito.ArgumentMatchers.any(com.mangareader.shared.domain.i18n.LocalizedString.class)))
+                .thenAnswer(inv -> {
+                    com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
+                    return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+        org.mockito.Mockito.when(localeResolver.resolve(org.mockito.ArgumentMatchers.any(com.mangareader.shared.domain.i18n.LocalizedStringList.class)))
+                .thenAnswer(inv -> {
+                    com.mangareader.shared.domain.i18n.LocalizedStringList ls = inv.getArgument(0);
+                    return ls == null ? java.util.List.of() : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+    }
+
 
     @MockitoBean
     private com.mangareader.application.label.service.DomainLabelService domainLabelService;
@@ -62,7 +76,7 @@ class NewsControllerTest {
     private NewsItem buildNews(String id, String title) {
         return NewsItem.builder()
                 .id(id)
-                .title(title)
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(title))
                 .category(NewsCategory.LANCAMENTOS)
                 .build();
     }

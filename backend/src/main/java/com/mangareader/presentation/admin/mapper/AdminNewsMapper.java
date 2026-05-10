@@ -9,7 +9,7 @@ import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
 
 /**
- * Mapper estático NewsItem → AdminNewsResponse. Inclui mapas *I18n.
+ * Mapper estático NewsItem → AdminNewsResponse.
  */
 public final class AdminNewsMapper {
 
@@ -19,13 +19,10 @@ public final class AdminNewsMapper {
     public static AdminNewsResponse toResponse(NewsItem news) {
         return new AdminNewsResponse(
                 news.getId(),
-                news.getTitle(),
-                news.getSubtitle(),
-                news.getExcerpt(),
-                values(news.getTitleI18n()),
-                values(news.getSubtitleI18n()),
-                values(news.getExcerptI18n()),
-                listValues(news.getContentI18n()),
+                values(news.getTitle()),
+                values(news.getSubtitle()),
+                values(news.getExcerpt()),
+                listValues(news.getContent()),
                 news.getCoverImage(),
                 news.getCategory() != null ? news.getCategory().name() : null,
                 news.getTags(),

@@ -63,9 +63,9 @@ class AdminNewsControllerTest {
     private NewsItem buildNews() {
         return NewsItem.builder()
                 .id("news-1")
-                .title("Breaking News")
-                .subtitle("Subtitle")
-                .excerpt("Excerpt")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Breaking News"))
+                .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Subtitle"))
+                .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Excerpt"))
                 .coverImage("cover.jpg")
                 .category(NewsCategory.PRINCIPAIS)
                 .tags(List.of("manga"))
@@ -89,7 +89,7 @@ class AdminNewsControllerTest {
         mockMvc.perform(get("/api/admin/news"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content[0].title").value("Breaking News"));
+                .andExpect(jsonPath("$.data.content[0].title['pt-BR']").value("Breaking News"));
     }
 
     @Test
@@ -99,7 +99,7 @@ class AdminNewsControllerTest {
 
         mockMvc.perform(get("/api/admin/news/news-1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.title").value("Breaking News"))
+                .andExpect(jsonPath("$.data.title['pt-BR']").value("Breaking News"))
                 .andExpect(jsonPath("$.data.category").value("PRINCIPAIS"));
     }
 
@@ -107,7 +107,7 @@ class AdminNewsControllerTest {
     @DisplayName("POST /api/admin/news — deve retornar 201 ao criar notícia")
     void deveRetornar201AoCriarNoticia() throws Exception {
         when(createNewsUseCase.execute(
-                anyString(), any(), any(), any(), any(), any(NewsCategory.class),
+                any(), any(), any(), any(), any(), any(NewsCategory.class),
                 any(), any(NewsAuthor.class), any(), anyInt(), anyBoolean(), anyBoolean()
         )).thenReturn(buildNews());
 
@@ -115,7 +115,7 @@ class AdminNewsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "title": "Breaking News",
+                                    "title": {"pt-BR": "Breaking News"},
                                     "category": "PRINCIPAIS",
                                     "readTime": 5,
                                     "isExclusive": false,
@@ -123,27 +123,26 @@ class AdminNewsControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.title").value("Breaking News"));
+                .andExpect(jsonPath("$.data.title['pt-BR']").value("Breaking News"));
     }
 
     @Test
     @DisplayName("PATCH /api/admin/news/{id} — deve retornar 200 ao atualizar")
     void deveRetornar200AoAtualizar() throws Exception {
         NewsItem updated = buildNews();
-        updated.setTitle("Updated News");
+        updated.setTitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Updated News"));
         when(updateNewsUseCase.execute(
                 eq("news-1"), any(), any(), any(), any(),
-                any(), any(), any(), any(),
                 any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/news/news-1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"title": "Updated News"}
+                                {"title": {"pt-BR": "Updated News"}}
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.title").value("Updated News"));
+                .andExpect(jsonPath("$.data.title['pt-BR']").value("Updated News"));
     }
 
     @Test

@@ -15,13 +15,9 @@ import com.mangareader.domain.news.valueobject.NewsCategory;
 public interface NewsMongoRepository extends MongoRepository<NewsItem, String> {
     List<NewsItem> findByCategory(NewsCategory category);
 
-    List<NewsItem> findByTitleContainingIgnoreCase(String query);
-
     List<NewsItem> findByIsFeaturedTrue();
 
     List<NewsItem> findAllByOrderByPublishedAtDesc();
 
     Page<NewsItem> findByCategory(NewsCategory category, Pageable pageable);
-
-    Page<NewsItem> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 }

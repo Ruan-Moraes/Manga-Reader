@@ -36,8 +36,8 @@ class GetNewsUseCaseTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 20);
         List<NewsItem> items = List.of(
-                NewsItem.builder().title("Novo manga anunciado").category(NewsCategory.LANCAMENTOS).build(),
-                NewsItem.builder().title("Evento de anime 2026").category(NewsCategory.EVENTOS).build()
+                NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo manga anunciado")).category(NewsCategory.LANCAMENTOS).build(),
+                NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Evento de anime 2026")).category(NewsCategory.EVENTOS).build()
         );
         Page<NewsItem> page = new PageImpl<>(items, pageable, 2);
         when(newsRepository.findAll(pageable)).thenReturn(page);

@@ -37,10 +37,10 @@ public class NewsMapper {
 
         return new NewsResponse(
                 item.getId(),
-                i18n.resolveOrFallback(item.getTitleI18n(), item.getTitle()),
-                i18n.resolveOrFallback(item.getSubtitleI18n(), item.getSubtitle()),
-                i18n.resolveOrFallback(item.getExcerptI18n(), item.getExcerpt()),
-                i18n.resolveOrFallback(item.getContentI18n(), item.getContent()),
+                i18n.toResolvedString(item.getTitle()),
+                i18n.toResolvedString(item.getSubtitle()),
+                i18n.toResolvedString(item.getExcerpt()),
+                i18n.toResolvedList(item.getContent()),
                 item.getCoverImage(),
                 item.getGallery(),
                 item.getSource(),

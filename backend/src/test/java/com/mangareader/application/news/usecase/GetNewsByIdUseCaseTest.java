@@ -35,7 +35,7 @@ class GetNewsByIdUseCaseTest {
         String newsId = "64a1b2c3d4e5f6a7b8c9d0e1";
         NewsItem newsItem = NewsItem.builder()
                 .id(newsId)
-                .title("Novo capítulo de One Piece")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capítulo de One Piece"))
                 .category(NewsCategory.LANCAMENTOS)
                 .build();
         when(newsRepository.findById(newsId)).thenReturn(Optional.of(newsItem));
@@ -46,7 +46,7 @@ class GetNewsByIdUseCaseTest {
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(newsId);
-        assertThat(result.getTitle()).isEqualTo("Novo capítulo de One Piece");
+        assertThat(result.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capítulo de One Piece");
         assertThat(result.getCategory()).isEqualTo(NewsCategory.LANCAMENTOS);
     }
 

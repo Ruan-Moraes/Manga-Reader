@@ -30,7 +30,7 @@ class DeleteNewsUseCaseTest {
     @Test
     @DisplayName("Deve excluir notícia existente")
     void deveExcluirNoticiaExistente() {
-        NewsItem news = NewsItem.builder().id("news-1").title("Test").build();
+        NewsItem news = NewsItem.builder().id("news-1").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).build();
         when(newsRepository.findById("news-1")).thenReturn(Optional.of(news));
 
         deleteNewsUseCase.execute("news-1");
