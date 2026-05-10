@@ -38,7 +38,7 @@ class GetStoresByTitleIdUseCaseTest {
     private Store buildStore(String name) {
         return Store.builder()
                 .id(UUID.randomUUID())
-                .name(name)
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(name))
                 .website("https://example.com")
                 .build();
     }
@@ -64,7 +64,7 @@ class GetStoresByTitleIdUseCaseTest {
 
             // Assert
             assertThat(result.getContent()).hasSize(3);
-            assertThat(result.getContent()).extracting(Store::getName)
+            assertThat(result.getContent()).extracting(s -> s.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
                     .containsExactlyInAnyOrder("Amazon", "Crunchyroll Store", "Book Walker");
         }
 

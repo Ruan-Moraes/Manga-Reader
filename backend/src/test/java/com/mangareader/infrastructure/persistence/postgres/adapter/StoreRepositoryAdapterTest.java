@@ -41,7 +41,7 @@ class StoreRepositoryAdapterTest {
     void setUp() {
         storeA = entityManager.persistAndFlush(
                 Store.builder()
-                        .name("Amazon Manga")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Amazon Manga"))
                         .website("https://amazon.com")
                         .availability(StoreAvailability.IN_STOCK)
                         .rating(4.5)
@@ -50,7 +50,7 @@ class StoreRepositoryAdapterTest {
 
         storeB = entityManager.persistAndFlush(
                 Store.builder()
-                        .name("Manga Store JP")
+                        .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Manga Store JP"))
                         .website("https://mangastore.jp")
                         .availability(StoreAvailability.PRE_ORDER)
                         .build()
@@ -89,7 +89,7 @@ class StoreRepositoryAdapterTest {
             var result = storeRepository.findById(storeA.getId());
 
             assertThat(result).isPresent();
-            assertThat(result.get().getName()).isEqualTo("Amazon Manga");
+            assertThat(result.get().getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Amazon Manga");
             assertThat(result.get().getAvailability()).isEqualTo(StoreAvailability.IN_STOCK);
         }
 
@@ -110,7 +110,7 @@ class StoreRepositoryAdapterTest {
             var result = storeRepository.findByTitleId("title-mongo-123");
 
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).getName()).isEqualTo("Amazon Manga");
+            assertThat(result.get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Amazon Manga");
         }
 
         @Test
@@ -145,7 +145,7 @@ class StoreRepositoryAdapterTest {
         @DisplayName("Deve persistir nova loja e gerar UUID")
         void devePersistirNovaLoja() {
             var newStore = Store.builder()
-                    .name("Bookwalker")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Bookwalker"))
                     .website("https://bookwalker.jp")
                     .availability(StoreAvailability.IN_STOCK)
                     .build();
@@ -153,17 +153,17 @@ class StoreRepositoryAdapterTest {
             var persisted = storeRepository.save(newStore);
 
             assertThat(persisted.getId()).isNotNull();
-            assertThat(persisted.getName()).isEqualTo("Bookwalker");
+            assertThat(persisted.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Bookwalker");
         }
 
         @Test
         @DisplayName("Deve atualizar loja existente")
         void deveAtualizarLoja() {
-            storeB.setName("Manga Store Japan");
+            storeB.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Manga Store Japan"));
             var updated = storeRepository.save(storeB);
             entityManager.flush();
 
-            assertThat(updated.getName()).isEqualTo("Manga Store Japan");
+            assertThat(updated.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Manga Store Japan");
         }
     }
 

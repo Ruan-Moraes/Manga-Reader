@@ -35,7 +35,7 @@ class GetStoreByIdUseCaseTest {
     private Store buildStore() {
         return Store.builder()
                 .id(STORE_ID)
-                .name("Crunchyroll Store")
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Crunchyroll Store"))
                 .website("https://store.crunchyroll.com")
                 .build();
     }
@@ -56,7 +56,7 @@ class GetStoreByIdUseCaseTest {
             // Assert
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(STORE_ID);
-            assertThat(result.getName()).isEqualTo("Crunchyroll Store");
+            assertThat(result.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Crunchyroll Store");
         }
 
         @Test

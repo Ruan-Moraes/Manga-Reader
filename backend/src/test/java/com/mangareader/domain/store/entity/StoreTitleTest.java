@@ -20,7 +20,7 @@ class StoreTitleTest {
         @DisplayName("Deve criar instância com todos os campos via builder")
         void shouldBuildWithAllFields() {
             UUID id = UUID.randomUUID();
-            Store store = Store.builder().name("Amazon").build();
+            Store store = Store.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Amazon")).build();
 
             StoreTitle storeTitle = StoreTitle.builder()
                     .id(id)

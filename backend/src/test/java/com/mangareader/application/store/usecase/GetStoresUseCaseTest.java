@@ -35,7 +35,7 @@ class GetStoresUseCaseTest {
     private Store buildStore(String name) {
         return Store.builder()
                 .id(UUID.randomUUID())
-                .name(name)
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(name))
                 .website("https://example.com")
                 .build();
     }

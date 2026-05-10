@@ -38,7 +38,7 @@ public class StoreController {
     public ResponseEntity<ApiResponse<PageResponse<StoreResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String direction
     ) {
         var pageable = buildPageable(page, size, sort, direction);
@@ -63,7 +63,7 @@ public class StoreController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
 
         var result = getStoresByTitleIdUseCase.execute(titleId, pageable);
 

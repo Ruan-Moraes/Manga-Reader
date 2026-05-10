@@ -23,10 +23,10 @@ public class StoreMapper {
     public StoreResponse toResponse(Store store) {
         return new StoreResponse(
                 store.getId().toString(),
-                i18n.resolveOrFallback(store.getNameI18n(), store.getName()),
+                i18n.toResolvedString(store.getName()),
                 store.getLogo(),
                 store.getIcon(),
-                i18n.resolveOrFallback(store.getDescriptionI18n(), store.getDescription()),
+                i18n.toResolvedString(store.getDescription()),
                 store.getWebsite(),
                 store.getAvailability() != null
                         ? store.getAvailability().name().toLowerCase()

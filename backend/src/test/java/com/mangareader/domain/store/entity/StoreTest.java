@@ -23,7 +23,7 @@ class StoreTest {
         @DisplayName("Deve iniciar com listas vazias no builder padrão")
         void shouldInitializeDefaults() {
             Store store = Store.builder()
-                    .name("Amazon")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Amazon"))
                     .website("https://amazon.com.br")
                     .build();
 
@@ -42,20 +42,20 @@ class StoreTest {
         @DisplayName("Deve permitir definir todos os campos via builder")
         void shouldSetAllFieldsViaBuilder() {
             Store store = Store.builder()
-                    .name("Amazon Brasil")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Amazon Brasil"))
                     .logo("https://example.com/amazon-logo.png")
                     .icon("https://example.com/amazon-icon.png")
-                    .description("Maior loja online do Brasil")
+                    .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Maior loja online do Brasil"))
                     .website("https://amazon.com.br")
                     .availability(StoreAvailability.IN_STOCK)
                     .rating(4.5)
                     .features(List.of("Frete grátis", "Prime", "Kindle"))
                     .build();
 
-            assertEquals("Amazon Brasil", store.getName());
+            assertEquals("Amazon Brasil", store.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertEquals("https://example.com/amazon-logo.png", store.getLogo());
             assertEquals("https://example.com/amazon-icon.png", store.getIcon());
-            assertEquals("Maior loja online do Brasil", store.getDescription());
+            assertEquals("Maior loja online do Brasil", store.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR")));
             assertEquals("https://amazon.com.br", store.getWebsite());
             assertEquals(StoreAvailability.IN_STOCK, store.getAvailability());
             assertEquals(4.5, store.getRating());
@@ -72,7 +72,7 @@ class StoreTest {
         @DisplayName("Deve permitir associar títulos à loja")
         void shouldAssociateTitlesToStore() {
             Store store = Store.builder()
-                    .name("Amazon")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Amazon"))
                     .website("https://amazon.com.br")
                     .build();
 
@@ -121,7 +121,7 @@ class StoreTest {
         @DisplayName("Deve suportar mudança de disponibilidade via setter")
         void shouldSupportAvailabilityChange() {
             Store store = Store.builder()
-                    .name("Loja")
+                    .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Loja"))
                     .website("https://loja.com")
                     .availability(StoreAvailability.IN_STOCK)
                     .build();
@@ -146,9 +146,9 @@ class StoreTest {
             Store store = new Store();
 
             assertNull(store.getId());
-            assertNull(store.getName());
+            assertTrue(store.getName().isEmpty());
             assertNull(store.getLogo());
-            assertNull(store.getDescription());
+            assertTrue(store.getDescription().isEmpty());
             assertNull(store.getWebsite());
             assertNull(store.getAvailability());
             assertNull(store.getRating());

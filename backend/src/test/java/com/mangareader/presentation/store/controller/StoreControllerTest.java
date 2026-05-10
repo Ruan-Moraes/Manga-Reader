@@ -51,11 +51,20 @@ class StoreControllerTest {
 
     @MockitoBean
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+    @org.junit.jupiter.api.BeforeEach
+    void stubLocaleResolver() {
+        org.mockito.Mockito.when(localeResolver.resolve(org.mockito.ArgumentMatchers.any(com.mangareader.shared.domain.i18n.LocalizedString.class)))
+                .thenAnswer(inv -> {
+                    com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
+                    return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
+                });
+    }
+
 
     private Store buildStore(UUID id, String name) {
         return Store.builder()
                 .id(id)
-                .name(name)
+                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(name))
                 .website("https://example.com")
                 .availability(StoreAvailability.IN_STOCK)
                 .rating(4.5)
