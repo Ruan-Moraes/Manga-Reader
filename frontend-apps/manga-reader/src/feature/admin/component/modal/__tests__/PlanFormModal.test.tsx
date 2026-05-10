@@ -10,17 +10,7 @@ vi.mock('react-i18next', () => ({
     }),
 }));
 
-vi.mock('@feature/label', () => ({
-    useDomainLabels: () => ({ data: [] }),
-    LABEL_TYPES: {
-        PUBLICATION_STATUS: 'publication_status',
-        NEWS_CATEGORY: 'news_category',
-        EVENT_TYPE: 'event_type',
-        EVENT_STATUS: 'event_status',
-        EVENT_TIMELINE: 'event_timeline',
-        CURRENCY: 'currency',
-    },
-}));
+// @feature/label mock now lives in src/test/setupTests.ts (global default).
 
 describe('PlanFormModal', () => {
     it('emits descriptionI18n + featuresI18n on submit', () => {
