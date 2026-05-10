@@ -3,7 +3,7 @@
 --
 -- Pre-requisito: V12 já backfillou *_i18n a partir das colunas legadas.
 -- Aplicação atual lê majoritariamente do JSONB (Fase A); este passo remove
--- definitivamente os campos planos. Após esta migração, V15 renomeia
+-- definitivamente os campos planos. Após esta migração, V17 renomeia
 -- <campo>_i18n para <campo> (nome canônico final).
 -- ============================================================================
 

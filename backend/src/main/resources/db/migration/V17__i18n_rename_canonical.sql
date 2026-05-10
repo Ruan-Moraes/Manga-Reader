@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Etapa B (i18n) — Fase B: renomear colunas *_i18n para nome canônico.
 --
--- Após V14 dropar legados, padroniza nomenclatura: campo traduzível tem
+-- Após V16 dropar legados, padroniza nomenclatura: campo traduzível tem
 -- nome simples (sem sufixo i18n), tipo JSONB. Convenção final do sistema.
 -- ============================================================================
 
