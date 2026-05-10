@@ -370,6 +370,24 @@ rabbitmq-diagnostics check_running
 
 ---
 
+## 6.1. Pré-deploy: Flyway dry-run
+
+Antes de qualquer release que adicione migration, valide contra um clone do banco de produção:
+
+```bash
+./scripts/flyway-dryrun.sh "$STAGING_JDBC_URL" "$STAGING_USER" "$STAGING_PWD"
+```
+
+O script roda `flyway:info` (lista pendentes vs aplicadas) + `flyway:validate` (checksum + cronologia). Detecta:
+
+- **Colisões de versão** — duas migrations com mesmo `Vn__`. Foi o caso real da Phase B i18n: `V14__i18n_drop_legacy_columns.sql` colidiu com `V14__create_domain_labels.sql` preexistente. Renomear a nova para próxima versão livre antes do merge.
+- **Checksum drift** — migration aplicada em prod foi editada localmente. Reverter ou criar migration corretiva.
+- **Migrations faltando** — algum `Vn` aplicado em prod não está mais no classpath. Indica deletion/rebase incorreto.
+
+Se `flyway:validate` falhar, **NÃO** prosseguir com `flyway:migrate` em prod.
+
+---
+
 ## 7. Checklist de Segurança para Produção
 
 - [ ] JWT secret com mínimo 256 bits, gerado aleatoriamente
