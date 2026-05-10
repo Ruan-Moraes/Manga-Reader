@@ -6,7 +6,20 @@ import PlanFormModal from '../PlanFormModal';
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({
         t: (_k: string, fallback?: string) => fallback ?? _k,
+        i18n: { language: 'pt-BR' },
     }),
+}));
+
+vi.mock('@feature/label', () => ({
+    useDomainLabels: () => ({ data: [] }),
+    LABEL_TYPES: {
+        PUBLICATION_STATUS: 'publication_status',
+        NEWS_CATEGORY: 'news_category',
+        EVENT_TYPE: 'event_type',
+        EVENT_STATUS: 'event_status',
+        EVENT_TIMELINE: 'event_timeline',
+        CURRENCY: 'currency',
+    },
 }));
 
 describe('PlanFormModal', () => {
@@ -31,8 +44,7 @@ describe('PlanFormModal', () => {
 
         expect(onSubmit).toHaveBeenCalledTimes(1);
         const call = onSubmit.mock.calls[0][0];
-        expect(call.description).toBe('Plano premium');
-        expect(call.descriptionI18n).toEqual({ 'pt-BR': 'Plano premium' });
+        expect(call.description).toEqual({ 'pt-BR': 'Plano premium' });
         expect(call.priceInCents).toBe(1990);
     });
 });

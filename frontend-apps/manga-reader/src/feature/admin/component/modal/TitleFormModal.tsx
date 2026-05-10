@@ -38,8 +38,8 @@ const TitleFormModal = ({
     const [artist, setArtist] = useState('');
     const [publisher, setPublisher] = useState('');
     const [adult, setAdult] = useState(false);
-    const [nameI18n, setNameI18n] = useState<LocalizedString>({});
-    const [synopsisI18n, setSynopsisI18n] = useState<LocalizedString>({});
+    const [name, setName] = useState<LocalizedString>({});
+    const [synopsis, setSynopsis] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (title) {
@@ -51,11 +51,8 @@ const TitleFormModal = ({
             setArtist(title.artist ?? '');
             setPublisher(title.publisher ?? '');
             setAdult(title.adult);
-            setNameI18n(title.nameI18n ?? { [DEFAULT_LANGUAGE]: title.name });
-            setSynopsisI18n(
-                title.synopsisI18n ??
-                    (title.synopsis ? { [DEFAULT_LANGUAGE]: title.synopsis } : {}),
-            );
+            setName(title.name ?? {});
+            setSynopsis(title.synopsis ?? {});
         } else {
             setType('manga');
             setCover('');
@@ -65,27 +62,23 @@ const TitleFormModal = ({
             setArtist('');
             setPublisher('');
             setAdult(false);
-            setNameI18n({});
-            setSynopsisI18n({});
+            setName({});
+            setSynopsis({});
         }
     }, [title, isOpen]);
 
-    const ptName = (nameI18n[DEFAULT_LANGUAGE] ?? '').trim();
+    const ptName = (name[DEFAULT_LANGUAGE] ?? '').trim();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!ptName) return;
 
         const payload: CreateTitleRequest = {
-            name: ptName,
+            name,
             type,
-            nameI18n,
-            synopsisI18n,
             adult,
             ...(cover ? { cover } : {}),
-            ...(synopsisI18n[DEFAULT_LANGUAGE]
-                ? { synopsis: synopsisI18n[DEFAULT_LANGUAGE] }
-                : {}),
+            ...(Object.keys(synopsis).length ? { synopsis } : {}),
             ...(genres
                 ? {
                       genres: genres
@@ -114,8 +107,8 @@ const TitleFormModal = ({
 
                 <LocalizedTextInput
                     label={t('titleForm.name', 'Nome')}
-                    value={nameI18n}
-                    onChange={setNameI18n}
+                    value={name}
+                    onChange={setName}
                     placeholder={t('titleForm.namePlaceholder', 'Nome do título')}
                     maxLength={200}
                 />
@@ -139,8 +132,8 @@ const TitleFormModal = ({
 
                 <LocalizedTextInput
                     label={t('titleForm.synopsis', 'Sinopse')}
-                    value={synopsisI18n}
-                    onChange={setSynopsisI18n}
+                    value={synopsis}
+                    onChange={setSynopsis}
                     multiline
                     rows={5}
                     placeholder={t('titleForm.synopsisPlaceholder', 'Sinopse...')}

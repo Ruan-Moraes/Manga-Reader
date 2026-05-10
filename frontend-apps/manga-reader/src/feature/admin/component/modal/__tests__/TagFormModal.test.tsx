@@ -25,7 +25,7 @@ describe('TagFormModal', () => {
         fireEvent.change(ptInput, { target: { value: 'Ação' } });
         fireEvent.click(screen.getByText('Salvar'));
 
-        expect(onSubmit).toHaveBeenCalledWith('Ação', { 'pt-BR': 'Ação' });
+        expect(onSubmit).toHaveBeenCalledWith({ 'pt-BR': 'Ação' });
     });
 
     it('disables submit when pt-BR empty', () => {
@@ -50,7 +50,7 @@ describe('TagFormModal', () => {
                 onClose={() => {}}
                 onSubmit={() => {}}
                 isSubmitting={false}
-                tag={{ value: 1, label: 'Drama' }}
+                tag={{ value: 1, label: { 'pt-BR': 'Drama' } }}
             />,
         );
         expect(screen.getByRole('textbox')).toHaveValue('Drama');

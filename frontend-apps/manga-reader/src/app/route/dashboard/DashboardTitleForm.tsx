@@ -17,6 +17,8 @@ import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 import { useTagsFetch, TagSelectInput } from '@feature/category';
 import type { Tag } from '@feature/category/type/tag.types';
 
+type FormState = Omit<CreateTitleRequest, 'name' | 'synopsis'>;
+
 const DashboardTitleForm = () => {
     const { t } = useTranslation('admin');
     const { titleId } = useParams<{ titleId: string }>();
@@ -35,11 +37,9 @@ const DashboardTitleForm = () => {
     const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.PUBLICATION_STATUS);
     const { data: allTags = [] } = useTagsFetch();
 
-    const [form, setForm] = useState<CreateTitleRequest>({
-        name: '',
+    const [form, setForm] = useState<FormState>({
         type: 'manga',
         cover: '',
-        synopsis: '',
         genres: [],
         status: '',
         author: '',
@@ -49,16 +49,14 @@ const DashboardTitleForm = () => {
     });
 
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-    const [nameI18n, setNameI18n] = useState<LocalizedString>({});
-    const [synopsisI18n, setSynopsisI18n] = useState<LocalizedString>({});
+    const [name, setName] = useState<LocalizedString>({});
+    const [synopsis, setSynopsis] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (existing) {
             setForm({
-                name: existing.name,
                 type: existing.type,
                 cover: existing.cover ?? '',
-                synopsis: existing.synopsis ?? '',
                 genres: existing.genres,
                 status: existing.status ?? '',
                 author: existing.author ?? '',
@@ -70,32 +68,20 @@ const DashboardTitleForm = () => {
                 .map(g => allTags.find(t => t.label.toLowerCase() === g.toLowerCase()))
                 .filter((t): t is Tag => t !== undefined);
             setSelectedTags(matched);
-            setNameI18n(
-                existing.nameI18n && Object.keys(existing.nameI18n).length
-                    ? existing.nameI18n
-                    : { [DEFAULT_LANGUAGE]: existing.name },
-            );
-            setSynopsisI18n(
-                existing.synopsisI18n && Object.keys(existing.synopsisI18n).length
-                    ? existing.synopsisI18n
-                    : existing.synopsis
-                      ? { [DEFAULT_LANGUAGE]: existing.synopsis }
-                      : {},
-            );
+            setName(existing.name ?? {});
+            setSynopsis(existing.synopsis ?? {});
         }
-    }, [existing]);
+    }, [existing, allTags]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const ptName = (nameI18n[DEFAULT_LANGUAGE] ?? '').trim() || form.name;
+        const ptName = (name[DEFAULT_LANGUAGE] ?? '').trim();
         if (!ptName) return;
 
-        const data = {
+        const data: CreateTitleRequest = {
             ...form,
-            name: ptName,
-            synopsis: synopsisI18n[DEFAULT_LANGUAGE] ?? form.synopsis,
-            nameI18n,
-            ...(Object.keys(synopsisI18n).length ? { synopsisI18n } : {}),
+            name,
+            ...(Object.keys(synopsis).length ? { synopsis } : {}),
             genres: selectedTags.map(t => t.label),
         };
 
@@ -142,8 +128,8 @@ const DashboardTitleForm = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <LocalizedTextInput
                     label={t('dashboard.titles.form.name')}
-                    value={nameI18n}
-                    onChange={setNameI18n}
+                    value={name}
+                    onChange={setName}
                     maxLength={200}
                 />
 
@@ -172,8 +158,8 @@ const DashboardTitleForm = () => {
 
                 <LocalizedTextInput
                     label={t('dashboard.titles.form.synopsis')}
-                    value={synopsisI18n}
-                    onChange={setSynopsisI18n}
+                    value={synopsis}
+                    onChange={setSynopsis}
                     multiline
                     rows={4}
                     requiredLanguages={[]}

@@ -49,10 +49,10 @@ const NewsFormModal = ({
     const [isExclusive, setIsExclusive] = useState(false);
     const [isFeatured, setIsFeatured] = useState(false);
 
-    const [titleI18n, setTitleI18n] = useState<LocalizedString>({});
-    const [subtitleI18n, setSubtitleI18n] = useState<LocalizedString>({});
-    const [excerptI18n, setExcerptI18n] = useState<LocalizedString>({});
-    const [contentI18n, setContentI18n] = useState<LocalizedStringList>({});
+    const [title, setTitle] = useState<LocalizedString>({});
+    const [subtitle, setSubtitle] = useState<LocalizedString>({});
+    const [excerpt, setExcerpt] = useState<LocalizedString>({});
+    const [content, setContent] = useState<LocalizedStringList>({});
     const [contentTab, setContentTab] = useState<LanguageTag>(DEFAULT_LANGUAGE);
 
     useEffect(() => {
@@ -65,16 +65,10 @@ const NewsFormModal = ({
             setReadTime(news.readTime);
             setIsExclusive(news.isExclusive);
             setIsFeatured(news.isFeatured);
-            setTitleI18n(news.titleI18n ?? { [DEFAULT_LANGUAGE]: news.title });
-            setSubtitleI18n(
-                news.subtitleI18n ??
-                    (news.subtitle ? { [DEFAULT_LANGUAGE]: news.subtitle } : {}),
-            );
-            setExcerptI18n(
-                news.excerptI18n ??
-                    (news.excerpt ? { [DEFAULT_LANGUAGE]: news.excerpt } : {}),
-            );
-            setContentI18n(news.contentI18n ?? {});
+            setTitle(news.title ?? {});
+            setSubtitle(news.subtitle ?? {});
+            setExcerpt(news.excerpt ?? {});
+            setContent(news.content ?? {});
         } else {
             setCategory('PRINCIPAIS');
             setCoverImage('');
@@ -84,39 +78,29 @@ const NewsFormModal = ({
             setReadTime(3);
             setIsExclusive(false);
             setIsFeatured(false);
-            setTitleI18n({});
-            setSubtitleI18n({});
-            setExcerptI18n({});
-            setContentI18n({});
+            setTitle({});
+            setSubtitle({});
+            setExcerpt({});
+            setContent({});
         }
         setContentTab(DEFAULT_LANGUAGE);
     }, [news, isOpen]);
 
-    const ptTitle = (titleI18n[DEFAULT_LANGUAGE] ?? '').trim();
+    const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!ptTitle) return;
 
         const payload: CreateNewsRequest = {
-            title: ptTitle,
+            title,
             category,
             readTime,
             isExclusive,
             isFeatured,
-            titleI18n,
-            ...(subtitleI18n[DEFAULT_LANGUAGE]
-                ? { subtitle: subtitleI18n[DEFAULT_LANGUAGE] }
-                : {}),
-            ...(Object.keys(subtitleI18n).length ? { subtitleI18n } : {}),
-            ...(excerptI18n[DEFAULT_LANGUAGE]
-                ? { excerpt: excerptI18n[DEFAULT_LANGUAGE] }
-                : {}),
-            ...(Object.keys(excerptI18n).length ? { excerptI18n } : {}),
-            ...(contentI18n[DEFAULT_LANGUAGE]
-                ? { content: contentI18n[DEFAULT_LANGUAGE] }
-                : {}),
-            ...(Object.keys(contentI18n).length ? { contentI18n } : {}),
+            ...(Object.keys(subtitle).length ? { subtitle } : {}),
+            ...(Object.keys(excerpt).length ? { excerpt } : {}),
+            ...(Object.keys(content).length ? { content } : {}),
             ...(coverImage ? { coverImage } : {}),
             ...(tags
                 ? {
@@ -144,23 +128,23 @@ const NewsFormModal = ({
 
                 <LocalizedTextInput
                     label={t('newsForm.title', 'Título')}
-                    value={titleI18n}
-                    onChange={setTitleI18n}
+                    value={title}
+                    onChange={setTitle}
                     maxLength={300}
                 />
 
                 <LocalizedTextInput
                     label={t('newsForm.subtitle', 'Subtítulo')}
-                    value={subtitleI18n}
-                    onChange={setSubtitleI18n}
+                    value={subtitle}
+                    onChange={setSubtitle}
                     requiredLanguages={[]}
                     maxLength={500}
                 />
 
                 <LocalizedTextInput
                     label={t('newsForm.excerpt', 'Resumo')}
-                    value={excerptI18n}
-                    onChange={setExcerptI18n}
+                    value={excerpt}
+                    onChange={setExcerpt}
                     multiline
                     rows={3}
                     requiredLanguages={[]}
@@ -172,7 +156,7 @@ const NewsFormModal = ({
                     </span>
                     <div className="flex gap-1 border-b border-tertiary">
                         {SUPPORTED_LANGUAGES.map(lang => {
-                            const filled = (contentI18n[lang] ?? []).length > 0;
+                            const filled = (content[lang] ?? []).length > 0;
                             const isActive = contentTab === lang;
                             return (
                                 <button
@@ -197,10 +181,10 @@ const NewsFormModal = ({
                         variant="outlined"
                         rows={6}
                         placeholder=""
-                        value={(contentI18n[contentTab] ?? []).join('\n\n')}
+                        value={(content[contentTab] ?? []).join('\n\n')}
                         onChange={e =>
-                            setContentI18n({
-                                ...contentI18n,
+                            setContent({
+                                ...content,
                                 [contentTab]: splitContent(e.target.value),
                             })
                         }

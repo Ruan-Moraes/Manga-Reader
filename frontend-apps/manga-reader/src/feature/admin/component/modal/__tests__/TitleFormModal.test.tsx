@@ -28,8 +28,7 @@ describe('TitleFormModal', () => {
 
         expect(onSubmit).toHaveBeenCalledTimes(1);
         const call = onSubmit.mock.calls[0][0];
-        expect(call.name).toBe('Solo Leveling');
-        expect(call.nameI18n).toEqual({ 'pt-BR': 'Solo Leveling' });
+        expect(call.name).toEqual({ 'pt-BR': 'Solo Leveling' });
     });
 
     it('disables submit when name empty', () => {

@@ -9,10 +9,8 @@ import type {
 import type { LocalizedString } from '@shared/type/i18n';
 
 export type UpdateGroupRequest = {
-    name?: string;
-    description?: string;
-    nameI18n?: LocalizedString;
-    descriptionI18n?: LocalizedString;
+    name?: LocalizedString;
+    description?: LocalizedString;
     logo?: string;
     banner?: string;
     website?: string;

@@ -26,41 +26,27 @@ const DashboardGroupForm = () => {
     const [logo, setLogo] = useState('');
     const [banner, setBanner] = useState('');
     const [website, setWebsite] = useState('');
-    const [nameI18n, setNameI18n] = useState<LocalizedString>({});
-    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
+    const [name, setName] = useState<LocalizedString>({});
+    const [description, setDescription] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (existing) {
             setLogo(existing.logo ?? '');
             setBanner('');
             setWebsite('');
-            setNameI18n(
-                existing.nameI18n && Object.keys(existing.nameI18n).length
-                    ? existing.nameI18n
-                    : { [DEFAULT_LANGUAGE]: existing.name },
-            );
-            setDescriptionI18n(
-                existing.descriptionI18n && Object.keys(existing.descriptionI18n).length
-                    ? existing.descriptionI18n
-                    : existing.description
-                      ? { [DEFAULT_LANGUAGE]: existing.description }
-                      : {},
-            );
+            setName(existing.name ?? {});
+            setDescription(existing.description ?? {});
         }
     }, [existing]);
 
-    const ptName = (nameI18n[DEFAULT_LANGUAGE] ?? '').trim();
+    const ptName = (name[DEFAULT_LANGUAGE] ?? '').trim();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!groupId || !ptName) return;
         const result = await handleUpdate(groupId, {
-            name: ptName,
-            ...(descriptionI18n[DEFAULT_LANGUAGE]
-                ? { description: descriptionI18n[DEFAULT_LANGUAGE] }
-                : {}),
-            nameI18n,
-            descriptionI18n,
+            name,
+            description,
             ...(logo ? { logo } : {}),
             ...(banner ? { banner } : {}),
             ...(website ? { website } : {}),
@@ -94,15 +80,15 @@ const DashboardGroupForm = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <LocalizedTextInput
                     label={t('groupForm.name', 'Nome')}
-                    value={nameI18n}
-                    onChange={setNameI18n}
+                    value={name}
+                    onChange={setName}
                     maxLength={100}
                 />
 
                 <LocalizedTextInput
                     label={t('groupForm.description', 'Descrição')}
-                    value={descriptionI18n}
-                    onChange={setDescriptionI18n}
+                    value={description}
+                    onChange={setDescription}
                     multiline
                     rows={4}
                     requiredLanguages={[]}

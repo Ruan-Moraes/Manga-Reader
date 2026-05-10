@@ -157,10 +157,8 @@ const DashboardSubscriptions = () => {
     const handlePlanSubmit = async (data: {
         period?: string;
         priceInCents: number;
-        description: string;
-        features: string[];
-        descriptionI18n: import('@shared/type/i18n').LocalizedString;
-        featuresI18n: import('@shared/type/i18n').LocalizedStringList;
+        description: import('@shared/type/i18n').LocalizedString;
+        features: import('@shared/type/i18n').LocalizedStringList;
         active?: boolean;
         prices: Record<string, number>;
     }) => {
@@ -169,8 +167,6 @@ const DashboardSubscriptions = () => {
                 priceInCents: data.priceInCents,
                 description: data.description,
                 features: data.features,
-                descriptionI18n: data.descriptionI18n,
-                featuresI18n: data.featuresI18n,
                 active: data.active,
                 prices: data.prices,
             });
@@ -180,8 +176,6 @@ const DashboardSubscriptions = () => {
                 priceInCents: data.priceInCents,
                 description: data.description,
                 features: data.features,
-                descriptionI18n: data.descriptionI18n,
-                featuresI18n: data.featuresI18n,
                 prices: data.prices,
             });
         }

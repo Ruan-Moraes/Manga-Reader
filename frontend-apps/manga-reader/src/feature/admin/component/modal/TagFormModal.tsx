@@ -10,7 +10,7 @@ import type { AdminTag } from '../type/admin.types';
 type TagFormModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (label: string, labelI18n: LocalizedString) => void;
+    onSubmit: (label: LocalizedString) => void;
     tag?: AdminTag | null;
     isSubmitting: boolean;
 };
@@ -24,33 +24,24 @@ const TagFormModal = ({
 }: TagFormModalProps) => {
     const { t } = useTranslation('admin');
 
-    const [labelI18n, setLabelI18n] = useState<LocalizedString>({});
+    const [label, setLabel] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (!tag) {
-            setLabelI18n({});
-
+            setLabel({});
             return;
         }
-
-        if (tag.labelI18n && Object.keys(tag.labelI18n).length) {
-            setLabelI18n(tag.labelI18n);
-        } else {
-            setLabelI18n({ [DEFAULT_LANGUAGE]: tag.label });
-        }
+        setLabel(tag.label ?? {});
     }, [tag, isOpen]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        const ptBR = (labelI18n[DEFAULT_LANGUAGE] ?? '').trim();
-
+        const ptBR = (label[DEFAULT_LANGUAGE] ?? '').trim();
         if (!ptBR) return;
-
-        onSubmit(ptBR, labelI18n);
+        onSubmit(label);
     };
 
-    const ptBR = (labelI18n[DEFAULT_LANGUAGE] ?? '').trim();
+    const ptBR = (label[DEFAULT_LANGUAGE] ?? '').trim();
 
     return (
         <AdminModal isOpen={isOpen} onClose={onClose}>
@@ -62,8 +53,8 @@ const TagFormModal = ({
                 </h3>
                 <LocalizedTextInput
                     label={t('tagForm.label', 'Nome da tag')}
-                    value={labelI18n}
-                    onChange={setLabelI18n}
+                    value={label}
+                    onChange={setLabel}
                     placeholder={t('tagForm.placeholder', 'Nome da tag')}
                     maxLength={60}
                 />

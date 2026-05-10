@@ -35,12 +35,10 @@ import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
 
 export type AdminTitle = {
     id: string;
-    name: string;
+    name: LocalizedString;
     type: string;
     cover: string | null;
-    synopsis: string | null;
-    nameI18n: LocalizedString;
-    synopsisI18n: LocalizedString;
+    synopsis: LocalizedString;
     genres: string[];
     status: string | null;
     author: string | null;
@@ -55,12 +53,10 @@ export type AdminTitle = {
 };
 
 export type CreateTitleRequest = {
-    name: string;
+    name: LocalizedString;
     type: string;
     cover?: string;
-    synopsis?: string;
-    nameI18n?: LocalizedString;
-    synopsisI18n?: LocalizedString;
+    synopsis?: LocalizedString;
     genres?: string[];
     status?: string;
     author?: string;
@@ -73,13 +69,10 @@ export type UpdateTitleRequest = Partial<CreateTitleRequest>;
 
 export type AdminNews = {
     id: string;
-    title: string;
-    subtitle: string | null;
-    excerpt: string | null;
-    titleI18n: LocalizedString;
-    subtitleI18n: LocalizedString;
-    excerptI18n: LocalizedString;
-    contentI18n: LocalizedStringList;
+    title: LocalizedString;
+    subtitle: LocalizedString;
+    excerpt: LocalizedString;
+    content: LocalizedStringList;
     coverImage: string | null;
     category: string;
     tags: string[];
@@ -94,15 +87,11 @@ export type AdminNews = {
 };
 
 export type CreateNewsRequest = {
-    title: string;
+    title: LocalizedString;
     category: string;
-    subtitle?: string;
-    excerpt?: string;
-    content?: string[];
-    titleI18n?: LocalizedString;
-    subtitleI18n?: LocalizedString;
-    excerptI18n?: LocalizedString;
-    contentI18n?: LocalizedStringList;
+    subtitle?: LocalizedString;
+    excerpt?: LocalizedString;
+    content?: LocalizedStringList;
     coverImage?: string;
     tags?: string[];
     authorName?: string;
@@ -117,12 +106,9 @@ export type UpdateNewsRequest = Partial<CreateNewsRequest>;
 
 export type AdminEvent = {
     id: string;
-    title: string;
-    subtitle: string | null;
-    description: string | null;
-    titleI18n: LocalizedString;
-    subtitleI18n: LocalizedString;
-    descriptionI18n: LocalizedString;
+    title: LocalizedString;
+    subtitle: LocalizedString;
+    description: LocalizedString;
     image: string | null;
     startDate: string;
     endDate: string;
@@ -143,17 +129,14 @@ export type AdminEvent = {
 };
 
 export type CreateEventRequest = {
-    title: string;
+    title: LocalizedString;
     startDate: string;
     endDate: string;
     timeline: string;
     status: string;
     type: string;
-    subtitle?: string;
-    description?: string;
-    titleI18n?: LocalizedString;
-    subtitleI18n?: LocalizedString;
-    descriptionI18n?: LocalizedString;
+    subtitle?: LocalizedString;
+    description?: LocalizedString;
     image?: string;
     timezone?: string;
     locationLabel?: string;
@@ -182,12 +165,10 @@ export type GroupMember = {
 
 export type AdminGroup = {
     id: string;
-    name: string;
+    name: LocalizedString;
     username: string;
     logo: string | null;
-    description: string | null;
-    nameI18n: LocalizedString;
-    descriptionI18n: LocalizedString;
+    description: LocalizedString;
     status: string;
     totalTitles: number;
     membersCount: number;
@@ -267,18 +248,15 @@ export type UpdateSubscriptionStatusRequest = {
 
 export type AdminTag = {
     value: number;
-    label: string;
-    labelI18n?: LocalizedString;
+    label: LocalizedString;
 };
 
 export type CreateTagRequest = {
-    label: string;
-    labelI18n?: LocalizedString;
+    label: LocalizedString;
 };
 
 export type UpdateTagRequest = {
-    label: string;
-    labelI18n?: LocalizedString;
+    label: LocalizedString;
 };
 
 export type AdminPlan = {
@@ -294,19 +272,15 @@ export type AdminPlan = {
 export type CreatePlanRequest = {
     period: string;
     priceInCents: number;
-    description: string;
-    features?: string[];
-    descriptionI18n?: LocalizedString;
-    featuresI18n?: LocalizedStringList;
+    description: LocalizedString;
+    features?: LocalizedStringList;
     prices?: Record<string, number>;
 };
 
 export type UpdatePlanRequest = {
     priceInCents?: number;
-    description?: string;
-    features?: string[];
-    descriptionI18n?: LocalizedString;
-    featuresI18n?: LocalizedStringList;
+    description?: LocalizedString;
+    features?: LocalizedStringList;
     active?: boolean;
     prices?: Record<string, number>;
 };

@@ -27,7 +27,6 @@ describe('GroupFormModal', () => {
 
         expect(onSubmit).toHaveBeenCalledTimes(1);
         const call = onSubmit.mock.calls[0][0];
-        expect(call.name).toBe('Scan Brasil');
-        expect(call.nameI18n).toEqual({ 'pt-BR': 'Scan Brasil' });
+        expect(call.name).toEqual({ 'pt-BR': 'Scan Brasil' });
     });
 });

@@ -33,8 +33,7 @@ describe('EventFormModal', () => {
 
         expect(onSubmit).toHaveBeenCalledTimes(1);
         const call = onSubmit.mock.calls[0][0];
-        expect(call.title).toBe('Anime Friends');
-        expect(call.titleI18n).toEqual({ 'pt-BR': 'Anime Friends' });
+        expect(call.title).toEqual({ 'pt-BR': 'Anime Friends' });
         expect(call.startDate).toBe('2026-12-01T10:00');
         expect(call.endDate).toBe('2026-12-03T22:00');
     });

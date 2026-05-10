@@ -37,7 +37,7 @@ const buildColumns = (
         sortable: true,
         render: tag => (
             <span className="font-medium">
-                {tag.labelI18n?.[lang] ?? tag.label}
+                {tag.label?.[lang] ?? tag.label?.['pt-BR'] ?? ''}
             </span>
         ),
     },

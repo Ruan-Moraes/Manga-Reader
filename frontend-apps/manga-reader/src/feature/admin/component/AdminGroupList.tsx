@@ -65,7 +65,7 @@ const buildColumns = (
         sortable: true,
         render: group => (
             <span className="font-medium">
-                {group.nameI18n?.[lang] ?? group.nameI18n?.['pt-BR'] ?? group.name}
+                {group.name?.[lang] ?? group.name?.['pt-BR'] ?? ''}
             </span>
         ),
     },

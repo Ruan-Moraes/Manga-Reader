@@ -43,9 +43,9 @@ const EventFormModal = ({
     const [priceLabel, setPriceLabel] = useState('');
     const [isFeatured, setIsFeatured] = useState(false);
 
-    const [titleI18n, setTitleI18n] = useState<LocalizedString>({});
-    const [subtitleI18n, setSubtitleI18n] = useState<LocalizedString>({});
-    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
+    const [title, setTitle] = useState<LocalizedString>({});
+    const [subtitle, setSubtitle] = useState<LocalizedString>({});
+    const [description, setDescription] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (event) {
@@ -61,21 +61,9 @@ const EventFormModal = ({
             setOrganizerName(event.organizerName ?? '');
             setPriceLabel(event.priceLabel ?? '');
             setIsFeatured(event.isFeatured);
-            setTitleI18n(
-                event.titleI18n ?? { [DEFAULT_LANGUAGE]: event.title },
-            );
-            setSubtitleI18n(
-                event.subtitleI18n ??
-                    (event.subtitle
-                        ? { [DEFAULT_LANGUAGE]: event.subtitle }
-                        : {}),
-            );
-            setDescriptionI18n(
-                event.descriptionI18n ??
-                    (event.description
-                        ? { [DEFAULT_LANGUAGE]: event.description }
-                        : {}),
-            );
+            setTitle(event.title ?? {});
+            setSubtitle(event.subtitle ?? {});
+            setDescription(event.description ?? {});
         } else {
             setStartDate('');
             setEndDate('');
@@ -89,13 +77,13 @@ const EventFormModal = ({
             setOrganizerName('');
             setPriceLabel('');
             setIsFeatured(false);
-            setTitleI18n({});
-            setSubtitleI18n({});
-            setDescriptionI18n({});
+            setTitle({});
+            setSubtitle({});
+            setDescription({});
         }
     }, [event, isOpen]);
 
-    const ptTitle = (titleI18n[DEFAULT_LANGUAGE] ?? '').trim();
+    const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -103,7 +91,7 @@ const EventFormModal = ({
         if (!ptTitle || !startDate || !endDate) return;
 
         const payload: CreateEventRequest = {
-            title: ptTitle,
+            title,
             startDate,
             endDate,
             timeline,
@@ -111,15 +99,8 @@ const EventFormModal = ({
             type,
             locationIsOnline,
             isFeatured,
-            titleI18n,
-            ...(Object.keys(subtitleI18n).length ? { subtitleI18n } : {}),
-            ...(Object.keys(descriptionI18n).length ? { descriptionI18n } : {}),
-            ...(subtitleI18n[DEFAULT_LANGUAGE]
-                ? { subtitle: subtitleI18n[DEFAULT_LANGUAGE] }
-                : {}),
-            ...(descriptionI18n[DEFAULT_LANGUAGE]
-                ? { description: descriptionI18n[DEFAULT_LANGUAGE] }
-                : {}),
+            ...(Object.keys(subtitle).length ? { subtitle } : {}),
+            ...(Object.keys(description).length ? { description } : {}),
             ...(image ? { image } : {}),
             ...(locationLabel ? { locationLabel } : {}),
             ...(locationCity ? { locationCity } : {}),
@@ -141,23 +122,23 @@ const EventFormModal = ({
 
                 <LocalizedTextInput
                     label={t('eventForm.title', 'Título')}
-                    value={titleI18n}
-                    onChange={setTitleI18n}
+                    value={title}
+                    onChange={setTitle}
                     maxLength={200}
                 />
 
                 <LocalizedTextInput
                     label={t('eventForm.subtitle', 'Subtítulo')}
-                    value={subtitleI18n}
-                    onChange={setSubtitleI18n}
+                    value={subtitle}
+                    onChange={setSubtitle}
                     requiredLanguages={[]}
                     maxLength={500}
                 />
 
                 <LocalizedTextInput
                     label={t('eventForm.description', 'Descrição')}
-                    value={descriptionI18n}
-                    onChange={setDescriptionI18n}
+                    value={description}
+                    onChange={setDescription}
                     multiline
                     rows={5}
                     requiredLanguages={[]}

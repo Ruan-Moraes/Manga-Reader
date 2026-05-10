@@ -9,10 +9,8 @@ import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 import type { AdminGroup } from '../../type/admin.types';
 
 export type GroupFormSubmitPayload = {
-    name: string;
-    description?: string;
-    nameI18n: LocalizedString;
-    descriptionI18n: LocalizedString;
+    name: LocalizedString;
+    description: LocalizedString;
     logo?: string;
     banner?: string;
     website?: string;
@@ -38,43 +36,34 @@ const GroupFormModal = ({
     const [logo, setLogo] = useState('');
     const [banner, setBanner] = useState('');
     const [website, setWebsite] = useState('');
-    const [nameI18n, setNameI18n] = useState<LocalizedString>({});
-    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
+    const [name, setName] = useState<LocalizedString>({});
+    const [description, setDescription] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (group) {
             setLogo(group.logo ?? '');
             setBanner('');
             setWebsite('');
-            setNameI18n(group.nameI18n ?? { [DEFAULT_LANGUAGE]: group.name });
-            setDescriptionI18n(
-                group.descriptionI18n ??
-                    (group.description
-                        ? { [DEFAULT_LANGUAGE]: group.description }
-                        : {}),
-            );
+            setName(group.name ?? {});
+            setDescription(group.description ?? {});
         } else {
             setLogo('');
             setBanner('');
             setWebsite('');
-            setNameI18n({});
-            setDescriptionI18n({});
+            setName({});
+            setDescription({});
         }
     }, [group, isOpen]);
 
-    const ptName = (nameI18n[DEFAULT_LANGUAGE] ?? '').trim();
+    const ptName = (name[DEFAULT_LANGUAGE] ?? '').trim();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!ptName) return;
 
         onSubmit({
-            name: ptName,
-            ...(descriptionI18n[DEFAULT_LANGUAGE]
-                ? { description: descriptionI18n[DEFAULT_LANGUAGE] }
-                : {}),
-            nameI18n,
-            descriptionI18n,
+            name,
+            description,
             ...(logo ? { logo } : {}),
             ...(banner ? { banner } : {}),
             ...(website ? { website } : {}),
@@ -92,15 +81,15 @@ const GroupFormModal = ({
 
                 <LocalizedTextInput
                     label={t('groupForm.name', 'Nome')}
-                    value={nameI18n}
-                    onChange={setNameI18n}
+                    value={name}
+                    onChange={setName}
                     maxLength={100}
                 />
 
                 <LocalizedTextInput
                     label={t('groupForm.description', 'Descrição')}
-                    value={descriptionI18n}
-                    onChange={setDescriptionI18n}
+                    value={description}
+                    onChange={setDescription}
                     multiline
                     rows={4}
                     requiredLanguages={[]}

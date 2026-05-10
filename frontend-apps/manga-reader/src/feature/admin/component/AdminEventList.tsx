@@ -55,7 +55,7 @@ const buildColumns = (
         sortable: true,
         render: event => (
             <span className="font-medium">
-                {event.titleI18n?.[lang] ?? event.titleI18n?.['pt-BR'] ?? event.title}
+                {event.title?.[lang] ?? event.title?.['pt-BR'] ?? ''}
             </span>
         ),
     },

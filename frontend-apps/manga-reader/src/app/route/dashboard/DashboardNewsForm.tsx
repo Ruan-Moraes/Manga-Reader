@@ -15,6 +15,8 @@ import BaseCheckbox from '@shared/component/input/BaseCheckbox';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 
+type FormState = Omit<CreateNewsRequest, 'title' | 'subtitle' | 'excerpt' | 'content'>;
+
 const DashboardNewsForm = () => {
     const { t } = useTranslation('admin');
 
@@ -35,11 +37,8 @@ const DashboardNewsForm = () => {
 
     const { data: categoryOptions = [] } = useDomainLabels(LABEL_TYPES.NEWS_CATEGORY);
 
-    const [form, setForm] = useState<CreateNewsRequest>({
-        title: '',
+    const [form, setForm] = useState<FormState>({
         category: 'PRINCIPAIS',
-        subtitle: '',
-        excerpt: '',
         coverImage: '',
         tags: [],
         authorName: '',
@@ -50,17 +49,14 @@ const DashboardNewsForm = () => {
     });
 
     const [tagsInput, setTagsInput] = useState('');
-    const [titleI18n, setTitleI18n] = useState<LocalizedString>({});
-    const [subtitleI18n, setSubtitleI18n] = useState<LocalizedString>({});
-    const [excerptI18n, setExcerptI18n] = useState<LocalizedString>({});
+    const [title, setTitle] = useState<LocalizedString>({});
+    const [subtitle, setSubtitle] = useState<LocalizedString>({});
+    const [excerpt, setExcerpt] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (existing) {
             setForm({
-                title: existing.title,
                 category: existing.category,
-                subtitle: existing.subtitle ?? '',
-                excerpt: existing.excerpt ?? '',
                 coverImage: existing.coverImage ?? '',
                 tags: existing.tags,
                 authorName: existing.authorName ?? '',
@@ -69,50 +65,24 @@ const DashboardNewsForm = () => {
                 isExclusive: existing.isExclusive,
                 isFeatured: existing.isFeatured,
             });
-
             setTagsInput(existing.tags.join(', '));
-
-            setTitleI18n(
-                existing.titleI18n && Object.keys(existing.titleI18n).length
-                    ? existing.titleI18n
-                    : { [DEFAULT_LANGUAGE]: existing.title },
-            );
-
-            setSubtitleI18n(
-                existing.subtitleI18n &&
-                    Object.keys(existing.subtitleI18n).length
-                    ? existing.subtitleI18n
-                    : existing.subtitle
-                      ? { [DEFAULT_LANGUAGE]: existing.subtitle }
-                      : {},
-            );
-
-            setExcerptI18n(
-                existing.excerptI18n && Object.keys(existing.excerptI18n).length
-                    ? existing.excerptI18n
-                    : existing.excerpt
-                      ? { [DEFAULT_LANGUAGE]: existing.excerpt }
-                      : {},
-            );
+            setTitle(existing.title ?? {});
+            setSubtitle(existing.subtitle ?? {});
+            setExcerpt(existing.excerpt ?? {});
         }
     }, [existing]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const ptTitle =
-            (titleI18n[DEFAULT_LANGUAGE] ?? '').trim() || form.title;
-
+        const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
         if (!ptTitle) return;
 
-        const data = {
+        const data: CreateNewsRequest = {
             ...form,
-            title: ptTitle,
-            subtitle: subtitleI18n[DEFAULT_LANGUAGE] ?? form.subtitle,
-            excerpt: excerptI18n[DEFAULT_LANGUAGE] ?? form.excerpt,
-            titleI18n,
-            ...(Object.keys(subtitleI18n).length ? { subtitleI18n } : {}),
-            ...(Object.keys(excerptI18n).length ? { excerptI18n } : {}),
+            title,
+            ...(Object.keys(subtitle).length ? { subtitle } : {}),
+            ...(Object.keys(excerpt).length ? { excerpt } : {}),
             tags: tagsInput
                 .split(',')
                 .map(tag => tag.trim())
@@ -121,20 +91,16 @@ const DashboardNewsForm = () => {
 
         if (isEditing && newsId) {
             const result = await handleUpdate(newsId, data);
-
             if (result) navigate('/Manga-Reader/dashboard/news');
         } else {
             const result = await handleCreate(data);
-
             if (result) navigate('/Manga-Reader/dashboard/news');
         }
     };
 
     const handleDeleteClick = async () => {
         if (!newsId || !confirm(t('dashboard.news.deleteConfirm'))) return;
-
         await handleDelete(newsId);
-
         navigate('/Manga-Reader/dashboard/news');
     };
 
@@ -166,8 +132,8 @@ const DashboardNewsForm = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <LocalizedTextInput
                     label={t('dashboard.news.form.title')}
-                    value={titleI18n}
-                    onChange={setTitleI18n}
+                    value={title}
+                    onChange={setTitle}
                     maxLength={300}
                 />
 
@@ -183,16 +149,16 @@ const DashboardNewsForm = () => {
 
                 <LocalizedTextInput
                     label={t('dashboard.news.form.subtitle')}
-                    value={subtitleI18n}
-                    onChange={setSubtitleI18n}
+                    value={subtitle}
+                    onChange={setSubtitle}
                     requiredLanguages={[]}
                     maxLength={500}
                 />
 
                 <LocalizedTextInput
                     label={t('dashboard.news.form.excerpt')}
-                    value={excerptI18n}
-                    onChange={setExcerptI18n}
+                    value={excerpt}
+                    onChange={setExcerpt}
                     multiline
                     rows={3}
                     requiredLanguages={[]}

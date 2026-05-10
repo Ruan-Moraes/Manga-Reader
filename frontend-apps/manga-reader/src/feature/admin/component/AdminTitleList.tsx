@@ -65,7 +65,7 @@ const buildColumns = (
         sortable: true,
         render: title => (
             <span className="font-medium">
-                {title.nameI18n?.[lang] ?? title.nameI18n?.['pt-BR'] ?? title.name}
+                {title.name?.[lang] ?? title.name?.['pt-BR'] ?? ''}
             </span>
         ),
     },

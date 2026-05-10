@@ -38,17 +38,14 @@ const DashboardTags = () => {
     };
 
     const handleFormSubmit = async (
-        label: string,
-        labelI18n: import('@shared/type/i18n').LocalizedString,
+        label: import('@shared/type/i18n').LocalizedString,
     ) => {
         if (editingTag) {
-            await handleUpdate(editingTag.value, { label, labelI18n });
+            await handleUpdate(editingTag.value, { label });
         } else {
-            await handleCreate({ label, labelI18n });
+            await handleCreate({ label });
         }
-
         setIsFormOpen(false);
-
         setEditingTag(null);
     };
 

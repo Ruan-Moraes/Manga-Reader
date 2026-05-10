@@ -27,10 +27,8 @@ type PlanFormModalProps = {
     onSubmit: (data: {
         period?: string;
         priceInCents: number;
-        description: string;
-        features: string[];
-        descriptionI18n: LocalizedString;
-        featuresI18n: LocalizedStringList;
+        description: LocalizedString;
+        features: LocalizedStringList;
         active?: boolean;
         prices: Record<string, number>;
     }) => void;
@@ -69,8 +67,8 @@ const PlanFormModal = ({
     const { t } = useTranslation('admin');
     const [period, setPeriod] = useState('MONTHLY');
     const [priceRows, setPriceRows] = useState<PriceRow[]>([{ currency: 'BRL', amount: '' }]);
-    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
-    const [featuresI18n, setFeaturesI18n] = useState<LocalizedStringList>({});
+    const [description, setDescription] = useState<LocalizedString>({});
+    const [features, setFeatures] = useState<LocalizedStringList>({});
     const [featuresTab, setFeaturesTab] = useState<LanguageTag>(DEFAULT_LANGUAGE);
     const [active, setActive] = useState(true);
 
@@ -89,14 +87,14 @@ const PlanFormModal = ({
         if (plan) {
             setPeriod(plan.period);
             setPriceRows(buildInitialPrices(plan));
-            setDescriptionI18n({ [DEFAULT_LANGUAGE]: plan.description });
-            setFeaturesI18n({ [DEFAULT_LANGUAGE]: plan.features });
+            setDescription({ [DEFAULT_LANGUAGE]: plan.description });
+            setFeatures({ [DEFAULT_LANGUAGE]: plan.features });
             setActive(plan.active);
         } else {
             setPeriod('MONTHLY');
             setPriceRows([{ currency: 'BRL', amount: '' }]);
-            setDescriptionI18n({});
-            setFeaturesI18n({});
+            setDescription({});
+            setFeatures({});
             setActive(true);
         }
         setFeaturesTab(DEFAULT_LANGUAGE);
@@ -131,25 +129,22 @@ const PlanFormModal = ({
         }
         if (Object.keys(prices).length === 0) return;
 
-        const ptDescription = descriptionI18n[DEFAULT_LANGUAGE]?.trim() ?? '';
+        const ptDescription = description[DEFAULT_LANGUAGE]?.trim() ?? '';
         if (!ptDescription) return;
 
-        const ptFeatures = featuresI18n[DEFAULT_LANGUAGE] ?? [];
         const priceInCents = prices['BRL'] ?? Object.values(prices)[0];
 
         onSubmit({
             ...(plan ? {} : { period }),
             priceInCents,
-            description: ptDescription,
-            features: ptFeatures,
-            descriptionI18n,
-            featuresI18n,
+            description,
+            features,
             prices,
             ...(plan ? { active } : {}),
         });
     };
 
-    const ptDescription = descriptionI18n[DEFAULT_LANGUAGE]?.trim() ?? '';
+    const ptDescription = description[DEFAULT_LANGUAGE]?.trim() ?? '';
     const hasValidPrices = priceRows.length > 0 && priceRows.every(r => r.amount !== '');
 
     return (
@@ -228,8 +223,8 @@ const PlanFormModal = ({
 
                 <LocalizedTextInput
                     label={t('planForm.descriptionLabel')}
-                    value={descriptionI18n}
-                    onChange={setDescriptionI18n}
+                    value={description}
+                    onChange={setDescription}
                     placeholder={t('planForm.descriptionPlaceholder')}
                     maxLength={300}
                 />
@@ -241,7 +236,7 @@ const PlanFormModal = ({
                     </span>
                     <div className="flex gap-1 border-b border-tertiary">
                         {SUPPORTED_LANGUAGES.map(lang => {
-                            const filled = (featuresI18n[lang] ?? []).length > 0;
+                            const filled = (features[lang] ?? []).length > 0;
                             const isActive = featuresTab === lang;
                             return (
                                 <button
@@ -265,10 +260,10 @@ const PlanFormModal = ({
                     <BaseTextArea
                         variant="outlined"
                         rows={3}
-                        value={featuresMapToText(featuresI18n, featuresTab)}
+                        value={featuresMapToText(features, featuresTab)}
                         onChange={e =>
-                            setFeaturesI18n({
-                                ...featuresI18n,
+                            setFeatures({
+                                ...features,
                                 [featuresTab]: featuresTextToList(e.target.value),
                             })
                         }

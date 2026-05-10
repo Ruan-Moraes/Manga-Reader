@@ -38,15 +38,14 @@ const DashboardEventForm = () => {
     const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_STATUS);
     const { data: typeOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_TYPE);
 
-    const [form, setForm] = useState<CreateEventRequest>({
-        title: '',
+    type FormState = Omit<CreateEventRequest, 'title' | 'subtitle' | 'description'>;
+
+    const [form, setForm] = useState<FormState>({
         startDate: '',
         endDate: '',
         timeline: 'UPCOMING',
         status: 'COMING_SOON',
         type: 'CONVENCAO',
-        subtitle: '',
-        description: '',
         image: '',
         timezone: 'America/Sao_Paulo',
         locationLabel: '',
@@ -58,21 +57,18 @@ const DashboardEventForm = () => {
         isFeatured: false,
     });
 
-    const [titleI18n, setTitleI18n] = useState<LocalizedString>({});
-    const [subtitleI18n, setSubtitleI18n] = useState<LocalizedString>({});
-    const [descriptionI18n, setDescriptionI18n] = useState<LocalizedString>({});
+    const [title, setTitle] = useState<LocalizedString>({});
+    const [subtitle, setSubtitle] = useState<LocalizedString>({});
+    const [description, setDescription] = useState<LocalizedString>({});
 
     useEffect(() => {
         if (existing) {
             setForm({
-                title: existing.title,
                 startDate: existing.startDate.slice(0, 16),
                 endDate: existing.endDate.slice(0, 16),
                 timeline: existing.timeline,
                 status: existing.status,
                 type: existing.type,
-                subtitle: existing.subtitle ?? '',
-                description: existing.description ?? '',
                 image: existing.image ?? '',
                 timezone: existing.timezone ?? 'America/Sao_Paulo',
                 locationLabel: existing.locationLabel ?? '',
@@ -82,58 +78,29 @@ const DashboardEventForm = () => {
                 priceLabel: existing.priceLabel ?? '',
                 isFeatured: existing.isFeatured,
             });
-
-            setTitleI18n(
-                existing.titleI18n && Object.keys(existing.titleI18n).length
-                    ? existing.titleI18n
-                    : { [DEFAULT_LANGUAGE]: existing.title },
-            );
-
-            setSubtitleI18n(
-                existing.subtitleI18n &&
-                    Object.keys(existing.subtitleI18n).length
-                    ? existing.subtitleI18n
-                    : existing.subtitle
-                      ? { [DEFAULT_LANGUAGE]: existing.subtitle }
-                      : {},
-            );
-
-            setDescriptionI18n(
-                existing.descriptionI18n &&
-                    Object.keys(existing.descriptionI18n).length
-                    ? existing.descriptionI18n
-                    : existing.description
-                      ? { [DEFAULT_LANGUAGE]: existing.description }
-                      : {},
-            );
+            setTitle(existing.title ?? {});
+            setSubtitle(existing.subtitle ?? {});
+            setDescription(existing.description ?? {});
         }
     }, [existing]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        const ptTitle =
-            (titleI18n[DEFAULT_LANGUAGE] ?? '').trim() || form.title;
-
+        const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
         if (!ptTitle) return;
 
-        const data = {
+        const data: CreateEventRequest = {
             ...form,
-            title: ptTitle,
-            subtitle: subtitleI18n[DEFAULT_LANGUAGE] ?? form.subtitle,
-            description: descriptionI18n[DEFAULT_LANGUAGE] ?? form.description,
-            titleI18n,
-            ...(Object.keys(subtitleI18n).length ? { subtitleI18n } : {}),
-            ...(Object.keys(descriptionI18n).length ? { descriptionI18n } : {}),
+            title,
+            ...(Object.keys(subtitle).length ? { subtitle } : {}),
+            ...(Object.keys(description).length ? { description } : {}),
         };
 
         if (isEditing && eventId) {
             const result = await handleUpdate(eventId, data);
-
             if (result) navigate('/Manga-Reader/dashboard/events');
         } else {
             const result = await handleCreate(data);
-
             if (result) navigate('/Manga-Reader/dashboard/events');
         }
     };
@@ -174,23 +141,23 @@ const DashboardEventForm = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <LocalizedTextInput
                     label={t('dashboard.events.form.title')}
-                    value={titleI18n}
-                    onChange={setTitleI18n}
+                    value={title}
+                    onChange={setTitle}
                     maxLength={200}
                 />
 
                 <LocalizedTextInput
                     label={t('dashboard.events.form.subtitle')}
-                    value={subtitleI18n}
-                    onChange={setSubtitleI18n}
+                    value={subtitle}
+                    onChange={setSubtitle}
                     requiredLanguages={[]}
                     maxLength={500}
                 />
 
                 <LocalizedTextInput
                     label={t('dashboard.events.form.description')}
-                    value={descriptionI18n}
-                    onChange={setDescriptionI18n}
+                    value={description}
+                    onChange={setDescription}
                     multiline
                     rows={4}
                     requiredLanguages={[]}
