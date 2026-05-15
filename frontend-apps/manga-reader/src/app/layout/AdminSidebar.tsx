@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import {
     FiHome,
     FiUsers,
@@ -172,8 +171,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
                 <nav className="flex flex-col gap-4">
                     {SECTIONS.map(section => (
                         <div
-                            key={section.
-titleKey}
+                            key={section.titleKey}
                             className="flex flex-col gap-1"
                         >
                             <span className="text-xs font-semibold tracking-wider uppercase text-quaternary">

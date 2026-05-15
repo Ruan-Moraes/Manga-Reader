@@ -16,6 +16,7 @@ type HeaderTypes = {
 
 const Header = ({ showAuth, showSearch }: HeaderTypes) => {
     const { t } = useTranslation('layout');
+
     const { user, isLoggedIn, logout } = useAuth();
 
     return (

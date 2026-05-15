@@ -4,18 +4,22 @@ import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
+import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 import { getAdminNewsDetail } from '@feature/admin/service/adminNewsService';
 import useAdminNewsActions from '@feature/admin/hook/useAdminNewsActions';
 import type { CreateNewsRequest } from '@feature/admin/type/admin.types';
+
+import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
 import BaseInput from '@shared/component/input/BaseInput';
 import BaseSelect from '@shared/component/input/BaseSelect';
 import BaseCheckbox from '@shared/component/input/BaseCheckbox';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
-import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 
-type FormState = Omit<CreateNewsRequest, 'title' | 'subtitle' | 'excerpt' | 'content'>;
+type FormState = Omit<
+    CreateNewsRequest,
+    'title' | 'subtitle' | 'excerpt' | 'content'
+>;
 
 const DashboardNewsForm = () => {
     const { t } = useTranslation('admin');
@@ -35,7 +39,9 @@ const DashboardNewsForm = () => {
         enabled: isEditing,
     });
 
-    const { data: categoryOptions = [] } = useDomainLabels(LABEL_TYPES.NEWS_CATEGORY);
+    const { data: categoryOptions = [] } = useDomainLabels(
+        LABEL_TYPES.NEWS_CATEGORY,
+    );
 
     const [form, setForm] = useState<FormState>({
         category: 'PRINCIPAIS',
@@ -76,6 +82,7 @@ const DashboardNewsForm = () => {
         e.preventDefault();
 
         const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
+
         if (!ptTitle) return;
 
         const data: CreateNewsRequest = {
@@ -91,16 +98,20 @@ const DashboardNewsForm = () => {
 
         if (isEditing && newsId) {
             const result = await handleUpdate(newsId, data);
+
             if (result) navigate('/Manga-Reader/dashboard/news');
         } else {
             const result = await handleCreate(data);
+
             if (result) navigate('/Manga-Reader/dashboard/news');
         }
     };
 
     const handleDeleteClick = async () => {
         if (!newsId || !confirm(t('dashboard.news.deleteConfirm'))) return;
+
         await handleDelete(newsId);
+
         navigate('/Manga-Reader/dashboard/news');
     };
 
