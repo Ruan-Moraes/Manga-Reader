@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
  * Requisição para criar um código de presente.
  */
 public record CreateGiftCodeRequest(
-        @NotNull UUID planId,
-        @NotBlank @Email String recipientEmail
+        @NotNull(message = "{validation.subscription.planId.required}") UUID planId,
+        @NotBlank(message = "{validation.gift.recipientEmail.required}")
+        @Email(message = "{validation.email.invalid}") String recipientEmail
 ) {}

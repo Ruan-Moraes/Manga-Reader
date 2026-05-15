@@ -25,7 +25,6 @@ const LanguageSettings = ({ settings, onUpdate }: SettingsTabProps) => {
         () => [
             { value: 'pt-BR', label: t('language.pt-BR', { ns: 'common' }) },
             { value: 'en-US', label: t('language.en-US', { ns: 'common' }) },
-            { value: 'ja-JP', label: '日本語' },
             { value: 'es-ES', label: t('language.es-ES', { ns: 'common' }) },
         ],
         [t],

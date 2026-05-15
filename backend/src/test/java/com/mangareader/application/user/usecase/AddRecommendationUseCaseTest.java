@@ -38,6 +38,9 @@ class AddRecommendationUseCaseTest {
     @Mock
     private TitleRepositoryPort titleRepository;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+
     @InjectMocks
     private AddRecommendationUseCase addRecommendationUseCase;
 
@@ -65,6 +68,7 @@ class AddRecommendationUseCaseTest {
             when(recommendationRepository.countByUserId(USER_ID)).thenReturn(3L);
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
                     Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).cover("cover.jpg").build()));
+            when(localeResolutionService.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn("Solo Leveling");
             when(recommendationRepository.save(any(UserRecommendation.class))).thenAnswer(inv -> inv.getArgument(0));
 
             UserRecommendation result = addRecommendationUseCase.execute(USER_ID, TITLE_ID);

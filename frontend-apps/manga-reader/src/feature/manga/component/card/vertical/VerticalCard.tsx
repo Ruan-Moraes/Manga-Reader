@@ -6,7 +6,7 @@ import type { VerticalCard as VerticalCardProps } from '../../../type/title-card
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
-import formatDate from '@shared/service/util/formatDate';
+import { formatDate } from '@shared/util/formatters';
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import AppLink from '@shared/component/link/element/AppLink';
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useUserModalContext } from '../context/useUserModalContext';
 
-import formatDate from '@shared/service/util/formatDate';
+import { formatDate } from '@shared/util/formatters';
 
 import DarkButton from '@shared/component/button/DarkButton';
 

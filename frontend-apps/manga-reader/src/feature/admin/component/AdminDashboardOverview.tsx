@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import type { DashboardMetrics } from '@feature/admin';
+import { getLocale } from '@shared/util/formatters';
 
 type MetricCardProps = {
     label: string;
@@ -25,7 +26,7 @@ const MetricCard = ({ label, value, icon }: MetricCardProps) => (
         <div className="p-2 rounded-xs bg-quaternary-opacity-25">{icon}</div>
         <div>
             <p className="text-2xl font-bold">
-                {value.toLocaleString('pt-BR')}
+                {value.toLocaleString(getLocale())}
             </p>
             <p className="text-xs text-tertiary">{label}</p>
         </div>

@@ -5,6 +5,6 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 
 public record GrantSubscriptionRequest(
-        @NotNull UUID userId,
-        @NotNull UUID planId
+        @NotNull(message = "{validation.subscription.userId.required}") UUID userId,
+        @NotNull(message = "{validation.subscription.planId.required}") UUID planId
 ) {}

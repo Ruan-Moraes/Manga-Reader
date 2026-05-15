@@ -6,6 +6,7 @@ import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminUser } from '../type/admin.types';
+import { getLocale } from '@shared/util/formatters';
 
 type AdminUserListProps = {
     users: AdminUser[];
@@ -19,7 +20,7 @@ type AdminUserListProps = {
 
 const formatDate = (date: string | null) => {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString('pt-BR', {
+    return new Date(date).toLocaleDateString(getLocale(), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',

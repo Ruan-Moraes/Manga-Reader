@@ -36,11 +36,20 @@ import com.mangareader.application.library.usecase.SaveToLibraryUseCase;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.application.auth.port.TokenPort;
+import com.mangareader.application.label.service.DomainLabelService;
+import com.mangareader.presentation.library.mapper.LibraryMapper;
+
+import org.springframework.context.annotation.Import;
 
 @WebMvcTest(LibraryController.class)
+@Import(LibraryMapper.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("LibraryController")
 class LibraryControllerTest {
+
+    @MockitoBean
+    private DomainLabelService domainLabelService;
+
 
     @Autowired
     private MockMvc mockMvc;

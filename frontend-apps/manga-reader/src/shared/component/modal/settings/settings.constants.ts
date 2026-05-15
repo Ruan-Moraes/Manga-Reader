@@ -16,7 +16,7 @@ export type UserSettings = {
     };
     language: {
         uiLanguage: 'pt-BR' | 'en-US' | 'es-ES';
-        preferredContentLanguage: 'pt-BR' | 'en-US' | 'ja-JP' | 'es-ES';
+        preferredContentLanguage: 'pt-BR' | 'en-US' | 'es-ES';
     };
     notifications: {
         newChapterFromFollowed: boolean;

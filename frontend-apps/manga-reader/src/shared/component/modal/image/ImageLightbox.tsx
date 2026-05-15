@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IoCloseOutline, IoImageOutline } from 'react-icons/io5';
 
 type ImageLightboxProps = {
@@ -9,6 +10,8 @@ type ImageLightboxProps = {
 };
 
 const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
+    const { t } = useTranslation('common');
+
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -49,7 +52,7 @@ const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
                 <button
                     type="button"
                     onClick={onClose}
-                    aria-label="Fechar visualização"
+                    aria-label={t('image.close')}
                     className="self-end p-1 text-white/80 hover:text-white transition-colors cursor-pointer"
                 >
                     <IoCloseOutline size={28} />
@@ -66,7 +69,7 @@ const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
                     <div className="flex flex-col items-center justify-center w-64 h-64 bg-secondary rounded-xs">
                         <IoImageOutline size={64} className="text-tertiary" />
                         <span className="mt-2 text-sm text-tertiary">
-                            Imagem não disponível
+                            {t('image.unavailable')}
                         </span>
                     </div>
                 )}

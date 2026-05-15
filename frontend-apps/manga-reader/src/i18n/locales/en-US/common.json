@@ -49,5 +49,9 @@
         "pt-BR": "Portuguese (Brazil)",
         "en-US": "English",
         "es-ES": "Spanish"
+    },
+    "image": {
+        "close": "Close preview",
+        "unavailable": "Image unavailable"
     }
 }

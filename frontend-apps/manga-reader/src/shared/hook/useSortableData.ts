@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import type { SortDirection } from '@shared/component/table/DataTable';
+import { getLocale } from '@shared/util/formatters';
 
 type UseSortableDataReturn<T> = {
     sortedData: T[];
@@ -36,7 +37,7 @@ function useSortableData<T>(
             } else if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
                 comparison = Number(aVal) - Number(bVal);
             } else {
-                comparison = String(aVal).localeCompare(String(bVal), 'pt-BR', {
+                comparison = String(aVal).localeCompare(String(bVal), getLocale(), {
                     sensitivity: 'base',
                 });
             }

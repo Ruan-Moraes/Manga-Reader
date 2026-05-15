@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Chapter } from '../type/chapter.types';
 
-import formatDate from '@shared/service/util/formatDate';
+import { formatDate } from '@shared/util/formatters';
 
 import ChapterItem from './ChapterItem';
 import ChapterPagination from './ChapterPagination';

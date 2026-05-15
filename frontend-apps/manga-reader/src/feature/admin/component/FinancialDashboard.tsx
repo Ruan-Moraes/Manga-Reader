@@ -2,13 +2,14 @@ import { useTranslation } from 'react-i18next';
 
 import type { FinancialSummary } from '../type/admin.types';
 import MetricsCard from './MetricsCard';
+import { getLocale } from '@shared/util/formatters';
 
 type FinancialDashboardProps = {
     summary: FinancialSummary;
 };
 
 const formatCurrency = (value: number) =>
-    new Intl.NumberFormat('pt-BR', {
+    new Intl.NumberFormat(getLocale(), {
         style: 'currency',
         currency: 'BRL',
     }).format(value ?? 0);

@@ -49,5 +49,9 @@
         "pt-BR": "Portugués (Brasil)",
         "en-US": "Inglés",
         "es-ES": "Español"
+    },
+    "image": {
+        "close": "Cerrar vista previa",
+        "unavailable": "Imagen no disponible"
     }
 }

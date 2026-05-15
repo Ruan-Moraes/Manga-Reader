@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FilterTitlesUseCase {
     private final TitleRepositoryPort titleRepository;
+    private final LocaleResolutionService localeResolutionService;
 
     public Page<Title> execute(List<String> genres, String status, Boolean adult,
                                SortCriteria sort, Pageable pageable) {
@@ -55,7 +57,7 @@ public class FilterTitlesUseCase {
                     .toList();
             case ALPHABETICAL -> titles.stream()
                     .sorted(Comparator.comparing(
-                            t -> t.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")), String.CASE_INSENSITIVE_ORDER))
+                            t -> localeResolutionService.resolve(t.getName()), String.CASE_INSENSITIVE_ORDER))
                     .toList();
             case ASCENSION -> titles.stream()
                     .sorted(Comparator.comparing(

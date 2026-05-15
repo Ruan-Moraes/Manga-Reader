@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
  * (mapa BCP 47 → texto). pt-BR obrigatório no title.
  */
 public record CreateEventRequest(
-        @NotNull @RequiredLanguages Map<String, String> title,
+        @NotNull(message = "{validation.event.title.required}") @RequiredLanguages Map<String, String> title,
         Map<String, String> subtitle,
         Map<String, String> description,
         String image,

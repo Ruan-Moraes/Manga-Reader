@@ -42,11 +42,27 @@ import com.mangareader.domain.forum.valueobject.ForumCategory;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
+import com.mangareader.application.label.service.DomainLabelService;
+import com.mangareader.presentation.forum.mapper.ForumMapper;
+
+import org.springframework.context.annotation.Import;
 
 @WebMvcTest(ForumController.class)
+@Import(ForumMapper.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("ForumController")
 class ForumControllerTest {
+
+    @MockitoBean
+    private DomainLabelService domainLabelService;
+
+    @org.junit.jupiter.api.BeforeEach
+    void stubDomainLabels() {
+        org.mockito.Mockito.lenient()
+                .when(domainLabelService.resolveLabel(any(), any(), any()))
+                .thenAnswer(inv -> inv.getArgument(2));
+    }
+
 
     @Autowired
     private MockMvc mockMvc;

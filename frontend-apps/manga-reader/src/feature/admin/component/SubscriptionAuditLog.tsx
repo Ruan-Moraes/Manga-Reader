@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
+import { getLocale } from '@shared/util/formatters';
 
 import { getSubscriptionAuditLogs } from '../service/adminSubscriptionService';
 import type { SubscriptionAuditLogEntry } from '../type/admin.types';
@@ -28,7 +29,7 @@ const ACTION_COLORS: Record<string, string> = {
 };
 
 const formatDate = (date: string) =>
-    new Date(date).toLocaleString('pt-BR', {
+    new Date(date).toLocaleString(getLocale(), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',

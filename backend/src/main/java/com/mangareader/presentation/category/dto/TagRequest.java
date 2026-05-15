@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
  * <p>Mapa BCP 47 → texto. {@code pt-BR} obrigatório (fallback).
  */
 public record TagRequest(
-        @NotNull
+        @NotNull(message = "{validation.tag.label.required}")
         @RequiredLanguages
         Map<String, String> label
 ) {}

@@ -12,6 +12,7 @@ import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class RecordViewHistoryUseCase {
     private final UserRepositoryPort userRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final TitleRepositoryPort titleRepository;
+    private final LocaleResolutionService localeResolutionService;
 
     public void execute(UUID userId, String titleId) {
         User user = userRepository.findById(userId)
@@ -54,7 +56,7 @@ public class RecordViewHistoryUseCase {
             ViewHistory vh = ViewHistory.builder()
                     .userId(userIdStr)
                     .titleId(titleId)
-                    .titleName(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
+                    .titleName(localeResolutionService.resolve(title.getName()))
                     .titleCover(title.getCover())
                     .viewedAt(LocalDateTime.now())
                     .build();

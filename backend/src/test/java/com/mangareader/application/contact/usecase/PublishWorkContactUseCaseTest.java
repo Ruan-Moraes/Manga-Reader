@@ -29,6 +29,9 @@ class PublishWorkContactUseCaseTest {
     @Mock
     private MessageSource messageSource;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+
     @InjectMocks
     private PublishWorkContactUseCase useCase;
 

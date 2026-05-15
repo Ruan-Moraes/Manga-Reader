@@ -1,6 +1,7 @@
 import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
+import { getLocale } from '@shared/util/formatters';
 
 import type { NewsCategory, NewsFilter, NewsItem } from '../type/news.types';
 
@@ -52,7 +53,7 @@ export const isNewsFresh = (publishedAt: string): boolean =>
 export { default as formatRelativeDate } from '@shared/service/util/formatRelativeDate';
 
 export const formatNewsDate = (date: string) =>
-    new Intl.DateTimeFormat('pt-BR', {
+    new Intl.DateTimeFormat(getLocale(), {
         dateStyle: 'full',
         timeStyle: 'short',
     }).format(new Date(date));

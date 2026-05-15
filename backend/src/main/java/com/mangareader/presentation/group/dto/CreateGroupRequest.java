@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
  * são mapas BCP 47 → texto; pt-BR obrigatório.
  */
 public record CreateGroupRequest(
-        @NotNull
+        @NotNull(message = "{validation.group.name.required}")
         @RequiredLanguages
         Map<String, String> name,
 

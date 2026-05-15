@@ -8,5 +8,5 @@ import jakarta.validation.constraints.NotNull;
  * Requisição para criar uma nova assinatura.
  */
 public record CreateSubscriptionRequest(
-        @NotNull UUID planId
+        @NotNull(message = "{validation.subscription.planId.required}") UUID planId
 ) {}

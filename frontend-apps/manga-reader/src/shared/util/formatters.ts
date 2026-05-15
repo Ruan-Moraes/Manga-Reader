@@ -1,6 +1,6 @@
 import i18n from '@/i18n/config';
 
-const getLocale = (): string => i18n.language || 'pt-BR';
+export const getLocale = (): string => i18n.language || 'pt-BR';
 
 export const formatDate = (
     date: Date | string | number,

@@ -54,6 +54,7 @@ public class LibraryController {
     private final SaveToLibraryUseCase saveToLibraryUseCase;
     private final ChangeReadingListUseCase changeReadingListUseCase;
     private final RemoveFromLibraryUseCase removeFromLibraryUseCase;
+    private final LibraryMapper libraryMapper;
 
     @GetMapping
     @Operation(summary = "Minha biblioteca", description = "Retorna mangás salvos do usuário com paginação. Filtrável por lista.")
@@ -72,7 +73,7 @@ public class LibraryController {
                 ? getUserLibraryByListUseCase.execute(userId, parseReadingList(list), pageable)
                 : getUserLibraryUseCase.execute(userId, pageable);
 
-        var mapped = result.map(LibraryMapper::toResponse);
+        var mapped = result.map(libraryMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -102,7 +103,7 @@ public class LibraryController {
         var saved = saveToLibraryUseCase.execute(input);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(LibraryMapper.toResponse(saved)));
+                .body(ApiResponse.created(libraryMapper.toResponse(saved)));
     }
 
     @PatchMapping("/{titleId}")
@@ -120,7 +121,7 @@ public class LibraryController {
 
         var saved = changeReadingListUseCase.execute(input);
 
-        return ResponseEntity.ok(ApiResponse.success(LibraryMapper.toResponse(saved)));
+        return ResponseEntity.ok(ApiResponse.success(libraryMapper.toResponse(saved)));
     }
 
     @DeleteMapping("/{titleId}")

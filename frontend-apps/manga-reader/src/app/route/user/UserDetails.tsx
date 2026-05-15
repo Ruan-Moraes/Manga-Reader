@@ -11,7 +11,7 @@ import TextSection from '@shared/component/paragraph/TextSection';
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
-import formatDate from '@shared/service/util/formatDate';
+import { formatDate } from '@shared/util/formatters';
 
 import { useAuth } from '@feature/auth';
 import { getUserProfile } from '@feature/user/service/userService';

@@ -2,13 +2,13 @@ package com.mangareader.application.auth.usecase;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.shared.port.EmailPort;
 import com.mangareader.application.shared.util.EmailTemplateBuilder;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +28,7 @@ public class ForgotPasswordUseCase {
     private final TokenPort tokenPort;
     private final EmailPort emailPort;
     private final MessageSource messageSource;
+    private final LocaleResolutionService localeResolutionService;
 
     @Value("${app.mail.base-url:http://localhost:5173}")
     private String baseUrl;
@@ -48,7 +49,7 @@ public class ForgotPasswordUseCase {
     }
 
     private String buildResetEmailHtml(String username, String resetUrl) {
-        String footer = messageSource.getMessage("email.footer.tagline", null, LocaleContextHolder.getLocale());
+        String footer = messageSource.getMessage("email.footer.tagline", null, localeResolutionService.currentLocale());
 
         return EmailTemplateBuilder.create()
                 .title("\uD83D\uDD12 Recuperação de Senha")

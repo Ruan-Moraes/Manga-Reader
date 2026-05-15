@@ -23,12 +23,17 @@ import org.springframework.data.domain.Pageable;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("FilterTitlesUseCase")
 class FilterTitlesUseCaseTest {
     @Mock
     private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private LocaleResolutionService localeResolutionService;
 
     @InjectMocks
     private FilterTitlesUseCase filterTitlesUseCase;
@@ -203,6 +208,8 @@ class FilterTitlesUseCaseTest {
         void alphabeticalDeveOrdenarPorNome() {
             when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
                     .thenReturn(buildSampleTitles());
+            when(localeResolutionService.resolve(any(LocalizedString.class)))
+                    .thenAnswer(i -> ((LocalizedString) i.getArgument(0)).resolve(java.util.Locale.forLanguageTag("pt-BR")));
 
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.ALPHABETICAL, PAGEABLE);
 

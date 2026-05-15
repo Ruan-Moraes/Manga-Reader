@@ -1,6 +1,7 @@
 import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
+import { getLocale } from '@shared/util/formatters';
 
 import { type EventType, type EventData } from '../type/event.types';
 
@@ -67,7 +68,7 @@ export const statusLabelKey: Record<EventData['status'], string> = {
 };
 
 export const formatEventDate = (date: string) =>
-    new Intl.DateTimeFormat('pt-BR', {
+    new Intl.DateTimeFormat(getLocale(), {
         dateStyle: 'medium',
         timeStyle: 'short',
     }).format(new Date(date));

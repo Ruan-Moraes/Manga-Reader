@@ -42,6 +42,9 @@ class RecordViewHistoryUseCaseTest {
     @Mock
     private TitleRepositoryPort titleRepository;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+
     @InjectMocks
     private RecordViewHistoryUseCase recordViewHistoryUseCase;
 
@@ -68,6 +71,7 @@ class RecordViewHistoryUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
                     Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).cover("cover.jpg").build()));
+            when(localeResolutionService.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn("Solo Leveling");
             when(viewHistoryRepository.findByUserIdAndTitleId(USER_ID.toString(), TITLE_ID))
                     .thenReturn(Optional.empty());
 

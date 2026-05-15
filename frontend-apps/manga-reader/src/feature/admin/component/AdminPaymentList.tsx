@@ -6,6 +6,7 @@ import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminPayment } from '../type/admin.types';
+import { getLocale } from '@shared/util/formatters';
 
 type AdminPaymentListProps = {
     payments: AdminPayment[];
@@ -19,7 +20,7 @@ type AdminPaymentListProps = {
 
 const formatDate = (date: string | null) => {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString('pt-BR', {
+    return new Date(date).toLocaleDateString(getLocale(), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -27,7 +28,7 @@ const formatDate = (date: string | null) => {
 };
 
 const formatAmount = (amount: number, currency: string) =>
-    new Intl.NumberFormat('pt-BR', {
+    new Intl.NumberFormat(getLocale(), {
         style: 'currency',
         currency: currency || 'BRL',
     }).format(amount);

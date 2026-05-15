@@ -6,6 +6,7 @@ import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminSubscription } from '../type/admin.types';
+import { getLocale } from '@shared/util/formatters';
 
 type AdminSubscriptionListProps = {
     subscriptions: AdminSubscription[];
@@ -24,14 +25,14 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString('pt-BR', {
+    new Date(date).toLocaleDateString(getLocale(), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
     });
 
 const formatPrice = (cents: number) =>
-    (cents / 100).toLocaleString('pt-BR', {
+    (cents / 100).toLocaleString(getLocale(), {
         style: 'currency',
         currency: 'BRL',
     });

@@ -7,6 +7,7 @@ import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminGroup } from '../type/admin.types';
+import { getLocale } from '@shared/util/formatters';
 
 type AdminGroupListProps = {
     groups: AdminGroup[];
@@ -20,7 +21,7 @@ type AdminGroupListProps = {
 
 const formatDate = (date: string | null) => {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString('pt-BR', {
+    return new Date(date).toLocaleDateString(getLocale(), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',

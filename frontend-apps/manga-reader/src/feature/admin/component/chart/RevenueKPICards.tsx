@@ -1,6 +1,8 @@
 import { FiTrendingUp, FiTrendingDown, FiDollarSign } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
+import { getLocale } from '@shared/util/formatters';
+
 import MetricsCard from '../MetricsCard';
 import type { RevenueTimeSeries } from '../../type/admin.types';
 
@@ -9,7 +11,7 @@ type Props = {
 };
 
 const formatCurrency = (valueInCents: number) =>
-    new Intl.NumberFormat('pt-BR', {
+    new Intl.NumberFormat(getLocale(), {
         style: 'currency',
         currency: 'BRL',
     }).format(valueInCents / 100);

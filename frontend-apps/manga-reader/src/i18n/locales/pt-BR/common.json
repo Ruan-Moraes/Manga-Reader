@@ -49,5 +49,9 @@
         "pt-BR": "Português (Brasil)",
         "en-US": "Inglês",
         "es-ES": "Espanhol"
+    },
+    "image": {
+        "close": "Fechar visualização",
+        "unavailable": "Imagem não disponível"
     }
 }

@@ -2,6 +2,8 @@ package com.mangareader.presentation.admin.mapper;
 
 import java.util.Map;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import com.mangareader.domain.subscription.entity.Subscription;
 import com.mangareader.domain.subscription.entity.SubscriptionAuditLog;
 import com.mangareader.domain.subscription.entity.SubscriptionPlan;
@@ -41,7 +43,7 @@ public final class AdminSubscriptionMapper {
     }
 
     public static SubscriptionPlanResponse toPlanResponse(SubscriptionPlan plan) {
-        var locale = java.util.Locale.forLanguageTag("pt-BR");
+        var locale = LocaleContextHolder.getLocale();
         return new SubscriptionPlanResponse(
                 plan.getId(),
                 plan.getPeriod(),

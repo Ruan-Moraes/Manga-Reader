@@ -7,31 +7,47 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
+import org.springframework.stereotype.Component;
+
+import com.mangareader.application.label.service.DomainLabelService;
 import com.mangareader.domain.forum.entity.ForumReply;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.user.entity.User;
-import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.presentation.forum.dto.ForumAuthorResponse;
 import com.mangareader.presentation.forum.dto.ForumReplyResponse;
 import com.mangareader.presentation.forum.dto.ForumTopicResponse;
 
+import lombok.RequiredArgsConstructor;
+
 /**
- * Mapper para converter entidades de Forum em DTOs de resposta.
+ * Mapper ForumTopic/ForumReply → DTOs públicos. Categoria resolvida via
+ * {@link DomainLabelService} (type {@code forum_category}); fallback para
+ * {@code getDisplayName()} se não houver entrada no banco.
  */
-public final class ForumMapper {
+@Component
+@RequiredArgsConstructor
+public class ForumMapper {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final String LABEL_TYPE_FORUM_CATEGORY = "forum_category";
 
-    private ForumMapper() {}
+    private final DomainLabelService domainLabels;
 
-    public static ForumTopicResponse toResponse(ForumTopic topic, Function<UUID, Long> postCountFn) {
+    public ForumTopicResponse toResponse(ForumTopic topic, Function<UUID, Long> postCountFn) {
         if (topic == null) return null;
+
+        String category = topic.getCategory() != null
+                ? domainLabels.resolveLabel(
+                        LABEL_TYPE_FORUM_CATEGORY,
+                        topic.getCategory().name(),
+                        topic.getCategory().getDisplayName())
+                : null;
 
         return new ForumTopicResponse(
                 topic.getId().toString(),
                 topic.getTitle(),
                 topic.getContent(),
                 mapAuthor(topic.getAuthor(), postCountFn),
-                topic.getCategory() != null ? topic.getCategory().getDisplayName() : null,
+                category,
                 topic.getTags(),
                 formatDateTime(topic.getCreatedAt()),
                 formatDateTime(topic.getLastActivityAt()),
@@ -82,7 +98,6 @@ public final class ForumMapper {
                 .toList();
     }
 
-    // Todo: Extrair para um utilitário de formatação de datas
     private static String formatDateTime(LocalDateTime dateTime) {
         if (dateTime == null) return null;
 

@@ -28,6 +28,9 @@ class GetContentMetricsUseCaseTest {
     @Mock
     private EventRepositoryPort eventRepository;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+
     @InjectMocks
     private GetContentMetricsUseCase useCase;
 
@@ -60,6 +63,7 @@ class GetContentMetricsUseCaseTest {
         when(titleRepository.countByStatus(any())).thenReturn(0L);
         when(eventRepository.countByStatus(any(EventStatus.class))).thenReturn(0L);
         when(titleRepository.findTopByRankingScore(10)).thenReturn(List.of(title));
+        when(localeResolutionService.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn("Top Manga");
 
         var result = useCase.execute();
 

@@ -2,11 +2,11 @@ package com.mangareader.application.contact.usecase;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mangareader.application.shared.port.EmailPort;
 import com.mangareader.application.shared.util.EmailTemplateBuilder;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 public class PublishWorkContactUseCase {
     private final EmailPort emailPort;
     private final MessageSource messageSource;
+    private final LocaleResolutionService localeResolutionService;
 
     @Value("${app.mail.admin-email:admin@mangareader.com}")
     private String adminEmail;
 
     private String resolveFooter() {
-        return messageSource.getMessage("email.footer.tagline", null, LocaleContextHolder.getLocale());
+        return messageSource.getMessage("email.footer.tagline", null, localeResolutionService.currentLocale());
     }
 
     public void execute(PublishWorkInput input) {

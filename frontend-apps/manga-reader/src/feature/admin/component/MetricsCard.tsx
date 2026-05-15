@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { getLocale } from '@shared/util/formatters';
+
 type MetricsCardProps = {
     label: string;
     value: number | string;
@@ -21,7 +23,7 @@ const MetricsCard = ({
     accent = 'default',
 }: MetricsCardProps) => {
     const formattedValue =
-        typeof value === 'number' ? value.toLocaleString('pt-BR') : value;
+        typeof value === 'number' ? value.toLocaleString(getLocale()) : value;
 
     return (
         <div className="flex items-center gap-3 p-4 border rounded-xs bg-secondary border-tertiary">

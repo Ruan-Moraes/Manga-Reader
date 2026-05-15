@@ -3,7 +3,6 @@ package com.mangareader.infrastructure.security.config;
 import java.io.IOException;
 
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
@@ -13,6 +12,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.dto.ApiErrorCode;
 import com.mangareader.shared.dto.ApiErrorResponse;
 
@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityExceptionHandler implements AuthenticationEntryPoint, AccessDeniedHandler {
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
+    private final LocaleResolutionService localeResolutionService;
 
     /**
      * 401 — Usuário não autenticado (token ausente, expirado ou inválido).
@@ -57,7 +58,7 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
     }
 
     private String resolveMessage(String code) {
-        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
+        return messageSource.getMessage(code, null, localeResolutionService.currentLocale());
     }
 
     private void writeError(HttpServletResponse response, HttpStatus status, String code, String message)

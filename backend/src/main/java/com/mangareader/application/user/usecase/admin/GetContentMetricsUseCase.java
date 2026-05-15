@@ -12,6 +12,7 @@ import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.presentation.admin.dto.ContentMetricsResponse;
 import com.mangareader.presentation.admin.dto.ContentMetricsResponse.TopTitleResponse;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ public class GetContentMetricsUseCase {
 
     private final TitleRepositoryPort titleRepository;
     private final EventRepositoryPort eventRepository;
+    private final LocaleResolutionService localeResolutionService;
 
     public ContentMetricsResponse execute() {
         Map<String, Long> titlesByStatus = new LinkedHashMap<>();
@@ -55,7 +57,7 @@ public class GetContentMetricsUseCase {
     private TopTitleResponse toTopTitleResponse(Title title) {
         return new TopTitleResponse(
                 title.getId(),
-                title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")),
+                localeResolutionService.resolve(title.getName()),
                 title.getCover(),
                 title.getType(),
                 title.getRankingScore(),

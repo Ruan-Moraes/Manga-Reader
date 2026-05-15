@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
  * Request para criação de notícia (admin). Campos textuais multilíngues.
  */
 public record CreateNewsRequest(
-        @NotNull @RequiredLanguages Map<String, String> title,
+        @NotNull(message = "{validation.news.title.required}") @RequiredLanguages Map<String, String> title,
         Map<String, String> subtitle,
         Map<String, String> excerpt,
         Map<String, List<String>> content,

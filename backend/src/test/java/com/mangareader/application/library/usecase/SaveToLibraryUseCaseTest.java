@@ -28,6 +28,7 @@ import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.DuplicateResourceException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -43,6 +44,9 @@ class SaveToLibraryUseCaseTest {
 
     @Mock
     private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private LocaleResolutionService localeResolutionService;
 
     @InjectMocks
     private SaveToLibraryUseCase saveToLibraryUseCase;
@@ -82,6 +86,7 @@ class SaveToLibraryUseCaseTest {
             when(libraryRepository.findByUserIdAndTitleId(USER_ID, TITLE_ID)).thenReturn(Optional.empty());
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(buildTitle()));
+            when(localeResolutionService.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn("Naruto");
             when(libraryRepository.save(any(SavedManga.class))).thenAnswer(i -> i.getArgument(0));
 
             // Act

@@ -9,6 +9,8 @@ import {
     Legend,
 } from 'recharts';
 
+import { getLocale } from '@shared/util/formatters';
+
 import type { MonthlyGrowthEntry } from '../type/admin.types';
 
 type Props = {
@@ -18,7 +20,7 @@ type Props = {
 const formatMonth = (yearMonth: string) => {
     const [year, month] = yearMonth.split('-');
     const date = new Date(Number(year), Number(month) - 1);
-    return date.toLocaleDateString('pt-BR', {
+    return date.toLocaleDateString(getLocale(), {
         month: 'short',
         year: '2-digit',
     });

@@ -11,6 +11,7 @@ import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.DuplicateResourceException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -25,6 +26,7 @@ public class SaveToLibraryUseCase {
     private final LibraryRepositoryPort libraryRepository;
     private final UserRepositoryPort userRepository;
     private final TitleRepositoryPort titleRepository;
+    private final LocaleResolutionService localeResolutionService;
 
     public record SaveToLibraryInput(UUID userId, String titleId, ReadingListType list) {}
 
@@ -43,7 +45,7 @@ public class SaveToLibraryUseCase {
         SavedManga saved = SavedManga.builder()
                 .user(user)
                 .titleId(input.titleId())
-                .name(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
+                .name(localeResolutionService.resolve(title.getName()))
                 .cover(title.getCover())
                 .type(title.getType())
                 .list(input.list())

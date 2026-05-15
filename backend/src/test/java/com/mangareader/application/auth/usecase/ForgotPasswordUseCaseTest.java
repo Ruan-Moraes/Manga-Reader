@@ -43,6 +43,9 @@ class ForgotPasswordUseCaseTest {
     @Mock
     private MessageSource messageSource;
 
+    @Mock
+    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+
     @InjectMocks
     private ForgotPasswordUseCase forgotPasswordUseCase;
 

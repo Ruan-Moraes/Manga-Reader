@@ -10,6 +10,7 @@ import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserRecommendation;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class AddRecommendationUseCase {
     private final UserRepositoryPort userRepository;
     private final RecommendationRepositoryPort recommendationRepository;
     private final TitleRepositoryPort titleRepository;
+    private final LocaleResolutionService localeResolutionService;
 
     public UserRecommendation execute(UUID userId, String titleId) {
         User user = userRepository.findById(userId)
@@ -47,7 +49,7 @@ public class AddRecommendationUseCase {
         UserRecommendation recommendation = UserRecommendation.builder()
                 .user(user)
                 .titleId(titleId)
-                .titleName(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
+                .titleName(localeResolutionService.resolve(title.getName()))
                 .titleCover(title.getCover())
                 .position((int) count)
                 .build();
