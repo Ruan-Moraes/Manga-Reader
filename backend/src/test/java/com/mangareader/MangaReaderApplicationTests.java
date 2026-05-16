@@ -1,12 +1,27 @@
 package com.mangareader;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
+import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig;
+
+/**
+ * Smoke test de carga do contexto Spring completo.
+ * <p>
+ * Sobe o ApplicationContext inteiro com H2 (JPA) e TestContainers (MongoDB).
+ * Falha de wiring de qualquer bean reprova o teste.
+ */
+@SpringBootTest
+@ActiveProfiles("test")
+@Import(MongoTestContainerConfig.class)
+@DisplayName("MangaReaderApplication — carga de contexto")
 class MangaReaderApplicationTests {
+
     @Test
-    void contextCreationSmokeTest() {
-        // Teste de contexto completo (@SpringBootTest) será adicionado
-        // após configurar Testcontainers para PostgreSQL + MongoDB.
-        // Por enquanto, apenas verifica que a classe de teste compila.
+    @DisplayName("Deve carregar o contexto Spring completo")
+    void contextLoads() {
     }
 }

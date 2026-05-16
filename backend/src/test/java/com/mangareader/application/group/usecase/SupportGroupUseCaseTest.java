@@ -26,6 +26,7 @@ import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SupportGroupUseCase")
@@ -45,7 +46,7 @@ class SupportGroupUseCaseTest {
     private final UUID LEADER_ID = UUID.randomUUID();
 
     private Group buildGroup() {
-        User leader = User.builder().id(LEADER_ID).name("Líder").email("l@e.com").passwordHash("h").build();
+        User leader = UserMock.withId(LEADER_ID);
         Group group = Group.builder()
                 .id(GROUP_ID)
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))
@@ -59,7 +60,7 @@ class SupportGroupUseCaseTest {
     }
 
     private User buildUser() {
-        return User.builder().id(USER_ID).name("Apoiador").email("apoiador@email.com").passwordHash("h").build();
+        return UserMock.withId(USER_ID);
     }
 
     @Nested

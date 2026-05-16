@@ -64,17 +64,23 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
         if (query == null || query.isBlank()) {
             return new PageImpl<>(List.of(), pageable, 0);
         }
+
         var lower = query.toLowerCase();
+
         var matches = repository.findAll().stream()
                 .filter(e -> matchesAnyLocale(e, lower))
                 .toList();
+
         int from = (int) Math.min(pageable.getOffset(), matches.size());
+
         int to = Math.min(from + pageable.getPageSize(), matches.size());
+
         return new PageImpl<>(matches.subList(from, to), pageable, matches.size());
     }
 
     private static boolean matchesAnyLocale(Event e, String lowerQuery) {
         if (e.getTitle() == null) return false;
+
         return e.getTitle().values().values().stream()
                 .anyMatch(v -> v != null && v.toLowerCase().contains(lowerQuery));
     }

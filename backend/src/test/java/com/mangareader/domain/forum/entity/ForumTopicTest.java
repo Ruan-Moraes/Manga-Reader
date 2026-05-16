@@ -1,10 +1,6 @@
 package com.mangareader.domain.forum.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -41,16 +37,16 @@ class ForumTopicTest {
                     .category(ForumCategory.GERAL)
                     .build();
 
-            assertEquals(0, topic.getViewCount());
-            assertEquals(0, topic.getReplyCount());
-            assertEquals(0, topic.getLikeCount());
-            assertFalse(topic.isPinned());
-            assertFalse(topic.isLocked());
-            assertFalse(topic.isSolved());
-            assertNotNull(topic.getTags());
-            assertTrue(topic.getTags().isEmpty());
-            assertNotNull(topic.getReplies());
-            assertTrue(topic.getReplies().isEmpty());
+            assertThat(topic.getViewCount()).isEqualTo(0);
+            assertThat(topic.getReplyCount()).isEqualTo(0);
+            assertThat(topic.getLikeCount()).isEqualTo(0);
+            assertThat(topic.isPinned()).isFalse();
+            assertThat(topic.isLocked()).isFalse();
+            assertThat(topic.isSolved()).isFalse();
+            assertThat(topic.getTags()).isNotNull();
+            assertThat(topic.getTags().isEmpty()).isTrue();
+            assertThat(topic.getReplies()).isNotNull();
+            assertThat(topic.getReplies().isEmpty()).isTrue();
         }
     }
 
@@ -77,16 +73,16 @@ class ForumTopicTest {
                     .isSolved(false)
                     .build();
 
-            assertEquals("Anúncio importante", topic.getTitle());
-            assertEquals("Conteúdo do anúncio", topic.getContent());
-            assertEquals(ForumCategory.NOTICIAS, topic.getCategory());
-            assertEquals(2, topic.getTags().size());
-            assertEquals(100, topic.getViewCount());
-            assertEquals(5, topic.getReplyCount());
-            assertEquals(42, topic.getLikeCount());
-            assertTrue(topic.isPinned());
-            assertTrue(topic.isLocked());
-            assertFalse(topic.isSolved());
+            assertThat(topic.getTitle()).isEqualTo("Anúncio importante");
+            assertThat(topic.getContent()).isEqualTo("Conteúdo do anúncio");
+            assertThat(topic.getCategory()).isEqualTo(ForumCategory.NOTICIAS);
+            assertThat(topic.getTags().size()).isEqualTo(2);
+            assertThat(topic.getViewCount()).isEqualTo(100);
+            assertThat(topic.getReplyCount()).isEqualTo(5);
+            assertThat(topic.getLikeCount()).isEqualTo(42);
+            assertThat(topic.isPinned()).isTrue();
+            assertThat(topic.isLocked()).isTrue();
+            assertThat(topic.isSolved()).isFalse();
         }
     }
 
@@ -104,13 +100,13 @@ class ForumTopicTest {
                     .category(ForumCategory.GERAL)
                     .build();
 
-            assertFalse(topic.isPinned());
+            assertThat(topic.isPinned()).isFalse();
 
             topic.setPinned(true);
-            assertTrue(topic.isPinned());
+            assertThat(topic.isPinned()).isTrue();
 
             topic.setPinned(false);
-            assertFalse(topic.isPinned());
+            assertThat(topic.isPinned()).isFalse();
         }
 
         @Test
@@ -123,9 +119,9 @@ class ForumTopicTest {
                     .category(ForumCategory.GERAL)
                     .build();
 
-            assertFalse(topic.isLocked());
+            assertThat(topic.isLocked()).isFalse();
             topic.setLocked(true);
-            assertTrue(topic.isLocked());
+            assertThat(topic.isLocked()).isTrue();
         }
 
         @Test
@@ -138,9 +134,9 @@ class ForumTopicTest {
                     .category(ForumCategory.SUPORTE)
                     .build();
 
-            assertFalse(topic.isSolved());
+            assertThat(topic.isSolved()).isFalse();
             topic.setSolved(true);
-            assertTrue(topic.isSolved());
+            assertThat(topic.isSolved()).isTrue();
         }
     }
 
@@ -167,8 +163,8 @@ class ForumTopicTest {
 
             topic.getReplies().add(reply);
 
-            assertEquals(1, topic.getReplies().size());
-            assertEquals("Concordo!", topic.getReplies().getFirst().getContent());
+            assertThat(topic.getReplies().size()).isEqualTo(1);
+            assertThat(topic.getReplies().getFirst().getContent()).isEqualTo("Concordo!");
         }
     }
 
@@ -180,21 +176,21 @@ class ForumTopicTest {
         @DisplayName("Todas as categorias devem ter displayName")
         void allCategoriesShouldHaveDisplayName() {
             for (ForumCategory cat : ForumCategory.values()) {
-                assertNotNull(cat.getDisplayName());
-                assertFalse(cat.getDisplayName().isBlank());
+                assertThat(cat.getDisplayName()).isNotNull();
+                assertThat(cat.getDisplayName().isBlank()).isFalse();
             }
         }
 
         @Test
         @DisplayName("Deve ter 8 categorias disponíveis")
         void shouldHaveExpectedCategoryCount() {
-            assertEquals(8, ForumCategory.values().length);
+            assertThat(ForumCategory.values().length).isEqualTo(8);
         }
 
         @Test
         @DisplayName("Categoria GERAL deve ter displayName 'Geral'")
         void geralCategoryShouldHaveCorrectDisplayName() {
-            assertEquals("Geral", ForumCategory.GERAL.getDisplayName());
+            assertThat(ForumCategory.GERAL.getDisplayName()).isEqualTo("Geral");
         }
     }
 
@@ -207,13 +203,13 @@ class ForumTopicTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             ForumTopic topic = new ForumTopic();
 
-            assertNull(topic.getId());
-            assertNull(topic.getAuthor());
-            assertNull(topic.getTitle());
-            assertNull(topic.getContent());
-            assertNull(topic.getCategory());
-            assertNull(topic.getCreatedAt());
-            assertNull(topic.getLastActivityAt());
+            assertThat(topic.getId()).isNull();
+            assertThat(topic.getAuthor()).isNull();
+            assertThat(topic.getTitle()).isNull();
+            assertThat(topic.getContent()).isNull();
+            assertThat(topic.getCategory()).isNull();
+            assertThat(topic.getCreatedAt()).isNull();
+            assertThat(topic.getLastActivityAt()).isNull();
         }
     }
 }

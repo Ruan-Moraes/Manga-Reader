@@ -1,9 +1,6 @@
 package com.mangareader.domain.store.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -27,10 +24,10 @@ class StoreTest {
                     .website("https://amazon.com.br")
                     .build();
 
-            assertNotNull(store.getFeatures());
-            assertTrue(store.getFeatures().isEmpty());
-            assertNotNull(store.getTitles());
-            assertTrue(store.getTitles().isEmpty());
+            assertThat(store.getFeatures()).isNotNull();
+            assertThat(store.getFeatures().isEmpty()).isTrue();
+            assertThat(store.getTitles()).isNotNull();
+            assertThat(store.getTitles().isEmpty()).isTrue();
         }
     }
 
@@ -52,15 +49,15 @@ class StoreTest {
                     .features(List.of("Frete grátis", "Prime", "Kindle"))
                     .build();
 
-            assertEquals("Amazon Brasil", store.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertEquals("https://example.com/amazon-logo.png", store.getLogo());
-            assertEquals("https://example.com/amazon-icon.png", store.getIcon());
-            assertEquals("Maior loja online do Brasil", store.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertEquals("https://amazon.com.br", store.getWebsite());
-            assertEquals(StoreAvailability.IN_STOCK, store.getAvailability());
-            assertEquals(4.5, store.getRating());
-            assertEquals(3, store.getFeatures().size());
-            assertTrue(store.getFeatures().contains("Prime"));
+            assertThat(store.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Amazon Brasil");
+            assertThat(store.getLogo()).isEqualTo("https://example.com/amazon-logo.png");
+            assertThat(store.getIcon()).isEqualTo("https://example.com/amazon-icon.png");
+            assertThat(store.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Maior loja online do Brasil");
+            assertThat(store.getWebsite()).isEqualTo("https://amazon.com.br");
+            assertThat(store.getAvailability()).isEqualTo(StoreAvailability.IN_STOCK);
+            assertThat(store.getRating()).isEqualTo(4.5);
+            assertThat(store.getFeatures().size()).isEqualTo(3);
+            assertThat(store.getFeatures().contains("Prime")).isTrue();
         }
     }
 
@@ -90,9 +87,9 @@ class StoreTest {
 
             store.getTitles().addAll(List.of(st1, st2));
 
-            assertEquals(2, store.getTitles().size());
-            assertEquals("mongo-title-id-1", store.getTitles().get(0).getTitleId());
-            assertEquals(store, store.getTitles().get(0).getStore());
+            assertThat(store.getTitles().size()).isEqualTo(2);
+            assertThat(store.getTitles().get(0).getTitleId()).isEqualTo("mongo-title-id-1");
+            assertThat(store.getTitles().get(0).getStore()).isEqualTo(store);
         }
 
         @Test
@@ -102,8 +99,8 @@ class StoreTest {
                     .titleId("title-1")
                     .build();
 
-            assertNotNull(st.getTitleId());
-            assertNull(st.getUrl());
+            assertThat(st.getTitleId()).isNotNull();
+            assertThat(st.getUrl()).isNull();
         }
     }
 
@@ -114,7 +111,7 @@ class StoreTest {
         @Test
         @DisplayName("Deve ter 3 tipos de disponibilidade")
         void shouldHaveThreeAvailabilityTypes() {
-            assertEquals(3, StoreAvailability.values().length);
+            assertThat(StoreAvailability.values().length).isEqualTo(3);
         }
 
         @Test
@@ -126,13 +123,13 @@ class StoreTest {
                     .availability(StoreAvailability.IN_STOCK)
                     .build();
 
-            assertEquals(StoreAvailability.IN_STOCK, store.getAvailability());
+            assertThat(store.getAvailability()).isEqualTo(StoreAvailability.IN_STOCK);
 
             store.setAvailability(StoreAvailability.OUT_OF_STOCK);
-            assertEquals(StoreAvailability.OUT_OF_STOCK, store.getAvailability());
+            assertThat(store.getAvailability()).isEqualTo(StoreAvailability.OUT_OF_STOCK);
 
             store.setAvailability(StoreAvailability.PRE_ORDER);
-            assertEquals(StoreAvailability.PRE_ORDER, store.getAvailability());
+            assertThat(store.getAvailability()).isEqualTo(StoreAvailability.PRE_ORDER);
         }
     }
 
@@ -145,13 +142,13 @@ class StoreTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             Store store = new Store();
 
-            assertNull(store.getId());
-            assertTrue(store.getName().isEmpty());
-            assertNull(store.getLogo());
-            assertTrue(store.getDescription().isEmpty());
-            assertNull(store.getWebsite());
-            assertNull(store.getAvailability());
-            assertNull(store.getRating());
+            assertThat(store.getId()).isNull();
+            assertThat(store.getName().isEmpty()).isTrue();
+            assertThat(store.getLogo()).isNull();
+            assertThat(store.getDescription().isEmpty()).isTrue();
+            assertThat(store.getWebsite()).isNull();
+            assertThat(store.getAvailability()).isNull();
+            assertThat(store.getRating()).isNull();
         }
     }
 }

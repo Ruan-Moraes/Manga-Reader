@@ -1,10 +1,6 @@
 package com.mangareader.domain.news.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
@@ -31,21 +27,21 @@ class NewsItemTest {
                     .category(NewsCategory.LANCAMENTOS)
                     .build();
 
-            assertNotNull(news.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertTrue(news.getContent().isEmpty());
-            assertNotNull(news.getGallery());
-            assertTrue(news.getGallery().isEmpty());
-            assertNotNull(news.getTags());
-            assertTrue(news.getTags().isEmpty());
-            assertEquals(0, news.getReadTime());
-            assertEquals(0, news.getViews());
-            assertEquals(0, news.getCommentsCount());
-            assertEquals(0, news.getTrendingScore());
-            assertFalse(news.isExclusive());
-            assertFalse(news.isFeatured());
-            assertNotNull(news.getTechnicalSheet());
-            assertTrue(news.getTechnicalSheet().isEmpty());
-            assertNotNull(news.getReactions());
+            assertThat(news.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isNotNull();
+            assertThat(news.getContent().isEmpty()).isTrue();
+            assertThat(news.getGallery()).isNotNull();
+            assertThat(news.getGallery().isEmpty()).isTrue();
+            assertThat(news.getTags()).isNotNull();
+            assertThat(news.getTags().isEmpty()).isTrue();
+            assertThat(news.getReadTime()).isEqualTo(0);
+            assertThat(news.getViews()).isEqualTo(0);
+            assertThat(news.getCommentsCount()).isEqualTo(0);
+            assertThat(news.getTrendingScore()).isEqualTo(0);
+            assertThat(news.isExclusive()).isFalse();
+            assertThat(news.isFeatured()).isFalse();
+            assertThat(news.getTechnicalSheet()).isNotNull();
+            assertThat(news.getTechnicalSheet().isEmpty()).isTrue();
+            assertThat(news.getReactions()).isNotNull();
         }
     }
 
@@ -95,22 +91,22 @@ class NewsItemTest {
                     .reactions(reactions)
                     .build();
 
-            assertEquals("news-abc", news.getId());
-            assertEquals("One Piece ganha adaptação live action S2", news.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertEquals("Netflix anuncia segunda temporada", news.getSubtitle().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertEquals(NewsCategory.ADAPTACOES, news.getCategory());
-            assertEquals(3, news.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR")).size());
-            assertEquals(3, news.getTags().size());
-            assertEquals(5, news.getReadTime());
-            assertEquals(10000, news.getViews());
-            assertEquals(42, news.getCommentsCount());
-            assertEquals(95, news.getTrendingScore());
-            assertTrue(news.isExclusive());
-            assertTrue(news.isFeatured());
-            assertEquals("https://youtube.com/watch?v=abc", news.getVideoUrl());
-            assertEquals("Matt Owens", news.getTechnicalSheet().get("Diretor"));
-            assertEquals(100, news.getReactions().getLike());
-            assertEquals(50, news.getReactions().getExcited());
+            assertThat(news.getId()).isEqualTo("news-abc");
+            assertThat(news.getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("One Piece ganha adaptação live action S2");
+            assertThat(news.getSubtitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Netflix anuncia segunda temporada");
+            assertThat(news.getCategory()).isEqualTo(NewsCategory.ADAPTACOES);
+            assertThat(news.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR")).size()).isEqualTo(3);
+            assertThat(news.getTags().size()).isEqualTo(3);
+            assertThat(news.getReadTime()).isEqualTo(5);
+            assertThat(news.getViews()).isEqualTo(10000);
+            assertThat(news.getCommentsCount()).isEqualTo(42);
+            assertThat(news.getTrendingScore()).isEqualTo(95);
+            assertThat(news.isExclusive()).isTrue();
+            assertThat(news.isFeatured()).isTrue();
+            assertThat(news.getVideoUrl()).isEqualTo("https://youtube.com/watch?v=abc");
+            assertThat(news.getTechnicalSheet().get("Diretor")).isEqualTo("Matt Owens");
+            assertThat(news.getReactions().getLike()).isEqualTo(100);
+            assertThat(news.getReactions().getExcited()).isEqualTo(50);
         }
     }
 
@@ -129,9 +125,9 @@ class NewsItemTest {
                     .profileLink("/editor")
                     .build();
 
-            assertEquals("a1", author.getId());
-            assertEquals("Editor", author.getName());
-            assertEquals("Redator", author.getRole());
+            assertThat(author.getId()).isEqualTo("a1");
+            assertThat(author.getName()).isEqualTo("Editor");
+            assertThat(author.getRole()).isEqualTo("Redator");
         }
 
         @Test
@@ -139,11 +135,11 @@ class NewsItemTest {
         void shouldKeepFieldsNullOnNoArgs() {
             NewsAuthor author = new NewsAuthor();
 
-            assertNull(author.getId());
-            assertNull(author.getName());
-            assertNull(author.getAvatar());
-            assertNull(author.getRole());
-            assertNull(author.getProfileLink());
+            assertThat(author.getId()).isNull();
+            assertThat(author.getName()).isNull();
+            assertThat(author.getAvatar()).isNull();
+            assertThat(author.getRole()).isNull();
+            assertThat(author.getProfileLink()).isNull();
         }
     }
 
@@ -156,10 +152,10 @@ class NewsItemTest {
         void shouldHaveDefaultZeroReactions() {
             NewsReaction reaction = new NewsReaction();
 
-            assertEquals(0, reaction.getLike());
-            assertEquals(0, reaction.getExcited());
-            assertEquals(0, reaction.getSad());
-            assertEquals(0, reaction.getSurprised());
+            assertThat(reaction.getLike()).isEqualTo(0);
+            assertThat(reaction.getExcited()).isEqualTo(0);
+            assertThat(reaction.getSad()).isEqualTo(0);
+            assertThat(reaction.getSurprised()).isEqualTo(0);
         }
 
         @Test
@@ -170,8 +166,8 @@ class NewsItemTest {
             reaction.setLike(reaction.getLike() + 1);
             reaction.setExcited(reaction.getExcited() + 1);
 
-            assertEquals(1, reaction.getLike());
-            assertEquals(1, reaction.getExcited());
+            assertThat(reaction.getLike()).isEqualTo(1);
+            assertThat(reaction.getExcited()).isEqualTo(1);
         }
     }
 
@@ -182,22 +178,22 @@ class NewsItemTest {
         @Test
         @DisplayName("Deve ter 9 categorias de notícia")
         void shouldHaveNineCategories() {
-            assertEquals(9, NewsCategory.values().length);
+            assertThat(NewsCategory.values().length).isEqualTo(9);
         }
 
         @Test
         @DisplayName("Todas as categorias devem ter displayName")
         void allCategoriesShouldHaveDisplayName() {
             for (NewsCategory cat : NewsCategory.values()) {
-                assertNotNull(cat.getDisplayName());
-                assertFalse(cat.getDisplayName().isBlank());
+                assertThat(cat.getDisplayName()).isNotNull();
+                assertThat(cat.getDisplayName().isBlank()).isFalse();
             }
         }
 
         @Test
         @DisplayName("LANCAMENTOS deve ter displayName 'Lançamentos'")
         void lancamentosShouldHaveCorrectDisplayName() {
-            assertEquals("Lançamentos", NewsCategory.LANCAMENTOS.getDisplayName());
+            assertThat(NewsCategory.LANCAMENTOS.getDisplayName()).isEqualTo("Lançamentos");
         }
     }
 
@@ -213,12 +209,12 @@ class NewsItemTest {
                     .category(NewsCategory.PRINCIPAIS)
                     .build();
 
-            assertEquals(0, news.getViews());
+            assertThat(news.getViews()).isEqualTo(0);
             news.setViews(news.getViews() + 1);
-            assertEquals(1, news.getViews());
+            assertThat(news.getViews()).isEqualTo(1);
 
             news.setTrendingScore(50);
-            assertEquals(50, news.getTrendingScore());
+            assertThat(news.getTrendingScore()).isEqualTo(50);
         }
 
         @Test
@@ -229,14 +225,14 @@ class NewsItemTest {
                     .category(NewsCategory.ENTREVISTAS)
                     .build();
 
-            assertFalse(news.isFeatured());
-            assertFalse(news.isExclusive());
+            assertThat(news.isFeatured()).isFalse();
+            assertThat(news.isExclusive()).isFalse();
 
             news.setFeatured(true);
             news.setExclusive(true);
 
-            assertTrue(news.isFeatured());
-            assertTrue(news.isExclusive());
+            assertThat(news.isFeatured()).isTrue();
+            assertThat(news.isExclusive()).isTrue();
         }
     }
 
@@ -249,15 +245,15 @@ class NewsItemTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             NewsItem news = new NewsItem();
 
-            assertNull(news.getId());
-            assertTrue(news.getTitle().isEmpty());
-            assertTrue(news.getSubtitle().isEmpty());
-            assertTrue(news.getExcerpt().isEmpty());
-            assertNull(news.getCategory());
-            assertNull(news.getAuthor());
-            assertNull(news.getPublishedAt());
-            assertNull(news.getUpdatedAt());
-            assertNull(news.getVideoUrl());
+            assertThat(news.getId()).isNull();
+            assertThat(news.getTitle().isEmpty()).isTrue();
+            assertThat(news.getSubtitle().isEmpty()).isTrue();
+            assertThat(news.getExcerpt().isEmpty()).isTrue();
+            assertThat(news.getCategory()).isNull();
+            assertThat(news.getAuthor()).isNull();
+            assertThat(news.getPublishedAt()).isNull();
+            assertThat(news.getUpdatedAt()).isNull();
+            assertThat(news.getVideoUrl()).isNull();
         }
     }
 }

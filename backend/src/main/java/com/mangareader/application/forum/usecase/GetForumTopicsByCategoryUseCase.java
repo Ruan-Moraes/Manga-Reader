@@ -30,8 +30,8 @@ public class GetForumTopicsByCategoryUseCase {
     public Page<ForumTopic> execute(ForumCategory category, Pageable pageable, boolean crossLanguage) {
         Page<ForumTopic> page = crossLanguage
                 ? forumRepository.findByCategory(category, pageable)
-                : forumRepository.findByCategoryAndLanguage(
-                        category, localeResolver.currentLanguageTag(), pageable);
+                : forumRepository.findByCategoryAndLanguageIn(
+                        category, localeResolver.currentContentLanguageTags(), pageable);
 
         page.getContent().forEach(topic -> {
             topic.getAuthor().getName();

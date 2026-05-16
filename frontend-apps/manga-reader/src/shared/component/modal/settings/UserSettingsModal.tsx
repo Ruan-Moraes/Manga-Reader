@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { clsx } from 'clsx';
 import {
@@ -8,6 +8,7 @@ import {
     FiBell,
     FiShield,
 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 import { USER_SETTINGS_STORAGE_KEY } from '@shared/constant/USER_SETTINGS_STORAGE_KEY';
@@ -23,7 +24,6 @@ import LanguageSettings from './tabs/LanguageSettings';
 import NotificationSettings from './tabs/NotificationSettings';
 import PrivacySettings from './tabs/PrivacySettings';
 import ReadingSettings from './tabs/ReadingSettings';
-import BaseButton from '@shared/component/button/BaseButton.tsx';
 import DarkButton from '@shared/component/button/DarkButton.tsx';
 
 type UserSettingsModalProps = {
@@ -32,25 +32,29 @@ type UserSettingsModalProps = {
     isLoggedIn: boolean;
 };
 
-const tabs: Array<{
-    key: TabKey;
-    label: string;
-    icon: React.ComponentType<{ className?: string }>;
-}> = [
-    { key: 'reading', label: 'Leitura', icon: FiBookOpen },
-    { key: 'appearance', label: 'Aparência', icon: FiMonitor },
-    { key: 'language', label: 'Idioma', icon: FiGlobe },
-    { key: 'notifications', label: 'Notificações', icon: FiBell },
-    { key: 'privacy', label: 'Privacidade', icon: FiShield },
-];
-
 const UserSettingsModal = ({
     isOpen,
     onClose,
     isLoggedIn,
 }: UserSettingsModalProps) => {
+    const { t } = useTranslation('user');
     const [activeTab, setActiveTab] = useState<TabKey>('reading');
     const [settings, setSettings] = useState<UserSettings>(getStoredSettings);
+
+    const tabs = useMemo<Array<{
+        key: TabKey;
+        label: string;
+        icon: React.ComponentType<{ className?: string }>;
+    }>>(
+        () => [
+            { key: 'reading', label: t('settings.tabs.reading'), icon: FiBookOpen },
+            { key: 'appearance', label: t('settings.tabs.appearance'), icon: FiMonitor },
+            { key: 'language', label: t('settings.tabs.language'), icon: FiGlobe },
+            { key: 'notifications', label: t('settings.tabs.notifications'), icon: FiBell },
+            { key: 'privacy', label: t('settings.tabs.privacy'), icon: FiShield },
+        ],
+        [t],
+    );
 
     useEffect(() => {
         localStorage.setItem(
@@ -64,13 +68,13 @@ const UserSettingsModal = ({
             <header className="flex items-center justify-between">
                 <div>
                     <p className={sectionTitleClass}>
-                        Configurações do usuário
+                        {t('settings.modalTitle')}
                     </p>
                     <p className="text-xs text-tertiary">
-                        Ajuste sua experiência.
+                        {t('settings.modalSubtitle')}
                     </p>
                 </div>
-                <DarkButton onClick={onClose} text="Fechar" />
+                <DarkButton onClick={onClose} text={t('settings.close')} />
             </header>
             <div className="grid gap-2 md:grid-cols-[200px_1fr]">
                 <nav className="flex scrollbar-hidden gap-2 overflow-x-scroll border rounded-xs border-tertiary bg-secondary/40">
@@ -115,6 +119,7 @@ const UserSettingsModal = ({
                         <LanguageSettings
                             settings={settings}
                             onUpdate={setSettings}
+                            isLoggedIn={isLoggedIn}
                         />
                     )}
                     {activeTab === 'notifications' && (

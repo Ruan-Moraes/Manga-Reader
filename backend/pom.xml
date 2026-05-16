@@ -255,4 +255,75 @@
         </plugins>
     </build>
 
+    <profiles>
+        <!-- Cobertura de mutação: mvn -Pmutation test -->
+        <profile>
+            <id>mutation</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.16.3</version>
+                        <executions>
+                            <execution>
+                                <id>pit-report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>mutationCoverage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>1.2.1</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <targetClasses>
+                                <param>com.mangareader.domain.*</param>
+                                <param>com.mangareader.application.*</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>com.mangareader.domain.*</param>
+                                <param>com.mangareader.application.*</param>
+                            </targetTests>
+                            <outputFormats>
+                                <param>HTML</param>
+                            </outputFormats>
+                            <timestampedReports>false</timestampedReports>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Migração JUnit asserts -> AssertJ: mvn -Prewrite rewrite:run -->
+        <profile>
+            <id>rewrite</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openrewrite.maven</groupId>
+                        <artifactId>rewrite-maven-plugin</artifactId>
+                        <version>6.39.0</version>
+                        <configuration>
+                            <activeRecipes>
+                                <recipe>org.openrewrite.java.testing.assertj.JUnitToAssertj</recipe>
+                            </activeRecipes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.openrewrite.recipe</groupId>
+                                <artifactId>rewrite-testing-frameworks</artifactId>
+                                <version>3.35.3</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

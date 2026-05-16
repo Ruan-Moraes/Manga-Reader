@@ -1,8 +1,6 @@
 package com.mangareader.domain.user.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
@@ -30,10 +28,10 @@ class UserSocialLinkTest {
                     .url("https://twitter.com/ruan")
                     .build();
 
-            assertEquals(id, link.getId());
-            assertEquals(user, link.getUser());
-            assertEquals("Twitter", link.getPlatform());
-            assertEquals("https://twitter.com/ruan", link.getUrl());
+            assertThat(link.getId()).isEqualTo(id);
+            assertThat(link.getUser()).isEqualTo(user);
+            assertThat(link.getPlatform()).isEqualTo("Twitter");
+            assertThat(link.getUrl()).isEqualTo("https://twitter.com/ruan");
         }
 
         @Test
@@ -44,8 +42,8 @@ class UserSocialLinkTest {
                     .url("https://github.com/ruan")
                     .build();
 
-            assertNull(link.getUser());
-            assertNotNull(link.getPlatform());
+            assertThat(link.getUser()).isNull();
+            assertThat(link.getPlatform()).isNotNull();
         }
     }
 
@@ -63,9 +61,9 @@ class UserSocialLinkTest {
             link.setPlatform("Instagram");
             link.setUrl("https://instagram.com/ruan");
 
-            assertEquals(id, link.getId());
-            assertEquals("Instagram", link.getPlatform());
-            assertEquals("https://instagram.com/ruan", link.getUrl());
+            assertThat(link.getId()).isEqualTo(id);
+            assertThat(link.getPlatform()).isEqualTo("Instagram");
+            assertThat(link.getUrl()).isEqualTo("https://instagram.com/ruan");
         }
     }
 
@@ -78,10 +76,10 @@ class UserSocialLinkTest {
         void shouldCreateEmptyInstance() {
             UserSocialLink link = new UserSocialLink();
 
-            assertNull(link.getId());
-            assertNull(link.getUser());
-            assertNull(link.getPlatform());
-            assertNull(link.getUrl());
+            assertThat(link.getId()).isNull();
+            assertThat(link.getUser()).isNull();
+            assertThat(link.getPlatform()).isNull();
+            assertThat(link.getUrl()).isNull();
         }
     }
 }

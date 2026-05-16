@@ -137,7 +137,10 @@ class AdminUserControllerTest {
                     .thenThrow(new ResourceNotFoundException("User", "id", USER_ID));
 
             mockMvc.perform(get("/api/admin/users/{id}", USER_ID))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("RESOURCE_NOT_FOUND"))
+                    .andExpect(jsonPath("$.statusCode").value(404));
         }
     }
 
@@ -194,7 +197,11 @@ class AdminUserControllerTest {
                             .content("""
                                     {"reason": ""}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.reason").exists());
         }
     }
 

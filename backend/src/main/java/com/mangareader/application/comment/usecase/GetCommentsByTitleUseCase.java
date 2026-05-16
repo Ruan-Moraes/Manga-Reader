@@ -30,7 +30,7 @@ public class GetCommentsByTitleUseCase {
     public Page<Comment> execute(String titleId, Pageable pageable, boolean crossLanguage) {
         return crossLanguage
                 ? commentRepository.findByTitleId(titleId, pageable)
-                : commentRepository.findByTitleIdAndLanguage(
-                        titleId, localeResolver.currentLanguageTag(), pageable);
+                : commentRepository.findByTitleIdAndLanguageIn(
+                        titleId, localeResolver.currentContentLanguageTags(), pageable);
     }
 }

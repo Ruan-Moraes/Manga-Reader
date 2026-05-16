@@ -1,10 +1,11 @@
 package com.mangareader.domain.manga.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 class ChapterTest {
     @Test
@@ -12,15 +13,15 @@ class ChapterTest {
     void shouldSetAllFieldsViaBuilder() {
         Chapter chapter = Chapter.builder()
                 .number("42")
-                .title("A Grande Batalha")
+                .title(LocalizedString.ofDefault("A Grande Batalha"))
                 .releaseDate("2025-06-15")
                 .pages("36")
                 .build();
 
-        assertEquals("42", chapter.getNumber());
-        assertEquals("A Grande Batalha", chapter.getTitle());
-        assertEquals("2025-06-15", chapter.getReleaseDate());
-        assertEquals("36", chapter.getPages());
+        assertThat(chapter.getNumber()).isEqualTo("42");
+        assertThat(chapter.getTitle().resolve(null)).isEqualTo("A Grande Batalha");
+        assertThat(chapter.getReleaseDate()).isEqualTo("2025-06-15");
+        assertThat(chapter.getPages()).isEqualTo("36");
     }
 
     @Test
@@ -28,10 +29,10 @@ class ChapterTest {
     void shouldKeepAllFieldsNullOnNoArgsConstructor() {
         Chapter chapter = new Chapter();
 
-        assertNull(chapter.getNumber());
-        assertNull(chapter.getTitle());
-        assertNull(chapter.getReleaseDate());
-        assertNull(chapter.getPages());
+        assertThat(chapter.getNumber()).isNull();
+        assertThat(chapter.getTitle()).isNull();
+        assertThat(chapter.getReleaseDate()).isNull();
+        assertThat(chapter.getPages()).isNull();
     }
 
     @Test
@@ -40,25 +41,25 @@ class ChapterTest {
         Chapter chapter = new Chapter();
 
         chapter.setNumber("1");
-        chapter.setTitle("Prólogo");
+        chapter.setTitle(LocalizedString.ofDefault("Prólogo"));
         chapter.setReleaseDate("2024-01-01");
         chapter.setPages("24");
 
-        assertEquals("1", chapter.getNumber());
-        assertEquals("Prólogo", chapter.getTitle());
-        assertEquals("2024-01-01", chapter.getReleaseDate());
-        assertEquals("24", chapter.getPages());
+        assertThat(chapter.getNumber()).isEqualTo("1");
+        assertThat(chapter.getTitle().resolve(null)).isEqualTo("Prólogo");
+        assertThat(chapter.getReleaseDate()).isEqualTo("2024-01-01");
+        assertThat(chapter.getPages()).isEqualTo("24");
     }
 
     @Test
     @DisplayName("Deve criar instância com todos os campos via AllArgsConstructor")
     void shouldCreateInstanceViaAllArgsConstructor() {
-        Chapter chapter = new Chapter("10", "Revelação", "2025-03-01", "30");
+        Chapter chapter = new Chapter("10", LocalizedString.ofDefault("Revelação"), "2025-03-01", "30");
 
-        assertEquals("10", chapter.getNumber());
-        assertEquals("Revelação", chapter.getTitle());
-        assertEquals("2025-03-01", chapter.getReleaseDate());
-        assertEquals("30", chapter.getPages());
+        assertThat(chapter.getNumber()).isEqualTo("10");
+        assertThat(chapter.getTitle().resolve(null)).isEqualTo("Revelação");
+        assertThat(chapter.getReleaseDate()).isEqualTo("2025-03-01");
+        assertThat(chapter.getPages()).isEqualTo("30");
     }
 
     @Test
@@ -68,9 +69,9 @@ class ChapterTest {
                 .number("5")
                 .build();
 
-        assertEquals("5", chapter.getNumber());
-        assertNull(chapter.getTitle());
-        assertNull(chapter.getReleaseDate());
-        assertNull(chapter.getPages());
+        assertThat(chapter.getNumber()).isEqualTo("5");
+        assertThat(chapter.getTitle()).isNull();
+        assertThat(chapter.getReleaseDate()).isNull();
+        assertThat(chapter.getPages()).isNull();
     }
 }

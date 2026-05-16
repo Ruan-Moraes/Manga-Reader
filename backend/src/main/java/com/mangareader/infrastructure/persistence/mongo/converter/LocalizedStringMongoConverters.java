@@ -20,7 +20,6 @@ import com.mangareader.shared.domain.i18n.LocalizedStringList;
  * busca por subcampo (ex.: {@code name.pt-BR}).
  */
 public final class LocalizedStringMongoConverters {
-
     private LocalizedStringMongoConverters() {
     }
 
@@ -37,10 +36,13 @@ public final class LocalizedStringMongoConverters {
         @Override
         public LocalizedString convert(Document source) {
             if (source == null || source.isEmpty()) return LocalizedString.empty();
+
             Map<String, String> map = new LinkedHashMap<>();
+
             source.forEach((k, v) -> {
                 if (v != null) map.put(k, v.toString());
             });
+
             return LocalizedString.of(map);
         }
     }
@@ -59,12 +61,15 @@ public final class LocalizedStringMongoConverters {
         @Override
         public LocalizedStringList convert(Document source) {
             if (source == null || source.isEmpty()) return LocalizedStringList.empty();
+
             Map<String, List<String>> map = new LinkedHashMap<>();
+
             source.forEach((k, v) -> {
                 if (v instanceof List<?> list) {
                     map.put(k, list.stream().map(Object::toString).toList());
                 }
             });
+
             return LocalizedStringList.of(map);
         }
     }

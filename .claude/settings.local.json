@@ -1,47 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls /home/ruan/Documentos/Projetos/Ruan/Manga-Reader/*.json /home/ruan/Documentos/Projetos/Ruan/Manga-Reader/*.yaml)",
-      "Bash(pnpm --filter manga-reader add marked dompurify)",
-      "Bash(pnpm --filter manga-reader add -D @types/dompurify)",
-      "Bash(pnpm --filter manga-reader exec tsc -b --noEmit)",
-      "Bash(npm info:*)",
-      "Bash(pnpm:*)",
-      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
-      "mcp__plugin_context-mode_context-mode__ctx_upgrade",
-      "Bash(node:*)",
-      "mcp__plugin_context-mode_context-mode__ctx_doctor",
-      "mcp__plugin_context-mode_context-mode__ctx_search",
-      "Bash(npm install *)",
-      "Bash(npx tsc *)",
-      "Bash(mvn compile *)",
-      "Bash(mvn clean *)",
-      "Bash(mvn test *)",
-      "Bash(npx vitest *)",
-      "Bash(git checkout *)",
-      "Bash(echo \"EXIT=$?\")",
-      "Bash(./node_modules/.bin/tsc --noEmit)",
       "Bash(git add *)",
-      "Bash(git commit -m 'feat\\(i18n\\): add internationalization configuration and message bundles for backend *)",
-      "Bash(git commit -m 'refactor\\(dto\\): enhance request DTOs with validation annotations and i18n support *)",
-      "Bash(git commit -m 'refactor\\(application\\): add transactional annotations and i18n support to use cases *)",
-      "Bash(git commit -m 'refactor\\(security\\): enhance exception handler and admin DTOs with i18n *)",
-      "Bash(git commit -m 'test\\(backend\\): add tests for auth and contact use cases *)",
-      "Bash(git commit -m 'feat\\(i18n\\): add frontend internationalization configuration and translation files *)",
-      "Bash(git commit -m 'refactor\\(frontend\\): integrate i18n into all pages and components *)",
-      "Bash(git commit -m 'feat\\(frontend\\): add utility services and enhance test setup *)",
-      "Bash(git commit -m 'chore\\(dependencies\\): update npm and pnpm lock files *)",
-      "Bash(git commit -m 'docs: update project documentation with i18n guidelines and implementation details *)",
-      "Bash(git commit *)",
-      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
-      "mcp__plugin_context-mode_context-mode__ctx_execute",
-      "Bash(mvn test-compile *)",
-      "Skill(update-config)",
-      "Bash(/usr/bin/mvn test-compile *)",
-      "Bash(find /home/ruan/Documentos/Projetos/Ruan/Manga-Reader/frontend* -path \"*shared/service/http*\" -type f)",
-      "Bash(git -C /home/ruan/Documentos/Projetos/Ruan/Manga-Reader status --short)",
-      "Bash(npx vite *)",
-      "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")"
+      "Bash(git commit -m ' *)"
     ]
   }
 }

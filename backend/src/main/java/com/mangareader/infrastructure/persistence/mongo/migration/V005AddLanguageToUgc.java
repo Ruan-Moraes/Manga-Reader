@@ -19,7 +19,6 @@ import io.mongock.api.annotations.RollbackExecution;
  */
 @ChangeUnit(id = "V005-add-language-to-ugc", order = "005", author = "mangareader")
 public class V005AddLanguageToUgc {
-
     private static final String DEFAULT_TAG = "pt-BR";
 
     private final MongoTemplate mongoTemplate;
@@ -63,6 +62,7 @@ public class V005AddLanguageToUgc {
 
     private void dropIndexIfExists(String collection, String indexName) {
         var ops = mongoTemplate.indexOps(collection);
+
         ops.getIndexInfo().stream()
                 .filter(idx -> idx.getName().equals(indexName))
                 .findFirst()

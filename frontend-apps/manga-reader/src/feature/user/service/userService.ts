@@ -127,3 +127,28 @@ export const getUserHistory = async (
 export const recordView = async (titleId: string): Promise<void> => {
     await api.post(`${API_URLS.USERS}/me/history`, { titleId });
 };
+
+// ---------------------------------------------------------------------------
+// Content Locales (catalog + UGC language preference)
+// ---------------------------------------------------------------------------
+
+export type ContentLocales = {
+    contentLocales: string[];
+};
+
+export const getMyContentLocales = async (): Promise<ContentLocales> => {
+    const response = await api.get<ApiResponse<ContentLocales>>(
+        `${API_URLS.USERS}/me/content-locales`,
+    );
+    return response.data.data;
+};
+
+export const updateMyContentLocales = async (
+    payload: ContentLocales,
+): Promise<ContentLocales> => {
+    const response = await api.patch<ApiResponse<ContentLocales>>(
+        `${API_URLS.USERS}/me/content-locales`,
+        payload,
+    );
+    return response.data.data;
+};

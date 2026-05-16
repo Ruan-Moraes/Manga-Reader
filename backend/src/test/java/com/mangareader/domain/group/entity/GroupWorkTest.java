@@ -1,9 +1,6 @@
 package com.mangareader.domain.group.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,11 +26,11 @@ class GroupWorkTest {
                     .title("Solo Leveling")
                     .build();
 
-            assertEquals(0, work.getChapters());
-            assertEquals(GroupWorkStatus.ONGOING, work.getStatus());
-            assertEquals(0, work.getPopularity());
-            assertNotNull(work.getGenres());
-            assertTrue(work.getGenres().isEmpty());
+            assertThat(work.getChapters()).isEqualTo(0);
+            assertThat(work.getStatus()).isEqualTo(GroupWorkStatus.ONGOING);
+            assertThat(work.getPopularity()).isEqualTo(0);
+            assertThat(work.getGenres()).isNotNull();
+            assertThat(work.getGenres().isEmpty()).isTrue();
         }
 
         @Test
@@ -48,11 +45,11 @@ class GroupWorkTest {
                     .genres(List.of("Action", "Adventure"))
                     .build();
 
-            assertEquals(1100, work.getChapters());
-            assertEquals(GroupWorkStatus.COMPLETED, work.getStatus());
-            assertEquals(999, work.getPopularity());
-            assertEquals(2, work.getGenres().size());
-            assertTrue(work.getGenres().contains("Action"));
+            assertThat(work.getChapters()).isEqualTo(1100);
+            assertThat(work.getStatus()).isEqualTo(GroupWorkStatus.COMPLETED);
+            assertThat(work.getPopularity()).isEqualTo(999);
+            assertThat(work.getGenres().size()).isEqualTo(2);
+            assertThat(work.getGenres().contains("Action")).isTrue();
         }
     }
 
@@ -78,14 +75,14 @@ class GroupWorkTest {
                     .genres(List.of("Action", "Shounen"))
                     .build();
 
-            assertEquals(id, work.getId());
-            assertEquals(group, work.getGroup());
-            assertEquals("mongo-789", work.getTitleId());
-            assertEquals("Naruto", work.getTitle());
-            assertEquals("https://example.com/naruto.jpg", work.getCover());
-            assertEquals(700, work.getChapters());
-            assertEquals(GroupWorkStatus.COMPLETED, work.getStatus());
-            assertEquals(500, work.getPopularity());
+            assertThat(work.getId()).isEqualTo(id);
+            assertThat(work.getGroup()).isEqualTo(group);
+            assertThat(work.getTitleId()).isEqualTo("mongo-789");
+            assertThat(work.getTitle()).isEqualTo("Naruto");
+            assertThat(work.getCover()).isEqualTo("https://example.com/naruto.jpg");
+            assertThat(work.getChapters()).isEqualTo(700);
+            assertThat(work.getStatus()).isEqualTo(GroupWorkStatus.COMPLETED);
+            assertThat(work.getPopularity()).isEqualTo(500);
         }
     }
 
@@ -98,10 +95,10 @@ class GroupWorkTest {
         void shouldCreateEmptyInstance() {
             GroupWork work = new GroupWork();
 
-            assertNull(work.getId());
-            assertNull(work.getGroup());
-            assertNull(work.getTitleId());
-            assertNull(work.getTitle());
+            assertThat(work.getId()).isNull();
+            assertThat(work.getGroup()).isNull();
+            assertThat(work.getTitleId()).isNull();
+            assertThat(work.getTitle()).isNull();
         }
     }
 }

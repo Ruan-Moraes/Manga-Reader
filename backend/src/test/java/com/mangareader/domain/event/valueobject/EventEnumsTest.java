@@ -1,6 +1,6 @@
 package com.mangareader.domain.event.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,16 +16,16 @@ class EventEnumsTest {
         @Test
         @DisplayName("Deve conter 4 valores")
         void shouldHaveFourValues() {
-            assertEquals(4, EventStatus.values().length);
+            assertThat(EventStatus.values().length).isEqualTo(4);
         }
 
         @Test
         @DisplayName("Deve retornar getValue() correto para cada status")
         void shouldReturnCorrectValues() {
-            assertEquals("happening_now", EventStatus.HAPPENING_NOW.getValue());
-            assertEquals("registrations_open", EventStatus.REGISTRATIONS_OPEN.getValue());
-            assertEquals("coming_soon", EventStatus.COMING_SOON.getValue());
-            assertEquals("ended", EventStatus.ENDED.getValue());
+            assertThat(EventStatus.HAPPENING_NOW.getValue()).isEqualTo("happening_now");
+            assertThat(EventStatus.REGISTRATIONS_OPEN.getValue()).isEqualTo("registrations_open");
+            assertThat(EventStatus.COMING_SOON.getValue()).isEqualTo("coming_soon");
+            assertThat(EventStatus.ENDED.getValue()).isEqualTo("ended");
         }
     }
 
@@ -36,16 +36,16 @@ class EventEnumsTest {
         @Test
         @DisplayName("Deve conter 3 valores")
         void shouldHaveThreeValues() {
-            assertEquals(3, EventTimeline.values().length);
+            assertThat(EventTimeline.values().length).isEqualTo(3);
         }
 
         @Test
         @DisplayName("Deve conter todos os valores esperados")
         void shouldContainExpectedValues() {
             EventTimeline[] values = EventTimeline.values();
-            assertEquals(EventTimeline.UPCOMING, values[0]);
-            assertEquals(EventTimeline.ONGOING, values[1]);
-            assertEquals(EventTimeline.PAST, values[2]);
+            assertThat(values[0]).isEqualTo(EventTimeline.UPCOMING);
+            assertThat(values[1]).isEqualTo(EventTimeline.ONGOING);
+            assertThat(values[2]).isEqualTo(EventTimeline.PAST);
         }
     }
 
@@ -56,17 +56,17 @@ class EventEnumsTest {
         @Test
         @DisplayName("Deve conter 5 valores")
         void shouldHaveFiveValues() {
-            assertEquals(5, EventType.values().length);
+            assertThat(EventType.values().length).isEqualTo(5);
         }
 
         @Test
         @DisplayName("Deve retornar displayName correto para cada tipo")
         void shouldReturnCorrectDisplayNames() {
-            assertEquals("Convenção", EventType.CONVENCAO.getDisplayName());
-            assertEquals("Lançamento", EventType.LANCAMENTO.getDisplayName());
-            assertEquals("Live", EventType.LIVE.getDisplayName());
-            assertEquals("Workshop", EventType.WORKSHOP.getDisplayName());
-            assertEquals("Meetup", EventType.MEETUP.getDisplayName());
+            assertThat(EventType.CONVENCAO.getDisplayName()).isEqualTo("Convenção");
+            assertThat(EventType.LANCAMENTO.getDisplayName()).isEqualTo("Lançamento");
+            assertThat(EventType.LIVE.getDisplayName()).isEqualTo("Live");
+            assertThat(EventType.WORKSHOP.getDisplayName()).isEqualTo("Workshop");
+            assertThat(EventType.MEETUP.getDisplayName()).isEqualTo("Meetup");
         }
     }
 }

@@ -35,7 +35,7 @@ public class GetForumTopicsUseCase {
     public Page<ForumTopic> execute(Pageable pageable, boolean crossLanguage) {
         Page<ForumTopic> page = crossLanguage
                 ? forumRepository.findAll(pageable)
-                : forumRepository.findByLanguage(localeResolver.currentLanguageTag(), pageable);
+                : forumRepository.findByLanguageIn(localeResolver.currentContentLanguageTags(), pageable);
 
         page.getContent().forEach(topic -> {
             topic.getAuthor().getName();

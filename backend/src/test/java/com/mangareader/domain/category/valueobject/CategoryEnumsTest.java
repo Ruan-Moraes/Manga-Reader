@@ -1,6 +1,6 @@
 package com.mangareader.domain.category.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,24 +16,24 @@ class CategoryEnumsTest {
         @Test
         @DisplayName("Deve conter 5 valores")
         void shouldHaveFiveValues() {
-            assertEquals(5, PublicationStatus.values().length);
+            assertThat(PublicationStatus.values().length).isEqualTo(5);
         }
 
         @Test
         @DisplayName("Deve conter todos os status esperados")
         void shouldContainExpectedValues() {
             PublicationStatus[] values = PublicationStatus.values();
-            assertEquals(PublicationStatus.COMPLETE, values[0]);
-            assertEquals(PublicationStatus.ONGOING, values[1]);
-            assertEquals(PublicationStatus.HIATUS, values[2]);
-            assertEquals(PublicationStatus.CANCELLED, values[3]);
-            assertEquals(PublicationStatus.ALL, values[4]);
+            assertThat(values[0]).isEqualTo(PublicationStatus.COMPLETE);
+            assertThat(values[1]).isEqualTo(PublicationStatus.ONGOING);
+            assertThat(values[2]).isEqualTo(PublicationStatus.HIATUS);
+            assertThat(values[3]).isEqualTo(PublicationStatus.CANCELLED);
+            assertThat(values[4]).isEqualTo(PublicationStatus.ALL);
         }
 
         @Test
         @DisplayName("Deve converter de string via valueOf")
         void shouldConvertFromString() {
-            assertEquals(PublicationStatus.ONGOING, PublicationStatus.valueOf("ONGOING"));
+            assertThat(PublicationStatus.valueOf("ONGOING")).isEqualTo(PublicationStatus.ONGOING);
         }
     }
 
@@ -44,25 +44,25 @@ class CategoryEnumsTest {
         @Test
         @DisplayName("Deve conter 6 valores")
         void shouldHaveSixValues() {
-            assertEquals(6, SortCriteria.values().length);
+            assertThat(SortCriteria.values().length).isEqualTo(6);
         }
 
         @Test
         @DisplayName("Deve conter todos os criterios esperados")
         void shouldContainExpectedValues() {
             SortCriteria[] values = SortCriteria.values();
-            assertEquals(SortCriteria.MOST_READ, values[0]);
-            assertEquals(SortCriteria.MOST_RATED, values[1]);
-            assertEquals(SortCriteria.MOST_RECENT, values[2]);
-            assertEquals(SortCriteria.ALPHABETICAL, values[3]);
-            assertEquals(SortCriteria.ASCENSION, values[4]);
-            assertEquals(SortCriteria.RANDOM, values[5]);
+            assertThat(values[0]).isEqualTo(SortCriteria.MOST_READ);
+            assertThat(values[1]).isEqualTo(SortCriteria.MOST_RATED);
+            assertThat(values[2]).isEqualTo(SortCriteria.MOST_RECENT);
+            assertThat(values[3]).isEqualTo(SortCriteria.ALPHABETICAL);
+            assertThat(values[4]).isEqualTo(SortCriteria.ASCENSION);
+            assertThat(values[5]).isEqualTo(SortCriteria.RANDOM);
         }
 
         @Test
         @DisplayName("Deve converter de string via valueOf")
         void shouldConvertFromString() {
-            assertEquals(SortCriteria.ALPHABETICAL, SortCriteria.valueOf("ALPHABETICAL"));
+            assertThat(SortCriteria.valueOf("ALPHABETICAL")).isEqualTo(SortCriteria.ALPHABETICAL);
         }
     }
 }

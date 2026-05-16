@@ -23,7 +23,6 @@ import com.mangareader.shared.application.i18n.LocaleResolutionService;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetCommentsByTitleUseCase")
 class GetCommentsByTitleUseCaseTest {
-
     @Mock
     private CommentRepositoryPort commentRepository;
 
@@ -39,11 +38,13 @@ class GetCommentsByTitleUseCaseTest {
     @DisplayName("Deve retornar comentários particionados pelo idioma do usuário")
     void deveRetornarComentariosFiltradosPorIdioma() {
         Pageable pageable = PageRequest.of(0, 10);
+
         Comment c = Comment.builder().id("c1").titleId(TITLE_ID).language("pt-BR").build();
+
         Page<Comment> page = new PageImpl<>(List.of(c), pageable, 1);
 
-        when(localeResolver.currentLanguageTag()).thenReturn("pt-BR");
-        when(commentRepository.findByTitleIdAndLanguage(TITLE_ID, "pt-BR", pageable)).thenReturn(page);
+        when(localeResolver.currentContentLanguageTags()).thenReturn(List.of("pt-BR"));
+        when(commentRepository.findByTitleIdAndLanguageIn(TITLE_ID, List.of("pt-BR"), pageable)).thenReturn(page);
 
         Page<Comment> result = getCommentsByTitleUseCase.execute(TITLE_ID, pageable);
 
@@ -54,10 +55,11 @@ class GetCommentsByTitleUseCaseTest {
     @DisplayName("Deve retornar página vazia quando não há comentários no idioma ativo")
     void deveRetornarPaginaVaziaQuandoSemComentarios() {
         Pageable pageable = PageRequest.of(0, 10);
+
         Page<Comment> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(localeResolver.currentLanguageTag()).thenReturn("en-US");
-        when(commentRepository.findByTitleIdAndLanguage(TITLE_ID, "en-US", pageable)).thenReturn(emptyPage);
+        when(localeResolver.currentContentLanguageTags()).thenReturn(List.of("en-US"));
+        when(commentRepository.findByTitleIdAndLanguageIn(TITLE_ID, List.of("en-US"), pageable)).thenReturn(emptyPage);
 
         Page<Comment> result = getCommentsByTitleUseCase.execute(TITLE_ID, pageable);
 
@@ -68,9 +70,11 @@ class GetCommentsByTitleUseCaseTest {
     @DisplayName("crossLanguage=true deve bypassar partição e retornar todos idiomas")
     void crossLanguageRetornaTodos() {
         Pageable pageable = PageRequest.of(0, 10);
+
         Comment pt = Comment.builder().id("c-pt").titleId(TITLE_ID).language("pt-BR").build();
         Comment en = Comment.builder().id("c-en").titleId(TITLE_ID).language("en-US").build();
         Comment es = Comment.builder().id("c-es").titleId(TITLE_ID).language("es-ES").build();
+
         Page<Comment> page = new PageImpl<>(List.of(pt, en, es), pageable, 3);
 
         when(commentRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(page);
@@ -88,13 +92,13 @@ class GetCommentsByTitleUseCaseTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Comment> page = new PageImpl<>(List.of(), pageable, 0);
 
-        when(localeResolver.currentLanguageTag()).thenReturn("pt-BR");
-        when(commentRepository.findByTitleIdAndLanguage(TITLE_ID, "pt-BR", pageable)).thenReturn(page);
+        when(localeResolver.currentContentLanguageTags()).thenReturn(List.of("pt-BR"));
+        when(commentRepository.findByTitleIdAndLanguageIn(TITLE_ID, List.of("pt-BR"), pageable)).thenReturn(page);
 
         getCommentsByTitleUseCase.execute(TITLE_ID, pageable, false);
 
         org.mockito.Mockito.verify(commentRepository)
-                .findByTitleIdAndLanguage(TITLE_ID, "pt-BR", pageable);
+                .findByTitleIdAndLanguageIn(TITLE_ID, List.of("pt-BR"), pageable);
         org.mockito.Mockito.verify(commentRepository, org.mockito.Mockito.never())
                 .findByTitleId(TITLE_ID, pageable);
     }

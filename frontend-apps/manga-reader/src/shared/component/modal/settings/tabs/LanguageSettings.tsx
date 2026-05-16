@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import BaseSelect from '@shared/component/input/BaseSelect';
+
+import { useContentLocales } from '@feature/user';
 
 import {
     sectionTitleClass,
@@ -9,10 +11,31 @@ import {
     type UserSettings,
 } from '../settings.constants';
 
-const LanguageSettings = ({ settings, onUpdate }: SettingsTabProps) => {
+const LanguageSettings = ({
+    settings,
+    onUpdate,
+    isLoggedIn = false,
+}: SettingsTabProps) => {
     const { t, i18n } = useTranslation('user');
+    const { query, mutation } = useContentLocales(isLoggedIn);
 
-    const uiLanguageOptions = useMemo(
+    useEffect(() => {
+        const first = query.data?.contentLocales?.[0];
+        if (!first) return;
+        onUpdate(prev => {
+            if (prev.language.preferredContentLanguage === first) return prev;
+            return {
+                ...prev,
+                language: {
+                    ...prev.language,
+                    preferredContentLanguage:
+                        first as UserSettings['language']['preferredContentLanguage'],
+                },
+            };
+        });
+    }, [query.data, onUpdate]);
+
+    const languageOptions = useMemo(
         () => [
             { value: 'pt-BR', label: t('language.pt-BR', { ns: 'common' }) },
             { value: 'en-US', label: t('language.en-US', { ns: 'common' }) },
@@ -20,31 +43,27 @@ const LanguageSettings = ({ settings, onUpdate }: SettingsTabProps) => {
         ],
         [t],
     );
-
-    const contentLanguageOptions = useMemo(
-        () => [
-            { value: 'pt-BR', label: t('language.pt-BR', { ns: 'common' }) },
-            { value: 'en-US', label: t('language.en-US', { ns: 'common' }) },
-            { value: 'es-ES', label: t('language.es-ES', { ns: 'common' }) },
-        ],
-        [t],
-    );
-
-    const updateLanguage = <K extends keyof UserSettings['language']>(
-        key: K,
-        value: UserSettings['language'][K],
-    ) => {
-        onUpdate(prev => ({
-            ...prev,
-            language: { ...prev.language, [key]: value },
-        }));
-    };
 
     const handleUiLanguageChange = (
         value: UserSettings['language']['uiLanguage'],
     ) => {
         i18n.changeLanguage(value);
-        updateLanguage('uiLanguage', value);
+        onUpdate(prev => ({
+            ...prev,
+            language: { ...prev.language, uiLanguage: value },
+        }));
+    };
+
+    const handleContentLanguageChange = (
+        value: UserSettings['language']['preferredContentLanguage'],
+    ) => {
+        onUpdate(prev => ({
+            ...prev,
+            language: { ...prev.language, preferredContentLanguage: value },
+        }));
+        if (isLoggedIn) {
+            mutation.mutate({ contentLocales: [value] });
+        }
     };
 
     return (
@@ -55,7 +74,7 @@ const LanguageSettings = ({ settings, onUpdate }: SettingsTabProps) => {
 
             <BaseSelect
                 label={t('settings.language.uiLanguageLabel')}
-                options={uiLanguageOptions}
+                options={languageOptions}
                 value={settings.language.uiLanguage}
                 onChange={e =>
                     handleUiLanguageChange(
@@ -67,11 +86,10 @@ const LanguageSettings = ({ settings, onUpdate }: SettingsTabProps) => {
 
             <BaseSelect
                 label={t('settings.language.preferredContentLanguageLabel')}
-                options={contentLanguageOptions}
+                options={languageOptions}
                 value={settings.language.preferredContentLanguage}
                 onChange={e =>
-                    updateLanguage(
-                        'preferredContentLanguage',
+                    handleContentLanguageChange(
                         e.target
                             .value as UserSettings['language']['preferredContentLanguage'],
                     )

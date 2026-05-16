@@ -203,6 +203,16 @@
             "title": "Language",
             "uiLanguageLabel": "Interface language",
             "preferredContentLanguageLabel": "Preferred chapter language"
+        },
+        "modalTitle": "User settings",
+        "modalSubtitle": "Tune your experience.",
+        "close": "Close",
+        "tabs": {
+            "reading": "Reading",
+            "appearance": "Appearance",
+            "language": "Language",
+            "notifications": "Notifications",
+            "privacy": "Privacy"
         }
     }
 }

@@ -64,7 +64,9 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
                 new LocalizedStringMongoConverters.LocalizedStringListWriter(),
                 new LocalizedStringMongoConverters.LocalizedStringListReader()
         ));
+
         localizedStringConvertersRegistered = true;
+
         return conversions;
     }
 

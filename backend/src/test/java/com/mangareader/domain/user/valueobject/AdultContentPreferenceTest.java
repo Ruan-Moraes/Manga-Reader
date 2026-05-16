@@ -1,7 +1,7 @@
 package com.mangareader.domain.user.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,38 +13,38 @@ class AdultContentPreferenceTest {
     @DisplayName("Deve conter exatamente 3 valores: BLUR, SHOW, HIDE")
     void deveConterTresValores() {
         AdultContentPreference[] values = AdultContentPreference.values();
-        assertEquals(3, values.length);
+        assertThat(values.length).isEqualTo(3);
     }
 
     @Test
     @DisplayName("Deve resolver BLUR via valueOf")
     void deveResolverBlur() {
-        assertEquals(AdultContentPreference.BLUR, AdultContentPreference.valueOf("BLUR"));
+        assertThat(AdultContentPreference.valueOf("BLUR")).isEqualTo(AdultContentPreference.BLUR);
     }
 
     @Test
     @DisplayName("Deve resolver SHOW via valueOf")
     void deveResolverShow() {
-        assertEquals(AdultContentPreference.SHOW, AdultContentPreference.valueOf("SHOW"));
+        assertThat(AdultContentPreference.valueOf("SHOW")).isEqualTo(AdultContentPreference.SHOW);
     }
 
     @Test
     @DisplayName("Deve resolver HIDE via valueOf")
     void deveResolverHide() {
-        assertEquals(AdultContentPreference.HIDE, AdultContentPreference.valueOf("HIDE"));
+        assertThat(AdultContentPreference.valueOf("HIDE")).isEqualTo(AdultContentPreference.HIDE);
     }
 
     @Test
     @DisplayName("Deve lançar IllegalArgumentException para valor inválido")
     void deveLancarExcecaoParaValorInvalido() {
-        assertThrows(IllegalArgumentException.class, () -> AdultContentPreference.valueOf("INVALID"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> AdultContentPreference.valueOf("INVALID"));
     }
 
     @Test
     @DisplayName("Deve manter ordinal correto")
     void deveManterOrdinalCorreto() {
-        assertEquals(0, AdultContentPreference.BLUR.ordinal());
-        assertEquals(1, AdultContentPreference.SHOW.ordinal());
-        assertEquals(2, AdultContentPreference.HIDE.ordinal());
+        assertThat(AdultContentPreference.BLUR.ordinal()).isEqualTo(0);
+        assertThat(AdultContentPreference.SHOW.ordinal()).isEqualTo(1);
+        assertThat(AdultContentPreference.HIDE.ordinal()).isEqualTo(2);
     }
 }

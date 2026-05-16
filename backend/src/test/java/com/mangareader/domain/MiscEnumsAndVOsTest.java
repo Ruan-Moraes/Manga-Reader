@@ -1,7 +1,6 @@
 package com.mangareader.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,16 +24,16 @@ class MiscEnumsAndVOsTest {
         @Test
         @DisplayName("Deve conter 3 valores")
         void shouldHaveThreeValues() {
-            assertEquals(3, UserRole.values().length);
+            assertThat(UserRole.values().length).isEqualTo(3);
         }
 
         @Test
         @DisplayName("Deve conter ADMIN, MODERATOR, MEMBER")
         void shouldContainExpectedValues() {
             UserRole[] values = UserRole.values();
-            assertEquals(UserRole.ADMIN, values[0]);
-            assertEquals(UserRole.MODERATOR, values[1]);
-            assertEquals(UserRole.MEMBER, values[2]);
+            assertThat(values[0]).isEqualTo(UserRole.ADMIN);
+            assertThat(values[1]).isEqualTo(UserRole.MODERATOR);
+            assertThat(values[2]).isEqualTo(UserRole.MEMBER);
         }
     }
 
@@ -45,20 +44,20 @@ class MiscEnumsAndVOsTest {
         @Test
         @DisplayName("Deve conter 8 valores")
         void shouldHaveEightValues() {
-            assertEquals(8, ForumCategory.values().length);
+            assertThat(ForumCategory.values().length).isEqualTo(8);
         }
 
         @Test
         @DisplayName("Deve retornar displayName correto para cada categoria")
         void shouldReturnCorrectDisplayNames() {
-            assertEquals("Geral", ForumCategory.GERAL.getDisplayName());
-            assertEquals("Recomendações", ForumCategory.RECOMENDACOES.getDisplayName());
-            assertEquals("Spoilers", ForumCategory.SPOILERS.getDisplayName());
-            assertEquals("Suporte", ForumCategory.SUPORTE.getDisplayName());
-            assertEquals("Off-topic", ForumCategory.OFF_TOPIC.getDisplayName());
-            assertEquals("Teorias", ForumCategory.TEORIAS.getDisplayName());
-            assertEquals("Fanart", ForumCategory.FANART.getDisplayName());
-            assertEquals("Notícias", ForumCategory.NOTICIAS.getDisplayName());
+            assertThat(ForumCategory.GERAL.getDisplayName()).isEqualTo("Geral");
+            assertThat(ForumCategory.RECOMENDACOES.getDisplayName()).isEqualTo("Recomendações");
+            assertThat(ForumCategory.SPOILERS.getDisplayName()).isEqualTo("Spoilers");
+            assertThat(ForumCategory.SUPORTE.getDisplayName()).isEqualTo("Suporte");
+            assertThat(ForumCategory.OFF_TOPIC.getDisplayName()).isEqualTo("Off-topic");
+            assertThat(ForumCategory.TEORIAS.getDisplayName()).isEqualTo("Teorias");
+            assertThat(ForumCategory.FANART.getDisplayName()).isEqualTo("Fanart");
+            assertThat(ForumCategory.NOTICIAS.getDisplayName()).isEqualTo("Notícias");
         }
     }
 
@@ -69,15 +68,15 @@ class MiscEnumsAndVOsTest {
         @Test
         @DisplayName("Deve conter 3 valores")
         void shouldHaveThreeValues() {
-            assertEquals(3, ReadingListType.values().length);
+            assertThat(ReadingListType.values().length).isEqualTo(3);
         }
 
         @Test
         @DisplayName("Deve retornar displayName correto para cada tipo")
         void shouldReturnCorrectDisplayNames() {
-            assertEquals("Lendo", ReadingListType.LENDO.getDisplayName());
-            assertEquals("Quero Ler", ReadingListType.QUERO_LER.getDisplayName());
-            assertEquals("Concluído", ReadingListType.CONCLUIDO.getDisplayName());
+            assertThat(ReadingListType.LENDO.getDisplayName()).isEqualTo("Lendo");
+            assertThat(ReadingListType.QUERO_LER.getDisplayName()).isEqualTo("Quero Ler");
+            assertThat(ReadingListType.CONCLUIDO.getDisplayName()).isEqualTo("Concluído");
         }
     }
 
@@ -88,21 +87,21 @@ class MiscEnumsAndVOsTest {
         @Test
         @DisplayName("Deve conter 9 valores")
         void shouldHaveNineValues() {
-            assertEquals(9, NewsCategory.values().length);
+            assertThat(NewsCategory.values().length).isEqualTo(9);
         }
 
         @Test
         @DisplayName("Deve retornar displayName correto para cada categoria")
         void shouldReturnCorrectDisplayNames() {
-            assertEquals("Principais", NewsCategory.PRINCIPAIS.getDisplayName());
-            assertEquals("Lançamentos", NewsCategory.LANCAMENTOS.getDisplayName());
-            assertEquals("Adaptações", NewsCategory.ADAPTACOES.getDisplayName());
-            assertEquals("Indústria", NewsCategory.INDUSTRIA.getDisplayName());
-            assertEquals("Entrevistas", NewsCategory.ENTREVISTAS.getDisplayName());
-            assertEquals("Eventos", NewsCategory.EVENTOS.getDisplayName());
-            assertEquals("Curiosidades", NewsCategory.CURIOSIDADES.getDisplayName());
-            assertEquals("Mercado", NewsCategory.MERCADO.getDisplayName());
-            assertEquals("Internacional", NewsCategory.INTERNACIONAL.getDisplayName());
+            assertThat(NewsCategory.PRINCIPAIS.getDisplayName()).isEqualTo("Principais");
+            assertThat(NewsCategory.LANCAMENTOS.getDisplayName()).isEqualTo("Lançamentos");
+            assertThat(NewsCategory.ADAPTACOES.getDisplayName()).isEqualTo("Adaptações");
+            assertThat(NewsCategory.INDUSTRIA.getDisplayName()).isEqualTo("Indústria");
+            assertThat(NewsCategory.ENTREVISTAS.getDisplayName()).isEqualTo("Entrevistas");
+            assertThat(NewsCategory.EVENTOS.getDisplayName()).isEqualTo("Eventos");
+            assertThat(NewsCategory.CURIOSIDADES.getDisplayName()).isEqualTo("Curiosidades");
+            assertThat(NewsCategory.MERCADO.getDisplayName()).isEqualTo("Mercado");
+            assertThat(NewsCategory.INTERNACIONAL.getDisplayName()).isEqualTo("Internacional");
         }
     }
 
@@ -113,16 +112,16 @@ class MiscEnumsAndVOsTest {
         @Test
         @DisplayName("Deve conter 3 valores")
         void shouldHaveThreeValues() {
-            assertEquals(3, StoreAvailability.values().length);
+            assertThat(StoreAvailability.values().length).isEqualTo(3);
         }
 
         @Test
         @DisplayName("Deve conter IN_STOCK, OUT_OF_STOCK, PRE_ORDER")
         void shouldContainExpectedValues() {
             StoreAvailability[] values = StoreAvailability.values();
-            assertEquals(StoreAvailability.IN_STOCK, values[0]);
-            assertEquals(StoreAvailability.OUT_OF_STOCK, values[1]);
-            assertEquals(StoreAvailability.PRE_ORDER, values[2]);
+            assertThat(values[0]).isEqualTo(StoreAvailability.IN_STOCK);
+            assertThat(values[1]).isEqualTo(StoreAvailability.OUT_OF_STOCK);
+            assertThat(values[2]).isEqualTo(StoreAvailability.PRE_ORDER);
         }
     }
 
@@ -141,11 +140,11 @@ class MiscEnumsAndVOsTest {
                     .profileLink("https://example.com/profile/maria")
                     .build();
 
-            assertEquals("author-001", author.getId());
-            assertEquals("Maria Silva", author.getName());
-            assertEquals("https://example.com/avatar.jpg", author.getAvatar());
-            assertEquals("Editor", author.getRole());
-            assertEquals("https://example.com/profile/maria", author.getProfileLink());
+            assertThat(author.getId()).isEqualTo("author-001");
+            assertThat(author.getName()).isEqualTo("Maria Silva");
+            assertThat(author.getAvatar()).isEqualTo("https://example.com/avatar.jpg");
+            assertThat(author.getRole()).isEqualTo("Editor");
+            assertThat(author.getProfileLink()).isEqualTo("https://example.com/profile/maria");
         }
 
         @Test
@@ -153,11 +152,11 @@ class MiscEnumsAndVOsTest {
         void shouldCreateEmptyInstance() {
             NewsAuthor author = new NewsAuthor();
 
-            assertNull(author.getId());
-            assertNull(author.getName());
-            assertNull(author.getAvatar());
-            assertNull(author.getRole());
-            assertNull(author.getProfileLink());
+            assertThat(author.getId()).isNull();
+            assertThat(author.getName()).isNull();
+            assertThat(author.getAvatar()).isNull();
+            assertThat(author.getRole()).isNull();
+            assertThat(author.getProfileLink()).isNull();
         }
     }
 
@@ -175,10 +174,10 @@ class MiscEnumsAndVOsTest {
                     .surprised(8)
                     .build();
 
-            assertEquals(42, reaction.getLike());
-            assertEquals(15, reaction.getExcited());
-            assertEquals(3, reaction.getSad());
-            assertEquals(8, reaction.getSurprised());
+            assertThat(reaction.getLike()).isEqualTo(42);
+            assertThat(reaction.getExcited()).isEqualTo(15);
+            assertThat(reaction.getSad()).isEqualTo(3);
+            assertThat(reaction.getSurprised()).isEqualTo(8);
         }
 
         @Test
@@ -186,10 +185,10 @@ class MiscEnumsAndVOsTest {
         void shouldDefaultToZeros() {
             NewsReaction reaction = new NewsReaction();
 
-            assertEquals(0, reaction.getLike());
-            assertEquals(0, reaction.getExcited());
-            assertEquals(0, reaction.getSad());
-            assertEquals(0, reaction.getSurprised());
+            assertThat(reaction.getLike()).isEqualTo(0);
+            assertThat(reaction.getExcited()).isEqualTo(0);
+            assertThat(reaction.getSad()).isEqualTo(0);
+            assertThat(reaction.getSurprised()).isEqualTo(0);
         }
     }
 }

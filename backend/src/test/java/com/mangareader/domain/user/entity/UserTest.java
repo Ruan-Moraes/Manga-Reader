@@ -1,11 +1,9 @@
 package com.mangareader.domain.user.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +13,6 @@ import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
 class UserTest {
-
     @Test
     @DisplayName("Deve iniciar com papel MEMBER e lista de social links vazia no builder padrão")
     void shouldInitializeDefaultValuesWhenUsingBuilder() {
@@ -25,9 +22,9 @@ class UserTest {
                 .passwordHash("hash")
                 .build();
 
-        assertEquals(UserRole.MEMBER, user.getRole());
-        assertNotNull(user.getSocialLinks());
-        assertTrue(user.getSocialLinks().isEmpty());
+        assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
+        assertThat(user.getSocialLinks()).isNotNull();
+        assertThat(user.getSocialLinks().isEmpty()).isTrue();
     }
 
     @Test
@@ -39,7 +36,7 @@ class UserTest {
                 .passwordHash("hash")
                 .build();
 
-        assertEquals(VisibilitySetting.PUBLIC, user.getCommentVisibility());
+        assertThat(user.getCommentVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
     }
 
     @Test
@@ -51,7 +48,7 @@ class UserTest {
                 .passwordHash("hash")
                 .build();
 
-        assertEquals(VisibilitySetting.PUBLIC, user.getViewHistoryVisibility());
+        assertThat(user.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
     }
 
     @Test
@@ -63,8 +60,8 @@ class UserTest {
                 .passwordHash("hash")
                 .build();
 
-        assertNotNull(user.getRecommendations());
-        assertTrue(user.getRecommendations().isEmpty());
+        assertThat(user.getRecommendations()).isNotNull();
+        assertThat(user.getRecommendations().isEmpty()).isTrue();
     }
 
     @Test
@@ -77,7 +74,7 @@ class UserTest {
                 .bannerUrl("https://example.com/banner.jpg")
                 .build();
 
-        assertEquals("https://example.com/banner.jpg", user.getBannerUrl());
+        assertThat(user.getBannerUrl()).isEqualTo("https://example.com/banner.jpg");
     }
 
     @Test
@@ -90,7 +87,7 @@ class UserTest {
                 .commentVisibility(VisibilitySetting.PRIVATE)
                 .build();
 
-        assertEquals(VisibilitySetting.PRIVATE, user.getCommentVisibility());
+        assertThat(user.getCommentVisibility()).isEqualTo(VisibilitySetting.PRIVATE);
     }
 
     @Test
@@ -103,7 +100,7 @@ class UserTest {
                 .viewHistoryVisibility(VisibilitySetting.DO_NOT_TRACK)
                 .build();
 
-        assertEquals(VisibilitySetting.DO_NOT_TRACK, user.getViewHistoryVisibility());
+        assertThat(user.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.DO_NOT_TRACK);
     }
 
     @Test
@@ -116,7 +113,7 @@ class UserTest {
                 .role(UserRole.ADMIN)
                 .build();
 
-        assertEquals(UserRole.ADMIN, user.getRole());
+        assertThat(user.getRole()).isEqualTo(UserRole.ADMIN);
     }
 
     @Test
@@ -136,9 +133,9 @@ class UserTest {
 
         user.setSocialLinks(List.of(socialLink));
 
-        assertEquals(1, user.getSocialLinks().size());
-        assertEquals("github", user.getSocialLinks().getFirst().getPlatform());
-        assertEquals(user, user.getSocialLinks().getFirst().getUser());
+        assertThat(user.getSocialLinks().size()).isEqualTo(1);
+        assertThat(user.getSocialLinks().getFirst().getPlatform()).isEqualTo("github");
+        assertThat(user.getSocialLinks().getFirst().getUser()).isEqualTo(user);
     }
 
     @Test
@@ -150,10 +147,52 @@ class UserTest {
                 .passwordHash("hash")
                 .build();
 
-        assertFalse(user.isBanned());
-        assertNull(user.getBannedAt());
-        assertNull(user.getBannedReason());
-        assertNull(user.getBannedUntil());
+        assertThat(user.isBanned()).isFalse();
+        assertThat(user.getBannedAt()).isNull();
+        assertThat(user.getBannedReason()).isNull();
+        assertThat(user.getBannedUntil()).isNull();
+    }
+
+    @Test
+    @DisplayName("Deve iniciar contentLocales com [pt-BR] no builder padrão")
+    void shouldInitializeContentLocalesDefault() {
+        User user = User.builder()
+                .name("User Test")
+                .email("user@test.com")
+                .passwordHash("hash")
+                .build();
+
+        assertThat(user.getContentLocales()).isEqualTo(List.of("pt-BR"));
+    }
+
+    @Test
+    @DisplayName("updateContentLocales deve normalizar tags BCP 47")
+    void shouldNormalizeLocaleTags() {
+        User user = User.builder()
+                .name("User Test")
+                .email("user@test.com")
+                .passwordHash("hash")
+                .build();
+
+        user.updateContentLocales(List.of("PT-br", "es-ES"));
+
+        assertThat(user.getContentLocales()).isEqualTo(List.of("pt-BR", "es-ES"));
+    }
+
+    @Test
+    @DisplayName("updateContentLocales deve rejeitar lista vazia")
+    void shouldRejectEmptyContentLocales() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> user.updateContentLocales(Collections.emptyList()));
+    }
+
+    @Test
+    @DisplayName("updateContentLocales deve rejeitar tag inválida")
+    void shouldRejectInvalidTag() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> user.updateContentLocales(List.of("not_a_locale!!!")));
     }
 
     @Test
@@ -161,10 +200,10 @@ class UserTest {
     void shouldKeepOptionalFieldsNullOnNoArgsConstructor() {
         User user = new User();
 
-        assertNull(user.getBio());
-        assertNull(user.getPhotoUrl());
-        assertNull(user.getBannerUrl());
-        assertNull(user.getCreatedAt());
-        assertNull(user.getUpdatedAt());
+        assertThat(user.getBio()).isNull();
+        assertThat(user.getPhotoUrl()).isNull();
+        assertThat(user.getBannerUrl()).isNull();
+        assertThat(user.getCreatedAt()).isNull();
+        assertThat(user.getUpdatedAt()).isNull();
     }
 }

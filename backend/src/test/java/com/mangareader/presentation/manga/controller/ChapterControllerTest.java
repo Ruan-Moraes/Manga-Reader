@@ -39,10 +39,23 @@ class ChapterControllerTest {
     @MockitoBean
     private TokenPort tokenPort;
 
+    @MockitoBean
+    private com.mangareader.presentation.shared.mapper.LocalizedMappingHelper i18n;
+
+    @org.junit.jupiter.api.BeforeEach
+    void stubI18n() {
+        when(i18n.toResolvedString(org.mockito.ArgumentMatchers.any()))
+                .thenAnswer(inv -> {
+                    var ls = inv.getArgument(0, com.mangareader.shared.domain.i18n.LocalizedString.class);
+
+                    return ls == null ? "" : ls.resolve(null);
+                });
+    }
+
     private Chapter buildChapter(String number) {
         return Chapter.builder()
                 .number(number)
-                .title("Capítulo " + number)
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capítulo " + number))
                 .releaseDate("2026-03-10")
                 .pages("25")
                 .build();
@@ -56,6 +69,7 @@ class ChapterControllerTest {
         @DisplayName("Deve retornar 200 com lista de capítulos")
         void deveRetornar200ComCapitulos() throws Exception {
             var chapters = List.of(buildChapter("1"), buildChapter("2"), buildChapter("3"));
+
             when(getChaptersByTitleUseCase.execute("title-1")).thenReturn(chapters);
 
             mockMvc.perform(get("/api/titles/title-1/chapters"))

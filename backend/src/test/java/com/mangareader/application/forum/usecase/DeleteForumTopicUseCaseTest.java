@@ -22,6 +22,7 @@ import com.mangareader.domain.forum.valueobject.ForumCategory;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("DeleteForumTopicUseCase")
@@ -37,7 +38,7 @@ class DeleteForumTopicUseCaseTest {
     private final UUID AUTHOR_ID = UUID.randomUUID();
 
     private ForumTopic buildTopic() {
-        User author = User.builder().id(AUTHOR_ID).name("Autor").email("a@e.com").passwordHash("h").build();
+        User author = UserMock.withId(AUTHOR_ID);
         return ForumTopic.builder()
                 .id(TOPIC_ID)
                 .author(author)

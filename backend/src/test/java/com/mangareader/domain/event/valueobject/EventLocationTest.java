@@ -1,9 +1,6 @@
 package com.mangareader.domain.event.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,12 +25,12 @@ class EventLocationTest {
                     .directions("Proximo ao metro")
                     .build();
 
-            assertEquals("Centro de Convencoes", location.getLabel());
-            assertEquals("Rua A, 123", location.getAddress());
-            assertEquals("Sao Paulo", location.getCity());
-            assertFalse(location.isOnline());
-            assertEquals("https://maps.google.com/xyz", location.getMapLink());
-            assertEquals("Proximo ao metro", location.getDirections());
+            assertThat(location.getLabel()).isEqualTo("Centro de Convencoes");
+            assertThat(location.getAddress()).isEqualTo("Rua A, 123");
+            assertThat(location.getCity()).isEqualTo("Sao Paulo");
+            assertThat(location.isOnline()).isFalse();
+            assertThat(location.getMapLink()).isEqualTo("https://maps.google.com/xyz");
+            assertThat(location.getDirections()).isEqualTo("Proximo ao metro");
         }
 
         @Test
@@ -44,9 +41,9 @@ class EventLocationTest {
                     .isOnline(true)
                     .build();
 
-            assertTrue(location.isOnline());
-            assertEquals("YouTube Live", location.getLabel());
-            assertNull(location.getAddress());
+            assertThat(location.isOnline()).isTrue();
+            assertThat(location.getLabel()).isEqualTo("YouTube Live");
+            assertThat(location.getAddress()).isNull();
         }
     }
 
@@ -59,12 +56,12 @@ class EventLocationTest {
         void shouldCreateEmptyInstance() {
             EventLocation location = new EventLocation();
 
-            assertNull(location.getLabel());
-            assertNull(location.getAddress());
-            assertNull(location.getCity());
-            assertFalse(location.isOnline());
-            assertNull(location.getMapLink());
-            assertNull(location.getDirections());
+            assertThat(location.getLabel()).isNull();
+            assertThat(location.getAddress()).isNull();
+            assertThat(location.getCity()).isNull();
+            assertThat(location.isOnline()).isFalse();
+            assertThat(location.getMapLink()).isNull();
+            assertThat(location.getDirections()).isNull();
         }
     }
 
@@ -78,7 +75,7 @@ class EventLocationTest {
             EventLocation location = new EventLocation();
             location.setOnline(true);
 
-            assertTrue(location.isOnline());
+            assertThat(location.isOnline()).isTrue();
         }
     }
 }

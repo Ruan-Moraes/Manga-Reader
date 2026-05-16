@@ -1,7 +1,6 @@
 package com.mangareader.domain.store.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
@@ -29,10 +28,10 @@ class StoreTitleTest {
                     .url("https://amazon.com/manga/one-piece")
                     .build();
 
-            assertEquals(id, storeTitle.getId());
-            assertEquals(store, storeTitle.getStore());
-            assertEquals("mongo-title-123", storeTitle.getTitleId());
-            assertEquals("https://amazon.com/manga/one-piece", storeTitle.getUrl());
+            assertThat(storeTitle.getId()).isEqualTo(id);
+            assertThat(storeTitle.getStore()).isEqualTo(store);
+            assertThat(storeTitle.getTitleId()).isEqualTo("mongo-title-123");
+            assertThat(storeTitle.getUrl()).isEqualTo("https://amazon.com/manga/one-piece");
         }
 
         @Test
@@ -42,7 +41,7 @@ class StoreTitleTest {
                     .titleId("mongo-456")
                     .build();
 
-            assertNull(storeTitle.getUrl());
+            assertThat(storeTitle.getUrl()).isNull();
         }
     }
 
@@ -55,10 +54,10 @@ class StoreTitleTest {
         void shouldCreateEmptyInstance() {
             StoreTitle storeTitle = new StoreTitle();
 
-            assertNull(storeTitle.getId());
-            assertNull(storeTitle.getStore());
-            assertNull(storeTitle.getTitleId());
-            assertNull(storeTitle.getUrl());
+            assertThat(storeTitle.getId()).isNull();
+            assertThat(storeTitle.getStore()).isNull();
+            assertThat(storeTitle.getTitleId()).isNull();
+            assertThat(storeTitle.getUrl()).isNull();
         }
     }
 }

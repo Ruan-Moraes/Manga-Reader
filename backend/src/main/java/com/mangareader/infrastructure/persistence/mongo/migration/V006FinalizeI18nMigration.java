@@ -21,7 +21,6 @@ import io.mongock.api.annotations.RollbackExecution;
  */
 @ChangeUnit(id = "V006-finalize-i18n-migration", order = "006", author = "mangareader")
 public class V006FinalizeI18nMigration {
-
     private final MongoTemplate mongoTemplate;
 
     public V006FinalizeI18nMigration(MongoTemplate mongoTemplate) {

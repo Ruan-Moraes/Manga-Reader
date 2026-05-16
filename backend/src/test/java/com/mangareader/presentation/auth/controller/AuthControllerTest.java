@@ -94,7 +94,11 @@ class AuthControllerTest {
                             .content("""
                                     {"email": "", "password": "senha123"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.email").exists());
         }
 
         @Test
@@ -105,7 +109,11 @@ class AuthControllerTest {
                             .content("""
                                     {"email": "invalido", "password": "senha123"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.email").exists());
         }
 
         @Test
@@ -116,7 +124,11 @@ class AuthControllerTest {
                             .content("""
                                     {"email": "ruan@email.com", "password": ""}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.password").exists());
         }
     }
 
@@ -152,7 +164,11 @@ class AuthControllerTest {
                             .content("""
                                     {"name": "A", "email": "a@b.com", "password": "senha123"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.name").exists());
         }
 
         @Test
@@ -163,7 +179,11 @@ class AuthControllerTest {
                             .content("""
                                     {"name": "Ruan", "email": "r@b.com", "password": "12345"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.password").exists());
         }
 
         @Test
@@ -174,7 +194,13 @@ class AuthControllerTest {
                             .content("""
                                     {"name": "", "email": "invalido", "password": ""}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.name").exists())
+                    .andExpect(jsonPath("$.fieldErrors.email").exists())
+                    .andExpect(jsonPath("$.fieldErrors.password").exists());
         }
     }
 
@@ -210,7 +236,11 @@ class AuthControllerTest {
                             .content("""
                                     {"refreshToken": ""}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.refreshToken").exists());
         }
     }
 
@@ -270,7 +300,11 @@ class AuthControllerTest {
                             .content("""
                                     {"email": "invalido"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.email").exists());
         }
     }
 
@@ -300,7 +334,11 @@ class AuthControllerTest {
                             .content("""
                                     {"token": "", "newPassword": "novaSenha123"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.token").exists());
         }
 
         @Test
@@ -311,7 +349,11 @@ class AuthControllerTest {
                             .content("""
                                     {"token": "valid-token", "newPassword": "123"}
                                     """))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.newPassword").exists());
         }
     }
 }

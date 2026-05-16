@@ -1,5 +1,6 @@
 package com.mangareader.application.comment.port;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,8 @@ public interface CommentRepositoryPort {
 
     /** Listagem particionada por idioma (UGC). Retorna apenas comentários no idioma informado. */
     Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable);
+
+    Page<Comment> findByTitleIdAndLanguageIn(String titleId, Collection<String> languages, Pageable pageable);
 
     Page<Comment> findByUserId(String userId, Pageable pageable);
 

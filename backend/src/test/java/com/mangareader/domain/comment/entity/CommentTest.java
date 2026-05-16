@@ -1,9 +1,6 @@
 package com.mangareader.domain.comment.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,10 +22,10 @@ class CommentTest {
                     .textContent("Ótimo capítulo!")
                     .build();
 
-            assertFalse(comment.isHighlighted());
-            assertFalse(comment.isWasEdited());
-            assertEquals(0, comment.getLikeCount());
-            assertEquals(0, comment.getDislikeCount());
+            assertThat(comment.isHighlighted()).isFalse();
+            assertThat(comment.isWasEdited()).isFalse();
+            assertThat(comment.getLikeCount()).isEqualTo(0);
+            assertThat(comment.getDislikeCount()).isEqualTo(0);
         }
 
         @Test
@@ -49,18 +46,18 @@ class CommentTest {
                     .dislikeCount(3)
                     .build();
 
-            assertEquals("comment-abc", comment.getId());
-            assertEquals("title-1", comment.getTitleId());
-            assertEquals("parent-xyz", comment.getParentCommentId());
-            assertEquals("user-1", comment.getUserId());
-            assertEquals("Maria", comment.getUserName());
-            assertEquals("https://example.com/photo.jpg", comment.getUserPhoto());
-            assertEquals(true, comment.isHighlighted());
-            assertEquals(true, comment.isWasEdited());
-            assertEquals("Texto do comentário", comment.getTextContent());
-            assertEquals("https://example.com/img.png", comment.getImageContent());
-            assertEquals(15, comment.getLikeCount());
-            assertEquals(3, comment.getDislikeCount());
+            assertThat(comment.getId()).isEqualTo("comment-abc");
+            assertThat(comment.getTitleId()).isEqualTo("title-1");
+            assertThat(comment.getParentCommentId()).isEqualTo("parent-xyz");
+            assertThat(comment.getUserId()).isEqualTo("user-1");
+            assertThat(comment.getUserName()).isEqualTo("Maria");
+            assertThat(comment.getUserPhoto()).isEqualTo("https://example.com/photo.jpg");
+            assertThat(comment.isHighlighted()).isTrue();
+            assertThat(comment.isWasEdited()).isTrue();
+            assertThat(comment.getTextContent()).isEqualTo("Texto do comentário");
+            assertThat(comment.getImageContent()).isEqualTo("https://example.com/img.png");
+            assertThat(comment.getLikeCount()).isEqualTo(15);
+            assertThat(comment.getDislikeCount()).isEqualTo(3);
         }
     }
 
@@ -77,7 +74,7 @@ class CommentTest {
                     .textContent("Comentário raiz")
                     .build();
 
-            assertNull(root.getParentCommentId());
+            assertThat(root.getParentCommentId()).isNull();
         }
 
         @Test
@@ -90,8 +87,8 @@ class CommentTest {
                     .textContent("Concordo!")
                     .build();
 
-            assertNotNull(reply.getParentCommentId());
-            assertEquals("comment-root", reply.getParentCommentId());
+            assertThat(reply.getParentCommentId()).isNotNull();
+            assertThat(reply.getParentCommentId()).isEqualTo("comment-root");
         }
     }
 
@@ -109,10 +106,10 @@ class CommentTest {
                     .build();
 
             comment.setLikeCount(comment.getLikeCount() + 1);
-            assertEquals(1, comment.getLikeCount());
+            assertThat(comment.getLikeCount()).isEqualTo(1);
 
             comment.setDislikeCount(comment.getDislikeCount() + 1);
-            assertEquals(1, comment.getDislikeCount());
+            assertThat(comment.getDislikeCount()).isEqualTo(1);
         }
 
         @Test
@@ -124,13 +121,13 @@ class CommentTest {
                     .textContent("Texto original")
                     .build();
 
-            assertFalse(comment.isWasEdited());
+            assertThat(comment.isWasEdited()).isFalse();
 
             comment.setWasEdited(true);
             comment.setTextContent("Texto editado");
 
-            assertEquals(true, comment.isWasEdited());
-            assertEquals("Texto editado", comment.getTextContent());
+            assertThat(comment.isWasEdited()).isTrue();
+            assertThat(comment.getTextContent()).isEqualTo("Texto editado");
         }
 
         @Test
@@ -142,9 +139,9 @@ class CommentTest {
                     .textContent("Comentário importante")
                     .build();
 
-            assertFalse(comment.isHighlighted());
+            assertThat(comment.isHighlighted()).isFalse();
             comment.setHighlighted(true);
-            assertEquals(true, comment.isHighlighted());
+            assertThat(comment.isHighlighted()).isTrue();
         }
     }
 
@@ -157,15 +154,15 @@ class CommentTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             Comment comment = new Comment();
 
-            assertNull(comment.getId());
-            assertNull(comment.getTitleId());
-            assertNull(comment.getParentCommentId());
-            assertNull(comment.getUserId());
-            assertNull(comment.getUserName());
-            assertNull(comment.getUserPhoto());
-            assertNull(comment.getTextContent());
-            assertNull(comment.getImageContent());
-            assertNull(comment.getCreatedAt());
+            assertThat(comment.getId()).isNull();
+            assertThat(comment.getTitleId()).isNull();
+            assertThat(comment.getParentCommentId()).isNull();
+            assertThat(comment.getUserId()).isNull();
+            assertThat(comment.getUserName()).isNull();
+            assertThat(comment.getUserPhoto()).isNull();
+            assertThat(comment.getTextContent()).isNull();
+            assertThat(comment.getImageContent()).isNull();
+            assertThat(comment.getCreatedAt()).isNull();
         }
     }
 }

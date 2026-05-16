@@ -11,7 +11,6 @@ import com.mangareader.domain.label.entity.DomainLabel;
  * Spring Data JPA Repository para {@link DomainLabel}.
  */
 public interface DomainLabelJpaRepository extends JpaRepository<DomainLabel, Long> {
-
     List<DomainLabel> findAllByTypeOrderByValueAsc(String type);
 
     Optional<DomainLabel> findByTypeAndValue(String type, String value);

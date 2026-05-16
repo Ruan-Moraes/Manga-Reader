@@ -53,6 +53,7 @@ export enum QUERY_KEYS {
     // Users
     USER_PROFILE = 'userProfile',
     AUTH_ME = 'authMe',
+    USER_CONTENT_LOCALES = 'userContentLocales',
 
     // Admin
     ADMIN_USERS = 'adminUsers',

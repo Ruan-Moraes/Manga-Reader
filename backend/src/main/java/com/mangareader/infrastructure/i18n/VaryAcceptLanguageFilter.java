@@ -27,6 +27,7 @@ public class VaryAcceptLanguageFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         response.addHeader("Vary", "Accept-Language");
+
         chain.doFilter(request, response);
     }
 }

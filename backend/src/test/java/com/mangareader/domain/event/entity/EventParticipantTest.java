@@ -1,7 +1,6 @@
 package com.mangareader.domain.event.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -34,10 +33,10 @@ class EventParticipantTest {
                     .joinedAt(joinedAt)
                     .build();
 
-            assertEquals(id, participant.getId());
-            assertEquals(event, participant.getEvent());
-            assertEquals(user, participant.getUser());
-            assertEquals(joinedAt, participant.getJoinedAt());
+            assertThat(participant.getId()).isEqualTo(id);
+            assertThat(participant.getEvent()).isEqualTo(event);
+            assertThat(participant.getUser()).isEqualTo(user);
+            assertThat(participant.getJoinedAt()).isEqualTo(joinedAt);
         }
     }
 
@@ -50,10 +49,10 @@ class EventParticipantTest {
         void shouldCreateEmptyInstance() {
             EventParticipant participant = new EventParticipant();
 
-            assertNull(participant.getId());
-            assertNull(participant.getEvent());
-            assertNull(participant.getUser());
-            assertNull(participant.getJoinedAt());
+            assertThat(participant.getId()).isNull();
+            assertThat(participant.getEvent()).isNull();
+            assertThat(participant.getUser()).isNull();
+            assertThat(participant.getJoinedAt()).isNull();
         }
     }
 }

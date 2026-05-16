@@ -9,7 +9,7 @@
 ### Backend (`/backend/`)
 
 ```bash
-mvn test                                        # Todos os testes (950, JUnit 5 + Mockito + H2 + TestContainers)
+mvn test                                        # Todos os testes (1022, JUnit 5 + Mockito + H2 + TestContainers)
 mvn test -Dtest=UserTest                        # Classe específica
 mvn test -Dtest=UserTest#shouldInitialize...    # Método específico
 mvn test -Dtest=**/domain/**/*Test              # Por camada (domain/application/presentation/infrastructure)
@@ -84,6 +84,27 @@ Auth, User, Manga, Comment, Rating, Library, Group, News, Event, Forum, Category
 - Novas entidades de negócio com labels exibíveis **devem** seguir esse padrão
 
 **Tipos seed disponíveis**: `publication_status`, `news_category`, `event_type`, `event_status`, `event_timeline`, `currency`
+
+### i18n Architecture — UI vs Conteúdo
+
+Dois eixos separados, com modelos de armazenamento distintos:
+
+- **UI language** (interface): **somente JSON do i18next + localStorage**. Não persistido no backend. Frontend define via `i18n.changeLanguage()` (chave `i18nextLng` no localStorage). O interceptor HTTP envia `Accept-Language: <i18n.language>`, então emails/validações/mensagens de erro do backend respeitam a UI atual via `AcceptHeaderLocaleResolver`.
+- **Content language** (catálogo + UGC): persistido em `users.content_locales` (JSONB, BCP 47). Resolve `LocalizedString` (Title, News, Tag, Chapter) e filtra UGC (Comment, ForumTopic). Lista ordenada = cadeia de fallback.
+
+**Backend**:
+- `User.contentLocales: List<String>` (default `["pt-BR"]`); método `updateContentLocales` valida BCP 47.
+- `LocaleResolutionService.currentContentLocales()` retorna a cadeia: autenticado → `user.contentLocales`; anônimo → parse de `Accept-Language`; sempre termina em `pt-BR`.
+- `LocaleResolutionService.resolve(LocalizedString)` percorre a cadeia antes do fallback global. Mappers (`TitleMapper`, `NewsMapper`, `TagMapper`, `LocalizedMappingHelper`) herdam automaticamente.
+- UGC: use cases públicos (`GetForumTopicsUseCase`, `GetForumTopicsByCategoryUseCase`, `GetCommentsByTitleUseCase`) usam `findByLanguageIn(currentContentLanguageTags(), ...)`. Admin cross-language toggle (`crossLanguage=true`) bypassa filtro.
+
+**Endpoints**:
+- `GET /api/users/me/content-locales` → `{ contentLocales: string[] }`
+- `PATCH /api/users/me/content-locales` (body: `{ contentLocales }`; valida via `User.updateContentLocales`)
+
+**Frontend**:
+- Hook `useContentLocales(isLoggedIn)` (TanStack Query) — sync com backend somente para users autenticados.
+- `LanguageSettings.tsx`: troca de UI lang só dispara `i18n.changeLanguage`; troca de content lang dispara mutation quando logado.
 
 ### API Response Patterns
 

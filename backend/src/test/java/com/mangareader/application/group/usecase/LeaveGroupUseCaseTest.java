@@ -26,6 +26,7 @@ import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("LeaveGroupUseCase")
@@ -42,8 +43,8 @@ class LeaveGroupUseCaseTest {
     private final UUID MEMBER_ID = UUID.randomUUID();
 
     private Group buildGroupWithLeaderAndMember() {
-        User leader = User.builder().id(LEADER_ID).name("Líder").email("l@e.com").passwordHash("h").build();
-        User member = User.builder().id(MEMBER_ID).name("Tradutor").email("t@e.com").passwordHash("h").build();
+        User leader = UserMock.withId(LEADER_ID);
+        User member = UserMock.withId(MEMBER_ID);
 
         Group group = Group.builder()
                 .id(GROUP_ID)

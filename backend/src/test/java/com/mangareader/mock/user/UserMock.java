@@ -20,6 +20,9 @@ public final class UserMock {
     public static final UUID POSTER_ID   = UUID.fromString("00000000-0000-0000-0000-000000000004");
     public static final UUID INACTIVE_ID = UUID.fromString("00000000-0000-0000-0000-000000000005");
 
+    public static final UUID SOCIAL_LINK_TWITTER_ID = UUID.fromString("00000000-0000-0000-0000-0000000000aa");
+    public static final UUID SOCIAL_LINK_DISCORD_ID = UUID.fromString("00000000-0000-0000-0000-0000000000ab");
+
     // ── Single entities ────────────────────────────────────────────────────
 
     public static User reader() {
@@ -89,7 +92,7 @@ public final class UserMock {
         User user = reader();
         user.getSocialLinks().add(
                 UserSocialLink.builder()
-                        .id(UUID.randomUUID())
+                        .id(SOCIAL_LINK_TWITTER_ID)
                         .user(user)
                         .platform("Twitter")
                         .url("https://twitter.com/leitordemo")
@@ -97,7 +100,7 @@ public final class UserMock {
         );
         user.getSocialLinks().add(
                 UserSocialLink.builder()
-                        .id(UUID.randomUUID())
+                        .id(SOCIAL_LINK_DISCORD_ID)
                         .user(user)
                         .platform("Discord")
                         .url("https://discord.gg/leitordemo")

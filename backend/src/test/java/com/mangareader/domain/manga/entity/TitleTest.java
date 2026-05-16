@@ -1,10 +1,6 @@
 package com.mangareader.domain.manga.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -22,10 +18,10 @@ class TitleTest {
                 .type("manhwa")
                 .build();
 
-        assertNotNull(title.getGenres());
-        assertTrue(title.getGenres().isEmpty());
-        assertNotNull(title.getChapters());
-        assertTrue(title.getChapters().isEmpty());
+        assertThat(title.getGenres()).isNotNull();
+        assertThat(title.getGenres().isEmpty()).isTrue();
+        assertThat(title.getChapters()).isNotNull();
+        assertThat(title.getChapters().isEmpty()).isTrue();
     }
 
     @Test
@@ -33,7 +29,7 @@ class TitleTest {
     void shouldSetAllFieldsViaBuilder() {
         Chapter ch1 = Chapter.builder()
                 .number("1")
-                .title("O Despertar")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Despertar"))
                 .releaseDate("2024-01-15")
                 .pages("42")
                 .build();
@@ -55,22 +51,22 @@ class TitleTest {
                 .publisher("Shueisha")
                 .build();
 
-        assertEquals("abc123", title.getId());
-        assertEquals("manga", title.getType());
-        assertEquals("One Piece", title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-        assertEquals("https://example.com/cover.jpg", title.getCover());
-        assertEquals("Aventura pirata épica", title.getSynopsis().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-        assertEquals(2, title.getGenres().size());
-        assertEquals("Action", title.getGenres().get(0));
-        assertEquals(1, title.getChapters().size());
-        assertEquals("1", title.getChapters().getFirst().getNumber());
-        assertEquals("1", title.getPopularity());
-        assertEquals(4.5, title.getRatingAverage());
-        assertEquals(100L, title.getRatingCount());
-        assertEquals(4.3, title.getRankingScore());
-        assertEquals("Eiichiro Oda", title.getAuthor());
-        assertEquals("Eiichiro Oda", title.getArtist());
-        assertEquals("Shueisha", title.getPublisher());
+        assertThat(title.getId()).isEqualTo("abc123");
+        assertThat(title.getType()).isEqualTo("manga");
+        assertThat(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("One Piece");
+        assertThat(title.getCover()).isEqualTo("https://example.com/cover.jpg");
+        assertThat(title.getSynopsis().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Aventura pirata épica");
+        assertThat(title.getGenres().size()).isEqualTo(2);
+        assertThat(title.getGenres().get(0)).isEqualTo("Action");
+        assertThat(title.getChapters().size()).isEqualTo(1);
+        assertThat(title.getChapters().getFirst().getNumber()).isEqualTo("1");
+        assertThat(title.getPopularity()).isEqualTo("1");
+        assertThat(title.getRatingAverage()).isEqualTo(4.5);
+        assertThat(title.getRatingCount()).isEqualTo(100L);
+        assertThat(title.getRankingScore()).isEqualTo(4.3);
+        assertThat(title.getAuthor()).isEqualTo("Eiichiro Oda");
+        assertThat(title.getArtist()).isEqualTo("Eiichiro Oda");
+        assertThat(title.getPublisher()).isEqualTo("Shueisha");
     }
 
     @Test
@@ -83,10 +79,10 @@ class TitleTest {
                 .genres(genres)
                 .build();
 
-        assertEquals(3, title.getGenres().size());
-        assertTrue(title.getGenres().contains("Romance"));
-        assertTrue(title.getGenres().contains("Drama"));
-        assertTrue(title.getGenres().contains("Slice of Life"));
+        assertThat(title.getGenres().size()).isEqualTo(3);
+        assertThat(title.getGenres().contains("Romance")).isTrue();
+        assertThat(title.getGenres().contains("Drama")).isTrue();
+        assertThat(title.getGenres().contains("Slice of Life")).isTrue();
     }
 
     @Test
@@ -98,13 +94,13 @@ class TitleTest {
 
         Chapter ch = Chapter.builder()
                 .number("700")
-                .title("Capítulo Final")
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capítulo Final"))
                 .build();
 
         title.getChapters().add(ch);
 
-        assertEquals(1, title.getChapters().size());
-        assertEquals("700", title.getChapters().getFirst().getNumber());
+        assertThat(title.getChapters().size()).isEqualTo(1);
+        assertThat(title.getChapters().getFirst().getNumber()).isEqualTo("700");
     }
 
     @Test
@@ -112,26 +108,26 @@ class TitleTest {
     void shouldKeepFieldsNullOnNoArgsConstructor() {
         Title title = new Title();
 
-        assertNull(title.getId());
-        assertTrue(title.getName().isEmpty());
-        assertNull(title.getType());
-        assertNull(title.getCover());
-        assertTrue(title.getSynopsis().isEmpty());
-        assertNull(title.getAuthor());
-        assertNull(title.getArtist());
-        assertNull(title.getPublisher());
-        assertNull(title.getPopularity());
-        assertNull(title.getRatingAverage());
-        assertNull(title.getRatingCount());
-        assertNull(title.getRankingScore());
-        assertNull(title.getCreatedAt());
-        assertNull(title.getUpdatedAt());
+        assertThat(title.getId()).isNull();
+        assertThat(title.getName().isEmpty()).isTrue();
+        assertThat(title.getType()).isNull();
+        assertThat(title.getCover()).isNull();
+        assertThat(title.getSynopsis().isEmpty()).isTrue();
+        assertThat(title.getAuthor()).isNull();
+        assertThat(title.getArtist()).isNull();
+        assertThat(title.getPublisher()).isNull();
+        assertThat(title.getPopularity()).isNull();
+        assertThat(title.getRatingAverage()).isNull();
+        assertThat(title.getRatingCount()).isNull();
+        assertThat(title.getRankingScore()).isNull();
+        assertThat(title.getCreatedAt()).isNull();
+        assertThat(title.getUpdatedAt()).isNull();
 
         // Listas com field initializer são inicializadas mesmo no no-args constructor
-        assertNotNull(title.getGenres());
-        assertTrue(title.getGenres().isEmpty());
-        assertNotNull(title.getChapters());
-        assertTrue(title.getChapters().isEmpty());
+        assertThat(title.getGenres()).isNotNull();
+        assertThat(title.getGenres().isEmpty()).isTrue();
+        assertThat(title.getChapters()).isNotNull();
+        assertThat(title.getChapters().isEmpty()).isTrue();
     }
 
     @Test
@@ -139,7 +135,7 @@ class TitleTest {
     void shouldInitializeAdultAsFalse() {
         Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).build();
 
-        assertFalse(title.isAdult());
+        assertThat(title.isAdult()).isFalse();
     }
 
     @Test
@@ -147,7 +143,7 @@ class TitleTest {
     void shouldSetAdultViaBuilder() {
         Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).adult(true).build();
 
-        assertTrue(title.isAdult());
+        assertThat(title.isAdult()).isTrue();
     }
 
     @Test
@@ -155,7 +151,7 @@ class TitleTest {
     void shouldInitializeStatusAsNull() {
         Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).build();
 
-        assertNull(title.getStatus());
+        assertThat(title.getStatus()).isNull();
     }
 
     @Test
@@ -163,7 +159,7 @@ class TitleTest {
     void shouldSetStatusViaBuilder() {
         Title title = Title.builder().name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Test")).status("ONGOING").build();
 
-        assertEquals("ONGOING", title.getStatus());
+        assertThat(title.getStatus()).isEqualTo("ONGOING");
     }
 
     @Test
@@ -179,10 +175,10 @@ class TitleTest {
         title.setRankingScore(2.8);
         title.setPopularity("5");
 
-        assertEquals("Atualizado", title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-        assertEquals(3.0, title.getRatingAverage());
-        assertEquals(50L, title.getRatingCount());
-        assertEquals(2.8, title.getRankingScore());
-        assertEquals("5", title.getPopularity());
+        assertThat(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Atualizado");
+        assertThat(title.getRatingAverage()).isEqualTo(3.0);
+        assertThat(title.getRatingCount()).isEqualTo(50L);
+        assertThat(title.getRankingScore()).isEqualTo(2.8);
+        assertThat(title.getPopularity()).isEqualTo("5");
     }
 }

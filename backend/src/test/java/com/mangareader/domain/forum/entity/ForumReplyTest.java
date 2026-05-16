@@ -1,9 +1,6 @@
 package com.mangareader.domain.forum.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,9 +40,9 @@ class ForumReplyTest {
                     .content("Minha resposta")
                     .build();
 
-            assertEquals(0, reply.getLikes());
-            assertFalse(reply.isEdited());
-            assertFalse(reply.isBestAnswer());
+            assertThat(reply.getLikes()).isEqualTo(0);
+            assertThat(reply.isEdited()).isFalse();
+            assertThat(reply.isBestAnswer()).isFalse();
         }
     }
 
@@ -68,12 +65,12 @@ class ForumReplyTest {
                     .isBestAnswer(true)
                     .build();
 
-            assertEquals(topic, reply.getTopic());
-            assertEquals(author, reply.getAuthor());
-            assertEquals("Resposta detalhada com a solução", reply.getContent());
-            assertEquals(10, reply.getLikes());
-            assertTrue(reply.isEdited());
-            assertTrue(reply.isBestAnswer());
+            assertThat(reply.getTopic()).isEqualTo(topic);
+            assertThat(reply.getAuthor()).isEqualTo(author);
+            assertThat(reply.getContent()).isEqualTo("Resposta detalhada com a solução");
+            assertThat(reply.getLikes()).isEqualTo(10);
+            assertThat(reply.isEdited()).isTrue();
+            assertThat(reply.isBestAnswer()).isTrue();
         }
     }
 
@@ -90,9 +87,9 @@ class ForumReplyTest {
                     .content("A solução é X")
                     .build();
 
-            assertFalse(reply.isBestAnswer());
+            assertThat(reply.isBestAnswer()).isFalse();
             reply.setBestAnswer(true);
-            assertTrue(reply.isBestAnswer());
+            assertThat(reply.isBestAnswer()).isTrue();
         }
 
         @Test
@@ -104,12 +101,12 @@ class ForumReplyTest {
                     .content("Texto original")
                     .build();
 
-            assertFalse(reply.isEdited());
+            assertThat(reply.isEdited()).isFalse();
             reply.setContent("Texto corrigido");
             reply.setEdited(true);
 
-            assertEquals("Texto corrigido", reply.getContent());
-            assertTrue(reply.isEdited());
+            assertThat(reply.getContent()).isEqualTo("Texto corrigido");
+            assertThat(reply.isEdited()).isTrue();
         }
 
         @Test
@@ -121,9 +118,9 @@ class ForumReplyTest {
                     .content("Ótima resposta")
                     .build();
 
-            assertEquals(0, reply.getLikes());
+            assertThat(reply.getLikes()).isEqualTo(0);
             reply.setLikes(reply.getLikes() + 1);
-            assertEquals(1, reply.getLikes());
+            assertThat(reply.getLikes()).isEqualTo(1);
         }
     }
 
@@ -136,11 +133,11 @@ class ForumReplyTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             ForumReply reply = new ForumReply();
 
-            assertNull(reply.getId());
-            assertNull(reply.getTopic());
-            assertNull(reply.getAuthor());
-            assertNull(reply.getContent());
-            assertNull(reply.getCreatedAt());
+            assertThat(reply.getId()).isNull();
+            assertThat(reply.getTopic()).isNull();
+            assertThat(reply.getAuthor()).isNull();
+            assertThat(reply.getContent()).isNull();
+            assertThat(reply.getCreatedAt()).isNull();
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.mangareader.domain.manga.valueobject;
 
+import com.mangareader.shared.domain.i18n.LocalizedString;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +11,8 @@ import lombok.Setter;
 /**
  * Capítulo de um título (embedded document MongoDB).
  * <p>
- * Compatível com o frontend ({@code Chapter} em chapter.types.ts):
- * <pre>{ number: string, title: string, releaseDate: string, pages: string }</pre>
+ * O título do capítulo é multilíngue ({@link LocalizedString}); a API resolve
+ * para o locale ativo via {@code LocaleResolutionService.resolve(...)}.
  */
 @Getter
 @Setter
@@ -19,7 +21,7 @@ import lombok.Setter;
 @Builder
 public class Chapter {
     private String number;
-    private String title;
+    private LocalizedString title;
     private String releaseDate;
     private String pages;
 }

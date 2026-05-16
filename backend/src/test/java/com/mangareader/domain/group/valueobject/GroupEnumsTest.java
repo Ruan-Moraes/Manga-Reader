@@ -1,6 +1,6 @@
 package com.mangareader.domain.group.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,18 +16,18 @@ class GroupEnumsTest {
         @Test
         @DisplayName("Deve conter 6 valores")
         void shouldHaveSixValues() {
-            assertEquals(6, GroupRole.values().length);
+            assertThat(GroupRole.values().length).isEqualTo(6);
         }
 
         @Test
         @DisplayName("Deve retornar displayName correto para cada role")
         void shouldReturnCorrectDisplayNames() {
-            assertEquals("Líder", GroupRole.LIDER.getDisplayName());
-            assertEquals("Tradutor(a)", GroupRole.TRADUTOR.getDisplayName());
-            assertEquals("Revisor(a)", GroupRole.REVISOR.getDisplayName());
-            assertEquals("QC", GroupRole.QC.getDisplayName());
-            assertEquals("Cleaner", GroupRole.CLEANER.getDisplayName());
-            assertEquals("Typesetter", GroupRole.TYPESETTER.getDisplayName());
+            assertThat(GroupRole.LIDER.getDisplayName()).isEqualTo("Líder");
+            assertThat(GroupRole.TRADUTOR.getDisplayName()).isEqualTo("Tradutor(a)");
+            assertThat(GroupRole.REVISOR.getDisplayName()).isEqualTo("Revisor(a)");
+            assertThat(GroupRole.QC.getDisplayName()).isEqualTo("QC");
+            assertThat(GroupRole.CLEANER.getDisplayName()).isEqualTo("Cleaner");
+            assertThat(GroupRole.TYPESETTER.getDisplayName()).isEqualTo("Typesetter");
         }
     }
 
@@ -38,16 +38,16 @@ class GroupEnumsTest {
         @Test
         @DisplayName("Deve conter 3 valores")
         void shouldHaveThreeValues() {
-            assertEquals(3, GroupStatus.values().length);
+            assertThat(GroupStatus.values().length).isEqualTo(3);
         }
 
         @Test
         @DisplayName("Deve conter todos os status esperados")
         void shouldContainExpectedValues() {
             GroupStatus[] values = GroupStatus.values();
-            assertEquals(GroupStatus.ACTIVE, values[0]);
-            assertEquals(GroupStatus.INACTIVE, values[1]);
-            assertEquals(GroupStatus.HIATUS, values[2]);
+            assertThat(values[0]).isEqualTo(GroupStatus.ACTIVE);
+            assertThat(values[1]).isEqualTo(GroupStatus.INACTIVE);
+            assertThat(values[2]).isEqualTo(GroupStatus.HIATUS);
         }
     }
 
@@ -58,14 +58,14 @@ class GroupEnumsTest {
         @Test
         @DisplayName("Deve conter 2 valores")
         void shouldHaveTwoValues() {
-            assertEquals(2, GroupWorkStatus.values().length);
+            assertThat(GroupWorkStatus.values().length).isEqualTo(2);
         }
 
         @Test
         @DisplayName("Deve conter ONGOING e COMPLETED")
         void shouldContainExpectedValues() {
-            assertEquals(GroupWorkStatus.ONGOING, GroupWorkStatus.values()[0]);
-            assertEquals(GroupWorkStatus.COMPLETED, GroupWorkStatus.values()[1]);
+            assertThat(GroupWorkStatus.values()[0]).isEqualTo(GroupWorkStatus.ONGOING);
+            assertThat(GroupWorkStatus.values()[1]).isEqualTo(GroupWorkStatus.COMPLETED);
         }
     }
 
@@ -76,14 +76,14 @@ class GroupEnumsTest {
         @Test
         @DisplayName("Deve conter 2 valores")
         void shouldHaveTwoValues() {
-            assertEquals(2, GroupUserType.values().length);
+            assertThat(GroupUserType.values().length).isEqualTo(2);
         }
 
         @Test
         @DisplayName("Deve conter MEMBER e SUPPORTER")
         void shouldContainExpectedValues() {
-            assertEquals(GroupUserType.MEMBER, GroupUserType.values()[0]);
-            assertEquals(GroupUserType.SUPPORTER, GroupUserType.values()[1]);
+            assertThat(GroupUserType.values()[0]).isEqualTo(GroupUserType.MEMBER);
+            assertThat(GroupUserType.values()[1]).isEqualTo(GroupUserType.SUPPORTER);
         }
     }
 }

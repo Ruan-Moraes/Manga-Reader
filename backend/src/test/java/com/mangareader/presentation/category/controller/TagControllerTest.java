@@ -144,7 +144,10 @@ class TagControllerTest {
                     .thenThrow(new ResourceNotFoundException("Tag", "id", "999"));
 
             mockMvc.perform(get("/api/tags/999"))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("RESOURCE_NOT_FOUND"))
+                    .andExpect(jsonPath("$.statusCode").value(404));
         }
     }
 
@@ -189,7 +192,11 @@ class TagControllerTest {
             mockMvc.perform(post("/api/tags")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{}"))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors").isNotEmpty());
         }
     }
 
@@ -218,7 +225,10 @@ class TagControllerTest {
             mockMvc.perform(put("/api/tags/999")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"label\":{\"pt-BR\":\"Qualquer\"}}"))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("RESOURCE_NOT_FOUND"))
+                    .andExpect(jsonPath("$.statusCode").value(404));
         }
     }
 
@@ -242,7 +252,10 @@ class TagControllerTest {
                     .when(deleteTagUseCase).execute(999L);
 
             mockMvc.perform(delete("/api/tags/999"))
-                    .andExpect(status().isNotFound());
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("RESOURCE_NOT_FOUND"))
+                    .andExpect(jsonPath("$.statusCode").value(404));
         }
     }
 }

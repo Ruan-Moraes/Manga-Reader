@@ -31,10 +31,11 @@ class GetChapterByNumberUseCaseTest {
 
     private Title buildTitleWithChapters() {
         List<Chapter> chapters = List.of(
-                Chapter.builder().number("1").title("O Início").releaseDate("2020-01-01").pages("24").build(),
-                Chapter.builder().number("2").title("A Jornada").releaseDate("2020-01-15").pages("22").build(),
-                Chapter.builder().number("3").title("O Confronto").releaseDate("2020-02-01").pages("26").build()
+                Chapter.builder().number("1").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Início")).releaseDate("2020-01-01").pages("24").build(),
+                Chapter.builder().number("2").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A Jornada")).releaseDate("2020-01-15").pages("22").build(),
+                Chapter.builder().number("3").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Confronto")).releaseDate("2020-02-01").pages("26").build()
         );
+
         return Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).chapters(chapters).build();
     }
 
@@ -44,16 +45,13 @@ class GetChapterByNumberUseCaseTest {
         @Test
         @DisplayName("Deve retornar capítulo pelo número")
         void deveRetornarCapituloPeloNumero() {
-            // Arrange
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(buildTitleWithChapters()));
 
-            // Act
             Chapter result = getChapterByNumberUseCase.execute("abc123", "2");
 
-            // Assert
             assertThat(result).isNotNull();
             assertThat(result.getNumber()).isEqualTo("2");
-            assertThat(result.getTitle()).isEqualTo("A Jornada");
+            assertThat(result.getTitle().resolve(null)).isEqualTo("A Jornada");
             assertThat(result.getPages()).isEqualTo("22");
         }
     }
@@ -64,10 +62,8 @@ class GetChapterByNumberUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")
         void deveLancarExcecaoQuandoTituloNaoExiste() {
-            // Arrange
             when(titleRepository.findById("inexistente")).thenReturn(Optional.empty());
 
-            // Act & Assert
             assertThatThrownBy(() -> getChapterByNumberUseCase.execute("inexistente", "1"))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("Title");
@@ -76,10 +72,8 @@ class GetChapterByNumberUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando capítulo não existe")
         void deveLancarExcecaoQuandoCapituloNaoExiste() {
-            // Arrange
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(buildTitleWithChapters()));
 
-            // Act & Assert
             assertThatThrownBy(() -> getChapterByNumberUseCase.execute("abc123", "999"))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("Chapter")

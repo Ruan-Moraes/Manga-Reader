@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TitleMock {
-
     private TitleMock() {}
-
-    // ── Fixed IDs ──────────────────────────────────────────────────────────
 
     public static final String TITLE_1_ID = "title-1";
     public static final String TITLE_2_ID = "title-2";
@@ -22,12 +19,10 @@ public final class TitleMock {
     public static final String TITLE_7_ID = "title-7";
     public static final String TITLE_8_ID = "title-8";
 
-    // ── Chapters ───────────────────────────────────────────────────────────
-
     public static Chapter chapter(String number, String chapterTitle) {
         return Chapter.builder()
                 .number(number)
-                .title(chapterTitle)
+                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(chapterTitle))
                 .releaseDate("2025-06-10")
                 .pages("42")
                 .build();
@@ -38,15 +33,13 @@ public final class TitleMock {
         for (int i = from; i <= to; i++) {
             chapters.add(Chapter.builder()
                     .number(String.valueOf(i))
-                    .title("Capitulo " + i)
+                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capitulo " + i))
                     .releaseDate("2025-06-" + String.format("%02d", Math.min(i, 28)))
                     .pages(String.valueOf(30 + i))
                     .build());
         }
         return chapters;
     }
-
-    // ── Manga ──────────────────────────────────────────────────────────────
 
     public static Title reinoDeAco() {
         return Title.builder()
@@ -213,8 +206,6 @@ public final class TitleMock {
                 .build();
     }
 
-    // ── Edge cases ─────────────────────────────────────────────────────────
-
     public static Title withNoChapters() {
         return Title.builder()
                 .id("title-empty")
@@ -281,8 +272,6 @@ public final class TitleMock {
                 .author("Author " + id)
                 .build();
     }
-
-    // ── Collections ────────────────────────────────────────────────────────
 
     public static List<Title> catalog() {
         return List.of(

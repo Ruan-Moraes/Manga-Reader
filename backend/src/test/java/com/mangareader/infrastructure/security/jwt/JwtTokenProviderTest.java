@@ -197,7 +197,7 @@ class JwtTokenProviderTest {
 
         @Test
         @DisplayName("Token de reset deve expirar em aproximadamente 15 minutos")
-        void tokenDeResetDeveExpirarEm15Minutos() throws InterruptedException {
+        void tokenDeResetDeveExpirarEm15Minutos() throws Exception {
             // Cria provider com expiração de 1ms para simular token instantaneamente expirado
             JwtTokenProvider shortLivedProvider = new JwtTokenProvider(SECRET, ACCESS_EXPIRATION, REFRESH_EXPIRATION);
             String token = shortLivedProvider.generatePasswordResetToken(USER_ID, "ruan@email.com");

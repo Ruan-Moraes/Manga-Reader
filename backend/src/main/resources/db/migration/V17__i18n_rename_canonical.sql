@@ -1,10 +1,3 @@
--- ============================================================================
--- Etapa B (i18n) — Fase B: renomear colunas *_i18n para nome canônico.
---
--- Após V16 dropar legados, padroniza nomenclatura: campo traduzível tem
--- nome simples (sem sufixo i18n), tipo JSONB. Convenção final do sistema.
--- ============================================================================
-
 ALTER TABLE tags                RENAME COLUMN label_i18n       TO label;
 
 ALTER TABLE events              RENAME COLUMN title_i18n       TO title;

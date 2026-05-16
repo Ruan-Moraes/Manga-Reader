@@ -1,8 +1,6 @@
 package com.mangareader.domain.user.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 
@@ -26,12 +24,12 @@ class ViewHistoryTest {
                 .viewedAt(now)
                 .build();
 
-        assertEquals("vh-123", vh.getId());
-        assertEquals("user-abc", vh.getUserId());
-        assertEquals("title-xyz", vh.getTitleId());
-        assertEquals("Solo Leveling", vh.getTitleName());
-        assertEquals("https://example.com/cover.jpg", vh.getTitleCover());
-        assertEquals(now, vh.getViewedAt());
+        assertThat(vh.getId()).isEqualTo("vh-123");
+        assertThat(vh.getUserId()).isEqualTo("user-abc");
+        assertThat(vh.getTitleId()).isEqualTo("title-xyz");
+        assertThat(vh.getTitleName()).isEqualTo("Solo Leveling");
+        assertThat(vh.getTitleCover()).isEqualTo("https://example.com/cover.jpg");
+        assertThat(vh.getViewedAt()).isEqualTo(now);
     }
 
     @Test
@@ -39,12 +37,12 @@ class ViewHistoryTest {
     void construtorVazioDeveManterCamposNulos() {
         ViewHistory vh = new ViewHistory();
 
-        assertNull(vh.getId());
-        assertNull(vh.getUserId());
-        assertNull(vh.getTitleId());
-        assertNull(vh.getTitleName());
-        assertNull(vh.getTitleCover());
-        assertNull(vh.getViewedAt());
+        assertThat(vh.getId()).isNull();
+        assertThat(vh.getUserId()).isNull();
+        assertThat(vh.getTitleId()).isNull();
+        assertThat(vh.getTitleName()).isNull();
+        assertThat(vh.getTitleCover()).isNull();
+        assertThat(vh.getViewedAt()).isNull();
     }
 
     @Test
@@ -60,8 +58,8 @@ class ViewHistoryTest {
         vh.setTitleName("Atualizado");
         vh.setViewedAt(newTime);
 
-        assertEquals("Atualizado", vh.getTitleName());
-        assertEquals(newTime, vh.getViewedAt());
+        assertThat(vh.getTitleName()).isEqualTo("Atualizado");
+        assertThat(vh.getViewedAt()).isEqualTo(newTime);
     }
 
     @Test
@@ -74,9 +72,9 @@ class ViewHistoryTest {
                 .viewedAt(LocalDateTime.now())
                 .build();
 
-        assertNull(vh.getId());
-        assertNotNull(vh.getUserId());
-        assertNotNull(vh.getTitleId());
-        assertNotNull(vh.getViewedAt());
+        assertThat(vh.getId()).isNull();
+        assertThat(vh.getUserId()).isNotNull();
+        assertThat(vh.getTitleId()).isNotNull();
+        assertThat(vh.getViewedAt()).isNotNull();
     }
 }

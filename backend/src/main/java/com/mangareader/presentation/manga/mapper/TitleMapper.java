@@ -58,13 +58,13 @@ public class TitleMapper {
         return titles.stream().map(this::toResponse).toList();
     }
 
-    private static List<ChapterResponse> mapChapters(List<Chapter> chapters) {
+    private List<ChapterResponse> mapChapters(List<Chapter> chapters) {
         if (chapters == null) return Collections.emptyList();
 
         return chapters.stream()
                 .map(ch -> new ChapterResponse(
                         ch.getNumber(),
-                        ch.getTitle(),
+                        i18n.toResolvedString(ch.getTitle()),
                         ch.getReleaseDate(),
                         ch.getPages()
                 ))

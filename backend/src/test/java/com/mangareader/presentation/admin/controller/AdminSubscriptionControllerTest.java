@@ -186,7 +186,11 @@ class AdminSubscriptionControllerTest {
             mockMvc.perform(patch("/api/admin/subscriptions/" + SUBSCRIPTION_ID + "/status")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"status\":\"\"}"))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.status").exists());
         }
     }
 }

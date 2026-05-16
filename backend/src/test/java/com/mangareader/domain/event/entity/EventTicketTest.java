@@ -1,7 +1,6 @@
 package com.mangareader.domain.event.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
@@ -30,11 +29,11 @@ class EventTicketTest {
                     .available(100)
                     .build();
 
-            assertEquals(id, ticket.getId());
-            assertEquals(event, ticket.getEvent());
-            assertEquals("VIP", ticket.getName());
-            assertEquals("R$ 150,00", ticket.getPrice());
-            assertEquals(100, ticket.getAvailable());
+            assertThat(ticket.getId()).isEqualTo(id);
+            assertThat(ticket.getEvent()).isEqualTo(event);
+            assertThat(ticket.getName()).isEqualTo("VIP");
+            assertThat(ticket.getPrice()).isEqualTo("R$ 150,00");
+            assertThat(ticket.getAvailable()).isEqualTo(100);
         }
 
         @Test
@@ -45,7 +44,7 @@ class EventTicketTest {
                     .price("R$ 50,00")
                     .build();
 
-            assertEquals(0, ticket.getAvailable());
+            assertThat(ticket.getAvailable()).isEqualTo(0);
         }
     }
 
@@ -58,10 +57,10 @@ class EventTicketTest {
         void shouldCreateEmptyInstance() {
             EventTicket ticket = new EventTicket();
 
-            assertNull(ticket.getId());
-            assertNull(ticket.getEvent());
-            assertNull(ticket.getName());
-            assertNull(ticket.getPrice());
+            assertThat(ticket.getId()).isNull();
+            assertThat(ticket.getEvent()).isNull();
+            assertThat(ticket.getName()).isNull();
+            assertThat(ticket.getPrice()).isNull();
         }
     }
 }

@@ -1,11 +1,8 @@
 package com.mangareader.infrastructure.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -117,8 +114,8 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(result);
-            assertTrue(tokenPort.isTokenValid(data.get("accessToken").asText()));
-            assertTrue(tokenPort.isTokenValid(data.get("refreshToken").asText()));
+            assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
+            assertThat(tokenPort.isTokenValid(data.get("refreshToken").asText())).isTrue();
         }
 
         @Test
@@ -132,12 +129,12 @@ class AuthSecurityIntegrationTest {
 
             User user = userRepository.findByEmail("persisted@test.com").orElse(null);
 
-            assertNotNull(user);
-            assertEquals("Persisted User", user.getName());
-            assertEquals("persisted@test.com", user.getEmail());
-            assertEquals(UserRole.MEMBER, user.getRole());
-            assertTrue(passwordEncoder.matches("senha456", user.getPasswordHash()));
-            assertNotEquals("senha456", user.getPasswordHash());
+            assertThat(user).isNotNull();
+            assertThat(user.getName()).isEqualTo("Persisted User");
+            assertThat(user.getEmail()).isEqualTo("persisted@test.com");
+            assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
+            assertThat(passwordEncoder.matches("senha456", user.getPasswordHash())).isTrue();
+            assertThat(user.getPasswordHash()).isNotEqualTo("senha456");
         }
 
         @Test
@@ -162,7 +159,7 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(result);
-            assertTrue(tokenPort.isTokenValid(data.get("accessToken").asText()));
+            assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
         }
 
         @Test
@@ -208,8 +205,8 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(refreshResult);
-            assertTrue(tokenPort.isTokenValid(data.get("accessToken").asText()));
-            assertTrue(tokenPort.isTokenValid(data.get("refreshToken").asText()));
+            assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
+            assertThat(tokenPort.isTokenValid(data.get("refreshToken").asText())).isTrue();
         }
 
         @Test
@@ -330,10 +327,10 @@ class AuthSecurityIntegrationTest {
             String accessToken = data.get("accessToken").asText();
             String userId = data.get("userId").asText();
 
-            assertEquals(java.util.UUID.fromString(userId), tokenPort.extractUserId(accessToken));
-            assertEquals("claims@test.com", tokenPort.extractEmail(accessToken));
-            assertEquals("MEMBER", tokenPort.extractRole(accessToken));
-            assertEquals(null, tokenPort.extractType(accessToken));
+            assertThat(tokenPort.extractUserId(accessToken)).isEqualTo(java.util.UUID.fromString(userId));
+            assertThat(tokenPort.extractEmail(accessToken)).isEqualTo("claims@test.com");
+            assertThat(tokenPort.extractRole(accessToken)).isEqualTo("MEMBER");
+            assertThat(tokenPort.extractType(accessToken)).isNull();
         }
 
         @Test
@@ -348,8 +345,8 @@ class AuthSecurityIntegrationTest {
             String refreshToken = data.get("refreshToken").asText();
             String userId = data.get("userId").asText();
 
-            assertEquals(java.util.UUID.fromString(userId), tokenPort.extractUserId(refreshToken));
-            assertEquals("refresh", tokenPort.extractType(refreshToken));
+            assertThat(tokenPort.extractUserId(refreshToken)).isEqualTo(java.util.UUID.fromString(userId));
+            assertThat(tokenPort.extractType(refreshToken)).isEqualTo("refresh");
         }
     }
 

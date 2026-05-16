@@ -1,10 +1,6 @@
 package com.mangareader.domain.group.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -40,18 +36,18 @@ class GroupTest {
                     .username("scan-team")
                     .build();
 
-            assertEquals(GroupStatus.ACTIVE, group.getStatus());
-            assertEquals(0, group.getTotalTitles());
-            assertEquals(0.0, group.getRating());
-            assertEquals(0, group.getPopularity());
-            assertNotNull(group.getGenres());
-            assertTrue(group.getGenres().isEmpty());
-            assertNotNull(group.getFocusTags());
-            assertTrue(group.getFocusTags().isEmpty());
-            assertNotNull(group.getGroupUsers());
-            assertTrue(group.getGroupUsers().isEmpty());
-            assertNotNull(group.getTranslatedWorks());
-            assertTrue(group.getTranslatedWorks().isEmpty());
+            assertThat(group.getStatus()).isEqualTo(GroupStatus.ACTIVE);
+            assertThat(group.getTotalTitles()).isEqualTo(0);
+            assertThat(group.getRating()).isEqualTo(0.0);
+            assertThat(group.getPopularity()).isEqualTo(0);
+            assertThat(group.getGenres()).isNotNull();
+            assertThat(group.getGenres().isEmpty()).isTrue();
+            assertThat(group.getFocusTags()).isNotNull();
+            assertThat(group.getFocusTags().isEmpty()).isTrue();
+            assertThat(group.getGroupUsers()).isNotNull();
+            assertThat(group.getGroupUsers().isEmpty()).isTrue();
+            assertThat(group.getTranslatedWorks()).isNotNull();
+            assertThat(group.getTranslatedWorks().isEmpty()).isTrue();
         }
     }
 
@@ -78,19 +74,19 @@ class GroupTest {
                     .popularity(1000)
                     .build();
 
-            assertEquals("Alpha Scans", group.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertEquals("alpha-scans", group.getUsername());
-            assertEquals("https://example.com/logo.png", group.getLogo());
-            assertEquals("https://example.com/banner.png", group.getBanner());
-            assertEquals("Grupo de tradução focado em manhwa", group.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertEquals("https://alphascans.com", group.getWebsite());
-            assertEquals(25, group.getTotalTitles());
-            assertEquals(2020, group.getFoundedYear());
-            assertEquals(GroupStatus.ACTIVE, group.getStatus());
-            assertEquals(2, group.getGenres().size());
-            assertEquals(2, group.getFocusTags().size());
-            assertEquals(4.5, group.getRating());
-            assertEquals(1000, group.getPopularity());
+            assertThat(group.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Alpha Scans");
+            assertThat(group.getUsername()).isEqualTo("alpha-scans");
+            assertThat(group.getLogo()).isEqualTo("https://example.com/logo.png");
+            assertThat(group.getBanner()).isEqualTo("https://example.com/banner.png");
+            assertThat(group.getDescription().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Grupo de tradução focado em manhwa");
+            assertThat(group.getWebsite()).isEqualTo("https://alphascans.com");
+            assertThat(group.getTotalTitles()).isEqualTo(25);
+            assertThat(group.getFoundedYear()).isEqualTo(2020);
+            assertThat(group.getStatus()).isEqualTo(GroupStatus.ACTIVE);
+            assertThat(group.getGenres().size()).isEqualTo(2);
+            assertThat(group.getFocusTags().size()).isEqualTo(2);
+            assertThat(group.getRating()).isEqualTo(4.5);
+            assertThat(group.getPopularity()).isEqualTo(1000);
         }
     }
 
@@ -117,9 +113,9 @@ class GroupTest {
 
             group.getGroupUsers().add(groupUser);
 
-            assertEquals(1, group.getGroupUsers().size());
-            assertEquals(GroupRole.TRADUTOR, group.getGroupUsers().getFirst().getRole());
-            assertEquals(user, group.getGroupUsers().getFirst().getUser());
+            assertThat(group.getGroupUsers().size()).isEqualTo(1);
+            assertThat(group.getGroupUsers().getFirst().getRole()).isEqualTo(GroupRole.TRADUTOR);
+            assertThat(group.getGroupUsers().getFirst().getUser()).isEqualTo(user);
         }
 
         @Test
@@ -153,7 +149,7 @@ class GroupTest {
 
             group.getGroupUsers().addAll(List.of(leader, translator, reviewer));
 
-            assertEquals(3, group.getGroupUsers().size());
+            assertThat(group.getGroupUsers().size()).isEqualTo(3);
         }
 
         @Test
@@ -174,9 +170,9 @@ class GroupTest {
 
             group.getGroupUsers().add(supporter);
 
-            assertEquals(1, group.getGroupUsers().size());
-            assertEquals(GroupUserType.SUPPORTER, group.getGroupUsers().getFirst().getType());
-            assertNull(group.getGroupUsers().getFirst().getRole());
+            assertThat(group.getGroupUsers().size()).isEqualTo(1);
+            assertThat(group.getGroupUsers().getFirst().getType()).isEqualTo(GroupUserType.SUPPORTER);
+            assertThat(group.getGroupUsers().getFirst().getRole()).isNull();
         }
     }
 
@@ -204,9 +200,9 @@ class GroupTest {
 
             group.getTranslatedWorks().add(work);
 
-            assertEquals(1, group.getTranslatedWorks().size());
-            assertEquals("Solo Leveling", group.getTranslatedWorks().getFirst().getTitle());
-            assertEquals("mongo-title-id", group.getTranslatedWorks().getFirst().getTitleId());
+            assertThat(group.getTranslatedWorks().size()).isEqualTo(1);
+            assertThat(group.getTranslatedWorks().getFirst().getTitle()).isEqualTo("Solo Leveling");
+            assertThat(group.getTranslatedWorks().getFirst().getTitleId()).isEqualTo("mongo-title-id");
         }
     }
 
@@ -222,13 +218,13 @@ class GroupTest {
                     .username("team")
                     .build();
 
-            assertEquals(GroupStatus.ACTIVE, group.getStatus());
+            assertThat(group.getStatus()).isEqualTo(GroupStatus.ACTIVE);
 
             group.setStatus(GroupStatus.HIATUS);
-            assertEquals(GroupStatus.HIATUS, group.getStatus());
+            assertThat(group.getStatus()).isEqualTo(GroupStatus.HIATUS);
 
             group.setStatus(GroupStatus.INACTIVE);
-            assertEquals(GroupStatus.INACTIVE, group.getStatus());
+            assertThat(group.getStatus()).isEqualTo(GroupStatus.INACTIVE);
         }
     }
 
@@ -240,21 +236,21 @@ class GroupTest {
         @DisplayName("Todos os roles devem ter displayName")
         void allRolesShouldHaveDisplayName() {
             for (GroupRole role : GroupRole.values()) {
-                assertNotNull(role.getDisplayName());
-                assertFalse(role.getDisplayName().isBlank());
+                assertThat(role.getDisplayName()).isNotNull();
+                assertThat(role.getDisplayName().isBlank()).isFalse();
             }
         }
 
         @Test
         @DisplayName("Deve ter 6 roles disponíveis")
         void shouldHaveExpectedRoleCount() {
-            assertEquals(6, GroupRole.values().length);
+            assertThat(GroupRole.values().length).isEqualTo(6);
         }
 
         @Test
         @DisplayName("LIDER deve ter displayName 'Líder'")
         void liderShouldHaveCorrectDisplayName() {
-            assertEquals("Líder", GroupRole.LIDER.getDisplayName());
+            assertThat(GroupRole.LIDER.getDisplayName()).isEqualTo("Líder");
         }
     }
 
@@ -270,11 +266,11 @@ class GroupTest {
                     .title("Título")
                     .build();
 
-            assertEquals(0, work.getChapters());
-            assertEquals(GroupWorkStatus.ONGOING, work.getStatus());
-            assertEquals(0, work.getPopularity());
-            assertNotNull(work.getGenres());
-            assertTrue(work.getGenres().isEmpty());
+            assertThat(work.getChapters()).isEqualTo(0);
+            assertThat(work.getStatus()).isEqualTo(GroupWorkStatus.ONGOING);
+            assertThat(work.getPopularity()).isEqualTo(0);
+            assertThat(work.getGenres()).isNotNull();
+            assertThat(work.getGenres().isEmpty()).isTrue();
         }
 
         @Test
@@ -285,9 +281,9 @@ class GroupTest {
                     .title("Naruto")
                     .build();
 
-            assertEquals(GroupWorkStatus.ONGOING, work.getStatus());
+            assertThat(work.getStatus()).isEqualTo(GroupWorkStatus.ONGOING);
             work.setStatus(GroupWorkStatus.COMPLETED);
-            assertEquals(GroupWorkStatus.COMPLETED, work.getStatus());
+            assertThat(work.getStatus()).isEqualTo(GroupWorkStatus.COMPLETED);
         }
     }
 
@@ -300,12 +296,12 @@ class GroupTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             Group group = new Group();
 
-            assertNull(group.getId());
-            assertTrue(group.getName().isEmpty());
-            assertNull(group.getUsername());
-            assertTrue(group.getDescription().isEmpty());
-            assertNull(group.getFoundedYear());
-            assertNull(group.getPlatformJoinedAt());
+            assertThat(group.getId()).isNull();
+            assertThat(group.getName().isEmpty()).isTrue();
+            assertThat(group.getUsername()).isNull();
+            assertThat(group.getDescription().isEmpty()).isTrue();
+            assertThat(group.getFoundedYear()).isNull();
+            assertThat(group.getPlatformJoinedAt()).isNull();
         }
     }
 }

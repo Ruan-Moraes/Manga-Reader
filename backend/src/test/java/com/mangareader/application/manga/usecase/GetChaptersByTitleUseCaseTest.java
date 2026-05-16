@@ -35,38 +35,32 @@ class GetChaptersByTitleUseCaseTest {
         @Test
         @DisplayName("Deve retornar lista de capítulos do título")
         void deveRetornarCapitulosDoTitulo() {
-            // Arrange
             List<Chapter> chapters = List.of(
-                    Chapter.builder().number("1").title("O Início").build(),
-                    Chapter.builder().number("2").title("A Jornada").build(),
-                    Chapter.builder().number("3").title("O Confronto").build()
+                    Chapter.builder().number("1").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Início")).build(),
+                    Chapter.builder().number("2").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A Jornada")).build(),
+                    Chapter.builder().number("3").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Confronto")).build()
             );
 
             Title title = Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).chapters(chapters).build();
 
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
 
-            // Act
             List<Chapter> result = getChaptersByTitleUseCase.execute("abc123");
 
-            // Assert
             assertThat(result).hasSize(3);
             assertThat(result.get(0).getNumber()).isEqualTo("1");
-            assertThat(result.get(2).getTitle()).isEqualTo("O Confronto");
+            assertThat(result.get(2).getTitle().resolve(null)).isEqualTo("O Confronto");
         }
 
         @Test
         @DisplayName("Deve retornar lista vazia quando título não possui capítulos")
         void deveRetornarListaVaziaQuandoSemCapitulos() {
-            // Arrange
             Title title = Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo Mangá")).build();
 
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
 
-            // Act
             List<Chapter> result = getChaptersByTitleUseCase.execute("abc123");
 
-            // Assert
             assertThat(result).isEmpty();
         }
     }
@@ -77,10 +71,8 @@ class GetChaptersByTitleUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")
         void deveLancarExcecaoQuandoTituloNaoExiste() {
-            // Arrange
             when(titleRepository.findById("inexistente")).thenReturn(Optional.empty());
 
-            // Act & Assert
             assertThatThrownBy(() -> getChaptersByTitleUseCase.execute("inexistente"))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("Title");

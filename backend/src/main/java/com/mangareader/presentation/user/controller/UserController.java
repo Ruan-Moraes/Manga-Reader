@@ -26,6 +26,7 @@ import com.mangareader.application.user.usecase.GetUserProfileUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
 import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
+import com.mangareader.application.user.usecase.UpdateLanguagePreferencesUseCase;
 import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase.SocialLinkInput;
@@ -37,6 +38,8 @@ import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.presentation.user.dto.AddRecommendationRequest;
 import com.mangareader.presentation.user.dto.EnrichedProfileResponse;
+import com.mangareader.presentation.user.dto.LanguagePreferencesResponse;
+import com.mangareader.presentation.user.dto.UpdateLanguagePreferencesRequest;
 import com.mangareader.presentation.user.dto.UpdatePrivacyRequest;
 import com.mangareader.presentation.user.dto.UpdateProfileRequest;
 import com.mangareader.presentation.user.dto.UserProfileResponse;
@@ -64,6 +67,7 @@ public class UserController {
     private final RemoveRecommendationUseCase removeRecommendationUseCase;
     private final ReorderRecommendationsUseCase reorderRecommendationsUseCase;
     private final UpdatePrivacySettingsUseCase updatePrivacySettingsUseCase;
+    private final UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
     private final GetUserCommentsUseCase getUserCommentsUseCase;
     private final RecordViewHistoryUseCase recordViewHistoryUseCase;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
@@ -208,6 +212,32 @@ public class UserController {
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/me/content-locales")
+    @Operation(summary = "Idiomas de conteúdo", description = "Retorna a cadeia de idiomas preferidos para o catálogo e UGC do usuário autenticado")
+    public ResponseEntity<ApiResponse<LanguagePreferencesResponse>> getMyContentLocales(Authentication auth) {
+        UUID userId = (UUID) auth.getPrincipal();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new LanguagePreferencesResponse(user.getContentLocales())));
+    }
+
+    @PatchMapping("/me/content-locales")
+    @Operation(summary = "Atualizar idiomas de conteúdo")
+    public ResponseEntity<ApiResponse<LanguagePreferencesResponse>> updateMyContentLocales(
+            @Valid @RequestBody UpdateLanguagePreferencesRequest request,
+            Authentication auth
+    ) {
+        UUID userId = (UUID) auth.getPrincipal();
+
+        User user = updateLanguagePreferencesUseCase.execute(userId, request.contentLocales());
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new LanguagePreferencesResponse(user.getContentLocales())));
     }
 
     @GetMapping("/{id}/comments")

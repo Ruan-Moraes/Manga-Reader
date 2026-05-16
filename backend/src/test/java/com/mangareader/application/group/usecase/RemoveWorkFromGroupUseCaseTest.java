@@ -27,6 +27,7 @@ import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("RemoveWorkFromGroupUseCase")
@@ -43,7 +44,7 @@ class RemoveWorkFromGroupUseCaseTest {
     private final String TITLE_ID = "title-to-remove";
 
     private Group buildGroupWithLeaderAndWork() {
-        User leader = User.builder().id(LEADER_ID).name("Líder").email("l@e.com").passwordHash("h").build();
+        User leader = UserMock.withId(LEADER_ID);
         Group group = Group.builder()
                 .id(GROUP_ID)
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))
@@ -133,7 +134,7 @@ class RemoveWorkFromGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeaderAndWork();
             UUID membroId = UUID.randomUUID();
-            User membro = User.builder().id(membroId).name("Membro").email("m@e.com").passwordHash("h").build();
+            User membro = UserMock.withId(membroId);
             group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
             when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));

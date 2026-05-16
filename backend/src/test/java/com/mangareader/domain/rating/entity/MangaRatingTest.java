@@ -1,7 +1,6 @@
 package com.mangareader.domain.rating.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,12 +27,12 @@ class MangaRatingTest {
                     .pacingRating(4.5)
                     .build();
 
-            assertEquals(4.0, rating.getFunRating());
-            assertEquals(5.0, rating.getArtRating());
-            assertEquals(3.5, rating.getStorylineRating());
-            assertEquals(4.0, rating.getCharactersRating());
-            assertEquals(3.0, rating.getOriginalityRating());
-            assertEquals(4.5, rating.getPacingRating());
+            assertThat(rating.getFunRating()).isEqualTo(4.0);
+            assertThat(rating.getArtRating()).isEqualTo(5.0);
+            assertThat(rating.getStorylineRating()).isEqualTo(3.5);
+            assertThat(rating.getCharactersRating()).isEqualTo(4.0);
+            assertThat(rating.getOriginalityRating()).isEqualTo(3.0);
+            assertThat(rating.getPacingRating()).isEqualTo(4.5);
         }
 
         @Test
@@ -55,19 +54,19 @@ class MangaRatingTest {
                     .comment("Excelente mangá!")
                     .build();
 
-            assertEquals("rating-abc", rating.getId());
-            assertEquals("title-1", rating.getTitleId());
-            assertEquals("user-1", rating.getUserId());
-            assertEquals("Maria", rating.getUserName());
-            assertEquals("Solo Leveling", rating.getTitleName());
-            assertEquals(4.5, rating.getFunRating());
-            assertEquals(5.0, rating.getArtRating());
-            assertEquals(4.0, rating.getStorylineRating());
-            assertEquals(3.5, rating.getCharactersRating());
-            assertEquals(4.0, rating.getOriginalityRating());
-            assertEquals(3.0, rating.getPacingRating());
-            assertEquals(4.0, rating.getOverallRating());
-            assertEquals("Excelente mangá!", rating.getComment());
+            assertThat(rating.getId()).isEqualTo("rating-abc");
+            assertThat(rating.getTitleId()).isEqualTo("title-1");
+            assertThat(rating.getUserId()).isEqualTo("user-1");
+            assertThat(rating.getUserName()).isEqualTo("Maria");
+            assertThat(rating.getTitleName()).isEqualTo("Solo Leveling");
+            assertThat(rating.getFunRating()).isEqualTo(4.5);
+            assertThat(rating.getArtRating()).isEqualTo(5.0);
+            assertThat(rating.getStorylineRating()).isEqualTo(4.0);
+            assertThat(rating.getCharactersRating()).isEqualTo(3.5);
+            assertThat(rating.getOriginalityRating()).isEqualTo(4.0);
+            assertThat(rating.getPacingRating()).isEqualTo(3.0);
+            assertThat(rating.getOverallRating()).isEqualTo(4.0);
+            assertThat(rating.getComment()).isEqualTo("Excelente mangá!");
         }
 
         @Test
@@ -84,8 +83,8 @@ class MangaRatingTest {
                     .pacingRating(3.0)
                     .build();
 
-            assertEquals(3.0, rating.getFunRating());
-            assertNull(rating.getComment());
+            assertThat(rating.getFunRating()).isEqualTo(3.0);
+            assertThat(rating.getComment()).isNull();
         }
     }
 
@@ -108,7 +107,7 @@ class MangaRatingTest {
                     .build();
 
             // (4.0 + 5.0 + 3.0 + 4.0 + 3.0 + 5.0) / 6 = 24.0 / 6 = 4.0
-            assertEquals(4.0, rating.calculateOverallRating());
+            assertThat(rating.calculateOverallRating()).isEqualTo(4.0);
         }
 
         @Test
@@ -126,7 +125,7 @@ class MangaRatingTest {
                     .build();
 
             // (4.5 + 3.7 + 4.2 + 3.8 + 4.1 + 3.9) / 6 = 24.2 / 6 = 4.0333... → 4.0
-            assertEquals(4.0, rating.calculateOverallRating());
+            assertThat(rating.calculateOverallRating()).isEqualTo(4.0);
         }
 
         @Test
@@ -137,7 +136,7 @@ class MangaRatingTest {
                     .userId("user-1")
                     .build();
 
-            assertEquals(0.0, rating.calculateOverallRating());
+            assertThat(rating.calculateOverallRating()).isEqualTo(0.0);
         }
     }
 
@@ -164,9 +163,9 @@ class MangaRatingTest {
             rating.setArtRating(4.5);
             rating.setComment("Na verdade, é perfeito!");
 
-            assertEquals(5.0, rating.getFunRating());
-            assertEquals(4.5, rating.getArtRating());
-            assertEquals("Na verdade, é perfeito!", rating.getComment());
+            assertThat(rating.getFunRating()).isEqualTo(5.0);
+            assertThat(rating.getArtRating()).isEqualTo(4.5);
+            assertThat(rating.getComment()).isEqualTo("Na verdade, é perfeito!");
         }
     }
 
@@ -179,15 +178,15 @@ class MangaRatingTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             MangaRating rating = new MangaRating();
 
-            assertNull(rating.getId());
-            assertNull(rating.getTitleId());
-            assertNull(rating.getUserId());
-            assertNull(rating.getUserName());
-            assertNull(rating.getTitleName());
-            assertNull(rating.getComment());
-            assertNull(rating.getCreatedAt());
-            assertEquals(0.0, rating.getOverallRating());
-            assertEquals(0.0, rating.getFunRating());
+            assertThat(rating.getId()).isNull();
+            assertThat(rating.getTitleId()).isNull();
+            assertThat(rating.getUserId()).isNull();
+            assertThat(rating.getUserName()).isNull();
+            assertThat(rating.getTitleName()).isNull();
+            assertThat(rating.getComment()).isNull();
+            assertThat(rating.getCreatedAt()).isNull();
+            assertThat(rating.getOverallRating()).isEqualTo(0.0);
+            assertThat(rating.getFunRating()).isEqualTo(0.0);
         }
     }
 }

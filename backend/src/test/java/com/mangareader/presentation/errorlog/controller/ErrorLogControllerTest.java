@@ -87,7 +87,11 @@ class ErrorLogControllerTest {
         mockMvc.perform(post("/api/error-logs")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.fieldErrors.message").exists());
     }
 
     @Test
@@ -105,7 +109,11 @@ class ErrorLogControllerTest {
         mockMvc.perform(post("/api/error-logs")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.fieldErrors.source").exists());
     }
 
     @Test
@@ -120,7 +128,11 @@ class ErrorLogControllerTest {
         mockMvc.perform(post("/api/error-logs")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.fieldErrors.message").exists());
     }
 
     @Test

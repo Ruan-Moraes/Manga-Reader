@@ -42,6 +42,7 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
         if (label == null) {
             return Optional.empty();
         }
+
         return jpaRepository.findAll().stream()
                 .filter(t -> defaultLabel(t).equalsIgnoreCase(label))
                 .findFirst();
@@ -52,7 +53,9 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
         if (query == null || query.isBlank()) {
             return List.of();
         }
+
         var lower = query.toLowerCase();
+
         return sortedByDefaultLabel(jpaRepository.findAll().stream()
                 .filter(t -> matchesAnyLocale(t, lower))
                 .toList());
@@ -71,6 +74,7 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
     @Override
     public Page<Tag> findAll(Pageable pageable) {
         var all = sortedByDefaultLabel(jpaRepository.findAll());
+
         return slice(all, pageable);
     }
 
@@ -79,22 +83,29 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
         if (query == null || query.isBlank()) {
             return Page.empty(pageable);
         }
+
         var lower = query.toLowerCase();
+
         var filtered = sortedByDefaultLabel(jpaRepository.findAll().stream()
                 .filter(t -> matchesAnyLocale(t, lower))
                 .toList());
+
         return slice(filtered, pageable);
     }
 
     private static String defaultLabel(Tag tag) {
         var label = tag.getLabel();
+
         if (label == null) {
             return "";
         }
+
         var pt = label.values().get(LocalizedString.DEFAULT_TAG);
+
         if (pt != null && !pt.isBlank()) {
             return pt;
         }
+
         return label.values().values().stream()
                 .filter(v -> v != null && !v.isBlank())
                 .findFirst()
@@ -103,9 +114,11 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
 
     private static boolean matchesAnyLocale(Tag tag, String lowerQuery) {
         var label = tag.getLabel();
+
         if (label == null) {
             return false;
         }
+
         return label.values().values().stream()
                 .anyMatch(v -> v != null && v.toLowerCase().contains(lowerQuery));
     }
@@ -121,8 +134,11 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
         if (pageable.isUnpaged()) {
             return new PageImpl<>(all, pageable, all.size());
         }
+
         int from = (int) Math.min(pageable.getOffset(), all.size());
+
         int to = Math.min(from + pageable.getPageSize(), all.size());
+
         return new PageImpl<>(all.subList(from, to), pageable, all.size());
     }
 }

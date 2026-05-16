@@ -1,5 +1,6 @@
 package com.mangareader.application.forum.port;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,15 +18,21 @@ public interface ForumRepositoryPort {
 
     Page<ForumTopic> findByLanguage(String language, Pageable pageable);
 
+    Page<ForumTopic> findByLanguageIn(Collection<String> languages, Pageable pageable);
+
     Optional<ForumTopic> findById(UUID id);
 
     Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable);
 
     Page<ForumTopic> findByCategoryAndLanguage(ForumCategory category, String language, Pageable pageable);
 
+    Page<ForumTopic> findByCategoryAndLanguageIn(ForumCategory category, Collection<String> languages, Pageable pageable);
+
     Page<ForumTopic> searchByTitle(String query, Pageable pageable);
 
     Page<ForumTopic> searchByTitleAndLanguage(String query, String language, Pageable pageable);
+
+    Page<ForumTopic> searchByTitleAndLanguageIn(String query, Collection<String> languages, Pageable pageable);
 
     ForumTopic save(ForumTopic topic);
 

@@ -80,7 +80,7 @@ class TitleControllerTest {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um caçador fraco se torna o mais forte"))
                 .genres(List.of("Ação", "Aventura"))
                 .chapters(List.of(
-                        Chapter.builder().number("1").title("Capítulo 1").releaseDate("2024-01-01").pages("20").build()
+                        Chapter.builder().number("1").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capítulo 1")).releaseDate("2024-01-01").pages("20").build()
                 ))
                 .popularity("1000")
                 .ratingAverage(4.5)

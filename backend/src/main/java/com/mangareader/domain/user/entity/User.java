@@ -3,10 +3,13 @@ package com.mangareader.domain.user.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.UserRole;
@@ -81,6 +84,11 @@ public class User {
     @Builder.Default
     private AdultContentPreference adultContentPreference = AdultContentPreference.BLUR;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "content_locales", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private List<String> contentLocales = new ArrayList<>(List.of("pt-BR"));
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserSocialLink> socialLinks = new ArrayList<>();
@@ -109,4 +117,34 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public void updateContentLocales(List<String> contentLocales) {
+        if (contentLocales == null || contentLocales.isEmpty()) {
+            throw new IllegalArgumentException("contentLocales must not be empty");
+        }
+
+        List<String> normalized = new ArrayList<>(contentLocales.size());
+
+        for (String tag : contentLocales) {
+            if (tag == null || tag.isBlank()) {
+                throw new IllegalArgumentException("contentLocales entries must not be blank");
+            }
+
+            normalized.add(normalizeTag(tag));
+        }
+
+        this.contentLocales = normalized;
+    }
+
+    private static String normalizeTag(String tag) {
+        Locale locale = Locale.forLanguageTag(tag);
+
+        String normalized = locale.toLanguageTag();
+
+        if (normalized.isEmpty() || "und".equals(normalized)) {
+            throw new IllegalArgumentException("Invalid BCP 47 language tag: " + tag);
+        }
+
+        return normalized;
+    }
 }

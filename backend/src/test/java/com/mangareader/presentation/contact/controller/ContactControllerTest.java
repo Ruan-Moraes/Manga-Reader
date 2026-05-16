@@ -83,7 +83,11 @@ class ContactControllerTest {
             mockMvc.perform(post(ENDPOINT)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.name").exists());
 
             verify(publishWorkContactUseCase, never()).execute(any());
         }
@@ -105,7 +109,11 @@ class ContactControllerTest {
             mockMvc.perform(post(ENDPOINT)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.email").exists());
 
             verify(publishWorkContactUseCase, never()).execute(any());
         }
@@ -127,7 +135,11 @@ class ContactControllerTest {
             mockMvc.perform(post(ENDPOINT)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors.synopsis").exists());
 
             verify(publishWorkContactUseCase, never()).execute(any());
         }
@@ -144,7 +156,11 @@ class ContactControllerTest {
             mockMvc.perform(post(ENDPOINT)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value("VALIDATION_FIELD_ERROR"))
+                    .andExpect(jsonPath("$.statusCode").value(400))
+                    .andExpect(jsonPath("$.fieldErrors").isNotEmpty());
 
             verify(publishWorkContactUseCase, never()).execute(any());
         }

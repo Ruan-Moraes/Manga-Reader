@@ -1,7 +1,6 @@
 package com.mangareader.domain.event.valueobject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,11 +24,11 @@ class EventOrganizerTest {
                     .organizerContact("contato@mangacorp.com")
                     .build();
 
-            assertEquals("org-001", organizer.getOrganizerId());
-            assertEquals("Manga Corp", organizer.getOrganizerName());
-            assertEquals("https://example.com/avatar.jpg", organizer.getOrganizerAvatar());
-            assertEquals("https://example.com/profile/manga-corp", organizer.getOrganizerProfileLink());
-            assertEquals("contato@mangacorp.com", organizer.getOrganizerContact());
+            assertThat(organizer.getOrganizerId()).isEqualTo("org-001");
+            assertThat(organizer.getOrganizerName()).isEqualTo("Manga Corp");
+            assertThat(organizer.getOrganizerAvatar()).isEqualTo("https://example.com/avatar.jpg");
+            assertThat(organizer.getOrganizerProfileLink()).isEqualTo("https://example.com/profile/manga-corp");
+            assertThat(organizer.getOrganizerContact()).isEqualTo("contato@mangacorp.com");
         }
     }
 
@@ -42,11 +41,11 @@ class EventOrganizerTest {
         void shouldCreateEmptyInstance() {
             EventOrganizer organizer = new EventOrganizer();
 
-            assertNull(organizer.getOrganizerId());
-            assertNull(organizer.getOrganizerName());
-            assertNull(organizer.getOrganizerAvatar());
-            assertNull(organizer.getOrganizerProfileLink());
-            assertNull(organizer.getOrganizerContact());
+            assertThat(organizer.getOrganizerId()).isNull();
+            assertThat(organizer.getOrganizerName()).isNull();
+            assertThat(organizer.getOrganizerAvatar()).isNull();
+            assertThat(organizer.getOrganizerProfileLink()).isNull();
+            assertThat(organizer.getOrganizerContact()).isNull();
         }
     }
 }

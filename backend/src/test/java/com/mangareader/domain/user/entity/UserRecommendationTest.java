@@ -1,8 +1,6 @@
 package com.mangareader.domain.user.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
@@ -20,7 +18,7 @@ class UserRecommendationTest {
                 .titleName("Solo Leveling")
                 .build();
 
-        assertEquals(0, rec.getPosition());
+        assertThat(rec.getPosition()).isEqualTo(0);
     }
 
     @Test
@@ -43,12 +41,12 @@ class UserRecommendationTest {
                 .position(3)
                 .build();
 
-        assertEquals(id, rec.getId());
-        assertEquals(user, rec.getUser());
-        assertEquals("title-abc", rec.getTitleId());
-        assertEquals("One Piece", rec.getTitleName());
-        assertEquals("https://example.com/cover.jpg", rec.getTitleCover());
-        assertEquals(3, rec.getPosition());
+        assertThat(rec.getId()).isEqualTo(id);
+        assertThat(rec.getUser()).isEqualTo(user);
+        assertThat(rec.getTitleId()).isEqualTo("title-abc");
+        assertThat(rec.getTitleName()).isEqualTo("One Piece");
+        assertThat(rec.getTitleCover()).isEqualTo("https://example.com/cover.jpg");
+        assertThat(rec.getPosition()).isEqualTo(3);
     }
 
     @Test
@@ -56,13 +54,13 @@ class UserRecommendationTest {
     void construtorVazioDeveManterCamposNulos() {
         UserRecommendation rec = new UserRecommendation();
 
-        assertNull(rec.getId());
-        assertNull(rec.getUser());
-        assertNull(rec.getTitleId());
-        assertNull(rec.getTitleName());
-        assertNull(rec.getTitleCover());
-        assertNull(rec.getCreatedAt());
-        assertEquals(0, rec.getPosition());
+        assertThat(rec.getId()).isNull();
+        assertThat(rec.getUser()).isNull();
+        assertThat(rec.getTitleId()).isNull();
+        assertThat(rec.getTitleName()).isNull();
+        assertThat(rec.getTitleCover()).isNull();
+        assertThat(rec.getCreatedAt()).isNull();
+        assertThat(rec.getPosition()).isEqualTo(0);
     }
 
     @Test
@@ -77,8 +75,8 @@ class UserRecommendationTest {
         rec.setPosition(5);
         rec.setTitleName("Atualizado");
 
-        assertEquals(5, rec.getPosition());
-        assertEquals("Atualizado", rec.getTitleName());
+        assertThat(rec.getPosition()).isEqualTo(5);
+        assertThat(rec.getTitleName()).isEqualTo("Atualizado");
     }
 
     @Test
@@ -97,7 +95,7 @@ class UserRecommendationTest {
                 .titleName("Naruto")
                 .build();
 
-        assertNotNull(rec.getUser());
-        assertEquals(user.getId(), rec.getUser().getId());
+        assertThat(rec.getUser()).isNotNull();
+        assertThat(rec.getUser().getId()).isEqualTo(user.getId());
     }
 }

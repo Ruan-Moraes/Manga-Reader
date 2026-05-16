@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class DomainLabelRepositoryAdapter implements DomainLabelRepositoryPort {
-
     private final DomainLabelJpaRepository jpaRepository;
 
     @Override

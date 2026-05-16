@@ -3,6 +3,7 @@ package com.mangareader.application.auth.usecase;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,7 @@ import com.mangareader.application.shared.port.EmailPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ForgotPasswordUseCase")
@@ -44,7 +46,7 @@ class ForgotPasswordUseCaseTest {
     private MessageSource messageSource;
 
     @Mock
-    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+    private LocaleResolutionService localeResolutionService;
 
     @InjectMocks
     private ForgotPasswordUseCase forgotPasswordUseCase;
@@ -57,7 +59,7 @@ class ForgotPasswordUseCaseTest {
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(forgotPasswordUseCase, "baseUrl", BASE_URL);
-        org.mockito.Mockito.lenient()
+        lenient()
                 .when(messageSource.getMessage(eq("email.footer.tagline"), any(), any()))
                 .thenReturn("Manga Reader — Sua plataforma de mangás");
     }

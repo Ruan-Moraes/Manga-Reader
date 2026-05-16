@@ -25,7 +25,6 @@ import io.mongock.api.annotations.RollbackExecution;
  */
 @ChangeUnit(id = "V004-localize-catalog-content", order = "004", author = "mangareader")
 public class V004LocalizeCatalogContent {
-
     private static final String DEFAULT_TAG = "pt-BR";
 
     private final MongoTemplate mongoTemplate;
@@ -96,6 +95,7 @@ public class V004LocalizeCatalogContent {
 
     private void createI18nIndexes() {
         var titlesOps = mongoTemplate.indexOps("titles");
+
         titlesOps.ensureIndex(new Index().on("nameI18n.pt-BR", org.springframework.data.domain.Sort.Direction.ASC)
                 .named("idx_titles_name_ptBR"));
         titlesOps.ensureIndex(new Index().on("nameI18n.en-US", org.springframework.data.domain.Sort.Direction.ASC)
@@ -104,6 +104,7 @@ public class V004LocalizeCatalogContent {
                 .named("idx_titles_name_esES"));
 
         var newsOps = mongoTemplate.indexOps("news");
+
         newsOps.ensureIndex(new Index().on("titleI18n.pt-BR", org.springframework.data.domain.Sort.Direction.ASC)
                 .named("idx_news_title_ptBR"));
         newsOps.ensureIndex(new Index().on("titleI18n.en-US", org.springframework.data.domain.Sort.Direction.ASC)
@@ -119,6 +120,7 @@ public class V004LocalizeCatalogContent {
 
     private void dropIndexIfExists(String collection, String indexName) {
         var ops = mongoTemplate.indexOps(collection);
+
         ops.getIndexInfo().stream()
                 .filter(idx -> idx.getName().equals(indexName))
                 .findFirst()

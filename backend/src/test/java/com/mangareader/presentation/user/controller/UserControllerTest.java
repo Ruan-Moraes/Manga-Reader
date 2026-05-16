@@ -67,6 +67,9 @@ class UserControllerTest {
     private UpdatePrivacySettingsUseCase updatePrivacySettingsUseCase;
 
     @MockitoBean
+    private com.mangareader.application.user.usecase.UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
+
+    @MockitoBean
     private GetUserCommentsUseCase getUserCommentsUseCase;
 
     @MockitoBean
@@ -85,7 +88,9 @@ class UserControllerTest {
 
     private Authentication mockAuth() {
         Authentication auth = org.mockito.Mockito.mock(Authentication.class);
+
         when(auth.getPrincipal()).thenReturn(USER_ID);
+
         return auth;
     }
 
@@ -104,7 +109,6 @@ class UserControllerTest {
     @Nested
     @DisplayName("GET /api/users/me")
     class GetMyProfile {
-
         @Test
         @DisplayName("Deve retornar 200 com perfil do usuário autenticado")
         void deveRetornar200() throws Exception {
@@ -121,7 +125,6 @@ class UserControllerTest {
     @Nested
     @DisplayName("GET /api/users/{id}")
     class GetPublicProfile {
-
         @Test
         @DisplayName("Deve retornar 200 com perfil público do usuário")
         void deveRetornar200() throws Exception {
@@ -138,6 +141,7 @@ class UserControllerTest {
         @DisplayName("Deve retornar 404 quando usuário não existe")
         void deveRetornar404() throws Exception {
             var userId = UUID.randomUUID();
+
             when(getUserProfileUseCase.execute(userId))
                     .thenThrow(new ResourceNotFoundException("User", "id", userId));
 
@@ -149,7 +153,6 @@ class UserControllerTest {
     @Nested
     @DisplayName("PATCH /api/users/me")
     class UpdateMyProfile {
-
         @Test
         @DisplayName("Deve retornar 200 ao atualizar perfil com sucesso")
         void deveRetornar200() throws Exception {
@@ -191,6 +194,7 @@ class UserControllerTest {
         @DisplayName("Deve retornar 400 quando bio ultrapassa 500 caracteres")
         void deveRetornar400BioMuitoLonga() throws Exception {
             var bioLonga = "x".repeat(501);
+
             mockMvc.perform(patch("/api/users/me")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -211,6 +215,59 @@ class UserControllerTest {
                             .principal(mockAuth()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/users/me/content-locales")
+    class GetMyContentLocales {
+        @Test
+        @DisplayName("Deve retornar 200 com contentLocales do usuário")
+        void deveRetornar200() throws Exception {
+            User user = buildUser(USER_ID);
+
+            user.setContentLocales(List.of("en-US", "pt-BR"));
+
+            when(userRepository.findById(USER_ID)).thenReturn(java.util.Optional.of(user));
+
+            mockMvc.perform(get("/api/users/me/content-locales").principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.contentLocales[0]").value("en-US"))
+                    .andExpect(jsonPath("$.data.contentLocales[1]").value("pt-BR"));
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH /api/users/me/content-locales")
+    class UpdateMyContentLocales {
+        @Test
+        @DisplayName("Deve retornar 200 com contentLocales atualizados")
+        void deveRetornar200() throws Exception {
+            User updated = buildUser(USER_ID);
+
+            updated.setContentLocales(List.of("es-ES", "pt-BR"));
+
+            when(updateLanguagePreferencesUseCase.execute(
+                    org.mockito.ArgumentMatchers.eq(USER_ID),
+                    org.mockito.ArgumentMatchers.eq(List.of("es-ES", "pt-BR"))
+            )).thenReturn(updated);
+
+            mockMvc.perform(patch("/api/users/me/content-locales")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"contentLocales\":[\"es-ES\",\"pt-BR\"]}")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.contentLocales[0]").value("es-ES"));
+        }
+
+        @Test
+        @DisplayName("Deve retornar 400 quando contentLocales vazio")
+        void deveRetornar400() throws Exception {
+            mockMvc.perform(patch("/api/users/me/content-locales")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"contentLocales\":[]}")
+                            .principal(mockAuth()))
+                    .andExpect(status().isBadRequest());
         }
     }
 }

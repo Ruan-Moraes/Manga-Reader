@@ -11,13 +11,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
 
+import static org.mockito.Mockito.mock;
+
 @DisplayName("LocaleResolutionService")
 class LocaleResolutionServiceTest {
-
-    private final LocaleResolutionService service = new LocaleResolutionService();
+    private final UserRepositoryPort userRepository = mock(UserRepositoryPort.class);
+    private final LocaleResolutionService service = new LocaleResolutionService(userRepository);
 
     @AfterEach
     void resetLocale() {

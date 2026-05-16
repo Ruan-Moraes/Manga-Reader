@@ -16,6 +16,7 @@ export type {
 // Hooks
 export { default as useUserProfile } from './hook/useUserProfile';
 export { default as useEnrichedProfile } from './hook/useEnrichedProfile';
+export { default as useContentLocales } from './hook/useContentLocales';
 
 // Context
 export { UserModalProvider } from './context/UserModalContext';

@@ -1,9 +1,6 @@
 package com.mangareader.domain.category.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,8 +23,8 @@ class TagTest {
                     .label(LocalizedString.ofDefault("Action"))
                     .build();
 
-            assertEquals("Action", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
-            assertNull(tag.getId());
+            assertThat(tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Action");
+            assertThat(tag.getId()).isNull();
         }
 
         @Test
@@ -38,16 +35,16 @@ class TagTest {
                     .label(LocalizedString.ofDefault("Romance"))
                     .build();
 
-            assertEquals(1L, tag.getId());
-            assertEquals("Romance", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
+            assertThat(tag.getId()).isEqualTo(1L);
+            assertThat(tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Romance");
         }
 
         @Test
         @DisplayName("Builder sem label deve usar default empty")
         void builderDefaultEmpty() {
             Tag tag = Tag.builder().build();
-            assertNotNull(tag.getLabel());
-            assertTrue(tag.getLabel().isEmpty());
+            assertThat(tag.getLabel()).isNotNull();
+            assertThat(tag.getLabel().isEmpty()).isTrue();
         }
     }
 
@@ -63,7 +60,7 @@ class TagTest {
                     .build();
 
             tag.setLabel(LocalizedString.ofDefault("Action"));
-            assertEquals("Action", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
+            assertThat(tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Action");
         }
     }
 
@@ -76,8 +73,8 @@ class TagTest {
         void shouldCreateViaAllArgs() {
             Tag tag = new Tag(5L, LocalizedString.ofDefault("Fantasy"));
 
-            assertEquals(5L, tag.getId());
-            assertEquals("Fantasy", tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR")));
+            assertThat(tag.getId()).isEqualTo(5L);
+            assertThat(tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Fantasy");
         }
     }
 
@@ -90,7 +87,7 @@ class TagTest {
         void shouldKeepIdNullOnNoArgsConstructor() {
             Tag tag = new Tag();
 
-            assertNull(tag.getId());
+            assertThat(tag.getId()).isNull();
         }
     }
 
@@ -101,26 +98,26 @@ class TagTest {
         @Test
         @DisplayName("Deve ter 6 critérios de ordenação")
         void shouldHaveSixSortCriteria() {
-            assertEquals(6, SortCriteria.values().length);
+            assertThat(SortCriteria.values().length).isEqualTo(6);
         }
 
         @Test
         @DisplayName("Deve conter todos os critérios esperados")
         void shouldContainExpectedCriteria() {
             SortCriteria[] values = SortCriteria.values();
-            assertEquals(SortCriteria.MOST_READ, values[0]);
-            assertEquals(SortCriteria.MOST_RATED, values[1]);
-            assertEquals(SortCriteria.MOST_RECENT, values[2]);
-            assertEquals(SortCriteria.ALPHABETICAL, values[3]);
-            assertEquals(SortCriteria.ASCENSION, values[4]);
-            assertEquals(SortCriteria.RANDOM, values[5]);
+            assertThat(values[0]).isEqualTo(SortCriteria.MOST_READ);
+            assertThat(values[1]).isEqualTo(SortCriteria.MOST_RATED);
+            assertThat(values[2]).isEqualTo(SortCriteria.MOST_RECENT);
+            assertThat(values[3]).isEqualTo(SortCriteria.ALPHABETICAL);
+            assertThat(values[4]).isEqualTo(SortCriteria.ASCENSION);
+            assertThat(values[5]).isEqualTo(SortCriteria.RANDOM);
         }
 
         @Test
         @DisplayName("Deve converter string para enum via valueOf")
         void shouldConvertFromStringViaValueOf() {
-            assertEquals(SortCriteria.MOST_READ, SortCriteria.valueOf("MOST_READ"));
-            assertEquals(SortCriteria.ALPHABETICAL, SortCriteria.valueOf("ALPHABETICAL"));
+            assertThat(SortCriteria.valueOf("MOST_READ")).isEqualTo(SortCriteria.MOST_READ);
+            assertThat(SortCriteria.valueOf("ALPHABETICAL")).isEqualTo(SortCriteria.ALPHABETICAL);
         }
     }
 
@@ -131,23 +128,23 @@ class TagTest {
         @Test
         @DisplayName("Deve ter 5 status de publicação")
         void shouldHaveFiveStatuses() {
-            assertEquals(5, PublicationStatus.values().length);
+            assertThat(PublicationStatus.values().length).isEqualTo(5);
         }
 
         @Test
         @DisplayName("Deve conter status ALL como filtro geral")
         void shouldContainAllAsGeneralFilter() {
             PublicationStatus all = PublicationStatus.ALL;
-            assertEquals("ALL", all.name());
+            assertThat(all.name()).isEqualTo("ALL");
         }
 
         @Test
         @DisplayName("Deve converter string para enum via valueOf")
         void shouldConvertFromStringViaValueOf() {
-            assertEquals(PublicationStatus.COMPLETE, PublicationStatus.valueOf("COMPLETE"));
-            assertEquals(PublicationStatus.ONGOING, PublicationStatus.valueOf("ONGOING"));
-            assertEquals(PublicationStatus.HIATUS, PublicationStatus.valueOf("HIATUS"));
-            assertEquals(PublicationStatus.CANCELLED, PublicationStatus.valueOf("CANCELLED"));
+            assertThat(PublicationStatus.valueOf("COMPLETE")).isEqualTo(PublicationStatus.COMPLETE);
+            assertThat(PublicationStatus.valueOf("ONGOING")).isEqualTo(PublicationStatus.ONGOING);
+            assertThat(PublicationStatus.valueOf("HIATUS")).isEqualTo(PublicationStatus.HIATUS);
+            assertThat(PublicationStatus.valueOf("CANCELLED")).isEqualTo(PublicationStatus.CANCELLED);
         }
     }
 }

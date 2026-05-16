@@ -29,6 +29,7 @@ import com.mangareader.domain.group.valueobject.GroupWorkStatus;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AddWorkToGroupUseCase")
@@ -44,7 +45,7 @@ class AddWorkToGroupUseCaseTest {
     private final UUID MEMBER_ID = UUID.randomUUID();
 
     private Group buildGroupWithMember() {
-        User member = User.builder().id(MEMBER_ID).name("Membro").email("m@e.com").passwordHash("h").build();
+        User member = UserMock.withId(MEMBER_ID);
         Group group = Group.builder()
                 .id(GROUP_ID)
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Scan Test"))

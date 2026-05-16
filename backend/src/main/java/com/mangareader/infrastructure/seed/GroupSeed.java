@@ -1,9 +1,12 @@
 package com.mangareader.infrastructure.seed;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
@@ -30,6 +33,14 @@ public class GroupSeed implements EntitySeeder {
         return 6;
     }
 
+    private static LocalizedString ls(String pt, String en, String es) {
+        return LocalizedString.of(Map.of("pt-BR", pt, "en-US", en, "es-ES", es));
+    }
+
+    private static LocalizedString brand(String name) {
+        return LocalizedString.of(Map.of("pt-BR", name, "en-US", name, "es-ES", name));
+    }
+
     @Override
     public void seed() {
         if (groupRepository.count() > 0) {
@@ -52,11 +63,14 @@ public class GroupSeed implements EntitySeeder {
         var diego = users.size() > 9 ? users.get(9) : null;
 
         var sakura = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Sakura Scans"))
+                .name(brand("Sakura Scans"))
                 .username("sakura-scans")
                 .logo("https://i.pravatar.cc/150?img=60")
                 .banner("https://picsum.photos/1200/300?random=201")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo focado em tradução de mangás shoujo e slice of life para o público brasileiro."))
+                .description(ls(
+                        "Grupo focado em tradução de mangás shoujo e slice of life para o público brasileiro.",
+                        "Group focused on translating shoujo and slice of life manga for the Brazilian audience.",
+                        "Grupo enfocado en la traducción de mangas shoujo y slice of life para el público brasileño."))
                 .website("https://sakurascans.example.com")
                 .totalTitles(3)
                 .foundedYear(2021)
@@ -87,11 +101,14 @@ public class GroupSeed implements EntitySeeder {
         ));
 
         var tempest = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tempest Scans"))
+                .name(brand("Tempest Scans"))
                 .username("tempest-scans")
                 .logo("https://i.pravatar.cc/150?img=62")
                 .banner("https://picsum.photos/1200/300?random=202")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tradução de manhwas e mangás de ação e fantasia. Velocidade e qualidade!"))
+                .description(ls(
+                        "Tradução de manhwas e mangás de ação e fantasia. Velocidade e qualidade!",
+                        "Translation of action and fantasy manhwa and manga. Speed and quality!",
+                        "Traducción de manhwas y mangas de acción y fantasía. ¡Velocidad y calidad!"))
                 .website("https://tempestscans.example.com")
                 .totalTitles(4)
                 .foundedYear(2020)
@@ -126,11 +143,14 @@ public class GroupSeed implements EntitySeeder {
         ));
 
         var polaris = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Polaris Translations"))
+                .name(brand("Polaris Translations"))
                 .username("polaris-tl")
                 .logo("https://i.pravatar.cc/150?img=65")
                 .banner("https://picsum.photos/1200/300?random=203")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Foco em traduções de alta qualidade para aventura e histórico. Atualmente em hiato."))
+                .description(ls(
+                        "Foco em traduções de alta qualidade para aventura e histórico. Atualmente em hiato.",
+                        "Focus on high-quality translations for adventure and historical works. Currently on hiatus.",
+                        "Enfoque en traducciones de alta calidad para aventura e histórico. Actualmente en hiato."))
                 .totalTitles(1)
                 .foundedYear(2022)
                 .status(GroupStatus.HIATUS)
@@ -153,11 +173,14 @@ public class GroupSeed implements EntitySeeder {
         );
 
         var aurora = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aurora Manga"))
+                .name(brand("Aurora Manga"))
                 .username("aurora-manga")
                 .logo("https://i.pravatar.cc/150?img=66")
                 .banner("https://picsum.photos/1200/300?random=204")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo com equipe completa cobrindo todos os papéis de scanlation."))
+                .description(ls(
+                        "Grupo com equipe completa cobrindo todos os papéis de scanlation.",
+                        "Group with a full team covering all scanlation roles.",
+                        "Grupo con equipo completo cubriendo todos los roles de scanlation."))
                 .website("https://auroramanga.example.com")
                 .totalTitles(6)
                 .foundedYear(2019)
@@ -188,11 +211,14 @@ public class GroupSeed implements EntitySeeder {
         );
 
         var eclipse = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Eclipse Scans"))
+                .name(brand("Eclipse Scans"))
                 .username("eclipse-scans")
                 .logo("https://i.pravatar.cc/150?img=67")
                 .banner("https://picsum.photos/1200/300?random=205")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo inativo desde 2023. Traduzia mangás de suspense e horror."))
+                .description(ls(
+                        "Grupo inativo desde 2023. Traduzia mangás de suspense e horror.",
+                        "Inactive group since 2023. Used to translate suspense and horror manga.",
+                        "Grupo inactivo desde 2023. Traducía mangas de suspenso y horror."))
                 .totalTitles(8)
                 .foundedYear(2018)
                 .status(GroupStatus.INACTIVE)
@@ -207,10 +233,13 @@ public class GroupSeed implements EntitySeeder {
         );
 
         var vortex = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Vortex Translations"))
+                .name(brand("Vortex Translations"))
                 .username("vortex-tl")
                 .logo("https://i.pravatar.cc/150?img=68")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo recém-criado, ainda sem membros ativos."))
+                .description(ls(
+                        "Grupo recém-criado, ainda sem membros ativos.",
+                        "Newly created group, still without active members.",
+                        "Grupo recién creado, aún sin miembros activos."))
                 .totalTitles(0)
                 .foundedYear(2025)
                 .status(GroupStatus.INACTIVE)
@@ -221,11 +250,14 @@ public class GroupSeed implements EntitySeeder {
                 .build();
 
         var phoenix = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Phoenix Manga"))
+                .name(brand("Phoenix Manga"))
                 .username("phoenix-manga")
                 .logo("https://i.pravatar.cc/150?img=69")
                 .banner("https://picsum.photos/1200/300?random=206")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo novato focado em manhuas de cultivo e fantasia chinesa."))
+                .description(ls(
+                        "Grupo novato focado em manhuas de cultivo e fantasia chinesa.",
+                        "Newcomer group focused on cultivation manhua and Chinese fantasy.",
+                        "Grupo novato enfocado en manhuas de cultivación y fantasía china."))
                 .website("https://phoenixmanga.example.com")
                 .totalTitles(2)
                 .foundedYear(2026)
@@ -250,10 +282,13 @@ public class GroupSeed implements EntitySeeder {
         );
 
         var solar = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solar Scans"))
+                .name(brand("Solar Scans"))
                 .username("solar-scans")
                 .logo("https://i.pravatar.cc/150?img=70")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo em hiato temporário por falta de equipe de tradução."))
+                .description(ls(
+                        "Grupo em hiato temporário por falta de equipe de tradução.",
+                        "Group on temporary hiatus due to lack of translation team.",
+                        "Grupo en hiato temporal por falta de equipo de traducción."))
                 .totalTitles(3)
                 .foundedYear(2021)
                 .status(GroupStatus.HIATUS)
@@ -268,11 +303,14 @@ public class GroupSeed implements EntitySeeder {
         );
 
         var lunar = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lunar TL"))
+                .name(brand("Lunar TL"))
                 .username("lunar-tl")
                 .logo("https://i.pravatar.cc/150?img=71")
                 .banner("https://picsum.photos/1200/300?random=207")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Pequeno grupo de tradução com foco em qualidade sobre velocidade."))
+                .description(ls(
+                        "Pequeno grupo de tradução com foco em qualidade sobre velocidade.",
+                        "Small translation group focused on quality over speed.",
+                        "Pequeño grupo de traducción enfocado en calidad sobre velocidad."))
                 .website("https://lunartl.example.com")
                 .totalTitles(1)
                 .foundedYear(2024)
@@ -288,10 +326,13 @@ public class GroupSeed implements EntitySeeder {
         );
 
         var quantum = Group.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Quantum Scans"))
+                .name(brand("Quantum Scans"))
                 .username("quantum-scans")
                 .logo("https://i.pravatar.cc/150?img=72")
-                .description(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo encerrado. Acervo transferido para outros grupos."))
+                .description(ls(
+                        "Grupo encerrado. Acervo transferido para outros grupos.",
+                        "Closed group. Collection transferred to other groups.",
+                        "Grupo cerrado. Acervo transferido a otros grupos."))
                 .totalTitles(0)
                 .foundedYear(2020)
                 .status(GroupStatus.INACTIVE)

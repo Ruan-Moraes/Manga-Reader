@@ -1,8 +1,6 @@
 package com.mangareader.domain.group.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -39,12 +37,12 @@ class GroupUserTest {
                     .joinedAt(joinedAt)
                     .build();
 
-            assertEquals(id, groupUser.getId());
-            assertEquals(group, groupUser.getGroup());
-            assertEquals(user, groupUser.getUser());
-            assertEquals(GroupUserType.MEMBER, groupUser.getType());
-            assertEquals(GroupRole.LIDER, groupUser.getRole());
-            assertEquals(joinedAt, groupUser.getJoinedAt());
+            assertThat(groupUser.getId()).isEqualTo(id);
+            assertThat(groupUser.getGroup()).isEqualTo(group);
+            assertThat(groupUser.getUser()).isEqualTo(user);
+            assertThat(groupUser.getType()).isEqualTo(GroupUserType.MEMBER);
+            assertThat(groupUser.getRole()).isEqualTo(GroupRole.LIDER);
+            assertThat(groupUser.getJoinedAt()).isEqualTo(joinedAt);
         }
 
         @Test
@@ -52,7 +50,7 @@ class GroupUserTest {
         void shouldDefaultTypeToMember() {
             GroupUser groupUser = GroupUser.builder().build();
 
-            assertEquals(GroupUserType.MEMBER, groupUser.getType());
+            assertThat(groupUser.getType()).isEqualTo(GroupUserType.MEMBER);
         }
 
         @Test
@@ -61,8 +59,8 @@ class GroupUserTest {
             GroupUser tradutor = GroupUser.builder().role(GroupRole.TRADUTOR).build();
             GroupUser cleaner = GroupUser.builder().role(GroupRole.CLEANER).build();
 
-            assertEquals(GroupRole.TRADUTOR, tradutor.getRole());
-            assertEquals(GroupRole.CLEANER, cleaner.getRole());
+            assertThat(tradutor.getRole()).isEqualTo(GroupRole.TRADUTOR);
+            assertThat(cleaner.getRole()).isEqualTo(GroupRole.CLEANER);
         }
 
         @Test
@@ -73,8 +71,8 @@ class GroupUserTest {
                     .role(null)
                     .build();
 
-            assertEquals(GroupUserType.SUPPORTER, supporter.getType());
-            assertNull(supporter.getRole());
+            assertThat(supporter.getType()).isEqualTo(GroupUserType.SUPPORTER);
+            assertThat(supporter.getRole()).isNull();
         }
     }
 
@@ -87,11 +85,11 @@ class GroupUserTest {
         void shouldCreateEmptyInstance() {
             GroupUser groupUser = new GroupUser();
 
-            assertNull(groupUser.getId());
-            assertNull(groupUser.getGroup());
-            assertNull(groupUser.getUser());
-            assertNull(groupUser.getRole());
-            assertNull(groupUser.getJoinedAt());
+            assertThat(groupUser.getId()).isNull();
+            assertThat(groupUser.getGroup()).isNull();
+            assertThat(groupUser.getUser()).isNull();
+            assertThat(groupUser.getRole()).isNull();
+            assertThat(groupUser.getJoinedAt()).isNull();
         }
     }
 
@@ -105,7 +103,7 @@ class GroupUserTest {
             GroupUser groupUser = GroupUser.builder().role(GroupRole.TRADUTOR).build();
             groupUser.setRole(GroupRole.REVISOR);
 
-            assertEquals(GroupRole.REVISOR, groupUser.getRole());
+            assertThat(groupUser.getRole()).isEqualTo(GroupRole.REVISOR);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.persistence.mongo.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -21,6 +22,8 @@ public interface CommentMongoRepository extends MongoRepository<Comment, String>
     Page<Comment> findByTitleId(String titleId, Pageable pageable);
 
     Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable);
+
+    Page<Comment> findByTitleIdAndLanguageIn(String titleId, Collection<String> languages, Pageable pageable);
 
     Page<Comment> findByUserId(String userId, Pageable pageable);
 

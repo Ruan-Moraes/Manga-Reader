@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mangareader.application.manga.usecase.GetChapterByNumberUseCase;
 import com.mangareader.application.manga.usecase.GetChaptersByTitleUseCase;
 import com.mangareader.presentation.manga.dto.ChapterResponse;
+import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 import com.mangareader.shared.dto.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ChapterController {
     private final GetChaptersByTitleUseCase getChaptersByTitleUseCase;
     private final GetChapterByNumberUseCase getChapterByNumberUseCase;
+    private final LocalizedMappingHelper i18n;
 
     @GetMapping
     @Operation(summary = "Listar capítulos", description = "Retorna todos os capítulos de um título")
@@ -38,7 +40,7 @@ public class ChapterController {
         var chapters = getChaptersByTitleUseCase.execute(titleId);
 
         var response = chapters.stream()
-                .map(ch -> new ChapterResponse(ch.getNumber(), ch.getTitle(), ch.getReleaseDate(), ch.getPages()))
+                .map(ch -> new ChapterResponse(ch.getNumber(), i18n.toResolvedString(ch.getTitle()), ch.getReleaseDate(), ch.getPages()))
                 .toList();
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -52,7 +54,7 @@ public class ChapterController {
     ) {
         var ch = getChapterByNumberUseCase.execute(titleId, number);
 
-        var response = new ChapterResponse(ch.getNumber(), ch.getTitle(), ch.getReleaseDate(), ch.getPages());
+        var response = new ChapterResponse(ch.getNumber(), i18n.toResolvedString(ch.getTitle()), ch.getReleaseDate(), ch.getPages());
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }

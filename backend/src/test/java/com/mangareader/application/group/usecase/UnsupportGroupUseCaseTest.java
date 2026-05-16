@@ -25,6 +25,7 @@ import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UnsupportGroupUseCase")
@@ -41,8 +42,8 @@ class UnsupportGroupUseCaseTest {
     private final UUID SUPPORTER_ID = UUID.randomUUID();
 
     private Group buildGroupWithSupporter() {
-        User leader = User.builder().id(LEADER_ID).name("Líder").email("l@e.com").passwordHash("h").build();
-        User supporter = User.builder().id(SUPPORTER_ID).name("Apoiador").email("a@e.com").passwordHash("h").build();
+        User leader = UserMock.withId(LEADER_ID);
+        User supporter = UserMock.withId(SUPPORTER_ID);
 
         Group group = Group.builder()
                 .id(GROUP_ID)

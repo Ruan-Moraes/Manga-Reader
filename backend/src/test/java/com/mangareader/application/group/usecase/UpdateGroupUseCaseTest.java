@@ -28,6 +28,7 @@ import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UpdateGroupUseCase")
@@ -43,7 +44,7 @@ class UpdateGroupUseCaseTest {
     private final UUID LEADER_ID = UUID.randomUUID();
 
     private Group buildGroupWithLeader() {
-        User leader = User.builder().id(LEADER_ID).name("Líder").email("lider@email.com").passwordHash("h").build();
+        User leader = UserMock.withId(LEADER_ID);
         Group group = Group.builder()
                 .id(GROUP_ID)
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Grupo Original"))
@@ -156,7 +157,7 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             UUID membroId = UUID.randomUUID();
-            User membro = User.builder().id(membroId).name("Membro").email("m@e.com").passwordHash("h").build();
+            User membro = UserMock.withId(membroId);
             group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
             var input = new UpdateGroupInput(GROUP_ID, membroId, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);

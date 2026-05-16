@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.persistence.mongo.adapter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,11 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     @Override
     public Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable) {
         return repository.findByTitleIdAndLanguage(titleId, language, pageable);
+    }
+
+    @Override
+    public Page<Comment> findByTitleIdAndLanguageIn(String titleId, Collection<String> languages, Pageable pageable) {
+        return repository.findByTitleIdAndLanguageIn(titleId, languages, pageable);
     }
 
     @Override

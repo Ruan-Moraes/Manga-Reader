@@ -1,8 +1,6 @@
 package com.mangareader.domain.library.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,10 +35,10 @@ class SavedMangaTest {
                     .list(ReadingListType.LENDO)
                     .build();
 
-            assertEquals(user, saved.getUser());
-            assertEquals("mongo-title-id-123", saved.getTitleId());
-            assertEquals("One Piece", saved.getName());
-            assertEquals(ReadingListType.LENDO, saved.getList());
+            assertThat(saved.getUser()).isEqualTo(user);
+            assertThat(saved.getTitleId()).isEqualTo("mongo-title-id-123");
+            assertThat(saved.getName()).isEqualTo("One Piece");
+            assertThat(saved.getList()).isEqualTo(ReadingListType.LENDO);
         }
 
         @Test
@@ -55,8 +53,8 @@ class SavedMangaTest {
                     .list(ReadingListType.CONCLUIDO)
                     .build();
 
-            assertEquals("https://example.com/naruto.jpg", saved.getCover());
-            assertEquals("Manga", saved.getType());
+            assertThat(saved.getCover()).isEqualTo("https://example.com/naruto.jpg");
+            assertThat(saved.getType()).isEqualTo("Manga");
         }
 
         @Test
@@ -69,8 +67,8 @@ class SavedMangaTest {
                     .list(ReadingListType.QUERO_LER)
                     .build();
 
-            assertNull(saved.getCover());
-            assertNull(saved.getType());
+            assertThat(saved.getCover()).isNull();
+            assertThat(saved.getType()).isNull();
         }
     }
 
@@ -88,10 +86,10 @@ class SavedMangaTest {
                     .list(ReadingListType.QUERO_LER)
                     .build();
 
-            assertEquals(ReadingListType.QUERO_LER, saved.getList());
+            assertThat(saved.getList()).isEqualTo(ReadingListType.QUERO_LER);
 
             saved.setList(ReadingListType.LENDO);
-            assertEquals(ReadingListType.LENDO, saved.getList());
+            assertThat(saved.getList()).isEqualTo(ReadingListType.LENDO);
         }
 
         @Test
@@ -105,7 +103,7 @@ class SavedMangaTest {
                     .build();
 
             saved.setList(ReadingListType.CONCLUIDO);
-            assertEquals(ReadingListType.CONCLUIDO, saved.getList());
+            assertThat(saved.getList()).isEqualTo(ReadingListType.CONCLUIDO);
         }
     }
 
@@ -116,15 +114,15 @@ class SavedMangaTest {
         @Test
         @DisplayName("Deve ter 3 tipos de lista")
         void shouldHaveThreeListTypes() {
-            assertEquals(3, ReadingListType.values().length);
+            assertThat(ReadingListType.values().length).isEqualTo(3);
         }
 
         @Test
         @DisplayName("Cada tipo deve ter displayName em português")
         void shouldHavePortugueseDisplayNames() {
-            assertEquals("Lendo", ReadingListType.LENDO.getDisplayName());
-            assertEquals("Quero Ler", ReadingListType.QUERO_LER.getDisplayName());
-            assertEquals("Concluído", ReadingListType.CONCLUIDO.getDisplayName());
+            assertThat(ReadingListType.LENDO.getDisplayName()).isEqualTo("Lendo");
+            assertThat(ReadingListType.QUERO_LER.getDisplayName()).isEqualTo("Quero Ler");
+            assertThat(ReadingListType.CONCLUIDO.getDisplayName()).isEqualTo("Concluído");
         }
     }
 
@@ -137,14 +135,14 @@ class SavedMangaTest {
         void shouldKeepFieldsNullOnNoArgsConstructor() {
             SavedManga saved = new SavedManga();
 
-            assertNull(saved.getId());
-            assertNull(saved.getUser());
-            assertNull(saved.getTitleId());
-            assertNull(saved.getName());
-            assertNull(saved.getCover());
-            assertNull(saved.getType());
-            assertNull(saved.getList());
-            assertNull(saved.getSavedAt());
+            assertThat(saved.getId()).isNull();
+            assertThat(saved.getUser()).isNull();
+            assertThat(saved.getTitleId()).isNull();
+            assertThat(saved.getName()).isNull();
+            assertThat(saved.getCover()).isNull();
+            assertThat(saved.getType()).isNull();
+            assertThat(saved.getList()).isNull();
+            assertThat(saved.getSavedAt()).isNull();
         }
     }
 }
