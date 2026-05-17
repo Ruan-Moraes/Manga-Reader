@@ -26,15 +26,19 @@ spring:
       hibernate:
         dialect:
         format_sql: true
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
         jdbc:
           time_zone: UTC
+          batch_size: 50
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
   data:
     mongodb:
-      uri: mongodb://localhost:27017/mangareader?retryWrites=false
+      uri: mongodb://localhost:27017/mangareader
       auto-index-creation: false
     redis:
       host: localhost
