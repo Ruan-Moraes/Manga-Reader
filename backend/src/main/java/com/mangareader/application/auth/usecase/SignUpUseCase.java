@@ -2,6 +2,7 @@ package com.mangareader.application.auth.usecase;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
  * Cria o usuário no banco e retorna tokens JWT.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SignUpUseCase {
     private final UserRepositoryPort userRepository;

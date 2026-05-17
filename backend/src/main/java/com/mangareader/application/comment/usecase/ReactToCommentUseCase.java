@@ -3,6 +3,7 @@ package com.mangareader.application.comment.usecase;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentReactionRepositoryPort;
 import com.mangareader.application.comment.port.CommentRepositoryPort;
@@ -14,6 +15,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class ReactToCommentUseCase {
     private final CommentRepositoryPort commentRepository;

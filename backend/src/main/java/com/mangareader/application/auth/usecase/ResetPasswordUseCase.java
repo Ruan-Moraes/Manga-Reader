@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
  * e atualiza o hash da nova senha.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ResetPasswordUseCase {
     private final TokenPort tokenPort;
