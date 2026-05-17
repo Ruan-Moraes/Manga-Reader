@@ -122,6 +122,40 @@ forem curtas).
 
 ---
 
+### DT-18: N+1 em listagens JPA (eventos / tópicos de fórum)
+
+**Descrição**: use cases de listagem inicializam coleções `@OneToMany`
+(LAZY) por linha, gerando N+1:
+- `GetEventsUseCase` / `GetEventsByStatusUseCase` / `ListAdminEventsUseCase`:
+  `page.getContent().forEach(e -> e.getTickets().size())` — 1 query da página
+  + N queries de `tickets` (um SELECT por evento).
+- `GetForumTopicsUseCase` / `GetForumTopicsByCategoryUseCase`:
+  `topic.getReplies().forEach(r -> r.getAuthor().getName())` — N queries de
+  `replies` por tópico + M de `author` por reply. Além disso, mapear **todas**
+  as replies dentro de uma listagem é desperdício de payload (design smell —
+  listagem deveria expor só `replyCount`).
+
+Itens single-entity (`GetEventByIdUseCase`, `GetForumTopicByIdUseCase`,
+`GetEnrichedProfileUseCase`, `GetUserDetailsUseCase`) fazem `.size()` uma vez
+sobre um agregado — aceitável, não é N+1.
+
+**Impacto**: degradação silenciosa de performance proporcional ao tamanho da
+página; pior no fórum (N+1 aninhado). Mascarado em testes por volumes pequenos.
+
+**Recomendação** (CLAUDE ORM Guidelines):
+- Eventos: `@EntityGraph`/two-query para hidratar `tickets` da página em 1
+  query extra, ou projeção DTO se a listagem não precisa dos tickets.
+- Fórum: **não** mapear replies na listagem — expor `replyCount` (escalar) e
+  carregar replies só no detalhe (`GetForumTopicById`).
+- Adicionar `hibernate.generate_statistics` + teste de contagem de query na
+  listagem como guarda de regressão.
+
+**Fora do escopo de quick-fix**: altera repository queries (cuidado com
+`HHH000104` paginação+fetch) e possivelmente o shape da resposta do fórum
+(impacto no frontend) — requer design + coordenação. Média prioridade.
+
+---
+
 ## Itens Resolvidos (2026-05-16)
 
 | ID | Dívida | Resolução |
@@ -154,6 +188,6 @@ forem curtas).
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 3 | DT-08, DT-10, DT-17 |
+| **Média** | 4 | DT-08, DT-10, DT-17, DT-18 |
 | **Baixa** | 2 | DT-03, DT-09 |
 | **Resolvidos 2026-05-16/17** | 11 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16 |
