@@ -1,6 +1,7 @@
 package com.mangareader.application.errorlog.usecase;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.errorlog.port.ErrorLogRepositoryPort;
 import com.mangareader.domain.errorlog.entity.ErrorLog;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
  * Cria um novo registro de erro reportado pelo frontend.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class CreateErrorLogUseCase {
     private final ErrorLogRepositoryPort errorLogRepository;

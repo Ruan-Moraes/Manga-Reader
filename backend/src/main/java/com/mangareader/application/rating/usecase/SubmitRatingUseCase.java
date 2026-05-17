@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.rating.port.RatingRepositoryPort;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
  * Se o usuário já avaliou o título, atualiza a avaliação existente (upsert).
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class SubmitRatingUseCase {
     private final RatingRepositoryPort ratingRepository;

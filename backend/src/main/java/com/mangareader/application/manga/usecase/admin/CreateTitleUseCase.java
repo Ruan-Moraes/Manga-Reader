@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.manga.entity.Title;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
  * Cria um novo título (admin).
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class CreateTitleUseCase {
     private final TitleRepositoryPort titleRepository;

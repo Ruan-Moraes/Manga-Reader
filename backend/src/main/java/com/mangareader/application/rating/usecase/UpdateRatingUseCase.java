@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
 import com.mangareader.application.shared.event.RatingEvent;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
  * Verifica se a avaliação pertence ao usuário autenticado.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class UpdateRatingUseCase {
     private final RatingRepositoryPort ratingRepository;

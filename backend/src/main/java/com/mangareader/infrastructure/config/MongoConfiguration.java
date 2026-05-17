@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
@@ -45,6 +47,18 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
                 .build();
 
         return MongoClients.create(mongoClientSettings);
+    }
+
+    /**
+     * Habilita transações multi-documento no MongoDB. Requer que o deployment
+     * seja um replica set (docker-compose usa {@code --replSet rs0};
+     * TestContainers {@code MongoDBContainer} já sobe como replica set de nó
+     * único). Bean nomeado {@code mongoTransactionManager} — use cases que
+     * escrevem no Mongo qualificam via {@code @Transactional("mongoTransactionManager")}.
+     */
+    @Bean
+    MongoTransactionManager mongoTransactionManager(MongoDatabaseFactory dbFactory) {
+        return new MongoTransactionManager(dbFactory);
     }
 
     /**

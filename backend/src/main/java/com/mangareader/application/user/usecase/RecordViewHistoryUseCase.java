@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
  * Não registra se viewHistoryVisibility == DO_NOT_TRACK.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class RecordViewHistoryUseCase {
     private final UserRepositoryPort userRepository;

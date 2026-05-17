@@ -1,6 +1,7 @@
 package com.mangareader.application.comment.usecase;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -17,6 +18,7 @@ import java.util.UUID;
  * Cria um novo comentário (root ou resposta).
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class CreateCommentUseCase {
     private final CommentRepositoryPort commentRepository;

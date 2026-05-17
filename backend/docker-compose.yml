@@ -28,15 +28,25 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: mangareader
-    command: mongod --wiredTigerCacheSizeGB 0.25
+    command: mongod --replSet rs0 --bind_ip_all --wiredTigerCacheSizeGB 0.25
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      # Inicia o replica set de nó único na primeira vez e serve como
+      # healthcheck nas execuções seguintes. Replica set é requisito para
+      # transações multi-documento (MongoTransactionManager).
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }) }",
+        ]
       interval: 5s
       timeout: 10s
-      retries: 10
-      start_period: 30s
+      retries: 15
+      start_period: 40s
     restart: unless-stopped
     deploy:
       resources:

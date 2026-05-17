@@ -3,6 +3,7 @@ package com.mangareader.application.comment.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
  * Atualiza o texto de um comentário existente.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class UpdateCommentUseCase {
     private final CommentRepositoryPort commentRepository;

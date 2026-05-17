@@ -17,23 +17,27 @@ Este documento lista as dívidas técnicas do projeto, organizadas por **priorid
 
 ## Itens em Aberto
 
-### DT-01 (parcial): `@Transactional` em use cases Mongo-backed
+### DT-01: `@Transactional` em use cases — **Resolvido**
 
-**Estado**: **Parcialmente resolvido (2026-05-16)**. Os 5 use cases com escrita
+**Estado**: **Resolvido**. Etapa 1 (2026-05-16): os 5 use cases com escrita
 primária em PostgreSQL (JPA) receberam `@Transactional`:
 `SaveToLibraryUseCase`, `ChangeReadingListUseCase`, `AddRecommendationUseCase`,
 `UpdateUserProfileUseCase`, `RemoveWorkFromGroupUseCase`.
 
-**Sub-item adiado**: 14 use cases com escrita primária em MongoDB
-(Comment×3, Rating×3, News×3, Title×3, RecordViewHistory, CreateErrorLog) **não**
-foram anotados. Motivo: não há `MongoTransactionManager` configurado e o MongoDB
-do `docker-compose` roda **standalone** (sem `--replSet`), logo transações
-multi-documento não são suportadas. Anotar com o `@Transactional` (JPA) atual
-não traria atomicidade e poderia abrir transação JPA inútil.
+Etapa 2 (2026-05-17, branch `tech-debt/dt01-mongo-transactions`): suporte a
+transações MongoDB habilitado e os 14 use cases Mongo-backed anotados
+(Comment×3, Rating×3, News×3, Title×3, RecordViewHistory, CreateErrorLog) com
+`@Transactional("mongoTransactionManager")`. Implementação:
+- `docker-compose.yml`: MongoDB roda como replica set de nó único
+  (`mongod --replSet rs0`), com healthcheck que executa `rs.initiate()` na
+  primeira subida. TestContainers `MongoDBContainer` já sobe como replica set.
+- `MongoConfiguration#mongoTransactionManager`: bean `MongoTransactionManager`.
+- `TransactionManagerConfig#transactionManager`: `JpaTransactionManager`
+  marcado `@Primary` — todo `@Transactional` sem qualifier continua resolvendo
+  para JPA (precisa ser explícito porque a presença de um
+  `MongoTransactionManager` desliga o auto-config do tx manager JPA).
 
-**Recomendação para resolver o sub-item**: configurar MongoDB como replica set +
-registrar `MongoTransactionManager`, então anotar os use cases Mongo qualificando
-o tx manager. Não-bloqueante enquanto não vai a produção.
+Verificação: `mvn test` → 1023 testes, 0 falhas, sem cascata transacional.
 
 ---
 
@@ -120,7 +124,9 @@ corrigir o tipo de `count` em `HorizontalCard`. Média prioridade.
 
 | ID | Dívida | Resolução |
 |----|--------|-----------|
-| DT-01 | `@Transactional` em writes JPA | 5 use cases JPA anotados (sub-item Mongo adiado — ver acima) |
+| DT-01 | `@Transactional` em use cases | 5 JPA anotados (2026-05-16) + 14 Mongo com `@Transactional("mongoTransactionManager")`; replica set + `MongoTransactionManager` + JPA `@Primary` (2026-05-17) |
+| DT-16 | `npm run build` quebrado (tsc -b) | 64 erros TS pré-existentes corrigidos (LocalizedString factories, paths admin.types, fixtures de service); build limpo, 92 chunks |
+| DT-13 (resíduo) | call-sites basename hardcoded | ~50 strings `/Manga-Reader/...` migradas para `WEB_BASE_URL` em 35 arquivos |
 | DT-04 | UserController injetava repository ports | Criado `GetUserViewHistoryUseCase`; content-locales reusa `GetUserProfileUseCase`; ports removidos do controller; testes atualizados + teste de application novo |
 | DT-05 | Sem Error Boundaries | **Stale** — `ErrorBoundary` + `RouteErrorFallback` já existiam e estão integrados em `main.tsx` |
 | DT-06 | Validação de forms insuficiente | `react-hook-form` + `zod` + `@hookform/resolvers`; `buildLoginSchema`/`buildSignUpSchema` com mensagens i18n; `Login`/`SignUp` migrados (demais forms = resíduo de baixa prioridade) |
@@ -145,7 +151,7 @@ corrigir o tipo de `count` em `HorizontalCard`. Média prioridade.
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
-| **Alta** | 1 parcial | DT-01 (sub-item Mongo), DT-02 (componente/E2E) |
-| **Média** | 3 | DT-08, DT-10, DT-16 |
-| **Baixa** | 2 | DT-03, DT-09, DT-13 (resíduo) |
-| **Resolvidos 2026-05-16** | 9 | DT-01*, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-14, DT-15 |
+| **Alta** | 1 | DT-02 (componente/E2E) |
+| **Média** | 2 | DT-08, DT-10 |
+| **Baixa** | 2 | DT-03, DT-09 |
+| **Resolvidos 2026-05-16/17** | 11 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16 |

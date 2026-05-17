@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
 import com.mangareader.application.shared.event.RatingEvent;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
  * Exclui uma avaliação (somente o autor pode excluir).
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class DeleteRatingUseCase {
     private final RatingRepositoryPort ratingRepository;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.domain.news.entity.NewsItem;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
  * Atualiza uma notícia existente (admin). Mapas multilíngues; nulos mantêm valor.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class UpdateNewsUseCase {
     private final NewsRepositoryPort newsRepository;
