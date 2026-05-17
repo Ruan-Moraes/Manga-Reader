@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.application.news.usecase.admin.CreateNewsUseCase;
 import com.mangareader.application.news.usecase.admin.DeleteNewsUseCase;
+import com.mangareader.application.news.usecase.admin.GetAdminNewsUseCase;
+import com.mangareader.application.news.usecase.admin.ListAdminNewsUseCase;
 import com.mangareader.application.news.usecase.admin.UpdateNewsUseCase;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
@@ -27,7 +28,6 @@ import com.mangareader.presentation.admin.dto.UpdateNewsRequest;
 import com.mangareader.presentation.admin.mapper.AdminNewsMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
-import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/news")
 @RequiredArgsConstructor
 public class AdminNewsController {
-    private final NewsRepositoryPort newsRepository;
+    private final ListAdminNewsUseCase listAdminNewsUseCase;
+    private final GetAdminNewsUseCase getAdminNewsUseCase;
     private final CreateNewsUseCase createNewsUseCase;
     private final UpdateNewsUseCase updateNewsUseCase;
     private final DeleteNewsUseCase deleteNewsUseCase;
@@ -56,9 +57,7 @@ public class AdminNewsController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
-        var result = (search != null && !search.isBlank())
-                ? newsRepository.searchByTitle(search, pageable)
-                : newsRepository.findAll(pageable);
+        var result = listAdminNewsUseCase.execute(search, pageable);
 
         var mapped = result.map(AdminNewsMapper::toResponse);
 
@@ -67,8 +66,7 @@ public class AdminNewsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<AdminNewsResponse>> getNewsDetail(@PathVariable String id) {
-        var news = newsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("News", "id", id));
+        var news = getAdminNewsUseCase.execute(id);
 
         return ResponseEntity.ok(ApiResponse.success(AdminNewsMapper.toResponse(news)));
     }

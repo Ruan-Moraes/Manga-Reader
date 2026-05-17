@@ -28,9 +28,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.auth.port.TokenPort;
-import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.application.news.usecase.admin.CreateNewsUseCase;
 import com.mangareader.application.news.usecase.admin.DeleteNewsUseCase;
+import com.mangareader.application.news.usecase.admin.GetAdminNewsUseCase;
+import com.mangareader.application.news.usecase.admin.ListAdminNewsUseCase;
 import com.mangareader.application.news.usecase.admin.UpdateNewsUseCase;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
@@ -48,7 +49,10 @@ class AdminNewsControllerTest {
     private TokenPort tokenPort;
 
     @MockitoBean
-    private NewsRepositoryPort newsRepository;
+    private ListAdminNewsUseCase listAdminNewsUseCase;
+
+    @MockitoBean
+    private GetAdminNewsUseCase getAdminNewsUseCase;
 
     @MockitoBean
     private CreateNewsUseCase createNewsUseCase;
@@ -83,7 +87,7 @@ class AdminNewsControllerTest {
     @DisplayName("GET /api/admin/news — deve retornar 200 com lista paginada")
     void deveRetornar200ComListaPaginada() throws Exception {
         var page = new PageImpl<>(List.of(buildNews()));
-        when(newsRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(listAdminNewsUseCase.execute(any(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/admin/news"))
                 .andExpect(status().isOk())
@@ -94,7 +98,7 @@ class AdminNewsControllerTest {
     @Test
     @DisplayName("GET /api/admin/news/{id} — deve retornar 200 com detalhes")
     void deveRetornar200ComDetalhes() throws Exception {
-        when(newsRepository.findById("news-1")).thenReturn(Optional.of(buildNews()));
+        when(getAdminNewsUseCase.execute("news-1")).thenReturn(buildNews());
 
         mockMvc.perform(get("/api/admin/news/news-1"))
                 .andExpect(status().isOk())

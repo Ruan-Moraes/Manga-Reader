@@ -27,9 +27,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.auth.port.TokenPort;
-import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.application.event.usecase.admin.CreateEventUseCase;
 import com.mangareader.application.event.usecase.admin.DeleteEventUseCase;
+import com.mangareader.application.event.usecase.admin.GetAdminEventUseCase;
+import com.mangareader.application.event.usecase.admin.ListAdminEventsUseCase;
 import com.mangareader.application.event.usecase.admin.UpdateEventUseCase;
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.domain.event.valueobject.EventLocation;
@@ -50,7 +51,10 @@ class AdminEventControllerTest {
     private TokenPort tokenPort;
 
     @MockitoBean
-    private EventRepositoryPort eventRepository;
+    private ListAdminEventsUseCase listAdminEventsUseCase;
+
+    @MockitoBean
+    private GetAdminEventUseCase getAdminEventUseCase;
 
     @MockitoBean
     private CreateEventUseCase createEventUseCase;
@@ -91,7 +95,7 @@ class AdminEventControllerTest {
     @DisplayName("GET /api/admin/events — deve retornar 200 com lista paginada")
     void deveRetornar200ComListaPaginada() throws Exception {
         var page = new PageImpl<>(List.of(buildEvent()));
-        when(eventRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(listAdminEventsUseCase.execute(any(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/admin/events"))
                 .andExpect(status().isOk())
@@ -102,7 +106,7 @@ class AdminEventControllerTest {
     @Test
     @DisplayName("GET /api/admin/events/{id} — deve retornar 200 com detalhes")
     void deveRetornar200ComDetalhes() throws Exception {
-        when(eventRepository.findById(EVENT_ID)).thenReturn(Optional.of(buildEvent()));
+        when(getAdminEventUseCase.execute(EVENT_ID)).thenReturn(buildEvent());
 
         mockMvc.perform(get("/api/admin/events/" + EVENT_ID))
                 .andExpect(status().isOk())

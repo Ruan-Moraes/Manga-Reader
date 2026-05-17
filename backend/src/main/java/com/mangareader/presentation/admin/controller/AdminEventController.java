@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.application.event.usecase.admin.CreateEventUseCase;
 import com.mangareader.application.event.usecase.admin.DeleteEventUseCase;
+import com.mangareader.application.event.usecase.admin.GetAdminEventUseCase;
+import com.mangareader.application.event.usecase.admin.ListAdminEventsUseCase;
 import com.mangareader.application.event.usecase.admin.UpdateEventUseCase;
 import com.mangareader.domain.event.valueobject.EventLocation;
 import com.mangareader.domain.event.valueobject.EventOrganizer;
@@ -32,7 +33,6 @@ import com.mangareader.presentation.admin.dto.UpdateEventRequest;
 import com.mangareader.presentation.admin.mapper.AdminEventMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
-import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
-    private final EventRepositoryPort eventRepository;
+    private final ListAdminEventsUseCase listAdminEventsUseCase;
+    private final GetAdminEventUseCase getAdminEventUseCase;
     private final CreateEventUseCase createEventUseCase;
     private final UpdateEventUseCase updateEventUseCase;
     private final DeleteEventUseCase deleteEventUseCase;
@@ -61,9 +62,7 @@ public class AdminEventController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
-        var result = (search != null && !search.isBlank())
-                ? eventRepository.searchByTitle(search, pageable)
-                : eventRepository.findAll(pageable);
+        var result = listAdminEventsUseCase.execute(search, pageable);
 
         var mapped = result.map(AdminEventMapper::toResponse);
 
@@ -72,8 +71,7 @@ public class AdminEventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<AdminEventResponse>> getEventDetail(@PathVariable UUID id) {
-        var event = eventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event", "id", id));
+        var event = getAdminEventUseCase.execute(id);
 
         return ResponseEntity.ok(ApiResponse.success(AdminEventMapper.toResponse(event)));
     }

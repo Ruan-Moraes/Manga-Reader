@@ -27,9 +27,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.auth.port.TokenPort;
-import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.manga.usecase.admin.CreateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.DeleteTitleUseCase;
+import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
+import com.mangareader.application.manga.usecase.admin.ListAdminTitlesUseCase;
 import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
 import com.mangareader.domain.manga.entity.Title;
 
@@ -45,7 +46,10 @@ class AdminTitleControllerTest {
     private TokenPort tokenPort;
 
     @MockitoBean
-    private TitleRepositoryPort titleRepository;
+    private ListAdminTitlesUseCase listAdminTitlesUseCase;
+
+    @MockitoBean
+    private GetAdminTitleUseCase getAdminTitleUseCase;
 
     @MockitoBean
     private CreateTitleUseCase createTitleUseCase;
@@ -80,7 +84,7 @@ class AdminTitleControllerTest {
     @DisplayName("GET /api/admin/titles — deve retornar 200 com lista paginada")
     void deveRetornar200ComListaPaginada() throws Exception {
         var page = new PageImpl<>(List.of(buildTitle()));
-        when(titleRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(listAdminTitlesUseCase.execute(any(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/admin/titles"))
                 .andExpect(status().isOk())
@@ -93,7 +97,7 @@ class AdminTitleControllerTest {
     @DisplayName("GET /api/admin/titles?search=naruto — deve buscar por nome")
     void deveBuscarPorNome() throws Exception {
         var page = new PageImpl<>(List.of(buildTitle()));
-        when(titleRepository.searchByName(eq("naruto"), any(Pageable.class))).thenReturn(page);
+        when(listAdminTitlesUseCase.execute(eq("naruto"), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/admin/titles").param("search", "naruto"))
                 .andExpect(status().isOk())
@@ -103,7 +107,7 @@ class AdminTitleControllerTest {
     @Test
     @DisplayName("GET /api/admin/titles/{id} — deve retornar 200 com detalhes")
     void deveRetornar200ComDetalhes() throws Exception {
-        when(titleRepository.findById("title-1")).thenReturn(Optional.of(buildTitle()));
+        when(getAdminTitleUseCase.execute("title-1")).thenReturn(buildTitle());
 
         mockMvc.perform(get("/api/admin/titles/title-1"))
                 .andExpect(status().isOk())

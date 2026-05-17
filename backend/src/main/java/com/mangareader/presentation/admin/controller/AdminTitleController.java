@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.manga.usecase.admin.CreateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.DeleteTitleUseCase;
+import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
+import com.mangareader.application.manga.usecase.admin.ListAdminTitlesUseCase;
 import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
 import com.mangareader.presentation.admin.dto.CreateTitleRequest;
@@ -36,7 +37,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin/titles")
 @RequiredArgsConstructor
 public class AdminTitleController {
-    private final TitleRepositoryPort titleRepository;
+    private final ListAdminTitlesUseCase listAdminTitlesUseCase;
+    private final GetAdminTitleUseCase getAdminTitleUseCase;
     private final CreateTitleUseCase createTitleUseCase;
     private final UpdateTitleUseCase updateTitleUseCase;
     private final DeleteTitleUseCase deleteTitleUseCase;
@@ -53,9 +55,7 @@ public class AdminTitleController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sort));
 
-        var result = (search != null && !search.isBlank())
-                ? titleRepository.searchByName(search, pageable)
-                : titleRepository.findAll(pageable);
+        var result = listAdminTitlesUseCase.execute(search, pageable);
 
         var mapped = result.map(AdminTitleMapper::toResponse);
 
@@ -64,8 +64,7 @@ public class AdminTitleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<AdminTitleResponse>> getTitleDetail(@PathVariable String id) {
-        var title = titleRepository.findById(id)
-                .orElseThrow(() -> new com.mangareader.shared.exception.ResourceNotFoundException("Title", "id", id));
+        var title = getAdminTitleUseCase.execute(id);
 
         return ResponseEntity.ok(ApiResponse.success(AdminTitleMapper.toResponse(title)));
     }
