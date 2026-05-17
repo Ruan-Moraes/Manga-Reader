@@ -118,14 +118,9 @@ public class AuthController {
     @GetMapping("/me")
     @Operation(summary = "Usuário atual", description = "Retorna os dados do usuário autenticado")
     public ResponseEntity<ApiResponse<AuthResponse>> getCurrentUser(Authentication auth) {
-        UUID userId = null;
-
-        try {
-            userId = (UUID) auth.getPrincipal();
-        } catch (Exception e) {
+        if (auth == null || !(auth.getPrincipal() instanceof UUID userId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.error("Acesso não autorizado. Usuário não autenticado ou token inválido.", 401));
-
         }
 
         User user = getCurrentUserUseCase.execute(userId);
