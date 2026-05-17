@@ -20,10 +20,8 @@ public class GetEventsUseCase {
 
     @Transactional(readOnly = true)
     public Page<Event> execute(Pageable pageable) {
-        Page<Event> page = eventRepository.findAll(pageable);
-
-        page.getContent().forEach(event -> event.getTickets().size());
-
-        return page;
+        // Listagem usa EventSummaryResponse (sem tickets) — não força a
+        // coleção lazy por evento (era N+1).
+        return eventRepository.findAll(pageable);
     }
 }

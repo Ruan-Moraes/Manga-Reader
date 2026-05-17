@@ -21,10 +21,7 @@ public class GetEventsByStatusUseCase {
 
     @Transactional(readOnly = true)
     public Page<Event> execute(EventStatus status, Pageable pageable) {
-        Page<Event> page = eventRepository.findByStatus(status, pageable);
-
-        page.getContent().forEach(event -> event.getTickets().size());
-
-        return page;
+        // Listagem usa EventSummaryResponse (sem tickets) — não força lazy.
+        return eventRepository.findByStatus(status, pageable);
     }
 }

@@ -64,7 +64,8 @@ export type EventData = {
     isSaved?: boolean;
     schedule: string[];
     specialGuests: string[];
-    tickets: TicketType[];
+    // Listagem não retorna tickets; detalhe (getEventById) traz.
+    tickets?: TicketType[];
     socialLinks: {
         instagram?: string;
         twitter?: string;

@@ -13,6 +13,7 @@ import com.mangareader.domain.event.entity.EventTicket;
 import com.mangareader.domain.event.valueobject.EventLocation;
 import com.mangareader.domain.event.valueobject.EventOrganizer;
 import com.mangareader.presentation.event.dto.EventResponse;
+import com.mangareader.presentation.event.dto.EventSummaryResponse;
 import com.mangareader.presentation.event.dto.EventTicketResponse;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 
@@ -65,6 +66,45 @@ public class EventMapper {
                 event.getSchedule(),
                 event.getSpecialGuests(),
                 mapTickets(event.getTickets()),
+                event.getSocialLinks(),
+                event.getRelatedEventIds()
+        );
+    }
+
+    /**
+     * Variante para LISTAGEM — sem tickets (evita N+1 lazy por evento;
+     * frontend de listagem não usa tickets).
+     */
+    public EventSummaryResponse toSummary(Event event) {
+        if (event == null) return null;
+
+        return new EventSummaryResponse(
+                event.getId().toString(),
+                i18n.toResolvedString(event.getTitle()),
+                i18n.toResolvedString(event.getSubtitle()),
+                i18n.toResolvedString(event.getDescription()),
+                event.getImage(),
+                event.getGallery(),
+                formatDateTime(event.getStartDate()),
+                formatDateTime(event.getEndDate()),
+                event.getTimezone(),
+                event.getTimeline() != null
+                        ? domainLabels.resolveLabel(LABEL_TYPE_EVENT_TIMELINE, event.getTimeline().name(), event.getTimeline().name().toLowerCase())
+                        : null,
+                event.getStatus() != null
+                        ? domainLabels.resolveLabel(LABEL_TYPE_EVENT_STATUS, event.getStatus().name(), event.getStatus().getValue())
+                        : null,
+                event.getType() != null
+                        ? domainLabels.resolveLabel(LABEL_TYPE_EVENT_TYPE, event.getType().name(), event.getType().getDisplayName())
+                        : null,
+                mapLocation(event.getLocation()),
+                mapOrganizer(event.getOrganizer()),
+                event.getPriceLabel(),
+                event.getParticipants(),
+                event.getInterested(),
+                event.isFeatured(),
+                event.getSchedule(),
+                event.getSpecialGuests(),
                 event.getSocialLinks(),
                 event.getRelatedEventIds()
         );

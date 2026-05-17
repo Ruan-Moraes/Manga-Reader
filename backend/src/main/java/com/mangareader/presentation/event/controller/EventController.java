@@ -17,6 +17,7 @@ import com.mangareader.application.event.usecase.GetEventsByStatusUseCase;
 import com.mangareader.application.event.usecase.GetEventsUseCase;
 import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.presentation.event.dto.EventResponse;
+import com.mangareader.presentation.event.dto.EventSummaryResponse;
 import com.mangareader.presentation.event.mapper.EventMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
@@ -40,7 +41,7 @@ public class EventController {
 
     @GetMapping
     @Operation(summary = "Listar eventos", description = "Retorna eventos com paginação")
-    public ResponseEntity<ApiResponse<PageResponse<EventResponse>>> getAll(
+    public ResponseEntity<ApiResponse<PageResponse<EventSummaryResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "startDate") String sort,
@@ -50,7 +51,7 @@ public class EventController {
 
         var result = getEventsUseCase.execute(pageable);
 
-        var mapped = result.map(eventMapper::toResponse);
+        var mapped = result.map(eventMapper::toSummary);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -65,7 +66,7 @@ public class EventController {
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Filtrar eventos por status")
-    public ResponseEntity<ApiResponse<PageResponse<EventResponse>>> getByStatus(
+    public ResponseEntity<ApiResponse<PageResponse<EventSummaryResponse>>> getByStatus(
             @PathVariable String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
@@ -76,7 +77,7 @@ public class EventController {
 
         var result = getEventsByStatusUseCase.execute(eventStatus, pageable);
 
-        var mapped = result.map(eventMapper::toResponse);
+        var mapped = result.map(eventMapper::toSummary);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

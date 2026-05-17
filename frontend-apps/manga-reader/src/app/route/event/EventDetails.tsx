@@ -219,7 +219,7 @@ const EventDetails = () => {
                                 <h3 className="font-semibold">
                                     {t('details.tickets')}
                                 </h3>
-                                {event.tickets.map(ticket => (
+                                {(event.tickets ?? []).map(ticket => (
                                     <div
                                         key={ticket.id}
                                         className="p-2 text-sm rounded-lg bg-primary"
