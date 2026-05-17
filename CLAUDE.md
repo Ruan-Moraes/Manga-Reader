@@ -349,6 +349,18 @@ Toda mudança que toca persistência deve manter ou adicionar:
 - Extrair código repetido em funções reutilizáveis
 - Manter single sources of truth
 
+### Imports
+- **Sempre dar preferência a `import`** em vez de nome totalmente qualificado
+  inline. Proibido referenciar tipos via FQN no corpo do código (ex.:
+  `org.springframework.dao.DataAccessException e`, `new com.x.Foo()`,
+  `java.util.UUID id`) — declarar o `import` no topo.
+- Preferir **`import static`** para helpers/constantes usados de forma idiomática
+  e repetida: asserts (`assertThat`), Mockito (`when`, `verify`, `any`),
+  matchers MockMvc (`get`, `status`, `jsonPath`), `Aggregation.*` quando melhora
+  legibilidade.
+- Exceção única: conflito de nome entre dois tipos no mesmo arquivo — aí
+  qualificar o menos usado.
+
 ### Encapsulamento
 - Esconder detalhes de implementação, expor interfaces claras
 - Mover condicionais aninhados para funções bem nomeadas

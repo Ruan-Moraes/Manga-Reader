@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
@@ -78,9 +79,7 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     @Override
     public RatingAggregate aggregateByTitleId(String titleId) {
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(
-                        org.springframework.data.mongodb.core.query.Criteria
-                                .where("titleId").is(titleId)),
+                Aggregation.match(Criteria.where("titleId").is(titleId)),
                 Aggregation.group()
                         .avg("overallRating").as("average")
                         .count().as("count"));

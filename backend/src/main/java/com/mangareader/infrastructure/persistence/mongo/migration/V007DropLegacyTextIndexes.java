@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.persistence.mongo.migration;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import io.mongock.api.annotations.ChangeUnit;
@@ -43,7 +44,7 @@ public class V007DropLegacyTextIndexes {
     private void dropIndexIfExists(String collection, String indexName) {
         try {
             mongoTemplate.indexOps(collection).dropIndex(indexName);
-        } catch (org.springframework.dao.DataAccessException ignored) {
+        } catch (DataAccessException ignored) {
             // Idempotente — índice já removido ou nunca existiu. Só engole
             // erro de acesso a dados; falha de programação propaga.
         }
