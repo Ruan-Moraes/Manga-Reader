@@ -31,4 +31,13 @@ public interface RatingRepositoryPort {
     Page<MangaRating> findByUserId(String userId, Pageable pageable);
 
     long countByUserId(String userId);
+
+    /**
+     * Agregação no banco: média e contagem de avaliações de um título.
+     * Evita carregar a lista completa de ratings em memória (pode crescer
+     * sem limite em títulos populares).
+     */
+    RatingAggregate aggregateByTitleId(String titleId);
+
+    record RatingAggregate(double average, long count) {}
 }

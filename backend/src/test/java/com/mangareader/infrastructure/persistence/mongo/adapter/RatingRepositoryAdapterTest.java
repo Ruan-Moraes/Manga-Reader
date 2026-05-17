@@ -245,6 +245,35 @@ class RatingRepositoryAdapterTest {
     }
 
     @Nested
+    @DisplayName("aggregateByTitleId")
+    class AggregateByTitleId {
+
+        @Test
+        @DisplayName("Deve calcular média e contagem no banco")
+        void deveAgregarMediaEContagem() {
+            var agg = ratingRepository.aggregateByTitleId("title-1");
+            assertThat(agg.count()).isEqualTo(2);
+            assertThat(agg.average()).isEqualTo((4.3 + 3.0) / 2.0);
+        }
+
+        @Test
+        @DisplayName("Deve agregar título com uma avaliação")
+        void deveAgregarUmaAvaliacao() {
+            var agg = ratingRepository.aggregateByTitleId("title-2");
+            assertThat(agg.count()).isEqualTo(1);
+            assertThat(agg.average()).isEqualTo(5.0);
+        }
+
+        @Test
+        @DisplayName("Deve retornar 0/0 para título sem avaliações")
+        void deveRetornarZeroSemAvaliacoes() {
+            var agg = ratingRepository.aggregateByTitleId("inexistente");
+            assertThat(agg.count()).isZero();
+            assertThat(agg.average()).isZero();
+        }
+    }
+
+    @Nested
     @DisplayName("deleteById")
     class DeleteById {
 

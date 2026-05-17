@@ -3,9 +3,6 @@ package com.mangareader.application.rating.usecase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
+import com.mangareader.application.rating.port.RatingRepositoryPort.RatingAggregate;
 import com.mangareader.application.rating.usecase.GetRatingAverageUseCase.RatingAverage;
-import com.mangareader.domain.rating.entity.MangaRating;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetRatingAverageUseCase")
@@ -35,56 +32,37 @@ class GetRatingAverageUseCaseTest {
     class CalculoMedia {
 
         @Test
-        @DisplayName("Deve calcular média arredondada para uma casa decimal")
-        void deveCalcularMediaArredondada() {
-            // Arrange
-            List<MangaRating> ratings = List.of(
-                    MangaRating.builder().overallRating(4.0).build(),
-                    MangaRating.builder().overallRating(5.0).build(),
-                    MangaRating.builder().overallRating(3.0).build()
-            );
-            when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(ratings);
+        @DisplayName("Repassa média e contagem da agregação do banco")
+        void repassaAgregacao() {
+            when(ratingRepository.aggregateByTitleId(TITLE_ID))
+                    .thenReturn(new RatingAggregate(4.0, 3));
 
-            // Act
             RatingAverage result = getRatingAverageUseCase.execute(TITLE_ID);
 
-            // Assert
             assertThat(result.average()).isEqualTo(4.0);
             assertThat(result.count()).isEqualTo(3);
         }
 
         @Test
-        @DisplayName("Deve arredondar corretamente valores com múltiplas casas decimais")
-        void deveArredondarCorretamente() {
-            // Arrange — média de (4.5 + 3.7 + 4.2) / 3 = 4.1333... → 4.1
-            List<MangaRating> ratings = List.of(
-                    MangaRating.builder().overallRating(4.5).build(),
-                    MangaRating.builder().overallRating(3.7).build(),
-                    MangaRating.builder().overallRating(4.2).build()
-            );
-            when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(ratings);
+        @DisplayName("Arredonda a média da agregação para uma casa decimal")
+        void arredondaUmaCasa() {
+            when(ratingRepository.aggregateByTitleId(TITLE_ID))
+                    .thenReturn(new RatingAggregate(4.133333, 3));
 
-            // Act
             RatingAverage result = getRatingAverageUseCase.execute(TITLE_ID);
 
-            // Assert
             assertThat(result.average()).isEqualTo(4.1);
             assertThat(result.count()).isEqualTo(3);
         }
 
         @Test
-        @DisplayName("Deve retornar média e contagem com uma única avaliação")
-        void deveRetornarMediaComUmaAvaliacao() {
-            // Arrange
-            List<MangaRating> ratings = List.of(
-                    MangaRating.builder().overallRating(4.5).build()
-            );
-            when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(ratings);
+        @DisplayName("Uma única avaliação")
+        void umaAvaliacao() {
+            when(ratingRepository.aggregateByTitleId(TITLE_ID))
+                    .thenReturn(new RatingAggregate(4.5, 1));
 
-            // Act
             RatingAverage result = getRatingAverageUseCase.execute(TITLE_ID);
 
-            // Assert
             assertThat(result.average()).isEqualTo(4.5);
             assertThat(result.count()).isEqualTo(1);
         }
@@ -95,15 +73,13 @@ class GetRatingAverageUseCaseTest {
     class SemAvaliacoes {
 
         @Test
-        @DisplayName("Deve retornar média 0.0 e contagem 0 quando não há avaliações")
-        void deveRetornarZeroQuandoSemAvaliacoes() {
-            // Arrange
-            when(ratingRepository.findByTitleId(TITLE_ID)).thenReturn(Collections.emptyList());
+        @DisplayName("Retorna 0.0 / 0 quando count da agregação é 0")
+        void zeroQuandoSemAvaliacoes() {
+            when(ratingRepository.aggregateByTitleId(TITLE_ID))
+                    .thenReturn(new RatingAggregate(0.0, 0));
 
-            // Act
             RatingAverage result = getRatingAverageUseCase.execute(TITLE_ID);
 
-            // Assert
             assertThat(result.average()).isEqualTo(0.0);
             assertThat(result.count()).isEqualTo(0);
         }

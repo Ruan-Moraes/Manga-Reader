@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
@@ -20,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RatingRepositoryAdapter implements RatingRepositoryPort {
     private final RatingMongoRepository repository;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public List<MangaRating> findByTitleId(String titleId) {
@@ -70,4 +74,26 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     public long countByUserId(String userId) {
         return repository.countByUserId(userId);
     }
+
+    @Override
+    public RatingAggregate aggregateByTitleId(String titleId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(
+                        org.springframework.data.mongodb.core.query.Criteria
+                                .where("titleId").is(titleId)),
+                Aggregation.group()
+                        .avg("overallRating").as("average")
+                        .count().as("count"));
+
+        AggregationResults<AggDoc> results = mongoTemplate.aggregate(
+                aggregation, MangaRating.class, AggDoc.class);
+
+        AggDoc doc = results.getUniqueMappedResult();
+
+        return doc == null
+                ? new RatingAggregate(0.0, 0)
+                : new RatingAggregate(doc.average(), doc.count());
+    }
+
+    private record AggDoc(double average, long count) {}
 }
