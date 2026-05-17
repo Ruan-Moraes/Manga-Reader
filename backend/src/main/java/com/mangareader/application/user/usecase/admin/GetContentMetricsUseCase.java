@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
  * Agrega métricas de conteúdo (titles + events) para o dashboard admin aprimorado.
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetContentMetricsUseCase {
     private static final int TOP_TITLES_LIMIT = 10;

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.application.group.port.GroupRepositoryPort;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
  * Agrega métricas de múltiplos domínios para o dashboard admin.
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetDashboardMetricsUseCase {
     private final UserRepositoryPort userRepository;

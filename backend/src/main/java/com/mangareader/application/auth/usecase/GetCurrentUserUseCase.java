@@ -3,6 +3,7 @@ package com.mangareader.application.auth.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
  * Retorna os dados do usuário autenticado (GET /auth/me).
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetCurrentUserUseCase {
     private final UserRepositoryPort userRepository;

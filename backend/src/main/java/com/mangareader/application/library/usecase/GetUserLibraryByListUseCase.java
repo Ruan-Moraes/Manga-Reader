@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.domain.library.entity.SavedManga;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
  * Retorna mangás salvos filtrados por tipo de lista de leitura, com paginação.
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetUserLibraryByListUseCase {
     private final LibraryRepositoryPort libraryRepository;

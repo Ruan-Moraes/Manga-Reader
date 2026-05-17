@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
  * Retorna comentários paginados de um usuário, respeitando privacidade.
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetUserCommentsUseCase {
     private final UserRepositoryPort userRepository;

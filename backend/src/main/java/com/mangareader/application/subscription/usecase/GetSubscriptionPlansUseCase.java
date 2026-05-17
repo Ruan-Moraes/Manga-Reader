@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.subscription.port.SubscriptionPlanRepositoryPort;
 import com.mangareader.domain.subscription.entity.SubscriptionPlan;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
  * Resultado cacheado para reduzir consultas ao banco.
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetSubscriptionPlansUseCase {
     private final SubscriptionPlanRepositoryPort planRepository;

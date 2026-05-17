@@ -3,6 +3,7 @@ package com.mangareader.application.user.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
  * Retorna o perfil público de um usuário por ID.
  */
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetUserProfileUseCase {
     private final UserRepositoryPort userRepository;
