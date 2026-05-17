@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.mangareader.domain.forum.entity.ForumTopic;
@@ -12,16 +13,27 @@ import com.mangareader.domain.forum.valueobject.ForumCategory;
 
 /**
  * Repositório JPA para tópicos do fórum.
+ * <p>
+ * Listagens usam {@code @EntityGraph(author)}: {@code author} é
+ * {@code @ManyToOne} — fetch via JOIN com paginação é seguro (sem
+ * {@code HHH000104}, que só afeta coleções). Evita N+1 de author por tópico.
  */
 public interface ForumTopicJpaRepository extends JpaRepository<ForumTopic, UUID> {
+    @Override
+    @EntityGraph(attributePaths = "author")
+    Page<ForumTopic> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = "author")
     Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable);
 
     Page<ForumTopic> findByLanguage(String language, Pageable pageable);
 
+    @EntityGraph(attributePaths = "author")
     Page<ForumTopic> findByLanguageIn(Collection<String> languages, Pageable pageable);
 
     Page<ForumTopic> findByCategoryAndLanguage(ForumCategory category, String language, Pageable pageable);
 
+    @EntityGraph(attributePaths = "author")
     Page<ForumTopic> findByCategoryAndLanguageIn(ForumCategory category, Collection<String> languages, Pageable pageable);
 
     Page<ForumTopic> findByTitleContainingIgnoreCase(String query, Pageable pageable);

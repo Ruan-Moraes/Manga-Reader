@@ -28,16 +28,10 @@ public class GetForumTopicsByCategoryUseCase {
 
     @Transactional(readOnly = true)
     public Page<ForumTopic> execute(ForumCategory category, Pageable pageable, boolean crossLanguage) {
-        Page<ForumTopic> page = crossLanguage
+        // author via @EntityGraph; replies não carregadas na listagem.
+        return crossLanguage
                 ? forumRepository.findByCategory(category, pageable)
                 : forumRepository.findByCategoryAndLanguageIn(
                         category, localeResolver.currentContentLanguageTags(), pageable);
-
-        page.getContent().forEach(topic -> {
-            topic.getAuthor().getName();
-            topic.getReplies().forEach(r -> r.getAuthor().getName());
-        });
-
-        return page;
     }
 }

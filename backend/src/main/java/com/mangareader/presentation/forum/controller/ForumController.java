@@ -33,6 +33,7 @@ import com.mangareader.presentation.forum.dto.CreateReplyRequest;
 import com.mangareader.presentation.forum.dto.CreateTopicRequest;
 import com.mangareader.presentation.forum.dto.ForumCategoryResponse;
 import com.mangareader.presentation.forum.dto.ForumTopicResponse;
+import com.mangareader.presentation.forum.dto.ForumTopicSummaryResponse;
 import com.mangareader.presentation.forum.dto.UpdateTopicRequest;
 import com.mangareader.presentation.forum.mapper.ForumMapper;
 import com.mangareader.shared.dto.ApiResponse;
@@ -68,7 +69,7 @@ public class ForumController {
 
     @GetMapping
     @Operation(summary = "Listar tópicos", description = "Retorna tópicos do fórum com paginação. Use language=all (admin) para listar todos idiomas.")
-    public ResponseEntity<ApiResponse<PageResponse<ForumTopicResponse>>> getAll(
+    public ResponseEntity<ApiResponse<PageResponse<ForumTopicSummaryResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
@@ -80,7 +81,7 @@ public class ForumController {
 
         var result = getForumTopicsUseCase.execute(pageable, "all".equalsIgnoreCase(language));
 
-        var mapped = result.map(t -> forumMapper.toResponse(t, getAuthorPostCountUseCase::execute));
+        var mapped = result.map(t -> forumMapper.toSummary(t, getAuthorPostCountUseCase::execute));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -95,7 +96,7 @@ public class ForumController {
 
     @GetMapping("/category/{category}")
     @Operation(summary = "Filtrar tópicos por categoria", description = "language=all (admin) lista todos idiomas.")
-    public ResponseEntity<ApiResponse<PageResponse<ForumTopicResponse>>> getByCategory(
+    public ResponseEntity<ApiResponse<PageResponse<ForumTopicSummaryResponse>>> getByCategory(
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -107,7 +108,7 @@ public class ForumController {
 
         var result = getForumTopicsByCategoryUseCase.execute(cat, pageable, "all".equalsIgnoreCase(language));
 
-        var mapped = result.map(t -> forumMapper.toResponse(t, getAuthorPostCountUseCase::execute));
+        var mapped = result.map(t -> forumMapper.toSummary(t, getAuthorPostCountUseCase::execute));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

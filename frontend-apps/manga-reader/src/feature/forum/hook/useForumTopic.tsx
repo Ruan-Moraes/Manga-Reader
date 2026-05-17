@@ -37,7 +37,7 @@ const useForumTopic = () => {
 
     const sortedReplies = useMemo(() => {
         if (!topic) return [];
-        return [...topic.replies].sort((a, b) => {
+        return [...(topic.replies ?? [])].sort((a, b) => {
             if (replySort === 'likes') return b.likes - a.likes;
             return (
                 new Date(a.createdAt).getTime() -

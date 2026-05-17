@@ -16,6 +16,7 @@ import com.mangareader.domain.user.entity.User;
 import com.mangareader.presentation.forum.dto.ForumAuthorResponse;
 import com.mangareader.presentation.forum.dto.ForumReplyResponse;
 import com.mangareader.presentation.forum.dto.ForumTopicResponse;
+import com.mangareader.presentation.forum.dto.ForumTopicSummaryResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +59,38 @@ public class ForumMapper {
                 topic.isLocked(),
                 topic.isSolved(),
                 mapReplies(topic.getReplies(), postCountFn)
+        );
+    }
+
+    /**
+     * Variante para LISTAGEM — sem replies (evita N+1 aninhado). Usa o
+     * escalar {@code replyCount} já desnormalizado em {@link ForumTopic}.
+     */
+    public ForumTopicSummaryResponse toSummary(ForumTopic topic, Function<UUID, Long> postCountFn) {
+        if (topic == null) return null;
+
+        String category = topic.getCategory() != null
+                ? domainLabels.resolveLabel(
+                        LABEL_TYPE_FORUM_CATEGORY,
+                        topic.getCategory().name(),
+                        topic.getCategory().getDisplayName())
+                : null;
+
+        return new ForumTopicSummaryResponse(
+                topic.getId().toString(),
+                topic.getTitle(),
+                topic.getContent(),
+                mapAuthor(topic.getAuthor(), postCountFn),
+                category,
+                topic.getTags(),
+                formatDateTime(topic.getCreatedAt()),
+                formatDateTime(topic.getLastActivityAt()),
+                topic.getViewCount(),
+                topic.getReplyCount(),
+                topic.getLikeCount(),
+                topic.isPinned(),
+                topic.isLocked(),
+                topic.isSolved()
         );
     }
 

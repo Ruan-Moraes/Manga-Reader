@@ -33,15 +33,10 @@ public class GetForumTopicsUseCase {
      */
     @Transactional(readOnly = true)
     public Page<ForumTopic> execute(Pageable pageable, boolean crossLanguage) {
-        Page<ForumTopic> page = crossLanguage
+        // author vem via @EntityGraph nas queries de listagem; replies NÃO são
+        // carregadas (DTO de listagem usa só o escalar replyCount).
+        return crossLanguage
                 ? forumRepository.findAll(pageable)
                 : forumRepository.findByLanguageIn(localeResolver.currentContentLanguageTags(), pageable);
-
-        page.getContent().forEach(topic -> {
-            topic.getAuthor().getName();
-            topic.getReplies().forEach(r -> r.getAuthor().getName());
-        });
-
-        return page;
     }
 }

@@ -43,7 +43,9 @@ export type ForumTopic = {
     isPinned: boolean;
     isLocked: boolean;
     isSolved: boolean;
-    replies: ForumReply[];
+    // Listagem não retorna replies (só replyCount); detalhe
+    // (getForumTopicById) traz o array completo.
+    replies?: ForumReply[];
 };
 
 export type ForumSort =
