@@ -16,8 +16,6 @@ public interface TitleRepositoryPort {
 
     Optional<Title> findById(String id);
 
-    List<Title> findByGenresContaining(String genre);
-
     List<Title> searchByName(String query);
 
     List<Title> findByGenresContainingAll(List<String> genres);

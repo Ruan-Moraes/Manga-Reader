@@ -42,11 +42,6 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     }
 
     @Override
-    public List<Title> findByGenresContaining(String genre) {
-        return mongoRepository.findByGenresContaining(genre);
-    }
-
-    @Override
     public List<Title> searchByName(String query) {
         if (query == null || query.isBlank()) return List.of();
         return mongoTemplate.find(buildNameSearchQuery(query), Title.class);

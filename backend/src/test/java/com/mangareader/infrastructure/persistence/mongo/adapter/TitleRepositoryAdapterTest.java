@@ -114,16 +114,6 @@ class TitleRepositoryAdapterTest {
     @DisplayName("findByGenresContaining")
     class FindByGenresContaining {
         @Test
-        @DisplayName("Deve retornar títulos que contêm o gênero")
-        void deveRetornarTitulosComGenero() {
-            var result = titleRepository.findByGenresContaining("Action");
-
-            assertThat(result).hasSize(2)
-                    .extracting(t -> t.getName().resolve(java.util.Locale.forLanguageTag("pt-BR")))
-                    .containsExactlyInAnyOrder("Naruto", "One Piece");
-        }
-
-        @Test
         @DisplayName("Deve retornar página de títulos por gênero")
         void deveRetornarPaginaPorGenero() {
             var page = titleRepository.findByGenresContaining("Action", PageRequest.of(0, 1));

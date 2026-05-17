@@ -23,11 +23,6 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     private final CommentMongoRepository repository;
 
     @Override
-    public List<Comment> findByTitleId(String titleId) {
-        return repository.findByTitleId(titleId);
-    }
-
-    @Override
     public List<Comment> findByTitleIdAndParentCommentIdIsNull(String titleId) {
         return repository.findByTitleIdAndParentCommentIdIsNull(titleId);
     }

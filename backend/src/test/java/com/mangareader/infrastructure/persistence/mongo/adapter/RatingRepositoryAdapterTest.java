@@ -101,13 +101,6 @@ class RatingRepositoryAdapterTest {
     class FindByTitleId {
 
         @Test
-        @DisplayName("Deve retornar ratings do título")
-        void deveRetornarRatingsDoTitulo() {
-            var result = ratingRepository.findByTitleId("title-1");
-            assertThat(result).hasSize(2);
-        }
-
-        @Test
         @DisplayName("Deve retornar página de ratings do título")
         void deveRetornarPaginaDeRatings() {
             var page = ratingRepository.findByTitleId("title-1", PageRequest.of(0, 1));
@@ -159,13 +152,6 @@ class RatingRepositoryAdapterTest {
     @Nested
     @DisplayName("findByUserId")
     class FindByUserId {
-
-        @Test
-        @DisplayName("Deve retornar ratings do usuário")
-        void deveRetornarRatingsDoUsuario() {
-            var result = ratingRepository.findByUserId("user-1");
-            assertThat(result).hasSize(2);
-        }
 
         @Test
         @DisplayName("Deve retornar página de ratings do usuário")

@@ -90,15 +90,6 @@ class NewsRepositoryAdapterTest {
     class FindAll {
 
         @Test
-        @DisplayName("Deve retornar todas as notícias ordenadas por publishedAt DESC")
-        void deveRetornarNoticiasOrdenadasDesc() {
-            var result = newsRepository.findAll();
-            assertThat(result).hasSize(3);
-            assertThat(result.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Evento manga expo 2024");
-            assertThat(result.get(2).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capitulo de Naruto");
-        }
-
-        @Test
         @DisplayName("Deve retornar página de notícias")
         void deveRetornarPaginaDeNoticias() {
             var page = newsRepository.findAll(PageRequest.of(0, 2));
@@ -132,26 +123,11 @@ class NewsRepositoryAdapterTest {
     class FindByCategory {
 
         @Test
-        @DisplayName("Deve retornar notícias por categoria")
-        void deveRetornarNoticiasPorCategoria() {
-            var result = newsRepository.findByCategory(NewsCategory.LANCAMENTOS);
-            assertThat(result).hasSize(1);
-            assertThat(result.get(0).getTitle().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Novo capitulo de Naruto");
-        }
-
-        @Test
         @DisplayName("Deve retornar página de notícias por categoria")
         void deveRetornarPaginaPorCategoria() {
             var page = newsRepository.findByCategory(NewsCategory.ADAPTACOES, PageRequest.of(0, 10));
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getTotalElements()).isEqualTo(1);
-        }
-
-        @Test
-        @DisplayName("Deve retornar vazio para categoria sem notícias")
-        void deveRetornarVazioParaCategoriaSemNoticias() {
-            var result = newsRepository.findByCategory(NewsCategory.ENTREVISTAS);
-            assertThat(result).isEmpty();
         }
     }
 
@@ -235,7 +211,7 @@ class NewsRepositoryAdapterTest {
         void deveRemoverNoticia() {
             newsRepository.deleteById(news3.getId());
             assertThat(newsRepository.findById(news3.getId())).isEmpty();
-            assertThat(newsRepository.findAll()).hasSize(2);
+            assertThat(newsRepository.count()).isEqualTo(2);
         }
     }
 }

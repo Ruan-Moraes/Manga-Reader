@@ -79,25 +79,11 @@ class CommentRepositoryAdapterTest {
     class FindByTitleId {
 
         @Test
-        @DisplayName("Deve retornar todos os comentários do título")
-        void deveRetornarComentariosDoTitulo() {
-            var result = commentRepository.findByTitleId("title-1");
-            assertThat(result).hasSize(3);
-        }
-
-        @Test
         @DisplayName("Deve retornar página de comentários do título")
         void deveRetornarPaginaDeComentarios() {
             var page = commentRepository.findByTitleId("title-1", PageRequest.of(0, 2));
             assertThat(page.getContent()).hasSize(2);
             assertThat(page.getTotalElements()).isEqualTo(3);
-        }
-
-        @Test
-        @DisplayName("Deve retornar vazio para título sem comentários")
-        void deveRetornarVazioParaTituloSemComentarios() {
-            var result = commentRepository.findByTitleId("title-inexistente");
-            assertThat(result).isEmpty();
         }
     }
 

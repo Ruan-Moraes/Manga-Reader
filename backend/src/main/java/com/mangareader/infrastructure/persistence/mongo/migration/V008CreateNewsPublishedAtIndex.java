@@ -16,7 +16,7 @@ import io.mongock.api.annotations.RollbackExecution;
  * {@code spring.data.mongodb.auto-index-creation=false} a anotação não cria
  * índice — precisa ser criado por migration. V001 indexou category/tags/text
  * mas não publishedAt, usado para ordenação das listagens de notícias
- * (`findAllByOrderByPublishedAtDesc`, sort default admin).
+ * (sort por publishedAt nas listagens públicas e admin).
  */
 @ChangeUnit(id = "V008-create-news-published-at-index", order = "008", author = "mangareader")
 public class V008CreateNewsPublishedAtIndex {

@@ -1,6 +1,5 @@
 package com.mangareader.infrastructure.persistence.mongo.adapter;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -27,11 +26,6 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public List<MangaRating> findByTitleId(String titleId) {
-        return repository.findByTitleId(titleId);
-    }
-
-    @Override
     public Optional<MangaRating> findByTitleIdAndUserId(String titleId, String userId) {
         return repository.findByTitleIdAndUserId(titleId, userId);
     }
@@ -44,11 +38,6 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     @Override
     public MangaRating save(MangaRating rating) {
         return repository.save(rating);
-    }
-
-    @Override
-    public List<MangaRating> findByUserId(String userId) {
-        return repository.findByUserId(userId);
     }
 
     @Override

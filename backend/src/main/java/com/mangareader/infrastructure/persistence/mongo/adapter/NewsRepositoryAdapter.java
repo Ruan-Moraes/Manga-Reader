@@ -28,18 +28,8 @@ public class NewsRepositoryAdapter implements NewsRepositoryPort {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public List<NewsItem> findAll() {
-        return repository.findAllByOrderByPublishedAtDesc();
-    }
-
-    @Override
     public Optional<NewsItem> findById(String id) {
         return repository.findById(id);
-    }
-
-    @Override
-    public List<NewsItem> findByCategory(NewsCategory category) {
-        return repository.findByCategory(category);
     }
 
     @Override
