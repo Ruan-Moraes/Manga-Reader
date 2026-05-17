@@ -32,6 +32,9 @@ public class ChapterController {
     private final GetChapterByNumberUseCase getChapterByNumberUseCase;
     private final LocalizedMappingHelper i18n;
 
+    // Sem paginação proposital: chapters são embedded no documento Title e já
+    // vêm carregados na mesma leitura — paginar em memória não reduz I/O. O
+    // risco real (array embedded ilimitado) é DT-17 (modelo de dados).
     @GetMapping
     @Operation(summary = "Listar capítulos", description = "Retorna todos os capítulos de um título")
     public ResponseEntity<ApiResponse<List<ChapterResponse>>> getAll(

@@ -100,23 +100,25 @@ espalhados (ex.: `news/*`, `event/*`, `dashboard/*`, `forum/*`). Migrar para
 
 ---
 
-### DT-16: `npm run build` falha no typecheck de arquivos de teste
+### DT-17: Capítulos embedded no documento Title (crescimento ilimitado)
 
-**Descrição**: `npm run build` roda `tsc -b` que inclui arquivos de teste.
-Há erros TS pré-existentes (não relacionados às mudanças de 2026-05-16) em
-`src/test/factories/admin/*` (LocalizedString espera
-`Partial<Record<locale,string>>`, fábricas passam `string`/`null`),
-`src/feature/news/service/newsService.test.ts` e
-`src/feature/manga/component/card/horizontal/HorizontalCard.tsx`
-(`t('card.chaptersCount', { count: string })` — `count` deveria ser `number`).
-Introduzido provavelmente no commit i18n `bb72601`.
+**Descrição**: `Title` (MongoDB) embarca a lista de `chapters` no próprio
+documento. Títulos longos (mangás com 1000+ capítulos) fazem o documento
+crescer sem limite. `ChapterController.getAll` retorna `List<ChapterResponse>`
+sem paginação — mas paginar a lista já carregada em memória não traz ganho de
+I/O (o documento Title inteiro é buscado de qualquer forma).
 
-**Impacto**: `npm run build` quebra; `vite build` direto funciona (91 chunks,
-code-splitting OK). `npx tsc --noEmit` (config app) passa — só `tsc -b` (inclui
-testes) falha.
+**Impacto**:
+- Risco de atingir o limite de 16 MB por documento do MongoDB em séries longas.
+- `ChapterController.getAll` sem paginação (viola regra de listagem), porém o
+  fix correto não é paginar em memória.
 
-**Recomendação**: ajustar as fábricas/test types para `LocalizedString` e
-corrigir o tipo de `count` em `HorizontalCard`. Média prioridade.
+**Recomendação**: mover `chapters` para coleção própria referenciada por
+`titleId` (CLAUDE Mongo Guidelines: "referenciar quando o documento embarcado
+pode crescer sem limite"), então paginar de fato no banco. Mudança de modelo
++ migração Mongock — **fora do escopo de correção de anti-padrão**, requer
+decisão de produto. Baixa-Média prioridade (não-bloqueante enquanto séries
+forem curtas).
 
 ---
 
@@ -152,6 +154,6 @@ corrigir o tipo de `count` em `HorizontalCard`. Média prioridade.
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 2 | DT-08, DT-10 |
+| **Média** | 3 | DT-08, DT-10, DT-17 |
 | **Baixa** | 2 | DT-03, DT-09 |
 | **Resolvidos 2026-05-16/17** | 11 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16 |
