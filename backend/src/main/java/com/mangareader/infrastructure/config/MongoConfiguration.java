@@ -43,7 +43,7 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
                         .readTimeout(10, TimeUnit.SECONDS))
                 .applyToClusterSettings(builder -> builder
                         .serverSelectionTimeout(10, TimeUnit.SECONDS))
-                .retryWrites(false)
+                .retryWrites(true)
                 .build();
 
         return MongoClients.create(mongoClientSettings);
