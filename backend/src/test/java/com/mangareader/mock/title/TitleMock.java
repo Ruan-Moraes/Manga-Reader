@@ -1,7 +1,6 @@
 package com.mangareader.mock.title;
 
 import com.mangareader.domain.manga.entity.Title;
-import com.mangareader.domain.manga.valueobject.Chapter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,28 +18,6 @@ public final class TitleMock {
     public static final String TITLE_7_ID = "title-7";
     public static final String TITLE_8_ID = "title-8";
 
-    public static Chapter chapter(String number, String chapterTitle) {
-        return Chapter.builder()
-                .number(number)
-                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(chapterTitle))
-                .releaseDate("2025-06-10")
-                .pages("42")
-                .build();
-    }
-
-    public static List<Chapter> chaptersRange(int from, int to) {
-        List<Chapter> chapters = new ArrayList<>();
-        for (int i = from; i <= to; i++) {
-            chapters.add(Chapter.builder()
-                    .number(String.valueOf(i))
-                    .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capitulo " + i))
-                    .releaseDate("2025-06-" + String.format("%02d", Math.min(i, 28)))
-                    .pages(String.valueOf(30 + i))
-                    .build());
-        }
-        return chapters;
-    }
-
     public static Title reinoDeAco() {
         return Title.builder()
                 .id(TITLE_1_ID)
@@ -50,7 +27,6 @@ public final class TitleMock {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Em um mundo onde armaduras vivas dominam os campos de batalha, "
                         + "um jovem ferreiro descobre que pode ouvir a voz do metal."))
                 .genres(new ArrayList<>(List.of("Acao", "Fantasia", "Aventura")))
-                .chapters(new ArrayList<>(chaptersRange(1, 8)))
                 .popularity("98")
                 .ratingAverage(4.5)
                 .ratingCount(120L)
@@ -71,7 +47,6 @@ public final class TitleMock {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Quando a tecnologia e a espada se encontram, uma guerreira do futuro "
                         + "volta ao passado para impedir uma catastrofe."))
                 .genres(new ArrayList<>(List.of("Acao", "Sci-Fi", "Drama")))
-                .chapters(new ArrayList<>(chaptersRange(1, 12)))
                 .popularity("85")
                 .ratingAverage(4.2)
                 .ratingCount(95L)
@@ -92,7 +67,6 @@ public final class TitleMock {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Numa metrópole futurista iluminada por neon, uma florista descobre "
                         + "que suas plantas possuem poderes sobrenaturais."))
                 .genres(new ArrayList<>(List.of("Romance", "Fantasia", "Slice of Life")))
-                .chapters(new ArrayList<>(chaptersRange(1, 6)))
                 .popularity("72")
                 .ratingAverage(3.8)
                 .ratingCount(60L)
@@ -113,7 +87,6 @@ public final class TitleMock {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Exploradores cruzam um oceano desconhecido em busca de uma terra lendaria "
                         + "guiados pela estrela Polaris."))
                 .genres(new ArrayList<>(List.of("Aventura", "Misterio", "Fantasia")))
-                .chapters(new ArrayList<>(chaptersRange(1, 20)))
                 .popularity("91")
                 .ratingAverage(4.7)
                 .ratingCount(200L)
@@ -133,7 +106,6 @@ public final class TitleMock {
                 .cover("https://picsum.photos/300/450?random=105")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um espadachim cego viaja pelo Japao feudal em busca de redencao."))
                 .genres(new ArrayList<>(List.of("Acao", "Historico", "Drama")))
-                .chapters(new ArrayList<>(chaptersRange(1, 15)))
                 .popularity("80")
                 .ratingAverage(4.0)
                 .ratingCount(85L)
@@ -153,7 +125,6 @@ public final class TitleMock {
                 .cover("https://picsum.photos/300/450?random=106")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um anjo caido protege a humanidade enquanto busca recuperar suas asas."))
                 .genres(new ArrayList<>(List.of("Acao", "Fantasia", "Sobrenatural")))
-                .chapters(new ArrayList<>(chaptersRange(1, 10)))
                 .popularity("76")
                 .ratingAverage(3.5)
                 .ratingCount(45L)
@@ -173,7 +144,6 @@ public final class TitleMock {
                 .cover("https://picsum.photos/300/450?random=107")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Uma artesã de porcelana descobre que suas criações ganham vida a noite."))
                 .genres(new ArrayList<>(List.of("Romance", "Drama", "Sobrenatural")))
-                .chapters(new ArrayList<>(chaptersRange(1, 4)))
                 .popularity("55")
                 .ratingAverage(3.2)
                 .ratingCount(30L)
@@ -194,7 +164,6 @@ public final class TitleMock {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Numa sociedade controlada por IA, um hacker descobre uma falha no sistema "
                         + "que pode libertar a humanidade."))
                 .genres(new ArrayList<>(List.of("Sci-Fi", "Thriller", "Acao")))
-                .chapters(new ArrayList<>(chaptersRange(1, 18)))
                 .popularity("88")
                 .ratingAverage(4.3)
                 .ratingCount(150L)
@@ -214,7 +183,6 @@ public final class TitleMock {
                 .cover("https://picsum.photos/300/450?random=200")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um titulo recem-criado sem capitulos publicados."))
                 .genres(new ArrayList<>(List.of("Slice of Life")))
-                .chapters(new ArrayList<>())
                 .popularity("0")
                 .ratingAverage(0.0)
                 .ratingCount(0L)
@@ -231,7 +199,6 @@ public final class TitleMock {
                 .cover("https://picsum.photos/300/450?random=201")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lancamento recente que ainda nao recebeu avaliacoes."))
                 .genres(new ArrayList<>(List.of("Acao")))
-                .chapters(new ArrayList<>(chaptersRange(1, 3)))
                 .popularity("10")
                 .ratingAverage(0.0)
                 .ratingCount(0L)
@@ -254,7 +221,6 @@ public final class TitleMock {
                         "Drama", "Comedia", "Horror", "Misterio", "Slice of Life",
                         "Historico", "Sobrenatural", "Esportes", "Thriller"
                 )))
-                .chapters(new ArrayList<>(chaptersRange(1, 2)))
                 .popularity("50")
                 .author("Multi Autor")
                 .build();
@@ -267,7 +233,6 @@ public final class TitleMock {
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Title " + id))
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Synopsis for " + id))
                 .genres(new ArrayList<>(List.of("Acao")))
-                .chapters(new ArrayList<>())
                 .popularity("50")
                 .author("Author " + id)
                 .build();

@@ -5,7 +5,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- * DTO completo de título, incluindo capítulos.
+ * DTO de título. Capítulos vivem em coleção própria (DT-17) e são obtidos
+ * via {@code GET /api/titles/{id}/chapters} (paginado), não embarcados aqui.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record TitleResponse(
@@ -15,7 +16,6 @@ public record TitleResponse(
         String name,
         String synopsis,
         List<String> genres,
-        List<ChapterResponse> chapters,
         String popularity,
         Double ratingAverage,
         Long ratingCount,

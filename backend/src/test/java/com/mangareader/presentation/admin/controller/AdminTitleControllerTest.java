@@ -27,6 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.auth.port.TokenPort;
+import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.usecase.admin.CreateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.DeleteTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
@@ -52,6 +53,9 @@ class AdminTitleControllerTest {
     private GetAdminTitleUseCase getAdminTitleUseCase;
 
     @MockitoBean
+    private ChapterRepositoryPort chapterRepository;
+
+    @MockitoBean
     private CreateTitleUseCase createTitleUseCase;
 
     @MockitoBean
@@ -59,6 +63,18 @@ class AdminTitleControllerTest {
 
     @MockitoBean
     private DeleteTitleUseCase deleteTitleUseCase;
+
+    @org.junit.jupiter.api.BeforeEach
+    void stubChapterCounts() {
+        org.mockito.Mockito.lenient()
+                .when(chapterRepository.countByTitleIdIn(
+                        org.mockito.ArgumentMatchers.any()))
+                .thenReturn(java.util.Map.of());
+        org.mockito.Mockito.lenient()
+                .when(chapterRepository.countByTitleId(
+                        org.mockito.ArgumentMatchers.anyString()))
+                .thenReturn(0L);
+    }
 
     private Title buildTitle() {
         return Title.builder()

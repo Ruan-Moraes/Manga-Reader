@@ -1,5 +1,7 @@
 package com.mangareader.presentation.manga.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,14 +15,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.manga.usecase.GetChapterByNumberUseCase;
 import com.mangareader.application.manga.usecase.GetChaptersByTitleUseCase;
-import com.mangareader.domain.manga.valueobject.Chapter;
+import com.mangareader.domain.manga.entity.Chapter;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
-import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(ChapterController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -46,7 +53,7 @@ class ChapterControllerTest {
     void stubI18n() {
         when(i18n.toResolvedString(org.mockito.ArgumentMatchers.any()))
                 .thenAnswer(inv -> {
-                    var ls = inv.getArgument(0, com.mangareader.shared.domain.i18n.LocalizedString.class);
+                    var ls = inv.getArgument(0, LocalizedString.class);
 
                     return ls == null ? "" : ls.resolve(null);
                 });
@@ -54,8 +61,9 @@ class ChapterControllerTest {
 
     private Chapter buildChapter(String number) {
         return Chapter.builder()
+                .titleId("title-1")
                 .number(number)
-                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capítulo " + number))
+                .title(LocalizedString.ofDefault("Capítulo " + number))
                 .releaseDate("2026-03-10")
                 .pages("25")
                 .build();
@@ -66,28 +74,33 @@ class ChapterControllerTest {
     class GetAll {
 
         @Test
-        @DisplayName("Deve retornar 200 com lista de capítulos")
+        @DisplayName("Deve retornar 200 com página de capítulos")
         void deveRetornar200ComCapitulos() throws Exception {
-            var chapters = List.of(buildChapter("1"), buildChapter("2"), buildChapter("3"));
+            Page<Chapter> page = new PageImpl<>(
+                    List.of(buildChapter("1"), buildChapter("2"), buildChapter("3")),
+                    PageRequest.of(0, 20), 3);
 
-            when(getChaptersByTitleUseCase.execute("title-1")).thenReturn(chapters);
+            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+                    .thenReturn(page);
 
             mockMvc.perform(get("/api/titles/title-1/chapters"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.length()").value(3))
-                    .andExpect(jsonPath("$.data[0].number").value("1"))
-                    .andExpect(jsonPath("$.data[0].title").value("Capítulo 1"));
+                    .andExpect(jsonPath("$.data.content.length()").value(3))
+                    .andExpect(jsonPath("$.data.content[0].number").value("1"))
+                    .andExpect(jsonPath("$.data.content[0].title").value("Capítulo 1"))
+                    .andExpect(jsonPath("$.data.totalElements").value(3));
         }
 
         @Test
-        @DisplayName("Deve retornar 200 com lista vazia")
-        void deveRetornarListaVazia() throws Exception {
-            when(getChaptersByTitleUseCase.execute("title-x")).thenReturn(List.of());
+        @DisplayName("Deve retornar 200 com página vazia")
+        void deveRetornarPaginaVazia() throws Exception {
+            when(getChaptersByTitleUseCase.execute(eq("title-x"), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
 
             mockMvc.perform(get("/api/titles/title-x/chapters"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data").isEmpty());
+                    .andExpect(jsonPath("$.data.content").isEmpty());
         }
     }
 

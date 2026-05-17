@@ -8,8 +8,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.domain.manga.entity.Title;
-import com.mangareader.domain.manga.valueobject.Chapter;
-import com.mangareader.presentation.manga.dto.ChapterResponse;
 import com.mangareader.presentation.manga.dto.TitleResponse;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 
@@ -37,7 +35,6 @@ public class TitleMapper {
                 i18n.toResolvedString(title.getName()),
                 i18n.toResolvedString(title.getSynopsis()),
                 title.getGenres() != null ? title.getGenres() : Collections.emptyList(),
-                mapChapters(title.getChapters()),
                 title.getPopularity(),
                 title.getRatingAverage(),
                 title.getRatingCount(),
@@ -56,19 +53,6 @@ public class TitleMapper {
         if (titles == null) return Collections.emptyList();
 
         return titles.stream().map(this::toResponse).toList();
-    }
-
-    private List<ChapterResponse> mapChapters(List<Chapter> chapters) {
-        if (chapters == null) return Collections.emptyList();
-
-        return chapters.stream()
-                .map(ch -> new ChapterResponse(
-                        ch.getNumber(),
-                        i18n.toResolvedString(ch.getTitle()),
-                        ch.getReleaseDate(),
-                        ch.getPages()
-                ))
-                .toList();
     }
 
     private static String formatDate(LocalDateTime dateTime) {

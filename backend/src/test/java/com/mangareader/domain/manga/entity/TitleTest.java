@@ -7,11 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.mangareader.domain.manga.valueobject.Chapter;
-
 class TitleTest {
     @Test
-    @DisplayName("Deve iniciar com listas vazias de genres e chapters no builder padrão")
+    @DisplayName("Deve iniciar com lista vazia de genres no builder padrão")
     void shouldInitializeDefaultListsWhenUsingBuilder() {
         Title title = Title.builder()
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling"))
@@ -20,20 +18,11 @@ class TitleTest {
 
         assertThat(title.getGenres()).isNotNull();
         assertThat(title.getGenres().isEmpty()).isTrue();
-        assertThat(title.getChapters()).isNotNull();
-        assertThat(title.getChapters().isEmpty()).isTrue();
     }
 
     @Test
     @DisplayName("Deve permitir definir todos os campos via builder")
     void shouldSetAllFieldsViaBuilder() {
-        Chapter ch1 = Chapter.builder()
-                .number("1")
-                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Despertar"))
-                .releaseDate("2024-01-15")
-                .pages("42")
-                .build();
-
         Title title = Title.builder()
                 .id("abc123")
                 .type("manga")
@@ -41,7 +30,6 @@ class TitleTest {
                 .cover("https://example.com/cover.jpg")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aventura pirata épica"))
                 .genres(List.of("Action", "Adventure"))
-                .chapters(List.of(ch1))
                 .popularity("1")
                 .ratingAverage(4.5)
                 .ratingCount(100L)
@@ -58,8 +46,6 @@ class TitleTest {
         assertThat(title.getSynopsis().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Aventura pirata épica");
         assertThat(title.getGenres().size()).isEqualTo(2);
         assertThat(title.getGenres().get(0)).isEqualTo("Action");
-        assertThat(title.getChapters().size()).isEqualTo(1);
-        assertThat(title.getChapters().getFirst().getNumber()).isEqualTo("1");
         assertThat(title.getPopularity()).isEqualTo("1");
         assertThat(title.getRatingAverage()).isEqualTo(4.5);
         assertThat(title.getRatingCount()).isEqualTo(100L);
@@ -86,24 +72,6 @@ class TitleTest {
     }
 
     @Test
-    @DisplayName("Deve permitir adicionar capítulos à lista padrão após construção")
-    void shouldAllowAddingChaptersAfterConstruction() {
-        Title title = Title.builder()
-                .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto"))
-                .build();
-
-        Chapter ch = Chapter.builder()
-                .number("700")
-                .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capítulo Final"))
-                .build();
-
-        title.getChapters().add(ch);
-
-        assertThat(title.getChapters().size()).isEqualTo(1);
-        assertThat(title.getChapters().getFirst().getNumber()).isEqualTo("700");
-    }
-
-    @Test
     @DisplayName("Construtor vazio deve manter campos opcionais nulos e listas inicializadas via @Builder.Default")
     void shouldKeepFieldsNullOnNoArgsConstructor() {
         Title title = new Title();
@@ -123,11 +91,9 @@ class TitleTest {
         assertThat(title.getCreatedAt()).isNull();
         assertThat(title.getUpdatedAt()).isNull();
 
-        // Listas com field initializer são inicializadas mesmo no no-args constructor
+        // Lista com field initializer é inicializada mesmo no no-args constructor
         assertThat(title.getGenres()).isNotNull();
         assertThat(title.getGenres().isEmpty()).isTrue();
-        assertThat(title.getChapters()).isNotNull();
-        assertThat(title.getChapters().isEmpty()).isTrue();
     }
 
     @Test

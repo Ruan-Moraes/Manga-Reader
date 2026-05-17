@@ -1,11 +1,12 @@
 package com.mangareader.presentation.manga.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.manga.usecase.GetChapterByNumberUseCase;
@@ -13,6 +14,7 @@ import com.mangareader.application.manga.usecase.GetChaptersByTitleUseCase;
 import com.mangareader.presentation.manga.dto.ChapterResponse;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 import com.mangareader.shared.dto.ApiResponse;
+import com.mangareader.shared.dto.PageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +23,8 @@ import lombok.RequiredArgsConstructor;
 /**
  * Controller de capítulos — sub-recurso de Titles.
  * <p>
- * Todos os endpoints são públicos (GET).
+ * Todos os endpoints são públicos (GET). Capítulos vivem em coleção própria
+ * (DT-17) e a listagem é paginada de verdade no banco.
  */
 @RestController
 @RequestMapping("/api/titles/{titleId}/chapters")
@@ -32,21 +35,23 @@ public class ChapterController {
     private final GetChapterByNumberUseCase getChapterByNumberUseCase;
     private final LocalizedMappingHelper i18n;
 
-    // Sem paginação proposital: chapters são embedded no documento Title e já
-    // vêm carregados na mesma leitura — paginar em memória não reduz I/O. O
-    // risco real (array embedded ilimitado) é DT-17 (modelo de dados).
     @GetMapping
-    @Operation(summary = "Listar capítulos", description = "Retorna todos os capítulos de um título")
-    public ResponseEntity<ApiResponse<List<ChapterResponse>>> getAll(
-            @PathVariable String titleId
+    @Operation(summary = "Listar capítulos", description = "Retorna os capítulos de um título com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<ChapterResponse>>> getAll(
+            @PathVariable String titleId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        var chapters = getChaptersByTitleUseCase.execute(titleId);
+        Pageable pageable = PageRequest.of(page, size);
 
-        var response = chapters.stream()
-                .map(ch -> new ChapterResponse(ch.getNumber(), i18n.toResolvedString(ch.getTitle()), ch.getReleaseDate(), ch.getPages()))
-                .toList();
+        var result = getChaptersByTitleUseCase.execute(titleId, pageable)
+                .map(ch -> new ChapterResponse(
+                        ch.getNumber(),
+                        i18n.toResolvedString(ch.getTitle()),
+                        ch.getReleaseDate(),
+                        ch.getPages()));
 
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(result)));
     }
 
     @GetMapping("/{number}")

@@ -2,6 +2,8 @@ package com.mangareader.application.manga.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -14,54 +16,54 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.domain.manga.entity.Chapter;
 import com.mangareader.domain.manga.entity.Title;
-import com.mangareader.domain.manga.valueobject.Chapter;
+import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetChaptersByTitleUseCase")
 class GetChaptersByTitleUseCaseTest {
     @Mock
+    private ChapterRepositoryPort chapterRepository;
+
+    @Mock
     private TitleRepositoryPort titleRepository;
 
     @InjectMocks
     private GetChaptersByTitleUseCase getChaptersByTitleUseCase;
 
+    private final Pageable pageable = PageRequest.of(0, 20);
+
     @Nested
     @DisplayName("Cenário de sucesso")
     class Sucesso {
         @Test
-        @DisplayName("Deve retornar lista de capítulos do título")
+        @DisplayName("Deve retornar página de capítulos do título")
         void deveRetornarCapitulosDoTitulo() {
-            List<Chapter> chapters = List.of(
-                    Chapter.builder().number("1").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Início")).build(),
-                    Chapter.builder().number("2").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("A Jornada")).build(),
-                    Chapter.builder().number("3").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O Confronto")).build()
-            );
-
-            Title title = Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).chapters(chapters).build();
-
-            when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
-
-            List<Chapter> result = getChaptersByTitleUseCase.execute("abc123");
-
-            assertThat(result).hasSize(3);
-            assertThat(result.get(0).getNumber()).isEqualTo("1");
-            assertThat(result.get(2).getTitle().resolve(null)).isEqualTo("O Confronto");
-        }
-
-        @Test
-        @DisplayName("Deve retornar lista vazia quando título não possui capítulos")
-        void deveRetornarListaVaziaQuandoSemCapitulos() {
-            Title title = Title.builder().id("abc123").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo Mangá")).build();
+            Title title = Title.builder().id("abc123")
+                    .name(LocalizedString.ofDefault("Naruto")).build();
+            Page<Chapter> page = new PageImpl<>(List.of(
+                    Chapter.builder().titleId("abc123").number("1")
+                            .title(LocalizedString.ofDefault("O Início")).build(),
+                    Chapter.builder().titleId("abc123").number("2")
+                            .title(LocalizedString.ofDefault("A Jornada")).build()));
 
             when(titleRepository.findById("abc123")).thenReturn(Optional.of(title));
+            when(chapterRepository.findByTitleId(eq("abc123"), any(Pageable.class)))
+                    .thenReturn(page);
 
-            List<Chapter> result = getChaptersByTitleUseCase.execute("abc123");
+            Page<Chapter> result = getChaptersByTitleUseCase.execute("abc123", pageable);
 
-            assertThat(result).isEmpty();
+            assertThat(result.getContent()).hasSize(2);
+            assertThat(result.getContent().get(0).getNumber()).isEqualTo("1");
         }
     }
 
@@ -73,7 +75,8 @@ class GetChaptersByTitleUseCaseTest {
         void deveLancarExcecaoQuandoTituloNaoExiste() {
             when(titleRepository.findById("inexistente")).thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> getChaptersByTitleUseCase.execute("inexistente"))
+            assertThatThrownBy(() ->
+                    getChaptersByTitleUseCase.execute("inexistente", pageable))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("Title");
         }

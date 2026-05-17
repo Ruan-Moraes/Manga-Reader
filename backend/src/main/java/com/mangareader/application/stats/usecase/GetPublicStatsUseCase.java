@@ -3,6 +3,7 @@ package com.mangareader.application.stats.usecase;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.presentation.stats.dto.PublicStatsResponse;
 import com.mangareader.shared.constant.CacheNames;
@@ -19,11 +20,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GetPublicStatsUseCase {
     private final TitleRepositoryPort titleRepository;
+    private final ChapterRepositoryPort chapterRepository;
 
     @Cacheable(CacheNames.PUBLIC_STATS)
     public PublicStatsResponse execute() {
         long totalTitles = titleRepository.count();
-        long totalChapters = titleRepository.countTotalChapters();
+        long totalChapters = chapterRepository.count();
 
         return new PublicStatsResponse(totalTitles, totalChapters);
     }

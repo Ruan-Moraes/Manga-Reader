@@ -29,7 +29,6 @@ import com.mangareader.application.manga.usecase.GetTitlesUseCase;
 import com.mangareader.application.manga.usecase.SearchTitlesUseCase;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
-import com.mangareader.domain.manga.valueobject.Chapter;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
@@ -79,9 +78,6 @@ class TitleControllerTest {
                 .cover("cover.png")
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um caçador fraco se torna o mais forte"))
                 .genres(List.of("Ação", "Aventura"))
-                .chapters(List.of(
-                        Chapter.builder().number("1").title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capítulo 1")).releaseDate("2024-01-01").pages("20").build()
-                ))
                 .popularity("1000")
                 .ratingAverage(4.5)
                 .author("Chugong")

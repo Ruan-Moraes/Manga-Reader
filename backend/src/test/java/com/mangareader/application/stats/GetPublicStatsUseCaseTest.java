@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.stats.usecase.GetPublicStatsUseCase;
 
@@ -20,6 +21,9 @@ class GetPublicStatsUseCaseTest {
     @Mock
     private TitleRepositoryPort titleRepository;
 
+    @Mock
+    private ChapterRepositoryPort chapterRepository;
+
     @InjectMocks
     private GetPublicStatsUseCase useCase;
 
@@ -27,7 +31,7 @@ class GetPublicStatsUseCaseTest {
     @DisplayName("Deve retornar totalTitles e totalChapters do repositório")
     void deveRetornarEstatisticasCorretas() {
         when(titleRepository.count()).thenReturn(250L);
-        when(titleRepository.countTotalChapters()).thenReturn(4820L);
+        when(chapterRepository.count()).thenReturn(4820L);
 
         var result = useCase.execute();
 
@@ -39,7 +43,7 @@ class GetPublicStatsUseCaseTest {
     @DisplayName("Deve retornar zeros quando não há títulos")
     void deveRetornarZerosQuandoVazio() {
         when(titleRepository.count()).thenReturn(0L);
-        when(titleRepository.countTotalChapters()).thenReturn(0L);
+        when(chapterRepository.count()).thenReturn(0L);
 
         var result = useCase.execute();
 

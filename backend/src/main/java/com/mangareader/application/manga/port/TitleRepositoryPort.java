@@ -38,7 +38,5 @@ public interface TitleRepositoryPort {
 
     long countByStatus(String status);
 
-    long countTotalChapters();
-
     List<Title> findTopByRankingScore(int limit);
 }

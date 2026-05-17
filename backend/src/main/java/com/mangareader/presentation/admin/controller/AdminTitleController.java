@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.usecase.admin.CreateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.DeleteTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.ListAdminTitlesUseCase;
 import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
+import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
 import com.mangareader.presentation.admin.dto.CreateTitleRequest;
 import com.mangareader.presentation.admin.dto.UpdateTitleRequest;
@@ -42,6 +44,7 @@ public class AdminTitleController {
     private final CreateTitleUseCase createTitleUseCase;
     private final UpdateTitleUseCase updateTitleUseCase;
     private final DeleteTitleUseCase deleteTitleUseCase;
+    private final ChapterRepositoryPort chapterRepository;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<AdminTitleResponse>>> listTitles(
@@ -57,7 +60,11 @@ public class AdminTitleController {
 
         var result = listAdminTitlesUseCase.execute(search, pageable);
 
-        var mapped = result.map(AdminTitleMapper::toResponse);
+        var ids = result.getContent().stream().map(Title::getId).toList();
+        var counts = chapterRepository.countByTitleIdIn(ids);
+
+        var mapped = result.map(t -> AdminTitleMapper.toResponse(
+                t, counts.getOrDefault(t.getId(), 0L)));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -66,7 +73,8 @@ public class AdminTitleController {
     public ResponseEntity<ApiResponse<AdminTitleResponse>> getTitleDetail(@PathVariable String id) {
         var title = getAdminTitleUseCase.execute(id);
 
-        return ResponseEntity.ok(ApiResponse.success(AdminTitleMapper.toResponse(title)));
+        return ResponseEntity.ok(ApiResponse.success(
+                AdminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id))));
     }
 
     @PostMapping
@@ -80,7 +88,7 @@ public class AdminTitleController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(AdminTitleMapper.toResponse(title)));
+                .body(ApiResponse.created(AdminTitleMapper.toResponse(title, 0L)));
     }
 
     @PatchMapping("/{id}")
@@ -94,7 +102,8 @@ public class AdminTitleController {
                 request.artist(), request.publisher(), request.adult()
         );
 
-        return ResponseEntity.ok(ApiResponse.success(AdminTitleMapper.toResponse(title)));
+        return ResponseEntity.ok(ApiResponse.success(
+                AdminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id))));
     }
 
     @DeleteMapping("/{id}")

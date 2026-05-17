@@ -1,13 +1,15 @@
 package com.mangareader.infrastructure.seed;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import com.mangareader.domain.manga.entity.Chapter;
 import com.mangareader.domain.manga.entity.Title;
-import com.mangareader.domain.manga.valueobject.Chapter;
+import com.mangareader.infrastructure.persistence.mongo.repository.ChapterMongoRepository;
 import com.mangareader.infrastructure.persistence.mongo.repository.TitleMongoRepository;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TitleSeed implements EntitySeeder {
     private final TitleMongoRepository titleRepository;
+    private final ChapterMongoRepository chapterRepository;
 
     @Override
     public int getOrder() {
@@ -28,6 +31,18 @@ public class TitleSeed implements EntitySeeder {
 
     private static LocalizedString ls(String pt, String en, String es) {
         return LocalizedString.of(Map.of("pt-BR", pt, "en-US", en, "es-ES", es));
+    }
+
+    private final List<Chapter> chapters = new ArrayList<>();
+
+    private void ch(String titleId, String number, String title, String date, String pages) {
+        chapters.add(Chapter.builder()
+                .titleId(titleId)
+                .number(number)
+                .title(LocalizedString.ofDefault(title))
+                .releaseDate(date)
+                .pages(pages)
+                .build());
     }
 
     @Override
@@ -49,16 +64,6 @@ public class TitleSeed implements EntitySeeder {
                                 "In a world where living armors rule the battlefields, an orphan blacksmith discovers his blood can awaken the legendary Black Armor.",
                                 "En un mundo donde armaduras vivientes dominan los campos de batalla, un herrero huérfano descubre que su sangre puede despertar la legendaria Armadura Negra."))
                         .genres(List.of("Ação", "Fantasia", "Aventura"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("O Despertar da Forja")).releaseDate("2025-06-10").pages("42").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Sangue e Metal")).releaseDate("2025-06-17").pages("38").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("A Guarda Real")).releaseDate("2025-06-24").pages("40").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("Chamas Ancestrais")).releaseDate("2025-07-01").pages("36").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("O Pacto Sombrio")).releaseDate("2025-07-08").pages("44").build(),
-                                Chapter.builder().number("6").title(LocalizedString.ofDefault("Cerco de Araviel")).releaseDate("2025-07-15").pages("41").build(),
-                                Chapter.builder().number("7").title(LocalizedString.ofDefault("Alvorada Carmesim")).releaseDate("2025-07-22").pages("39").build(),
-                                Chapter.builder().number("8").title(LocalizedString.ofDefault("O Último Forjador")).releaseDate("2025-07-29").pages("45").build()
-                        ))
                         .popularity("98").ratingAverage(3.0)
                         .author("Takeshi Yamamoto").artist("Takeshi Yamamoto").publisher("Panini")
                         .build(),
@@ -73,14 +78,6 @@ public class TitleSeed implements EntitySeeder {
                                 "After waking 500 years in the future, a medieval swordsman must master advanced technology to survive in a society that eradicated violence.",
                                 "Tras despertar 500 años en el futuro, un espadachín medieval debe dominar tecnología avanzada para sobrevivir en una sociedad que erradicó la violencia."))
                         .genres(List.of("Ação", "Ficção Científica", "Drama"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("Tempo Perdido")).releaseDate("2025-05-01").pages("50").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Neon e Lâminas")).releaseDate("2025-05-08").pages("48").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("O Torneio Secreto")).releaseDate("2025-05-15").pages("46").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("Ecos do Passado")).releaseDate("2025-05-22").pages("52").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("A Arena de Vidro")).releaseDate("2025-05-29").pages("44").build(),
-                                Chapter.builder().number("6").title(LocalizedString.ofDefault("Alianças Frágeis")).releaseDate("2025-06-05").pages("47").build()
-                        ))
                         .popularity("94").ratingAverage(2.9)
                         .author("Park Ji-Won").artist("Lee Soo-Hyun").publisher("NewPOP")
                         .build(),
@@ -95,13 +92,6 @@ public class TitleSeed implements EntitySeeder {
                                 "In Tokyo, a florist by day and hacker by night gets entangled in a corporate conspiracy when her two lives collide.",
                                 "En Tokio, una florista de día y hacker de noche se ve envuelta en una conspiración corporativa cuando sus dos vidas colisionan."))
                         .genres(List.of("Suspense", "Seinen", "Urbano"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("Pétalas Digitais")).releaseDate("2025-04-05").pages("40").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Código Verde")).releaseDate("2025-04-12").pages("38").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("Raízes Cortadas")).releaseDate("2025-04-19").pages("42").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("Firewall")).releaseDate("2025-04-26").pages("36").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("Florescer no Caos")).releaseDate("2025-05-03").pages("44").build()
-                        ))
                         .popularity("87").ratingAverage(1.5)
                         .author("Yuki Aoi").artist("Yuki Aoi").publisher("JBC")
                         .build(),
@@ -116,15 +106,6 @@ public class TitleSeed implements EntitySeeder {
                                 "A group of explorers sets out toward the star Polaris following ancient maps that promise to reveal humanity's origin.",
                                 "Un grupo de exploradores parte hacia la estrella Polaris siguiendo mapas antiguos que prometen revelar el origen de la humanidad."))
                         .genres(List.of("Aventura", "Fantasia", "Histórico"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("O Mapa Estelar")).releaseDate("2025-03-01").pages("46").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Terras Proibidas")).releaseDate("2025-03-08").pages("42").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("O Rio de Cristal")).releaseDate("2025-03-15").pages("40").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("Tempestade de Areia")).releaseDate("2025-03-22").pages("38").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("O Farol Esquecido")).releaseDate("2025-03-29").pages("48").build(),
-                                Chapter.builder().number("6").title(LocalizedString.ofDefault("Estrelas Perdidas")).releaseDate("2025-04-05").pages("45").build(),
-                                Chapter.builder().number("7").title(LocalizedString.ofDefault("A Cidade Flutuante")).releaseDate("2025-04-12").pages("43").build()
-                        ))
                         .popularity("91").ratingAverage(3.7)
                         .author("Hiroshi Tanaka").artist("Hiroshi Tanaka").publisher("Panini")
                         .build(),
@@ -139,13 +120,6 @@ public class TitleSeed implements EntitySeeder {
                                 "A young martial artist discovers he has the rare ability to cut the wind, becoming the target of rival clans seeking to master this legendary technique.",
                                 "Un joven artista marcial descubre que posee la rara habilidad de cortar el viento, convirtiéndose en blanco de clanes rivales que desean dominar esta técnica legendaria."))
                         .genres(List.of("Ação", "Artes Marciais", "Drama"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("O Primeiro Corte")).releaseDate("2025-02-14").pages("44").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Discípulo Relutante")).releaseDate("2025-02-21").pages("40").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("Ventos do Norte")).releaseDate("2025-02-28").pages("42").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("A Montanha Sagrada")).releaseDate("2025-03-07").pages("46").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("Duelo ao Amanhecer")).releaseDate("2025-03-14").pages("48").build()
-                        ))
                         .popularity("89").ratingAverage(2.6)
                         .author("Kim Dae-Sung").artist("Kim Dae-Sung").publisher("NewPOP")
                         .build(),
@@ -160,14 +134,6 @@ public class TitleSeed implements EntitySeeder {
                                 "When the celestial gates open, a young monk is chosen as the last guardian between the mortal world and the realm of gods.",
                                 "Cuando se abren las puertas celestiales, un joven monje es elegido como el último guardián entre el mundo mortal y el reino de los dioses."))
                         .genres(List.of("Fantasia", "Sobrenatural", "Aventura"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("Os Portões Abertos")).releaseDate("2025-01-10").pages("50").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("O Selo Partido")).releaseDate("2025-01-17").pages("46").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("Caminho do Monge")).releaseDate("2025-01-24").pages("44").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("Espíritos Errantes")).releaseDate("2025-01-31").pages("48").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("A Espada Divina")).releaseDate("2025-02-07").pages("52").build(),
-                                Chapter.builder().number("6").title(LocalizedString.ofDefault("Ascensão Celestial")).releaseDate("2025-02-14").pages("50").build()
-                        ))
                         .popularity("92").ratingAverage(1.8)
                         .author("Chen Wei").artist("Liu Xing").publisher("Panini")
                         .build(),
@@ -182,12 +148,6 @@ public class TitleSeed implements EntitySeeder {
                                 "A young porcelain artisan discovers her creations come to life, revealing feelings she had long tried to hide.",
                                 "Una joven artesana de porcelana descubre que sus creaciones cobran vida propia, revelando sentimientos que ella intentaba ocultar desde hace mucho."))
                         .genres(List.of("Romance", "Shoujo", "Slice of Life"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("A Primeira Peça")).releaseDate("2025-04-01").pages("36").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Cores do Coração")).releaseDate("2025-04-08").pages("34").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("Fragmentos")).releaseDate("2025-04-15").pages("38").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("O Restaurador")).releaseDate("2025-04-22").pages("36").build()
-                        ))
                         .popularity("85").ratingAverage(0.3)
                         .author("Sakura Miyazaki").artist("Sakura Miyazaki").publisher("JBC")
                         .build(),
@@ -202,13 +162,6 @@ public class TitleSeed implements EntitySeeder {
                                 "In a dystopian future, a programmer discovers that the ruling AI hides a secret protocol that can either free or destroy humanity.",
                                 "En un futuro distópico, un programador descubre que la IA gobernante esconde un protocolo secreto que puede liberar o destruir a la humanidad."))
                         .genres(List.of("Ficção Científica", "Thriller", "Seinen"))
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("Linha de Código")).releaseDate("2025-05-10").pages("48").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Bugado")).releaseDate("2025-05-17").pages("44").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("Firewall Humana")).releaseDate("2025-05-24").pages("46").build(),
-                                Chapter.builder().number("4").title(LocalizedString.ofDefault("Override")).releaseDate("2025-05-31").pages("42").build(),
-                                Chapter.builder().number("5").title(LocalizedString.ofDefault("Protocolo Ativado")).releaseDate("2025-06-07").pages("50").build()
-                        ))
                         .popularity("90").ratingAverage(2.8)
                         .author("Park Min-Ho").artist("Park Min-Ho").publisher("NewPOP")
                         .build(),
@@ -224,11 +177,6 @@ public class TitleSeed implements EntitySeeder {
                                 "En una ciudad dominada por cultos sobrenaturales, un detective desacreditado investiga desapariciones que llevan a rituales ancestrales de sangre."))
                         .genres(List.of("Horror", "Suspense", "Seinen", "+18"))
                         .adult(true)
-                        .chapters(List.of(
-                                Chapter.builder().number("1").title(LocalizedString.ofDefault("O Primeiro Rito")).releaseDate("2025-08-01").pages("46").build(),
-                                Chapter.builder().number("2").title(LocalizedString.ofDefault("Sangue na Lua")).releaseDate("2025-08-08").pages("42").build(),
-                                Chapter.builder().number("3").title(LocalizedString.ofDefault("O Culto Desperta")).releaseDate("2025-08-15").pages("48").build()
-                        ))
                         .popularity("72").ratingAverage(4.2)
                         .status("ongoing")
                         .author("Kazuki Morimoto").artist("Kazuki Morimoto").publisher("Panini")
@@ -244,7 +192,6 @@ public class TitleSeed implements EntitySeeder {
                                 "A wandering monk searches for fragments of a mystical mirror that reflects hidden truths while confronting his own inner demons.",
                                 "Un monje errante busca fragmentos de un espejo místico que refleja verdades ocultas, mientras enfrenta sus propios demonios internos."))
                         .genres(List.of("Fantasia", "Filosófico", "Aventura"))
-                        .chapters(List.of())
                         .popularity("10").ratingAverage(0.0)
                         .status("hiatus")
                         .author("Zhang Liang").artist("Zhang Liang").publisher("JBC")
@@ -253,6 +200,67 @@ public class TitleSeed implements EntitySeeder {
 
         titleRepository.saveAll(titles);
 
-        log.info("✓ {} títulos de demonstração criados.", titles.size());
+        ch("1", "1", "O Despertar da Forja", "2025-06-10", "42");
+        ch("1", "2", "Sangue e Metal", "2025-06-17", "38");
+        ch("1", "3", "A Guarda Real", "2025-06-24", "40");
+        ch("1", "4", "Chamas Ancestrais", "2025-07-01", "36");
+        ch("1", "5", "O Pacto Sombrio", "2025-07-08", "44");
+        ch("1", "6", "Cerco de Araviel", "2025-07-15", "41");
+        ch("1", "7", "Alvorada Carmesim", "2025-07-22", "39");
+        ch("1", "8", "O Último Forjador", "2025-07-29", "45");
+
+        ch("2", "1", "Tempo Perdido", "2025-05-01", "50");
+        ch("2", "2", "Neon e Lâminas", "2025-05-08", "48");
+        ch("2", "3", "O Torneio Secreto", "2025-05-15", "46");
+        ch("2", "4", "Ecos do Passado", "2025-05-22", "52");
+        ch("2", "5", "A Arena de Vidro", "2025-05-29", "44");
+        ch("2", "6", "Alianças Frágeis", "2025-06-05", "47");
+
+        ch("3", "1", "Pétalas Digitais", "2025-04-05", "40");
+        ch("3", "2", "Código Verde", "2025-04-12", "38");
+        ch("3", "3", "Raízes Cortadas", "2025-04-19", "42");
+        ch("3", "4", "Firewall", "2025-04-26", "36");
+        ch("3", "5", "Florescer no Caos", "2025-05-03", "44");
+
+        ch("4", "1", "O Mapa Estelar", "2025-03-01", "46");
+        ch("4", "2", "Terras Proibidas", "2025-03-08", "42");
+        ch("4", "3", "O Rio de Cristal", "2025-03-15", "40");
+        ch("4", "4", "Tempestade de Areia", "2025-03-22", "38");
+        ch("4", "5", "O Farol Esquecido", "2025-03-29", "48");
+        ch("4", "6", "Estrelas Perdidas", "2025-04-05", "45");
+        ch("4", "7", "A Cidade Flutuante", "2025-04-12", "43");
+
+        ch("5", "1", "O Primeiro Corte", "2025-02-14", "44");
+        ch("5", "2", "Discípulo Relutante", "2025-02-21", "40");
+        ch("5", "3", "Ventos do Norte", "2025-02-28", "42");
+        ch("5", "4", "A Montanha Sagrada", "2025-03-07", "46");
+        ch("5", "5", "Duelo ao Amanhecer", "2025-03-14", "48");
+
+        ch("6", "1", "Os Portões Abertos", "2025-01-10", "50");
+        ch("6", "2", "O Selo Partido", "2025-01-17", "46");
+        ch("6", "3", "Caminho do Monge", "2025-01-24", "44");
+        ch("6", "4", "Espíritos Errantes", "2025-01-31", "48");
+        ch("6", "5", "A Espada Divina", "2025-02-07", "52");
+        ch("6", "6", "Ascensão Celestial", "2025-02-14", "50");
+
+        ch("7", "1", "A Primeira Peça", "2025-04-01", "36");
+        ch("7", "2", "Cores do Coração", "2025-04-08", "34");
+        ch("7", "3", "Fragmentos", "2025-04-15", "38");
+        ch("7", "4", "O Restaurador", "2025-04-22", "36");
+
+        ch("8", "1", "Linha de Código", "2025-05-10", "48");
+        ch("8", "2", "Bugado", "2025-05-17", "44");
+        ch("8", "3", "Firewall Humana", "2025-05-24", "46");
+        ch("8", "4", "Override", "2025-05-31", "42");
+        ch("8", "5", "Protocolo Ativado", "2025-06-07", "50");
+
+        ch("9", "1", "O Primeiro Rito", "2025-08-01", "46");
+        ch("9", "2", "Sangue na Lua", "2025-08-08", "42");
+        ch("9", "3", "O Culto Desperta", "2025-08-15", "48");
+
+        chapterRepository.saveAll(chapters);
+
+        log.info("✓ {} títulos e {} capítulos de demonstração criados.",
+                titles.size(), chapters.size());
     }
 }

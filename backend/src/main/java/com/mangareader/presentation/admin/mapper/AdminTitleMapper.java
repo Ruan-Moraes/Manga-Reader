@@ -14,7 +14,7 @@ public final class AdminTitleMapper {
     private AdminTitleMapper() {
     }
 
-    public static AdminTitleResponse toResponse(Title title) {
+    public static AdminTitleResponse toResponse(Title title, long chaptersCount) {
         return new AdminTitleResponse(
                 title.getId(),
                 values(title.getName()),
@@ -29,7 +29,7 @@ public final class AdminTitleMapper {
                 title.isAdult(),
                 title.getRatingAverage(),
                 title.getRatingCount(),
-                title.getChapters() != null ? title.getChapters().size() : 0,
+                (int) chaptersCount,
                 title.getCreatedAt(),
                 title.getUpdatedAt()
         );

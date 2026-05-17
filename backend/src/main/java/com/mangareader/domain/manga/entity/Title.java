@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mangareader.domain.manga.valueobject.Chapter;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.AllArgsConstructor;
@@ -49,9 +48,6 @@ public class Title {
     @Indexed
     @Builder.Default
     private List<String> genres = new ArrayList<>();
-
-    @Builder.Default
-    private List<Chapter> chapters = new ArrayList<>();
 
     @Indexed
     private String popularity;
