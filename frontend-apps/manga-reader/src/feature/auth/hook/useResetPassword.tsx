@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -54,9 +55,7 @@ const useResetPassword = () => {
         }
 
         if (!confirmPassword) {
-            newErrors.confirmPassword = t(
-                'validation.confirmPasswordRequired',
-            );
+            newErrors.confirmPassword = t('validation.confirmPasswordRequired');
         }
 
         if (password !== confirmPassword) {
@@ -89,7 +88,7 @@ const useResetPassword = () => {
 
                 showSuccessToast(message ?? t('resetPassword.success'));
 
-                navigate('/Manga-Reader/login');
+                navigate(`${WEB_BASE_URL}/login`);
             } catch {
                 showErrorToast(t('validation.unexpectedError'));
             } finally {

@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 
@@ -45,7 +46,7 @@ const DashboardUserDetail = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate('/Manga-Reader/dashboard/users')}
+                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/users`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />

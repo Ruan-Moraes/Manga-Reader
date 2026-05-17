@@ -3,6 +3,7 @@ package com.mangareader.application.group.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RemoveWorkFromGroupUseCase {
     private final GroupRepositoryPort groupRepository;
 

@@ -1,6 +1,4 @@
 export enum ROUTES {
-    WEB_URL = '/Manga-Reader',
-
     FILTER_MOST_READ = '/filter?sort=most_read',
     FILTER_ASCENSION = '/filter?sort=ascension',
     FILTER_RANDOM = '/filter?sort=random',

@@ -5,7 +5,7 @@ import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
 import AdminModal from './AdminModal';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 
-import type { AdminTag } from '../type/admin.types';
+import type { AdminTag } from '../../type/admin.types';
 
 type TagFormModalProps = {
     isOpen: boolean;

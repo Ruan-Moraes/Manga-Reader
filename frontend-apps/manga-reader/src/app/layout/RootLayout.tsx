@@ -1,10 +1,15 @@
+import { Suspense } from 'react';
 import { Outlet, ScrollRestoration } from 'react-router-dom';
+
+import RouteSuspenseFallback from '@shared/component/loading/RouteSuspenseFallback';
 
 const RootLayout = () => {
     return (
         <>
             <ScrollRestoration />
-            <Outlet />
+            <Suspense fallback={<RouteSuspenseFallback />}>
+                <Outlet />
+            </Suspense>
         </>
     );
 };

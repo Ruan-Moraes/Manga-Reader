@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -51,7 +52,7 @@ const ForumTopicPage = () => {
                             {t('topicPage.notFound')}
                         </p>
                         <Link
-                            to="/Manga-Reader/forum"
+                            to={`${WEB_BASE_URL}/forum`}
                             className="inline-block mt-4 text-sm underline text-quaternary-default"
                         >
                             {t('topicPage.backToForum')}
@@ -68,7 +69,7 @@ const ForumTopicPage = () => {
             <Header />
             <MainContent>
                 <Link
-                    to="/Manga-Reader/forum"
+                    to={`${WEB_BASE_URL}/forum`}
                     className="flex items-center gap-1 text-xs transition-colors text-shadow-secondary hover:text-quaternary-default"
                 >
                     <FiArrowLeft size={14} /> {t('topicPage.backToForum')}
@@ -88,7 +89,8 @@ const ForumTopicPage = () => {
                         )}
                         {topic.isSolved && (
                             <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
-                                <FiCheckCircle size={10} /> {t('topicPage.solved')}
+                                <FiCheckCircle size={10} />{' '}
+                                {t('topicPage.solved')}
                             </span>
                         )}
                         <span
@@ -168,7 +170,9 @@ const ForumTopicPage = () => {
                         </span>
                         <span className="flex items-center gap-1">
                             <FiMessageCircle size={13} />{' '}
-                            {t('topicPage.replies', { count: topic.replyCount })}
+                            {t('topicPage.replies', {
+                                count: topic.replyCount,
+                            })}
                         </span>
                         <button className="flex items-center gap-1 ml-auto transition-colors hover:text-quaternary-default">
                             <FiShare2 size={13} /> {t('topicPage.share')}

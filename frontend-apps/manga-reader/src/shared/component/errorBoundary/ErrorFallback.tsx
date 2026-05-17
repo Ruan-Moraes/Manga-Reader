@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 interface ErrorFallbackProps {
     error: Error;
@@ -64,7 +65,7 @@ function ErrorFallback({ error }: ErrorFallbackProps) {
                     </div>
                     <div className="mt-3 text-center">
                         <a
-                            href="/Manga-Reader"
+                            href={`${WEB_BASE_URL}`}
                             className="text-sm font-bold text-quinary-default transition-all duration-300 hover:text-shadow-highlight"
                         >
                             Voltar à página inicial

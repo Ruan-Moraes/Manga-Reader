@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { FiMenu } from 'react-icons/fi';
 
 import UserAvatar from '@shared/component/avatar/UserAvatar';
+import Logo from '@shared/component/logo/Logo.tsx';
 
 import { useAuth } from '@feature/auth';
-import Logo from '@shared/component/logo/Logo.tsx';
 
 type AdminHeaderProps = {
     onToggleSidebar: () => void;

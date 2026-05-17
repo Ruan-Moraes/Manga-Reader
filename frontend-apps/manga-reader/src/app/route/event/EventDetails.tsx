@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,11 +15,7 @@ import MainContent from '@/app/layout/Main';
 import Footer from '@app/layout/Footer';
 import UserAvatar from '@shared/component/avatar/UserAvatar';
 
-import {
-    getEventById,
-    getRelatedEvents,
-    statusLabelKey,
-} from '@feature/event';
+import { getEventById, getRelatedEvents, statusLabelKey } from '@feature/event';
 import type { EventData } from '@feature/event';
 
 // TODO: Refatorar esse componente, ele está muito grande e precisa ser dividido em subcomponentes menores para melhorar a legibilidade e manutenção. Talvez criar um componente específico para o leitor de capítulos, outro para a navegação entre capítulos e outro para os comentários.
@@ -63,7 +60,7 @@ const EventDetails = () => {
                 <MainContent>
                     <p>{t('notFound')}</p>
                     <Link
-                        to="/Manga-Reader/events"
+                        to={`${WEB_BASE_URL}/events`}
                         className="text-purple-400 underline"
                     >
                         {t('backToEvents')}
@@ -265,7 +262,7 @@ const EventDetails = () => {
                                     })}
                                 </p>
                                 <Link
-                                    to="/Manga-Reader/events"
+                                    to={`${WEB_BASE_URL}/events`}
                                     className="text-sm text-purple-400 underline"
                                 >
                                     {t('details.otherEvents')}
@@ -279,7 +276,7 @@ const EventDetails = () => {
                                 {relatedEvents.map(item => (
                                     <Link
                                         key={item.id}
-                                        to={`/Manga-Reader/event/${item.id}`}
+                                        to={`${WEB_BASE_URL}/event/${item.id}`}
                                         className="flex items-center gap-2 p-2 rounded-lg bg-primary"
                                     >
                                         <img

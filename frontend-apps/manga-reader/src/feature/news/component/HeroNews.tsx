@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 
 import { formatRelativeDate } from '../service/newsService';
@@ -14,7 +15,7 @@ const HeroNews = ({ news }: HeroNewsProps) => {
 
     return (
         <Link
-            to={`/Manga-Reader/news/${news.id}`}
+            to={`${WEB_BASE_URL}/news/${news.id}`}
             className="block overflow-hidden transition border rounded-2xl border-tertiary bg-secondary hover:-translate-y-1"
         >
             <div className="relative">
@@ -31,14 +32,18 @@ const HeroNews = ({ news }: HeroNewsProps) => {
             </div>
             <div className="p-4 space-y-2">
                 <p className="text-xs text-purple-300">{news.category}</p>
-                <h2 className="text-2xl font-bold line-clamp-3">{news.title}</h2>
+                <h2 className="text-2xl font-bold line-clamp-3">
+                    {news.title}
+                </h2>
                 <p className="text-sm text-tertiary line-clamp-3">
                     {news.excerpt}
                 </p>
                 <div className="flex flex-wrap items-center gap-3 text-xs text-tertiary">
                     <span>{news.author.name}</span>
                     <span>{formatRelativeDate(news.publishedAt)}</span>
-                    <span>{t('card.readMinutes', { count: news.readTime })}</span>
+                    <span>
+                        {t('card.readMinutes', { count: news.readTime })}
+                    </span>
                     <span>
                         {t('hero.views', {
                             count: news.views,

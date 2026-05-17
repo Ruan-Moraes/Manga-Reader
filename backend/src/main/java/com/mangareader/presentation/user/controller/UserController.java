@@ -23,6 +23,7 @@ import com.mangareader.application.user.usecase.AddRecommendationUseCase;
 import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase;
 import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
+import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
 import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
@@ -32,10 +33,8 @@ import com.mangareader.application.user.usecase.UpdateUserProfileUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase.SocialLinkInput;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.user.entity.ViewHistory;
-import com.mangareader.domain.user.valueobject.VisibilitySetting;
-import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
-import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.presentation.user.dto.AddRecommendationRequest;
 import com.mangareader.presentation.user.dto.EnrichedProfileResponse;
 import com.mangareader.presentation.user.dto.LanguagePreferencesResponse;
@@ -45,7 +44,6 @@ import com.mangareader.presentation.user.dto.UpdateProfileRequest;
 import com.mangareader.presentation.user.dto.UserProfileResponse;
 import com.mangareader.presentation.user.mapper.UserMapper;
 import com.mangareader.shared.dto.ApiResponse;
-import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,8 +68,7 @@ public class UserController {
     private final UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
     private final GetUserCommentsUseCase getUserCommentsUseCase;
     private final RecordViewHistoryUseCase recordViewHistoryUseCase;
-    private final ViewHistoryRepositoryPort viewHistoryRepository;
-    private final UserRepositoryPort userRepository;
+    private final GetUserViewHistoryUseCase getUserViewHistoryUseCase;
 
     @GetMapping("/me")
     @Operation(summary = "Meu perfil", description = "Retorna o perfil completo do usuário autenticado")
@@ -219,8 +216,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<LanguagePreferencesResponse>> getMyContentLocales(Authentication auth) {
         UUID userId = (UUID) auth.getPrincipal();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        User user = getUserProfileUseCase.execute(userId);
 
         return ResponseEntity.ok(ApiResponse.success(
                 new LanguagePreferencesResponse(user.getContentLocales())));
@@ -271,17 +267,8 @@ public class UserController {
     ) {
         UUID viewerUserId = auth != null ? (UUID) auth.getPrincipal() : null;
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-
-        boolean isOwner = viewerUserId != null && viewerUserId.equals(id);
-
-        if (!isOwner && user.getViewHistoryVisibility() != VisibilitySetting.PUBLIC) {
-            return ResponseEntity.ok(ApiResponse.success(Page.empty()));
-        }
-
-        Page<ViewHistory> history = viewHistoryRepository.findByUserIdOrderByViewedAtDesc(
-                id.toString(), PageRequest.of(page, size));
+        Page<ViewHistory> history = getUserViewHistoryUseCase.execute(
+                id, viewerUserId, PageRequest.of(page, size));
 
         Page<EnrichedProfileResponse.ViewHistoryItemResponse> response = history.map(vh ->
                 new EnrichedProfileResponse.ViewHistoryItemResponse(

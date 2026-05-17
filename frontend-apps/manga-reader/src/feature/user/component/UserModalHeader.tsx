@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate } from 'react-router-dom';
 
 import { useUserModalContext } from '../context/useUserModalContext';
@@ -22,7 +23,7 @@ const UserModalHeader = () => {
         if (!userData) return;
 
         closeUserModal();
-        navigate(`/Manga-Reader/users/${userData.id}`);
+        navigate(`${WEB_BASE_URL}/users/${userData.id}`);
     };
 
     if (!userData) return null;

@@ -1,33 +1,60 @@
-import { ReactNode, useEffect } from 'react';
+import { lazy, ReactNode, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { showErrorToast } from '@shared/service/util/toastService';
-
-import PublishWork from '@app/route/publish-work/PublishWork';
-import Library from '@app/route/library/Library';
-import MyReviews from '@app/route/review/MyReviews';
-import AdminLayout from '@app/layout/AdminLayout';
-import DashboardOverview from '@app/route/dashboard/DashboardOverview';
-import DashboardUsers from '@app/route/dashboard/DashboardUsers';
-import DashboardUserDetail from '@app/route/dashboard/DashboardUserDetail';
-import DashboardTitles from '@app/route/dashboard/DashboardTitles';
-import DashboardTitleForm from '@app/route/dashboard/DashboardTitleForm';
-import DashboardNews from '@app/route/dashboard/DashboardNews';
-import DashboardNewsForm from '@app/route/dashboard/DashboardNewsForm';
-import DashboardEvents from '@app/route/dashboard/DashboardEvents';
-import DashboardEventForm from '@app/route/dashboard/DashboardEventForm';
-import DashboardGroups from '@app/route/dashboard/DashboardGroups';
-import DashboardGroupDetail from '@app/route/dashboard/DashboardGroupDetail';
-import DashboardGroupForm from '@app/route/dashboard/DashboardGroupForm';
-import DashboardFinancial from '@app/route/dashboard/DashboardFinancial';
-import DashboardSubscriptions from '@app/route/dashboard/DashboardSubscriptions';
-import DashboardTags from '@app/route/dashboard/DashboardTags';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 import {
     getStoredSession,
     mapAuthResponseToUser,
 } from '@feature/auth/service/authService';
 import { type UserRole } from '@feature/user';
+
+const PublishWork = lazy(() => import('@app/route/publish-work/PublishWork'));
+const Library = lazy(() => import('@app/route/library/Library'));
+const MyReviews = lazy(() => import('@app/route/review/MyReviews'));
+const AdminLayout = lazy(() => import('@app/layout/AdminLayout'));
+const DashboardOverview = lazy(
+    () => import('@app/route/dashboard/DashboardOverview'),
+);
+const DashboardUsers = lazy(
+    () => import('@app/route/dashboard/DashboardUsers'),
+);
+const DashboardUserDetail = lazy(
+    () => import('@app/route/dashboard/DashboardUserDetail'),
+);
+const DashboardTitles = lazy(
+    () => import('@app/route/dashboard/DashboardTitles'),
+);
+const DashboardTitleForm = lazy(
+    () => import('@app/route/dashboard/DashboardTitleForm'),
+);
+const DashboardNews = lazy(() => import('@app/route/dashboard/DashboardNews'));
+const DashboardNewsForm = lazy(
+    () => import('@app/route/dashboard/DashboardNewsForm'),
+);
+const DashboardEvents = lazy(
+    () => import('@app/route/dashboard/DashboardEvents'),
+);
+const DashboardEventForm = lazy(
+    () => import('@app/route/dashboard/DashboardEventForm'),
+);
+const DashboardGroups = lazy(
+    () => import('@app/route/dashboard/DashboardGroups'),
+);
+const DashboardGroupDetail = lazy(
+    () => import('@app/route/dashboard/DashboardGroupDetail'),
+);
+const DashboardGroupForm = lazy(
+    () => import('@app/route/dashboard/DashboardGroupForm'),
+);
+const DashboardFinancial = lazy(
+    () => import('@app/route/dashboard/DashboardFinancial'),
+);
+const DashboardSubscriptions = lazy(
+    () => import('@app/route/dashboard/DashboardSubscriptions'),
+);
+const DashboardTags = lazy(() => import('@app/route/dashboard/DashboardTags'));
 
 const AuthGuard = ({ children }: { children: ReactNode }) => {
     const session = getStoredSession();
@@ -47,7 +74,7 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
     }, [isAuthenticated, location]);
 
     if (!isAuthenticated) {
-        return <Navigate to="/Manga-Reader/login" replace />;
+        return <Navigate to={`${WEB_BASE_URL}/login`} replace />;
     }
 
     return <>{children}</>;
@@ -67,7 +94,7 @@ const RoleGuard = ({
         : 'user';
 
     if (!session) {
-        return <Navigate to="/Manga-Reader/login" replace />;
+        return <Navigate to={`${WEB_BASE_URL}/login`} replace />;
     }
 
     if (!allowedRoles.includes(role)) {
@@ -75,7 +102,7 @@ const RoleGuard = ({
             toastId: 'dashboard-role-error',
         });
 
-        return <Navigate to="/Manga-Reader/" replace />;
+        return <Navigate to={`${WEB_BASE_URL}/`} replace />;
     }
 
     return <>{children}</>;

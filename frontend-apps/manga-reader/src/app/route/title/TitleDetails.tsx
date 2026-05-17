@@ -12,7 +12,6 @@ import Loading from '@app/route/loading/Loading';
 
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import {
-    showErrorToast,
     showInfoToast,
     showSuccessToast,
 } from '@shared/service/util/toastService';
@@ -79,8 +78,7 @@ const TitleDetailsPage = () => {
     }, [rawTitleId]);
 
     const { user: authUser } = useAuth();
-    const isCommentsAdmin =
-        authUser?.role === 'ADMIN' || authUser?.role === 'MODERATOR';
+    const isCommentsAdmin = authUser?.role === 'admin';
     const [commentsCrossLanguage, setCommentsCrossLanguage] = useState(false);
     const {
         comments,
@@ -88,7 +86,9 @@ const TitleDetailsPage = () => {
         isError: isCommentsError,
         error: commentsError,
         refetchComments,
-    } = useComments(rawTitleId ?? '', 0, 20, { crossLanguage: commentsCrossLanguage });
+    } = useComments(rawTitleId ?? '', 0, 20, {
+        crossLanguage: commentsCrossLanguage,
+    });
 
     const {
         isAscending,
@@ -149,6 +149,8 @@ const TitleDetailsPage = () => {
         author,
         artist,
         publisher,
+        status,
+        adult,
     } = title as Title;
 
     const handleBookmarkClick = async () => {
@@ -191,6 +193,8 @@ const TitleDetailsPage = () => {
                         author={author}
                         artist={artist}
                         publisher={publisher}
+                        status={status}
+                        adult={adult}
                     />
                     <div className="flex items-center justify-between px-2 py-2 border border-tertiary bg-primary-default rounded-tr-xs">
                         <span className="text-sm font-semibold">
@@ -201,7 +205,8 @@ const TitleDetailsPage = () => {
                     <TitleActions
                         onBookmarkClick={handleBookmarkClick}
                         onLikeClick={() => {
-                            if (!requireAuth(t('titleDetails.authActionRate'))) return;
+                            if (!requireAuth(t('titleDetails.authActionRate')))
+                                return;
                             openRatingModal();
                         }}
                         onGroupsClick={openGroupsModal}

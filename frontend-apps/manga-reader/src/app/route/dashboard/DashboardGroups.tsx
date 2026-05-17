@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiSearch } from 'react-icons/fi';
@@ -80,7 +81,7 @@ const DashboardGroups = () => {
                 isLoading={isLoading}
                 onPageChange={setPage}
                 onEdit={group =>
-                    navigate(`/Manga-Reader/dashboard/groups/${group.id}`)
+                    navigate(`${WEB_BASE_URL}/dashboard/groups/${group.id}`)
                 }
                 onDelete={setDeletingGroup}
             />

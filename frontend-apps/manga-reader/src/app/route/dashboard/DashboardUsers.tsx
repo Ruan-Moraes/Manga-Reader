@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiSearch } from 'react-icons/fi';
@@ -80,7 +81,7 @@ const DashboardUsers = () => {
                 isLoading={isLoading}
                 onPageChange={setPage}
                 onEdit={user =>
-                    navigate(`/Manga-Reader/dashboard/users/${user.id}`)
+                    navigate(`${WEB_BASE_URL}/dashboard/users/${user.id}`)
                 }
                 onDelete={setDeletingUser}
             />

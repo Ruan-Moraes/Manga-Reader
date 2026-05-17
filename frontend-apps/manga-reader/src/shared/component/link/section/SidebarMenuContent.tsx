@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -53,7 +54,7 @@ const MenuNavLink = ({
 }: MenuItem & { onNavigate: () => void }) => {
     return (
         <Link
-            to={`/Manga-Reader${link}`}
+            to={`${WEB_BASE_URL}${link}`}
             className={menuItemClass}
             onClick={onNavigate}
         >
@@ -191,14 +192,14 @@ const SidebarMenuContent = ({
                         </p>
                         <div className="flex gap-2 pt-1">
                             <Link
-                                to="/Manga-Reader/login"
+                                to={`${WEB_BASE_URL}/login`}
                                 onClick={onNavigate}
                                 className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
                             >
                                 {t('sidebar.loginCta')}
                             </Link>
                             <Link
-                                to="/Manga-Reader/sign-up"
+                                to={`${WEB_BASE_URL}/sign-up`}
                                 onClick={onNavigate}
                                 className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
                             >

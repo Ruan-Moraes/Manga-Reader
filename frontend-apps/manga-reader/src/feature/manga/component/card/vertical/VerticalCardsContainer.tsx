@@ -6,6 +6,7 @@ import clsx from 'clsx';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 import { SectionHeader } from '../../../type/section-header.types';
 
@@ -64,7 +65,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     const handleClick = useCallback(() => {
         if (visible >= allChildren.length) {
-            navigate(ROUTES.WEB_URL + ROUTES.FILTER_MOST_RECENT);
+            navigate(WEB_BASE_URL + ROUTES.FILTER_MOST_RECENT);
         }
 
         if (visible < allChildren.length) {

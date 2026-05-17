@@ -1,234 +1,151 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 26 de março de 2026
+> Última atualização: 16 de maio de 2026
 
 ---
 
 ## Resumo
 
-Este documento lista as dívidas técnicas identificadas no projeto, organizadas por **prioridade** (Crítica, Alta, Média, Baixa). Cada item inclui descrição, impacto e recomendação.
+Este documento lista as dívidas técnicas do projeto, organizadas por **prioridade**. Cada item inclui descrição, impacto e recomendação/estado.
+
+> **Decisão 2026-05-16**: o projeto ainda **não vai a produção**. Itens que exigem
+> infraestrutura grande (CI/CD, jobs de limpeza, observabilidade, conteúdo legal
+> vinculante, E2E) foram **adiados como não-bloqueantes** — permanecem listados,
+> mas não serão implementados nesta fase. Itens só-código foram resolvidos.
 
 ---
 
-## Prioridade Crítica
+## Itens em Aberto
 
-### DT-01: Use cases data-modifying sem `@Transactional`
+### DT-01 (parcial): `@Transactional` em use cases Mongo-backed
 
-**Descrição**: ~23 use cases que modificam dados no banco não possuem `@Transactional`. Isso inclui CreateComment, DeleteComment, UpdateComment, JoinGroup, SaveToLibrary, SubmitRating, AddRecommendation, RecordViewHistory, entre outros.
+**Estado**: **Parcialmente resolvido (2026-05-16)**. Os 5 use cases com escrita
+primária em PostgreSQL (JPA) receberam `@Transactional`:
+`SaveToLibraryUseCase`, `ChangeReadingListUseCase`, `AddRecommendationUseCase`,
+`UpdateUserProfileUseCase`, `RemoveWorkFromGroupUseCase`.
 
-**Impacto**:
-- Risco de `LazyInitializationException` quando lazy collections são acessadas fora da transação
-- Inconsistência de dados em operações multi-repository (ex: salvar em dois bancos sem atomicidade)
-- Race conditions em operações concorrentes
+**Sub-item adiado**: 14 use cases com escrita primária em MongoDB
+(Comment×3, Rating×3, News×3, Title×3, RecordViewHistory, CreateErrorLog) **não**
+foram anotados. Motivo: não há `MongoTransactionManager` configurado e o MongoDB
+do `docker-compose` roda **standalone** (sem `--replSet`), logo transações
+multi-documento não são suportadas. Anotar com o `@Transactional` (JPA) atual
+não traria atomicidade e poderia abrir transação JPA inútil.
 
-**Recomendação**:
-1. Adicionar `@Transactional` a todos os use cases que fazem write (POST/PUT/DELETE)
-2. Adicionar `@Transactional(readOnly = true)` a use cases de leitura que acessam lazy collections
-3. Documentar a regra no CLAUDE.md (já feito)
-
----
-
-## Prioridade Alta
-
-### DT-02: 8 testes frontend falhando + sem testes de componentes
-
-**Descrição**: O frontend possui 37 arquivos de teste com 284 testes (Vitest + RTL + MSW), cobrindo services (13 domínios), hooks (7 domínios) e utilities (6 arquivos). Porém **8 testes estão falhando** (timers em forumService/newsService, session guard em useBookmark, toast mock em useCommentCRUD) e **não há testes de componentes nem E2E**.
-
-**Impacto**:
-- 8 testes falhando reduzem confiança na suite
-- Componentes críticos (CommentsSection, Library, UserProfile) sem cobertura
-- Sem testes E2E para fluxos de navegação
-
-**Recomendação**:
-1. Corrigir os 8 testes falhando (vi.useRealTimers timeout, session guard assertion, toast mock)
-2. Adicionar testes de componentes críticos (CommentsSection, Library, UserProfile, SearchResults)
-3. Considerar Playwright para testes E2E dos fluxos de auth e navegação
+**Recomendação para resolver o sub-item**: configurar MongoDB como replica set +
+registrar `MongoTransactionManager`, então anotar os use cases Mongo qualificando
+o tx manager. Não-bloqueante enquanto não vai a produção.
 
 ---
 
-### DT-03: Sem pipeline CI/CD
+### DT-02 (parcial): Sem testes de componente / E2E
 
-**Descrição**: Nenhum workflow de integração contínua ou deploy automatizado. Não há verificação automática de lint, build, testes ou deploy.
+**Estado**: A parte "8 testes falhando" está **resolvida/stale** — a suíte atual
+roda **333 testes em 48 arquivos, 0 falhas** (`npx vitest run`). Os 8 falhando
+descritos em 2026-03 não existem mais.
 
-**Impacto**:
-- Erros de build passam despercebidos
-- Deploys manuais são propensos a falhas
-- Sem garantia de qualidade antes do merge
-- Processo de deploy não reproduzível
-
-**Recomendação**: Configurar GitHub Actions com stages: lint → test → build → deploy (ver `deployment-plan.md`).
+**Adiado (não-prod)**: ainda **não há testes de componente nem E2E**
+(CommentsSection, Library, UserProfile, SearchResults sem cobertura; sem
+Playwright). Não-bloqueante enquanto não vai a produção.
 
 ---
 
-### DT-04: UserController injeta repository ports diretamente
+### DT-03: Sem pipeline CI/CD — **Adiado (não-prod)**
 
-**Descrição**: O `UserController` injeta `ViewHistoryRepositoryPort` e `UserRepositoryPort` diretamente (linhas 69-70), em vez de usar use cases. Isso viola o princípio da Clean Architecture onde controllers devem depender apenas de use cases.
-
-**Impacto**:
-- Violação arquitetural (controller acessa infraestrutura diretamente)
-- Lógica de negócio espalhada na camada de apresentação
-- Dificulta testes unitários do controller
-
-**Recomendação**:
-1. Criar use cases dedicados para as operações que usam esses ports no controller
-2. Remover injeção de repository ports do controller
-3. Controller deve depender apenas de use case ports
+Nenhum workflow de CI/CD. **Decisão 2026-05-16**: não implementar pipelines
+enquanto o projeto não for a produção. Quando for: GitHub Actions
+lint → test → build (ver `deployment-plan.md`).
 
 ---
 
-### DT-05: Sem Error Boundaries no frontend
+### DT-08: Acessibilidade incompleta (a11y) — **Adiado (não-prod)**
 
-**Descrição**: O frontend não possui nenhum `ErrorBoundary`. Um erro em qualquer componente causa crash da aplicação inteira.
-
-**Impacto**:
-- UX degradada — tela branca em caso de erro em qualquer componente
-- Sem fallback visual para erros
-- Difícil diagnosticar problemas em produção
-
-**Recomendação**:
-1. Criar `ErrorBoundary` genérico com fallback UI
-2. Envolver rotas principais com ErrorBoundary
-3. Considerar integração com Sentry para error tracking
+Acessibilidade parcial (alguns `aria-label`, `role`, HTML semântico). Faltam
+labels em botões icon-only, landmarks consistentes e testes de a11y. Auditoria
+completa adiada como não-bloqueante.
 
 ---
 
-### DT-06: Validação insuficiente em formulários do frontend
+### DT-09: Conteúdo placeholder em páginas legais — **Adiado (não-prod)**
 
-**Descrição**: Formulários de SignUp, PublishWork e outros forms de criação/edição não possuem validação client-side completa. Faltam validação de formato de email, força de senha, campos obrigatórios com feedback visual, e sanitização de inputs.
-
-**Impacto**:
-- UX degradada (sem feedback de erros inline)
-- Dados inválidos podem ser enviados ao backend
-- Vulnerabilidade a XSS se inputs não são sanitizados
-
-**Recomendação**: Implementar validação com React Hook Form + Zod. Priorizar forms de auth (login, signup, reset password).
+Termos de Uso / DMCA / About com placeholder. Texto legal vinculante exige
+revisão jurídica — fora do escopo de código. Bloqueia produção; não-bloqueante
+para desenvolvimento.
 
 ---
 
-## Prioridade Média
+### DT-10: Refs cross-database sem job de limpeza — **Adiado (não-prod)**
 
-### DT-07: Sem lazy loading / code splitting para rotas
-
-**Descrição**: Todas as 27 rotas são importadas estaticamente. Não há uso de `React.lazy()` ou dynamic imports para code splitting. Os 272 arquivos TypeScript do frontend carregam no bundle inicial.
-
-**Impacto**:
-- Bundle inicial contém todo o código de todas as páginas
-- Tempo de carregamento inicial elevado
-- Usuários baixam código de páginas que podem nunca visitar
-
-**Recomendação**: Implementar `React.lazy()` + `Suspense` para todas as rotas. Vite faz code splitting automático com dynamic imports.
+Refs cross-DB (`user_libraries.title_id`, `group_works.title_id`,
+`store_titles.title_id`) **já estão documentadas** via Javadoc nas entidades
+`SavedManga`, `GroupWork`, `StoreTitle`. O **job de limpeza de órfãos** é
+infraestrutura grande — adiado como não-bloqueante.
 
 ---
 
-### DT-08: Ausência de acessibilidade completa (a11y)
+### DT-13 (resíduo): call-sites com basename hardcoded
 
-**Descrição**: Acessibilidade parcial — alguns `aria-label`, `role="search"` e HTML semântico presentes, mas vários botões icon-only sem labels, falta de landmarks consistentes, sem testes de acessibilidade.
+**Estado**: **Resolvido na fonte (2026-05-16)** — o basename agora é
+parametrizado por `VITE_BASE_URL` (`src/shared/constant/baseUrl.ts`,
+`vite.config.ts` via `loadEnv`, `.env`/`.env.example`). `main.tsx`,
+`ProtectedRoutes`, `Login`, `SignUp`, `AdminSidebar` e `VerticalCardsContainer`
+usam a constante.
 
-**Impacto**:
-- Usuários com deficiência visual ou motora não conseguem usar partes da aplicação
-- Potenciais problemas legais em algumas jurisdições
-
-**Recomendação**: Adicionar aria-labels em todos os botões icon-only, garantir landmarks (`<nav>`, `<main>`, `<aside>`), implementar navegação por teclado completa.
-
----
-
-### DT-09: Conteúdo placeholder em páginas legais
-
-**Descrição**: Termos de Uso e DMCA possuem texto placeholder com "XX" para datas e Lorem Ipsum para conteúdo. About Us também usa conteúdo genérico.
-
-**Impacto**:
-- Requisito legal não atendido
-- Não pode ir para produção sem conteúdo real
-
-**Recomendação**: Redigir conteúdo legal real ou consultar um advogado. Bloquear deploy até que esteja pronto.
+**Resíduo**: ~50 strings `'/Manga-Reader/...'` ainda hardcoded em links/`navigate`
+espalhados (ex.: `news/*`, `event/*`, `dashboard/*`, `forum/*`). Migrar para
+`WEB_BASE_URL` é mecânico mas amplo (baixa prioridade).
 
 ---
 
-### DT-10: Referências cross-database sem integridade referencial documentada
+### DT-16: `npm run build` falha no typecheck de arquivos de teste
 
-**Descrição**: Tabelas PostgreSQL referenciam ObjectIds do MongoDB (`user_libraries.title_id`, `group_works.title_id`, `store_titles.title_id`). Sem FK entre bancos — integridade por aplicação.
+**Descrição**: `npm run build` roda `tsc -b` que inclui arquivos de teste.
+Há erros TS pré-existentes (não relacionados às mudanças de 2026-05-16) em
+`src/test/factories/admin/*` (LocalizedString espera
+`Partial<Record<locale,string>>`, fábricas passam `string`/`null`),
+`src/feature/news/service/newsService.test.ts` e
+`src/feature/manga/component/card/horizontal/HorizontalCard.tsx`
+(`t('card.chaptersCount', { count: string })` — `count` deveria ser `number`).
+Introduzido provavelmente no commit i18n `bb72601`.
 
-**Impacto**:
-- IDs órfãos se um título for deletado do MongoDB
-- Sem cascading delete automático
+**Impacto**: `npm run build` quebra; `vite build` direto funciona (91 chunks,
+code-splitting OK). `npx tsc --noEmit` (config app) passa — só `tsc -b` (inclui
+testes) falha.
 
-**Recomendação**:
-1. Documentar quais tabelas fazem cross-ref
-2. Implementar validação na aplicação antes de salvar referências
-3. Criar job de limpeza para referências órfãs
-
----
-
-### DT-11: Logging sem estratégia para produção
-
-**Descrição**: Logback configurado mas sem rotação de logs, níveis por pacote, ou integração com ferramentas de observabilidade.
-
-**Impacto**:
-- Logs podem crescer sem limite em produção
-- Difícil debugar problemas em produção
-
-**Recomendação**: Configurar logback com rotação, JSON format para produção, e considerar ELK/Grafana Loki.
+**Recomendação**: ajustar as fábricas/test types para `LocalizedString` e
+corrigir o tipo de `count` em `HorizontalCard`. Média prioridade.
 
 ---
 
-### DT-12: `localhost:5000` hardcoded em useCategoryFilters
+## Itens Resolvidos (2026-05-16)
 
-**Descrição**: O hook `useCategoryFilters.tsx` (linha 34) possui `http://localhost:5000/search_title_by?` hardcoded, referenciando uma API diferente da principal (porta 5000 vs 8080).
+| ID | Dívida | Resolução |
+|----|--------|-----------|
+| DT-01 | `@Transactional` em writes JPA | 5 use cases JPA anotados (sub-item Mongo adiado — ver acima) |
+| DT-04 | UserController injetava repository ports | Criado `GetUserViewHistoryUseCase`; content-locales reusa `GetUserProfileUseCase`; ports removidos do controller; testes atualizados + teste de application novo |
+| DT-05 | Sem Error Boundaries | **Stale** — `ErrorBoundary` + `RouteErrorFallback` já existiam e estão integrados em `main.tsx` |
+| DT-06 | Validação de forms insuficiente | `react-hook-form` + `zod` + `@hookform/resolvers`; `buildLoginSchema`/`buildSignUpSchema` com mensagens i18n; `Login`/`SignUp` migrados (demais forms = resíduo de baixa prioridade) |
+| DT-07 | Sem lazy loading de rotas | `React.lazy` em `PublicRoutes`/`ProtectedRoutes` + `<Suspense>` no `RootLayout`; build gera 91 chunks por rota |
+| DT-11 | Logging sem rotação | `RollingFileAppender` (SizeAndTimeBased, 50MB/30d/1GB, JSON) no profile `prod` do `logback-spring.xml` |
+| DT-12 | `localhost:5000` em useCategoryFilters | **Stale** — hook não tem mais fetch hardcoded (só state) |
+| DT-14 | Sem i18n | **Stale** — i18n completo (pt-BR/en-US/es-ES) via `react-i18next`, 16 namespaces |
+| DT-15 | React Query DevTools comentado | Habilitado em `main.tsx` apenas em dev (`import.meta.env.DEV`) |
 
-**Impacto**:
-- Filtros de categoria apontam para endpoint errado/inexistente
-- Funcionalidade de busca por categoria quebrada
+### Itens Resolvidos (anteriores)
 
-**Recomendação**: Migrar para o endpoint correto da API principal (`/api/titles/filter`) ou remover se não for utilizado.
-
----
-
-## Prioridade Baixa
-
-### DT-13: Basename hardcoded para GitHub Pages
-
-**Descrição**: `ROUTES.WEB_URL = '/Manga-Reader'` e `base` no Vite config estão hardcoded para deploy no GitHub Pages. Em produção real, o basename seria `/` ou outro valor.
-
-**Impacto**: Precisa ser alterado manualmente para deploy em outro ambiente.
-
-**Recomendação**: Parametrizar via variável de ambiente (`VITE_BASE_URL`).
-
----
-
-### DT-14: Sem internacionalização (i18n)
-
-**Descrição**: Todas as strings de UI, mensagens de erro e labels estão hardcoded em português. Não há framework de i18n configurado.
-
-**Impacto**: Impossível atingir mercado internacional sem reescrita significativa.
-
-**Recomendação**: Para o momento, não é bloqueante. Se internacionalização for desejada futuramente, integrar `react-i18next`.
-
----
-
-### DT-15: React Query DevTools comentado
-
-**Descrição**: O import do `ReactQueryDevtools` está comentado em `main.tsx`.
-
-**Impacto**: Mínimo. Ferramenta de desenvolvimento útil que não está acessível.
-
-**Recomendação**: Descomentar para ambiente de desenvolvimento.
+| ID Antigo | Dívida | Data |
+|-----------|--------|------|
+| DT-01 (old) | Cobertura de testes backend incompleta | 2026-03-14 |
+| DT-02 (old) | Features frontend com dados mock | 2026-03-14 |
+| DT-04 (old) | Fluxo de auth não testado E2E | 2026-03-14 |
 
 ---
 
 ## Resumo por Prioridade
 
-| Prioridade | Quantidade | IDs |
+| Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
-| **Crítica** | 1 | DT-01 |
-| **Alta** | 5 | DT-02, DT-03, DT-04, DT-05, DT-06 |
-| **Média** | 6 | DT-07, DT-08, DT-09, DT-10, DT-11, DT-12 |
-| **Baixa** | 3 | DT-13, DT-14, DT-15 |
-| **Total** | **15** | |
-
-### Itens Resolvidos (removidos nesta atualização)
-
-| ID Antigo | Dívida | Data de Resolução |
-|-----------|--------|-------------------|
-| DT-01 (old) | Cobertura de testes backend incompleta | 2026-03-14 (727 testes, 126 arquivos) |
-| DT-02 (old) | Features frontend com dados mock | 2026-03-14 (13/13 integradas com API real) |
-| DT-04 (old) | Fluxo de autenticação não testado E2E | 2026-03-14 (16 testes SecurityIntegrationTest) |
+| **Crítica** | 0 | — |
+| **Alta** | 1 parcial | DT-01 (sub-item Mongo), DT-02 (componente/E2E) |
+| **Média** | 3 | DT-08, DT-10, DT-16 |
+| **Baixa** | 2 | DT-03, DT-09, DT-13 (resíduo) |
+| **Resolvidos 2026-05-16** | 9 | DT-01*, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-14, DT-15 |

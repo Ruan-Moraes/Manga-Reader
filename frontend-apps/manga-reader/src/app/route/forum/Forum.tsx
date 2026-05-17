@@ -22,7 +22,7 @@ import {
 const Forum = () => {
     const { t } = useTranslation('forum');
     const { user } = useAuth();
-    const isAdmin = user?.role === 'ADMIN' || user?.role === 'MODERATOR';
+    const isAdmin = user?.role === 'admin';
     const {
         activeCategory,
         sort,
@@ -43,7 +43,9 @@ const Forum = () => {
         () =>
             forumSortOptions.map(option => ({
                 value: option.value,
-                label: t(`sort.${option.value}`, { defaultValue: option.label }),
+                label: t(`sort.${option.value}`, {
+                    defaultValue: option.label,
+                }),
             })),
         [t],
     );
@@ -119,7 +121,11 @@ const Forum = () => {
                                     onChange={toggleCrossLanguage}
                                     className="accent-quaternary-default"
                                 />
-                                <span>{t('page.crossLanguage', { defaultValue: 'Todos idiomas (admin)' })}</span>
+                                <span>
+                                    {t('page.crossLanguage', {
+                                        defaultValue: 'Todos idiomas (admin)',
+                                    })}
+                                </span>
                             </label>
                         )}
 

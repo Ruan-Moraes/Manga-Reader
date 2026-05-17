@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
     showErrorToast,
@@ -16,26 +18,30 @@ import AuthenticationForm from '@shared/component/form/AuthenticationForm';
 import BaseInput from '@shared/component/input/BaseInput';
 import RaisedButton from '@shared/component/button/RaisedButton';
 
-import { useAuth } from '@feature/auth';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-type FormErrors = {
-    email?: string;
-    password?: string;
-};
+import { useAuth, buildLoginSchema, type LoginFormValues } from '@feature/auth';
 
 const Login = () => {
     const { t } = useTranslation('auth');
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [redirectPath, setRedirectPath] = useState<string | null>(null);
-    const [errors, setErrors] = useState<FormErrors>({});
 
     const { login } = useAuth();
+
+    const schema = useMemo(() => buildLoginSchema(t), [t]);
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormValues>({
+        resolver: zodResolver(schema),
+        defaultValues: { email: '', password: '' },
+        mode: 'onTouched',
+    });
 
     useEffect(() => {
         const storedPath = localStorage.getItem('redirectAfterLogin');
@@ -49,44 +55,15 @@ const Login = () => {
         }
     }, [t]);
 
-    const validate = useCallback((): FormErrors => {
-        const newErrors: FormErrors = {};
-
-        if (!email.trim()) {
-            newErrors.email = t('validation.emailRequired');
-        }
-
-        if (!EMAIL_REGEX.test(email.trim())) {
-            newErrors.email = t('validation.emailInvalid');
-        }
-
-        if (!password) {
-            newErrors.password = t('validation.passwordRequired');
-        }
-
-        return newErrors;
-    }, [email, password, t]);
-
-    const handleFormSubmit = useCallback(
-        async (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-
-            const validationErrors = validate();
-
-            setErrors(validationErrors);
-
-            if (Object.keys(validationErrors).length > 0) {
-                showErrorToast(t('validation.fixErrors'), {
-                    toastId: 'login-validation',
-                });
-
-                return;
-            }
-
+    const onSubmit = useCallback(
+        async (values: LoginFormValues) => {
             setIsLoading(true);
 
             try {
-                await login({ email: email.trim(), password });
+                await login({
+                    email: values.email.trim(),
+                    password: values.password,
+                });
 
                 if (redirectPath) {
                     localStorage.removeItem('redirectAfterLogin');
@@ -95,7 +72,7 @@ const Login = () => {
                         toastId: 'auth-success-redirect',
                     });
                 } else {
-                    navigate('/Manga-Reader');
+                    navigate(WEB_BASE_URL);
                     showSuccessToast(t('login.success'), {
                         toastId: 'auth-success',
                     });
@@ -104,39 +81,57 @@ const Login = () => {
                 setIsLoading(false);
             }
         },
-        [login, navigate, redirectPath, email, password, validate, t],
+        [login, navigate, redirectPath, t],
     );
+
+    const onInvalid = useCallback(() => {
+        showErrorToast(t('validation.fixErrors'), {
+            toastId: 'login-validation',
+        });
+    }, [t]);
 
     return (
         <>
             <Header showSearch={true} />
             <MainContent>
                 <AuthenticationForm
-                    onFormSubmit={handleFormSubmit}
+                    onFormSubmit={handleSubmit(onSubmit, onInvalid)}
                     title={t('login.title')}
                     helperText={t('login.helperText')}
                     link="/forgot-password"
                     linkText={t('login.linkText')}
                 >
-                    <BaseInput
-                        label={t('login.emailLabel')}
-                        type="email"
-                        placeholder={t('login.emailPlaceholder')}
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        disabled={isLoading}
-                        error={errors.email}
+                    <Controller
+                        control={control}
                         name="email"
+                        render={({ field }) => (
+                            <BaseInput
+                                label={t('login.emailLabel')}
+                                type="email"
+                                placeholder={t('login.emailPlaceholder')}
+                                value={field.value}
+                                onChange={field.onChange}
+                                disabled={isLoading}
+                                error={errors.email?.message}
+                                name="email"
+                            />
+                        )}
                     />
-                    <BaseInput
-                        label={t('login.passwordLabel')}
-                        type="password"
-                        placeholder={t('login.passwordPlaceholder')}
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        disabled={isLoading}
-                        error={errors.password}
+                    <Controller
+                        control={control}
                         name="password"
+                        render={({ field }) => (
+                            <BaseInput
+                                label={t('login.passwordLabel')}
+                                type="password"
+                                placeholder={t('login.passwordPlaceholder')}
+                                value={field.value}
+                                onChange={field.onChange}
+                                disabled={isLoading}
+                                error={errors.password?.message}
+                                name="password"
+                            />
+                        )}
                     />
                     <RaisedButton
                         text={

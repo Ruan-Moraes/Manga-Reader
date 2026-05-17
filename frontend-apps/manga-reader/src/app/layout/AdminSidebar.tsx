@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fi';
 
 import { ROUTES } from '@shared/constant/ROUTES';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 type AdminSidebarProps = {
     isOpen: boolean;
@@ -33,7 +34,7 @@ type NavSection = {
     items: NavItem[];
 };
 
-const BASE = `${ROUTES.WEB_URL}${ROUTES.DASHBOARD}`;
+const BASE = `${WEB_BASE_URL}${ROUTES.DASHBOARD}`;
 
 const SECTIONS: NavSection[] = [
     {

@@ -14,8 +14,7 @@ type AdminTagApi = {
 };
 
 const fromAdminTagApi = (raw: AdminTagApi): AdminTag => {
-    const ptBR = raw.label['pt-BR'] ?? Object.values(raw.label)[0] ?? '';
-    return { value: raw.value, label: ptBR, labelI18n: raw.label };
+    return { value: raw.value, label: raw.label };
 };
 
 export const getAdminTags = async (

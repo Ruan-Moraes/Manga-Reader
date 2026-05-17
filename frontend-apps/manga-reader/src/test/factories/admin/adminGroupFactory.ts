@@ -2,9 +2,12 @@ import type {
     AdminGroup,
     GroupMember as AdminGroupMember,
 } from '@feature/admin/type/admin.types';
+import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildPage } from '../pageFactory';
+
+const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminGroupCounter = 0;
 let adminGroupMemberCounter = 0;
@@ -43,10 +46,10 @@ export const buildAdminGroup = (
 
     return {
         id: `admin-group-${adminGroupCounter}`,
-        name: `Grupo Admin ${adminGroupCounter}`,
+        name: loc(`Grupo Admin ${adminGroupCounter}`),
         username: `grupo-admin-${adminGroupCounter}`,
         logo: `/logos/admin-group-${adminGroupCounter}.png`,
-        description: 'Grupo administrado de scanlation.',
+        description: loc('Grupo administrado de scanlation.'),
         status: 'active',
         totalTitles: 25,
         membersCount: 6,
@@ -80,7 +83,7 @@ export const adminGroupPresets = {
     minimal: () =>
         buildAdminGroup({
             logo: null,
-            description: null,
+            description: {},
             platformJoinedAt: null,
         }),
 

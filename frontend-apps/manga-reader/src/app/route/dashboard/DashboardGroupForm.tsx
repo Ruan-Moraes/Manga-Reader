@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -51,7 +52,7 @@ const DashboardGroupForm = () => {
             ...(banner ? { banner } : {}),
             ...(website ? { website } : {}),
         });
-        if (result) navigate(`/Manga-Reader/dashboard/groups/${groupId}`);
+        if (result) navigate(`${WEB_BASE_URL}/dashboard/groups/${groupId}`);
     };
 
     if (isLoading) {
@@ -66,7 +67,9 @@ const DashboardGroupForm = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate(`/Manga-Reader/dashboard/groups/${groupId}`)}
+                onClick={() =>
+                    navigate(`${WEB_BASE_URL}/dashboard/groups/${groupId}`)
+                }
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />

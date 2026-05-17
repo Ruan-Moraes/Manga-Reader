@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { IoSearchSharp } from 'react-icons/io5';
@@ -12,7 +13,7 @@ const MainSearchInput = () => {
         e.preventDefault();
         const trimmed = query.trim();
         if (trimmed) {
-            navigate(`/Manga-Reader/search?q=${encodeURIComponent(trimmed)}`);
+            navigate(`${WEB_BASE_URL}/search?q=${encodeURIComponent(trimmed)}`);
         }
     };
 

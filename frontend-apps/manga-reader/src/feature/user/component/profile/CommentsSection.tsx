@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -61,7 +62,7 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
                             className="p-3 border rounded-xs border-tertiary bg-secondary/30"
                         >
                             <Link
-                                to={`/Manga-Reader/title/${c.titleId}`}
+                                to={`${WEB_BASE_URL}/title/${c.titleId}`}
                                 className="text-xs text-quaternary hover:underline"
                             >
                                 {t('profile.comments.viewTitle')}

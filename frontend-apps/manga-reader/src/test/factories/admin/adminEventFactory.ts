@@ -1,7 +1,10 @@
 import type { AdminEvent } from '@feature/admin/type/admin.types';
+import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildPage } from '../pageFactory';
+
+const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminEventCounter = 0;
 
@@ -12,9 +15,9 @@ export const buildAdminEvent = (
 
     return {
         id: `admin-event-${adminEventCounter}`,
-        title: `Evento Admin ${adminEventCounter}`,
-        subtitle: 'Subtitulo do evento',
-        description: 'Descricao detalhada do evento.',
+        title: loc(`Evento Admin ${adminEventCounter}`),
+        subtitle: loc('Subtitulo do evento'),
+        description: loc('Descricao detalhada do evento.'),
         image: `/events/admin-${adminEventCounter}.jpg`,
         startDate: '2026-05-15T10:00:00Z',
         endDate: '2026-05-17T22:00:00Z',
@@ -66,8 +69,8 @@ export const adminEventPresets = {
 
     minimal: () =>
         buildAdminEvent({
-            subtitle: null,
-            description: null,
+            subtitle: {},
+            description: {},
             image: null,
             timezone: null,
             locationLabel: null,

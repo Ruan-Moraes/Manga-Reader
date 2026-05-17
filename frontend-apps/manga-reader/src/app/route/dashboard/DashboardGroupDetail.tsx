@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
 
@@ -46,7 +47,7 @@ const DashboardGroupDetail = () => {
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <button
-                    onClick={() => navigate('/Manga-Reader/dashboard/groups')}
+                    onClick={() => navigate(`${WEB_BASE_URL}/dashboard/groups`)}
                     className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
                 >
                     <FiArrowLeft size={14} />
@@ -54,7 +55,9 @@ const DashboardGroupDetail = () => {
                 </button>
                 <button
                     onClick={() =>
-                        navigate(`/Manga-Reader/dashboard/groups/${groupId}/edit`)
+                        navigate(
+                            `${WEB_BASE_URL}/dashboard/groups/${groupId}/edit`,
+                        )
                     }
                     className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                 >

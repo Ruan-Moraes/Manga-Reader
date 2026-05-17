@@ -3,6 +3,7 @@ package com.mangareader.application.user.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AddRecommendationUseCase {
     private static final int MAX_RECOMMENDATIONS = 10;
 

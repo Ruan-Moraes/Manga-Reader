@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -34,11 +35,18 @@ const DashboardEventForm = () => {
         enabled: isEditing,
     });
 
-    const { data: timelineOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_TIMELINE);
-    const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_STATUS);
+    const { data: timelineOptions = [] } = useDomainLabels(
+        LABEL_TYPES.EVENT_TIMELINE,
+    );
+    const { data: statusOptions = [] } = useDomainLabels(
+        LABEL_TYPES.EVENT_STATUS,
+    );
     const { data: typeOptions = [] } = useDomainLabels(LABEL_TYPES.EVENT_TYPE);
 
-    type FormState = Omit<CreateEventRequest, 'title' | 'subtitle' | 'description'>;
+    type FormState = Omit<
+        CreateEventRequest,
+        'title' | 'subtitle' | 'description'
+    >;
 
     const [form, setForm] = useState<FormState>({
         startDate: '',
@@ -98,10 +106,10 @@ const DashboardEventForm = () => {
 
         if (isEditing && eventId) {
             const result = await handleUpdate(eventId, data);
-            if (result) navigate('/Manga-Reader/dashboard/events');
+            if (result) navigate(`${WEB_BASE_URL}/dashboard/events`);
         } else {
             const result = await handleCreate(data);
-            if (result) navigate('/Manga-Reader/dashboard/events');
+            if (result) navigate(`${WEB_BASE_URL}/dashboard/events`);
         }
     };
 
@@ -110,7 +118,7 @@ const DashboardEventForm = () => {
 
         await handleDelete(eventId);
 
-        navigate('/Manga-Reader/dashboard/events');
+        navigate(`${WEB_BASE_URL}/dashboard/events`);
     };
 
     if (isEditing && isLoading) {
@@ -125,7 +133,7 @@ const DashboardEventForm = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate('/Manga-Reader/dashboard/events')}
+                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/events`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />

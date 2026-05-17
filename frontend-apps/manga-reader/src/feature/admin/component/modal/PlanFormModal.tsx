@@ -17,7 +17,7 @@ import {
 } from '@shared/type/i18n';
 import { useDomainLabels, LABEL_TYPES } from '@feature/label';
 
-import type { AdminPlan } from '../type/admin.types';
+import type { AdminPlan } from '../../type/admin.types';
 
 type PriceRow = { currency: string; amount: string };
 
@@ -42,17 +42,22 @@ const featuresMapToText = (map: LocalizedStringList, lang: LanguageTag) =>
     (map[lang] ?? []).join('\n');
 
 const featuresTextToList = (text: string): string[] =>
-    text.split('\n').map(f => f.trim()).filter(Boolean);
+    text
+        .split('\n')
+        .map(f => f.trim())
+        .filter(Boolean);
 
 const buildInitialPrices = (plan: AdminPlan | null | undefined): PriceRow[] => {
     if (plan?.prices && Object.keys(plan.prices).length > 0) {
         return Object.entries(plan.prices).map(([currency, cents]) => ({
             currency,
-            amount: (cents / 100).toFixed(2),
+            amount: (Number(cents) / 100).toFixed(2),
         }));
     }
     if (plan?.priceInCents) {
-        return [{ currency: 'BRL', amount: (plan.priceInCents / 100).toFixed(2) }];
+        return [
+            { currency: 'BRL', amount: (plan.priceInCents / 100).toFixed(2) },
+        ];
     }
     return [{ currency: 'BRL', amount: '' }];
 };
@@ -66,13 +71,18 @@ const PlanFormModal = ({
 }: PlanFormModalProps) => {
     const { t } = useTranslation('admin');
     const [period, setPeriod] = useState('MONTHLY');
-    const [priceRows, setPriceRows] = useState<PriceRow[]>([{ currency: 'BRL', amount: '' }]);
+    const [priceRows, setPriceRows] = useState<PriceRow[]>([
+        { currency: 'BRL', amount: '' },
+    ]);
     const [description, setDescription] = useState<LocalizedString>({});
     const [features, setFeatures] = useState<LocalizedStringList>({});
-    const [featuresTab, setFeaturesTab] = useState<LanguageTag>(DEFAULT_LANGUAGE);
+    const [featuresTab, setFeaturesTab] =
+        useState<LanguageTag>(DEFAULT_LANGUAGE);
     const [active, setActive] = useState(true);
 
-    const { data: currencyOptions = [] } = useDomainLabels(LABEL_TYPES.CURRENCY);
+    const { data: currencyOptions = [] } = useDomainLabels(
+        LABEL_TYPES.CURRENCY,
+    );
 
     const periodLabels = useMemo<Record<string, string>>(
         () => ({
@@ -106,12 +116,20 @@ const PlanFormModal = ({
     );
 
     const addPriceRow = () => {
-        const next = currencyOptions.find(opt => !usedCurrencies.includes(opt.value));
-        if (next) setPriceRows(rows => [...rows, { currency: next.value, amount: '' }]);
+        const next = currencyOptions.find(
+            opt => !usedCurrencies.includes(opt.value),
+        );
+        if (next)
+            setPriceRows(rows => [
+                ...rows,
+                { currency: next.value, amount: '' },
+            ]);
     };
 
     const updatePriceRow = (idx: number, patch: Partial<PriceRow>) => {
-        setPriceRows(rows => rows.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
+        setPriceRows(rows =>
+            rows.map((r, i) => (i === idx ? { ...r, ...patch } : r)),
+        );
     };
 
     const removePriceRow = (idx: number) => {
@@ -145,7 +163,8 @@ const PlanFormModal = ({
     };
 
     const ptDescription = description[DEFAULT_LANGUAGE]?.trim() ?? '';
-    const hasValidPrices = priceRows.length > 0 && priceRows.every(r => r.amount !== '');
+    const hasValidPrices =
+        priceRows.length > 0 && priceRows.every(r => r.amount !== '');
 
     return (
         <AdminModal isOpen={isOpen} onClose={onClose}>
@@ -179,9 +198,15 @@ const PlanFormModal = ({
                                 <BaseSelect
                                     variant="outlined"
                                     value={row.currency}
-                                    onChange={e => updatePriceRow(idx, { currency: e.target.value })}
+                                    onChange={e =>
+                                        updatePriceRow(idx, {
+                                            currency: e.target.value,
+                                        })
+                                    }
                                     options={[
-                                        ...currencyOptions.filter(opt => opt.value === row.currency),
+                                        ...currencyOptions.filter(
+                                            opt => opt.value === row.currency,
+                                        ),
                                         ...availableCurrencyOptions,
                                     ]}
                                 />
@@ -193,7 +218,11 @@ const PlanFormModal = ({
                                     step="0.01"
                                     min="0.01"
                                     value={row.amount}
-                                    onChange={e => updatePriceRow(idx, { amount: e.target.value })}
+                                    onChange={e =>
+                                        updatePriceRow(idx, {
+                                            amount: e.target.value,
+                                        })
+                                    }
                                     placeholder="0.00"
                                 />
                             </div>
@@ -251,7 +280,9 @@ const PlanFormModal = ({
                                 >
                                     {lang}
                                     {filled && (
-                                        <span className="text-quaternary-default">●</span>
+                                        <span className="text-quaternary-default">
+                                            ●
+                                        </span>
                                     )}
                                 </button>
                             );
@@ -264,7 +295,9 @@ const PlanFormModal = ({
                         onChange={e =>
                             setFeatures({
                                 ...features,
-                                [featuresTab]: featuresTextToList(e.target.value),
+                                [featuresTab]: featuresTextToList(
+                                    e.target.value,
+                                ),
                             })
                         }
                         placeholder={t('planForm.featuresPlaceholder')}
@@ -289,10 +322,14 @@ const PlanFormModal = ({
                     </button>
                     <button
                         type="submit"
-                        disabled={isSubmitting || !hasValidPrices || !ptDescription}
+                        disabled={
+                            isSubmitting || !hasValidPrices || !ptDescription
+                        }
                         className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
                     >
-                        {isSubmitting ? t('planForm.saving') : t('planForm.save')}
+                        {isSubmitting
+                            ? t('planForm.saving')
+                            : t('planForm.save')}
                     </button>
                 </div>
             </form>

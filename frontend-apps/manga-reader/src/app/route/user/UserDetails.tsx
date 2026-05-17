@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -95,7 +96,9 @@ const UserDetails = () => {
                 <TextSection>
                     <SectionTitle
                         titleStyleClasses="text-lg"
-                        title={t('details.profileTitle', { name: targetUser.name })}
+                        title={t('details.profileTitle', {
+                            name: targetUser.name,
+                        })}
                     />
 
                     <div className="grid gap-4 md:grid-cols-[240px_1fr]">
@@ -107,7 +110,9 @@ const UserDetails = () => {
                             >
                                 <img
                                     src={targetUser.photo}
-                                    alt={t('details.photoAlt', { name: targetUser.name })}
+                                    alt={t('details.photoAlt', {
+                                        name: targetUser.name,
+                                    })}
                                     className="object-cover w-full h-full min-h-56"
                                 />
                             </button>
@@ -212,12 +217,14 @@ const UserDetails = () => {
                                                 title => (
                                                     <Link
                                                         key={title.link}
-                                                        to={`/Manga-Reader${title.link}`}
+                                                        to={`${WEB_BASE_URL}${title.link}`}
                                                         className="overflow-hidden border rounded-xs border-tertiary"
                                                     >
                                                         <img
                                                             src={title.image}
-                                                            alt={t('details.recommendedAlt')}
+                                                            alt={t(
+                                                                'details.recommendedAlt',
+                                                            )}
                                                             className="object-cover w-full h-36"
                                                         />
                                                     </Link>

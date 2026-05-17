@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link } from 'react-router-dom';
 import { FiCalendar, FiFilter, FiPlus, FiStar } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -179,7 +180,7 @@ const Events = () => {
                                 {featured.subtitle}
                             </p>
                             <Link
-                                to={`/Manga-Reader/event/${featured.id}`}
+                                to={`${WEB_BASE_URL}/event/${featured.id}`}
                                 className="inline-flex px-4 py-2 text-sm font-medium text-purple-900 bg-white rounded-lg"
                             >
                                 {t('page.viewDetails')}

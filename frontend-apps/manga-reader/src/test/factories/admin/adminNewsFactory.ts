@@ -1,7 +1,10 @@
 import type { AdminNews } from '@feature/admin/type/admin.types';
+import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildPage } from '../pageFactory';
+
+const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminNewsCounter = 0;
 
@@ -12,9 +15,10 @@ export const buildAdminNews = (
 
     return {
         id: `admin-news-${adminNewsCounter}`,
-        title: `Noticia Admin ${adminNewsCounter}`,
-        subtitle: `Subtitulo ${adminNewsCounter}`,
-        excerpt: 'Resumo da noticia.',
+        title: loc(`Noticia Admin ${adminNewsCounter}`),
+        subtitle: loc(`Subtitulo ${adminNewsCounter}`),
+        excerpt: loc('Resumo da noticia.'),
+        content: { 'pt-BR': ['Conteudo da noticia.'] },
         coverImage: `/news/admin-${adminNewsCounter}.jpg`,
         category: 'Principais',
         tags: ['noticia', 'destaque'],
@@ -44,8 +48,8 @@ export const adminNewsPresets = {
     withoutAuthor: () => buildAdminNews({ authorName: null, source: null }),
     minimal: () =>
         buildAdminNews({
-            subtitle: null,
-            excerpt: null,
+            subtitle: {},
+            excerpt: {},
             coverImage: null,
             authorName: null,
             source: null,

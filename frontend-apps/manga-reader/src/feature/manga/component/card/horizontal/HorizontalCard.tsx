@@ -48,8 +48,8 @@ const HorizontalCard = ({
                     {t('card.chaptersCount', {
                         count:
                             lastChapter === '...'
-                                ? lastChapter
-                                : lastChapter.number,
+                                ? 0
+                                : Number(lastChapter.number),
                     })}
                 </span>
             </div>

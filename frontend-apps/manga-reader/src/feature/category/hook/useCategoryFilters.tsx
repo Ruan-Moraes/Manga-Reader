@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import type { Tag } from '../type/tag.types';
-import type { Sort } from '../type/sort.types';
-import type { PublicationStatus } from '../type/publication-status.types';
-import type { AdultContent } from '../type/adult-content.types';
+import type { Tag } from '@feature/category';
+import type { Sort } from '@feature/category';
+import type { PublicationStatus } from '@feature/category';
+import type { AdultContent } from '@feature/category';
 
 const useCategoryFilters = () => {
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
@@ -16,21 +16,26 @@ const useCategoryFilters = () => {
 
     const handleSelectedTags = useCallback((newValue: Tag[]) => {
         setSelectedTags(newValue as Tag[]);
+
         setPage(0);
     }, []);
 
     const handleSortChange = useCallback((newValue: Sort) => {
         setSelectedSort(newValue);
+
+        setPage(0);
         setPage(0);
     }, []);
 
     const handleStatusChange = useCallback((newValue: PublicationStatus) => {
         setSelectedStatus(newValue);
+
         setPage(0);
     }, []);
 
     const handleAdultContentChange = useCallback((newValue: AdultContent) => {
         setSelectedAdultContent(newValue);
+
         setPage(0);
     }, []);
 

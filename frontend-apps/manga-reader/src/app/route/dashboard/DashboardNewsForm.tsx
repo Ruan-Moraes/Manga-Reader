@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -99,11 +100,11 @@ const DashboardNewsForm = () => {
         if (isEditing && newsId) {
             const result = await handleUpdate(newsId, data);
 
-            if (result) navigate('/Manga-Reader/dashboard/news');
+            if (result) navigate(`${WEB_BASE_URL}/dashboard/news`);
         } else {
             const result = await handleCreate(data);
 
-            if (result) navigate('/Manga-Reader/dashboard/news');
+            if (result) navigate(`${WEB_BASE_URL}/dashboard/news`);
         }
     };
 
@@ -112,7 +113,7 @@ const DashboardNewsForm = () => {
 
         await handleDelete(newsId);
 
-        navigate('/Manga-Reader/dashboard/news');
+        navigate(`${WEB_BASE_URL}/dashboard/news`);
     };
 
     if (isEditing && isLoading) {
@@ -127,7 +128,7 @@ const DashboardNewsForm = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate('/Manga-Reader/dashboard/news')}
+                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/news`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />

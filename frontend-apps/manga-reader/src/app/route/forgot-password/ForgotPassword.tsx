@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -34,7 +35,7 @@ const ForgotPassword = () => {
                             {t('forgotPassword.submittedMessage')}
                         </p>
                         <a
-                            href="/Manga-Reader/login"
+                            href={`${WEB_BASE_URL}/login`}
                             className="text-sm font-bold text-link hover:underline"
                         >
                             {t('forgotPassword.backToLogin')}

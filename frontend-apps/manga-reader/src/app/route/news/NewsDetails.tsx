@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import {
     FiArrowUp,
     FiBookmark,
@@ -48,7 +49,7 @@ const NewsDetails = () => {
                             {t('details.notFound')}
                         </h1>
                         <Link
-                            to="/Manga-Reader/news"
+                            to={`${WEB_BASE_URL}/news`}
                             className="inline-block mt-3 text-purple-300 underline"
                         >
                             {t('details.back')}
@@ -325,8 +326,7 @@ const NewsDetails = () => {
                                                 <FiHeart /> {comment.likes}
                                             </span>
                                             <span className="inline-flex items-center gap-1">
-                                                <FiSmile />{' '}
-                                                {t('details.reply')}
+                                                <FiSmile /> {t('details.reply')}
                                             </span>
                                         </div>
                                         {comment.replies?.map(reply => (
@@ -352,7 +352,7 @@ const NewsDetails = () => {
                                     {relatedNews.map(item => (
                                         <Link
                                             key={item.id}
-                                            to={`/Manga-Reader/news/${item.id}`}
+                                            to={`${WEB_BASE_URL}/news/${item.id}`}
                                             className="block min-w-56 rounded-lg bg-primary p-2 xl:min-w-0"
                                         >
                                             <p className="text-sm font-medium line-clamp-2">
@@ -379,7 +379,7 @@ const NewsDetails = () => {
                                 {relatedNews.slice(0, 4).map(item => (
                                     <Link
                                         key={`${item.id}-extra`}
-                                        to={`/Manga-Reader/news/${item.id}`}
+                                        to={`${WEB_BASE_URL}/news/${item.id}`}
                                         className="block text-sm underline text-purple-300"
                                     >
                                         {item.title}

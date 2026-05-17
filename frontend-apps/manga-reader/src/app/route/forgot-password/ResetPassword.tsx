@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 import Header from '@app/layout/Header';
 import MainContent from '@/app/layout/Main';
@@ -36,7 +37,7 @@ const ResetPassword = () => {
                             {t('resetPassword.invalidLinkMessage')}
                         </p>
                         <a
-                            href="/Manga-Reader/forgot-password"
+                            href={`${WEB_BASE_URL}/forgot-password`}
                             className="text-sm font-bold text-link hover:underline"
                         >
                             {t('resetPassword.requestNewLink')}

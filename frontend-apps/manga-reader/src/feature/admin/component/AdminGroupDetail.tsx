@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { resolveLocalized } from '@shared/type/i18n';
+
 import type { AdminGroup, GroupMember } from '../type/admin.types';
 import useAdminGroupActions from '../hook/useAdminGroupActions';
 import ChangeGroupRoleModal from './modal/ChangeGroupRoleModal';
@@ -66,9 +68,7 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
 
     const confirmRemove = (userId: string, userName: string) => {
         if (
-            window.confirm(
-                t('groupDetail.removeConfirm', { name: userName }),
-            )
+            window.confirm(t('groupDetail.removeConfirm', { name: userName }))
         ) {
             handleRemoveMember(group.id, userId);
         }
@@ -80,12 +80,14 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                 {group.logo && (
                     <img
                         src={group.logo}
-                        alt={group.name}
+                        alt={resolveLocalized(group.name, i18n.language)}
                         className="object-cover rounded-xs w-16 h-16 border border-tertiary"
                     />
                 )}
                 <div className="flex-1">
-                    <h2 className="text-lg font-bold">{group.name}</h2>
+                    <h2 className="text-lg font-bold">
+                        {resolveLocalized(group.name, i18n.language)}
+                    </h2>
                     <p className="text-sm text-tertiary">@{group.username}</p>
                     <div className="flex gap-2 mt-2">
                         <StatusBadge status={group.status} />
@@ -149,7 +151,7 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                             {t('groupDetail.description')}
                         </h3>
                         <p className="text-sm text-tertiary">
-                            {group.description}
+                            {resolveLocalized(group.description, i18n.language)}
                         </p>
                     </div>
                 )}

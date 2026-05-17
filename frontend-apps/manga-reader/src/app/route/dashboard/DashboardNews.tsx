@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiSearch, FiPlus } from 'react-icons/fi';
@@ -52,7 +53,7 @@ const DashboardNews = () => {
                     </span>
                     <button
                         onClick={() =>
-                            navigate('/Manga-Reader/dashboard/news/new')
+                            navigate(`${WEB_BASE_URL}/dashboard/news/new`)
                         }
                         className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-dark"
                     >
@@ -91,7 +92,7 @@ const DashboardNews = () => {
                 isLoading={isLoading}
                 onPageChange={setPage}
                 onEdit={n =>
-                    navigate(`/Manga-Reader/dashboard/news/${n.id}/edit`)
+                    navigate(`${WEB_BASE_URL}/dashboard/news/${n.id}/edit`)
                 }
                 onDelete={setDeletingNews}
             />

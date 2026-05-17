@@ -1,4 +1,5 @@
 import React from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
 import { Link, useLocation } from 'react-router-dom';
 
@@ -40,7 +41,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
         link = link.startsWith('/') ? link.slice(1) : link;
 
         const isExternalLink = link.includes('http');
-        const isActive = useLocation().pathname === `/Manga-Reader/${link}`;
+        const isActive = useLocation().pathname === `${WEB_BASE_URL}/${link}`;
 
         return (
             <Link
@@ -53,7 +54,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
                     },
                 )}
                 style={inlineStyle}
-                to={isExternalLink ? link : '/Manga-Reader/' + link}
+                to={isExternalLink ? link : `${WEB_BASE_URL}/` + link}
             >
                 {children ?? text}
             </Link>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import {
     FiCalendar,
@@ -16,7 +17,7 @@ const EventCard = ({ event }: { event: EventData }) => {
 
     return (
         <Link
-            to={`/Manga-Reader/event/${event.id}`}
+            to={`${WEB_BASE_URL}/event/${event.id}`}
             className="overflow-hidden transition border group rounded-2xl border-tertiary bg-secondary hover:-translate-y-1 hover:shadow-xl hover:border-purple-400/70"
         >
             <img

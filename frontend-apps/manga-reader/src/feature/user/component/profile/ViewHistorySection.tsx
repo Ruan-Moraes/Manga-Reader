@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -62,7 +63,7 @@ const ViewHistorySection = ({
                     {items.map(item => (
                         <Link
                             key={`${item.titleId}-${item.viewedAt}`}
-                            to={`/Manga-Reader/title/${item.titleId}`}
+                            to={`${WEB_BASE_URL}/title/${item.titleId}`}
                             className="block overflow-hidden border rounded-xs border-tertiary"
                         >
                             {item.titleCover ? (

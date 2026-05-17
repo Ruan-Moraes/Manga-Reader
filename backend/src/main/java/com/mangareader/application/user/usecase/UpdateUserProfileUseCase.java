@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.shared.event.UserProfileUpdatedEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateUserProfileUseCase {
     private final UserRepositoryPort userRepository;
     private final EventPublisherPort eventPublisher;

@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
 
-import type { MonthlyRevenueEntry } from '../type/admin.types';
+import type { MonthlyRevenueEntry } from '../../type/admin.types';
 
 type Props = {
     entries: MonthlyRevenueEntry[];

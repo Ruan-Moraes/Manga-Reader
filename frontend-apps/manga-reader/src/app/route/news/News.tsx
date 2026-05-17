@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { FiClock, FiFilter, FiBell } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
@@ -169,7 +170,7 @@ const News = () => {
                             {sidebarMostRead.map(item => (
                                 <Link
                                     key={item.id}
-                                    to={`/Manga-Reader/news/${item.id}`}
+                                    to={`${WEB_BASE_URL}/news/${item.id}`}
                                     className="flex items-start gap-2 text-sm"
                                 >
                                     <span className="w-2 h-2 mt-2 bg-purple-400 rounded-full" />

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -49,9 +50,7 @@ const RecommendationsSection = ({
 
     if (recommendations.length === 0 && !isOwner) {
         return (
-            <ProfileEmptyState
-                message={t('profile.recommendations.empty')}
-            />
+            <ProfileEmptyState message={t('profile.recommendations.empty')} />
         );
     }
 
@@ -62,7 +61,9 @@ const RecommendationsSection = ({
                     <input
                         value={titleIdInput}
                         onChange={e => setTitleIdInput(e.target.value)}
-                        placeholder={t('profile.recommendations.addPlaceholder')}
+                        placeholder={t(
+                            'profile.recommendations.addPlaceholder',
+                        )}
                         className="flex-1 px-2 py-1.5 text-sm border rounded-xs border-tertiary bg-primary-default"
                     />
                     <button
@@ -81,7 +82,7 @@ const RecommendationsSection = ({
                 {recommendations.map(rec => (
                     <div key={rec.titleId} className="relative group">
                         <Link
-                            to={`/Manga-Reader/title/${rec.titleId}`}
+                            to={`${WEB_BASE_URL}/title/${rec.titleId}`}
                             className="block overflow-hidden border rounded-xs border-tertiary"
                         >
                             {rec.titleCover ? (

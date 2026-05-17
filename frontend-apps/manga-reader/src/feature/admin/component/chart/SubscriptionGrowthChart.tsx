@@ -11,7 +11,7 @@ import {
 
 import { getLocale } from '@shared/util/formatters';
 
-import type { MonthlyGrowthEntry } from '../type/admin.types';
+import type { MonthlyGrowthEntry } from '../../type/admin.types';
 
 type Props = {
     entries: MonthlyGrowthEntry[];

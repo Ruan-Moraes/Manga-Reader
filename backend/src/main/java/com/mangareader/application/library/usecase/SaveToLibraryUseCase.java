@@ -3,6 +3,7 @@ package com.mangareader.application.library.usecase;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SaveToLibraryUseCase {
     private final LibraryRepositoryPort libraryRepository;
     private final UserRepositoryPort userRepository;

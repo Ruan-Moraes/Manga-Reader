@@ -18,10 +18,10 @@ describe('useCategoryFilters', () => {
         const { result } = renderHook(() => useCategoryFilters());
 
         act(() => {
-            result.current.handleSortChange('newest');
+            result.current.handleSortChange('most_recent');
         });
 
-        expect(result.current.selectedSort).toBe('newest');
+        expect(result.current.selectedSort).toBe('most_recent');
     });
 
     it('deve atualizar status ao chamar handleStatusChange', () => {

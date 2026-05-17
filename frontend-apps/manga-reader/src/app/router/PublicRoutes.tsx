@@ -1,25 +1,34 @@
-import Home from '@app/route/home/Home';
-import TitleDetailsPage from '@app/route/title/TitleDetails';
-import Chapter from '@app/route/chapter/Chapter';
-import CategoryFilters from '@app/route/category/CategoryFilters';
-import Groups from '@app/route/group/Groups';
-import GroupProfile from '@app/route/group/GroupProfile';
-import News from '@app/route/news/News';
-import NewsDetails from '@app/route/news/NewsDetails';
-import Events from '@app/route/event/Events';
-import EventDetails from '@app/route/event/EventDetails';
-import Login from '@app/route/login/Login';
-import SignUp from '@app/route/sign-up/SignUp';
-import ForgotPassword from '@app/route/forgot-password/ForgotPassword';
-import ResetPassword from '@app/route/forgot-password/ResetPassword';
-import AboutUs from '@app/route/about-us/AboutUs';
-import TermsOfUse from '@app/route/term/TermsOfUse';
-import Dmca from '@app/route/term/Dmca';
+import { lazy } from 'react';
+
 import NotFound from '@app/route/error/NotFound';
-import UserProfile from '@app/route/profile/UserProfile';
-import Forum from '@app/route/forum/Forum';
-import ForumTopic from '@app/route/forum/ForumTopic';
-import SearchResults from '@app/route/search/SearchResults';
+
+const Home = lazy(() => import('@app/route/home/Home'));
+const TitleDetailsPage = lazy(() => import('@app/route/title/TitleDetails'));
+const Chapter = lazy(() => import('@app/route/chapter/Chapter'));
+const CategoryFilters = lazy(
+    () => import('@app/route/category/CategoryFilters'),
+);
+const Groups = lazy(() => import('@app/route/group/Groups'));
+const GroupProfile = lazy(() => import('@app/route/group/GroupProfile'));
+const News = lazy(() => import('@app/route/news/News'));
+const NewsDetails = lazy(() => import('@app/route/news/NewsDetails'));
+const Events = lazy(() => import('@app/route/event/Events'));
+const EventDetails = lazy(() => import('@app/route/event/EventDetails'));
+const Login = lazy(() => import('@app/route/login/Login'));
+const SignUp = lazy(() => import('@app/route/sign-up/SignUp'));
+const ForgotPassword = lazy(
+    () => import('@app/route/forgot-password/ForgotPassword'),
+);
+const ResetPassword = lazy(
+    () => import('@app/route/forgot-password/ResetPassword'),
+);
+const AboutUs = lazy(() => import('@app/route/about-us/AboutUs'));
+const TermsOfUse = lazy(() => import('@app/route/term/TermsOfUse'));
+const Dmca = lazy(() => import('@app/route/term/Dmca'));
+const UserProfile = lazy(() => import('@app/route/profile/UserProfile'));
+const Forum = lazy(() => import('@app/route/forum/Forum'));
+const ForumTopic = lazy(() => import('@app/route/forum/ForumTopic'));
+const SearchResults = lazy(() => import('@app/route/search/SearchResults'));
 
 const publicRoutes = [
     {

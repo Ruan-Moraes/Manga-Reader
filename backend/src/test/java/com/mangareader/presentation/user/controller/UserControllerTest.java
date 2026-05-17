@@ -22,12 +22,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.auth.port.TokenPort;
-import com.mangareader.application.user.port.UserRepositoryPort;
-import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.application.user.usecase.AddRecommendationUseCase;
 import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase;
 import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
+import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
 import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
@@ -76,10 +75,7 @@ class UserControllerTest {
     private RecordViewHistoryUseCase recordViewHistoryUseCase;
 
     @MockitoBean
-    private ViewHistoryRepositoryPort viewHistoryRepository;
-
-    @MockitoBean
-    private UserRepositoryPort userRepository;
+    private GetUserViewHistoryUseCase getUserViewHistoryUseCase;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -228,7 +224,7 @@ class UserControllerTest {
 
             user.setContentLocales(List.of("en-US", "pt-BR"));
 
-            when(userRepository.findById(USER_ID)).thenReturn(java.util.Optional.of(user));
+            when(getUserProfileUseCase.execute(USER_ID)).thenReturn(user);
 
             mockMvc.perform(get("/api/users/me/content-locales").principal(mockAuth()))
                     .andExpect(status().isOk())

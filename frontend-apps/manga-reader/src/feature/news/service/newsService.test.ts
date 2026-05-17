@@ -2,8 +2,10 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { http, HttpResponse } from 'msw';
 
 import { server } from '@/test/mocks/server';
+
 import { API_URLS } from '@shared/constant/API_URLS';
-import type { NewsItem } from '../type/news.types';
+
+import type { NewsItem } from '@feature/news';
 
 import {
     getNews,
@@ -17,17 +19,30 @@ import {
 const buildNewsItem = (overrides: Partial<NewsItem> = {}): NewsItem => ({
     id: 'news-1',
     title: 'Nova noticia',
+    subtitle: 'Subtitulo da noticia',
     excerpt: 'Resumo da noticia',
-    content: 'Conteudo completo',
-    cover: 'cover.jpg',
+    content: ['Conteudo completo'],
+    coverImage: 'cover.jpg',
+    gallery: [],
     category: 'Lançamentos',
     tags: ['manga', 'anime'],
     source: 'MangaPlus',
-    author: { name: 'Editor', avatar: 'avatar.jpg' },
+    sourceLogo: 'mangaplus.png',
+    readTime: 5,
+    commentsCount: 0,
+    author: {
+        id: 'author-1',
+        name: 'Editor',
+        avatar: 'avatar.jpg',
+        role: 'editor',
+        profileLink: '/users/author-1',
+    },
     publishedAt: '2025-06-15T10:00:00Z',
     views: 1000,
     trendingScore: 90,
     isFeatured: false,
+    reactions: { like: 0, excited: 0, sad: 0, surprised: 0 },
+    comments: [],
     ...overrides,
 });
 

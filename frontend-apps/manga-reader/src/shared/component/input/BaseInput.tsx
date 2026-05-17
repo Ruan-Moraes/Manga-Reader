@@ -1,8 +1,8 @@
 type BaseInputVariant = 'default' | 'outlined';
 
 type BaseInputTypes = {
-    label: string;
-    placeholder: string;
+    label?: string;
+    placeholder?: string;
     type: string;
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -26,7 +26,7 @@ const VARIANT_CLASSES: Record<BaseInputVariant, string> = {
 
 const BaseInput = ({
     label,
-    placeholder,
+    placeholder = '',
     type,
     value,
     onChange,

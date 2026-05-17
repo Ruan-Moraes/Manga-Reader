@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -34,7 +35,9 @@ const DashboardTitleForm = () => {
         enabled: isEditing,
     });
 
-    const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.PUBLICATION_STATUS);
+    const { data: statusOptions = [] } = useDomainLabels(
+        LABEL_TYPES.PUBLICATION_STATUS,
+    );
     const { data: allTags = [] } = useTagsFetch();
 
     const [form, setForm] = useState<FormState>({
@@ -65,7 +68,11 @@ const DashboardTitleForm = () => {
                 adult: existing.adult,
             });
             const matched = existing.genres
-                .map(g => allTags.find(t => t.label.toLowerCase() === g.toLowerCase()))
+                .map(g =>
+                    allTags.find(
+                        t => t.label.toLowerCase() === g.toLowerCase(),
+                    ),
+                )
                 .filter((t): t is Tag => t !== undefined);
             setSelectedTags(matched);
             setName(existing.name ?? {});
@@ -87,17 +94,17 @@ const DashboardTitleForm = () => {
 
         if (isEditing && titleId) {
             const result = await handleUpdate(titleId, data);
-            if (result) navigate('/Manga-Reader/dashboard/titles');
+            if (result) navigate(`${WEB_BASE_URL}/dashboard/titles`);
         } else {
             const result = await handleCreate(data);
-            if (result) navigate('/Manga-Reader/dashboard/titles');
+            if (result) navigate(`${WEB_BASE_URL}/dashboard/titles`);
         }
     };
 
     const handleDeleteClick = async () => {
         if (!titleId || !confirm(t('dashboard.titles.deleteConfirm'))) return;
         await handleDelete(titleId);
-        navigate('/Manga-Reader/dashboard/titles');
+        navigate(`${WEB_BASE_URL}/dashboard/titles`);
     };
 
     if (isEditing && isLoading) {
@@ -112,7 +119,7 @@ const DashboardTitleForm = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate('/Manga-Reader/dashboard/titles')}
+                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/titles`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <FiArrowLeft size={14} />
@@ -194,7 +201,9 @@ const DashboardTitleForm = () => {
                     <TagSelectInput
                         options={allTags}
                         onChange={setSelectedTags}
-                        placeholder={t('dashboard.titles.form.genresPlaceholder')}
+                        placeholder={t(
+                            'dashboard.titles.form.genresPlaceholder',
+                        )}
                     />
                 </div>
 

@@ -1,7 +1,10 @@
 import type { AdminTitle } from '@feature/admin/type/admin.types';
+import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildPage } from '../pageFactory';
+
+const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminTitleCounter = 0;
 
@@ -12,10 +15,10 @@ export const buildAdminTitle = (
 
     return {
         id: `admin-title-${adminTitleCounter}`,
-        name: `Titulo Admin ${adminTitleCounter}`,
+        name: loc(`Titulo Admin ${adminTitleCounter}`),
         type: 'MANGA',
         cover: `/covers/admin-title-${adminTitleCounter}.jpg`,
-        synopsis: 'Sinopse do titulo administrado.',
+        synopsis: loc('Sinopse do titulo administrado.'),
         genres: ['Action'],
         status: 'ongoing',
         author: 'Autor Admin',
@@ -47,7 +50,7 @@ export const adminTitlePresets = {
     minimal: () =>
         buildAdminTitle({
             cover: null,
-            synopsis: null,
+            synopsis: {},
             status: null,
             author: null,
             artist: null,

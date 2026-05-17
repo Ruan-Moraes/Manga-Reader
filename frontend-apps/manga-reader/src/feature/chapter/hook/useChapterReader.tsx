@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SingleValue, MultiValue } from 'react-select';
 import { SelectOption } from '@shared/component/ui/StyledSelect';
@@ -58,7 +59,7 @@ const useChapterReader = () => {
         (newValue: MultiValue<SelectOption> | SingleValue<SelectOption>) => {
             if (newValue && !Array.isArray(newValue)) {
                 navigate(
-                    `/Manga-Reader/title/${titleId}/${(newValue as SelectOption).value}`,
+                    `${WEB_BASE_URL}/title/${titleId}/${(newValue as SelectOption).value}`,
                 );
             }
         },

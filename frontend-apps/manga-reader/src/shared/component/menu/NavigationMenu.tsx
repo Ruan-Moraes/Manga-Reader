@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -151,7 +152,7 @@ const NavigationMenu = () => {
                             const trimmed = menuSearch.trim();
                             if (trimmed) {
                                 navigate(
-                                    `/Manga-Reader/search?q=${encodeURIComponent(trimmed)}`,
+                                    `${WEB_BASE_URL}/search?q=${encodeURIComponent(trimmed)}`,
                                 );
                                 closeMenu();
                                 setMenuSearch('');

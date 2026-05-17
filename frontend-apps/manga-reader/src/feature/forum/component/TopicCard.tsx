@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import {
     FiEye,
@@ -21,90 +22,90 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => {
     const { t } = useTranslation('forum');
 
     return (
-    <Link
-        to={`/Manga-Reader/forum/${topic.id}`}
-        className="flex gap-4 p-4 transition-colors border rounded-lg border-tertiary bg-secondary hover:bg-tertiary/30"
-    >
-        {/* Avatar */}
-        <UserAvatar
-            src={topic.author.avatar}
-            name={topic.author.name}
-            size="md"
-            rounded="full"
-        />
+        <Link
+            to={`${WEB_BASE_URL}/forum/${topic.id}`}
+            className="flex gap-4 p-4 transition-colors border rounded-lg border-tertiary bg-secondary hover:bg-tertiary/30"
+        >
+            {/* Avatar */}
+            <UserAvatar
+                src={topic.author.avatar}
+                name={topic.author.name}
+                size="md"
+                rounded="full"
+            />
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-            {/* Title row */}
-            <div className="flex flex-wrap items-center gap-2">
-                {topic.isPinned && (
-                    <FiBookmark
-                        className="text-yellow-400 shrink-0"
-                        size={14}
-                    />
-                )}
-                {topic.isLocked && (
-                    <FiLock className="text-red-400 shrink-0" size={14} />
-                )}
-                {topic.isSolved && (
-                    <FiCheckCircle
-                        className="text-green-400 shrink-0"
-                        size={14}
-                    />
-                )}
-                <h3 className="text-sm font-semibold truncate text-shadow-default">
-                    {topic.title}
-                </h3>
-                <LanguageBadge language={topic.language} />
-            </div>
-
-            {/* Meta row */}
-            <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-shadow-secondary">
-                <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getCategoryColor(topic.category)}`}
-                >
-                    {topic.category}
-                </span>
-                <span>
-                    {t('topic.authoredBy', { name: topic.author.name })}
-                </span>
-                <span>·</span>
-                <span>{formatRelativeDate(topic.createdAt)}</span>
-            </div>
-
-            {/* Tags */}
-            {topic.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                    {topic.tags.map(tag => (
-                        <span
-                            key={tag}
-                            className="px-2 py-0.5 text-[10px] rounded bg-tertiary text-shadow-secondary"
-                        >
-                            {tag}
-                        </span>
-                    ))}
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+                {/* Title row */}
+                <div className="flex flex-wrap items-center gap-2">
+                    {topic.isPinned && (
+                        <FiBookmark
+                            className="text-yellow-400 shrink-0"
+                            size={14}
+                        />
+                    )}
+                    {topic.isLocked && (
+                        <FiLock className="text-red-400 shrink-0" size={14} />
+                    )}
+                    {topic.isSolved && (
+                        <FiCheckCircle
+                            className="text-green-400 shrink-0"
+                            size={14}
+                        />
+                    )}
+                    <h3 className="text-sm font-semibold truncate text-shadow-default">
+                        {topic.title}
+                    </h3>
+                    <LanguageBadge language={topic.language} />
                 </div>
-            )}
 
-            {/* Preview */}
-            <p className="mt-2 text-xs line-clamp-2 text-shadow-secondary">
-                {topic.content}
-            </p>
-        </div>
+                {/* Meta row */}
+                <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-shadow-secondary">
+                    <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getCategoryColor(topic.category)}`}
+                    >
+                        {topic.category}
+                    </span>
+                    <span>
+                        {t('topic.authoredBy', { name: topic.author.name })}
+                    </span>
+                    <span>·</span>
+                    <span>{formatRelativeDate(topic.createdAt)}</span>
+                </div>
 
-        {/* Stats */}
-        <div className="flex flex-col items-end gap-1 text-xs shrink-0 text-shadow-secondary">
-            <span className="flex items-center gap-1">
-                <FiMessageCircle size={12} /> {topic.replyCount}
-            </span>
-            <span className="flex items-center gap-1">
-                <FiEye size={12} /> {topic.viewCount}
-            </span>
-            <span className="flex items-center gap-1">
-                <FiHeart size={12} /> {topic.likeCount}
-            </span>
-        </div>
-    </Link>
+                {/* Tags */}
+                {topic.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {topic.tags.map(tag => (
+                            <span
+                                key={tag}
+                                className="px-2 py-0.5 text-[10px] rounded bg-tertiary text-shadow-secondary"
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                {/* Preview */}
+                <p className="mt-2 text-xs line-clamp-2 text-shadow-secondary">
+                    {topic.content}
+                </p>
+            </div>
+
+            {/* Stats */}
+            <div className="flex flex-col items-end gap-1 text-xs shrink-0 text-shadow-secondary">
+                <span className="flex items-center gap-1">
+                    <FiMessageCircle size={12} /> {topic.replyCount}
+                </span>
+                <span className="flex items-center gap-1">
+                    <FiEye size={12} /> {topic.viewCount}
+                </span>
+                <span className="flex items-center gap-1">
+                    <FiHeart size={12} /> {topic.likeCount}
+                </span>
+            </div>
+        </Link>
     );
 };
 

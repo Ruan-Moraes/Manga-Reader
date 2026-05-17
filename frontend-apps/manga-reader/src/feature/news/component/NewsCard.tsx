@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 import { FiBookOpen, FiBookmark, FiShare2, FiTrendingUp } from 'react-icons/fi';
 
@@ -43,7 +44,7 @@ const NewsCard = ({
             <div className="mt-2 space-y-2">
                 <h3 className="font-semibold leading-snug line-clamp-2">
                     <Link
-                        to={`/Manga-Reader/news/${news.id}`}
+                        to={`${WEB_BASE_URL}/news/${news.id}`}
                         onClick={() => onMarkRead(news.id)}
                     >
                         {news.title}
