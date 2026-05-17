@@ -43,8 +43,9 @@ public class V007DropLegacyTextIndexes {
     private void dropIndexIfExists(String collection, String indexName) {
         try {
             mongoTemplate.indexOps(collection).dropIndex(indexName);
-        } catch (Exception ignored) {
-            // Idempotente — índice já removido ou nunca existiu.
+        } catch (org.springframework.dao.DataAccessException ignored) {
+            // Idempotente — índice já removido ou nunca existiu. Só engole
+            // erro de acesso a dados; falha de programação propaga.
         }
     }
 }
