@@ -100,59 +100,7 @@ espalhados (ex.: `news/*`, `event/*`, `dashboard/*`, `forum/*`). Migrar para
 
 ---
 
-### DT-17: Capítulos embedded no documento Title (crescimento ilimitado)
-
-**Descrição**: `Title` (MongoDB) embarca a lista de `chapters` no próprio
-documento. Títulos longos (mangás com 1000+ capítulos) fazem o documento
-crescer sem limite. `ChapterController.getAll` retorna `List<ChapterResponse>`
-sem paginação — mas paginar a lista já carregada em memória não traz ganho de
-I/O (o documento Title inteiro é buscado de qualquer forma).
-
-**Impacto**:
-- Risco de atingir o limite de 16 MB por documento do MongoDB em séries longas.
-- `ChapterController.getAll` sem paginação (viola regra de listagem), porém o
-  fix correto não é paginar em memória.
-
-**Recomendação**: mover `chapters` para coleção própria referenciada por
-`titleId` (CLAUDE Mongo Guidelines: "referenciar quando o documento embarcado
-pode crescer sem limite"), então paginar de fato no banco. Mudança de modelo
-+ migração Mongock — **fora do escopo de correção de anti-padrão**, requer
-decisão de produto. Baixa-Média prioridade (não-bloqueante enquanto séries
-forem curtas).
-
----
-
-### DT-18: N+1 em listagens JPA (eventos / tópicos de fórum)
-
-**Descrição**: use cases de listagem inicializam coleções `@OneToMany`
-(LAZY) por linha, gerando N+1:
-- `GetEventsUseCase` / `GetEventsByStatusUseCase` / `ListAdminEventsUseCase`:
-  `page.getContent().forEach(e -> e.getTickets().size())` — 1 query da página
-  + N queries de `tickets` (um SELECT por evento).
-- `GetForumTopicsUseCase` / `GetForumTopicsByCategoryUseCase`:
-  `topic.getReplies().forEach(r -> r.getAuthor().getName())` — N queries de
-  `replies` por tópico + M de `author` por reply. Além disso, mapear **todas**
-  as replies dentro de uma listagem é desperdício de payload (design smell —
-  listagem deveria expor só `replyCount`).
-
-Itens single-entity (`GetEventByIdUseCase`, `GetForumTopicByIdUseCase`,
-`GetEnrichedProfileUseCase`, `GetUserDetailsUseCase`) fazem `.size()` uma vez
-sobre um agregado — aceitável, não é N+1.
-
-**Impacto**: degradação silenciosa de performance proporcional ao tamanho da
-página; pior no fórum (N+1 aninhado). Mascarado em testes por volumes pequenos.
-
-**Recomendação** (CLAUDE ORM Guidelines):
-- Eventos: `@EntityGraph`/two-query para hidratar `tickets` da página em 1
-  query extra, ou projeção DTO se a listagem não precisa dos tickets.
-- Fórum: **não** mapear replies na listagem — expor `replyCount` (escalar) e
-  carregar replies só no detalhe (`GetForumTopicById`).
-- Adicionar `hibernate.generate_statistics` + teste de contagem de query na
-  listagem como guarda de regressão.
-
-**Fora do escopo de quick-fix**: altera repository queries (cuidado com
-`HHH000104` paginação+fetch) e possivelmente o shape da resposta do fórum
-(impacto no frontend) — requer design + coordenação. Média prioridade.
+_(DT-17 e DT-18 resolvidos em 2026-05-17 — ver tabela de resolvidos.)_
 
 ---
 
@@ -171,6 +119,8 @@ página; pior no fórum (N+1 aninhado). Mascarado em testes por volumes pequenos
 | DT-12 | `localhost:5000` em useCategoryFilters | **Stale** — hook não tem mais fetch hardcoded (só state) |
 | DT-14 | Sem i18n | **Stale** — i18n completo (pt-BR/en-US/es-ES) via `react-i18next`, 16 namespaces |
 | DT-15 | React Query DevTools comentado | Habilitado em `main.tsx` apenas em dev (`import.meta.env.DEV`) |
+| DT-17 | Capítulos embedded em `Title` (risco 16MB) | Coleção própria `chapters` (titleId + índice único); `ChapterRepositoryPort/Adapter` paginado + `countByTitleIdIn` agregado; `GetChapters*` paginados; `TitleResponse` sem chapters; migração Mongock V009 (idempotente, $unset); seed + frontend (`useChapters`, endpoint `/api/titles/{id}/chapters`) (2026-05-17) |
+| DT-18 | N+1 em listagens (eventos/fórum) | Eventos: `EventSummaryResponse` sem tickets na listagem (frontend não usa), tickets só no detalhe; sem `forEach(getTickets)`. Fórum: `ForumTopicSummaryResponse` sem replies, `@EntityGraph(author)`. Extra: `EventRepositoryAdapter.searchByTitle` → query nativa paginada (jsonb) em vez de carregar todos em memória (2026-05-17) |
 
 ### Itens Resolvidos (anteriores)
 
@@ -188,6 +138,6 @@ página; pior no fórum (N+1 aninhado). Mascarado em testes por volumes pequenos
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 4 | DT-08, DT-10, DT-17, DT-18 |
+| **Média** | 2 | DT-08, DT-10 |
 | **Baixa** | 2 | DT-03, DT-09 |
-| **Resolvidos 2026-05-16/17** | 11 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16 |
+| **Resolvidos 2026-05-16/17** | 13 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18 |

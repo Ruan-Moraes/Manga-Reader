@@ -10,17 +10,17 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ 1356 testes (1023 backend + 333 frontend) — **0 falhas** |
+| **Build** | ✅ 1371 testes (1032 backend + 339 frontend) — **0 falhas** |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
 [✅] Fase 6:   Frontend UI (páginas, features, layout, guards)
-[✅] Fase 7:   Testes do backend (1023 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
+[✅] Fase 7:   Testes do backend (1032 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
 [✅] Fase 8:   Integração frontend ↔ backend (features com API real)
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
        ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy)
-       ├─ ✅ 9c-testes: Testes frontend (48 arquivos, 333 testes — services, hooks, utils, componentes)
+       ├─ ✅ 9c-testes: Testes frontend (50 arquivos, 339 testes — services, hooks, utils, componentes)
        ├─ ✅ 9d-i18n: Internacionalização (pt-BR, en-US, es-ES)
        │      ├─ ✅ Infra frontend (i18next + LanguageSwitcher + namespaces)
        │      ├─ ✅ Backend (MessageSource + DTOs + SecurityExceptionHandler + emails)
@@ -67,8 +67,8 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Pacotes compartilhados frontend | **4** (assets, design-tokens, tsconfig, types) |
 | Features frontend (manga-reader) | **17** módulos |
 | Idiomas suportados | **3** (pt-BR padrão/fallback, en-US, es-ES) |
-| Testes backend | **1023** (0 falhas) |
-| Testes frontend | **333** (48 arquivos, 0 falhas) |
+| Testes backend | **1032** (0 falhas) |
+| Testes frontend | **339** (50 arquivos, 0 falhas) |
 
 ---
 
@@ -204,7 +204,7 @@ pnpm --filter landing-page dev    # landing page
 ### Testes
 
 ```bash
-# Backend (1023 testes)
+# Backend (1032 testes)
 cd backend
 mvn test                                    # Todos
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
@@ -260,7 +260,7 @@ Manga-Reader/
 
 **167+ arquivos · 1355 testes · 0 falhas**
 
-### Backend — 1023 testes
+### Backend — 1032 testes
 
 | Camada | Anotação | Abordagem |
 |--------|----------|-----------|
