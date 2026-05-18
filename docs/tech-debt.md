@@ -132,6 +132,35 @@ write de capítulo) e religar os cards; (2) paginação real de UI no
 
 ---
 
+### DT-20: Fragilidade dos testes Mongock + TestContainers
+
+**Descrição**: numa execução de `mvn test` (2026-05-18), 9 erros
+`DataAccessResourceFailure: ... Connection refused` nos testes que usam
+MongoDB TestContainers (`V004LocalizeCatalogContentTest`,
+`V005AddLanguageToUgcTest`, `V009MigrateChaptersToCollectionTest` — falha em
+`@BeforeEach`/`clean`). O container Mongo estava reiniciando
+(`health: starting`). Reexecução passou (1036, 0 falha) — **não é defeito de
+código**, é flakiness de infraestrutura de teste.
+
+**Impacto**: builds de CI ficam não-determinísticos (falsos vermelhos);
+agravado após habilitar também `testcontainers:postgresql` (mais containers
+concorrendo por recursos Docker, suíte mais pesada/lenta).
+
+**Recomendação**:
+- Reusar um único container por suíte (singleton container pattern /
+  `@Testcontainers` com container `static` compartilhado) em vez de subir/
+  derrubar por classe.
+- Healthcheck/espera explícita antes do primeiro acesso; aumentar
+  `startup timeout`.
+- Avaliar agrupar todos os testes Mongock numa classe/ordem dedicada para
+  reduzir ciclos de container.
+- Em CI: garantir Docker com recursos suficientes; possível retry
+  automático só para a camada de testes de container.
+
+Média prioridade (não bloqueia código; bloqueia confiabilidade de CI).
+
+---
+
 ## Itens Resolvidos (2026-05-16)
 
 | ID | Dívida | Resolução |
@@ -168,5 +197,6 @@ write de capítulo) e religar os cards; (2) paginação real de UI no
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08, DT-10 |
 | **Baixa-Média** | 1 | DT-19 (resíduos frontend DT-17) |
+| **Média (CI)** | 1 | DT-20 (flake Mongock + TestContainers) |
 | **Baixa** | 2 | DT-03, DT-09 |
 | **Resolvidos 2026-05-16/17** | 13 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18 |
