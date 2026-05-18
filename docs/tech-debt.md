@@ -104,6 +104,34 @@ _(DT-17 e DT-18 resolvidos em 2026-05-17 — ver tabela de resolvidos.)_
 
 ---
 
+### DT-19: Resíduos frontend da migração de capítulos (DT-17)
+
+**Origem**: ao mover capítulos para coleção própria (DT-17), `Title` deixou de
+embarcar `chapters`. O tipo `Title.chapters` virou opcional para evitar ripple,
+mas dois pontos ficaram degradados:
+
+1. **Badge "último capítulo" no catálogo**: cards (`VerticalCard`,
+   `CategoryFilters`, `HorizontalCard`, etc.) liam `title.chapters` para exibir
+   o capítulo mais recente. Como o backend não envia mais `chapters` no
+   `TitleResponse`, esses badges renderizam vazio. Fix correto: expor um campo
+   leve no `TitleResponse` (ex.: `latestChapterNumber`/`chaptersCount`
+   desnormalizado) ou buscar via endpoint dedicado nos cards.
+2. **`ChapterList` pagina em memória**: a página de detalhe usa
+   `useChapters(size=500)` e o `ChapterList` continua paginando o array no
+   cliente. Server-side pagination de UI (controles + `page/size` reais) é
+   evolução pendente — o risco crítico (documento 16 MB) já está resolvido no
+   backend, então isto é não-bloqueante.
+
+**Impacto**: cosmético (badge vazio) + UX de listagem de capítulos não escala
+para séries muito longas na tela de detalhe. Sem risco de dados.
+
+**Recomendação**: (1) adicionar `chaptersCount`/`latestChapterNumber`
+desnormalizado ao `TitleResponse` (consolidado por job ou atualizado em
+write de capítulo) e religar os cards; (2) paginação real de UI no
+`ChapterList`. Baixa-Média prioridade.
+
+---
+
 ## Itens Resolvidos (2026-05-16)
 
 | ID | Dívida | Resolução |
@@ -139,5 +167,6 @@ _(DT-17 e DT-18 resolvidos em 2026-05-17 — ver tabela de resolvidos.)_
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08, DT-10 |
+| **Baixa-Média** | 1 | DT-19 (resíduos frontend DT-17) |
 | **Baixa** | 2 | DT-03, DT-09 |
 | **Resolvidos 2026-05-16/17** | 13 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18 |
