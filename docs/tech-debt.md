@@ -161,6 +161,55 @@ Média prioridade (não bloqueia código; bloqueia confiabilidade de CI).
 
 ---
 
+### DT-21: Migração V009 nunca validada contra Mongo de produção
+
+**Descrição**: `V009MigrateChaptersToCollection` (DT-17 — move
+`titles.chapters[]` embedded para coleção `chapters`) só foi exercitada via
+TestContainers (migra + idempotente + título sem chapters). O projeto nunca
+foi a produção; a migração roda no **boot da aplicação** (Mongock) e ainda
+não enfrentou dados reais/volume.
+
+**Impacto**: risco residual no primeiro deploy — documentos legados
+inesperados (chapters malformados, `_id` não-String, títulos com milhares de
+capítulos) podem se comportar diferente do dataset de teste. Mongock **não é
+transacional** no projeto: falha no meio deixa estado parcial.
+
+**Recomendação**:
+- Antes do primeiro deploy: dump/restore de um dump representativo de prod em
+  staging e rodar o boot com V009; conferir contagem
+  `sum(titles.chapters.size)` == `chapters.count()` e ausência de
+  `titles.chapters`.
+- Backup do banco antes do deploy que aplicar V009.
+- Logar métricas na execução (títulos processados, capítulos inseridos) para
+  auditoria pós-migração.
+
+Bloqueia produção do recurso de capítulos até validação em staging.
+
+---
+
+### DT-22: Suíte de testes mais pesada (Postgres TestContainers)
+
+**Descrição**: para cobrir `EventRepositoryAdapter.searchByTitle` (query
+`jsonb_each_text`, não suportada por H2) foi habilitada a dependência
+`org.testcontainers:postgresql` e criado `EventSearchByTitlePostgresTest`
+(~17 s só essa classe, sobe container `postgres:17`). Antes, testes JPA
+usavam só H2 (sem Docker).
+
+**Impacto**: `mvn test` agora exige Docker também para Postgres (além do
+Mongo já existente); suíte mais lenta e mais sensível a recursos (ver
+DT-20). Ambientes sem Docker não rodam a suíte completa.
+
+**Recomendação**:
+- Singleton container Postgres reutilizado entre classes (quando houver
+  mais testes Postgres-TC), padrão consistente com DT-20.
+- Tag/grupo separado (ex.: `@Tag("testcontainers")`) para permitir rodar
+  só os testes leves (H2/unit) localmente e os de container em CI.
+- Documentar requisito de Docker no README de testes.
+
+Baixa-Média prioridade (trade-off aceito: cobertura real do JSONB > custo).
+
+---
+
 ## Itens Resolvidos (2026-05-16)
 
 | ID | Dívida | Resolução |
@@ -196,7 +245,8 @@ Média prioridade (não bloqueia código; bloqueia confiabilidade de CI).
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08, DT-10 |
-| **Baixa-Média** | 1 | DT-19 (resíduos frontend DT-17) |
+| **Baixa-Média** | 2 | DT-19 (resíduos frontend DT-17), DT-22 (peso suíte Postgres-TC) |
 | **Média (CI)** | 1 | DT-20 (flake Mongock + TestContainers) |
+| **Bloqueia prod (capítulos)** | 1 | DT-21 (V009 sem validação em staging/prod) |
 | **Baixa** | 2 | DT-03, DT-09 |
 | **Resolvidos 2026-05-16/17** | 13 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18 |
