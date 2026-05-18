@@ -14,7 +14,7 @@ export const getChaptersByTitleId = async (
     size = 50,
 ): Promise<PageResponse<Chapter>> => {
     const response = await api.get<ApiResponse<PageResponse<Chapter>>>(
-        `${API_URLS.CHAPTERS}/title/${titleId}`,
+        `${API_URLS.TITLES}/${titleId}/chapters`,
         { params: { page, size } },
     );
 
@@ -26,7 +26,7 @@ export const getChapterByNumber = async (
     chapterNumber: string,
 ): Promise<Chapter> => {
     const response = await api.get<ApiResponse<Chapter>>(
-        `${API_URLS.CHAPTERS}/title/${titleId}/${chapterNumber}`,
+        `${API_URLS.TITLES}/${titleId}/chapters/${chapterNumber}`,
     );
 
     return response.data.data;

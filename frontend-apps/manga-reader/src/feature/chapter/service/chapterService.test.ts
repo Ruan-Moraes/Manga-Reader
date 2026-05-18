@@ -23,7 +23,7 @@ describe('chapterService', () => {
             ];
 
             server.use(
-                http.get(`*${API_URLS.CHAPTERS}/title/title-1`, () =>
+                http.get(`*${API_URLS.TITLES}/title-1/chapters`, () =>
                     HttpResponse.json({
                         data: {
                             content: chapters,
@@ -47,7 +47,7 @@ describe('chapterService', () => {
         it('deve passar parametros de paginacao', async () => {
             server.use(
                 http.get(
-                    `*${API_URLS.CHAPTERS}/title/title-1`,
+                    `*${API_URLS.TITLES}/title-1/chapters`,
                     ({ request }) => {
                         const url = new URL(request.url);
                         expect(url.searchParams.get('page')).toBe('1');
@@ -72,7 +72,7 @@ describe('chapterService', () => {
 
         it('deve propagar erro quando API falha', async () => {
             server.use(
-                http.get(`*${API_URLS.CHAPTERS}/title/title-1`, () =>
+                http.get(`*${API_URLS.TITLES}/title-1/chapters`, () =>
                     HttpResponse.json(null, { status: 500 }),
                 ),
             );
@@ -86,7 +86,7 @@ describe('chapterService', () => {
             const chapter = buildChapter({ number: '5', title: 'Capitulo 5' });
 
             server.use(
-                http.get(`*${API_URLS.CHAPTERS}/title/title-1/5`, () =>
+                http.get(`*${API_URLS.TITLES}/title-1/chapters/5`, () =>
                     HttpResponse.json({ data: chapter, success: true }),
                 ),
             );
@@ -99,7 +99,7 @@ describe('chapterService', () => {
 
         it('deve lançar erro quando API retorna 500', async () => {
             server.use(
-                http.get(`*${API_URLS.CHAPTERS}/title/title-1/5`, () =>
+                http.get(`*${API_URLS.TITLES}/title-1/chapters/5`, () =>
                     HttpResponse.json(null, { status: 500 }),
                 ),
             );

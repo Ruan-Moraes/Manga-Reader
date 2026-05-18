@@ -9,6 +9,7 @@ export { default as ChapterBottomBar } from './component/ChapterBottomBar';
 // Hooks
 export { default as useChapterReader } from './hook/useChapterReader';
 export { default as useChapterSort } from './hook/useChapterSort';
+export { default as useChapters } from './hook/useChapters';
 
 // Types
 export type { Chapter } from './type/chapter.types';

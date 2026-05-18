@@ -7,7 +7,9 @@ export type Title = {
     name: string;
     synopsis: string;
     genres: string[];
-    chapters: Chapter[];
+    // Capítulos não vêm mais embarcados no Title (DT-17) — buscados via
+    // endpoint paginado /api/titles/{id}/chapters. Opcional para compat.
+    chapters?: Chapter[];
     popularity: string;
     ratingAverage: number;
     ratingCount: number;

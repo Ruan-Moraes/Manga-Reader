@@ -34,7 +34,12 @@ import {
     RatingModal,
     RecentReviews,
 } from '@feature/rating';
-import { ChapterFilter, ChapterList, useChapterSort } from '@feature/chapter';
+import {
+    ChapterFilter,
+    ChapterList,
+    useChapterSort,
+    useChapters,
+} from '@feature/chapter';
 import { GroupsModal } from '@feature/group';
 import { StoresModal } from '@feature/store';
 import { getStoredSession } from '@feature/auth/service/authService';
@@ -90,15 +95,15 @@ const TitleDetailsPage = () => {
         crossLanguage: commentsCrossLanguage,
     });
 
+    const { chapters: fetchedChapters } = useChapters(rawTitleId ?? '');
+
     const {
         isAscending,
         searchTerm,
         setSearchTerm,
         handleSortClick,
         filteredAndSortedChapters,
-    } = useChapterSort(
-        title && !(title instanceof Error) ? title.chapters : [],
-    );
+    } = useChapterSort(fetchedChapters);
 
     const { toggleBookmark, isSaved } = useBookmark();
     const { submitRating, ratings, average } = useRating(String(id));
@@ -141,7 +146,6 @@ const TitleDetailsPage = () => {
         name,
         synopsis,
         genres,
-        chapters,
         popularity,
         ratingAverage,
         ratingCount,
@@ -185,7 +189,7 @@ const TitleDetailsPage = () => {
                         name={name}
                         synopsis={synopsis}
                         genres={genres}
-                        chapters={chapters}
+                        chapters={fetchedChapters}
                         popularity={popularity}
                         ratingAverage={ratingAverage}
                         ratingCount={ratingCount}
