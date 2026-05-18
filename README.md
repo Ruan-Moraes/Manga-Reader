@@ -114,7 +114,7 @@ frontend-apps/
 | Banco | Tech | Responsável por |
 |-------|------|----------------|
 | **PostgreSQL** | JPA/Hibernate + Flyway (19 migrations, 14 repos) | users, groups, events, forum, library, stores, tags, subscriptions, payments, domain labels |
-| **MongoDB** | Spring Data Mongo + Mongock (7 repos) | titles, chapters, comments, ratings, news, view history |
+| **MongoDB** | Spring Data Mongo + Mongock (9 migrations, 8 repos) | titles, **chapters** (coleção própria — DT-17, `GET /api/titles/{id}/chapters` paginado), comments, ratings, news, view history |
 
 ---
 

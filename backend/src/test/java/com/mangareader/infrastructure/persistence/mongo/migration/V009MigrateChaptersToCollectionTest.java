@@ -84,4 +84,20 @@ class V009MigrateChaptersToCollectionTest {
         assertThat(mongoTemplate.getCollection("chapters").countDocuments())
                 .isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("Título sem campo chapters não é afetado nem gera capítulos")
+    void semChaptersNaoAfeta() {
+        var titles = mongoTemplate.getCollection("titles");
+        titles.insertOne(new Document("_id", "t-sem")
+                .append("name", new Document("pt-BR", "Sem capítulos")));
+
+        new V009MigrateChaptersToCollection(mongoTemplate).execute();
+
+        assertThat(mongoTemplate.getCollection("chapters").countDocuments())
+                .isZero();
+        var doc = titles.find(new Document("_id", "t-sem")).first();
+        assertThat(doc).isNotNull();
+        assertThat(doc.get("name")).isNotNull();
+    }
 }
