@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -42,8 +43,8 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @ActiveProfiles("test")
 @Import(MongoTestContainerConfig.class)
 @DisplayName("Auth Security — Integração E2E")
+@Tag("testcontainers")
 class AuthSecurityIntegrationTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -87,15 +88,10 @@ class AuthSecurityIntegrationTest {
         return root.get("data");
     }
 
-    // =========================================================================
-    // Fluxo Completo (Happy Path)
-    // =========================================================================
-
     @Nested
     @DisplayName("Fluxo Completo (Happy Path)")
     @TestMethodOrder(OrderAnnotation.class)
     class HappyPathTests {
-
         @Test
         @Order(1)
         @DisplayName("Sign-up deve retornar 201 com tokens e dados do usuario")
@@ -114,6 +110,7 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(result);
+
             assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
             assertThat(tokenPort.isTokenValid(data.get("refreshToken").asText())).isTrue();
         }
@@ -159,6 +156,7 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(result);
+
             assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
         }
 
@@ -205,6 +203,7 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(refreshResult);
+
             assertThat(tokenPort.isTokenValid(data.get("accessToken").asText())).isTrue();
             assertThat(tokenPort.isTokenValid(data.get("refreshToken").asText())).isTrue();
         }
@@ -235,14 +234,9 @@ class AuthSecurityIntegrationTest {
         }
     }
 
-    // =========================================================================
-    // Erros de Autenticação
-    // =========================================================================
-
     @Nested
     @DisplayName("Erros de Autenticacao")
     class AuthErrorTests {
-
         @Test
         @DisplayName("Sign-up com email duplicado deve retornar 409")
         void signUpDuplicateEmailShouldReturn409() throws Exception {
@@ -307,14 +301,9 @@ class AuthSecurityIntegrationTest {
         }
     }
 
-    // =========================================================================
-    // Validação de Claims JWT
-    // =========================================================================
-
     @Nested
     @DisplayName("Validacao de Claims JWT")
     class JwtClaimsTests {
-
         @Test
         @DisplayName("Access token deve conter userId, email, role e type null")
         void accessTokenShouldHaveCorrectClaims() throws Exception {
@@ -324,6 +313,7 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(result);
+
             String accessToken = data.get("accessToken").asText();
             String userId = data.get("userId").asText();
 
@@ -342,6 +332,7 @@ class AuthSecurityIntegrationTest {
                     .andReturn();
 
             JsonNode data = extractData(result);
+
             String refreshToken = data.get("refreshToken").asText();
             String userId = data.get("userId").asText();
 
@@ -350,14 +341,9 @@ class AuthSecurityIntegrationTest {
         }
     }
 
-    // =========================================================================
-    // Endpoints Públicos vs Protegidos
-    // =========================================================================
-
     @Nested
     @DisplayName("Endpoints Publicos vs Protegidos")
     class PublicVsProtectedTests {
-
         @Test
         @DisplayName("GET /api/titles sem token deve retornar 200 (publico)")
         void publicEndpointShouldBeAccessibleWithoutToken() throws Exception {

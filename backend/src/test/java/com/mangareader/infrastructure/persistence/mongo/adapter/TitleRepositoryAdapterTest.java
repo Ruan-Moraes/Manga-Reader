@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -24,6 +25,7 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @ActiveProfiles("test")
 @Import({TitleRepositoryAdapter.class, MongoTestContainerConfig.class})
 @DisplayName("TitleRepositoryAdapter — Integração MongoDB")
+@Tag("testcontainers")
 class TitleRepositoryAdapterTest {
     @Autowired
     private TitleRepositoryPort titleRepository;

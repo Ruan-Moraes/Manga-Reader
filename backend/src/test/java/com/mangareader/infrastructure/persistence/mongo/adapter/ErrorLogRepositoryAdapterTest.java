@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -19,6 +20,7 @@ import com.mangareader.infrastructure.persistence.mongo.repository.ErrorLogMongo
 @ActiveProfiles("test")
 @Import(MongoTestContainerConfig.class)
 @DisplayName("ErrorLogRepositoryAdapter")
+@Tag("testcontainers")
 class ErrorLogRepositoryAdapterTest {
     @Autowired
     private ErrorLogMongoRepository mongoRepository;

@@ -1,6 +1,7 @@
 package com.mangareader;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -18,6 +19,7 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @ActiveProfiles("test")
 @Import(MongoTestContainerConfig.class)
 @DisplayName("MangaReaderApplication — carga de contexto")
+@Tag("testcontainers")
 class MangaReaderApplicationTests {
 
     @Test

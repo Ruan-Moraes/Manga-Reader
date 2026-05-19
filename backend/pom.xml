@@ -23,6 +23,9 @@
         <jjwt.version>0.12.6</jjwt.version>
         <!-- Phase 8: MongoDB migrations -->
         <mongock.version>5.5.0</mongock.version>
+        <!-- DT-22: grupos JUnit excluídos do surefire (default: nenhum).
+             Suíte leve sem Docker: mvn test -Dtest.excludedGroups=testcontainers -->
+        <test.excludedGroups></test.excludedGroups>
     </properties>
     <dependencies>
         <dependency>
@@ -220,6 +223,15 @@
                     <compilerArgs>
                         <arg>-Amapstruct.defaultComponentModel=spring</arg>
                     </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- DT-22: permite pular testes de container
+                         (mvn test -Dtest.excludedGroups=testcontainers) -->
+                    <excludedGroups>${test.excludedGroups}</excludedGroups>
                 </configuration>
             </plugin>
             <plugin>

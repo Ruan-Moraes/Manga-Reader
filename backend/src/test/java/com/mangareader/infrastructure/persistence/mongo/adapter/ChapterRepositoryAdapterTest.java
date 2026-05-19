@@ -7,11 +7,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.IndexResolver;
@@ -27,8 +29,8 @@ import com.mangareader.shared.domain.i18n.LocalizedString;
 @ActiveProfiles("test")
 @Import({ChapterRepositoryAdapter.class, MongoTestContainerConfig.class})
 @DisplayName("ChapterRepositoryAdapter — Integração MongoDB")
+@Tag("testcontainers")
 class ChapterRepositoryAdapterTest {
-
     @Autowired
     private ChapterRepositoryPort chapterRepository;
 
@@ -40,8 +42,10 @@ class ChapterRepositoryAdapterTest {
         mongoTemplate.dropCollection(Chapter.class);
 
         IndexOperations indexOps = mongoTemplate.indexOps(Chapter.class);
+
         IndexResolver resolver = new MongoPersistentEntityIndexResolver(
                 mongoTemplate.getConverter().getMappingContext());
+
         resolver.resolveIndexFor(Chapter.class).forEach(indexOps::ensureIndex);
 
         chapterRepository.saveAll(List.of(
@@ -74,12 +78,60 @@ class ChapterRepositoryAdapterTest {
     }
 
     @Nested
+    @DisplayName("ordenação numérica e último capítulo")
+    class NumericOrdering {
+        @BeforeEach
+        void extraData() {
+            chapterRepository.saveAll(List.of(
+                    chapter("t1", "10", "Dez"),
+                    chapter("t3", "Extra", "Especial")));
+        }
+
+        @Test
+        @DisplayName("findByTitleId ordena por valor numérico, não lexicográfico")
+        void ordenaNumerico() {
+            var asc = chapterRepository.findByTitleId(
+                    "t1", PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "number")));
+
+            assertThat(asc.getContent()).extracting(Chapter::getNumber)
+                    .containsExactly("1", "2");
+            assertThat(asc.getTotalElements()).isEqualTo(4);
+
+            var desc = chapterRepository.findByTitleId(
+                    "t1", PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "number")));
+
+            assertThat(desc.getContent()).extracting(Chapter::getNumber)
+                    .containsExactly("10", "3");
+        }
+
+        @Test
+        @DisplayName("latestChapterNumberByTitleIdIn — maior numérico por título")
+        void latestPorTitulo() {
+            var latest = chapterRepository.latestChapterNumberByTitleIdIn(
+                    List.of("t1", "t2", "t3", "nope"));
+
+            assertThat(latest).containsEntry("t1", "10");
+            assertThat(latest).containsEntry("t2", "1");
+            assertThat(latest).containsEntry("t3", "Extra");
+            assertThat(latest).doesNotContainKey("nope");
+        }
+
+        @Test
+        @DisplayName("latestChapterNumberByTitleIdIn — vazio quando ids vazios")
+        void vazio() {
+            assertThat(chapterRepository.latestChapterNumberByTitleIdIn(List.of()))
+                    .isEmpty();
+        }
+    }
+
+    @Nested
     @DisplayName("findByTitleIdAndNumber")
     class FindByTitleIdAndNumber {
         @Test
         @DisplayName("Retorna capítulo específico")
         void retornaCapitulo() {
             var ch = chapterRepository.findByTitleIdAndNumber("t1", "2");
+
             assertThat(ch).isPresent();
             assertThat(ch.get().getTitle().resolve(null)).isEqualTo("Dois");
         }
@@ -106,6 +158,7 @@ class ChapterRepositoryAdapterTest {
         @DisplayName("countByTitleIdIn agrega em uma query")
         void countByTitleIdIn() {
             var counts = chapterRepository.countByTitleIdIn(List.of("t1", "t2", "nope"));
+
             assertThat(counts).containsEntry("t1", 3L).containsEntry("t2", 1L);
             assertThat(counts).doesNotContainKey("nope");
         }
@@ -124,6 +177,7 @@ class ChapterRepositoryAdapterTest {
         @DisplayName("Remove todos os capítulos do título")
         void remove() {
             chapterRepository.deleteByTitleId("t1");
+
             assertThat(chapterRepository.countByTitleId("t1")).isZero();
             assertThat(chapterRepository.count()).isEqualTo(1);
         }

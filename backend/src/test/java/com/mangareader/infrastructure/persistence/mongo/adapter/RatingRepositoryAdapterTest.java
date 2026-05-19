@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -28,6 +29,7 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @ActiveProfiles("test")
 @Import({RatingRepositoryAdapter.class, MongoTestContainerConfig.class})
 @DisplayName("RatingRepositoryAdapter — Integração MongoDB")
+@Tag("testcontainers")
 class RatingRepositoryAdapterTest {
 
     @Autowired
