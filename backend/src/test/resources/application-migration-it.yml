@@ -1,0 +1,28 @@
+# DT-21: profile de integração para validar V009 pela orquestração real do
+# Mongock (Mongock é @Profile("!test"), então NÃO usar profile "test" aqui).
+# Mongo vem do container singleton via @ServiceConnection.
+spring:
+  docker:
+    compose:
+      enabled: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+  data:
+    mongodb:
+      auto-index-creation: false
+mongock:
+  migration-scan-package: com.mangareader.infrastructure.persistence.mongo.migration
+  transactional: false
+logging:
+  level:
+    root: WARN
+    com.mangareader: DEBUG
+    io.mongock: INFO
