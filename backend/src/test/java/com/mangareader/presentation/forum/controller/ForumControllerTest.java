@@ -1,5 +1,7 @@
 package com.mangareader.presentation.forum.controller;
 
+import com.mangareader.shared.web.PageableWebConfig;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -48,7 +50,7 @@ import com.mangareader.presentation.forum.mapper.ForumMapper;
 import org.springframework.context.annotation.Import;
 
 @WebMvcTest(ForumController.class)
-@Import(ForumMapper.class)
+@Import({ForumMapper.class, PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("ForumController")
 class ForumControllerTest {

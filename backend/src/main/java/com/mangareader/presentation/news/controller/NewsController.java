@@ -1,8 +1,6 @@
 package com.mangareader.presentation.news.controller;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +17,7 @@ import com.mangareader.presentation.news.dto.NewsResponse;
 import com.mangareader.presentation.news.mapper.NewsMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,13 +41,9 @@ public class NewsController {
     @GetMapping
     @Operation(summary = "Listar notícias", description = "Retorna notícias com paginação")
     public ResponseEntity<ApiResponse<PageResponse<NewsResponse>>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "publishedAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @PageParams(defaultSort = "publishedAt", defaultDirection = "desc")
+            Pageable pageable
     ) {
-        var pageable = buildPageable(page, size, sort, direction);
-
         var result = getNewsUseCase.execute(pageable);
 
         var mapped = result.map(newsMapper::toResponse);
@@ -67,12 +62,11 @@ public class NewsController {
     @Operation(summary = "Filtrar notícias por categoria")
     public ResponseEntity<ApiResponse<PageResponse<NewsResponse>>> getByCategory(
             @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @PageParams(defaultSort = "publishedAt", defaultDirection = "desc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
         var cat = parseCategory(category);
-
-        var pageable = buildPageable(page, size, "publishedAt", "desc");
 
         var result = getNewsByCategoryUseCase.execute(cat, pageable);
 
@@ -85,11 +79,10 @@ public class NewsController {
     @Operation(summary = "Pesquisar notícias por título")
     public ResponseEntity<ApiResponse<PageResponse<NewsResponse>>> search(
             @RequestParam String q,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @PageParams(defaultSort = "publishedAt", defaultDirection = "desc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
-        var pageable = buildPageable(page, size, "publishedAt", "desc");
-
         var result = searchNewsUseCase.execute(q, pageable);
 
         var mapped = result.map(newsMapper::toResponse);
@@ -97,7 +90,6 @@ public class NewsController {
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
-    // TODO: Esses métodos de parsing e construção de Pageable podem ser extraídos para componentes de utilitário ou similares para evitar repetição em outros controllers
     private NewsCategory parseCategory(String value) {
         for (NewsCategory cat : NewsCategory.values()) {
             if (cat.getDisplayName().equalsIgnoreCase(value) || cat.name().equalsIgnoreCase(value)) {
@@ -106,11 +98,5 @@ public class NewsController {
         }
 
         throw new IllegalArgumentException("Categoria de notícia inválida: " + value);
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

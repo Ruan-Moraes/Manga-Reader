@@ -4,12 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import com.mangareader.shared.web.CurrentUserId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +36,7 @@ import com.mangareader.presentation.forum.dto.UpdateTopicRequest;
 import com.mangareader.presentation.forum.mapper.ForumMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -64,21 +63,15 @@ public class ForumController {
     private final DeleteForumTopicUseCase deleteForumTopicUseCase;
     private final ForumMapper forumMapper;
 
-    private static final java.util.Set<String> SORTABLE_FIELDS =
-            java.util.Set.of("createdAt", "updatedAt", "title");
-
     @GetMapping
     @Operation(summary = "Listar tópicos", description = "Retorna tópicos do fórum com paginação. Use language=all (admin) para listar todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<ForumTopicSummaryResponse>>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction,
+            @PageParams(defaultSize = 10, defaultSort = "createdAt",
+                    defaultDirection = "desc",
+                    allow = {"createdAt", "updatedAt", "title"})
+            Pageable pageable,
             @RequestParam(required = false) String language
     ) {
-        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
-        var pageable = buildPageable(page, size, sort, direction);
-
         var result = getForumTopicsUseCase.execute(pageable, "all".equalsIgnoreCase(language));
 
         var mapped = result.map(t -> forumMapper.toSummary(t, getAuthorPostCountUseCase::execute));
@@ -98,13 +91,12 @@ public class ForumController {
     @Operation(summary = "Filtrar tópicos por categoria", description = "language=all (admin) lista todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<ForumTopicSummaryResponse>>> getByCategory(
             @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @PageParams(defaultSize = 10, defaultSort = "createdAt",
+                    defaultDirection = "desc", ignoreRequestSort = true)
+            Pageable pageable,
             @RequestParam(required = false) String language
     ) {
         var cat = parseCategory(category);
-
-        var pageable = buildPageable(page, size, "createdAt", "desc");
 
         var result = getForumTopicsByCategoryUseCase.execute(cat, pageable, "all".equalsIgnoreCase(language));
 
@@ -117,12 +109,12 @@ public class ForumController {
     @Operation(summary = "Criar tópico", description = "Cria um novo tópico no fórum (autenticado)")
     public ResponseEntity<ApiResponse<ForumTopicResponse>> create(
             @Valid @RequestBody CreateTopicRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var cat = parseCategory(request.category());
 
         var input = new CreateForumTopicUseCase.CreateTopicInput(
-                extractUserId(auth),
+                userId,
                 request.title(),
                 request.content(),
                 cat,
@@ -140,9 +132,9 @@ public class ForumController {
     public ResponseEntity<ApiResponse<ForumTopicResponse>> reply(
             @PathVariable UUID id,
             @Valid @RequestBody CreateReplyRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var input = new CreateForumReplyUseCase.CreateReplyInput(id, extractUserId(auth), request.content());
+        var input = new CreateForumReplyUseCase.CreateReplyInput(id, userId, request.content());
 
         var topic = createForumReplyUseCase.execute(input);
 
@@ -155,12 +147,12 @@ public class ForumController {
     public ResponseEntity<ApiResponse<ForumTopicResponse>> update(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateTopicRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         ForumCategory cat = request.category() != null ? parseCategory(request.category()) : null;
 
         var input = new UpdateForumTopicUseCase.UpdateTopicInput(
-                id, extractUserId(auth),
+                id, userId,
                 request.title(), request.content(), cat, request.tags()
         );
 
@@ -171,8 +163,11 @@ public class ForumController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Remover tópico", description = "Remove um tópico do fórum (somente o autor)")
-    public ResponseEntity<Void> delete(@PathVariable UUID id, Authentication auth) {
-        deleteForumTopicUseCase.execute(id, extractUserId(auth));
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID id,
+            @CurrentUserId UUID userId
+    ) {
+        deleteForumTopicUseCase.execute(id, userId);
 
         return ResponseEntity.noContent().build();
     }
@@ -187,13 +182,6 @@ public class ForumController {
         return ResponseEntity.ok(ApiResponse.success(categories));
     }
 
-    // TODO: Retirar essa lógica do controller
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        return PageRequest.of(page, size, Sort.by(dir, sort));
-    }
-
     private ForumCategory parseCategory(String value) {
         for (ForumCategory cat : ForumCategory.values()) {
             if (cat.getDisplayName().equalsIgnoreCase(value) || cat.name().equalsIgnoreCase(value)) {
@@ -202,9 +190,5 @@ public class ForumController {
         }
 
         throw new IllegalArgumentException("Categoria de fórum inválida: " + value);
-    }
-
-    private UUID extractUserId(Authentication auth) {
-        return (UUID) auth.getPrincipal();
     }
 }

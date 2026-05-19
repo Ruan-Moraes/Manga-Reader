@@ -2,9 +2,7 @@ package com.mangareader.presentation.event.controller;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +19,7 @@ import com.mangareader.presentation.event.dto.EventSummaryResponse;
 import com.mangareader.presentation.event.mapper.EventMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,13 +41,9 @@ public class EventController {
     @GetMapping
     @Operation(summary = "Listar eventos", description = "Retorna eventos com paginação")
     public ResponseEntity<ApiResponse<PageResponse<EventSummaryResponse>>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "startDate") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @PageParams(defaultSort = "startDate", defaultDirection = "desc")
+            Pageable pageable
     ) {
-        var pageable = buildPageable(page, size, sort, direction);
-
         var result = getEventsUseCase.execute(pageable);
 
         var mapped = result.map(eventMapper::toSummary);
@@ -68,12 +63,11 @@ public class EventController {
     @Operation(summary = "Filtrar eventos por status")
     public ResponseEntity<ApiResponse<PageResponse<EventSummaryResponse>>> getByStatus(
             @PathVariable String status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @PageParams(defaultSort = "startDate", defaultDirection = "desc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
         var eventStatus = parseStatus(status);
-
-        var pageable = buildPageable(page, size, "startDate", "desc");
 
         var result = getEventsByStatusUseCase.execute(eventStatus, pageable);
 
@@ -91,11 +85,5 @@ public class EventController {
         }
 
         throw new IllegalArgumentException("Status de evento inválido: " + value);
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

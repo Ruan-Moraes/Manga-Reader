@@ -1,5 +1,9 @@
 package com.mangareader.presentation.comment.controller;
 
+import com.mangareader.shared.web.PageableWebConfig;
+
+import org.springframework.context.annotation.Import;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -40,6 +44,7 @@ import com.mangareader.domain.comment.valueobject.ReactionType;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(CommentController.class)
+@Import(PageableWebConfig.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("CommentController")
 class CommentControllerTest {

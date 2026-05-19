@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import com.mangareader.shared.web.CurrentUserId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +31,7 @@ import com.mangareader.presentation.comment.dto.UpdateCommentRequest;
 import com.mangareader.presentation.comment.mapper.CommentMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,20 +56,15 @@ public class CommentController {
     private final ReactToCommentUseCase reactToCommentUseCase;
     private final GetUserReactionsUseCase getUserReactionsUseCase;
 
-    private static final java.util.Set<String> SORTABLE_FIELDS = java.util.Set.of("createdAt", "updatedAt");
-
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar comentários", description = "Retorna comentários de um título com paginação. language=all (admin) lista todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<CommentResponse>>> getByTitle(
             @PathVariable String titleId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "createdAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction,
+            @PageParams(defaultSort = "createdAt", defaultDirection = "desc",
+                    allow = {"createdAt", "updatedAt"})
+            Pageable pageable,
             @RequestParam(required = false) String language
     ) {
-        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
-        var pageable = buildPageable(page, size, sort, direction);
         var result = getCommentsByTitleUseCase.execute(titleId, pageable, "all".equalsIgnoreCase(language));
         var mapped = result.map(CommentMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -80,14 +74,14 @@ public class CommentController {
     @Operation(summary = "Criar comentário", description = "Cria um novo comentário em um título")
     public ResponseEntity<ApiResponse<CommentResponse>> create(
             @Valid @RequestBody CreateCommentRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new CreateCommentUseCase.CreateCommentInput(
                 request.titleId(),
                 request.textContent(),
                 request.imageContent(),
                 request.parentCommentId(),
-                extractUserId(auth)
+                userId
         );
         var comment = createCommentUseCase.execute(input);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -99,31 +93,40 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentResponse>> update(
             @PathVariable String id,
             @Valid @RequestBody UpdateCommentRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var input = new UpdateCommentUseCase.UpdateCommentInput(id, request.textContent(), extractUserId(auth));
+        var input = new UpdateCommentUseCase.UpdateCommentInput(id, request.textContent(), userId);
         var comment = updateCommentUseCase.execute(input);
         return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponse(comment)));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Excluir comentário", description = "Remove um comentário existente")
-    public ResponseEntity<Void> delete(@PathVariable String id, Authentication auth) {
-        deleteCommentUseCase.execute(id, extractUserId(auth));
+    public ResponseEntity<Void> delete(
+            @PathVariable String id,
+            @CurrentUserId UUID userId
+    ) {
+        deleteCommentUseCase.execute(id, userId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/like")
     @Operation(summary = "Curtir comentário", description = "Toggle like no comentário")
-    public ResponseEntity<ApiResponse<CommentResponse>> like(@PathVariable String id, Authentication auth) {
-        var comment = reactToCommentUseCase.execute(id, ReactionType.LIKE, extractUserId(auth).toString());
+    public ResponseEntity<ApiResponse<CommentResponse>> like(
+            @PathVariable String id,
+            @CurrentUserId UUID userId
+    ) {
+        var comment = reactToCommentUseCase.execute(id, ReactionType.LIKE, userId.toString());
         return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponse(comment)));
     }
 
     @PostMapping("/{id}/dislike")
     @Operation(summary = "Descurtir comentário", description = "Toggle dislike no comentário")
-    public ResponseEntity<ApiResponse<CommentResponse>> dislike(@PathVariable String id, Authentication auth) {
-        var comment = reactToCommentUseCase.execute(id, ReactionType.DISLIKE, extractUserId(auth).toString());
+    public ResponseEntity<ApiResponse<CommentResponse>> dislike(
+            @PathVariable String id,
+            @CurrentUserId UUID userId
+    ) {
+        var comment = reactToCommentUseCase.execute(id, ReactionType.DISLIKE, userId.toString());
         return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponse(comment)));
     }
 
@@ -131,25 +134,14 @@ public class CommentController {
     @Operation(summary = "Reações do usuário", description = "Retorna as reações do usuário para uma lista de comentários")
     public ResponseEntity<ApiResponse<Map<String, String>>> getUserReactions(
             @RequestParam List<String> commentIds,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var reactions = getUserReactionsUseCase.execute(commentIds, extractUserId(auth).toString());
+        var reactions = getUserReactionsUseCase.execute(commentIds, userId.toString());
         var mapped = reactions.entrySet().stream()
                 .collect(java.util.stream.Collectors.toMap(
                         Map.Entry::getKey,
                         e -> e.getValue().name()
                 ));
         return ResponseEntity.ok(ApiResponse.success(mapped));
-    }
-
-    // ── Helper ──────────────────────────────────────────────────────────────
-
-    private UUID extractUserId(Authentication auth) {
-        return (UUID) auth.getPrincipal();
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

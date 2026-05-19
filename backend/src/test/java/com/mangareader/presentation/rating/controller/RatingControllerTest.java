@@ -1,5 +1,9 @@
 package com.mangareader.presentation.rating.controller;
 
+import com.mangareader.shared.web.PageableWebConfig;
+
+import org.springframework.context.annotation.Import;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -37,10 +41,10 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(RatingController.class)
+@Import(PageableWebConfig.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("RatingController")
 class RatingControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -94,11 +98,11 @@ class RatingControllerTest {
     @Nested
     @DisplayName("GET /api/ratings/title/{titleId}")
     class GetByTitle {
-
         @Test
         @DisplayName("Deve retornar 200 com avaliações paginadas do título")
         void deveRetornar200ComAvaliacoes() throws Exception {
             var ratings = List.of(buildRating("r1"), buildRating("r2"));
+
             when(getRatingsByTitleUseCase.execute(any(), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(ratings));
 
@@ -125,7 +129,6 @@ class RatingControllerTest {
     @Nested
     @DisplayName("GET /api/ratings/title/{titleId}/average")
     class GetAverage {
-
         @Test
         @DisplayName("Deve retornar 200 com média e contagem de avaliações")
         void deveRetornar200ComMedia() throws Exception {
@@ -143,7 +146,6 @@ class RatingControllerTest {
     @Nested
     @DisplayName("GET /api/ratings/user")
     class GetUserRatings {
-
         @Test
         @DisplayName("Deve retornar 200 com avaliações do usuário autenticado")
         void deveRetornar200ComAvaliacoesDoUsuario() throws Exception {
@@ -161,7 +163,6 @@ class RatingControllerTest {
     @Nested
     @DisplayName("POST /api/ratings")
     class Submit {
-
         @Test
         @DisplayName("Deve retornar 201 ao submeter avaliação válida")
         void deveRetornar201() throws Exception {
@@ -242,7 +243,6 @@ class RatingControllerTest {
     @Nested
     @DisplayName("PUT /api/ratings/{id}")
     class Update {
-
         @Test
         @DisplayName("Deve retornar 200 ao atualizar avaliação")
         void deveRetornar200() throws Exception {
@@ -277,7 +277,6 @@ class RatingControllerTest {
     @Nested
     @DisplayName("DELETE /api/ratings/{id}")
     class Delete {
-
         @Test
         @DisplayName("Deve retornar 204 ao excluir avaliação")
         void deveRetornar204() throws Exception {

@@ -1,5 +1,7 @@
 package com.mangareader.presentation.store.controller;
 
+
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,7 +31,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(StoreController.class)
-@org.springframework.context.annotation.Import({com.mangareader.presentation.store.mapper.StoreMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
+@org.springframework.context.annotation.Import({com.mangareader.presentation.store.mapper.StoreMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class, com.mangareader.shared.web.PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("StoreController")
 class StoreControllerTest {

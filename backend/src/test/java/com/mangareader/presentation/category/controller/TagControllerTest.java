@@ -1,5 +1,7 @@
 package com.mangareader.presentation.category.controller;
 
+
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,8 +44,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 @WebMvcTest(TagController.class)
 @org.springframework.context.annotation.Import({
         com.mangareader.presentation.category.mapper.TagMapper.class,
-        com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class
-})
+        com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class, com.mangareader.shared.web.PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("TagController")
 class TagControllerTest {

@@ -12,6 +12,12 @@ server:
 spring:
   application:
     name: manga-reader
+  autoconfigure:
+    # DT-23: paginação resolvida pelo PageableArgumentResolver custom
+    # (contrato page/size/sort/direction). Desliga o resolver do Spring Data
+    # (sort=campo,dir) para não competir/sombrear o nosso.
+    exclude:
+      - org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration
   docker:
     compose:
       enabled: true          # Desabilitar se não tiver permissão Docker

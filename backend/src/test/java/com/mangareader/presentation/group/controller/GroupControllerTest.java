@@ -1,5 +1,7 @@
 package com.mangareader.presentation.group.controller;
 
+
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,7 +48,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(GroupController.class)
-@org.springframework.context.annotation.Import({com.mangareader.presentation.group.mapper.GroupMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
+@org.springframework.context.annotation.Import({com.mangareader.presentation.group.mapper.GroupMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class, com.mangareader.shared.web.PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("GroupController")
 class GroupControllerTest {

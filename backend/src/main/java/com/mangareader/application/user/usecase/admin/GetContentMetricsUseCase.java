@@ -11,6 +11,7 @@ import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.domain.manga.valueobject.PublicationStatus;
 import com.mangareader.presentation.admin.dto.ContentMetricsResponse;
 import com.mangareader.presentation.admin.dto.ContentMetricsResponse.TopTitleResponse;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
@@ -25,10 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GetContentMetricsUseCase {
     private static final int TOP_TITLES_LIMIT = 10;
-    // TODO: Refinar estes estatutos para refletir os estados reais dos títulos no sistema e transformar em enums
-    private static final List<String> TITLE_STATUSES = List.of(
-            "ONGOING", "COMPLETED", "HIATUS", "CANCELLED"
-    );
 
     private final TitleRepositoryPort titleRepository;
     private final EventRepositoryPort eventRepository;
@@ -37,8 +34,9 @@ public class GetContentMetricsUseCase {
     public ContentMetricsResponse execute() {
         Map<String, Long> titlesByStatus = new LinkedHashMap<>();
 
-        for (String status : TITLE_STATUSES) {
-            titlesByStatus.put(status, titleRepository.countByStatus(status));
+        for (PublicationStatus status : PublicationStatus.values()) {
+            titlesByStatus.put(status.name(),
+                    titleRepository.countByStatus(status.name()));
         }
 
         Map<String, Long> eventsByStatus = new LinkedHashMap<>();

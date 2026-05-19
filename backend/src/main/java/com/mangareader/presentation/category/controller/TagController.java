@@ -1,8 +1,6 @@
 package com.mangareader.presentation.category.controller;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +25,7 @@ import com.mangareader.presentation.category.dto.TagResponse;
 import com.mangareader.presentation.category.mapper.TagMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,18 +46,12 @@ public class TagController {
     private final DeleteTagUseCase deleteTagUseCase;
     private final TagMapper tagMapper;
 
-    /** Whitelist sort fields — exclude JSONB {@code label} from ORDER BY. */
-    private static final java.util.Set<String> SORTABLE_FIELDS = java.util.Set.of("id");
-
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<TagResponse>>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction
+            @PageParams(defaultSort = "id", defaultDirection = "asc",
+                    allow = "id")
+            Pageable pageable
     ) {
-        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
-        var pageable = buildPageable(page, size, sort, direction);
         var result = getTagsUseCase.execute(pageable);
         var mapped = result.map(tagMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -73,13 +66,10 @@ public class TagController {
     /** Admin: lista com mapas i18n para edição multilíngue. */
     @GetMapping("/admin")
     public ResponseEntity<ApiResponse<PageResponse<TagAdminResponse>>> getAllAdmin(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction
+            @PageParams(defaultSort = "id", defaultDirection = "asc",
+                    allow = "id")
+            Pageable pageable
     ) {
-        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
-        var pageable = buildPageable(page, size, sort, direction);
         var result = getTagsUseCase.execute(pageable);
         var mapped = result.map(tagMapper::toAdminResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -96,10 +86,10 @@ public class TagController {
     @GetMapping("/admin/search")
     public ResponseEntity<ApiResponse<PageResponse<TagAdminResponse>>> searchAdmin(
             @RequestParam("q") String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @PageParams(defaultSort = "id", defaultDirection = "asc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
-        var pageable = buildPageable(page, size, "id", "asc");
         var result = searchTagsUseCase.execute(query, pageable);
         var mapped = result.map(tagMapper::toAdminResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -108,10 +98,10 @@ public class TagController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<PageResponse<TagResponse>>> search(
             @RequestParam("q") String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @PageParams(defaultSort = "id", defaultDirection = "asc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
-        var pageable = buildPageable(page, size, "id", "asc");
         var result = searchTagsUseCase.execute(query, pageable);
         var mapped = result.map(tagMapper::toResponse);
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
@@ -137,10 +127,5 @@ public class TagController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         deleteTagUseCase.execute(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

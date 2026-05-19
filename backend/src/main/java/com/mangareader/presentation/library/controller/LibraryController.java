@@ -2,12 +2,10 @@ package com.mangareader.presentation.library.controller;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import com.mangareader.shared.web.CurrentUserId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +30,7 @@ import com.mangareader.presentation.library.dto.SavedMangaResponse;
 import com.mangareader.presentation.library.mapper.LibraryMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,16 +58,11 @@ public class LibraryController {
     @GetMapping
     @Operation(summary = "Minha biblioteca", description = "Retorna mangás salvos do usuário com paginação. Filtrável por lista.")
     public ResponseEntity<ApiResponse<PageResponse<SavedMangaResponse>>> getLibrary(
-            Authentication auth,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "savedAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction,
+            @CurrentUserId UUID userId,
+            @PageParams(defaultSort = "savedAt", defaultDirection = "desc")
+            Pageable pageable,
             @RequestParam(required = false) String list
     ) {
-        var pageable = buildPageable(page, size, sort, direction);
-        var userId = extractUserId(auth);
-
         var result = (list != null)
                 ? getUserLibraryByListUseCase.execute(userId, parseReadingList(list), pageable)
                 : getUserLibraryUseCase.execute(userId, pageable);
@@ -80,8 +74,10 @@ public class LibraryController {
 
     @GetMapping("/counts")
     @Operation(summary = "Contagens da biblioteca", description = "Retorna a quantidade de mangás por lista de leitura")
-    public ResponseEntity<ApiResponse<LibraryCountsResponse>> getCounts(Authentication auth) {
-        var counts = getLibraryCountsUseCase.execute(extractUserId(auth));
+    public ResponseEntity<ApiResponse<LibraryCountsResponse>> getCounts(
+            @CurrentUserId UUID userId
+    ) {
+        var counts = getLibraryCountsUseCase.execute(userId);
 
         return ResponseEntity.ok(ApiResponse.success(
                 new LibraryCountsResponse(counts.lendo(), counts.queroLer(), counts.concluido(), counts.total())
@@ -92,10 +88,10 @@ public class LibraryController {
     @Operation(summary = "Salvar na biblioteca", description = "Adiciona um título à biblioteca do usuário")
     public ResponseEntity<ApiResponse<SavedMangaResponse>> save(
             @Valid @RequestBody SaveToLibraryRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new SaveToLibraryUseCase.SaveToLibraryInput(
-                extractUserId(auth),
+                userId,
                 request.titleId(),
                 parseReadingList(request.list())
         );
@@ -111,10 +107,10 @@ public class LibraryController {
     public ResponseEntity<ApiResponse<SavedMangaResponse>> changeList(
             @PathVariable String titleId,
             @Valid @RequestBody ChangeListRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new ChangeReadingListUseCase.ChangeListInput(
-                extractUserId(auth),
+                userId,
                 titleId,
                 parseReadingList(request.list())
         );
@@ -126,15 +122,13 @@ public class LibraryController {
 
     @DeleteMapping("/{titleId}")
     @Operation(summary = "Remover da biblioteca", description = "Remove um título da biblioteca do usuário")
-    public ResponseEntity<Void> remove(@PathVariable String titleId, Authentication auth) {
-        removeFromLibraryUseCase.execute(extractUserId(auth), titleId);
+    public ResponseEntity<Void> remove(
+            @PathVariable String titleId,
+            @CurrentUserId UUID userId
+    ) {
+        removeFromLibraryUseCase.execute(userId, titleId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    // TODO: Retirar essa lógica do controller
-    private UUID extractUserId(Authentication auth) {
-        return (UUID) auth.getPrincipal();
     }
 
     private ReadingListType parseReadingList(String list) {
@@ -144,11 +138,5 @@ public class LibraryController {
             case "Concluído" -> ReadingListType.CONCLUIDO;
             default -> ReadingListType.valueOf(list);
         };
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

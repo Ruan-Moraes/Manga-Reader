@@ -1,5 +1,7 @@
 package com.mangareader.presentation.event.controller;
 
+
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -33,7 +35,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(EventController.class)
-@org.springframework.context.annotation.Import({com.mangareader.presentation.event.mapper.EventMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
+@org.springframework.context.annotation.Import({com.mangareader.presentation.event.mapper.EventMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class, com.mangareader.shared.web.PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("EventController")
 class EventControllerTest {

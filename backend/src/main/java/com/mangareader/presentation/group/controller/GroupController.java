@@ -2,12 +2,10 @@ package com.mangareader.presentation.group.controller;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import com.mangareader.shared.web.CurrentUserId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.group.usecase.AddWorkToGroupUseCase;
@@ -39,6 +36,7 @@ import com.mangareader.presentation.group.dto.UpdateGroupRequest;
 import com.mangareader.presentation.group.mapper.GroupMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,21 +67,14 @@ public class GroupController {
     private final UnsupportGroupUseCase unsupportGroupUseCase;
     private final GroupMapper groupMapper;
 
-    /** Whitelist sort fields — exclude JSONB name/description from ORDER BY. */
-    private static final java.util.Set<String> SORTABLE_FIELDS =
-            java.util.Set.of("id", "platformJoinedAt", "totalTitles", "rating", "popularity");
-
     @GetMapping
     @Operation(summary = "Listar grupos", description = "Retorna grupos de tradução com paginação")
     public ResponseEntity<ApiResponse<PageResponse<GroupResponse>>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "asc") String direction
+            @PageParams(defaultSort = "id", defaultDirection = "asc",
+                    allow = {"id", "platformJoinedAt", "totalTitles",
+                            "rating", "popularity"})
+            Pageable pageable
     ) {
-        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
-        var pageable = buildPageable(page, size, sort, direction);
-
         var result = getGroupsUseCase.execute(pageable);
 
         var mapped = result.map(groupMapper::toResponse);
@@ -111,10 +102,10 @@ public class GroupController {
     @Operation(summary = "Criar grupo", description = "Cria um novo grupo. O criador se torna líder.")
     public ResponseEntity<ApiResponse<GroupResponse>> create(
             @Valid @RequestBody CreateGroupRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new CreateGroupUseCase.CreateGroupInput(
-                extractUserId(auth),
+                userId,
                 request.name(),
                 request.username(),
                 request.description(),
@@ -134,9 +125,9 @@ public class GroupController {
     @Operation(summary = "Entrar no grupo", description = "Adiciona o usuário logado como membro do grupo")
     public ResponseEntity<ApiResponse<GroupResponse>> join(
             @PathVariable UUID id,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var input = new JoinGroupUseCase.JoinGroupInput(id, extractUserId(auth), GroupRole.TRADUTOR);
+        var input = new JoinGroupUseCase.JoinGroupInput(id, userId, GroupRole.TRADUTOR);
 
         var group = joinGroupUseCase.execute(input);
 
@@ -148,10 +139,10 @@ public class GroupController {
     public ResponseEntity<ApiResponse<GroupResponse>> update(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateGroupRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new UpdateGroupUseCase.UpdateGroupInput(
-                id, extractUserId(auth),
+                id, userId,
                 request.name(), request.description(),
                 request.logo(), request.banner(), request.website()
         );
@@ -165,9 +156,9 @@ public class GroupController {
     @Operation(summary = "Sair do grupo", description = "Remove o usuário logado do grupo")
     public ResponseEntity<ApiResponse<GroupResponse>> leave(
             @PathVariable UUID id,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var group = leaveGroupUseCase.execute(id, extractUserId(auth));
+        var group = leaveGroupUseCase.execute(id, userId);
 
         return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
@@ -176,11 +167,10 @@ public class GroupController {
     @Operation(summary = "Grupos por título", description = "Retorna grupos que traduzem um título específico com paginação")
     public ResponseEntity<ApiResponse<PageResponse<GroupPreviewResponse>>> getByTitleId(
             @PathVariable String titleId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @PageParams(defaultSort = "id", defaultDirection = "asc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
-
         var result = getGroupsByTitleIdUseCase.execute(titleId, pageable);
 
         var mapped = result.map(groupMapper::toPreviewResponse);
@@ -193,10 +183,10 @@ public class GroupController {
     public ResponseEntity<ApiResponse<GroupResponse>> addWork(
             @PathVariable UUID id,
             @Valid @RequestBody AddWorkRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new AddWorkToGroupUseCase.AddWorkInput(
-                id, extractUserId(auth),
+                id, userId,
                 request.titleId(), request.title(), request.cover(),
                 request.chapters(), request.status(), request.genres()
         );
@@ -212,9 +202,9 @@ public class GroupController {
     public ResponseEntity<Void> removeWork(
             @PathVariable UUID id,
             @PathVariable String titleId,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        removeWorkFromGroupUseCase.execute(id, extractUserId(auth), titleId);
+        removeWorkFromGroupUseCase.execute(id, userId, titleId);
 
         return ResponseEntity.noContent().build();
     }
@@ -223,9 +213,9 @@ public class GroupController {
     @Operation(summary = "Apoiar grupo", description = "Adiciona o usuário logado como apoiador do grupo")
     public ResponseEntity<ApiResponse<GroupResponse>> support(
             @PathVariable UUID id,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var group = supportGroupUseCase.execute(id, extractUserId(auth));
+        var group = supportGroupUseCase.execute(id, userId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(groupMapper.toResponse(group)));
@@ -235,21 +225,11 @@ public class GroupController {
     @Operation(summary = "Deixar de apoiar grupo", description = "Remove o apoio do usuário logado ao grupo")
     public ResponseEntity<ApiResponse<GroupResponse>> unsupport(
             @PathVariable UUID id,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
-        var group = unsupportGroupUseCase.execute(id, extractUserId(auth));
+        var group = unsupportGroupUseCase.execute(id, userId);
 
         return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
     }
 
-    // TODO: Retirar essa lógica do controller
-    private UUID extractUserId(Authentication auth) {
-        return (UUID) auth.getPrincipal();
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        return PageRequest.of(page, size, Sort.by(dir, sort));
-    }
 }

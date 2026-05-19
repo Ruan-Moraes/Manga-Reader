@@ -2,12 +2,10 @@ package com.mangareader.presentation.rating.controller;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import com.mangareader.shared.web.CurrentUserId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.rating.usecase.DeleteRatingUseCase;
@@ -31,6 +28,7 @@ import com.mangareader.presentation.rating.dto.UpdateRatingRequest;
 import com.mangareader.presentation.rating.mapper.RatingMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,21 +52,14 @@ public class RatingController {
     private final DeleteRatingUseCase deleteRatingUseCase;
     private final GetUserRatingsUseCase getUserRatingsUseCase;
 
-    private static final java.util.Set<String> SORTABLE_FIELDS =
-            java.util.Set.of("createdAt", "updatedAt", "overallRating");
-
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar avaliações", description = "Retorna avaliações de um título com paginação")
     public ResponseEntity<ApiResponse<PageResponse<RatingResponse>>> getByTitle(
             @PathVariable String titleId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "createdAt") String sort,
-            @RequestParam(defaultValue = "desc") String direction
+            @PageParams(defaultSort = "createdAt", defaultDirection = "desc",
+                    allow = {"createdAt", "updatedAt", "overallRating"})
+            Pageable pageable
     ) {
-        com.mangareader.shared.web.SortValidator.validate(sort, SORTABLE_FIELDS);
-        var pageable = buildPageable(page, size, sort, direction);
-
         var result = getRatingsByTitleUseCase.execute(titleId, pageable);
 
         var mapped = result.map(RatingMapper::toResponse);
@@ -87,13 +78,12 @@ public class RatingController {
     @GetMapping("/user")
     @Operation(summary = "Minhas avaliações", description = "Retorna avaliações do usuário logado com paginação")
     public ResponseEntity<ApiResponse<PageResponse<RatingResponse>>> getUserRatings(
-            Authentication auth,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+            @CurrentUserId UUID userId,
+            @PageParams(defaultSort = "createdAt", defaultDirection = "desc",
+                    ignoreRequestSort = true)
+            Pageable pageable
     ) {
-        var pageable = buildPageable(page, size, "createdAt", "desc");
-
-        var result = getUserRatingsUseCase.execute(extractUserId(auth), pageable);
+        var result = getUserRatingsUseCase.execute(userId, pageable);
 
         var mapped = result.map(RatingMapper::toResponse);
 
@@ -104,11 +94,11 @@ public class RatingController {
     @Operation(summary = "Avaliar título", description = "Submete ou atualiza uma avaliação para um título")
     public ResponseEntity<ApiResponse<RatingResponse>> submit(
             @Valid @RequestBody SubmitRatingRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new SubmitRatingUseCase.SubmitRatingInput(
                 request.titleId(),
-                extractUserId(auth),
+                userId,
                 request.funRating(),
                 request.artRating(),
                 request.storylineRating(),
@@ -129,11 +119,11 @@ public class RatingController {
     public ResponseEntity<ApiResponse<RatingResponse>> update(
             @PathVariable String id,
             @Valid @RequestBody UpdateRatingRequest request,
-            Authentication auth
+            @CurrentUserId UUID userId
     ) {
         var input = new UpdateRatingUseCase.UpdateRatingInput(
                 id,
-                extractUserId(auth),
+                userId,
                 request.funRating(),
                 request.artRating(),
                 request.storylineRating(),
@@ -150,19 +140,11 @@ public class RatingController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Excluir avaliação", description = "Remove uma avaliação existente")
-    public ResponseEntity<Void> delete(@PathVariable String id, Authentication auth) {
-        deleteRatingUseCase.execute(id, extractUserId(auth));
+    public ResponseEntity<Void> delete(
+            @PathVariable String id,
+            @CurrentUserId UUID userId
+    ) {
+        deleteRatingUseCase.execute(id, userId);
         return ResponseEntity.noContent().build();
-    }
-
-    // TODO: Retirar essa lógica do controller e colocar em um componente de utilitário
-    private UUID extractUserId(Authentication auth) {
-        return (UUID) auth.getPrincipal();
-    }
-
-    private Pageable buildPageable(int page, int size, String sort, String direction) {
-        var dir = "asc".equalsIgnoreCase(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
-
-        return PageRequest.of(page, size, Sort.by(dir, sort));
     }
 }

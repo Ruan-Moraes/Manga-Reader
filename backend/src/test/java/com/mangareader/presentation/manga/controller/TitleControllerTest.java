@@ -1,5 +1,7 @@
 package com.mangareader.presentation.manga.controller;
 
+
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -10,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mangareader.application.manga.usecase.ChapterStats;
 import com.mangareader.application.manga.usecase.FilterTitlesUseCase;
+import com.mangareader.application.manga.usecase.GetChapterStatsUseCase;
 import com.mangareader.application.manga.usecase.GetTitleByIdUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesByGenreUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesUseCase;
@@ -33,7 +38,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(TitleController.class)
-@org.springframework.context.annotation.Import({com.mangareader.presentation.manga.mapper.TitleMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
+@org.springframework.context.annotation.Import({com.mangareader.presentation.manga.mapper.TitleMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class, com.mangareader.shared.web.PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("TitleController")
 class TitleControllerTest {
@@ -56,6 +61,9 @@ class TitleControllerTest {
     private FilterTitlesUseCase filterTitlesUseCase;
 
     @MockitoBean
+    private GetChapterStatsUseCase getChapterStatsUseCase;
+
+    @MockitoBean
     private TokenPort tokenPort;
 
     @MockitoBean
@@ -67,6 +75,11 @@ class TitleControllerTest {
                     com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
                     return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
                 });
+
+        when(getChapterStatsUseCase.execute(any()))
+                .thenReturn(Map.of(
+                        "t1", new ChapterStats(12L, "12"),
+                        "t2", new ChapterStats(5L, "5")));
     }
 
 
@@ -104,7 +117,9 @@ class TitleControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.content.length()").value(2))
-                    .andExpect(jsonPath("$.data.content[0].name").value("Solo Leveling"));
+                    .andExpect(jsonPath("$.data.content[0].name").value("Solo Leveling"))
+                    .andExpect(jsonPath("$.data.content[0].chaptersCount").value(12))
+                    .andExpect(jsonPath("$.data.content[0].latestChapterNumber").value("12"));
         }
 
         @Test
@@ -131,7 +146,9 @@ class TitleControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.name").value("Solo Leveling"))
-                    .andExpect(jsonPath("$.data.author").value("Chugong"));
+                    .andExpect(jsonPath("$.data.author").value("Chugong"))
+                    .andExpect(jsonPath("$.data.chaptersCount").value(12))
+                    .andExpect(jsonPath("$.data.latestChapterNumber").value("12"));
         }
 
         @Test

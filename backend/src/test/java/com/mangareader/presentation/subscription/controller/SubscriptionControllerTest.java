@@ -38,7 +38,7 @@ import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
 import com.mangareader.domain.subscription.valueobject.SubscriptionStatus;
 
 @WebMvcTest(SubscriptionController.class)
-@org.springframework.context.annotation.Import({com.mangareader.presentation.subscription.mapper.SubscriptionMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class})
+@org.springframework.context.annotation.Import({com.mangareader.presentation.subscription.mapper.SubscriptionMapper.class, com.mangareader.presentation.shared.mapper.LocalizedMappingHelper.class, com.mangareader.shared.web.PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("SubscriptionController")
 class SubscriptionControllerTest {

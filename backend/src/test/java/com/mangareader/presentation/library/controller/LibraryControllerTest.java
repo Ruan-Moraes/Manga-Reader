@@ -1,5 +1,7 @@
 package com.mangareader.presentation.library.controller;
 
+import com.mangareader.shared.web.PageableWebConfig;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +44,7 @@ import com.mangareader.presentation.library.mapper.LibraryMapper;
 import org.springframework.context.annotation.Import;
 
 @WebMvcTest(LibraryController.class)
-@Import(LibraryMapper.class)
+@Import({LibraryMapper.class, PageableWebConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("LibraryController")
 class LibraryControllerTest {
