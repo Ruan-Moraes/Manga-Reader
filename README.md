@@ -10,17 +10,17 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ 1371 testes (1032 backend + 339 frontend) — **0 falhas** |
+| **Build** | ✅ 1397 testes (1057 backend + 340 frontend) — **0 falhas** |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
 [✅] Fase 6:   Frontend UI (páginas, features, layout, guards)
-[✅] Fase 7:   Testes do backend (1032 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
+[✅] Fase 7:   Testes do backend (1057 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
 [✅] Fase 8:   Integração frontend ↔ backend (features com API real)
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
        ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy)
-       ├─ ✅ 9c-testes: Testes frontend (50 arquivos, 339 testes — services, hooks, utils, componentes)
+       ├─ ✅ 9c-testes: Testes frontend (50 arquivos, 340 testes — services, hooks, utils, componentes)
        ├─ ✅ 9d-i18n: Internacionalização (pt-BR, en-US, es-ES)
        │      ├─ ✅ Infra frontend (i18next + LanguageSwitcher + namespaces)
        │      ├─ ✅ Backend (MessageSource + DTOs + SecurityExceptionHandler + emails)
@@ -67,8 +67,8 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Pacotes compartilhados frontend | **4** (assets, design-tokens, tsconfig, types) |
 | Features frontend (manga-reader) | **17** módulos |
 | Idiomas suportados | **3** (pt-BR padrão/fallback, en-US, es-ES) |
-| Testes backend | **1032** (0 falhas) |
-| Testes frontend | **339** (50 arquivos, 0 falhas) |
+| Testes backend | **1057** (0 falhas) |
+| Testes frontend | **340** (50 arquivos, 0 falhas) |
 
 ---
 
@@ -114,7 +114,7 @@ frontend-apps/
 | Banco | Tech | Responsável por |
 |-------|------|----------------|
 | **PostgreSQL** | JPA/Hibernate + Flyway (19 migrations, 14 repos) | users, groups, events, forum, library, stores, tags, subscriptions, payments, domain labels |
-| **MongoDB** | Spring Data Mongo + Mongock (9 migrations, 8 repos) | titles, **chapters** (coleção própria — DT-17, `GET /api/titles/{id}/chapters` paginado), comments, ratings, news, view history |
+| **MongoDB** | Spring Data Mongo + Mongock (9 migrations, 8 repos) | titles, **chapters** (coleção própria — DT-17, `GET /api/titles/{id}/chapters` paginado + `direction` asc/desc numérico — DT-19), comments, ratings, news, view history |
 
 ---
 
@@ -135,7 +135,7 @@ frontend-apps/
 | Bucket4j | 8.10.1 | Rate limiting |
 | Flyway / Mongock | — / 5.5.0 | Migrations PostgreSQL / MongoDB |
 | JaCoCo | 0.8.12 | Cobertura |
-| TestContainers | 1.20.5 | Testes integração MongoDB |
+| TestContainers | 1.20.5 | Testes integração MongoDB + PostgreSQL (singleton por JVM) |
 | Maven | 3.9.9 | Build |
 
 ### Frontend
@@ -204,15 +204,16 @@ pnpm --filter landing-page dev    # landing page
 ### Testes
 
 ```bash
-# Backend (1032 testes)
+# Backend (1057 testes)
 cd backend
 mvn test                                    # Todos
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
 mvn test -Dtest=**/application/**/*Test     # Apenas use cases
 mvn test -Dtest=**/presentation/**/*Test    # Apenas controllers
 mvn test -Dtest=**/infrastructure/**/*Test  # JPA + MongoDB + Security
+mvn test -Dtest.excludedGroups=testcontainers  # Suíte leve, SEM Docker (pula testes de container)
 
-# Frontend (333 testes)
+# Frontend (340 testes)
 cd frontend-apps
 pnpm --filter manga-reader test             # Vitest
 pnpm --filter manga-reader test:watch       # Watch mode
@@ -258,9 +259,9 @@ Manga-Reader/
 
 ## 7. Testes
 
-**167+ arquivos · 1355 testes · 0 falhas**
+**170+ arquivos · 1397 testes · 0 falhas**
 
-### Backend — 1032 testes
+### Backend — 1057 testes
 
 | Camada | Anotação | Abordagem |
 |--------|----------|-----------|
@@ -271,7 +272,7 @@ Manga-Reader/
 | Infrastructure MongoDB | `@DataMongoTest` + `@Import(MongoTestContainerConfig)` | TestContainers (mongo:8.0) |
 | Security E2E | `@SpringBootTest` | Fluxo Auth completo (sign-up → login → JWT → refresh → /me) |
 
-### Frontend — 333 testes (48 arquivos)
+### Frontend — 340 testes (50 arquivos)
 
 | Camada | Abordagem |
 |--------|-----------|

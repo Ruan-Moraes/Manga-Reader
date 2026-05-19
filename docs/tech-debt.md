@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 16 de maio de 2026
+> Última atualização: 18 de maio de 2026
 
 ---
 
@@ -104,60 +104,20 @@ _(DT-17 e DT-18 resolvidos em 2026-05-17 — ver tabela de resolvidos.)_
 
 ---
 
-### DT-19: Resíduos frontend da migração de capítulos (DT-17)
-
-**Origem**: ao mover capítulos para coleção própria (DT-17), `Title` deixou de
-embarcar `chapters`. O tipo `Title.chapters` virou opcional para evitar ripple,
-mas dois pontos ficaram degradados:
-
-1. **Badge "último capítulo" no catálogo**: cards (`VerticalCard`,
-   `CategoryFilters`, `HorizontalCard`, etc.) liam `title.chapters` para exibir
-   o capítulo mais recente. Como o backend não envia mais `chapters` no
-   `TitleResponse`, esses badges renderizam vazio. Fix correto: expor um campo
-   leve no `TitleResponse` (ex.: `latestChapterNumber`/`chaptersCount`
-   desnormalizado) ou buscar via endpoint dedicado nos cards.
-2. **`ChapterList` pagina em memória**: a página de detalhe usa
-   `useChapters(size=500)` e o `ChapterList` continua paginando o array no
-   cliente. Server-side pagination de UI (controles + `page/size` reais) é
-   evolução pendente — o risco crítico (documento 16 MB) já está resolvido no
-   backend, então isto é não-bloqueante.
-
-**Impacto**: cosmético (badge vazio) + UX de listagem de capítulos não escala
-para séries muito longas na tela de detalhe. Sem risco de dados.
-
-**Recomendação**: (1) adicionar `chaptersCount`/`latestChapterNumber`
-desnormalizado ao `TitleResponse` (consolidado por job ou atualizado em
-write de capítulo) e religar os cards; (2) paginação real de UI no
-`ChapterList`. Baixa-Média prioridade.
+_(DT-19 resolvido em 2026-05-18 — ver tabela de resolvidos.)_
 
 ---
 
-### DT-20: Fragilidade dos testes Mongock + TestContainers
+### DT-20: Fragilidade dos testes Mongock + TestContainers — **Resolvido**
 
-**Descrição**: numa execução de `mvn test` (2026-05-18), 9 erros
-`DataAccessResourceFailure: ... Connection refused` nos testes que usam
-MongoDB TestContainers (`V004LocalizeCatalogContentTest`,
-`V005AddLanguageToUgcTest`, `V009MigrateChaptersToCollectionTest` — falha em
-`@BeforeEach`/`clean`). O container Mongo estava reiniciando
-(`health: starting`). Reexecução passou (1036, 0 falha) — **não é defeito de
-código**, é flakiness de infraestrutura de teste.
-
-**Impacto**: builds de CI ficam não-determinísticos (falsos vermelhos);
-agravado após habilitar também `testcontainers:postgresql` (mais containers
-concorrendo por recursos Docker, suíte mais pesada/lenta).
-
-**Recomendação**:
-- Reusar um único container por suíte (singleton container pattern /
-  `@Testcontainers` com container `static` compartilhado) em vez de subir/
-  derrubar por classe.
-- Healthcheck/espera explícita antes do primeiro acesso; aumentar
-  `startup timeout`.
-- Avaliar agrupar todos os testes Mongock numa classe/ordem dedicada para
-  reduzir ciclos de container.
-- Em CI: garantir Docker com recursos suficientes; possível retry
-  automático só para a camada de testes de container.
-
-Média prioridade (não bloqueia código; bloqueia confiabilidade de CI).
+**Estado**: **Resolvido (2026-05-18)**. `MongoTestContainerConfig` e
+`PostgresTestContainerConfig` agora mantêm o container como **singleton por
+JVM**: instância única iniciada em bloco `static` com `startupTimeout` de
+120s e `stop()` sobrescrito como no-op (fechamento de contexto Spring / cache
+LRU não derruba o container; Ryuk limpa no fim da JVM). Eliminou o
+`DataAccessResourceFailure: Connection refused` intermitente causado por
+restart de container entre contextos. Verificação: 3 execuções consecutivas
+de `mvn test` (1050, 0 falhas) sem flake.
 
 ---
 
@@ -174,43 +134,48 @@ inesperados (chapters malformados, `_id` não-String, títulos com milhares de
 capítulos) podem se comportar diferente do dataset de teste. Mongock **não é
 transacional** no projeto: falha no meio deixa estado parcial.
 
-**Recomendação**:
-- Antes do primeiro deploy: dump/restore de um dump representativo de prod em
-  staging e rodar o boot com V009; conferir contagem
-  `sum(titles.chapters.size)` == `chapters.count()` e ausência de
-  `titles.chapters`.
-- Backup do banco antes do deploy que aplicar V009.
-- Logar métricas na execução (títulos processados, capítulos inseridos) para
-  auditoria pós-migração.
+**Estado (2026-05-18) — lado-código fechado**:
+1. Logging de auditoria implementado (`@Slf4j`: início, `debug` por título,
+   totais finais, "nada a migrar").
+2. **Validação pela orquestração real do Mongock** —
+   `V009MongockIntegrationTest` roda o **runner do Mongock** (não
+   `execute()` direto) contra Mongo TestContainers, semeando dados em
+   **formato legado** (`titles.chapters[]` embedded) antes do contexto subir.
+   Cobre os riscos citados aqui: `_id` não-String (`ObjectId` → `titleId` via
+   `toString()`), elemento malformado no array (ignorado), volume grande
+   (2000 capítulos, `insertMany` em lote), `chapters: []` vazio, título sem
+   chapters intocado. Assere invariante `sum == chapters.count()`, ausência de
+   `titles.chapters`, registro no `mongockChangeLog` e **idempotência real**
+   (reboot do runner não reprocessa — guarda de changelog).
 
-Bloqueia produção do recurso de capítulos até validação em staging.
+**Resíduo — só infra (não fechável em código)**: validação contra **dump real
+de produção** em staging. Runbook antes do primeiro deploy que aplicar V009:
+1. Restaurar dump representativo de prod em staging.
+2. Subir a aplicação (Mongock roda V009 no boot).
+3. Conferir nos logs de auditoria: `títulos processados`/`capítulos inseridos`
+   batem com `sum(titles.chapters.size)` pré-migração e `chapters.count()`
+   pós; nenhum `titles` retém `chapters`.
+4. **Backup do banco antes** do deploy (Mongock não é transacional aqui).
 
----
-
-### DT-22: Suíte de testes mais pesada (Postgres TestContainers)
-
-**Descrição**: para cobrir `EventRepositoryAdapter.searchByTitle` (query
-`jsonb_each_text`, não suportada por H2) foi habilitada a dependência
-`org.testcontainers:postgresql` e criado `EventSearchByTitlePostgresTest`
-(~17 s só essa classe, sobe container `postgres:17`). Antes, testes JPA
-usavam só H2 (sem Docker).
-
-**Impacto**: `mvn test` agora exige Docker também para Postgres (além do
-Mongo já existente); suíte mais lenta e mais sensível a recursos (ver
-DT-20). Ambientes sem Docker não rodam a suíte completa.
-
-**Recomendação**:
-- Singleton container Postgres reutilizado entre classes (quando houver
-  mais testes Postgres-TC), padrão consistente com DT-20.
-- Tag/grupo separado (ex.: `@Tag("testcontainers")`) para permitir rodar
-  só os testes leves (H2/unit) localmente e os de container em CI.
-- Documentar requisito de Docker no README de testes.
-
-Baixa-Média prioridade (trade-off aceito: cobertura real do JSONB > custo).
+Lado-código resolvido; resíduo só-infra documentado acima.
 
 ---
 
-## Itens Resolvidos (2026-05-16)
+### DT-22: Suíte de testes mais pesada (Postgres TestContainers) — **Resolvido**
+
+**Estado**: **Resolvido (2026-05-18)**.
+- Container Postgres singleton por JVM (mesmo padrão de DT-20).
+- `@Tag("testcontainers")` em todas as 14 classes que sobem container
+  (Mongo + Postgres). `pom.xml`: `maven-surefire-plugin` com
+  `<excludedGroups>${test.excludedGroups}</excludedGroups>` (property default
+  vazia → CI roda tudo).
+- Suíte leve sem Docker: `mvn test -Dtest.excludedGroups=testcontainers`
+  (verificado: 949 testes, 0 falhas, nenhum container criado). Documentado no
+  `README.md` (seção Testes) e `CLAUDE.md` (Known Test Limitations).
+
+---
+
+## Itens Resolvidos (2026-05-16 a 18)
 
 | ID | Dívida | Resolução |
 |----|--------|-----------|
@@ -227,6 +192,11 @@ Baixa-Média prioridade (trade-off aceito: cobertura real do JSONB > custo).
 | DT-15 | React Query DevTools comentado | Habilitado em `main.tsx` apenas em dev (`import.meta.env.DEV`) |
 | DT-17 | Capítulos embedded em `Title` (risco 16MB) | Coleção própria `chapters` (titleId + índice único); `ChapterRepositoryPort/Adapter` paginado + `countByTitleIdIn` agregado; `GetChapters*` paginados; `TitleResponse` sem chapters; migração Mongock V009 (idempotente, $unset); seed + frontend (`useChapters`, endpoint `/api/titles/{id}/chapters`) (2026-05-17) |
 | DT-18 | N+1 em listagens (eventos/fórum) | Eventos: `EventSummaryResponse` sem tickets na listagem (frontend não usa), tickets só no detalhe; sem `forEach(getTickets)`. Fórum: `ForumTopicSummaryResponse` sem replies, `@EntityGraph(author)`. Extra: `EventRepositoryAdapter.searchByTitle` → query nativa paginada (jsonb) em vez de carregar todos em memória (2026-05-17) |
+| DT-19 | Resíduos frontend da migração de capítulos | `TitleResponse` ganhou `chaptersCount`/`latestChapterNumber` desnormalizados via `GetChapterStatsUseCase` (agregação bulk `countByTitleIdIn` + `latestChapterNumberByTitleIdIn`, sem N+1; controller não injeta port — DT-04); cards (`Vertical/Horizontal/Highlight/Base`, `CategoryFilters`, info `TitleDetails`) religados. `ChapterList` virou apresentacional com paginação **real server-side**; `useChapters` controlado (page/size/direction) + `keepPreviousData`; ordenação numérica global resolvida no backend (`ChapterRepositoryAdapter.findByTitleId` via aggregation `$convert`+sort; `ChapterController` aceita `direction`); busca passa a filtrar página atual. `useChapterSort` removido (2026-05-18) |
+| DT-20 | Flake Mongock + TestContainers | Container Mongo/Postgres **singleton por JVM** (bloco `static`, `stop()` no-op, startupTimeout 120s); sem restart por contexto Spring → sem `Connection refused` intermitente; 3× `mvn test` (1050, 0 falhas) (2026-05-18) |
+| DT-21 (lado-código) | V009 nunca validada pela orquestração real | `V009MongockIntegrationTest`: runner Mongock real contra Mongo-TC, dados legados (`ObjectId` `_id`, malformado, 2000 caps, array vazio), invariante de contagem + `$unset` + `mongockChangeLog` + idempotência por reboot. Resíduo só-infra (dump prod em staging) com runbook documentado (2026-05-18) |
+| DT-22 | Peso suíte Postgres-TC / exige Docker | Postgres singleton; `@Tag("testcontainers")` nas 14 classes de container; `pom.xml` surefire `excludedGroups=${test.excludedGroups}`; `mvn test -Dtest.excludedGroups=testcontainers` roda 949 testes sem Docker (2026-05-18) |
+| DT-23 | Duplicação em controllers (`buildPageable` ×10, `extractUserId` ×7) + status hardcoded | `@PageParams Pageable` resolvido por `PageableArgumentResolver` (contrato page/size/sort/direction preservado, whitelist via `SortValidator`) e `@CurrentUserId UUID` via `CurrentUserIdArgumentResolver` (`PageableWebConfig`); 11 controllers limpos, 0 `buildPageable`/`extractUserId`. `SpringDataWebAutoConfiguration` excluída p/ não competir. `PublicationStatus` enum substitui `TITLE_STATUSES` magic strings em `GetContentMetricsUseCase`. 1057 testes, 0 falhas; +`PageableArgumentResolverTest`/`PublicationStatusTest` (2026-05-18) |
 
 ### Itens Resolvidos (anteriores)
 
@@ -245,8 +215,6 @@ Baixa-Média prioridade (trade-off aceito: cobertura real do JSONB > custo).
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08, DT-10 |
-| **Baixa-Média** | 2 | DT-19 (resíduos frontend DT-17), DT-22 (peso suíte Postgres-TC) |
-| **Média (CI)** | 1 | DT-20 (flake Mongock + TestContainers) |
-| **Bloqueia prod (capítulos)** | 1 | DT-21 (V009 sem validação em staging/prod) |
+| **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
 | **Baixa** | 2 | DT-03, DT-09 |
-| **Resolvidos 2026-05-16/17** | 13 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18 |
+| **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
