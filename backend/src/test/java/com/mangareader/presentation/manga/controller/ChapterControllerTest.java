@@ -1,7 +1,9 @@
 package com.mangareader.presentation.manga.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -12,6 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,7 +36,6 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("ChapterController")
 class ChapterControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -72,7 +74,6 @@ class ChapterControllerTest {
     @Nested
     @DisplayName("GET /api/titles/{titleId}/chapters")
     class GetAll {
-
         @Test
         @DisplayName("Deve retornar 200 com página de capítulos")
         void deveRetornar200ComCapitulos() throws Exception {
@@ -93,6 +94,45 @@ class ChapterControllerTest {
         }
 
         @Test
+        @DisplayName("direction=desc gera Pageable ordenado desc por number")
+        void direcaoDescOrdenaNumber() throws Exception {
+            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
+
+            mockMvc.perform(get("/api/titles/title-1/chapters")
+                            .param("direction", "desc"))
+                    .andExpect(status().isOk());
+
+            var captor = ArgumentCaptor.forClass(Pageable.class);
+
+            verify(getChaptersByTitleUseCase).execute(eq("title-1"), captor.capture());
+
+            var order = captor.getValue().getSort().getOrderFor("number");
+
+            assertThat(order).isNotNull();
+            assertThat(order.getDirection().isDescending()).isTrue();
+        }
+
+        @Test
+        @DisplayName("default (sem direction) ordena asc por number")
+        void defaultOrdenaAsc() throws Exception {
+            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
+
+            mockMvc.perform(get("/api/titles/title-1/chapters"))
+                    .andExpect(status().isOk());
+
+            var captor = ArgumentCaptor.forClass(Pageable.class);
+
+            verify(getChaptersByTitleUseCase).execute(eq("title-1"), captor.capture());
+
+            var order = captor.getValue().getSort().getOrderFor("number");
+
+            assertThat(order).isNotNull();
+            assertThat(order.getDirection().isAscending()).isTrue();
+        }
+
+        @Test
         @DisplayName("Deve retornar 200 com página vazia")
         void deveRetornarPaginaVazia() throws Exception {
             when(getChaptersByTitleUseCase.execute(eq("title-x"), any(Pageable.class)))
@@ -107,7 +147,6 @@ class ChapterControllerTest {
     @Nested
     @DisplayName("GET /api/titles/{titleId}/chapters/{number}")
     class GetByNumber {
-
         @Test
         @DisplayName("Deve retornar 200 com capítulo encontrado")
         void deveRetornar200() throws Exception {

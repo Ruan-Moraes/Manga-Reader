@@ -202,7 +202,9 @@ const CategoryFilters = () => {
                                         cover={title.cover}
                                         name={title.name}
                                         ratingAverage={title.ratingAverage}
-                                        chapters={title.chapters}
+                                        latestChapterNumber={
+                                            title.latestChapterNumber
+                                        }
                                     />
                                 ))}
                             </div>

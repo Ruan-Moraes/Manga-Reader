@@ -70,6 +70,38 @@ describe('chapterService', () => {
             await getChaptersByTitleId('title-1', 1, 25);
         });
 
+        it('deve enviar direction (default asc e desc explicito)', async () => {
+            const captured: string[] = [];
+
+            server.use(
+                http.get(
+                    `*${API_URLS.TITLES}/title-1/chapters`,
+                    ({ request }) => {
+                        const url = new URL(request.url);
+                        captured.push(
+                            url.searchParams.get('direction') ?? 'missing',
+                        );
+                        return HttpResponse.json({
+                            data: {
+                                content: [],
+                                page: 0,
+                                size: 20,
+                                totalElements: 0,
+                                totalPages: 0,
+                                last: true,
+                            },
+                            success: true,
+                        });
+                    },
+                ),
+            );
+
+            await getChaptersByTitleId('title-1');
+            await getChaptersByTitleId('title-1', 0, 20, 'desc');
+
+            expect(captured).toEqual(['asc', 'desc']);
+        });
+
         it('deve propagar erro quando API falha', async () => {
             server.use(
                 http.get(`*${API_URLS.TITLES}/title-1/chapters`, () =>

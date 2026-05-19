@@ -28,7 +28,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
                     name,
                     synopsis,
                     genres,
-                    chapters,
+                    latestChapterNumber,
                     popularity,
                     ratingAverage,
                     author,
@@ -45,7 +45,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
                         name={name}
                         synopsis={synopsis}
                         genres={genres}
-                        chapters={chapters}
+                        latestChapterNumber={latestChapterNumber}
                         popularity={popularity}
                         ratingAverage={ratingAverage}
                         author={author}

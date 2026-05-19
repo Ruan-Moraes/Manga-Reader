@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.mangareader.application.manga.usecase.ChapterStats;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.presentation.manga.dto.TitleResponse;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
@@ -26,7 +27,13 @@ public class TitleMapper {
     private final LocalizedMappingHelper i18n;
 
     public TitleResponse toResponse(Title title) {
+        return toResponse(title, ChapterStats.EMPTY);
+    }
+
+    public TitleResponse toResponse(Title title, ChapterStats stats) {
         if (title == null) return null;
+
+        var chapterStats = stats != null ? stats : ChapterStats.EMPTY;
 
         return new TitleResponse(
                 title.getId(),
@@ -45,7 +52,9 @@ public class TitleMapper {
                 title.getArtist(),
                 title.getPublisher(),
                 formatDate(title.getCreatedAt()),
-                formatDate(title.getUpdatedAt())
+                formatDate(title.getUpdatedAt()),
+                (int) chapterStats.chaptersCount(),
+                chapterStats.latestChapterNumber()
         );
     }
 

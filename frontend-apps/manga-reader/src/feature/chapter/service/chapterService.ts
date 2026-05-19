@@ -12,10 +12,11 @@ export const getChaptersByTitleId = async (
     titleId: string,
     page = 0,
     size = 50,
+    direction: 'asc' | 'desc' = 'asc',
 ): Promise<PageResponse<Chapter>> => {
     const response = await api.get<ApiResponse<PageResponse<Chapter>>>(
         `${API_URLS.TITLES}/${titleId}/chapters`,
-        { params: { page, size } },
+        { params: { page, size, direction } },
     );
 
     return response.data.data;

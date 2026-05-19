@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
@@ -18,17 +17,9 @@ const HorizontalCard = ({
     cover,
     ratingAverage,
     name,
-    chapters,
+    chaptersCount,
 }: HorizontalCardProps) => {
     const { t } = useTranslation('manga');
-
-    const lastChapter = useMemo(() => {
-        if (!chapters || chapters.length === 0) {
-            return '...';
-        }
-
-        return chapters?.[chapters.length - 1];
-    }, [chapters]);
 
     if (isError) {
         return (
@@ -45,12 +36,7 @@ const HorizontalCard = ({
             <div className="flex flex-col px-3 py-1 text-center rounded-b-none rounded-xs bg-tertiary">
                 <span className="font-bold">{isLoading ? '...' : type}</span>
                 <span className="text-xs">
-                    {t('card.chaptersCount', {
-                        count:
-                            lastChapter === '...'
-                                ? 0
-                                : Number(lastChapter.number),
-                    })}
+                    {t('card.chaptersCount', { count: chaptersCount ?? 0 })}
                 </span>
             </div>
             <div className="border border-b-0 border-tertiary w-[20rem] h-[18rem] relative rounded-tr-xs overflow-hidden">

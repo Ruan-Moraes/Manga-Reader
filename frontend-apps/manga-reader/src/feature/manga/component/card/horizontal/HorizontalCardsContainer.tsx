@@ -17,14 +17,14 @@ const HorizontalCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return data?.content.map(
-                ({ id, type, cover, name, chapters, ratingAverage }) => (
+                ({ id, type, cover, name, chaptersCount, ratingAverage }) => (
                     <HorizontalCard
                         isLoading={false}
                         isError={false}
                         key={id}
                         id={id}
                         ratingAverage={ratingAverage}
-                        chapters={chapters}
+                        chaptersCount={chaptersCount}
                         cover={cover}
                         name={name}
                         type={type}

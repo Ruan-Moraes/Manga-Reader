@@ -15,6 +15,7 @@ import com.mongodb.client.MongoCollection;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Mongock ChangeUnit — DT-17: move capítulos embedded em
@@ -26,6 +27,7 @@ import io.mongock.api.annotations.RollbackExecution;
  * transacional no projeto — reexecução é segura (não há mais o campo após a
  * primeira passada).
  */
+@Slf4j
 @ChangeUnit(id = "V009-migrate-chapters-to-collection", order = "009", author = "mangareader")
 public class V009MigrateChaptersToCollection {
     private final MongoTemplate mongoTemplate;
@@ -42,11 +44,14 @@ public class V009MigrateChaptersToCollection {
         List<Document> chapterDocs = new ArrayList<>();
         List<Object> migratedTitleIds = new ArrayList<>();
 
+        log.info("V009 início — migrando chapters embedded de titles para coleção própria");
+
         for (Document title : titles.find(new Document("chapters",
                 new Document("$exists", true)))) {
             Object titleId = title.get("_id");
             List<?> embedded = title.getList("chapters", Object.class);
 
+            int countForTitle = 0;
             if (embedded != null) {
                 for (Object raw : embedded) {
                     if (raw instanceof Document ch) {
@@ -55,11 +60,17 @@ public class V009MigrateChaptersToCollection {
                         doc.put("titleId",
                                 titleId != null ? titleId.toString() : null);
                         chapterDocs.add(doc);
+                        countForTitle++;
                     }
                 }
             }
 
             migratedTitleIds.add(titleId);
+            log.debug("V009 título {} — {} capítulos extraídos", titleId, countForTitle);
+        }
+
+        if (migratedTitleIds.isEmpty()) {
+            log.info("V009 — nada a migrar (sem títulos com campo chapters; idempotente)");
         }
 
         if (!chapterDocs.isEmpty()) {
@@ -83,6 +94,9 @@ public class V009MigrateChaptersToCollection {
                     new Document("_id", new Document("$in", migratedTitleIds)),
                     new Document("$unset", new Document("chapters", "")));
         }
+
+        log.info("V009 fim — títulos processados={}, capítulos inseridos={}",
+                migratedTitleIds.size(), chapterDocs.size());
     }
 
     @RollbackExecution

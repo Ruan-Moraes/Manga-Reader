@@ -33,7 +33,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
                     cover,
                     name,
                     ratingAverage,
-                    chapters,
+                    latestChapterNumber,
                     updatedAt,
                 }) => (
                     <VerticalCard
@@ -45,7 +45,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
                         cover={cover}
                         name={name}
                         ratingAverage={ratingAverage}
-                        chapters={chapters}
+                        latestChapterNumber={latestChapterNumber}
                         updatedAt={updatedAt}
                     />
                 ),

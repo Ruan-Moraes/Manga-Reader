@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { TitleDetails as TitleDetailsProps } from '../../type/title-card.types';
@@ -12,7 +11,7 @@ const TitleDetails = ({
     id,
     name,
     type,
-    chapters,
+    latestChapterNumber,
     popularity,
     author,
     artist,
@@ -22,9 +21,7 @@ const TitleDetails = ({
 
     const isDataLoading = shouldLoadCardData && isLoading;
 
-    const lastChapter = useMemo(() => {
-        return chapters ? [chapters?.length - 1] : t('details.notAvailable');
-    }, [chapters, t]);
+    const lastChapter = latestChapterNumber || t('details.notAvailable');
 
     return (
         <div>

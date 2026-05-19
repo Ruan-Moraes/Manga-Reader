@@ -34,12 +34,7 @@ import {
     RatingModal,
     RecentReviews,
 } from '@feature/rating';
-import {
-    ChapterFilter,
-    ChapterList,
-    useChapterSort,
-    useChapters,
-} from '@feature/chapter';
+import { ChapterFilter, ChapterList, useChapters } from '@feature/chapter';
 import { GroupsModal } from '@feature/group';
 import { StoresModal } from '@feature/store';
 import { getStoredSession } from '@feature/auth/service/authService';
@@ -95,15 +90,39 @@ const TitleDetailsPage = () => {
         crossLanguage: commentsCrossLanguage,
     });
 
-    const { chapters: fetchedChapters } = useChapters(rawTitleId ?? '');
+    const [chapterPage, setChapterPage] = useState(0);
+    const [chapterDirection, setChapterDirection] = useState<'asc' | 'desc'>(
+        'asc',
+    );
+    const [searchTerm, setSearchTerm] = useState('');
 
     const {
-        isAscending,
-        searchTerm,
-        setSearchTerm,
-        handleSortClick,
-        filteredAndSortedChapters,
-    } = useChapterSort(fetchedChapters);
+        chapters: fetchedChapters,
+        totalPages: chapterTotalPages,
+    } = useChapters(rawTitleId ?? '', {
+        page: chapterPage,
+        direction: chapterDirection,
+    });
+
+    const isAscending = chapterDirection === 'asc';
+
+    const handleSortClick = () => {
+        setChapterDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+        setChapterPage(0);
+    };
+
+    // Busca filtra apenas a página atual (DT-19): backend não expõe busca de
+    // capítulo; ordenação numérica global é resolvida no servidor.
+    const visibleChapters = searchTerm.trim()
+        ? fetchedChapters.filter(chapter => {
+              const term = searchTerm.toLowerCase();
+
+              return (
+                  chapter.number.toLowerCase().includes(term) ||
+                  chapter.title.toLowerCase().includes(term)
+              );
+          })
+        : fetchedChapters;
 
     const { toggleBookmark, isSaved } = useBookmark();
     const { submitRating, ratings, average } = useRating(String(id));
@@ -155,6 +174,7 @@ const TitleDetailsPage = () => {
         publisher,
         status,
         adult,
+        latestChapterNumber,
     } = title as Title;
 
     const handleBookmarkClick = async () => {
@@ -189,7 +209,7 @@ const TitleDetailsPage = () => {
                         name={name}
                         synopsis={synopsis}
                         genres={genres}
-                        chapters={fetchedChapters}
+                        latestChapterNumber={latestChapterNumber}
                         popularity={popularity}
                         ratingAverage={ratingAverage}
                         ratingCount={ratingCount}
@@ -225,8 +245,12 @@ const TitleDetailsPage = () => {
                         isAscending={isAscending}
                     />
                     <ChapterList
-                        key={`${isAscending ? 'ASC' : 'DESC'}-${searchTerm}`}
-                        chapters={filteredAndSortedChapters}
+                        chapters={visibleChapters}
+                        currentPage={chapterPage + 1}
+                        totalPages={chapterTotalPages}
+                        onPageChange={pageNumber =>
+                            setChapterPage(pageNumber - 1)
+                        }
                         onChapterClick={chapterNumber => {
                             const basePath = import.meta.env.BASE_URL;
 

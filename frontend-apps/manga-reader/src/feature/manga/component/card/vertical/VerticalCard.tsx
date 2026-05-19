@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoImageOutline } from 'react-icons/io5';
 
@@ -6,11 +6,9 @@ import type { VerticalCard as VerticalCardProps } from '../../../type/title-card
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
-import { formatDate } from '@shared/util/formatters';
 import AlertBanner from '@shared/component/notification/AlertBanner';
 import AppLink from '@shared/component/link/element/AppLink';
 
-import { type Chapter } from '@feature/chapter';
 import { RatingStars } from '@feature/rating';
 
 const VerticalCard = ({
@@ -21,36 +19,11 @@ const VerticalCard = ({
     cover,
     name,
     ratingAverage,
-    chapters,
+    latestChapterNumber,
 }: VerticalCardProps) => {
     const { t } = useTranslation('manga');
 
-    const listOfChapters = useMemo(() => {
-        if (!chapters || chapters.length === 0) {
-            return [];
-        }
-
-        const sortedChapters = [...chapters].sort((a, b) => {
-            const numA = parseFloat(a.number);
-            const numB = parseFloat(b.number);
-
-            if (isNaN(numA) && isNaN(numB)) {
-                return 0;
-            }
-
-            if (isNaN(numA)) {
-                return 1;
-            }
-
-            if (isNaN(numB)) {
-                return -1;
-            }
-
-            return numB - numA;
-        });
-
-        return sortedChapters.slice(0, 3);
-    }, [chapters]);
+    const hasChapter = Boolean(latestChapterNumber);
 
     const [imageError, setImageError] = useState<boolean>(false);
 
@@ -68,57 +41,32 @@ const VerticalCard = ({
         );
     }
 
-    const renderChapterItem = (
-        chapter: Partial<Chapter>,
-        index: number,
-        hasChapters: boolean,
-    ) => {
-        const hasBorder = hasChapters
-            ? index < listOfChapters.length - 1
-            : index < 2;
-
-        return (
-            <p
-                key={hasChapters ? chapter.number : `empty-${index}`}
-                className={`flex items-center justify-between p-1 text-xs py-2 ${
-                    hasBorder ? 'border-b border-tertiary' : ''
-                }`}
-            >
-                <span className="block mobile-md:hidden">
-                    {t('card.chapterLabelShort')}
-                </span>
-                <span className="mobile-md:block hidden">
-                    {t('card.chapterLabelFull')}
-                </span>
-                <span className="flex items-center gap-2">
-                    {hasChapters && index === 0 && (
-                        <span className="p-1 text-[0.5rem] rounded-xs bg-tertiary">
-                            {formatDate(chapter.releaseDate!, {
-                                month: '2-digit',
-                                day: '2-digit',
-                            })}
-                        </span>
-                    )}
-                    {isLoading ? (
-                        <span className="font-bold text-tertiary">...</span>
+    const renderLatestChapter = () => (
+        <p className="flex items-center justify-between p-1 text-xs py-2">
+            <span className="block mobile-md:hidden">
+                {t('card.chapterLabelShort')}
+            </span>
+            <span className="mobile-md:block hidden">
+                {t('card.chapterLabelFull')}
+            </span>
+            {isLoading ? (
+                <span className="font-bold text-tertiary">...</span>
+            ) : (
+                <span
+                    className={`font-bold ${hasChapter ? 'text-shadow-highlight' : 'text-tertiary'}`}
+                >
+                    {hasChapter ? (
+                        <AppLink
+                            link={`title/${id}/chapter/${latestChapterNumber}`}
+                            text={latestChapterNumber}
+                        />
                     ) : (
-                        <span
-                            className={`font-bold ${hasChapters ? 'text-shadow-highlight' : 'text-tertiary'}`}
-                        >
-                            {hasChapters ? (
-                                <AppLink
-                                    link={`title/${id}/chapter/${chapter.number}`}
-                                    text={chapter.number}
-                                />
-                            ) : (
-                                '-'
-                            )}
-                        </span>
+                        '-'
                     )}
                 </span>
-            </p>
-        );
-    };
+            )}
+        </p>
+    );
 
     return (
         <div className="flex flex-col items-start">
@@ -175,13 +123,7 @@ const VerticalCard = ({
                         )}
                     </div>
                     <div className="flex flex-col px-2">
-                        {listOfChapters.length > 0
-                            ? listOfChapters.map((chapter, index) =>
-                                  renderChapterItem(chapter, index, true),
-                              )
-                            : Array.from({ length: 3 }).map((_, index) =>
-                                  renderChapterItem({}, index, false),
-                              )}
+                        {renderLatestChapter()}
                     </div>
                 </div>
             </div>

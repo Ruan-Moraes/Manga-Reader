@@ -26,5 +26,7 @@ public record TitleResponse(
         String artist,
         String publisher,
         String createdAt,
-        String updatedAt
+        String updatedAt,
+        Integer chaptersCount,
+        String latestChapterNumber
 ) {}

@@ -1,5 +1,3 @@
-import { useMemo, useState } from 'react';
-
 import { Chapter } from '../type/chapter.types';
 
 import { formatDate } from '@shared/util/formatters';
@@ -9,34 +7,23 @@ import ChapterPagination from './ChapterPagination';
 
 type ChapterListProps = {
     chapters: Chapter[];
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
     onChapterClick?: (chapterNumber: string) => void;
 };
 
-const ChapterList = ({ chapters, onChapterClick }: ChapterListProps) => {
-    const itemsPerPage = useMemo(() => 10, []);
-    const totalPages = useMemo(
-        () => Math.ceil(chapters.length / itemsPerPage),
-        [chapters.length, itemsPerPage],
-    );
-
-    const [currentPage, setCurrentPage] = useState<number>(1);
-
-    const indexOfLastChapter = currentPage * itemsPerPage;
-    const indexOfFirstChapter = indexOfLastChapter - itemsPerPage;
-
-    const currentChapters = chapters.slice(
-        indexOfFirstChapter,
-        indexOfLastChapter,
-    );
-
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-    };
-
+const ChapterList = ({
+    chapters,
+    currentPage,
+    totalPages,
+    onPageChange,
+    onChapterClick,
+}: ChapterListProps) => {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2 text-xs">
-                {currentChapters.map((chapter, index) => (
+                {chapters.map((chapter, index) => (
                     <ChapterItem
                         key={`${chapter.number}-${index}`}
                         chapterNumber={chapter.number}
@@ -57,7 +44,7 @@ const ChapterList = ({ chapters, onChapterClick }: ChapterListProps) => {
                 <ChapterPagination
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onPageChange={handlePageChange}
+                    onPageChange={onPageChange}
                 />
             )}
         </div>

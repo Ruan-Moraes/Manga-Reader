@@ -27,6 +27,14 @@ public interface ChapterRepositoryPort {
      */
     Map<String, Long> countByTitleIdIn(Collection<String> titleIds);
 
+    /**
+     * Maior número de capítulo (string original) por título, em UMA query
+     * (agregação) para uma página de títulos — evita N+1 em listagens.
+     * Números não-numéricos só vencem se forem os únicos do título.
+     * Títulos sem capítulos não aparecem no mapa.
+     */
+    Map<String, String> latestChapterNumberByTitleIdIn(Collection<String> titleIds);
+
     long count();
 
     List<Chapter> saveAll(List<Chapter> chapters);
