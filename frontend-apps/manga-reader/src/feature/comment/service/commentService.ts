@@ -60,10 +60,7 @@ export const getCommentsByTitleId = async (
 ): Promise<PageResponse<CommentData>> => {
     const params: Record<string, string | number> = { page, size };
     if (options.crossLanguage) params.language = 'all';
-    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(
-        `${API_URLS.COMMENTS}/title/${titleId}`,
-        { params },
-    );
+    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(`${API_URLS.COMMENTS}/title/${titleId}`, { params });
 
     const pageData = response.data.data;
 
@@ -73,31 +70,18 @@ export const getCommentsByTitleId = async (
     };
 };
 
-export const createComment = async (data: {
-    titleId: string;
-    textContent: string;
-    parentCommentId?: string | null;
-}): Promise<CommentData> => {
-    const response = await api.post<ApiResponse<CommentResponse>>(
-        API_URLS.COMMENTS,
-        {
-            titleId: data.titleId,
-            textContent: data.textContent,
-            parentCommentId: data.parentCommentId ?? null,
-        },
-    );
+export const createComment = async (data: { titleId: string; textContent: string; parentCommentId?: string | null }): Promise<CommentData> => {
+    const response = await api.post<ApiResponse<CommentResponse>>(API_URLS.COMMENTS, {
+        titleId: data.titleId,
+        textContent: data.textContent,
+        parentCommentId: data.parentCommentId ?? null,
+    });
 
     return toCommentData(response.data.data);
 };
 
-export const updateComment = async (
-    id: string,
-    textContent: string,
-): Promise<CommentData> => {
-    const response = await api.put<ApiResponse<CommentResponse>>(
-        `${API_URLS.COMMENTS}/${id}`,
-        { textContent },
-    );
+export const updateComment = async (id: string, textContent: string): Promise<CommentData> => {
+    const response = await api.put<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}`, { textContent });
 
     return toCommentData(response.data.data);
 };
@@ -107,28 +91,21 @@ export const deleteComment = async (id: string): Promise<void> => {
 };
 
 export const likeComment = async (id: string): Promise<CommentData> => {
-    const response = await api.post<ApiResponse<CommentResponse>>(
-        `${API_URLS.COMMENTS}/${id}/like`,
-    );
+    const response = await api.post<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}/like`);
 
     return toCommentData(response.data.data);
 };
 
 export const dislikeComment = async (id: string): Promise<CommentData> => {
-    const response = await api.post<ApiResponse<CommentResponse>>(
-        `${API_URLS.COMMENTS}/${id}/dislike`,
-    );
+    const response = await api.post<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}/dislike`);
 
     return toCommentData(response.data.data);
 };
 
-export const getUserReactions = async (
-    commentIds: string[],
-): Promise<Record<string, string>> => {
-    const response = await api.get<ApiResponse<Record<string, string>>>(
-        `${API_URLS.COMMENTS}/user-reactions`,
-        { params: { commentIds: commentIds.join(',') } },
-    );
+export const getUserReactions = async (commentIds: string[]): Promise<Record<string, string>> => {
+    const response = await api.get<ApiResponse<Record<string, string>>>(`${API_URLS.COMMENTS}/user-reactions`, {
+        params: { commentIds: commentIds.join(',') },
+    });
 
     return response.data.data;
 };

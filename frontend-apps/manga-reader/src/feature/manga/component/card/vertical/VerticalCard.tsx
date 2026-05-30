@@ -1,26 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoImageOutline } from 'react-icons/io5';
-
 import type { VerticalCard as VerticalCardProps } from '../../../type/title-card.types';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
-import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
-import AlertBanner from '@shared/component/notification/AlertBanner';
 import AppLink from '@shared/component/link/element/AppLink';
 
 import { RatingStars } from '@feature/rating';
+import { Image } from 'lucide-react';
 
-const VerticalCard = ({
-    isError,
-    isLoading,
-    id,
-    type,
-    cover,
-    name,
-    ratingAverage,
-    latestChapterNumber,
-}: VerticalCardProps) => {
+const VerticalCard = ({ isError, isLoading, id, type, cover, name, ratingAverage, latestChapterNumber }: VerticalCardProps) => {
     const { t } = useTranslation('manga');
 
     const hasChapter = Boolean(latestChapterNumber);
@@ -33,36 +21,24 @@ const VerticalCard = ({
 
     if (isError) {
         return (
-            <AlertBanner
-                color={THEME_COLORS.QUINARY}
-                title={t('errorTitle')}
-                message={ERROR_MESSAGES.FETCH_ERROR_BASE}
-            />
+            <div className="w-full flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-xs border-quinary-default">
+                    <h2 className="text-xl font-bold text-quinary-default">{t('errorTitle')}</h2>
+                    <p className="text-xs">{ERROR_MESSAGES.FETCH_ERROR_BASE}</p>
+                </div>
+            </div>
         );
     }
 
     const renderLatestChapter = () => (
         <p className="flex items-center justify-between p-1 text-xs py-2">
-            <span className="block mobile-md:hidden">
-                {t('card.chapterLabelShort')}
-            </span>
-            <span className="mobile-md:block hidden">
-                {t('card.chapterLabelFull')}
-            </span>
+            <span className="block mobile-md:hidden">{t('card.chapterLabelShort')}</span>
+            <span className="mobile-md:block hidden">{t('card.chapterLabelFull')}</span>
             {isLoading ? (
                 <span className="font-bold text-tertiary">...</span>
             ) : (
-                <span
-                    className={`font-bold ${hasChapter ? 'text-shadow-highlight' : 'text-tertiary'}`}
-                >
-                    {hasChapter ? (
-                        <AppLink
-                            link={`title/${id}/chapter/${latestChapterNumber}`}
-                            text={latestChapterNumber}
-                        />
-                    ) : (
-                        '-'
-                    )}
+                <span className={`font-bold ${hasChapter ? 'text-shadow-highlight' : 'text-tertiary'}`}>
+                    {hasChapter ? <AppLink link={`title/${id}/chapter/${latestChapterNumber}`} text={latestChapterNumber} /> : '-'}
                 </span>
             )}
         </p>
@@ -77,9 +53,7 @@ const VerticalCard = ({
             <div className="flex flex-col w-full border rounded-xs rounded-tl-none border-tertiary">
                 {isLoading && (
                     <div className="flex items-center justify-center h-44 mobile-md:h-56">
-                        <span className="font-bold text-tertiary">
-                            {t('loading')}
-                        </span>
+                        <span className="font-bold text-tertiary">{t('loading')}</span>
                     </div>
                 )}
                 {!isLoading && (
@@ -98,13 +72,8 @@ const VerticalCard = ({
                             ) : (
                                 <div className="flex items-center justify-center w-full h-44 mobile-md:h-56 bg-secondary">
                                     <div className="flex flex-col items-center justify-center">
-                                        <IoImageOutline
-                                            size={48}
-                                            className="text-tertiary"
-                                        />
-                                        <span className="mt-2 text-xs text-center text-tertiary">
-                                            {t('imageUnavailable')}
-                                        </span>
+                                        <Image size={48} className="text-tertiary" />
+                                        <span className="mt-2 text-xs text-center text-tertiary">{t('imageUnavailable')}</span>
                                     </div>
                                 </div>
                             )}
@@ -113,18 +82,14 @@ const VerticalCard = ({
                 )}
                 <div className="border-t border-t-tertiary">
                     <div className="px-2 py-1 text-sm font-bold text-center bg-tertiary">
-                        {isLoading && (
-                            <span className="text-shadow-default">...</span>
-                        )}
+                        {isLoading && <span className="text-shadow-default">...</span>}
                         {!isLoading && (
                             <h3 className="overflow-x-auto text-nowrap text-shadow-default scrollbar-hidden">
                                 <AppLink link={`title/${id}`} text={name} />
                             </h3>
                         )}
                     </div>
-                    <div className="flex flex-col px-2">
-                        {renderLatestChapter()}
-                    </div>
+                    <div className="flex flex-col px-2">{renderLatestChapter()}</div>
                 </div>
             </div>
         </div>

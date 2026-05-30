@@ -4,7 +4,7 @@ import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 
 import { useUserModalContext } from '../context/useUserModalContext';
 
-import SocialMediaLink from '@shared/component/social-media/SocialMediaLink';
+import AppLink from '@shared/component/link/element/AppLink';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 
@@ -16,64 +16,47 @@ const UserModalBody = () => {
         <div className="flex flex-col gap-4 mt-2">
             {userData?.bio && (
                 <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">
-                        {t('modal.body.bio')}
-                    </h4>
-                    <p className="text-xs text-shadow-default">
-                        {userData.bio}
-                    </p>
+                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.bio')}</h4>
+                    <p className="text-xs text-shadow-default">{userData.bio}</p>
                 </div>
             )}
             {userData?.socialMediasLinks && (
                 <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">
-                        {t('modal.body.socialMedia')}
-                    </h4>
+                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.socialMedia')}</h4>
                     <div className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
                         {userData.socialMediasLinks.map(socialMedia => (
-                            <SocialMediaLink
+                            <div
                                 key={socialMedia.link}
-                                link={socialMedia.link}
-                                name={socialMedia.name}
-                                color={
-                                    SOCIAL_MEDIA_COLORS[
-                                        socialMedia.name as SocialMediaName
-                                    ]
-                                }
-                            />
+                                className="flex items-center justify-center p-2 border border-tertiary text-shadow-default"
+                                style={{
+                                    backgroundColor: SOCIAL_MEDIA_COLORS[socialMedia.name as SocialMediaName],
+                                }}
+                            >
+                                <AppLink className="text-xs leading-none" link={socialMedia.link} text={socialMedia.name} />
+                            </div>
                         ))}
                     </div>
                 </div>
             )}
             {userData?.statistics && (
                 <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">
-                        {t('modal.body.statistics')}
-                    </h4>
+                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.statistics')}</h4>
                     <ul className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
                         <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                            <span className="text-xs leading-none text-center text-nowrap">
-                                {t('modal.body.commentsCount', { count: 1000 })}
-                            </span>
+                            <span className="text-xs leading-none text-center text-nowrap">{t('modal.body.commentsCount', { count: 1000 })}</span>
                         </li>
                         <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                            <span className="text-xs leading-none text-center text-nowrap">
-                                {t('modal.body.likesCount', { count: 1000 })}
-                            </span>
+                            <span className="text-xs leading-none text-center text-nowrap">{t('modal.body.likesCount', { count: 1000 })}</span>
                         </li>
                         <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                            <span className="text-xs leading-none text-center text-nowrap">
-                                {t('modal.body.dislikesCount', { count: 1000 })}
-                            </span>
+                            <span className="text-xs leading-none text-center text-nowrap">{t('modal.body.dislikesCount', { count: 1000 })}</span>
                         </li>
                     </ul>
                 </div>
             )}
             {userData?.recommendedTitles && (
                 <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">
-                        {t('modal.body.recommendedWorks')}
-                    </h4>
+                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.recommendedWorks')}</h4>
                     <div className="flex gap-2 overflow-x-auto flex-nowrap scrollbar-hidden">
                         <div className="h-32 w-28 shrink-0">
                             <img

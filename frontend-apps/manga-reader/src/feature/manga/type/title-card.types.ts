@@ -19,34 +19,12 @@ export type CarouselCard = Omit<
 > &
     FetchStatus;
 
-export type HighlightCard = Omit<Partial<Title>, 'createdAt' | 'updatedAt'> &
-    FetchStatus;
+export type HighlightCard = Omit<Partial<Title>, 'createdAt' | 'updatedAt'> & FetchStatus;
 
-export type VerticalCard = Omit<
-    Partial<Title>,
-    'synopsis' | 'popularity' | 'author' | 'artist' | 'publisher' | 'createdAt'
-> &
-    FetchStatus;
+export type VerticalCard = Omit<Partial<Title>, 'synopsis' | 'popularity' | 'author' | 'artist' | 'publisher' | 'createdAt'> & FetchStatus;
 
-export type HorizontalCard = Omit<
-    Partial<Title>,
-    | 'synopsis'
-    | 'popularity'
-    | 'author'
-    | 'artist'
-    | 'publisher'
-    | 'createdAt'
-    | 'updatedAt'
-> &
-    FetchStatus;
+export type HorizontalCard = Omit<Partial<Title>, 'synopsis' | 'popularity' | 'author' | 'artist' | 'publisher' | 'createdAt' | 'updatedAt'> & FetchStatus;
 
-export type BaseCard = Omit<Title, 'createdAt' | 'updatedAt'> &
-    CardConfiguration &
-    Omit<FetchStatus, 'isError'>;
+export type BaseCard = Omit<Title, 'createdAt' | 'updatedAt'> & CardConfiguration & Omit<FetchStatus, 'isError'>;
 
-export type TitleDetails = Omit<
-    Partial<Title>,
-    'createdAt' | 'updatedAt' | 'cover' | 'synopsis' | 'genres'
-> &
-    CardConfiguration &
-    Omit<FetchStatus, 'isError'>;
+export type TitleDetails = Omit<Partial<Title>, 'createdAt' | 'updatedAt' | 'cover' | 'synopsis' | 'genres'> & CardConfiguration & Omit<FetchStatus, 'isError'>;

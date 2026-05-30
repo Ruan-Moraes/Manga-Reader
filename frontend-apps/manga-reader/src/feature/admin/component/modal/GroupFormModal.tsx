@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import BaseInput from '@shared/component/input/BaseInput';
+import { Input } from '@ui/Input';
 import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
 import AdminModal from './AdminModal';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
@@ -24,13 +24,7 @@ type GroupFormModalProps = {
     isSubmitting: boolean;
 };
 
-const GroupFormModal = ({
-    isOpen,
-    onClose,
-    onSubmit,
-    group,
-    isSubmitting,
-}: GroupFormModalProps) => {
+const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: GroupFormModalProps) => {
     const { t } = useTranslation('admin');
 
     const [logo, setLogo] = useState('');
@@ -73,18 +67,9 @@ const GroupFormModal = ({
     return (
         <AdminModal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-2">
-                <h3 className="text-sm font-bold">
-                    {group
-                        ? t('groupForm.editTitle', 'Editar Grupo')
-                        : t('groupForm.newTitle', 'Novo Grupo')}
-                </h3>
+                <h3 className="text-sm font-bold">{group ? t('groupForm.editTitle', 'Editar Grupo') : t('groupForm.newTitle', 'Novo Grupo')}</h3>
 
-                <LocalizedTextInput
-                    label={t('groupForm.name', 'Nome')}
-                    value={name}
-                    onChange={setName}
-                    maxLength={100}
-                />
+                <LocalizedTextInput label={t('groupForm.name', 'Nome')} value={name} onChange={setName} maxLength={100} />
 
                 <LocalizedTextInput
                     label={t('groupForm.description', 'Descrição')}
@@ -96,36 +81,23 @@ const GroupFormModal = ({
                     maxLength={2000}
                 />
 
-                <BaseInput
-                    label={t('groupForm.logo', 'Logo (URL)')}
-                    variant="outlined"
-                    type="text"
-                    value={logo}
-                    onChange={e => setLogo(e.target.value)}
-                />
+                <div className="flex flex-col gap-1.5">
+                    <span className="text-xs font-bold">{t('groupForm.logo', 'Logo (URL)')}</span>
+                    <Input type="text" value={logo} onChange={e => setLogo(e.target.value)} />
+                </div>
 
-                <BaseInput
-                    label={t('groupForm.banner', 'Banner (URL)')}
-                    variant="outlined"
-                    type="text"
-                    value={banner}
-                    onChange={e => setBanner(e.target.value)}
-                />
+                <div className="flex flex-col gap-1.5">
+                    <span className="text-xs font-bold">{t('groupForm.banner', 'Banner (URL)')}</span>
+                    <Input type="text" value={banner} onChange={e => setBanner(e.target.value)} />
+                </div>
 
-                <BaseInput
-                    label={t('groupForm.website', 'Website')}
-                    variant="outlined"
-                    type="text"
-                    value={website}
-                    onChange={e => setWebsite(e.target.value)}
-                />
+                <div className="flex flex-col gap-1.5">
+                    <span className="text-xs font-bold">{t('groupForm.website', 'Website')}</span>
+                    <Input type="text" value={website} onChange={e => setWebsite(e.target.value)} />
+                </div>
 
                 <div className="flex justify-end gap-2">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30"
-                    >
+                    <button type="button" onClick={onClose} className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30">
                         {t('common.cancel', 'Cancelar')}
                     </button>
                     <button
@@ -133,9 +105,7 @@ const GroupFormModal = ({
                         disabled={isSubmitting || !ptName}
                         className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
                     >
-                        {isSubmitting
-                            ? t('common.saving', 'Salvando...')
-                            : t('common.save', 'Salvar')}
+                        {isSubmitting ? t('common.saving', 'Salvando...') : t('common.save', 'Salvar')}
                     </button>
                 </div>
             </form>

@@ -1,5 +1,4 @@
-import BaseModal from '@shared/component/modal/base/BaseModal';
-import DeleteModalHeader from './header/DeleteModalHeader';
+import { Modal } from '@ui/Modal';
 import DeleteModalBody from './body/DeleteModalBody';
 import DeleteModalFooter from './footer/DeleteModalFooter';
 
@@ -23,18 +22,9 @@ const DeleteModal = ({
     onCancel,
 }: DeleteModalProps) => {
     return (
-        isOpen && (
-            <BaseModal isModalOpen={isOpen} closeModal={onCancel}>
-                <div className="flex flex-col gap-3 p-2">
-                    <DeleteModalHeader title={title} />
-                    <DeleteModalBody message={message} />
-                    <DeleteModalFooter
-                        onConfirm={onConfirm}
-                        onCancel={onCancel}
-                    />
-                </div>
-            </BaseModal>
-        )
+        <Modal open={isOpen} onClose={onCancel} title={title} footer={<DeleteModalFooter onConfirm={onConfirm} onCancel={onCancel} />}>
+            <DeleteModalBody message={message} />
+        </Modal>
     );
 };
 

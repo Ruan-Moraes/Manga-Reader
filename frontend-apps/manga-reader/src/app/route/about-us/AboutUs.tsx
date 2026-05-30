@@ -1,55 +1,33 @@
-import Header from '@app/layout/Header';
-import Footer from '@app/layout/Footer';
-import MainContent from '@/app/layout/Main';
+import { useTranslation } from 'react-i18next';
 
-import TextSection from '@shared/component/paragraph/TextSection';
-import SectionTitle from '@shared/component/title/SectionTitle';
-import TextBlock from '@shared/component/paragraph/TextBlock';
+import { PageContainer } from '@ui/PageContainer';
+import { SectionHeader } from '@ui/SectionHeader';
+import { Card } from '@ui/Card';
 
 const AboutUs = () => {
+    const { t } = useTranslation('common');
+
     return (
-        <>
-            <Header showSearch={true} />
-            <MainContent>
-                <TextSection>
-                    <SectionTitle
-                        titleStyleClasses="text-lg"
-                        title="Quem Somos?"
-                    />
-                    <TextBlock
-                        paragraphContent={[
-                            {
-                                text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
-                            },
-                            {
-                                text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
-                            },
-                        ]}
-                    />
-                    <TextBlock
-                        paragraphContent={[
-                            {
-                                text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
-                            },
-                            {
-                                text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
-                            },
-                        ]}
-                    />
-                    <TextBlock
-                        paragraphContent={[
-                            {
-                                text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid sed deserunt rerum sit inventore iste unde? Ea alias, unde quaerat commodi corrupti ipsum maiores id corporis deleniti numquam facere! Tenetur.',
-                            },
-                            {
-                                text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit!',
-                            },
-                        ]}
-                    />
-                </TextSection>
-            </MainContent>
-            <Footer />
-        </>
+        <PageContainer asMain size="narrow" paddingY="md">
+            <SectionHeader eyebrow={t('aboutUs.eyebrow')} title={t('aboutUs.title')} className="mb-8" />
+
+            <div className="flex flex-col gap-4">
+                <Card variant="default" className="p-6">
+                    <h2 className="mb-3 text-mr-small font-mr-bold text-mr-fg">{t('aboutUs.missionTitle')}</h2>
+                    <p className="leading-relaxed text-mr-small text-mr-fg-muted">{t('aboutUs.missionContent')}</p>
+                </Card>
+
+                <Card variant="default" className="p-6">
+                    <h2 className="mb-3 text-mr-small font-mr-bold text-mr-fg">{t('aboutUs.offerTitle')}</h2>
+                    <p className="leading-relaxed text-mr-small text-mr-fg-muted">{t('aboutUs.offerContent')}</p>
+                </Card>
+
+                <Card variant="default" className="p-6">
+                    <h2 className="mb-3 text-mr-small font-mr-bold text-mr-fg">{t('aboutUs.communityTitle')}</h2>
+                    <p className="leading-relaxed text-mr-small text-mr-fg-muted">{t('aboutUs.communityContent')}</p>
+                </Card>
+            </div>
+        </PageContainer>
     );
 };
 

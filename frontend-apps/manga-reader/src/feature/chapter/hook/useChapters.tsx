@@ -17,10 +17,7 @@ type UseChaptersOptions = {
  * servidor (DT-19). A página/ordenação são controladas pelo chamador; a
  * ordenação numérica é resolvida no backend (global, correta entre páginas).
  */
-const useChapters = (
-    titleId: string,
-    { page = 0, size = 20, direction = 'asc' }: UseChaptersOptions = {},
-) => {
+const useChapters = (titleId: string, { page = 0, size = 20, direction = 'asc' }: UseChaptersOptions = {}) => {
     const query = useQuery<PageResponse<Chapter>, Error>({
         queryKey: [QUERY_KEYS.CHAPTERS, titleId, page, size, direction],
         queryFn: () => getChaptersByTitleId(titleId, page, size, direction),

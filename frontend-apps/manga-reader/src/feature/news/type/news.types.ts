@@ -1,13 +1,6 @@
-export type NewsCategory =
-    | 'Principais'
-    | 'Lançamentos'
-    | 'Adaptações'
-    | 'Indústria'
-    | 'Entrevistas'
-    | 'Eventos'
-    | 'Curiosidades'
-    | 'Mercado'
-    | 'Internacional';
+export type NewsCategory = 'Principais' | 'Lançamentos' | 'Adaptações' | 'Indústria' | 'Entrevistas' | 'Eventos' | 'Curiosidades' | 'Mercado' | 'Internacional';
+
+export type NewsTabId = 'all' | 'featured' | 'releases' | 'adaptations' | 'industry' | 'interviews' | 'events' | 'curiosities' | 'market' | 'international';
 
 export type NewsReaction = {
     like: number;
@@ -68,7 +61,7 @@ export type NewsItem = {
 };
 
 export type NewsFilter = {
-    tab: 'all' | 'Principais' | NewsCategory;
+    tab: NewsTabId;
     query: string;
     period: 'all' | 'today' | 'week' | 'month';
     source: 'all' | string;

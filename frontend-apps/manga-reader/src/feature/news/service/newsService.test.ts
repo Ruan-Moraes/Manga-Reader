@@ -7,14 +7,7 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import type { NewsItem } from '@feature/news';
 
-import {
-    getNews,
-    getNewsById,
-    getRelatedNews,
-    isNewsFresh,
-    formatNewsDate,
-    filterNews,
-} from './newsService';
+import { getNews, getNewsById, getRelatedNews, isNewsFresh, formatNewsDate, filterNews } from './newsService';
 
 const buildNewsItem = (overrides: Partial<NewsItem> = {}): NewsItem => ({
     id: 'news-1',
@@ -79,11 +72,7 @@ describe('newsService', () => {
 
     describe('getNewsById', () => {
         it('deve retornar noticia pelo id', async () => {
-            server.use(
-                http.get(`*${API_URLS.NEWS}/news-1`, () =>
-                    HttpResponse.json({ data: buildNewsItem(), success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.NEWS}/news-1`, () => HttpResponse.json({ data: buildNewsItem(), success: true })));
 
             const result = await getNewsById('news-1');
 
@@ -110,33 +99,21 @@ describe('newsService', () => {
 
     describe('getNews — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.NEWS}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.NEWS}`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getNews()).rejects.toThrow();
         });
     });
 
     describe('getNewsById — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.NEWS}/news-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.NEWS}/news-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getNewsById('news-1')).rejects.toThrow();
         });
     });
 
     describe('getRelatedNews — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.NEWS}/news-1/related`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.NEWS}/news-1/related`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getRelatedNews('news-1')).rejects.toThrow();
         });
     });
@@ -167,13 +144,10 @@ describe('newsService', () => {
 
     describe('filterNews', () => {
         it('deve filtrar por categoria', () => {
-            const items = [
-                buildNewsItem({ category: 'Lançamentos' }),
-                buildNewsItem({ id: 'n2', category: 'Indústria' }),
-            ];
+            const items = [buildNewsItem({ category: 'Lançamentos' }), buildNewsItem({ id: 'n2', category: 'Indústria' })];
 
             const result = filterNews(items, {
-                tab: 'Lançamentos',
+                tab: 'releases',
                 query: '',
                 period: 'all',
                 source: 'all',
@@ -184,10 +158,7 @@ describe('newsService', () => {
         });
 
         it('deve filtrar por query no titulo', () => {
-            const items = [
-                buildNewsItem({ title: 'One Piece capitulo novo' }),
-                buildNewsItem({ id: 'n2', title: 'Naruto remake' }),
-            ];
+            const items = [buildNewsItem({ title: 'One Piece capitulo novo' }), buildNewsItem({ id: 'n2', title: 'Naruto remake' })];
 
             const result = filterNews(items, {
                 tab: 'all',
@@ -201,10 +172,7 @@ describe('newsService', () => {
         });
 
         it('deve ordenar por mais lidos', () => {
-            const items = [
-                buildNewsItem({ id: 'n1', views: 100 }),
-                buildNewsItem({ id: 'n2', views: 500 }),
-            ];
+            const items = [buildNewsItem({ id: 'n1', views: 100 }), buildNewsItem({ id: 'n2', views: 500 })];
 
             const result = filterNews(items, {
                 tab: 'all',

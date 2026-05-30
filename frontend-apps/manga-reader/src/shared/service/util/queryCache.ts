@@ -8,6 +8,12 @@ export const queryClient = new QueryClient({
     queryCache: new QueryCache({}),
 });
 
+const logCacheError = (label: string, error: unknown): void => {
+    if (import.meta.env.DEV) {
+        console.error(label, error);
+    }
+};
+
 export const clearCache = (): void => {
     try {
         queryClient.resetQueries();
@@ -26,7 +32,7 @@ export const clearCache = (): void => {
             location.reload();
         }, 2250);
     } catch (error) {
-        console.error('Erro ao limpar cache:', error);
+        logCacheError('Erro ao limpar cache:', error);
     }
 };
 
@@ -36,7 +42,7 @@ export const getCache = (key: string[]) => {
 
         return cachedData || null;
     } catch (error) {
-        console.error('Error getting cache:', error);
+        logCacheError('Error getting cache:', error);
 
         return null;
     }

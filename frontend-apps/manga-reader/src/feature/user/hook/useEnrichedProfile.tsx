@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { type EnrichedProfile } from '../type/user.types';
-import {
-    getEnrichedProfile,
-    getMyEnrichedProfile,
-} from '../service/userService';
+import { getEnrichedProfile, getMyEnrichedProfile } from '../service/userService';
 
 type UseEnrichedProfileReturn = {
     profile: EnrichedProfile | null;
@@ -22,9 +19,7 @@ const useEnrichedProfile = (userId?: string): UseEnrichedProfileReturn => {
         setLoading(true);
         setError(null);
         try {
-            const data = userId
-                ? await getEnrichedProfile(userId)
-                : await getMyEnrichedProfile();
+            const data = userId ? await getEnrichedProfile(userId) : await getMyEnrichedProfile();
             setProfile(data);
         } catch {
             setError('Não foi possível carregar o perfil.');

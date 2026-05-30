@@ -42,7 +42,46 @@
         "authActionBookmark": "save to library",
         "authActionRate": "rate",
         "savedToLibrary": "Manga saved to your library.",
-        "removedFromLibrary": "Manga removed from your library."
+        "removedFromLibrary": "Manga removed from your library.",
+        "tabs": {
+            "chapters": "Chapters",
+            "reviews": "Reviews",
+            "groups": "Groups",
+            "about": "About"
+        },
+        "order": {
+            "desc": "Most recent",
+            "asc": "Oldest"
+        },
+        "sort": {
+            "top": "Top",
+            "recent": "Recent",
+            "controversial": "Controversial"
+        },
+        "lang": {
+            "all": "All languages",
+            "ptBR": "PT-BR",
+            "en": "EN"
+        },
+        "notFound": "Title not found",
+        "backToCatalog": "Back to catalog",
+        "addToLibrary": "Add to library",
+        "removeFromLibrary": "Remove from library",
+        "ratingAria": "{{rating}} out of 5 stars, based on {{count}} votes",
+        "votes": "votes",
+        "synopsisAria": "Synopsis",
+        "collapse": "Collapse",
+        "startReading": "Start reading",
+        "inLibrary": "In library",
+        "addButton": "Add",
+        "shareAria": "Share",
+        "chaptersLabel": "chapters",
+        "groupsLabel": "groups",
+        "noChapters": "No chapters found",
+        "writeReview": "Write review",
+        "noReviews": "No reviews yet",
+        "noGroups": "No groups found",
+        "fullSynopsis": "Full synopsis"
     },
     "home": {
         "alertTitle": "Notice!",
@@ -59,6 +98,128 @@
         "notFoundMessage": "The chapter you are trying to access does not exist.",
         "backToTitle": "Back to title page",
         "commentsHeading": "Comments"
+    },
+    "chapterEnd": {
+        "title": "You finished chapter {{chNum}}!",
+        "description": "What did you think of this chapter?",
+        "rateLabel": "Rate chapter",
+        "ratingAria": "{{rating}} out of 5 stars",
+        "commentPlaceholder": "Quick comment (optional)...",
+        "publish": "Post",
+        "backToWork": "Back to title",
+        "nextChapter": "Next chapter"
+    },
+    "reader": {
+        "backAria": "Go back",
+        "saveAria": "Save",
+        "commentsAria": "Comments",
+        "settingsAria": "Settings",
+        "toolbarAria": "Reader controls",
+        "prevChapterAria": "Previous chapter",
+        "nextChapterAria": "Next chapter",
+        "prevPageAria": "Previous page",
+        "nextPageAria": "Next page",
+        "pageSliderAria": "Page {{current}} of {{total}}",
+        "pageAria": "Page {{page}} of chapter {{chNum}}",
+        "prevRegionAria": "Previous region",
+        "nextRegionAria": "Next region",
+        "chapterAbbr": "Ch.",
+        "pageAbbr": "Pg.",
+        "readerLandmarkAria": "Manga reader",
+        "configTitle": "Reader settings",
+        "modeSection": "Reading mode",
+        "modeVertical": "Vertical",
+        "modePaged": "Paged",
+        "modeDouble": "Double",
+        "directionSection": "Direction",
+        "fitSection": "Image fit",
+        "fitWidth": "Width",
+        "fitHeight": "Height",
+        "fitOriginal": "Original",
+        "bgSection": "Background",
+        "bgBlack": "Black",
+        "bgDark": "Dark",
+        "bgPaper": "Paper",
+        "shortcutsSection": "Keyboard shortcuts",
+        "shortcuts": {
+            "prevPage": "Previous page",
+            "nextPage": "Next page",
+            "settings": "Settings",
+            "saveLibrary": "Save to library",
+            "close": "Close drawer / go back"
+        }
+    },
+    "releases": {
+        "eyebrow": "New chapters",
+        "title": "Recent releases",
+        "todayMeta_one": "{{count}} chapter in the last 24h",
+        "todayMeta_other": "{{count}} chapters in the last 24h",
+        "allLanguages": "All languages",
+        "filterPlaceholder": "Filter by title",
+        "libraryOnly": "My library only",
+        "newBadge": "New",
+        "markAllSeen": "Mark all as seen",
+        "chaptersCount_one": "{{count}} chapter",
+        "chaptersCount_other": "{{count}} chapters",
+        "publishedAt": "published at {{time}}",
+        "emptyLibrary": {
+            "title": "No new chapters in your followed titles",
+            "description": "Add titles to your library to see releases here."
+        },
+        "emptyFilter": {
+            "title": "All caught up!",
+            "description": "No releases match the current filter."
+        }
+    },
+    "filters": {
+        "searchPlaceholder": "Search titles...",
+        "filtersButton": "Filters",
+        "filtersButtonCount": "Filters ({{count}})",
+        "genres": "Genres",
+        "status": "Status",
+        "clearAll": "Clear all",
+        "apply": "Apply",
+        "sort": {
+            "most_read": "Most read",
+            "most_rated": "Best rated",
+            "most_recent": "Most recent",
+            "alphabetical": "A–Z",
+            "random": "Random"
+        },
+        "statusOptions": {
+            "all": "All",
+            "ongoing": "Ongoing",
+            "complete": "Complete",
+            "hiatus": "On hiatus",
+            "cancelled": "Cancelled"
+        },
+        "layout": {
+            "grid": "Grid",
+            "list": "List"
+        },
+        "filterChipRemoveAria": "Remove filter {{label}}",
+        "drawerAria": "Filters",
+        "eyebrow": "Catalog",
+        "title": "Explore",
+        "metaSuffix_one": "{{count}} title",
+        "metaSuffix_other": "{{count}} titles",
+        "emptyTitle": "No titles found",
+        "emptyDesc": "Try adjusting the filters or search for another term.",
+        "clearFilters": "Clear filters"
+    },
+    "search": {
+        "eyebrow": "Catalog",
+        "placeholder": "Search manga, manhwa, manhua...",
+        "titleEmpty": "Search titles",
+        "titleWithQuery": "Results for \"{{query}}\"",
+        "emptyTitle": "What do you want to read today?",
+        "emptyDescription": "Type a title name to get started.",
+        "errorTitle": "Search error",
+        "errorDescription": "Could not load results. Please try again.",
+        "noResultsTitle": "No results",
+        "noResultsDescription": "Nothing found for \"{{query}}\". Try other terms.",
+        "resultsMeta_one": "{{count}} title found",
+        "resultsMeta_other": "{{count}} titles found"
     },
     "chapter": {
         "heading": "Chapters:",

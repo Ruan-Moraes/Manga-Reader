@@ -11,21 +11,13 @@ import { buildTitle } from '@/test/factories/titleFactory';
 
 import useTitle from './useTitle';
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 describe('useTitle', () => {
     it('deve expor title, isLoading e refetchTitle', async () => {
         const titulo = buildTitle({ id: '1', name: 'Naruto' });
 
-        server.use(
-            http.get(`*${API_URLS.TITLES}/1`, () =>
-                HttpResponse.json({ data: titulo, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}/1`, () => HttpResponse.json({ data: titulo, success: true })));
 
         const { result } = renderHook(() => useTitle('1'), { wrapper });
 

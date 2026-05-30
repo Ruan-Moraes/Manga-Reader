@@ -1,21 +1,11 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import {
-    showErrorToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
+import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import {
-    createEvent,
-    updateEvent,
-    deleteEvent,
-} from '../service/adminEventService';
-import type {
-    CreateEventRequest,
-    UpdateEventRequest,
-} from '../type/admin.types';
+import { createEvent, updateEvent, deleteEvent } from '../service/adminEventService';
+import type { CreateEventRequest, UpdateEventRequest } from '../type/admin.types';
 
 const useAdminEventActions = () => {
     const queryClient = useQueryClient();

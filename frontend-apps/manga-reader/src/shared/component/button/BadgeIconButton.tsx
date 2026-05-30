@@ -8,13 +8,7 @@ type IconButtonProps = {
     likeCount?: string;
 };
 
-const BadgeIconButton = ({
-    onClick,
-    className,
-    children,
-    dislikeCount,
-    likeCount,
-}: IconButtonProps) => {
+const BadgeIconButton = ({ onClick, className, children, dislikeCount, likeCount }: IconButtonProps) => {
     if (dislikeCount && Number(dislikeCount) < 10) {
         dislikeCount = dislikeCount.padStart(2, '0');
     }
@@ -28,10 +22,7 @@ const BadgeIconButton = ({
             type="button"
             onClick={onClick}
             className={`px-3 py-2 transition-colors duration-300 rounded-xs bg-primary-default hover:bg-quaternary-opacity-25
-            ${clsx(
-                className && className,
-                (likeCount || dislikeCount) && 'relative',
-            )}
+            ${clsx(className && className, (likeCount || dislikeCount) && 'relative')}
         `}
         >
             {children}

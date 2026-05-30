@@ -3,12 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import BaseSelect from '@shared/component/input/BaseSelect';
 
-import {
-    sectionTitleClass,
-    checkboxLabelClass,
-    type SettingsTabProps,
-    type UserSettings,
-} from '../settings.constants';
+import { sectionTitleClass, checkboxLabelClass, type SettingsTabProps, type UserSettings } from '../settings.constants';
 
 const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
     const { t } = useTranslation('user');
@@ -45,10 +40,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
         [t],
     );
 
-    const updateReading = <K extends keyof UserSettings['reading']>(
-        key: K,
-        value: UserSettings['reading'][K],
-    ) => {
+    const updateReading = <K extends keyof UserSettings['reading']>(key: K, value: UserSettings['reading'][K]) => {
         onUpdate(prev => ({
             ...prev,
             reading: { ...prev.reading, [key]: value },
@@ -63,37 +55,21 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                 label={t('settings.reading.modeLabel')}
                 options={modeOptions}
                 value={settings.reading.mode}
-                onChange={e =>
-                    updateReading(
-                        'mode',
-                        e.target.value as UserSettings['reading']['mode'],
-                    )
-                }
+                onChange={e => updateReading('mode', e.target.value as UserSettings['reading']['mode'])}
             />
 
             <BaseSelect
                 label={t('settings.reading.directionLabel')}
                 options={directionOptions}
                 value={settings.reading.direction}
-                onChange={e =>
-                    updateReading(
-                        'direction',
-                        e.target.value as UserSettings['reading']['direction'],
-                    )
-                }
+                onChange={e => updateReading('direction', e.target.value as UserSettings['reading']['direction'])}
             />
 
             <BaseSelect
                 label={t('settings.reading.imageQualityLabel')}
                 options={imageQualityOptions}
                 value={settings.reading.imageQuality}
-                onChange={e =>
-                    updateReading(
-                        'imageQuality',
-                        e.target
-                            .value as UserSettings['reading']['imageQuality'],
-                    )
-                }
+                onChange={e => updateReading('imageQuality', e.target.value as UserSettings['reading']['imageQuality'])}
             />
 
             <label className="block text-xs font-bold">
@@ -107,9 +83,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                 max={5}
                 value={settings.reading.preloadPages}
                 className="w-full accent-quaternary-default"
-                onChange={e =>
-                    updateReading('preloadPages', Number(e.target.value))
-                }
+                onChange={e => updateReading('preloadPages', Number(e.target.value))}
             />
 
             <label className={checkboxLabelClass}>
@@ -117,9 +91,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                     type="checkbox"
                     checked={settings.reading.autoNextChapter}
                     className="accent-quaternary-default"
-                    onChange={e =>
-                        updateReading('autoNextChapter', e.target.checked)
-                    }
+                    onChange={e => updateReading('autoNextChapter', e.target.checked)}
                 />
                 {t('settings.reading.autoNextChapter')}
             </label>
@@ -129,9 +101,7 @@ const ReadingSettings = ({ settings, onUpdate }: SettingsTabProps) => {
                     type="checkbox"
                     checked={settings.reading.showPageNumber}
                     className="accent-quaternary-default"
-                    onChange={e =>
-                        updateReading('showPageNumber', e.target.checked)
-                    }
+                    onChange={e => updateReading('showPageNumber', e.target.checked)}
                 />
                 {t('settings.reading.showPageNumber')}
             </label>

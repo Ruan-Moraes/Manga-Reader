@@ -1,0 +1,145 @@
+{
+    "search": {
+        "eyebrow": "Help center",
+        "title": "How can we help?",
+        "description": "Find answers, guides and support for any question about Manga Reader.",
+        "inputLabel": "Search help",
+        "placeholder": "How to change reading direction, forgot my password...",
+        "systemStatus": "All systems operational",
+        "viewDetails": "View details →",
+        "chips": {
+            "changeLanguage": "Change language",
+            "spoiler": "Spoiler",
+            "importMal": "Import MAL",
+            "cancelSupport": "Cancel support"
+        }
+    },
+    "faq": {
+        "eyebrow": "Quick answers",
+        "title": "Frequently asked questions",
+        "helpful": "Was this answer helpful?",
+        "yesAria": "Yes, it was helpful",
+        "yes": "Yes",
+        "noAria": "Not helpful",
+        "no": "No"
+    },
+    "articles": {
+        "categoriesEyebrow": "Browse by topic",
+        "categoriesTitle": "Categories",
+        "articlesCount_one": "{{count}} article",
+        "articlesCount_other": "{{count}} articles",
+        "resultsEyebrow": "Results for \"{{query}}\"",
+        "popularEyebrow": "Most searched",
+        "resultsTitle_one": "{{count}} found",
+        "resultsTitle_other": "{{count}} found",
+        "popularTitle": "Popular articles",
+        "emptyTitle": "Nothing found for \"{{query}}\"",
+        "emptyDesc": "Try different terms or open a ticket with our team.",
+        "openTicket": "Open ticket",
+        "helpful": "{{percent}}% helpful"
+    },
+    "status": {
+        "eyebrow": "Platform health",
+        "title": "System status",
+        "meta": "Last checked 2 min ago"
+    },
+    "contact": {
+        "eyebrow": "Didn't find what you were looking for?",
+        "title": "Talk to the team",
+        "responseTime": "Average response time:",
+        "responseTimeValue": "4h12min",
+        "openTicket": "Open ticket",
+        "askForum": "Ask on the forum",
+        "priority": "Priority channel"
+    },
+    "categories": {
+        "account": {
+            "label": "Account",
+            "desc": "Login, password, profile"
+        },
+        "reading": {
+            "label": "Reading",
+            "desc": "Modes, controls, downloads"
+        },
+        "library": {
+            "label": "Library",
+            "desc": "Lists, history, progress"
+        },
+        "community": {
+            "label": "Community",
+            "desc": "Forum, groups, comments"
+        },
+        "settings": {
+            "label": "Settings",
+            "desc": "Language, notifications, theme"
+        },
+        "privacy": {
+            "label": "Privacy",
+            "desc": "Data, GDPR, export"
+        },
+        "billing": {
+            "label": "Subscription",
+            "desc": "Payment, plans, refunds"
+        },
+        "technical": {
+            "label": "Issues",
+            "desc": "Errors, slowness, bugs"
+        }
+    },
+    "items": {
+        "1": "How do I change my email or password?",
+        "2": "How do I change the reading direction (horizontal/vertical)?",
+        "3": "I forgot my password — how do I recover it?",
+        "4": "How do I change the interface language?",
+        "5": "How do I cancel my subscription?",
+        "6": "The app is slow — what should I do?"
+    },
+    "faqItems": {
+        "1": {
+            "q": "Is Manga Reader free?",
+            "a": "Yes, basic reading is completely free. There is an optional supporter plan that removes ads and unlocks extra features."
+        },
+        "2": {
+            "q": "How do I import my MyAnimeList / AniList list?",
+            "a": "Go to Settings → Library → Import list. We support MAL XML and AniList JSON imports."
+        },
+        "3": {
+            "q": "Can I read offline?",
+            "a": "Yes, supporter plan users can download chapters for offline reading on iOS and Android apps."
+        },
+        "4": {
+            "q": "How do I report a chapter with translation issues?",
+            "a": "Open the chapter, click the ⋮ menu and select \"Report issue\". Our moderation team reviews within 48h."
+        },
+        "5": {
+            "q": "Does the site have a mobile app?",
+            "a": "We have native iOS and Android apps in development. In the meantime, the site is fully responsive and works well on mobile."
+        },
+        "6": {
+            "q": "How do I cancel support and keep access until the end of the period?",
+            "a": "Cancel in Settings → Subscription → Cancel. Access remains active until the end of the period already paid."
+        },
+        "7": {
+            "q": "Can I request a title be added?",
+            "a": "Yes! Go to Forum → Title requests and open a topic with the title, author and link to an official source."
+        },
+        "8": {
+            "q": "How long is reading data kept?",
+            "a": "Your history and progress are kept while your account is active, plus 90 days after closing."
+        }
+    },
+    "statusTiles": {
+        "reader": "Manga reader",
+        "search": "Search",
+        "auth": "Account and authentication",
+        "notifications": "Notifications",
+        "payments": "Payments",
+        "api": "Content API"
+    },
+    "statusLabel": {
+        "operating": "Operating",
+        "degraded": "Degraded",
+        "idle": "Unavailable",
+        "maintenance": "Maintenance"
+    }
+}

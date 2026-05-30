@@ -5,14 +5,7 @@ import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 import type { EventData } from '../type/event.types';
 
-import {
-    getEvents,
-    getEventById,
-    getRelatedEvents,
-    statusLabelKey,
-    formatEventDate,
-    filterEvents,
-} from './eventService';
+import { getEvents, getEventById, getRelatedEvents, statusLabelKey, formatEventDate, filterEvents } from './eventService';
 
 const buildEvent = (overrides: Partial<EventData> = {}): EventData => ({
     id: 'event-1',
@@ -91,11 +84,7 @@ describe('eventService', () => {
 
     describe('getEventById', () => {
         it('deve retornar evento pelo id', async () => {
-            server.use(
-                http.get(`*${API_URLS.EVENTS}/event-1`, () =>
-                    HttpResponse.json({ data: buildEvent(), success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.EVENTS}/event-1`, () => HttpResponse.json({ data: buildEvent(), success: true })));
 
             const result = await getEventById('event-1');
 
@@ -122,33 +111,21 @@ describe('eventService', () => {
 
     describe('getEvents — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.EVENTS}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.EVENTS}`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getEvents()).rejects.toThrow();
         });
     });
 
     describe('getEventById — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.EVENTS}/event-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.EVENTS}/event-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getEventById('event-1')).rejects.toThrow();
         });
     });
 
     describe('getRelatedEvents — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.EVENTS}/event-1/related`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.EVENTS}/event-1/related`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getRelatedEvents('event-1')).rejects.toThrow();
         });
     });
@@ -156,9 +133,7 @@ describe('eventService', () => {
     describe('statusLabelKey', () => {
         it('deve mapear todos os status para chaves i18n', () => {
             expect(statusLabelKey.happening_now).toBe('status.happening_now');
-            expect(statusLabelKey.registrations_open).toBe(
-                'status.registrations_open',
-            );
+            expect(statusLabelKey.registrations_open).toBe('status.registrations_open');
             expect(statusLabelKey.coming_soon).toBe('status.coming_soon');
             expect(statusLabelKey.ended).toBe('status.ended');
         });
@@ -174,10 +149,7 @@ describe('eventService', () => {
 
     describe('filterEvents', () => {
         it('deve filtrar por tab upcoming', () => {
-            const events = [
-                buildEvent({ timeline: 'upcoming' }),
-                buildEvent({ id: 'e2', timeline: 'past' }),
-            ];
+            const events = [buildEvent({ timeline: 'upcoming' }), buildEvent({ id: 'e2', timeline: 'past' })];
 
             const result = filterEvents(events, {
                 tab: 'upcoming',
@@ -193,10 +165,7 @@ describe('eventService', () => {
         });
 
         it('deve filtrar por tipo de evento', () => {
-            const events = [
-                buildEvent({ type: 'Convenção' }),
-                buildEvent({ id: 'e2', type: 'Live' }),
-            ];
+            const events = [buildEvent({ type: 'Convenção' }), buildEvent({ id: 'e2', type: 'Live' })];
 
             const result = filterEvents(events, {
                 tab: 'upcoming',

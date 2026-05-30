@@ -1,12 +1,6 @@
 export type GroupStatus = 'active' | 'inactive' | 'hiatus';
 
-export type GroupRole =
-    | 'Líder'
-    | 'Tradutor(a)'
-    | 'Revisor(a)'
-    | 'QC'
-    | 'Cleaner'
-    | 'Typesetter';
+export type GroupRole = 'Líder' | 'Tradutor(a)' | 'Revisor(a)' | 'QC' | 'Cleaner' | 'Typesetter';
 
 export type UserPost = {
     id: string;

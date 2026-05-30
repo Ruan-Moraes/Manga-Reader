@@ -10,11 +10,7 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import useTagsFetch from './useTagsFetch';
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 describe('useTagsFetch', () => {
     it('deve retornar tags quando busca e bem-sucedida', async () => {
@@ -50,11 +46,7 @@ describe('useTagsFetch', () => {
     });
 
     it('deve retornar erro quando API falha', async () => {
-        server.use(
-            http.get(`*${API_URLS.TAGS}`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TAGS}`, () => HttpResponse.json(null, { status: 500 })));
 
         const { result } = renderHook(() => useTagsFetch(), {
             wrapper,

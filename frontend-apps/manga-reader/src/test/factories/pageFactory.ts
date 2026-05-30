@@ -6,11 +6,7 @@ import type { PageResponse } from '@shared/service/http';
  * Calcula automaticamente totalPages e last com base no tamanho da página
  * — útil quando o teste precisa simular paginação multi-página sem boilerplate.
  */
-export const buildPage = <T>(
-    items: T[],
-    page = 0,
-    size = 20,
-): PageResponse<T> => {
+export const buildPage = <T>(items: T[], page = 0, size = 20): PageResponse<T> => {
     const totalElements = items.length;
     const totalPages = Math.max(1, Math.ceil(totalElements / size));
 

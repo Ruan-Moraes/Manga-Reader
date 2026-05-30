@@ -1,11 +1,11 @@
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
 import type { LanguageTag } from '@shared/type/i18n';
 import type { AdminTag } from '../type/admin.types';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminTagListProps = {
     tags: AdminTag[];
@@ -17,29 +17,18 @@ type AdminTagListProps = {
     onDelete: (tag: AdminTag) => void;
 };
 
-const buildColumns = (
-    t: TFunction,
-    lang: LanguageTag,
-    onEdit: (tag: AdminTag) => void,
-    onDelete: (tag: AdminTag) => void,
-): Column<AdminTag>[] => [
+const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (tag: AdminTag) => void, onDelete: (tag: AdminTag) => void): Column<AdminTag>[] => [
     {
         key: 'value',
         header: t('tagList.columnId'),
         hiddenOnMobile: true,
-        render: tag => (
-            <span className="font-mono text-xs text-tertiary">{tag.value}</span>
-        ),
+        render: tag => <span className="font-mono text-xs text-tertiary">{tag.value}</span>,
     },
     {
         key: 'label',
         header: t('tagList.columnName'),
         sortable: true,
-        render: tag => (
-            <span className="font-medium">
-                {tag.label?.[lang] ?? tag.label?.['pt-BR'] ?? ''}
-            </span>
-        ),
+        render: tag => <span className="font-medium">{tag.label?.[lang] ?? tag.label?.['pt-BR'] ?? ''}</span>,
     },
     {
         key: 'actions',
@@ -55,7 +44,7 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                     aria-label={t('tagList.editAriaLabel')}
                 >
-                    <FiEdit2 size={14} />
+                    <Pencil size={14} />
                 </button>
                 <button
                     type="button"
@@ -66,26 +55,17 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                     aria-label={t('tagList.deleteAriaLabel')}
                 >
-                    <FiTrash2 size={14} />
+                    <Trash2 size={14} />
                 </button>
             </div>
         ),
     },
 ];
 
-const AdminTagList = ({
-    tags,
-    page,
-    totalPages,
-    isLoading,
-    onPageChange,
-    onEdit,
-    onDelete,
-}: AdminTagListProps) => {
+const AdminTagList = ({ tags, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminTagListProps) => {
     const { t, i18n } = useTranslation('admin');
     const lang = i18n.language as LanguageTag;
-    const { sortedData, sortBy, sortDirection, handleSort } =
-        useSortableData(tags);
+    const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(tags);
 
     return (
         <DataTable

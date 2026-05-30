@@ -9,17 +9,9 @@ type SocialMediaLinkTypes = {
     name: string;
 };
 
-const SocialMediaLink = ({
-    className,
-    color,
-    link,
-    name,
-}: SocialMediaLinkTypes) => {
+const SocialMediaLink = ({ className, color, link, name }: SocialMediaLinkTypes) => {
     return (
-        <div
-            className={`flex items-center justify-center p-2 border border-tertiary text-shadow-default ${className}`}
-            style={{ backgroundColor: color }}
-        >
+        <div className={`flex items-center justify-center p-2 border border-tertiary text-shadow-default ${className}`} style={{ backgroundColor: color }}>
             <AppLink className="text-xs leading-none" link={link} text={name} />
         </div>
     );

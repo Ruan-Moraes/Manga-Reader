@@ -9,12 +9,9 @@ import { type Tag } from '../type/tag.types';
 // ---------------------------------------------------------------------------
 
 export const getTags = async (): Promise<Tag[]> => {
-    const response = await api.get<ApiResponse<PageResponse<Tag>>>(
-        API_URLS.TAGS,
-        {
-            params: { page: 0, size: 1000 },
-        },
-    );
+    const response = await api.get<ApiResponse<PageResponse<Tag>>>(API_URLS.TAGS, {
+        params: { page: 0, size: 1000 },
+    });
 
     return response.data.data.content;
 };

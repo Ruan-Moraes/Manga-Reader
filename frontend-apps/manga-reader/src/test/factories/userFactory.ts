@@ -64,8 +64,7 @@ export const userPresets = {
             moderator: { isModerator: true, since: new Date('2024-01-01') },
         }),
 
-    statsZero: () =>
-        buildUser({ statistics: { comments: 0, likes: 0, dislikes: 0 } }),
+    statsZero: () => buildUser({ statistics: { comments: 0, likes: 0, dislikes: 0 } }),
     statsHigh: () =>
         buildUser({
             statistics: { comments: 9999, likes: 50000, dislikes: 100 },
@@ -81,9 +80,7 @@ export const userPresets = {
 // EnrichedProfile sub-records
 // ---------------------------------------------------------------------------
 
-export const buildRecommendedTitle = (
-    overrides: Partial<RecommendedTitle> = {},
-): RecommendedTitle => {
+export const buildRecommendedTitle = (overrides: Partial<RecommendedTitle> = {}): RecommendedTitle => {
     recommendationCounter += 1;
 
     return {
@@ -95,9 +92,7 @@ export const buildRecommendedTitle = (
     };
 };
 
-export const buildViewHistoryItem = (
-    overrides: Partial<ViewHistoryItem> = {},
-): ViewHistoryItem => {
+export const buildViewHistoryItem = (overrides: Partial<ViewHistoryItem> = {}): ViewHistoryItem => {
     viewHistoryCounter += 1;
 
     return {
@@ -109,9 +104,7 @@ export const buildViewHistoryItem = (
     };
 };
 
-export const buildCommentSummary = (
-    overrides: Partial<CommentSummary> = {},
-): CommentSummary => {
+export const buildCommentSummary = (overrides: Partial<CommentSummary> = {}): CommentSummary => {
     commentSummaryCounter += 1;
 
     return {
@@ -123,9 +116,7 @@ export const buildCommentSummary = (
     };
 };
 
-export const buildSocialLinkResponse = (
-    overrides: Partial<SocialLinkResponse> = {},
-): SocialLinkResponse => {
+export const buildSocialLinkResponse = (overrides: Partial<SocialLinkResponse> = {}): SocialLinkResponse => {
     socialLinkCounter += 1;
 
     return {
@@ -136,9 +127,7 @@ export const buildSocialLinkResponse = (
     };
 };
 
-export const buildPrivacySettings = (
-    overrides: Partial<PrivacySettings> = {},
-): PrivacySettings => ({
+export const buildPrivacySettings = (overrides: Partial<PrivacySettings> = {}): PrivacySettings => ({
     commentVisibility: 'PUBLIC',
     viewHistoryVisibility: 'PUBLIC',
     ...overrides,
@@ -167,9 +156,7 @@ export const privacySettingsPresets = {
         }),
 };
 
-export const buildProfileStats = (
-    overrides: Partial<ProfileStats> = {},
-): ProfileStats => ({
+export const buildProfileStats = (overrides: Partial<ProfileStats> = {}): ProfileStats => ({
     comments: 25,
     ratings: 12,
     libraryTotal: 47,
@@ -181,9 +168,7 @@ export const buildProfileStats = (
 
 let enrichedProfileCounter = 0;
 
-export const buildEnrichedProfile = (
-    overrides: Partial<EnrichedProfile> = {},
-): EnrichedProfile => {
+export const buildEnrichedProfile = (overrides: Partial<EnrichedProfile> = {}): EnrichedProfile => {
     enrichedProfileCounter += 1;
 
     return {
@@ -213,18 +198,10 @@ export const enrichedProfilePresets = {
     fullyPopulated: () =>
         buildEnrichedProfile({
             isOwner: true,
-            socialLinks: Array.from({ length: 3 }, () =>
-                buildSocialLinkResponse(),
-            ),
-            recommendations: Array.from({ length: 10 }, () =>
-                buildRecommendedTitle(),
-            ),
-            recentComments: Array.from({ length: 5 }, () =>
-                buildCommentSummary(),
-            ),
-            recentViewHistory: Array.from({ length: 5 }, () =>
-                buildViewHistoryItem(),
-            ),
+            socialLinks: Array.from({ length: 3 }, () => buildSocialLinkResponse()),
+            recommendations: Array.from({ length: 10 }, () => buildRecommendedTitle()),
+            recentComments: Array.from({ length: 5 }, () => buildCommentSummary()),
+            recentViewHistory: Array.from({ length: 5 }, () => buildViewHistoryItem()),
         }),
 
     emptyProfile: () =>
@@ -241,17 +218,14 @@ export const enrichedProfilePresets = {
             privacySettings: privacySettingsPresets.mixed(),
         }),
 
-    noPrivacySettings: () =>
-        buildEnrichedProfile({ isOwner: false, privacySettings: null }),
+    noPrivacySettings: () => buildEnrichedProfile({ isOwner: false, privacySettings: null }),
 
     adminProfile: () => buildEnrichedProfile({ role: 'admin' }),
     posterProfile: () => buildEnrichedProfile({ role: 'poster' }),
 
     withRecommendationsCapped: () =>
         buildEnrichedProfile({
-            recommendations: Array.from({ length: 10 }, () =>
-                buildRecommendedTitle(),
-            ),
+            recommendations: Array.from({ length: 10 }, () => buildRecommendedTitle()),
         }),
 
     withSingleRecommendation: () =>
@@ -260,11 +234,6 @@ export const enrichedProfilePresets = {
         }),
 };
 
-export const visibilityValues: VisibilitySetting[] = [
-    'PUBLIC',
-    'PRIVATE',
-    'DO_NOT_TRACK',
-];
+export const visibilityValues: VisibilitySetting[] = ['PUBLIC', 'PRIVATE', 'DO_NOT_TRACK'];
 
-export const buildUserList = (count = 10): User[] =>
-    Array.from({ length: count }, () => buildUser());
+export const buildUserList = (count = 10): User[] => Array.from({ length: count }, () => buildUser());

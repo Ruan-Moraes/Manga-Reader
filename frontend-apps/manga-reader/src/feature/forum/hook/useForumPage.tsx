@@ -1,26 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-    getForumTopics,
-    filterForumTopics,
-    paginateTopics,
-    type ForumCategory,
-    type ForumSort,
-} from '@feature/forum';
+import { getForumTopics, filterForumTopics, paginateTopics, type ForumCategory, type ForumSort } from '@feature/forum';
 import type { ForumTopic } from '../type/forum.types';
 
 const useForumPage = () => {
     const [allTopicsRaw, setAllTopicsRaw] = useState<ForumTopic[]>([]);
-    const [activeCategory, setActiveCategory] = useState<'all' | ForumCategory>(
-        'all',
-    );
+    const [activeCategory, setActiveCategory] = useState<'all' | ForumCategory>('all');
     const [sort, setSort] = useState<ForumSort>('recent');
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
     const [crossLanguage, setCrossLanguage] = useState(false);
 
     useEffect(() => {
-        getForumTopics(0, 200, { crossLanguage })
-            .then(res => setAllTopicsRaw(res.content));
+        getForumTopics(0, 200, { crossLanguage }).then(res => setAllTopicsRaw(res.content));
     }, [crossLanguage]);
 
     const allTopics = useMemo(
@@ -33,10 +24,7 @@ const useForumPage = () => {
         [allTopicsRaw, activeCategory, sort, query],
     );
 
-    const { items: topics, totalPages } = useMemo(
-        () => paginateTopics(allTopics, page),
-        [allTopics, page],
-    );
+    const { items: topics, totalPages } = useMemo(() => paginateTopics(allTopics, page), [allTopics, page]);
 
     const updateCategory = useCallback((cat: 'all' | ForumCategory) => {
         setActiveCategory(cat);

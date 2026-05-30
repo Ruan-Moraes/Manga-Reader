@@ -30,82 +30,46 @@ const TitleDetails = ({
                     <span className="text-shadow-default">...</span>
                 ) : (
                     <h3 className="overflow-x-auto scrollbar-hidden">
-                        <AppLink
-                            link={`title/${id}`}
-                            text={name}
-                            className="text-nowrap text-shadow-default"
-                        />
+                        <AppLink link={`title/${id}`} text={name} className="text-nowrap text-shadow-default" />
                     </h3>
                 )}
             </div>
             <div className="flex flex-col w-full gap-1 p-2 text-xs">
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">
-                            {t('details.popularity')}{' '}
-                        </span>
-                        <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading ? '...' : popularity + 'º'}
-                        </span>
+                        <span className="font-bold">{t('details.popularity')} </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>{isDataLoading ? '...' : popularity + 'º'}</span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">
-                            {t('details.chapters')}{' '}
-                        </span>
-                        <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading ? '...' : lastChapter}
-                        </span>
+                        <span className="font-bold">{t('details.chapters')} </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>{isDataLoading ? '...' : lastChapter}</span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">
-                            {t('details.author')}{' '}
-                        </span>
-                        <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading
-                                ? '...'
-                                : author || t('details.notAvailable')}
-                        </span>
+                        <span className="font-bold">{t('details.author')} </span>
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>{isDataLoading ? '...' : author || t('details.notAvailable')}</span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">
-                            {t('details.artist')}
-                        </span>{' '}
-                        <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading
-                                ? '...'
-                                : artist || t('details.notAvailable')}
-                        </span>
+                        <span className="font-bold">{t('details.artist')}</span>{' '}
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>{isDataLoading ? '...' : artist || t('details.notAvailable')}</span>
                     </p>
                 </div>
                 <div>
                     <p className="truncate">
-                        <span className="font-bold">
-                            {t('details.publisher')}
-                        </span>{' '}
-                        <span className={isDataLoading ? 'text-tertiary' : ''}>
-                            {isDataLoading
-                                ? '...'
-                                : publisher || t('details.notAvailable')}
-                        </span>
+                        <span className="font-bold">{t('details.publisher')}</span>{' '}
+                        <span className={isDataLoading ? 'text-tertiary' : ''}>{isDataLoading ? '...' : publisher || t('details.notAvailable')}</span>
                     </p>
                 </div>
                 {showType && type && (
                     <div>
                         <p className="truncate">
-                            <span className="font-bold">
-                                {t('details.type')}
-                            </span>{' '}
-                            <span
-                                className={isDataLoading ? 'text-tertiary' : ''}
-                            >
-                                {isDataLoading ? '...' : type}
-                            </span>
+                            <span className="font-bold">{t('details.type')}</span>{' '}
+                            <span className={isDataLoading ? 'text-tertiary' : ''}>{isDataLoading ? '...' : type}</span>
                         </p>
                     </div>
                 )}

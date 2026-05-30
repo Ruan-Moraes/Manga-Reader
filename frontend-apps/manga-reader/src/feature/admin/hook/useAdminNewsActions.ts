@@ -1,17 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import {
-    showErrorToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
+import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import {
-    createNews,
-    updateNews,
-    deleteNews,
-} from '../service/adminNewsService';
+import { createNews, updateNews, deleteNews } from '../service/adminNewsService';
 import type { CreateNewsRequest, UpdateNewsRequest } from '../type/admin.types';
 
 const useAdminNewsActions = () => {

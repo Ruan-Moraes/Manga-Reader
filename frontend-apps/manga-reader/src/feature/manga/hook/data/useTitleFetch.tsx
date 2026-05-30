@@ -16,9 +16,7 @@ const useTitleFetch = (id: string): UseQueryResult<Title | Error> => {
                 validateId(Number(id));
 
                 return await getTitleById(id);
-            } catch (error) {
-                console.error('Erro ao buscar título:', error);
-
+            } catch {
                 throw new Error(ERROR_MESSAGES.FETCH_TITLES_ERROR);
             }
         },

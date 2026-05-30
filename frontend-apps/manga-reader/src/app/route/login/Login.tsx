@@ -1,149 +1,171 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
-import {
-    showErrorToast,
-    showInfoToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
-
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
-
-import AuthenticationForm from '@shared/component/form/AuthenticationForm';
-import BaseInput from '@shared/component/input/BaseInput';
-import RaisedButton from '@shared/component/button/RaisedButton';
-
+import { useAuth, AuthShell, AuthField, AuthSubmit } from '@feature/auth';
+import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { ROUTES } from '@shared/constant/ROUTES';
 
-import { useAuth, buildLoginSchema, type LoginFormValues } from '@feature/auth';
+const DEMO_USER = {
+    email: 'admin@mangareader.com',
+    password: '123456',
+} as const;
 
+// Todo: Implementar o ZOD para validar e refatorar esse componente seguindo a lei da arquitera FSD e clean code.
 const Login = () => {
-    const { t } = useTranslation('auth');
     const navigate = useNavigate();
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [redirectPath, setRedirectPath] = useState<string | null>(null);
+    const { t } = useTranslation('auth');
 
     const { login } = useAuth();
 
-    const schema = useMemo(() => buildLoginSchema(t), [t]);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [remember, setRemember] = useState(true);
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+    const [loading, setLoading] = useState(false);
 
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<LoginFormValues>({
-        resolver: zodResolver(schema),
-        defaultValues: { email: '', password: '' },
-        mode: 'onTouched',
-    });
+    const submit = async (e: FormEvent) => {
+        e.preventDefault();
 
-    useEffect(() => {
-        const storedPath = localStorage.getItem('redirectAfterLogin');
+        const errs: { email?: string; password?: string } = {};
 
-        if (storedPath) {
-            setRedirectPath(storedPath);
-
-            showInfoToast(t('login.redirectInfo'), {
-                toastId: 'redirect-info',
-            });
+        if (!email.trim()) {
+            errs.email = t('login.emailRequired');
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            errs.email = t('login.emailInvalid');
         }
-    }, [t]);
 
-    const onSubmit = useCallback(
-        async (values: LoginFormValues) => {
-            setIsLoading(true);
+        if (!password) errs.password = t('login.passwordRequired');
 
-            try {
-                await login({
-                    email: values.email.trim(),
-                    password: values.password,
-                });
+        setErrors(errs);
 
-                if (redirectPath) {
-                    localStorage.removeItem('redirectAfterLogin');
-                    navigate(redirectPath);
-                    showSuccessToast(t('login.successRedirect'), {
-                        toastId: 'auth-success-redirect',
-                    });
-                } else {
-                    navigate(WEB_BASE_URL);
-                    showSuccessToast(t('login.success'), {
-                        toastId: 'auth-success',
-                    });
-                }
-            } finally {
-                setIsLoading(false);
+        if (Object.keys(errs).length) return;
+
+        setLoading(true);
+
+        try {
+            await login({ email: email.trim(), password });
+
+            const redirectPath = localStorage.getItem(REDIRECT_AFTER_LOGIN_KEY);
+
+            if (redirectPath) {
+                localStorage.removeItem(REDIRECT_AFTER_LOGIN_KEY);
+                navigate(redirectPath);
+            } else {
+                navigate(WEB_BASE_URL);
             }
-        },
-        [login, navigate, redirectPath, t],
-    );
+        } catch {
+            setErrors({
+                password: t('login.invalidCredentials'),
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const onInvalid = useCallback(() => {
-        showErrorToast(t('validation.fixErrors'), {
-            toastId: 'login-validation',
-        });
-    }, [t]);
+    const fillDemo = () => {
+        setEmail(DEMO_USER.email);
+        setPassword(DEMO_USER.password);
+        setErrors({});
+    };
+
+    const go = (path: string) => (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        navigate(path);
+    };
 
     return (
-        <>
-            <Header showSearch={true} />
-            <MainContent>
-                <AuthenticationForm
-                    onFormSubmit={handleSubmit(onSubmit, onInvalid)}
-                    title={t('login.title')}
-                    helperText={t('login.helperText')}
-                    link="/forgot-password"
-                    linkText={t('login.linkText')}
-                >
-                    <Controller
-                        control={control}
-                        name="email"
-                        render={({ field }) => (
-                            <BaseInput
-                                label={t('login.emailLabel')}
-                                type="email"
-                                placeholder={t('login.emailPlaceholder')}
-                                value={field.value}
-                                onChange={field.onChange}
-                                disabled={isLoading}
-                                error={errors.email?.message}
-                                name="email"
-                            />
-                        )}
+        <AuthShell
+            eyebrow={t('login.eyebrow')}
+            title={t('login.title')}
+            subtitle={t('login.subtitle')}
+            footer={
+                <>
+                    {t('login.noAccount')}{' '}
+                    <a
+                        href={`${WEB_BASE_URL}${ROUTES.SIGN_UP}`}
+                        onClick={go(`${WEB_BASE_URL}${ROUTES.SIGN_UP}`)}
+                        className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                    >
+                        {t('login.signUpLink')}
+                    </a>
+                </>
+            }
+        >
+            <form onSubmit={submit} noValidate aria-label={t('login.formAria')}>
+                <AuthField
+                    label={t('login.emailLabel')}
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder={t('login.emailPlaceholder')}
+                    error={errors.email}
+                />
+
+                <AuthField
+                    label={t('login.passwordLabel')}
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder={t('login.passwordPlaceholder')}
+                    error={errors.password}
+                    rightSlot={
+                        <a
+                            href={`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`}
+                            onClick={go(`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`)}
+                            className="text-mr-tiny tracking-mr text-mr-fg-subtle no-underline hover:text-mr-fg"
+                        >
+                            {t('login.forgotPassword')}
+                        </a>
+                    }
+                />
+
+                <label className="mb-4 flex cursor-pointer items-center gap-2">
+                    <input
+                        type="checkbox"
+                        checked={remember}
+                        onChange={e => setRemember(e.target.checked)}
+                        className="size-3.5"
+                        style={{ accentColor: '#ddda2a' }}
                     />
-                    <Controller
-                        control={control}
-                        name="password"
-                        render={({ field }) => (
-                            <BaseInput
-                                label={t('login.passwordLabel')}
-                                type="password"
-                                placeholder={t('login.passwordPlaceholder')}
-                                value={field.value}
-                                onChange={field.onChange}
-                                disabled={isLoading}
-                                error={errors.password?.message}
-                                name="password"
-                            />
-                        )}
-                    />
-                    <RaisedButton
-                        text={
-                            isLoading
-                                ? t('login.submitLoading')
-                                : t('login.submit')
-                        }
-                    />
-                </AuthenticationForm>
-            </MainContent>
-            <Footer showLinks={true} />
-        </>
+                    <span className="text-mr-small tracking-mr text-mr-gray-200">{t('login.rememberSession')}</span>
+                </label>
+
+                <AuthSubmit loading={loading}>{t('login.submit')}</AuthSubmit>
+
+                {import.meta.env.DEV && (
+                    <div
+                        className="mt-4 rounded-mr-sm border border-dashed p-3.5"
+                        style={{
+                            background: 'rgba(221,218,42,0.06)',
+                            borderColor: 'rgba(221,218,42,0.35)',
+                        }}
+                    >
+                        <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0 flex-1">
+                                <div className="mb-1.5 text-[10px] font-mr-extrabold uppercase tracking-[0.12em] text-mr-accent">{t('login.demoTitle')}</div>
+                                <div className="font-mr-mono text-mr-small leading-relaxed text-mr-gray-200">
+                                    <div>{DEMO_USER.email}</div>
+                                    <div>{DEMO_USER.password}</div>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={fillDemo}
+                                className="shrink-0 rounded-mr-xs border border-mr-accent bg-transparent px-2.5 py-1.5 text-[10px] font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent"
+                            >
+                                {t('login.demoFill')}
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </form>
+        </AuthShell>
     );
 };
 

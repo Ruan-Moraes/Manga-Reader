@@ -1,7 +1,4 @@
-import type {
-    AdminGroup,
-    GroupMember as AdminGroupMember,
-} from '@feature/admin/type/admin.types';
+import type { AdminGroup, GroupMember as AdminGroupMember } from '@feature/admin/type/admin.types';
 import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 
@@ -12,9 +9,7 @@ const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 let adminGroupCounter = 0;
 let adminGroupMemberCounter = 0;
 
-export const buildAdminGroupMember = (
-    overrides: Partial<AdminGroupMember> = {},
-): AdminGroupMember => {
+export const buildAdminGroupMember = (overrides: Partial<AdminGroupMember> = {}): AdminGroupMember => {
     adminGroupMemberCounter += 1;
 
     return {
@@ -35,13 +30,10 @@ export const adminGroupMemberPresets = {
     qc: () => buildAdminGroupMember({ role: 'QC' }),
     cleaner: () => buildAdminGroupMember({ role: 'Cleaner' }),
     typesetter: () => buildAdminGroupMember({ role: 'Typesetter' }),
-    incomplete: () =>
-        buildAdminGroupMember({ type: null, role: null, joinedAt: null }),
+    incomplete: () => buildAdminGroupMember({ type: null, role: null, joinedAt: null }),
 };
 
-export const buildAdminGroup = (
-    overrides: Partial<AdminGroup> = {},
-): AdminGroup => {
+export const buildAdminGroup = (overrides: Partial<AdminGroup> = {}): AdminGroup => {
     adminGroupCounter += 1;
 
     return {
@@ -104,11 +96,6 @@ export const adminGroupPresets = {
         }),
 };
 
-export const buildAdminGroupList = (count = 10): AdminGroup[] =>
-    Array.from({ length: count }, () => buildAdminGroup());
+export const buildAdminGroupList = (count = 10): AdminGroup[] => Array.from({ length: count }, () => buildAdminGroup());
 
-export const buildAdminGroupPage = (
-    items: AdminGroup[] = buildAdminGroupList(),
-    page = 0,
-    size = 20,
-): PageResponse<AdminGroup> => buildPage(items, page, size);
+export const buildAdminGroupPage = (items: AdminGroup[] = buildAdminGroupList(), page = 0, size = 20): PageResponse<AdminGroup> => buildPage(items, page, size);

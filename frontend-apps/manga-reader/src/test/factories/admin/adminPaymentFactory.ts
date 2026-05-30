@@ -5,16 +5,9 @@ import { buildPage } from '../pageFactory';
 
 let adminPaymentCounter = 0;
 
-const PAYMENT_STATUSES = [
-    'PENDING',
-    'COMPLETED',
-    'FAILED',
-    'REFUNDED',
-] as const;
+const PAYMENT_STATUSES = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'] as const;
 
-export const buildAdminPayment = (
-    overrides: Partial<AdminPayment> = {},
-): AdminPayment => {
+export const buildAdminPayment = (overrides: Partial<AdminPayment> = {}): AdminPayment => {
     adminPaymentCounter += 1;
 
     return {
@@ -61,8 +54,7 @@ export const adminPaymentPresets = {
     boleto: () => buildAdminPayment({ paymentMethod: 'BOLETO' }),
     paypal: () => buildAdminPayment({ paymentMethod: 'PAYPAL' }),
 
-    highValue: () =>
-        buildAdminPayment({ amount: 9999.99, paymentMethod: 'CREDIT_CARD' }),
+    highValue: () => buildAdminPayment({ amount: 9999.99, paymentMethod: 'CREDIT_CARD' }),
     lowValue: () => buildAdminPayment({ amount: 1.0 }),
     free: () => buildAdminPayment({ amount: 0 }),
 
@@ -90,16 +82,9 @@ export const adminPaymentPresets = {
 };
 
 export const buildAdminPaymentList = (count = 10): AdminPayment[] =>
-    Array.from({ length: count }, (_, i) =>
-        buildAdminPayment({ status: PAYMENT_STATUSES[i % 4] }),
-    );
+    Array.from({ length: count }, (_, i) => buildAdminPayment({ status: PAYMENT_STATUSES[i % 4] }));
 
-export const buildAdminPaymentPage = (
-    items: AdminPayment[] = buildAdminPaymentList(),
-    page = 0,
-    size = 20,
-): PageResponse<AdminPayment> => buildPage(items, page, size);
+export const buildAdminPaymentPage = (items: AdminPayment[] = buildAdminPaymentList(), page = 0, size = 20): PageResponse<AdminPayment> =>
+    buildPage(items, page, size);
 
-export const adminPaymentStatusValues = [
-    ...PAYMENT_STATUSES,
-] as const satisfies readonly string[];
+export const adminPaymentStatusValues = [...PAYMENT_STATUSES] as const satisfies readonly string[];

@@ -6,7 +6,7 @@ import RatingStars from '../../RatingStars';
 import FinalScoreCard from './FinalScoreCard';
 
 import { RATING_CATEGORIES } from './ratingCategories';
-import DarkButton from '@shared/component/button/DarkButton.tsx';
+import { Button } from '@ui/Button';
 
 type CategoryRatings = Record<string, number>;
 type CategoryComments = Record<string, string>;
@@ -31,24 +31,14 @@ type RatingWizardProps = {
 
 const TOTAL_STEPS = RATING_CATEGORIES.length + 1;
 
-const RatingWizard = ({
-    onSubmit,
-    onCancel,
-    isSubmitting = false,
-}: RatingWizardProps) => {
+const RatingWizard = ({ onSubmit, onCancel, isSubmitting = false }: RatingWizardProps) => {
     const { t } = useTranslation('rating');
     const [currentStep, setCurrentStep] = useState(0);
     const [categoryRatings, setCategoryRatings] = useState<CategoryRatings>(
-        () =>
-            Object.fromEntries(
-                RATING_CATEGORIES.map(c => [c.key, -1]),
-            ) as CategoryRatings,
+        () => Object.fromEntries(RATING_CATEGORIES.map(c => [c.key, -1])) as CategoryRatings,
     );
     const [categoryComments, setCategoryComments] = useState<CategoryComments>(
-        () =>
-            Object.fromEntries(
-                RATING_CATEGORIES.map(c => [c.key, '']),
-            ) as CategoryComments,
+        () => Object.fromEntries(RATING_CATEGORIES.map(c => [c.key, ''])) as CategoryComments,
     );
 
     const isFinalStep = currentStep === TOTAL_STEPS - 1;
@@ -86,10 +76,7 @@ const RatingWizard = ({
     };
 
     const handleStepClick = (step: number) => {
-        if (
-            step <= currentStep ||
-            categoryRatings[RATING_CATEGORIES[step]?.key] > 0
-        ) {
+        if (step <= currentStep || categoryRatings[RATING_CATEGORIES[step]?.key] > 0) {
             setCurrentStep(step);
         }
     };
@@ -97,12 +84,9 @@ const RatingWizard = ({
     const handleSubmit = () => {
         if (!allCategoriesRated) return;
 
-        const commentParts = RATING_CATEGORIES.map(
-            c => categoryComments[c.key],
-        ).filter(Boolean);
+        const commentParts = RATING_CATEGORIES.map(c => categoryComments[c.key]).filter(Boolean);
 
-        const combinedComment =
-            commentParts.length > 0 ? commentParts.join(' | ') : undefined;
+        const combinedComment = commentParts.length > 0 ? commentParts.join(' | ') : undefined;
 
         onSubmit({
             funRating: categoryRatings['funRating'],
@@ -118,17 +102,9 @@ const RatingWizard = ({
     const handleReset = () => {
         setCurrentStep(0);
 
-        setCategoryRatings(
-            Object.fromEntries(
-                RATING_CATEGORIES.map(c => [c.key, -1]),
-            ) as CategoryRatings,
-        );
+        setCategoryRatings(Object.fromEntries(RATING_CATEGORIES.map(c => [c.key, -1])) as CategoryRatings);
 
-        setCategoryComments(
-            Object.fromEntries(
-                RATING_CATEGORIES.map(c => [c.key, '']),
-            ) as CategoryComments,
-        );
+        setCategoryComments(Object.fromEntries(RATING_CATEGORIES.map(c => [c.key, ''])) as CategoryComments);
     };
 
     const renderStepIndicator = () => (
@@ -152,20 +128,14 @@ const RatingWizard = ({
                                       : ''
                             } ${isFuture ? 'text-tertiary opacity-60' : ''}`}
                         >
-                            <span>
-                                {isCompleted && !isCurrent ? '✓' : `${i + 1}`}
-                            </span>
-                            <span className="hidden mobile-md:inline">
-                                {t(`wizard.categoryLabels.${cat.key}`)}
-                            </span>
+                            <span>{isCompleted && !isCurrent ? '✓' : `${i + 1}`}</span>
+                            <span className="hidden mobile-md:inline">{t(`wizard.categoryLabels.${cat.key}`)}</span>
                         </button>
                     );
                 })}
                 <button
                     type="button"
-                    onClick={() =>
-                        allCategoriesRated && handleStepClick(TOTAL_STEPS - 1)
-                    }
+                    onClick={() => allCategoriesRated && handleStepClick(TOTAL_STEPS - 1)}
                     className={`flex items-center gap-1 px-2 py-1 text-xs rounded-xs transition-colors cursor-pointer whitespace-nowrap ${
                         isFinalStep
                             ? 'font-bold text-white border-b-2 border-white'
@@ -190,31 +160,17 @@ const RatingWizard = ({
 
         const canAdvance = isRated;
 
-        const categoryLabel = t(
-            `wizard.categoryLabels.${currentCategory.key}`,
-        );
+        const categoryLabel = t(`wizard.categoryLabels.${currentCategory.key}`);
 
         return (
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col items-center gap-2 pt-2">
                     <span className="text-2xl">{currentCategory.icon}</span>
-                    <h3 className="text-sm font-bold text-shadow-default">
-                        {t('wizard.rateLabel', { label: categoryLabel })}
-                    </h3>
-                    <p className="text-xs text-tertiary text-center max-w-xs">
-                        {t(
-                            `wizard.categoryDescriptions.${currentCategory.key}`,
-                        )}
-                    </p>
+                    <h3 className="text-sm font-bold text-shadow-default">{t('wizard.rateLabel', { label: categoryLabel })}</h3>
+                    <p className="text-xs text-tertiary text-center max-w-xs">{t(`wizard.categoryDescriptions.${currentCategory.key}`)}</p>
                 </div>
                 <div className="flex justify-center py-2">
-                    <RatingStars
-                        value={isRated ? currentRating : 0}
-                        onChange={handleCategoryRating}
-                        size={28}
-                        showValue={isRated}
-                        halfPrecision
-                    />
+                    <RatingStars value={isRated ? currentRating : 0} onChange={handleCategoryRating} size={28} showValue={isRated} halfPrecision />
                 </div>
                 <textarea
                     value={currentComment}
@@ -229,9 +185,7 @@ const RatingWizard = ({
                         onClick={currentStep === 0 ? onCancel : handleBack}
                         className="flex-1 px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors cursor-pointer"
                     >
-                        {currentStep === 0
-                            ? t('wizard.cancel')
-                            : t('wizard.back')}
+                        {currentStep === 0 ? t('wizard.cancel') : t('wizard.back')}
                     </button>
                     <button
                         type="button"
@@ -261,24 +215,20 @@ const RatingWizard = ({
     return (
         <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold leading-none">
-                    {t('wizard.title')}
-                </h2>
-                <DarkButton
-                    text={t('wizard.close')}
+                <h2 className="text-lg font-semibold leading-none">{t('wizard.title')}</h2>
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => {
                         handleReset();
-
                         onCancel();
                     }}
-                />
+                >
+                    {t('wizard.close')}
+                </Button>
             </div>
             {renderStepIndicator()}
-            <div
-                key={currentStep}
-                className="animate-fade-in"
-                style={{ animation: 'fadeIn 300ms ease-in-out' }}
-            >
+            <div key={currentStep} className="animate-fade-in" style={{ animation: 'fadeIn 300ms ease-in-out' }}>
                 {isFinalStep ? renderFinalStep() : renderCategoryStep()}
             </div>
         </div>

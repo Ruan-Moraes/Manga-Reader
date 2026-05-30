@@ -1,164 +1,55 @@
-import { useMemo } from 'react';
-import { FiMessageSquare } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
+import useAppNavigate from '@shared/hook/useAppNavigate';
+import { Plus, Users } from 'lucide-react';
 
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
-import BaseSelect from '@shared/component/input/BaseSelect';
-import SearchInput from '@shared/component/input/SearchInput';
-import useAuth from '@feature/auth/hook/useAuth';
+import { PageContainer } from '@ui/PageContainer';
+import { SectionHeader } from '@ui/SectionHeader';
+import { StatusDot } from '@ui/StatusDot';
+import { Button } from '@ui/Button';
 
-import {
-    useForumPage,
-    TopicCard,
-    Pagination,
-    ForumStats,
-    forumCategories,
-    forumSortOptions,
-    type ForumSort,
-} from '@feature/forum';
+import { useForumPage } from '@feature/forum';
+
+import { ForumFilters } from './parts/ForumFilters';
+import { ForumTopicList } from './parts/ForumTopicList';
 
 const Forum = () => {
+    const navigate = useAppNavigate();
     const { t } = useTranslation('forum');
-    const { user } = useAuth();
-    const isAdmin = user?.role === 'admin';
-    const {
-        activeCategory,
-        sort,
-        query,
-        page,
-        setPage,
-        allTopics,
-        topics,
-        totalPages,
-        crossLanguage,
-        toggleCrossLanguage,
-        updateCategory,
-        updateSort,
-        updateQuery,
-    } = useForumPage();
-
-    const translatedSortOptions = useMemo(
-        () =>
-            forumSortOptions.map(option => ({
-                value: option.value,
-                label: t(`sort.${option.value}`, {
-                    defaultValue: option.label,
-                }),
-            })),
-        [t],
-    );
+    const { activeCategory, sort, query, page, setPage, allTopics, topics, totalPages, updateCategory, updateSort, updateQuery } = useForumPage();
 
     return (
-        <>
-            <Header />
-            <MainContent>
-                <section className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                        <FiMessageSquare
-                            className="text-quaternary-default"
-                            size={28}
-                        />
-                        <h1 className="text-2xl font-bold">
-                            {t('page.title')}
-                        </h1>
-                    </div>
-                    <p className="max-w-xl mx-auto text-sm text-shadow-secondary">
-                        {t('page.subtitle')}
-                    </p>
-                </section>
-                <ForumStats topics={allTopics} />
-                <section className="flex flex-col gap-3">
-                    <SearchInput
-                        value={query}
-                        onChange={updateQuery}
-                        placeholder={t('page.searchPlaceholder')}
-                    />
-                    <div className="flex flex-wrap gap-2">
-                        <button
-                            onClick={() => updateCategory('all')}
-                            className={`px-3 py-1.5 text-xs rounded-full transition-colors ${
-                                activeCategory === 'all'
-                                    ? 'bg-quaternary-default text-primary-default font-bold'
-                                    : 'bg-secondary border border-tertiary hover:bg-tertiary'
-                            }`}
-                        >
-                            {t('page.allCategories')}
-                        </button>
-                        {forumCategories.map(cat => (
-                            <button
-                                key={cat}
-                                onClick={() => updateCategory(cat)}
-                                className={`px-3 py-1.5 text-xs rounded-full transition-colors ${
-                                    activeCategory === cat
-                                        ? 'bg-quaternary-default text-primary-default font-bold'
-                                        : 'bg-secondary border border-tertiary hover:bg-tertiary'
-                                }`}
-                            >
-                                {t(`categories.${cat}`, { defaultValue: cat })}
-                            </button>
-                        ))}
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-shadow-secondary">
-                            {t('page.sortLabel')}
-                        </span>
-                        <BaseSelect
-                            options={translatedSortOptions}
-                            value={sort}
-                            onChange={e =>
-                                updateSort(e.target.value as ForumSort)
-                            }
-                            className="px-3 py-1.5 text-xs border rounded-xs bg-secondary border-tertiary"
-                        />
+        <PageContainer asMain size="default" paddingY="md">
+            <SectionHeader
+                eyebrow={t('page.eyebrow')}
+                title={t('page.title')}
+                meta={t('page.topicsCount', { count: allTopics.length })}
+                action={
+                    <Button variant="primary" icon={Plus}>
+                        {t('page.newTopic')}
+                    </Button>
+                }
+                className="mb-4"
+            />
 
-                        {isAdmin && (
-                            <label className="flex items-center gap-1.5 ml-2 text-xs cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={crossLanguage}
-                                    onChange={toggleCrossLanguage}
-                                    className="accent-quaternary-default"
-                                />
-                                <span>
-                                    {t('page.crossLanguage', {
-                                        defaultValue: 'Todos idiomas (admin)',
-                                    })}
-                                </span>
-                            </label>
-                        )}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-mr-full border border-mr-border bg-mr-surface px-4 py-2 text-mr-tiny text-mr-fg-muted">
+                <StatusDot status="operating" size={8} />
+                <Users className="size-3" />
+                <span>
+                    <strong className="text-mr-fg">3.241</strong> {t('page.liveReaders')}
+                </span>
+            </div>
 
-                        <span className="ml-auto text-xs text-shadow-secondary">
-                            {t('page.foundTopics', { count: allTopics.length })}
-                        </span>
-                    </div>
-                </section>
-                <section className="flex flex-col gap-3">
-                    {topics.length === 0 ? (
-                        <div className="py-12 text-center">
-                            <FiMessageSquare
-                                className="mx-auto mb-3 text-shadow-secondary"
-                                size={40}
-                            />
-                            <p className="text-sm text-shadow-secondary">
-                                {t('page.emptyState')}
-                            </p>
-                        </div>
-                    ) : (
-                        topics.map(topic => (
-                            <TopicCard key={topic.id} topic={topic} />
-                        ))
-                    )}
-                </section>
-                <Pagination
-                    page={page}
-                    totalPages={totalPages}
-                    onPageChange={setPage}
-                />
-            </MainContent>
-            <Footer />
-        </>
+            <ForumFilters query={query} sort={sort} activeCategory={activeCategory} onQuery={updateQuery} onSort={updateSort} onCategory={updateCategory} />
+
+            <ForumTopicList
+                topics={topics}
+                allTopicsCount={allTopics.length}
+                page={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                onTopicClick={id => navigate(`/forum/topic/${id}`)}
+            />
+        </PageContainer>
     );
 };
 

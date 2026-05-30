@@ -15,6 +15,8 @@
     "actions": {
         "send": "Enviar",
         "reply": "Responder",
+        "like": "Me gusta",
+        "dislike": "No me gusta",
         "edit": "Editar",
         "delete": "Eliminar",
         "report": "Denunciar",
@@ -55,6 +57,11 @@
         "memberBadge": "Miembro",
         "moderatorBadge": "Moderador",
         "imageAlt": "Imagen del comentario de {{name}}"
+    },
+    "editor": {
+        "imageLimitError": "Solo puedes agregar hasta 3 imágenes.",
+        "noFileError": "Ningún archivo seleccionado.",
+        "fileSizeError": "El archivo debe tener como máximo 2MB."
     },
     "list": {
         "loading": "Cargando comentarios...",

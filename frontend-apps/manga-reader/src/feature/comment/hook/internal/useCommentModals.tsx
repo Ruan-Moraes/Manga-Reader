@@ -2,11 +2,7 @@ import { useCallback, useState } from 'react';
 
 type UseCommentModalsOptions = {
     onDelete: (id: string) => void;
-    onEdit: (
-        id: string,
-        newTextContent: string | null,
-        newImageContent: string | null,
-    ) => void;
+    onEdit: (id: string, newTextContent: string | null, newImageContent: string | null) => void;
 
     commentId: string;
 };

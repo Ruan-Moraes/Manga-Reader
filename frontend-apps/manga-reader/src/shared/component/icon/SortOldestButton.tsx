@@ -10,11 +10,7 @@ type SortOldestButtonProps = {
 const SortOldestButton = ({ onClick, className }: SortOldestButtonProps) => {
     return (
         <BadgeIconButton onClick={onClick} className={className}>
-            <img
-                src={CalendarArrowDownIcon}
-                alt="Calendar Arrow Down"
-                className="w-[0.9296875rem] h-[0.9296875rem]"
-            />
+            <img src={CalendarArrowDownIcon} alt="Calendar Arrow Down" className="w-[0.9296875rem] h-[0.9296875rem]" />
         </BadgeIconButton>
     );
 };

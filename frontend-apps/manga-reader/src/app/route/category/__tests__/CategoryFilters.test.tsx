@@ -1,0 +1,112 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import CategoryFilters from '../CategoryFilters';
+import type { Title } from '@feature/manga';
+import type { Tag } from '@feature/category';
+
+const makeTitle = (overrides: Partial<Title> = {}): Title => ({
+    id: '1',
+    type: 'Manga',
+    cover: '',
+    name: 'Default',
+    synopsis: '',
+    genres: ['Shounen'],
+    popularity: '100',
+    ratingAverage: 4.5,
+    ratingCount: 10,
+    rankingScore: 0.9,
+    adult: false,
+    status: 'ONGOING',
+    author: 'Author',
+    artist: 'Artist',
+    publisher: 'Pub',
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-01',
+    ...overrides,
+});
+
+const MOCK_TAGS: Tag[] = [
+    { value: 1, label: 'Seinen' },
+    { value: 2, label: 'Shounen' },
+    { value: 3, label: 'Isekai' },
+];
+
+const MOCK_TITLES: Title[] = [
+    makeTitle({
+        id: '1',
+        name: 'Berserk',
+        author: 'Miura',
+        genres: ['Seinen'],
+    }),
+    makeTitle({
+        id: '2',
+        name: 'One Piece',
+        author: 'Oda',
+        genres: ['Shounen'],
+    }),
+];
+
+vi.mock('@feature/category', async importOriginal => {
+    const actual = await importOriginal<typeof import('@feature/category')>();
+    return {
+        ...actual,
+        useTagsFetch: () => ({ data: MOCK_TAGS }),
+        useFilterResults: () => ({
+            data: { content: MOCK_TITLES, totalElements: 2, totalPages: 1 },
+            isLoading: false,
+        }),
+    };
+});
+
+beforeEach(() => {
+    vi.clearAllMocks();
+});
+
+const setup = () => renderWithProviders(<CategoryFilters />);
+
+describe('CategoryFilters', () => {
+    it('renders obra count and search field', () => {
+        setup();
+        expect(screen.getByRole('searchbox')).toBeInTheDocument();
+        expect(screen.getByText(/2 obras/i)).toBeInTheDocument();
+    });
+
+    it('filters by search query', async () => {
+        const user = userEvent.setup();
+        setup();
+
+        const search = screen.getByRole('searchbox');
+        await user.type(search, 'Berserk');
+
+        // Client-side filter on current page results — only Berserk remains
+        expect(screen.getByText('Berserk')).toBeInTheDocument();
+        expect(screen.queryByText('One Piece')).not.toBeInTheDocument();
+    });
+
+    it('renders genre checkboxes', () => {
+        setup();
+        expect(screen.getByRole('checkbox', { name: /seinen/i })).toBeInTheDocument();
+        expect(screen.getByRole('checkbox', { name: /shounen/i })).toBeInTheDocument();
+    });
+
+    it('selecting a genre adds active filter chip', async () => {
+        const user = userEvent.setup();
+        setup();
+
+        const seinenCb = screen.getByRole('checkbox', { name: /seinen/i });
+        await user.click(seinenCb);
+
+        // Genre chip appears as a remove button
+        const chips = screen.getAllByRole('button', { name: /seinen/i });
+        expect(chips.length).toBeGreaterThan(0);
+    });
+
+    it('shows layout toggle controls', () => {
+        setup();
+        expect(screen.getByRole('radio', { name: /grade/i })).toBeInTheDocument();
+        expect(screen.getByRole('radio', { name: /lista/i })).toBeInTheDocument();
+    });
+});

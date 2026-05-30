@@ -7,9 +7,7 @@ type CommentSortContextType = {
     setSortType: (sortType: SortType) => void;
 };
 
-const CommentSortContext = createContext<CommentSortContextType | undefined>(
-    undefined,
-);
+const CommentSortContext = createContext<CommentSortContextType | undefined>(undefined);
 
 type CommentSortProviderProps = {
     children: ReactNode;
@@ -18,20 +16,14 @@ type CommentSortProviderProps = {
 export const CommentSortProvider = ({ children }: CommentSortProviderProps) => {
     const [sortType, setSortType] = useState<SortType>(null);
 
-    return (
-        <CommentSortContext.Provider value={{ sortType, setSortType }}>
-            {children}
-        </CommentSortContext.Provider>
-    );
+    return <CommentSortContext.Provider value={{ sortType, setSortType }}>{children}</CommentSortContext.Provider>;
 };
 
 export const useCommentSortContext = () => {
     const context = useContext(CommentSortContext);
 
     if (context === undefined) {
-        throw new Error(
-            'useCommentSortContext must be used within a CommentSortProvider',
-        );
+        throw new Error('useCommentSortContext must be used within a CommentSortProvider');
     }
 
     return context;

@@ -1,8 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import GenreTagList from '@shared/component/box/GenreTagList';
-
 import { Title } from '../../type/title.types';
 import SynopsisModal from './SynopsisModal';
 
@@ -10,11 +8,7 @@ type TitleDescriptionTypes = Pick<Title, 'name' | 'genres' | 'synopsis'>;
 
 const SYNOPSIS_MAX_LINES = 18;
 
-const TitleDescription = ({
-    name,
-    genres,
-    synopsis,
-}: TitleDescriptionTypes) => {
+const TitleDescription = ({ name, genres, synopsis }: TitleDescriptionTypes) => {
     const { t } = useTranslation('manga');
     const synopsisRef = useRef<HTMLParagraphElement>(null);
 
@@ -33,9 +27,7 @@ const TitleDescription = ({
         <>
             <div className="flex flex-col gap-2">
                 <div>
-                    <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">
-                        {t('synopsis')}
-                    </h3>
+                    <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">{t('synopsis')}</h3>
                 </div>
                 <div>
                     <p
@@ -62,18 +54,19 @@ const TitleDescription = ({
             </div>
             <div className="flex flex-col gap-2">
                 <div>
-                    <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">
-                        {t('genres')}
-                    </h3>
+                    <h3 className="px-2 py-1 text-sm font-bold text-center rounded-xs bg-tertiary text-shadow-default">{t('genres')}</h3>
                 </div>
-                <GenreTagList genres={genres} />
+                <div className="text-xs text-center">
+                    <ul className="flex flex-wrap gap-1">
+                        {genres.map(genre => (
+                            <li key={genre} className="p-1 border rounded-xs bg-secondary border-tertiary">
+                                {genre}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
-            <SynopsisModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                title={name}
-                synopsis={synopsis}
-            />
+            <SynopsisModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={name} synopsis={synopsis} />
         </>
     );
 };

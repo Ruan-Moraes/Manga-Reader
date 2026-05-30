@@ -12,16 +12,11 @@ const useGroupWorks = (translatedWorks: GroupWork[]) => {
     }, []);
 
     const sortedWorks = useMemo(() => {
-        const scoped = activeGenre
-            ? translatedWorks.filter(work => work.genres.includes(activeGenre))
-            : translatedWorks;
+        const scoped = activeGenre ? translatedWorks.filter(work => work.genres.includes(activeGenre)) : translatedWorks;
 
         return [...scoped].sort((a, b) => {
             if (workSort === 'date') {
-                return (
-                    new Date(b.updatedAt).getTime() -
-                    new Date(a.updatedAt).getTime()
-                );
+                return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
             }
 
             if (workSort === 'chapters') {

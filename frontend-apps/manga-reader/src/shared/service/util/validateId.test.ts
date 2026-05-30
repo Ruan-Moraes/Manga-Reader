@@ -22,15 +22,11 @@ describe('validateId', () => {
     });
 
     it('deve lancar erro quando recebe undefined coercido a number', () => {
-        expect(() => validateId(undefined as unknown as number)).toThrow(
-            ERROR_MESSAGES.INVALID_ID_ERROR,
-        );
+        expect(() => validateId(undefined as unknown as number)).toThrow(ERROR_MESSAGES.INVALID_ID_ERROR);
     });
 
     it('deve lancar erro quando recebe string coercida via Number()', () => {
-        expect(() => validateId(Number('abc'))).toThrow(
-            ERROR_MESSAGES.INVALID_ID_ERROR,
-        );
+        expect(() => validateId(Number('abc'))).toThrow(ERROR_MESSAGES.INVALID_ID_ERROR);
     });
 
     it('nao deve lancar erro para Infinity', () => {

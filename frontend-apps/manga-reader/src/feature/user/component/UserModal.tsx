@@ -1,23 +1,17 @@
 import { useUserModalContext } from '../context/useUserModalContext';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import { Modal } from '@ui/Modal';
 import UserModalHeader from './UserModalHeader';
 import UserModalBody from './UserModalBody';
 
 const UserModal = () => {
-    const { isUserModalOpen, closeUserModal } = useUserModalContext();
-
-    // const fetchUserData = async () => {}; // TODO: Implementar função para buscar os dados do usuário
-
-    // useEffect(() => {
-    //  fetchUserData(id);
-    // });
+    const { isUserModalOpen, closeUserModal, userData } = useUserModalContext();
 
     return (
-        <BaseModal isModalOpen={isUserModalOpen} closeModal={closeUserModal}>
+        <Modal open={isUserModalOpen} onClose={closeUserModal} title={userData?.name ?? ''}>
             <UserModalHeader />
             <UserModalBody />
-        </BaseModal>
+        </Modal>
     );
 };
 

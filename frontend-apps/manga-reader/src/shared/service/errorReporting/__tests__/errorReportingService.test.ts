@@ -14,13 +14,8 @@ describe('errorReportingService', () => {
 
         server.use(
             http.post('*/api/error-logs', async ({ request }) => {
-                capturedBodies.push(
-                    (await request.json()) as Record<string, unknown>,
-                );
-                return HttpResponse.json(
-                    { data: { id: 'err-1' }, success: true },
-                    { status: 201 },
-                );
+                capturedBodies.push((await request.json()) as Record<string, unknown>);
+                return HttpResponse.json({ data: { id: 'err-1' }, success: true }, { status: 201 });
             }),
         );
     });
@@ -45,10 +40,7 @@ describe('errorReportingService', () => {
     });
 
     it('deve incluir userId quando session existe', async () => {
-        localStorage.setItem(
-            AUTH_STORAGE_KEY,
-            JSON.stringify({ userId: 'user-abc', accessToken: 'tok' }),
-        );
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ userId: 'user-abc', accessToken: 'tok' }));
 
         reportError('Error with user', null, 'window-error');
 

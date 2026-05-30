@@ -29,7 +29,26 @@
         "avatarAlt": "Avatar de {{name}}",
         "officialSite": "Sitio oficial",
         "supporters_one": "{{count}} apoyador",
-        "supporters_other": "{{count}} apoyadores"
+        "supporters_other": "{{count}} apoyadores",
+        "verifiedAria": "Verificado",
+        "statusActive": "Activo",
+        "statusHiatus": "En hiato",
+        "statusInactive": "Inactivo",
+        "follow": "Seguir",
+        "following": "Siguiendo",
+        "share": "Compartir",
+        "tabs": {
+            "works": "Obras",
+            "activity": "Actividad",
+            "members": "Miembros",
+            "about": "Acerca de"
+        },
+        "stats": {
+            "followers": "Seguidores",
+            "works": "Obras",
+            "chapters": "Capítulos",
+            "avgDays": "Días entre caps"
+        }
     },
     "modal": {
         "title": "Grupos de Traducción",
@@ -44,6 +63,29 @@
         "noTitle": "Sin obra vinculada",
         "searchPlaceholder": "Buscar miembro",
         "membersHeader": "{{name}} • {{count}} miembros"
+    },
+    "page": {
+        "eyebrow": "Comunidad",
+        "title": "Grupos de scan",
+        "meta": "{{count}} grupos",
+        "claimGroup": "Reclamar grupo"
+    },
+    "filters": {
+        "searchPlaceholder": "Buscar grupo...",
+        "sortMostActive": "Más activos",
+        "sortMostFollowers": "Más seguidores",
+        "sortMostWorks": "Más obras",
+        "sortBestRated": "Mejor valorados",
+        "statusAll": "Todos",
+        "statusActive": "Activos",
+        "statusHiatus": "En pausa",
+        "statusInactive": "Inactivos"
+    },
+    "list": {
+        "empty": "No se encontraron grupos",
+        "emptyDesc": "Prueba otros términos o elimina los filtros.",
+        "featured": "Destacados",
+        "allGroups": "Todos los grupos"
     },
     "listing": {
         "title": "Grupos de Traducción",
@@ -62,8 +104,13 @@
     "profile": {
         "notFoundTitle": "Grupo no encontrado",
         "notFoundMessage": "No se pudo localizar el perfil solicitado.",
+        "notFoundDesc": "Puede que haya sido eliminado o el enlace sea incorrecto.",
         "backToGroups": "Volver a Grupos",
+        "backToGroupsShort": "Volver a grupos",
         "aboutTitle": "Sobre el grupo",
+        "chapterPublished": "Capítulo {{chapter}} publicado",
+        "languagesTitle": "Idiomas",
+        "findUs": "Dónde encontrarnos",
         "foundationInfo": "Fundación: {{year}} • Entrada en la plataforma: {{joinedAt}}",
         "translatedWorks": "Obras traducidas",
         "sortPopularity": "Popularidad",

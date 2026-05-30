@@ -1,12 +1,4 @@
-export type ForumCategory =
-    | 'Geral'
-    | 'Recomendações'
-    | 'Spoilers'
-    | 'Suporte'
-    | 'Off-topic'
-    | 'Teorias'
-    | 'Fanart'
-    | 'Notícias';
+export type ForumCategory = 'Geral' | 'Recomendações' | 'Spoilers' | 'Suporte' | 'Off-topic' | 'Teorias' | 'Fanart' | 'Notícias';
 
 export type ForumAuthor = {
     id: string;
@@ -48,12 +40,7 @@ export type ForumTopic = {
     replies?: ForumReply[];
 };
 
-export type ForumSort =
-    | 'recent'
-    | 'popular'
-    | 'most-replies'
-    | 'unanswered'
-    | 'oldest';
+export type ForumSort = 'recent' | 'popular' | 'most-replies' | 'unanswered' | 'oldest';
 
 export type ForumFilter = {
     query?: string;

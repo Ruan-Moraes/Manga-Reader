@@ -6,9 +6,7 @@ import checkValidId from './checkValidId';
 
 describe('checkValidId', () => {
     it('deve lancar erro quando id e NaN', () => {
-        expect(() => checkValidId(NaN)).toThrow(
-            ERROR_MESSAGES.INVALID_ID_ERROR,
-        );
+        expect(() => checkValidId(NaN)).toThrow(ERROR_MESSAGES.INVALID_ID_ERROR);
     });
 
     it('nao deve lancar erro para id numerico valido', () => {
@@ -20,9 +18,7 @@ describe('checkValidId', () => {
     });
 
     it('deve lancar erro quando recebe undefined coercido a number', () => {
-        expect(() => checkValidId(undefined as unknown as number)).toThrow(
-            ERROR_MESSAGES.INVALID_ID_ERROR,
-        );
+        expect(() => checkValidId(undefined as unknown as number)).toThrow(ERROR_MESSAGES.INVALID_ID_ERROR);
     });
 
     it('nao deve lancar erro para null coercido (Number(null) === 0)', () => {
@@ -30,8 +26,6 @@ describe('checkValidId', () => {
     });
 
     it('deve lancar erro quando recebe string coercida via Number()', () => {
-        expect(() => checkValidId(Number('abc'))).toThrow(
-            ERROR_MESSAGES.INVALID_ID_ERROR,
-        );
+        expect(() => checkValidId(Number('abc'))).toThrow(ERROR_MESSAGES.INVALID_ID_ERROR);
     });
 });

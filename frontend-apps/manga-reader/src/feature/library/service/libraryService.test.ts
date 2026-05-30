@@ -4,14 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import {
-    getUserLibrary,
-    saveToLibrary,
-    updateSavedMangaList,
-    removeSavedManga,
-    getUserLibraryByList,
-    getLibraryCounts,
-} from './libraryService';
+import { getUserLibrary, saveToLibrary, updateSavedMangaList, removeSavedManga, getUserLibraryByList, getLibraryCounts } from './libraryService';
 
 const buildSavedItem = (overrides = {}) => ({
     titleId: 'title-1',
@@ -55,11 +48,7 @@ describe('libraryService', () => {
         it('deve salvar titulo na biblioteca', async () => {
             const item = buildSavedItem();
 
-            server.use(
-                http.post(`*${API_URLS.LIBRARY}`, () =>
-                    HttpResponse.json({ data: item, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.LIBRARY}`, () => HttpResponse.json({ data: item, success: true })));
 
             const result = await saveToLibrary({ titleId: 'title-1' });
 
@@ -69,27 +58,15 @@ describe('libraryService', () => {
 
     describe('updateSavedMangaList', () => {
         it('deve atualizar lista sem erro', async () => {
-            server.use(
-                http.patch(
-                    `*${API_URLS.LIBRARY}/title-1`,
-                    () => new HttpResponse(null, { status: 204 }),
-                ),
-            );
+            server.use(http.patch(`*${API_URLS.LIBRARY}/title-1`, () => new HttpResponse(null, { status: 204 })));
 
-            await expect(
-                updateSavedMangaList({ titleId: 'title-1', list: 'Concluído' }),
-            ).resolves.toBeUndefined();
+            await expect(updateSavedMangaList({ titleId: 'title-1', list: 'Concluído' })).resolves.toBeUndefined();
         });
     });
 
     describe('removeSavedManga', () => {
         it('deve remover titulo da biblioteca sem erro', async () => {
-            server.use(
-                http.delete(
-                    `*${API_URLS.LIBRARY}/title-1`,
-                    () => new HttpResponse(null, { status: 204 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.LIBRARY}/title-1`, () => new HttpResponse(null, { status: 204 })));
 
             await expect(removeSavedManga('title-1')).resolves.toBeUndefined();
         });
@@ -139,11 +116,7 @@ describe('libraryService', () => {
 
     describe('getUserLibrary - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.LIBRARY}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.LIBRARY}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getUserLibrary()).rejects.toThrow();
         });
@@ -151,39 +124,23 @@ describe('libraryService', () => {
 
     describe('saveToLibrary - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.post(`*${API_URLS.LIBRARY}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.LIBRARY}`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                saveToLibrary({ titleId: 'title-1' }),
-            ).rejects.toThrow();
+            await expect(saveToLibrary({ titleId: 'title-1' })).rejects.toThrow();
         });
     });
 
     describe('updateSavedMangaList - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.patch(`*${API_URLS.LIBRARY}/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.patch(`*${API_URLS.LIBRARY}/title-1`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                updateSavedMangaList({ titleId: 'title-1', list: 'Concluído' }),
-            ).rejects.toThrow();
+            await expect(updateSavedMangaList({ titleId: 'title-1', list: 'Concluído' })).rejects.toThrow();
         });
     });
 
     describe('removeSavedManga - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.delete(`*${API_URLS.LIBRARY}/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.LIBRARY}/title-1`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(removeSavedManga('title-1')).rejects.toThrow();
         });

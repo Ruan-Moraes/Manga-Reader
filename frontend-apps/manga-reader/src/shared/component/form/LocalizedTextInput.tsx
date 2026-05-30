@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-    DEFAULT_LANGUAGE,
-    SUPPORTED_LANGUAGES,
-    type LanguageTag,
-    type LocalizedString,
-} from '@shared/type/i18n';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type LanguageTag, type LocalizedString } from '@shared/type/i18n';
 
 interface LocalizedTextInputProps {
     label: string;
@@ -43,11 +38,9 @@ const LocalizedTextInput = ({
         onChange({ ...value, [lang]: text });
     };
 
-    const isRequired = (lang: LanguageTag) =>
-        requiredLanguages.includes(lang);
+    const isRequired = (lang: LanguageTag) => requiredLanguages.includes(lang);
 
-    const hasContent = (lang: LanguageTag) =>
-        Boolean(value[lang] && value[lang]!.trim().length > 0);
+    const hasContent = (lang: LanguageTag) => Boolean(value[lang] && value[lang]!.trim().length > 0);
 
     const inputClasses =
         'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white';
@@ -56,17 +49,11 @@ const LocalizedTextInput = ({
         <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 {label}
-                {isRequired(DEFAULT_LANGUAGE) && (
-                    <span className="ml-1 text-red-500">*</span>
-                )}
+                {isRequired(DEFAULT_LANGUAGE) && <span className="ml-1 text-red-500">*</span>}
             </label>
 
-            <div
-                className="flex gap-1 border-b border-gray-200 dark:border-gray-700"
-                role="tablist"
-                aria-label={label}
-            >
-                {SUPPORTED_LANGUAGES.map((lang) => {
+            <div className="flex gap-1 border-b border-gray-200 dark:border-gray-700" role="tablist" aria-label={label}>
+                {SUPPORTED_LANGUAGES.map(lang => {
                     const filled = hasContent(lang);
                     const required = isRequired(lang);
                     const missing = required && !filled;
@@ -88,18 +75,12 @@ const LocalizedTextInput = ({
                         >
                             <span>{t(`i18n.language.${lang}`, lang)}</span>
                             {filled && (
-                                <span
-                                    className="text-green-500"
-                                    aria-label={t('i18n.filled', 'preenchido')}
-                                >
+                                <span className="text-green-500" aria-label={t('i18n.filled', 'preenchido')}>
                                     ●
                                 </span>
                             )}
                             {missing && (
-                                <span
-                                    className="text-red-500"
-                                    aria-label={t('i18n.missing', 'faltando')}
-                                >
+                                <span className="text-red-500" aria-label={t('i18n.missing', 'faltando')}>
                                     ●
                                 </span>
                             )}
@@ -108,15 +89,11 @@ const LocalizedTextInput = ({
                 })}
             </div>
 
-            <div
-                id={`i18n-panel-${activeTab}`}
-                role="tabpanel"
-                aria-labelledby={`i18n-tab-${activeTab}`}
-            >
+            <div id={`i18n-panel-${activeTab}`} role="tabpanel" aria-labelledby={`i18n-tab-${activeTab}`}>
                 {multiline ? (
                     <textarea
                         value={value[activeTab] ?? ''}
-                        onChange={(e) => handleChange(activeTab, e.target.value)}
+                        onChange={e => handleChange(activeTab, e.target.value)}
                         placeholder={placeholder}
                         rows={rows}
                         maxLength={maxLength}
@@ -126,7 +103,7 @@ const LocalizedTextInput = ({
                     <input
                         type="text"
                         value={value[activeTab] ?? ''}
-                        onChange={(e) => handleChange(activeTab, e.target.value)}
+                        onChange={e => handleChange(activeTab, e.target.value)}
                         placeholder={placeholder}
                         maxLength={maxLength}
                         className={inputClasses}

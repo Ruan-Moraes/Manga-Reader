@@ -17,9 +17,7 @@ const LibraryEmptyState = ({ tab }: { tab: ActiveTab }) => {
     return (
         <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
             <span className="text-4xl">&#128218;</span>
-            <p className="text-sm text-tertiary max-w-xs">
-                {t(`empty.${tabToKey[tab]}`)}
-            </p>
+            <p className="text-sm text-tertiary max-w-xs">{t(`empty.${tabToKey[tab]}`)}</p>
         </div>
     );
 };

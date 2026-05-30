@@ -24,7 +24,37 @@
     "page": {
         "title": "My Library",
         "subtitle": "Manage your saved manga by reading status.",
+        "eyebrow": "Your collection",
+        "worksCount_one": "{{count}} title",
+        "worksCount_other": "{{count}} titles",
+        "addButton": "Add",
+        "searchPlaceholder": "Search library",
+        "sort": {
+            "recent": "Recent",
+            "az": "A–Z",
+            "za": "Z–A"
+        },
+        "layout": {
+            "grid": "Grid",
+            "list": "List"
+        },
+        "remove": "Remove",
         "retry": "Try again",
         "loadMore": "Load more"
+    },
+    "tabLabel": {
+        "all": "All ({{count}})",
+        "reading": "Reading ({{count}})",
+        "wantToRead": "Want to Read ({{count}})",
+        "completed": "Completed ({{count}})"
+    },
+    "emptySearch": {
+        "title": "No titles found",
+        "description": "Try a different search term."
+    },
+    "emptyCollection": {
+        "title": "Nothing here yet",
+        "description": "How about starting your collection?",
+        "discoverButton": "Discover titles"
     }
 }

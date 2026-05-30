@@ -64,7 +64,8 @@
     },
     "profile": {
         "banner": {
-            "alt": "Profile banner"
+            "alt": "Profile banner",
+            "changePhoto": "Change profile photo"
         },
         "header": {
             "memberSince": "Member since {{date}}",
@@ -73,7 +74,9 @@
                 "admin": "Administrator",
                 "poster": "Poster",
                 "reader": "Reader"
-            }
+            },
+            "follow": "Follow",
+            "following": "Following"
         },
         "stats": {
             "reading": "Reading",
@@ -88,7 +91,38 @@
             "recommendations": "Recommended",
             "comments": "Comments",
             "history": "History",
-            "settings": "Settings"
+            "settings": "Settings",
+            "overview": "Overview",
+            "readingNow": "Reading Now",
+            "completedList": "Completed",
+            "reviews": "Reviews"
+        },
+        "sectionHeader": {
+            "eyebrow": "Your account",
+            "meta": "Changes are saved as you edit"
+        },
+        "noActivity": "No public activity",
+        "editTabs": {
+            "account": "Account",
+            "identity": "Identity",
+            "recommendations": "Recommendations",
+            "notifications": "Notifications",
+            "privacy": "Privacy"
+        },
+        "identity": {
+            "displayNameLabel": "Display name",
+            "handleLabel": "Handle (@)",
+            "bioLabel": "Bio",
+            "pronounLabel": "Pronoun",
+            "locationLabel": "Location",
+            "locationPlaceholder": "City, country",
+            "pronouns": {
+                "preferNotToSay": "Prefer not to say",
+                "he": "he/him",
+                "she": "she/her",
+                "they": "they/them",
+                "other": "Other"
+            }
         },
         "privacy": {
             "doNotTrack": "Not tracked",
@@ -110,7 +144,37 @@
             "addPlaceholder": "Title ID",
             "add": "Add",
             "adding": "Adding...",
-            "noCover": "No cover"
+            "noCover": "No cover",
+            "genresLabel": "Favorite genres",
+            "languagesLabel": "Preferred reading languages",
+            "adultContentLabel": "Show 18+ content",
+            "adultContentDesc": "Adult content will be shown in the catalog and recommendations."
+        },
+        "notifications": {
+            "inAppSection": "In app",
+            "newChapterLabel": "New chapter",
+            "newChapterDesc": "Titles in your library released new chapters.",
+            "replyLabel": "Reply",
+            "replyDesc": "Someone replied to your comment or review.",
+            "mentionLabel": "Mention",
+            "mentionDesc": "Someone mentioned you in a comment or topic.",
+            "groupLabel": "Group",
+            "groupDesc": "Activity in groups you follow.",
+            "emailSection": "By email",
+            "newsletterLabel": "Weekly newsletter",
+            "newsletterDesc": "Week highlights, news and releases."
+        },
+        "account": {
+            "changePhoto": "Change photo",
+            "removePhoto": "Remove",
+            "emailLabel": "Email",
+            "changeEmail": "Change",
+            "securitySection": "Security",
+            "changePassword": "Change password",
+            "dangerZone": "Danger zone",
+            "dangerZoneDesc": "These actions are permanent and cannot be undone.",
+            "logout": "Log out",
+            "deleteAccount": "Delete account"
         },
         "comments": {
             "empty": "No comments found.",
@@ -151,7 +215,35 @@
                 "hide": "Hide",
                 "blur": "Blur",
                 "show": "Show"
-            }
+            },
+            "publicProfile": "Public profile",
+            "publicProfileDesc": "Your profile is visible to everyone. Disabling hides everything except your handle.",
+            "libraryVisibility": "Library visibility",
+            "visPublic": "Public",
+            "visFriends": "Friends only",
+            "visPrivate": "Private",
+            "publicActivity": "Public activity",
+            "publicActivityDesc": "Other users can see what you've read and commented on recently.",
+            "yourData": "Your data",
+            "downloadData": "Download my data (JSON)"
+        },
+        "reader": {
+            "navigationSection": "Navigation",
+            "defaultDirection": "Default direction",
+            "readingMode": "Reading mode",
+            "modeVertical": "Vertical",
+            "modePaged": "Paged",
+            "modeDouble": "Double",
+            "imagesSection": "Images",
+            "imageQualityLabel": "Quality",
+            "qualityAuto": "Automatic",
+            "qualityLow": "Low",
+            "qualityMedium": "Medium",
+            "qualityHigh": "High",
+            "qualityOriginal": "Original",
+            "progressSection": "Progress",
+            "markReadAuto": "Mark as read automatically",
+            "markReadAutoDesc": "Marks the chapter when you reach the last page."
         },
         "reading": {
             "title": "Reading mode",
@@ -196,13 +288,33 @@
             "theme": {
                 "system": "System",
                 "light": "Light",
-                "dark": "Dark"
-            }
+                "dark": "Dark",
+                "lightSoon": "Light (coming soon)",
+                "followSystem": "Follow system"
+            },
+            "themeSection": "Theme",
+            "textSection": "Text & layout",
+            "fontSizeLabel": "Global font size",
+            "fontSize": {
+                "compact": "Compact",
+                "default": "Default",
+                "comfortable": "Comfortable"
+            },
+            "motionSection": "Motion",
+            "animationsLabel": "Interface animations",
+            "animationsDesc": "Disabling respects the system's prefers-reduced-motion setting."
         },
         "language": {
             "title": "Language",
             "uiLanguageLabel": "Interface language",
-            "preferredContentLanguageLabel": "Preferred chapter language"
+            "preferredContentLanguageLabel": "Preferred chapter language",
+            "interfaceSection": "Interface",
+            "contentSection": "Preferred reading languages",
+            "ptBR": "Português (BR)",
+            "enUS": "English (US)",
+            "ja": "日本語",
+            "checkboxPtBR": "Português (PT-BR)",
+            "checkboxEn": "English"
         },
         "modalTitle": "User settings",
         "modalSubtitle": "Tune your experience.",
@@ -213,6 +325,56 @@
             "language": "Language",
             "notifications": "Notifications",
             "privacy": "Privacy"
+        },
+        "system": {
+            "eyebrow": "System",
+            "title": "Settings",
+            "meta": "changes applied in real time",
+            "tabs": {
+                "reader": "Reader",
+                "appearance": "Appearance",
+                "language": "Language & region",
+                "accessibility": "Accessibility",
+                "data": "Data",
+                "about": "About"
+            }
+        },
+        "accessibility": {
+            "section": "Motion & contrast",
+            "reducedMotionLabel": "Reduce motion",
+            "reducedMotionDesc": "Removes unnecessary transitions and animations.",
+            "highContrastLabel": "Increase contrast",
+            "highContrastDesc": "Coming soon — improves text readability.",
+            "shortcutsLink": "View keyboard shortcuts list →"
+        },
+        "data": {
+            "cacheSection": "Cache",
+            "readerCache": "Reader cache",
+            "clearCache": "Clear",
+            "librarySection": "Library",
+            "exportLibrary": "Export my library (CSV/JSON)",
+            "importList": "Import list (MAL / AniList)",
+            "historySection": "History",
+            "clearHistory": "Clear reading history"
+        },
+        "about": {
+            "versionSection": "Version",
+            "versionLabel": "Version",
+            "commitLabel": "Commit",
+            "systemStatus": "System status",
+            "changelog": "Changelog",
+            "shortcutsSection": "Keyboard shortcuts",
+            "keysHeader": "Key(s)",
+            "actionHeader": "Action",
+            "shortcuts": {
+                "navigatePages": "Navigate between pages",
+                "navigateAlt": "Navigate (alternative)",
+                "fullscreen": "Full screen",
+                "addLibrary": "Add to library",
+                "quickSearch": "Open quick search",
+                "publish": "Post (forum/comment)",
+                "close": "Close modal / go back"
+            }
         }
     }
 }

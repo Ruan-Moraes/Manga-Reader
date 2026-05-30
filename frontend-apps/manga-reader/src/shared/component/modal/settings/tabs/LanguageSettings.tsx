@@ -5,17 +5,9 @@ import BaseSelect from '@shared/component/input/BaseSelect';
 
 import { useContentLocales } from '@feature/user';
 
-import {
-    sectionTitleClass,
-    type SettingsTabProps,
-    type UserSettings,
-} from '../settings.constants';
+import { sectionTitleClass, type SettingsTabProps, type UserSettings } from '../settings.constants';
 
-const LanguageSettings = ({
-    settings,
-    onUpdate,
-    isLoggedIn = false,
-}: SettingsTabProps) => {
+const LanguageSettings = ({ settings, onUpdate, isLoggedIn = false }: SettingsTabProps) => {
     const { t, i18n } = useTranslation('user');
     const { query, mutation } = useContentLocales(isLoggedIn);
 
@@ -28,8 +20,7 @@ const LanguageSettings = ({
                 ...prev,
                 language: {
                     ...prev.language,
-                    preferredContentLanguage:
-                        first as UserSettings['language']['preferredContentLanguage'],
+                    preferredContentLanguage: first as UserSettings['language']['preferredContentLanguage'],
                 },
             };
         });
@@ -44,9 +35,7 @@ const LanguageSettings = ({
         [t],
     );
 
-    const handleUiLanguageChange = (
-        value: UserSettings['language']['uiLanguage'],
-    ) => {
+    const handleUiLanguageChange = (value: UserSettings['language']['uiLanguage']) => {
         i18n.changeLanguage(value);
         onUpdate(prev => ({
             ...prev,
@@ -54,9 +43,7 @@ const LanguageSettings = ({
         }));
     };
 
-    const handleContentLanguageChange = (
-        value: UserSettings['language']['preferredContentLanguage'],
-    ) => {
+    const handleContentLanguageChange = (value: UserSettings['language']['preferredContentLanguage']) => {
         onUpdate(prev => ({
             ...prev,
             language: { ...prev.language, preferredContentLanguage: value },
@@ -68,32 +55,20 @@ const LanguageSettings = ({
 
     return (
         <div className="space-y-4">
-            <h3 className={sectionTitleClass}>
-                {t('settings.language.title')}
-            </h3>
+            <h3 className={sectionTitleClass}>{t('settings.language.title')}</h3>
 
             <BaseSelect
                 label={t('settings.language.uiLanguageLabel')}
                 options={languageOptions}
                 value={settings.language.uiLanguage}
-                onChange={e =>
-                    handleUiLanguageChange(
-                        e.target
-                            .value as UserSettings['language']['uiLanguage'],
-                    )
-                }
+                onChange={e => handleUiLanguageChange(e.target.value as UserSettings['language']['uiLanguage'])}
             />
 
             <BaseSelect
                 label={t('settings.language.preferredContentLanguageLabel')}
                 options={languageOptions}
                 value={settings.language.preferredContentLanguage}
-                onChange={e =>
-                    handleContentLanguageChange(
-                        e.target
-                            .value as UserSettings['language']['preferredContentLanguage'],
-                    )
-                }
+                onChange={e => handleContentLanguageChange(e.target.value as UserSettings['language']['preferredContentLanguage'])}
             />
         </div>
     );

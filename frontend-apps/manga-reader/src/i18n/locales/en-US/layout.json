@@ -10,29 +10,93 @@
         "usefulLinks": "Useful links",
         "socialMedia": "Social media",
         "otherLinks": "Other links",
+        "tagline": "Read, discover and track your favorite manga, manhwa and manhua.",
+        "navAriaLabel": "Footer",
+        "expand": "Expand",
+        "collapse": "Collapse",
+        "section": {
+            "discover": "Discover",
+            "library": "Library",
+            "community": "Community",
+            "account": "Account",
+            "support": "Support",
+            "legal": "Legal"
+        },
         "links": {
             "home": "Home",
-            "filter": "Filter",
+            "trending": "Trending",
+            "releases": "Releases",
+            "filter": "Filters",
             "news": "News",
             "events": "Events",
             "forum": "Forum",
             "groups": "Groups",
+            "translationGroups": "Scan groups",
+            "myMangas": "My mangas",
+            "reviews": "Reviews",
+            "downloads": "Downloads",
+            "history": "History",
+            "profile": "My profile",
+            "settings": "Settings",
+            "notifications": "Notifications",
+            "login": "Sign in",
+            "signUp": "Create account",
+            "help": "Help center",
+            "contact": "Contact",
             "publishWork": "I want to publish",
-            "donate": "Donate to the project",
-            "aboutUs": "About us",
+            "donate": "Support the project",
+            "aboutUs": "About",
             "dmca": "DMCA",
-            "termsOfUse": "Terms of use"
+            "termsOfUse": "Terms of use",
+            "privacy": "Privacy"
         },
-        "copyright": "© {{year}} Manga Reader. All rights reserved."
+        "newsletter": {
+            "label": "Get the weekly highlights",
+            "placeholder": "you@email.com",
+            "submitAria": "Subscribe to the newsletter",
+            "hint": "No spam. Unsubscribe anytime.",
+            "success": "Done! You'll get the highlights every Friday."
+        },
+        "apps": {
+            "label": "Download the app",
+            "downloadFor": "Download for",
+            "iosAria": "Download for iOS",
+            "androidAria": "Download for Android"
+        },
+        "socials": {
+            "label": "Follow us"
+        },
+        "statusBanner": {
+            "title": "All systems operational",
+            "meta": "Updated 2 min ago · 99.9% uptime",
+            "link": "Status page",
+            "ariaLabel": "Platform status"
+        },
+        "preferences": {
+            "language": "Language",
+            "languageValue": "English (US)",
+            "languageAria": "Change language",
+            "theme": "Theme",
+            "themeValue": "Dark",
+            "themeAria": "Change theme",
+            "help": "Help",
+            "helpAria": "Open help center"
+        },
+        "status": "All systems operating normally",
+        "copyright": "© {{year}} Manga Reader. All rights reserved.",
+        "copyrightStudy": "© {{year}} Manga Reader. Built by Ruan — study project."
     },
     "socialMedia": {
         "heading": "Stay tuned to our social media"
     },
     "search": {
-        "placeholder": "Search titles, authors, genres...",
+        "placeholder": "Search titles, authors, groups...",
         "ariaLabel": "Search",
         "menuPlaceholder": "Search mangas, news, groups...",
-        "submit": "Search"
+        "submit": "Search",
+        "suggestionsTitle": "Suggestions for you",
+        "recentTitle": "Recent searches",
+        "kbdHint": "Shortcut ⌘K to focus search"
     },
     "navigation": {
         "openMenu": "Open menu",
@@ -40,6 +104,60 @@
         "close": "Close",
         "mainMenu": "Main menu",
         "dialogLabel": "Main menu"
+    },
+    "nav": {
+        "ariaMain": "Main navigation",
+        "section": {
+            "discover": "Discover",
+            "community": "Community",
+            "system": "System"
+        },
+        "item": {
+            "home": "Home",
+            "trending": "Trending",
+            "releases": "Releases",
+            "categories": "Categories",
+            "filter": "Filter",
+            "news": "News",
+            "events": "Events",
+            "translationGroups": "Groups & scans",
+            "forum": "Forum",
+            "reviews": "Reviews",
+            "settings": "Settings",
+            "helpCenter": "Help center",
+            "about": "About",
+            "downloads": "Downloads"
+        },
+        "hint": {
+            "trending": "Most read this week",
+            "releases": "Fresh chapters",
+            "categories": "Browse by genre",
+            "events": "What's happening",
+            "translationGroups": "Find translators",
+            "forum": "Community discussions",
+            "reviews": "Reader opinions",
+            "settings": "Account preferences",
+            "helpCenter": "Get answers",
+            "about": "About Manga Reader"
+        },
+        "action": {
+            "profile": "Profile",
+            "settings": "Settings",
+            "logout": "Logout",
+            "login": "Sign in",
+            "accountOf": "Account of {{name}}"
+        },
+        "aria": {
+            "notifications": "Notifications",
+            "library": "Library",
+            "search": "Search"
+        },
+        "mobile": {
+            "home": "Home",
+            "search": "Search",
+            "library": "Library",
+            "profile": "Profile"
+        }
     },
     "sidebar": {
         "section": {
@@ -87,6 +205,19 @@
             "settings": "Settings",
             "clearCache": "Clear cache",
             "logout": "Logout"
+        },
+        "menu": {
+            "home": "Home",
+            "trending": "Trending",
+            "releases": "What's new",
+            "myMangas": "My Mangas",
+            "reviews": "Reviews",
+            "downloads": "Downloads",
+            "news": "News",
+            "events": "Events",
+            "groups": "Groups",
+            "forum": "Forum",
+            "profile": "My Profile"
         },
         "logoutMessage": "You have logged out.",
         "role": {

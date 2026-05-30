@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import GroupSummaryCard from '../card/GroupSummaryCard';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
-import DarkButton from '@shared/component/button/DarkButton.tsx';
+import { Modal } from '@ui/Modal';
 
 import { getGroupsByTitleId } from '../../service/groupService';
 
@@ -18,19 +17,11 @@ type GroupsModalProps = {
     titleId?: number;
 };
 
-const GroupsModal = ({
-    isModalOpen,
-    closeModal,
-    groups,
-    isLoading = false,
-    titleId,
-}: GroupsModalProps) => {
+const GroupsModal = ({ isModalOpen, closeModal, groups, isLoading = false, titleId }: GroupsModalProps) => {
     const { t } = useTranslation('group');
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
-    const [scopedGroups, setScopedGroups] = useState<GroupSummary[]>(
-        groups ?? [],
-    );
+    const [scopedGroups, setScopedGroups] = useState<GroupSummary[]>(groups ?? []);
 
     useEffect(() => {
         if (groups) {
@@ -51,23 +42,13 @@ const GroupsModal = ({
     const showLoading = isLoading || isFetching;
 
     return (
-        <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
-            <div className="max-w-4xl mx-auto flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-bold">{t('modal.title')}</h2>
-                    <DarkButton
-                        text={t('modal.close')}
-                        onClick={closeModal}
-                    />
-                </div>
+        <Modal open={isModalOpen} onClose={closeModal} title={t('modal.title')}>
+            <div className="flex flex-col gap-2">
                 <div className="max-h-80 overflow-y-auto">
                     {showLoading && (
                         <div className="flex flex-col gap-3">
                             {Array.from({ length: 3 }).map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="flex flex-col gap-3 p-4 border rounded-xs border-tertiary animate-pulse bg-secondary/40"
-                                >
+                                <div key={i} className="flex flex-col gap-3 p-4 border rounded-xs border-tertiary animate-pulse bg-secondary/40">
                                     <div className="flex gap-3 items-center">
                                         <div className="w-12 h-12 rounded-full bg-tertiary" />
                                         <div className="flex flex-col gap-1.5 flex-1">
@@ -83,24 +64,19 @@ const GroupsModal = ({
                     )}
                     {!showLoading && scopedGroups.length === 0 && (
                         <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
-                            <p className="text-tertiary text-center text-sm">
-                                {t('modal.empty')}
-                            </p>
+                            <p className="text-tertiary text-center text-sm">{t('modal.empty')}</p>
                         </div>
                     )}
                     {!showLoading && scopedGroups.length > 0 && (
                         <div className="flex flex-col gap-3">
                             {scopedGroups.map(group => (
-                                <GroupSummaryCard
-                                    key={group.id}
-                                    group={group}
-                                />
+                                <GroupSummaryCard key={group.id} group={group} />
                             ))}
                         </div>
                     )}
                 </div>
             </div>
-        </BaseModal>
+        </Modal>
     );
 };
 

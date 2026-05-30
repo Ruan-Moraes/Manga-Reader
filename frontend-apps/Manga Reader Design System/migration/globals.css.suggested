@@ -1,0 +1,284 @@
+/* ============================================================
+   globals.css.suggested
+   ----------------------------------------------------------
+   Importar logo após o reset/normalize do projeto destino.
+   Dark-only por design — não há :root.light.
+   Comentários em pt-BR.
+   ============================================================ */
+
+/* Fontes — preferir self-hosted via @fontsource-variable/nunito-sans.
+   Se ainda não disponível, fallback Google Fonts: */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+
+/* ============================================================
+   CUSTOM PROPERTIES — fonte da verdade em runtime
+   ============================================================ */
+:root {
+  /* ---------- BRAND ---------- */
+  --mr-primary:       #161616;
+  --mr-primary-80:    rgba(22, 22, 22, 0.80);
+  --mr-primary-75:    rgba(22, 22, 22, 0.75);
+  --mr-secondary:     #252526;
+  --mr-tertiary:      #727273;
+  --mr-accent:        #ddda2a;
+  --mr-accent-25:     rgba(221, 218, 42, 0.25);
+  --mr-accent-50:     rgba(221, 218, 42, 0.50);
+  --mr-accent-75:     rgba(221, 218, 42, 0.75);
+  --mr-danger:        #FF784F;
+  --mr-text:          #ffffff;
+
+  /* ---------- NEUTRAL GRAY SCALE ---------- */
+  --mr-gray-900:      #1a1a1a;
+  --mr-gray-800:      #2d2d2d;
+  --mr-gray-700:      #444444;
+  --mr-gray-600:      #555555;
+  --mr-gray-500:      #727273;
+  --mr-gray-400:      #777777;
+  --mr-gray-300:      #999999;
+  --mr-gray-200:      #cccccc;
+
+  /* ---------- SEMÂNTICOS ---------- */
+  --mr-bg:            var(--mr-primary);
+  --mr-surface:       var(--mr-secondary);
+  --mr-surface-muted: var(--mr-gray-900);
+  --mr-border:        var(--mr-gray-700);
+  --mr-border-subtle: var(--mr-gray-600);
+  --mr-fg:            var(--mr-text);
+  --mr-fg-muted:      var(--mr-gray-200);
+  --mr-fg-subtle:     var(--mr-gray-300);
+  --mr-fg-disabled:   var(--mr-tertiary);
+  --mr-link:          var(--mr-accent);
+  --mr-focus-ring:    var(--mr-accent);
+
+  /* ---------- STATUS ---------- */
+  --mr-status-operating: var(--mr-accent);
+  --mr-status-degraded:  var(--mr-danger);
+  --mr-status-down:      #FF4444;
+
+  /* ---------- TIPOGRAFIA ---------- */
+  --mr-font-sans: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mr-font-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --mr-letter-spacing: 0.0625rem;
+
+  --mr-fs-h1:    32px;
+  --mr-fs-h2:    24px;
+  --mr-fs-h3:    20px;
+  --mr-fs-h4:    16px;
+  --mr-fs-body:  14px;
+  --mr-fs-small: 12px;
+  --mr-fs-tiny:  11px;
+
+  --mr-fw-regular:   400;
+  --mr-fw-semibold:  600;
+  --mr-fw-bold:      700;
+  --mr-fw-extrabold: 800;
+
+  /* ---------- SPACING (8px grid) ---------- */
+  --mr-space-xs:  4px;
+  --mr-space-sm:  8px;
+  --mr-space-md:  16px;
+  --mr-space-lg:  24px;
+  --mr-space-xl:  32px;
+  --mr-space-2xl: 48px;
+  --mr-space-3xl: 64px;
+
+  /* ---------- RADII ---------- */
+  --mr-radius-xs:   2px;
+  --mr-radius-sm:   4px;
+  --mr-radius-md:   8px;
+  --mr-radius-lg:   12px;
+  --mr-radius-full: 9999px;
+
+  /* ---------- SHADOWS ---------- */
+  --mr-shadow-default:  0.25rem 0.25rem 0 0 rgba(221, 218, 42, 0.25);
+  --mr-shadow-elevated: -0.25rem 0.25rem 0 0 rgba(221, 218, 42, 0.25);
+  --mr-shadow-inside:   0 0 0.075rem 0.25rem rgba(221, 218, 42, 0.25);
+  --mr-shadow-black:    0 0 2rem 0.25rem rgba(22, 22, 22, 0.75);
+
+  --mr-text-shadow-default:   0.125rem 0.0625rem 0 rgba(22, 22, 22, 0.75);
+  --mr-text-shadow-highlight: 0.125rem 0.0625rem 0 rgba(221, 218, 42, 0.25);
+
+  /* ---------- BREAKPOINTS (informational) ---------- */
+  --mr-bp-mobile-sm: 320px;
+  --mr-bp-mobile-md: 375px;
+  --mr-bp-mobile-lg: 425px;
+  --mr-bp-sm:        640px;
+  --mr-bp-md:        768px;
+  --mr-bp-lg:        1024px;
+  --mr-bp-xl:        1280px;
+
+  /* ---------- MOTION ---------- */
+  --mr-duration-fast:    150ms;
+  --mr-duration-default: 300ms;
+  --mr-duration-slow:    500ms;
+  --mr-easing:           ease;
+
+  /* ---------- LAYOUT ---------- */
+  --mr-container-max: 1240px;
+  --mr-z-header:   10;
+  --mr-z-dropdown: 20;
+  --mr-z-drawer:   40;
+  --mr-z-modal:    50;
+  --mr-z-toast:    60;
+  --mr-z-tooltip:  70;
+}
+
+/* ============================================================
+   BASE — aplica no body do projeto destino
+   ============================================================ */
+html {
+  background-color: var(--mr-bg);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--mr-font-sans);
+  font-size: var(--mr-fs-body);
+  line-height: 1.55;
+  color: var(--mr-fg);
+  background-color: var(--mr-bg);
+  letter-spacing: var(--mr-letter-spacing);  /* ASSINATURA — não remover */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tipografia semântica — pode coexistir com classes utilitárias Tailwind */
+h1, .mr-h1 {
+  font: var(--mr-fw-bold) var(--mr-fs-h1) / 1.2 var(--mr-font-sans);
+  letter-spacing: var(--mr-letter-spacing);
+  color: var(--mr-fg);
+}
+h2, .mr-h2 {
+  font: var(--mr-fw-semibold) var(--mr-fs-h2) / 1.25 var(--mr-font-sans);
+  letter-spacing: var(--mr-letter-spacing);
+  color: var(--mr-fg);
+}
+h3, .mr-h3 {
+  font: var(--mr-fw-semibold) var(--mr-fs-h3) / 1.3 var(--mr-font-sans);
+  letter-spacing: var(--mr-letter-spacing);
+  color: var(--mr-fg);
+}
+h4, .mr-h4 {
+  font: var(--mr-fw-semibold) var(--mr-fs-h4) / 1.4 var(--mr-font-sans);
+  letter-spacing: var(--mr-letter-spacing);
+  color: var(--mr-fg);
+}
+p, .mr-body {
+  font: var(--mr-fw-regular) var(--mr-fs-body) / 1.55 var(--mr-font-sans);
+  color: var(--mr-fg);
+}
+small, .mr-small {
+  font: var(--mr-fw-regular) var(--mr-fs-small) / 1.4 var(--mr-font-sans);
+  color: var(--mr-fg-muted);
+}
+.mr-tiny {
+  font: var(--mr-fw-regular) var(--mr-fs-tiny) / 1.3 var(--mr-font-sans);
+  color: var(--mr-fg-subtle);
+}
+.mr-label {
+  font: var(--mr-fw-bold) var(--mr-fs-tiny) / 1 var(--mr-font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mr-fg-muted);
+}
+
+/* Mobile-first responsive headings — ajustar via clamp() */
+@media (max-width: 767px) {
+  h1, .mr-h1 { font-size: 28px; }
+  h2, .mr-h2 { font-size: 20px; }
+  h3, .mr-h3 { font-size: 18px; }
+}
+
+a, .mr-link {
+  color: var(--mr-link);
+  text-decoration: none;
+  transition: opacity var(--mr-duration-default) var(--mr-easing);
+}
+a:hover, .mr-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+a:focus-visible {
+  outline: 2px solid var(--mr-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--mr-radius-xs);
+}
+
+code, pre {
+  font-family: var(--mr-font-mono);
+  background: var(--mr-gray-800);
+  color: var(--mr-fg);
+  border-radius: var(--mr-radius-xs);
+}
+code { padding: 0.1em 0.35em; font-size: 0.9em; }
+pre  { padding: var(--mr-space-md); overflow-x: auto; }
+
+blockquote {
+  border-left: 3px solid var(--mr-gray-700);
+  color: var(--mr-gray-200);
+  padding-left: var(--mr-space-md);
+  margin: var(--mr-space-md) 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--mr-border);
+}
+
+/* ============================================================
+   SCROLLBARS — assinatura do produto
+   ============================================================ */
+*::-webkit-scrollbar       { width: 0.5rem; height: 0.5rem; }
+*::-webkit-scrollbar-track { background: var(--mr-gray-800); }
+*::-webkit-scrollbar-thumb {
+  background: var(--mr-gray-700);
+  border: 0.125rem solid var(--mr-gray-800);
+  transition: background-color var(--mr-duration-slow);
+}
+*::-webkit-scrollbar-thumb:hover  { background: var(--mr-gray-400); }
+*::-webkit-scrollbar-thumb:active { background: var(--mr-gray-300); }
+
+/* ============================================================
+   UTILITY CLASSES — shadows complementares ao Tailwind
+   (Tailwind core não cobre text-shadow)
+   ============================================================ */
+.mr-text-shadow-default   { text-shadow: var(--mr-text-shadow-default); }
+.mr-text-shadow-highlight { text-shadow: var(--mr-text-shadow-highlight); }
+
+/* ============================================================
+   FOCUS RING UNIVERSAL — sempre accent
+   ============================================================ */
+*:focus-visible {
+  outline: 2px solid var(--mr-focus-ring);
+  outline-offset: 2px;
+}
+/* Em inputs, o focus ring é a própria borda (sem outline duplicado) */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--mr-accent);
+}
+
+/* ============================================================
+   ACCESSIBILITY — prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   SELEÇÃO DE TEXTO — accent contained
+   ============================================================ */
+::selection {
+  background: var(--mr-accent-50);
+  color: var(--mr-primary);
+}

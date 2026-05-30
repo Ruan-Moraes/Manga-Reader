@@ -1,7 +1,5 @@
 const formatRelativeDate = (date: string): string => {
-    const diffInHours = Math.floor(
-        (Date.now() - new Date(date).getTime()) / 3_600_000,
-    );
+    const diffInHours = Math.floor((Date.now() - new Date(date).getTime()) / 3_600_000);
 
     if (diffInHours < 1) {
         return 'agora mesmo';

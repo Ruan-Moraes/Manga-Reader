@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cabeçalho — Manga Reader</title>
+  <link rel="stylesheet" href="colors_and_type.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="shell">
+    <header class="showcase-head">
+      <div class="showcase-eyebrow">Componente · Header</div>
+      <h1 class="showcase-title">Cabeçalho — duas direções</h1>
+      <p class="showcase-sub">
+        Proposta de redesenho do header do Manga Reader. Compare as duas direções e veja
+        cada uma em mobile, tablet e desktop. Tudo é interativo: passe o mouse na navegação,
+        clique na busca para ver as sugestões, abra o menu no mobile e alterne os estados abaixo.
+      </p>
+    </header>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <span class="toolbar-label">Direção</span>
+        <div class="seg">
+          <button data-dir="a" class="active">A · Linha calma</button>
+          <button data-dir="b">B · Comando</button>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="toolbar-group">
+        <span class="toolbar-label">Estados</span>
+        <div class="pill on" id="pill-auth"><span class="dot"></span>Logado</div>
+        <div class="pill" id="pill-scroll"><span class="dot"></span>Rolado</div>
+        <div class="pill" id="pill-search"><span class="dot"></span>Busca aberta</div>
+      </div>
+    </div>
+
+    <div id="stage"></div>
+
+    <p class="showcase-sub" style="margin-top:8px">
+      Mostrando direção <strong id="dir-name" style="color:var(--mr-accent)">A · Linha calma</strong>.
+      Desligue “Logado” para ver os botões Entrar / Criar conta.
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

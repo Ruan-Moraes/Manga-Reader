@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-    IoLogoAmazon,
-    IoOpenOutline,
-    IoStorefrontOutline,
-} from 'react-icons/io5';
-import { SiBookmeter } from 'react-icons/si';
 import { useTranslation } from 'react-i18next';
 
 import { Store } from '../type/store.types';
+import { BookOpen, ExternalLink, ShoppingBag, Store as StoreIcon } from 'lucide-react';
 
 interface StoreCardProps {
     store: Store;
@@ -30,9 +25,9 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, isLoading }) => {
     }
 
     const iconMap: Record<string, React.ReactNode> = {
-        amazon: <IoLogoAmazon className="text-2xl" />,
-        panini: <SiBookmeter className="text-xl" />,
-        default: <IoStorefrontOutline className="text-2xl" />,
+        amazon: <ShoppingBag className="text-2xl" />,
+        panini: <BookOpen className="text-xl" />,
+        default: <StoreIcon className="text-2xl" />,
     };
 
     return (
@@ -51,7 +46,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, isLoading }) => {
             </div>
             <div className="flex items-center gap-1 text-xs font-semibold">
                 <span>{t('card.access')}</span>
-                <IoOpenOutline size={14} />
+                <ExternalLink size={14} />
             </div>
         </a>
     );

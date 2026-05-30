@@ -92,12 +92,7 @@ export default defineConfig({
             provider: 'v8',
             reporter: ['text', 'html', 'lcov'],
             include: ['src/**/*.{ts,tsx}'],
-            exclude: [
-                'src/test/**',
-                'src/**/*.d.ts',
-                'src/main.tsx',
-                'src/vite-env.d.ts',
-            ],
+            exclude: ['src/test/**', 'src/**/*.d.ts', 'src/main.tsx', 'src/vite-env.d.ts'],
         },
     },
 });
@@ -181,10 +176,7 @@ const AllProviders = ({ children }: ProvidersProps) => {
     );
 };
 
-const renderWithProviders = (
-    ui: ReactElement,
-    options?: Omit<RenderOptions, 'wrapper'>,
-) => render(ui, { wrapper: AllProviders, ...options });
+const renderWithProviders = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) => render(ui, { wrapper: AllProviders, ...options });
 
 export { renderWithProviders };
 export { createTestQueryClient };
@@ -215,10 +207,7 @@ export const buildTitle = (overrides: Partial<Title> = {}): Title => {
     };
 };
 
-export const buildTitlePage = (
-    titles: Title[] = [buildTitle(), buildTitle()],
-    page = 0,
-) => ({
+export const buildTitlePage = (titles: Title[] = [buildTitle(), buildTitle()], page = 0) => ({
     content: titles,
     page,
     size: 20,
@@ -509,11 +498,7 @@ describe('titleService', () => {
         });
 
         it('deve propagar erro quando a API falha', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getTitles()).rejects.toThrow();
         });
@@ -556,21 +541,13 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import useTitlesFetch from './useTitlesFetch';
 import { buildTitlePage } from '@/test/factories/titleFactory';
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: React.ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 describe('useTitlesFetch', () => {
     it('deve retornar dados quando a busca é bem-sucedida', async () => {
         const page = buildTitlePage();
 
-        server.use(
-            http.get(`*${API_URLS.TITLES}`, () =>
-                HttpResponse.json({ data: page, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json({ data: page, success: true })));
 
         const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
             wrapper,
@@ -588,11 +565,7 @@ describe('useTitlesFetch', () => {
     });
 
     it('deve retornar erro quando a API falha', async () => {
-        server.use(
-            http.get(`*${API_URLS.TITLES}`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json(null, { status: 500 })));
 
         const { result } = renderHook(() => useTitlesFetch(QUERY_KEYS.TITLES), {
             wrapper,
@@ -619,21 +592,13 @@ import { API_URLS } from '@shared/constant/API_URLS';
 import useTitle from './useTitle';
 import { buildTitle } from '@/test/factories/titleFactory';
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: React.ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 describe('useTitle', () => {
     it('deve expor title, isLoading e refetchTitle', async () => {
         const titulo = buildTitle({ id: 'title-1' });
 
-        server.use(
-            http.get(`*${API_URLS.TITLES}/title-1`, () =>
-                HttpResponse.json({ data: titulo, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}/title-1`, () => HttpResponse.json({ data: titulo, success: true })));
 
         const { result } = renderHook(() => useTitle('title-1'), { wrapper });
 

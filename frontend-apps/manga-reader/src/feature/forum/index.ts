@@ -26,11 +26,4 @@ export { default as ReplyCard } from './component/ReplyCard';
 export { default as RelatedTopicCard } from './component/RelatedTopicCard';
 
 // Types
-export type {
-    ForumCategory,
-    ForumAuthor,
-    ForumReply,
-    ForumTopic,
-    ForumSort,
-    ForumFilter,
-} from './type/forum.types';
+export type { ForumCategory, ForumAuthor, ForumReply, ForumTopic, ForumSort, ForumFilter } from './type/forum.types';

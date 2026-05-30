@@ -2,10 +2,7 @@ import i18n from '@/i18n/config';
 
 export const getLocale = (): string => i18n.language || 'pt-BR';
 
-export const formatDate = (
-    date: Date | string | number,
-    options?: Intl.DateTimeFormatOptions,
-): string => {
+export const formatDate = (date: Date | string | number, options?: Intl.DateTimeFormatOptions): string => {
     const value = date instanceof Date ? date : new Date(date);
     return new Intl.DateTimeFormat(getLocale(), options).format(value);
 };
@@ -26,15 +23,9 @@ export const formatShortDate = (date: Date | string | number): string =>
         day: '2-digit',
     });
 
-export const formatNumber = (
-    value: number,
-    options?: Intl.NumberFormatOptions,
-): string => new Intl.NumberFormat(getLocale(), options).format(value);
+export const formatNumber = (value: number, options?: Intl.NumberFormatOptions): string => new Intl.NumberFormat(getLocale(), options).format(value);
 
-export const formatCurrency = (
-    value: number,
-    currency: string = 'BRL',
-): string =>
+export const formatCurrency = (value: number, currency: string = 'BRL'): string =>
     formatNumber(value, {
         style: 'currency',
         currency,
@@ -61,10 +52,7 @@ export const formatRelativeTime = (date: Date | string | number): string => {
 
     for (const { unit, seconds } of RELATIVE_TIME_UNITS) {
         if (Math.abs(diffInSeconds) >= seconds) {
-            return formatter.format(
-                Math.round(diffInSeconds / seconds),
-                unit,
-            );
+            return formatter.format(Math.round(diffInSeconds / seconds), unit);
         }
     }
 

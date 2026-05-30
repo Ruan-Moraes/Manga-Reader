@@ -54,11 +54,7 @@ function isDuplicate(message: string, source: string): boolean {
  * Nunca lança exceção — erros no envio são silenciosamente ignorados.
  * Deduplicação: ignora erros idênticos reportados nos últimos 5 segundos.
  */
-export function reportError(
-    message: string,
-    stackTrace: string | null,
-    source: ErrorReport['source'],
-): void {
+export function reportError(message: string, stackTrace: string | null, source: ErrorReport['source']): void {
     if (isDuplicate(message, source)) return;
 
     const payload: ErrorReport = {

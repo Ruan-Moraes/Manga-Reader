@@ -1,28 +1,19 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaUpload } from 'react-icons/fa';
-
 import useEasyMDE from '../../../../hook/internal/useEasyMDE';
 import useCommentImageUpload from '../../../../hook/internal/useCommentImageUpload';
 
-import BadgeIconButton from '@shared/component/button/BadgeIconButton';
+import { IconButton } from '@ui/IconButton';
+import { Upload } from 'lucide-react';
 
 type EditModalBodyProps = {
-    onEdit: (
-        newTextContent: string | null,
-        newImageContent: string | null,
-    ) => void;
+    onEdit: (newTextContent: string | null, newImageContent: string | null) => void;
     onCancel: () => void;
     initialText: string | null;
     initialImages: string | null;
 };
 
-const EditModalBody = ({
-    onEdit,
-    onCancel,
-    initialText,
-    initialImages,
-}: EditModalBodyProps) => {
+const EditModalBody = ({ onEdit, onCancel, initialText, initialImages }: EditModalBodyProps) => {
     const { t } = useTranslation('comment');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { getValue } = useEasyMDE({
@@ -31,9 +22,7 @@ const EditModalBody = ({
         initialValue: initialText ?? '',
         minHeight: '4rem',
     });
-    const { images, addImage, removeImage } = useCommentImageUpload(
-        initialImages ?? undefined,
-    );
+    const { images, addImage, removeImage } = useCommentImageUpload(initialImages ?? undefined);
 
     const handleSave = () => {
         const trimmed = getValue().trim() || null;
@@ -50,12 +39,8 @@ const EditModalBody = ({
                 {images.length > 0 && (
                     <div className="flex flex-wrap gap-2 px-2 pb-2">
                         {images.map((src, i) => (
-                            <div key={i} className="relative inline-block">
-                                <img
-                                    src={src}
-                                    alt={t('edit.imageAlt', { index: i + 1 })}
-                                    className="object-cover rounded-xs max-h-[10rem]"
-                                />
+                            <div key={src} className="relative inline-block">
+                                <img src={src} alt={t('edit.imageAlt', { index: i + 1 })} className="object-cover rounded-xs max-h-[10rem]" />
                                 <button
                                     type="button"
                                     onClick={() => removeImage(i)}
@@ -69,9 +54,7 @@ const EditModalBody = ({
                 )}
                 <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                     <div className="flex items-center gap-2">
-                        <BadgeIconButton onClick={addImage}>
-                            <FaUpload />
-                        </BadgeIconButton>
+                        <IconButton icon={Upload} aria-label="Upload image" onClick={addImage} variant="ghost" />
                     </div>
                     <div className="flex gap-2">
                         <button

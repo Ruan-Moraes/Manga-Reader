@@ -8,23 +8,7 @@ export { default as HeroNews } from './component/HeroNews';
 export { default as NewsFilterPanel } from './component/NewsFilterPanel';
 
 // Services
-export {
-    getNews,
-    getNewsById,
-    getRelatedNews,
-    isNewsFresh,
-    formatRelativeDate,
-    formatNewsDate,
-    filterNews,
-    newsCategories,
-} from './service/newsService';
+export { getNews, getNewsById, getRelatedNews, isNewsFresh, formatRelativeDate, formatNewsDate, filterNews, newsCategories } from './service/newsService';
 
 // Types
-export type {
-    NewsCategory,
-    NewsReaction,
-    NewsComment,
-    NewsAuthor,
-    NewsItem,
-    NewsFilter,
-} from './type/news.types';
+export type { NewsCategory, NewsTabId, NewsReaction, NewsComment, NewsAuthor, NewsItem, NewsFilter } from './type/news.types';

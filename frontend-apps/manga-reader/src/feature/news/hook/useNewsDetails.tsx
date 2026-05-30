@@ -6,17 +6,21 @@ import type { NewsItem } from '../type/news.types';
 const useNewsDetails = (newsId: string | undefined) => {
     const [news, setNews] = useState<NewsItem | undefined>();
     const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+    const [isLoading, setIsLoading] = useState(!!newsId);
 
     useEffect(() => {
         if (!newsId) {
             setNews(undefined);
             setRelatedNews([]);
+            setIsLoading(false);
             return;
         }
 
+        setIsLoading(true);
         getNewsById(newsId)
             .then(setNews)
-            .catch(() => setNews(undefined));
+            .catch(() => setNews(undefined))
+            .finally(() => setIsLoading(false));
     }, [newsId]);
 
     useEffect(() => {
@@ -30,9 +34,7 @@ const useNewsDetails = (newsId: string | undefined) => {
             .catch(() => setRelatedNews([]));
     }, [news]);
 
-    const [commentSort, setCommentSort] = useState<'recent' | 'relevant'>(
-        'recent',
-    );
+    const [commentSort, setCommentSort] = useState<'recent' | 'relevant'>('recent');
     const [showSpoilers, setShowSpoilers] = useState(false);
     const [readingProgress, setReadingProgress] = useState(0);
 
@@ -46,10 +48,7 @@ const useNewsDetails = (newsId: string | undefined) => {
                 return b.likes - a.likes;
             }
 
-            return (
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
-            );
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
     }, [commentSort, news]);
 
@@ -60,11 +59,8 @@ const useNewsDetails = (newsId: string | undefined) => {
 
         const handleScroll = () => {
             const pageHeight = document.body.scrollHeight - window.innerHeight;
-            const progress =
-                pageHeight > 0 ? (window.scrollY / pageHeight) * 100 : 0;
-            setReadingProgress(
-                Math.min(100, Math.max(0, Math.round(progress))),
-            );
+            const progress = pageHeight > 0 ? (window.scrollY / pageHeight) * 100 : 0;
+            setReadingProgress(Math.min(100, Math.max(0, Math.round(progress))));
         };
 
         handleScroll();
@@ -75,6 +71,7 @@ const useNewsDetails = (newsId: string | undefined) => {
 
     return {
         news,
+        isLoading,
         commentSort,
         setCommentSort,
         showSpoilers,

@@ -8,7 +8,13 @@ const loginMock = vi.fn();
 const navigateMock = vi.fn();
 
 vi.mock('@feature/auth/hook/useAuth', () => ({
-    default: () => ({ login: loginMock, register: vi.fn(), user: null }),
+    default: () => ({
+        login: loginMock,
+        register: vi.fn(),
+        logout: vi.fn(),
+        user: null,
+        isLoggedIn: false,
+    }),
 }));
 
 vi.mock('@shared/service/util/toastService', () => ({
@@ -22,66 +28,90 @@ vi.mock('react-router-dom', async orig => {
     return { ...actual, useNavigate: () => navigateMock };
 });
 
-vi.mock('@app/layout/Header', () => ({ default: () => null }));
-vi.mock('@app/layout/Footer', () => ({ default: () => null }));
-vi.mock('@/app/layout/Main', () => ({
-    default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}));
-
 import Login from '../Login';
 
-const emailInput = (c: HTMLElement) =>
-    c.querySelector('input[name="email"]') as HTMLInputElement;
-const passwordInput = (c: HTMLElement) =>
-    c.querySelector('input[name="password"]') as HTMLInputElement;
-
-describe('Login form (zod + react-hook-form)', () => {
+describe('Login', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        loginMock.mockResolvedValue(undefined);
     });
 
-    it('bloqueia submit e mostra erros quando vazio', async () => {
+    it('renders email and password fields', () => {
+        renderWithProviders(<Login />);
+        expect(screen.getByPlaceholderText(/voce@email.com/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/••••••••/i)).toBeInTheDocument();
+    });
+
+    it('renders Entrar submit button', () => {
+        renderWithProviders(<Login />);
+        expect(screen.getByRole('button', { name: /^entrar$/i })).toBeInTheDocument();
+    });
+
+    it('submits with valid credentials and navigates', async () => {
         const user = userEvent.setup();
         renderWithProviders(<Login />);
 
-        await user.click(screen.getByRole('button', { name: /entrar/i }));
+        await user.type(screen.getByPlaceholderText(/voce@email.com/i), 'user@test.com');
+        await user.type(screen.getByPlaceholderText(/••••••••/i), 'senha123');
+        await user.click(screen.getByRole('button', { name: /^entrar$/i }));
 
-        expect(
-            await screen.findByText(/email é obrigatório/i),
-        ).toBeInTheDocument();
-        expect(screen.getByText(/senha é obrigatória/i)).toBeInTheDocument();
-        expect(loginMock).not.toHaveBeenCalled();
-    });
-
-    it('mostra erro de formato de email inválido', async () => {
-        const user = userEvent.setup();
-        const { container } = renderWithProviders(<Login />);
-
-        // 'a@b' passa na validação nativa do <input type="email"> mas
-        // falha no regex do zod — exercita a regra de schema.
-        await user.type(emailInput(container), 'a@b');
-        await user.click(screen.getByRole('button', { name: /entrar/i }));
-
-        expect(
-            await screen.findByText(/formato de email inválido/i),
-        ).toBeInTheDocument();
-        expect(loginMock).not.toHaveBeenCalled();
-    });
-
-    it('chama login com credenciais válidas (trim aplicado)', async () => {
-        loginMock.mockResolvedValueOnce(undefined);
-        const user = userEvent.setup();
-        const { container } = renderWithProviders(<Login />);
-
-        await user.type(emailInput(container), '  user@example.com  ');
-        await user.type(passwordInput(container), 'secret123');
-        await user.click(screen.getByRole('button', { name: /entrar/i }));
-
-        await waitFor(() =>
+        await waitFor(() => {
             expect(loginMock).toHaveBeenCalledWith({
-                email: 'user@example.com',
-                password: 'secret123',
-            }),
-        );
+                email: 'user@test.com',
+                password: 'senha123',
+            });
+        });
+        expect(navigateMock).toHaveBeenCalled();
+    });
+
+    it('shows error on invalid credentials', async () => {
+        loginMock.mockRejectedValue(new Error('Unauthorized'));
+        const user = userEvent.setup();
+        renderWithProviders(<Login />);
+
+        await user.type(screen.getByPlaceholderText(/voce@email.com/i), 'wrong@test.com');
+        await user.type(screen.getByPlaceholderText(/••••••••/i), 'wrongpass');
+        await user.click(screen.getByRole('button', { name: /^entrar$/i }));
+
+        await waitFor(() => {
+            expect(screen.getByText(/e-mail ou senha incorretos/i)).toBeInTheDocument();
+        });
+    });
+
+    it('fills demo credentials on Preencher click', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<Login />);
+
+        const emailInput = screen.getByPlaceholderText(/voce@email.com/i) as HTMLInputElement;
+        const passwordInput = screen.getByPlaceholderText(/••••••••/i) as HTMLInputElement;
+
+        expect(emailInput.value).toBe('');
+        await user.click(screen.getByRole('button', { name: /preencher/i }));
+        expect(emailInput.value).toBe('admin@mangareader.com');
+        expect(passwordInput.value).toBe('12345');
+    });
+
+    it('shows loading state while submitting', async () => {
+        loginMock.mockImplementation(() => new Promise(() => {}));
+        const user = userEvent.setup();
+        renderWithProviders(<Login />);
+
+        await user.type(screen.getByPlaceholderText(/voce@email.com/i), 'a@b.com');
+        await user.type(screen.getByPlaceholderText(/••••••••/i), 'pass1234');
+        await user.click(screen.getByRole('button', { name: /^entrar$/i }));
+
+        await waitFor(() => {
+            expect(screen.getByText(/carregando/i)).toBeInTheDocument();
+        });
+    });
+
+    it('renders Esqueci a senha link', () => {
+        renderWithProviders(<Login />);
+        expect(screen.getByText(/esqueci a senha/i)).toBeInTheDocument();
+    });
+
+    it('renders Crie uma agora footer link', () => {
+        renderWithProviders(<Login />);
+        expect(screen.getByText(/crie uma agora/i)).toBeInTheDocument();
     });
 });

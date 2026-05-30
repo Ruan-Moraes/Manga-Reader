@@ -19,17 +19,7 @@ const VARIANT_CLASSES: Record<BaseTextAreaVariant, string> = {
         'w-full px-3 py-2 text-sm border rounded-xs outline-none bg-primary-default border-tertiary placeholder:text-tertiary transition-colors duration-300 focus:border-quaternary-default hover:border-quaternary-opacity-50',
 };
 
-const BaseTextArea = ({
-    label,
-    placeholder,
-    value,
-    onChange,
-    disabled,
-    error,
-    name,
-    rows = 4,
-    variant = 'default',
-}: BaseTextAreaTypes) => {
+const BaseTextArea = ({ label, placeholder, value, onChange, disabled, error, name, rows = 4, variant = 'default' }: BaseTextAreaTypes) => {
     const textareaClass = `${VARIANT_CLASSES[variant]} resize-y disabled:opacity-50 disabled:cursor-not-allowed ${error ? 'ring-1 ring-red-500' : ''}`;
 
     return (

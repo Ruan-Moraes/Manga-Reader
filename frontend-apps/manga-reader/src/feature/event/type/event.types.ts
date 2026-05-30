@@ -1,17 +1,8 @@
-export type EventStatus =
-    | 'happening_now'
-    | 'registrations_open'
-    | 'coming_soon'
-    | 'ended';
+export type EventStatus = 'happening_now' | 'registrations_open' | 'coming_soon' | 'ended';
 
 export type EventTimeline = 'upcoming' | 'ongoing' | 'past';
 
-export type EventType =
-    | 'Convenção'
-    | 'Lançamento'
-    | 'Live'
-    | 'Workshop'
-    | 'Meetup';
+export type EventType = 'Convenção' | 'Lançamento' | 'Live' | 'Workshop' | 'Meetup';
 
 export type TicketType = {
     id: string;

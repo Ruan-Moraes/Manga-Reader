@@ -2,9 +2,7 @@ import type { MangaRating } from '@feature/rating/type/rating.types';
 
 let ratingCounter = 0;
 
-export const buildMangaRating = (
-    overrides: Partial<MangaRating> = {},
-): MangaRating => {
+export const buildMangaRating = (overrides: Partial<MangaRating> = {}): MangaRating => {
     ratingCounter += 1;
 
     return {
@@ -60,10 +58,7 @@ export const mangaRatingPresets = {
     withoutComment: () => buildMangaRating({ comment: undefined }),
     longComment: () =>
         buildMangaRating({
-            comment:
-                'Comentario muito longo descrevendo em detalhes a opiniao sobre a obra. '.repeat(
-                    10,
-                ),
+            comment: 'Comentario muito longo descrevendo em detalhes a opiniao sobre a obra. '.repeat(10),
         }),
     artistic: () =>
         buildMangaRating({
@@ -81,5 +76,4 @@ export const mangaRatingPresets = {
     noTitleName: () => buildMangaRating({ titleName: undefined }),
 };
 
-export const buildMangaRatingList = (count = 10): MangaRating[] =>
-    Array.from({ length: count }, () => buildMangaRating());
+export const buildMangaRatingList = (count = 10): MangaRating[] => Array.from({ length: count }, () => buildMangaRating());

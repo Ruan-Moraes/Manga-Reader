@@ -24,10 +24,7 @@ beforeEach(() => {
     vi.clearAllMocks();
     console.error = (...args: unknown[]) => {
         const msg = typeof args[0] === 'string' ? args[0] : '';
-        if (
-            msg.includes('Error: Uncaught') ||
-            msg.includes('The above error occurred')
-        ) {
+        if (msg.includes('Error: Uncaught') || msg.includes('The above error occurred')) {
             return;
         }
         originalConsoleError(...args);
@@ -46,9 +43,7 @@ describe('ErrorBoundary', () => {
             </ErrorBoundary>,
         );
 
-        expect(
-            screen.getByText('Content rendered successfully'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Content rendered successfully')).toBeInTheDocument();
     });
 
     it('deve exibir fallback quando ocorre erro de renderizacao', () => {
@@ -59,9 +54,7 @@ describe('ErrorBoundary', () => {
         );
 
         expect(screen.getByText('Ops! Algo deu errado.')).toBeInTheDocument();
-        expect(
-            screen.getByText(/Ocorreu um erro inesperado/),
-        ).toBeInTheDocument();
+        expect(screen.getByText(/Ocorreu um erro inesperado/)).toBeInTheDocument();
         expect(screen.getByText('Voltar à página inicial')).toBeInTheDocument();
     });
 
@@ -73,11 +66,7 @@ describe('ErrorBoundary', () => {
         );
 
         expect(mockedReportError).toHaveBeenCalledOnce();
-        expect(mockedReportError).toHaveBeenCalledWith(
-            'Test rendering error',
-            expect.any(String),
-            'error-boundary',
-        );
+        expect(mockedReportError).toHaveBeenCalledWith('Test rendering error', expect.any(String), 'error-boundary');
     });
 
     it('deve exibir detalhes do erro em modo dev', () => {

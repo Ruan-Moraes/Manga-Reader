@@ -2,17 +2,10 @@ import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import {
-    showSuccessToast,
-    showErrorToast,
-} from '@shared/service/util/toastService';
+import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 import { requireAuth } from '@shared/service/util/requireAuth';
 
-import {
-    deleteComment as deleteCommentService,
-    updateComment,
-    createComment,
-} from '../../service/commentService';
+import { deleteComment as deleteCommentService, updateComment, createComment } from '../../service/commentService';
 
 const useCommentCRUD = () => {
     const queryClient = useQueryClient();
@@ -36,14 +29,7 @@ const useCommentCRUD = () => {
     });
 
     const editCommentMutation = useMutation({
-        mutationFn: async ({
-            id,
-            newTextContent,
-        }: {
-            id: string;
-            newTextContent: string | null;
-            newImageContent: string | null;
-        }) => {
+        mutationFn: async ({ id, newTextContent }: { id: string; newTextContent: string | null; newImageContent: string | null }) => {
             return await updateComment(id, newTextContent ?? '');
         },
         onSuccess: () => {
@@ -60,16 +46,7 @@ const useCommentCRUD = () => {
     });
 
     const replyCommentMutation = useMutation({
-        mutationFn: async ({
-            id,
-            titleId,
-            textContent,
-        }: {
-            id: string;
-            titleId: string;
-            textContent: string | null;
-            imageContent: string | null;
-        }) => {
+        mutationFn: async ({ id, titleId, textContent }: { id: string; titleId: string; textContent: string | null; imageContent: string | null }) => {
             return await createComment({
                 titleId,
                 textContent: textContent ?? '',
@@ -98,11 +75,7 @@ const useCommentCRUD = () => {
     );
 
     const editComment = useCallback(
-        (
-            id: string,
-            newTextContent: string | null,
-            newImageContent: string | null,
-        ) => {
+        (id: string, newTextContent: string | null, newImageContent: string | null) => {
             if (!requireAuth('editar comentários')) return;
             editCommentMutation.mutate({ id, newTextContent, newImageContent });
         },
@@ -110,12 +83,7 @@ const useCommentCRUD = () => {
     );
 
     const replyComment = useCallback(
-        (
-            id: string,
-            titleId: string,
-            textContent: string | null,
-            imageContent: string | null,
-        ) => {
+        (id: string, titleId: string, textContent: string | null, imageContent: string | null) => {
             if (!requireAuth('responder comentários')) return;
             replyCommentMutation.mutate({
                 id,

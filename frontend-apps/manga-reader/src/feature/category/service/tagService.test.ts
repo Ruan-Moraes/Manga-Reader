@@ -19,10 +19,7 @@ describe('tagService', () => {
                 http.get(`*${API_URLS.TAGS}`, () =>
                     HttpResponse.json({
                         data: {
-                            content: [
-                                buildTag(),
-                                buildTag({ value: 2, label: 'Romance' }),
-                            ],
+                            content: [buildTag(), buildTag({ value: 2, label: 'Romance' })],
                             page: 0,
                             size: 1000,
                             totalElements: 2,
@@ -41,11 +38,7 @@ describe('tagService', () => {
         });
 
         it('deve propagar erro quando API falha', async () => {
-            server.use(
-                http.get(`*${API_URLS.TAGS}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TAGS}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getTags()).rejects.toThrow();
         });
@@ -68,11 +61,7 @@ describe('tagService', () => {
         });
 
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.TAGS}/1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TAGS}/1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getTagById(1)).rejects.toThrow();
         });
     });

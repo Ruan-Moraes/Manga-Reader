@@ -31,14 +31,7 @@ const roleBadgeColor = (role: string) => {
     }
 };
 
-const ProfileHeader = ({
-    name,
-    role,
-    bio,
-    createdAt,
-    isOwner,
-    onEdit,
-}: Props) => {
+const ProfileHeader = ({ name, role, bio, createdAt, isOwner, onEdit }: Props) => {
     const { t, i18n } = useTranslation('user');
 
     const formattedDate = createdAt
@@ -54,9 +47,7 @@ const ProfileHeader = ({
                 <div>
                     <div className="flex items-center gap-2">
                         <h1 className="text-xl font-bold">{name}</h1>
-                        <span
-                            className={`px-2 py-0.5 text-xs font-medium rounded-full ${roleBadgeColor(role)}`}
-                        >
+                        <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${roleBadgeColor(role)}`}>
                             {t(`profile.header.roles.${roleKey(role)}`)}
                         </span>
                     </div>

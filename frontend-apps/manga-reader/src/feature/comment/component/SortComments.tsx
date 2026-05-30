@@ -1,8 +1,6 @@
-import { MdSort } from 'react-icons/md';
-import { AiFillDislike, AiFillLike } from 'react-icons/ai';
-import BadgeIconButton from '@shared/component/button/BadgeIconButton';
-import SortOldestButton from '@shared/component/icon/SortOldestButton';
-import SortNewestButton from '@shared/component/icon/SortNewestButton';
+import { ArrowUpDown, CalendarArrowDown, CalendarArrowUp, ThumbsDown, ThumbsUp } from 'lucide-react';
+
+import { IconButton } from '@ui/IconButton';
 
 import { SortType, useCommentSortContext } from '../context/CommentSortContext';
 
@@ -29,31 +27,45 @@ const SortComments = ({ title }: SortCommentsProps) => {
                 <h4 className="font-bold">{title}</h4>
             </div>
             <div className="flex items-center gap-2 grow">
-                <BadgeIconButton
+                <IconButton
+                    icon={ArrowUpDown}
+                    aria-label="Sort default"
+                    size="sm"
+                    variant="ghost"
                     onClick={() => setSortType(null)}
-                    className={`h-8 ${sortType === null ? 'bg-quaternary-opacity-50' : ''}`}
-                >
-                    <MdSort size={13} />
-                </BadgeIconButton>
-                <BadgeIconButton
-                    onClick={() => handleSortClick('dislikes')}
-                    className={`h-8 ${sortType === 'dislikes' ? 'bg-quaternary-opacity-50' : ''}`}
-                >
-                    <AiFillDislike size={13} />
-                </BadgeIconButton>
-                <BadgeIconButton
-                    onClick={() => handleSortClick('likes')}
-                    className={`h-8 ${sortType === 'likes' ? 'bg-quaternary-opacity-50' : ''}`}
-                >
-                    <AiFillLike size={13} />
-                </BadgeIconButton>
-                <SortOldestButton
-                    onClick={() => handleSortClick('oldest')}
-                    className={`h-8 ${sortType === 'oldest' ? 'bg-quaternary-opacity-50' : ''}`}
+                    className={sortType === null ? 'bg-quaternary-opacity-50' : ''}
                 />
-                <SortNewestButton
+                <IconButton
+                    icon={ThumbsDown}
+                    aria-label="Sort by dislikes"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('dislikes')}
+                    className={sortType === 'dislikes' ? 'bg-quaternary-opacity-50' : ''}
+                />
+                <IconButton
+                    icon={ThumbsUp}
+                    aria-label="Sort by likes"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('likes')}
+                    className={sortType === 'likes' ? 'bg-quaternary-opacity-50' : ''}
+                />
+                <IconButton
+                    icon={CalendarArrowDown}
+                    aria-label="Sort by oldest"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('oldest')}
+                    className={sortType === 'oldest' ? 'bg-quaternary-opacity-50' : ''}
+                />
+                <IconButton
+                    icon={CalendarArrowUp}
+                    aria-label="Sort by newest"
+                    size="sm"
+                    variant="ghost"
                     onClick={() => handleSortClick('newest')}
-                    className={`h-8 ${sortType === 'newest' ? 'bg-quaternary-opacity-50' : ''}`}
+                    className={sortType === 'newest' ? 'bg-quaternary-opacity-50' : ''}
                 />
             </div>
         </div>

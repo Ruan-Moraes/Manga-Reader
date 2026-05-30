@@ -18,13 +18,8 @@ const ForumStats = ({ topics }: { topics: ForumTopic[] }) => {
                     value: new Set(topics.map(topic => topic.author.id)).size,
                 },
             ].map(({ label, value }) => (
-                <div
-                    key={label}
-                    className="p-3 text-center border rounded-lg bg-secondary border-tertiary"
-                >
-                    <p className="text-lg font-bold text-quaternary-default">
-                        {value.toLocaleString(i18n.language)}
-                    </p>
+                <div key={label} className="p-3 text-center border rounded-lg bg-secondary border-tertiary">
+                    <p className="text-lg font-bold text-quaternary-default">{value.toLocaleString(i18n.language)}</p>
                     <p className="text-xs text-shadow-secondary">{label}</p>
                 </div>
             ))}

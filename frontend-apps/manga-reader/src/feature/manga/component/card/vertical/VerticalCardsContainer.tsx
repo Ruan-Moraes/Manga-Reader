@@ -12,9 +12,9 @@ import { SectionHeader } from '../../../type/section-header.types';
 
 import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
-import SectionTitle from '@shared/component/title/SectionTitle';
+import AppLink from '@shared/component/link/element/AppLink';
 import VerticalCard from './VerticalCard';
-import RaisedButton from '@shared/component/button/RaisedButton';
+import { Button } from '@ui/Button';
 
 const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
     const { t } = useTranslation('manga');
@@ -26,41 +26,27 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
-            return data?.content.map(
-                ({
-                    id,
-                    type,
-                    cover,
-                    name,
-                    ratingAverage,
-                    latestChapterNumber,
-                    updatedAt,
-                }) => (
-                    <VerticalCard
-                        isLoading={false}
-                        isError={false}
-                        key={id}
-                        id={id}
-                        type={type}
-                        cover={cover}
-                        name={name}
-                        ratingAverage={ratingAverage}
-                        latestChapterNumber={latestChapterNumber}
-                        updatedAt={updatedAt}
-                    />
-                ),
-            );
-        }
-
-        if (status === 'pending') {
-            return Array.from({ length: 10 }).map((_, index) => (
-                <VerticalCard isLoading={true} isError={false} key={index} />
+            return data?.content.map(({ id, type, cover, name, ratingAverage, latestChapterNumber, updatedAt }) => (
+                <VerticalCard
+                    isLoading={false}
+                    isError={false}
+                    key={id}
+                    id={id}
+                    type={type}
+                    cover={cover}
+                    name={name}
+                    ratingAverage={ratingAverage}
+                    latestChapterNumber={latestChapterNumber}
+                    updatedAt={updatedAt}
+                />
             ));
         }
 
-        return Array.from({ length: 1 }).map((_, index) => (
-            <VerticalCard isError={true} isLoading={false} key={index} />
-        ));
+        if (status === 'pending') {
+            return Array.from({ length: 10 }).map((_, index) => <VerticalCard isLoading={true} isError={false} key={index} />);
+        }
+
+        return Array.from({ length: 1 }).map((_, index) => <VerticalCard isError={true} isLoading={false} key={index} />);
     }, [data, status]);
 
     const handleClick = useCallback(() => {
@@ -75,11 +61,14 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     return (
         <section className="flex flex-col gap-4">
-            <SectionTitle
-                title={title}
-                subTitle={subTitle}
-                subLink={ROUTES.FILTER_MOST_RECENT}
-            />
+            <div>
+                <h2 className="font-bold text-2xl">{title}</h2>
+                {subTitle && (
+                    <p className="leading-none">
+                        <AppLink link={ROUTES.FILTER_MOST_RECENT} text={subTitle} className="text-xs text-quaternary-default" />
+                    </p>
+                )}
+            </div>
             <div
                 className={clsx('grid gap-x-2 gap-y-4', {
                     'grid-cols-2': status === 'success' || status === 'pending',
@@ -88,7 +77,9 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
             >
                 {allChildren.slice(0, visible)}
             </div>
-            <RaisedButton onClick={handleClick} text={t('card.loadMore')} />
+            <Button onClick={handleClick} block>
+                {t('card.loadMore')}
+            </Button>
         </section>
     );
 };

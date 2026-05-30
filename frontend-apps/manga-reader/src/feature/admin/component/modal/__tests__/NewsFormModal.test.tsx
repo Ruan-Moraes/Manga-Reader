@@ -12,14 +12,7 @@ vi.mock('react-i18next', () => ({
 describe('NewsFormModal', () => {
     it('emits payload with titleI18n on submit', () => {
         const onSubmit = vi.fn();
-        render(
-            <NewsFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<NewsFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const inputs = screen.getAllByRole('textbox');
         // titleI18n pt-BR is first textbox
@@ -33,14 +26,7 @@ describe('NewsFormModal', () => {
     });
 
     it('disables submit when title empty', () => {
-        render(
-            <NewsFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={() => {}}
-                isSubmitting={false}
-            />,
-        );
+        render(<NewsFormModal isOpen onClose={() => {}} onSubmit={() => {}} isSubmitting={false} />);
         expect((screen.getByText('Salvar') as HTMLButtonElement).disabled).toBe(true);
     });
 });

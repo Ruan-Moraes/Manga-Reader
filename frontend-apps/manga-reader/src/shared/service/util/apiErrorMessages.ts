@@ -51,46 +51,31 @@ export type ApiErrorCodeKey = keyof typeof API_ERROR_CODES;
 
 const ERROR_CODE_MESSAGES: Record<string, string> = {
     // Auth
-    [API_ERROR_CODES.AUTH_INVALID_CREDENTIALS]:
-        'Email ou senha incorretos. Verifique seus dados e tente novamente.',
-    [API_ERROR_CODES.AUTH_TOKEN_EXPIRED]:
-        'Sua sessão expirou. Faça login novamente.',
-    [API_ERROR_CODES.AUTH_REFRESH_TOKEN_EXPIRED]:
-        'Sua sessão expirou. Faça login novamente.',
-    [API_ERROR_CODES.AUTH_RESET_TOKEN_INVALID]:
-        'O link de redefinição de senha é inválido ou expirou. Solicite um novo.',
-    [API_ERROR_CODES.AUTH_UNAUTHENTICATED]:
-        'Você precisa estar logado para acessar este recurso.',
-    [API_ERROR_CODES.AUTH_ACCESS_DENIED]:
-        'Você não tem permissão para acessar este recurso.',
-    [API_ERROR_CODES.AUTH_EMAIL_ALREADY_EXISTS]:
-        'Este email já está cadastrado. Tente fazer login ou use outro email.',
+    [API_ERROR_CODES.AUTH_INVALID_CREDENTIALS]: 'Email ou senha incorretos. Verifique seus dados e tente novamente.',
+    [API_ERROR_CODES.AUTH_TOKEN_EXPIRED]: 'Sua sessão expirou. Faça login novamente.',
+    [API_ERROR_CODES.AUTH_REFRESH_TOKEN_EXPIRED]: 'Sua sessão expirou. Faça login novamente.',
+    [API_ERROR_CODES.AUTH_RESET_TOKEN_INVALID]: 'O link de redefinição de senha é inválido ou expirou. Solicite um novo.',
+    [API_ERROR_CODES.AUTH_UNAUTHENTICATED]: 'Você precisa estar logado para acessar este recurso.',
+    [API_ERROR_CODES.AUTH_ACCESS_DENIED]: 'Você não tem permissão para acessar este recurso.',
+    [API_ERROR_CODES.AUTH_EMAIL_ALREADY_EXISTS]: 'Este email já está cadastrado. Tente fazer login ou use outro email.',
 
     // Resource
-    [API_ERROR_CODES.RESOURCE_NOT_FOUND]:
-        'O item que você procura não foi encontrado.',
-    [API_ERROR_CODES.RESOURCE_DUPLICATE]:
-        'Este item já existe. Verifique os dados e tente novamente.',
+    [API_ERROR_CODES.RESOURCE_NOT_FOUND]: 'O item que você procura não foi encontrado.',
+    [API_ERROR_CODES.RESOURCE_DUPLICATE]: 'Este item já existe. Verifique os dados e tente novamente.',
 
     // Validation
-    [API_ERROR_CODES.VALIDATION_FIELD_ERROR]:
-        'Alguns campos estão inválidos. Verifique os dados destacados.',
-    [API_ERROR_CODES.VALIDATION_BAD_REQUEST]:
-        'Requisição inválida. Verifique os dados enviados.',
-    [API_ERROR_CODES.VALIDATION_TYPE_MISMATCH]:
-        'Requisição inválida. Verifique os dados enviados.',
+    [API_ERROR_CODES.VALIDATION_FIELD_ERROR]: 'Alguns campos estão inválidos. Verifique os dados destacados.',
+    [API_ERROR_CODES.VALIDATION_BAD_REQUEST]: 'Requisição inválida. Verifique os dados enviados.',
+    [API_ERROR_CODES.VALIDATION_TYPE_MISMATCH]: 'Requisição inválida. Verifique os dados enviados.',
 
     // Business
-    [API_ERROR_CODES.BUSINESS_RULE_VIOLATION]:
-        'Não foi possível completar a ação. Verifique as condições necessárias.',
+    [API_ERROR_CODES.BUSINESS_RULE_VIOLATION]: 'Não foi possível completar a ação. Verifique as condições necessárias.',
 
     // Rate limit
-    [API_ERROR_CODES.RATE_LIMIT_EXCEEDED]:
-        'Muitas requisições. Aguarde um momento e tente novamente.',
+    [API_ERROR_CODES.RATE_LIMIT_EXCEEDED]: 'Muitas requisições. Aguarde um momento e tente novamente.',
 
     // Internal
-    [API_ERROR_CODES.INTERNAL_SERVER_ERROR]:
-        'Erro interno do servidor. Tente novamente mais tarde.',
+    [API_ERROR_CODES.INTERNAL_SERVER_ERROR]: 'Erro interno do servidor. Tente novamente mais tarde.',
 };
 
 // ---------------------------------------------------------------------------
@@ -112,8 +97,7 @@ const STATUS_FALLBACK_MESSAGES: Record<number, string> = {
     503: 'Servidor temporariamente indisponível. Tente novamente mais tarde.',
 };
 
-const DEFAULT_ERROR_MESSAGE =
-    'Ops! Ocorreu um erro inesperado. Tente novamente mais tarde.';
+const DEFAULT_ERROR_MESSAGE = 'Ops! Ocorreu um erro inesperado. Tente novamente mais tarde.';
 
 // ---------------------------------------------------------------------------
 // Resolver principal — usado pelo interceptor
@@ -129,11 +113,7 @@ const DEFAULT_ERROR_MESSAGE =
  * 3. Fallback por `httpStatus`
  * 4. Mensagem genérica
  */
-export const resolveApiErrorMessage = (
-    code?: string,
-    httpStatus?: number,
-    serverMessage?: string,
-): string => {
+export const resolveApiErrorMessage = (code?: string, httpStatus?: number, serverMessage?: string): string => {
     // 1. Mapeamento por código
     if (code && ERROR_CODE_MESSAGES[code]) {
         return ERROR_CODE_MESSAGES[code];
@@ -166,10 +146,7 @@ export const resolveApiErrorMessage = (
 
 /** Verifica se o código de erro indica que o usuário deve refazer login. */
 export const isAuthExpiredError = (code?: string): boolean =>
-    code === API_ERROR_CODES.AUTH_TOKEN_EXPIRED ||
-    code === API_ERROR_CODES.AUTH_REFRESH_TOKEN_EXPIRED ||
-    code === API_ERROR_CODES.AUTH_UNAUTHENTICATED;
+    code === API_ERROR_CODES.AUTH_TOKEN_EXPIRED || code === API_ERROR_CODES.AUTH_REFRESH_TOKEN_EXPIRED || code === API_ERROR_CODES.AUTH_UNAUTHENTICATED;
 
 /** Verifica se o erro contém detalhes por campo (validação). */
-export const isValidationError = (code?: string): boolean =>
-    code === API_ERROR_CODES.VALIDATION_FIELD_ERROR;
+export const isValidationError = (code?: string): boolean => code === API_ERROR_CODES.VALIDATION_FIELD_ERROR;

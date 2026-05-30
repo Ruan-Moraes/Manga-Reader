@@ -2,15 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { type User } from '@feature/user';
 
-import {
-    getCurrentUser,
-    getStoredSession,
-    mapAuthResponseToUser,
-    signIn,
-    signOut,
-    signUp as signUpService,
-    type SignUpRequest,
-} from '../service/authService';
+import { getCurrentUser, getStoredSession, mapAuthResponseToUser, signIn, signOut, signUp as signUpService, type SignUpRequest } from '../service/authService';
 
 type SignInPayload = { email: string; password: string };
 

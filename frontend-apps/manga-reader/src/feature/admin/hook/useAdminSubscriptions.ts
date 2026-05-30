@@ -11,8 +11,7 @@ const useAdminSubscriptions = () => {
 
     const { data, isLoading, isError, refetch } = useQuery({
         queryKey: [QUERY_KEYS.ADMIN_SUBSCRIPTIONS, page, statusFilter],
-        queryFn: () =>
-            getAdminSubscriptions(page, 20, statusFilter || undefined),
+        queryFn: () => getAdminSubscriptions(page, 20, statusFilter || undefined),
     });
 
     return {

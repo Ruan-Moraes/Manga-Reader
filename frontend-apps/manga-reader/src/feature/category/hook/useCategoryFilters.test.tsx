@@ -48,9 +48,7 @@ describe('useCategoryFilters', () => {
         const { result } = renderHook(() => useCategoryFilters());
 
         act(() => {
-            result.current.handleSelectedTags([
-                { value: 1, label: 'Action' },
-            ] as never[]);
+            result.current.handleSelectedTags([{ value: 1, label: 'Action' }] as never[]);
         });
 
         expect(result.current.selectedTags).toHaveLength(1);

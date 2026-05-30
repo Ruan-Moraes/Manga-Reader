@@ -4,11 +4,7 @@
     linkText: string;
 };
 
-const InfoModalFooter = ({
-    onLinkClick,
-    onClose,
-    linkText,
-}: InfoModalFooterProps) => {
+const InfoModalFooter = ({ onLinkClick, onClose, linkText }: InfoModalFooterProps) => {
     return (
         <div className="flex gap-2">
             <button

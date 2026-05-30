@@ -8,10 +8,8 @@ import type { AdultContent } from '@feature/category';
 const useCategoryFilters = () => {
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [selectedSort, setSelectedSort] = useState<Sort>('most_read');
-    const [selectedStatus, setSelectedStatus] =
-        useState<PublicationStatus>('all');
-    const [selectedAdultContent, setSelectedAdultContent] =
-        useState<AdultContent>('no_adult_content');
+    const [selectedStatus, setSelectedStatus] = useState<PublicationStatus>('all');
+    const [selectedAdultContent, setSelectedAdultContent] = useState<AdultContent>('no_adult_content');
     const [page, setPage] = useState(0);
 
     const handleSelectedTags = useCallback((newValue: Tag[]) => {
@@ -23,7 +21,6 @@ const useCategoryFilters = () => {
     const handleSortChange = useCallback((newValue: Sort) => {
         setSelectedSort(newValue);
 
-        setPage(0);
         setPage(0);
     }, []);
 

@@ -11,8 +11,7 @@
 // Delay simulation
 // ---------------------------------------------------------------------------
 
-export const simulateDelay = (ms = 300): Promise<void> =>
-    new Promise(resolve => setTimeout(resolve, ms));
+export const simulateDelay = (ms = 300): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 // ---------------------------------------------------------------------------
 // Generic response wrapper

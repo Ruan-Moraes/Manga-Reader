@@ -25,24 +25,9 @@ const DEFAULT_TOOLBAR: EasyMDE.Options['toolbar'] = [
     'preview',
 ];
 
-const COMPACT_TOOLBAR: EasyMDE.Options['toolbar'] = [
-    'bold',
-    'italic',
-    'strikethrough',
-    '|',
-    'code',
-    'quote',
-    '|',
-    'preview',
-];
+const COMPACT_TOOLBAR: EasyMDE.Options['toolbar'] = ['bold', 'italic', 'strikethrough', '|', 'code', 'quote', '|', 'preview'];
 
-const useEasyMDE = ({
-    textareaRef,
-    placeholder = '',
-    initialValue = '',
-    minHeight = '6rem',
-    toolbar,
-}: UseEasyMDEOptions) => {
+const useEasyMDE = ({ textareaRef, placeholder = '', initialValue = '', minHeight = '6rem', toolbar }: UseEasyMDEOptions) => {
     const editorRef = useRef<EasyMDE | null>(null);
 
     useEffect(() => {
@@ -72,7 +57,10 @@ const useEasyMDE = ({
             instance.toTextArea();
             editorRef.current = null;
         };
-        // Only run on mount/unmount
+        // EasyMDE é imperativo (DOM-bound): init roda uma vez no mount, props
+        // (`placeholder`/`initialValue`/`minHeight`/`toolbar`) só semeiam estado
+        // inicial — re-rodar destruiria o editor e perderia o conteúdo digitado
+        // pelo usuário. Omissão intencional.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -1,11 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
-
-import SectionTitle from '@shared/component/title/SectionTitle';
-import TextSection from '@shared/component/paragraph/TextSection';
+import PageShell from '@app/layout/PageShell';
 
 import { useAuth } from '@feature/auth';
 
@@ -47,48 +42,29 @@ const Dashboard = () => {
         },
     ];
 
-    const dashboardCards = isAdmin
-        ? [...posterCards, ...adminOnlyCards]
-        : posterCards;
+    const dashboardCards = isAdmin ? [...posterCards, ...adminOnlyCards] : posterCards;
 
-    const title = isAdmin
-        ? t('dashboard.home.titleAdmin')
-        : isPoster
-          ? t('dashboard.home.titlePoster')
-          : t('dashboard.home.titleDefault');
+    const title = isAdmin ? t('dashboard.home.titleAdmin') : isPoster ? t('dashboard.home.titlePoster') : t('dashboard.home.titleDefault');
 
-    const description = isAdmin
-        ? t('dashboard.home.adminDescription')
-        : t('dashboard.home.posterDescription');
+    const description = isAdmin ? t('dashboard.home.adminDescription') : t('dashboard.home.posterDescription');
 
     return (
-        <>
-            <Header showSearch={true} />
-            <MainContent>
-                <TextSection>
-                    <SectionTitle titleStyleClasses="text-lg" title={title} />
+        <PageShell showSearch footerShowLinks>
+            <section className="flex flex-col gap-4">
+                <h2 className="font-bold text-lg">{title}</h2>
 
-                    <p className="mb-4 text-sm text-tertiary">{description}</p>
+                <p className="mb-4 text-sm text-tertiary">{description}</p>
 
-                    <div className="grid gap-3 md:grid-cols-2">
-                        {dashboardCards.map(card => (
-                            <article
-                                key={card.title}
-                                className="p-3 border rounded-xs border-tertiary bg-secondary/50"
-                            >
-                                <h3 className="mb-1 text-sm font-semibold">
-                                    {card.title}
-                                </h3>
-                                <p className="text-xs text-tertiary">
-                                    {card.description}
-                                </p>
-                            </article>
-                        ))}
-                    </div>
-                </TextSection>
-            </MainContent>
-            <Footer showLinks={true} />
-        </>
+                <div className="grid gap-3 md:grid-cols-2">
+                    {dashboardCards.map(card => (
+                        <article key={card.title} className="p-3 border rounded-xs border-tertiary bg-secondary/50">
+                            <h3 className="mb-1 text-sm font-semibold">{card.title}</h3>
+                            <p className="text-xs text-tertiary">{card.description}</p>
+                        </article>
+                    ))}
+                </div>
+            </section>
+        </PageShell>
     );
 };
 

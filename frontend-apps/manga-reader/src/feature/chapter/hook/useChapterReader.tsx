@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SingleValue, MultiValue } from 'react-select';
-import { SelectOption } from '@shared/component/ui/StyledSelect';
 
 import { useTitles } from '@feature/manga';
 
@@ -13,11 +11,7 @@ const useChapterReader = () => {
 
     const { titles, isLoading } = useTitles(titleId);
 
-    const currentTitle =
-        Array.isArray(titles) && titles.length > 0
-            ? titles.find(title => String(title.id) === titleId) ||
-              titles[Number(titleId)]
-            : undefined;
+    const currentTitle = Array.isArray(titles) && titles.length > 0 ? titles.find(title => String(title.id) === titleId) || titles[Number(titleId)] : undefined;
 
     const isInvalidChapter = isNaN(Number(chapterId));
 
@@ -43,9 +37,7 @@ const useChapterReader = () => {
         };
 
         if (bottomNavRef.current) {
-            bottomNavRef.current.style.transform = isBottomNavVisible
-                ? 'translateY(calc(0% - 0.5rem))'
-                : 'translateY(calc(100%))';
+            bottomNavRef.current.style.transform = isBottomNavVisible ? 'translateY(calc(0% - 0.5rem))' : 'translateY(calc(100%))';
         }
 
         window.addEventListener('resize', handleResize);
@@ -56,12 +48,8 @@ const useChapterReader = () => {
     }, [windowHeight, isBottomNavVisible]);
 
     const handleChapterChange = useCallback(
-        (newValue: MultiValue<SelectOption> | SingleValue<SelectOption>) => {
-            if (newValue && !Array.isArray(newValue)) {
-                navigate(
-                    `${WEB_BASE_URL}/title/${titleId}/${(newValue as SelectOption).value}`,
-                );
-            }
+        (value: string) => {
+            navigate(`${WEB_BASE_URL}/title/${titleId}/${value}`);
         },
         [navigate, titleId],
     );

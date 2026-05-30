@@ -1,89 +1,63 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AppLink from '@shared/component/link/element/AppLink';
-import MainSearchInput from '@shared/component/input/MainSearchInput';
-import NavigationMenu from '@shared/component/menu/NavigationMenu';
-import UserAvatar from '@shared/component/avatar/UserAvatar';
+import { NavBar } from './navbar/NavBar';
+import { SideMenu } from './SideMenu';
+import UserSettingsModal from './settings/UserSettingsModal';
 
 import { useAuth } from '@feature/auth';
-
+import useMenuData from './hooks/useMenuData';
+import useAppNavigate from '@shared/hook/useAppNavigate';
 import { showInfoToast } from '@shared/service/util/toastService';
+import { clearCache } from '@shared/service/util/queryCache';
 
-type HeaderTypes = {
-    showAuth?: boolean;
-    showSearch?: boolean;
-};
-
-const Header = ({ showAuth, showSearch }: HeaderTypes) => {
+const Header = () => {
     const { t } = useTranslation('layout');
 
     const { user, isLoggedIn, logout } = useAuth();
+    const navigate = useAppNavigate();
+    const { savedCount } = useMenuData(isLoggedIn);
+
+    const [sideOpen, setSideOpen] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(false);
+
+    const navUser = isLoggedIn && user ? { name: user.name, avatar: user.photo, libraryCount: savedCount } : null;
+
+    const sideUser = isLoggedIn && user ? { name: user.name, avatar: user.photo } : null;
+
+    const handleLogout = () => {
+        logout();
+
+        showInfoToast(t('header.sessionEnded'));
+    };
 
     return (
-        <header className="bg-secondary lg:max-w-6xl lg:mx-auto">
-            {!showAuth && (
-                <nav className="flex items-center justify-end gap-3 p-2 border-b-2 border-b-tertiary">
-                    {isLoggedIn && user ? (
-                        <>
-                            <AppLink
-                                link={`users/${user.id}`}
-                                className="shrink-0"
-                            >
-                                <UserAvatar
-                                    src={user.photo}
-                                    name={user.name}
-                                    size="sm"
-                                    rounded="xs"
-                                    className="border border-tertiary"
-                                />
-                            </AppLink>
-                            <AppLink
-                                enabledColorWhenActive={true}
-                                link={`users/${user.id}`}
-                                text={user.name}
-                            />
-                            <span className="font-bold">|</span>
-                            <button
-                                onClick={() => {
-                                    logout();
-                                    showInfoToast(t('header.sessionEnded'));
-                                }}
-                                className="font-bold cursor-pointer hover:text-quaternary-default"
-                            >
-                                {t('header.logout')}
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <AppLink
-                                enabledColorWhenActive={true}
-                                link="sign-up"
-                                text={t('header.signUp')}
-                            />
-                            <span className="font-bold">|</span>
-                            <AppLink
-                                enabledColorWhenActive={true}
-                                link="login"
-                                text={t('header.login')}
-                            />
-                        </>
-                    )}
-                </nav>
-            )}
-            <nav className="flex flex-col items-center justify-center gap-2 p-4 border-b-2 bg-primary-default border-b-tertiary">
-                <div>
-                    <h1>
-                        <AppLink
-                            text={t('header.brand')}
-                            link="/"
-                            className="text-2xl italic"
-                        />
-                    </h1>
-                </div>
-                {!showSearch && <MainSearchInput />}
-            </nav>
-            <NavigationMenu />
-        </header>
+        <>
+            <NavBar
+                user={navUser}
+                onNavigate={navigate}
+                onOpenSideMenu={() => setSideOpen(true)}
+                onSearchSubmit={q => navigate(`/search?q=${encodeURIComponent(q)}`)}
+                onNotificationsClick={() => {}}
+                onLibraryClick={() => navigate('/library')}
+                onProfileClick={() => navigate('/profile')}
+                onSettingsClick={() => setSettingsOpen(true)}
+                onLogoutClick={handleLogout}
+                onAccountClick={() => navigate('/login')}
+            />
+            <SideMenu
+                open={sideOpen}
+                onClose={() => setSideOpen(false)}
+                user={sideUser}
+                isLoggedIn={isLoggedIn}
+                libraryCount={savedCount}
+                onNavigate={navigate}
+                onSettingsClick={() => setSettingsOpen(true)}
+                onLogoutClick={handleLogout}
+                onClearCache={clearCache}
+            />
+            <UserSettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} isLoggedIn={isLoggedIn} />
+        </>
     );
 };
 

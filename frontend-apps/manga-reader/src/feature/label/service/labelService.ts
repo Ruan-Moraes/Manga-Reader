@@ -12,9 +12,6 @@ export const getDomainLabels = async (type: string): Promise<DomainLabelOption[]
 };
 
 export const getDomainLabelsAdmin = async (type: string): Promise<DomainLabelAdminOption[]> => {
-    const response = await api.get<ApiResponse<DomainLabelAdminOption[]>>(
-        `${API_URLS.LABELS}/admin`,
-        { params: { type } },
-    );
+    const response = await api.get<ApiResponse<DomainLabelAdminOption[]>>(`${API_URLS.LABELS}/admin`, { params: { type } });
     return response.data.data;
 };

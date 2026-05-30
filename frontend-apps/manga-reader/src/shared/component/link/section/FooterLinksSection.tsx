@@ -6,11 +6,7 @@ type FooterLinksSectionTypes = {
     links: { url: string; text: string }[];
 };
 
-const FooterLinksSection = ({
-    className,
-    title,
-    links,
-}: FooterLinksSectionTypes) => {
+const FooterLinksSection = ({ className, title, links }: FooterLinksSectionTypes) => {
     return (
         <div className={`bg-primary-default ${className}`}>
             <div className="p-2 font-bold text-center border-2 rounded-xs rounded-b-none border-tertiary">
@@ -26,9 +22,7 @@ const FooterLinksSection = ({
                             link={url}
                             text={text}
                             className={`flex items-center justify-center h-10 px-2 font-normal border-b-tertiary ${
-                                index === links.length - 1
-                                    ? 'border-b-0'
-                                    : 'border-b'
+                                index === links.length - 1 ? 'border-b-0' : 'border-b'
                             }`}
                         />
                     );

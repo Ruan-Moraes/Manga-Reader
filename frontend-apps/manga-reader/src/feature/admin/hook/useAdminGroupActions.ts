@@ -1,19 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import {
-    showErrorToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
+import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import {
-    changeGroupMemberRole,
-    deleteGroup,
-    removeGroupMember,
-    updateAdminGroup,
-    type UpdateGroupRequest,
-} from '../service/adminGroupService';
+import { changeGroupMemberRole, deleteGroup, removeGroupMember, updateAdminGroup, type UpdateGroupRequest } from '../service/adminGroupService';
 
 const useAdminGroupActions = () => {
     const queryClient = useQueryClient();

@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-    getForumTopicById,
-    getForumTopics,
-    filterForumTopics,
-} from '@feature/forum';
+import { getForumTopicById, getForumTopics, filterForumTopics } from '@feature/forum';
 import type { ForumTopic } from '../type/forum.types';
 
 const useForumTopic = () => {
@@ -39,10 +35,7 @@ const useForumTopic = () => {
         if (!topic) return [];
         return [...(topic.replies ?? [])].sort((a, b) => {
             if (replySort === 'likes') return b.likes - a.likes;
-            return (
-                new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
-            );
+            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         });
     }, [topic, replySort]);
 

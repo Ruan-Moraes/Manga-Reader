@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminGroup } from '../type/admin.types';
 import { getLocale } from '@shared/util/formatters';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminGroupListProps = {
     groups: AdminGroup[];
@@ -35,48 +34,27 @@ const StatusBadge = ({ status }: { status: string }) => {
         HIATUS: 'bg-yellow-500/20 text-yellow-300',
     };
 
-    return (
-        <span
-            className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[status] ?? 'bg-tertiary/30'}`}
-        >
-            {status}
-        </span>
-    );
+    return <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[status] ?? 'bg-tertiary/30'}`}>{status}</span>;
 };
 
-const buildColumns = (
-    t: TFunction,
-    lang: LanguageTag,
-    onEdit: (group: AdminGroup) => void,
-    onDelete: (group: AdminGroup) => void,
-): Column<AdminGroup>[] => [
+const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (group: AdminGroup) => void, onDelete: (group: AdminGroup) => void): Column<AdminGroup>[] => [
     {
         key: 'id',
         header: t('dashboard.groups.columnId'),
         hiddenOnMobile: true,
-        render: group => (
-            <span className="font-mono text-xs text-tertiary">
-                {group.id.slice(0, 8)}
-            </span>
-        ),
+        render: group => <span className="font-mono text-xs text-tertiary">{group.id.slice(0, 8)}</span>,
     },
     {
         key: 'name',
         header: t('dashboard.groups.columnName'),
         sortable: true,
-        render: group => (
-            <span className="font-medium">
-                {group.name?.[lang] ?? group.name?.['pt-BR'] ?? ''}
-            </span>
-        ),
+        render: group => <span className="font-medium">{group.name?.[lang] ?? group.name?.['pt-BR'] ?? ''}</span>,
     },
     {
         key: 'username',
         header: t('dashboard.groups.columnUsername'),
         sortable: true,
-        render: group => (
-            <span className="text-tertiary">@{group.username}</span>
-        ),
+        render: group => <span className="text-tertiary">@{group.username}</span>,
     },
     {
         key: 'status',
@@ -88,27 +66,19 @@ const buildColumns = (
         key: 'membersCount',
         header: t('dashboard.groups.columnMembers'),
         sortable: true,
-        render: group => (
-            <span className="text-xs text-tertiary">{group.membersCount}</span>
-        ),
+        render: group => <span className="text-xs text-tertiary">{group.membersCount}</span>,
     },
     {
         key: 'totalTitles',
         header: t('dashboard.groups.columnTitles'),
         sortable: true,
-        render: group => (
-            <span className="text-xs text-tertiary">{group.totalTitles}</span>
-        ),
+        render: group => <span className="text-xs text-tertiary">{group.totalTitles}</span>,
     },
     {
         key: 'platformJoinedAt',
         header: t('dashboard.groups.columnJoinedAt'),
         sortable: true,
-        render: group => (
-            <span className="text-xs text-tertiary">
-                {formatDate(group.platformJoinedAt)}
-            </span>
-        ),
+        render: group => <span className="text-xs text-tertiary">{formatDate(group.platformJoinedAt)}</span>,
     },
     {
         key: 'actions',
@@ -124,7 +94,7 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                     aria-label={t('dashboard.groups.editAriaLabel')}
                 >
-                    <FiEdit2 size={14} />
+                    <Pencil size={14} />
                 </button>
                 <button
                     type="button"
@@ -135,26 +105,17 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                     aria-label={t('dashboard.groups.deleteAriaLabel')}
                 >
-                    <FiTrash2 size={14} />
+                    <Trash2 size={14} />
                 </button>
             </div>
         ),
     },
 ];
 
-const AdminGroupList = ({
-    groups,
-    page,
-    totalPages,
-    isLoading,
-    onPageChange,
-    onEdit,
-    onDelete,
-}: AdminGroupListProps) => {
+const AdminGroupList = ({ groups, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminGroupListProps) => {
     const { t, i18n } = useTranslation('admin');
     const lang = i18n.language as LanguageTag;
-    const { sortedData, sortBy, sortDirection, handleSort } =
-        useSortableData(groups);
+    const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(groups);
 
     return (
         <DataTable

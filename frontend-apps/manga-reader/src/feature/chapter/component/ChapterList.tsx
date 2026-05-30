@@ -13,13 +13,7 @@ type ChapterListProps = {
     onChapterClick?: (chapterNumber: string) => void;
 };
 
-const ChapterList = ({
-    chapters,
-    currentPage,
-    totalPages,
-    onPageChange,
-    onChapterClick,
-}: ChapterListProps) => {
+const ChapterList = ({ chapters, currentPage, totalPages, onPageChange, onChapterClick }: ChapterListProps) => {
     return (
         <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2 text-xs">
@@ -34,19 +28,11 @@ const ChapterList = ({
                             year: 'numeric',
                         })}
                         pages={chapter.pages}
-                        onClick={() =>
-                            onChapterClick && onChapterClick(chapter.number)
-                        }
+                        onClick={() => onChapterClick && onChapterClick(chapter.number)}
                     />
                 ))}
             </div>
-            {totalPages > 1 && (
-                <ChapterPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={onPageChange}
-                />
-            )}
+            {totalPages > 1 && <ChapterPagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />}
         </div>
     );
 };

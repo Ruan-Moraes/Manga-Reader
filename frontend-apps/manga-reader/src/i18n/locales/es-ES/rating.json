@@ -31,6 +31,9 @@
     "myReviews": {
         "title": "Mis Reseñas",
         "subtitle": "Edita o elimina tus reseñas en cualquier momento.",
+        "eyebrow": "Tu cuenta",
+        "emptyDesc": "Valora una obra y aparecerá aquí.",
+        "discoverWorks": "Descubrir obras",
         "workPlaceholder": "Obra #{{id}}",
         "saving": "Guardando...",
         "save": "Guardar",

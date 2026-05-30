@@ -2,11 +2,7 @@ import { toast, ToastOptions, Id } from 'react-toastify';
 
 const activeToasts = new Set<string>();
 
-const showToast = (
-    type: 'info' | 'success' | 'error' | 'warning',
-    message: string,
-    options?: ToastOptions,
-) => {
+const showToast = (type: 'info' | 'success' | 'error' | 'warning', message: string, options?: ToastOptions) => {
     const toastKey = `${type}:${message}`;
 
     if (activeToasts.has(toastKey)) {
@@ -53,16 +49,12 @@ const showToast = (
     return toastId;
 };
 
-export const showInfoToast = (message: string, options?: ToastOptions) =>
-    showToast('info', message, options);
+export const showInfoToast = (message: string, options?: ToastOptions) => showToast('info', message, options);
 
-export const showSuccessToast = (message: string, options?: ToastOptions) =>
-    showToast('success', message, options);
+export const showSuccessToast = (message: string, options?: ToastOptions) => showToast('success', message, options);
 
-export const showErrorToast = (message: string, options?: ToastOptions) =>
-    showToast('error', message, options);
+export const showErrorToast = (message: string, options?: ToastOptions) => showToast('error', message, options);
 
-export const showWarningToast = (message: string, options?: ToastOptions) =>
-    showToast('warning', message, options);
+export const showWarningToast = (message: string, options?: ToastOptions) => showToast('warning', message, options);
 
 export { toast };

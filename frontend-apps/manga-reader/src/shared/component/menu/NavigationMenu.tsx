@@ -34,19 +34,11 @@ const NavigationMenu = () => {
             const role = user.role ?? 'user';
             const isAdmin = role === 'admin';
             const isPoster = role === 'poster' || role === 'admin';
-            const planBadge = isAdmin
-                ? t('sidebar.role.adminBadge')
-                : isPoster
-                  ? t('sidebar.role.posterBadge')
-                  : '';
+            const planBadge = isAdmin ? t('sidebar.role.adminBadge') : isPoster ? t('sidebar.role.posterBadge') : '';
 
             return {
                 id: user.id,
-                label: isAdmin
-                    ? t('sidebar.role.admin')
-                    : isPoster
-                      ? t('sidebar.role.poster')
-                      : t('sidebar.role.user'),
+                label: isAdmin ? t('sidebar.role.admin') : isPoster ? t('sidebar.role.poster') : t('sidebar.role.user'),
                 fullName: user.name,
                 email: user.email,
                 planBadge: planBadge || undefined,
@@ -110,13 +102,7 @@ const NavigationMenu = () => {
 
     const sidebarContent = (
         <>
-            {isMenuOpen && (
-                <div
-                    className="fixed inset-0 z-40 bg-black/50"
-                    onClick={closeMenu}
-                    aria-hidden="true"
-                />
-            )}
+            {isMenuOpen && <div className="fixed inset-0 z-40 bg-black/50" onClick={closeMenu} aria-hidden="true" />}
             <aside
                 className={clsx(
                     'flex flex-col gap-4 w-full max-w-md fixed top-0 bottom-0 left-0 bg-primary-default border-r-2 border-r-tertiary z-50 transform transition-transform duration-300',
@@ -151,9 +137,7 @@ const NavigationMenu = () => {
                             e.preventDefault();
                             const trimmed = menuSearch.trim();
                             if (trimmed) {
-                                navigate(
-                                    `${WEB_BASE_URL}/search?q=${encodeURIComponent(trimmed)}`,
-                                );
+                                navigate(`${WEB_BASE_URL}/search?q=${encodeURIComponent(trimmed)}`);
                                 closeMenu();
                                 setMenuSearch('');
                             }
@@ -193,23 +177,17 @@ const NavigationMenu = () => {
         <>
             {isSticky && <div style={{ height: `${menuHeight}rem` }} />}
             <nav
-                className={clsx(
-                    'px-3 py-2 bg-secondary border-b-2 border-b-tertiary transition duration-300',
-                    {
-                        'fixed top-0 left-0 right-0 z-20': isSticky,
-                    },
-                )}
+                className={clsx('px-3 py-2 bg-secondary border-b-2 border-b-tertiary transition duration-300', {
+                    'fixed top-0 left-0 right-0 z-20': isSticky,
+                })}
                 ref={menuRef}
             >
                 <div className="flex items-center justify-between">
                     <div
-                        className={clsx(
-                            'transition duration-300 text-xl font-bold text-center',
-                            {
-                                'opacity-100': isSticky,
-                                'opacity-0': !isSticky,
-                            },
-                        )}
+                        className={clsx('transition duration-300 text-xl font-bold text-center', {
+                            'opacity-100': isSticky,
+                            'opacity-0': !isSticky,
+                        })}
                     >
                         <h2
                             className={clsx('italic', {

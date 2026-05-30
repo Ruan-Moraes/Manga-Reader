@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type User, useUserModalContext, UserModal } from '@feature/user';
+import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@feature/user';
 import { type CommentData } from '../type/comment.types';
 
 import useCommentTree from '../hook/internal/useCommentTree';
@@ -18,13 +18,7 @@ type CommentsListProps = {
     error?: Error | null;
 };
 
-const CommentsList = ({
-    titleId,
-    comments,
-    isLoading,
-    isError,
-    error,
-}: CommentsListProps) => {
+const CommentsList = ({ titleId, comments, isLoading, isError, error }: CommentsListProps) => {
     const { t } = useTranslation('comment');
     const { openUserModal, setUserData } = useUserModalContext();
 
@@ -34,63 +28,34 @@ const CommentsList = ({
 
     const commentsTree = comments ? getCommentsTree() : [];
 
-    const { visibleItems, hasMore, loadMore } =
-        useCommentPagination(commentsTree);
+    const { visibleItems, hasMore, loadMore } = useCommentPagination(commentsTree);
 
-    const commentIds = useMemo(
-        () => (comments ?? []).map(c => c.id),
-        [comments],
-    );
+    const commentIds = useMemo(() => (comments ?? []).map(c => c.id), [comments]);
 
-    const { reactionsMap, toggleLike, toggleDislike } =
-        useCommentReactions(commentIds);
+    const { reactionsMap, toggleLike, toggleDislike } = useCommentReactions(commentIds);
 
     const [showDeepComments, setShowDeepComments] = useState(false);
 
     const MAX_VISUAL_DEPTH = 5;
 
-    const deepCount = visibleItems.filter(
-        item => item.nestedLevel > MAX_VISUAL_DEPTH,
-    ).length;
+    const deepCount = visibleItems.filter(item => item.nestedLevel > MAX_VISUAL_DEPTH).length;
 
-    const displayItems = showDeepComments
-        ? visibleItems
-        : visibleItems.filter(item => item.nestedLevel <= MAX_VISUAL_DEPTH);
+    const displayItems = showDeepComments ? visibleItems : visibleItems.filter(item => item.nestedLevel <= MAX_VISUAL_DEPTH);
 
     const handleClickProfile = useCallback(
         (user: User): void => {
-            setUserData({
-                id: user.id,
-                role: user.role,
-                moderator: user.moderator,
-                member: user.member,
-                name: user.name,
-                photo: user.photo,
-                bio: user.bio,
-                socialMediasLinks: user.socialMediasLinks,
-                statistics: user.statistics,
-                recommendedTitles: user.recommendedTitles,
-            });
-
+            setUserData(buildUserModalPayload(user));
             openUserModal();
         },
         [openUserModal, setUserData],
     );
 
     if (isLoading) {
-        return (
-            <div className="text-center text-tertiary">
-                {t('list.loading')}
-            </div>
-        );
+        return <div className="text-center text-tertiary">{t('list.loading')}</div>;
     }
 
     if (isError) {
-        return (
-            <div className="text-center text-quinary-default">
-                {error!.message || t('list.unknownError')}
-            </div>
-        );
+        return <div className="text-center text-quinary-default">{error!.message || t('list.unknownError')}</div>;
     }
 
     return (
@@ -102,9 +67,7 @@ const CommentsList = ({
                     onClick={() => setShowDeepComments(prev => !prev)}
                     className="self-start text-xs text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer mt-4"
                 >
-                    {showDeepComments
-                        ? t('list.hideDeep')
-                        : t('list.showDeep', { count: deepCount })}
+                    {showDeepComments ? t('list.hideDeep') : t('list.showDeep', { count: deepCount })}
                 </button>
             )}
             {displayItems.map(({ comment, nestedLevel, parentUserName }) => (
@@ -130,12 +93,7 @@ const CommentsList = ({
                     imageContent={comment.imageContent}
                     likeCount={comment.likeCount}
                     dislikeCount={comment.dislikeCount}
-                    userReaction={
-                        (reactionsMap[comment.id] as
-                            | 'LIKE'
-                            | 'DISLIKE'
-                            | undefined) ?? null
-                    }
+                    userReaction={(reactionsMap[comment.id] as 'LIKE' | 'DISLIKE' | undefined) ?? null}
                 />
             ))}
             {hasMore && (
@@ -147,11 +105,7 @@ const CommentsList = ({
                     {t('list.loadMore')}
                 </button>
             )}
-            {commentsTree.length === 0 && !isLoading && !isError && (
-                <div className="text-gray-400 text-center mt-12 font-bold">
-                    {t('list.empty')}
-                </div>
-            )}
+            {commentsTree.length === 0 && !isLoading && !isError && <div className="text-gray-400 text-center mt-12 font-bold">{t('list.empty')}</div>}
         </div>
     );
 };

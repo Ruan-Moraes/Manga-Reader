@@ -36,16 +36,9 @@ describe('useAuth', () => {
 
     it('deve restaurar usuario quando sessao existe no localStorage', async () => {
         const authData = buildAuthResponse();
-        localStorage.setItem(
-            'manga-reader:auth-user',
-            JSON.stringify(authData),
-        );
+        localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
 
-        server.use(
-            http.get(`*${API_URLS.AUTH_ME}`, () =>
-                HttpResponse.json({ data: authData, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.AUTH_ME}`, () => HttpResponse.json({ data: authData, success: true })));
 
         const { result } = renderHook(() => useAuth());
 
@@ -60,11 +53,7 @@ describe('useAuth', () => {
     it('deve fazer login e atualizar user', async () => {
         const authData = buildAuthResponse();
 
-        server.use(
-            http.post(`*${API_URLS.AUTH_SIGN_IN}`, () =>
-                HttpResponse.json({ data: authData, success: true }),
-            ),
-        );
+        server.use(http.post(`*${API_URLS.AUTH_SIGN_IN}`, () => HttpResponse.json({ data: authData, success: true })));
 
         const { result } = renderHook(() => useAuth());
 
@@ -83,11 +72,7 @@ describe('useAuth', () => {
     it('deve fazer registro e atualizar user', async () => {
         const authData = buildAuthResponse({ name: 'New User' });
 
-        server.use(
-            http.post(`*${API_URLS.AUTH_SIGN_UP}`, () =>
-                HttpResponse.json({ data: authData, success: true }),
-            ),
-        );
+        server.use(http.post(`*${API_URLS.AUTH_SIGN_UP}`, () => HttpResponse.json({ data: authData, success: true })));
 
         const { result } = renderHook(() => useAuth());
 
@@ -104,16 +89,9 @@ describe('useAuth', () => {
 
     it('deve fazer logout e limpar user', async () => {
         const authData = buildAuthResponse();
-        localStorage.setItem(
-            'manga-reader:auth-user',
-            JSON.stringify(authData),
-        );
+        localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
 
-        server.use(
-            http.get(`*${API_URLS.AUTH_ME}`, () =>
-                HttpResponse.json({ data: authData, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.AUTH_ME}`, () => HttpResponse.json({ data: authData, success: true })));
 
         const { result } = renderHook(() => useAuth());
 

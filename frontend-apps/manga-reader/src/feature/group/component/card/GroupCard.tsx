@@ -1,9 +1,9 @@
-import { IoOpenOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 
 import { getGroupStatusLabelKey } from '../../service/groupService';
 import { Group } from '../../type/group.types';
 import AppLink from '@shared/component/link/element/AppLink';
+import { ExternalLink } from 'lucide-react';
 
 type GroupCardProps = {
     group: Group;
@@ -39,16 +39,11 @@ const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
             />
 
             <div className="flex flex-col gap-2">
-                <h3 className="text-base font-bold text-center">
-                    {group.name}
-                </h3>
+                <h3 className="text-base font-bold text-center">{group.name}</h3>
 
                 <div className="flex flex-wrap gap-1 justify-center">
                     {group.genres.map(genre => (
-                        <span
-                            key={genre}
-                            className="px-2 py-1 text-[0.65rem] border rounded-xs border-tertiary bg-primary"
-                        >
+                        <span key={genre} className="px-2 py-1 text-[0.65rem] border rounded-xs border-tertiary bg-primary">
                             {genre}
                         </span>
                     ))}
@@ -56,9 +51,7 @@ const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
 
                 <div className="flex justify-between items-center text-xs">
                     <span className="flex gap-2 items-center">
-                        <span
-                            className={`h-2 w-2 rounded-full ${statusColorMap[group.status]}`}
-                        />
+                        <span className={`h-2 w-2 rounded-full ${statusColorMap[group.status]}`} />
                         {t(getGroupStatusLabelKey(group.status))}
                     </span>
                     <a
@@ -68,7 +61,7 @@ const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
                         className="transition-colors text-tertiary hover:text-quaternary"
                         title={t('card.openSite')}
                     >
-                        <IoOpenOutline size={14} />
+                        <ExternalLink size={14} />
                     </a>
                 </div>
 
@@ -78,16 +71,10 @@ const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
                             count: group.members.length,
                         })}
                     </span>
-                    <span>
-                        {t('card.worksCount', { count: group.totalTitles })}
-                    </span>
+                    <span>{t('card.worksCount', { count: group.totalTitles })}</span>
                 </div>
 
-                <AppLink
-                    link={`groups/${group.id}`}
-                    text={t('card.viewDetails')}
-                    className="text-xs"
-                />
+                <AppLink link={`groups/${group.id}`} text={t('card.viewDetails')} className="text-xs" />
             </div>
         </article>
     );

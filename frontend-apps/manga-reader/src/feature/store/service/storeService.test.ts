@@ -61,22 +61,14 @@ describe('storeService', () => {
 
     describe('getStores — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.STORES}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.STORES}`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getStores()).rejects.toThrow();
         });
     });
 
     describe('getStoresByTitleId — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.STORES}/title/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.STORES}/title/title-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getStoresByTitleId('title-1')).rejects.toThrow();
         });
     });

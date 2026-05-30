@@ -64,7 +64,8 @@
     },
     "profile": {
         "banner": {
-            "alt": "Banner do perfil"
+            "alt": "Banner do perfil",
+            "changePhoto": "Alterar foto de perfil"
         },
         "header": {
             "memberSince": "Membro desde {{date}}",
@@ -73,7 +74,9 @@
                 "admin": "Administrador",
                 "poster": "Postador",
                 "reader": "Leitor"
-            }
+            },
+            "follow": "Seguir",
+            "following": "Seguindo"
         },
         "stats": {
             "reading": "Lendo",
@@ -88,7 +91,38 @@
             "recommendations": "Recomendados",
             "comments": "Comentários",
             "history": "Histórico",
-            "settings": "Configurações"
+            "settings": "Configurações",
+            "overview": "Visão Geral",
+            "readingNow": "Lendo Agora",
+            "completedList": "Concluídos",
+            "reviews": "Resenhas"
+        },
+        "sectionHeader": {
+            "eyebrow": "Sua conta",
+            "meta": "Mudanças são salvas conforme você edita"
+        },
+        "noActivity": "Nenhuma atividade pública",
+        "editTabs": {
+            "account": "Conta",
+            "identity": "Identidade",
+            "recommendations": "Recomendações",
+            "notifications": "Notificações",
+            "privacy": "Privacidade"
+        },
+        "identity": {
+            "displayNameLabel": "Nome de exibição",
+            "handleLabel": "Handle (@)",
+            "bioLabel": "Bio",
+            "pronounLabel": "Pronome",
+            "locationLabel": "Localidade",
+            "locationPlaceholder": "Cidade, país",
+            "pronouns": {
+                "preferNotToSay": "Preferir não dizer",
+                "he": "ele/dele",
+                "she": "ela/dela",
+                "they": "elu/delu",
+                "other": "Outros"
+            }
         },
         "privacy": {
             "doNotTrack": "Não rastreado",
@@ -110,7 +144,37 @@
             "addPlaceholder": "ID do título",
             "add": "Adicionar",
             "adding": "Adicionando...",
-            "noCover": "Sem capa"
+            "noCover": "Sem capa",
+            "genresLabel": "Gêneros favoritos",
+            "languagesLabel": "Idiomas de leitura preferidos",
+            "adultContentLabel": "Mostrar conteúdo +18",
+            "adultContentDesc": "Conteúdo adulto será exibido no catálogo e recomendações."
+        },
+        "notifications": {
+            "inAppSection": "No app",
+            "newChapterLabel": "Novo capítulo",
+            "newChapterDesc": "Obras na sua biblioteca lançaram novos capítulos.",
+            "replyLabel": "Resposta",
+            "replyDesc": "Alguém respondeu seu comentário ou resenha.",
+            "mentionLabel": "Menção",
+            "mentionDesc": "Alguém te marcou em um comentário ou tópico.",
+            "groupLabel": "Grupo",
+            "groupDesc": "Atividade em grupos que você segue.",
+            "emailSection": "Por email",
+            "newsletterLabel": "Newsletter semanal",
+            "newsletterDesc": "Destaques da semana, novidades e lançamentos."
+        },
+        "account": {
+            "changePhoto": "Alterar foto",
+            "removePhoto": "Remover",
+            "emailLabel": "Email",
+            "changeEmail": "Alterar",
+            "securitySection": "Segurança",
+            "changePassword": "Alterar senha",
+            "dangerZone": "Zona de perigo",
+            "dangerZoneDesc": "Estas ações são permanentes e não podem ser desfeitas.",
+            "logout": "Sair",
+            "deleteAccount": "Excluir conta"
         },
         "comments": {
             "empty": "Nenhum comentário encontrado.",
@@ -151,7 +215,35 @@
                 "hide": "Ocultar",
                 "blur": "Desfocar",
                 "show": "Exibir"
-            }
+            },
+            "publicProfile": "Perfil público",
+            "publicProfileDesc": "Seu perfil é visível para todos. Desabilitar oculta tudo exceto seu handle.",
+            "libraryVisibility": "Visibilidade da biblioteca",
+            "visPublic": "Público",
+            "visFriends": "Só amigos",
+            "visPrivate": "Privado",
+            "publicActivity": "Atividade pública",
+            "publicActivityDesc": "Outros usuários veem o que você leu e comentou recentemente.",
+            "yourData": "Seus dados",
+            "downloadData": "Baixar meus dados (JSON)"
+        },
+        "reader": {
+            "navigationSection": "Navegação",
+            "defaultDirection": "Direção padrão",
+            "readingMode": "Modo de leitura",
+            "modeVertical": "Vertical",
+            "modePaged": "Paginado",
+            "modeDouble": "Duplo",
+            "imagesSection": "Imagens",
+            "imageQualityLabel": "Qualidade",
+            "qualityAuto": "Automático",
+            "qualityLow": "Baixa",
+            "qualityMedium": "Média",
+            "qualityHigh": "Alta",
+            "qualityOriginal": "Original",
+            "progressSection": "Progresso",
+            "markReadAuto": "Marcar como lido automaticamente",
+            "markReadAutoDesc": "Marca o capítulo ao atingir a última página."
         },
         "reading": {
             "title": "Modo de leitura",
@@ -196,13 +288,33 @@
             "theme": {
                 "system": "Sistema",
                 "light": "Claro",
-                "dark": "Escuro"
-            }
+                "dark": "Escuro",
+                "lightSoon": "Claro (em breve)",
+                "followSystem": "Seguir sistema"
+            },
+            "themeSection": "Tema",
+            "textSection": "Texto e layout",
+            "fontSizeLabel": "Tamanho de fonte global",
+            "fontSize": {
+                "compact": "Compacto",
+                "default": "Padrão",
+                "comfortable": "Confortável"
+            },
+            "motionSection": "Movimento",
+            "animationsLabel": "Animações da interface",
+            "animationsDesc": "Desativar respeita prefers-reduced-motion do sistema."
         },
         "language": {
             "title": "Idioma",
             "uiLanguageLabel": "Idioma da interface",
-            "preferredContentLanguageLabel": "Idioma preferido dos capítulos"
+            "preferredContentLanguageLabel": "Idioma preferido dos capítulos",
+            "interfaceSection": "Interface",
+            "contentSection": "Idiomas de leitura preferidos",
+            "ptBR": "Português (BR)",
+            "enUS": "English (US)",
+            "ja": "日本語",
+            "checkboxPtBR": "Português (PT-BR)",
+            "checkboxEn": "English"
         },
         "modalTitle": "Configurações do usuário",
         "modalSubtitle": "Ajuste sua experiência.",
@@ -213,6 +325,56 @@
             "language": "Idioma",
             "notifications": "Notificações",
             "privacy": "Privacidade"
+        },
+        "system": {
+            "eyebrow": "Sistema",
+            "title": "Configurações",
+            "meta": "alterações aplicadas em tempo real",
+            "tabs": {
+                "reader": "Leitor",
+                "appearance": "Aparência",
+                "language": "Idioma e região",
+                "accessibility": "Acessibilidade",
+                "data": "Dados",
+                "about": "Sobre"
+            }
+        },
+        "accessibility": {
+            "section": "Movimento e contraste",
+            "reducedMotionLabel": "Reduzir movimento",
+            "reducedMotionDesc": "Remove transições e animações desnecessárias.",
+            "highContrastLabel": "Aumentar contraste",
+            "highContrastDesc": "Em breve — melhora legibilidade de texto.",
+            "shortcutsLink": "Ver lista de atalhos de teclado →"
+        },
+        "data": {
+            "cacheSection": "Cache",
+            "readerCache": "Cache do leitor",
+            "clearCache": "Limpar",
+            "librarySection": "Biblioteca",
+            "exportLibrary": "Exportar minha biblioteca (CSV/JSON)",
+            "importList": "Importar lista (MAL / AniList)",
+            "historySection": "Histórico",
+            "clearHistory": "Limpar histórico de leitura"
+        },
+        "about": {
+            "versionSection": "Versão",
+            "versionLabel": "Versão",
+            "commitLabel": "Commit",
+            "systemStatus": "Status do sistema",
+            "changelog": "Changelog",
+            "shortcutsSection": "Atalhos de teclado",
+            "keysHeader": "Tecla(s)",
+            "actionHeader": "Ação",
+            "shortcuts": {
+                "navigatePages": "Navegar entre páginas",
+                "navigateAlt": "Navegar (alternativo)",
+                "fullscreen": "Tela cheia",
+                "addLibrary": "Adicionar à biblioteca",
+                "quickSearch": "Abrir busca rápida",
+                "publish": "Publicar (fórum/comentário)",
+                "close": "Fechar modal / voltar"
+            }
         }
     }
 }

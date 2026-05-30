@@ -7,21 +7,13 @@ interface ChapterPaginationProps {
     onPageChange?: (page: number) => void;
 }
 
-const ChapterPagination: React.FC<ChapterPaginationProps> = ({
-    currentPage,
-    totalPages,
-    onPageChange,
-}) => {
+const ChapterPagination: React.FC<ChapterPaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
     const getPageNumbers = () => {
         const pageNumbers = [];
 
         pageNumbers.push(1);
 
-        for (
-            let i = Math.max(2, currentPage - 2);
-            i <= Math.min(totalPages - 1, currentPage + 2);
-            i++
-        ) {
+        for (let i = Math.max(2, currentPage - 2); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
             pageNumbers.push(i);
         }
 
@@ -42,12 +34,8 @@ const ChapterPagination: React.FC<ChapterPaginationProps> = ({
                         <li
                             key={page}
                             className={`p-1 border border-tertiary grow ${
-                                page === currentPage
-                                    ? 'font-bold bg-quaternary-opacity-50 text-shadow-default'
-                                    : 'bg-secondary'
-                            } ${page === 1 ? 'rounded-l-xs' : ''} ${
-                                page === totalPages ? 'rounded-r-xs' : ''
-                            }`}
+                                page === currentPage ? 'font-bold bg-quaternary-opacity-50 text-shadow-default' : 'bg-secondary'
+                            } ${page === 1 ? 'rounded-l-xs' : ''} ${page === totalPages ? 'rounded-r-xs' : ''}`}
                             onClick={() => onPageChange && onPageChange(page)}
                         >
                             {page}

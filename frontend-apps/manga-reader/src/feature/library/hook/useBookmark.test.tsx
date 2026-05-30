@@ -28,10 +28,7 @@ describe('useBookmark', () => {
     });
 
     it('deve carregar ids salvos quando sessao existe', async () => {
-        localStorage.setItem(
-            'manga-reader:auth-user',
-            JSON.stringify(buildSession()),
-        );
+        localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildSession()));
 
         server.use(
             http.get(`*${API_URLS.LIBRARY}`, () =>
@@ -66,10 +63,7 @@ describe('useBookmark', () => {
     });
 
     it('deve adicionar bookmark via toggleBookmark', async () => {
-        localStorage.setItem(
-            'manga-reader:auth-user',
-            JSON.stringify(buildSession()),
-        );
+        localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildSession()));
 
         server.use(
             http.get(`*${API_URLS.LIBRARY}`, () =>
@@ -120,10 +114,7 @@ describe('useBookmark', () => {
     });
 
     it('deve remover bookmark via toggleBookmark', async () => {
-        localStorage.setItem(
-            'manga-reader:auth-user',
-            JSON.stringify(buildSession()),
-        );
+        localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildSession()));
 
         server.use(
             http.get(`*${API_URLS.LIBRARY}`, () =>
@@ -148,10 +139,7 @@ describe('useBookmark', () => {
                     success: true,
                 }),
             ),
-            http.delete(
-                `*${API_URLS.LIBRARY}/title-1`,
-                () => new HttpResponse(null, { status: 204 }),
-            ),
+            http.delete(`*${API_URLS.LIBRARY}/title-1`, () => new HttpResponse(null, { status: 204 })),
         );
 
         const { result } = renderHook(() => useBookmark());

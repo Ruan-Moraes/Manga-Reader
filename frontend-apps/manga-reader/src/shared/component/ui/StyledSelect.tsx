@@ -1,7 +1,4 @@
-﻿import ReactSelect, {
-    Props as ReactSelectProps,
-    StylesConfig,
-} from 'react-select';
+﻿import ReactSelect, { Props as ReactSelectProps, StylesConfig } from 'react-select';
 
 import { SelectVariant } from '@shared/type/select-variant.types';
 
@@ -17,18 +14,14 @@ interface SelectProps extends Omit<ReactSelectProps<SelectOption>, 'styles'> {
     menuPlacement?: 'auto' | 'bottom' | 'top';
 }
 
-const getVariantStyles = (
-    variant: SelectVariant,
-): StylesConfig<SelectOption> => {
+const getVariantStyles = (variant: SelectVariant): StylesConfig<SelectOption> => {
     const baseStyles: StylesConfig<SelectOption> = {
         control: (provided, state) => ({
             ...provided,
             padding: '0.5rem',
             backgroundColor: '#252526',
             borderRadius: '0.125rem',
-            border: state.isFocused
-                ? '0.0625rem solid #ddda2a'
-                : '0.0625rem solid #727273',
+            border: state.isFocused ? '0.0625rem solid #ddda2a' : '0.0625rem solid #727273',
             boxShadow: state.isFocused ? '0 0 0 0' : '0 0 0 0',
             cursor: 'text',
             transition: 'border 0.3s',
@@ -175,19 +168,13 @@ const getVariantStyles = (
                 }),
                 option: (provided, state) => ({
                     ...provided,
-                    backgroundColor: state.isSelected
-                        ? '#ddda2a'
-                        : state.isFocused
-                          ? '#252526'
-                          : '#161616',
+                    backgroundColor: state.isSelected ? '#ddda2a' : state.isFocused ? '#252526' : '#161616',
                     color: state.isSelected ? '#161616' : '#FFFFFF',
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     padding: '0.5rem 0.75rem',
                     '&:hover': {
-                        backgroundColor: state.isSelected
-                            ? '#ddda2a'
-                            : '#252526',
+                        backgroundColor: state.isSelected ? '#ddda2a' : '#252526',
                     },
                     borderBottom: '0.0625rem solid #727273',
                     ':last-child': {
@@ -237,25 +224,12 @@ const getVariantStyles = (
     }
 };
 
-const StyledSelect = ({
-    variant = 'default',
-    customStyles,
-    menuPlacement = 'auto',
-    ...props
-}: SelectProps) => {
+const StyledSelect = ({ variant = 'default', customStyles, menuPlacement = 'auto', ...props }: SelectProps) => {
     const variantStyles = getVariantStyles(variant);
 
-    const finalStyles = customStyles
-        ? { ...variantStyles, ...customStyles }
-        : variantStyles;
+    const finalStyles = customStyles ? { ...variantStyles, ...customStyles } : variantStyles;
 
-    return (
-        <ReactSelect
-            menuPlacement={menuPlacement}
-            {...props}
-            styles={finalStyles}
-        />
-    );
+    return <ReactSelect menuPlacement={menuPlacement} {...props} styles={finalStyles} />;
 };
 
 export default StyledSelect;

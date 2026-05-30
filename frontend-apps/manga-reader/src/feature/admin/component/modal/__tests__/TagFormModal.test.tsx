@@ -12,14 +12,7 @@ vi.mock('react-i18next', () => ({
 describe('TagFormModal', () => {
     it('emits label + labelI18n on submit', () => {
         const onSubmit = vi.fn();
-        render(
-            <TagFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<TagFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const ptInput = screen.getByRole('textbox');
         fireEvent.change(ptInput, { target: { value: 'Ação' } });
@@ -30,29 +23,14 @@ describe('TagFormModal', () => {
 
     it('disables submit when pt-BR empty', () => {
         const onSubmit = vi.fn();
-        render(
-            <TagFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<TagFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const btn = screen.getByText('Salvar') as HTMLButtonElement;
         expect(btn.disabled).toBe(true);
     });
 
     it('preloads label from existing tag', () => {
-        render(
-            <TagFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={() => {}}
-                isSubmitting={false}
-                tag={{ value: 1, label: { 'pt-BR': 'Drama' } }}
-            />,
-        );
+        render(<TagFormModal isOpen onClose={() => {}} onSubmit={() => {}} isSubmitting={false} tag={{ value: 1, label: { 'pt-BR': 'Drama' } }} />);
         expect(screen.getByRole('textbox')).toHaveValue('Drama');
     });
 });

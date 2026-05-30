@@ -48,35 +48,19 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
 
     return (
         <div className="px-4 py-3 space-y-3">
-            {isOwner && commentVisibility !== 'PUBLIC' && (
-                <PrivacyBadge visibility={commentVisibility} />
-            )}
+            {isOwner && commentVisibility !== 'PUBLIC' && <PrivacyBadge visibility={commentVisibility} />}
 
             {comments.length === 0 ? (
                 <ProfileEmptyState message={t('profile.comments.empty')} />
             ) : (
                 <ul className="space-y-2">
                     {comments.map(c => (
-                        <li
-                            key={c.id}
-                            className="p-3 border rounded-xs border-tertiary bg-secondary/30"
-                        >
-                            <Link
-                                to={`${WEB_BASE_URL}/title/${c.titleId}`}
-                                className="text-xs text-quaternary hover:underline"
-                            >
+                        <li key={c.id} className="p-3 border rounded-xs border-tertiary bg-secondary/30">
+                            <Link to={`${WEB_BASE_URL}/title/${c.titleId}`} className="text-xs text-quaternary hover:underline">
                                 {t('profile.comments.viewTitle')}
                             </Link>
-                            <p className="mt-1 text-sm line-clamp-2">
-                                {c.textContent}
-                            </p>
-                            {c.createdAt && (
-                                <p className="mt-1 text-[10px] text-tertiary">
-                                    {new Date(c.createdAt).toLocaleDateString(
-                                        i18n.language,
-                                    )}
-                                </p>
-                            )}
+                            <p className="mt-1 text-sm line-clamp-2">{c.textContent}</p>
+                            {c.createdAt && <p className="mt-1 text-[10px] text-tertiary">{new Date(c.createdAt).toLocaleDateString(i18n.language)}</p>}
                         </li>
                     ))}
                 </ul>

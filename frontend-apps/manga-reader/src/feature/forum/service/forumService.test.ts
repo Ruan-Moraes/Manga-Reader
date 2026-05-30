@@ -75,11 +75,7 @@ describe('forumService', () => {
 
     describe('getForumTopicById', () => {
         it('deve retornar topico pelo id', async () => {
-            server.use(
-                http.get(`*${API_URLS.FORUM}/topic-1`, () =>
-                    HttpResponse.json({ data: buildTopic(), success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.FORUM}/topic-1`, () => HttpResponse.json({ data: buildTopic(), success: true })));
 
             const result = await getForumTopicById('topic-1');
 
@@ -91,11 +87,7 @@ describe('forumService', () => {
         it('deve retornar lista de categorias', async () => {
             const categories = ['Geral', 'Suporte'];
 
-            server.use(
-                http.get(`*${API_URLS.FORUM}/categories`, () =>
-                    HttpResponse.json({ data: categories, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.FORUM}/categories`, () => HttpResponse.json({ data: categories, success: true })));
 
             const result = await getForumCategories();
 
@@ -105,43 +97,28 @@ describe('forumService', () => {
 
     describe('getForumTopics — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.FORUM}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.FORUM}`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getForumTopics()).rejects.toThrow();
         });
     });
 
     describe('getForumTopicById — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.FORUM}/topic-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.FORUM}/topic-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getForumTopicById('topic-1')).rejects.toThrow();
         });
     });
 
     describe('getForumCategories — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.FORUM}/categories`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.FORUM}/categories`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getForumCategories()).rejects.toThrow();
         });
     });
 
     describe('filterForumTopics', () => {
         it('deve filtrar por categoria', () => {
-            const topics = [
-                buildTopic({ category: 'Geral' }),
-                buildTopic({ id: 't2', category: 'Suporte' }),
-            ];
+            const topics = [buildTopic({ category: 'Geral' }), buildTopic({ id: 't2', category: 'Suporte' })];
 
             const result = filterForumTopics(topics, { category: 'Geral' });
 
@@ -150,10 +127,7 @@ describe('forumService', () => {
         });
 
         it('deve filtrar por query no titulo', () => {
-            const topics = [
-                buildTopic({ title: 'One Piece e incrivel' }),
-                buildTopic({ id: 't2', title: 'Naruto discussion' }),
-            ];
+            const topics = [buildTopic({ title: 'One Piece e incrivel' }), buildTopic({ id: 't2', title: 'Naruto discussion' })];
 
             const result = filterForumTopics(topics, { query: 'one piece' });
 
@@ -161,10 +135,7 @@ describe('forumService', () => {
         });
 
         it('deve filtrar apenas pinados quando onlyPinned', () => {
-            const topics = [
-                buildTopic({ isPinned: true }),
-                buildTopic({ id: 't2', isPinned: false }),
-            ];
+            const topics = [buildTopic({ isPinned: true }), buildTopic({ id: 't2', isPinned: false })];
 
             const result = filterForumTopics(topics, { onlyPinned: true });
 
@@ -173,10 +144,7 @@ describe('forumService', () => {
         });
 
         it('deve ordenar por popularidade', () => {
-            const topics = [
-                buildTopic({ id: 't1', likeCount: 5, isPinned: false }),
-                buildTopic({ id: 't2', likeCount: 20, isPinned: false }),
-            ];
+            const topics = [buildTopic({ id: 't1', likeCount: 5, isPinned: false }), buildTopic({ id: 't2', likeCount: 20, isPinned: false })];
 
             const result = filterForumTopics(topics, { sort: 'popular' });
 
@@ -184,10 +152,7 @@ describe('forumService', () => {
         });
 
         it('deve manter pinados no topo independente da ordenacao', () => {
-            const topics = [
-                buildTopic({ id: 't1', likeCount: 100, isPinned: false }),
-                buildTopic({ id: 't2', likeCount: 1, isPinned: true }),
-            ];
+            const topics = [buildTopic({ id: 't1', likeCount: 100, isPinned: false }), buildTopic({ id: 't2', likeCount: 1, isPinned: true })];
 
             const result = filterForumTopics(topics, { sort: 'popular' });
 
@@ -205,9 +170,7 @@ describe('forumService', () => {
 
     describe('paginateTopics', () => {
         it('deve paginar corretamente', () => {
-            const topics = Array.from({ length: 20 }, (_, i) =>
-                buildTopic({ id: `t-${i}` }),
-            );
+            const topics = Array.from({ length: 20 }, (_, i) => buildTopic({ id: `t-${i}` }));
 
             const page1 = paginateTopics(topics, 1);
 
@@ -228,27 +191,21 @@ describe('forumService', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
 
-            expect(formatRelativeDate('2025-06-15T11:59:50Z')).toBe(
-                'agora mesmo',
-            );
+            expect(formatRelativeDate('2025-06-15T11:59:50Z')).toBe('agora mesmo');
         });
 
         it('deve retornar minutos para menos de 1 hora', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
 
-            expect(formatRelativeDate('2025-06-15T11:30:00Z')).toBe(
-                'há 30 min',
-            );
+            expect(formatRelativeDate('2025-06-15T11:30:00Z')).toBe('há 30 min');
         });
 
         it('deve retornar meses para mais de 30 dias', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
 
-            expect(formatRelativeDate('2025-03-15T12:00:00Z')).toContain(
-                'meses',
-            );
+            expect(formatRelativeDate('2025-03-15T12:00:00Z')).toContain('meses');
         });
     });
 });

@@ -98,15 +98,9 @@ const useCommentTree = (comments: CommentData[] | Error) => {
                 case 'dislikes':
                     return parseInt(b.dislikeCount) - parseInt(a.dislikeCount);
                 case 'newest':
-                    return (
-                        new Date(b.createdAt).getTime() -
-                        new Date(a.createdAt).getTime()
-                    );
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                 case 'oldest':
-                    return (
-                        new Date(a.createdAt).getTime() -
-                        new Date(b.createdAt).getTime()
-                    );
+                    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
                 default:
                     return 0;
             }
@@ -126,27 +120,24 @@ const useCommentTree = (comments: CommentData[] | Error) => {
         [sortCommentsByType],
     );
 
-    const ensureHighlightedAtTop = useCallback(
-        (comments: CommentWithChildren[]): CommentWithChildren[] => {
-            const sortedComments = [...comments].sort((a, b) => {
-                if (a.isHighlighted && !b.isHighlighted) {
-                    return -1;
-                }
+    const ensureHighlightedAtTop = useCallback((comments: CommentWithChildren[]): CommentWithChildren[] => {
+        const sortedComments = [...comments].sort((a, b) => {
+            if (a.isHighlighted && !b.isHighlighted) {
+                return -1;
+            }
 
-                if (!a.isHighlighted && b.isHighlighted) {
-                    return 1;
-                }
+            if (!a.isHighlighted && b.isHighlighted) {
+                return 1;
+            }
 
-                return 0;
-            });
+            return 0;
+        });
 
-            return sortedComments.map(comment => ({
-                ...comment,
-                children: ensureHighlightedAtTop(comment.children),
-            }));
-        },
-        [],
-    );
+        return sortedComments.map(comment => ({
+            ...comment,
+            children: ensureHighlightedAtTop(comment.children),
+        }));
+    }, []);
 
     const getCommentsTree = useCallback(() => {
         if (isError || !comments || comments.length === 0) {
@@ -156,21 +147,10 @@ const useCommentTree = (comments: CommentData[] | Error) => {
         const commentMap = createCommentMap(comments);
         const commentsTree = buildTree(commentMap, comments);
 
-        const treeToFlatten = sortType
-            ? sortTreeRecursively(commentsTree)
-            : ensureHighlightedAtTop(commentsTree);
+        const treeToFlatten = sortType ? sortTreeRecursively(commentsTree) : ensureHighlightedAtTop(commentsTree);
 
         return flattenTree(treeToFlatten);
-    }, [
-        isError,
-        comments,
-        createCommentMap,
-        buildTree,
-        sortType,
-        sortTreeRecursively,
-        ensureHighlightedAtTop,
-        flattenTree,
-    ]);
+    }, [isError, comments, createCommentMap, buildTree, sortType, sortTreeRecursively, ensureHighlightedAtTop, flattenTree]);
 
     return { getCommentsTree };
 };

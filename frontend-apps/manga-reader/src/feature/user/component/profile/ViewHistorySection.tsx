@@ -14,11 +14,7 @@ type Props = {
     viewHistoryVisibility: string;
 };
 
-const ViewHistorySection = ({
-    userId,
-    isOwner,
-    viewHistoryVisibility,
-}: Props) => {
+const ViewHistorySection = ({ userId, isOwner, viewHistoryVisibility }: Props) => {
     const { t, i18n } = useTranslation('user');
     const [items, setItems] = useState<ViewHistoryItem[]>([]);
     const [page, setPage] = useState(0);
@@ -52,9 +48,7 @@ const ViewHistorySection = ({
 
     return (
         <div className="px-4 py-3 space-y-3">
-            {isOwner && viewHistoryVisibility !== 'PUBLIC' && (
-                <PrivacyBadge visibility={viewHistoryVisibility} />
-            )}
+            {isOwner && viewHistoryVisibility !== 'PUBLIC' && <PrivacyBadge visibility={viewHistoryVisibility} />}
 
             {items.length === 0 ? (
                 <ProfileEmptyState message={t('profile.history.empty')} />
@@ -67,29 +61,15 @@ const ViewHistorySection = ({
                             className="block overflow-hidden border rounded-xs border-tertiary"
                         >
                             {item.titleCover ? (
-                                <img
-                                    src={item.titleCover}
-                                    alt={item.titleName}
-                                    className="object-cover w-full h-36"
-                                />
+                                <img src={item.titleCover} alt={item.titleName} className="object-cover w-full h-36" />
                             ) : (
                                 <div className="flex items-center justify-center w-full h-36 bg-secondary/50">
-                                    <span className="text-xs text-tertiary">
-                                        {t('profile.history.noCover')}
-                                    </span>
+                                    <span className="text-xs text-tertiary">{t('profile.history.noCover')}</span>
                                 </div>
                             )}
                             <div className="p-1.5">
-                                <p className="text-xs truncate">
-                                    {item.titleName}
-                                </p>
-                                {item.viewedAt && (
-                                    <p className="text-[10px] text-tertiary">
-                                        {new Date(
-                                            item.viewedAt,
-                                        ).toLocaleDateString(i18n.language)}
-                                    </p>
-                                )}
+                                <p className="text-xs truncate">{item.titleName}</p>
+                                {item.viewedAt && <p className="text-[10px] text-tertiary">{new Date(item.viewedAt).toLocaleDateString(i18n.language)}</p>}
                             </div>
                         </Link>
                     ))}

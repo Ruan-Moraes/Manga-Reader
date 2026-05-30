@@ -25,9 +25,7 @@ const CommentMetadata = ({ createdAt, wasEdited }: CommentMetadataProps) => {
             </div>
             {wasEdited && (
                 <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
-                    <span className=" text-shadow-default">
-                        {t('metadata.edited')}
-                    </span>
+                    <span className=" text-shadow-default">{t('metadata.edited')}</span>
                 </div>
             )}
         </div>

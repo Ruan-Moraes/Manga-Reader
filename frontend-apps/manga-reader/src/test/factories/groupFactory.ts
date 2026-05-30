@@ -1,13 +1,4 @@
-import type {
-    Group,
-    GroupMember,
-    GroupRole,
-    GroupStatus,
-    GroupSummary,
-    GroupSupporter,
-    GroupWork,
-    UserPost,
-} from '@feature/group/type/group.types';
+import type { Group, GroupMember, GroupRole, GroupStatus, GroupSummary, GroupSupporter, GroupWork, UserPost } from '@feature/group/type/group.types';
 
 let groupCounter = 0;
 let groupMemberCounter = 0;
@@ -15,14 +6,7 @@ let groupSupporterCounter = 0;
 let groupWorkCounter = 0;
 let userPostCounter = 0;
 
-const ALL_GROUP_ROLES: GroupRole[] = [
-    'Líder',
-    'Tradutor(a)',
-    'Revisor(a)',
-    'QC',
-    'Cleaner',
-    'Typesetter',
-];
+const ALL_GROUP_ROLES: GroupRole[] = ['Líder', 'Tradutor(a)', 'Revisor(a)', 'QC', 'Cleaner', 'Typesetter'];
 
 export const buildUserPost = (overrides: Partial<UserPost> = {}): UserPost => {
     userPostCounter += 1;
@@ -37,9 +21,7 @@ export const buildUserPost = (overrides: Partial<UserPost> = {}): UserPost => {
     };
 };
 
-export const buildGroupMember = (
-    overrides: Partial<GroupMember> = {},
-): GroupMember => {
+export const buildGroupMember = (overrides: Partial<GroupMember> = {}): GroupMember => {
     groupMemberCounter += 1;
 
     return {
@@ -76,12 +58,9 @@ export const groupMemberPresets = {
         }),
 };
 
-export const buildAllRoleMembers = (): GroupMember[] =>
-    ALL_GROUP_ROLES.map(role => buildGroupMember({ role }));
+export const buildAllRoleMembers = (): GroupMember[] => ALL_GROUP_ROLES.map(role => buildGroupMember({ role }));
 
-export const buildGroupSupporter = (
-    overrides: Partial<GroupSupporter> = {},
-): GroupSupporter => {
+export const buildGroupSupporter = (overrides: Partial<GroupSupporter> = {}): GroupSupporter => {
     groupSupporterCounter += 1;
 
     return {
@@ -93,9 +72,7 @@ export const buildGroupSupporter = (
     };
 };
 
-export const buildGroupWork = (
-    overrides: Partial<GroupWork> = {},
-): GroupWork => {
+export const buildGroupWork = (overrides: Partial<GroupWork> = {}): GroupWork => {
     groupWorkCounter += 1;
 
     return {
@@ -192,9 +169,7 @@ export const groupPresets = {
         }),
 };
 
-export const buildGroupSummary = (
-    overrides: Partial<GroupSummary> = {},
-): GroupSummary => {
+export const buildGroupSummary = (overrides: Partial<GroupSummary> = {}): GroupSummary => {
     const base = buildGroup();
     return {
         id: base.id,
@@ -216,12 +191,7 @@ export const buildGroupSummary = (
     };
 };
 
-export const groupStatusValues: GroupStatus[] = [
-    'active',
-    'inactive',
-    'hiatus',
-];
+export const groupStatusValues: GroupStatus[] = ['active', 'inactive', 'hiatus'];
 export const groupRoleValues: GroupRole[] = ALL_GROUP_ROLES;
 
-export const buildGroupList = (count = 10): Group[] =>
-    Array.from({ length: count }, () => buildGroup());
+export const buildGroupList = (count = 10): Group[] => Array.from({ length: count }, () => buildGroup());

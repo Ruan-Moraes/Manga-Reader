@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('@feature/auth/service/authService', () => ({
+vi.mock('@shared/service/session', () => ({
     getStoredSession: vi.fn(),
 }));
 
@@ -8,7 +8,7 @@ vi.mock('@shared/service/util/toastService', () => ({
     showErrorToast: vi.fn(),
 }));
 
-import { getStoredSession } from '@feature/auth/service/authService';
+import { getStoredSession } from '@shared/service/session';
 import { showErrorToast } from '@shared/service/util/toastService';
 import { requireAuth } from '../requireAuth';
 
@@ -39,10 +39,7 @@ describe('requireAuth', () => {
         const result = requireAuth('comentar');
 
         expect(result).toBe(false);
-        expect(showErrorToast).toHaveBeenCalledWith(
-            'Faça login para comentar.',
-            { toastId: 'auth-required-comentar' },
-        );
+        expect(showErrorToast).toHaveBeenCalledWith('Faça login para comentar.', { toastId: 'auth-required-comentar' });
     });
 
     it('deve usar a mensagem da ação no toast', () => {
@@ -50,9 +47,6 @@ describe('requireAuth', () => {
 
         requireAuth('salvar na biblioteca');
 
-        expect(showErrorToast).toHaveBeenCalledWith(
-            'Faça login para salvar na biblioteca.',
-            { toastId: 'auth-required-salvar na biblioteca' },
-        );
+        expect(showErrorToast).toHaveBeenCalledWith('Faça login para salvar na biblioteca.', { toastId: 'auth-required-salvar na biblioteca' });
     });
 });

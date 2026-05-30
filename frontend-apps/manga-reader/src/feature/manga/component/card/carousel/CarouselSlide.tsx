@@ -1,4 +1,4 @@
-// @ts-expect-error - ignore import error
+// @ts-expect-error upstream package.json "exports" não mapeia os tipos (bug do @splidejs/react-splide 0.7.x)
 import { SplideSlide } from '@splidejs/react-splide';
 import { useTranslation } from 'react-i18next';
 
@@ -20,9 +20,7 @@ const CarouselSlide = ({
     if (isError) {
         return (
             <div className="flex items-center justify-center h-full">
-                <p className="p-4 font-bold text-center text-quinary-default">
-                    {t('carouselError')}
-                </p>
+                <p className="p-4 font-bold text-center text-quinary-default">{t('carouselError')}</p>
             </div>
         );
     }
@@ -30,9 +28,7 @@ const CarouselSlide = ({
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-full p-4">
-                <p className="font-bold text-center text-tertiary">
-                    {t('loading')}
-                </p>
+                <p className="font-bold text-center text-tertiary">{t('loading')}</p>
             </div>
         );
     }
@@ -41,15 +37,8 @@ const CarouselSlide = ({
         <SplideSlide>
             <div className="relative h-full">
                 <div className="h-full">
-                    <AppLink
-                        link={`title/${id}`}
-                        className="block h-full cursor-default"
-                    >
-                        <img
-                            alt={t('coverAlt', { name })}
-                            src={cover}
-                            className="w-full h-full object-fit"
-                        />
+                    <AppLink link={`title/${id}`} className="block h-full cursor-default">
+                        <img alt={t('coverAlt', { name })} src={cover} className="w-full h-full object-fit" />
                     </AppLink>
                 </div>
                 <div className="absolute bottom-0 left-[50%] -translate-x-2/4 w-full p-2 text-center bg-primary-opacity-80">

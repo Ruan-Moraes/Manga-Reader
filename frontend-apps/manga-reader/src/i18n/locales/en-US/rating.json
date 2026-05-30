@@ -31,6 +31,9 @@
     "myReviews": {
         "title": "My Reviews",
         "subtitle": "Edit or remove your reviews at any time.",
+        "eyebrow": "Your account",
+        "emptyDesc": "Rate a title and it will appear here.",
+        "discoverWorks": "Discover titles",
         "workPlaceholder": "Title #{{id}}",
         "saving": "Saving...",
         "save": "Save",

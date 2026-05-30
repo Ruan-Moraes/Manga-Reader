@@ -9,7 +9,7 @@ export const buildStore = (overrides: Partial<Store> = {}): Store => {
         id: `store-${storeCounter}`,
         name: `Loja Teste ${storeCounter}`,
         logo: `/logos/store-${storeCounter}.png`,
-        icon: '🛒',
+        icon: 'feliz',
         description: 'Loja oficial de mangas e merchandising.',
         website: `https://loja${storeCounter}.com`,
         availability: 'in_stock',
@@ -41,15 +41,8 @@ export const storePresets = {
 
     fullFeatures: () =>
         buildStore({
-            features: [
-                'frete-gratis',
-                'suporte-24h',
-                'parcelamento',
-                'troca-gratis',
-                'embalagem-presente',
-            ],
+            features: ['frete-gratis', 'suporte-24h', 'parcelamento', 'troca-gratis', 'embalagem-presente'],
         }),
 };
 
-export const buildStoreList = (count = 10): Store[] =>
-    Array.from({ length: count }, () => buildStore());
+export const buildStoreList = (count = 10): Store[] => Array.from({ length: count }, () => buildStore());

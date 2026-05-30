@@ -1,36 +1,16 @@
-import type {
-    EventComment,
-    EventData,
-    EventStatus,
-    EventTimeline,
-    EventType,
-    TicketType,
-} from '@feature/event/type/event.types';
+import type { EventComment, EventData, EventStatus, EventTimeline, EventType, TicketType } from '@feature/event/type/event.types';
 
 let eventCounter = 0;
 let ticketCounter = 0;
 let eventCommentCounter = 0;
 
-const ALL_EVENT_STATUSES: EventStatus[] = [
-    'happening_now',
-    'registrations_open',
-    'coming_soon',
-    'ended',
-];
+const ALL_EVENT_STATUSES: EventStatus[] = ['happening_now', 'registrations_open', 'coming_soon', 'ended'];
 
 const ALL_EVENT_TIMELINES: EventTimeline[] = ['upcoming', 'ongoing', 'past'];
 
-const ALL_EVENT_TYPES: EventType[] = [
-    'Convenção',
-    'Lançamento',
-    'Live',
-    'Workshop',
-    'Meetup',
-];
+const ALL_EVENT_TYPES: EventType[] = ['Convenção', 'Lançamento', 'Live', 'Workshop', 'Meetup'];
 
-export const buildTicketType = (
-    overrides: Partial<TicketType> = {},
-): TicketType => {
+export const buildTicketType = (overrides: Partial<TicketType> = {}): TicketType => {
     ticketCounter += 1;
 
     return {
@@ -49,9 +29,7 @@ export const ticketTypePresets = {
     soldOut: () => buildTicketType({ available: 0 }),
 };
 
-export const buildEventComment = (
-    overrides: Partial<EventComment> = {},
-): EventComment => {
+export const buildEventComment = (overrides: Partial<EventComment> = {}): EventComment => {
     eventCommentCounter += 1;
 
     return {
@@ -63,9 +41,7 @@ export const buildEventComment = (
     };
 };
 
-export const buildEventData = (
-    overrides: Partial<EventData> = {},
-): EventData => {
+export const buildEventData = (overrides: Partial<EventData> = {}): EventData => {
     eventCounter += 1;
 
     return {
@@ -114,12 +90,9 @@ export const buildEventData = (
 };
 
 export const eventDataPresets = {
-    happeningNow: () =>
-        buildEventData({ status: 'happening_now', timeline: 'ongoing' }),
-    registrationsOpen: () =>
-        buildEventData({ status: 'registrations_open', timeline: 'upcoming' }),
-    comingSoon: () =>
-        buildEventData({ status: 'coming_soon', timeline: 'upcoming' }),
+    happeningNow: () => buildEventData({ status: 'happening_now', timeline: 'ongoing' }),
+    registrationsOpen: () => buildEventData({ status: 'registrations_open', timeline: 'upcoming' }),
+    comingSoon: () => buildEventData({ status: 'coming_soon', timeline: 'upcoming' }),
     ended: () => buildEventData({ status: 'ended', timeline: 'past' }),
 
     convencao: () => buildEventData({ type: 'Convenção' }),
@@ -155,18 +128,13 @@ export const eventDataPresets = {
 
     withTickets: () =>
         buildEventData({
-            tickets: [
-                ticketTypePresets.free(),
-                ticketTypePresets.cheap(),
-                ticketTypePresets.vip(),
-            ],
+            tickets: [ticketTypePresets.free(), ticketTypePresets.cheap(), ticketTypePresets.vip()],
         }),
     soldOut: () => buildEventData({ tickets: [ticketTypePresets.soldOut()] }),
 
     featured: () => buildEventData({ isFeatured: true }),
     saved: () => buildEventData({ isSaved: true }),
-    participating: () =>
-        buildEventData({ amIParticipating: true, isSaved: true }),
+    participating: () => buildEventData({ amIParticipating: true, isSaved: true }),
     createdByMe: () => buildEventData({ isCreatedByMe: true }),
 
     withComments: () =>
@@ -176,10 +144,7 @@ export const eventDataPresets = {
 
     withGallery: () =>
         buildEventData({
-            gallery: Array.from(
-                { length: 6 },
-                (_, i) => `/events/gallery-${i + 1}.jpg`,
-            ),
+            gallery: Array.from({ length: 6 }, (_, i) => `/events/gallery-${i + 1}.jpg`),
         }),
 
     massive: () =>
@@ -189,14 +154,11 @@ export const eventDataPresets = {
         }),
 };
 
-export const buildEventList = (count = 10): EventData[] =>
-    Array.from({ length: count }, () => buildEventData());
+export const buildEventList = (count = 10): EventData[] => Array.from({ length: count }, () => buildEventData());
 
-export const buildAllStatusEvents = (): EventData[] =>
-    ALL_EVENT_STATUSES.map(status => buildEventData({ status }));
+export const buildAllStatusEvents = (): EventData[] => ALL_EVENT_STATUSES.map(status => buildEventData({ status }));
 
-export const buildAllTypeEvents = (): EventData[] =>
-    ALL_EVENT_TYPES.map(type => buildEventData({ type }));
+export const buildAllTypeEvents = (): EventData[] => ALL_EVENT_TYPES.map(type => buildEventData({ type }));
 
 export const eventStatusValues = ALL_EVENT_STATUSES;
 export const eventTimelineValues = ALL_EVENT_TIMELINES;

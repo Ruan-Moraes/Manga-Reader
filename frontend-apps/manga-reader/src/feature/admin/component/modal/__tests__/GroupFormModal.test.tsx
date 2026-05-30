@@ -12,14 +12,7 @@ vi.mock('react-i18next', () => ({
 describe('GroupFormModal', () => {
     it('emits payload with nameI18n on submit', () => {
         const onSubmit = vi.fn();
-        render(
-            <GroupFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<GroupFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const inputs = screen.getAllByRole('textbox');
         fireEvent.change(inputs[0], { target: { value: 'Scan Brasil' } });

@@ -15,6 +15,8 @@
     "actions": {
         "send": "Send",
         "reply": "Reply",
+        "like": "Like",
+        "dislike": "Dislike",
         "edit": "Edit",
         "delete": "Delete",
         "report": "Report",
@@ -55,6 +57,11 @@
         "memberBadge": "Member",
         "moderatorBadge": "Moderator",
         "imageAlt": "Image from {{name}}'s comment"
+    },
+    "editor": {
+        "imageLimitError": "You can only add up to 3 images.",
+        "noFileError": "No file selected.",
+        "fileSizeError": "The file must be at most 2MB."
     },
     "list": {
         "loading": "Loading comments...",

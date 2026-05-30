@@ -4,9 +4,7 @@ import usePublishWorkForm from '../usePublishWorkForm';
 
 vi.mock('@shared/service/util/toastService');
 
-const submitEmpty = async (result: {
-    current: ReturnType<typeof usePublishWorkForm>;
-}) => {
+const submitEmpty = async (result: { current: ReturnType<typeof usePublishWorkForm> }) => {
     await act(async () => {
         const fakeEvent = {
             preventDefault: vi.fn(),
@@ -21,9 +19,7 @@ describe('usePublishWorkForm', () => {
         it('deve pre-preencher nome e email da sessao do usuario', () => {
             seedAuthSession({ name: 'Ruan', email: 'ruan@test.com' });
 
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             expect(result.current.draft.name).toBe('Ruan');
             expect(result.current.draft.email).toBe('ruan@test.com');
@@ -32,9 +28,7 @@ describe('usePublishWorkForm', () => {
         it('deve iniciar com campos vazios quando nao ha sessao', () => {
             localStorage.clear();
 
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             expect(result.current.draft.name).toBe('');
             expect(result.current.draft.email).toBe('');
@@ -43,9 +37,7 @@ describe('usePublishWorkForm', () => {
 
     describe('updateField', () => {
         it('deve atualizar campo do draft', () => {
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('workTitle', 'Minha Obra');
@@ -55,9 +47,7 @@ describe('usePublishWorkForm', () => {
         });
 
         it('deve limpar erro do campo ao atualizar', async () => {
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             await submitEmpty(result);
 
@@ -75,9 +65,7 @@ describe('usePublishWorkForm', () => {
         it('deve gerar erros para todos os campos obrigatorios vazios', async () => {
             localStorage.clear();
 
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             await submitEmpty(result);
 
@@ -90,9 +78,7 @@ describe('usePublishWorkForm', () => {
         });
 
         it('deve validar formato de email', async () => {
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('email', 'email-invalido');
@@ -104,9 +90,7 @@ describe('usePublishWorkForm', () => {
         });
 
         it('deve validar URL do portfolio quando preenchido', async () => {
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('portfolioLink', 'nao-e-url');
@@ -120,21 +104,13 @@ describe('usePublishWorkForm', () => {
         it('deve aceitar portfolio link vazio (campo opcional)', async () => {
             seedAuthSession({ name: 'Ruan', email: 'ruan@test.com' });
 
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('workType', 'manga');
                 result.current.updateField('workTitle', 'Minha Obra');
-                result.current.updateField(
-                    'synopsis',
-                    'Uma sinopse interessante sobre a historia',
-                );
-                result.current.updateField(
-                    'message',
-                    'Gostaria de publicar meu trabalho aqui',
-                );
+                result.current.updateField('synopsis', 'Uma sinopse interessante sobre a historia');
+                result.current.updateField('message', 'Gostaria de publicar meu trabalho aqui');
             });
 
             await submitEmpty(result);
@@ -143,9 +119,7 @@ describe('usePublishWorkForm', () => {
         });
 
         it('deve validar tamanho minimo da sinopse', async () => {
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('synopsis', 'Curta');
@@ -161,21 +135,13 @@ describe('usePublishWorkForm', () => {
         it('deve resetar formulario apos submit bem-sucedido', async () => {
             seedAuthSession({ name: 'Ruan', email: 'ruan@test.com' });
 
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('workType', 'manga');
                 result.current.updateField('workTitle', 'Minha Obra');
-                result.current.updateField(
-                    'synopsis',
-                    'Uma sinopse interessante sobre a historia',
-                );
-                result.current.updateField(
-                    'message',
-                    'Gostaria de publicar meu trabalho aqui',
-                );
+                result.current.updateField('synopsis', 'Uma sinopse interessante sobre a historia');
+                result.current.updateField('message', 'Gostaria de publicar meu trabalho aqui');
             });
 
             await submitEmpty(result);
@@ -192,21 +158,13 @@ describe('usePublishWorkForm', () => {
         it('deve setar isSubmitting como false apos completar', async () => {
             seedAuthSession({ name: 'Ruan', email: 'ruan@test.com' });
 
-            const { result } = renderHookWithProviders(() =>
-                usePublishWorkForm(),
-            );
+            const { result } = renderHookWithProviders(() => usePublishWorkForm());
 
             act(() => {
                 result.current.updateField('workType', 'manga');
                 result.current.updateField('workTitle', 'Minha Obra');
-                result.current.updateField(
-                    'synopsis',
-                    'Uma sinopse interessante sobre a historia',
-                );
-                result.current.updateField(
-                    'message',
-                    'Gostaria de publicar meu trabalho aqui',
-                );
+                result.current.updateField('synopsis', 'Uma sinopse interessante sobre a historia');
+                result.current.updateField('message', 'Gostaria de publicar meu trabalho aqui');
             });
 
             expect(result.current.isSubmitting).toBe(false);

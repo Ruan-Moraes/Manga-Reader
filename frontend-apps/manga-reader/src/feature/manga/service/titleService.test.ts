@@ -5,13 +5,7 @@ import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 import { buildTitle, buildTitlePage } from '@/test/factories/titleFactory';
 
-import {
-    getTitles,
-    getTitleById,
-    searchTitles,
-    getTitlesByGenre,
-    filterTitles,
-} from './titleService';
+import { getTitles, getTitleById, searchTitles, getTitlesByGenre, filterTitles } from './titleService';
 
 describe('titleService', () => {
     describe('getTitles', () => {
@@ -19,11 +13,7 @@ describe('titleService', () => {
             const titles = [buildTitle(), buildTitle()];
             const page = buildTitlePage(titles);
 
-            server.use(
-                http.get(`*${API_URLS.TITLES}`, () =>
-                    HttpResponse.json({ data: page, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json({ data: page, success: true })));
 
             const result = await getTitles();
 
@@ -47,11 +37,7 @@ describe('titleService', () => {
         });
 
         it('deve propagar erro quando API falha', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getTitles()).rejects.toThrow();
         });
@@ -61,11 +47,7 @@ describe('titleService', () => {
         it('deve retornar titulo pelo id', async () => {
             const titulo = buildTitle({ id: 'abc-123', name: 'One Piece' });
 
-            server.use(
-                http.get(`*${API_URLS.TITLES}/abc-123`, () =>
-                    HttpResponse.json({ data: titulo, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}/abc-123`, () => HttpResponse.json({ data: titulo, success: true })));
 
             const result = await getTitleById('abc-123');
 
@@ -74,11 +56,7 @@ describe('titleService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no getTitleById', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES}/abc-123`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}/abc-123`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getTitleById('abc-123')).rejects.toThrow();
         });
@@ -102,11 +80,7 @@ describe('titleService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no searchTitles', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES_SEARCH}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES_SEARCH}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(searchTitles('naruto')).rejects.toThrow();
         });
@@ -116,11 +90,7 @@ describe('titleService', () => {
         it('deve buscar titulos por genero', async () => {
             const page = buildTitlePage([buildTitle()]);
 
-            server.use(
-                http.get(`*${API_URLS.TITLES_BY_GENRE}/action`, () =>
-                    HttpResponse.json({ data: page, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES_BY_GENRE}/action`, () => HttpResponse.json({ data: page, success: true })));
 
             const result = await getTitlesByGenre('action');
 
@@ -128,11 +98,7 @@ describe('titleService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no getTitlesByGenre', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES_BY_GENRE}/action`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES_BY_GENRE}/action`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getTitlesByGenre('action')).rejects.toThrow();
         });
@@ -156,11 +122,7 @@ describe('titleService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no filterTitles', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES_FILTER}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES_FILTER}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(filterTitles({ status: 'ONGOING' })).rejects.toThrow();
         });

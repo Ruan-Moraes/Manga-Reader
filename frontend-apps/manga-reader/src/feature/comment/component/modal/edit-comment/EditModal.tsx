@@ -1,16 +1,12 @@
 import { useCallback } from 'react';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
-import EditModalHeader from './header/EditModalHeader';
+import { Modal } from '@ui/Modal';
 import EditModalBody from './body/EditModalBody';
 
 type EditModalProps = {
     isOpen: boolean;
 
-    onEdit: (
-        newTextContent: string | null,
-        newImageContent: string | null,
-    ) => void;
+    onEdit: (newTextContent: string | null, newImageContent: string | null) => void;
     onCancel: () => void;
 
     title: string;
@@ -42,19 +38,9 @@ const EditModal = ({
     }, [onCancel]);
 
     return (
-        isOpen && (
-            <BaseModal isModalOpen={isOpen} closeModal={handleCancelClick}>
-                <div className="flex flex-col gap-2 p-2">
-                    <EditModalHeader title={title} />
-                    <EditModalBody
-                        onEdit={handleEdit}
-                        onCancel={handleCancelClick}
-                        initialText={initialText}
-                        initialImages={initialImages}
-                    />
-                </div>
-            </BaseModal>
-        )
+        <Modal open={isOpen} onClose={handleCancelClick} title={title}>
+            <EditModalBody onEdit={handleEdit} onCancel={handleCancelClick} initialText={initialText} initialImages={initialImages} />
+        </Modal>
     );
 };
 

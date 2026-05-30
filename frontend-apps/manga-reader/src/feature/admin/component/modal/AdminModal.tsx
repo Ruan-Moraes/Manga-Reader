@@ -14,9 +14,7 @@ const AdminModal = ({ isOpen, onClose, children }: AdminModalProps) => {
 
     useEffect(() => {
         if (!isOpen) return;
-        setContainer(
-            document.getElementById(ADMIN_CONTENT_ID) ?? document.body,
-        );
+        setContainer(document.getElementById(ADMIN_CONTENT_ID) ?? document.body);
     }, [isOpen]);
 
     useEffect(() => {
@@ -32,11 +30,7 @@ const AdminModal = ({ isOpen, onClose, children }: AdminModalProps) => {
 
     return createPortal(
         <div className="absolute inset-0 z-30 flex items-start justify-center p-4 overflow-y-auto">
-            <div
-                onClick={onClose}
-                aria-hidden="true"
-                className="absolute inset-0 bg-black/50 backdrop-blur-xs"
-            />
+            <div onClick={onClose} aria-hidden="true" className="absolute inset-0 bg-black/50 backdrop-blur-xs" />
             <div
                 role="dialog"
                 aria-modal="true"

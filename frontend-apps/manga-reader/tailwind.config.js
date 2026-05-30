@@ -3,11 +3,7 @@ import plugin from 'tailwindcss/plugin';
 
 export default {
     content: ['./index.html', './src/**/*.{ts,tsx}'],
-    safelist: [
-        'border-quaternary-default !important',
-        'border-quinary-default !important',
-        'text-quinary-default !important',
-    ],
+    safelist: ['border-quaternary-default !important', 'border-quinary-default !important', 'text-quinary-default !important'],
     theme: {
         extend: {
             screens: {

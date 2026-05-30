@@ -1,15 +1,10 @@
-import type {
-    CommentData,
-    CommentWithChildren,
-} from '@feature/comment/type/comment.types';
+import type { CommentData, CommentWithChildren } from '@feature/comment/type/comment.types';
 
 import { buildUser } from './userFactory';
 
 let commentCounter = 0;
 
-export const buildCommentData = (
-    overrides: Partial<CommentData> = {},
-): CommentData => {
+export const buildCommentData = (overrides: Partial<CommentData> = {}): CommentData => {
     commentCounter += 1;
 
     return {
@@ -35,8 +30,7 @@ export const commentDataPresets = {
 
     owner: () => buildCommentData({ isOwner: true }),
     highlighted: () => buildCommentData({ isHighlighted: true }),
-    edited: () =>
-        buildCommentData({ wasEdited: true, textContent: 'Editado.' }),
+    edited: () => buildCommentData({ wasEdited: true, textContent: 'Editado.' }),
 
     withImage: () =>
         buildCommentData({
@@ -47,33 +41,25 @@ export const commentDataPresets = {
             textContent: null,
             imageContent: 'https://example.com/only-image.jpg',
         }),
-    onlyText: () =>
-        buildCommentData({ textContent: 'Apenas texto.', imageContent: null }),
+    onlyText: () => buildCommentData({ textContent: 'Apenas texto.', imageContent: null }),
 
     liked: () => buildCommentData({ likeCount: '42', userReaction: 'LIKE' }),
-    disliked: () =>
-        buildCommentData({ dislikeCount: '7', userReaction: 'DISLIKE' }),
+    disliked: () => buildCommentData({ dislikeCount: '7', userReaction: 'DISLIKE' }),
     noReaction: () =>
         buildCommentData({
             likeCount: '0',
             dislikeCount: '0',
             userReaction: null,
         }),
-    veryPopular: () =>
-        buildCommentData({ likeCount: '9999', dislikeCount: '12' }),
+    veryPopular: () => buildCommentData({ likeCount: '9999', dislikeCount: '12' }),
 
     longText: () =>
         buildCommentData({
-            textContent:
-                'Comentario muito longo para testar truncamento e overflow. '.repeat(
-                    20,
-                ),
+            textContent: 'Comentario muito longo para testar truncamento e overflow. '.repeat(20),
         }),
 };
 
-export const buildCommentWithChildren = (
-    overrides: Partial<CommentWithChildren> = {},
-): CommentWithChildren => ({
+export const buildCommentWithChildren = (overrides: Partial<CommentWithChildren> = {}): CommentWithChildren => ({
     ...buildCommentData(),
     children: [],
     ...overrides,
@@ -83,18 +69,13 @@ export const buildCommentWithChildren = (
  * Cria uma arvore de comentarios com profundidade arbitraria.
  * Cada nivel tem `breadth` filhos. Util para testar renderizacao recursiva.
  */
-export const buildCommentTree = (
-    depth = 2,
-    breadth = 2,
-): CommentWithChildren => {
+export const buildCommentTree = (depth = 2, breadth = 2): CommentWithChildren => {
     const root = buildCommentWithChildren();
     if (depth === 0) {
         return root;
     }
 
-    root.children = Array.from({ length: breadth }, () =>
-        buildCommentTree(depth - 1, breadth),
-    );
+    root.children = Array.from({ length: breadth }, () => buildCommentTree(depth - 1, breadth));
 
     return root;
 };
@@ -110,5 +91,4 @@ export const commentTreePresets = {
     deepThread: () => buildCommentTree(5, 1),
 };
 
-export const buildCommentList = (count = 10): CommentData[] =>
-    Array.from({ length: count }, () => buildCommentData());
+export const buildCommentList = (count = 10): CommentData[] => Array.from({ length: count }, () => buildCommentData());

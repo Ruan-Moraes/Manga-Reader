@@ -8,7 +8,13 @@ const registerMock = vi.fn();
 const navigateMock = vi.fn();
 
 vi.mock('@feature/auth/hook/useAuth', () => ({
-    default: () => ({ register: registerMock, login: vi.fn(), user: null }),
+    default: () => ({
+        login: vi.fn(),
+        register: registerMock,
+        logout: vi.fn(),
+        user: null,
+        isLoggedIn: false,
+    }),
 }));
 
 vi.mock('@shared/service/util/toastService', () => ({
@@ -22,79 +28,119 @@ vi.mock('react-router-dom', async orig => {
     return { ...actual, useNavigate: () => navigateMock };
 });
 
-vi.mock('@app/layout/Header', () => ({ default: () => null }));
-vi.mock('@app/layout/Footer', () => ({ default: () => null }));
-vi.mock('@/app/layout/Main', () => ({
-    default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}));
-
 import SignUp from '../SignUp';
 
-const byName = (c: HTMLElement, name: string) =>
-    c.querySelector(`input[name="${name}"]`) as HTMLInputElement;
+const fillForm = async (
+    user: ReturnType<typeof userEvent.setup>,
+    overrides: Partial<{
+        name: string;
+        email: string;
+        password: string;
+        accept: boolean;
+    }> = {},
+) => {
+    const { name = 'João', email = 'joao@test.com', password = 'Senha123!', accept = true } = overrides;
+    if (name) await user.type(screen.getByPlaceholderText(/como podemos te chamar/i), name);
+    if (email) await user.type(screen.getByPlaceholderText(/voce@email.com/i), email);
+    if (password) await user.type(screen.getByPlaceholderText(/mínimo 8 caracteres/i), password);
+    if (accept) await user.click(screen.getByRole('checkbox'));
+};
 
-describe('SignUp form (zod + react-hook-form)', () => {
+describe('SignUp', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        registerMock.mockResolvedValue(undefined);
     });
 
-    it('exige termos e DMCA aceitos', async () => {
-        const user = userEvent.setup();
-        const { container } = renderWithProviders(<SignUp />);
-
-        await user.type(byName(container, 'name'), 'Ruan');
-        await user.type(byName(container, 'email'), 'ruan@example.com');
-        await user.type(byName(container, 'password'), 'secret123');
-        await user.type(byName(container, 'confirmPassword'), 'secret123');
-        await user.click(screen.getByRole('button', { name: /cadastrar/i }));
-
-        expect(
-            await screen.findByText(
-                /aceitar os termos de uso e a política dmca/i,
-            ),
-        ).toBeInTheDocument();
-        expect(registerMock).not.toHaveBeenCalled();
+    it('renders all 3 fields', () => {
+        renderWithProviders(<SignUp />);
+        expect(screen.getByPlaceholderText(/como podemos te chamar/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/voce@email.com/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/mínimo 8 caracteres/i)).toBeInTheDocument();
     });
 
-    it('mostra erro quando senhas não coincidem', async () => {
-        const user = userEvent.setup();
-        const { container } = renderWithProviders(<SignUp />);
-
-        await user.type(byName(container, 'name'), 'Ruan');
-        await user.type(byName(container, 'email'), 'ruan@example.com');
-        await user.type(byName(container, 'password'), 'secret123');
-        await user.type(byName(container, 'confirmPassword'), 'different');
-        await user.click(screen.getByRole('button', { name: /cadastrar/i }));
-
-        expect(
-            await screen.findByText(/as senhas não coincidem/i),
-        ).toBeInTheDocument();
-        expect(registerMock).not.toHaveBeenCalled();
+    it('renders Criar conta button', () => {
+        renderWithProviders(<SignUp />);
+        expect(screen.getByRole('button', { name: /criar conta/i })).toBeInTheDocument();
     });
 
-    it('chama register quando válido com termos aceitos', async () => {
-        registerMock.mockResolvedValueOnce(undefined);
+    it('shows error when name is empty', async () => {
         const user = userEvent.setup();
-        const { container } = renderWithProviders(<SignUp />);
+        renderWithProviders(<SignUp />);
+        await user.click(screen.getByRole('button', { name: /criar conta/i }));
+        await waitFor(() => {
+            expect(screen.getByText(/diga como podemos te chamar/i)).toBeInTheDocument();
+        });
+    });
 
-        await user.type(byName(container, 'name'), '  Ruan  ');
-        await user.type(byName(container, 'email'), '  ruan@example.com  ');
-        await user.type(byName(container, 'password'), 'secret123');
-        await user.type(byName(container, 'confirmPassword'), 'secret123');
+    it('shows error when email is invalid', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<SignUp />);
+        await user.type(screen.getByPlaceholderText(/como podemos te chamar/i), 'Ana');
+        await user.type(screen.getByPlaceholderText(/voce@email.com/i), 'invalido');
+        await user.type(screen.getByPlaceholderText(/mínimo 8 caracteres/i), 'Senha123!');
+        await user.click(screen.getByRole('button', { name: /criar conta/i }));
+        await waitFor(() => {
+            expect(screen.getByText(/e-mail inválido/i)).toBeInTheDocument();
+        });
+    });
 
-        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-        for (const cb of checkboxes) {
-            await user.click(cb);
-        }
+    it('shows error when password is too short', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<SignUp />);
+        await user.type(screen.getByPlaceholderText(/como podemos te chamar/i), 'Ana');
+        await user.type(screen.getByPlaceholderText(/voce@email.com/i), 'ana@test.com');
+        await user.type(screen.getByPlaceholderText(/mínimo 8 caracteres/i), '1234');
+        await user.click(screen.getByRole('button', { name: /criar conta/i }));
+        await waitFor(() => {
+            expect(screen.getByText(/pelo menos 8 caracteres/i)).toBeInTheDocument();
+        });
+    });
 
-        await user.click(screen.getByRole('button', { name: /cadastrar/i }));
+    it('shows error when terms not accepted', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<SignUp />);
+        await fillForm(user, { accept: false });
+        await user.click(screen.getByRole('button', { name: /criar conta/i }));
+        await waitFor(() => {
+            expect(screen.getByText(/preciso aceitar os termos/i)).toBeInTheDocument();
+        });
+    });
 
-        await waitFor(() =>
+    it('submits successfully with valid data', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<SignUp />);
+        await fillForm(user);
+        await user.click(screen.getByRole('button', { name: /criar conta/i }));
+        await waitFor(() => {
             expect(registerMock).toHaveBeenCalledWith({
-                name: 'Ruan',
-                email: 'ruan@example.com',
-                password: 'secret123',
-            }),
-        );
+                name: 'João',
+                email: 'joao@test.com',
+                password: 'Senha123!',
+            });
+        });
+        expect(navigateMock).toHaveBeenCalled();
+    });
+
+    it('strength label updates as password changes', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<SignUp />);
+        const pwInput = screen.getByPlaceholderText(/mínimo 8 caracteres/i);
+        await user.type(pwInput, 'abc'); // weak — too short, no conditions
+        expect(screen.getByText('Fraca')).toBeInTheDocument();
+    });
+
+    it('shows Forte label for strong password', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<SignUp />);
+        const pwInput = screen.getByPlaceholderText(/mínimo 8 caracteres/i);
+        await user.type(pwInput, 'AbcDef1!'); // 8 chars + uppercase + number + special
+        expect(screen.getByText(/ótima|forte/i)).toBeInTheDocument();
+    });
+
+    it('renders terms links', () => {
+        renderWithProviders(<SignUp />);
+        expect(screen.getByText(/termos de uso/i)).toBeInTheDocument();
+        expect(screen.getByText(/política de privacidade/i)).toBeInTheDocument();
     });
 });

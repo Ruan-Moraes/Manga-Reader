@@ -8,13 +8,7 @@ interface ChapterItemProps {
     onClick?: () => void;
 }
 
-const ChapterItem: React.FC<ChapterItemProps> = ({
-    chapterNumber,
-    title,
-    date,
-    pages,
-    onClick,
-}) => {
+const ChapterItem: React.FC<ChapterItemProps> = ({ chapterNumber, title, date, pages, onClick }) => {
     const { t } = useTranslation('manga');
 
     return (
@@ -24,30 +18,18 @@ const ChapterItem: React.FC<ChapterItemProps> = ({
         >
             <div className="flex flex-col gap-1">
                 <p>
-                    <span className="font-bold">
-                        {t('chapter.item.chapterLabel')}
-                    </span>{' '}
-                    <span>{chapterNumber}</span>
+                    <span className="font-bold">{t('chapter.item.chapterLabel')}</span> <span>{chapterNumber}</span>
                 </p>
                 <p>
-                    <span className="font-bold">
-                        {t('chapter.item.titleLabel')}
-                    </span>{' '}
-                    <span>{title}</span>
+                    <span className="font-bold">{t('chapter.item.titleLabel')}</span> <span>{title}</span>
                 </p>
             </div>
             <div className="flex flex-col gap-1">
                 <p>
-                    <span className="font-bold">
-                        {t('chapter.item.dateLabel')}
-                    </span>{' '}
-                    <span>{date}</span>
+                    <span className="font-bold">{t('chapter.item.dateLabel')}</span> <span>{date}</span>
                 </p>
                 <p>
-                    <span className="font-bold">
-                        {t('chapter.item.pagesLabel')}
-                    </span>{' '}
-                    <span>{pages}</span>
+                    <span className="font-bold">{t('chapter.item.pagesLabel')}</span> <span>{pages}</span>
                 </p>
             </div>
         </div>

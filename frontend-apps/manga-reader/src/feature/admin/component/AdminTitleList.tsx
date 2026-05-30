@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
 import { getLocale } from '@shared/util/formatters';
 
 import type { AdminTitle } from '../type/admin.types';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminTitleListProps = {
     titles: AdminTitle[];
@@ -35,40 +34,21 @@ const TypeBadge = ({ type }: { type: string }) => {
         manhua: 'bg-green-500/20 text-green-300',
     };
 
-    return (
-        <span
-            className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[type] ?? 'bg-tertiary/30'}`}
-        >
-            {type}
-        </span>
-    );
+    return <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[type] ?? 'bg-tertiary/30'}`}>{type}</span>;
 };
 
-const buildColumns = (
-    t: TFunction,
-    lang: LanguageTag,
-    onEdit: (title: AdminTitle) => void,
-    onDelete: (title: AdminTitle) => void,
-): Column<AdminTitle>[] => [
+const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (title: AdminTitle) => void, onDelete: (title: AdminTitle) => void): Column<AdminTitle>[] => [
     {
         key: 'id',
         header: t('dashboard.titles.columnId'),
         hiddenOnMobile: true,
-        render: title => (
-            <span className="font-mono text-xs text-tertiary">
-                {title.id.slice(0, 8)}
-            </span>
-        ),
+        render: title => <span className="font-mono text-xs text-tertiary">{title.id.slice(0, 8)}</span>,
     },
     {
         key: 'name',
         header: t('dashboard.titles.columnName'),
         sortable: true,
-        render: title => (
-            <span className="font-medium">
-                {title.name?.[lang] ?? title.name?.['pt-BR'] ?? ''}
-            </span>
-        ),
+        render: title => <span className="font-medium">{title.name?.[lang] ?? title.name?.['pt-BR'] ?? ''}</span>,
     },
     {
         key: 'type',
@@ -80,27 +60,19 @@ const buildColumns = (
         key: 'status',
         header: t('dashboard.titles.columnStatus'),
         sortable: true,
-        render: title => (
-            <span className="text-xs text-tertiary">{title.status ?? '—'}</span>
-        ),
+        render: title => <span className="text-xs text-tertiary">{title.status ?? '—'}</span>,
     },
     {
         key: 'chaptersCount',
         header: t('dashboard.titles.columnChapters'),
         sortable: true,
-        render: title => (
-            <span className="text-xs text-tertiary">{title.chaptersCount}</span>
-        ),
+        render: title => <span className="text-xs text-tertiary">{title.chaptersCount}</span>,
     },
     {
         key: 'createdAt',
         header: t('dashboard.titles.columnCreatedAt'),
         sortable: true,
-        render: title => (
-            <span className="text-xs text-tertiary">
-                {formatDate(title.createdAt)}
-            </span>
-        ),
+        render: title => <span className="text-xs text-tertiary">{formatDate(title.createdAt)}</span>,
     },
     {
         key: 'actions',
@@ -116,7 +88,7 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                     aria-label={t('dashboard.titles.editAriaLabel')}
                 >
-                    <FiEdit2 size={14} />
+                    <Pencil size={14} />
                 </button>
                 <button
                     type="button"
@@ -127,26 +99,17 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                     aria-label={t('dashboard.titles.deleteAriaLabel')}
                 >
-                    <FiTrash2 size={14} />
+                    <Trash2 size={14} />
                 </button>
             </div>
         ),
     },
 ];
 
-const AdminTitleList = ({
-    titles,
-    page,
-    totalPages,
-    isLoading,
-    onPageChange,
-    onEdit,
-    onDelete,
-}: AdminTitleListProps) => {
+const AdminTitleList = ({ titles, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminTitleListProps) => {
     const { t, i18n } = useTranslation('admin');
     const lang = i18n.language as LanguageTag;
-    const { sortedData, sortBy, sortDirection, handleSort } =
-        useSortableData(titles);
+    const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(titles);
 
     return (
         <DataTable

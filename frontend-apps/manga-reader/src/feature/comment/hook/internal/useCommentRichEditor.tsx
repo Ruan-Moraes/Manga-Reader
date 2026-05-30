@@ -1,10 +1,5 @@
-import {
-    MutableRefObject,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { showErrorToast } from '@shared/service/util/toastService';
 
@@ -14,10 +9,9 @@ type UseCommentRichEditorProps = {
 };
 
 const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
-    const placeholder =
-        typeof options === 'string' ? options : options.placeholder;
-    const externalRef =
-        typeof options === 'object' ? options.externalRef : undefined;
+    const { t } = useTranslation('comment');
+    const placeholder = typeof options === 'string' ? options : options.placeholder;
+    const externalRef = typeof options === 'object' ? options.externalRef : undefined;
 
     const internalRef = useRef<HTMLDivElement | null>(null);
     const textareaRef = externalRef || internalRef;
@@ -31,11 +25,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
             return false;
         }
 
-        return (
-            textarea.innerHTML.trim() === '' ||
-            textarea.innerHTML.trim() === '<br>' ||
-            textarea.innerText.trim().length === 0
-        );
+        return textarea.innerHTML.trim() === '' || textarea.innerHTML.trim() === '<br>' || textarea.innerText.trim().length === 0;
     }, [textareaRef]);
 
     const addPlaceholder = useCallback(() => {
@@ -55,9 +45,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
             return;
         }
 
-        const placeholderElement = textarea.querySelector(
-            '#textarea_placeholder',
-        );
+        const placeholderElement = textarea.querySelector('#textarea_placeholder');
 
         if (placeholderElement) {
             placeholderElement.remove();
@@ -71,9 +59,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
             return;
         }
 
-        const currentImgs = Array.from(
-            textarea.querySelectorAll('[contenteditable="false"] img'),
-        )
+        const currentImgs = Array.from(textarea.querySelectorAll('[contenteditable="false"] img'))
             .map(img => img.getAttribute('src'))
             .filter(Boolean) as string[];
 
@@ -82,7 +68,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
 
     const exceedsImageLimit = useCallback(() => {
         if (images.length >= 3) {
-            showErrorToast('Você só pode adicionar até 3 imagens', {
+            showErrorToast(t('editor.imageLimitError'), {
                 toastId: 'image-limit-error',
             });
 
@@ -90,27 +76,30 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
         }
 
         return false;
-    }, [images]);
+    }, [images, t]);
 
-    const isImageValid = useCallback((file: File | null) => {
-        if (!file) {
-            showErrorToast('Nenhum arquivo selecionado', {
-                toastId: 'no-file-selected-error',
-            });
+    const isImageValid = useCallback(
+        (file: File | null) => {
+            if (!file) {
+                showErrorToast(t('editor.noFileError'), {
+                    toastId: 'no-file-selected-error',
+                });
 
-            return false;
-        }
+                return false;
+            }
 
-        if (file.size > 2 * 1024 * 1024) {
-            showErrorToast('O arquivo deve ter no máximo 2MB', {
-                toastId: 'file-size-error',
-            });
+            if (file.size > 2 * 1024 * 1024) {
+                showErrorToast(t('editor.fileSizeError'), {
+                    toastId: 'file-size-error',
+                });
 
-            return false;
-        }
+                return false;
+            }
 
-        return true;
-    }, []);
+            return true;
+        },
+        [t],
+    );
 
     const addImage = useCallback(() => {
         const input = document.createElement('input');
@@ -173,13 +162,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
 
             reader.readAsDataURL(file as Blob);
         };
-    }, [
-        exceedsImageLimit,
-        isImageValid,
-        removePlaceholder,
-        textareaRef,
-        updateImagesFromDOM,
-    ]);
+    }, [exceedsImageLimit, isImageValid, removePlaceholder, textareaRef, updateImagesFromDOM]);
 
     const getContent = useCallback((): {
         textContent: string | null;
@@ -194,9 +177,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
         const placeholderEl = textarea.querySelector('#textarea_placeholder');
         const text = placeholderEl ? null : textarea.innerText.trim() || null;
 
-        const imgElements = textarea.querySelectorAll(
-            '[contenteditable="false"] img',
-        );
+        const imgElements = textarea.querySelectorAll('[contenteditable="false"] img');
         const imgSources = Array.from(imgElements)
             .map(img => img.getAttribute('src'))
             .filter(Boolean)
@@ -233,9 +214,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
             const target = e.target as HTMLElement;
 
             if (target.classList.contains('remove-img-btn')) {
-                const container = target.closest(
-                    '[contenteditable="false"]',
-                ) as HTMLElement | null;
+                const container = target.closest('[contenteditable="false"]') as HTMLElement | null;
 
                 if (container && textarea.contains(container)) {
                     const imgEl = container.querySelector('img');
@@ -291,13 +270,7 @@ const useCommentRichEditor = (options: UseCommentRichEditorProps | string) => {
             textarea.removeEventListener('keyup', handleInput);
             textarea.removeEventListener('focus', handleFocus);
         };
-    }, [
-        addPlaceholder,
-        removePlaceholder,
-        shouldShowPlaceholder,
-        textareaRef,
-        updateImagesFromDOM,
-    ]);
+    }, [addPlaceholder, removePlaceholder, shouldShowPlaceholder, textareaRef, updateImagesFromDOM]);
 
     return {
         textareaRef,

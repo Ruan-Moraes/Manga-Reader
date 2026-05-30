@@ -10,11 +10,7 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import useComments from './useComments';
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 const buildCommentResponse = (id = 'c1') => ({
     id,
@@ -46,10 +42,7 @@ describe('useComments', () => {
             http.get(`*${API_URLS.COMMENTS}/title/1`, () =>
                 HttpResponse.json({
                     data: {
-                        content: [
-                            buildCommentResponse(),
-                            buildCommentResponse('c2'),
-                        ],
+                        content: [buildCommentResponse(), buildCommentResponse('c2')],
                         page: 0,
                         size: 20,
                         totalElements: 2,
@@ -74,11 +67,7 @@ describe('useComments', () => {
     });
 
     it('deve retornar valores padrao quando API falha', async () => {
-        server.use(
-            http.get(`*${API_URLS.COMMENTS}/title/1`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.COMMENTS}/title/1`, () => HttpResponse.json(null, { status: 500 })));
 
         const { result } = renderHook(() => useComments('1'), { wrapper });
 

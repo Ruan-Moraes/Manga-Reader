@@ -9,22 +9,9 @@ type AuthenticationFormTypes = {
     linkText?: string;
 };
 
-const AuthenticationForm = ({
-    onFormSubmit,
-    title,
-    children,
-    helperText,
-    link,
-    linkText,
-}: AuthenticationFormTypes) => {
+const AuthenticationForm = ({ onFormSubmit, title, children, helperText, link, linkText }: AuthenticationFormTypes) => {
     return (
-        <FormWrapper
-            onFormSubmit={onFormSubmit}
-            title={title}
-            helperText={helperText}
-            link={link}
-            linkText={linkText}
-        >
+        <FormWrapper onFormSubmit={onFormSubmit} title={title} helperText={helperText} link={link} linkText={linkText}>
             {children}
         </FormWrapper>
     );

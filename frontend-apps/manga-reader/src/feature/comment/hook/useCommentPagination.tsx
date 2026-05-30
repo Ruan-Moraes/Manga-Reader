@@ -9,10 +9,7 @@ const useCommentPagination = <T,>(items: T[], pageSize = COMMENTS_PER_PAGE) => {
         setVisibleCount(pageSize);
     }, [items.length, pageSize]);
 
-    const visibleItems = useMemo(
-        () => items.slice(0, visibleCount),
-        [items, visibleCount],
-    );
+    const visibleItems = useMemo(() => items.slice(0, visibleCount), [items, visibleCount]);
 
     const hasMore = visibleCount < items.length;
     const totalCount = items.length;

@@ -1,24 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { clsx } from 'clsx';
-import {
-    FiBookOpen,
-    FiMonitor,
-    FiGlobe,
-    FiBell,
-    FiShield,
-} from 'react-icons/fi';
+import { FiBookOpen, FiMonitor, FiGlobe, FiBell, FiShield } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 
 import BaseModal from '@shared/component/modal/base/BaseModal';
 import { USER_SETTINGS_STORAGE_KEY } from '@shared/constant/USER_SETTINGS_STORAGE_KEY';
 
-import {
-    sectionTitleClass,
-    getStoredSettings,
-    type TabKey,
-    type UserSettings,
-} from './settings.constants';
+import { sectionTitleClass, getStoredSettings, type TabKey, type UserSettings } from './settings.constants';
 import AppearanceSettings from './tabs/AppearanceSettings';
 import LanguageSettings from './tabs/LanguageSettings';
 import NotificationSettings from './tabs/NotificationSettings';
@@ -32,20 +21,18 @@ type UserSettingsModalProps = {
     isLoggedIn: boolean;
 };
 
-const UserSettingsModal = ({
-    isOpen,
-    onClose,
-    isLoggedIn,
-}: UserSettingsModalProps) => {
+const UserSettingsModal = ({ isOpen, onClose, isLoggedIn }: UserSettingsModalProps) => {
     const { t } = useTranslation('user');
     const [activeTab, setActiveTab] = useState<TabKey>('reading');
     const [settings, setSettings] = useState<UserSettings>(getStoredSettings);
 
-    const tabs = useMemo<Array<{
-        key: TabKey;
-        label: string;
-        icon: React.ComponentType<{ className?: string }>;
-    }>>(
+    const tabs = useMemo<
+        Array<{
+            key: TabKey;
+            label: string;
+            icon: React.ComponentType<{ className?: string }>;
+        }>
+    >(
         () => [
             { key: 'reading', label: t('settings.tabs.reading'), icon: FiBookOpen },
             { key: 'appearance', label: t('settings.tabs.appearance'), icon: FiMonitor },
@@ -57,22 +44,15 @@ const UserSettingsModal = ({
     );
 
     useEffect(() => {
-        localStorage.setItem(
-            USER_SETTINGS_STORAGE_KEY,
-            JSON.stringify(settings),
-        );
+        localStorage.setItem(USER_SETTINGS_STORAGE_KEY, JSON.stringify(settings));
     }, [settings]);
 
     return (
         <BaseModal isModalOpen={isOpen} closeModal={onClose}>
             <header className="flex items-center justify-between">
                 <div>
-                    <p className={sectionTitleClass}>
-                        {t('settings.modalTitle')}
-                    </p>
-                    <p className="text-xs text-tertiary">
-                        {t('settings.modalSubtitle')}
-                    </p>
+                    <p className={sectionTitleClass}>{t('settings.modalTitle')}</p>
+                    <p className="text-xs text-tertiary">{t('settings.modalSubtitle')}</p>
                 </div>
                 <DarkButton onClick={onClose} text={t('settings.close')} />
             </header>
@@ -103,39 +83,11 @@ const UserSettingsModal = ({
                 </nav>
 
                 <section className="flex flex-nowrap p-3 border rounded-xs border-tertiary bg-secondary/30 max-h-[65vh] overflow-y-auto">
-                    {activeTab === 'reading' && (
-                        <ReadingSettings
-                            settings={settings}
-                            onUpdate={setSettings}
-                        />
-                    )}
-                    {activeTab === 'appearance' && (
-                        <AppearanceSettings
-                            settings={settings}
-                            onUpdate={setSettings}
-                        />
-                    )}
-                    {activeTab === 'language' && (
-                        <LanguageSettings
-                            settings={settings}
-                            onUpdate={setSettings}
-                            isLoggedIn={isLoggedIn}
-                        />
-                    )}
-                    {activeTab === 'notifications' && (
-                        <NotificationSettings
-                            settings={settings}
-                            onUpdate={setSettings}
-                            isLoggedIn={isLoggedIn}
-                        />
-                    )}
-                    {activeTab === 'privacy' && (
-                        <PrivacySettings
-                            settings={settings}
-                            onUpdate={setSettings}
-                            isLoggedIn={isLoggedIn}
-                        />
-                    )}
+                    {activeTab === 'reading' && <ReadingSettings settings={settings} onUpdate={setSettings} />}
+                    {activeTab === 'appearance' && <AppearanceSettings settings={settings} onUpdate={setSettings} />}
+                    {activeTab === 'language' && <LanguageSettings settings={settings} onUpdate={setSettings} isLoggedIn={isLoggedIn} />}
+                    {activeTab === 'notifications' && <NotificationSettings settings={settings} onUpdate={setSettings} isLoggedIn={isLoggedIn} />}
+                    {activeTab === 'privacy' && <PrivacySettings settings={settings} onUpdate={setSettings} isLoggedIn={isLoggedIn} />}
                 </section>
             </div>
         </BaseModal>

@@ -1,9 +1,9 @@
 import { act, waitFor } from '@testing-library/react';
-import { renderHook } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
+import { describe, expect, it, vi } from 'vitest';
 
 import { server } from '@/test/mocks/server';
-import { seedAuthSession } from '@/test/testUtils';
+import { renderHookWithProviders, seedAuthSession } from '@/test/testUtils';
 
 import useBookmark from '../useBookmark';
 
@@ -15,12 +15,9 @@ const bookmarkPayload = {
 };
 
 describe('useBookmark', () => {
-    // ── Estado inicial ────────────────────────────────────────────────────
-
     it('deve ter savedIds vazio quando não há sessão', async () => {
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        // Aguarda estabilizar (nenhum fetch deve acontecer)
         await waitFor(() => {
             expect(result.current.isSaved('title-1')).toBe(false);
         });
@@ -29,46 +26,35 @@ describe('useBookmark', () => {
     it('deve carregar IDs salvos do /api/library quando sessão existe', async () => {
         seedAuthSession();
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        await waitFor(() =>
-            expect(result.current.isSaved('title-1')).toBe(true),
-        );
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
     });
-
-    // ── isSaved ───────────────────────────────────────────────────────────
 
     it('deve retornar true para ID presente na lista', async () => {
         seedAuthSession();
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        await waitFor(() =>
-            expect(result.current.isSaved('title-1')).toBe(true),
-        );
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
     });
 
     it('deve retornar false para ID ausente da lista', async () => {
         seedAuthSession();
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        await waitFor(() =>
-            expect(result.current.isSaved('title-1')).toBe(true),
-        );
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
 
         expect(result.current.isSaved('title-unknown')).toBe(false);
     });
 
-    // ── toggleBookmark (adicionar) ────────────────────────────────────────
-
     it('deve adicionar ID otimistamente ao salvar', async () => {
         seedAuthSession();
 
-        // Resposta vazia da library — sem itens salvos
         server.use(
-            http.get('*/api/library', () => {
-                return HttpResponse.json({
+            http.get('*/api/library', () =>
+                HttpResponse.json({
                     data: {
                         content: [],
                         page: 0,
@@ -78,13 +64,12 @@ describe('useBookmark', () => {
                         last: true,
                     },
                     success: true,
-                });
-            }),
+                }),
+            ),
         );
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        // Aguarda mount effect
         await waitFor(() => {
             expect(result.current.isSaved('title-new')).toBe(false);
         });
@@ -98,35 +83,29 @@ describe('useBookmark', () => {
             });
         });
 
-        expect(result.current.isSaved('title-new')).toBe(true);
+        await waitFor(() => expect(result.current.isSaved('title-new')).toBe(true));
     });
-
-    // ── toggleBookmark (remover) ──────────────────────────────────────────
 
     it('deve remover ID otimistamente ao desfazer bookmark', async () => {
         seedAuthSession();
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        await waitFor(() =>
-            expect(result.current.isSaved('title-1')).toBe(true),
-        );
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
 
         await act(async () => {
             await result.current.toggleBookmark(bookmarkPayload);
         });
 
-        expect(result.current.isSaved('title-1')).toBe(false);
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(false));
     });
-
-    // ── Rollback em erro ──────────────────────────────────────────────────
 
     it('deve fazer rollback ao falhar ao adicionar', async () => {
         seedAuthSession();
 
         server.use(
-            http.get('*/api/library', () => {
-                return HttpResponse.json({
+            http.get('*/api/library', () =>
+                HttpResponse.json({
                     data: {
                         content: [],
                         page: 0,
@@ -136,17 +115,12 @@ describe('useBookmark', () => {
                         last: true,
                     },
                     success: true,
-                });
-            }),
-            http.post('*/api/library', () => {
-                return HttpResponse.json(
-                    { success: false, message: 'Server error' },
-                    { status: 500 },
-                );
-            }),
+                }),
+            ),
+            http.post('*/api/library', () => HttpResponse.json({ success: false, message: 'Server error' }, { status: 500 })),
         );
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
         await waitFor(() => {
             expect(result.current.isSaved('title-fail')).toBe(false);
@@ -161,40 +135,26 @@ describe('useBookmark', () => {
             });
         });
 
-        // Rollback: ID não deve estar na lista
         expect(result.current.isSaved('title-fail')).toBe(false);
     });
 
     it('deve fazer rollback ao falhar ao remover', async () => {
         seedAuthSession();
 
-        server.use(
-            http.delete('*/api/library/:titleId', () => {
-                return HttpResponse.json(
-                    { success: false, message: 'Server error' },
-                    { status: 500 },
-                );
-            }),
-        );
+        server.use(http.delete('*/api/library/:titleId', () => HttpResponse.json({ success: false, message: 'Server error' }, { status: 500 })));
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
-        await waitFor(() =>
-            expect(result.current.isSaved('title-1')).toBe(true),
-        );
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
 
         await act(async () => {
             await result.current.toggleBookmark(bookmarkPayload);
         });
 
-        // Rollback: ID deve voltar à lista
         expect(result.current.isSaved('title-1')).toBe(true);
     });
 
-    // ── Guard sem sessão ──────────────────────────────────────────────────
-
     it('não deve carregar biblioteca sem sessão ativa', async () => {
-        // Sem seedAuthSession — nenhum fetch deve acontecer
         const fetchSpy = vi.fn();
 
         server.use(
@@ -214,9 +174,8 @@ describe('useBookmark', () => {
             }),
         );
 
-        renderHook(() => useBookmark());
+        renderHookWithProviders(() => useBookmark());
 
-        // Aguarda um tick para garantir que o efeito rodou
         await new Promise(resolve => setTimeout(resolve, 50));
 
         expect(fetchSpy).not.toHaveBeenCalled();

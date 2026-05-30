@@ -4,27 +4,14 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type Store } from '@feature/store';
 
-export const getStores = async (
-    page = 0,
-    size = 20,
-): Promise<PageResponse<Store>> => {
-    const response = await api.get<ApiResponse<PageResponse<Store>>>(
-        API_URLS.STORES,
-        { params: { page, size } },
-    );
+export const getStores = async (page = 0, size = 20): Promise<PageResponse<Store>> => {
+    const response = await api.get<ApiResponse<PageResponse<Store>>>(API_URLS.STORES, { params: { page, size } });
 
     return response.data.data;
 };
 
-export const getStoresByTitleId = async (
-    titleId: string,
-    page = 0,
-    size = 20,
-): Promise<PageResponse<Store>> => {
-    const response = await api.get<ApiResponse<PageResponse<Store>>>(
-        `${API_URLS.STORES}/title/${titleId}`,
-        { params: { page, size } },
-    );
+export const getStoresByTitleId = async (titleId: string, page = 0, size = 20): Promise<PageResponse<Store>> => {
+    const response = await api.get<ApiResponse<PageResponse<Store>>>(`${API_URLS.STORES}/title/${titleId}`, { params: { page, size } });
 
     return response.data.data;
 };

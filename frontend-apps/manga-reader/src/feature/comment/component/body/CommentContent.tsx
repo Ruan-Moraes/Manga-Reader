@@ -10,11 +10,7 @@ type CommentContentProps = {
     user: User;
 };
 
-const CommentContent = ({
-    textContent,
-    imageContent,
-    user,
-}: CommentContentProps) => {
+const CommentContent = ({ textContent, imageContent, user }: CommentContentProps) => {
     const { t } = useTranslation('comment');
 
     return (

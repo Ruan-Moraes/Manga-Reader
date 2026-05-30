@@ -25,7 +25,7 @@ const Harness = ({
         <LocalizedTextInput
             label="Label"
             value={value}
-            onChange={(next) => {
+            onChange={next => {
                 setValue(next);
                 onChange?.(next);
             }}

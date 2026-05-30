@@ -10,14 +10,9 @@ type UseSortableDataReturn<T> = {
     handleSort: (key: string, direction: SortDirection) => void;
 };
 
-function useSortableData<T>(
-    data: T[],
-    defaultSortKey = '',
-    defaultDirection: SortDirection = 'asc',
-): UseSortableDataReturn<T> {
+function useSortableData<T>(data: T[], defaultSortKey = '', defaultDirection: SortDirection = 'asc'): UseSortableDataReturn<T> {
     const [sortBy, setSortBy] = useState(defaultSortKey);
-    const [sortDirection, setSortDirection] =
-        useState<SortDirection>(defaultDirection);
+    const [sortDirection, setSortDirection] = useState<SortDirection>(defaultDirection);
 
     const sortedData = useMemo(() => {
         if (!sortBy) return data;

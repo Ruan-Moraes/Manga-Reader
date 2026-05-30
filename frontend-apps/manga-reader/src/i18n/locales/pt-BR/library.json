@@ -24,7 +24,37 @@
     "page": {
         "title": "Minha Biblioteca",
         "subtitle": "Gerencie seus mangás salvos por status de leitura.",
+        "eyebrow": "Sua coleção",
+        "worksCount_one": "{{count}} obra",
+        "worksCount_other": "{{count}} obras",
+        "addButton": "Adicionar",
+        "searchPlaceholder": "Buscar na biblioteca",
+        "sort": {
+            "recent": "Recentes",
+            "az": "A–Z",
+            "za": "Z–A"
+        },
+        "layout": {
+            "grid": "Grade",
+            "list": "Lista"
+        },
+        "remove": "Remover",
         "retry": "Tentar novamente",
         "loadMore": "Carregar mais"
+    },
+    "tabLabel": {
+        "all": "Todas ({{count}})",
+        "reading": "Lendo ({{count}})",
+        "wantToRead": "Quero Ler ({{count}})",
+        "completed": "Concluídas ({{count}})"
+    },
+    "emptySearch": {
+        "title": "Nenhuma obra encontrada",
+        "description": "Tente outro termo de busca."
+    },
+    "emptyCollection": {
+        "title": "Nada por aqui ainda",
+        "description": "Que tal começar a sua coleção?",
+        "discoverButton": "Descobrir obras"
     }
 }

@@ -1,18 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-    FiHome,
-    FiUsers,
-    FiBook,
-    FiFileText,
-    FiCalendar,
-    FiTag,
-    FiLayers,
-    FiDollarSign,
-    FiCreditCard,
-    FiX,
-} from 'react-icons/fi';
+import { Home, Users, Book, FileText, Calendar, Tag, Layers, DollarSign, CreditCard, X } from 'lucide-react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
@@ -43,7 +32,7 @@ const SECTIONS: NavSection[] = [
             {
                 to: BASE,
                 labelKey: 'sidebar.overview',
-                icon: <FiHome size={18} />,
+                icon: <Home size={18} />,
                 end: true,
             },
         ],
@@ -54,22 +43,22 @@ const SECTIONS: NavSection[] = [
             {
                 to: `${BASE}/titles`,
                 labelKey: 'sidebar.titles',
-                icon: <FiBook size={18} />,
+                icon: <Book size={18} />,
             },
             {
                 to: `${BASE}/tags`,
                 labelKey: 'sidebar.tags',
-                icon: <FiTag size={18} />,
+                icon: <Tag size={18} />,
             },
             {
                 to: `${BASE}/news`,
                 labelKey: 'sidebar.news',
-                icon: <FiFileText size={18} />,
+                icon: <FileText size={18} />,
             },
             {
                 to: `${BASE}/events`,
                 labelKey: 'sidebar.events',
-                icon: <FiCalendar size={18} />,
+                icon: <Calendar size={18} />,
             },
         ],
     },
@@ -79,12 +68,12 @@ const SECTIONS: NavSection[] = [
             {
                 to: `${BASE}/users`,
                 labelKey: 'sidebar.users',
-                icon: <FiUsers size={18} />,
+                icon: <Users size={18} />,
             },
             {
                 to: `${BASE}/groups`,
                 labelKey: 'sidebar.groups',
-                icon: <FiLayers size={18} />,
+                icon: <Layers size={18} />,
             },
         ],
     },
@@ -94,12 +83,12 @@ const SECTIONS: NavSection[] = [
             {
                 to: `${BASE}/financial`,
                 labelKey: 'sidebar.financial',
-                icon: <FiDollarSign size={18} />,
+                icon: <DollarSign size={18} />,
             },
             {
                 to: `${BASE}/subscriptions`,
                 labelKey: 'sidebar.subscriptions',
-                icon: <FiCreditCard size={18} />,
+                icon: <CreditCard size={18} />,
             },
         ],
     },
@@ -140,13 +129,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
 
     return (
         <>
-            {isOpen && (
-                <div
-                    className="fixed inset-0 z-40 bg-black/50 md:hidden"
-                    onClick={onClose}
-                    aria-hidden="true"
-                />
-            )}
+            {isOpen && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={onClose} aria-hidden="true" />}
             <aside
                 aria-label={t('sidebar.brand')}
                 className={`
@@ -157,27 +140,15 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
                 `}
             >
                 <div className="flex items-center justify-between mb-3 md:hidden">
-                    <span className="text-sm font-semibold">
-                        {t('sidebar.brand')}
-                    </span>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        aria-label={t('sidebar.closeMenu')}
-                        className="p-1 rounded-xs hover:bg-tertiary/30"
-                    >
-                        <FiX size={20} />
+                    <span className="text-sm font-semibold">{t('sidebar.brand')}</span>
+                    <button type="button" onClick={onClose} aria-label={t('sidebar.closeMenu')} className="p-1 rounded-xs hover:bg-tertiary/30">
+                        <X size={20} />
                     </button>
                 </div>
                 <nav className="flex flex-col gap-4">
                     {SECTIONS.map(section => (
-                        <div
-                            key={section.titleKey}
-                            className="flex flex-col gap-1"
-                        >
-                            <span className="text-xs font-semibold tracking-wider uppercase text-quaternary">
-                                {t(section.titleKey)}
-                            </span>
+                        <div key={section.titleKey} className="flex flex-col gap-1">
+                            <span className="text-xs font-semibold tracking-wider uppercase text-quaternary">{t(section.titleKey)}</span>
                             {section.items.map(item => (
                                 <NavLink
                                     key={item.to}
@@ -185,9 +156,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
                                     end={item.end}
                                     className={({ isActive }) =>
                                         `flex items-center gap-2 px-3 py-2 text-sm rounded-xs transition-colors ${
-                                            isActive
-                                                ? 'bg-quaternary-opacity-25 font-semibold'
-                                                : 'hover:bg-tertiary/30'
+                                            isActive ? 'bg-quaternary-opacity-25 font-semibold' : 'hover:bg-tertiary/30'
                                         }`
                                     }
                                 >

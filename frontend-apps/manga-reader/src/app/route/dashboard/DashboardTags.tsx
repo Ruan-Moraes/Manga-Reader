@@ -1,27 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AdminTagList from '@feature/admin/component/AdminTagList';
-import TagFormModal from '@feature/admin/component/modal/TagFormModal';
-import ConfirmDeleteWithIdModal from '@feature/admin/component/modal/ConfirmDeleteWithIdModal';
-import useAdminTags from '@feature/admin/hook/useAdminTags';
-import { useAdminTagActions } from '@/feature/admin';
-import type { AdminTag } from '@feature/admin/type/admin.types';
+import { AdminTagList, TagFormModal, ConfirmDeleteWithIdModal, useAdminTags, useAdminTagActions, type AdminTag } from '@feature/admin';
 
 const DashboardTags = () => {
     const { t } = useTranslation('admin');
-    const {
-        tags,
-        page,
-        totalPages,
-        totalElements,
-        isLoading,
-        search,
-        setSearch,
-        setPage,
-    } = useAdminTags();
-    const { isSubmitting, handleCreate, handleUpdate, handleDelete } =
-        useAdminTagActions();
+    const { tags, page, totalPages, totalElements, isLoading, search, setSearch, setPage } = useAdminTags();
+    const { isSubmitting, handleCreate, handleUpdate, handleDelete } = useAdminTagActions();
 
     const [editingTag, setEditingTag] = useState<AdminTag | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -37,9 +22,7 @@ const DashboardTags = () => {
         setIsFormOpen(true);
     };
 
-    const handleFormSubmit = async (
-        label: import('@shared/type/i18n').LocalizedString,
-    ) => {
+    const handleFormSubmit = async (label: import('@shared/type/i18n').LocalizedString) => {
         if (editingTag) {
             await handleUpdate(editingTag.value, { label });
         } else {
@@ -72,9 +55,7 @@ const DashboardTags = () => {
                         placeholder={t('dashboard.tags.search')}
                         className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
                     />
-                    <span className="text-sm text-tertiary">
-                        {t('dashboard.tags.count', { count: totalElements })}
-                    </span>
+                    <span className="text-sm text-tertiary">{t('dashboard.tags.count', { count: totalElements })}</span>
                 </div>
                 <button
                     type="button"

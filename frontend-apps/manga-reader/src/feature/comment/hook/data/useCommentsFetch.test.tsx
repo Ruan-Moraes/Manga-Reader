@@ -10,11 +10,7 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import useCommentsFetch from './useCommentsFetch';
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 const buildCommentResponse = (id = 'c1') => ({
     id,

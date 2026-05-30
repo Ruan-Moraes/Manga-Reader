@@ -1,0 +1,50 @@
+{
+    "skipToContent": "Ir pro conteúdo",
+    "hero": {
+        "ariaLabel": "Destaque da semana",
+        "eyebrow": "Em destaque",
+        "indicators": "Itens em destaque",
+        "start": "Começar a ler",
+        "add": "Adicionar"
+    },
+    "continueReading": {
+        "eyebrow": "Sua biblioteca",
+        "title": "Continue de onde parou",
+        "viewAll": "Ver tudo"
+    },
+    "trending": {
+        "eyebrow": "Esta semana",
+        "title": "Em alta na comunidade",
+        "meta": "atualizado a cada 30 min",
+        "viewAll": "Ver tudo",
+        "categoryAll": "Todas",
+        "periodToday": "Hoje",
+        "periodWeek": "Semana",
+        "periodMonth": "Mês",
+        "periodAll": "Sempre",
+        "others": "Demais",
+        "top3Aria": "Top 3",
+        "fullRankingAria": "Ranking completo"
+    },
+    "releases": {
+        "title": "Lançamentos da semana",
+        "meta": "atualizado há 2h",
+        "viewAll": "Ver tudo"
+    },
+    "community": {
+        "eyebrow": "Fórum",
+        "title": "O que estão discutindo",
+        "viewForum": "Ver o fórum",
+        "viewForumCta": "Ver o fórum →"
+    },
+    "groups": {
+        "title": "Grupos pra conhecer",
+        "viewGroups": "Ver grupos"
+    },
+    "forYou": {
+        "eyebrow": "Recomendado",
+        "title": "Pra você",
+        "meta": "treinado no seu histórico",
+        "explore": "Explorar"
+    }
+}

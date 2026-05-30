@@ -60,12 +60,16 @@ export default tseslint.config(
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
-            'react-refresh/only-export-components': [
-                'warn',
-                { allowConstantExport: true },
-            ],
+            'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
             'no-unused-vars': 'warn',
             'no-console': 'warn',
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'Literal[value=/\\p{Emoji_Presentation}/u]',
+                    message: 'Use ilustrações chibi de /illustrations/, não emoji.',
+                },
+            ],
         },
     },
 

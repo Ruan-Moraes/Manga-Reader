@@ -13,15 +13,7 @@ type ConfirmDeleteWithIdModalProps = {
     isSubmitting: boolean;
 };
 
-const ConfirmDeleteWithIdModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    entityId,
-    title,
-    message,
-    isSubmitting,
-}: ConfirmDeleteWithIdModalProps) => {
+const ConfirmDeleteWithIdModal = ({ isOpen, onClose, onConfirm, entityId, title, message, isSubmitting }: ConfirmDeleteWithIdModalProps) => {
     const { t } = useTranslation('admin');
     const [inputValue, setInputValue] = useState('');
 
@@ -37,12 +29,8 @@ const ConfirmDeleteWithIdModal = ({
                 <h3 className="text-sm font-bold">{title}</h3>
                 <p className="text-sm text-tertiary">{message}</p>
                 <div className="flex flex-col gap-1">
-                    <span className="text-xs text-tertiary">
-                        {t('common.deleteIdPrompt')}
-                    </span>
-                    <span className="px-2 py-1 font-mono text-xs rounded-xs bg-tertiary/20 select-all">
-                        {entityId}
-                    </span>
+                    <span className="text-xs text-tertiary">{t('common.deleteIdPrompt')}</span>
+                    <span className="px-2 py-1 font-mono text-xs rounded-xs bg-tertiary/20 select-all">{entityId}</span>
                     <input
                         type="text"
                         value={inputValue}
@@ -53,11 +41,7 @@ const ConfirmDeleteWithIdModal = ({
                     />
                 </div>
                 <div className="flex justify-end gap-2">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30"
-                    >
+                    <button type="button" onClick={onClose} className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30">
                         {t('common.cancel')}
                     </button>
                     <button

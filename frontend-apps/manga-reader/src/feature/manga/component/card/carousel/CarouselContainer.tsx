@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
-// @ts-expect-error - ignore import error
+// @ts-expect-error upstream package.json "exports" não mapeia os tipos (bug do @splidejs/react-splide 0.7.x)
 import { Splide } from '@splidejs/react-splide';
-// @ts-expect-error - ignore import error
+// @ts-expect-error subpath "/css" não declarado nos "exports" do pacote
 import '@splidejs/react-splide/css';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
@@ -15,18 +15,13 @@ import CarouselSlide from './CarouselSlide';
 import AppLink from '@shared/component/link/element/AppLink';
 
 const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data, status } = useTitlesFetch(
-        QUERY_KEYS.TITLES_IN_THE_CAROUSEL,
-        0,
-        10,
-    );
+    const { data, status } = useTitlesFetch(QUERY_KEYS.TITLES_IN_THE_CAROUSEL, 0, 10);
 
     const splideRef = useRef<Splide>(null);
 
     useEffect(() => {
         if (splideRef.current) {
-            const { root, track, list } =
-                splideRef.current.splide.Components.Elements;
+            const { root, track, list } = splideRef.current.splide.Components.Elements;
 
             if (root && track && list) {
                 root.classList.add('h-full');
@@ -57,15 +52,7 @@ const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
                     ref={splideRef}
                 >
                     {data?.content.map(({ id, name, cover, synopsis }) => (
-                        <CarouselSlide
-                            isLoading={false}
-                            isError={false}
-                            key={id}
-                            id={id}
-                            name={name}
-                            cover={cover}
-                            synopsis={synopsis}
-                        />
+                        <CarouselSlide isLoading={false} isError={false} key={id} id={id} name={name} cover={cover} synopsis={synopsis} />
                     ))}
                 </Splide>
             );
@@ -82,17 +69,11 @@ const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
         <section className="flex flex-col items-start">
             <div className="px-4 py-2 rounded-t-xs bg-tertiary">
                 <h2 className="flex flex-col items-center text-center">
-                    <AppLink
-                        link={ROUTES.FILTER_MOST_READ}
-                        text={title}
-                        className="text-shadow-default text-quaternary-default"
-                    />
+                    <AppLink link={ROUTES.FILTER_MOST_READ} text={title} className="text-shadow-default text-quaternary-default" />
                     <span className="text-xs">({subTitle})</span>
                 </h2>
             </div>
-            <div className="w-full border rounded-xs rounded-tl-none border-tertiary h-[18rem] overflow-hidden">
-                {allChildren}
-            </div>
+            <div className="w-full border rounded-xs rounded-tl-none border-tertiary h-[18rem] overflow-hidden">{allChildren}</div>
         </section>
     );
 };

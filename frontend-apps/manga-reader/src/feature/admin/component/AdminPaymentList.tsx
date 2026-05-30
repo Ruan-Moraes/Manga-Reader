@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminPayment } from '../type/admin.types';
 import { getLocale } from '@shared/util/formatters';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminPaymentListProps = {
     payments: AdminPayment[];
@@ -41,39 +40,21 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const StatusBadge = ({ status }: { status: string }) => (
-    <span
-        className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${
-            STATUS_COLORS[status] ?? 'bg-tertiary/30'
-        }`}
-    >
-        {status}
-    </span>
+    <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${STATUS_COLORS[status] ?? 'bg-tertiary/30'}`}>{status}</span>
 );
 
-const buildColumns = (
-    t: TFunction,
-    onEdit: (payment: AdminPayment) => void,
-    onDelete: (payment: AdminPayment) => void,
-): Column<AdminPayment>[] => [
+const buildColumns = (t: TFunction, onEdit: (payment: AdminPayment) => void, onDelete: (payment: AdminPayment) => void): Column<AdminPayment>[] => [
     {
         key: 'id',
         header: t('dashboard.financial.columnId'),
         hiddenOnMobile: true,
-        render: payment => (
-            <span className="font-mono text-xs text-tertiary">
-                {payment.id.slice(0, 8)}
-            </span>
-        ),
+        render: payment => <span className="font-mono text-xs text-tertiary">{payment.id.slice(0, 8)}</span>,
     },
     {
         key: 'amount',
         header: t('dashboard.financial.columnAmount'),
         sortable: true,
-        render: payment => (
-            <span className="font-medium">
-                {formatAmount(payment.amount, payment.currency)}
-            </span>
-        ),
+        render: payment => <span className="font-medium">{formatAmount(payment.amount, payment.currency)}</span>,
     },
     {
         key: 'status',
@@ -86,31 +67,19 @@ const buildColumns = (
         header: t('dashboard.financial.columnMethod'),
         hiddenOnMobile: true,
         sortable: true,
-        render: payment => (
-            <span className="text-xs text-tertiary">
-                {payment.paymentMethod ?? '—'}
-            </span>
-        ),
+        render: payment => <span className="text-xs text-tertiary">{payment.paymentMethod ?? '—'}</span>,
     },
     {
         key: 'referenceType',
         header: t('dashboard.financial.columnReference'),
         hiddenOnMobile: true,
-        render: payment => (
-            <span className="text-xs text-tertiary">
-                {payment.referenceType ?? '—'}
-            </span>
-        ),
+        render: payment => <span className="text-xs text-tertiary">{payment.referenceType ?? '—'}</span>,
     },
     {
         key: 'createdAt',
         header: t('dashboard.financial.columnCreatedAt'),
         sortable: true,
-        render: payment => (
-            <span className="text-xs text-tertiary">
-                {formatDate(payment.createdAt)}
-            </span>
-        ),
+        render: payment => <span className="text-xs text-tertiary">{formatDate(payment.createdAt)}</span>,
     },
     {
         key: 'actions',
@@ -126,7 +95,7 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                     aria-label={t('dashboard.financial.editAriaLabel')}
                 >
-                    <FiEdit2 size={14} />
+                    <Pencil size={14} />
                 </button>
                 <button
                     type="button"
@@ -137,25 +106,16 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                     aria-label={t('dashboard.financial.deleteAriaLabel')}
                 >
-                    <FiTrash2 size={14} />
+                    <Trash2 size={14} />
                 </button>
             </div>
         ),
     },
 ];
 
-const AdminPaymentList = ({
-    payments,
-    page,
-    totalPages,
-    isLoading,
-    onPageChange,
-    onEdit,
-    onDelete,
-}: AdminPaymentListProps) => {
+const AdminPaymentList = ({ payments, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminPaymentListProps) => {
     const { t } = useTranslation('admin');
-    const { sortedData, sortBy, sortDirection, handleSort } =
-        useSortableData(payments);
+    const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(payments);
 
     return (
         <DataTable

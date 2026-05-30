@@ -4,14 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import {
-    getRatingsByTitleId,
-    getRatingsAverage,
-    submitRating,
-    getUserReviews,
-    updateReview,
-    deleteReview,
-} from './ratingService';
+import { getRatingsByTitleId, getRatingsAverage, submitRating, getUserReviews, updateReview, deleteReview } from './ratingService';
 
 const buildRatingResponse = (overrides = {}) => ({
     id: 'rating-1',
@@ -42,10 +35,7 @@ const buildPageResponse = (content: unknown[] = []) => ({
 describe('ratingService', () => {
     describe('getRatingsByTitleId', () => {
         it('deve retornar pagina de ratings mapeados', async () => {
-            const ratings = [
-                buildRatingResponse(),
-                buildRatingResponse({ id: 'rating-2' }),
-            ];
+            const ratings = [buildRatingResponse(), buildRatingResponse({ id: 'rating-2' })];
 
             server.use(
                 http.get(`*${API_URLS.RATINGS}/title/title-1`, () =>
@@ -63,11 +53,7 @@ describe('ratingService', () => {
         });
 
         it('deve propagar erro quando API falha', async () => {
-            server.use(
-                http.get(`*${API_URLS.RATINGS}/title/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.RATINGS}/title/title-1`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getRatingsByTitleId('title-1')).rejects.toThrow();
         });
@@ -95,11 +81,7 @@ describe('ratingService', () => {
         it('deve enviar rating e retornar dados mapeados', async () => {
             const rating = buildRatingResponse();
 
-            server.use(
-                http.post(`*${API_URLS.RATINGS}`, () =>
-                    HttpResponse.json({ data: rating, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.RATINGS}`, () => HttpResponse.json({ data: rating, success: true })));
 
             const result = await submitRating({
                 titleId: 'title-1',
@@ -139,11 +121,7 @@ describe('ratingService', () => {
         it('deve atualizar review e retornar dados mapeados', async () => {
             const rating = buildRatingResponse({ comment: 'Atualizado' });
 
-            server.use(
-                http.put(`*${API_URLS.RATINGS}/rating-1`, () =>
-                    HttpResponse.json({ data: rating, success: true }),
-                ),
-            );
+            server.use(http.put(`*${API_URLS.RATINGS}/rating-1`, () => HttpResponse.json({ data: rating, success: true })));
 
             const result = await updateReview({
                 id: 'rating-1',
@@ -156,22 +134,13 @@ describe('ratingService', () => {
 
     describe('deleteReview', () => {
         it('deve deletar review sem erro', async () => {
-            server.use(
-                http.delete(
-                    `*${API_URLS.RATINGS}/rating-1`,
-                    () => new HttpResponse(null, { status: 204 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.RATINGS}/rating-1`, () => new HttpResponse(null, { status: 204 })));
 
             await expect(deleteReview('rating-1')).resolves.toBeUndefined();
         });
 
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.delete(`*${API_URLS.RATINGS}/rating-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.RATINGS}/rating-1`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(deleteReview('rating-1')).rejects.toThrow();
         });
@@ -179,11 +148,7 @@ describe('ratingService', () => {
 
     describe('submitRating - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.post(`*${API_URLS.RATINGS}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.RATINGS}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(
                 submitRating({
@@ -201,11 +166,7 @@ describe('ratingService', () => {
 
     describe('getUserReviews - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.RATINGS}/user`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.RATINGS}/user`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getUserReviews()).rejects.toThrow();
         });
@@ -213,11 +174,7 @@ describe('ratingService', () => {
 
     describe('getRatingsAverage - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.RATINGS}/title/title-1/average`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.RATINGS}/title/title-1/average`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getRatingsAverage('title-1')).rejects.toThrow();
         });
@@ -225,15 +182,9 @@ describe('ratingService', () => {
 
     describe('updateReview - erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.put(`*${API_URLS.RATINGS}/rating-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.put(`*${API_URLS.RATINGS}/rating-1`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                updateReview({ id: 'rating-1', comment: 'Atualizado' }),
-            ).rejects.toThrow();
+            await expect(updateReview({ id: 'rating-1', comment: 'Atualizado' })).rejects.toThrow();
         });
     });
 });

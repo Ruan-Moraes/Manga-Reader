@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoImageOutline } from 'react-icons/io5';
-
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
-import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
 
 import type { HighlightCard as HighlightCardProps } from '../../../type/title-card.types';
-
-import AlertBanner from '@shared/component/notification/AlertBanner';
 import TitleDetails from '../../information/TitleDetails';
 import AppLink from '@shared/component/link/element/AppLink';
 
 import { RatingStars } from '@feature/rating';
+import { Image } from 'lucide-react';
 
 const HighlightCard = ({
     isError,
@@ -37,15 +33,12 @@ const HighlightCard = ({
 
     useEffect(() => {
         if (detailsHTML.current && synopsisHTML.current) {
-            const descriptionElementHeight =
-                (detailsHTML.current.clientHeight * 2) / 3;
+            const descriptionElementHeight = (detailsHTML.current.clientHeight * 2) / 3;
 
             synopsisHTML.current.style.height = `${descriptionElementHeight / 16}rem`;
 
             const paragraphHeight = synopsisHTML.current.clientHeight;
-            const lineHeight = parseFloat(
-                getComputedStyle(synopsisHTML.current).lineHeight,
-            );
+            const lineHeight = parseFloat(getComputedStyle(synopsisHTML.current).lineHeight);
 
             const totalLines = Math.ceil(paragraphHeight / lineHeight);
 
@@ -61,11 +54,12 @@ const HighlightCard = ({
 
     if (isError) {
         return (
-            <AlertBanner
-                color={THEME_COLORS.QUINARY}
-                title={t('errorTitle')}
-                message={ERROR_MESSAGES.FETCH_ERROR_BASE}
-            />
+            <div className="w-full flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-2 p-4 text-center border-2 rounded-xs border-quinary-default">
+                    <h2 className="text-xl font-bold text-quinary-default">{t('errorTitle')}</h2>
+                    <p className="text-xs">{ERROR_MESSAGES.FETCH_ERROR_BASE}</p>
+                </div>
+            </div>
         );
     }
 
@@ -78,9 +72,7 @@ const HighlightCard = ({
                 {isLoading && (
                     <div className="flex flex-col w-2/4 border rounded-xs rounded-tl-none border-tertiary">
                         <div className="flex items-center justify-center h-44 mobile-md:h-56">
-                            <span className="font-bold text-center text-tertiary">
-                                {t('loading')}
-                            </span>
+                            <span className="font-bold text-center text-tertiary">{t('loading')}</span>
                         </div>
                         <TitleDetails
                             showType={false}
@@ -100,10 +92,7 @@ const HighlightCard = ({
                     </div>
                 )}
                 {!isLoading && (
-                    <div
-                        ref={detailsHTML}
-                        className="flex flex-col w-2/4 overflow-hidden border rounded-xs rounded-tl-none border-tertiary"
-                    >
+                    <div ref={detailsHTML} className="flex flex-col w-2/4 overflow-hidden border rounded-xs rounded-tl-none border-tertiary">
                         <div className="relative h-44 mobile-md:h-56">
                             <div className="absolute right-2 bottom-2 z-10 px-1.5 py-1 rounded-xs bg-secondary/80 backdrop-blur-sm">
                                 <RatingStars value={ratingAverage!} size={12} />
@@ -119,13 +108,8 @@ const HighlightCard = ({
                                 ) : (
                                     <div className="flex items-center justify-center w-full h-full bg-secondary">
                                         <div className="flex flex-col items-center justify-center">
-                                            <IoImageOutline
-                                                size={48}
-                                                className="text-tertiary"
-                                            />
-                                            <span className="mt-2 text-xs text-center text-tertiary">
-                                                {t('imageUnavailable')}
-                                            </span>
+                                            <Image size={48} className="text-tertiary" />
+                                            <span className="mt-2 text-xs text-center text-tertiary">{t('imageUnavailable')}</span>
                                         </div>
                                     </div>
                                 )}
@@ -149,11 +133,7 @@ const HighlightCard = ({
                     </div>
                 )}
                 <div className="w-2/4 overflow-hidden">
-                    {isLoading && (
-                        <div className="text-center text-tertiary">
-                            {t('synopsisLoading')}
-                        </div>
-                    )}
+                    {isLoading && <div className="text-center text-tertiary">{t('synopsisLoading')}</div>}
                     {!isLoading && (
                         <p
                             ref={synopsisHTML}

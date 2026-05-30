@@ -1,12 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { requestPasswordReset } from '@feature/auth/service/authService';
+import { requestPasswordReset } from '../service/authService';
 
-import {
-    showSuccessToast,
-    showErrorToast,
-} from '@shared/service/util/toastService';
+import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,12 +18,9 @@ const useForgotPassword = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
-    const handleEmailChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            setEmail(e.target.value);
-        },
-        [],
-    );
+    const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+    }, []);
 
     const validate = useCallback((): FormErrors => {
         const newErrors: FormErrors = {};

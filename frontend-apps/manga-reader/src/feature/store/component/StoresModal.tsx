@@ -5,7 +5,7 @@ import StoresContainer from './StoresContainer';
 
 import { getStoresByTitleId } from '../service/storeService';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import { Modal } from '@ui/Modal';
 
 import { Store } from '@feature/store';
 
@@ -15,11 +15,7 @@ type StoresModalTypes = {
     titleId: string;
 };
 
-const StoresModal = ({
-    isModalOpen,
-    closeModal,
-    titleId,
-}: StoresModalTypes) => {
+const StoresModal = ({ isModalOpen, closeModal, titleId }: StoresModalTypes) => {
     const { t } = useTranslation('store');
     const [stores, setStores] = useState<Store[]>([]);
 
@@ -38,17 +34,9 @@ const StoresModal = ({
     }, [isModalOpen, titleId]);
 
     return (
-        <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
-            <div className="flex flex-col gap-4">
-                <div>
-                    <h2 className="text-lg font-bold">{t('modal.title')}</h2>
-                    <p className="text-xs text-tertiary">
-                        {t('modal.subtitle')}
-                    </p>
-                </div>
-                <StoresContainer stores={stores} isLoading={isLoading} />
-            </div>
-        </BaseModal>
+        <Modal open={isModalOpen} onClose={closeModal} title={t('modal.title')} description={t('modal.subtitle')}>
+            <StoresContainer stores={stores} isLoading={isLoading} />
+        </Modal>
     );
 };
 

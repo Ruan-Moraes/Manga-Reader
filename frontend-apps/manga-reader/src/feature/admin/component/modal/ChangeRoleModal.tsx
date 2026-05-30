@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import BaseRadioGroup from '@shared/component/input/BaseRadioGroup';
+import { RadioGroup } from '@ui/Radio';
 import AdminModal from './AdminModal';
 
 type ChangeRoleModalProps = {
@@ -15,14 +15,7 @@ type ChangeRoleModalProps = {
 
 const ROLES = ['MEMBER', 'MODERATOR', 'ADMIN'] as const;
 
-const ChangeRoleModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    userName,
-    currentRole,
-    isSubmitting,
-}: ChangeRoleModalProps) => {
+const ChangeRoleModal = ({ isOpen, onClose, onConfirm, userName, currentRole, isSubmitting }: ChangeRoleModalProps) => {
     const { t } = useTranslation('admin');
     const [selectedRole, setSelectedRole] = useState(currentRole);
 
@@ -30,20 +23,15 @@ const ChangeRoleModal = ({
         <AdminModal isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-4 p-2">
                 <div className="flex flex-col gap-1">
-                    <h3 className="text-sm font-bold">
-                        {t('changeRole.title', { name: userName })}
-                    </h3>
+                    <h3 className="text-sm font-bold">{t('changeRole.title', { name: userName })}</h3>
                     <p className="text-xs text-tertiary">
-                        {t('changeRole.currentRole')}{' '}
-                        <span className="font-semibold">
-                            {t(`changeRole.roles.${currentRole}`, currentRole)}
-                        </span>
+                        {t('changeRole.currentRole')} <span className="font-semibold">{t(`changeRole.roles.${currentRole}`, currentRole)}</span>
                     </p>
                 </div>
 
-                <BaseRadioGroup
+                <RadioGroup
                     name="role"
-                    orientation="vertical"
+                    layout="vertical"
                     value={selectedRole}
                     onChange={setSelectedRole}
                     options={ROLES.map(role => ({
@@ -53,11 +41,7 @@ const ChangeRoleModal = ({
                 />
 
                 <div className="flex justify-end gap-2 pt-2">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-3 py-1.5 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
-                    >
+                    <button type="button" onClick={onClose} className="px-3 py-1.5 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30">
                         {t('changeRole.cancel')}
                     </button>
                     <button
@@ -66,9 +50,7 @@ const ChangeRoleModal = ({
                         disabled={selectedRole === currentRole || isSubmitting}
                         className="px-3 py-1.5 text-sm font-semibold border rounded-xs bg-quaternary-opacity-25 border-quaternary-default hover:bg-quaternary-opacity-50 disabled:opacity-50"
                     >
-                        {isSubmitting
-                            ? t('changeRole.confirming')
-                            : t('changeRole.confirm')}
+                        {isSubmitting ? t('changeRole.confirming') : t('changeRole.confirm')}
                     </button>
                 </div>
             </div>

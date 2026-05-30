@@ -1,13 +1,7 @@
 import useTitleFetch from './data/useTitleFetch';
 
 const useTitle = (id: string) => {
-    const {
-        data: title,
-        isLoading,
-        isError,
-        error,
-        refetch,
-    } = useTitleFetch(id);
+    const { data: title, isLoading, isError, error, refetch } = useTitleFetch(id);
 
     return {
         title,

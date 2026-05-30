@@ -1,4 +1,26 @@
 export enum ROUTES {
+    HOME = '/',
+    LOGIN = '/login',
+    SIGN_UP = '/sign-up',
+    FORGOT_PASSWORD = '/forgot-password',
+    SEARCH = '/search',
+    PROFILE = '/profile',
+
+    TITLE = '/title',
+    TITLE_DETAIL = '/title/:titleId',
+
+    NEWS = '/news',
+    NEWS_DETAIL = '/news/:newsId',
+
+    EVENTS = '/events',
+    EVENT_DETAIL = '/event/:eventId',
+
+    GROUPS = '/groups',
+    GROUP_DETAIL = '/groups/:groupId',
+
+    USERS = '/users',
+    USER_DETAIL = '/users/:userId',
+
     FILTER_MOST_READ = '/filter?sort=most_read',
     FILTER_ASCENSION = '/filter?sort=ascension',
     FILTER_RANDOM = '/filter?sort=random',

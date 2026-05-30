@@ -12,12 +12,7 @@ type TagSelectInputProps = {
     placeholder: string;
 };
 
-const TagSelectInput = ({
-    urlParameterName,
-    options,
-    onChange,
-    placeholder,
-}: TagSelectInputProps) => {
+const TagSelectInput = ({ urlParameterName, options, onChange, placeholder }: TagSelectInputProps) => {
     const { t } = useTranslation('category');
     const [searchParams] = useSearchParams();
     const [selectedValues, setSelectedValues] = useState<Tag[]>([]);
@@ -34,13 +29,9 @@ const TagSelectInput = ({
                 const tags = searchParams.get(urlParameterName)?.split(',');
 
                 if (tags) {
-                    const upperCaseTags = tags.map(tag =>
-                        tag.trim().toUpperCase(),
-                    );
+                    const upperCaseTags = tags.map(tag => tag.trim().toUpperCase());
 
-                    const selectedTags = options?.filter(option =>
-                        upperCaseTags.includes(option.label.toUpperCase()),
-                    );
+                    const selectedTags = options?.filter(option => upperCaseTags.includes(option.label.toUpperCase()));
 
                     if (selectedTags) {
                         setSelectedValues(selectedTags);
@@ -68,7 +59,6 @@ const TagSelectInput = ({
 
     return (
         <div>
-            {/* TODO: Transforma esse input em componente */}
             <StyledSelect
                 blurInputOnSelect={false}
                 closeMenuOnSelect={false}
@@ -86,9 +76,7 @@ const TagSelectInput = ({
                         backgroundColor: '#727273',
                         borderRadius: '0.125rem',
                         border: 'none',
-                        boxShadow: state.isFocused
-                            ? '0 0 0.075rem 0.25rem #ddda2a40'
-                            : '0.25rem 0.25rem 0 0 #ddda2a40',
+                        boxShadow: state.isFocused ? '0 0 0.075rem 0.25rem #ddda2a40' : '0.25rem 0.25rem 0 0 #ddda2a40',
                         color: '#FFFFFF',
                         cursor: 'text',
                         transition: 'box-shadow 0.3s',
@@ -142,9 +130,7 @@ const TagSelectInput = ({
                     }),
                     option: (baseStyles, state) => ({
                         ...baseStyles,
-                        backgroundColor: state.isSelected
-                            ? '#ddda2a'
-                            : '#161616',
+                        backgroundColor: state.isSelected ? '#ddda2a' : '#161616',
                         color: state.isSelected ? '#161616' : '#FFFFFF',
                         ':hover': {
                             backgroundColor: '#ddda2a',

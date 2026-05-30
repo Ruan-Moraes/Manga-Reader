@@ -125,10 +125,6 @@ export const handlers = [
     }),
 
     http.post('*/api/contact/publish-work', () => {
-        return HttpResponse.json(
-            wrap(
-                'Sua solicitação foi enviada com sucesso! Entraremos em contato em breve.',
-            ),
-        );
+        return HttpResponse.json(wrap('Sua solicitação foi enviada com sucesso! Entraremos em contato em breve.'));
     }),
 ];

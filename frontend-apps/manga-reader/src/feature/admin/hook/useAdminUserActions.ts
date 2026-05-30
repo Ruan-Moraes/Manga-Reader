@@ -1,18 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import {
-    showErrorToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
+import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import {
-    banUser,
-    changeUserRole,
-    deleteUser,
-    unbanUser,
-} from '../service/adminUserService';
+import { banUser, changeUserRole, deleteUser, unbanUser } from '../service/adminUserService';
 import type { BanUserRequest } from '../type/admin.types';
 
 const useAdminUserActions = () => {

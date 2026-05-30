@@ -15,17 +15,7 @@ type CustomLinkBaseTypes = {
 };
 
 const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
-    (
-        {
-            link,
-            className,
-            enabledColorWhenActive,
-            inlineStyle,
-            children,
-            text,
-        }: CustomLinkBaseTypes,
-        ref,
-    ) => {
+    ({ link, className, enabledColorWhenActive, inlineStyle, children, text }: CustomLinkBaseTypes, ref) => {
         if (text && children) {
             throw new Error(
                 'O componente AppLink não pode receber ambos os props "text" e "children". Por favor, escolha um dos dois para evitar conflitos de renderização.',
@@ -46,13 +36,9 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
         return (
             <Link
                 ref={ref}
-                className={clsx(
-                    `font-bold transition-text-shadow duration-300 hover:text-shadow-highlight ${className}`,
-                    {
-                        'text-quaternary-default':
-                            enabledColorWhenActive && isActive,
-                    },
-                )}
+                className={clsx(`font-bold transition-text-shadow duration-300 hover:text-shadow-highlight ${className}`, {
+                    'text-quaternary-default': enabledColorWhenActive && isActive,
+                })}
                 style={inlineStyle}
                 to={isExternalLink ? link : `${WEB_BASE_URL}/` + link}
             >

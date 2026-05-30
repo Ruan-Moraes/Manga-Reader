@@ -5,12 +5,7 @@ type DarkButtonProps = {
     disabled?: boolean;
 };
 
-const DarkButton = ({
-    onClick,
-    text,
-    className,
-    disabled,
-}: DarkButtonProps) => {
+const DarkButton = ({ onClick, text, className, disabled }: DarkButtonProps) => {
     return (
         <button
             type="button"

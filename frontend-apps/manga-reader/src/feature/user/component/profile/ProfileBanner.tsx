@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import UserAvatar from '@shared/component/avatar/UserAvatar';
+import { Avatar } from '@ui/Avatar';
 
 type Props = {
     bannerUrl?: string;
@@ -16,11 +16,7 @@ const ProfileBanner = ({ bannerUrl, photoUrl, name, onPhotoClick }: Props) => {
         <div className="relative">
             <div className="h-40 overflow-hidden rounded-t-xs sm:h-52">
                 {bannerUrl ? (
-                    <img
-                        src={bannerUrl}
-                        alt={t('profile.banner.alt')}
-                        className="object-cover w-full h-full"
-                    />
+                    <img src={bannerUrl} alt={t('profile.banner.alt')} className="object-cover w-full h-full" />
                 ) : (
                     <div className="w-full h-full bg-gradient-to-r from-quaternary/40 to-quinary-default/30" />
                 )}
@@ -29,14 +25,10 @@ const ProfileBanner = ({ bannerUrl, photoUrl, name, onPhotoClick }: Props) => {
                 <button
                     type="button"
                     onClick={onPhotoClick}
+                    aria-label={t('profile.banner.changePhoto')}
                     className="border-4 rounded-full border-primary-default"
                 >
-                    <UserAvatar
-                        src={photoUrl}
-                        name={name}
-                        size="2xl"
-                        rounded="full"
-                    />
+                    <Avatar src={photoUrl} name={name} size={96} shape="circle" />
                 </button>
             </div>
         </div>

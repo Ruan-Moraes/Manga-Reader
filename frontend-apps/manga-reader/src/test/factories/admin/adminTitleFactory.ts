@@ -8,9 +8,7 @@ const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminTitleCounter = 0;
 
-export const buildAdminTitle = (
-    overrides: Partial<AdminTitle> = {},
-): AdminTitle => {
+export const buildAdminTitle = (overrides: Partial<AdminTitle> = {}): AdminTitle => {
     adminTitleCounter += 1;
 
     return {
@@ -71,11 +69,7 @@ export const adminTitlePresets = {
     neverUpdated: () => buildAdminTitle({ updatedAt: null }),
 };
 
-export const buildAdminTitleList = (count = 10): AdminTitle[] =>
-    Array.from({ length: count }, () => buildAdminTitle());
+export const buildAdminTitleList = (count = 10): AdminTitle[] => Array.from({ length: count }, () => buildAdminTitle());
 
-export const buildAdminTitlePage = (
-    titles: AdminTitle[] = buildAdminTitleList(),
-    page = 0,
-    size = 20,
-): PageResponse<AdminTitle> => buildPage(titles, page, size);
+export const buildAdminTitlePage = (titles: AdminTitle[] = buildAdminTitleList(), page = 0, size = 20): PageResponse<AdminTitle> =>
+    buildPage(titles, page, size);

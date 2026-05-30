@@ -1,9 +1,4 @@
-import type {
-    AxiosError,
-    AxiosInstance,
-    AxiosResponse,
-    InternalAxiosRequestConfig,
-} from 'axios';
+import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 import i18n from '@/i18n/config';
 
@@ -15,16 +10,14 @@ import type { ApiErrorResponse, HttpClientConfig } from './httpTypes';
 /** Mesma chave usada pelo authService para persistir a sessão. */
 const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
 
-const onRequest = (
-    config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
+const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     try {
         const raw = localStorage.getItem(AUTH_STORAGE_KEY);
 
         if (raw) {
             const parsed = JSON.parse(raw);
-            const token: string | undefined =
-                parsed?.accessToken ?? parsed?.token;
+
+            const token: string | undefined = parsed?.accessToken ?? parsed?.token;
 
             if (token) {
                 config.headers.set('Authorization', `Bearer ${token}`);
@@ -38,6 +31,7 @@ const onRequest = (
     // e particionar UGC. Vary: Accept-Language no servidor garante cache correto.
     try {
         const lang = i18n.language;
+
         if (lang) {
             config.headers.set('Accept-Language', lang);
         }
@@ -53,10 +47,6 @@ const onRequest = (
  * `response` intacto. Assim, `response.data` já é o `ApiResponse<T>`.
  */
 const onResponseSuccess = (response: AxiosResponse): AxiosResponse => response;
-
-// ---------------------------------------------------------------------------
-// Error interceptor — trata erros HTTP, de rede e códigos da API
-// ---------------------------------------------------------------------------
 
 /** Shape que o backend envia no body de erros. */
 type ServerErrorBody = {
@@ -116,19 +106,10 @@ const createOnResponseError =
         return Promise.reject(apiError);
     };
 
-// ---------------------------------------------------------------------------
-// Registra todos os interceptors numa instância Axios
-// ---------------------------------------------------------------------------
-export const registerInterceptors = (
-    instance: AxiosInstance,
-    config: HttpClientConfig,
-): void => {
+export const registerInterceptors = (instance: AxiosInstance, config: HttpClientConfig): void => {
     if (!config.skipAuth) {
         instance.interceptors.request.use(onRequest);
     }
 
-    instance.interceptors.response.use(
-        onResponseSuccess,
-        createOnResponseError(config),
-    );
+    instance.interceptors.response.use(onResponseSuccess, createOnResponseError(config));
 };

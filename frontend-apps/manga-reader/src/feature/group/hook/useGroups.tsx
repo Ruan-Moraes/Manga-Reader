@@ -37,32 +37,21 @@ const useGroups = (filters: GroupFilters) => {
         });
     }, []);
 
-    const genres = useMemo(
-        () => Array.from(new Set(allGroups.flatMap(g => g.genres))).sort(),
-        [allGroups],
-    );
+    const genres = useMemo(() => Array.from(new Set(allGroups.flatMap(g => g.genres))).sort(), [allGroups]);
 
     const groups = useMemo(() => {
         const q = filters.query?.toLowerCase().trim() ?? '';
 
         const filtered = allGroups.filter(group => {
-            const statusMatch =
-                filters.status === 'all' || group.status === filters.status;
-            const genreMatch =
-                filters.genre === 'all' || group.genres.includes(filters.genre);
+            const statusMatch = filters.status === 'all' || group.status === filters.status;
+            const genreMatch = filters.genre === 'all' || group.genres.includes(filters.genre);
             const queryMatch = !q || group.name.toLowerCase().includes(q);
 
             return statusMatch && genreMatch && queryMatch;
         });
 
         return sortGroups(filtered, filters.sortBy);
-    }, [
-        allGroups,
-        filters.genre,
-        filters.query,
-        filters.sortBy,
-        filters.status,
-    ]);
+    }, [allGroups, filters.genre, filters.query, filters.sortBy, filters.status]);
 
     return {
         groups,

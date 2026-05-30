@@ -9,9 +9,7 @@ import useSearchTitles from '../useSearchTitles';
 
 describe('useSearchTitles', () => {
     it('deve retornar dados quando query não é vazia', async () => {
-        const { result } = renderHookWithProviders(() =>
-            useSearchTitles('One Piece'),
-        );
+        const { result } = renderHookWithProviders(() => useSearchTitles('One Piece'));
 
         await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -27,18 +25,14 @@ describe('useSearchTitles', () => {
     });
 
     it('não deve fazer fetch com query contendo apenas espaços', () => {
-        const { result } = renderHookWithProviders(() =>
-            useSearchTitles('   '),
-        );
+        const { result } = renderHookWithProviders(() => useSearchTitles('   '));
 
         expect(result.current.fetchStatus).toBe('idle');
         expect(result.current.data).toBeUndefined();
     });
 
     it('deve retornar isLoading enquanto fetching', () => {
-        const { result } = renderHookWithProviders(() =>
-            useSearchTitles('Naruto'),
-        );
+        const { result } = renderHookWithProviders(() => useSearchTitles('Naruto'));
 
         expect(result.current.isLoading).toBe(true);
     });
@@ -46,16 +40,11 @@ describe('useSearchTitles', () => {
     it('deve retornar erro quando API falha', async () => {
         server.use(
             http.get('*/api/titles/search', () => {
-                return HttpResponse.json(
-                    { success: false, message: 'Internal error' },
-                    { status: 500 },
-                );
+                return HttpResponse.json({ success: false, message: 'Internal error' }, { status: 500 });
             }),
         );
 
-        const { result } = renderHookWithProviders(() =>
-            useSearchTitles('fail'),
-        );
+        const { result } = renderHookWithProviders(() => useSearchTitles('fail'));
 
         await waitFor(() => expect(result.current.isError).toBe(true));
 
@@ -63,11 +52,9 @@ describe('useSearchTitles', () => {
     });
 
     it('deve manter dados anteriores ao mudar página (placeholderData)', async () => {
-        const { result, rerender } = renderHookWithProviders(
-            ({ query, page }: { query: string; page: number }) =>
-                useSearchTitles(query, page),
-            { initialProps: { query: 'One Piece', page: 0 } },
-        );
+        const { result, rerender } = renderHookWithProviders(({ query, page }: { query: string; page: number }) => useSearchTitles(query, page), {
+            initialProps: { query: 'One Piece', page: 0 },
+        });
 
         await waitFor(() => expect(result.current.isSuccess).toBe(true));
 

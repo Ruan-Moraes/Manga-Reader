@@ -3,10 +3,9 @@ import clsx from 'clsx';
 
 import { type User } from '@feature/user';
 
-import { MdAdminPanelSettings, MdStar } from 'react-icons/md';
-
 import formatRelativeDate from '@shared/service/util/formatRelativeDate';
-import UserAvatar from '@shared/component/avatar/UserAvatar';
+import { Avatar } from '@ui/Avatar';
+import { ShieldCheck, Star } from 'lucide-react';
 
 type CommentUserProps = {
     user: Partial<User> & { name: string };
@@ -35,13 +34,7 @@ const sizeConfig = {
     },
 } as const;
 
-const CommentUser = ({
-    onClickProfile,
-    isHighlighted,
-    user,
-    createdAt,
-    size = 'md',
-}: CommentUserProps) => {
+const CommentUser = ({ onClickProfile, isHighlighted, user, createdAt, size = 'md' }: CommentUserProps) => {
     const { t } = useTranslation('comment');
     const config = sizeConfig[size];
     const isInteractive = !!onClickProfile;
@@ -61,11 +54,7 @@ const CommentUser = ({
         <div className="flex items-center gap-3">
             <AvatarTag
                 onClick={isInteractive ? handleProfileClick : undefined}
-                aria-label={
-                    isInteractive
-                        ? t('user.viewProfileAria', { name: user.name })
-                        : undefined
-                }
+                aria-label={isInteractive ? t('user.viewProfileAria', { name: user.name }) : undefined}
                 className={clsx(
                     'shrink-0 rounded-xs border border-tertiary bg-secondary p-0 overflow-hidden',
                     config.avatar,
@@ -73,11 +62,7 @@ const CommentUser = ({
                         'cursor-pointer hover:border-quaternary-opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-opacity-50 transition-all duration-300',
                 )}
             >
-                <UserAvatar
-                    src={user.photo}
-                    name={user.name}
-                    size={size === 'sm' ? 'sm' : 'lg'}
-                />
+                <Avatar src={user.photo} name={user.name} size={size === 'sm' ? 32 : 48} />
             </AvatarTag>
             <div className="flex flex-col justify-center min-w-0 gap-1">
                 <div className="flex flex-col gap-2">
@@ -97,47 +82,26 @@ const CommentUser = ({
                         <div className="flex items-center gap-1.5 flex-wrap">
                             {user.member?.isMember && (
                                 <span
-                                    className={clsx(
-                                        'flex items-center gap-1 font-bold rounded-xs bg-quaternary-opacity-25',
-                                        config.badge,
-                                    )}
+                                    className={clsx('flex items-center gap-1 font-bold rounded-xs bg-quaternary-opacity-25', config.badge)}
                                     title={t('user.memberBadge')}
                                 >
-                                    <MdStar size={config.iconSize} />
-                                    <span className="leading-none">
-                                        {t('user.memberBadge')}
-                                    </span>
+                                    <Star size={config.iconSize} />
+                                    <span className="leading-none">{t('user.memberBadge')}</span>
                                 </span>
                             )}
                             {user.moderator?.isModerator && (
                                 <span
-                                    className={clsx(
-                                        'flex items-center gap-1 font-bold rounded-xs bg-quaternary-opacity-25',
-                                        config.badge,
-                                    )}
+                                    className={clsx('flex items-center gap-1 font-bold rounded-xs bg-quaternary-opacity-25', config.badge)}
                                     title={t('user.moderatorBadge')}
                                 >
-                                    <MdAdminPanelSettings
-                                        size={config.iconSize}
-                                    />
-                                    <span className="leading-none">
-                                        {t('user.moderatorBadge')}
-                                    </span>
+                                    <ShieldCheck size={config.iconSize} />
+                                    <span className="leading-none">{t('user.moderatorBadge')}</span>
                                 </span>
                             )}
                         </div>
                     )}
                 </div>
-                {createdAt && (
-                    <span
-                        className={clsx(
-                            'text-tertiary leading-none',
-                            config.date,
-                        )}
-                    >
-                        {formatRelativeDate(createdAt)}
-                    </span>
-                )}
+                {createdAt && <span className={clsx('text-tertiary leading-none', config.date)}>{formatRelativeDate(createdAt)}</span>}
             </div>
         </div>
     );

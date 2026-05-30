@@ -12,10 +12,7 @@ const ChapterPages = () => {
             <div className="flex flex-col justify-center gap-0.5">
                 {Array.from({ length: TOTAL_PAGES }, (_, i) => (
                     <div key={i}>
-                        <img
-                            src={CHAPTER_PAGE_PLACEHOLDER}
-                            alt={t('chapter.pageAlt', { number: i + 1 })}
-                        />
+                        <img src={CHAPTER_PAGE_PLACEHOLDER} alt={t('chapter.pageAlt', { number: i + 1 })} />
                     </div>
                 ))}
             </div>

@@ -42,7 +42,46 @@
         "authActionBookmark": "salvar na biblioteca",
         "authActionRate": "avaliar",
         "savedToLibrary": "Mangá salvo na sua biblioteca.",
-        "removedFromLibrary": "Mangá removido da sua biblioteca."
+        "removedFromLibrary": "Mangá removido da sua biblioteca.",
+        "tabs": {
+            "chapters": "Capítulos",
+            "reviews": "Resenhas",
+            "groups": "Grupos",
+            "about": "Sobre"
+        },
+        "order": {
+            "desc": "Mais recente",
+            "asc": "Mais antigo"
+        },
+        "sort": {
+            "top": "Top",
+            "recent": "Recentes",
+            "controversial": "Polêmicas"
+        },
+        "lang": {
+            "all": "Todos os idiomas",
+            "ptBR": "PT-BR",
+            "en": "EN"
+        },
+        "notFound": "Obra não encontrada",
+        "backToCatalog": "Voltar ao catálogo",
+        "addToLibrary": "Adicionar à biblioteca",
+        "removeFromLibrary": "Remover da biblioteca",
+        "ratingAria": "{{rating}} de 5 estrelas, baseado em {{count}} votos",
+        "votes": "votos",
+        "synopsisAria": "Sinopse",
+        "collapse": "Recolher",
+        "startReading": "Começar a ler",
+        "inLibrary": "Na biblioteca",
+        "addButton": "Adicionar",
+        "shareAria": "Compartilhar",
+        "chaptersLabel": "capítulos",
+        "groupsLabel": "grupos",
+        "noChapters": "Nenhum capítulo encontrado",
+        "writeReview": "Escrever resenha",
+        "noReviews": "Nenhuma resenha ainda",
+        "noGroups": "Nenhum grupo encontrado",
+        "fullSynopsis": "Sinopse completa"
     },
     "home": {
         "alertTitle": "Atenção!",
@@ -59,6 +98,128 @@
         "notFoundMessage": "O capítulo que você está tentando acessar não existe.",
         "backToTitle": "Voltar para página do título",
         "commentsHeading": "Comentários"
+    },
+    "chapterEnd": {
+        "title": "Você zerou o capítulo {{chNum}}!",
+        "description": "O que achou deste capítulo?",
+        "rateLabel": "Avaliar capítulo",
+        "ratingAria": "{{rating}} de 5 estrelas",
+        "commentPlaceholder": "Comentário rápido (opcional)...",
+        "publish": "Publicar",
+        "backToWork": "Voltar à obra",
+        "nextChapter": "Próximo capítulo"
+    },
+    "reader": {
+        "backAria": "Voltar",
+        "saveAria": "Salvar",
+        "commentsAria": "Comentários",
+        "settingsAria": "Configurações",
+        "toolbarAria": "Controles do leitor",
+        "prevChapterAria": "Capítulo anterior",
+        "nextChapterAria": "Próximo capítulo",
+        "prevPageAria": "Página anterior",
+        "nextPageAria": "Próxima página",
+        "pageSliderAria": "Página {{current}} de {{total}}",
+        "pageAria": "Página {{page}} do capítulo {{chNum}}",
+        "prevRegionAria": "Região anterior",
+        "nextRegionAria": "Próxima região",
+        "chapterAbbr": "Cap.",
+        "pageAbbr": "Pág.",
+        "readerLandmarkAria": "Leitor de mangá",
+        "configTitle": "Configurações do leitor",
+        "modeSection": "Modo de leitura",
+        "modeVertical": "Vertical",
+        "modePaged": "Paginado",
+        "modeDouble": "Duplo",
+        "directionSection": "Direção",
+        "fitSection": "Ajuste de imagem",
+        "fitWidth": "Largura",
+        "fitHeight": "Altura",
+        "fitOriginal": "Original",
+        "bgSection": "Fundo",
+        "bgBlack": "Preto",
+        "bgDark": "Escuro",
+        "bgPaper": "Papel",
+        "shortcutsSection": "Atalhos de teclado",
+        "shortcuts": {
+            "prevPage": "Página anterior",
+            "nextPage": "Próxima página",
+            "settings": "Configurações",
+            "saveLibrary": "Salvar na biblioteca",
+            "close": "Fechar drawer / voltar"
+        }
+    },
+    "releases": {
+        "eyebrow": "Capítulos novos",
+        "title": "Lançamentos recentes",
+        "todayMeta_one": "{{count}} capítulo nas últimas 24h",
+        "todayMeta_other": "{{count}} capítulos nas últimas 24h",
+        "allLanguages": "Todos idiomas",
+        "filterPlaceholder": "Filtrar por obra",
+        "libraryOnly": "Só minha biblioteca",
+        "newBadge": "Novo",
+        "markAllSeen": "Marcar tudo como visto",
+        "chaptersCount_one": "{{count}} capítulo",
+        "chaptersCount_other": "{{count}} capítulos",
+        "publishedAt": "publicado às {{time}}",
+        "emptyLibrary": {
+            "title": "Nenhum cap. novo nas obras que você segue",
+            "description": "Adicione obras à sua biblioteca para ver os lançamentos aqui."
+        },
+        "emptyFilter": {
+            "title": "Tudo em dia!",
+            "description": "Nenhum lançamento corresponde ao filtro."
+        }
+    },
+    "filters": {
+        "searchPlaceholder": "Buscar obras...",
+        "filtersButton": "Filtros",
+        "filtersButtonCount": "Filtros ({{count}})",
+        "genres": "Gêneros",
+        "status": "Status",
+        "clearAll": "Limpar tudo",
+        "apply": "Aplicar",
+        "sort": {
+            "most_read": "Mais lidos",
+            "most_rated": "Melhor rating",
+            "most_recent": "Mais recentes",
+            "alphabetical": "A–Z",
+            "random": "Aleatório"
+        },
+        "statusOptions": {
+            "all": "Todos",
+            "ongoing": "Em andamento",
+            "complete": "Completo",
+            "hiatus": "Em hiato",
+            "cancelled": "Cancelado"
+        },
+        "layout": {
+            "grid": "Grade",
+            "list": "Lista"
+        },
+        "filterChipRemoveAria": "Remover filtro {{label}}",
+        "drawerAria": "Filtros",
+        "eyebrow": "Catálogo",
+        "title": "Explorar",
+        "metaSuffix_one": "{{count}} obra",
+        "metaSuffix_other": "{{count}} obras",
+        "emptyTitle": "Nenhuma obra encontrada",
+        "emptyDesc": "Tente ajustar os filtros ou buscar por outro termo.",
+        "clearFilters": "Limpar filtros"
+    },
+    "search": {
+        "eyebrow": "Catálogo",
+        "placeholder": "Buscar mangás, manhwas, manhuas...",
+        "titleEmpty": "Buscar obras",
+        "titleWithQuery": "Resultados para \"{{query}}\"",
+        "emptyTitle": "O que você quer ler hoje?",
+        "emptyDescription": "Digite o nome de uma obra para começar.",
+        "errorTitle": "Erro ao buscar",
+        "errorDescription": "Não foi possível carregar os resultados. Tente novamente.",
+        "noResultsTitle": "Nenhum resultado",
+        "noResultsDescription": "Não encontramos nada para \"{{query}}\". Tente outros termos.",
+        "resultsMeta_one": "{{count}} obra encontrada",
+        "resultsMeta_other": "{{count}} obras encontradas"
     },
     "chapter": {
         "heading": "Capítulos:",

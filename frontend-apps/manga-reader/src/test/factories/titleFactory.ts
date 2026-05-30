@@ -48,10 +48,8 @@ export const titlePresets = {
     noChapters: () => buildTitle({ chapters: [] }),
     withFiftyChapters: () => buildTitle({ chapters: buildChapterList(50) }),
 
-    unrated: () =>
-        buildTitle({ ratingAverage: 0, ratingCount: 0, rankingScore: 0 }),
-    perfectRating: () =>
-        buildTitle({ ratingAverage: 5, ratingCount: 9999, rankingScore: 100 }),
+    unrated: () => buildTitle({ ratingAverage: 0, ratingCount: 0, rankingScore: 0 }),
+    perfectRating: () => buildTitle({ ratingAverage: 5, ratingCount: 9999, rankingScore: 100 }),
 
     popularityHigh: () => buildTitle({ popularity: 'HIGH' }),
     popularityMedium: () => buildTitle({ popularity: 'MEDIUM' }),
@@ -64,15 +62,10 @@ export const titlePresets = {
         }),
 };
 
-export const buildTitleList = (count = 10): Title[] =>
-    Array.from({ length: count }, () => buildTitle());
+export const buildTitleList = (count = 10): Title[] => Array.from({ length: count }, () => buildTitle());
 
 /**
  * Default mantem 2 items para compatibilidade com testes existentes
  * (useTitlesFetch, titleService) — usar buildTitleList(N) quando precisar mais.
  */
-export const buildTitlePage = (
-    titles: Title[] = [buildTitle(), buildTitle()],
-    page = 0,
-    size = 20,
-): PageResponse<Title> => buildPage(titles, page, size);
+export const buildTitlePage = (titles: Title[] = [buildTitle(), buildTitle()], page = 0, size = 20): PageResponse<Title> => buildPage(titles, page, size);

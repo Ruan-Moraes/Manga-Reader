@@ -15,10 +15,7 @@ import ErrorFallback from './ErrorFallback';
 function RouteErrorFallback() {
     const routeError = useRouteError();
 
-    const error =
-        routeError instanceof Error
-            ? routeError
-            : new Error(String(routeError));
+    const error = routeError instanceof Error ? routeError : new Error(String(routeError));
 
     reportError(error.message, error.stack ?? null, 'error-boundary');
 

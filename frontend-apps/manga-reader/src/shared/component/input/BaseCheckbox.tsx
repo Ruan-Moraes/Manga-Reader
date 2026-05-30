@@ -7,26 +7,16 @@ type BaseCheckboxTypes = {
     className?: string;
 };
 
-const BaseCheckbox = ({
-    label,
-    checked,
-    onChange,
-    disabled,
-    name,
-    className,
-}: BaseCheckboxTypes) => {
+const BaseCheckbox = ({ label, checked, onChange, disabled, name, className }: BaseCheckboxTypes) => {
     return (
-        <label
-            className={`flex items-center gap-2 py-1 w-max cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className ?? ''}`}
-        >
+        <label className={`flex items-center gap-2 py-1 w-max cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className ?? ''}`}>
             <div className="relative w-5 h-5 shrink-0">
                 <input
                     className="w-full h-full transition duration-300 border rounded-xs appearance-none cursor-pointer border-tertiary checked:bg-quaternary-opacity-50 checked:border-quaternary-default peer focus-visible:ring-2 focus-visible:ring-quaternary-default focus-visible:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
                     type="checkbox"
                     {...(checked !== undefined && { checked })}
                     {...(onChange && {
-                        onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                            onChange(e.target.checked),
+                        onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.checked),
                     })}
                     disabled={disabled}
                     name={name}

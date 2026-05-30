@@ -8,9 +8,7 @@ const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminNewsCounter = 0;
 
-export const buildAdminNews = (
-    overrides: Partial<AdminNews> = {},
-): AdminNews => {
+export const buildAdminNews = (overrides: Partial<AdminNews> = {}): AdminNews => {
     adminNewsCounter += 1;
 
     return {
@@ -67,11 +65,6 @@ export const adminNewsPresets = {
     edited: () => buildAdminNews({ updatedAt: '2026-03-20T10:00:00Z' }),
 };
 
-export const buildAdminNewsList = (count = 10): AdminNews[] =>
-    Array.from({ length: count }, () => buildAdminNews());
+export const buildAdminNewsList = (count = 10): AdminNews[] => Array.from({ length: count }, () => buildAdminNews());
 
-export const buildAdminNewsPage = (
-    items: AdminNews[] = buildAdminNewsList(),
-    page = 0,
-    size = 20,
-): PageResponse<AdminNews> => buildPage(items, page, size);
+export const buildAdminNewsPage = (items: AdminNews[] = buildAdminNewsList(), page = 0, size = 20): PageResponse<AdminNews> => buildPage(items, page, size);

@@ -1,5 +1,4 @@
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface PaginationProps {
     page: number;
     totalPages: number;
@@ -16,7 +15,7 @@ const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) => {
                 onClick={() => onPageChange(page - 1)}
                 className="p-2 transition-colors rounded disabled:opacity-30 hover:bg-tertiary"
             >
-                <FiChevronLeft size={16} />
+                <ChevronLeft size={16} />
             </button>
 
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
@@ -24,9 +23,7 @@ const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) => {
                     key={p}
                     onClick={() => onPageChange(p)}
                     className={`w-8 h-8 text-sm rounded transition-colors ${
-                        p === page
-                            ? 'bg-quaternary-default text-primary-default font-bold'
-                            : 'hover:bg-tertiary'
+                        p === page ? 'bg-quaternary-default text-primary-default font-bold' : 'hover:bg-tertiary'
                     }`}
                 >
                     {p}
@@ -38,7 +35,7 @@ const Pagination = ({ page, totalPages, onPageChange }: PaginationProps) => {
                 onClick={() => onPageChange(page + 1)}
                 className="p-2 transition-colors rounded disabled:opacity-30 hover:bg-tertiary"
             >
-                <FiChevronRight size={16} />
+                <ChevronRight size={16} />
             </button>
         </div>
     );

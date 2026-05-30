@@ -1,17 +1,11 @@
 import { FormEvent, useCallback, useState } from 'react';
 import i18next from 'i18next';
 
-import {
-    showErrorToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
+import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 
-import { getStoredSession } from '@feature/auth/service/authService';
+import { getStoredSession } from '@shared/service/session';
 
-import {
-    submitPublishWorkContact,
-    type PublishWorkRequest,
-} from '@feature/contact';
+import { submitPublishWorkContact, type PublishWorkRequest } from '@feature/contact';
 
 type PublishWorkDraft = {
     name: string;
@@ -47,26 +41,19 @@ const usePublishWorkForm = () => {
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const updateField = useCallback(
-        <K extends keyof PublishWorkDraft>(
-            field: K,
-            value: PublishWorkDraft[K],
-        ) => {
-            setDraft(prev => ({ ...prev, [field]: value }));
-            setErrors(prev => {
-                if (!prev[field]) return prev;
-                const next = { ...prev };
-                delete next[field];
-                return next;
-            });
-        },
-        [],
-    );
+    const updateField = useCallback(<K extends keyof PublishWorkDraft>(field: K, value: PublishWorkDraft[K]) => {
+        setDraft(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => {
+            if (!prev[field]) return prev;
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    }, []);
 
     const validate = useCallback((): FormErrors => {
         const e: FormErrors = {};
-        const t = (key: string) =>
-            i18next.t(key, { ns: 'contact' }) as string;
+        const t = (key: string) => i18next.t(key, { ns: 'contact' }) as string;
 
         if (!draft.name.trim()) {
             e.name = t('form.errors.nameRequired');
@@ -106,10 +93,7 @@ const usePublishWorkForm = () => {
             e.synopsis = t('form.errors.synopsisMax');
         }
 
-        if (
-            draft.portfolioLink.trim() &&
-            !URL_REGEX.test(draft.portfolioLink.trim())
-        ) {
+        if (draft.portfolioLink.trim() && !URL_REGEX.test(draft.portfolioLink.trim())) {
             e.portfolioLink = t('form.errors.portfolioLinkInvalid');
         }
 
@@ -164,11 +148,7 @@ const usePublishWorkForm = () => {
 
                 const responseMessage = await submitPublishWorkContact(payload);
 
-                showSuccessToast(
-                    responseMessage ??
-                        i18next.t('form.toasts.success', { ns: 'contact' }),
-                    { toastId: 'publish-work-success' },
-                );
+                showSuccessToast(responseMessage ?? i18next.t('form.toasts.success', { ns: 'contact' }), { toastId: 'publish-work-success' });
 
                 setDraft(buildInitialDraft());
 

@@ -12,14 +12,7 @@ type InfoModalProps = {
     linkUrl: string;
 };
 
-const InfoModal = ({
-    isModalOpen,
-    closeModal,
-    title,
-    message,
-    linkText,
-    linkUrl,
-}: InfoModalProps) => {
+const InfoModal = ({ isModalOpen, closeModal, title, message, linkText, linkUrl }: InfoModalProps) => {
     const handleLinkClick = () => {
         window.open(linkUrl, '_blank', 'noopener,noreferrer');
         closeModal();
@@ -29,11 +22,7 @@ const InfoModal = ({
         <BaseModal isModalOpen={isModalOpen} closeModal={closeModal}>
             <InfoModalHeader title={title} />
             <InfoModalBody message={message} />
-            <InfoModalFooter
-                onLinkClick={handleLinkClick}
-                onClose={closeModal}
-                linkText={linkText}
-            />
+            <InfoModalFooter onLinkClick={handleLinkClick} onClose={closeModal} linkText={linkText} />
         </BaseModal>
     );
 };

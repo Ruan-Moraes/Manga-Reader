@@ -2,11 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
 
-import {
-    getRatingsAverage,
-    getRatingsByTitleId,
-    submitRating as submitRatingService,
-} from '../service/ratingService';
+import { getRatingsAverage, getRatingsByTitleId, submitRating as submitRatingService } from '../service/ratingService';
 
 import { MangaRating } from '@feature/rating';
 

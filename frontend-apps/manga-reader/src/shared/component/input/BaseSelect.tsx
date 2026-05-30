@@ -28,18 +28,7 @@ const VARIANT_CLASSES: Record<BaseSelectVariant, string> = {
         'w-full px-3 py-2 text-sm border rounded-xs outline-none bg-primary-default border-tertiary transition-colors duration-300 focus:border-quaternary-default hover:border-quaternary-opacity-50',
 };
 
-const BaseSelect = ({
-    label,
-    options,
-    value,
-    onChange,
-    disabled,
-    error,
-    name,
-    id,
-    className,
-    variant = 'default',
-}: BaseSelectTypes) => {
+const BaseSelect = ({ label, options, value, onChange, disabled, error, name, id, className, variant = 'default' }: BaseSelectTypes) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -74,12 +63,9 @@ const BaseSelect = ({
             if (e.key === 'ArrowDown' && isOpen) {
                 e.preventDefault();
 
-                const currentIndex = options.findIndex(
-                    opt => opt.value === value,
-                );
+                const currentIndex = options.findIndex(opt => opt.value === value);
 
-                const nextIndex =
-                    currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+                const nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
 
                 handleSelect(options[nextIndex].value);
             }
@@ -87,12 +73,9 @@ const BaseSelect = ({
             if (e.key === 'ArrowUp' && isOpen) {
                 e.preventDefault();
 
-                const currentIndex = options.findIndex(
-                    opt => opt.value === value,
-                );
+                const currentIndex = options.findIndex(opt => opt.value === value);
 
-                const prevIndex =
-                    currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
 
                 handleSelect(options[prevIndex].value);
             }
@@ -102,18 +85,14 @@ const BaseSelect = ({
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (
-                containerRef.current &&
-                !containerRef.current.contains(event.target as Node)
-            ) {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
 
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     const triggerClass = className
@@ -135,17 +114,11 @@ const BaseSelect = ({
                 onKeyDown={handleKeyDown}
             >
                 <span className="truncate">{displayLabel}</span>
-                <FiChevronDown
-                    className={`flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                    size={14}
-                />
+                <FiChevronDown className={`flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} size={14} />
             </button>
 
             {isOpen && (
-                <ul
-                    role="listbox"
-                    className="absolute z-50 w-full mt-1 overflow-y-auto border rounded-xs border-tertiary bg-secondary max-h-60"
-                >
+                <ul role="listbox" className="absolute z-50 w-full mt-1 overflow-y-auto border rounded-xs border-tertiary bg-secondary max-h-60">
                     {options.map(option => {
                         const isSelected = option.value === value;
 
@@ -155,9 +128,7 @@ const BaseSelect = ({
                                 role="option"
                                 aria-selected={isSelected}
                                 className={`px-3 py-2 text-sm cursor-pointer transition-colors duration-150 ${
-                                    isSelected
-                                        ? 'bg-quaternary-opacity-25 font-semibold'
-                                        : 'hover:bg-tertiary'
+                                    isSelected ? 'bg-quaternary-opacity-25 font-semibold' : 'hover:bg-tertiary'
                                 }`}
                                 onClick={() => handleSelect(option.value)}
                             >

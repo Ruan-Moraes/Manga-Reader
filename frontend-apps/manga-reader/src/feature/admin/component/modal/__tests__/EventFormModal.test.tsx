@@ -12,20 +12,14 @@ vi.mock('react-i18next', () => ({
 describe('EventFormModal', () => {
     it('emits payload with titleI18n + dates on submit', () => {
         const onSubmit = vi.fn();
-        render(
-            <EventFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<EventFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const textboxes = screen.getAllByRole('textbox');
         fireEvent.change(textboxes[0], { target: { value: 'Anime Friends' } });
 
-        const startInput = screen.getByLabelText(/Início/i);
-        const endInput = screen.getByLabelText(/Fim/i);
+        const dateInputs = document.querySelectorAll('input[type="datetime-local"]');
+        const startInput = dateInputs[0];
+        const endInput = dateInputs[1];
         fireEvent.change(startInput, { target: { value: '2026-12-01T10:00' } });
         fireEvent.change(endInput, { target: { value: '2026-12-03T22:00' } });
 

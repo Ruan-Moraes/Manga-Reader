@@ -29,7 +29,26 @@
         "avatarAlt": "Avatar de {{name}}",
         "officialSite": "Site oficial",
         "supporters_one": "{{count}} apoiador",
-        "supporters_other": "{{count}} apoiadores"
+        "supporters_other": "{{count}} apoiadores",
+        "verifiedAria": "Verificado",
+        "statusActive": "Ativo",
+        "statusHiatus": "Em hiato",
+        "statusInactive": "Inativo",
+        "follow": "Seguir",
+        "following": "Seguindo",
+        "share": "Compartilhar",
+        "tabs": {
+            "works": "Obras",
+            "activity": "Atividade",
+            "members": "Membros",
+            "about": "Sobre"
+        },
+        "stats": {
+            "followers": "Seguidores",
+            "works": "Obras",
+            "chapters": "Capítulos",
+            "avgDays": "Dias entre caps"
+        }
     },
     "modal": {
         "title": "Grupos de Tradução",
@@ -44,6 +63,29 @@
         "noTitle": "Sem obra vinculada",
         "searchPlaceholder": "Buscar membro",
         "membersHeader": "{{name}} • {{count}} membros"
+    },
+    "page": {
+        "eyebrow": "Comunidade",
+        "title": "Grupos de scan",
+        "meta": "{{count}} grupos",
+        "claimGroup": "Reivindicar grupo"
+    },
+    "filters": {
+        "searchPlaceholder": "Buscar grupo...",
+        "sortMostActive": "Mais ativos",
+        "sortMostFollowers": "Mais seguidores",
+        "sortMostWorks": "Mais obras",
+        "sortBestRated": "Melhor avaliados",
+        "statusAll": "Todos",
+        "statusActive": "Ativos",
+        "statusHiatus": "Em hiato",
+        "statusInactive": "Inativos"
+    },
+    "list": {
+        "empty": "Nenhum grupo encontrado",
+        "emptyDesc": "Tente outros termos ou remova os filtros.",
+        "featured": "Em destaque",
+        "allGroups": "Todos os grupos"
     },
     "listing": {
         "title": "Grupos de Tradução",
@@ -62,8 +104,13 @@
     "profile": {
         "notFoundTitle": "Grupo não encontrado",
         "notFoundMessage": "Não foi possível localizar o perfil solicitado.",
+        "notFoundDesc": "Ele pode ter sido removido ou o link está errado.",
         "backToGroups": "Voltar para Grupos",
+        "backToGroupsShort": "Voltar aos grupos",
         "aboutTitle": "Sobre o grupo",
+        "chapterPublished": "Capítulo {{chapter}} publicado",
+        "languagesTitle": "Idiomas",
+        "findUs": "Onde nos encontrar",
         "foundationInfo": "Fundação: {{year}} • Entrada na plataforma: {{joinedAt}}",
         "translatedWorks": "Obras traduzidas",
         "sortPopularity": "Popularidade",

@@ -1,10 +1,4 @@
-import type {
-    NewsAuthor,
-    NewsCategory,
-    NewsComment,
-    NewsItem,
-    NewsReaction,
-} from '@feature/news/type/news.types';
+import type { NewsAuthor, NewsCategory, NewsComment, NewsItem, NewsReaction } from '@feature/news/type/news.types';
 
 let newsCounter = 0;
 let newsAuthorCounter = 0;
@@ -22,9 +16,7 @@ const ALL_NEWS_CATEGORIES: NewsCategory[] = [
     'Internacional',
 ];
 
-export const buildNewsAuthor = (
-    overrides: Partial<NewsAuthor> = {},
-): NewsAuthor => {
+export const buildNewsAuthor = (overrides: Partial<NewsAuthor> = {}): NewsAuthor => {
     newsAuthorCounter += 1;
 
     return {
@@ -37,9 +29,7 @@ export const buildNewsAuthor = (
     };
 };
 
-export const buildNewsReaction = (
-    overrides: Partial<NewsReaction> = {},
-): NewsReaction => ({
+export const buildNewsReaction = (overrides: Partial<NewsReaction> = {}): NewsReaction => ({
     like: 10,
     excited: 5,
     sad: 1,
@@ -48,8 +38,7 @@ export const buildNewsReaction = (
 });
 
 export const newsReactionPresets = {
-    zero: (): NewsReaction =>
-        buildNewsReaction({ like: 0, excited: 0, sad: 0, surprised: 0 }),
+    zero: (): NewsReaction => buildNewsReaction({ like: 0, excited: 0, sad: 0, surprised: 0 }),
     viral: (): NewsReaction =>
         buildNewsReaction({
             like: 9999,
@@ -57,13 +46,10 @@ export const newsReactionPresets = {
             sad: 100,
             surprised: 2000,
         }),
-    sadOnly: (): NewsReaction =>
-        buildNewsReaction({ like: 0, excited: 0, sad: 500, surprised: 50 }),
+    sadOnly: (): NewsReaction => buildNewsReaction({ like: 0, excited: 0, sad: 500, surprised: 50 }),
 };
 
-export const buildNewsComment = (
-    overrides: Partial<NewsComment> = {},
-): NewsComment => {
+export const buildNewsComment = (overrides: Partial<NewsComment> = {}): NewsComment => {
     newsCommentCounter += 1;
 
     return {
@@ -158,14 +144,10 @@ export const newsItemPresets = {
             trendingScore: 100,
         }),
 
-    withVideo: () =>
-        buildNewsItem({ videoUrl: 'https://youtube.com/watch?v=test' }),
+    withVideo: () => buildNewsItem({ videoUrl: 'https://youtube.com/watch?v=test' }),
     withGallery: () =>
         buildNewsItem({
-            gallery: Array.from(
-                { length: 5 },
-                (_, i) => `/news/gallery-${i}.jpg`,
-            ),
+            gallery: Array.from({ length: 5 }, (_, i) => `/news/gallery-${i}.jpg`),
         }),
     withTechSheet: () =>
         buildNewsItem({
@@ -193,10 +175,8 @@ export const newsItemPresets = {
         }),
 };
 
-export const buildAllCategoryNews = (): NewsItem[] =>
-    ALL_NEWS_CATEGORIES.map(category => buildNewsItem({ category }));
+export const buildAllCategoryNews = (): NewsItem[] => ALL_NEWS_CATEGORIES.map(category => buildNewsItem({ category }));
 
-export const buildNewsList = (count = 10): NewsItem[] =>
-    Array.from({ length: count }, () => buildNewsItem());
+export const buildNewsList = (count = 10): NewsItem[] => Array.from({ length: count }, () => buildNewsItem());
 
 export const newsCategoryValues = ALL_NEWS_CATEGORIES;

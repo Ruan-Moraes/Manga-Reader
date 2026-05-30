@@ -1,224 +1,215 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Filter, X } from 'lucide-react';
+import useAppNavigate from '@shared/hook/useAppNavigate';
 
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
+import { PageContainer } from '@ui/PageContainer';
+import { SectionHeader } from '@ui/SectionHeader';
+import { SearchField } from '@ui/SearchField';
+import { Select } from '@ui/Select';
+import { SegmentedControl } from '@ui/SegmentedControl';
+import { Button } from '@ui/Button';
+import { Drawer } from '@ui/Drawer';
+import { MangaCard } from '@ui/MangaCard';
+import { Pagination } from '@ui/Pagination';
+import { EmptyState } from '@ui/EmptyState';
+import { Skeleton } from '@ui/Skeleton';
+import { Badge } from '@ui/Badge';
 
-import SectionTitle from '@shared/component/title/SectionTitle';
-import TextBlock from '@shared/component/paragraph/TextBlock';
-import FiltersForm from '@shared/component/form/FiltersForm';
-import RadioInput from '@shared/component/input/RadioInput';
-import Pagination from '@shared/component/navigation/Pagination';
+import { useCategoryFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@feature/category';
 
-import {
-    useTagsFetch,
-    useCategoryFilters,
-    useFilterResults,
-    TagSelectInput,
-} from '@feature/category';
+import CategoryFilterPanel from './parts/CategoryFilterPanel';
 
-import VerticalCard from '@feature/manga/component/card/vertical/VerticalCard';
+type Layout = 'grid' | 'list';
 
 const CategoryFilters = () => {
-    const { t } = useTranslation('category');
-    const { data: tags } = useTagsFetch();
+    const { t } = useTranslation('manga');
+    const navigate = useAppNavigate();
+    const [query, setQuery] = useState('');
+    const [layout, setLayout] = useState<Layout>('grid');
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
-    const {
-        selectedTags,
-        selectedSort,
-        selectedStatus,
-        selectedAdultContent,
-        page,
-        handleSelectedTags,
-        handleSortChange,
-        handleStatusChange,
-        handleAdultContentChange,
-        handlePageChange,
-    } = useCategoryFilters();
+    const sortOptions: { value: Sort; label: string }[] = [
+        { value: 'most_read', label: t('filters.sort.most_read') },
+        { value: 'most_rated', label: t('filters.sort.most_rated') },
+        { value: 'most_recent', label: t('filters.sort.most_recent') },
+        { value: 'alphabetical', label: t('filters.sort.alphabetical') },
+        { value: 'random', label: t('filters.sort.random') },
+    ];
+    const layoutItems = [
+        { value: 'grid', label: t('filters.layout.grid') },
+        { value: 'list', label: t('filters.layout.list') },
+    ];
 
-    const {
-        data: results,
-        isLoading,
-        isError,
-    } = useFilterResults({
+    const { selectedTags, selectedSort, selectedStatus, page, handleSelectedTags, handleSortChange, handleStatusChange, handlePageChange } =
+        useCategoryFilters();
+    const { data: tagsData } = useTagsFetch();
+    const tags = tagsData ?? [];
+
+    const { data, isLoading } = useFilterResults({
         genres: selectedTags,
         sort: selectedSort,
         status: selectedStatus,
-        adultContent: selectedAdultContent,
+        adultContent: 'no_adult_content',
         page,
     });
+    const results = data?.content ?? [];
+    const totalPages = data?.totalPages ?? 1;
+    const totalElements = data?.totalElements ?? 0;
+
+    const toggleTag = (tag: Tag) => {
+        const exists = selectedTags.some(t => t.value === tag.value);
+        handleSelectedTags(exists ? selectedTags.filter(t => t.value !== tag.value) : [...selectedTags, tag]);
+    };
+    const clearAll = () => {
+        handleSelectedTags([]);
+        handleStatusChange('all');
+    };
+    const activeCount = selectedTags.length + (selectedStatus !== 'all' ? 1 : 0);
+    const filtered = results.filter(m => !query || m.name.toLowerCase().includes(query.toLowerCase()));
+
+    const filterPanelProps = {
+        tags,
+        selectedTags,
+        onTagToggle: toggleTag,
+        selectedStatus,
+        onStatusChange: handleStatusChange as (v: PublicationStatus) => void,
+        onClearAll: clearAll,
+    };
 
     return (
-        <>
-            <Header />
-            <MainContent>
-                <SectionTitle title={t('filters.title')}>
-                    <TextBlock
-                        paragraphContent={[
-                            { text: t('filters.description') },
-                        ]}
-                    />
-                </SectionTitle>
-                <FiltersForm title={t('filters.categoriesTitle')}>
-                    <TagSelectInput
-                        urlParameterName="tags"
-                        options={tags}
-                        onChange={handleSelectedTags}
-                        placeholder={t('filters.categoriesPlaceholder')}
-                    />
-                </FiltersForm>
-                <FiltersForm isGrid={true} title={t('filters.sortTitle')}>
-                    <RadioInput
-                        fieldName="sort"
-                        onChange={handleSortChange}
-                        defaultValue={true}
-                        value="most_read"
-                        labelText={t('filters.sort.mostRead')}
-                    />
-                    <RadioInput
-                        fieldName="sort"
-                        onChange={handleSortChange}
-                        value="most_rated"
-                        labelText={t('filters.sort.mostRated')}
-                    />
-                    <RadioInput
-                        fieldName="sort"
-                        onChange={handleSortChange}
-                        value="ascension"
-                        labelText={t('filters.sort.ascension')}
-                    />
-                    <RadioInput
-                        fieldName="sort"
-                        onChange={handleSortChange}
-                        value="most_recent"
-                        labelText={t('filters.sort.mostRecent')}
-                    />
-                    <RadioInput
-                        fieldName="sort"
-                        onChange={handleSortChange}
-                        value="random"
-                        labelText={t('filters.sort.random')}
-                    />
-                    <RadioInput
-                        fieldName="sort"
-                        onChange={handleSortChange}
-                        value="alphabetical"
-                        labelText={t('filters.sort.alphabetical')}
-                    />
-                </FiltersForm>
-                <FiltersForm isGrid={true} title={t('filters.statusTitle')}>
-                    <RadioInput
-                        fieldName="status"
-                        onChange={handleStatusChange}
-                        value="complete"
-                        labelText={t('filters.status.complete')}
-                    />
-                    <RadioInput
-                        fieldName="status"
-                        onChange={handleStatusChange}
-                        value="ongoing"
-                        labelText={t('filters.status.ongoing')}
-                    />
-                    <RadioInput
-                        fieldName="status"
-                        onChange={handleStatusChange}
-                        value="hiatus"
-                        labelText={t('filters.status.hiatus')}
-                    />
-                    <RadioInput
-                        fieldName="status"
-                        onChange={handleStatusChange}
-                        value="cancelled"
-                        labelText={t('filters.status.cancelled')}
-                    />
-                    <RadioInput
-                        className="col-span-full"
-                        fieldName="status"
-                        defaultValue={true}
-                        onChange={handleStatusChange}
-                        value="all"
-                        labelText={t('filters.status.all')}
-                    />
-                </FiltersForm>
-                <FiltersForm isGrid={true} title={t('filters.adultTitle')}>
-                    <RadioInput
-                        fieldName="adult_content"
-                        onChange={handleAdultContentChange}
-                        value="adult_content"
-                        labelText={t('filters.adult.yes')}
-                    />
-                    <RadioInput
-                        defaultValue={true}
-                        fieldName="adult_content"
-                        onChange={handleAdultContentChange}
-                        value="no_adult_content"
-                        labelText={t('filters.adult.no')}
-                    />
-                </FiltersForm>
+        <PageContainer asMain size="wide" paddingY="md">
+            <SectionHeader
+                eyebrow={t('filters.eyebrow')}
+                title={t('filters.title')}
+                meta={t('filters.metaSuffix', { count: totalElements })}
+                className="mb-6"
+            />
 
-                <section className="flex flex-col gap-4 mt-4">
-                    {results && (
-                        <span className="text-sm text-secondary">
-                            {t('filters.resultsCount', {
-                                count: results.totalElements,
-                            })}
-                        </span>
-                    )}
+            <div className="mb-4 lg:hidden">
+                <Button variant="raised" icon={Filter} onClick={() => setDrawerOpen(true)}>
+                    {activeCount > 0
+                        ? t('filters.filtersButtonCount', {
+                              count: activeCount,
+                          })
+                        : t('filters.filtersButton')}
+                </Button>
+            </div>
 
-                    {isLoading && (
-                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-5">
-                            {Array.from({ length: 10 }).map((_, i) => (
-                                <VerticalCard
-                                    key={i}
-                                    isLoading={true}
-                                    isError={false}
-                                />
+            <Drawer
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                side="right"
+                title={t('filters.filtersButton')}
+                footer={
+                    <Button variant="primary" onClick={() => setDrawerOpen(false)} className="w-full">
+                        {t('filters.apply')}
+                    </Button>
+                }
+            >
+                <CategoryFilterPanel {...filterPanelProps} />
+            </Drawer>
+
+            <div className="flex gap-6">
+                <aside aria-label={t('filters.drawerAria')} className="hidden w-[260px] shrink-0 lg:block">
+                    <CategoryFilterPanel {...filterPanelProps} />
+                </aside>
+
+                <div className="flex-1 min-w-0">
+                    <div className="mb-4 flex flex-wrap gap-3">
+                        <SearchField value={query} onChange={setQuery} placeholder={t('filters.searchPlaceholder')} className="flex-1 min-w-[200px]" />
+                        <Select value={selectedSort} onChange={e => handleSortChange(e.target.value as Sort)} options={sortOptions} className="w-44" />
+                        <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="sm" />
+                    </div>
+
+                    {selectedTags.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2" aria-live="polite">
+                            {selectedTags.map(tag => (
+                                <button
+                                    key={tag.value}
+                                    type="button"
+                                    onClick={() => handleSelectedTags(selectedTags.filter(t => t.value !== tag.value))}
+                                    aria-label={t('filters.filterChipRemoveAria', { label: tag.label })}
+                                    className="inline-flex items-center gap-1 rounded-mr-full border border-mr-accent bg-mr-accent/10 px-3 py-1 text-mr-tiny text-mr-accent transition-colors hover:bg-mr-accent/20"
+                                >
+                                    {tag.label}
+                                    <X className="size-3" />
+                                </button>
                             ))}
                         </div>
                     )}
 
-                    {isError && (
-                        <p className="py-8 text-sm text-center text-secondary">
-                            {t('filters.errorMessage')}
-                        </p>
-                    )}
-
-                    {results && results.content.length === 0 && (
-                        <p className="py-8 text-sm text-center text-secondary">
-                            {t('filters.emptyResults')}
-                        </p>
-                    )}
-
-                    {results && results.content.length > 0 && (
-                        <>
-                            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-5">
-                                {results.content.map(title => (
-                                    <VerticalCard
-                                        key={title.id}
-                                        isLoading={false}
-                                        isError={false}
-                                        id={title.id}
-                                        type={title.type}
-                                        cover={title.cover}
-                                        name={title.name}
-                                        ratingAverage={title.ratingAverage}
-                                        latestChapterNumber={
-                                            title.latestChapterNumber
+                    {isLoading ? (
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                            {Array.from({ length: 12 }).map((_, i) => (
+                                <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
+                            ))}
+                        </div>
+                    ) : filtered.length === 0 ? (
+                        <EmptyState
+                            illustration="duvida"
+                            title={t('filters.emptyTitle')}
+                            description={t('filters.emptyDesc')}
+                            action={
+                                <Button variant="raised" onClick={clearAll}>
+                                    {t('filters.clearFilters')}
+                                </Button>
+                            }
+                        />
+                    ) : layout === 'grid' ? (
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                            {filtered.map(m => (
+                                <MangaCard
+                                    key={m.id}
+                                    manga={{
+                                        id: m.id,
+                                        title: m.name,
+                                        author: m.author,
+                                        cover: m.cover,
+                                        rating: m.ratingAverage,
+                                        chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
+                                    }}
+                                    onClick={() => navigate(`/titles/${m.id}`)}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            {filtered.map(m => (
+                                <button
+                                    key={m.id}
+                                    type="button"
+                                    onClick={() => navigate(`/titles/${m.id}`)}
+                                    className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3 text-left transition-colors hover:border-mr-accent"
+                                >
+                                    <div
+                                        className="size-12 shrink-0 rounded-mr-xs bg-cover bg-center bg-mr-tertiary/20"
+                                        style={
+                                            m.cover
+                                                ? {
+                                                      backgroundImage: `url(${m.cover})`,
+                                                  }
+                                                : undefined
                                         }
                                     />
-                                ))}
-                            </div>
-                            <Pagination
-                                page={page + 1}
-                                totalPages={results.totalPages}
-                                onPageChange={p => handlePageChange(p - 1)}
-                            />
-                        </>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="truncate text-mr-body font-mr-bold text-mr-fg">{m.name}</p>
+                                        <p className="text-mr-tiny text-mr-fg-muted">{m.author}</p>
+                                    </div>
+                                    {m.latestChapterNumber && <Badge variant="neutral">Cap. {m.latestChapterNumber}</Badge>}
+                                </button>
+                            ))}
+                        </div>
                     )}
-                </section>
-            </MainContent>
-            <Footer />
-        </>
+
+                    {totalPages > 1 && (
+                        <div className="mt-8">
+                            <Pagination page={page + 1} total={totalPages} onChange={p => handlePageChange(p - 1)} />
+                        </div>
+                    )}
+                </div>
+            </div>
+        </PageContainer>
     );
 };
 

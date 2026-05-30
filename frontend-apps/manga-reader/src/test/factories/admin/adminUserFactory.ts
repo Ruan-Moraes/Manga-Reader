@@ -5,9 +5,7 @@ import { buildPage } from '../pageFactory';
 
 let adminUserCounter = 0;
 
-export const buildAdminUser = (
-    overrides: Partial<AdminUser> = {},
-): AdminUser => {
+export const buildAdminUser = (overrides: Partial<AdminUser> = {}): AdminUser => {
     adminUserCounter += 1;
 
     return {
@@ -62,11 +60,6 @@ export const adminUserPresets = {
         }),
 };
 
-export const buildAdminUserList = (count = 10): AdminUser[] =>
-    Array.from({ length: count }, () => buildAdminUser());
+export const buildAdminUserList = (count = 10): AdminUser[] => Array.from({ length: count }, () => buildAdminUser());
 
-export const buildAdminUserPage = (
-    users: AdminUser[] = buildAdminUserList(),
-    page = 0,
-    size = 20,
-): PageResponse<AdminUser> => buildPage(users, page, size);
+export const buildAdminUserPage = (users: AdminUser[] = buildAdminUserList(), page = 0, size = 20): PageResponse<AdminUser> => buildPage(users, page, size);

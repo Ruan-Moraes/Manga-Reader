@@ -7,7 +7,7 @@ import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
 import { SectionHeader } from '@feature/manga';
 
-import SectionTitle from '@shared/component/title/SectionTitle';
+import AppLink from '@shared/component/link/element/AppLink';
 
 import HorizontalCard from './HorizontalCard';
 
@@ -16,27 +16,23 @@ const HorizontalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
-            return data?.content.map(
-                ({ id, type, cover, name, chaptersCount, ratingAverage }) => (
-                    <HorizontalCard
-                        isLoading={false}
-                        isError={false}
-                        key={id}
-                        id={id}
-                        ratingAverage={ratingAverage}
-                        chaptersCount={chaptersCount}
-                        cover={cover}
-                        name={name}
-                        type={type}
-                    />
-                ),
-            );
+            return data?.content.map(({ id, type, cover, name, chaptersCount, ratingAverage }) => (
+                <HorizontalCard
+                    isLoading={false}
+                    isError={false}
+                    key={id}
+                    id={id}
+                    ratingAverage={ratingAverage}
+                    chaptersCount={chaptersCount}
+                    cover={cover}
+                    name={name}
+                    type={type}
+                />
+            ));
         }
 
         if (status === 'pending') {
-            return Array.from({ length: 10 }).map((_, index) => (
-                <HorizontalCard isLoading={true} isError={false} key={index} />
-            ));
+            return Array.from({ length: 10 }).map((_, index) => <HorizontalCard isLoading={true} isError={false} key={index} />);
         }
 
         return <HorizontalCard isError={true} isLoading={false} />;
@@ -44,14 +40,15 @@ const HorizontalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     return (
         <section className="flex flex-col gap-4">
-            <SectionTitle
-                title={title}
-                subTitle={subTitle}
-                subLink={ROUTES.FILTER_RANDOM}
-            />
-            <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">
-                {allChildren}
+            <div>
+                <h2 className="font-bold text-2xl">{title}</h2>
+                {subTitle && (
+                    <p className="leading-none">
+                        <AppLink link={ROUTES.FILTER_RANDOM} text={subTitle} className="text-xs text-quaternary-default" />
+                    </p>
+                )}
             </div>
+            <div className="flex gap-4 overflow-x-auto flex-nowrap scrollbar-hidden">{allChildren}</div>
         </section>
     );
 };

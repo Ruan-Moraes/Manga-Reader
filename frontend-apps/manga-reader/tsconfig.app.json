@@ -16,7 +16,10 @@
             "@/*": ["./src/*"],
             "@feature/*": ["./src/feature/*"],
             "@shared/*": ["./src/shared/*"],
-            "@app/*": ["./src/app/*"]
+            "@app/*": ["./src/app/*"],
+            "@pages/*": ["./src/pages/*"],
+            "@widgets/*": ["./src/widgets/*"],
+            "@ui/*": ["./src/shared/ui/*"]
         },
         /* Linting */
         "strict": true,

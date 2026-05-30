@@ -2,9 +2,7 @@ import type { AuthResponse } from '@feature/auth/service/authService';
 
 let authCounter = 0;
 
-export const buildAuthResponse = (
-    overrides: Partial<AuthResponse> = {},
-): AuthResponse => {
+export const buildAuthResponse = (overrides: Partial<AuthResponse> = {}): AuthResponse => {
     authCounter += 1;
 
     return {

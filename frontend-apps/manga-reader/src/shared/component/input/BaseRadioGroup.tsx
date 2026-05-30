@@ -16,30 +16,12 @@ type BaseRadioGroupTypes = {
     error?: string;
 };
 
-const BaseRadioGroup = ({
-    label,
-    options,
-    value,
-    onChange,
-    name,
-    disabled,
-    className,
-    orientation = 'horizontal',
-    error,
-}: BaseRadioGroupTypes) => {
-    const containerClass =
-        orientation === 'vertical'
-            ? 'flex flex-col gap-2'
-            : 'flex flex-wrap gap-2';
+const BaseRadioGroup = ({ label, options, value, onChange, name, disabled, className, orientation = 'horizontal', error }: BaseRadioGroupTypes) => {
+    const containerClass = orientation === 'vertical' ? 'flex flex-col gap-2' : 'flex flex-wrap gap-2';
 
     return (
-        <fieldset
-            className={`flex flex-col gap-1.5 ${className ?? ''}`}
-            disabled={disabled}
-        >
-            {label && (
-                <legend className="text-xs font-bold">{label}</legend>
-            )}
+        <fieldset className={`flex flex-col gap-1.5 ${className ?? ''}`} disabled={disabled}>
+            {label && <legend className="text-xs font-bold">{label}</legend>}
             <div role="radiogroup" className={containerClass}>
                 {options.map(option => {
                     const isSelected = option.value === value;
@@ -53,17 +35,11 @@ const BaseRadioGroup = ({
                         : orientation === 'vertical'
                           ? 'border-tertiary hover:bg-tertiary/20'
                           : 'border-tertiary bg-secondary hover:bg-quaternary-opacity-25';
-                    const disabledClass = disabled
-                        ? 'opacity-50 cursor-not-allowed'
-                        : '';
+                    const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
 
                     if (orientation === 'horizontal') {
                         return (
-                            <label
-                                key={option.value}
-                                htmlFor={inputId}
-                                className={`${baseLabelClass} ${stateClass} ${disabledClass}`}
-                            >
+                            <label key={option.value} htmlFor={inputId} className={`${baseLabelClass} ${stateClass} ${disabledClass}`}>
                                 <input
                                     id={inputId}
                                     type="radio"
@@ -74,19 +50,13 @@ const BaseRadioGroup = ({
                                     className="absolute inset-0 appearance-none cursor-pointer focus-visible:outline-2 focus-visible:outline-quaternary-default rounded-xs"
                                     disabled={disabled}
                                 />
-                                <span className="text-shadow-default">
-                                    {option.label}
-                                </span>
+                                <span className="text-shadow-default">{option.label}</span>
                             </label>
                         );
                     }
 
                     return (
-                        <label
-                            key={option.value}
-                            htmlFor={inputId}
-                            className={`${baseLabelClass} ${stateClass} ${disabledClass}`}
-                        >
+                        <label key={option.value} htmlFor={inputId} className={`${baseLabelClass} ${stateClass} ${disabledClass}`}>
                             <span className="relative flex items-center justify-center w-4 h-4 mt-0.5 shrink-0">
                                 <input
                                     id={inputId}
@@ -106,14 +76,8 @@ const BaseRadioGroup = ({
                                 />
                             </span>
                             <span className="flex flex-col gap-0.5">
-                                <span className="font-medium">
-                                    {option.label}
-                                </span>
-                                {option.description && (
-                                    <span className="text-xs text-tertiary">
-                                        {option.description}
-                                    </span>
-                                )}
+                                <span className="font-medium">{option.label}</span>
+                                {option.description && <span className="text-xs text-tertiary">{option.description}</span>}
                             </span>
                         </label>
                     );

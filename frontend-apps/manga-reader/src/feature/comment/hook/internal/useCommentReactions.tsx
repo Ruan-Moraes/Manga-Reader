@@ -3,22 +3,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { requireAuth } from '@shared/service/util/requireAuth';
-import { getStoredSession } from '@feature/auth/service/authService';
+import { getStoredSession } from '@shared/service/session';
 
-import {
-    getUserReactions,
-    likeComment,
-    dislikeComment,
-} from '../../service/commentService';
+import { getUserReactions, likeComment, dislikeComment } from '../../service/commentService';
 
 const useCommentReactions = (commentIds: string[]) => {
     const queryClient = useQueryClient();
     const isAuthenticated = !!getStoredSession();
 
-    const stableKey = useMemo(
-        () => [...commentIds].sort().join(','),
-        [commentIds],
-    );
+    const stableKey = useMemo(() => [...commentIds].sort().join(','), [commentIds]);
 
     const { data: serverReactions } = useQuery({
         queryKey: [QUERY_KEYS.COMMENTS, 'reactions', stableKey],
@@ -27,9 +20,7 @@ const useCommentReactions = (commentIds: string[]) => {
         staleTime: 30_000,
     });
 
-    const [optimistic, setOptimistic] = useState<Record<string, string | null>>(
-        {},
-    );
+    const [optimistic, setOptimistic] = useState<Record<string, string | null>>({});
 
     const reactionsMap = useMemo(() => {
         const merged: Record<string, string | null> = {

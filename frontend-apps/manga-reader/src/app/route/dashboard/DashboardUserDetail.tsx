@@ -1,18 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
-import { FiArrowLeft } from 'react-icons/fi';
-
-import AdminUserDetail from '@feature/admin/component/AdminUserDetail';
-import useAdminUserDetail from '@feature/admin/hook/useAdminUserDetail';
+import { AdminUserDetail, useAdminUserDetail } from '@feature/admin';
+import { ArrowLeft } from 'lucide-react';
 
 const DashboardUserDetail = () => {
     const { t } = useTranslation('admin');
     const { userId } = useParams<{ userId: string }>();
     const navigate = useNavigate();
-    const { user, isLoading, isError, refetch } = useAdminUserDetail(
-        userId ?? '',
-    );
+    const { user, isLoading, isError, refetch } = useAdminUserDetail(userId ?? '');
 
     if (isLoading) {
         return (
@@ -30,13 +27,8 @@ const DashboardUserDetail = () => {
     if (isError || !user) {
         return (
             <div className="py-8 text-center">
-                <p className="mb-2 text-sm text-tertiary">
-                    {t('dashboard.users.errorDetail')}
-                </p>
-                <button
-                    onClick={() => refetch()}
-                    className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30"
-                >
+                <p className="mb-2 text-sm text-tertiary">{t('dashboard.users.errorDetail')}</p>
+                <button onClick={() => refetch()} className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30">
                     {t('common.retry')}
                 </button>
             </div>
@@ -46,10 +38,10 @@ const DashboardUserDetail = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/users`)}
+                onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_USERS}`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
-                <FiArrowLeft size={14} />
+                <ArrowLeft size={14} />
                 {t('common.back')}
             </button>
             <AdminUserDetail user={user} />

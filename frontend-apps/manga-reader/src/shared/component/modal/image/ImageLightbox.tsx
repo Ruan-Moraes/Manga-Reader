@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoCloseOutline, IoImageOutline } from 'react-icons/io5';
-
+import { Image, X } from 'lucide-react';
 type ImageLightboxProps = {
     isOpen: boolean;
     onClose: () => void;
@@ -36,17 +35,8 @@ const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
     if (!isOpen) return null;
 
     return (
-        <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={alt}
-            className="fixed inset-0 z-30 flex items-center justify-center"
-        >
-            <div
-                onClick={onClose}
-                className="absolute inset-0 bg-black/80 backdrop-blur-xs"
-                style={{ transition: 'opacity 300ms' }}
-            />
+        <div role="dialog" aria-modal="true" aria-label={alt} className="fixed inset-0 z-30 flex items-center justify-center">
+            <div onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-xs" style={{ transition: 'opacity 300ms' }} />
 
             <div className="relative z-10 flex flex-col items-center gap-3 mx-4 max-w-full max-h-full">
                 <button
@@ -55,22 +45,15 @@ const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
                     aria-label={t('image.close')}
                     className="self-end p-1 text-white/80 hover:text-white transition-colors cursor-pointer"
                 >
-                    <IoCloseOutline size={28} />
+                    <X size={28} />
                 </button>
 
                 {src ? (
-                    <img
-                        src={src}
-                        alt={alt}
-                        className="object-contain max-h-[80vh] w-auto rounded-xs"
-                        style={{ transition: 'opacity 300ms' }}
-                    />
+                    <img src={src} alt={alt} className="object-contain max-h-[80vh] w-auto rounded-xs" style={{ transition: 'opacity 300ms' }} />
                 ) : (
                     <div className="flex flex-col items-center justify-center w-64 h-64 bg-secondary rounded-xs">
-                        <IoImageOutline size={64} className="text-tertiary" />
-                        <span className="mt-2 text-sm text-tertiary">
-                            {t('image.unavailable')}
-                        </span>
+                        <Image size={64} className="text-tertiary" />
+                        <span className="mt-2 text-sm text-tertiary">{t('image.unavailable')}</span>
                     </div>
                 )}
             </div>

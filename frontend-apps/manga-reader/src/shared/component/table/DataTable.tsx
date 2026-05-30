@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-
 import Pagination from '@shared/component/navigation/Pagination';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export type SortDirection = 'asc' | 'desc';
 
@@ -48,8 +47,7 @@ function DataTable<T>({
     const handleSort = (col: Column<T>) => {
         if (!col.sortable || !onSort) return;
 
-        const newDirection: SortDirection =
-            sortBy === col.key && sortDirection === 'asc' ? 'desc' : 'asc';
+        const newDirection: SortDirection = sortBy === col.key && sortDirection === 'asc' ? 'desc' : 'asc';
 
         onSort(col.key, newDirection);
     };
@@ -58,21 +56,14 @@ function DataTable<T>({
         return (
             <div className="flex flex-col gap-2">
                 {Array.from({ length: 5 }).map((_, i) => (
-                    <div
-                        key={i}
-                        className="h-12 rounded-xs bg-tertiary/30 animate-pulse"
-                    />
+                    <div key={i} className="h-12 rounded-xs bg-tertiary/30 animate-pulse" />
                 ))}
             </div>
         );
     }
 
     if (data.length === 0) {
-        return (
-            <p className="py-8 text-sm text-center text-tertiary">
-                {emptyMessage}
-            </p>
-        );
+        return <p className="py-8 text-sm text-center text-tertiary">{emptyMessage}</p>;
     }
 
     return (
@@ -92,11 +83,7 @@ function DataTable<T>({
                                         {col.sortable &&
                                             onSort &&
                                             sortBy === col.key &&
-                                            (sortDirection === 'asc' ? (
-                                                <FiChevronUp size={12} />
-                                            ) : (
-                                                <FiChevronDown size={12} />
-                                            ))}
+                                            (sortDirection === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />)}
                                     </span>
                                 </th>
                             ))}
@@ -105,9 +92,7 @@ function DataTable<T>({
                     <tbody>
                         {data.map(item => {
                             const itemKey = keyExtractor(item);
-                            const isSelected =
-                                selectedKey !== undefined &&
-                                itemKey === selectedKey;
+                            const isSelected = selectedKey !== undefined && itemKey === selectedKey;
 
                             return (
                                 <tr
@@ -118,10 +103,7 @@ function DataTable<T>({
                                     } ${isSelected ? 'bg-quaternary-opacity-25' : ''}`}
                                 >
                                     {columns.map(col => (
-                                        <td
-                                            key={col.key}
-                                            className={`px-4 py-3 ${col.hiddenOnMobile ? 'hidden sm:table-cell' : ''} ${col.className ?? ''}`}
-                                        >
+                                        <td key={col.key} className={`px-4 py-3 ${col.hiddenOnMobile ? 'hidden sm:table-cell' : ''} ${col.className ?? ''}`}>
                                             {col.render(item)}
                                         </td>
                                     ))}
@@ -131,11 +113,7 @@ function DataTable<T>({
                     </tbody>
                 </table>
             </div>
-            <Pagination
-                page={page + 1}
-                totalPages={totalPages}
-                onPageChange={p => onPageChange(p - 1)}
-            />
+            <Pagination page={page + 1} totalPages={totalPages} onPageChange={p => onPageChange(p - 1)} />
         </div>
     );
 }

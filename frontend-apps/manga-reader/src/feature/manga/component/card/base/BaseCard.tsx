@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoImageOutline } from 'react-icons/io5';
-
 import type { BaseCard as BaseCardProps } from '../../../type/title-card.types';
 
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import TitleDetails from '../../information/TitleDetails';
 import TitleDescription from '../../information/TitleDescription';
+import { Image } from 'lucide-react';
 
 const BaseCard = ({
     showType,
@@ -55,13 +54,8 @@ const BaseCard = ({
                     ) : (
                         <div className="flex items-center justify-center w-full h-full bg-secondary">
                             <div className="flex flex-col items-center justify-center">
-                                <IoImageOutline
-                                    size={48}
-                                    className="text-tertiary"
-                                />
-                                <span className="mt-2 text-xs text-center text-tertiary">
-                                    {t('imageUnavailable')}
-                                </span>
+                                <Image size={48} className="text-tertiary" />
+                                <span className="mt-2 text-xs text-center text-tertiary">{t('imageUnavailable')}</span>
                             </div>
                         </div>
                     )}
@@ -92,12 +86,7 @@ const BaseCard = ({
                     }}
                 />
             </div>
-            <ImageLightbox
-                isOpen={isLightboxOpen}
-                onClose={() => setIsLightboxOpen(false)}
-                src={cover}
-                alt={t('coverAlt', { name })}
-            />
+            <ImageLightbox isOpen={isLightboxOpen} onClose={() => setIsLightboxOpen(false)} src={cover} alt={t('coverAlt', { name })} />
         </div>
     );
 };

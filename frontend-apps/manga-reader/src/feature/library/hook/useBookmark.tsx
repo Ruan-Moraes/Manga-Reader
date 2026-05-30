@@ -1,49 +1,39 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getStoredSession } from '@feature/auth/service/authService';
+import { getStoredSession } from '@shared/service/session';
 import { requireAuth } from '@shared/service/util/requireAuth';
+import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import {
-    getUserLibrary,
-    removeSavedManga,
-    saveToLibrary,
-} from '../service/libraryService';
+import { getUserLibrary, removeSavedManga, saveToLibrary } from '../service/libraryService';
+
+const STALE_TIME = 1000 * 60 * 30;
+const MAX_IDS = 500;
+
+const QUERY_KEY = [QUERY_KEYS.LIBRARY_IDS] as const;
 
 const useBookmark = () => {
-    const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+    const session = getStoredSession();
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const session = getStoredSession();
-        if (!session) return;
+    const { data: savedIds = new Set<string>() } = useQuery({
+        queryKey: QUERY_KEY,
+        queryFn: async () => {
+            const page = await getUserLibrary(0, MAX_IDS);
+            return new Set(page.content.map(m => m.titleId));
+        },
+        enabled: !!session,
+        staleTime: STALE_TIME,
+    });
 
-        getUserLibrary(0, 1000)
-            .then(page => {
-                setSavedIds(new Set(page.content.map(m => m.titleId)));
-            })
-            .catch(() => {});
-    }, []);
-
-    const isSaved = useCallback(
-        (titleId: string) => savedIds.has(titleId),
-        [savedIds],
-    );
+    const isSaved = useCallback((titleId: string) => savedIds.has(titleId), [savedIds]);
 
     const toggleBookmark = useCallback(
-        async ({
-            titleId,
-            name,
-            cover,
-            type,
-        }: {
-            titleId: string;
-            name: string;
-            cover: string;
-            type: string;
-        }) => {
+        async ({ titleId, name, cover, type }: { titleId: string; name: string; cover: string; type: string }) => {
             if (!requireAuth('salvar na biblioteca')) return false;
 
             if (savedIds.has(titleId)) {
-                setSavedIds(prev => {
+                queryClient.setQueryData(QUERY_KEY, (prev: Set<string>) => {
                     const next = new Set(prev);
                     next.delete(titleId);
                     return next;
@@ -51,28 +41,28 @@ const useBookmark = () => {
                 try {
                     await removeSavedManga(titleId);
                 } catch {
-                    setSavedIds(prev => new Set(prev).add(titleId));
+                    queryClient.setQueryData(QUERY_KEY, (prev: Set<string>) => new Set(prev).add(titleId));
                 }
                 return false;
             }
 
-            setSavedIds(prev => new Set(prev).add(titleId));
+            queryClient.setQueryData(QUERY_KEY, (prev: Set<string>) => new Set(prev).add(titleId));
             try {
                 await saveToLibrary({ titleId, list: 'Quero Ler' });
             } catch {
-                setSavedIds(prev => {
+                queryClient.setQueryData(QUERY_KEY, (prev: Set<string>) => {
                     const next = new Set(prev);
                     next.delete(titleId);
                     return next;
                 });
             }
-            // suppress unused var warnings
+
             void name;
             void cover;
             void type;
             return true;
         },
-        [savedIds],
+        [savedIds, queryClient],
     );
 
     return { toggleBookmark, isSaved };

@@ -2,6 +2,7 @@ import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+import ptHome from './locales/pt-BR/home.json';
 import ptCommon from './locales/pt-BR/common.json';
 import ptAuth from './locales/pt-BR/auth.json';
 import ptUser from './locales/pt-BR/user.json';
@@ -18,7 +19,10 @@ import ptContact from './locales/pt-BR/contact.json';
 import ptLibrary from './locales/pt-BR/library.json';
 import ptStore from './locales/pt-BR/store.json';
 import ptLayout from './locales/pt-BR/layout.json';
+import ptHelp from './locales/pt-BR/help.json';
+import ptLegal from './locales/pt-BR/legal.json';
 
+import enHome from './locales/en-US/home.json';
 import enCommon from './locales/en-US/common.json';
 import enAuth from './locales/en-US/auth.json';
 import enUser from './locales/en-US/user.json';
@@ -35,7 +39,10 @@ import enContact from './locales/en-US/contact.json';
 import enLibrary from './locales/en-US/library.json';
 import enStore from './locales/en-US/store.json';
 import enLayout from './locales/en-US/layout.json';
+import enHelp from './locales/en-US/help.json';
+import enLegal from './locales/en-US/legal.json';
 
+import esHome from './locales/es-ES/home.json';
 import esCommon from './locales/es-ES/common.json';
 import esAuth from './locales/es-ES/auth.json';
 import esUser from './locales/es-ES/user.json';
@@ -52,12 +59,15 @@ import esContact from './locales/es-ES/contact.json';
 import esLibrary from './locales/es-ES/library.json';
 import esStore from './locales/es-ES/store.json';
 import esLayout from './locales/es-ES/layout.json';
+import esHelp from './locales/es-ES/help.json';
+import esLegal from './locales/es-ES/legal.json';
 
 export const SUPPORTED_LANGUAGES = ['pt-BR', 'en-US', 'es-ES'] as const;
 export const DEFAULT_LANGUAGE = 'pt-BR';
 
 export const NAMESPACES = [
     'common',
+    'home',
     'layout',
     'auth',
     'user',
@@ -73,6 +83,8 @@ export const NAMESPACES = [
     'contact',
     'library',
     'store',
+    'help',
+    'legal',
 ] as const;
 
 i18n.use(LanguageDetector)
@@ -80,6 +92,7 @@ i18n.use(LanguageDetector)
     .init({
         resources: {
             'pt-BR': {
+                home: ptHome,
                 common: ptCommon,
                 layout: ptLayout,
                 auth: ptAuth,
@@ -96,8 +109,11 @@ i18n.use(LanguageDetector)
                 contact: ptContact,
                 library: ptLibrary,
                 store: ptStore,
+                help: ptHelp,
+                legal: ptLegal,
             },
             'en-US': {
+                home: enHome,
                 common: enCommon,
                 layout: enLayout,
                 auth: enAuth,
@@ -114,8 +130,11 @@ i18n.use(LanguageDetector)
                 contact: enContact,
                 library: enLibrary,
                 store: enStore,
+                help: enHelp,
+                legal: enLegal,
             },
             'es-ES': {
+                home: esHome,
                 common: esCommon,
                 layout: esLayout,
                 auth: esAuth,
@@ -132,6 +151,8 @@ i18n.use(LanguageDetector)
                 contact: esContact,
                 library: esLibrary,
                 store: esStore,
+                help: esHelp,
+                legal: esLegal,
             },
         },
         fallbackLng: DEFAULT_LANGUAGE,

@@ -28,14 +28,8 @@ const DEFAULT_HEADERS: Record<string, string> = {
  * });
  * ```
  */
-export const createHttpClient = (
-    config: HttpClientConfig = {},
-): AxiosInstance => {
-    const {
-        baseURL = import.meta.env.VITE_API_BASE_URL,
-        timeout = DEFAULT_TIMEOUT,
-        headers = {},
-    } = config;
+export const createHttpClient = (config: HttpClientConfig = {}): AxiosInstance => {
+    const { baseURL = import.meta.env.VITE_API_BASE_URL, timeout = DEFAULT_TIMEOUT, headers = {} } = config;
 
     const instance = axios.create({
         baseURL,

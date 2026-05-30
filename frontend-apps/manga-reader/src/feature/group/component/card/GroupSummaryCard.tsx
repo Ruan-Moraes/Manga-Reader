@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { IoImageOutline } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 
 import AppLink from '@shared/component/link/element/AppLink';
@@ -8,6 +7,7 @@ import { getGroupStatusLabelKey } from '../../service/groupService';
 
 import { GroupSummary } from '@feature/group';
 import { RatingStars } from '@feature/rating';
+import { Image } from 'lucide-react';
 
 const statusColorMap: Record<string, string> = {
     active: 'bg-green-400',
@@ -31,8 +31,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
     const { t } = useTranslation('group');
     const [avatarError, setAvatarError] = useState(false);
 
-    const displayTags =
-        group.focusTags.length > 0 ? group.focusTags.slice(0, MAX_TAGS) : null;
+    const displayTags = group.focusTags.length > 0 ? group.focusTags.slice(0, MAX_TAGS) : null;
 
     return (
         <article className="flex flex-col gap-4 p-4 border rounded-xs border-tertiary bg-secondary/40 hover:border-quaternary-opacity-50 transition-colors">
@@ -47,63 +46,39 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
                         />
                     ) : (
                         <div className="flex items-center justify-center w-full h-full bg-secondary">
-                            <IoImageOutline
-                                size={24}
-                                className="text-tertiary"
-                            />
+                            <Image size={24} className="text-tertiary" />
                         </div>
                     )}
                 </div>
                 <div className="flex flex-col min-w-0">
-                    <AppLink
-                        link={`groups/${group.id}`}
-                        text={group.name}
-                        className="text-sm font-bold truncate"
-                    />
-                    <span className="text-xs text-tertiary truncate">
-                        {group.username}
-                    </span>
+                    <AppLink link={`groups/${group.id}`} text={group.name} className="text-sm font-bold truncate" />
+                    <span className="text-xs text-tertiary truncate">{group.username}</span>
                 </div>
             </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
                 <div className="flex flex-col gap-1">
-                    <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">
-                        {t('summary.statusLabel')}
-                    </span>
-                    <span
-                        className={`flex items-center gap-1.5 ${statusTextMap[group.status] ?? 'text-tertiary'}`}
-                    >
-                        <span
-                            className={`inline-block w-2 h-2 rounded-full ${statusColorMap[group.status] ?? 'bg-tertiary'}`}
-                        />
+                    <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">{t('summary.statusLabel')}</span>
+                    <span className={`flex items-center gap-1.5 ${statusTextMap[group.status] ?? 'text-tertiary'}`}>
+                        <span className={`inline-block w-2 h-2 rounded-full ${statusColorMap[group.status] ?? 'bg-tertiary'}`} />
                         {t(getGroupStatusLabelKey(group.status))}
                     </span>
                 </div>
                 <div className="flex flex-col gap-1">
-                    <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">
-                        {t('summary.focusTags')}
-                    </span>
+                    <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">{t('summary.focusTags')}</span>
                     {displayTags ? (
                         <div className="flex flex-wrap gap-1">
                             {displayTags.map(tag => (
-                                <span
-                                    key={tag}
-                                    className="px-2 py-0.5 text-[0.65rem] rounded-full border border-tertiary bg-primary-default"
-                                >
+                                <span key={tag} className="px-2 py-0.5 text-[0.65rem] rounded-full border border-tertiary bg-primary-default">
                                     {tag}
                                 </span>
                             ))}
                         </div>
                     ) : (
-                        <span className="text-tertiary italic">
-                            {t('summary.noTags')}
-                        </span>
+                        <span className="text-tertiary italic">{t('summary.noTags')}</span>
                     )}
                 </div>
                 <div className="flex flex-col gap-1">
-                    <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">
-                        {t('summary.rating')}
-                    </span>
+                    <span className="text-tertiary font-semibold uppercase tracking-wide text-[0.6rem]">{t('summary.rating')}</span>
                     <RatingStars value={group.rating} size={12} showValue />
                 </div>
             </div>

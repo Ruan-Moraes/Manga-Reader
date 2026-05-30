@@ -23,17 +23,12 @@ const RadioInput = <T extends string | number | readonly string[] | undefined>({
     const inputRef = useRef<HTMLInputElement>(null);
 
     const removeClassesFromAllElements = useCallback(() => {
-        const allInputRefs = Array.from(
-            document.querySelectorAll(`input[name=${fieldName}]`),
-        );
+        const allInputRefs = Array.from(document.querySelectorAll(`input[name=${fieldName}]`));
 
         allInputRefs.forEach(input => {
             const parentElement = input.parentNode as HTMLElement;
 
-            parentElement.classList.remove(
-                'border-quaternary-default',
-                'bg-quaternary-opacity-25',
-            );
+            parentElement.classList.remove('border-quaternary-default', 'bg-quaternary-opacity-25');
             parentElement.classList.add('border-tertiary', 'bg-secondary');
         });
     }, [fieldName]);
@@ -42,10 +37,7 @@ const RadioInput = <T extends string | number | readonly string[] | undefined>({
         const parentElement = inputRef!.current!.parentNode as HTMLElement;
 
         parentElement.classList.remove('border-tertiary', 'bg-secondary');
-        parentElement.classList.add(
-            'border-quaternary-default',
-            'bg-quaternary-opacity-25',
-        );
+        parentElement.classList.add('border-quaternary-default', 'bg-quaternary-opacity-25');
     }, []);
 
     const handleChange = useCallback(() => {
@@ -85,9 +77,7 @@ const RadioInput = <T extends string | number | readonly string[] | undefined>({
                     onChange={handleChange}
                     className="absolute top-0 bottom-0 left-0 right-0 appearance-none cursor-pointer "
                 />
-                <span className="px-2 font-bold text-shadow-default">
-                    {labelText}
-                </span>
+                <span className="px-2 font-bold text-shadow-default">{labelText}</span>
             </label>
         </div>
     );

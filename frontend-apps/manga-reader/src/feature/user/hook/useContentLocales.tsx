@@ -2,11 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import {
-    type ContentLocales,
-    getMyContentLocales,
-    updateMyContentLocales,
-} from '../service/userService';
+import { type ContentLocales, getMyContentLocales, updateMyContentLocales } from '../service/userService';
 
 const useContentLocales = (isLoggedIn: boolean) => {
     const queryClient = useQueryClient();

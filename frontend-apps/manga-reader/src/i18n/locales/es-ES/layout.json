@@ -10,29 +10,93 @@
         "usefulLinks": "Enlaces útiles",
         "socialMedia": "Redes sociales",
         "otherLinks": "Otros enlaces",
+        "tagline": "Lee, descubre y sigue tus mangas, manhwas y manhuas favoritos.",
+        "navAriaLabel": "Pie de página",
+        "expand": "Expandir",
+        "collapse": "Contraer",
+        "section": {
+            "discover": "Descubrir",
+            "library": "Biblioteca",
+            "community": "Comunidad",
+            "account": "Cuenta",
+            "support": "Soporte",
+            "legal": "Legal"
+        },
         "links": {
             "home": "Inicio",
-            "filter": "Filtrar",
+            "trending": "En tendencia",
+            "releases": "Novedades",
+            "filter": "Filtros",
             "news": "Noticias",
             "events": "Eventos",
             "forum": "Foro",
             "groups": "Grupos",
+            "translationGroups": "Grupos de scan",
+            "myMangas": "Mis mangas",
+            "reviews": "Reseñas",
+            "downloads": "Descargas",
+            "history": "Historial",
+            "profile": "Mi perfil",
+            "settings": "Configuración",
+            "notifications": "Notificaciones",
+            "login": "Entrar",
+            "signUp": "Crear cuenta",
+            "help": "Centro de ayuda",
+            "contact": "Contacto",
             "publishWork": "Quiero publicar obra",
-            "donate": "Dona al proyecto",
-            "aboutUs": "Quiénes somos",
+            "donate": "Apoyar el proyecto",
+            "aboutUs": "Sobre nosotros",
             "dmca": "DMCA",
-            "termsOfUse": "Términos de uso"
+            "termsOfUse": "Términos de uso",
+            "privacy": "Privacidad"
         },
-        "copyright": "© {{year}} Manga Reader. Todos los derechos reservados."
+        "newsletter": {
+            "label": "Recibe los destacados de la semana",
+            "placeholder": "tu@email.com",
+            "submitAria": "Suscribirse al boletín",
+            "hint": "Sin spam. Cancela cuando quieras.",
+            "success": "¡Listo! Recibirás los destacados todos los viernes."
+        },
+        "apps": {
+            "label": "Descarga la app",
+            "downloadFor": "Descarga para",
+            "iosAria": "Descarga para iOS",
+            "androidAria": "Descarga para Android"
+        },
+        "socials": {
+            "label": "Síguenos"
+        },
+        "statusBanner": {
+            "title": "Todos los sistemas operativos",
+            "meta": "Actualizado hace 2 min · 99,9% de disponibilidad",
+            "link": "Página de estado",
+            "ariaLabel": "Estado de la plataforma"
+        },
+        "preferences": {
+            "language": "Idioma",
+            "languageValue": "Español (ES)",
+            "languageAria": "Cambiar idioma",
+            "theme": "Tema",
+            "themeValue": "Oscuro",
+            "themeAria": "Cambiar tema",
+            "help": "Ayuda",
+            "helpAria": "Abrir centro de ayuda"
+        },
+        "status": "Todos los sistemas funcionando con normalidad",
+        "copyright": "© {{year}} Manga Reader. Todos los derechos reservados.",
+        "copyrightStudy": "© {{year}} Manga Reader. Hecho por Ruan — proyecto de estudio."
     },
     "socialMedia": {
         "heading": "Mantente al día con nuestras redes sociales"
     },
     "search": {
-        "placeholder": "Buscar obras, autores, géneros...",
+        "placeholder": "Buscar títulos, autores, grupos...",
         "ariaLabel": "Buscar",
         "menuPlaceholder": "Buscar mangas, noticias, grupos...",
-        "submit": "Buscar"
+        "submit": "Buscar",
+        "suggestionsTitle": "Sugerencias para ti",
+        "recentTitle": "Búsquedas recientes",
+        "kbdHint": "Atajo ⌘K para enfocar la búsqueda"
     },
     "navigation": {
         "openMenu": "Abrir menú",
@@ -40,6 +104,60 @@
         "close": "Cerrar",
         "mainMenu": "Menú principal",
         "dialogLabel": "Menú principal"
+    },
+    "nav": {
+        "ariaMain": "Navegación principal",
+        "section": {
+            "discover": "Descubrir",
+            "community": "Comunidad",
+            "system": "Sistema"
+        },
+        "item": {
+            "home": "Inicio",
+            "trending": "En tendencia",
+            "releases": "Novedades",
+            "categories": "Categorías",
+            "filter": "Filtrar",
+            "news": "Noticias",
+            "events": "Eventos",
+            "translationGroups": "Grupos y scans",
+            "forum": "Foro",
+            "reviews": "Reseñas",
+            "settings": "Configuración",
+            "helpCenter": "Centro de ayuda",
+            "about": "Acerca de",
+            "downloads": "Descargas"
+        },
+        "hint": {
+            "trending": "Más leídos de la semana",
+            "releases": "Recién salidos",
+            "categories": "Explora por género",
+            "events": "Qué está pasando",
+            "translationGroups": "Encuentra traductores",
+            "forum": "Discusiones de la comunidad",
+            "reviews": "Opiniones de lectores",
+            "settings": "Preferencias de cuenta",
+            "helpCenter": "Resuelve tus dudas",
+            "about": "Acerca de Manga Reader"
+        },
+        "action": {
+            "profile": "Perfil",
+            "settings": "Configuración",
+            "logout": "Salir",
+            "login": "Entrar",
+            "accountOf": "Cuenta de {{name}}"
+        },
+        "aria": {
+            "notifications": "Notificaciones",
+            "library": "Biblioteca",
+            "search": "Buscar"
+        },
+        "mobile": {
+            "home": "Inicio",
+            "search": "Buscar",
+            "library": "Biblioteca",
+            "profile": "Perfil"
+        }
     },
     "sidebar": {
         "section": {
@@ -87,6 +205,19 @@
             "settings": "Configuración",
             "clearCache": "Limpiar caché",
             "logout": "Salir"
+        },
+        "menu": {
+            "home": "Inicio",
+            "trending": "En Tendencia",
+            "releases": "Novedades",
+            "myMangas": "Mis Mangas",
+            "reviews": "Valorados",
+            "downloads": "Descargas",
+            "news": "Noticias",
+            "events": "Eventos",
+            "groups": "Grupos",
+            "forum": "Foro",
+            "profile": "Mi Perfil"
         },
         "logoutMessage": "Has cerrado sesión.",
         "role": {

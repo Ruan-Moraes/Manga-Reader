@@ -19,10 +19,7 @@ export function initGlobalErrorHandler(): void {
     rejectionListener = (event: PromiseRejectionEvent) => {
         const reason = event.reason;
 
-        const message =
-            reason instanceof Error
-                ? reason.message
-                : String(reason ?? 'Unhandled promise rejection');
+        const message = reason instanceof Error ? reason.message : String(reason ?? 'Unhandled promise rejection');
 
         const stack = reason instanceof Error ? (reason.stack ?? null) : null;
 

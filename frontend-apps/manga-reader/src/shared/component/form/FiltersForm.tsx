@@ -12,13 +12,7 @@ const FiltersForm = ({ title, isGrid, children }: FiltersFormTypes) => {
                     <div>
                         <h3 className="text-lg font-bold">{title}</h3>
                     </div>
-                    <div
-                        {...(isGrid
-                            ? { className: 'grid grid-cols-2 gap-2' }
-                            : {})}
-                    >
-                        {children}
-                    </div>
+                    <div {...(isGrid ? { className: 'grid grid-cols-2 gap-2' } : {})}>{children}</div>
                 </div>
             </form>
         </section>

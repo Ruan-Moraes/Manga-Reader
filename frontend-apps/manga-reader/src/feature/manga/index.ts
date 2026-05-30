@@ -11,11 +11,15 @@ export { default as CarouselContainer } from './component/card/carousel/Carousel
 export { default as HighlightCardsContainer } from './component/card/highlight/HighlightCardsContainer';
 export { default as HorizontalCardsContainer } from './component/card/horizontal/HorizontalCardsContainer';
 export { default as VerticalCardsContainer } from './component/card/vertical/VerticalCardsContainer';
+export { default as VerticalCard } from './component/card/vertical/VerticalCard';
 
 // Components - Info & Actions
 export { default as TitleDetails } from './component/information/TitleDetails';
 export { default as TitleDescription } from './component/information/TitleDescription';
 export { default as TitleActions } from './component/action/TitleActions';
+
+// Services
+export { filterTitles } from './service/titleService';
 
 // Types
 export type { Title } from './type/title.types';

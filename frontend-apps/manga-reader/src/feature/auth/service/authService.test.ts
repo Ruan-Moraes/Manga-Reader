@@ -17,9 +17,7 @@ import {
     type AuthResponse,
 } from './authService';
 
-const buildAuthResponse = (
-    overrides: Partial<AuthResponse> = {},
-): AuthResponse => ({
+const buildAuthResponse = (overrides: Partial<AuthResponse> = {}): AuthResponse => ({
     accessToken: 'access-token-123',
     refreshToken: 'refresh-token-456',
     userId: 'user-1',
@@ -39,11 +37,7 @@ describe('authService', () => {
         it('deve retornar auth response e persistir sessao', async () => {
             const authData = buildAuthResponse();
 
-            server.use(
-                http.post(`*${API_URLS.AUTH_SIGN_IN}`, () =>
-                    HttpResponse.json({ data: authData, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_SIGN_IN}`, () => HttpResponse.json({ data: authData, success: true })));
 
             const result = await signIn({
                 email: 'test@example.com',
@@ -58,15 +52,9 @@ describe('authService', () => {
         });
 
         it('deve propagar erro quando API falha', async () => {
-            server.use(
-                http.post(`*${API_URLS.AUTH_SIGN_IN}`, () =>
-                    HttpResponse.json(null, { status: 401 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_SIGN_IN}`, () => HttpResponse.json(null, { status: 401 })));
 
-            await expect(
-                signIn({ email: 'test@example.com', password: 'wrong' }),
-            ).rejects.toThrow();
+            await expect(signIn({ email: 'test@example.com', password: 'wrong' })).rejects.toThrow();
         });
     });
 
@@ -74,11 +62,7 @@ describe('authService', () => {
         it('deve retornar auth response e persistir sessao', async () => {
             const authData = buildAuthResponse({ name: 'New User' });
 
-            server.use(
-                http.post(`*${API_URLS.AUTH_SIGN_UP}`, () =>
-                    HttpResponse.json({ data: authData, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_SIGN_UP}`, () => HttpResponse.json({ data: authData, success: true })));
 
             const result = await signUp({
                 name: 'New User',
@@ -91,11 +75,7 @@ describe('authService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no signUp', async () => {
-            server.use(
-                http.post(`*${API_URLS.AUTH_SIGN_UP}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_SIGN_UP}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(
                 signUp({
@@ -113,11 +93,7 @@ describe('authService', () => {
                 accessToken: 'new-access-token',
             });
 
-            server.use(
-                http.post(`*${API_URLS.AUTH_REFRESH}`, () =>
-                    HttpResponse.json({ data: authData, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_REFRESH}`, () => HttpResponse.json({ data: authData, success: true })));
 
             const result = await refreshToken('refresh-token-456');
 
@@ -126,11 +102,7 @@ describe('authService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no refreshToken', async () => {
-            server.use(
-                http.post(`*${API_URLS.AUTH_REFRESH}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_REFRESH}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(refreshToken('refresh-token-456')).rejects.toThrow();
         });
@@ -145,16 +117,9 @@ describe('authService', () => {
 
         it('deve retornar dados do usuario quando sessao existe', async () => {
             const authData = buildAuthResponse();
-            localStorage.setItem(
-                'manga-reader:auth-user',
-                JSON.stringify(authData),
-            );
+            localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
 
-            server.use(
-                http.get(`*${API_URLS.AUTH_ME}`, () =>
-                    HttpResponse.json({ data: authData, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.AUTH_ME}`, () => HttpResponse.json({ data: authData, success: true })));
 
             const result = await getCurrentUser();
 
@@ -163,16 +128,9 @@ describe('authService', () => {
 
         it('deve retornar null quando API falha', async () => {
             const authData = buildAuthResponse();
-            localStorage.setItem(
-                'manga-reader:auth-user',
-                JSON.stringify(authData),
-            );
+            localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
 
-            server.use(
-                http.get(`*${API_URLS.AUTH_ME}`, () =>
-                    HttpResponse.json(null, { status: 401 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.AUTH_ME}`, () => HttpResponse.json(null, { status: 401 })));
 
             const result = await getCurrentUser();
 
@@ -182,10 +140,7 @@ describe('authService', () => {
 
     describe('signOut', () => {
         it('deve limpar sessao do localStorage', async () => {
-            localStorage.setItem(
-                'manga-reader:auth-user',
-                JSON.stringify(buildAuthResponse()),
-            );
+            localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildAuthResponse()));
 
             await signOut();
 
@@ -210,15 +165,9 @@ describe('authService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no requestPasswordReset', async () => {
-            server.use(
-                http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                requestPasswordReset('test@example.com'),
-            ).rejects.toThrow();
+            await expect(requestPasswordReset('test@example.com')).rejects.toThrow();
         });
     });
 
@@ -239,15 +188,9 @@ describe('authService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no resetPassword', async () => {
-            server.use(
-                http.post(`*${API_URLS.AUTH_RESET_PASSWORD}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.AUTH_RESET_PASSWORD}`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                resetPassword('token-123', 'newPass123'),
-            ).rejects.toThrow();
+            await expect(resetPassword('token-123', 'newPass123')).rejects.toThrow();
         });
     });
 
@@ -258,10 +201,7 @@ describe('authService', () => {
 
         it('deve retornar sessao quando dados validos existem', () => {
             const authData = buildAuthResponse();
-            localStorage.setItem(
-                'manga-reader:auth-user',
-                JSON.stringify(authData),
-            );
+            localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
 
             expect(getStoredSession()?.accessToken).toBe('access-token-123');
         });
@@ -275,37 +215,27 @@ describe('authService', () => {
 
     describe('mapAuthResponseToUser', () => {
         it('deve mapear ADMIN para admin', () => {
-            const user = mapAuthResponseToUser(
-                buildAuthResponse({ role: 'ADMIN' }),
-            );
+            const user = mapAuthResponseToUser(buildAuthResponse({ role: 'ADMIN' }));
             expect(user.role).toBe('admin');
         });
 
         it('deve mapear MODERATOR para poster', () => {
-            const user = mapAuthResponseToUser(
-                buildAuthResponse({ role: 'MODERATOR' }),
-            );
+            const user = mapAuthResponseToUser(buildAuthResponse({ role: 'MODERATOR' }));
             expect(user.role).toBe('poster');
         });
 
         it('deve mapear MEMBER para user', () => {
-            const user = mapAuthResponseToUser(
-                buildAuthResponse({ role: 'MEMBER' }),
-            );
+            const user = mapAuthResponseToUser(buildAuthResponse({ role: 'MEMBER' }));
             expect(user.role).toBe('user');
         });
 
         it('deve usar user como fallback para role desconhecida', () => {
-            const user = mapAuthResponseToUser(
-                buildAuthResponse({ role: 'UNKNOWN' }),
-            );
+            const user = mapAuthResponseToUser(buildAuthResponse({ role: 'UNKNOWN' }));
             expect(user.role).toBe('user');
         });
 
         it('deve usar string vazia quando photoUrl e undefined', () => {
-            const user = mapAuthResponseToUser(
-                buildAuthResponse({ photoUrl: undefined }),
-            );
+            const user = mapAuthResponseToUser(buildAuthResponse({ photoUrl: undefined }));
             expect(user.photo).toBe('');
         });
     });

@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import BaseCheckbox from '@shared/component/input/BaseCheckbox';
-import BaseInput from '@shared/component/input/BaseInput';
+import { Checkbox } from '@ui/Checkbox';
+import { Input } from '@ui/Input';
 import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
-import AdminModal from './AdminModal';
+import FormModal from './FormModal';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 
-import type {
-    AdminTitle,
-    CreateTitleRequest,
-    UpdateTitleRequest,
-} from '../../type/admin.types';
+import type { AdminTitle, CreateTitleRequest, UpdateTitleRequest } from '../../type/admin.types';
 
 type TitleFormModalProps = {
     isOpen: boolean;
@@ -21,13 +17,7 @@ type TitleFormModalProps = {
     isSubmitting: boolean;
 };
 
-const TitleFormModal = ({
-    isOpen,
-    onClose,
-    onSubmit,
-    title,
-    isSubmitting,
-}: TitleFormModalProps) => {
+const TitleFormModal = ({ isOpen, onClose, onSubmit, title, isSubmitting }: TitleFormModalProps) => {
     const { t } = useTranslation('admin');
 
     const [type, setType] = useState('manga');
@@ -97,115 +87,72 @@ const TitleFormModal = ({
     };
 
     return (
-        <AdminModal isOpen={isOpen} onClose={onClose}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-2">
-                <h3 className="text-sm font-bold">
-                    {title
-                        ? t('titleForm.editTitle', 'Editar Título')
-                        : t('titleForm.newTitle', 'Novo Título')}
-                </h3>
+        <FormModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={title ? t('titleForm.editTitle', 'Editar Título') : t('titleForm.newTitle', 'Novo Título')}
+            onSubmit={handleSubmit}
+            submitLabel={t('common.save', 'Salvar')}
+            submittingLabel={t('common.saving', 'Salvando...')}
+            cancelLabel={t('common.cancel', 'Cancelar')}
+            isSubmitting={isSubmitting}
+            submitDisabled={!ptName}
+        >
+            <LocalizedTextInput
+                label={t('titleForm.name', 'Nome')}
+                value={name}
+                onChange={setName}
+                placeholder={t('titleForm.namePlaceholder', 'Nome do título')}
+                maxLength={200}
+            />
 
-                <LocalizedTextInput
-                    label={t('titleForm.name', 'Nome')}
-                    value={name}
-                    onChange={setName}
-                    placeholder={t('titleForm.namePlaceholder', 'Nome do título')}
-                    maxLength={200}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.type', 'Tipo')}</span>
+                <Input type="text" value={type} onChange={e => setType(e.target.value)} placeholder={t('titleForm.typePlaceholder')} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.type', 'Tipo')}
-                    variant="outlined"
-                    type="text"
-                    value={type}
-                    onChange={e => setType(e.target.value)}
-                    placeholder={t('titleForm.typePlaceholder')}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.cover', 'Capa (URL)')}</span>
+                <Input type="text" value={cover} onChange={e => setCover(e.target.value)} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.cover', 'Capa (URL)')}
-                    variant="outlined"
-                    type="text"
-                    value={cover}
-                    onChange={e => setCover(e.target.value)}
-                />
+            <LocalizedTextInput
+                label={t('titleForm.synopsis', 'Sinopse')}
+                value={synopsis}
+                onChange={setSynopsis}
+                multiline
+                rows={5}
+                placeholder={t('titleForm.synopsisPlaceholder', 'Sinopse...')}
+                requiredLanguages={[]}
+            />
 
-                <LocalizedTextInput
-                    label={t('titleForm.synopsis', 'Sinopse')}
-                    value={synopsis}
-                    onChange={setSynopsis}
-                    multiline
-                    rows={5}
-                    placeholder={t('titleForm.synopsisPlaceholder', 'Sinopse...')}
-                    requiredLanguages={[]}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.genres', 'Gêneros (separados por vírgula)')}</span>
+                <Input type="text" value={genres} onChange={e => setGenres(e.target.value)} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.genres', 'Gêneros (separados por vírgula)')}
-                    variant="outlined"
-                    type="text"
-                    value={genres}
-                    onChange={e => setGenres(e.target.value)}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.status', 'Status')}</span>
+                <Input type="text" value={status} onChange={e => setStatus(e.target.value)} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.status', 'Status')}
-                    variant="outlined"
-                    type="text"
-                    value={status}
-                    onChange={e => setStatus(e.target.value)}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.author', 'Autor')}</span>
+                <Input type="text" value={author} onChange={e => setAuthor(e.target.value)} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.author', 'Autor')}
-                    variant="outlined"
-                    type="text"
-                    value={author}
-                    onChange={e => setAuthor(e.target.value)}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.artist', 'Artista')}</span>
+                <Input type="text" value={artist} onChange={e => setArtist(e.target.value)} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.artist', 'Artista')}
-                    variant="outlined"
-                    type="text"
-                    value={artist}
-                    onChange={e => setArtist(e.target.value)}
-                />
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-bold">{t('titleForm.publisher', 'Editora')}</span>
+                <Input type="text" value={publisher} onChange={e => setPublisher(e.target.value)} />
+            </div>
 
-                <BaseInput
-                    label={t('titleForm.publisher', 'Editora')}
-                    variant="outlined"
-                    type="text"
-                    value={publisher}
-                    onChange={e => setPublisher(e.target.value)}
-                />
-
-                <BaseCheckbox
-                    label={t('titleForm.adult', 'Conteúdo adulto')}
-                    checked={adult}
-                    onChange={setAdult}
-                />
-
-                <div className="flex justify-end gap-2">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30"
-                    >
-                        {t('common.cancel', 'Cancelar')}
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={isSubmitting || !ptName}
-                        className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
-                    >
-                        {isSubmitting
-                            ? t('common.saving', 'Salvando...')
-                            : t('common.save', 'Salvar')}
-                    </button>
-                </div>
-            </form>
-        </AdminModal>
+            <Checkbox label={t('titleForm.adult', 'Conteúdo adulto')} checked={adult} onChange={e => setAdult(e.target.checked)} />
+        </FormModal>
     );
 };
 

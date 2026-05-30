@@ -62,11 +62,7 @@ const buildPageResponse = (content: unknown[] = []) => ({
 describe('userService', () => {
     describe('getUserProfile', () => {
         it('deve retornar perfil do usuario', async () => {
-            server.use(
-                http.get(`*${API_URLS.USERS}/user-1`, () =>
-                    HttpResponse.json({ data: buildUser(), success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.USERS}/user-1`, () => HttpResponse.json({ data: buildUser(), success: true })));
 
             const result = await getUserProfile('user-1');
 
@@ -134,11 +130,7 @@ describe('userService', () => {
                 position: 0,
             };
 
-            server.use(
-                http.post(`*${API_URLS.USERS}/me/recommendations`, () =>
-                    HttpResponse.json({ data: rec, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.USERS}/me/recommendations`, () => HttpResponse.json({ data: rec, success: true })));
 
             const result = await addRecommendation('title-1');
 
@@ -148,16 +140,9 @@ describe('userService', () => {
 
     describe('removeRecommendation', () => {
         it('deve remover recomendacao sem erro', async () => {
-            server.use(
-                http.delete(
-                    `*${API_URLS.USERS}/me/recommendations/title-1`,
-                    () => new HttpResponse(null, { status: 204 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.USERS}/me/recommendations/title-1`, () => new HttpResponse(null, { status: 204 })));
 
-            await expect(
-                removeRecommendation('title-1'),
-            ).resolves.toBeUndefined();
+            await expect(removeRecommendation('title-1')).resolves.toBeUndefined();
         });
     });
 
@@ -178,11 +163,7 @@ describe('userService', () => {
                 },
             ];
 
-            server.use(
-                http.put(`*${API_URLS.USERS}/me/recommendations/order`, () =>
-                    HttpResponse.json({ data: recs, success: true }),
-                ),
-            );
+            server.use(http.put(`*${API_URLS.USERS}/me/recommendations/order`, () => HttpResponse.json({ data: recs, success: true })));
 
             const result = await reorderRecommendations(['t2', 't1']);
 
@@ -197,11 +178,7 @@ describe('userService', () => {
                 viewHistoryVisibility: 'PRIVATE' as const,
             };
 
-            server.use(
-                http.patch(`*${API_URLS.USERS}/me/privacy`, () =>
-                    HttpResponse.json({ data: settings, success: true }),
-                ),
-            );
+            server.use(http.patch(`*${API_URLS.USERS}/me/privacy`, () => HttpResponse.json({ data: settings, success: true })));
 
             const result = await updatePrivacySettings({
                 viewHistoryVisibility: 'PRIVATE',
@@ -265,12 +242,7 @@ describe('userService', () => {
 
     describe('recordView', () => {
         it('deve registrar visualizacao sem erro', async () => {
-            server.use(
-                http.post(
-                    `*${API_URLS.USERS}/me/history`,
-                    () => new HttpResponse(null, { status: 204 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.USERS}/me/history`, () => new HttpResponse(null, { status: 204 })));
 
             await expect(recordView('title-1')).resolves.toBeUndefined();
         });
@@ -280,126 +252,77 @@ describe('userService', () => {
 
     describe('getUserProfile — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.USERS}/user-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.USERS}/user-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getUserProfile('user-1')).rejects.toThrow();
         });
     });
 
     describe('updateProfile — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.patch(`*${API_URLS.USERS}/me`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.patch(`*${API_URLS.USERS}/me`, () => HttpResponse.json(null, { status: 500 })));
             await expect(updateProfile({ name: 'X' })).rejects.toThrow();
         });
     });
 
     describe('getEnrichedProfile — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.USERS}/user-1/profile`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.USERS}/user-1/profile`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getEnrichedProfile('user-1')).rejects.toThrow();
         });
     });
 
     describe('getMyEnrichedProfile — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.USERS}/me/profile`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.USERS}/me/profile`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getMyEnrichedProfile()).rejects.toThrow();
         });
     });
 
     describe('addRecommendation — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.post(`*${API_URLS.USERS}/me/recommendations`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.USERS}/me/recommendations`, () => HttpResponse.json(null, { status: 500 })));
             await expect(addRecommendation('title-1')).rejects.toThrow();
         });
     });
 
     describe('removeRecommendation — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.delete(
-                    `*${API_URLS.USERS}/me/recommendations/title-1`,
-                    () => HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.USERS}/me/recommendations/title-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(removeRecommendation('title-1')).rejects.toThrow();
         });
     });
 
     describe('reorderRecommendations — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.put(`*${API_URLS.USERS}/me/recommendations/order`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
-            await expect(
-                reorderRecommendations(['t1', 't2']),
-            ).rejects.toThrow();
+            server.use(http.put(`*${API_URLS.USERS}/me/recommendations/order`, () => HttpResponse.json(null, { status: 500 })));
+            await expect(reorderRecommendations(['t1', 't2'])).rejects.toThrow();
         });
     });
 
     describe('updatePrivacySettings — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.patch(`*${API_URLS.USERS}/me/privacy`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
-            await expect(
-                updatePrivacySettings({ viewHistoryVisibility: 'PRIVATE' }),
-            ).rejects.toThrow();
+            server.use(http.patch(`*${API_URLS.USERS}/me/privacy`, () => HttpResponse.json(null, { status: 500 })));
+            await expect(updatePrivacySettings({ viewHistoryVisibility: 'PRIVATE' })).rejects.toThrow();
         });
     });
 
     describe('getUserComments — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.USERS}/user-1/comments`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.USERS}/user-1/comments`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getUserComments('user-1')).rejects.toThrow();
         });
     });
 
     describe('getUserHistory — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.USERS}/user-1/history`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.USERS}/user-1/history`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getUserHistory('user-1')).rejects.toThrow();
         });
     });
 
     describe('recordView — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.post(`*${API_URLS.USERS}/me/history`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.USERS}/me/history`, () => HttpResponse.json(null, { status: 500 })));
             await expect(recordView('title-1')).rejects.toThrow();
         });
     });

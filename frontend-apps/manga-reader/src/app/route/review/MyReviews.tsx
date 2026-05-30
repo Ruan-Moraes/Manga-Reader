@@ -1,23 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
+import { PageContainer } from '@ui/PageContainer';
+import { SectionHeader } from '@ui/SectionHeader';
+import { Stars } from '@ui/Stars';
+import { Textarea } from '@ui/Textarea';
+import { Button } from '@ui/Button';
+import { Skeleton } from '@ui/Skeleton';
+import { EmptyState } from '@ui/EmptyState';
+import { Card } from '@ui/Card';
 
-import AppLink from '@shared/component/link/element/AppLink';
-import {
-    showSuccessToast,
-    showErrorToast,
-} from '@shared/service/util/toastService';
+import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 
-import {
-    RatingStars,
-    getUserReviews,
-    updateReview,
-    deleteReview,
-    type MangaRating,
-} from '@feature/rating';
+import { getUserReviews, updateReview, deleteReview, type MangaRating } from '@feature/rating';
 
 const ReviewCard = ({
     review,
@@ -47,68 +43,56 @@ const ReviewCard = ({
     };
 
     return (
-        <article className="p-3 border rounded-xs border-tertiary">
-            <div className="flex items-center justify-between gap-2">
-                <AppLink
-                    link={`title/${review.titleId}`}
-                    text={
-                        review.titleName ??
-                        t('myReviews.workPlaceholder', { id: review.titleId })
-                    }
-                    className="text-sm font-medium"
-                />
-                <RatingStars value={review.overallRating} />
+        <Card variant="default" className="p-4">
+            <div className="mb-3 flex items-center justify-between gap-2">
+                <Link to={`/titles/${review.titleId}`} className="text-mr-small font-mr-bold text-mr-fg hover:text-mr-accent transition-colors">
+                    {review.titleName ?? t('myReviews.workPlaceholder', { id: review.titleId })}
+                </Link>
+                <Stars value={review.overallRating} size={16} />
             </div>
-            <textarea
+
+            <Textarea
                 value={comment}
                 onChange={e => setComment(e.target.value)}
-                className="w-full h-20 p-2 mt-2 text-sm border rounded-xs border-tertiary bg-secondary"
+                rows={3}
+                placeholder={t('myReviews.commentPlaceholder', 'Escreva sua resenha...')}
+                className="mb-3"
             />
-            <div className="flex items-center justify-between gap-2 mt-2">
-                <div className="flex items-center gap-2">
+
+            <div className="flex items-center justify-between gap-2">
+                <div>
                     {isDirty && (
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="px-3 py-1 text-xs border rounded-xs border-quaternary text-quaternary hover:bg-quaternary/20 disabled:opacity-50"
-                        >
-                            {saving
-                                ? t('myReviews.saving')
-                                : t('myReviews.save')}
-                        </button>
+                        <Button variant="raised" size="sm" loading={saving} onClick={handleSave}>
+                            {saving ? t('myReviews.saving') : t('myReviews.save')}
+                        </Button>
                     )}
                 </div>
+
                 {confirming ? (
-                    <div className="flex items-center gap-2 text-xs">
-                        <span className="text-quinary-default">
-                            {t('myReviews.confirmPrompt')}
-                        </span>
-                        <button
+                    <div className="flex items-center gap-2">
+                        <span className="text-mr-tiny text-mr-danger">{t('myReviews.confirmPrompt')}</span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => {
                                 onDelete(review.id);
                                 setConfirming(false);
                             }}
-                            className="px-2 py-0.5 border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default/20"
+                            className="text-mr-danger"
                         >
                             {t('myReviews.confirm')}
-                        </button>
-                        <button
-                            onClick={() => setConfirming(false)}
-                            className="px-2 py-0.5 border rounded-xs border-tertiary hover:bg-tertiary/20"
-                        >
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>
                             {t('myReviews.cancel')}
-                        </button>
+                        </Button>
                     </div>
                 ) : (
-                    <button
-                        onClick={() => setConfirming(true)}
-                        className="px-3 py-1 text-xs border rounded-xs border-quinary-default hover:bg-quinary-default/20 text-quinary-default"
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => setConfirming(true)} className="text-mr-danger">
                         {t('myReviews.delete')}
-                    </button>
+                    </Button>
                 )}
             </div>
-        </article>
+        </Card>
     );
 };
 
@@ -123,9 +107,7 @@ const MyReviews = () => {
         try {
             if (!append) setLoading(true);
             const result = await getUserReviews(page);
-            setReviews(prev =>
-                append ? [...prev, ...result.content] : result.content,
-            );
+            setReviews(prev => (append ? [...prev, ...result.content] : result.content));
             setCurrentPage(page);
             setHasMore(!result.last);
         } catch {
@@ -141,9 +123,7 @@ const MyReviews = () => {
 
     const handleUpdate = async (id: string, comment: string) => {
         await updateReview({ id, comment });
-        setReviews(prev =>
-            prev.map(r => (r.id === id ? { ...r, comment } : r)),
-        );
+        setReviews(prev => prev.map(r => (r.id === id ? { ...r, comment } : r)));
     };
 
     const handleDelete = async (id: string) => {
@@ -159,63 +139,53 @@ const MyReviews = () => {
     };
 
     return (
-        <>
-            <Header />
-            <MainContent>
-                <section>
-                    <h2 className="text-xl font-bold">
-                        {t('myReviews.title')}
-                    </h2>
-                    <p className="text-sm text-tertiary">
-                        {t('myReviews.subtitle')}
-                    </p>
-                </section>
+        <PageContainer asMain size="narrow" paddingY="md">
+            <SectionHeader
+                eyebrow={t('myReviews.eyebrow')}
+                title={t('myReviews.title', 'Minhas resenhas')}
+                meta={t('myReviews.subtitle', 'Edite ou remova suas avaliações')}
+                className="mb-6"
+            />
 
-                {loading ? (
+            {loading && (
+                <div className="flex flex-col gap-3">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <Skeleton key={i} variant="rect" height={140} className="rounded-mr-md" />
+                    ))}
+                </div>
+            )}
+
+            {!loading && reviews.length === 0 && (
+                <EmptyState
+                    illustration="pensando"
+                    title={t('myReviews.emptyState', 'Nenhuma resenha ainda')}
+                    description={t('myReviews.emptyDesc')}
+                    action={
+                        <Button variant="primary" onClick={() => window.location.assign('/genres')}>
+                            {t('myReviews.discoverWorks')}
+                        </Button>
+                    }
+                />
+            )}
+
+            {!loading && reviews.length > 0 && (
+                <>
                     <div className="flex flex-col gap-3">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                            <div
-                                key={i}
-                                className="h-32 border rounded-xs border-tertiary animate-pulse bg-tertiary/10"
-                            />
+                        {reviews.map(review => (
+                            <ReviewCard key={review.id} review={review} onUpdate={handleUpdate} onDelete={handleDelete} />
                         ))}
                     </div>
-                ) : reviews.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-                        <span className="text-4xl">&#9997;</span>
-                        <p className="text-sm text-tertiary">
-                            {t('myReviews.emptyState')}
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        <section className="flex flex-col gap-3">
-                            {reviews.map(review => (
-                                <ReviewCard
-                                    key={review.id}
-                                    review={review}
-                                    onUpdate={handleUpdate}
-                                    onDelete={handleDelete}
-                                />
-                            ))}
-                        </section>
-                        {hasMore && (
-                            <div className="flex justify-center">
-                                <button
-                                    onClick={() =>
-                                        loadReviews(currentPage + 1, true)
-                                    }
-                                    className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                                >
-                                    {t('myReviews.loadMore')}
-                                </button>
-                            </div>
-                        )}
-                    </>
-                )}
-            </MainContent>
-            <Footer />
-        </>
+
+                    {hasMore && (
+                        <div className="mt-6 flex justify-center">
+                            <Button variant="raised" onClick={() => loadReviews(currentPage + 1, true)}>
+                                {t('myReviews.loadMore', 'Carregar mais')}
+                            </Button>
+                        </div>
+                    )}
+                </>
+            )}
+        </PageContainer>
     );
 };
 

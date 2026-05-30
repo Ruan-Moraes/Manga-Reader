@@ -7,34 +7,17 @@ import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
 import { SectionHeader } from '@feature/manga';
 
-import SectionTitle from '@shared/component/title/SectionTitle';
+import AppLink from '@shared/component/link/element/AppLink';
 
 import HighlightCard from './HighlightCard';
 
 const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
-    const { data, status } = useTitlesFetch(
-        QUERY_KEYS.TITLES_ON_THE_RISE,
-        0,
-        5,
-    );
+    const { data, status } = useTitlesFetch(QUERY_KEYS.TITLES_ON_THE_RISE, 0, 5);
 
     const allChildren = useMemo(() => {
         if (status === 'success') {
             return data.content.map(
-                ({
-                    id,
-                    type,
-                    cover,
-                    name,
-                    synopsis,
-                    genres,
-                    latestChapterNumber,
-                    popularity,
-                    ratingAverage,
-                    author,
-                    artist,
-                    publisher,
-                }) => (
+                ({ id, type, cover, name, synopsis, genres, latestChapterNumber, popularity, ratingAverage, author, artist, publisher }) => (
                     <HighlightCard
                         isLoading={false}
                         isError={false}
@@ -57,9 +40,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
         }
 
         if (status === 'pending') {
-            return Array.from({ length: 5 }).map((_, index) => (
-                <HighlightCard isLoading={true} isError={false} key={index} />
-            ));
+            return Array.from({ length: 5 }).map((_, index) => <HighlightCard isLoading={true} isError={false} key={index} />);
         }
 
         return <HighlightCard isError={true} isLoading={false} />;
@@ -67,11 +48,14 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     return (
         <section className="flex flex-col gap-4">
-            <SectionTitle
-                title={title}
-                subTitle={subTitle}
-                subLink={ROUTES.FILTER_ASCENSION}
-            />
+            <div>
+                <h2 className="font-bold text-2xl">{title}</h2>
+                {subTitle && (
+                    <p className="leading-none">
+                        <AppLink link={ROUTES.FILTER_ASCENSION} text={subTitle} className="text-xs text-quaternary-default" />
+                    </p>
+                )}
+            </div>
             <div className="flex flex-col gap-4">{allChildren}</div>
         </section>
     );

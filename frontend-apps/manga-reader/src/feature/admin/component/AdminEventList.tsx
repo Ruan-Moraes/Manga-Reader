@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminEvent } from '../type/admin.types';
 import { getLocale } from '@shared/util/formatters';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminEventListProps = {
     events: AdminEvent[];
@@ -28,45 +27,26 @@ const formatDate = (date: string | null) => {
     });
 };
 
-const StatusBadge = ({ status }: { status: string }) => (
-    <span className="px-2 py-0.5 text-xs font-semibold rounded-xs bg-tertiary/30">
-        {status}
-    </span>
-);
+const StatusBadge = ({ status }: { status: string }) => <span className="px-2 py-0.5 text-xs font-semibold rounded-xs bg-tertiary/30">{status}</span>;
 
-const buildColumns = (
-    t: TFunction,
-    lang: LanguageTag,
-    onEdit: (event: AdminEvent) => void,
-    onDelete: (event: AdminEvent) => void,
-): Column<AdminEvent>[] => [
+const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (event: AdminEvent) => void, onDelete: (event: AdminEvent) => void): Column<AdminEvent>[] => [
     {
         key: 'id',
         header: t('dashboard.events.columnId'),
         hiddenOnMobile: true,
-        render: event => (
-            <span className="font-mono text-xs text-tertiary">
-                {event.id.slice(0, 8)}
-            </span>
-        ),
+        render: event => <span className="font-mono text-xs text-tertiary">{event.id.slice(0, 8)}</span>,
     },
     {
         key: 'title',
         header: t('dashboard.events.columnTitle'),
         sortable: true,
-        render: event => (
-            <span className="font-medium">
-                {event.title?.[lang] ?? event.title?.['pt-BR'] ?? ''}
-            </span>
-        ),
+        render: event => <span className="font-medium">{event.title?.[lang] ?? event.title?.['pt-BR'] ?? ''}</span>,
     },
     {
         key: 'type',
         header: t('dashboard.events.columnType'),
         sortable: true,
-        render: event => (
-            <span className="text-xs text-tertiary">{event.type}</span>
-        ),
+        render: event => <span className="text-xs text-tertiary">{event.type}</span>,
     },
     {
         key: 'status',
@@ -78,22 +58,14 @@ const buildColumns = (
         key: 'location',
         header: t('dashboard.events.columnLocation'),
         render: event => (
-            <span className="text-xs text-tertiary">
-                {event.locationIsOnline
-                    ? t('dashboard.events.locationOnline')
-                    : (event.locationCity ?? '—')}
-            </span>
+            <span className="text-xs text-tertiary">{event.locationIsOnline ? t('dashboard.events.locationOnline') : (event.locationCity ?? '—')}</span>
         ),
     },
     {
         key: 'startDate',
         header: t('dashboard.events.columnStart'),
         sortable: true,
-        render: event => (
-            <span className="text-xs text-tertiary">
-                {formatDate(event.startDate)}
-            </span>
-        ),
+        render: event => <span className="text-xs text-tertiary">{formatDate(event.startDate)}</span>,
     },
     {
         key: 'actions',
@@ -109,7 +81,7 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                     aria-label={t('dashboard.events.editAriaLabel')}
                 >
-                    <FiEdit2 size={14} />
+                    <Pencil size={14} />
                 </button>
                 <button
                     type="button"
@@ -120,26 +92,17 @@ const buildColumns = (
                     className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
                     aria-label={t('dashboard.events.deleteAriaLabel')}
                 >
-                    <FiTrash2 size={14} />
+                    <Trash2 size={14} />
                 </button>
             </div>
         ),
     },
 ];
 
-const AdminEventList = ({
-    events,
-    page,
-    totalPages,
-    isLoading,
-    onPageChange,
-    onEdit,
-    onDelete,
-}: AdminEventListProps) => {
+const AdminEventList = ({ events, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminEventListProps) => {
     const { t, i18n } = useTranslation('admin');
     const lang = i18n.language as LanguageTag;
-    const { sortedData, sortBy, sortDirection, handleSort } =
-        useSortableData(events);
+    const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(events);
 
     return (
         <DataTable

@@ -24,7 +24,37 @@
     "page": {
         "title": "Mi Biblioteca",
         "subtitle": "Gestiona tus mangas guardados por estado de lectura.",
+        "eyebrow": "Tu colección",
+        "worksCount_one": "{{count}} obra",
+        "worksCount_other": "{{count}} obras",
+        "addButton": "Agregar",
+        "searchPlaceholder": "Buscar en la biblioteca",
+        "sort": {
+            "recent": "Recientes",
+            "az": "A–Z",
+            "za": "Z–A"
+        },
+        "layout": {
+            "grid": "Cuadrícula",
+            "list": "Lista"
+        },
+        "remove": "Eliminar",
         "retry": "Intentar de nuevo",
         "loadMore": "Cargar más"
+    },
+    "tabLabel": {
+        "all": "Todas ({{count}})",
+        "reading": "Leyendo ({{count}})",
+        "wantToRead": "Quiero Leer ({{count}})",
+        "completed": "Completadas ({{count}})"
+    },
+    "emptySearch": {
+        "title": "No se encontraron obras",
+        "description": "Prueba otro término de búsqueda."
+    },
+    "emptyCollection": {
+        "title": "Nada por aquí todavía",
+        "description": "¿Qué tal si empiezas tu colección?",
+        "discoverButton": "Descubrir obras"
     }
 }

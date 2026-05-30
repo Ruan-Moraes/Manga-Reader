@@ -11,21 +11,13 @@ import { buildTitle } from '@/test/factories/titleFactory';
 
 import useTitleFetch from './useTitleFetch';
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 describe('useTitleFetch', () => {
     it('deve retornar titulo quando busca e bem-sucedida', async () => {
         const titulo = buildTitle({ id: '1', name: 'One Piece' });
 
-        server.use(
-            http.get(`*${API_URLS.TITLES}/1`, () =>
-                HttpResponse.json({ data: titulo, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}/1`, () => HttpResponse.json({ data: titulo, success: true })));
 
         const { result } = renderHook(() => useTitleFetch('1'), { wrapper });
 
@@ -45,11 +37,7 @@ describe('useTitleFetch', () => {
     });
 
     it('deve retornar erro quando API falha', async () => {
-        server.use(
-            http.get(`*${API_URLS.TITLES}/999`, () =>
-                HttpResponse.json(null, { status: 404 }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}/999`, () => HttpResponse.json(null, { status: 404 })));
 
         const { result } = renderHook(() => useTitleFetch('999'), { wrapper });
 

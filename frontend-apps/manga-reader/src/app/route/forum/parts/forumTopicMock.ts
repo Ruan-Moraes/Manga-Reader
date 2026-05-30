@@ -1,0 +1,87 @@
+export type TopicAuthor = {
+    name: string;
+    handle: string;
+    badge: 'mod' | 'author' | undefined;
+};
+
+export type TopicData = {
+    id: string;
+    title: string;
+    category: string;
+    pinned: boolean;
+    author: TopicAuthor;
+    postedAt: string;
+    views: number;
+    replies: number;
+    live: number;
+    content: string;
+};
+
+export type ReplyData = {
+    id: string;
+    author: TopicAuthor;
+    when: string;
+    upvotes: number;
+    downvotes: number;
+    children: string;
+};
+
+export const TOPICS: Record<string, TopicData> = {
+    '2': {
+        id: '2',
+        title: 'Poll: Qual o melhor arco de One Piece até agora?',
+        category: 'One Piece',
+        pinned: true,
+        author: {
+            name: 'luffy_d_garp',
+            handle: '@luffygarp',
+            badge: undefined,
+        },
+        postedAt: 'há 3h',
+        views: 4800,
+        replies: 187,
+        live: 12,
+        content:
+            'Galera, com o arco de Egghead chegando ao fim e Oda preparando o próximo, queria saber qual vocês consideram o melhor arco da série até hoje.\n\nMinha escolha pessoal é Marineford pela tensão absurda e o impacto emocional, mas Wano é concorrência pesada pela execução visual.\n\nDeixem sua opinião nos comentários!',
+    },
+    '3': {
+        id: '3',
+        title: 'Teoria: O que aconteceu com o pai do Guts no capítulo 370?',
+        category: 'Berserk',
+        pinned: false,
+        author: { name: 'darkfan92', handle: '@darkfan', badge: undefined },
+        postedAt: 'há 5h',
+        views: 1200,
+        replies: 42,
+        live: 3,
+        content:
+            'Depois de reler o capítulo 370 três vezes, acho que a Studio Gaga deixou uma pista sutil sobre as origens de Guts que Miura nunca chegou a desenvolver explicitamente.\n\nA cicatriz no rosto do cavaleiro sem nome bate exatamente com a descrição dos bandidos da infância do Guts. Pode ser coincidência, mas não acho.',
+    },
+};
+
+export const REPLIES: ReplyData[] = [
+    {
+        id: 'r1',
+        author: { name: 'nakama_forever', handle: '@nakama', badge: undefined },
+        when: 'há 2h',
+        upvotes: 134,
+        downvotes: 8,
+        children: 'Marineford sem dúvida. A morte do Ace ainda dói depois de todos esses anos.',
+    },
+    {
+        id: 'r2',
+        author: { name: 'zoro_sensei', handle: '@zoro', badge: undefined },
+        when: 'há 1h',
+        upvotes: 98,
+        downvotes: 3,
+        children: 'Wano foi visualmente lindo mas narrativamente inconsistente. Enies Lobby bate facilmente.',
+    },
+    {
+        id: 'r3',
+        author: { name: 'mod_br', handle: '@modbr', badge: 'mod' as const },
+        when: 'há 45min',
+        upvotes: 67,
+        downvotes: 1,
+        children: 'Lembrem que spoilers do capítulo mais recente devem ter tag adequada. Bom debate!',
+    },
+];

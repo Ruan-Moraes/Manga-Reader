@@ -1,18 +1,15 @@
 import { useRef } from 'react';
-import { FaUpload } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 
 import useEasyMDE from '../hook/internal/useEasyMDE';
 import useCommentImageUpload from '../hook/internal/useCommentImageUpload';
 import { createComment } from '../service/commentService';
 
-import BadgeIconButton from '@shared/component/button/BadgeIconButton';
-import DarkButton from '@shared/component/button/DarkButton';
-import {
-    showErrorToast,
-    showSuccessToast,
-} from '@shared/service/util/toastService';
+import { IconButton } from '@ui/IconButton';
+import { Button } from '@ui/Button';
+import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import { requireAuth } from '@shared/service/util/requireAuth';
+import { Upload } from 'lucide-react';
 
 type CommentInputProps = {
     placeholder: string;
@@ -20,11 +17,7 @@ type CommentInputProps = {
     onCommentCreated?: () => void;
 };
 
-const CommentInput = ({
-    placeholder,
-    titleId,
-    onCommentCreated,
-}: CommentInputProps) => {
+const CommentInput = ({ placeholder, titleId, onCommentCreated }: CommentInputProps) => {
     const { t } = useTranslation('comment');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { getValue, clearValue } = useEasyMDE({
@@ -32,8 +25,7 @@ const CommentInput = ({
         placeholder,
         minHeight: '4rem',
     });
-    const { images, addImage, removeImage, clearImages } =
-        useCommentImageUpload();
+    const { images, addImage, removeImage, clearImages } = useCommentImageUpload();
 
     const handleSend = async () => {
         if (!requireAuth(t('validation.loginRequired'))) return;
@@ -80,10 +72,12 @@ const CommentInput = ({
                     {images.length > 0 && (
                         <div className="flex flex-wrap gap-2 px-2 pb-2">
                             {images.map((src, i) => (
-                                <div key={i} className="relative inline-block">
+                                <div key={src} className="relative inline-block">
                                     <img
                                         src={src}
-                                        alt={t('actions.imageAlt', { index: i + 1 })}
+                                        alt={t('actions.imageAlt', {
+                                            index: i + 1,
+                                        })}
                                         className="object-cover rounded-xs max-h-[10rem]"
                                     />
                                     <button
@@ -100,15 +94,12 @@ const CommentInput = ({
                     )}
                     <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                         <div className="flex items-center gap-2">
-                            <BadgeIconButton
-                                onClick={addImage}
-                                className="h-full w-full"
-                            >
-                                <FaUpload />
-                            </BadgeIconButton>
+                            <IconButton icon={Upload} aria-label="Upload image" onClick={addImage} variant="ghost" />
                         </div>
                         <div>
-                            <DarkButton onClick={handleSend} text={t('actions.send')} />
+                            <Button variant="ghost" size="sm" onClick={handleSend}>
+                                {t('actions.send')}
+                            </Button>
                         </div>
                     </div>
                 </div>

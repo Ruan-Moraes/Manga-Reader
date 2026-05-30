@@ -1,9 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import type {
-    LibraryCounts,
-    ReadingListType,
-} from '../type/saved-library.types';
+import type { LibraryCounts, ReadingListType } from '../type/saved-library.types';
 
 type ActiveTab = ReadingListType | 'Todos';
 
@@ -42,9 +39,7 @@ const LibraryTabs = ({ activeTab, counts, onChange }: Props) => {
                     {t(`tabs.${i18nKey}`)}
                     <span
                         className={`text-xs px-1.5 py-0.5 rounded-full ${
-                            activeTab === id
-                                ? 'bg-shadow-default/20 text-shadow-default'
-                                : 'bg-tertiary/30 text-tertiary'
+                            activeTab === id ? 'bg-shadow-default/20 text-shadow-default' : 'bg-tertiary/30 text-tertiary'
                         }`}
                     >
                         {counts[countKey]}

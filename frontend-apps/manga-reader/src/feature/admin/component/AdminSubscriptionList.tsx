@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminSubscription } from '../type/admin.types';
 import { getLocale } from '@shared/util/formatters';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminSubscriptionListProps = {
     subscriptions: AdminSubscription[];
@@ -37,11 +36,7 @@ const formatPrice = (cents: number) =>
         currency: 'BRL',
     });
 
-const buildColumns = (
-    t: TFunction,
-    onEdit: (sub: AdminSubscription) => void,
-    onDelete: (sub: AdminSubscription) => void,
-): Column<AdminSubscription>[] => {
+const buildColumns = (t: TFunction, onEdit: (sub: AdminSubscription) => void, onDelete: (sub: AdminSubscription) => void): Column<AdminSubscription>[] => {
     const periodLabels: Record<string, string> = {
         DAILY: t('dashboard.subscriptions.periodDaily'),
         MONTHLY: t('dashboard.subscriptions.periodMonthly'),
@@ -59,21 +54,13 @@ const buildColumns = (
             key: 'id',
             header: t('dashboard.subscriptions.columnId'),
             hiddenOnMobile: true,
-            render: sub => (
-                <span className="font-mono text-xs text-tertiary">
-                    {sub.id.slice(0, 8)}
-                </span>
-            ),
+            render: sub => <span className="font-mono text-xs text-tertiary">{sub.id.slice(0, 8)}</span>,
         },
         {
             key: 'userId',
             header: t('dashboard.subscriptions.columnUserId'),
             hiddenOnMobile: true,
-            render: sub => (
-                <span className="font-mono text-xs text-tertiary">
-                    {sub.userId.slice(0, 8)}
-                </span>
-            ),
+            render: sub => <span className="font-mono text-xs text-tertiary">{sub.userId.slice(0, 8)}</span>,
         },
         {
             key: 'planPeriod',
@@ -81,12 +68,8 @@ const buildColumns = (
             sortable: true,
             render: sub => (
                 <div className="flex flex-col">
-                    <span className="font-medium">
-                        {periodLabels[sub.planPeriod] ?? sub.planPeriod}
-                    </span>
-                    <span className="text-xs text-tertiary">
-                        {formatPrice(sub.planPriceInCents)}
-                    </span>
+                    <span className="font-medium">{periodLabels[sub.planPeriod] ?? sub.planPeriod}</span>
+                    <span className="text-xs text-tertiary">{formatPrice(sub.planPriceInCents)}</span>
                 </div>
             ),
         },
@@ -95,11 +78,7 @@ const buildColumns = (
             header: t('dashboard.subscriptions.columnStatus'),
             sortable: true,
             render: sub => (
-                <span
-                    className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${
-                        STATUS_COLORS[sub.status] ?? 'bg-tertiary/30'
-                    }`}
-                >
+                <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${STATUS_COLORS[sub.status] ?? 'bg-tertiary/30'}`}>
                     {statusLabels[sub.status] ?? sub.status}
                 </span>
             ),
@@ -108,18 +87,14 @@ const buildColumns = (
             key: 'startDate',
             header: t('dashboard.subscriptions.columnStart'),
             sortable: true,
-            render: sub => (
-                <span className="text-xs">{formatDate(sub.startDate)}</span>
-            ),
+            render: sub => <span className="text-xs">{formatDate(sub.startDate)}</span>,
         },
         {
             key: 'endDate',
             header: t('dashboard.subscriptions.columnEnd'),
             hiddenOnMobile: true,
             sortable: true,
-            render: sub => (
-                <span className="text-xs">{formatDate(sub.endDate)}</span>
-            ),
+            render: sub => <span className="text-xs">{formatDate(sub.endDate)}</span>,
         },
         {
             key: 'actions',
@@ -135,7 +110,7 @@ const buildColumns = (
                         className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
                         aria-label={t('dashboard.subscriptions.editAriaLabel')}
                     >
-                        <FiEdit2 size={14} />
+                        <Pencil size={14} />
                     </button>
                     <button
                         type="button"
@@ -144,11 +119,9 @@ const buildColumns = (
                             onDelete(sub);
                         }}
                         className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
-                        aria-label={t(
-                            'dashboard.subscriptions.deleteAriaLabel',
-                        )}
+                        aria-label={t('dashboard.subscriptions.deleteAriaLabel')}
                     >
-                        <FiTrash2 size={14} />
+                        <Trash2 size={14} />
                     </button>
                 </div>
             ),
@@ -156,18 +129,9 @@ const buildColumns = (
     ];
 };
 
-const AdminSubscriptionList = ({
-    subscriptions,
-    page,
-    totalPages,
-    isLoading,
-    onPageChange,
-    onEdit,
-    onDelete,
-}: AdminSubscriptionListProps) => {
+const AdminSubscriptionList = ({ subscriptions, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminSubscriptionListProps) => {
     const { t } = useTranslation('admin');
-    const { sortedData, sortBy, sortDirection, handleSort } =
-        useSortableData(subscriptions);
+    const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(subscriptions);
 
     return (
         <DataTable

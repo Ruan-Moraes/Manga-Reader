@@ -8,7 +8,15 @@
     "topic": {
         "authoredBy": "por {{name}}",
         "replies_one": "{{count}} respuesta",
-        "replies_other": "{{count}} respuestas"
+        "replies_other": "{{count}} respuestas",
+        "notFound": "Tema no encontrado",
+        "notFoundDesc": "Puede que haya sido eliminado o el enlace sea incorrecto.",
+        "backToForum": "Volver al foro",
+        "replyLabel": "Tu respuesta",
+        "commentPlaceholder": "Comentar (sin spoilers de cap futuros sin etiqueta)...",
+        "replySortTop": "Top",
+        "replySortRecent": "Recientes",
+        "replySortOld": "Antiguos"
     },
     "reply": {
         "edited": "(editado)",
@@ -23,12 +31,19 @@
     "page": {
         "title": "Foro",
         "subtitle": "Participa en las discusiones, comparte recomendaciones y conéctate con otros lectores de manga.",
-        "searchPlaceholder": "Buscar temas...",
+        "eyebrow": "Comunidad",
+        "newTopic": "Nuevo tema",
+        "topicsCount_one": "{{count}} tema",
+        "topicsCount_other": "{{count}} temas",
+        "searchPlaceholder": "Buscar en el foro",
         "allCategories": "Todos",
+        "allCategoriesLabel": "Todas",
         "sortLabel": "Ordenar:",
         "foundTopics_one": "{{count}} tema encontrado",
         "foundTopics_other": "{{count}} temas encontrados",
-        "emptyState": "No se encontraron temas."
+        "emptyState": "No se encontraron temas.",
+        "emptyDescription": "Prueba otros términos o una categoría diferente.",
+        "liveReaders": "lectores discutiendo ahora"
     },
     "categories": {
         "Geral": "General",
@@ -45,6 +60,43 @@
         "popular": "Más populares",
         "most-replies": "Más respuestas",
         "oldest": "Más antiguos"
+    },
+    "composer": {
+        "categories": {
+            "discussion": "Discusión",
+            "spoiler": "Sin spoilers",
+            "question": "Pregunta",
+            "news": "Noticias",
+            "other": "Otros"
+        },
+        "titlePlaceholder": "Describe el tema del tópico (10–120 caracteres)",
+        "categoryLabel": "Categoría",
+        "titleLabel": "Título",
+        "contentLabel": "Contenido",
+        "editMode": "Editar",
+        "previewMode": "Vista previa",
+        "formattingAria": "Formato",
+        "toolbar": {
+            "bold": "Negrita",
+            "italic": "Cursiva",
+            "link": "Enlace",
+            "quote": "Cita"
+        },
+        "spoilerTagAria": "Etiqueta spoiler",
+        "contentPlaceholder": "Escribe el contenido del tema (mínimo 30 caracteres)...",
+        "previewEmpty": "Nada que previsualizar.",
+        "spoilerNote": "Spoiler > 7 días atrás es libre. Capítulos recientes: usa [spoiler]…[/spoiler]",
+        "spoilerLabel": "Marcar tema como spoiler",
+        "spoilerDescription": "Otros usuarios verán un aviso antes de abrir.",
+        "publishShortcut": "para publicar",
+        "cancelButton": "Cancelar",
+        "publishButton": "Publicar",
+        "publishingButton": "Publicando...",
+        "validation": {
+            "categoryRequired": "Elige una categoría.",
+            "titleLength": "El título debe tener entre 10 y 120 caracteres.",
+            "contentLength": "El contenido debe tener al menos 30 caracteres."
+        }
     },
     "topicPage": {
         "notFound": "Tema no encontrado.",

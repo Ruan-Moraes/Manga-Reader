@@ -1,6 +1,5 @@
 import { useRef } from 'react';
-
-import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import { Star, StarHalf } from 'lucide-react';
 
 type RatingStarsProps = {
     value: number;
@@ -10,19 +9,10 @@ type RatingStarsProps = {
     showValue?: boolean;
 };
 
-const RatingStars = ({
-    value,
-    onChange,
-    size = 16,
-    halfPrecision = false,
-    showValue = false,
-}: RatingStarsProps) => {
+const RatingStars = ({ value, onChange, size = 16, halfPrecision = false, showValue = false }: RatingStarsProps) => {
     const starRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-    const handleClick = (
-        index: number,
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
+    const handleClick = (index: number, event: React.MouseEvent<HTMLButtonElement>) => {
         if (!onChange) return;
 
         const starValue = index + 1;
@@ -50,15 +40,12 @@ const RatingStars = ({
         const isFull = value >= starValue;
         const isHalf = !isFull && value >= starValue - 0.5;
 
-        const iconClass =
-            isFull || isHalf
-                ? 'text-yellow-400 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]'
-                : 'text-white/80 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]';
+        const iconClass = isFull || isHalf ? 'text-yellow-400 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]' : 'text-white/80 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]';
 
-        if (isFull) return <FaStar size={size} className={iconClass} />;
-        if (isHalf) return <FaStarHalfAlt size={size} className={iconClass} />;
+        if (isFull) return <Star size={size} className={iconClass} />;
+        if (isHalf) return <StarHalf size={size} className={iconClass} />;
 
-        return <FaRegStar size={size} className={iconClass} />;
+        return <Star size={size} className={iconClass} />;
     };
 
     return (
@@ -79,9 +66,7 @@ const RatingStars = ({
                     </button>
                 ))}
             </div>
-            {showValue && (
-                <span className="text-sm font-medium">{value.toFixed(1)}</span>
-            )}
+            {showValue && <span className="text-sm font-medium">{value.toFixed(1)}</span>}
         </div>
     );
 };

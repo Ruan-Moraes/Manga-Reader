@@ -62,9 +62,7 @@ describe('useChapters', () => {
             }),
         );
 
-        const { result } = renderHookWithProviders(() =>
-            useChapters('t1', { page: 2, size: 10, direction: 'desc' }),
-        );
+        const { result } = renderHookWithProviders(() => useChapters('t1', { page: 2, size: 10, direction: 'desc' }));
 
         await waitFor(() => expect(result.current.isLoading).toBe(false));
 
@@ -94,10 +92,7 @@ describe('useChapters', () => {
             }),
         );
 
-        const { result, rerender } = renderHookWithProviders(
-            ({ p }: { p: number }) => useChapters('t1', { page: p }),
-            { initialProps: { p: 0 } },
-        );
+        const { result, rerender } = renderHookWithProviders(({ p }: { p: number }) => useChapters('t1', { page: p }), { initialProps: { p: 0 } });
 
         await waitFor(() => expect(result.current.isLoading).toBe(false));
         const first = result.current.chapters;
@@ -108,11 +103,7 @@ describe('useChapters', () => {
     });
 
     it('expõe isError quando API falha', async () => {
-        server.use(
-            http.get(`*${API_URLS.TITLES}/t1/chapters`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}/t1/chapters`, () => HttpResponse.json(null, { status: 500 })));
 
         const { result } = renderHookWithProviders(() => useChapters('t1'));
 

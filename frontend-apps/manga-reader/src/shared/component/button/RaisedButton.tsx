@@ -4,11 +4,7 @@ type RaisedButtonProps = {
     type?: 'button' | 'submit' | 'reset';
 };
 
-const RaisedButton = ({
-    onClick,
-    text,
-    type = 'submit',
-}: RaisedButtonProps) => {
+const RaisedButton = ({ onClick, text, type = 'submit' }: RaisedButtonProps) => {
     return (
         <button
             type={type}

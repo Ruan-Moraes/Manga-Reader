@@ -12,11 +12,7 @@ export function useCommentEditor(placeholder: string) {
 
         if (!textarea) return false;
 
-        return (
-            textarea.innerHTML.trim() === '' ||
-            textarea.innerHTML.trim() === '<br>' ||
-            textarea.innerText.trim().length === 0
-        );
+        return textarea.innerHTML.trim() === '' || textarea.innerHTML.trim() === '<br>' || textarea.innerText.trim().length === 0;
     }, []);
 
     const addPlaceholder = useCallback(() => {
@@ -32,9 +28,7 @@ export function useCommentEditor(placeholder: string) {
 
         if (!textarea) return;
 
-        const placeholderElement = textarea.querySelector(
-            '#textarea_placeholder',
-        );
+        const placeholderElement = textarea.querySelector('#textarea_placeholder');
 
         if (placeholderElement) {
             placeholderElement.remove();
@@ -46,9 +40,7 @@ export function useCommentEditor(placeholder: string) {
 
         if (!textarea) return;
 
-        const currentImgs = Array.from(
-            textarea.querySelectorAll('[contenteditable="false"] img'),
-        )
+        const currentImgs = Array.from(textarea.querySelectorAll('[contenteditable="false"] img'))
             .map(img => img.getAttribute('src'))
             .filter(Boolean) as string[];
 
@@ -130,12 +122,7 @@ export function useCommentEditor(placeholder: string) {
 
             reader.readAsDataURL(file as Blob);
         };
-    }, [
-        exceedsImageLimit,
-        isImageValid,
-        removePlaceholder,
-        updateImagesFromDOM,
-    ]);
+    }, [exceedsImageLimit, isImageValid, removePlaceholder, updateImagesFromDOM]);
 
     useEffect(() => {
         const textarea = textareaRef.current;
@@ -148,9 +135,7 @@ export function useCommentEditor(placeholder: string) {
             const target = e.target as HTMLElement;
 
             if (target.classList.contains('remove-img-btn')) {
-                const container = target.closest(
-                    '[contenteditable="false"]',
-                ) as HTMLElement | null;
+                const container = target.closest('[contenteditable="false"]') as HTMLElement | null;
 
                 if (container && textarea.contains(container)) {
                     const imgEl = container.querySelector('img');
@@ -182,12 +167,7 @@ export function useCommentEditor(placeholder: string) {
             textarea.removeEventListener('input', handleInput);
             textarea.removeEventListener('keyup', handleInput);
         };
-    }, [
-        addPlaceholder,
-        removePlaceholder,
-        updateImagesFromDOM,
-        shouldShowPlaceholder,
-    ]);
+    }, [addPlaceholder, removePlaceholder, updateImagesFromDOM, shouldShowPlaceholder]);
 
     return {
         textareaRef,

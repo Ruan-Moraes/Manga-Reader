@@ -17,10 +17,7 @@ const buildChapter = (overrides = {}) => ({
 describe('chapterService', () => {
     describe('getChaptersByTitleId', () => {
         it('deve retornar pagina de capitulos', async () => {
-            const chapters = [
-                buildChapter(),
-                buildChapter({ number: '2', title: 'Capitulo 2' }),
-            ];
+            const chapters = [buildChapter(), buildChapter({ number: '2', title: 'Capitulo 2' })];
 
             server.use(
                 http.get(`*${API_URLS.TITLES}/title-1/chapters`, () =>
@@ -46,25 +43,22 @@ describe('chapterService', () => {
 
         it('deve passar parametros de paginacao', async () => {
             server.use(
-                http.get(
-                    `*${API_URLS.TITLES}/title-1/chapters`,
-                    ({ request }) => {
-                        const url = new URL(request.url);
-                        expect(url.searchParams.get('page')).toBe('1');
-                        expect(url.searchParams.get('size')).toBe('25');
-                        return HttpResponse.json({
-                            data: {
-                                content: [],
-                                page: 1,
-                                size: 25,
-                                totalElements: 0,
-                                totalPages: 0,
-                                last: true,
-                            },
-                            success: true,
-                        });
-                    },
-                ),
+                http.get(`*${API_URLS.TITLES}/title-1/chapters`, ({ request }) => {
+                    const url = new URL(request.url);
+                    expect(url.searchParams.get('page')).toBe('1');
+                    expect(url.searchParams.get('size')).toBe('25');
+                    return HttpResponse.json({
+                        data: {
+                            content: [],
+                            page: 1,
+                            size: 25,
+                            totalElements: 0,
+                            totalPages: 0,
+                            last: true,
+                        },
+                        success: true,
+                    });
+                }),
             );
 
             await getChaptersByTitleId('title-1', 1, 25);
@@ -74,26 +68,21 @@ describe('chapterService', () => {
             const captured: string[] = [];
 
             server.use(
-                http.get(
-                    `*${API_URLS.TITLES}/title-1/chapters`,
-                    ({ request }) => {
-                        const url = new URL(request.url);
-                        captured.push(
-                            url.searchParams.get('direction') ?? 'missing',
-                        );
-                        return HttpResponse.json({
-                            data: {
-                                content: [],
-                                page: 0,
-                                size: 20,
-                                totalElements: 0,
-                                totalPages: 0,
-                                last: true,
-                            },
-                            success: true,
-                        });
-                    },
-                ),
+                http.get(`*${API_URLS.TITLES}/title-1/chapters`, ({ request }) => {
+                    const url = new URL(request.url);
+                    captured.push(url.searchParams.get('direction') ?? 'missing');
+                    return HttpResponse.json({
+                        data: {
+                            content: [],
+                            page: 0,
+                            size: 20,
+                            totalElements: 0,
+                            totalPages: 0,
+                            last: true,
+                        },
+                        success: true,
+                    });
+                }),
             );
 
             await getChaptersByTitleId('title-1');
@@ -103,11 +92,7 @@ describe('chapterService', () => {
         });
 
         it('deve propagar erro quando API falha', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES}/title-1/chapters`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}/title-1/chapters`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getChaptersByTitleId('title-1')).rejects.toThrow();
         });
@@ -117,11 +102,7 @@ describe('chapterService', () => {
         it('deve retornar capitulo pelo numero', async () => {
             const chapter = buildChapter({ number: '5', title: 'Capitulo 5' });
 
-            server.use(
-                http.get(`*${API_URLS.TITLES}/title-1/chapters/5`, () =>
-                    HttpResponse.json({ data: chapter, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}/title-1/chapters/5`, () => HttpResponse.json({ data: chapter, success: true })));
 
             const result = await getChapterByNumber('title-1', '5');
 
@@ -130,11 +111,7 @@ describe('chapterService', () => {
         });
 
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.TITLES}/title-1/chapters/5`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.TITLES}/title-1/chapters/5`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getChapterByNumber('title-1', '5')).rejects.toThrow();
         });

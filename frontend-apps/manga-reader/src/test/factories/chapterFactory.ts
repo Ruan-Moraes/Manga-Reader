@@ -21,14 +21,10 @@ export const chapterPresets = {
     shortChapter: () => buildChapter({ pages: '4' }),
     noPages: () => buildChapter({ pages: '0' }),
     releasedToday: () => buildChapter({ releaseDate: '2026-04-11T00:00:00Z' }),
-    releasedLongAgo: () =>
-        buildChapter({ releaseDate: '2018-03-21T00:00:00Z' }),
+    releasedLongAgo: () => buildChapter({ releaseDate: '2018-03-21T00:00:00Z' }),
     upcoming: () => buildChapter({ releaseDate: '2027-12-31T00:00:00Z' }),
     untitled: () => buildChapter({ title: '' }),
     high: () => buildChapter({ number: '999', title: 'Capitulo Final' }),
 };
 
-export const buildChapterList = (count = 10): Chapter[] =>
-    Array.from({ length: count }, (_, index) =>
-        buildChapter({ number: String(index + 1) }),
-    );
+export const buildChapterList = (count = 10): Chapter[] => Array.from({ length: count }, (_, index) => buildChapter({ number: String(index + 1) }));

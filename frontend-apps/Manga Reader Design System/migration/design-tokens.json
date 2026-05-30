@@ -1,0 +1,221 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Manga Reader — Design Tokens. Single source of truth para cores, tipografia, espaçamentos, radii, sombras, breakpoints, z-index e animações. Consumir via Tailwind (theme.extend) ou diretamente via CSS vars (globals.css).",
+  "$meta": {
+    "name": "Manga Reader Design System",
+    "version": "1.0.0",
+    "theme": "dark-only",
+    "lightModeStatus": "não definido — todas as referências dark"
+  },
+
+  "color": {
+    "brand": {
+      "primary":   { "value": "#161616", "description": "Background da página; near-black. Nunca preto puro." },
+      "secondary": { "value": "#252526", "description": "Surface — cards, containers, modals." },
+      "tertiary":  { "value": "#727273", "description": "Mid gray — ícones, disabled text, placeholders, bordas em inputs." },
+      "accent":    { "value": "#ddda2a", "description": "Amarelo-lima. Highlights, CTAs primários, focus rings, glow." },
+      "danger":    { "value": "#FF784F", "description": "Coral. Exclusivo para excluir, sair, avisos destrutivos." },
+      "text":      { "value": "#ffffff", "description": "Texto primário em fundo escuro." }
+    },
+
+    "primaryAlpha": {
+      "80": { "value": "rgba(22, 22, 22, 0.80)" },
+      "75": { "value": "rgba(22, 22, 22, 0.75)", "description": "Overlays e backdrops; usar com blur 4px." }
+    },
+
+    "accentAlpha": {
+      "25": { "value": "rgba(221, 218, 42, 0.25)", "description": "Glow padrão das shadows offset." },
+      "50": { "value": "rgba(221, 218, 42, 0.50)", "description": "Hover de bordas em inputs/cards." },
+      "75": { "value": "rgba(221, 218, 42, 0.75)" }
+    },
+
+    "gray": {
+      "900": { "value": "#1a1a1a", "description": "Editor bg / surface mais profunda que primary." },
+      "800": { "value": "#2d2d2d", "description": "Scrollbar track, code bg." },
+      "700": { "value": "#444444", "description": "Bordas, scrollbar thumb." },
+      "600": { "value": "#555555", "description": "Separators, border hover." },
+      "500": { "value": "#727273", "description": "Mesmo valor de tertiary." },
+      "400": { "value": "#777777", "description": "Placeholder, scrollbar thumb hover." },
+      "300": { "value": "#999999", "description": "Links inativos, metadados." },
+      "200": { "value": "#cccccc", "description": "Subtle text, blockquote." }
+    },
+
+    "semantic": {
+      "bg":            { "value": "{color.brand.primary}" },
+      "surface":       { "value": "{color.brand.secondary}" },
+      "surfaceMuted":  { "value": "{color.gray.900}" },
+      "border":        { "value": "{color.gray.700}" },
+      "borderSubtle":  { "value": "{color.gray.600}" },
+      "fg":            { "value": "{color.brand.text}" },
+      "fgMuted":       { "value": "{color.gray.200}" },
+      "fgSubtle":      { "value": "{color.gray.300}" },
+      "fgDisabled":    { "value": "{color.brand.tertiary}" },
+      "link":          { "value": "{color.brand.accent}" },
+      "focusRing":     { "value": "{color.brand.accent}" },
+
+      "success": { "value": "{color.brand.accent}", "description": "Sucesso reaproveita o accent — não há verde no sistema." },
+      "warning": { "value": "{color.brand.danger}", "description": "Warnings usam o coral." },
+      "error":   { "value": "{color.brand.danger}" },
+      "info":    { "value": "{color.brand.accent}" }
+    },
+
+    "status": {
+      "operating": { "value": "{color.brand.accent}",  "description": "Verde-amarelo de OK; usar com pulse animation." },
+      "degraded":  { "value": "{color.brand.danger}",  "description": "Coral; pulse contínuo." },
+      "down":      { "value": "#FF4444",               "description": "Vermelho saturado; sem pulse, é estado fixo." }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "sans": {
+        "value": "'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+        "description": "Nunito Sans variable — opsz 6–12, wght 200–1000, itálico suportado."
+      },
+      "mono": {
+        "value": "'Fira Code', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace",
+        "description": "Para code, kbd, números técnicos."
+      }
+    },
+
+    "letterSpacing": {
+      "default":  { "value": "0.0625rem", "description": "≈1px. ASSINATURA — aplicado globalmente no body." },
+      "label":    { "value": "0.08em",    "description": "Labels e uppercase metadados." },
+      "logo":     { "value": "1.5px",     "description": "Wordmark do logo." }
+    },
+
+    "fontSize": {
+      "h1":    { "value": "32px", "lineHeight": "1.2",  "weight": 700 },
+      "h2":    { "value": "24px", "lineHeight": "1.25", "weight": 600 },
+      "h3":    { "value": "20px", "lineHeight": "1.3",  "weight": 600 },
+      "h4":    { "value": "16px", "lineHeight": "1.4",  "weight": 600 },
+      "body":  { "value": "14px", "lineHeight": "1.55", "weight": 400, "description": "Body é 14, NÃO 16." },
+      "small": { "value": "12px", "lineHeight": "1.4",  "weight": 400 },
+      "tiny":  { "value": "11px", "lineHeight": "1.3",  "weight": 400 },
+      "label": { "value": "11px", "lineHeight": "1",    "weight": 700, "description": "Uppercase + letterSpacing label." }
+    },
+
+    "fontWeight": {
+      "regular":   { "value": 400 },
+      "semibold":  { "value": 600 },
+      "bold":      { "value": 700 },
+      "extrabold": { "value": 800 }
+    },
+
+    "responsive": {
+      "description": "Em mobile (<768px) headings escalam para ~28/20/18/16 via clamp() ou breakpoints.",
+      "h1Mobile": { "value": "28px" },
+      "h2Mobile": { "value": "20px" },
+      "h3Mobile": { "value": "18px" }
+    }
+  },
+
+  "spacing": {
+    "$description": "Grid de 8px. xs=4 é exceção para gaps de ícone/texto.",
+    "xs":  { "value": "4px"  },
+    "sm":  { "value": "8px"  },
+    "md":  { "value": "16px" },
+    "lg":  { "value": "24px" },
+    "xl":  { "value": "32px" },
+    "2xl": { "value": "48px" },
+    "3xl": { "value": "64px" }
+  },
+
+  "radius": {
+    "$description": "Cantos angulares — muito mais sóbrios que a média de 2025.",
+    "xs":   { "value": "2px",   "description": "Botões, inputs, badges de status. Default do produto." },
+    "sm":   { "value": "4px",   "description": "Elementos secundários." },
+    "md":   { "value": "8px",   "description": "Cards, posters, modals." },
+    "lg":   { "value": "12px",  "description": "Hero sections grandes, avatares-foto." },
+    "full": { "value": "999px", "description": "Badges pills, avatares circulares, progress bars." }
+  },
+
+  "shadow": {
+    "$description": "Sombras offset accent — efeito de tinta offset, NÃO sombras de profundidade. Proibido usar 0 4px 12px rgba(0,0,0,.2) genérico.",
+    "default":  { "value": "0.25rem 0.25rem 0 0 rgba(221, 218, 42, 0.25)",  "description": "Deslocada pra direita-baixo." },
+    "elevated": { "value": "-0.25rem 0.25rem 0 0 rgba(221, 218, 42, 0.25)", "description": "Botões raised. Zera no hover + outline aparece." },
+    "inside":   { "value": "0 0 0.075rem 0.25rem rgba(221, 218, 42, 0.25)", "description": "Glow interno; uso esparso." },
+    "black":    { "value": "0 0 2rem 0.25rem rgba(22, 22, 22, 0.75)",       "description": "Modal/overlay; única sombra escura permitida." }
+  },
+
+  "textShadow": {
+    "default":   { "value": "0.125rem 0.0625rem 0 rgba(22, 22, 22, 0.75)",  "description": "Headings sobre fundo fotográfico." },
+    "highlight": { "value": "0.125rem 0.0625rem 0 rgba(221, 218, 42, 0.25)" }
+  },
+
+  "breakpoint": {
+    "$description": "Mobile-first. Todos os valores em min-width. Os 3 primeiros são específicos do produto.",
+    "mobileSm": { "value": "320px" },
+    "mobileMd": { "value": "375px", "description": "Default mobile." },
+    "mobileLg": { "value": "425px" },
+    "sm":       { "value": "640px" },
+    "md":       { "value": "768px", "description": "Tablet." },
+    "lg":       { "value": "1024px", "description": "Desktop." },
+    "xl":       { "value": "1280px", "description": "Wide." },
+    "2xl":      { "value": "1536px" }
+  },
+
+  "zIndex": {
+    "base":     { "value": 0 },
+    "above":    { "value": 1 },
+    "header":   { "value": 10, "description": "NavBar sticky." },
+    "footer":   { "value": 10 },
+    "mobileTab":{ "value": 15, "description": "Tab bar mobile." },
+    "dropdown": { "value": 20 },
+    "drawer":   { "value": 40 },
+    "modal":    { "value": 50 },
+    "toast":    { "value": 60 },
+    "tooltip":  { "value": 70 }
+  },
+
+  "motion": {
+    "duration": {
+      "instant": { "value": "0ms" },
+      "fast":    { "value": "150ms" },
+      "default": { "value": "300ms", "description": "Duração canônica de todas as transições do produto." },
+      "slow":    { "value": "500ms", "description": "Reservado para scrollbar hover e raros casos lentos." }
+    },
+    "easing": {
+      "default": { "value": "ease",         "description": "Padrão do navegador. Simples e consistente." },
+      "in":      { "value": "ease-in" },
+      "out":     { "value": "ease-out" },
+      "inOut":   { "value": "ease-in-out" }
+    },
+    "$rules": [
+      "Sem spring. Sem bounce. Tom é contido.",
+      "Propriedades comumente animadas: opacity, border-color, background-color, box-shadow, transform: scale(.98) em :active.",
+      "Sempre embrulhar animações dentro de @media (prefers-reduced-motion: no-preference) ou Tailwind motion-safe:."
+    ]
+  },
+
+  "blur": {
+    "default": { "value": "4px", "description": "Backdrop blur dos overlays. Sempre 4px." },
+    "heavy":   { "value": "10px" }
+  },
+
+  "border": {
+    "width": {
+      "default":   { "value": "1px" },
+      "emphasis":  { "value": "2px", "description": "Header bottom, footer top, divisores fortes." },
+      "kbd":       { "value": "2px", "description": "border-bottom de elementos <kbd>." }
+    }
+  },
+
+  "opacity": {
+    "hover":    { "value": 0.8,  "description": "Hover de links e ícones." },
+    "disabled": { "value": 0.4 }
+  },
+
+  "iconSize": {
+    "xs": { "value": "12px", "description": "Inline em texto, badges." },
+    "sm": { "value": "16px", "description": "Botões pequenos, metadados." },
+    "md": { "value": "20px", "description": "Botões padrão, ações." },
+    "lg": { "value": "24px", "description": "Nav, headers." },
+    "xl": { "value": "28px", "description": "Menu aberto, ilustrações iconográficas." }
+  },
+
+  "container": {
+    "maxWidth": { "value": "1240px", "description": "Largura máxima do conteúdo principal." },
+    "footer":   { "value": "1320px" }
+  }
+}

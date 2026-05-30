@@ -12,13 +12,8 @@ export type PublishWorkRequest = {
     message: string;
 };
 
-export const submitPublishWorkContact = async (
-    data: PublishWorkRequest,
-): Promise<string> => {
-    const response = await api.post<ApiResponse<string>>(
-        API_URLS.CONTACT_PUBLISH_WORK,
-        data,
-    );
+export const submitPublishWorkContact = async (data: PublishWorkRequest): Promise<string> => {
+    const response = await api.post<ApiResponse<string>>(API_URLS.CONTACT_PUBLISH_WORK, data);
 
     return response.data.data;
 };

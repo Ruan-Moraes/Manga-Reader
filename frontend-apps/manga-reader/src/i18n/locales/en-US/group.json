@@ -29,7 +29,26 @@
         "avatarAlt": "Avatar of {{name}}",
         "officialSite": "Official site",
         "supporters_one": "{{count}} supporter",
-        "supporters_other": "{{count}} supporters"
+        "supporters_other": "{{count}} supporters",
+        "verifiedAria": "Verified",
+        "statusActive": "Active",
+        "statusHiatus": "On hiatus",
+        "statusInactive": "Inactive",
+        "follow": "Follow",
+        "following": "Following",
+        "share": "Share",
+        "tabs": {
+            "works": "Works",
+            "activity": "Activity",
+            "members": "Members",
+            "about": "About"
+        },
+        "stats": {
+            "followers": "Followers",
+            "works": "Works",
+            "chapters": "Chapters",
+            "avgDays": "Days between chapters"
+        }
     },
     "modal": {
         "title": "Translation Groups",
@@ -44,6 +63,29 @@
         "noTitle": "No linked work",
         "searchPlaceholder": "Search member",
         "membersHeader": "{{name}} • {{count}} members"
+    },
+    "page": {
+        "eyebrow": "Community",
+        "title": "Scan groups",
+        "meta": "{{count}} groups",
+        "claimGroup": "Claim group"
+    },
+    "filters": {
+        "searchPlaceholder": "Search group...",
+        "sortMostActive": "Most active",
+        "sortMostFollowers": "Most followers",
+        "sortMostWorks": "Most works",
+        "sortBestRated": "Best rated",
+        "statusAll": "All",
+        "statusActive": "Active",
+        "statusHiatus": "On hiatus",
+        "statusInactive": "Inactive"
+    },
+    "list": {
+        "empty": "No groups found",
+        "emptyDesc": "Try other terms or remove the filters.",
+        "featured": "Featured",
+        "allGroups": "All groups"
     },
     "listing": {
         "title": "Translation Groups",
@@ -62,8 +104,13 @@
     "profile": {
         "notFoundTitle": "Group not found",
         "notFoundMessage": "Could not locate the requested profile.",
+        "notFoundDesc": "It may have been removed or the link is wrong.",
         "backToGroups": "Back to Groups",
+        "backToGroupsShort": "Back to groups",
         "aboutTitle": "About the group",
+        "chapterPublished": "Chapter {{chapter}} published",
+        "languagesTitle": "Languages",
+        "findUs": "Where to find us",
         "foundationInfo": "Founded: {{year}} • Joined the platform: {{joinedAt}}",
         "translatedWorks": "Translated works",
         "sortPopularity": "Popularity",

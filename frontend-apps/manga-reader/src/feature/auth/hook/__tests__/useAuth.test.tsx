@@ -35,10 +35,7 @@ describe('useAuth', () => {
 
         server.use(
             http.get('*/api/auth/me', () => {
-                return HttpResponse.json(
-                    { success: false, message: 'Unauthorized' },
-                    { status: 401 },
-                );
+                return HttpResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
             }),
         );
 
@@ -92,10 +89,7 @@ describe('useAuth', () => {
     it('deve lançar erro quando credenciais estão incorretas', async () => {
         server.use(
             http.post('*/api/auth/sign-in', () => {
-                return HttpResponse.json(
-                    { success: false, message: 'Invalid credentials' },
-                    { status: 401 },
-                );
+                return HttpResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
             }),
         );
 
@@ -133,10 +127,7 @@ describe('useAuth', () => {
     it('deve lançar erro quando email já existe no registro', async () => {
         server.use(
             http.post('*/api/auth/sign-up', () => {
-                return HttpResponse.json(
-                    { success: false, message: 'Email already in use' },
-                    { status: 409 },
-                );
+                return HttpResponse.json({ success: false, message: 'Email already in use' }, { status: 409 });
             }),
         );
 

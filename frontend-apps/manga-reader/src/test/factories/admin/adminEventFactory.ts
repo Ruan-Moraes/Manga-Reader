@@ -8,9 +8,7 @@ const loc = (value: string): LocalizedString => ({ 'pt-BR': value });
 
 let adminEventCounter = 0;
 
-export const buildAdminEvent = (
-    overrides: Partial<AdminEvent> = {},
-): AdminEvent => {
+export const buildAdminEvent = (overrides: Partial<AdminEvent> = {}): AdminEvent => {
     adminEventCounter += 1;
 
     return {
@@ -40,15 +38,13 @@ export const buildAdminEvent = (
 };
 
 export const adminEventPresets = {
-    happeningNow: () =>
-        buildAdminEvent({ status: 'happening_now', timeline: 'ongoing' }),
+    happeningNow: () => buildAdminEvent({ status: 'happening_now', timeline: 'ongoing' }),
     registrationsOpen: () =>
         buildAdminEvent({
             status: 'registrations_open',
             timeline: 'upcoming',
         }),
-    comingSoon: () =>
-        buildAdminEvent({ status: 'coming_soon', timeline: 'upcoming' }),
+    comingSoon: () => buildAdminEvent({ status: 'coming_soon', timeline: 'upcoming' }),
     ended: () => buildAdminEvent({ status: 'ended', timeline: 'past' }),
 
     online: () =>
@@ -85,11 +81,6 @@ export const adminEventPresets = {
     massive: () => buildAdminEvent({ participants: 50000, interested: 200000 }),
 };
 
-export const buildAdminEventList = (count = 10): AdminEvent[] =>
-    Array.from({ length: count }, () => buildAdminEvent());
+export const buildAdminEventList = (count = 10): AdminEvent[] => Array.from({ length: count }, () => buildAdminEvent());
 
-export const buildAdminEventPage = (
-    items: AdminEvent[] = buildAdminEventList(),
-    page = 0,
-    size = 20,
-): PageResponse<AdminEvent> => buildPage(items, page, size);
+export const buildAdminEventPage = (items: AdminEvent[] = buildAdminEventList(), page = 0, size = 20): PageResponse<AdminEvent> => buildPage(items, page, size);

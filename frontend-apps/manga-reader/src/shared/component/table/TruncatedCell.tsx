@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import BaseModal from '@shared/component/modal/base/BaseModal';
+import { Modal } from '@ui/Modal';
 
 type TruncatedCellProps = {
     content: string;
@@ -8,11 +8,7 @@ type TruncatedCellProps = {
     title?: string;
 };
 
-const TruncatedCell = ({
-    content,
-    maxLength = 80,
-    title = 'Detalhes',
-}: TruncatedCellProps) => {
+const TruncatedCell = ({ content, maxLength = 80, title = 'Detalhes' }: TruncatedCellProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     if (!content || content.length <= maxLength) {
@@ -35,23 +31,9 @@ const TruncatedCell = ({
                 </button>
             </span>
 
-            <BaseModal isModalOpen={isOpen} closeModal={() => setIsOpen(false)}>
-                <div className="flex flex-col gap-3 p-2">
-                    <h3 className="text-sm font-bold">{title}</h3>
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">
-                        {content}
-                    </p>
-                    <div className="flex justify-end">
-                        <button
-                            type="button"
-                            onClick={() => setIsOpen(false)}
-                            className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30 transition-colors"
-                        >
-                            Fechar
-                        </button>
-                    </div>
-                </div>
-            </BaseModal>
+            <Modal open={isOpen} onClose={() => setIsOpen(false)} title={title}>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{content}</p>
+            </Modal>
         </>
     );
 };

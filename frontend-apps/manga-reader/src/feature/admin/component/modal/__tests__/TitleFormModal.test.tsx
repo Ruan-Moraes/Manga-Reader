@@ -12,14 +12,7 @@ vi.mock('react-i18next', () => ({
 describe('TitleFormModal', () => {
     it('emits payload with nameI18n + synopsisI18n', () => {
         const onSubmit = vi.fn();
-        render(
-            <TitleFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<TitleFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const inputs = screen.getAllByRole('textbox');
         // first textbox = LocalizedTextInput (nameI18n) pt-BR slot
@@ -32,14 +25,7 @@ describe('TitleFormModal', () => {
     });
 
     it('disables submit when name empty', () => {
-        render(
-            <TitleFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={() => {}}
-                isSubmitting={false}
-            />,
-        );
+        render(<TitleFormModal isOpen onClose={() => {}} onSubmit={() => {}} isSubmitting={false} />);
         expect((screen.getByText('Salvar') as HTMLButtonElement).disabled).toBe(true);
     });
 });

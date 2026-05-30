@@ -1,13 +1,13 @@
 import { useRef } from 'react';
-import { FaUpload } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 
 import useEasyMDE from '../hook/internal/useEasyMDE';
 import { COMPACT_TOOLBAR } from '../hook/internal/useEasyMDE';
 import useCommentImageUpload from '../hook/internal/useCommentImageUpload';
 
-import BadgeIconButton from '@shared/component/button/BadgeIconButton';
-import DarkButton from '@shared/component/button/DarkButton';
+import { IconButton } from '@ui/IconButton';
+import { Button } from '@ui/Button';
+import { Upload } from 'lucide-react';
 
 type InlineReplyInputProps = {
     onSubmit: (textContent: string | null, imageContent: string | null) => void;
@@ -39,12 +39,8 @@ const InlineReplyInput = ({ onSubmit, onCancel }: InlineReplyInputProps) => {
             {images.length > 0 && (
                 <div className="flex flex-wrap gap-2 px-2 pb-2">
                     {images.map((src, i) => (
-                        <div key={i} className="relative inline-block">
-                            <img
-                                src={src}
-                                alt={t('actions.imageAlt', { index: i + 1 })}
-                                className="object-cover rounded-xs max-h-[10rem]"
-                            />
+                        <div key={src} className="relative inline-block">
+                            <img src={src} alt={t('actions.imageAlt', { index: i + 1 })} className="object-cover rounded-xs max-h-[10rem]" />
                             <button
                                 type="button"
                                 onClick={() => removeImage(i)}
@@ -59,13 +55,15 @@ const InlineReplyInput = ({ onSubmit, onCancel }: InlineReplyInputProps) => {
             )}
             <div className="flex items-stretch justify-between p-2 border-t border-t-tertiary">
                 <div className="flex items-center gap-2">
-                    <BadgeIconButton onClick={addImage}>
-                        <FaUpload />
-                    </BadgeIconButton>
+                    <IconButton icon={Upload} aria-label="Upload image" onClick={addImage} variant="ghost" />
                 </div>
                 <div className="flex gap-2">
-                    <DarkButton onClick={onCancel} text={t('reply.cancel')} />
-                    <DarkButton onClick={handleSubmit} text={t('reply.action')} />
+                    <Button variant="ghost" size="sm" onClick={onCancel}>
+                        {t('reply.cancel')}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={handleSubmit}>
+                        {t('reply.action')}
+                    </Button>
                 </div>
             </div>
         </div>

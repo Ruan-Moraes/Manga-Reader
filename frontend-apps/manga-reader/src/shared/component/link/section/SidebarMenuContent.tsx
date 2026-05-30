@@ -3,11 +3,7 @@ import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import {
-    IoLogOutOutline,
-    IoSettingsOutline,
-    IoTrashOutline,
-} from 'react-icons/io5';
+import { IoLogOutOutline, IoSettingsOutline, IoTrashOutline } from 'react-icons/io5';
 
 import UserSettingsModal from '@shared/component/modal/settings/UserSettingsModal';
 import { clearCache } from '@shared/service/util/queryCache';
@@ -40,43 +36,23 @@ type MenuItem = {
     badge?: string;
 };
 
-const sectionTitleClass =
-    'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-quaternary-default';
+const sectionTitleClass = 'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-quaternary-default';
 
 const menuItemClass =
     'flex items-center justify-between px-3 py-2 rounded-xs text-sm font-medium transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default';
 
-const MenuNavLink = ({
-    label,
-    link,
-    badge,
-    onNavigate,
-}: MenuItem & { onNavigate: () => void }) => {
+const MenuNavLink = ({ label, link, badge, onNavigate }: MenuItem & { onNavigate: () => void }) => {
     return (
-        <Link
-            to={`${WEB_BASE_URL}${link}`}
-            className={menuItemClass}
-            onClick={onNavigate}
-        >
+        <Link to={`${WEB_BASE_URL}${link}`} className={menuItemClass} onClick={onNavigate}>
             <span>{label}</span>
-            {badge && (
-                <span className="px-2 py-0.5 text-[0.68rem] font-semibold rounded-xs bg-secondary border border-tertiary text-tertiary">
-                    {badge}
-                </span>
-            )}
+            {badge && <span className="px-2 py-0.5 text-[0.68rem] font-semibold rounded-xs bg-secondary border border-tertiary text-tertiary">{badge}</span>}
         </Link>
     );
 };
 
-const SidebarMenuContent = ({
-    profile,
-    isLoggedIn,
-    onLogout,
-    onNavigate,
-}: MenuLinkBlockProps) => {
+const SidebarMenuContent = ({ profile, isLoggedIn, onLogout, onNavigate }: MenuLinkBlockProps) => {
     const { t } = useTranslation('layout');
-    const [isUserSettingsOpen, setIsUserSettingsOpen] =
-        useState<boolean>(false);
+    const [isUserSettingsOpen, setIsUserSettingsOpen] = useState<boolean>(false);
 
     const feedItems: MenuItem[] = [
         { label: t('sidebar.feed.home'), link: '/' },
@@ -125,14 +101,10 @@ const SidebarMenuContent = ({
         { label: t('sidebar.community.forum'), link: '/forum' },
     ];
 
-    const settingsItems: MenuItem[] = [
-        { label: t('sidebar.user.profile'), link: '/profile' },
-    ];
+    const settingsItems: MenuItem[] = [{ label: t('sidebar.user.profile'), link: '/profile' }];
 
     const roleItems: MenuItem[] = [
-        ...(profile.isPoster || profile.isAdmin
-            ? [{ label: t('sidebar.admin.dashboard'), link: '/dashboard' }]
-            : []),
+        ...(profile.isPoster || profile.isAdmin ? [{ label: t('sidebar.admin.dashboard'), link: '/dashboard' }] : []),
         ...(profile.isAdmin
             ? [
                   {
@@ -164,32 +136,15 @@ const SidebarMenuContent = ({
             <div className="flex flex-col gap-2 p-3 border rounded-xs border-tertiary bg-secondary/40">
                 {isLoggedIn ? (
                     <>
-                        <p className={sectionTitleClass}>
-                            {t('sidebar.section.account')}
-                        </p>
-                        <p className="text-sm font-semibold">
-                            {profile.fullName}
-                        </p>
-                        <p className="text-xs text-tertiary">
-                            {profile.email?.replace(
-                                /(.{4}).*(@.*)/,
-                                '$1••••$2',
-                            )}
-                        </p>
-                        {profile.planBadge && (
-                            <p className="text-xs font-semibold text-quaternary-default">
-                                {profile.planBadge}
-                            </p>
-                        )}
+                        <p className={sectionTitleClass}>{t('sidebar.section.account')}</p>
+                        <p className="text-sm font-semibold">{profile.fullName}</p>
+                        <p className="text-xs text-tertiary">{profile.email?.replace(/(.{4}).*(@.*)/, '$1••••$2')}</p>
+                        {profile.planBadge && <p className="text-xs font-semibold text-quaternary-default">{profile.planBadge}</p>}
                     </>
                 ) : (
                     <>
-                        <p className={sectionTitleClass}>
-                            {t('sidebar.section.welcome')}
-                        </p>
-                        <p className="text-sm font-semibold">
-                            {t('sidebar.welcomeMessage')}
-                        </p>
+                        <p className={sectionTitleClass}>{t('sidebar.section.welcome')}</p>
+                        <p className="text-sm font-semibold">{t('sidebar.welcomeMessage')}</p>
                         <div className="flex gap-2 pt-1">
                             <Link
                                 to={`${WEB_BASE_URL}/login`}
@@ -211,72 +166,42 @@ const SidebarMenuContent = ({
             </div>
 
             <section className="flex flex-col gap-1.5">
-                <h3 className={sectionTitleClass}>
-                    {t('sidebar.section.feed')}
-                </h3>
+                <h3 className={sectionTitleClass}>{t('sidebar.section.feed')}</h3>
                 {feedItems.map(item => (
-                    <MenuNavLink
-                        key={item.label}
-                        {...item}
-                        onNavigate={onNavigate}
-                    />
+                    <MenuNavLink key={item.label} {...item} onNavigate={onNavigate} />
                 ))}
             </section>
 
             {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>
-                        {t('sidebar.section.library')}
-                    </h3>
+                    <h3 className={sectionTitleClass}>{t('sidebar.section.library')}</h3>
                     {libraryItems.map(item => (
-                        <MenuNavLink
-                            key={item.label}
-                            {...item}
-                            onNavigate={onNavigate}
-                        />
+                        <MenuNavLink key={item.label} {...item} onNavigate={onNavigate} />
                     ))}
                 </section>
             )}
 
             <section className="flex flex-col gap-1.5">
-                <h3 className={sectionTitleClass}>
-                    {t('sidebar.section.community')}
-                </h3>
+                <h3 className={sectionTitleClass}>{t('sidebar.section.community')}</h3>
                 {communityItems.map(item => (
-                    <MenuNavLink
-                        key={item.label}
-                        {...item}
-                        onNavigate={onNavigate}
-                    />
+                    <MenuNavLink key={item.label} {...item} onNavigate={onNavigate} />
                 ))}
             </section>
 
             {isLoggedIn && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>
-                        {t('sidebar.section.user')}
-                    </h3>
+                    <h3 className={sectionTitleClass}>{t('sidebar.section.user')}</h3>
                     {settingsItems.map(item => (
-                        <MenuNavLink
-                            key={item.label}
-                            {...item}
-                            onNavigate={onNavigate}
-                        />
+                        <MenuNavLink key={item.label} {...item} onNavigate={onNavigate} />
                     ))}
                 </section>
             )}
 
             {(profile.isPoster || profile.isAdmin) && (
                 <section className="flex flex-col gap-1.5">
-                    <h3 className={sectionTitleClass}>
-                        {t('sidebar.section.panel')}
-                    </h3>
+                    <h3 className={sectionTitleClass}>{t('sidebar.section.panel')}</h3>
                     {roleItems.map(item => (
-                        <MenuNavLink
-                            key={item.label}
-                            {...item}
-                            onNavigate={onNavigate}
-                        />
+                        <MenuNavLink key={item.label} {...item} onNavigate={onNavigate} />
                     ))}
                 </section>
             )}
@@ -309,11 +234,7 @@ const SidebarMenuContent = ({
                 )}
             </div>
 
-            <UserSettingsModal
-                isOpen={isUserSettingsOpen}
-                onClose={() => setIsUserSettingsOpen(false)}
-                isLoggedIn={isLoggedIn}
-            />
+            <UserSettingsModal isOpen={isUserSettingsOpen} onClose={() => setIsUserSettingsOpen(false)} isLoggedIn={isLoggedIn} />
         </div>
     );
 };

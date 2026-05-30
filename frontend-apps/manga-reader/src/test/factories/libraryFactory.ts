@@ -1,15 +1,8 @@
-import type {
-    LibraryCounts,
-    ReadingListType,
-    SavedMangaItem,
-    UserSavedLibrary,
-} from '@feature/library/type/saved-library.types';
+import type { LibraryCounts, ReadingListType, SavedMangaItem, UserSavedLibrary } from '@feature/library/type/saved-library.types';
 
 let savedMangaCounter = 0;
 
-export const buildSavedMangaItem = (
-    overrides: Partial<SavedMangaItem> = {},
-): SavedMangaItem => {
+export const buildSavedMangaItem = (overrides: Partial<SavedMangaItem> = {}): SavedMangaItem => {
     savedMangaCounter += 1;
 
     return {
@@ -44,14 +37,10 @@ export const savedMangaPresets = {
 
 export const buildSavedMangaList = (count = 10): SavedMangaItem[] => {
     const lists: ReadingListType[] = ['Lendo', 'Quero Ler', 'Concluído'];
-    return Array.from({ length: count }, (_, i) =>
-        buildSavedMangaItem({ list: lists[i % 3] }),
-    );
+    return Array.from({ length: count }, (_, i) => buildSavedMangaItem({ list: lists[i % 3] }));
 };
 
-export const buildUserSavedLibrary = (
-    overrides: Partial<UserSavedLibrary> = {},
-): UserSavedLibrary => ({
+export const buildUserSavedLibrary = (overrides: Partial<UserSavedLibrary> = {}): UserSavedLibrary => ({
     userId: 'user-1',
     name: 'Usuario Teste',
     savedMangas: buildSavedMangaList(),
@@ -63,15 +52,11 @@ export const userSavedLibraryPresets = {
     full: () => buildUserSavedLibrary({ savedMangas: buildSavedMangaList(50) }),
     onlyLendo: () =>
         buildUserSavedLibrary({
-            savedMangas: Array.from({ length: 5 }, () =>
-                buildSavedMangaItem({ list: 'Lendo' }),
-            ),
+            savedMangas: Array.from({ length: 5 }, () => buildSavedMangaItem({ list: 'Lendo' })),
         }),
 };
 
-export const buildLibraryCounts = (
-    overrides: Partial<LibraryCounts> = {},
-): LibraryCounts => ({
+export const buildLibraryCounts = (overrides: Partial<LibraryCounts> = {}): LibraryCounts => ({
     lendo: 10,
     queroLer: 25,
     concluido: 12,
@@ -80,8 +65,7 @@ export const buildLibraryCounts = (
 });
 
 export const libraryCountsPresets = {
-    empty: (): LibraryCounts =>
-        buildLibraryCounts({ lendo: 0, queroLer: 0, concluido: 0, total: 0 }),
+    empty: (): LibraryCounts => buildLibraryCounts({ lendo: 0, queroLer: 0, concluido: 0, total: 0 }),
     balanced: (): LibraryCounts =>
         buildLibraryCounts({
             lendo: 10,
@@ -89,8 +73,7 @@ export const libraryCountsPresets = {
             concluido: 10,
             total: 30,
         }),
-    onlyLendo: (): LibraryCounts =>
-        buildLibraryCounts({ lendo: 7, queroLer: 0, concluido: 0, total: 7 }),
+    onlyLendo: (): LibraryCounts => buildLibraryCounts({ lendo: 7, queroLer: 0, concluido: 0, total: 7 }),
     onlyConcluido: (): LibraryCounts =>
         buildLibraryCounts({
             lendo: 0,

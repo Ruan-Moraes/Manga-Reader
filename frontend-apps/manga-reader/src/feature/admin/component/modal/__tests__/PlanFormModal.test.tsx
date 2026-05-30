@@ -15,14 +15,7 @@ vi.mock('react-i18next', () => ({
 describe('PlanFormModal', () => {
     it('emits descriptionI18n + featuresI18n on submit', () => {
         const onSubmit = vi.fn();
-        render(
-            <PlanFormModal
-                isOpen
-                onClose={() => {}}
-                onSubmit={onSubmit}
-                isSubmitting={false}
-            />,
-        );
+        render(<PlanFormModal isOpen onClose={() => {}} onSubmit={onSubmit} isSubmitting={false} />);
 
         const priceInput = screen.getByRole('spinbutton');
         fireEvent.change(priceInput, { target: { value: '19.90' } });

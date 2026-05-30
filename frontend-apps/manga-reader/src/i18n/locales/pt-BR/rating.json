@@ -31,6 +31,9 @@
     "myReviews": {
         "title": "Minhas Avaliações",
         "subtitle": "Edite ou remova seus reviews a qualquer momento.",
+        "eyebrow": "Sua conta",
+        "emptyDesc": "Avalie uma obra e ela aparecerá aqui.",
+        "discoverWorks": "Descobrir obras",
         "workPlaceholder": "Obra #{{id}}",
         "saving": "Salvando...",
         "save": "Salvar",

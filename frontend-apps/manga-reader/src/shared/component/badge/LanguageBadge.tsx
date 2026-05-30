@@ -19,10 +19,7 @@ const LanguageBadge: FC<Props> = ({ language }) => {
     if (!language) return null;
     const cls = COLORS[language] ?? 'bg-tertiary/30 text-tertiary';
     return (
-        <span
-            className={`inline-block px-1.5 py-0.5 text-[10px] font-mono rounded-xs ${cls}`}
-            title={`Posted in ${language}`}
-        >
+        <span className={`inline-block px-1.5 py-0.5 text-[10px] font-mono rounded-xs ${cls}`} title={`Posted in ${language}`}>
             {language}
         </span>
     );

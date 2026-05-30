@@ -1,0 +1,444 @@
+{
+    "shell": {
+        "eyebrow": "Documentos legales",
+        "updated": "Actualizado el {{date}}",
+        "language": "Portugués (BR)",
+        "tabsAriaLabel": "Documentos legales",
+        "tocAriaLabel": "Índice",
+        "tocHeading": "En este documento",
+        "tabs": {
+            "terms": "Términos",
+            "privacy": "Privacidad",
+            "dmca": "DMCA",
+            "contact": "Contacto"
+        }
+    },
+    "section": {
+        "tldrLabel": "En resumen"
+    },
+    "crossLinks": {
+        "heading": "Otros documentos",
+        "ariaLabel": "Otros documentos",
+        "pages": {
+            "terms": {
+                "label": "Términos de uso",
+                "desc": "Reglas de uso de la plataforma"
+            },
+            "privacy": {
+                "label": "Política de Privacidad",
+                "desc": "Cómo tratamos tus datos personales"
+            },
+            "dmca": {
+                "label": "DMCA / Derechos de autor",
+                "desc": "Procedimiento de retirada de contenido"
+            },
+            "contact": {
+                "label": "Contactos",
+                "desc": "Canales y formulario de contacto"
+            }
+        }
+    },
+    "terms": {
+        "title": "Términos de uso",
+        "sub": "Las reglas de convivencia, los límites del servicio y tus derechos como usuario de la plataforma.",
+        "updated": "01/01/2025",
+        "version": "v1.0",
+        "toc": {
+            "aceite": "01. Aceptación y quiénes somos",
+            "conta": "02. Tu cuenta",
+            "uso": "03. Uso del servicio",
+            "comunidade": "04. Contenido de la comunidad",
+            "direitos-autorais": "05. Derechos de autor",
+            "pagamentos": "06. Apoyo y pagos",
+            "encerramento": "07. Cierre de cuenta",
+            "isencoes": "08. Exenciones y límites",
+            "mudancas": "09. Cambios en estos términos",
+            "lei": "10. Ley aplicable y jurisdicción"
+        },
+        "sections": {
+            "aceite": {
+                "title": "Aceptación y quiénes somos",
+                "tldr": "Al usar Manga Reader, aceptas estos términos. Somos una plataforma de lectura y descubrimiento de manga, manhwa y manhua.",
+                "p1": "Estos Términos de Uso rigen el acceso y la utilización de Manga Reader, plataforma operada por Manga Reader Tecnologia Ltda. (\"nosotros\", \"nuestro\" o \"Manga Reader\"), con sede en Brasil.",
+                "p2": "Al crear una cuenta, acceder o utilizar cualquier parte del servicio, declaras que has leído, entendido y aceptas quedar vinculado a estos Términos y a nuestra Política de Privacidad. Si no estás de acuerdo con alguna parte, no utilices el servicio.",
+                "p3": "Manga Reader es una plataforma de lectura, descubrimiento y discusión de cómics asiáticos — manga, manhwa y manhua — disponibles gracias a grupos de traducción asociados y a los propios autores."
+            },
+            "conta": {
+                "title": "Tu cuenta",
+                "tldr": "Eres responsable de la seguridad de tu cuenta. Mantén tu contraseña segura y avísanos si detectas accesos no autorizados.",
+                "p1": "Para acceder a funciones avanzadas de Manga Reader debes crear una cuenta proporcionando una dirección de correo electrónico válida y una contraseña. Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades realizadas en tu cuenta.",
+                "p2": "Debes tener al menos 13 años para crear una cuenta. Al registrarte, confirmas que la información proporcionada es verdadera, precisa, actual y completa. Las cuentas falsas o creadas mediante automatización serán eliminadas sin previo aviso.",
+                "p3": "Notifícanos inmediatamente en caso de sospecha de uso no autorizado de tu cuenta a través de los canales de soporte disponibles en <strong>/legal/contact</strong>."
+            },
+            "uso": {
+                "title": "Uso del servicio",
+                "tldr": "Usa el servicio de forma responsable y legal. No intentes saltarte restricciones ni perjudicar a otros usuarios.",
+                "p1": "Aceptas usar Manga Reader solo con fines lícitos y de acuerdo con estos Términos. Está prohibido: violar leyes aplicables, infringir derechos de terceros, transmitir virus o código malicioso, intentar acceder a sistemas no autorizados, realizar scraping automatizado sin permiso o cualquier forma de acoso.",
+                "p2": "Nos reservamos el derecho a cerrar o suspender cuentas que violen estos Términos, a nuestra exclusiva discreción y sin necesidad de previo aviso en casos graves."
+            },
+            "comunidade": {
+                "title": "Contenido de la comunidad",
+                "tldr": "Lo que publicas es tu responsabilidad. El contenido que viole las reglas puede ser eliminado.",
+                "p1": "Manga Reader permite a los usuarios publicar comentarios, valoraciones, temas en el foro y otras formas de contenido generado por el usuario (\"CGU\"). Eres el único responsable del CGU que publicas y declaras tener los derechos necesarios para hacerlo.",
+                "p2": "Está prohibido publicar contenido que sea: difamatorio, obsceno, invasivo de la privacidad, incitador al odio o la violencia, o que infrinja derechos de autor de terceros. Nos reservamos el derecho a eliminar CGU que viole estas directrices sin previo aviso.",
+                "p3": "Al publicar CGU en la plataforma, nos otorgas una licencia no exclusiva, libre de regalías y mundial para usar, reproducir, modificar y mostrar el contenido en conexión con el servicio."
+            },
+            "direitos-autorais": {
+                "title": "Derechos de autor",
+                "tldr": "Respetamos los derechos de los creadores. Si eres titular de derechos e identificaste una infracción, consulta nuestra política DMCA.",
+                "p1": "Manga Reader respeta los derechos de propiedad intelectual y espera que los usuarios hagan lo mismo. El contenido disponible en la plataforma por grupos de traducción asociados debe cumplir con las licencias aplicables.",
+                "p2": "Si crees que tu contenido ha sido publicado violando tus derechos de autor, consulta nuestra Política DMCA en <strong>/legal/dmca</strong> para el procedimiento de solicitud de retirada."
+            },
+            "pagamentos": {
+                "title": "Apoyo y pagos",
+                "tldr": "Los pagos son procesados por terceros. Las suscripciones se renuevan automáticamente salvo cancelación anticipada.",
+                "p1": "Manga Reader puede ofrecer funciones premium mediante pago. Todos los pagos son procesados por proveedores externos (como Stripe o Mercado Pago). Los precios están sujetos a cambios con aviso previo de 30 días.",
+                "p2": "Las suscripciones recurrentes se renuevan automáticamente al final del periodo contratado, salvo cancelación realizada con al menos 24 horas de antelación. Los reembolsos se evalúan caso por caso conforme al Código de Defensa del Consumidor brasileño."
+            },
+            "encerramento": {
+                "title": "Cierre de cuenta",
+                "tldr": "Puedes cerrar tu cuenta en cualquier momento. Podemos suspender cuentas que violen estos términos.",
+                "p1": "Puedes cerrar tu cuenta en cualquier momento a través de las configuraciones de perfil. Al hacerlo, tus datos personales serán tratados conforme a nuestra Política de Privacidad.",
+                "p2": "Podemos cerrar o suspender tu acceso inmediatamente, sin previo aviso, si violas estos Términos de Uso. Algunas cláusulas sobrevivirán al cierre, incluyendo las relativas a propiedad intelectual, exenciones y limitaciones de responsabilidad."
+            },
+            "isencoes": {
+                "title": "Exenciones y límites de responsabilidad",
+                "tldr": "El servicio se proporciona 'tal cual'. Nuestra responsabilidad está limitada al máximo permitido por la ley.",
+                "p1": "MANGA READER SE PROPORCIONA \"TAL CUAL\" Y \"SEGÚN DISPONIBILIDAD\", SIN GARANTÍAS DE NINGÚN TIPO, EXPRESAS O IMPLÍCITAS. NO GARANTIZAMOS QUE EL SERVICIO SEA ININTERRUMPIDO, SEGURO O LIBRE DE ERRORES.",
+                "p2": "En la máxima medida permitida por la ley aplicable, Manga Reader no será responsable de daños indirectos, incidentales, especiales, consecuentes o punitivos, incluidos pérdida de beneficios, datos u otros daños intangibles, derivados del uso o la imposibilidad de uso del servicio."
+            },
+            "mudancas": {
+                "title": "Cambios en estos términos",
+                "tldr": "Podemos actualizar estos términos. Te notificaremos por correo o aviso en la plataforma con 15 días de antelación.",
+                "p1": "Nos reservamos el derecho a modificar estos Términos en cualquier momento. Los cambios materiales serán comunicados con al menos 15 días de antelación vía correo registrado o aviso destacado en la plataforma.",
+                "p2": "El uso continuado del servicio después de la entrada en vigor de los cambios constituye aceptación de los nuevos términos. Si no estás de acuerdo con los cambios, debes cerrar tu cuenta antes de la fecha de vigencia."
+            },
+            "lei": {
+                "title": "Ley aplicable y jurisdicción",
+                "tldr": "Estos términos se rigen por la ley brasileña. Los conflictos se resolverán en el fuero de São Paulo/SP.",
+                "p1": "Estos Términos se rigen e interpretan de acuerdo con las leyes de la República Federativa de Brasil. Cualquier disputa derivada de estos Términos se someterá al fuero de la Comarca de São Paulo, Estado de São Paulo, con exclusión de cualquier otro, por más privilegiado que sea.",
+                "p2": "Las partes acuerdan intentar resolver disputas de buena fe antes de recurrir al poder judicial, a través de los canales de soporte disponibles en la plataforma."
+            }
+        },
+        "footerCard": {
+            "title": "¿Algo quedó confuso?",
+            "desc": "Nuestro equipo está disponible para resolver dudas.",
+            "cta": "Hablar con el equipo"
+        }
+    },
+    "privacy": {
+        "title": "Política de Privacidad",
+        "sub": "Qué recopilamos, por qué, y cómo mantienes el control de lo que es tuyo.",
+        "updated": "01/01/2025",
+        "version": "v1.0",
+        "toc": {
+            "tldr": "01. Resumen rápido",
+            "coleta": "02. Datos recopilados",
+            "uso": "03. Cómo los usamos",
+            "base-legal": "04. Base legal (LGPD)",
+            "compartilhamento": "05. Con quién compartimos",
+            "cookies": "06. Cookies",
+            "direitos": "07. Tus derechos (LGPD)",
+            "retencao": "08. Retención y eliminación",
+            "seguranca": "09. Seguridad",
+            "criancas": "10. Niños y adolescentes",
+            "internacional": "11. Transferencias internacionales",
+            "dpo": "12. Responsable (DPO)"
+        },
+        "sections": {
+            "tldr": {
+                "title": "Resumen en 30 segundos",
+                "tldr": "Recopilamos solo lo necesario para que el servicio funcione. No vendemos tus datos. Puedes exportar o eliminar tu cuenta en cualquier momento.",
+                "p1": "Manga Reader recopila datos personales estrictamente necesarios para proveer el servicio, mejorar la experiencia y cumplir obligaciones legales. No comercializamos datos personales con terceros con fines publicitarios.",
+                "p2": "Esta política explica qué datos recopilamos, cómo los usamos, con quién los compartimos y cuáles son tus derechos como titular de los datos, conforme a la Ley General de Protección de Datos brasileña (LGPD — Ley nº 13.709/2018)."
+            },
+            "coleta": {
+                "title": "Qué datos recopilamos",
+                "lead": "Recopilamos los siguientes datos según cómo utilices el servicio:",
+                "rows": [
+                    { "term": "Registro", "value": "Correo, nombre de visualización, contraseña (hash bcrypt — nunca en texto plano)." },
+                    { "term": "Perfil", "value": "Avatar, biografía, idioma preferido, lista de contenido guardado." },
+                    { "term": "Uso", "value": "Historial de lectura, capítulos leídos, valoraciones, comentarios." },
+                    { "term": "Dispositivo", "value": "IP, tipo de navegador, sistema operativo (logs de acceso)." },
+                    { "term": "Pagos", "value": "Datos procesados por la pasarela (Stripe/Mercado Pago) — no almacenamos número de tarjeta." },
+                    { "term": "Comunicaciones", "value": "Correos de soporte y notificaciones que nos envías o recibes." }
+                ]
+            },
+            "uso": {
+                "title": "Cómo los usamos",
+                "lead": "Utilizamos tus datos para:",
+                "items": [
+                    "Operar y mantener la plataforma funcionando correctamente;",
+                    "Personalizar recomendaciones y experiencia de lectura;",
+                    "Procesar pagos de suscripción;",
+                    "Enviar notificaciones sobre nuevos capítulos, respuestas y avisos del sistema;",
+                    "Detectar y prevenir fraudes y abusos;",
+                    "Cumplir obligaciones legales y regulatorias."
+                ],
+                "outro": "No utilizamos tus datos para publicidad de terceros ni para crear perfiles de comportamiento más allá de lo necesario para las funciones del servicio."
+            },
+            "base-legal": {
+                "title": "Base legal (LGPD art. 7)",
+                "lead": "El tratamiento de tus datos personales se fundamenta en las siguientes bases legales previstas en el art. 7 de la LGPD:",
+                "items": [
+                    "<strong>Consentimiento</strong> — para correos de marketing y cookies no esenciales;",
+                    "<strong>Ejecución del contrato</strong> — para operar la cuenta y procesar pagos;",
+                    "<strong>Interés legítimo</strong> — para seguridad, prevención de fraudes y mejora del servicio;",
+                    "<strong>Cumplimiento de obligación legal</strong> — para atender requerimientos judiciales o regulatorios."
+                ]
+            },
+            "compartilhamento": {
+                "title": "Con quién compartimos",
+                "lead": "Solo compartimos datos con:",
+                "items": [
+                    "<strong>Proveedores de servicio</strong> — hosting (AWS), correo transaccional (SendGrid), pasarela de pago (Stripe), análisis de errores (Sentry);",
+                    "<strong>Autoridades públicas</strong> — cuando lo exija la ley o una decisión judicial;",
+                    "<strong>Grupos de traducción asociados</strong> — solo identificador anónimo de usuario con fines estadísticos."
+                ],
+                "outro": "Todos los proveedores de servicio están contractualmente obligados a tratar tus datos con confidencialidad y seguridad, sin poder utilizarlos para sus propios fines."
+            },
+            "cookies": {
+                "title": "Cookies",
+                "p1": "Manga Reader utiliza cookies y tecnologías similares para operar el servicio, autenticar sesiones y recordar preferencias. Puedes gestionar las cookies en las configuraciones de tu navegador.",
+                "p2": "Las cookies esenciales (necesarias para inicio de sesión y seguridad) no pueden desactivarse sin comprometer el funcionamiento de la plataforma. Las cookies analíticas y de preferencia pueden activarse en las configuraciones de la cuenta."
+            },
+            "direitos": {
+                "title": "Tus derechos (LGPD)",
+                "lead": "Como titular de los datos, tienes derecho a:",
+                "items": [
+                    "Confirmar la existencia de tratamiento y acceder a tus datos;",
+                    "Corregir datos incompletos, inexactos o desactualizados;",
+                    "Solicitar la anonimización, bloqueo o eliminación de datos innecesarios;",
+                    "Portabilidad a otro proveedor;",
+                    "Revocar el consentimiento en cualquier momento;",
+                    "Oponerte al tratamiento realizado sin consentimiento."
+                ],
+                "outro": "Para ejercer estos derechos, accede a las Configuraciones de la cuenta o contacta a nuestro DPO en <mail>dpo@manga-reader.example.com</mail>. Respondemos en hasta 15 días hábiles."
+            },
+            "retencao": {
+                "title": "Retención y eliminación",
+                "p1": "Conservamos tus datos por el tiempo necesario para las finalidades descritas en esta política, o por el periodo mínimo exigido por ley. Al cerrar tu cuenta, los datos personales se anonimizan o eliminan en hasta 90 días, salvo cuando exista obligación legal de retención.",
+                "p2": "Los logs de acceso se conservan durante 6 meses conforme al Marco Civil de Internet brasileño (Ley nº 12.965/2014). Los datos de pago se retienen durante 5 años por obligaciones fiscales."
+            },
+            "seguranca": {
+                "title": "Seguridad",
+                "p1": "Adoptamos medidas técnicas y organizativas adecuadas para proteger tus datos contra acceso no autorizado, pérdida, alteración o divulgación. Entre las medidas implementadas: cifrado en tránsito (TLS 1.3), contraseñas con hash bcrypt, autenticación JWT con expiración corta, control de acceso por función y auditoría de logs.",
+                "p2": "En caso de incidente de seguridad que afecte tus datos, te notificaremos a ti y a la ANPD dentro de los plazos previstos por la LGPD."
+            },
+            "criancas": {
+                "title": "Niños y adolescentes",
+                "p1": "Manga Reader no está dirigido a niños menores de 13 años. No recopilamos intencionalmente datos personales de menores de 13 años. Si llegamos a saber que recopilamos datos de un niño sin el debido consentimiento de los responsables, eliminaremos esa información de inmediato.",
+                "p2": "Para menores entre 13 y 18 años, recomendamos que el acceso a la plataforma se realice bajo la supervisión de un responsable legal."
+            },
+            "internacional": {
+                "title": "Transferencias internacionales",
+                "p1": "Algunos de nuestros proveedores de servicio operan en otros países (EE. UU., UE). En esos casos, garantizamos que la transferencia de datos se realice con base en mecanismos legales adecuados, como cláusulas contractuales estándar aprobadas por autoridades de protección de datos."
+            },
+            "dpo": {
+                "title": "Responsable de Datos (DPO)",
+                "rows": [
+                    { "term": "Nombre", "value": "Responsable de Datos de Manga Reader" },
+                    { "term": "Correo", "value": "dpo@manga-reader.example.com" },
+                    { "term": "Dirección", "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100" }
+                ]
+            }
+        },
+        "footerCard": {
+            "title": "Gestiona tu privacidad",
+            "desc": "Exporta datos o revisa tus preferencias directamente en las configuraciones.",
+            "cta": "Abrir configuraciones"
+        }
+    },
+    "dmca": {
+        "title": "DMCA / Derechos de autor",
+        "sub": "Procedimiento para solicitudes de retirada por violación de derechos de autor y cómo contactarnos.",
+        "updated": "01/01/2025",
+        "version": "v1.0",
+        "toc": {
+            "oque-e": "01. Qué es",
+            "quem-pode": "02. Quién puede solicitar la retirada",
+            "como-pedir": "03. Cómo solicitar la retirada",
+            "informacoes": "04. Información necesaria",
+            "prazo": "05. Plazo de respuesta",
+            "contra": "06. Contranotificación",
+            "reincidencia": "07. Reincidencia",
+            "agente": "08. Agente designado"
+        },
+        "sections": {
+            "oque-e": {
+                "title": "Qué es, en pocas líneas",
+                "tldr": "La DMCA (Digital Millennium Copyright Act) es una ley estadounidense que define cómo las plataformas deben reaccionar ante violaciones de derechos de autor. Seguimos un proceso similar en Brasil.",
+                "p1": "Manga Reader respeta los derechos de propiedad intelectual de autores, editoriales y traductores. Aunque somos una plataforma brasileña regida principalmente por la Ley nº 9.610/1998 (Ley de Derechos de Autor), adoptamos un proceso de notificación y retirada inspirado en la DMCA estadounidense por ser un estándar ampliamente reconocido internacionalmente.",
+                "p2": "Si eres titular de derechos de autor e identificaste contenido publicado sin autorización en la plataforma, sigue el procedimiento descrito en este documento para solicitar su retirada."
+            },
+            "quem-pode": {
+                "title": "Quién puede solicitar la retirada",
+                "lead": "Pueden enviar una notificación de retirada:",
+                "items": [
+                    "El propio titular de los derechos de autor de la obra;",
+                    "Representante legal autorizado por el titular (ej.: editorial, agencia, abogado);",
+                    "Plataforma de distribución con licencia exclusiva sobre el contenido."
+                ],
+                "outro": "Las notificaciones de terceros sin vínculo con la obra pueden ser desestimadas."
+            },
+            "como-pedir": {
+                "title": "Cómo solicitar la retirada",
+                "lead": "Envía tu notificación por escrito a:",
+                "emailLabel": "Correo:",
+                "emailAddress": "dmca@manga-reader.example.com",
+                "channelLabel": "Canal prioritario:",
+                "channelLinkText": "/legal/contact",
+                "outro": "Las notificaciones enviadas fuera de estos canales pueden no ser procesadas. No aceptamos solicitudes verbales o vía redes sociales."
+            },
+            "informacoes": {
+                "title": "Información necesaria",
+                "lead": "Tu notificación debe contener:",
+                "items": [
+                    "Identificación de la obra protegida y prueba de titularidad;",
+                    "URL exacta del contenido infractor en Manga Reader;",
+                    "Declaración de buena fe de que el uso no está autorizado;",
+                    "Tus datos de contacto (nombre, correo, teléfono);",
+                    "Firma electrónica o física del titular/representante."
+                ],
+                "warningTitle": "Atención:",
+                "warningBody": "Las declaraciones falsas sobre violación de derechos de autor pueden resultar en responsabilidad civil por daños causados al acusado (17 U.S.C. § 512(f) en el derecho estadounidense; arts. 186 y 927 del Código Civil brasileño para jurisdicción local)."
+            },
+            "prazo": {
+                "title": "Plazo de respuesta",
+                "lead": "Tras recibir una notificación válida y completa, Manga Reader se compromete a:",
+                "items": [
+                    "Confirmar la recepción en hasta <strong>2 días hábiles</strong>;",
+                    "Retirar o bloquear el contenido señalado en hasta <strong>5 días hábiles</strong>;",
+                    "Notificar al usuario responsable de la publicación sobre la retirada."
+                ],
+                "outro": "Para casos urgentes que involucren obras en periodo de lanzamiento o daño comercial inminente, utiliza el Canal Prioritario para agilizar el procesamiento."
+            },
+            "contra": {
+                "title": "Contranotificación",
+                "p1": "Si crees que tu contenido fue retirado por error o uso legítimo (ej.: cita, parodia, crítica), puedes enviar una contranotificación con:",
+                "items": [
+                    "Identificación del contenido retirado y su ubicación anterior;",
+                    "Declaración, bajo pena de responsabilidad, de que la retirada fue indebida;",
+                    "Tus datos de contacto completos;",
+                    "Consentimiento con la jurisdicción brasileña para eventuales disputas."
+                ],
+                "outro": "Tras recibir una contranotificación válida, notificaremos al reclamante original y podremos restaurar el contenido en hasta 10 días hábiles, salvo acción judicial contraria."
+            },
+            "reincidencia": {
+                "title": "Reincidencia",
+                "p1": "Manga Reader adopta una política de reincidencia conforme a lo dispuesto en <strong>17 U.S.C. § 512(i)</strong>. Los usuarios que reciben múltiples notificaciones válidas y confirmadas de violación de derechos de autor tendrán sus cuentas suspendidas o cerradas permanentemente, a criterio de la plataforma.",
+                "p2": "La definición de \"múltiples\" considera el contexto, frecuencia y gravedad de cada violación. Una única violación grave puede resultar en cierre inmediato."
+            },
+            "agente": {
+                "title": "Agente designado",
+                "rows": [
+                    { "term": "Agente designado", "value": "Agente de Derechos de Autor — Manga Reader" },
+                    { "term": "Correo", "value": "dmca@manga-reader.example.com" },
+                    { "term": "Canal prioritario", "value": "/legal/contact (tipo: DMCA)" },
+                    { "term": "Dirección postal", "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100, Brasil" }
+                ]
+            }
+        },
+        "footerCard": {
+            "title": "¿Tienes un caso urgente?",
+            "desc": "Usa nuestro canal prioritario para casos de violación en periodo de lanzamiento.",
+            "cta": "Canal prioritario"
+        }
+    },
+    "contact": {
+        "title": "Contactos",
+        "sub": "Para cada tipo de asunto, un canal.",
+        "updated": "01/01/2025",
+        "channelsTitle": "Canales directos",
+        "channelAriaLabel": "Canal: {{name}}",
+        "channels": {
+            "general": {
+                "label": "GENERAL",
+                "title": "Soporte general",
+                "desc": "Dudas sobre cuenta, lectura y funciones de la plataforma.",
+                "email": "suporte@manga-reader.example.com",
+                "sla": "hasta 2 días hábiles"
+            },
+            "content": {
+                "label": "CONTENIDO",
+                "title": "Contenido y publicación",
+                "desc": "Solicitudes de adición de obras, problemas con capítulos.",
+                "email": "conteudo@manga-reader.example.com",
+                "sla": "hasta 3 días hábiles"
+            },
+            "privacy": {
+                "label": "PRIVACIDAD",
+                "title": "Privacidad y LGPD",
+                "desc": "Exportación, corrección o eliminación de datos personales.",
+                "email": "dpo@manga-reader.example.com",
+                "sla": "hasta 15 días hábiles"
+            },
+            "dmca": {
+                "label": "DMCA",
+                "title": "Derechos de autor",
+                "desc": "Notificaciones de retirada por violación de copyright.",
+                "email": "dmca@manga-reader.example.com",
+                "sla": "hasta 5 días hábiles"
+            },
+            "billing": {
+                "label": "SUSCRIPCIÓN",
+                "title": "Facturación y suscripción",
+                "desc": "Problemas con pagos, cargos indebidos y cancelaciones.",
+                "email": "cobranca@manga-reader.example.com",
+                "sla": "hasta 1 día hábil"
+            },
+            "priority": {
+                "label": "PRIORITARIO",
+                "title": "Canal prioritario",
+                "desc": "Cuenta hackeada, contenido ilegal o situación de emergencia.",
+                "email": "urgente@manga-reader.example.com",
+                "sla": "hasta 4 horas"
+            }
+        },
+        "slaLabel": "SLA:",
+        "priorityWarning": "Usa solo para emergencias reales.",
+        "form": {
+            "title": "Enviar mensaje",
+            "sub": "Rellena el formulario y lo enrutamos automáticamente al equipo correcto según el asunto.",
+            "name": "Nombre",
+            "namePlaceholder": "Tu nombre completo",
+            "email": "Correo",
+            "emailPlaceholder": "tu@correo.com",
+            "topic": "Asunto",
+            "message": "Mensaje",
+            "messagePlaceholder": "Describe tu duda o situación con el mayor detalle posible...",
+            "responseTime": "Tiempo medio de respuesta:",
+            "responseTimeValue": "4h12min",
+            "submit": "Enviar mensaje",
+            "topics": {
+                "placeholder": "Selecciona el asunto",
+                "general": "Soporte general",
+                "content": "Contenido y publicación",
+                "privacy": "Privacidad y LGPD",
+                "dmca": "Derechos de autor (DMCA)",
+                "billing": "Facturación y suscripción",
+                "priority": "Canal prioritario — emergencia"
+            },
+            "errors": {
+                "nameRequired": "El nombre es obligatorio.",
+                "emailRequired": "El correo es obligatorio.",
+                "emailInvalid": "Correo inválido.",
+                "topicRequired": "Selecciona un asunto.",
+                "messageRequired": "El mensaje es obligatorio.",
+                "messageTooShort": "Mensaje demasiado corto (mín. 10 caracteres)."
+            },
+            "success": {
+                "heading": "¡Mensaje enviado!",
+                "body": "Responderemos al correo <strong>{{email}}</strong> dentro del plazo del canal seleccionado.",
+                "again": "Enviar otro mensaje"
+            }
+        },
+        "postal": {
+            "title": "Dirección postal",
+            "rows": [
+                { "term": "Sede administrativa", "value": "Manga Reader Tecnologia Ltda.\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrasil" },
+                { "term": "Responsable de datos (DPO)", "value": "dpo@manga-reader.example.com\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrasil" }
+            ]
+        }
+    }
+}

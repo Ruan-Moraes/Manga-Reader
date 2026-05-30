@@ -2,27 +2,13 @@ import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import type {
-    ForumCategory,
-    ForumFilter,
-    ForumSort,
-    ForumTopic,
-} from '../type/forum.types';
+import type { ForumCategory, ForumFilter, ForumSort, ForumTopic } from '../type/forum.types';
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
-export const forumCategories: ForumCategory[] = [
-    'Geral',
-    'Recomendações',
-    'Spoilers',
-    'Suporte',
-    'Off-topic',
-    'Teorias',
-    'Fanart',
-    'Notícias',
-];
+export const forumCategories: ForumCategory[] = ['Geral', 'Recomendações', 'Spoilers', 'Suporte', 'Off-topic', 'Teorias', 'Fanart', 'Notícias'];
 
 export const forumSortOptions: { value: ForumSort; label: string }[] = [
     { value: 'recent', label: 'Mais recentes' },
@@ -38,8 +24,7 @@ export const TOPICS_PER_PAGE = 8;
 // ---------------------------------------------------------------------------
 
 const matchesQuery = (topic: ForumTopic, query: string): boolean => {
-    const haystack =
-        `${topic.title} ${topic.content} ${topic.tags.join(' ')} ${topic.author.name}`.toLowerCase();
+    const haystack = `${topic.title} ${topic.content} ${topic.tags.join(' ')} ${topic.author.name}`.toLowerCase();
     return haystack.includes(query);
 };
 
@@ -54,16 +39,10 @@ const sortTopics = (topics: ForumTopic[], sort: ForumSort): ForumTopic[] => {
             case 'most-replies':
                 return b.replyCount - a.replyCount;
             case 'oldest':
-                return (
-                    new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime()
-                );
+                return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
             case 'recent':
             default:
-                return (
-                    new Date(b.lastActivityAt).getTime() -
-                    new Date(a.lastActivityAt).getTime()
-                );
+                return new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime();
         }
     });
 
@@ -74,33 +53,22 @@ const sortTopics = (topics: ForumTopic[], sort: ForumSort): ForumTopic[] => {
 // Public API — Async (chamadas ao backend)
 // ---------------------------------------------------------------------------
 
-export const getForumTopics = async (
-    page = 0,
-    size = 20,
-    options: { crossLanguage?: boolean } = {},
-): Promise<PageResponse<ForumTopic>> => {
+export const getForumTopics = async (page = 0, size = 20, options: { crossLanguage?: boolean } = {}): Promise<PageResponse<ForumTopic>> => {
     const params: Record<string, string | number> = { page, size };
     if (options.crossLanguage) params.language = 'all';
-    const response = await api.get<ApiResponse<PageResponse<ForumTopic>>>(
-        API_URLS.FORUM,
-        { params },
-    );
+    const response = await api.get<ApiResponse<PageResponse<ForumTopic>>>(API_URLS.FORUM, { params });
 
     return response.data.data;
 };
 
 export const getForumTopicById = async (id: string): Promise<ForumTopic> => {
-    const response = await api.get<ApiResponse<ForumTopic>>(
-        `${API_URLS.FORUM}/${id}`,
-    );
+    const response = await api.get<ApiResponse<ForumTopic>>(`${API_URLS.FORUM}/${id}`);
 
     return response.data.data;
 };
 
 export const getForumCategories = async (): Promise<ForumCategory[]> => {
-    const response = await api.get<ApiResponse<ForumCategory[]>>(
-        `${API_URLS.FORUM}/categories`,
-    );
+    const response = await api.get<ApiResponse<ForumCategory[]>>(`${API_URLS.FORUM}/categories`);
 
     return response.data.data;
 };
@@ -109,17 +77,8 @@ export const getForumCategories = async (): Promise<ForumCategory[]> => {
 // Sync filter — usado pelos componentes de rota em useMemo
 // ---------------------------------------------------------------------------
 
-export const filterForumTopics = (
-    items: ForumTopic[],
-    filters: ForumFilter,
-): ForumTopic[] => {
-    const {
-        category = 'all',
-        sort = 'recent',
-        query = '',
-        onlyPinned = false,
-        onlySolved = false,
-    } = filters;
+export const filterForumTopics = (items: ForumTopic[], filters: ForumFilter): ForumTopic[] => {
+    const { category = 'all', sort = 'recent', query = '', onlyPinned = false, onlySolved = false } = filters;
 
     const normalizedQuery = query.trim().toLowerCase();
 
@@ -127,8 +86,7 @@ export const filterForumTopics = (
         if (category !== 'all' && topic.category !== category) return false;
         if (onlyPinned && !topic.isPinned) return false;
         if (onlySolved && !topic.isSolved) return false;
-        if (normalizedQuery && !matchesQuery(topic, normalizedQuery))
-            return false;
+        if (normalizedQuery && !matchesQuery(topic, normalizedQuery)) return false;
         return true;
     });
 
@@ -147,8 +105,7 @@ export const formatRelativeDate = (date: string): string => {
 
     if (diffMin < 1) return 'agora mesmo';
     if (diffMin < 60) return `há ${diffMin} min`;
-    if (diffHours < 24)
-        return `há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+    if (diffHours < 24) return `há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
     if (diffDays < 30) return `há ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
 
     const diffMonths = Math.floor(diffDays / 30);
@@ -169,10 +126,7 @@ export const getCategoryColor = (category: ForumCategory): string => {
     return colors[category];
 };
 
-export const paginateTopics = (
-    topics: ForumTopic[],
-    page: number,
-): { items: ForumTopic[]; totalPages: number } => {
+export const paginateTopics = (topics: ForumTopic[], page: number): { items: ForumTopic[]; totalPages: number } => {
     const totalPages = Math.max(1, Math.ceil(topics.length / TOPICS_PER_PAGE));
     const start = (page - 1) * TOPICS_PER_PAGE;
     return {

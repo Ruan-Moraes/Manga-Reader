@@ -13,6 +13,9 @@ export default defineConfig({
             '@feature': path.resolve(__dirname, './src/feature'),
             '@shared': path.resolve(__dirname, './src/shared'),
             '@app': path.resolve(__dirname, './src/app'),
+            '@pages': path.resolve(__dirname, './src/pages'),
+            '@widgets': path.resolve(__dirname, './src/widgets'),
+            '@ui': path.resolve(__dirname, './src/shared/ui'),
         },
     },
     test: {
@@ -24,12 +27,7 @@ export default defineConfig({
             provider: 'v8',
             reporter: ['text', 'html', 'lcov'],
             include: ['src/**/*.{ts,tsx}'],
-            exclude: [
-                'src/test/**',
-                'src/**/*.d.ts',
-                'src/main.tsx',
-                'src/vite-env.d.ts',
-            ],
+            exclude: ['src/test/**', 'src/**/*.d.ts', 'src/main.tsx', 'src/vite-env.d.ts'],
         },
     },
 });

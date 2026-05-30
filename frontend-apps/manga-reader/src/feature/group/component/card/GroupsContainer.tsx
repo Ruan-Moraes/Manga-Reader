@@ -9,27 +9,17 @@ type GroupsContainerProps = {
     title?: string;
 };
 
-const GroupsContainer = ({
-    groups,
-    isLoading = false,
-    title,
-}: GroupsContainerProps) => {
+const GroupsContainer = ({ groups, isLoading = false, title }: GroupsContainerProps) => {
     const { t } = useTranslation('group');
     const resolvedTitle = title ?? t('container.defaultTitle');
 
     if (isLoading) {
         return (
             <div className="flex flex-col gap-4">
-                {resolvedTitle && (
-                    <h2 className="text-lg font-bold">{resolvedTitle}</h2>
-                )}
+                {resolvedTitle && <h2 className="text-lg font-bold">{resolvedTitle}</h2>}
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4">
                     {Array.from({ length: 6 }).map((_, index) => (
-                        <GroupCard
-                            key={index}
-                            group={{} as Group}
-                            isLoading={true}
-                        />
+                        <GroupCard key={index} group={{} as Group} isLoading={true} />
                     ))}
                 </div>
             </div>
@@ -39,13 +29,9 @@ const GroupsContainer = ({
     if (!groups || groups.length === 0) {
         return (
             <div className="flex flex-col gap-4">
-                {resolvedTitle && (
-                    <h2 className="text-lg font-bold">{resolvedTitle}</h2>
-                )}
+                {resolvedTitle && <h2 className="text-lg font-bold">{resolvedTitle}</h2>}
                 <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
-                    <p className="text-tertiary text-center text-sm">
-                        {t('container.empty')}
-                    </p>
+                    <p className="text-tertiary text-center text-sm">{t('container.empty')}</p>
                 </div>
             </div>
         );
@@ -53,9 +39,7 @@ const GroupsContainer = ({
 
     return (
         <div className="flex flex-col gap-4">
-            {resolvedTitle && (
-                <h2 className="text-lg font-bold">{resolvedTitle}</h2>
-            )}
+            {resolvedTitle && <h2 className="text-lg font-bold">{resolvedTitle}</h2>}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-2 gap-y-4">
                 {groups.map(group => (
                     <GroupCard key={group.id} group={group} isLoading={false} />

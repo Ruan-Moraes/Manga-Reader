@@ -3,12 +3,9 @@ import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import {
-    showSuccessToast,
-    showErrorToast,
-} from '@shared/service/util/toastService';
+import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 
-import { resetPassword } from '@feature/auth/service/authService';
+import { resetPassword } from '../service/authService';
 
 type FormErrors = {
     password?: string;
@@ -29,19 +26,13 @@ const useResetPassword = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
-    const handlePasswordChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            setPassword(e.target.value);
-        },
-        [],
-    );
+    const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    }, []);
 
-    const handleConfirmPasswordChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            setConfirmPassword(e.target.value);
-        },
-        [],
-    );
+    const handleConfirmPasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setConfirmPassword(e.target.value);
+    }, []);
 
     const validate = useCallback((): FormErrors => {
         const newErrors: FormErrors = {};

@@ -1,91 +1,170 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useAppNavigate from '@shared/hook/useAppNavigate';
+import { Plus } from 'lucide-react';
 
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
+import { PageContainer } from '@ui/PageContainer';
+import { SectionHeader } from '@ui/SectionHeader';
+import { Tabs } from '@ui/Tabs';
+import { SearchField } from '@ui/SearchField';
+import { Select } from '@ui/Select';
+import { SegmentedControl } from '@ui/SegmentedControl';
+import { MangaCard } from '@ui/MangaCard';
+import { Button } from '@ui/Button';
+import { EmptyState } from '@ui/EmptyState';
+import { Skeleton } from '@ui/Skeleton';
 
-import { useSavedMangas } from '@feature/library';
-import LibraryTabs from '@feature/library/component/LibraryTabs';
-import LibraryCard from '@feature/library/component/LibraryCard';
-import LibraryEmptyState from '@feature/library/component/LibraryEmptyState';
-import LibrarySkeleton from '@feature/library/component/LibrarySkeleton';
+import { useSavedMangas, type ReadingListType } from '@feature/library';
+
+type ActiveTab = ReadingListType | 'Todos';
+type Layout = 'grid' | 'list';
 
 const Library = () => {
+    const navigate = useAppNavigate();
     const { t } = useTranslation('library');
-    const {
-        items,
-        counts,
-        activeTab,
-        loading,
-        error,
-        hasMore,
-        changeTab,
-        loadMore,
-        changeList,
-        removeFromSaved,
-        retry,
-    } = useSavedMangas();
+    const [query, setQuery] = useState('');
+    const [sort, setSort] = useState('recent');
+    const [layout, setLayout] = useState<Layout>('grid');
+
+    const { items, counts, activeTab, loading, hasMore, changeTab, loadMore, removeFromSaved } = useSavedMangas('Todos');
+
+    const filtered = items.filter(m => !query || m.name.toLowerCase().includes(query.toLowerCase()));
+
+    const sorted = [...filtered].sort((a, b) => {
+        if (sort === 'az') return a.name.localeCompare(b.name);
+        if (sort === 'za') return b.name.localeCompare(a.name);
+        return new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime();
+    });
+
+    const sortOptions = [
+        { value: 'recent', label: t('page.sort.recent') },
+        { value: 'az', label: t('page.sort.az') },
+        { value: 'za', label: t('page.sort.za') },
+    ];
+
+    const layoutItems = [
+        { value: 'grid', label: t('page.layout.grid') },
+        { value: 'list', label: t('page.layout.list') },
+    ];
+
+    const tabItems: Array<{ value: string; label: string }> = [
+        { value: 'Todos', label: t('tabLabel.all', { count: counts.total }) },
+        {
+            value: 'Lendo',
+            label: t('tabLabel.reading', { count: counts.lendo }),
+        },
+        {
+            value: 'Quero Ler',
+            label: t('tabLabel.wantToRead', { count: counts.queroLer }),
+        },
+        {
+            value: 'Concluído',
+            label: t('tabLabel.completed', { count: counts.concluido }),
+        },
+    ];
 
     return (
-        <>
-            <Header />
-            <MainContent>
-                <section className="flex flex-col gap-1">
-                    <h2 className="text-xl font-bold">{t('page.title')}</h2>
-                    <p className="text-sm text-tertiary">
-                        {t('page.subtitle')}
-                    </p>
-                </section>
+        <PageContainer asMain size="wide" paddingY="md">
+            <SectionHeader
+                eyebrow={t('page.eyebrow')}
+                title={t('page.title')}
+                meta={t('page.worksCount', { count: counts.total })}
+                action={
+                    <Button variant="raised" icon={Plus}>
+                        {t('page.addButton')}
+                    </Button>
+                }
+                className="mb-4"
+            />
 
-                <LibraryTabs
-                    activeTab={activeTab}
-                    counts={counts}
-                    onChange={changeTab}
-                />
+            <div className="mb-4">
+                <Tabs items={tabItems} value={activeTab} onChange={v => changeTab(v as ActiveTab)} variant="underline" />
+            </div>
 
-                {error && (
-                    <div className="flex items-center gap-3 p-3 text-sm border rounded-xs border-quinary-default bg-quinary-default/10">
-                        <span>{error}</span>
-                        <button
-                            onClick={retry}
-                            className="px-3 py-1 text-xs border rounded-xs border-quinary-default hover:bg-quinary-default/20"
-                        >
-                            {t('page.retry')}
-                        </button>
-                    </div>
-                )}
+            {/* Toolbar */}
+            <div className="mb-6 flex flex-wrap gap-3">
+                <SearchField value={query} onChange={setQuery} placeholder={t('page.searchPlaceholder')} className="flex-1 min-w-[180px]" />
+                <Select value={sort} onChange={e => setSort(e.target.value)} options={sortOptions} className="w-40" />
+                <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="sm" />
+            </div>
 
-                {loading ? (
-                    <LibrarySkeleton />
-                ) : items.length === 0 && !error ? (
-                    <LibraryEmptyState tab={activeTab} />
+            {/* Content */}
+            {loading ? (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                        <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
+                    ))}
+                </div>
+            ) : sorted.length === 0 ? (
+                query ? (
+                    <EmptyState illustration="duvida" title={t('emptySearch.title')} description={t('emptySearch.description')} />
                 ) : (
-                    <>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {items.map(manga => (
-                                <LibraryCard
-                                    key={manga.titleId}
-                                    manga={manga}
-                                    onChangeList={changeList}
-                                    onRemove={removeFromSaved}
+                    <EmptyState
+                        illustration="pensando"
+                        title={t('emptyCollection.title')}
+                        description={t('emptyCollection.description')}
+                        action={
+                            <Button variant="primary" onClick={() => navigate('/genres')}>
+                                {t('emptyCollection.discoverButton')}
+                            </Button>
+                        }
+                    />
+                )
+            ) : layout === 'grid' ? (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                    {sorted.map(m => (
+                        <MangaCard
+                            key={m.titleId}
+                            manga={{
+                                id: m.titleId,
+                                title: m.name,
+                                cover: m.cover,
+                            }}
+                            size="md"
+                            onClick={() => navigate(`/titles/${m.titleId}`)}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-col gap-2">
+                    {sorted.map(m => (
+                        <div
+                            key={m.titleId}
+                            className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent"
+                        >
+                            <button type="button" className="flex flex-1 items-center gap-3 text-left" onClick={() => navigate(`/titles/${m.titleId}`)}>
+                                <div
+                                    className="size-12 shrink-0 rounded-mr-xs bg-cover bg-center bg-mr-tertiary/20"
+                                    style={
+                                        m.cover
+                                            ? {
+                                                  backgroundImage: `url(${m.cover})`,
+                                              }
+                                            : undefined
+                                    }
                                 />
-                            ))}
+                                <div className="flex-1 min-w-0">
+                                    <p className="truncate text-mr-body font-mr-bold text-mr-fg">{m.name}</p>
+                                    <p className="text-mr-tiny text-mr-fg-muted">{m.type}</p>
+                                </div>
+                                <span className="text-mr-tiny text-mr-fg-subtle">{m.list}</span>
+                            </button>
+                            <Button variant="ghost" size="sm" onClick={() => removeFromSaved(m.titleId)} className="text-mr-danger shrink-0">
+                                {t('page.remove')}
+                            </Button>
                         </div>
-                        {hasMore && (
-                            <div className="flex justify-center">
-                                <button
-                                    onClick={loadMore}
-                                    className="px-4 py-2 text-sm border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                                >
-                                    {t('page.loadMore')}
-                                </button>
-                            </div>
-                        )}
-                    </>
-                )}
-            </MainContent>
-            <Footer />
-        </>
+                    ))}
+                </div>
+            )}
+
+            {hasMore && !loading && (
+                <div className="mt-8 flex justify-center">
+                    <Button variant="raised" onClick={loadMore}>
+                        {t('page.loadMore')}
+                    </Button>
+                </div>
+            )}
+        </PageContainer>
     );
 };
 

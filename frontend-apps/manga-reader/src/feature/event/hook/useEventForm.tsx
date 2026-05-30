@@ -45,12 +45,9 @@ const useEventForm = () => {
     const openForm = useCallback(() => setShowCreateForm(true), []);
     const closeForm = useCallback(() => setShowCreateForm(false), []);
 
-    const updateDraftField = useCallback(
-        <K extends keyof DraftEvent>(field: K, value: DraftEvent[K]) => {
-            setDraftEvent(prev => ({ ...prev, [field]: value }));
-        },
-        [],
-    );
+    const updateDraftField = useCallback(<K extends keyof DraftEvent>(field: K, value: DraftEvent[K]) => {
+        setDraftEvent(prev => ({ ...prev, [field]: value }));
+    }, []);
 
     const toggleDraft = useCallback(() => {
         setDraftEvent(prev => ({ ...prev, asDraft: !prev.asDraft }));

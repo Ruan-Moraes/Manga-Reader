@@ -28,66 +28,32 @@ const FinancialDashboard = ({ summary }: FinancialDashboardProps) => {
     return (
         <div className="flex flex-col gap-4">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <MetricsCard
-                    label={t('dashboard.financial.summary.totalPayments')}
-                    value={summary.totalPayments}
-                />
-                <MetricsCard
-                    label={t('dashboard.financial.summary.confirmedRevenue')}
-                    value={formatCurrency(summary.totalRevenue)}
-                    accent="success"
-                />
-                <MetricsCard
-                    label={t('dashboard.financial.summary.pendingRevenue')}
-                    value={formatCurrency(summary.pendingRevenue)}
-                    accent="warning"
-                />
+                <MetricsCard label={t('dashboard.financial.summary.totalPayments')} value={summary.totalPayments} />
+                <MetricsCard label={t('dashboard.financial.summary.confirmedRevenue')} value={formatCurrency(summary.totalRevenue)} accent="success" />
+                <MetricsCard label={t('dashboard.financial.summary.pendingRevenue')} value={formatCurrency(summary.pendingRevenue)} accent="warning" />
             </div>
 
             <div className="p-4 border rounded-xs bg-secondary border-tertiary">
-                <h3 className="mb-3 text-sm font-semibold">
-                    {t('dashboard.financial.summary.distributionByStatus')}
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">{t('dashboard.financial.summary.distributionByStatus')}</h3>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-tertiary">
-                                <th className="py-2 text-left font-medium text-tertiary">
-                                    {t('dashboard.financial.columnStatus')}
-                                </th>
-                                <th className="py-2 text-right font-medium text-tertiary">
-                                    {t('dashboard.financial.summary.quantity')}
-                                </th>
-                                <th className="py-2 text-right font-medium text-tertiary">
-                                    {t('dashboard.financial.summary.totalAmount')}
-                                </th>
+                                <th className="py-2 text-left font-medium text-tertiary">{t('dashboard.financial.columnStatus')}</th>
+                                <th className="py-2 text-right font-medium text-tertiary">{t('dashboard.financial.summary.quantity')}</th>
+                                <th className="py-2 text-right font-medium text-tertiary">{t('dashboard.financial.summary.totalAmount')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {statuses.map(status => (
-                                <tr
-                                    key={status}
-                                    className="border-b border-tertiary/30"
-                                >
+                                <tr key={status} className="border-b border-tertiary/30">
                                     <td className="py-2">
-                                        <span
-                                            className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${
-                                                STATUS_COLORS[status] ??
-                                                'bg-tertiary/30'
-                                            }`}
-                                        >
+                                        <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${STATUS_COLORS[status] ?? 'bg-tertiary/30'}`}>
                                             {status}
                                         </span>
                                     </td>
-                                    <td className="py-2 text-right">
-                                        {summary.countsByStatus[status] ?? 0}
-                                    </td>
-                                    <td className="py-2 text-right text-xs text-tertiary">
-                                        {formatCurrency(
-                                            summary.amountsByStatus[status] ??
-                                                0,
-                                        )}
-                                    </td>
+                                    <td className="py-2 text-right">{summary.countsByStatus[status] ?? 0}</td>
+                                    <td className="py-2 text-right text-xs text-tertiary">{formatCurrency(summary.amountsByStatus[status] ?? 0)}</td>
                                 </tr>
                             ))}
                         </tbody>

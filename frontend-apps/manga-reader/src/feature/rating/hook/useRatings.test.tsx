@@ -59,12 +59,8 @@ describe('useRatings', () => {
 
     it('deve retornar arrays/valores vazios quando API falha', async () => {
         server.use(
-            http.get(`*${API_URLS.RATINGS}/title/bad-id`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
-            http.get(`*${API_URLS.RATINGS}/title/bad-id/average`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
+            http.get(`*${API_URLS.RATINGS}/title/bad-id`, () => HttpResponse.json(null, { status: 500 })),
+            http.get(`*${API_URLS.RATINGS}/title/bad-id/average`, () => HttpResponse.json(null, { status: 500 })),
         );
 
         const { result } = renderHook(() => useRatings('bad-id'));

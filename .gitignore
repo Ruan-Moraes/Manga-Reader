@@ -126,3 +126,8 @@ sketch
 cmake-build-*/
 node-compile-cache/
 coverage/
+
+/frontend-apps/design_handoff_header_redesign/
+/frontend-apps/Manga Reader Design System/
+/frontend-apps/design_handoff_footer_redesign/
+/frontend-apps/design_handoff_header_redesign/

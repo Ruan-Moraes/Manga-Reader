@@ -4,15 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import {
-    getCommentsByTitleId,
-    createComment,
-    updateComment,
-    deleteComment,
-    likeComment,
-    dislikeComment,
-    getUserReactions,
-} from './commentService';
+import { getCommentsByTitleId, createComment, updateComment, deleteComment, likeComment, dislikeComment, getUserReactions } from './commentService';
 
 const buildCommentResponse = (overrides = {}) => ({
     id: 'comment-1',
@@ -34,10 +26,7 @@ const buildCommentResponse = (overrides = {}) => ({
 describe('commentService', () => {
     describe('getCommentsByTitleId', () => {
         it('deve retornar pagina de comentarios mapeados', async () => {
-            const comments = [
-                buildCommentResponse(),
-                buildCommentResponse({ id: 'comment-2' }),
-            ];
+            const comments = [buildCommentResponse(), buildCommentResponse({ id: 'comment-2' })];
 
             server.use(
                 http.get(`*${API_URLS.COMMENTS}/title/title-1`, () =>
@@ -63,11 +52,7 @@ describe('commentService', () => {
         });
 
         it('deve propagar erro quando API falha', async () => {
-            server.use(
-                http.get(`*${API_URLS.COMMENTS}/title/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.COMMENTS}/title/title-1`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getCommentsByTitleId('title-1')).rejects.toThrow();
         });
@@ -79,11 +64,7 @@ describe('commentService', () => {
                 textContent: 'Novo comentario',
             });
 
-            server.use(
-                http.post(`*${API_URLS.COMMENTS}`, () =>
-                    HttpResponse.json({ data: comment, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.COMMENTS}`, () => HttpResponse.json({ data: comment, success: true })));
 
             const result = await createComment({
                 titleId: 'title-1',
@@ -101,10 +82,7 @@ describe('commentService', () => {
 
             server.use(
                 http.post(`*${API_URLS.COMMENTS}`, async ({ request }) => {
-                    const body = (await request.json()) as Record<
-                        string,
-                        unknown
-                    >;
+                    const body = (await request.json()) as Record<string, unknown>;
                     expect(body.parentCommentId).toBe('parent-1');
                     return HttpResponse.json({ data: comment, success: true });
                 }),
@@ -118,11 +96,7 @@ describe('commentService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no createComment', async () => {
-            server.use(
-                http.post(`*${API_URLS.COMMENTS}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.COMMENTS}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(
                 createComment({
@@ -140,11 +114,7 @@ describe('commentService', () => {
                 wasEdited: true,
             });
 
-            server.use(
-                http.put(`*${API_URLS.COMMENTS}/comment-1`, () =>
-                    HttpResponse.json({ data: comment, success: true }),
-                ),
-            );
+            server.use(http.put(`*${API_URLS.COMMENTS}/comment-1`, () => HttpResponse.json({ data: comment, success: true })));
 
             const result = await updateComment('comment-1', 'Texto editado');
 
@@ -153,36 +123,21 @@ describe('commentService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no updateComment', async () => {
-            server.use(
-                http.put(`*${API_URLS.COMMENTS}/comment-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.put(`*${API_URLS.COMMENTS}/comment-1`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                updateComment('comment-1', 'Texto editado'),
-            ).rejects.toThrow();
+            await expect(updateComment('comment-1', 'Texto editado')).rejects.toThrow();
         });
     });
 
     describe('deleteComment', () => {
         it('deve deletar comentario sem erro', async () => {
-            server.use(
-                http.delete(
-                    `*${API_URLS.COMMENTS}/comment-1`,
-                    () => new HttpResponse(null, { status: 204 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.COMMENTS}/comment-1`, () => new HttpResponse(null, { status: 204 })));
 
             await expect(deleteComment('comment-1')).resolves.toBeUndefined();
         });
 
         it('deve lançar erro quando API retorna 500 no deleteComment', async () => {
-            server.use(
-                http.delete(`*${API_URLS.COMMENTS}/comment-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.COMMENTS}/comment-1`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(deleteComment('comment-1')).rejects.toThrow();
         });
@@ -192,11 +147,7 @@ describe('commentService', () => {
         it('deve dar like e retornar comentario atualizado', async () => {
             const comment = buildCommentResponse({ likeCount: '6' });
 
-            server.use(
-                http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () =>
-                    HttpResponse.json({ data: comment, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () => HttpResponse.json({ data: comment, success: true })));
 
             const result = await likeComment('comment-1');
 
@@ -204,11 +155,7 @@ describe('commentService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no likeComment', async () => {
-            server.use(
-                http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(likeComment('comment-1')).rejects.toThrow();
         });
@@ -218,11 +165,7 @@ describe('commentService', () => {
         it('deve dar dislike e retornar comentario atualizado', async () => {
             const comment = buildCommentResponse({ dislikeCount: '2' });
 
-            server.use(
-                http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () =>
-                    HttpResponse.json({ data: comment, success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () => HttpResponse.json({ data: comment, success: true })));
 
             const result = await dislikeComment('comment-1');
 
@@ -230,11 +173,7 @@ describe('commentService', () => {
         });
 
         it('deve lançar erro quando API retorna 500 no dislikeComment', async () => {
-            server.use(
-                http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(dislikeComment('comment-1')).rejects.toThrow();
         });
@@ -244,11 +183,7 @@ describe('commentService', () => {
         it('deve retornar mapa de reacoes do usuario', async () => {
             const reactions = { 'comment-1': 'LIKE', 'comment-2': 'DISLIKE' };
 
-            server.use(
-                http.get(`*${API_URLS.COMMENTS}/user-reactions`, () =>
-                    HttpResponse.json({ data: reactions, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.COMMENTS}/user-reactions`, () => HttpResponse.json({ data: reactions, success: true })));
 
             const result = await getUserReactions(['comment-1', 'comment-2']);
 

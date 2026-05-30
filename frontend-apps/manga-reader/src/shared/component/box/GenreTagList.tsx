@@ -7,10 +7,7 @@ const GenreTagList = ({ genres }: GenreTagListTypes) => {
         <div className="text-xs text-center">
             <ul className="flex flex-wrap gap-1">
                 {genres.map((genre, index) => (
-                    <li
-                        key={index}
-                        className="p-1 border rounded-xs bg-secondary border-tertiary"
-                    >
+                    <li key={index} className="p-1 border rounded-xs bg-secondary border-tertiary">
                         {genre}
                     </li>
                 ))}

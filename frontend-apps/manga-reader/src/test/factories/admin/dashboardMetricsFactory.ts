@@ -1,15 +1,8 @@
-import type {
-    ContentMetrics,
-    DashboardMetrics,
-    FinancialSummary,
-    TopTitle,
-} from '@feature/admin/type/admin.types';
+import type { ContentMetrics, DashboardMetrics, FinancialSummary, TopTitle } from '@feature/admin/type/admin.types';
 
 let topTitleCounter = 0;
 
-export const buildDashboardMetrics = (
-    overrides: Partial<DashboardMetrics> = {},
-): DashboardMetrics => ({
+export const buildDashboardMetrics = (overrides: Partial<DashboardMetrics> = {}): DashboardMetrics => ({
     totalUsers: 1500,
     totalTitles: 850,
     totalGroups: 45,
@@ -90,9 +83,7 @@ export const topTitlePresets = {
         }),
 };
 
-export const buildContentMetrics = (
-    overrides: Partial<ContentMetrics> = {},
-): ContentMetrics => ({
+export const buildContentMetrics = (overrides: Partial<ContentMetrics> = {}): ContentMetrics => ({
     titlesByStatus: {
         ongoing: 450,
         completed: 300,
@@ -127,9 +118,7 @@ export const contentMetricsPresets = {
         }),
 };
 
-export const buildFinancialSummary = (
-    overrides: Partial<FinancialSummary> = {},
-): FinancialSummary => ({
+export const buildFinancialSummary = (overrides: Partial<FinancialSummary> = {}): FinancialSummary => ({
     totalPayments: 850,
     totalRevenue: 42_500.5,
     pendingRevenue: 1250.0,

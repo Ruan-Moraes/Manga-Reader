@@ -14,13 +14,7 @@ type Props = {
     hasHistory: boolean;
 };
 
-const ProfileTabs = ({
-    activeTab,
-    onTabChange,
-    isOwner,
-    hasComments,
-    hasHistory,
-}: Props) => {
+const ProfileTabs = ({ activeTab, onTabChange, isOwner, hasComments, hasHistory }: Props) => {
     const { t } = useTranslation('user');
 
     const tabs: Tab[] = [
@@ -48,9 +42,7 @@ const ProfileTabs = ({
                         key={tab.id}
                         onClick={() => onTabChange(tab.id)}
                         className={`px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
-                            activeTab === tab.id
-                                ? 'border-quaternary text-quaternary'
-                                : 'border-transparent text-tertiary hover:text-primary-default'
+                            activeTab === tab.id ? 'border-quaternary text-quaternary' : 'border-transparent text-tertiary hover:text-primary-default'
                         }`}
                     >
                         {t(`profile.tabs.${tab.i18nKey}`)}

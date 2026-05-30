@@ -1,37 +1,14 @@
-import type {
-    ForumAuthor,
-    ForumCategory,
-    ForumReply,
-    ForumSort,
-    ForumTopic,
-} from '@feature/forum/type/forum.types';
+import type { ForumAuthor, ForumCategory, ForumReply, ForumSort, ForumTopic } from '@feature/forum/type/forum.types';
 
 let forumTopicCounter = 0;
 let forumAuthorCounter = 0;
 let forumReplyCounter = 0;
 
-const ALL_FORUM_CATEGORIES: ForumCategory[] = [
-    'Geral',
-    'Recomendações',
-    'Spoilers',
-    'Suporte',
-    'Off-topic',
-    'Teorias',
-    'Fanart',
-    'Notícias',
-];
+const ALL_FORUM_CATEGORIES: ForumCategory[] = ['Geral', 'Recomendações', 'Spoilers', 'Suporte', 'Off-topic', 'Teorias', 'Fanart', 'Notícias'];
 
-const ALL_FORUM_SORTS: ForumSort[] = [
-    'recent',
-    'popular',
-    'most-replies',
-    'unanswered',
-    'oldest',
-];
+const ALL_FORUM_SORTS: ForumSort[] = ['recent', 'popular', 'most-replies', 'unanswered', 'oldest'];
 
-export const buildForumAuthor = (
-    overrides: Partial<ForumAuthor> = {},
-): ForumAuthor => {
+export const buildForumAuthor = (overrides: Partial<ForumAuthor> = {}): ForumAuthor => {
     forumAuthorCounter += 1;
 
     return {
@@ -63,9 +40,7 @@ export const forumAuthorPresets = {
         }),
 };
 
-export const buildForumReply = (
-    overrides: Partial<ForumReply> = {},
-): ForumReply => {
+export const buildForumReply = (overrides: Partial<ForumReply> = {}): ForumReply => {
     forumReplyCounter += 1;
 
     return {
@@ -92,9 +67,7 @@ export const forumReplyPresets = {
     fromAdmin: () => buildForumReply({ author: forumAuthorPresets.admin() }),
 };
 
-export const buildForumTopic = (
-    overrides: Partial<ForumTopic> = {},
-): ForumTopic => {
+export const buildForumTopic = (overrides: Partial<ForumTopic> = {}): ForumTopic => {
     forumTopicCounter += 1;
 
     return {
@@ -162,11 +135,9 @@ export const forumTopicPresets = {
         }),
 };
 
-export const buildAllCategoryTopics = (): ForumTopic[] =>
-    ALL_FORUM_CATEGORIES.map(category => buildForumTopic({ category }));
+export const buildAllCategoryTopics = (): ForumTopic[] => ALL_FORUM_CATEGORIES.map(category => buildForumTopic({ category }));
 
-export const buildForumTopicList = (count = 10): ForumTopic[] =>
-    Array.from({ length: count }, () => buildForumTopic());
+export const buildForumTopicList = (count = 10): ForumTopic[] => Array.from({ length: count }, () => buildForumTopic());
 
 export const forumCategoryValues = ALL_FORUM_CATEGORIES;
 export const forumSortValues = ALL_FORUM_SORTS;

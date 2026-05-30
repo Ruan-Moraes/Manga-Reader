@@ -8,14 +8,7 @@ export { default as RatingModal } from './component/modal/RatingModal';
 export { default as RecentReviews } from './component/RecentReviews';
 
 // Services
-export {
-    getRatingsAverage,
-    getUserReviews,
-    updateReview,
-    deleteReview,
-    submitRating,
-    getRatingsByTitleId,
-} from './service/ratingService';
+export { getRatingsAverage, getUserReviews, updateReview, deleteReview, submitRating, getRatingsByTitleId } from './service/ratingService';
 
 // Types
 export type { MangaRating } from './type/rating.types';

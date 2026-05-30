@@ -11,31 +11,21 @@ interface StoresContainerProps {
     title?: string;
 }
 
-const StoresContainer: React.FC<StoresContainerProps> = ({
-    stores,
-    isLoading,
-    title,
-}) => {
+const StoresContainer: React.FC<StoresContainerProps> = ({ stores, isLoading, title }) => {
     const { t } = useTranslation('store');
 
     if (isLoading) {
         return (
             <div className="flex flex-col gap-3">
                 {Array.from({ length: 4 }).map((_, index) => (
-                    <StoreCard
-                        key={index}
-                        store={{} as Store}
-                        isLoading={true}
-                    />
+                    <StoreCard key={index} store={{} as Store} isLoading={true} />
                 ))}
             </div>
         );
     }
 
     if (!stores.length) {
-        return (
-            <p className="text-sm text-tertiary">{t('container.empty')}</p>
-        );
+        return <p className="text-sm text-tertiary">{t('container.empty')}</p>;
     }
 
     return (

@@ -21,9 +21,7 @@ describe('validateResponse', () => {
     it('deve lancar erro com mensagem padrao quando statusText e vazio', () => {
         const response = { ok: false, statusText: '' } as Response;
 
-        expect(() => validateResponse(response)).toThrow(
-            'Resposta inválida da API',
-        );
+        expect(() => validateResponse(response)).toThrow('Resposta inválida da API');
     });
 
     it('deve lancar erro para response null', () => {
@@ -31,8 +29,6 @@ describe('validateResponse', () => {
     });
 
     it('deve lancar erro para response undefined', () => {
-        expect(() =>
-            validateResponse(undefined as unknown as Response),
-        ).toThrow();
+        expect(() => validateResponse(undefined as unknown as Response)).toThrow();
     });
 });

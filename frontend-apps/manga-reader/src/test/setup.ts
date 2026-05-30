@@ -3,6 +3,18 @@ import i18n from '@/i18n/config';
 import { cleanup } from '@testing-library/react';
 import { afterEach, beforeAll, afterAll, vi } from 'vitest';
 
+// jsdom does not implement IntersectionObserver
+class MockIntersectionObserver {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+}
+Object.defineProperty(window, 'IntersectionObserver', {
+    writable: true,
+    configurable: true,
+    value: MockIntersectionObserver,
+});
+
 import { server } from './mocks/server';
 
 void i18n.changeLanguage('pt-BR');

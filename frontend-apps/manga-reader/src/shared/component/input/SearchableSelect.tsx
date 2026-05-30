@@ -25,9 +25,7 @@ const selectStyles: StylesConfig<SearchableSelectOption> = {
         padding: '0.125rem 0.25rem',
         backgroundColor: '#161616',
         borderRadius: '0.125rem',
-        border: state.isFocused
-            ? '0.0625rem solid #ddda2a'
-            : '0.0625rem solid #727273',
+        border: state.isFocused ? '0.0625rem solid #ddda2a' : '0.0625rem solid #727273',
         boxShadow: 'none',
         cursor: 'text',
         transition: 'border-color 0.3s',
@@ -71,11 +69,7 @@ const selectStyles: StylesConfig<SearchableSelectOption> = {
     }),
     option: (provided, state) => ({
         ...provided,
-        backgroundColor: state.isSelected
-            ? '#ddda2a40'
-            : state.isFocused
-              ? '#252526'
-              : '#161616',
+        backgroundColor: state.isSelected ? '#ddda2a40' : state.isFocused ? '#252526' : '#161616',
         color: state.isSelected ? '#FFFFFF' : '#FFFFFF',
         cursor: 'pointer',
         fontSize: '0.875rem',

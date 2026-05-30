@@ -1,38 +1,25 @@
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
+import { useTranslation } from 'react-i18next';
 
-import TextSection from '@shared/component/paragraph/TextSection';
-import SectionTitle from '@shared/component/title/SectionTitle';
-import TextBlock from '@shared/component/paragraph/TextBlock';
+import { PageContainer } from '@ui/PageContainer';
+import { SectionHeader } from '@ui/SectionHeader';
+import { Card } from '@ui/Card';
 
-import ContactForm from '@shared/component/form/ContactForm';
+import { ContactForm } from '@feature/contact';
 
 const PublishWork = () => {
+    const { t } = useTranslation('common');
+
     return (
-        <>
-            <Header showSearch={true} />
-            <MainContent>
-                <TextSection>
-                    <SectionTitle
-                        titleStyleClasses="text-lg"
-                        title="Publicar Trabalho"
-                    />
-                    <TextBlock
-                        paragraphContent={[
-                            {
-                                text: 'Se você é um autor e deseja publicar seu trabalho em nosso site, entre em contato conosco para obter mais informações sobre como enviar seu trabalho para revisão e publicação.',
-                            },
-                            {
-                                text: 'Nós aceitamos mangas, webtoons, fanfics, fanarts, e outros tipos de trabalhos criativos. Se você tem uma história para contar ou uma arte para compartilhar, nós adoraríamos ajudá-lo a compartilhar seu trabalho com o mundo.',
-                            },
-                        ]}
-                    />
-                </TextSection>
-                <ContactForm />
-            </MainContent>
-            <Footer showLinks={true} />
-        </>
+        <PageContainer asMain size="narrow" paddingY="md">
+            <SectionHeader eyebrow={t('publishWork.eyebrow')} title={t('publishWork.title')} className="mb-6" />
+
+            <Card variant="default" className="mb-6 p-6">
+                <p className="mb-3 leading-relaxed text-mr-small text-mr-fg-muted">{t('publishWork.description1')}</p>
+                <p className="leading-relaxed text-mr-small text-mr-fg-muted">{t('publishWork.description2')}</p>
+            </Card>
+
+            <ContactForm />
+        </PageContainer>
     );
 };
 

@@ -1,95 +1,85 @@
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useAppNavigate from '@shared/hook/useAppNavigate';
 
-import Header from '@app/layout/Header';
-import MainContent from '@/app/layout/Main';
-import Footer from '@app/layout/Footer';
-
-import { THEME_COLORS } from '@shared/constant/THEME_COLORS';
-import AlertBanner from '@shared/component/notification/AlertBanner';
-
-import { CommentInput, SortComments, CommentsList } from '@feature/comment';
-
-import {
-    useChapterReader,
-    ChapterCoverImage,
-    ChapterNavigation,
-    ChapterPages,
-    ChapterBottomBar,
-} from '@feature/chapter';
+import { BG_CLASS, useChapterReader } from './useChapterReader';
+import { BottomToolbar } from './parts/BottomToolbar';
+import { ConfigDrawer } from './parts/ConfigDrawer';
+import { ReaderChrome } from './parts/ReaderChrome';
+import { ReadingArea } from './parts/ReadingArea';
 
 const Chapter = () => {
+    const { titleId, chapter } = useParams();
+    const navigate = useAppNavigate();
     const { t } = useTranslation('manga');
-    const { t: tComment } = useTranslation('comment');
-    const {
-        titleId,
-        chapterId,
-        currentTitle,
-        isLoading,
-        isInvalidChapter,
-        bottomNavRef,
-        imageError,
-        setImageError,
-        handleChapterChange,
-    } = useChapterReader();
 
-    if (isInvalidChapter) {
-        return (
-            <MainContent>
-                <AlertBanner
-                    color={THEME_COLORS.QUINARY}
-                    title={t('chapterPage.notFoundTitle')}
-                    message={t('chapterPage.notFoundMessage')}
-                    link={`/title/${titleId}`}
-                    linkText={t('chapterPage.backToTitle')}
-                />
-            </MainContent>
-        );
-    }
+    const reader = useChapterReader(titleId, chapter);
+
+    const navToTitle = () => navigate(`/titles/${titleId}`);
+    const navToChapter = (n: number) => navigate(`/titles/${titleId}/chapters/${n}`);
 
     return (
-        <>
-            <Header />
-            <MainContent>
-                <ChapterCoverImage
-                    currentTitle={currentTitle}
-                    isLoading={isLoading}
-                    imageError={imageError}
-                    onImageError={() => setImageError(true)}
+        <div className={`relative min-h-screen ${BG_CLASS[reader.bg]}`}>
+            <main aria-label={t('reader.readerLandmarkAria')}>
+                <ReaderChrome
+                    ref={reader.chromeRef}
+                    titleId={titleId}
+                    chNum={reader.chNum}
+                    page={reader.page}
+                    saved={reader.saved}
+                    onBack={navToTitle}
+                    onSaveToggle={() => reader.setSaved(s => !s)}
+                    onCommentsToggle={() => reader.setCommentsOpen(o => !o)}
+                    onOpenSettings={() => reader.setDrawerOpen(true)}
                 />
-                <ChapterNavigation
-                    chapterId={chapterId}
-                    onChapterChange={handleChapterChange}
+
+                <ReadingArea
+                    mode={reader.mode}
+                    dir={reader.dir}
+                    fit={reader.fit}
+                    chNum={reader.chNum}
+                    page={reader.page}
+                    isEnd={reader.isEnd}
+                    titleId={titleId}
+                    ratingGiven={reader.ratingGiven}
+                    comment={reader.comment}
+                    onPrevPage={reader.prevPage}
+                    onNextPage={reader.nextPage}
+                    onRate={reader.setRatingGiven}
+                    onComment={reader.setComment}
+                    onNavigateNext={() => navToChapter(Number(reader.chNum) + 1)}
+                    onNavigateBack={navToTitle}
                 />
-                <ChapterPages />
-                <section>
-                    <div className="flex flex-col gap-8">
-                        <div className="flex flex-col gap-2">
-                            <div>
-                                <h3 className="text-xl font-bold">
-                                    {t('chapterPage.commentsHeading')}
-                                </h3>
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <CommentInput
-                                    placeholder={tComment('section.placeholder')}
-                                    titleId={titleId}
-                                />
-                                <SortComments title={tComment('section.sortLabel')} />
-                            </div>
-                        </div>
-                        <div className="flex flex-col -mt-4">
-                            <CommentsList titleId={titleId} />
-                        </div>
-                    </div>
-                </section>
-                <ChapterBottomBar
-                    ref={bottomNavRef}
-                    chapterId={chapterId}
-                    onChapterChange={handleChapterChange}
+
+                <BottomToolbar
+                    ref={reader.bottomRef}
+                    page={reader.page}
+                    progress={reader.progress}
+                    chNum={reader.chNum}
+                    titleId={titleId}
+                    onPrevPage={reader.prevPage}
+                    onNextPage={reader.nextPage}
+                    onScrub={reader.setPage}
+                    onPrevChapter={() => navToChapter(Number(reader.chNum) - 1)}
+                    onNextChapter={() => navToChapter(Number(reader.chNum) + 1)}
                 />
-            </MainContent>
-            <Footer />
-        </>
+
+                <ConfigDrawer
+                    open={reader.drawerOpen}
+                    onClose={() => reader.setDrawerOpen(false)}
+                    mode={reader.mode}
+                    dir={reader.dir}
+                    fit={reader.fit}
+                    bg={reader.bg}
+                    onMode={reader.setMode}
+                    onDir={reader.setDir}
+                    onFit={reader.setFit}
+                    onBg={reader.setBg}
+                />
+            </main>
+
+            <div className="h-14" />
+        </div>
     );
 };
 

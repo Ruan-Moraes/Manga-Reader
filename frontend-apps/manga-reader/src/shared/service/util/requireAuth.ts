@@ -1,4 +1,4 @@
-import { getStoredSession } from '@feature/auth/service/authService';
+import { getStoredSession } from '@shared/service/session';
 import { showErrorToast } from '@shared/service/util/toastService';
 
 export const requireAuth = (actionMessage: string): boolean => {

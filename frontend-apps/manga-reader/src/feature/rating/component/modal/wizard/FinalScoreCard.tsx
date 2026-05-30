@@ -18,6 +18,7 @@ type FinalScoreCardProps = {
     allCategoriesRated: boolean;
 };
 
+const SCORE_ANIMATION_DELAY_MS = 50;
 const CIRCLE_RADIUS = 44;
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 const CIRCLE_SIZE = 120;
@@ -29,49 +30,28 @@ const getScoreColor = (score: number): string => {
     return '#22c55e';
 };
 
-const FinalScoreCard = ({
-    average,
-    categoryRatings,
-    categories,
-    onSubmit,
-    onBack,
-    isSubmitting,
-    allCategoriesRated,
-}: FinalScoreCardProps) => {
+const FinalScoreCard = ({ average, categoryRatings, categories, onSubmit, onBack, isSubmitting, allCategoriesRated }: FinalScoreCardProps) => {
     const { t } = useTranslation('rating');
     const [animatedOffset, setAnimatedOffset] = useState(CIRCLE_CIRCUMFERENCE);
 
     const displayScore = Math.round(average * 10) / 10;
     const percentage = Math.round((displayScore / 5) * 100);
-    const targetOffset =
-        CIRCLE_CIRCUMFERENCE - (CIRCLE_CIRCUMFERENCE * displayScore) / 5;
+    const targetOffset = CIRCLE_CIRCUMFERENCE - (CIRCLE_CIRCUMFERENCE * displayScore) / 5;
     const scoreColor = getScoreColor(displayScore);
 
     useEffect(() => {
         setAnimatedOffset(CIRCLE_CIRCUMFERENCE);
         const timer = setTimeout(() => {
             setAnimatedOffset(targetOffset);
-        }, 50);
+        }, SCORE_ANIMATION_DELAY_MS);
         return () => clearTimeout(timer);
     }, [targetOffset]);
 
     return (
         <div className="flex flex-col gap-4 items-center">
             <div className="relative flex items-center justify-center">
-                <svg
-                    width={CIRCLE_SIZE}
-                    height={CIRCLE_SIZE}
-                    viewBox={`0 0 ${CIRCLE_SIZE} ${CIRCLE_SIZE}`}
-                >
-                    <circle
-                        cx={CIRCLE_SIZE / 2}
-                        cy={CIRCLE_SIZE / 2}
-                        r={CIRCLE_RADIUS}
-                        fill="none"
-                        stroke="#727273"
-                        strokeWidth={STROKE_WIDTH}
-                        opacity={0.3}
-                    />
+                <svg width={CIRCLE_SIZE} height={CIRCLE_SIZE} viewBox={`0 0 ${CIRCLE_SIZE} ${CIRCLE_SIZE}`}>
+                    <circle cx={CIRCLE_SIZE / 2} cy={CIRCLE_SIZE / 2} r={CIRCLE_RADIUS} fill="none" stroke="#727273" strokeWidth={STROKE_WIDTH} opacity={0.3} />
                     <circle
                         cx={CIRCLE_SIZE / 2}
                         cy={CIRCLE_SIZE / 2}
@@ -84,21 +64,15 @@ const FinalScoreCard = ({
                         strokeDashoffset={animatedOffset}
                         transform={`rotate(-90 ${CIRCLE_SIZE / 2} ${CIRCLE_SIZE / 2})`}
                         style={{
-                            transition:
-                                'stroke-dashoffset 1s ease-in-out, stroke 0.5s ease',
+                            transition: 'stroke-dashoffset 1s ease-in-out, stroke 0.5s ease',
                         }}
                     />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span
-                        className="text-2xl font-bold leading-none"
-                        style={{ color: scoreColor }}
-                    >
+                    <span className="text-2xl font-bold leading-none" style={{ color: scoreColor }}>
                         {displayScore.toFixed(1)}
                     </span>
-                    <span className="text-[0.6rem] text-tertiary mt-0.5">
-                        {percentage}%
-                    </span>
+                    <span className="text-[0.6rem] text-tertiary mt-0.5">{percentage}%</span>
                 </div>
             </div>
 
@@ -110,21 +84,13 @@ const FinalScoreCard = ({
                     const isRated = rating > 0;
 
                     return (
-                        <div
-                            key={cat.key}
-                            className="flex items-center justify-between gap-1"
-                        >
+                        <div key={cat.key} className="flex items-center justify-between gap-1">
                             <span className="flex items-center gap-1 text-xs">
                                 <span>{cat.icon}</span>
-                                <span className="text-tertiary">
-                                    {t(`wizard.categoryLabels.${cat.key}`)}
-                                </span>
+                                <span className="text-tertiary">{t(`wizard.categoryLabels.${cat.key}`)}</span>
                             </span>
                             <div className="flex items-center gap-1">
-                                <RatingStars
-                                    value={isRated ? rating : 0}
-                                    size={10}
-                                />
+                                <RatingStars value={isRated ? rating : 0} size={10} />
                             </div>
                         </div>
                     );
@@ -146,9 +112,7 @@ const FinalScoreCard = ({
                     disabled={!allCategoriesRated || isSubmitting}
                     className="flex-1 px-4 py-2 text-sm font-bold border rounded-xs bg-quaternary-opacity-75 text-primary-default border-quaternary-default hover:bg-quaternary-default disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
-                    {isSubmitting
-                        ? t('wizard.submitting')
-                        : t('wizard.confirm')}
+                    {isSubmitting ? t('wizard.submitting') : t('wizard.confirm')}
                 </button>
             </div>
         </div>

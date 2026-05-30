@@ -4,15 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import {
-    getGroups,
-    getGroupById,
-    getGroupsByTitleId,
-    getMemberById,
-    getGroupStatusLabelKey,
-    supportGroup,
-    unsupportGroup,
-} from './groupService';
+import { getGroups, getGroupById, getGroupsByTitleId, getMemberById, getGroupStatusLabelKey, supportGroup, unsupportGroup } from './groupService';
 
 const buildGroup = (overrides = {}) => ({
     id: 'group-1',
@@ -67,11 +59,7 @@ describe('groupService', () => {
 
     describe('getGroupById', () => {
         it('deve retornar grupo pelo id', async () => {
-            server.use(
-                http.get(`*${API_URLS.GROUPS}/group-1`, () =>
-                    HttpResponse.json({ data: buildGroup(), success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.GROUPS}/group-1`, () => HttpResponse.json({ data: buildGroup(), success: true })));
 
             const result = await getGroupById('group-1');
 
@@ -100,11 +88,7 @@ describe('groupService', () => {
         it('deve retornar membro pelo id', async () => {
             const member = { id: 'member-1', name: 'Member' };
 
-            server.use(
-                http.get(`*${API_URLS.GROUPS}/members/member-1`, () =>
-                    HttpResponse.json({ data: member, success: true }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.GROUPS}/members/member-1`, () => HttpResponse.json({ data: member, success: true })));
 
             const result = await getMemberById('member-1');
 
@@ -114,44 +98,28 @@ describe('groupService', () => {
 
     describe('getGroups — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.GROUPS}`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.GROUPS}`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getGroups()).rejects.toThrow();
         });
     });
 
     describe('getGroupById — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.GROUPS}/group-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.GROUPS}/group-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getGroupById('group-1')).rejects.toThrow();
         });
     });
 
     describe('getGroupsByTitleId — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.GROUPS}/title/title-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.GROUPS}/title/title-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getGroupsByTitleId('title-1')).rejects.toThrow();
         });
     });
 
     describe('getMemberById — erro', () => {
         it('deve lançar erro quando API retorna 500', async () => {
-            server.use(
-                http.get(`*${API_URLS.GROUPS}/members/member-1`, () =>
-                    HttpResponse.json(null, { status: 500 }),
-                ),
-            );
+            server.use(http.get(`*${API_URLS.GROUPS}/members/member-1`, () => HttpResponse.json(null, { status: 500 })));
             await expect(getMemberById('member-1')).rejects.toThrow();
         });
     });
@@ -172,11 +140,7 @@ describe('groupService', () => {
 
     describe('supportGroup', () => {
         it('deve apoiar grupo com sucesso', async () => {
-            server.use(
-                http.post(`*${API_URLS.GROUPS}/group-1/support`, () =>
-                    HttpResponse.json({ data: buildGroup(), success: true }),
-                ),
-            );
+            server.use(http.post(`*${API_URLS.GROUPS}/group-1/support`, () => HttpResponse.json({ data: buildGroup(), success: true })));
 
             const result = await supportGroup('group-1');
 
@@ -186,11 +150,7 @@ describe('groupService', () => {
 
     describe('unsupportGroup', () => {
         it('deve deixar de apoiar grupo com sucesso', async () => {
-            server.use(
-                http.delete(`*${API_URLS.GROUPS}/group-1/support`, () =>
-                    HttpResponse.json({ data: buildGroup(), success: true }),
-                ),
-            );
+            server.use(http.delete(`*${API_URLS.GROUPS}/group-1/support`, () => HttpResponse.json({ data: buildGroup(), success: true })));
 
             const result = await unsupportGroup('group-1');
 

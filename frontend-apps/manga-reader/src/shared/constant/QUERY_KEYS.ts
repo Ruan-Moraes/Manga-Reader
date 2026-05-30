@@ -24,6 +24,8 @@ export enum QUERY_KEYS {
 
     // Library
     LIBRARY = 'library',
+    LIBRARY_COUNTS = 'libraryCounts',
+    LIBRARY_IDS = 'libraryIds',
 
     // Groups
     GROUPS = 'groups',
@@ -40,6 +42,7 @@ export enum QUERY_KEYS {
     // Events
     EVENTS = 'events',
     EVENT = 'event',
+    EVENT_RELATED = 'eventRelated',
 
     // Forum
     FORUM_TOPICS = 'forumTopics',

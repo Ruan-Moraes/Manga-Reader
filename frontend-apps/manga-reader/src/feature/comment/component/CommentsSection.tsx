@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { getStoredSession } from '@feature/auth/service/authService';
+import { getStoredSession } from '@shared/service/session';
 
 import { CommentData } from '../type/comment.types';
 
@@ -39,12 +39,7 @@ const CommentsSection = ({
                     <h3 className="text-xl font-bold">{t('section.title')}</h3>
                     {onToggleCrossLanguage && (
                         <label className="flex items-center gap-1.5 text-xs cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={crossLanguage}
-                                onChange={onToggleCrossLanguage}
-                                className="accent-quaternary-default"
-                            />
+                            <input type="checkbox" checked={crossLanguage} onChange={onToggleCrossLanguage} className="accent-quaternary-default" />
                             <span>
                                 {t('section.crossLanguage', {
                                     defaultValue: 'Todos idiomas (admin)',
@@ -55,26 +50,14 @@ const CommentsSection = ({
                 </div>
                 <div className="flex flex-col gap-4">
                     {getStoredSession() ? (
-                        <CommentInput
-                            placeholder={t('section.placeholder')}
-                            titleId={titleId}
-                            onCommentCreated={onCommentCreated}
-                        />
+                        <CommentInput placeholder={t('section.placeholder')} titleId={titleId} onCommentCreated={onCommentCreated} />
                     ) : (
-                        <p className="p-3 text-xs border rounded-xs border-tertiary bg-secondary text-tertiary">
-                            {t('section.loginPrompt')}
-                        </p>
+                        <p className="p-3 text-xs border rounded-xs border-tertiary bg-secondary text-tertiary">{t('section.loginPrompt')}</p>
                     )}
                     <SortComments title={t('section.sortLabel')} />
                 </div>
             </div>
-            <CommentsList
-                titleId={titleId}
-                comments={comments}
-                isLoading={isLoading}
-                isError={isError}
-                error={error}
-            />
+            <CommentsList titleId={titleId} comments={comments} isLoading={isLoading} isError={isError} error={error} />
         </section>
     );
 };

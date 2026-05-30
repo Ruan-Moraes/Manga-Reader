@@ -16,22 +16,12 @@ const ACCENTS: Record<NonNullable<MetricsCardProps['accent']>, string> = {
     danger: 'bg-red-500/20 text-red-300',
 };
 
-const MetricsCard = ({
-    label,
-    value,
-    icon,
-    accent = 'default',
-}: MetricsCardProps) => {
-    const formattedValue =
-        typeof value === 'number' ? value.toLocaleString(getLocale()) : value;
+const MetricsCard = ({ label, value, icon, accent = 'default' }: MetricsCardProps) => {
+    const formattedValue = typeof value === 'number' ? value.toLocaleString(getLocale()) : value;
 
     return (
         <div className="flex items-center gap-3 p-4 border rounded-xs bg-secondary border-tertiary">
-            {icon && (
-                <div className={`p-2 rounded-xs ${ACCENTS[accent]}`}>
-                    {icon}
-                </div>
-            )}
+            {icon && <div className={`p-2 rounded-xs ${ACCENTS[accent]}`}>{icon}</div>}
             <div>
                 <p className="text-2xl font-bold">{formattedValue}</p>
                 <p className="text-xs text-tertiary">{label}</p>

@@ -1,3 +1,5 @@
+export { default as ContactForm } from './component/ContactForm';
+
 export { default as usePublishWorkForm } from './hook/usePublishWorkForm';
 
 export { submitPublishWorkContact } from './service/contactService';

@@ -11,8 +11,7 @@ import { usePublishWorkForm } from '@feature/contact';
 
 const ContactForm = () => {
     const { t } = useTranslation('contact');
-    const { draft, errors, isSubmitting, updateField, handleSubmit } =
-        usePublishWorkForm();
+    const { draft, errors, isSubmitting, updateField, handleSubmit } = usePublishWorkForm();
 
     const workTypeOptions = useMemo(
         () => [
@@ -27,11 +26,7 @@ const ContactForm = () => {
     );
 
     return (
-        <FormWrapper
-            onFormSubmit={handleSubmit}
-            title={t('form.title')}
-            subtitle={t('form.subtitle')}
-        >
+        <FormWrapper onFormSubmit={handleSubmit} title={t('form.title')} subtitle={t('form.subtitle')}>
             <BaseInput
                 label={t('form.labels.name')}
                 type="text"
@@ -101,13 +96,7 @@ const ContactForm = () => {
                 name="message"
                 rows={6}
             />
-            <RaisedButton
-                text={
-                    isSubmitting
-                        ? t('form.actions.submitting')
-                        : t('form.actions.submit')
-                }
-            />
+            <RaisedButton text={isSubmitting ? t('form.actions.submitting') : t('form.actions.submit')} />
         </FormWrapper>
     );
 };

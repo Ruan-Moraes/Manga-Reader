@@ -12,11 +12,7 @@ import { buildTitle, buildTitlePage } from '@/test/factories/titleFactory';
 
 import useTitles from './useTitles';
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={createTestQueryClient()}>
-        {children}
-    </QueryClientProvider>
-);
+const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={createTestQueryClient()}>{children}</QueryClientProvider>;
 
 describe('useTitles', () => {
     it('deve retornar array vazio e totalPages 0 enquanto carrega', () => {
@@ -33,11 +29,7 @@ describe('useTitles', () => {
         const titles = [buildTitle(), buildTitle(), buildTitle()];
         const page = buildTitlePage(titles);
 
-        server.use(
-            http.get(`*${API_URLS.TITLES}`, () =>
-                HttpResponse.json({ data: page, success: true }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json({ data: page, success: true })));
 
         const { result } = renderHook(() => useTitles(QUERY_KEYS.TITLES), {
             wrapper,
@@ -54,11 +46,7 @@ describe('useTitles', () => {
     });
 
     it('deve retornar valores padrao quando API falha', async () => {
-        server.use(
-            http.get(`*${API_URLS.TITLES}`, () =>
-                HttpResponse.json(null, { status: 500 }),
-            ),
-        );
+        server.use(http.get(`*${API_URLS.TITLES}`, () => HttpResponse.json(null, { status: 500 })));
 
         const { result } = renderHook(() => useTitles(QUERY_KEYS.TITLES), {
             wrapper,

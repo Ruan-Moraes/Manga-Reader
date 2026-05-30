@@ -5,12 +5,7 @@
     isDisabled: boolean;
 };
 
-const RatingModalFooter = ({
-    onSubmit,
-    onCancel,
-    isSubmitting,
-    isDisabled,
-}: RatingModalFooterProps) => {
+const RatingModalFooter = ({ onSubmit, onCancel, isSubmitting, isDisabled }: RatingModalFooterProps) => {
     return (
         <div className="flex gap-2">
             <button
