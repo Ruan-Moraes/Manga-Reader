@@ -167,7 +167,9 @@ Varredura manual+heurística de `frontend-apps/manga-reader/src` (~720 arquivos)
 #### 25.1 — Código morto / obsoleto
 - ✅ **Feito**: `entities/comment/model/useCommentEditor.tsx` removido (0 consumidores; substituído por `useCommentRichEditor`).
 - **Mock data em runtime**: `pages/forum/ui/parts/forumTopicMock.ts` (usado por ForumTopic/TopicHeader/TopicReplies) e `pages/profile/ui/parts/userProfileMock.ts` (UserProfile/Header). **Em uso** — telas ainda não migradas p/ API real. Migrar + remover mock.
-- **Páginas legais legadas `pages/term/`** (`TermsOfUse.tsx`, `Dmca.tsx`) redundantes com `pages/legal/`. Router mantém `LegacyDmca` (`/dmca`) + `LegalDmca` (`/legal/dmca`). **Consolidar em `legal/`, redirecionar rota legada, remover `term/`.** (não feito — muda rota/comportamento)
+- ✅ **Feito**: slice `pages/term/` removido (eram stubs `<Navigate>`). As rotas legadas
+  `/terms-of-use` e `/dmca` agora redirecionam inline no router (`<Navigate to="/legal/...">`).
+  Comportamento preservado, slice redundante eliminado.
 - 3 `TODO/FIXME` espalhados (baixo).
 
 #### 25.2 — FSD: pureza de segmento (hooks fora de `model/`) — ✅ Feito

@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import NotFound from '@pages/error/ui/NotFound';
 
@@ -14,8 +15,6 @@ const EventDetails = lazy(() => import('@pages/event/ui/EventDetails'));
 const Login = lazy(() => import('@pages/login/ui/Login'));
 const SignUp = lazy(() => import('@pages/sign-up/ui/SignUp'));
 const AboutUs = lazy(() => import('@pages/about-us/ui/AboutUs'));
-const TermsOfUse = lazy(() => import('@pages/term/ui/TermsOfUse'));
-const LegacyDmca = lazy(() => import('@pages/term/ui/Dmca'));
 const LegalTerms = lazy(() => import('@pages/legal/ui/Terms'));
 const LegalPrivacy = lazy(() => import('@pages/legal/ui/Privacy'));
 const LegalDmca = lazy(() => import('@pages/legal/ui/Dmca'));
@@ -81,8 +80,8 @@ export const contentRoutes = [
 
     // Static / legal
     { path: 'about-us', element: <AboutUs /> },
-    { path: 'terms-of-use', element: <TermsOfUse /> },
-    { path: 'dmca', element: <LegacyDmca /> },
+    { path: 'terms-of-use', element: <Navigate to="/legal/terms" replace /> },
+    { path: 'dmca', element: <Navigate to="/legal/dmca" replace /> },
     { path: 'legal/terms', element: <LegalTerms /> },
     { path: 'legal/privacy', element: <LegalPrivacy /> },
     { path: 'legal/dmca', element: <LegalDmca /> },
