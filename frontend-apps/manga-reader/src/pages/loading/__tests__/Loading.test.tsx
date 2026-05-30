@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Loading from '../Loading';
 
-vi.mock('@app/layout/PageShell', () => ({
+vi.mock('@widgets/layouts/PageShell', () => ({
     default: ({ children }: { children: React.ReactNode }) => <main>{children}</main>,
 }));
 

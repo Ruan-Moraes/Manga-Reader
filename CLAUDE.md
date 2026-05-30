@@ -560,9 +560,23 @@ backend/src/main/java/com/mangareader/
 └── shared/                            # Cross-cutting: configs, exceptions, constants
 
 frontend/src/
-├── app/      # Layouts, router, route guards
-├── feature/  # 13 feature modules (component/, hook/, service/, type/)
-├── shared/   # Reusable components (~37), HTTP client, types
+├── app/      # Router config + route guards (@app) — FSD app layer
+├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
+├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,
+│             #   admin-panel/, layouts/ (shells) (@widgets) — FSD widgets layer
+├── feature/  # Feature modules (component/, hook/, service/, type/) — singular (migração p/ `features` pendente)
+├── shared/   # Reusable components (~37), HTTP client, types (@shared, @ui)
 ├── mock/     # Mock data (legacy — features usam API real)
 └── style/    # Global CSS + Tailwind
 ```
+
+**Arquitetura frontend — Feature-Sliced Design (em migração)**
+
+Camadas FSD com import unidirecional (camada superior importa inferior, nunca o contrário):
+`app → pages → widgets → feature → shared`. Aliases: `@app`, `@pages`, `@widgets`, `@feature`, `@shared`, `@ui`.
+
+- **app**: só `router/` (PublicRoutes, ProtectedRoutes) + bootstrap em `main.tsx`. Sem páginas/widgets aqui.
+- **pages**: cada rota = 1 slice (ex.: `pages/home/`, `pages/chapter/`). Sub-partes em `parts/`, testes em `__tests__/`.
+- **widgets**: slices coesos por bloco de UI. `layouts/` contém os shells de rota (RootLayout, ChapterLayout, PageShell) — esses compõem `@widgets/header|footer|mobile-tab-bar` (desvio pragmático widget→widget; enforcement via steiger pendente).
+
+**Pendências FSD** (ver `docs/tech-debt.md`): renomear `feature/` → `features/` (canon plural); adicionar `entities/` layer; public API (`index.ts`) por slice de page/widget; lint de boundaries (steiger/eslint-boundaries).

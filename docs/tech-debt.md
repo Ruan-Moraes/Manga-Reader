@@ -86,6 +86,24 @@ infraestrutura grande — adiado como não-bloqueante.
 
 ---
 
+### DT-24: Migração FSD frontend incompleta
+
+**Concluído (2026-05-30)**: separadas as camadas FSD `pages` (ex-`app/route`) e
+`widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/layouts).
+`app/` agora só contém `router/`. Aliases `@pages`/`@widgets` adicionados.
+
+**Pendente**:
+- Renomear `feature/` → `features/` (canon plural FSD).
+- Adicionar layer `entities/` (modelos de negócio compartilhados entre features).
+- Public API (`index.ts`) por slice em `pages/` e `widgets/`.
+- Enforcement de boundaries (steiger ou eslint-plugin-boundaries) — captura
+  regressões de import cross-layer. Resolve também o desvio widget→widget em
+  `widgets/layouts/` (shells compõem header/footer/mobile-tab-bar).
+
+**Prioridade**: Média (não-bloqueante; arquitetura funcional, falta hardening).
+
+---
+
 ### DT-13 (resíduo): call-sites com basename hardcoded
 
 **Estado**: **Resolvido na fonte (2026-05-16)** — o basename agora é
@@ -214,7 +232,7 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 2 | DT-08, DT-10 |
+| **Média** | 3 | DT-08, DT-10, DT-24 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
 | **Baixa** | 2 | DT-03, DT-09 |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |

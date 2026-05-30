@@ -37,12 +37,17 @@
 O frontend segue uma **arquitetura modular orientada a domínio**, onde cada feature é um módulo auto-contido com sua própria camada de componentes, hooks, serviços, tipos e contextos.
 
 ```
-src/
-├── app/                → Aplicação (layouts, rotas, router)
-│   ├── layout/         → Header, Footer, Main, RootLayout
-│   ├── route/          → 29 pages organizadas por domínio
+src/                    → Feature-Sliced Design (em migração): app → pages → widgets → feature → shared
+├── app/                → FSD app layer — bootstrap
 │   └── router/         → PublicRoutes + ProtectedRoutes
-├── feature/            → 13 módulos de domínio
+├── pages/              → FSD pages layer — 1 slice por rota (parts/ + __tests__/)
+├── widgets/            → FSD widgets layer — blocos de UI compostos
+│   ├── header/         → Header + navbar/ + SideMenu + settings/ + hooks/
+│   ├── footer/         → Footer
+│   ├── mobile-tab-bar/ → MobileTabBar
+│   ├── admin-panel/    → AdminLayout + AdminHeader + AdminSidebar
+│   └── layouts/        → Shells de rota: RootLayout, ChapterLayout, PageShell, Main
+├── feature/            → módulos de domínio (singular; rename p/ features pendente)
 │   └── [feature]/
 │       ├── index.ts    → Barrel file (API pública do módulo)
 │       ├── component/  → Componentes React
@@ -346,7 +351,7 @@ Os mocks permanecem no código como referência de estrutura de dados, mas não 
 
 - **Base URL**: `/Manga-Reader` (GitHub Pages)
 - **Plugins**: `@vitejs/plugin-react-swc`, `@tailwindcss/vite`
-- **Aliases**: `@` → `src/`, `@feature` → `src/feature/`, `@shared` → `src/shared/`, `@app` → `src/app/`, `@mock` → `src/mock/`
+- **Aliases**: `@` → `src/`, `@app` → `src/app/`, `@pages` → `src/pages/`, `@widgets` → `src/widgets/`, `@feature` → `src/feature/`, `@shared` → `src/shared/`, `@ui` → `src/shared/ui/`
 - **Proxy (dev)**: `/api` → `http://localhost:8080`
 
 ### TypeScript (`tsconfig.app.json`)

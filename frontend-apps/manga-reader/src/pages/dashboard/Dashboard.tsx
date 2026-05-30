@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import PageShell from '@app/layout/PageShell';
+import PageShell from '@widgets/layouts/PageShell';
 
 import { useAuth } from '@feature/auth';
 

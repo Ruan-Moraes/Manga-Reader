@@ -21,9 +21,9 @@ vi.mock('react-router-dom', async importOriginal => {
     };
 });
 
-vi.mock('@app/layout/Header', () => ({ default: () => null }));
-vi.mock('@app/layout/Footer', () => ({ default: () => null }));
-vi.mock('@/app/layout/Main', () => ({
+vi.mock('@widgets/header/Header', () => ({ default: () => null }));
+vi.mock('@widgets/footer/Footer', () => ({ default: () => null }));
+vi.mock('@widgets/layouts/Main', () => ({
     default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 

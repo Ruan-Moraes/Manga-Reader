@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import Header from '@app/layout/Header';
-import Main from '@app/layout/Main';
-import Footer from '@app/layout/Footer';
+import Header from '@widgets/header/Header';
+import Main from '@widgets/layouts/Main';
+import Footer from '@widgets/footer/Footer';
 
 type PageShellProps = {
     children: ReactNode;

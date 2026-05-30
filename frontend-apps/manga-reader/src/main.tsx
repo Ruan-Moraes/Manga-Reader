@@ -27,8 +27,8 @@ import { initGlobalErrorHandler } from '@shared/service/errorReporting/globalErr
 
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
-import RootLayout from '@app/layout/RootLayout';
-import ChapterLayout from '@app/layout/ChapterLayout';
+import RootLayout from '@widgets/layouts/RootLayout';
+import ChapterLayout from '@widgets/layouts/ChapterLayout';
 
 import { contentRoutes, authRoutes, chapterRoutes } from '@app/router/PublicRoutes';
 import { protectedContentRoutes, adminRoute } from '@app/router/ProtectedRoutes';
@@ -47,12 +47,12 @@ const prefetchOnIdle = () => {
             : setTimeout(fn, IDLE_FALLBACK_DELAY_MS);
 
     scheduleIdle(() => {
-        import('@app/route/forum/Forum');
-        import('@app/route/news/News');
-        import('@app/route/event/Events');
-        import('@app/route/group/Groups');
-        import('@app/route/title/TitleDetails');
-        import('@app/route/trending/Trending');
+        import('@pages/forum/Forum');
+        import('@pages/news/News');
+        import('@pages/event/Events');
+        import('@pages/group/Groups');
+        import('@pages/title/TitleDetails');
+        import('@pages/trending/Trending');
     });
 };
 

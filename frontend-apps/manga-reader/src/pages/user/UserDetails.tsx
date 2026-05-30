@@ -3,7 +3,7 @@ import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import PageShell from '@app/layout/PageShell';
+import PageShell from '@widgets/layouts/PageShell';
 
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import AppLink from '@shared/component/link/element/AppLink';
