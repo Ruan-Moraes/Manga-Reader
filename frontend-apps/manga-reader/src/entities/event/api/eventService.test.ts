@@ -1,0 +1,210 @@
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { http, HttpResponse } from 'msw';
+
+import { server } from '@/test/mocks/server';
+import { API_URLS } from '@shared/constant/API_URLS';
+import type { EventData } from '../model/event.types';
+
+import { getEvents, getEventById, getRelatedEvents, statusLabelKey, formatEventDate, filterEvents } from './eventService';
+
+const buildEvent = (overrides: Partial<EventData> = {}): EventData => ({
+    id: 'event-1',
+    title: 'Manga Convention',
+    description: 'Grande evento',
+    type: 'Convenção',
+    image: 'cover.jpg',
+    startDate: '2025-07-01T10:00:00Z',
+    endDate: '2025-07-02T18:00:00Z',
+    location: {
+        label: 'Centro SP',
+        address: 'Rua A, 100',
+        city: 'Sao Paulo',
+        isOnline: false,
+        mapLink: 'https://maps.example/centro-sp',
+        directions: 'Proximo ao metro',
+    },
+    status: 'registrations_open',
+    timeline: 'upcoming',
+    participants: 500,
+    interested: 200,
+    isFeatured: false,
+    isCreatedByMe: false,
+    amIParticipating: false,
+    isSaved: false,
+    organizer: {
+        id: 'org-1',
+        name: 'Org',
+        avatar: 'org.jpg',
+        profileLink: '/users/org-1',
+        contact: 'org@example.com',
+    },
+    subtitle: 'Subtitulo do evento',
+    gallery: [],
+    timezone: 'America/Sao_Paulo',
+    priceLabel: 'R$ 50,00',
+    schedule: [],
+    specialGuests: [],
+    tickets: [],
+    socialLinks: {},
+    comments: [],
+    relatedEventIds: [],
+    ...overrides,
+});
+
+const buildPageResponse = (content: unknown[] = []) => ({
+    content,
+    page: 0,
+    size: 20,
+    totalElements: content.length,
+    totalPages: 1,
+    last: true,
+});
+
+describe('eventService', () => {
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    describe('getEvents', () => {
+        it('deve retornar pagina de eventos', async () => {
+            server.use(
+                http.get(`*${API_URLS.EVENTS}`, () =>
+                    HttpResponse.json({
+                        data: buildPageResponse([buildEvent()]),
+                        success: true,
+                    }),
+                ),
+            );
+
+            const result = await getEvents();
+
+            expect(result.content).toHaveLength(1);
+        });
+    });
+
+    describe('getEventById', () => {
+        it('deve retornar evento pelo id', async () => {
+            server.use(http.get(`*${API_URLS.EVENTS}/event-1`, () => HttpResponse.json({ data: buildEvent(), success: true })));
+
+            const result = await getEventById('event-1');
+
+            expect(result.title).toBe('Manga Convention');
+        });
+    });
+
+    describe('getRelatedEvents', () => {
+        it('deve retornar eventos relacionados', async () => {
+            server.use(
+                http.get(`*${API_URLS.EVENTS}/event-1/related`, () =>
+                    HttpResponse.json({
+                        data: [buildEvent({ id: 'event-2' })],
+                        success: true,
+                    }),
+                ),
+            );
+
+            const result = await getRelatedEvents('event-1');
+
+            expect(result).toHaveLength(1);
+        });
+    });
+
+    describe('getEvents — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(http.get(`*${API_URLS.EVENTS}`, () => HttpResponse.json(null, { status: 500 })));
+            await expect(getEvents()).rejects.toThrow();
+        });
+    });
+
+    describe('getEventById — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(http.get(`*${API_URLS.EVENTS}/event-1`, () => HttpResponse.json(null, { status: 500 })));
+            await expect(getEventById('event-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getRelatedEvents — erro', () => {
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(http.get(`*${API_URLS.EVENTS}/event-1/related`, () => HttpResponse.json(null, { status: 500 })));
+            await expect(getRelatedEvents('event-1')).rejects.toThrow();
+        });
+    });
+
+    describe('statusLabelKey', () => {
+        it('deve mapear todos os status para chaves i18n', () => {
+            expect(statusLabelKey.happening_now).toBe('status.happening_now');
+            expect(statusLabelKey.registrations_open).toBe('status.registrations_open');
+            expect(statusLabelKey.coming_soon).toBe('status.coming_soon');
+            expect(statusLabelKey.ended).toBe('status.ended');
+        });
+    });
+
+    describe('formatEventDate', () => {
+        it('deve formatar data em portugues', () => {
+            const result = formatEventDate('2025-07-01T10:00:00Z');
+
+            expect(result).toContain('2025');
+        });
+    });
+
+    describe('filterEvents', () => {
+        it('deve filtrar por tab upcoming', () => {
+            const events = [buildEvent({ timeline: 'upcoming' }), buildEvent({ id: 'e2', timeline: 'past' })];
+
+            const result = filterEvents(events, {
+                tab: 'upcoming',
+                query: '',
+                type: 'all',
+                period: 'all',
+                sort: 'date',
+                isLoggedIn: false,
+            });
+
+            expect(result).toHaveLength(1);
+            expect(result[0].timeline).toBe('upcoming');
+        });
+
+        it('deve filtrar por tipo de evento', () => {
+            const events = [buildEvent({ type: 'Convenção' }), buildEvent({ id: 'e2', type: 'Live' })];
+
+            const result = filterEvents(events, {
+                tab: 'upcoming',
+                query: '',
+                type: 'Convenção',
+                period: 'all',
+                sort: 'date',
+                isLoggedIn: false,
+            });
+
+            expect(result).toHaveLength(1);
+        });
+
+        it('deve ordenar por popularidade', () => {
+            const events = [
+                buildEvent({
+                    id: 'e1',
+                    participants: 100,
+                    interested: 50,
+                    timeline: 'upcoming',
+                }),
+                buildEvent({
+                    id: 'e2',
+                    participants: 500,
+                    interested: 200,
+                    timeline: 'upcoming',
+                }),
+            ];
+
+            const result = filterEvents(events, {
+                tab: 'upcoming',
+                query: '',
+                type: 'all',
+                period: 'all',
+                sort: 'popularity',
+                isLoggedIn: false,
+            });
+
+            expect(result[0].id).toBe('e2');
+        });
+    });
+});

@@ -1,4 +1,4 @@
-import type { Title } from '@entities/manga/type/title.types';
+import type { Title } from '@entities/manga/model/title.types';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildChapterList } from './chapterFactory';

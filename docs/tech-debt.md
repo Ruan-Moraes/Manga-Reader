@@ -134,17 +134,24 @@ tsc: 33 → 28 erros.
   movidos p/ `shared/ui/` (`@ui/Illustration`). `fsd/no-reserved-folder-names` agora **ON**.
 - `*.tsbuildinfo` adicionado ao `.gitignore` (era trackeado e gerava erros-fantasma no tsc incremental).
 
-**Pendente — outros** (regras desligadas no `steiger.config.ts`):
-- Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — `fsd/no-segmentless-slices`.
-- **Deferido com rationale**: `public-api`/`no-public-api-sidestep` em `shared/`. Imports por
-  caminho de segmento (`@ui/Button`, `@shared/service/http`, 300+ refs) são idiomáticos na
-  layer shared; barrels + rewire = baixo valor / alto churn. Não é bug.
-- `Pagination` duplicado (não é dup real): `@ui/Pagination` (text/Button, `total/onChange`)
-  vs `shared/component/navigation/Pagination` (icon-only, `totalPages/onPageChange`, usado por
-  `DataTable` + re-export em `entities/forum`). Unificar = mudança visual/UX, exige decisão de design.
-- Dead code residual: `shared/component/link/section/FooterLinksSection.tsx` + `shared/ui/StyledSelect.tsx` (0 consumidores).
+**Concluído — segmentação canônica (2026-05-30)**:
+- `pages/` (28) e `widgets/` (5) com código movido p/ segmento `ui/`.
+- `entities/` (12) e `features/` (4): segmentos renomeados p/ canônico FSD —
+  `component→ui`, `service→api`, `hook/type/context/schema→model`, `util→lib`, `constant→config`.
+  `fsd/no-segmentless-slices` agora **ON**, verde.
+- Dead code removido: `shared/component/form/ContactForm` e `shared/hook/useMenuData`
+  (duplicatas stale que importavam `@features` — resolviam 2 violações `shared→features`).
 
-**Prioridade**: Baixa (layers FSD completas, tsc 0, suite verde; resta só segmentos + dups de baixo impacto).
+**Pendente — deferido com rationale** (desligado no `steiger.config.ts`):
+- **`@x` cross-import API p/ entity↔entity**: refs de domínio (Title↔Chapter, Comment→User,
+  Manga→Rating, etc.) hoje são import direto. `fsd/forbidden-imports` off p/ `entities/**`
+  (cross-layer segue ON nas outras layers). Migrar p/ `@x` é polish futuro.
+- `public-api`/`no-public-api-sidestep` em `shared/`: imports por caminho de segmento são idiomáticos.
+- `fsd/inconsistent-naming` off: falso-positivo em `news` (substantivo, não plural).
+- `Pagination` não-dup (2 componentes distintos — UX), e dead code residual
+  (`FooterLinksSection`, `shared/ui/StyledSelect`, 0 consumidores).
+
+**Prioridade**: Baixa (layers + segmentos FSD completos, tsc 0, suite verde, lint verde).
 
 ---
 

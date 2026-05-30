@@ -1,4 +1,4 @@
-import type { Store } from '@entities/store/type/store.types';
+import type { Store } from '@entities/store/model/store.types';
 
 let storeCounter = 0;
 

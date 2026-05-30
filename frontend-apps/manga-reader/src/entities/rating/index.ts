@@ -1,14 +1,14 @@
 // Hooks
-export { default as useRating } from './hook/useRating';
-export { default as useRatings } from './hook/useRatings';
+export { default as useRating } from './model/useRating';
+export { default as useRatings } from './model/useRatings';
 
 // Components
-export { default as RatingStars } from './component/RatingStars';
-export { default as RatingModal } from './component/modal/RatingModal';
-export { default as RecentReviews } from './component/RecentReviews';
+export { default as RatingStars } from './ui/RatingStars';
+export { default as RatingModal } from './ui/modal/RatingModal';
+export { default as RecentReviews } from './ui/RecentReviews';
 
 // Services
-export { getRatingsAverage, getUserReviews, updateReview, deleteReview, submitRating, getRatingsByTitleId } from './service/ratingService';
+export { getRatingsAverage, getUserReviews, updateReview, deleteReview, submitRating, getRatingsByTitleId } from './api/ratingService';
 
 // Types
-export type { MangaRating } from './type/rating.types';
+export type { MangaRating } from './model/rating.types';

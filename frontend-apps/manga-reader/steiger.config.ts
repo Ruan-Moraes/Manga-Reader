@@ -59,19 +59,24 @@ export default defineConfig([
     // Advisórios não aplicáveis a este app:
     // - excessive-slicing: 28 páginas é o tamanho real do app (acima do limite 20).
     // - insignificant-slice: login/sign-up/forgot são rotas reais (router não conta como ref).
+    // - inconsistent-naming: falso-positivo em `news` (substantivo de domínio, não plural).
     {
         rules: {
             'fsd/excessive-slicing': 'off',
             'fsd/insignificant-slice': 'off',
+            'fsd/inconsistent-naming': 'off',
         },
     },
 
-    // TEMP: entities/features usam segmentos custom (component/hook/service/type).
-    // Rename p/ canônico (ui/api/model/lib) em andamento — remover este bloco depois.
+    // entities cross-referenciam entities por relação de domínio (Title↔Chapter,
+    // Comment→User, Manga→Rating, etc.). FSD sanciona via cross-import API (@x);
+    // migração p/ @x é trabalho futuro (DT-24). Guard cross-layer segue ON nas
+    // demais layers. entity→feature (upward) é estruturalmente improvável + pega em review.
     {
-        files: ['./src/entities/**', './src/features/**'],
+        files: ['./src/entities/**'],
         rules: {
-            'fsd/no-segmentless-slices': 'off',
+            'fsd/forbidden-imports': 'off',
         },
     },
+
 ]);

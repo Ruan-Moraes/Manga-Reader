@@ -1,15 +1,15 @@
 // Hooks
-export { default as useEventForm } from './hook/useEventForm';
-export { default as useEventDetails } from './hook/useEventDetails';
+export { default as useEventForm } from './model/useEventForm';
+export { default as useEventDetails } from './model/useEventDetails';
 
 // Components
-export { default as EventCard } from './component/EventCard';
-export { default as CreateEventForm } from './component/CreateEventForm';
+export { default as EventCard } from './ui/EventCard';
+export { default as CreateEventForm } from './ui/CreateEventForm';
 
 // Services
-export { getEvents, getEventById, getRelatedEvents, filterEvents, eventTypes, statusLabelKey, formatEventDate } from './service/eventService';
+export { getEvents, getEventById, getRelatedEvents, filterEvents, eventTypes, statusLabelKey, formatEventDate } from './api/eventService';
 
-export type { EventFilters } from './service/eventService';
+export type { EventFilters } from './api/eventService';
 
 // Types
-export type { EventType, EventData, EventStatus } from './type/event.types';
+export type { EventType, EventData, EventStatus } from './model/event.types';

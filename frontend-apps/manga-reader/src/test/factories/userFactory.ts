@@ -8,7 +8,7 @@ import type {
     User,
     ViewHistoryItem,
     VisibilitySetting,
-} from '@entities/user/type/user.types';
+} from '@entities/user/model/user.types';
 
 let userCounter = 0;
 let recommendationCounter = 0;

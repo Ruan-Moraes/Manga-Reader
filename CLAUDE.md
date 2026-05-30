@@ -412,8 +412,8 @@ Toda mudança que toca persistência deve manter ou adicionar:
 
 | Tipo | Local | Estilo |
 |------|-------|--------|
-| Hooks | `feature/{name}/hook/__tests__/` | `renderHookWithProviders` + MSW handlers |
-| Components | (pendente) | `render` + `@testing-library/react` + MSW |
+| Hooks | `{entities,features}/{name}/model/__tests__/` | `renderHookWithProviders` + MSW handlers |
+| Components | `{layer}/{slice}/ui/__tests__/` | `render` + `@testing-library/react` + MSW |
 
 - **Stack**: Vitest (standalone `vitest.config.ts`) + @testing-library/react + MSW v2
 - **vitest.config.ts é standalone** — NÃO estender `vite.config.ts` (importa `ROUTES` com `import.meta.env`, quebra em testes)
@@ -564,12 +564,17 @@ frontend/src/
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,
 │             #   admin-panel/, layouts/ (shells) (@widgets) — FSD widgets layer
-├── features/ # Interações/verbos: auth, admin, library, contact, … (@features)
-├── entities/ # Modelos de domínio/nouns: user, manga, news, … (@entities) — migração em andamento
-├── shared/   # Reusable components (~37), HTTP client, types (@shared, @ui)
+├── features/ # Interações/verbos: auth, admin, library, contact (@features)
+├── entities/ # Modelos de domínio/nouns: user, manga, news, … (@entities)
+├── shared/   # Reusable components, HTTP client, types (@shared, @ui)
 ├── mock/     # Mock data (legacy — features usam API real)
-└── style/    # Global CSS + Tailwind
+└── styles/   # Global CSS + Tailwind
 ```
+
+**Segmentos (FSD canônico)** — slices de `pages/widgets/features/entities` organizam
+o código em segmentos canônicos: `ui/` (componentes), `api/` (chamadas de serviço),
+`model/` (hooks, tipos, contexts, state), `lib/` (utils), `config/` (constantes).
+`shared/` mantém nomes próprios por caminho de segmento (`@shared/service`, `@shared/component`, `@ui`).
 
 **Arquitetura frontend — Feature-Sliced Design (em migração)**
 
@@ -583,4 +588,4 @@ Camadas FSD com import unidirecional (camada superior importa inferior, nunca o 
 
 **Boundary lint**: `npm run lint:fsd` (steiger + `@feature-sliced/steiger-plugin`, config `steiger.config.ts`). Verde no escopo atual. Regras de trabalho adiado desligadas com nota (ver `steiger.config.ts` e DT-24).
 
-**Pendências FSD** (ver `docs/tech-debt.md` DT-24): adicionar `entities/` layer; subdividir slices em segmentos (`ui/`, etc. — `no-segmentless-slices`); public API nos segmentos de `shared/` (reativa `no-public-api-sidestep`); resolver import `shared→features` em `NavigationMenu`.
+**Estado FSD**: layers completas (`app→pages→widgets→features→entities→shared`), slices segmentados em `ui/api/model/lib/config`, lint verde. **Pendências** (ver `docs/tech-debt.md` DT-24): cross-import API (`@x`) p/ refs entity↔entity (hoje import direto, aceito); public API nos segmentos de `shared/` (`no-public-api-sidestep`, idiomático/deferido).

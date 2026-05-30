@@ -1,11 +1,11 @@
-export { default as useBookmark } from './hook/useBookmark';
-export { default as useSavedMangas } from './hook/useSavedMangas';
-export { default as BookmarkButton } from './component/BookmarkButton';
-export { default as LibraryTabs } from './component/LibraryTabs';
-export { default as LibraryCard } from './component/LibraryCard';
-export { default as LibraryEmptyState } from './component/LibraryEmptyState';
-export { default as LibrarySkeleton } from './component/LibrarySkeleton';
+export { default as useBookmark } from './model/useBookmark';
+export { default as useSavedMangas } from './model/useSavedMangas';
+export { default as BookmarkButton } from './ui/BookmarkButton';
+export { default as LibraryTabs } from './ui/LibraryTabs';
+export { default as LibraryCard } from './ui/LibraryCard';
+export { default as LibraryEmptyState } from './ui/LibraryEmptyState';
+export { default as LibrarySkeleton } from './ui/LibrarySkeleton';
 
-export { getLibraryCounts } from './service/libraryService';
+export { getLibraryCounts } from './api/libraryService';
 
-export type { LibraryCounts, ReadingListType, SavedMangaItem, UserSavedLibrary } from './type/saved-library.types';
+export type { LibraryCounts, ReadingListType, SavedMangaItem, UserSavedLibrary } from './model/saved-library.types';

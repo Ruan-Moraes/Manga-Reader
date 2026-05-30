@@ -1,10 +1,10 @@
 // features/comment/index.ts
-export { default as useComments } from './hook/useComments';
-export { default as useCommentPagination } from './hook/useCommentPagination';
-export { CommentSortProvider, useCommentSortContext } from './context/CommentSortContext';
-export { default as CommentsSection } from './component/CommentsSection';
-export { default as CommentsList } from './component/CommentsList';
-export { default as CommentInput } from './component/CommentInput';
-export { default as CommentUser } from './component/header/CommentUser';
-export { default as SortComments } from './component/SortComments';
-export type { CommentData, CommentWithChildren } from './type/comment.types';
+export { default as useComments } from './model/useComments';
+export { default as useCommentPagination } from './model/useCommentPagination';
+export { CommentSortProvider, useCommentSortContext } from './model/CommentSortContext';
+export { default as CommentsSection } from './ui/CommentsSection';
+export { default as CommentsList } from './ui/CommentsList';
+export { default as CommentInput } from './ui/CommentInput';
+export { default as CommentUser } from './ui/header/CommentUser';
+export { default as SortComments } from './ui/SortComments';
+export type { CommentData, CommentWithChildren } from './model/comment.types';

@@ -1,4 +1,4 @@
-import type { AuthResponse } from '@features/auth/service/authService';
+import type { AuthResponse } from '@features/auth/api/authService';
 
 let authCounter = 0;
 

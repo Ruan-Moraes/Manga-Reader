@@ -1,6 +1,6 @@
-export { default as ContactForm } from './component/ContactForm';
+export { default as ContactForm } from './ui/ContactForm';
 
-export { default as usePublishWorkForm } from './hook/usePublishWorkForm';
+export { default as usePublishWorkForm } from './model/usePublishWorkForm';
 
-export { submitPublishWorkContact } from './service/contactService';
-export type { PublishWorkRequest } from './service/contactService';
+export { submitPublishWorkContact } from './api/contactService';
+export type { PublishWorkRequest } from './api/contactService';

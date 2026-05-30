@@ -1,28 +1,28 @@
 // Hooks
-export { default as useTitle } from './hook/useTitle';
-export { default as useTitles } from './hook/useTitles';
-export { default as useTitlesFetch } from './hook/data/useTitlesFetch';
-export { default as useTitleModals } from './hook/useTitleModals';
-export { default as useSearchTitles } from './hook/useSearchTitles';
+export { default as useTitle } from './model/useTitle';
+export { default as useTitles } from './model/useTitles';
+export { default as useTitlesFetch } from './model/data/useTitlesFetch';
+export { default as useTitleModals } from './model/useTitleModals';
+export { default as useSearchTitles } from './model/useSearchTitles';
 
 // Components - Cards
-export { default as BaseCard } from './component/card/base/BaseCard';
-export { default as CarouselContainer } from './component/card/carousel/CarouselContainer';
-export { default as HighlightCardsContainer } from './component/card/highlight/HighlightCardsContainer';
-export { default as HorizontalCardsContainer } from './component/card/horizontal/HorizontalCardsContainer';
-export { default as VerticalCardsContainer } from './component/card/vertical/VerticalCardsContainer';
-export { default as VerticalCard } from './component/card/vertical/VerticalCard';
+export { default as BaseCard } from './ui/card/base/BaseCard';
+export { default as CarouselContainer } from './ui/card/carousel/CarouselContainer';
+export { default as HighlightCardsContainer } from './ui/card/highlight/HighlightCardsContainer';
+export { default as HorizontalCardsContainer } from './ui/card/horizontal/HorizontalCardsContainer';
+export { default as VerticalCardsContainer } from './ui/card/vertical/VerticalCardsContainer';
+export { default as VerticalCard } from './ui/card/vertical/VerticalCard';
 
 // Components - Info & Actions
-export { default as TitleDetails } from './component/information/TitleDetails';
-export { default as TitleDescription } from './component/information/TitleDescription';
-export { default as TitleActions } from './component/action/TitleActions';
+export { default as TitleDetails } from './ui/information/TitleDetails';
+export { default as TitleDescription } from './ui/information/TitleDescription';
+export { default as TitleActions } from './ui/action/TitleActions';
 
 // Services
-export { filterTitles } from './service/titleService';
+export { filterTitles } from './api/titleService';
 
 // Types
-export type { Title } from './type/title.types';
+export type { Title } from './model/title.types';
 export type {
     BaseCard as BaseCardProps,
     CarouselCard,
@@ -30,6 +30,6 @@ export type {
     VerticalCard as VerticalCardProps,
     HorizontalCard as HorizontalCardProps,
     TitleDetails as TitleDetailsProps,
-} from './type/title-card.types';
-export type { CardConfiguration } from './type/card-configuration.types';
-export type { SectionHeader } from './type/section-header.types';
+} from './model/title-card.types';
+export type { CardConfiguration } from './model/card-configuration.types';
+export type { SectionHeader } from './model/section-header.types';

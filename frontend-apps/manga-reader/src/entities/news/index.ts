@@ -1,14 +1,14 @@
 // Hooks
-export { default as useNews } from './hook/useNews';
-export { default as useNewsDetails } from './hook/useNewsDetails';
+export { default as useNews } from './model/useNews';
+export { default as useNewsDetails } from './model/useNewsDetails';
 
 // Components
-export { default as NewsCard } from './component/NewsCard';
-export { default as HeroNews } from './component/HeroNews';
-export { default as NewsFilterPanel } from './component/NewsFilterPanel';
+export { default as NewsCard } from './ui/NewsCard';
+export { default as HeroNews } from './ui/HeroNews';
+export { default as NewsFilterPanel } from './ui/NewsFilterPanel';
 
 // Services
-export { getNews, getNewsById, getRelatedNews, isNewsFresh, formatRelativeDate, formatNewsDate, filterNews, newsCategories } from './service/newsService';
+export { getNews, getNewsById, getRelatedNews, isNewsFresh, formatRelativeDate, formatNewsDate, filterNews, newsCategories } from './api/newsService';
 
 // Types
-export type { NewsCategory, NewsTabId, NewsReaction, NewsComment, NewsAuthor, NewsItem, NewsFilter } from './type/news.types';
+export type { NewsCategory, NewsTabId, NewsReaction, NewsComment, NewsAuthor, NewsItem, NewsFilter } from './model/news.types';

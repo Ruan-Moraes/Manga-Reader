@@ -1,4 +1,4 @@
-import type { LibraryCounts, ReadingListType, SavedMangaItem, UserSavedLibrary } from '@features/library/type/saved-library.types';
+import type { LibraryCounts, ReadingListType, SavedMangaItem, UserSavedLibrary } from '@features/library/model/saved-library.types';
 
 let savedMangaCounter = 0;
 

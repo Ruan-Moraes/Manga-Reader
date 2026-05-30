@@ -1,14 +1,14 @@
 // Components
-export { default as ChapterList } from './component/ChapterList';
-export { default as ChapterFilter } from './component/ChapterFilter';
-export { default as ChapterCoverImage } from './component/ChapterCoverImage';
-export { default as ChapterNavigation } from './component/ChapterNavigation';
-export { default as ChapterPages } from './component/ChapterPages';
-export { default as ChapterBottomBar } from './component/ChapterBottomBar';
+export { default as ChapterList } from './ui/ChapterList';
+export { default as ChapterFilter } from './ui/ChapterFilter';
+export { default as ChapterCoverImage } from './ui/ChapterCoverImage';
+export { default as ChapterNavigation } from './ui/ChapterNavigation';
+export { default as ChapterPages } from './ui/ChapterPages';
+export { default as ChapterBottomBar } from './ui/ChapterBottomBar';
 
 // Hooks
-export { default as useChapterReader } from './hook/useChapterReader';
-export { default as useChapters } from './hook/useChapters';
+export { default as useChapterReader } from './model/useChapterReader';
+export { default as useChapters } from './model/useChapters';
 
 // Types
-export type { Chapter } from './type/chapter.types';
+export type { Chapter } from './model/chapter.types';

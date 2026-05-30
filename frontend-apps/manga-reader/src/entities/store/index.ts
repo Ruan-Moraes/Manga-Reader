@@ -1,4 +1,4 @@
-export { default as StoresModal } from './component/StoresModal';
-export { default as StoresContainer } from './component/StoresContainer';
+export { default as StoresModal } from './ui/StoresModal';
+export { default as StoresContainer } from './ui/StoresContainer';
 
-export type { Store } from './type/store.types';
+export type { Store } from './model/store.types';

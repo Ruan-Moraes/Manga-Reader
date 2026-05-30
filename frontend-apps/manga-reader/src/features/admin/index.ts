@@ -36,104 +36,104 @@ export type {
     RevenueTimeSeries,
     MonthlyGrowthEntry,
     SubscriptionGrowth,
-} from './type/admin.types';
+} from './model/admin.types';
 
 // Hooks — Users
-export { default as useAdminUsers } from './hook/useAdminUsers';
-export { default as useAdminUserDetail } from './hook/useAdminUserDetail';
-export { default as useAdminUserActions } from './hook/useAdminUserActions';
-export { default as useDashboardMetrics } from './hook/useDashboardMetrics';
+export { default as useAdminUsers } from './model/useAdminUsers';
+export { default as useAdminUserDetail } from './model/useAdminUserDetail';
+export { default as useAdminUserActions } from './model/useAdminUserActions';
+export { default as useDashboardMetrics } from './model/useDashboardMetrics';
 
 // Hooks — Titles
-export { default as useAdminTitles } from './hook/useAdminTitles';
-export { default as useAdminTitleActions } from './hook/useAdminTitleActions';
+export { default as useAdminTitles } from './model/useAdminTitles';
+export { default as useAdminTitleActions } from './model/useAdminTitleActions';
 
 // Hooks — News
-export { default as useAdminNews } from './hook/useAdminNews';
-export { default as useAdminNewsActions } from './hook/useAdminNewsActions';
+export { default as useAdminNews } from './model/useAdminNews';
+export { default as useAdminNewsActions } from './model/useAdminNewsActions';
 
 // Hooks — Events
-export { default as useAdminEvents } from './hook/useAdminEvents';
-export { default as useAdminEventActions } from './hook/useAdminEventActions';
+export { default as useAdminEvents } from './model/useAdminEvents';
+export { default as useAdminEventActions } from './model/useAdminEventActions';
 
 // Hooks — Groups
-export { default as useAdminGroups } from './hook/useAdminGroups';
-export { default as useAdminGroupDetail } from './hook/useAdminGroupDetail';
-export { default as useAdminGroupActions } from './hook/useAdminGroupActions';
+export { default as useAdminGroups } from './model/useAdminGroups';
+export { default as useAdminGroupDetail } from './model/useAdminGroupDetail';
+export { default as useAdminGroupActions } from './model/useAdminGroupActions';
 
 // Hooks — Dashboard Content Metrics
-export { default as useContentMetrics } from './hook/useContentMetrics';
+export { default as useContentMetrics } from './model/useContentMetrics';
 
 // Hooks — Payments
-export { default as useAdminPayments } from './hook/useAdminPayments';
-export { default as useAdminPaymentActions } from './hook/useAdminPaymentActions';
-export { default as useFinancialSummary } from './hook/useFinancialSummary';
+export { default as useAdminPayments } from './model/useAdminPayments';
+export { default as useAdminPaymentActions } from './model/useAdminPaymentActions';
+export { default as useFinancialSummary } from './model/useFinancialSummary';
 
 // Hooks — Subscriptions
-export { default as useAdminSubscriptions } from './hook/useAdminSubscriptions';
-export { default as useAdminSubscriptionActions } from './hook/useAdminSubscriptionActions';
-export { default as useAdminSubscriptionSummary } from './hook/useAdminSubscriptionSummary';
+export { default as useAdminSubscriptions } from './model/useAdminSubscriptions';
+export { default as useAdminSubscriptionActions } from './model/useAdminSubscriptionActions';
+export { default as useAdminSubscriptionSummary } from './model/useAdminSubscriptionSummary';
 
 // Hooks — Tags
-export { default as useAdminTags } from './hook/useAdminTags';
-export { default as useAdminTagActions } from './hook/useAdminTagActions';
+export { default as useAdminTags } from './model/useAdminTags';
+export { default as useAdminTagActions } from './model/useAdminTagActions';
 
 // Hooks — Plans
-export { default as useAdminPlans } from './hook/useAdminPlans';
-export { default as useAdminPlanActions } from './hook/useAdminPlanActions';
+export { default as useAdminPlans } from './model/useAdminPlans';
+export { default as useAdminPlanActions } from './model/useAdminPlanActions';
 
 // Hooks — Charts
-export { default as useRevenueSeries } from './hook/useRevenueSeries';
-export { default as useSubscriptionGrowth } from './hook/useSubscriptionGrowth';
+export { default as useRevenueSeries } from './model/useRevenueSeries';
+export { default as useSubscriptionGrowth } from './model/useSubscriptionGrowth';
 
 // Components — Forms
-export { default as AdminEventForm } from './component/AdminEventForm';
-export { default as AdminNewsForm } from './component/AdminNewsForm';
-export { default as AdminTitleForm } from './component/AdminTitleForm';
-export { default as AdminGroupForm } from './component/AdminGroupForm';
+export { default as AdminEventForm } from './ui/AdminEventForm';
+export { default as AdminNewsForm } from './ui/AdminNewsForm';
+export { default as AdminTitleForm } from './ui/AdminTitleForm';
+export { default as AdminGroupForm } from './ui/AdminGroupForm';
 
 // Components
-export { default as AdminDashboardOverview } from './component/AdminDashboardOverview';
-export { default as AdminUserList } from './component/AdminUserList';
-export { default as AdminUserDetail } from './component/AdminUserDetail';
-export { default as AdminTitleList } from './component/AdminTitleList';
-export { default as AdminNewsList } from './component/AdminNewsList';
-export { default as AdminEventList } from './component/AdminEventList';
-export { default as AdminGroupList } from './component/AdminGroupList';
-export { default as AdminGroupDetail } from './component/AdminGroupDetail';
-export { default as MetricsCard } from './component/MetricsCard';
-export { default as ContentMetricsPanel } from './component/ContentMetricsPanel';
-export { default as AdminPaymentList } from './component/AdminPaymentList';
-export { default as FinancialDashboard } from './component/FinancialDashboard';
-export { default as BanUserModal } from './component/modal/BanUserModal';
-export { default as ChangeRoleModal } from './component/modal/ChangeRoleModal';
-export { default as ChangeGroupRoleModal } from './component/modal/ChangeGroupRoleModal';
-export { default as UpdatePaymentStatusModal } from './component/modal/UpdatePaymentStatusModal';
-export { default as ConfirmDeleteWithIdModal } from './component/modal/ConfirmDeleteWithIdModal';
+export { default as AdminDashboardOverview } from './ui/AdminDashboardOverview';
+export { default as AdminUserList } from './ui/AdminUserList';
+export { default as AdminUserDetail } from './ui/AdminUserDetail';
+export { default as AdminTitleList } from './ui/AdminTitleList';
+export { default as AdminNewsList } from './ui/AdminNewsList';
+export { default as AdminEventList } from './ui/AdminEventList';
+export { default as AdminGroupList } from './ui/AdminGroupList';
+export { default as AdminGroupDetail } from './ui/AdminGroupDetail';
+export { default as MetricsCard } from './ui/MetricsCard';
+export { default as ContentMetricsPanel } from './ui/ContentMetricsPanel';
+export { default as AdminPaymentList } from './ui/AdminPaymentList';
+export { default as FinancialDashboard } from './ui/FinancialDashboard';
+export { default as BanUserModal } from './ui/modal/BanUserModal';
+export { default as ChangeRoleModal } from './ui/modal/ChangeRoleModal';
+export { default as ChangeGroupRoleModal } from './ui/modal/ChangeGroupRoleModal';
+export { default as UpdatePaymentStatusModal } from './ui/modal/UpdatePaymentStatusModal';
+export { default as ConfirmDeleteWithIdModal } from './ui/modal/ConfirmDeleteWithIdModal';
 
 // Components — Charts
-export { default as RevenueChart } from './component/chart/RevenueChart';
-export { default as RevenueKPICards } from './component/chart/RevenueKPICards';
-export { default as SubscriptionGrowthChart } from './component/chart/SubscriptionGrowthChart';
+export { default as RevenueChart } from './ui/chart/RevenueChart';
+export { default as RevenueKPICards } from './ui/chart/RevenueKPICards';
+export { default as SubscriptionGrowthChart } from './ui/chart/SubscriptionGrowthChart';
 
 // Services
-export { getAdminTitleDetail } from './service/adminTitleService';
-export { getAdminGroupDetail } from './service/adminGroupService';
-export { getAdminNewsDetail } from './service/adminNewsService';
-export { getAdminEventDetail } from './service/adminEventService';
-export { grantSubscription, revokeSubscription } from './service/adminSubscriptionService';
+export { getAdminTitleDetail } from './api/adminTitleService';
+export { getAdminGroupDetail } from './api/adminGroupService';
+export { getAdminNewsDetail } from './api/adminNewsService';
+export { getAdminEventDetail } from './api/adminEventService';
+export { grantSubscription, revokeSubscription } from './api/adminSubscriptionService';
 
 // Components — Subscriptions
-export { default as AdminSubscriptionList } from './component/AdminSubscriptionList';
-export { default as SubscriptionSummaryCards } from './component/SubscriptionSummaryCards';
-export { default as UpdateSubscriptionStatusModal } from './component/modal/UpdateSubscriptionStatusModal';
+export { default as AdminSubscriptionList } from './ui/AdminSubscriptionList';
+export { default as SubscriptionSummaryCards } from './ui/SubscriptionSummaryCards';
+export { default as UpdateSubscriptionStatusModal } from './ui/modal/UpdateSubscriptionStatusModal';
 
 // Components — Tags
-export { default as AdminTagList } from './component/AdminTagList';
-export { default as TagFormModal } from './component/modal/TagFormModal';
+export { default as AdminTagList } from './ui/AdminTagList';
+export { default as TagFormModal } from './ui/modal/TagFormModal';
 
 // Components — Plans & Subscription extras
-export { default as AdminPlanList } from './component/AdminPlanList';
-export { default as PlanFormModal } from './component/modal/PlanFormModal';
-export { default as GrantSubscriptionModal } from './component/modal/GrantSubscriptionModal';
-export { default as SubscriptionAuditLog } from './component/SubscriptionAuditLog';
+export { default as AdminPlanList } from './ui/AdminPlanList';
+export { default as PlanFormModal } from './ui/modal/PlanFormModal';
+export { default as GrantSubscriptionModal } from './ui/modal/GrantSubscriptionModal';
+export { default as SubscriptionAuditLog } from './ui/SubscriptionAuditLog';

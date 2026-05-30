@@ -1,4 +1,4 @@
-import type { MangaRating } from '@entities/rating/type/rating.types';
+import type { MangaRating } from '@entities/rating/model/rating.types';
 
 let ratingCounter = 0;
 

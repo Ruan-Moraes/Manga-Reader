@@ -1,4 +1,4 @@
-import type { Group, GroupMember, GroupRole, GroupStatus, GroupSummary, GroupSupporter, GroupWork, UserPost } from '@entities/group/type/group.types';
+import type { Group, GroupMember, GroupRole, GroupStatus, GroupSummary, GroupSupporter, GroupWork, UserPost } from '@entities/group/model/group.types';
 
 let groupCounter = 0;
 let groupMemberCounter = 0;

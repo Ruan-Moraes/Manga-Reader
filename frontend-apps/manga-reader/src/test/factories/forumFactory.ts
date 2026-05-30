@@ -1,4 +1,4 @@
-import type { ForumAuthor, ForumCategory, ForumReply, ForumSort, ForumTopic } from '@entities/forum/type/forum.types';
+import type { ForumAuthor, ForumCategory, ForumReply, ForumSort, ForumTopic } from '@entities/forum/model/forum.types';
 
 let forumTopicCounter = 0;
 let forumAuthorCounter = 0;

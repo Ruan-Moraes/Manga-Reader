@@ -1,4 +1,4 @@
-import type { NewsAuthor, NewsCategory, NewsComment, NewsItem, NewsReaction } from '@entities/news/type/news.types';
+import type { NewsAuthor, NewsCategory, NewsComment, NewsItem, NewsReaction } from '@entities/news/model/news.types';
 
 let newsCounter = 0;
 let newsAuthorCounter = 0;

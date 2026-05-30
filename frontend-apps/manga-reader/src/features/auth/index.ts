@@ -1,13 +1,13 @@
-export { default as useAuth } from './hook/useAuth';
-export { default as useForgotPassword } from './hook/useForgotPassword';
-export { default as useResetPassword } from './hook/useResetPassword';
+export { default as useAuth } from './model/useAuth';
+export { default as useForgotPassword } from './model/useForgotPassword';
+export { default as useResetPassword } from './model/useResetPassword';
 
-export { mapAuthResponseToUser, requestPasswordReset } from './service/authService';
+export { mapAuthResponseToUser, requestPasswordReset } from './api/authService';
 
-export { AUTH_KEY } from './constant/AUTH_KEY';
+export { AUTH_KEY } from './config/AUTH_KEY';
 
-export { buildLoginSchema, buildSignUpSchema } from './schema/authSchemas';
-export type { LoginFormValues, SignUpFormValues } from './schema/authSchemas';
+export { buildLoginSchema, buildSignUpSchema } from './model/authSchemas';
+export type { LoginFormValues, SignUpFormValues } from './model/authSchemas';
 
 export { AuthShell } from './ui/AuthShell';
 export { AuthField } from './ui/AuthField';

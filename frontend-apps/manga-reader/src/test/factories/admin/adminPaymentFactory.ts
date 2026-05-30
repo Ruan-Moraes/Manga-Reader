@@ -1,4 +1,4 @@
-import type { AdminPayment } from '@features/admin/type/admin.types';
+import type { AdminPayment } from '@features/admin/model/admin.types';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildPage } from '../pageFactory';

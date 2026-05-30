@@ -1,4 +1,4 @@
-import type { CommentData, CommentWithChildren } from '@entities/comment/type/comment.types';
+import type { CommentData, CommentWithChildren } from '@entities/comment/model/comment.types';
 
 import { buildUser } from './userFactory';
 

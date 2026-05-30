@@ -1,4 +1,4 @@
-import type { AdminGroup, GroupMember as AdminGroupMember } from '@features/admin/type/admin.types';
+import type { AdminGroup, GroupMember as AdminGroupMember } from '@features/admin/model/admin.types';
 import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 
