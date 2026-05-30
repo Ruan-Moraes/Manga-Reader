@@ -88,7 +88,7 @@ describe('Login', () => {
         expect(emailInput.value).toBe('');
         await user.click(screen.getByRole('button', { name: /preencher/i }));
         expect(emailInput.value).toBe('admin@mangareader.com');
-        expect(passwordInput.value).toBe('12345');
+        expect(passwordInput.value).toBe('123456');
     });
 
     it('shows loading state while submitting', async () => {

@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { waitFor, act } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 
 import { server } from '@/test/mocks/server';
+import { renderHookWithProviders } from '@/test/testUtils';
 import { API_URLS } from '@shared/constant/API_URLS';
 
 import useBookmark from './useBookmark';
@@ -22,7 +23,7 @@ describe('useBookmark', () => {
     });
 
     it('deve iniciar com nenhum item salvo quando sem sessao', () => {
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
         expect(result.current.isSaved('title-1')).toBe(false);
     });
@@ -55,7 +56,7 @@ describe('useBookmark', () => {
             ),
         );
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
         await waitFor(() => {
             expect(result.current.isSaved('title-1')).toBe(true);
@@ -94,7 +95,7 @@ describe('useBookmark', () => {
             ),
         );
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
         await waitFor(() => {
             expect(result.current.isSaved('title-2')).toBe(false);
@@ -110,7 +111,7 @@ describe('useBookmark', () => {
             expect(added).toBe(true);
         });
 
-        expect(result.current.isSaved('title-2')).toBe(true);
+        await waitFor(() => expect(result.current.isSaved('title-2')).toBe(true));
     });
 
     it('deve remover bookmark via toggleBookmark', async () => {
@@ -142,7 +143,7 @@ describe('useBookmark', () => {
             http.delete(`*${API_URLS.LIBRARY}/title-1`, () => new HttpResponse(null, { status: 204 })),
         );
 
-        const { result } = renderHook(() => useBookmark());
+        const { result } = renderHookWithProviders(() => useBookmark());
 
         await waitFor(() => {
             expect(result.current.isSaved('title-1')).toBe(true);
@@ -158,6 +159,6 @@ describe('useBookmark', () => {
             expect(removed).toBe(false);
         });
 
-        expect(result.current.isSaved('title-1')).toBe(false);
+        await waitFor(() => expect(result.current.isSaved('title-1')).toBe(false));
     });
 });
