@@ -160,6 +160,41 @@ desvios same-layer aceitos: layout shells + design showcase).
 
 ---
 
+### DT-25: Auditoria frontend — FSD / SRP / dead-code (mapeamento 2026-05-30)
+
+Varredura manual+heurística de `frontend-apps/manga-reader/src` (~720 arquivos). **Só documentação — nada corrigido aqui.** Escopo: violações FSD além do que o steiger pega (verde), responsabilidade excessiva, código morto/obsoleto.
+
+#### 25.1 — Código morto / obsoleto
+- **`entities/comment/model/useCommentEditor.tsx`** — 0 consumidores; substituído por `useCommentRichEditor` (`model/internal/`). **Remover.**
+- **Mock data em runtime dentro de slice**: `pages/forum/ui/parts/forumTopicMock.ts` e `pages/profile/ui/parts/userProfileMock.ts`. Features usam API real (mock é legacy). **Avaliar remoção / mover p/ `test/`.**
+- **Páginas legais legadas `pages/term/`** (`TermsOfUse.tsx`, `Dmca.tsx`) redundantes com `pages/legal/` (`Terms.tsx`, `Dmca.tsx`). Router mantém `LegacyDmca` (`/dmca`) + `LegalDmca` (`/legal/dmca`). **Consolidar em `legal/` e remover `term/` + rota legada.**
+- 3 `TODO/FIXME` espalhados (baixo).
+
+#### 25.2 — FSD: pureza de segmento (hooks fora de `model/`)
+Hooks vivendo em `ui/` (deveriam estar em `model/`) — viola convenção de segmento (steiger não pega pois o slice já tem `ui/`):
+- `pages/chapter/ui/useChapterReader.ts`
+- `pages/event/ui/useEvents.tsx`
+- `pages/forum/ui/hook/useComposerFormState.ts` (+ pasta `hook/` não-canônica)
+- `widgets/header/ui/hooks/{useSidebarMenuItems.ts, useMenuData.tsx}` (pasta `hooks/`)
+- `widgets/header/ui/navbar/useNavSearch.ts`
+→ mover p/ `model/` do slice.
+
+#### 25.3 — Responsabilidade excessiva (god files, LOC)
+- **`pages/design/ui/DesignPrimitives.tsx` — 1516 LOC** (showcase do design-system). Quebrar por seção em `parts/`.
+- `shared/ui/Footer.tsx` (353) · `features/admin/model/admin.types.ts` (327 — split por subdomínio) · `entities/comment/model/internal/useCommentRichEditor.tsx` (285) · `features/admin/ui/AdminEventForm.tsx` (242) · `entities/rating/ui/modal/wizard/RatingWizard.tsx` (239) · `pages/category/ui/CategoryFilters.tsx` (216) · `widgets/header/ui/navbar/NavBar.tsx` (212).
+- Páginas legais (`Contact` 340, `Privacy` 290, `Dmca` 253) — texto jurídico placeholder inline; mover conteúdo p/ i18n/dados (ver DT-09).
+
+#### 25.4 — Duplicação / nomes colididos (triar)
+- **`Pagination`** — 2 componentes distintos (`@ui` text vs `navigation/` icon). Unificar = UX (escolhido `@ui/Pagination`).
+- **Não-dups (composição/contexto, só confunde por nome)**: `Footer`/`NavBar`/`SideMenu`/`MobileTabBar` — a versão widget **compõe** o kit `@ui` (ok); `AboutTab` (title vs settings), `TitleDetails` (page vs entity), `CommentsSection` (comment vs user/profile), `Logo` (main vs admin) — contextos diferentes. Considerar renomear p/ clareza.
+
+#### 25.5 — Já aceito / deferido (não re-auditar)
+- `shared` public-api/sidestep (idiomático); `inconsistent-naming` off (`news`); 3 desvios same-layer (layout shells, design showcase) com exceção file-scoped.
+
+**Prioridade**: Baixa-Média. Quick wins: 25.1 (dead code) + 25.2 (mover hooks). Maior: 25.3 (DesignPrimitives).
+
+---
+
 ### DT-13 (resíduo): call-sites com basename hardcoded
 
 **Estado**: **Resolvido na fonte (2026-05-16)** — o basename agora é
