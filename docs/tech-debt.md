@@ -190,7 +190,19 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
 #### 25.5 — Já aceito / deferido (não re-auditar)
 - `shared` public-api/sidestep (idiomático); `inconsistent-naming` off (`news`); 3 desvios same-layer (layout shells, design showcase) com exceção file-scoped.
 
-**Prioridade**: Baixa-Média. Quick wins: 25.1 (dead code) + 25.2 (mover hooks). Maior: 25.3 (DesignPrimitives).
+#### 25.6 — Padronização de testes — ✅ Feito
+- Convenção `__tests__/` aplicada: 31 testes inline movidos p/ `__tests__/` do segmento
+  (api e model). Único inline mantido: `test/setup.smoke.test.ts` (infra).
+- **Duplicatas removidas**: `useAuth` e `useBookmark` tinham 2 arquivos de teste divergentes
+  (inline + `__tests__/`); a versão `__tests__/` era superset → inline deletado.
+- Suite: 120 files / 817 tests, verde (−2 files, −9 testes redundantes).
+
+#### 25.7 — Estruturais observados — não corrigidos (escopo semântico/à parte)
+- `shared/util/` (formatters, pagination) vs `shared/service/util/` — 2 locais de "util".
+- `entities/category` carrega tag/sort/adult-content/publication-status + `tagService` — semanticamente é "tag/taxonomia", não "category".
+- `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (aceito).
+
+**Prioridade**: Baixa-Média. Restam: 25.3 (god files, ex. DesignPrimitives 1516L), mocks→API real (forum/profile), renomes semânticos (25.7).
 
 ---
 
