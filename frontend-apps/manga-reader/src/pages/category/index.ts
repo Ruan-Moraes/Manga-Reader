@@ -1,1 +1,1 @@
-export { default as CategoryFilters } from './CategoryFilters';
+export { default as CategoryFilters } from './ui/CategoryFilters';

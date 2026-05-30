@@ -1,1 +1,1 @@
-export { default as SystemSettings } from './SystemSettings';
+export { default as SystemSettings } from './ui/SystemSettings';

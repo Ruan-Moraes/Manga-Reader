@@ -1,2 +1,2 @@
-export { default as Dmca } from './Dmca';
-export { default as TermsOfUse } from './TermsOfUse';
+export { default as Dmca } from './ui/Dmca';
+export { default as TermsOfUse } from './ui/TermsOfUse';

@@ -1,2 +1,2 @@
-export { default as EventDetails } from './EventDetails';
-export { default as Events } from './Events';
+export { default as EventDetails } from './ui/EventDetails';
+export { default as Events } from './ui/Events';

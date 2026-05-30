@@ -46,12 +46,12 @@ const prefetchOnIdle = () => {
             : setTimeout(fn, IDLE_FALLBACK_DELAY_MS);
 
     scheduleIdle(() => {
-        import('@pages/forum/Forum');
-        import('@pages/news/News');
-        import('@pages/event/Events');
-        import('@pages/group/Groups');
-        import('@pages/title/TitleDetails');
-        import('@pages/trending/Trending');
+        import('@pages/forum/ui/Forum');
+        import('@pages/news/ui/News');
+        import('@pages/event/ui/Events');
+        import('@pages/group/ui/Groups');
+        import('@pages/title/ui/TitleDetails');
+        import('@pages/trending/ui/Trending');
     });
 };
 

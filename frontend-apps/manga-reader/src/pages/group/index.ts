@@ -1,2 +1,2 @@
-export { default as GroupProfile } from './GroupProfile';
-export { default as Groups } from './Groups';
+export { default as GroupProfile } from './ui/GroupProfile';
+export { default as Groups } from './ui/Groups';

@@ -1,1 +1,1 @@
-export { MobileTabBar } from './MobileTabBar';
+export { MobileTabBar } from './ui/MobileTabBar';

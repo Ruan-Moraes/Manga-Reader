@@ -1,1 +1,1 @@
-export { default as UserDetails } from './UserDetails';
+export { default as UserDetails } from './ui/UserDetails';

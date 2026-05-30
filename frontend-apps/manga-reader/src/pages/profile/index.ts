@@ -1,2 +1,2 @@
-export { default as Profile } from './Profile';
-export { default as UserProfile } from './UserProfile';
+export { default as Profile } from './ui/Profile';
+export { default as UserProfile } from './ui/UserProfile';

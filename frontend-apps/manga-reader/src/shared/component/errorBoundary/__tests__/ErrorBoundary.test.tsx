@@ -15,6 +15,7 @@ function ThrowingComponent({ shouldThrow }: { shouldThrow: boolean }) {
     if (shouldThrow) {
         throw new Error('Test rendering error');
     }
+
     return <div>Content rendered successfully</div>;
 }
 
@@ -22,11 +23,14 @@ const originalConsoleError = console.error;
 
 beforeEach(() => {
     vi.clearAllMocks();
+
     console.error = (...args: unknown[]) => {
         const msg = typeof args[0] === 'string' ? args[0] : '';
+
         if (msg.includes('Error: Uncaught') || msg.includes('The above error occurred')) {
             return;
         }
+
         originalConsoleError(...args);
     };
 });
@@ -88,6 +92,7 @@ describe('ErrorBoundary', () => {
         );
 
         const link = screen.getByText('Voltar à página inicial');
+
         expect(link).toHaveAttribute('href', '/Manga-Reader');
     });
 });

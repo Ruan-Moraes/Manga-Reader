@@ -1,1 +1,1 @@
-export { default as NewReleases } from './NewReleases';
+export { default as NewReleases } from './ui/NewReleases';

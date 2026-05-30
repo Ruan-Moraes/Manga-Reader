@@ -1,1 +1,1 @@
-export { default as PublishWork } from './PublishWork';
+export { default as PublishWork } from './ui/PublishWork';

@@ -1,1 +1,1 @@
-export { default as HelpCenter } from './HelpCenter';
+export { default as HelpCenter } from './ui/HelpCenter';

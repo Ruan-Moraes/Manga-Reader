@@ -1,1 +1,1 @@
-export { default as TitleDetails } from './TitleDetails';
+export { default as TitleDetails } from './ui/TitleDetails';

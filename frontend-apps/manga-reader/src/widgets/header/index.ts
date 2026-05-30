@@ -1,3 +1,3 @@
-export { default as Header } from './Header';
-export { NavBar } from './navbar/NavBar';
-export { SideMenu } from './SideMenu';
+export { default as Header } from './ui/Header';
+export { NavBar } from './ui/navbar/NavBar';
+export { SideMenu } from './ui/SideMenu';
