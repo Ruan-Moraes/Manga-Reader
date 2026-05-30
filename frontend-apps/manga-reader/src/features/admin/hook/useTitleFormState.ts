@@ -9,7 +9,7 @@ import { getAdminTitleDetail } from '../service/adminTitleService';
 import useAdminTitleActions from './useAdminTitleActions';
 import type { CreateTitleRequest } from '../type/admin.types';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
-import { useDomainLabels, LABEL_TYPES } from '@features/label';
+import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 import { useTagsFetch, type Tag } from '@features/category';
 
 type FormState = Omit<CreateTitleRequest, 'name' | 'synopsis'>;

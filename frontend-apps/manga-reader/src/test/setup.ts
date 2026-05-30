@@ -19,12 +19,12 @@ import { server } from './mocks/server';
 
 void i18n.changeLanguage('pt-BR');
 
-// Default global mock for `@features/label` — useDomainLabels hook reads
+// Default global mock for `@entities/label` — useDomainLabels hook reads
 // `i18n.language` via `useTranslation()` and needs QueryClientProvider.
 // Modal/component tests typically don't wrap with provider; mocking the
 // hook avoids the dependency. Tests that need real domain label data
-// override locally with their own `vi.mock('@features/label', () => ...)`.
-vi.mock('@features/label', () => ({
+// override locally with their own `vi.mock('@entities/label', () => ...)`.
+vi.mock('@entities/label', () => ({
     useDomainLabels: () => ({ data: [] }),
     LABEL_TYPES: {
         PUBLICATION_STATUS: 'publication_status',

@@ -100,18 +100,26 @@ e `widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/l
 - Boundary lint via **steiger** (`@feature-sliced/steiger-plugin`,
   `steiger.config.ts`, script `npm run lint:fsd`). **Verde** no escopo atual.
 
-**Pendente** (regras desligadas no `steiger.config.ts`, reativar por item):
-- Adicionar layer `entities/` (modelos de negócio compartilhados entre features;
-  hoje features importam features — 40+ refs). **Tarefa própria, judgment-heavy.**
-- Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — regra
-  `fsd/no-segmentless-slices`.
-- Public API nos segmentos de `shared/` → reativa `fsd/no-public-api-sidestep`
-  (11 sidesteps hoje, todos para `@shared/*` profundo).
-- Resolver import upward `shared→features` em
-  `shared/component/menu/NavigationMenu.tsx` (`fsd/forbidden-imports`).
-- Renomear pasta reservada `shared/component/ui/` (`fsd/no-reserved-folder-names`).
+**Em andamento — Fase 3 / Entities (2026-05-30)**: introdução da layer `entities/`
+(alias `@entities`). Classificação: **12 entities** (user, manga, chapter, rating,
+comment, category, label, news, event, group, store, forum) vs **4 features**
+(auth, admin, library, contact). Migração **incremental por batches**:
+- **Batch 1 — feito**: `user, label, store, news, forum` (folhas, sem edges de saída).
+- **Batch 2 — pendente**: `comment, category, group, rating` (acoplam a folhas/manga).
+- **Batch 3 — pendente**: `manga, chapter` — ciclo de tipos manga↔chapter, resolver
+  via cross-import API FSD (`@x`) ou unir slice.
+- **Batch 4 — pendente**: `event` — antes mover `useAuth` de `event` p/ page/feature
+  (hoje `event→auth` viraria `entity→feature`, proibido).
 
-**Prioridade**: Média (não-bloqueante; foundations entregues, falta entities + segmentos).
+**Pendente — outros** (regras desligadas no `steiger.config.ts`, reativar por item):
+- Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — `fsd/no-segmentless-slices`.
+- Public API nos segmentos de `shared/` → reativa `fsd/no-public-api-sidestep`.
+- Resolver import upward `shared→features` em `shared/component/menu/NavigationMenu.tsx`.
+- Renomear pasta reservada `shared/component/ui/` (`fsd/no-reserved-folder-names`).
+- Stragglers `react-icons` (lib real é `lucide-react`): 2 arquivos mortos
+  (`NavigationMenu`, `MainSearchInput`), resto migrar p/ lucide; dups stale em `shared/`.
+
+**Prioridade**: Média (não-bloqueante; foundations + entities batch 1 entregues).
 
 ---
 

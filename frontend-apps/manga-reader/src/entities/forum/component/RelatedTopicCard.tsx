@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 
-import { formatRelativeDate, type ForumTopic } from '@features/forum';
+import { formatRelativeDate, type ForumTopic } from '@entities/forum';
 
 const RelatedTopicCard = ({ topic }: { topic: ForumTopic }) => {
     const { t } = useTranslation('forum');

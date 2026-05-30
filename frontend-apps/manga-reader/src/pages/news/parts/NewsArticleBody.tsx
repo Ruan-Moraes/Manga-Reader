@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { NewsItem } from '@features/news';
+import type { NewsItem } from '@entities/news';
 import { Bookmark, MessageCircle, Share2 } from 'lucide-react';
 
 type NewsArticleBodyProps = {

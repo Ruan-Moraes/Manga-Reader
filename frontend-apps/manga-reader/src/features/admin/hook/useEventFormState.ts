@@ -10,7 +10,7 @@ import { getAdminEventDetail } from '../service/adminEventService';
 import useAdminEventActions from './useAdminEventActions';
 import type { CreateEventRequest } from '../type/admin.types';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
-import { useDomainLabels, LABEL_TYPES } from '@features/label';
+import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 
 type FormState = Omit<CreateEventRequest, 'title' | 'subtitle' | 'description'>;
 

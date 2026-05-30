@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 
-import { formatRelativeDate, type NewsItem } from '@features/news';
+import { formatRelativeDate, type NewsItem } from '@entities/news';
 
 interface NewsFeedProps {
     items: NewsItem[];

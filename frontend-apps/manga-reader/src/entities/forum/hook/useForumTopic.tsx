@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getForumTopicById, getForumTopics, filterForumTopics } from '@features/forum';
+import { getForumTopicById, getForumTopics, filterForumTopics } from '@entities/forum';
 import type { ForumTopic } from '../type/forum.types';
 
 const useForumTopic = () => {

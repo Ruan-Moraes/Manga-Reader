@@ -11,7 +11,7 @@ import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 import { formatDate } from '@shared/util/formatters';
 
 import { useAuth } from '@features/auth';
-import { useUserDetails } from '@features/user';
+import { useUserDetails } from '@entities/user';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 

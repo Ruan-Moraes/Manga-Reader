@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import StoreCard from './StoreCard';
 
-import { Store } from '@features/store';
+import { Store } from '@entities/store';
 
 interface StoresContainerProps {
     stores: Store[];

@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
-import { formatRelativeDate } from '@features/news';
-import type { NewsItem } from '@features/news';
+import { formatRelativeDate } from '@entities/news';
+import type { NewsItem } from '@entities/news';
 
 type NewsRelatedSidebarProps = {
     related: NewsItem[];

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getForumTopics, filterForumTopics, paginateTopics, type ForumCategory, type ForumSort } from '@features/forum';
+import { getForumTopics, filterForumTopics, paginateTopics, type ForumCategory, type ForumSort } from '@entities/forum';
 import type { ForumTopic } from '../type/forum.types';
 
 const useForumPage = () => {

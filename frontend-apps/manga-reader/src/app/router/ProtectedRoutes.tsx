@@ -9,7 +9,7 @@ import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_
 import { getStoredSession } from '@shared/service/session';
 
 import { mapAuthResponseToUser } from '@features/auth';
-import { type UserRole } from '@features/user';
+import { type UserRole } from '@entities/user';
 
 const PublishWork = lazy(() => import('@pages/publish-work/PublishWork'));
 const Library = lazy(() => import('@pages/library/Library'));

@@ -5,7 +5,7 @@ import { server } from '@/test/mocks/server';
 
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import type { NewsItem } from '@features/news';
+import type { NewsItem } from '@entities/news';
 
 import { getNews, getNewsById, getRelatedNews, isNewsFresh, formatNewsDate, filterNews } from './newsService';
 

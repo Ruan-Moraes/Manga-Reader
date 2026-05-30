@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { DEFAULT_LANGUAGE, type LanguageTag, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
 
-import type { NewsCategory } from '@features/news';
+import type { NewsCategory } from '@entities/news';
 
 import type { AdminNews, CreateNewsRequest, UpdateNewsRequest } from '../type/admin.types';
 

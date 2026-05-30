@@ -3,8 +3,8 @@ import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import UserDetails from '../UserDetails';
 
-vi.mock('@features/user', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/user')>();
+vi.mock('@entities/user', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/user')>();
     return { ...actual, useUserDetails: vi.fn() };
 });
 
@@ -13,7 +13,7 @@ vi.mock('@features/auth', async importOriginal => {
     return { ...actual, useAuth: vi.fn() };
 });
 
-import { useUserDetails } from '@features/user';
+import { useUserDetails } from '@entities/user';
 import { useAuth } from '@features/auth';
 
 const mockUser = {

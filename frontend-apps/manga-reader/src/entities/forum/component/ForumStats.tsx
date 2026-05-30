@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import type { ForumTopic } from '@features/forum';
+import type { ForumTopic } from '@entities/forum';
 
 const ForumStats = ({ topics }: { topics: ForumTopic[] }) => {
     const { t, i18n } = useTranslation('forum');

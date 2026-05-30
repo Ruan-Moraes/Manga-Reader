@@ -5,7 +5,7 @@ import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { Card } from '@ui/Card';
 
-import { formatRelativeDate, type NewsItem } from '@features/news';
+import { formatRelativeDate, type NewsItem } from '@entities/news';
 
 interface NewsHeroProps {
     news: NewsItem;

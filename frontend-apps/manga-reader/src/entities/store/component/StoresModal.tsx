@@ -7,7 +7,7 @@ import { getStoresByTitleId } from '../service/storeService';
 
 import { Modal } from '@ui/Modal';
 
-import { Store } from '@features/store';
+import { Store } from '@entities/store';
 
 type StoresModalTypes = {
     isModalOpen: boolean;

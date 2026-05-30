@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import News from '../News';
-import type { NewsItem } from '@features/news';
+import type { NewsItem } from '@entities/news';
 
 const makeItem = (overrides: Partial<NewsItem> = {}): NewsItem => ({
     id: '1',
@@ -99,8 +99,8 @@ const mNews = {
     setMyNewsTab: vi.fn(),
 };
 
-vi.mock('@features/news', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/news')>();
+vi.mock('@entities/news', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/news')>();
     return {
         ...actual,
         useNews: () => mNews,

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import BaseSelect from '@shared/component/input/BaseSelect';
 
-import { useContentLocales } from '@features/user';
+import { useContentLocales } from '@entities/user';
 
 import { sectionTitleClass, type SettingsTabProps, type UserSettings } from '../settings.constants';
 

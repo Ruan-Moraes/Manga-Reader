@@ -7,7 +7,7 @@ import Illustration, { type IllustrationType } from '@shared/component/ui/Illust
 
 import { useCommentPagination, CommentUser } from '@features/comment';
 
-import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@features/user';
+import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user';
 
 import { Button } from '@ui/Button';
 

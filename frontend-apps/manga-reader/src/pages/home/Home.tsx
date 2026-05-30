@@ -4,7 +4,7 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { useAuth } from '@features/auth';
 import { useFilterResults } from '@features/category';
 import { useSavedMangas } from '@features/library';
-import { getForumTopics } from '@features/forum';
+import { getForumTopics } from '@entities/forum';
 import { getGroups } from '@features/group';
 
 import { PageContainer } from '@ui/PageContainer';

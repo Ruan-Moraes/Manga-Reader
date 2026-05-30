@@ -5,7 +5,7 @@ import { Checkbox } from '@ui/Checkbox';
 import { Select } from '@ui/Select';
 import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
-import { useDomainLabels, LABEL_TYPES } from '@features/label';
+import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 
 import FormModal from './FormModal';
 import PlanFormPriceRows, { type PriceRow } from './PlanFormPriceRows';

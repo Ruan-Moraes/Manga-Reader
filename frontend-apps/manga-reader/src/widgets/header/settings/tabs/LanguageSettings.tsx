@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Select } from '@ui/Select';
 
-import { useContentLocales } from '@features/user';
+import { useContentLocales } from '@entities/user';
 
 import { sectionTitleClass, type SettingsTabProps, type UserSettings } from '../settings.constants';
 

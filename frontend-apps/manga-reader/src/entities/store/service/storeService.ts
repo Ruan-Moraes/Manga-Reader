@@ -2,7 +2,7 @@ import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import { type Store } from '@features/store';
+import { type Store } from '@entities/store';
 
 export const getStores = async (page = 0, size = 20): Promise<PageResponse<Store>> => {
     const response = await api.get<ApiResponse<PageResponse<Store>>>(API_URLS.STORES, { params: { page, size } });

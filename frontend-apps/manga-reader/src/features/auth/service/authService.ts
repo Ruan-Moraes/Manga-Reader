@@ -2,7 +2,7 @@ import { api } from '@shared/service/http';
 import type { ApiResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
 import { getStoredSession, persistSession, clearSession, type StoredSession } from '@shared/service/session';
-import type { User, UserRole } from '@features/user';
+import type { User, UserRole } from '@entities/user';
 
 export { getStoredSession };
 export type { StoredSession };

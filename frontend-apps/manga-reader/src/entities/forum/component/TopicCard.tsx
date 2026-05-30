@@ -9,7 +9,7 @@ const LANG_COLORS: Record<string, string> = {
 };
 import { Avatar } from '@ui/Avatar';
 import { Bookmark, CheckCircle, Eye, Heart, Lock, MessageCircle } from 'lucide-react';
-import { formatRelativeDate, getCategoryColor, type ForumTopic } from '@features/forum';
+import { formatRelativeDate, getCategoryColor, type ForumTopic } from '@entities/forum';
 
 const TopicCard = ({ topic }: { topic: ForumTopic }) => {
     const { t } = useTranslation('forum');

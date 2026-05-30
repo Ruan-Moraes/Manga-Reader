@@ -564,7 +564,8 @@ frontend/src/
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,
 │             #   admin-panel/, layouts/ (shells) (@widgets) — FSD widgets layer
-├── features/ # Feature modules (component/, hook/, service/, type/) — cada slice com index.ts (@features)
+├── features/ # Interações/verbos: auth, admin, library, contact, … (@features)
+├── entities/ # Modelos de domínio/nouns: user, manga, news, … (@entities) — migração em andamento
 ├── shared/   # Reusable components (~37), HTTP client, types (@shared, @ui)
 ├── mock/     # Mock data (legacy — features usam API real)
 └── style/    # Global CSS + Tailwind
@@ -573,10 +574,11 @@ frontend/src/
 **Arquitetura frontend — Feature-Sliced Design (em migração)**
 
 Camadas FSD com import unidirecional (camada superior importa inferior, nunca o contrário):
-`app → pages → widgets → features → shared`. Aliases: `@app`, `@pages`, `@widgets`, `@features`, `@shared`, `@ui`.
+`app → pages → widgets → features → entities → shared`. Aliases: `@app`, `@pages`, `@widgets`, `@features`, `@entities`, `@shared`, `@ui`.
 
 - **app**: só `router/` (PublicRoutes, ProtectedRoutes) + bootstrap em `main.tsx`. Sem páginas/widgets aqui.
-- **pages / widgets / features**: cada slice expõe public API via `index.ts` (barrel). **Importar sempre da raiz do slice** (`@pages/home`, `@widgets/header`, `@features/auth`), nunca de arquivos internos — exceto `import()` dinâmico do router/`main.tsx` (code-splitting por página).
+- **features vs entities**: `features/` = interações (verbos: login, bookmark, admin CRUD). `entities/` = modelos de domínio (nouns: User, Manga, News). Feature pode importar entity; entity **nunca** importa feature. Migração `features→entities` por batches (ver DT-24): Batch 1 = user, label, store, news, forum.
+- **pages / widgets / features / entities**: cada slice expõe public API via `index.ts` (barrel). **Importar sempre da raiz do slice** (`@pages/home`, `@widgets/header`, `@features/auth`, `@entities/user`), nunca de arquivos internos — exceto `import()` dinâmico do router/`main.tsx` (code-splitting por página).
 - **widgets**: slices coesos por bloco de UI. `layouts/` contém os shells de rota (RootLayout, ChapterLayout, PageShell) — esses compõem `@widgets/header|footer|mobile-tab-bar` (desvio pragmático widget→widget, permitido na config do steiger).
 
 **Boundary lint**: `npm run lint:fsd` (steiger + `@feature-sliced/steiger-plugin`, config `steiger.config.ts`). Verde no escopo atual. Regras de trabalho adiado desligadas com nota (ver `steiger.config.ts` e DT-24).

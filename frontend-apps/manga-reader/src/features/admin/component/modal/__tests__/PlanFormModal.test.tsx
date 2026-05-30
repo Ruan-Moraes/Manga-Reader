@@ -10,7 +10,7 @@ vi.mock('react-i18next', () => ({
     }),
 }));
 
-// @features/label mock now lives in src/test/setupTests.ts (global default).
+// @entities/label mock now lives in src/test/setupTests.ts (global default).
 
 describe('PlanFormModal', () => {
     it('emits descriptionI18n + featuresI18n on submit', () => {

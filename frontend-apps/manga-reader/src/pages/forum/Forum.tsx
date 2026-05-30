@@ -7,7 +7,7 @@ import { SectionHeader } from '@ui/SectionHeader';
 import { StatusDot } from '@ui/StatusDot';
 import { Button } from '@ui/Button';
 
-import { useForumPage } from '@features/forum';
+import { useForumPage } from '@entities/forum';
 
 import { ForumFilters } from './parts/ForumFilters';
 import { ForumTopicList } from './parts/ForumTopicList';

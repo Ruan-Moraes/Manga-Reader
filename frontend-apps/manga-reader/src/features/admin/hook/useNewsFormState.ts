@@ -9,8 +9,8 @@ import { getAdminNewsDetail } from '../service/adminNewsService';
 import useAdminNewsActions from './useAdminNewsActions';
 import type { CreateNewsRequest } from '../type/admin.types';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
-import { useDomainLabels, LABEL_TYPES } from '@features/label';
-import type { NewsCategory } from '@features/news';
+import { useDomainLabels, LABEL_TYPES } from '@entities/label';
+import type { NewsCategory } from '@entities/news';
 
 type FormState = Omit<CreateNewsRequest, 'title' | 'subtitle' | 'excerpt' | 'content'> & { category: NewsCategory };
 

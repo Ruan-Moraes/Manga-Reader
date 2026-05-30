@@ -5,7 +5,7 @@ import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 import { Pagination } from '@ui/Pagination';
 
-import { formatRelativeDate, type ForumTopic } from '@features/forum';
+import { formatRelativeDate, type ForumTopic } from '@entities/forum';
 
 interface ForumTopicListProps {
     topics: ForumTopic[];

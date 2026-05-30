@@ -47,7 +47,7 @@ src/                    → Feature-Sliced Design (em migração): app → pages
 │   ├── mobile-tab-bar/ → MobileTabBar
 │   ├── admin-panel/    → AdminLayout + AdminHeader + AdminSidebar
 │   └── layouts/        → Shells de rota: RootLayout, ChapterLayout, PageShell, Main
-├── features/           → módulos de domínio (cada slice com index.ts público)
+├── features/           → interações/verbos (auth, admin, library, contact); cada slice com index.ts
 │   └── [feature]/
 │       ├── index.ts    → Barrel file (API pública do módulo)
 │       ├── component/  → Componentes React
@@ -56,6 +56,7 @@ src/                    → Feature-Sliced Design (em migração): app → pages
 │       ├── type/       → Tipos TypeScript
 │       ├── context/    → Context providers (quando necessário)
 │       └── constant/   → Constantes do módulo
+├── entities/           → modelos de domínio/nouns (user, news, …); mesma estrutura de slice (migração por batches — DT-24)
 ├── shared/             → Código reutilizável cross-feature
 │   ├── component/      → ~37 componentes compartilhados
 │   ├── constant/       → Constantes globais
@@ -351,7 +352,7 @@ Os mocks permanecem no código como referência de estrutura de dados, mas não 
 
 - **Base URL**: `/Manga-Reader` (GitHub Pages)
 - **Plugins**: `@vitejs/plugin-react-swc`, `@tailwindcss/vite`
-- **Aliases**: `@` → `src/`, `@app` → `src/app/`, `@pages` → `src/pages/`, `@widgets` → `src/widgets/`, `@features` → `src/features/`, `@shared` → `src/shared/`, `@ui` → `src/shared/ui/`
+- **Aliases**: `@` → `src/`, `@app` → `src/app/`, `@pages` → `src/pages/`, `@widgets` → `src/widgets/`, `@features` → `src/features/`, `@entities` → `src/entities/`, `@shared` → `src/shared/`, `@ui` → `src/shared/ui/`
 - **Proxy (dev)**: `/api` → `http://localhost:8080`
 
 ### TypeScript (`tsconfig.app.json`)

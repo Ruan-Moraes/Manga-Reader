@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Forum from '../Forum';
-import type { ForumTopic } from '@features/forum';
+import type { ForumTopic } from '@entities/forum';
 
 const mockTopic = (overrides: Partial<ForumTopic> = {}): ForumTopic => ({
     id: '1',
@@ -68,8 +68,8 @@ const mForum = {
     updateQuery: vi.fn(),
 };
 
-vi.mock('@features/forum', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/forum')>();
+vi.mock('@entities/forum', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/forum')>();
     return {
         ...actual,
         useForumPage: () => mForum,

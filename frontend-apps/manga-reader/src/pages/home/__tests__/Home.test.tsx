@@ -50,8 +50,8 @@ vi.mock('@features/library', async importOriginal => {
     };
 });
 
-vi.mock('@features/forum', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/forum')>();
+vi.mock('@entities/forum', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/forum')>();
     return {
         ...actual,
         getForumTopics: vi.fn().mockResolvedValue({ content: [], totalElements: 0 }),

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
-import { type User } from '@features/user';
+import { type User } from '@entities/user';
 
 import useCommentModals from '../hook/internal/useCommentModals';
 import useCommentScrollToParent from '../hook/internal/useCommentScrollToParent';

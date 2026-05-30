@@ -6,7 +6,7 @@ import { SectionHeader } from '@ui/SectionHeader';
 import { ForumTopicCard } from '@ui/ForumTopicCard';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import { formatRelativeDate, type ForumTopic } from '@features/forum';
+import { formatRelativeDate, type ForumTopic } from '@entities/forum';
 
 type HomeCommunityProps = {
     topics: ForumTopic[];

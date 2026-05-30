@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@ui/Avatar';
 import { CheckCircle, MessageCircle, ThumbsUp } from 'lucide-react';
-import { formatRelativeDate, roleBadgeColor, roleLabelKey, type ForumReply } from '@features/forum';
+import { formatRelativeDate, roleBadgeColor, roleLabelKey, type ForumReply } from '@entities/forum';
 
 const ReplyCard = ({ reply }: { reply: ForumReply }) => {
     const { t } = useTranslation('forum');
