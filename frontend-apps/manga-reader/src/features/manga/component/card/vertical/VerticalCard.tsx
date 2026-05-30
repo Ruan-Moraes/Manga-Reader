@@ -5,7 +5,7 @@ import type { VerticalCard as VerticalCardProps } from '../../../type/title-card
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import AppLink from '@shared/component/link/element/AppLink';
 
-import { RatingStars } from '@features/rating';
+import { RatingStars } from '@entities/rating';
 import { Image } from 'lucide-react';
 
 const VerticalCard = ({ isError, isLoading, id, type, cover, name, ratingAverage, latestChapterNumber }: VerticalCardProps) => {

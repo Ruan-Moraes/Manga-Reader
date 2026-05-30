@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { GroupWork } from '@features/group';
+import type { GroupWork } from '@entities/group';
 
 type WorkSortOption = 'popularity' | 'date' | 'chapters';
 

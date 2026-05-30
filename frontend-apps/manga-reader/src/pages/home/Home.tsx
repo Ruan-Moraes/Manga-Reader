@@ -5,7 +5,7 @@ import { useAuth } from '@features/auth';
 import { useFilterResults } from '@features/category';
 import { useSavedMangas } from '@features/library';
 import { getForumTopics } from '@entities/forum';
-import { getGroups } from '@features/group';
+import { getGroups } from '@entities/group';
 
 import { PageContainer } from '@ui/PageContainer';
 

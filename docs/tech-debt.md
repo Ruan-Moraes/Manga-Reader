@@ -105,9 +105,10 @@ e `widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/l
 comment, category, label, news, event, group, store, forum) vs **4 features**
 (auth, admin, library, contact). Migração **incremental por batches**:
 - **Batch 1 — feito**: `user, label, store, news, forum` (folhas, sem edges de saída).
-- **Batch 2 — pendente**: `comment, category, group, rating` (acoplam a folhas/manga).
-- **Batch 3 — pendente**: `manga, chapter` — ciclo de tipos manga↔chapter, resolver
-  via cross-import API FSD (`@x`) ou unir slice.
+- **Batch 2 — feito**: `comment, group, rating` (edges só entre si e p/ entities; `category`
+  movido p/ Batch 3 pois `category→manga` seria `entity→feature`).
+- **Batch 3 — pendente**: `manga, chapter, category` — ciclo de tipos manga↔chapter,
+  resolver via cross-import API FSD (`@x`) ou unir slice; mover `category` junto.
 - **Batch 4 — pendente**: `event` — antes mover `useAuth` de `event` p/ page/feature
   (hoje `event→auth` viraria `entity→feature`, proibido).
 

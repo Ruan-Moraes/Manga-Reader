@@ -4,7 +4,7 @@ import { requireAuth } from '@shared/service/util/requireAuth';
 
 import { getRatingsAverage, getRatingsByTitleId, submitRating as submitRatingService } from '../service/ratingService';
 
-import { MangaRating } from '@features/rating';
+import { MangaRating } from '@entities/rating';
 
 type RatingAverageResult = {
     average: number;

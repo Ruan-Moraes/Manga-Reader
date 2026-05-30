@@ -11,8 +11,8 @@ import { EmptyState } from '@ui/EmptyState';
 
 import { useTitle } from '@features/manga';
 import { useChapters } from '@features/chapter';
-import { useRatings } from '@features/rating';
-import { getGroupsByTitleId } from '@features/group';
+import { useRatings } from '@entities/rating';
+import { getGroupsByTitleId } from '@entities/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import TitleHero from './parts/TitleHero';

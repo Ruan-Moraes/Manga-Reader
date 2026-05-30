@@ -5,8 +5,8 @@ import AppLink from '@shared/component/link/element/AppLink';
 
 import { getGroupStatusLabelKey } from '../../service/groupService';
 
-import { GroupSummary } from '@features/group';
-import { RatingStars } from '@features/rating';
+import { GroupSummary } from '@entities/group';
+import { RatingStars } from '@entities/rating';
 import { Image } from 'lucide-react';
 
 const statusColorMap: Record<string, string> = {

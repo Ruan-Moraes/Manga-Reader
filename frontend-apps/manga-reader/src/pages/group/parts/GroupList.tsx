@@ -5,7 +5,7 @@ import { Badge } from '@ui/Badge';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import type { Group } from '@features/group';
+import type { Group } from '@entities/group';
 
 interface GroupListProps {
     groups: Group[];

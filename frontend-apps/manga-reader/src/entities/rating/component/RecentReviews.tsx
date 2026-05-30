@@ -5,7 +5,7 @@ import { type MangaRating } from '../type/rating.types';
 
 import Illustration, { type IllustrationType } from '@shared/component/ui/Illustration';
 
-import { useCommentPagination, CommentUser } from '@features/comment';
+import { useCommentPagination, CommentUser } from '@entities/comment';
 
 import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user';
 

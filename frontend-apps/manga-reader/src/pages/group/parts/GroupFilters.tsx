@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SearchField } from '@ui/SearchField';
 import { Select } from '@ui/Select';
 
-import type { GroupStatus } from '@features/group';
+import type { GroupStatus } from '@entities/group';
 
 type SortBy = 'popularity' | 'members' | 'titles' | 'rating';
 

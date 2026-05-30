@@ -59,8 +59,8 @@ vi.mock('@entities/forum', async importOriginal => {
     };
 });
 
-vi.mock('@features/group', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/group')>();
+vi.mock('@entities/group', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/group')>();
     return {
         ...actual,
         getGroups: vi.fn().mockResolvedValue({ content: [], totalElements: 0 }),

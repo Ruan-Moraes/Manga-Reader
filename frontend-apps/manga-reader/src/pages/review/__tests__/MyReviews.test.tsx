@@ -3,8 +3,8 @@ import { screen, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import MyReviews from '../MyReviews';
 
-vi.mock('@features/rating', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/rating')>();
+vi.mock('@entities/rating', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/rating')>();
     return {
         ...actual,
         getUserReviews: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('@features/rating', async importOriginal => {
 
 vi.mock('@shared/service/util/toastService');
 
-import { getUserReviews } from '@features/rating';
+import { getUserReviews } from '@entities/rating';
 
 const mockReview = {
     id: 'r1',

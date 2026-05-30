@@ -7,7 +7,7 @@ import { Select } from '@ui/Select';
 import { ReviewCard } from '@ui/ReviewCard';
 import { EmptyState } from '@ui/EmptyState';
 
-import type { MangaRating } from '@features/rating';
+import type { MangaRating } from '@entities/rating';
 
 type Average = { average: number; count: number };
 

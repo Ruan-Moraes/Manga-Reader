@@ -14,7 +14,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { UserModalProvider } from '@entities/user';
-import { CommentSortProvider } from '@features/comment';
+import { CommentSortProvider } from '@entities/comment';
 
 import { queryClient } from '@shared/service/util/queryCache';
 

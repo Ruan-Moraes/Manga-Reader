@@ -7,7 +7,7 @@ import { Modal } from '@ui/Modal';
 
 import { getGroupsByTitleId } from '../../service/groupService';
 
-import { GroupSummary } from '@features/group';
+import { GroupSummary } from '@entities/group';
 
 type GroupsModalProps = {
     isModalOpen: boolean;
