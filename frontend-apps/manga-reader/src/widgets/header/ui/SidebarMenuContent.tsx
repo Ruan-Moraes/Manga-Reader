@@ -8,7 +8,7 @@ import { clearCache } from '@shared/service/util/queryCache';
 
 import UserSettingsModal from './settings/UserSettingsModal';
 import SidebarProfileCard from './SidebarProfileCard';
-import { useSidebarMenuItems } from './hooks/useSidebarMenuItems';
+import { useSidebarMenuItems } from '../model/useSidebarMenuItems';
 
 export type MenuProfile = {
     id: string;

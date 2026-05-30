@@ -92,7 +92,7 @@ const mEvents = {
     featured: MOCK_EVENTS[0],
 };
 
-vi.mock('../useEvents', () => ({
+vi.mock('../../model/useEvents', () => ({
     default: () => mEvents,
 }));
 

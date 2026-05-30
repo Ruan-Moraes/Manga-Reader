@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
-import { BG_CLASS, useChapterReader } from './useChapterReader';
+import { BG_CLASS, useChapterReader } from '../model/useChapterReader';
 import { BottomToolbar } from './parts/BottomToolbar';
 import { ConfigDrawer } from './parts/ConfigDrawer';
 import { ReaderChrome } from './parts/ReaderChrome';

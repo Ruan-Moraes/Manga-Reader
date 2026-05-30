@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { MenuProfile } from '../SidebarMenuContent';
+import type { MenuProfile } from '../ui/SidebarMenuContent';
 
 type MenuItem = { label: string; link: string; badge?: string };
 

@@ -6,7 +6,7 @@ import { SectionHeader } from '@ui/SectionHeader';
 
 import { type EventType } from '@entities/event';
 
-import useEvents from './useEvents';
+import useEvents from '../model/useEvents';
 
 import { EventFilters } from './parts/EventFilters';
 import { EventList } from './parts/EventList';

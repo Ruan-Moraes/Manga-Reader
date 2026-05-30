@@ -8,7 +8,7 @@ export type { LayoutNavBarUser, LayoutNavBarProps } from './navBar.types';
 import NavMegaMenu from './NavMegaMenu';
 import NavActions from './NavActions';
 import NavSearch from './NavSearch';
-import useNavSearch from './useNavSearch';
+import useNavSearch from '../../model/useNavSearch';
 import Logo from '@shared/component/logo/Logo.tsx';
 
 const SCROLL_THRESHOLD = 8;

@@ -165,19 +165,16 @@ desvios same-layer aceitos: layout shells + design showcase).
 Varredura manual+heurística de `frontend-apps/manga-reader/src` (~720 arquivos). **Só documentação — nada corrigido aqui.** Escopo: violações FSD além do que o steiger pega (verde), responsabilidade excessiva, código morto/obsoleto.
 
 #### 25.1 — Código morto / obsoleto
-- **`entities/comment/model/useCommentEditor.tsx`** — 0 consumidores; substituído por `useCommentRichEditor` (`model/internal/`). **Remover.**
-- **Mock data em runtime dentro de slice**: `pages/forum/ui/parts/forumTopicMock.ts` e `pages/profile/ui/parts/userProfileMock.ts`. Features usam API real (mock é legacy). **Avaliar remoção / mover p/ `test/`.**
-- **Páginas legais legadas `pages/term/`** (`TermsOfUse.tsx`, `Dmca.tsx`) redundantes com `pages/legal/` (`Terms.tsx`, `Dmca.tsx`). Router mantém `LegacyDmca` (`/dmca`) + `LegalDmca` (`/legal/dmca`). **Consolidar em `legal/` e remover `term/` + rota legada.**
+- ✅ **Feito**: `entities/comment/model/useCommentEditor.tsx` removido (0 consumidores; substituído por `useCommentRichEditor`).
+- **Mock data em runtime**: `pages/forum/ui/parts/forumTopicMock.ts` (usado por ForumTopic/TopicHeader/TopicReplies) e `pages/profile/ui/parts/userProfileMock.ts` (UserProfile/Header). **Em uso** — telas ainda não migradas p/ API real. Migrar + remover mock.
+- **Páginas legais legadas `pages/term/`** (`TermsOfUse.tsx`, `Dmca.tsx`) redundantes com `pages/legal/`. Router mantém `LegacyDmca` (`/dmca`) + `LegalDmca` (`/legal/dmca`). **Consolidar em `legal/`, redirecionar rota legada, remover `term/`.** (não feito — muda rota/comportamento)
 - 3 `TODO/FIXME` espalhados (baixo).
 
-#### 25.2 — FSD: pureza de segmento (hooks fora de `model/`)
-Hooks vivendo em `ui/` (deveriam estar em `model/`) — viola convenção de segmento (steiger não pega pois o slice já tem `ui/`):
-- `pages/chapter/ui/useChapterReader.ts`
-- `pages/event/ui/useEvents.tsx`
-- `pages/forum/ui/hook/useComposerFormState.ts` (+ pasta `hook/` não-canônica)
-- `widgets/header/ui/hooks/{useSidebarMenuItems.ts, useMenuData.tsx}` (pasta `hooks/`)
-- `widgets/header/ui/navbar/useNavSearch.ts`
-→ mover p/ `model/` do slice.
+#### 25.2 — FSD: pureza de segmento (hooks fora de `model/`) — ✅ Feito
+Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useEvents`
+(pages/event), `useComposerFormState` (pages/forum, +removida pasta `hook/`),
+`useSidebarMenuItems` + `useMenuData` (widgets/header, +removida `hooks/`), `useNavSearch`
+(widgets/header). tsc 0, lint verde, suite verde.
 
 #### 25.3 — Responsabilidade excessiva (god files, LOC)
 - **`pages/design/ui/DesignPrimitives.tsx` — 1516 LOC** (showcase do design-system). Quebrar por seção em `parts/`.

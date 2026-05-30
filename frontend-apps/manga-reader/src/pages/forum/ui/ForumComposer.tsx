@@ -7,7 +7,7 @@ import { Input } from '@ui/Input';
 import { Switch } from '@ui/Switch';
 import { Label } from '@ui/Label';
 
-import useComposerFormState from './hook/useComposerFormState';
+import useComposerFormState from '../model/useComposerFormState';
 import ComposerCategoryPicker from './parts/ComposerCategoryPicker';
 import ComposerEditor from './parts/ComposerEditor';
 import ComposerActions from './parts/ComposerActions';

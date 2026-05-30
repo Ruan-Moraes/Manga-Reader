@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Label } from '@ui/Label';
-import type { ComposerCategory } from '../hook/useComposerFormState';
+import type { ComposerCategory } from '../../model/useComposerFormState';
 
 type Props = {
     value: ComposerCategory | null;

@@ -6,7 +6,7 @@ import { SideMenu } from './SideMenu';
 import UserSettingsModal from './settings/UserSettingsModal';
 
 import { useAuth } from '@features/auth';
-import useMenuData from './hooks/useMenuData';
+import useMenuData from '../model/useMenuData';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { showInfoToast } from '@shared/service/util/toastService';
 import { clearCache } from '@shared/service/util/queryCache';

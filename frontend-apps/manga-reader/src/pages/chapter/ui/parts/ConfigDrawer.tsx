@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Drawer } from '@ui/Drawer';
 import { Kbd } from '@ui/Kbd';
 import { SegmentedControl } from '@ui/SegmentedControl';
-import type { Bg, Direction, Fit, ReadMode } from '../useChapterReader';
-import { CHROME_HEIGHT, KEYBOARD_SHORTCUTS } from '../useChapterReader';
+import type { Bg, Direction, Fit, ReadMode } from '../../model/useChapterReader';
+import { CHROME_HEIGHT, KEYBOARD_SHORTCUTS } from '../../model/useChapterReader';
 
 interface ConfigDrawerProps {
     open: boolean;

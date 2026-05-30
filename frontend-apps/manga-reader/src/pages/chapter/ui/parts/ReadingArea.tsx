@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import type { Direction, Fit, ReadMode } from '../useChapterReader';
-import { PAGE_PLACEHOLDERS, TOTAL_PAGES } from '../useChapterReader';
+import type { Direction, Fit, ReadMode } from '../../model/useChapterReader';
+import { PAGE_PLACEHOLDERS, TOTAL_PAGES } from '../../model/useChapterReader';
 import { EndCard } from './EndCard';
 
 interface ReadingAreaProps {

@@ -4,7 +4,7 @@ import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
 
 import { IconButton } from '@ui/IconButton';
 import { ProgressBar } from '@ui/ProgressBar';
-import { TOTAL_PAGES } from '../useChapterReader';
+import { TOTAL_PAGES } from '../../model/useChapterReader';
 
 interface BottomToolbarProps {
     page: number;

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Bookmark, MessageSquare, Settings, ChevronLeft } from 'lucide-react';
 
 import { IconButton } from '@ui/IconButton';
-import { CHROME_HEIGHT, TOTAL_PAGES } from '../useChapterReader';
+import { CHROME_HEIGHT, TOTAL_PAGES } from '../../model/useChapterReader';
 
 interface ReaderChromeProps {
     titleId: string | undefined;
