@@ -42,10 +42,12 @@ export default defineConfig([
         },
     },
     {
+        // shared expõe API por caminho de segmento (@ui/Button, @shared/service/http),
+        // idiomático nesta layer — public-api por segmento fica deferido (ver DT-24).
+        // no-reserved-folder-names já resolvido (shared/component/ui removido).
         files: ['./src/shared/**'],
         rules: {
             'fsd/public-api': 'off',
-            'fsd/no-reserved-folder-names': 'off',
         },
     },
 ]);

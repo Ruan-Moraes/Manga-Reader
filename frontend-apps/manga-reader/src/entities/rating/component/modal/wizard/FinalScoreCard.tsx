@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RatingStars from '../../RatingStars';
-import Illustration, { type IllustrationType } from '@shared/component/ui/Illustration';
+import Illustration, { type IllustrationType } from '@ui/Illustration';
 
 type Category = {
     readonly key: string;

@@ -126,6 +126,7 @@ sketch
 cmake-build-*/
 node-compile-cache/
 coverage/
+*.tsbuildinfo
 
 /frontend-apps/design_handoff_header_redesign/
 /frontend-apps/Manga Reader Design System/

@@ -124,14 +124,27 @@ componentes duplicados. `BaseSelect` migrado `react-icons/fi` → `lucide-react`
 `react-icons` 100% eliminado. `fsd/forbidden-imports` agora **sem exceções** (verde).
 tsc: 33 → 28 erros.
 
-**Pendente — outros** (regras desligadas no `steiger.config.ts`, reativar por item):
-- Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — `fsd/no-segmentless-slices`.
-- Public API nos segmentos de `shared/` → reativa `fsd/no-public-api-sidestep`.
-- Renomear pasta reservada `shared/component/ui/` (`fsd/no-reserved-folder-names`).
-- Dead code residual: `shared/component/link/section/FooterLinksSection.tsx` (0 consumidores — verificar antes de remover).
-- ~17 erros de tipo reais restantes no tsc (enum NewsCategory, RatingWizard, RecentReviews, PageShell, Avatar, TitleDetails — ver relatório).
+**Concluído — type errors + shared cleanup (2026-05-30)**:
+- Zerados os ~28 erros de tipo reais (enum NewsCategory→string dinâmico, RatingWizard/
+  FinalScoreCard iconType, RecentReviews import, useTitleFetch `<Title,Error>`, PageShell
+  props mortas, i18n `count`→`voteCount`, etc.). **tsc 0.**
+- Avatar: prop `shape` removida + consumidores; Button types consolidados em `Button.tsx`
+  (`Button.types.ts` deletado); rename `style/`→`styles/`.
+- Reserved folder `shared/component/ui/` resolvido: `Illustration` + `StyledSelect`
+  movidos p/ `shared/ui/` (`@ui/Illustration`). `fsd/no-reserved-folder-names` agora **ON**.
+- `*.tsbuildinfo` adicionado ao `.gitignore` (era trackeado e gerava erros-fantasma no tsc incremental).
 
-**Prioridade**: Média (não-bloqueante; layers FSD completas + dead code limpo. Resta hardening: segmentos, public-api shared, type errors).
+**Pendente — outros** (regras desligadas no `steiger.config.ts`):
+- Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — `fsd/no-segmentless-slices`.
+- **Deferido com rationale**: `public-api`/`no-public-api-sidestep` em `shared/`. Imports por
+  caminho de segmento (`@ui/Button`, `@shared/service/http`, 300+ refs) são idiomáticos na
+  layer shared; barrels + rewire = baixo valor / alto churn. Não é bug.
+- `Pagination` duplicado (não é dup real): `@ui/Pagination` (text/Button, `total/onChange`)
+  vs `shared/component/navigation/Pagination` (icon-only, `totalPages/onPageChange`, usado por
+  `DataTable` + re-export em `entities/forum`). Unificar = mudança visual/UX, exige decisão de design.
+- Dead code residual: `shared/component/link/section/FooterLinksSection.tsx` + `shared/ui/StyledSelect.tsx` (0 consumidores).
+
+**Prioridade**: Baixa (layers FSD completas, tsc 0, suite verde; resta só segmentos + dups de baixo impacto).
 
 ---
 

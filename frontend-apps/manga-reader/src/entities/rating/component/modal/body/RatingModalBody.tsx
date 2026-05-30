@@ -1,7 +1,7 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Illustration, { type IllustrationType } from '@shared/component/ui/Illustration';
+import Illustration, { type IllustrationType } from '@ui/Illustration';
 import { Select } from '@ui/Select';
 
 type CategoryRating = {

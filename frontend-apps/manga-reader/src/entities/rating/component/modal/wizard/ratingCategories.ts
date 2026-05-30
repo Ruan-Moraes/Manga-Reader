@@ -1,4 +1,4 @@
-import type { IllustrationType } from '@shared/component/ui/Illustration';
+import type { IllustrationType } from '@ui/Illustration';
 
 export const RATING_CATEGORIES = [
     { key: 'funRating', iconType: 'feliz' as IllustrationType },

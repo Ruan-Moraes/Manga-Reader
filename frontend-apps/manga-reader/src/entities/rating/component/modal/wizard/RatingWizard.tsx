@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RatingStars from '../../RatingStars';
-import Illustration from '@shared/component/ui/Illustration';
+import Illustration from '@ui/Illustration';
 
 import FinalScoreCard from './FinalScoreCard';
 

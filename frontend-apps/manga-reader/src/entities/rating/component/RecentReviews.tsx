@@ -5,7 +5,7 @@ import { type MangaRating } from '../type/rating.types';
 
 import RatingStars from './RatingStars';
 
-import Illustration, { type IllustrationType } from '@shared/component/ui/Illustration';
+import Illustration, { type IllustrationType } from '@ui/Illustration';
 
 import { useCommentPagination, CommentUser } from '@entities/comment';
 
