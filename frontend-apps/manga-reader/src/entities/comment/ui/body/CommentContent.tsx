@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { type User } from '@entities/user';
+import { type User } from '@entities/user/@x/comment';
 import { parseMarkdown } from '@shared/service/util/markdownService';
 
 type CommentContentProps = {

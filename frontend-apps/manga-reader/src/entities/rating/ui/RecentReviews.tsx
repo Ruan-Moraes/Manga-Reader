@@ -7,9 +7,9 @@ import RatingStars from './RatingStars';
 
 import Illustration, { type IllustrationType } from '@ui/Illustration';
 
-import { useCommentPagination, CommentUser } from '@entities/comment';
+import { useCommentPagination, CommentUser } from '@entities/comment/@x/rating';
 
-import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user';
+import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user/@x/rating';
 
 import { Button } from '@ui/Button';
 

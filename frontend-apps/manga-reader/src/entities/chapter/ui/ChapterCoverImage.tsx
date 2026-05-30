@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { type Title } from '@entities/manga';
+import { type Title } from '@entities/manga/@x/chapter';
 import { Image } from 'lucide-react';
 
 type ChapterCoverImageProps = {

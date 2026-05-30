@@ -65,15 +65,7 @@ export default defineConfig([
         },
     },
 
-    // entities cross-referenciam entities por relação de domínio (Title↔Chapter,
-    // Comment→User, Manga→Rating, etc.). FSD sanciona via cross-import API (@x);
-    // migração p/ @x é trabalho futuro (DT-24). Guard cross-layer segue ON nas
-    // demais layers. entity→feature (upward) é estruturalmente improvável + pega em review.
-    {
-        files: ['./src/entities/**'],
-        rules: {
-            'fsd/forbidden-imports': 'off',
-        },
-    },
+    // entity↔entity cross-refs agora via FSD cross-import API (@x):
+    // entities/<target>/@x/<consumer>.ts. forbidden-imports volta a ON full.
 
 ]);

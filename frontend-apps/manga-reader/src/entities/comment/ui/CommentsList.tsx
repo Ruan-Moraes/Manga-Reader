@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user';
+import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user/@x/comment';
 import { type CommentData } from '../model/comment.types';
 
 import useCommentTree from '../model/internal/useCommentTree';

@@ -1,4 +1,4 @@
-import { type Chapter } from '@entities/chapter';
+import { type Chapter } from '@entities/chapter/@x/manga';
 
 export type Title = {
     id: string;

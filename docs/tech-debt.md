@@ -145,15 +145,18 @@ tsc: 33 → 28 erros.
   `design-system/tokens`→`shared/config`, SVGs de `assets/` colocados em `shared/component/icon/`.
   Root agora só tem layers + cross-cutting aceitos (`i18n/`, `styles/`, `test/`, `main.tsx`).
 
+**Concluído — cross-import API @x (2026-05-30)**: refs de domínio entity↔entity
+(Title↔Chapter, Comment→User, Manga→Rating, Category→Manga, Group→Rating) migradas
+p/ `entities/<target>/@x/<consumer>.ts` (8 gateways, `export * from '..'`).
+`fsd/forbidden-imports` agora **100% ON** (sem exceção p/ entities; só ficam os 3
+desvios same-layer aceitos: layout shells + design showcase).
+
 **Pendente — deferido com rationale** (desligado no `steiger.config.ts`):
-- **`@x` cross-import API p/ entity↔entity**: refs de domínio (Title↔Chapter, Comment→User,
-  Manga→Rating, etc.) hoje são import direto. `fsd/forbidden-imports` off p/ `entities/**`
-  (cross-layer segue ON nas outras layers). Migrar p/ `@x` é polish futuro.
 - `public-api`/`no-public-api-sidestep` em `shared/`: imports por caminho de segmento são idiomáticos.
 - `fsd/inconsistent-naming` off: falso-positivo em `news` (substantivo, não plural).
-- `Pagination`: 2 componentes distintos (não dup real) — unificar exige decisão de UX.
+- `Pagination`: 2 componentes distintos (não dup real) — unificar exige decisão de UX (escolhido `@ui/Pagination`, execução pendente).
 
-**Prioridade**: Baixa (layers + segmentos FSD completos, tsc 0, suite verde, lint verde).
+**Prioridade**: Baixa (FSD essencialmente completo: layers + segmentos + @x, tsc 0, suite verde, lint verde full).
 
 ---
 

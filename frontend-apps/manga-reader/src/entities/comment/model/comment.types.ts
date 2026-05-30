@@ -1,4 +1,4 @@
-import { type User } from '@entities/user';
+import { type User } from '@entities/user/@x/comment';
 
 export type CommentData = {
     id: string;

@@ -5,7 +5,7 @@ import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import type { HorizontalCard as HorizontalCardProps } from '../../../model/title-card.types';
 
 import AppLink from '@shared/component/link/element/AppLink';
-import { RatingStars } from '@entities/rating';
+import { RatingStars } from '@entities/rating/@x/manga';
 
 const HorizontalCard = ({ isError, isLoading, id, type, cover, ratingAverage, name, chaptersCount }: HorizontalCardProps) => {
     const { t } = useTranslation('manga');

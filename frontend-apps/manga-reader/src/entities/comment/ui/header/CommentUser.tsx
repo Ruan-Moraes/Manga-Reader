@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-import { type User } from '@entities/user';
+import { type User } from '@entities/user/@x/comment';
 
 import formatRelativeDate from '@shared/service/util/formatRelativeDate';
 import { Avatar } from '@ui/Avatar';
