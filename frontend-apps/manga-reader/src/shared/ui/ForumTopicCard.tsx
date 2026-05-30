@@ -1,9 +1,11 @@
 import { memo } from 'react';
 import { Pin, MessageSquare, Eye } from 'lucide-react';
+
+import { cn } from '@/lib/cn';
+
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { StatusDot } from './StatusDot';
-import { cn } from '@/lib/cn';
 
 export interface ForumTopicCardProps {
     id: string;

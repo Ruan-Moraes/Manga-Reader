@@ -13,12 +13,18 @@ export interface AccordionItemProps {
 
 export const AccordionItem = ({ title, children, defaultOpen = false, open, onOpenChange }: AccordionItemProps) => {
     const [internal, setInternal] = useState(defaultOpen);
+
     const isOpen = open ?? internal;
+
     const id = useId();
 
     const toggle = () => {
         const next = !isOpen;
-        if (open === undefined) setInternal(next);
+
+        if (open === undefined) {
+            setInternal(next);
+        }
+
         onOpenChange?.(next);
     };
 

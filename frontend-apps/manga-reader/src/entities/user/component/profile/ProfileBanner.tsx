@@ -28,7 +28,7 @@ const ProfileBanner = ({ bannerUrl, photoUrl, name, onPhotoClick }: Props) => {
                     aria-label={t('profile.banner.changePhoto')}
                     className="border-4 rounded-full border-primary-default"
                 >
-                    <Avatar src={photoUrl} name={name} size={96} shape="circle" />
+                    <Avatar src={photoUrl} name={name} size={96} />
                 </button>
             </div>
         </div>

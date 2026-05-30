@@ -10,7 +10,6 @@ export interface DrawerProps {
     onClose: () => void;
     side?: 'left' | 'right';
     width?: number;
-    /** Pixel offset from viewport top — use when a sticky chrome occupies the top. */
     top?: number;
     title?: string;
     children: ReactNode;

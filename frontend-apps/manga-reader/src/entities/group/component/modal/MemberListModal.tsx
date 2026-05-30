@@ -40,7 +40,7 @@ const MemberListModal = ({ isOpen, closeModal, group }: MemberListModalProps) =>
                                 onClick={() => setSelectedUser(member)}
                                 className="flex gap-3 items-center p-2 text-left border rounded-xs border-tertiary hover:border-quaternary hover:shadow-default transition-all"
                             >
-                                <Avatar src={member.avatar} name={member.name} size={40} shape="circle" />
+                                <Avatar src={member.avatar} name={member.name} size={40} />
                                 <div>
                                     <p className="text-sm font-bold">{member.name}</p>
                                     <p className="text-xs text-tertiary">{member.role}</p>

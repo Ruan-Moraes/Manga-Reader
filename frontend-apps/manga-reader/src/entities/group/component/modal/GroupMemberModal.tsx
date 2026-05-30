@@ -20,7 +20,7 @@ const GroupMemberModal = ({ isOpen, user, closeModal }: GroupMemberModalProps) =
         <Modal open={isOpen} onClose={closeModal} title={t('member.profileTitle')}>
             <section className="mx-auto w-full max-w-2xl">
                 <div className="flex gap-3 items-center">
-                    <Avatar src={user.avatar} name={user.name} size={64} shape="circle" />
+                    <Avatar src={user.avatar} name={user.name} size={64} />
                     <div>
                         <h4 className="text-lg font-bold">{user.name}</h4>
                         <p className="text-xs text-tertiary">{user.role}</p>

@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { Button } from './Button';
-import { paginationRange } from './pagination-utils';
+
+import { paginationRange } from '../util/pagination.ts';
 
 export interface PaginationProps {
     page: number;
@@ -11,6 +13,7 @@ export interface PaginationProps {
 
 export const Pagination = ({ page, total, onChange, siblings = 1 }: PaginationProps) => {
     const items = paginationRange(page, total, siblings);
+
     return (
         <nav role="navigation" aria-label="Paginação" className="flex flex-wrap items-center justify-center gap-1">
             <Button variant="ghost" size="sm" icon={ChevronLeft} disabled={page === 1} onClick={() => onChange(page - 1)} aria-label="Página anterior">

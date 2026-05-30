@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
+
 import { Drawer } from './Drawer';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { cn } from '@/lib/cn';
-import type { ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
 
 export interface SideMenuItem {
     key: string;
@@ -33,7 +34,7 @@ export const SideMenu = ({ open, onClose, sections, user, activeKey, footer }: S
         <div className="flex h-full flex-col">
             {user && (
                 <div className="mb-4 flex items-center gap-3 border-b border-mr-border-subtle pb-4">
-                    <Avatar src={user.avatar} name={user.name} size={48} shape="circle" />
+                    <Avatar src={user.avatar} name={user.name} size={48} />
                     <div className="min-w-0 flex-1">
                         <div className="truncate text-mr-body font-mr-extrabold text-mr-fg">{user.name}</div>
                         {user.handle && <div className="truncate text-mr-tiny text-mr-fg-subtle">@{user.handle}</div>}

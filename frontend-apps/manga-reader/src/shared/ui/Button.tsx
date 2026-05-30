@@ -1,7 +1,22 @@
 import { forwardRef } from 'react';
-import { Loader2 } from 'lucide-react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { Loader2, LucideIcon } from 'lucide-react';
+
 import { cn } from '@/lib/cn';
-import type { ButtonProps } from './Button.types';
+
+export type ButtonVariant = 'primary' | 'raised' | 'ghost';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+    icon?: LucideIcon;
+    iconRight?: LucideIcon;
+    danger?: boolean;
+    block?: boolean;
+    loading?: boolean;
+    children?: ReactNode;
+}
 
 const variantClass: Record<NonNullable<ButtonProps['variant']>, string> = {
     primary: 'bg-mr-accent text-mr-primary border border-mr-accent ' + 'hover:opacity-[0.85] active:scale-[0.98]',

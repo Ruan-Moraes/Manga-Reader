@@ -12,7 +12,9 @@ export interface ProgressBarProps {
 
 export const ProgressBar = ({ value, indeterminate, thickness = 'thin', animated = true, tone = 'accent', label, className }: ProgressBarProps) => {
     const clamped = Math.min(100, Math.max(0, value));
+
     const height = thickness === 'thick' ? 'h-3' : 'h-1';
+
     const fillColor = tone === 'danger' ? 'bg-mr-danger' : 'bg-mr-accent';
 
     return (

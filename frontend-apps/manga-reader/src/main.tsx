@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import '@fontsource-variable/nunito-sans/wght.css';
 import '@fontsource-variable/nunito-sans/wght-italic.css';
-import './style/index.css';
+import './styles/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import i18n from './i18n/config';

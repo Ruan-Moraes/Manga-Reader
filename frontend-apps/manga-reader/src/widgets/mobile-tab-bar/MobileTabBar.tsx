@@ -1,5 +1,6 @@
 import { Home, Search, BookOpen, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
 import { MobileTabBar as DSMobileTabBar } from '@ui/MobileTabBar';
 
 export interface LayoutMobileTabBarProps {

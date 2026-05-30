@@ -1,4 +1,5 @@
 import { memo } from 'react';
+
 import { cn } from '@/lib/cn';
 
 export interface MangaPosterProps {
@@ -53,4 +54,5 @@ const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape 
 };
 
 export const MangaPoster = memo(MangaPosterBase);
+
 export default MangaPoster;

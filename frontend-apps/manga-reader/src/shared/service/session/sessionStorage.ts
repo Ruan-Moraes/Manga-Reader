@@ -22,6 +22,7 @@ export const clearSession = (): void => {
 export const getStoredSession = (): StoredSession | null => {
     try {
         const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+
         return raw ? (JSON.parse(raw) as StoredSession) : null;
     } catch {
         return null;

@@ -22,7 +22,7 @@ const EventHero = ({ event }: EventHeroProps) => {
                 </div>
                 <h1 className="text-3xl font-bold">{event.title}</h1>
                 <div className="flex items-center gap-3">
-                    <Avatar src={event.organizer.avatar} name={event.organizer.name} size={40} shape="circle" />
+                    <Avatar src={event.organizer.avatar} name={event.organizer.name} />
                     <Link to={event.organizer.profileLink} className="font-medium text-purple-400">
                         {event.organizer.name}
                     </Link>

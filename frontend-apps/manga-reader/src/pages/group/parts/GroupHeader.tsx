@@ -84,7 +84,7 @@ export const GroupHeader = ({ group, following, activeTab, onFollowToggle, onTab
 
                 <div className="relative px-4 md:px-6">
                     <div className="-mt-10 mb-3 md:-mt-12">
-                        <Avatar name={group.name} size={96} shape="square" />
+                        <Avatar name={group.name} size={96} />
                     </div>
 
                     <div className="flex flex-wrap items-start justify-between gap-4">

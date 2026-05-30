@@ -1,10 +1,12 @@
 import { memo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Bookmark } from 'lucide-react';
+
+import { cn } from '@/lib/cn';
+
 import { Stars } from './Stars';
 import { IconButton } from './IconButton';
 import { ProgressBar } from './ProgressBar';
-import { cn } from '@/lib/cn';
-import type { ReactNode } from 'react';
 
 export interface Manga {
     id: string;
@@ -116,4 +118,5 @@ const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, o
 };
 
 export const MangaCard = memo(MangaCardBase);
+
 export default MangaCard;

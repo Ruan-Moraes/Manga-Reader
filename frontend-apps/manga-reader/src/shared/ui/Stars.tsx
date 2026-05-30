@@ -18,9 +18,9 @@ const StarSvg = ({ filled, size }: { filled: boolean; size: number }) => (
     </svg>
 );
 
-/** Display-only — mostra valor arredondado ao inteiro mais próximo */
 export const Stars = ({ value, size = 14, label }: StarsProps) => {
     const full = Math.round(value);
+
     return (
         <span role="img" aria-label={label ?? `${value} de 5 estrelas`} className="inline-flex gap-0.5">
             {[1, 2, 3, 4, 5].map(i => (
@@ -33,7 +33,9 @@ export const Stars = ({ value, size = 14, label }: StarsProps) => {
 /** Input interativo — permite selecionar rating de 1 a 5 */
 export const StarsInput = ({ value, onChange, size = 18, label = 'Avalie de 1 a 5' }: StarsProps) => {
     const [hover, setHover] = useState(0);
+
     const shown = hover || value;
+
     return (
         <fieldset className="inline-flex gap-1 border-none p-0">
             <legend className="sr-only">{label}</legend>

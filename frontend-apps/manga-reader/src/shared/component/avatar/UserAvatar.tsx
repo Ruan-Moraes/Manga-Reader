@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import clsx from 'clsx';
 
 type UserAvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
@@ -24,13 +25,17 @@ const avatarColors = ['bg-indigo-600', 'bg-emerald-600', 'bg-amber-600', 'bg-ros
 
 const getColorForName = (name: string): string => {
     const index = name.charCodeAt(0) % avatarColors.length;
+
     return avatarColors[index];
 };
 
 const UserAvatar = ({ src, name, size = 'md', rounded = 'xs', className }: UserAvatarProps) => {
     const [imgError, setImgError] = useState(false);
+
     const config = sizeClasses[size];
+
     const showImage = src && !imgError;
+
     const letter = name.charAt(0).toUpperCase();
 
     return (

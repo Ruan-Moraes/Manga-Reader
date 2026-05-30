@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
+
 import * as RD from '@radix-ui/react-dropdown-menu';
 import { Kbd } from './Kbd';
 import { cn } from '@/lib/cn';
-import type { ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
 
 export interface DropdownMenuItem {
     type?: 'item' | 'separator' | 'label';

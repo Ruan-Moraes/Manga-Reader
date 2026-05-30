@@ -1,6 +1,7 @@
 import { forwardRef, useId, useEffect, useRef } from 'react';
-import { cn } from '@/lib/cn';
 import type { TextareaHTMLAttributes } from 'react';
+
+import { cn } from '@/lib/cn';
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     error?: string;
@@ -14,13 +15,18 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 ) {
     const auto = useId();
     const fieldId = id ?? auto;
+
     const describedBy = hint || error ? `${fieldId}-hint` : undefined;
+
     const innerRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (!autoResize) return;
+
         const el = innerRef.current;
+
         if (!el) return;
+
         el.style.height = 'auto';
         el.style.height = `${el.scrollHeight}px`;
     }, [autoResize, rest.value]);
@@ -30,8 +36,18 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
             <textarea
                 ref={node => {
                     innerRef.current = node;
-                    if (typeof ref === 'function') ref(node);
-                    else if (ref) (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+
+                    if (typeof ref === 'function') {
+                        ref(node);
+
+                        return;
+                    }
+
+                    if (ref) {
+                        (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+
+                        return;
+                    }
                 }}
                 id={fieldId}
                 disabled={disabled}

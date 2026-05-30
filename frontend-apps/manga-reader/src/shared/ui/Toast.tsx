@@ -1,3 +1,5 @@
+// Todo: Refatorar.
+
 import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 import { X, Check, AlertTriangle, Info } from 'lucide-react';
 import { IconButton } from './IconButton';
@@ -28,8 +30,10 @@ type ToastAction = { type: 'ADD'; toast: ToastItem } | { type: 'DISMISS'; id: st
 function reducer(state: ToastItem[], action: ToastAction): ToastItem[] {
     if (action.type === 'ADD') {
         const next = [action.toast, ...state].slice(0, 3);
+
         return next;
     }
+
     return state.filter(t => t.id !== action.id);
 }
 
@@ -65,16 +69,20 @@ let counter = 0;
 
 function ToastItemView({ item, onDismiss }: { item: ToastItem; onDismiss: (id: string) => void }) {
     const hoverRef = useRef(false);
+
     const Icon = item.icon ?? defaultToneIcon[item.tone];
 
     useEffect(() => {
         if (item.duration === 0) return;
+
         const id = setInterval(() => {
             if (!hoverRef.current) {
                 onDismiss(item.id);
+
                 clearInterval(id);
             }
         }, item.duration);
+
         return () => clearInterval(id);
     }, [item.id, item.duration, onDismiss]);
 
@@ -129,6 +137,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
     const toast = useCallback((cfg: ToastConfig): string => {
         const id = cfg.id ?? `toast-${++counter}`;
+
         const item: ToastItem = {
             id,
             tone: cfg.tone ?? 'neutral',
@@ -138,7 +147,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             action: cfg.action,
             icon: cfg.icon,
         };
+
         dispatch({ type: 'ADD', toast: item });
+
         return id;
     }, []);
 
@@ -161,7 +172,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 export function useToast(): ToastApi {
     const ctx = useContext(ToastContext);
+
     if (!ctx) throw new Error('useToast deve ser usado dentro de <ToastProvider>');
+
     return ctx;
 }
 

@@ -1,9 +1,11 @@
-import { forwardRef } from 'react';
-import { cn } from '@/lib/cn';
-import { Button } from './Button';
 import type { ButtonHTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import type { ButtonVariant, ButtonSize } from './Button.types';
+
+import { cn } from '@/lib/cn';
+
+import { Button } from './Button';
+import type { ButtonVariant, ButtonSize } from './Button';
 
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     icon: LucideIcon;

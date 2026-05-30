@@ -1,6 +1,7 @@
-import { cn } from '@/lib/cn';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
+
+import { cn } from '@/lib/cn';
 
 export interface HeroSectionProps {
     eyebrow?: string;

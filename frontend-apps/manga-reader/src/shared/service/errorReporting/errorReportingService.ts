@@ -25,8 +25,13 @@ const recentErrors = new Map<string, number>();
 function getUserId(): string | null {
     try {
         const raw = localStorage.getItem(AUTH_STORAGE_KEY);
-        if (!raw) return null;
+
+        if (!raw) {
+            return null;
+        }
+
         const parsed = JSON.parse(raw);
+
         return parsed?.userId ?? null;
     } catch {
         return null;

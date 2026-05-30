@@ -1,14 +1,11 @@
 export type AvatarSize = 24 | 32 | 40 | 48 | 64 | 96;
 
-export type AvatarShape = 'square' | 'circle';
-
 export interface AvatarProps {
     src?: string;
     initials?: string;
     name?: string;
     color?: string;
     size?: AvatarSize;
-    shape?: AvatarShape;
     onClick?: () => void;
 }
 
@@ -23,7 +20,9 @@ const getInitials = (name?: string) =>
 const hashToHue = (s: string) => {
     let h = 0;
 
-    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+    for (let i = 0; i < s.length; i++) {
+        h = (h * 31 + s.charCodeAt(i)) | 0;
+    }
 
     return Math.abs(h) % 360;
 };
@@ -39,10 +38,8 @@ const fontBySize: Record<AvatarSize, string> = {
     96: 'text-mr-h1',
 };
 
-export const Avatar = ({ src, initials, name, color, size = 44, shape = 'square', onClick }: AvatarProps) => {
+export const Avatar = ({ src, initials, name, color, size = 40, onClick }: AvatarProps) => {
     const inits = initials ?? getInitials(name);
-
-    const radiusClass = shape === 'circle' ? 'rounded-mr-full' : 'rounded-mr-xs';
 
     const bgColor = src ? undefined : (color ?? (name ? colorFromName(name) : 'var(--mr-accent)'));
 
@@ -59,7 +56,7 @@ export const Avatar = ({ src, initials, name, color, size = 44, shape = 'square'
             role={onClick ? 'button' : undefined}
             tabIndex={onClick ? 0 : undefined}
             aria-label={onClick ? (name ?? 'Abrir perfil') : undefined}
-            className={`inline-flex shrink-0 items-center justify-center font-mr-extrabold ${radiusClass} ${fontBySize[size]} ${onClick ? 'cursor-pointer hover:opacity-[0.85]' : ''}`}
+            className={`inline-flex shrink-0 items-center justify-center font-mr-extrabold rounded-mr-xs ${fontBySize[size]} ${onClick ? 'cursor-pointer hover:opacity-[0.85]' : ''}`}
             style={{
                 width: size,
                 height: size,
@@ -67,7 +64,7 @@ export const Avatar = ({ src, initials, name, color, size = 44, shape = 'square'
                 color: 'var(--mr-primary)',
             }}
         >
-            {src ? <img src={src} alt={name ?? ''} loading="lazy" className={`size-full object-cover ${radiusClass}`} /> : inits}
+            {src ? <img src={src} alt={name ?? ''} loading="lazy" className={`size-full object-cover rounded-mr-xs`} /> : inits}
         </div>
     );
 };

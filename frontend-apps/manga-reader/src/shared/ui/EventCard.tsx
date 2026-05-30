@@ -1,8 +1,10 @@
 import { memo } from 'react';
+
+import { cn } from '@/lib/cn';
+
 import { Button } from './Button';
 import { Badge } from './Badge';
 import { Avatar } from './Avatar';
-import { cn } from '@/lib/cn';
 
 export interface EventCardProps {
     event: {
@@ -117,4 +119,5 @@ const EventCardBase = ({ event, onClick, onToggleGoing }: EventCardProps) => {
 };
 
 export const EventCard = memo(EventCardBase);
+
 export default EventCard;

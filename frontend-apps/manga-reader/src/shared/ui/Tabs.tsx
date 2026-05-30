@@ -1,4 +1,5 @@
 import { cn } from '@/lib/cn';
+
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -20,6 +21,7 @@ export interface TabsProps {
 
 export const Tabs = ({ items, value, onChange, variant = 'underline', size = 'md' }: TabsProps) => {
     const baseSize = size === 'sm' ? 'h-9 px-3 text-mr-small' : 'h-11 px-4 text-mr-body';
+
     return (
         <div role="tablist" className="flex gap-1 overflow-x-auto border-b border-mr-border-subtle [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {items.map(it => {

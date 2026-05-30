@@ -1,6 +1,8 @@
 import { BookOpen, MessageSquare, AtSign, Users, Bell, X } from 'lucide-react';
+
 import { Avatar } from './Avatar';
 import { IconButton } from './IconButton';
+
 import { cn } from '@/lib/cn';
 
 export type NotificationKind = 'chapter' | 'reply' | 'mention' | 'group' | 'system';
@@ -27,6 +29,7 @@ const kindIcon = {
 
 export const NotificationItem = ({ kind, actor, text, preview, when, unread, onClick, onDismiss }: NotificationItemProps) => {
     const Icon = kindIcon[kind];
+
     return (
         <article
             onClick={onClick}

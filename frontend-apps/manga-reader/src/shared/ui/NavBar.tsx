@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Menu, Bell, BookOpen, Search } from 'lucide-react';
+
 import { IconButton } from './IconButton';
 import { Avatar } from './Avatar';
 import { Button } from './Button';
@@ -77,13 +78,10 @@ export const NavBar = ({
     return (
         <header role="banner" className="sticky top-0 z-mr-header border-b-2 border-mr-tertiary bg-mr-primary">
             <div className="mx-auto flex h-16 max-w-mr-container items-center gap-3 px-4 sm:px-5 lg:px-6 md:h-[72px]">
-                {/* Hamburger — sempre visível */}
                 <IconButton icon={Menu} aria-label="Abrir menu" onClick={onMenuClick} className="shrink-0" />
 
-                {/* Logo */}
                 <Wordmark onClick={onLogoClick} />
 
-                {/* Links — só desktop */}
                 {links.length > 0 && (
                     <nav aria-label="Principal" className="hidden md:flex items-center gap-1">
                         {links.map(l => (
@@ -101,7 +99,6 @@ export const NavBar = ({
                     </nav>
                 )}
 
-                {/* Busca desktop */}
                 <div className="hidden md:flex flex-1 max-w-xs">
                     <SearchField
                         value={searchValue}
@@ -112,15 +109,12 @@ export const NavBar = ({
                     />
                 </div>
 
-                {/* Spacer mobile */}
                 <div className="flex-1 md:hidden" />
 
-                {/* Ações mobile */}
                 <div className="flex items-center gap-1 md:hidden">
                     <IconButton icon={Search} aria-label="Buscar" onClick={() => setMobileSearchOpen(v => !v)} />
                 </div>
 
-                {/* Ações desktop */}
                 <div className="hidden md:flex items-center gap-1">
                     {user && (
                         <>
@@ -147,7 +141,7 @@ export const NavBar = ({
                                         aria-label={`Conta de ${user.name}`}
                                         className="rounded-mr-xs focus-visible:outline-2 focus-visible:outline-mr-accent"
                                     >
-                                        <Avatar src={user.avatar} name={user.name} size={32} shape="circle" onClick={undefined} />
+                                        <Avatar src={user.avatar} name={user.name} size={32} onClick={undefined} />
                                     </button>
                                 }
                                 items={accountItems}
@@ -164,7 +158,6 @@ export const NavBar = ({
                 </div>
             </div>
 
-            {/* Search overlay mobile */}
             {mobileSearchOpen && (
                 <div className="border-t border-mr-border-subtle px-4 py-2 md:hidden">
                     <SearchField
@@ -173,6 +166,7 @@ export const NavBar = ({
                         onKeyDown={e => {
                             if (e.key === 'Enter') {
                                 onSearchSubmit?.(searchValue);
+
                                 setMobileSearchOpen(false);
                             }
                         }}

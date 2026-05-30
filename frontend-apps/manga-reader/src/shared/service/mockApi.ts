@@ -7,15 +7,7 @@
  * and components stay untouched.
  */
 
-// ---------------------------------------------------------------------------
-// Delay simulation
-// ---------------------------------------------------------------------------
-
 export const simulateDelay = (ms = 300): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
-
-// ---------------------------------------------------------------------------
-// Generic response wrapper
-// ---------------------------------------------------------------------------
 
 export type MockApiResponse<T> = {
     data: T;
@@ -34,10 +26,6 @@ export const fail = <T>(data: T, message: string): MockApiResponse<T> => ({
     success: false,
     message,
 });
-
-// ---------------------------------------------------------------------------
-// localStorage helpers (centralised so every service uses the same pattern)
-// ---------------------------------------------------------------------------
 
 export const getFromStorage = <T>(key: string, fallback: T): T => {
     const raw = localStorage.getItem(key);

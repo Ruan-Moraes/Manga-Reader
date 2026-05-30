@@ -9,7 +9,7 @@ const ReplyCard = ({ reply }: { reply: ForumReply }) => {
 
     return (
         <div className="flex gap-3 p-4 border rounded-lg border-tertiary bg-secondary">
-            <Avatar src={reply.author.avatar} name={reply.author.name} size={32} shape="circle" />
+            <Avatar src={reply.author.avatar} name={reply.author.name} size={32} />
             <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                     <span className="font-semibold text-shadow-default">{reply.author.name}</span>

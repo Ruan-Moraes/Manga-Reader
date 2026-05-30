@@ -42,10 +42,6 @@ export const createHttpClient = (config: HttpClientConfig = {}): AxiosInstance =
     return instance;
 };
 
-// ---------------------------------------------------------------------------
-// Instância padrão — usada pela maioria dos services
-// ---------------------------------------------------------------------------
-
 /**
  * Cliente HTTP padrão do projeto.
  *

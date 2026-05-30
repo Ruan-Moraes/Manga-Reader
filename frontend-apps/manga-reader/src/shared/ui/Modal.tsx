@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
+
 import { IconButton } from './IconButton';
-import type { ReactNode } from 'react';
 
 export interface ModalProps {
     open: boolean;
@@ -26,9 +27,18 @@ export const Modal = ({ open, onClose, title, description, eyebrow, size = 'md',
 
     useEffect(() => {
         const el = dialogRef.current;
-        if (!el) return;
-        if (open && !el.open) el.showModal();
-        if (!open && el.open) el.close();
+
+        if (!el) {
+            return;
+        }
+
+        if (open && !el.open) {
+            el.showModal();
+        }
+
+        if (!open && el.open) {
+            el.close();
+        }
     }, [open]);
 
     return (

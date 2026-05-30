@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-
 import { HelpCircle, Languages, MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
 
 import { Footer as DSFooter } from '@ui/Footer';
 import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, FooterSocialLink, FooterStatusInfo } from '@ui/Footer';
 
 import { useAuth } from '@features/auth';
+
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 type FooterProps = {

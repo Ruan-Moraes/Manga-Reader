@@ -15,7 +15,7 @@ export default defineConfig([
             './src/lib/**',
             './src/design-system/**',
             './src/i18n/**',
-            './src/style/**',
+            './src/styles/**',
             './src/asset/**',
             './src/test/**',
             './src/mock/**',

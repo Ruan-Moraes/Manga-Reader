@@ -37,7 +37,7 @@ const EventSidebar = ({ event, relatedEvents }: EventSidebarProps) => {
             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                 <h3 className="font-semibold">{t('details.organizer')}</h3>
                 <div className="flex items-center gap-2 text-sm">
-                    <Avatar src={event.organizer.avatar} name={event.organizer.name} size={32} shape="circle" />
+                    <Avatar src={event.organizer.avatar} name={event.organizer.name} size={32} />
                     {event.organizer.name}
                 </div>
                 <p className="text-sm text-tertiary">{t('details.contact', { value: event.organizer.contact })}</p>

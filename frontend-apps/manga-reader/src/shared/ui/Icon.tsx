@@ -5,7 +5,6 @@ export type IconSize = 12 | 16 | 20 | 24 | 28;
 export interface IconProps extends Omit<LucideProps, 'size'> {
     icon: LucideIcon;
     size?: IconSize;
-    /** Decorativo = esconde de leitores de tela. Padrão: true */
     decorative?: boolean;
 }
 

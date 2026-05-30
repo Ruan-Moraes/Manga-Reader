@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { Stars } from './Stars';
+
 import { cn } from '@/lib/cn';
-import type { ReactNode } from 'react';
 
 export interface CommentAuthor {
     name: string;

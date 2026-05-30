@@ -29,20 +29,3 @@ export function initGlobalErrorHandler(): void {
     window.addEventListener('error', errorListener);
     window.addEventListener('unhandledrejection', rejectionListener);
 }
-
-/**
- * Remove os listeners globais. Útil para cleanup em testes.
- */
-export function cleanupGlobalErrorHandler(): void {
-    if (errorListener) {
-        window.removeEventListener('error', errorListener);
-
-        errorListener = null;
-    }
-
-    if (rejectionListener) {
-        window.removeEventListener('unhandledrejection', rejectionListener);
-
-        rejectionListener = null;
-    }
-}

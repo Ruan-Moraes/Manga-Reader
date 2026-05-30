@@ -1,10 +1,12 @@
 import { memo } from 'react';
 import { BadgeCheck } from 'lucide-react';
+
+import { cn } from '@/lib/cn';
+
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { Button } from './Button';
 import { StatusDot } from './StatusDot';
-import { cn } from '@/lib/cn';
 
 export interface GroupCardProps {
     group: {
@@ -26,11 +28,13 @@ export interface GroupCardProps {
 }
 
 const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+
 const statusLabel = {
     active: 'Ativo',
     hiatus: 'Em hiato',
     inactive: 'Inativo',
 };
+
 const statusKind = {
     active: 'operating',
     hiatus: 'degraded',

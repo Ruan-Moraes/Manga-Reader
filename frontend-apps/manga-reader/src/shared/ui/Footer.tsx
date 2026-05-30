@@ -1,3 +1,5 @@
+// TODO: Refatorar isso.
+
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { ArrowRight, Check, ChevronDown, Download } from 'lucide-react';

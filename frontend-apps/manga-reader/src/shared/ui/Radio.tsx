@@ -1,10 +1,4 @@
 import { useId } from 'react';
-import type { InputHTMLAttributes, ReactNode } from 'react';
-
-export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-    label?: ReactNode;
-    hint?: string;
-}
 
 export interface RadioOption {
     value: string;
@@ -24,6 +18,7 @@ export interface RadioGroupProps {
 
 export const RadioGroup = ({ name, value, onChange, options, layout = 'vertical', legend }: RadioGroupProps) => {
     const baseId = useId();
+
     return (
         <fieldset className={`border-none p-0 m-0 ${layout === 'vertical' ? 'flex flex-col gap-2' : 'flex flex-wrap gap-4'}`}>
             {legend && <legend className="mr-label mb-2">{legend}</legend>}

@@ -1,4 +1,5 @@
 import { cn } from '@/lib/cn';
+
 import type { ReactNode } from 'react';
 
 export interface SectionHeaderProps {
@@ -19,6 +20,7 @@ const sizeMap: Record<NonNullable<SectionHeaderProps['size']>, string> = {
 
 export const SectionHeader = ({ eyebrow, title, meta, action, size = 'md', as = 'h2', className }: SectionHeaderProps) => {
     const TitleTag = as;
+
     return (
         <header className={cn('mb-4 flex flex-wrap items-end justify-between gap-3', className)}>
             <div className="min-w-0">

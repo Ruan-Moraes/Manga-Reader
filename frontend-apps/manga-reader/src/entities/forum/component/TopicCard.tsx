@@ -20,7 +20,7 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => {
             className="flex gap-4 p-4 transition-colors border rounded-lg border-tertiary bg-secondary hover:bg-tertiary/30"
         >
             {/* Avatar */}
-            <Avatar src={topic.author.avatar} name={topic.author.name} size={40} shape="circle" />
+            <Avatar src={topic.author.avatar} name={topic.author.name} size={40} />
 
             {/* Content */}
             <div className="flex-1 min-w-0">

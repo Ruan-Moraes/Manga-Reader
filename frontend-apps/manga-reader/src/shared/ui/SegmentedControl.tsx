@@ -1,4 +1,5 @@
 import { cn } from '@/lib/cn';
+
 import type { LucideIcon } from 'lucide-react';
 
 export interface SegmentItem {
@@ -18,11 +19,14 @@ export interface SegmentedControlProps {
 
 export const SegmentedControl = ({ items, value, onChange, size = 'md', block }: SegmentedControlProps) => {
     const baseSize = size === 'sm' ? 'h-8 px-2 text-mr-tiny' : 'h-11 px-3 text-mr-small';
+
     return (
         <div role="radiogroup" className={cn('inline-flex gap-1', block && 'w-full')}>
             {items.map(it => {
                 const active = it.value === value;
+
                 const Icon = it.icon;
+
                 return (
                     <button
                         key={it.value}

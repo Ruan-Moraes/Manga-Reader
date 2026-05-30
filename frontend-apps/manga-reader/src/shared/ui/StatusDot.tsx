@@ -26,6 +26,7 @@ const labelMap: Record<StatusKind, string> = {
 
 export const StatusDot = ({ status, size = 10, pulse, label }: StatusDotProps) => {
     const shouldPulse = pulse ?? status === 'degraded';
+
     return (
         <span
             role="status"

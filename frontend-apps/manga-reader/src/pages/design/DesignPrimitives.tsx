@@ -309,8 +309,7 @@ export default function DesignPrimitives() {
                     <Avatar size={40} />
                 </SubSection>
                 <SubSection label="Formas">
-                    <Avatar name="Quadrado" size={40} shape="square" />
-                    <Avatar name="Círculo" size={40} shape="circle" />
+                    <Avatar name="Normal" size={40} />
                 </SubSection>
                 <SubSection label="Interativo">
                     <Avatar name="Clicável" size={40} onClick={() => alert('clicou!')} />

@@ -34,7 +34,7 @@ const NewsArticleHeader = ({ news }: NewsArticleHeaderProps) => {
                 <p className="text-lg text-tertiary">{news.subtitle}</p>
                 <div className="flex flex-wrap items-center justify-between gap-4 p-3 rounded-xl bg-primary">
                     <div className="flex items-center gap-3">
-                        <Avatar src={news.author.avatar} name={news.author.name} size={40} shape="circle" />
+                        <Avatar src={news.author.avatar} name={news.author.name} size={40} />
                         <div>
                             <Link to={news.author.profileLink} className="font-medium underline">
                                 {news.author.name}

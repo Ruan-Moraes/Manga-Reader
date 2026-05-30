@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react';
 import { ThumbsUp, MessageSquare, Star } from 'lucide-react';
+
+import { cn } from '@/lib/cn';
+
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { Stars } from './Stars';
 import { MangaPoster } from './MangaPoster';
-import { cn } from '@/lib/cn';
-import type { ReactNode } from 'react';
 import type { CommentAuthor } from './CommentBox';
 
 export interface ReviewCardProps {
