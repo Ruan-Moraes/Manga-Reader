@@ -3,15 +3,15 @@ import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import PageShell from '@widgets/layouts/PageShell';
+import { PageShell } from '@widgets/layouts';
 
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import AppLink from '@shared/component/link/element/AppLink';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 import { formatDate } from '@shared/util/formatters';
 
-import { useAuth } from '@feature/auth';
-import { useUserDetails } from '@feature/user';
+import { useAuth } from '@features/auth';
+import { useUserDetails } from '@features/user';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 

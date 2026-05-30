@@ -5,7 +5,7 @@ import { Menu } from 'lucide-react';
 import { Avatar } from '@ui/Avatar';
 import Logo from '../../shared/component/logo/admin/Logo.tsx';
 
-import { useAuth } from '@feature/auth';
+import { useAuth } from '@features/auth';
 
 type AdminHeaderProps = {
     onToggleSidebar: () => void;

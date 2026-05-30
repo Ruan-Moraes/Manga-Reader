@@ -4,7 +4,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Search } from 'lucide-react';
-import { AdminNewsList, ConfirmDeleteWithIdModal, useAdminNews, useAdminNewsActions, type AdminNews } from '@feature/admin';
+import { AdminNewsList, ConfirmDeleteWithIdModal, useAdminNews, useAdminNewsActions, type AdminNews } from '@features/admin';
 
 const DashboardNews = () => {
     const { t } = useTranslation('admin');

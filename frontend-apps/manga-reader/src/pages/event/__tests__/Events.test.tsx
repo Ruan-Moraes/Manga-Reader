@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Events from '../Events';
-import type { EventData } from '@feature/event';
+import type { EventData } from '@features/event';
 
 const makeEvent = (overrides: Partial<EventData> = {}): EventData => ({
     id: '1',
@@ -92,8 +92,8 @@ const mEvents = {
     featured: MOCK_EVENTS[0],
 };
 
-vi.mock('@feature/event', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/event')>();
+vi.mock('@features/event', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/event')>();
     return {
         ...actual,
         useEvents: () => mEvents,

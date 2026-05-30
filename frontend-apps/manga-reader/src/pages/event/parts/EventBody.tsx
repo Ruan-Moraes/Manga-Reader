@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { EventData } from '@feature/event';
+import type { EventData } from '@features/event';
 import { Calendar, Clock, MapPin, Navigation } from 'lucide-react';
 
 type EventBodyProps = {

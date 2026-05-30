@@ -1,4 +1,4 @@
-import type { Chapter } from '@feature/chapter';
+import type { Chapter } from '@features/chapter';
 
 let chapterCounter = 0;
 

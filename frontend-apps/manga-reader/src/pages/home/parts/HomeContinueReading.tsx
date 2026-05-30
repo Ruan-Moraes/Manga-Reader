@@ -6,7 +6,7 @@ import { SectionHeader } from '@ui/SectionHeader';
 import { MangaCard } from '@ui/MangaCard';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { SavedMangaItem } from '@feature/library';
+import type { SavedMangaItem } from '@features/library';
 
 const MangaCardSkeleton = () => <Skeleton variant="rect" height={260} className="rounded-mr-md shrink-0 w-[140px] sm:w-auto" />;
 

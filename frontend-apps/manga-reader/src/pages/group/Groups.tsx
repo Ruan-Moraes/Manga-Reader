@@ -7,7 +7,7 @@ import { PageContainer } from '@ui/PageContainer';
 import { SectionHeader } from '@ui/SectionHeader';
 import { Button } from '@ui/Button';
 
-import { useGroups, type GroupStatus } from '@feature/group';
+import { useGroups, type GroupStatus } from '@features/group';
 
 import { GroupFilters, type SortBy } from './parts/GroupFilters';
 import { GroupList } from './parts/GroupList';

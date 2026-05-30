@@ -8,8 +8,8 @@ import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_
 
 import { getStoredSession } from '@shared/service/session';
 
-import { mapAuthResponseToUser } from '@feature/auth';
-import { type UserRole } from '@feature/user';
+import { mapAuthResponseToUser } from '@features/auth';
+import { type UserRole } from '@features/user';
 
 const PublishWork = lazy(() => import('@pages/publish-work/PublishWork'));
 const Library = lazy(() => import('@pages/library/Library'));
@@ -19,14 +19,14 @@ const DashboardOverview = lazy(() => import('@pages/dashboard/DashboardOverview'
 const DashboardUsers = lazy(() => import('@pages/dashboard/DashboardUsers'));
 const DashboardUserDetail = lazy(() => import('@pages/dashboard/DashboardUserDetail'));
 const DashboardTitles = lazy(() => import('@pages/dashboard/DashboardTitles'));
-const DashboardTitleForm = lazy(() => import('@feature/admin').then(m => ({ default: m.AdminTitleForm })));
+const DashboardTitleForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminTitleForm })));
 const DashboardNews = lazy(() => import('@pages/dashboard/DashboardNews'));
-const DashboardNewsForm = lazy(() => import('@feature/admin').then(m => ({ default: m.AdminNewsForm })));
+const DashboardNewsForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminNewsForm })));
 const DashboardEvents = lazy(() => import('@pages/dashboard/DashboardEvents'));
-const DashboardEventForm = lazy(() => import('@feature/admin').then(m => ({ default: m.AdminEventForm })));
+const DashboardEventForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminEventForm })));
 const DashboardGroups = lazy(() => import('@pages/dashboard/DashboardGroups'));
 const DashboardGroupDetail = lazy(() => import('@pages/dashboard/DashboardGroupDetail'));
-const DashboardGroupForm = lazy(() => import('@feature/admin').then(m => ({ default: m.AdminGroupForm })));
+const DashboardGroupForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminGroupForm })));
 const DashboardFinancial = lazy(() => import('@pages/dashboard/DashboardFinancial'));
 const DashboardSubscriptions = lazy(() => import('@pages/dashboard/DashboardSubscriptions'));
 const DashboardTags = lazy(() => import('@pages/dashboard/DashboardTags'));

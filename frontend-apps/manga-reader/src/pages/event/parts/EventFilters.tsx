@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SegmentedControl, type SegmentItem } from '@ui/SegmentedControl';
 import { Select } from '@ui/Select';
 
-import type { EventType } from '@feature/event';
+import type { EventType } from '@features/event';
 
 interface EventFiltersProps {
     activeTab: string;

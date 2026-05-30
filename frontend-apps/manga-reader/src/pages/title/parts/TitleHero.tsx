@@ -9,7 +9,7 @@ import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { IconButton } from '@ui/IconButton';
 
-import type { Title } from '@feature/manga';
+import type { Title } from '@features/manga';
 
 type Average = { average: number; count: number };
 

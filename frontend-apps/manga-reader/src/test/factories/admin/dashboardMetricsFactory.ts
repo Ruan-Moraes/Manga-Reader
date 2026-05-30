@@ -1,4 +1,4 @@
-import type { ContentMetrics, DashboardMetrics, FinancialSummary, TopTitle } from '@feature/admin/type/admin.types';
+import type { ContentMetrics, DashboardMetrics, FinancialSummary, TopTitle } from '@features/admin/type/admin.types';
 
 let topTitleCounter = 0;
 

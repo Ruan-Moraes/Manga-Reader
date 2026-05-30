@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { AdminDashboardOverview, ContentMetricsPanel, useContentMetrics, useDashboardMetrics } from '@feature/admin';
+import { AdminDashboardOverview, ContentMetricsPanel, useContentMetrics, useDashboardMetrics } from '@features/admin';
 
 const DashboardOverview = () => {
     const { t } = useTranslation('admin');

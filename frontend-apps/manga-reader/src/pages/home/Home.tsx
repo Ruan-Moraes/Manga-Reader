@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import { useAuth } from '@feature/auth';
-import { useFilterResults } from '@feature/category';
-import { useSavedMangas } from '@feature/library';
-import { getForumTopics } from '@feature/forum';
-import { getGroups } from '@feature/group';
+import { useAuth } from '@features/auth';
+import { useFilterResults } from '@features/category';
+import { useSavedMangas } from '@features/library';
+import { getForumTopics } from '@features/forum';
+import { getGroups } from '@features/group';
 
 import { PageContainer } from '@ui/PageContainer';
 

@@ -12,7 +12,7 @@ import SidebarMenuContent from '@shared/component/link/section/SidebarMenuConten
 import { showInfoToast } from '@shared/service/util/toastService';
 import useMenuData from '@shared/hook/useMenuData';
 
-import { useAuth } from '@feature/auth';
+import { useAuth } from '@features/auth';
 
 const NavigationMenu = () => {
     const { t } = useTranslation('layout');

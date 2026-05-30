@@ -5,8 +5,8 @@ import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 
 const resetPasswordHookMock = vi.fn();
 
-vi.mock('@feature/auth', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/auth')>();
+vi.mock('@features/auth', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/auth')>();
     return { ...actual, useResetPassword: () => resetPasswordHookMock() };
 });
 

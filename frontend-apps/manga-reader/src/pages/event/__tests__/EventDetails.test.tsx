@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import EventDetails from '../EventDetails';
-import type { EventData } from '@feature/event';
-import { useEventDetails } from '@feature/event';
+import type { EventData } from '@features/event';
+import { useEventDetails } from '@features/event';
 
-vi.mock('@feature/event', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/event')>();
+vi.mock('@features/event', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/event')>();
     return { ...actual, useEventDetails: vi.fn() };
 });
 

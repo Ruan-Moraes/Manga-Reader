@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { useAuth, AuthShell, AuthField, AuthSubmit } from '@feature/auth';
+import { useAuth, AuthShell, AuthField, AuthSubmit } from '@features/auth';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { ROUTES } from '@shared/constant/ROUTES';

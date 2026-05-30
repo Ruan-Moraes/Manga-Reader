@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff } from 'lucide-react';
 
-import { useResetPassword, AuthShell, AuthField, AuthSubmit } from '@feature/auth';
+import { useResetPassword, AuthShell, AuthField, AuthSubmit } from '@features/auth';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { EmptyState } from '@ui/EmptyState';

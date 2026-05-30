@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import PublishWork from '../PublishWork';
 
-vi.mock('@feature/contact', () => ({
+vi.mock('@features/contact', () => ({
     ContactForm: () => <div data-testid="contact-form" />,
 }));
 

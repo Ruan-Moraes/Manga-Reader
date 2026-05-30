@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Library from '../Library';
-import type { SavedMangaItem } from '@feature/library';
+import type { SavedMangaItem } from '@features/library';
 
 const makeManga = (overrides: Partial<SavedMangaItem> = {}): SavedMangaItem => ({
     titleId: '1',
@@ -107,8 +107,8 @@ const mSaved = {
     retry: vi.fn(),
 };
 
-vi.mock('@feature/library', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/library')>();
+vi.mock('@features/library', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/library')>();
     return {
         ...actual,
         useSavedMangas: () => mSaved,

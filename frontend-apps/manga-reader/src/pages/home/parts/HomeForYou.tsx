@@ -5,7 +5,7 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
 import { MangaCard } from '@ui/MangaCard';
 import { Button } from '@ui/Button';
-import type { Title } from '@feature/manga';
+import type { Title } from '@features/manga';
 
 type HomeForYouProps = {
     forYou: Title[];

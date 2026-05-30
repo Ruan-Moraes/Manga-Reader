@@ -564,7 +564,7 @@ frontend/src/
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,
 │             #   admin-panel/, layouts/ (shells) (@widgets) — FSD widgets layer
-├── feature/  # Feature modules (component/, hook/, service/, type/) — singular (migração p/ `features` pendente)
+├── features/ # Feature modules (component/, hook/, service/, type/) — cada slice com index.ts (@features)
 ├── shared/   # Reusable components (~37), HTTP client, types (@shared, @ui)
 ├── mock/     # Mock data (legacy — features usam API real)
 └── style/    # Global CSS + Tailwind
@@ -573,10 +573,12 @@ frontend/src/
 **Arquitetura frontend — Feature-Sliced Design (em migração)**
 
 Camadas FSD com import unidirecional (camada superior importa inferior, nunca o contrário):
-`app → pages → widgets → feature → shared`. Aliases: `@app`, `@pages`, `@widgets`, `@feature`, `@shared`, `@ui`.
+`app → pages → widgets → features → shared`. Aliases: `@app`, `@pages`, `@widgets`, `@features`, `@shared`, `@ui`.
 
 - **app**: só `router/` (PublicRoutes, ProtectedRoutes) + bootstrap em `main.tsx`. Sem páginas/widgets aqui.
-- **pages**: cada rota = 1 slice (ex.: `pages/home/`, `pages/chapter/`). Sub-partes em `parts/`, testes em `__tests__/`.
-- **widgets**: slices coesos por bloco de UI. `layouts/` contém os shells de rota (RootLayout, ChapterLayout, PageShell) — esses compõem `@widgets/header|footer|mobile-tab-bar` (desvio pragmático widget→widget; enforcement via steiger pendente).
+- **pages / widgets / features**: cada slice expõe public API via `index.ts` (barrel). **Importar sempre da raiz do slice** (`@pages/home`, `@widgets/header`, `@features/auth`), nunca de arquivos internos — exceto `import()` dinâmico do router/`main.tsx` (code-splitting por página).
+- **widgets**: slices coesos por bloco de UI. `layouts/` contém os shells de rota (RootLayout, ChapterLayout, PageShell) — esses compõem `@widgets/header|footer|mobile-tab-bar` (desvio pragmático widget→widget, permitido na config do steiger).
 
-**Pendências FSD** (ver `docs/tech-debt.md`): renomear `feature/` → `features/` (canon plural); adicionar `entities/` layer; public API (`index.ts`) por slice de page/widget; lint de boundaries (steiger/eslint-boundaries).
+**Boundary lint**: `npm run lint:fsd` (steiger + `@feature-sliced/steiger-plugin`, config `steiger.config.ts`). Verde no escopo atual. Regras de trabalho adiado desligadas com nota (ver `steiger.config.ts` e DT-24).
+
+**Pendências FSD** (ver `docs/tech-debt.md` DT-24): adicionar `entities/` layer; subdividir slices em segmentos (`ui/`, etc. — `no-segmentless-slices`); public API nos segmentos de `shared/` (reativa `no-public-api-sidestep`); resolver import `shared→features` em `NavigationMenu`.

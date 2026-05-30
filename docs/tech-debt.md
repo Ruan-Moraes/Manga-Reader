@@ -88,19 +88,30 @@ infraestrutura grande — adiado como não-bloqueante.
 
 ### DT-24: Migração FSD frontend incompleta
 
-**Concluído (2026-05-30)**: separadas as camadas FSD `pages` (ex-`app/route`) e
-`widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/layouts).
-`app/` agora só contém `router/`. Aliases `@pages`/`@widgets` adicionados.
+**Concluído — Fase 1 (2026-05-30)**: separadas as camadas FSD `pages` (ex-`app/route`)
+e `widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/layouts).
+`app/` agora só contém `router/`. Aliases `@pages`/`@widgets`.
 
-**Pendente**:
-- Renomear `feature/` → `features/` (canon plural FSD).
-- Adicionar layer `entities/` (modelos de negócio compartilhados entre features).
-- Public API (`index.ts`) por slice em `pages/` e `widgets/`.
-- Enforcement de boundaries (steiger ou eslint-plugin-boundaries) — captura
-  regressões de import cross-layer. Resolve também o desvio widget→widget em
-  `widgets/layouts/` (shells compõem header/footer/mobile-tab-bar).
+**Concluído — Fase 2 / Foundations (2026-05-30)**:
+- Renomeado `feature/` → `features/`; alias `@feature` → `@features` (221 refs).
+- Public API (`index.ts`) por slice em `pages/` (28) e `widgets/` (5); imports
+  estáticos rewireados para os barrels (router/`main.tsx` mantêm `import()`
+  dinâmico por página para preservar code-splitting).
+- Boundary lint via **steiger** (`@feature-sliced/steiger-plugin`,
+  `steiger.config.ts`, script `npm run lint:fsd`). **Verde** no escopo atual.
 
-**Prioridade**: Média (não-bloqueante; arquitetura funcional, falta hardening).
+**Pendente** (regras desligadas no `steiger.config.ts`, reativar por item):
+- Adicionar layer `entities/` (modelos de negócio compartilhados entre features;
+  hoje features importam features — 40+ refs). **Tarefa própria, judgment-heavy.**
+- Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — regra
+  `fsd/no-segmentless-slices`.
+- Public API nos segmentos de `shared/` → reativa `fsd/no-public-api-sidestep`
+  (11 sidesteps hoje, todos para `@shared/*` profundo).
+- Resolver import upward `shared→features` em
+  `shared/component/menu/NavigationMenu.tsx` (`fsd/forbidden-imports`).
+- Renomear pasta reservada `shared/component/ui/` (`fsd/no-reserved-folder-names`).
+
+**Prioridade**: Média (não-bloqueante; foundations entregues, falta entities + segmentos).
 
 ---
 

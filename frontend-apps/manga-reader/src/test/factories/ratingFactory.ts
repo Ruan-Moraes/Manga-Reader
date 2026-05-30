@@ -1,4 +1,4 @@
-import type { MangaRating } from '@feature/rating/type/rating.types';
+import type { MangaRating } from '@features/rating/type/rating.types';
 
 let ratingCounter = 0;
 

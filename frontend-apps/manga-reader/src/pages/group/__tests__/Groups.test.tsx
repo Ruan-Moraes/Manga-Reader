@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Groups from '../Groups';
-import type { Group } from '@feature/group';
+import type { Group } from '@features/group';
 
 const makeGroup = (overrides: Partial<Group> = {}): Group => ({
     id: '1',
@@ -70,8 +70,8 @@ const mGroups = {
     isLoading: false,
 };
 
-vi.mock('@feature/group', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/group')>();
+vi.mock('@features/group', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/group')>();
     return {
         ...actual,
         useGroups: ({ status, query }: { status: string; query?: string; genre?: string; sortBy?: string }) => {

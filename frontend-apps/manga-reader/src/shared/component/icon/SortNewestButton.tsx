@@ -1,6 +1,6 @@
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
 
-import CalendarArrowUpIcon from '@/asset/svg/calendar-arrow-up.svg';
+import CalendarArrowUpIcon from '../../../assets/svg/calendar-arrow-up.svg';
 
 type SortNewestButtonProps = {
     onClick: () => void;

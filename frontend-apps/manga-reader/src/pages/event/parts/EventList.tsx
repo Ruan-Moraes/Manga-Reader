@@ -4,7 +4,7 @@ import { EventCard } from '@ui/EventCard';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { formatEventDate, type EventData, type EventType } from '@feature/event';
+import { formatEventDate, type EventData, type EventType } from '@features/event';
 
 const TYPE_MAP: Record<EventType, 'launch' | 'meetup' | 'stream' | 'announcement'> = {
     Lançamento: 'launch',

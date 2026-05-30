@@ -13,7 +13,7 @@ import { Card } from '@ui/Card';
 
 import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 
-import { getUserReviews, updateReview, deleteReview, type MangaRating } from '@feature/rating';
+import { getUserReviews, updateReview, deleteReview, type MangaRating } from '@features/rating';
 
 const ReviewCard = ({
     review,

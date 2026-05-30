@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@ui/Badge';
-import type { Title } from '@feature/manga';
+import type { Title } from '@features/manga';
 
 type AboutTabProps = {
     title: Title;

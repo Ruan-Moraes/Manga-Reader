@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { AdminPlanList, PlanFormModal, type AdminPlan } from '@feature/admin';
+import { AdminPlanList, PlanFormModal, type AdminPlan } from '@features/admin';
 import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
 
 type PlanSubmitData = {

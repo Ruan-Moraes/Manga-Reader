@@ -5,7 +5,7 @@ import { NavBar } from './navbar/NavBar';
 import { SideMenu } from './SideMenu';
 import UserSettingsModal from './settings/UserSettingsModal';
 
-import { useAuth } from '@feature/auth';
+import { useAuth } from '@features/auth';
 import useMenuData from './hooks/useMenuData';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { showInfoToast } from '@shared/service/util/toastService';

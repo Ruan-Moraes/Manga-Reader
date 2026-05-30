@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Select } from '@ui/Select';
-import { formatRelativeDate } from '@feature/news';
-import type { NewsComment } from '@feature/news';
+import { formatRelativeDate } from '@features/news';
+import type { NewsComment } from '@features/news';
 import { Heart, Smile } from 'lucide-react';
 
 type CommentSort = 'recent' | 'relevant';

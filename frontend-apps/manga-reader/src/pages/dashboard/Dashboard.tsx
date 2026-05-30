@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-import PageShell from '@widgets/layouts/PageShell';
+import { PageShell } from '@widgets/layouts';
 
-import { useAuth } from '@feature/auth';
+import { useAuth } from '@features/auth';
 
 const Dashboard = () => {
     const { t } = useTranslation('admin');

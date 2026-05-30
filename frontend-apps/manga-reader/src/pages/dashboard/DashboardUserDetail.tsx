@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
-import { AdminUserDetail, useAdminUserDetail } from '@feature/admin';
+import { AdminUserDetail, useAdminUserDetail } from '@features/admin';
 import { ArrowLeft } from 'lucide-react';
 
 const DashboardUserDetail = () => {

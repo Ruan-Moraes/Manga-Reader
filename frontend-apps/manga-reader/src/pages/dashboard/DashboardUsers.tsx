@@ -4,7 +4,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
-import { AdminUserList, ConfirmDeleteWithIdModal, useAdminUsers, useAdminUserActions, type AdminUser } from '@feature/admin';
+import { AdminUserList, ConfirmDeleteWithIdModal, useAdminUsers, useAdminUserActions, type AdminUser } from '@features/admin';
 
 const DashboardUsers = () => {
     const { t } = useTranslation('admin');

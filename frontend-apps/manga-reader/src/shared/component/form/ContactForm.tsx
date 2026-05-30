@@ -7,7 +7,7 @@ import BaseTextArea from '@shared/component/input/BaseTextArea';
 import BaseSelect from '@shared/component/input/BaseSelect';
 import RaisedButton from '@shared/component/button/RaisedButton';
 
-import { usePublishWorkForm } from '@feature/contact';
+import { usePublishWorkForm } from '@features/contact';
 
 const ContactForm = () => {
     const { t } = useTranslation('contact');

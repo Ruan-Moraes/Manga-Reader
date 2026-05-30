@@ -1,4 +1,4 @@
-import type { AdminTitle } from '@feature/admin/type/admin.types';
+import type { AdminTitle } from '@features/admin/type/admin.types';
 import type { LocalizedString } from '@shared/type/i18n';
 import type { PageResponse } from '@shared/service/http';
 

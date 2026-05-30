@@ -29,8 +29,8 @@ const MOCK_NEWS = {
     comments: [],
 };
 
-vi.mock('@feature/news', async () => {
-    const actual = await vi.importActual<typeof import('@feature/news')>('@feature/news');
+vi.mock('@features/news', async () => {
+    const actual = await vi.importActual<typeof import('@features/news')>('@features/news');
     return {
         ...actual,
         useNewsDetails: () => ({

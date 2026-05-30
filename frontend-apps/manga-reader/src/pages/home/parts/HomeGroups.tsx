@@ -6,7 +6,7 @@ import { SectionHeader } from '@ui/SectionHeader';
 import { GroupCard } from '@ui/GroupCard';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { Group } from '@feature/group';
+import type { Group } from '@features/group';
 
 type HomeGroupsProps = {
     groups: Group[];

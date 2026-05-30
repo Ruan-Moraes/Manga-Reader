@@ -1,0 +1,83 @@
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import GroupSummaryCard from '../card/GroupSummaryCard';
+
+import { Modal } from '@ui/Modal';
+
+import { getGroupsByTitleId } from '../../service/groupService';
+
+import { GroupSummary } from '@features/group';
+
+type GroupsModalProps = {
+    isModalOpen: boolean;
+    closeModal: () => void;
+    groups?: GroupSummary[];
+    isLoading?: boolean;
+    titleId?: number;
+};
+
+const GroupsModal = ({ isModalOpen, closeModal, groups, isLoading = false, titleId }: GroupsModalProps) => {
+    const { t } = useTranslation('group');
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    const [scopedGroups, setScopedGroups] = useState<GroupSummary[]>(groups ?? []);
+
+    useEffect(() => {
+        if (groups) {
+            setScopedGroups(groups);
+
+            return;
+        }
+
+        if (titleId && isModalOpen) {
+            setIsFetching(true);
+
+            getGroupsByTitleId(String(titleId))
+                .then(res => setScopedGroups(res.content))
+                .finally(() => setIsFetching(false));
+        }
+    }, [groups, titleId, isModalOpen]);
+
+    const showLoading = isLoading || isFetching;
+
+    return (
+        <Modal open={isModalOpen} onClose={closeModal} title={t('modal.title')}>
+            <div className="flex flex-col gap-2">
+                <div className="max-h-80 overflow-y-auto">
+                    {showLoading && (
+                        <div className="flex flex-col gap-3">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className="flex flex-col gap-3 p-4 border rounded-xs border-tertiary animate-pulse bg-secondary/40">
+                                    <div className="flex gap-3 items-center">
+                                        <div className="w-12 h-12 rounded-full bg-tertiary" />
+                                        <div className="flex flex-col gap-1.5 flex-1">
+                                            <div className="w-2/3 h-4 rounded-xs bg-tertiary" />
+                                            <div className="w-1/3 h-3 rounded-xs bg-tertiary" />
+                                        </div>
+                                    </div>
+                                    <div className="w-full h-3 rounded-xs bg-tertiary" />
+                                    <div className="w-1/2 h-3 rounded-xs bg-tertiary" />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {!showLoading && scopedGroups.length === 0 && (
+                        <div className="flex items-center justify-center p-4 border border-dashed border-tertiary rounded-xs">
+                            <p className="text-tertiary text-center text-sm">{t('modal.empty')}</p>
+                        </div>
+                    )}
+                    {!showLoading && scopedGroups.length > 0 && (
+                        <div className="flex flex-col gap-3">
+                            {scopedGroups.map(group => (
+                                <GroupSummaryCard key={group.id} group={group} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </Modal>
+    );
+};
+
+export default GroupsModal;

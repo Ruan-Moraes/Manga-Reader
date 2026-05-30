@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AdminTagList, TagFormModal, ConfirmDeleteWithIdModal, useAdminTags, useAdminTagActions, type AdminTag } from '@feature/admin';
+import { AdminTagList, TagFormModal, ConfirmDeleteWithIdModal, useAdminTags, useAdminTagActions, type AdminTag } from '@features/admin';
 
 const DashboardTags = () => {
     const { t } = useTranslation('admin');

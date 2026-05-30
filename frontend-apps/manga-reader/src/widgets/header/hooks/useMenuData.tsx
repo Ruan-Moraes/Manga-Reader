@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getLibraryCounts } from '@feature/library';
+import { getLibraryCounts } from '@features/library';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 const FIVE_MINUTES = 5 * 60 * 1000;

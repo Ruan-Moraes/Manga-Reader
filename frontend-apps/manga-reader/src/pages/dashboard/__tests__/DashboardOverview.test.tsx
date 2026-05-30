@@ -30,7 +30,7 @@ const cState = {
     isError: false,
 };
 
-vi.mock('@feature/admin', () => ({
+vi.mock('@features/admin', () => ({
     useDashboardMetrics: () => mState,
     useContentMetrics: () => cState,
     AdminDashboardOverview: ({ metrics }: { metrics: unknown }) => <div data-testid="admin-overview">{String(metrics)}</div>,

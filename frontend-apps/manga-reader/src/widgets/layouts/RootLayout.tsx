@@ -4,9 +4,9 @@ import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
 import RouteSuspenseFallback from '@shared/component/loading/RouteSuspenseFallback';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
-import Header from '@widgets/header/Header';
-import Footer from '@widgets/footer/Footer';
-import { MobileTabBar } from '@widgets/mobile-tab-bar/MobileTabBar';
+import { Header } from '@widgets/header';
+import { Footer } from '@widgets/footer';
+import { MobileTabBar } from '@widgets/mobile-tab-bar';
 
 const TAB_KEYS: Record<string, string> = {
     '/': 'home',

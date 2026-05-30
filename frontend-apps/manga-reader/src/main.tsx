@@ -13,8 +13,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { UserModalProvider } from '@feature/user';
-import { CommentSortProvider } from '@feature/comment';
+import { UserModalProvider } from '@features/user';
+import { CommentSortProvider } from '@features/comment';
 
 import { queryClient } from '@shared/service/util/queryCache';
 
@@ -27,8 +27,7 @@ import { initGlobalErrorHandler } from '@shared/service/errorReporting/globalErr
 
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 
-import RootLayout from '@widgets/layouts/RootLayout';
-import ChapterLayout from '@widgets/layouts/ChapterLayout';
+import { RootLayout, ChapterLayout } from '@widgets/layouts';
 
 import { contentRoutes, authRoutes, chapterRoutes } from '@app/router/PublicRoutes';
 import { protectedContentRoutes, adminRoute } from '@app/router/ProtectedRoutes';

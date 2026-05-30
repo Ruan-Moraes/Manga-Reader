@@ -7,7 +7,7 @@ import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 const loginMock = vi.fn();
 const navigateMock = vi.fn();
 
-vi.mock('@feature/auth/hook/useAuth', () => ({
+vi.mock('@features/auth/hook/useAuth', () => ({
     default: () => ({
         login: loginMock,
         register: vi.fn(),

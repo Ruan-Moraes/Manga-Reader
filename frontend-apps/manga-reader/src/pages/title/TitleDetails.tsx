@@ -9,10 +9,10 @@ import { Tabs } from '@ui/Tabs';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 
-import { useTitle } from '@feature/manga';
-import { useChapters } from '@feature/chapter';
-import { useRatings } from '@feature/rating';
-import { getGroupsByTitleId } from '@feature/group';
+import { useTitle } from '@features/manga';
+import { useChapters } from '@features/chapter';
+import { useRatings } from '@features/rating';
+import { getGroupsByTitleId } from '@features/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import TitleHero from './parts/TitleHero';

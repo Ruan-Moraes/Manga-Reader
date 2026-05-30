@@ -3,7 +3,7 @@ import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus, Search } from 'lucide-react';
-import { AdminEventList, ConfirmDeleteWithIdModal, useAdminEvents, useAdminEventActions, type AdminEvent } from '@feature/admin';
+import { AdminEventList, ConfirmDeleteWithIdModal, useAdminEvents, useAdminEventActions, type AdminEvent } from '@features/admin';
 
 const DashboardEvents = () => {
     const { t } = useTranslation('admin');

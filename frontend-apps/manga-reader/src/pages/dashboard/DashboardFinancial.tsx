@@ -13,7 +13,7 @@ import {
     useFinancialSummary,
     useRevenueSeries,
     type AdminPayment,
-} from '@feature/admin';
+} from '@features/admin';
 import { Select } from '@ui/Select';
 
 const STATUS_OPTIONS = ['', 'PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'] as const;

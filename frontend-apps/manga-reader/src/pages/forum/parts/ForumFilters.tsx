@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SearchField } from '@ui/SearchField';
 import { Select } from '@ui/Select';
 
-import { forumCategories, forumSortOptions, type ForumCategory, type ForumSort } from '@feature/forum';
+import { forumCategories, forumSortOptions, type ForumCategory, type ForumSort } from '@features/forum';
 
 interface ForumFiltersProps {
     query: string;

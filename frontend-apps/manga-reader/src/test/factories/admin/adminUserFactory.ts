@@ -1,4 +1,4 @@
-import type { AdminUser } from '@feature/admin/type/admin.types';
+import type { AdminUser } from '@features/admin/type/admin.types';
 import type { PageResponse } from '@shared/service/http';
 
 import { buildPage } from '../pageFactory';

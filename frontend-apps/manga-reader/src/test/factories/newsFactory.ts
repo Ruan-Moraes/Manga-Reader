@@ -1,4 +1,4 @@
-import type { NewsAuthor, NewsCategory, NewsComment, NewsItem, NewsReaction } from '@feature/news/type/news.types';
+import type { NewsAuthor, NewsCategory, NewsComment, NewsItem, NewsReaction } from '@features/news/type/news.types';
 
 let newsCounter = 0;
 let newsAuthorCounter = 0;

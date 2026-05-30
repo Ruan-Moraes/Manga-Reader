@@ -15,7 +15,7 @@ const mState = {
     setPage: vi.fn(),
 };
 
-vi.mock('@feature/admin', () => ({
+vi.mock('@features/admin', () => ({
     useAdminGroups: () => mState,
     useAdminGroupActions: () => ({
         isSubmitting: false,

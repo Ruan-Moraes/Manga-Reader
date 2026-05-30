@@ -11,7 +11,7 @@ import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { useSearchTitles } from '@feature/manga';
+import { useSearchTitles } from '@features/manga';
 
 const CARDS_PER_PAGE = 20;
 

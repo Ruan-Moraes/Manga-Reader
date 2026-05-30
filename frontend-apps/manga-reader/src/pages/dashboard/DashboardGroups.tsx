@@ -4,7 +4,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
-import { AdminGroupList, ConfirmDeleteWithIdModal, useAdminGroups, useAdminGroupActions, type AdminGroup } from '@feature/admin';
+import { AdminGroupList, ConfirmDeleteWithIdModal, useAdminGroups, useAdminGroupActions, type AdminGroup } from '@features/admin';
 
 const DashboardGroups = () => {
     const { t } = useTranslation('admin');

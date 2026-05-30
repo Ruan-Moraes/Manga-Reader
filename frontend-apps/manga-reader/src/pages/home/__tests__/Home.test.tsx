@@ -23,8 +23,8 @@ const mockTitle = {
     updatedAt: '2024-01-01',
 };
 
-vi.mock('@feature/category', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/category')>();
+vi.mock('@features/category', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/category')>();
     return {
         ...actual,
         useFilterResults: () => ({
@@ -34,24 +34,24 @@ vi.mock('@feature/category', async importOriginal => {
     };
 });
 
-vi.mock('@feature/auth', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/auth')>();
+vi.mock('@features/auth', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/auth')>();
     return {
         ...actual,
         useAuth: () => ({ isLoggedIn: false, user: null }),
     };
 });
 
-vi.mock('@feature/library', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/library')>();
+vi.mock('@features/library', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/library')>();
     return {
         ...actual,
         useSavedMangas: () => ({ items: [], loading: false }),
     };
 });
 
-vi.mock('@feature/forum', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/forum')>();
+vi.mock('@features/forum', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/forum')>();
     return {
         ...actual,
         getForumTopics: vi.fn().mockResolvedValue({ content: [], totalElements: 0 }),
@@ -59,8 +59,8 @@ vi.mock('@feature/forum', async importOriginal => {
     };
 });
 
-vi.mock('@feature/group', async importOriginal => {
-    const actual = await importOriginal<typeof import('@feature/group')>();
+vi.mock('@features/group', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/group')>();
     return {
         ...actual,
         getGroups: vi.fn().mockResolvedValue({ content: [], totalElements: 0 }),

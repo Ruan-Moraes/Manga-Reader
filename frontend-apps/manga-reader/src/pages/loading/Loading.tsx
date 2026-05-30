@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import PageShell from '@widgets/layouts/PageShell';
+import { PageShell } from '@widgets/layouts';
 
 const Loading = () => {
     const { t } = useTranslation('common');

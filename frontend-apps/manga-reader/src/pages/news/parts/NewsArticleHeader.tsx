@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from '@ui/Avatar';
-import { formatNewsDate, formatRelativeDate } from '@feature/news';
-import type { NewsItem } from '@feature/news';
+import { formatNewsDate, formatRelativeDate } from '@features/news';
+import type { NewsItem } from '@features/news';
 import { Clock, Eye } from 'lucide-react';
 
 type NewsArticleHeaderProps = {

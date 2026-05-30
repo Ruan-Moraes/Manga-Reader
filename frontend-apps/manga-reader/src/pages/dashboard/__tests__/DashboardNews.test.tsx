@@ -15,7 +15,7 @@ const mState = {
     setPage: vi.fn(),
 };
 
-vi.mock('@feature/admin', () => ({
+vi.mock('@features/admin', () => ({
     useAdminNews: () => mState,
     useAdminNewsActions: () => ({ isSubmitting: false, handleDelete: vi.fn() }),
     AdminNewsList: ({ isLoading }: { isLoading: boolean }) => <div data-testid="news-list">{isLoading ? 'loading' : 'list'}</div>,

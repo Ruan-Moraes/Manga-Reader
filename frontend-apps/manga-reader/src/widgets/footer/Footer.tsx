@@ -5,7 +5,7 @@ import { HelpCircle, Languages, MessageCircle, Moon, GitBranch, Bird, Camera } f
 import { Footer as DSFooter } from '@ui/Footer';
 import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, FooterSocialLink, FooterStatusInfo } from '@ui/Footer';
 
-import { useAuth } from '@feature/auth';
+import { useAuth } from '@features/auth';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 type FooterProps = {

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SubscriptionAuditLog } from '@feature/admin';
+import { SubscriptionAuditLog } from '@features/admin';
 
 type Props = {
     selectedLogSubId: string | null;

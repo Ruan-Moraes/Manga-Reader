@@ -9,7 +9,7 @@ import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 import { IconButton } from '@ui/IconButton';
 
-import { useNewsDetails } from '@feature/news';
+import { useNewsDetails } from '@features/news';
 
 import NewsArticleHeader from './parts/NewsArticleHeader';
 import NewsArticleBody from './parts/NewsArticleBody';

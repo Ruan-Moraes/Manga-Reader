@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { Avatar } from '@ui/Avatar';
-import type { EventData } from '@feature/event';
+import type { EventData } from '@features/event';
 import { Users } from 'lucide-react';
 
 type EventSidebarProps = {

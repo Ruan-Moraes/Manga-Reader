@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
-import { NavBar } from '@widgets/header/navbar/NavBar';
-import { SideMenu } from '@widgets/header/SideMenu';
-import { MobileTabBar } from '@widgets/mobile-tab-bar/MobileTabBar';
-import Footer from '@widgets/footer/Footer';
+import { NavBar, SideMenu } from '@widgets/header';
+import { MobileTabBar } from '@widgets/mobile-tab-bar';
+import { Footer } from '@widgets/footer';
 
 const MOCK_USER = { name: 'Leitor BR', avatar: undefined, libraryCount: 12 };
 

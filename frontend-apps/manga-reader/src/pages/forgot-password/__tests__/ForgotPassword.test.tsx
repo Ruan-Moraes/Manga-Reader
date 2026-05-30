@@ -9,7 +9,7 @@ const { requestResetMock, navigateMock } = vi.hoisted(() => ({
     navigateMock: vi.fn(),
 }));
 
-vi.mock('@feature/auth/service/authService', () => ({
+vi.mock('@features/auth/service/authService', () => ({
     requestPasswordReset: requestResetMock,
 }));
 

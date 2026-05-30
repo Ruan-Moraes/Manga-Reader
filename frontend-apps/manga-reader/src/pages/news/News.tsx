@@ -7,7 +7,7 @@ import { Tabs } from '@ui/Tabs';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { useNews, type NewsTabId } from '@feature/news';
+import { useNews, type NewsTabId } from '@features/news';
 
 import { NewsHero } from './parts/NewsHero';
 import { NewsFeed } from './parts/NewsFeed';

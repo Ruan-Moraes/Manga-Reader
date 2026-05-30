@@ -4,7 +4,7 @@ import { PageContainer } from '@ui/PageContainer';
 import { SectionHeader } from '@ui/SectionHeader';
 import { Card } from '@ui/Card';
 
-import { ContactForm } from '@feature/contact';
+import { ContactForm } from '@features/contact';
 
 const PublishWork = () => {
     const { t } = useTranslation('common');

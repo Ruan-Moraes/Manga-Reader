@@ -14,7 +14,7 @@ import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { useSavedMangas, type ReadingListType } from '@feature/library';
+import { useSavedMangas, type ReadingListType } from '@features/library';
 
 type ActiveTab = ReadingListType | 'Todos';
 type Layout = 'grid' | 'list';

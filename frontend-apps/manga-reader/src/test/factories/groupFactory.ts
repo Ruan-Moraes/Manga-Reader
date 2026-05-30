@@ -1,4 +1,4 @@
-import type { Group, GroupMember, GroupRole, GroupStatus, GroupSummary, GroupSupporter, GroupWork, UserPost } from '@feature/group/type/group.types';
+import type { Group, GroupMember, GroupRole, GroupStatus, GroupSummary, GroupSupporter, GroupWork, UserPost } from '@features/group/type/group.types';
 
 let groupCounter = 0;
 let groupMemberCounter = 0;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Login from '@pages/login/Login';
-import SignUp from '@pages/sign-up/SignUp';
-import ForgotPassword from '@pages/forgot-password/ForgotPassword';
+import { Login } from '@pages/login';
+import { SignUp } from '@pages/sign-up';
+import { ForgotPassword } from '@pages/forgot-password';
 
 type View = 'login' | 'signup' | 'forgot';
 

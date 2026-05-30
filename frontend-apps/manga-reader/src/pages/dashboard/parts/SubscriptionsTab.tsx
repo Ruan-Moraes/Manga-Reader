@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AdminSubscriptionList, UpdateSubscriptionStatusModal, ConfirmDeleteWithIdModal, GrantSubscriptionModal, type AdminSubscription } from '@feature/admin';
+import { AdminSubscriptionList, UpdateSubscriptionStatusModal, ConfirmDeleteWithIdModal, GrantSubscriptionModal, type AdminSubscription } from '@features/admin';
 import { Select } from '@ui/Select';
 
 const STATUS_OPTIONS = ['', 'ACTIVE', 'EXPIRED', 'CANCELLED'] as const;

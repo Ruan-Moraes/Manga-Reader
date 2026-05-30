@@ -14,7 +14,7 @@ import {
     revokeSubscription,
     type AdminSubscription,
     type AdminPlan,
-} from '@feature/admin';
+} from '@features/admin';
 import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
 

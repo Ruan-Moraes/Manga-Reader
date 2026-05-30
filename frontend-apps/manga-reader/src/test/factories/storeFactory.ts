@@ -1,4 +1,4 @@
-import type { Store } from '@feature/store/type/store.types';
+import type { Store } from '@features/store/type/store.types';
 
 let storeCounter = 0;
 
