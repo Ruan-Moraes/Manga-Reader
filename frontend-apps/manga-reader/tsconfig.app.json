@@ -16,6 +16,7 @@
             "@/*": ["./src/*"],
             "@features/*": ["./src/features/*"],
             "@entities/*": ["./src/entities/*"],
+            "@mock/*": ["./src/mock/*"],
             "@shared/*": ["./src/shared/*"],
             "@app/*": ["./src/app/*"],
             "@pages/*": ["./src/pages/*"],

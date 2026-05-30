@@ -8,7 +8,7 @@ import { CommentBox } from '@ui/CommentBox';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 
-import { TOPICS, REPLIES } from './parts/forumTopicMock';
+import { TOPICS, REPLIES } from '@mock/forumTopic';
 import TopicHeader from './parts/TopicHeader';
 import TopicReplies from './parts/TopicReplies';
 import TopicCommentInput from './parts/TopicCommentInput';

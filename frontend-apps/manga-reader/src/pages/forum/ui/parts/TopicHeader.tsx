@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Share2, Eye, MessageCircle } from 'lucide-react';
 import { Badge } from '@ui/Badge';
 import { Avatar } from '@ui/Avatar';
-import type { TopicData } from './forumTopicMock';
+import type { TopicData } from '@mock/forumTopic';
 
 type Props = {
     topic: TopicData;

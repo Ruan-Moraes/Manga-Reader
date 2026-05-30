@@ -576,6 +576,11 @@ o código em segmentos canônicos: `ui/` (componentes), `api/` (chamadas de serv
 `model/` (hooks, tipos, contexts, state), `lib/` (utils), `config/` (constantes).
 `shared/` mantém nomes próprios por caminho de segmento (`@shared/service`, `@shared/component`, `@ui`).
 
+**Mocks de runtime** — `src/mock/` (alias `@mock`, fora do FSD de propósito, steiger-ignored) é a
+**fonte única** de dado-fake p/ telas ainda sem backend. Nova tela sem API ⇒ mock vai aqui, componente
+importa `@mock`. Ao ligar o backend: deletar o mock do domínio e trocar pelo hook/service real.
+Hoje mockados: forum-topic (`@mock/forumTopic`), profile (`@mock/userProfile`).
+
 **Arquitetura frontend — Feature-Sliced Design (em migração)**
 
 Camadas FSD com import unidirecional (camada superior importa inferior, nunca o contrário):

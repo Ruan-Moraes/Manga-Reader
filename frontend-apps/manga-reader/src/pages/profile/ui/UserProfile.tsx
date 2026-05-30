@@ -11,7 +11,7 @@ import { GroupCard } from '@ui/GroupCard';
 
 import UserProfileHeader from './parts/UserProfileHeader';
 import ActivityTab from './parts/ActivityTab';
-import { PROFILES, READING_NOW, COMPLETED, REVIEWS, GROUPS_FOLLOWED, ACTIVITY } from './parts/userProfileMock';
+import { PROFILES, READING_NOW, COMPLETED, REVIEWS, GROUPS_FOLLOWED, ACTIVITY } from '@mock/userProfile';
 
 const UserProfile = () => {
     const { handle } = useParams();
