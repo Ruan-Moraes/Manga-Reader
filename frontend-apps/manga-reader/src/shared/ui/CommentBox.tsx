@@ -5,7 +5,7 @@ import { Avatar } from './Avatar';
 import { Badge } from './Badge';
 import { Stars } from './Stars';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface CommentAuthor {
     name: string;

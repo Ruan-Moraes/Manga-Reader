@@ -12,11 +12,8 @@ export default defineConfig([
         ignores: [
             '**/*.test.{ts,tsx}',
             '**/__tests__/**',
-            './src/lib/**',
-            './src/design-system/**',
             './src/i18n/**',
             './src/styles/**',
-            './src/asset/**',
             './src/test/**',
             './src/mock/**',
             './src/main.tsx',

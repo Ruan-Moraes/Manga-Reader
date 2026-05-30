@@ -4,7 +4,7 @@ import { Search, X } from 'lucide-react';
 import { IconButton } from './IconButton';
 
 import { Kbd } from './Kbd';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface SearchFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange' | 'value' | 'size'> {
     value: string;

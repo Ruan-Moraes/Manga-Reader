@@ -3,7 +3,7 @@
 import { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 import { X, Check, AlertTriangle, Info } from 'lucide-react';
 import { IconButton } from './IconButton';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 

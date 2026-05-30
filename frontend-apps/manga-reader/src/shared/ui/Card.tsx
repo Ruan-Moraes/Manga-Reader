@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 export type CardVariant = 'default' | 'flat' | 'elevated';

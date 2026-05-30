@@ -1,6 +1,6 @@
 import { MoreHorizontal, CheckCircle2, Download } from 'lucide-react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 import { IconButton } from './IconButton';
 import { Avatar } from './Avatar';

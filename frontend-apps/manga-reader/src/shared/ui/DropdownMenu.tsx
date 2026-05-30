@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 
 import * as RD from '@radix-ui/react-dropdown-menu';
 import { Kbd } from './Kbd';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface DropdownMenuItem {
     type?: 'item' | 'separator' | 'label';

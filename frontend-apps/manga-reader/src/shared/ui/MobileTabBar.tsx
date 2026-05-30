@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface TabBarItem {
     key: string;

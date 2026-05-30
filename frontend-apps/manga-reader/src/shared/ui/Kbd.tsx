@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface KbdProps extends HTMLAttributes<HTMLElement> {
     children: ReactNode;

@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export type PageContainerSize = 'narrow' | 'default' | 'wide' | 'fluid';
 export type PageContainerPaddingY = 'none' | 'sm' | 'md' | 'lg';

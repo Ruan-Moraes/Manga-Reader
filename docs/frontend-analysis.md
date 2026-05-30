@@ -58,14 +58,15 @@ src/                    → Feature-Sliced Design (em migração): app → pages
 │       └── constant/   → Constantes do módulo
 ├── entities/           → modelos de domínio/nouns (user, news, …); mesma estrutura de slice (migração por batches — DT-24)
 ├── shared/             → Código reutilizável cross-feature
-│   ├── component/      → ~37 componentes compartilhados
-│   ├── constant/       → Constantes globais
-│   ├── service/        → HTTP client, utilitários
-│   └── type/           → Tipos globais
-├── mock/               → Dados mock (legacy — todas as features usam API real)
-├── asset/              → Imagens e SVGs
-└── style/              → CSS global + customizações Tailwind
+│   ├── ui/             → design-system kit (@ui)
+│   ├── component/      → componentes compartilhados de app
+│   ├── service/        → HTTP client, sessão, utilitários
+│   ├── lib/            → utils (cn)  · config/ → tokens · constant/ · type/ · hook/
+├── i18n/               → locales + config (cross-cutting)
+├── test/               → infra de teste (helpers, mocks, factories)
+└── styles/             → CSS global + Tailwind
 ```
+(SVGs colocados em `shared/component/icon/`; `lib`/`design-system`/`assets` do root absorvidos em `shared/`.)
 
 ### Entry Point (`main.tsx`)
 

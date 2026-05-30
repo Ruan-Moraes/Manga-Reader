@@ -3,7 +3,7 @@ import { ChevronDown, Flame, Sparkles, Grid, Calendar, Users, MessageSquare, Sta
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 type Props = {
     openSection: string | null;

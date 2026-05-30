@@ -141,6 +141,9 @@ tsc: 33 → 28 erros.
   `fsd/no-segmentless-slices` agora **ON**, verde.
 - Dead code removido: `shared/component/form/ContactForm` e `shared/hook/useMenuData`
   (duplicatas stale que importavam `@features` — resolviam 2 violações `shared→features`).
+- Pastas não-FSD do root absorvidas em `shared/`: `lib/`→`shared/lib` (`@shared/lib/cn`),
+  `design-system/tokens`→`shared/config`, SVGs de `assets/` colocados em `shared/component/icon/`.
+  Root agora só tem layers + cross-cutting aceitos (`i18n/`, `styles/`, `test/`, `main.tsx`).
 
 **Pendente — deferido com rationale** (desligado no `steiger.config.ts`):
 - **`@x` cross-import API p/ entity↔entity**: refs de domínio (Title↔Chapter, Comment→User,

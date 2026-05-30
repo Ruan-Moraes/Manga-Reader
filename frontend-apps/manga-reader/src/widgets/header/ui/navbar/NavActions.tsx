@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Avatar } from '@ui/Avatar';
 import { Button } from '@ui/Button';
 import { DropdownMenu } from '@ui/DropdownMenu';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 import type { LayoutNavBarUser } from './navBar.types';
 
 type Props = {

@@ -1,6 +1,6 @@
 import { useState, useId } from 'react';
 import { Plus, X } from 'lucide-react';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 import type { ReactNode } from 'react';
 
 export interface AccordionItemProps {

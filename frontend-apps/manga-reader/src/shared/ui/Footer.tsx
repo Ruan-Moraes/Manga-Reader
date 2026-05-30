@@ -6,7 +6,7 @@ import { ArrowRight, Check, ChevronDown, Download } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import Logo from '@shared/component/logo/Logo.tsx';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface FooterLink {
     label: string;

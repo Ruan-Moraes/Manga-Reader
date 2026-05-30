@@ -3,7 +3,7 @@ import { BookOpen, MessageSquare, AtSign, Users, Bell, X } from 'lucide-react';
 import { Avatar } from './Avatar';
 import { IconButton } from './IconButton';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export type NotificationKind = 'chapter' | 'reply' | 'mention' | 'group' | 'system';
 

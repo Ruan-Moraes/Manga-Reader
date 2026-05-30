@@ -4,7 +4,7 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import { FileText, Shield, Copyright, Mail } from 'lucide-react';
 import { PageContainer } from '@ui/PageContainer';
 import { Badge } from '@ui/Badge';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 import type { ReactNode } from 'react';
 
 type LegalPage = 'terms' | 'privacy' | 'dmca' | 'contact';

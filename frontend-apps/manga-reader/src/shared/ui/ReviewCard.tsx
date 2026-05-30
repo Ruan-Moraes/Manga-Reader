@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ThumbsUp, MessageSquare, Star } from 'lucide-react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';

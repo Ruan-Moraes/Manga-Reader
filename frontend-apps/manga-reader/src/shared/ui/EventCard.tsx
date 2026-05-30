@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 import { Button } from './Button';
 import { Badge } from './Badge';

@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 import { Button } from './Button';
 import type { ButtonVariant, ButtonSize } from './Button';

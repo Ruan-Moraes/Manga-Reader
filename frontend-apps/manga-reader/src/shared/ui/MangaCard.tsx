@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Bookmark } from 'lucide-react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 import { Stars } from './Stars';
 import { IconButton } from './IconButton';

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Loader2, LucideIcon } from 'lucide-react';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export type ButtonVariant = 'primary' | 'raised' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';

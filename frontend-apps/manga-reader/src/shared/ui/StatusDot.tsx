@@ -1,4 +1,4 @@
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export type StatusKind = 'operating' | 'degraded' | 'down' | 'idle';
 export type StatusSize = 8 | 10 | 12;

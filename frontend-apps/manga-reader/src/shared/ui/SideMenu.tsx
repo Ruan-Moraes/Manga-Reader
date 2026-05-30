@@ -4,7 +4,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Drawer } from './Drawer';
 import { Avatar } from './Avatar';
 import { Badge } from './Badge';
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 export interface SideMenuItem {
     key: string;

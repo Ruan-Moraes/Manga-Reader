@@ -1,6 +1,6 @@
 import BadgeIconButton from '@shared/component/button/BadgeIconButton';
 
-import CalendarArrowDownIcon from '../../../assets/svg/calendar-arrow-down.svg';
+import CalendarArrowDownIcon from './calendar-arrow-down.svg';
 
 type SortOldestButtonProps = {
     onClick: () => void;

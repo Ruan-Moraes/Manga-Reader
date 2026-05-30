@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { cn } from '@/lib/cn';
+import { cn } from '@shared/lib/cn';
 
 type Suggestion = {
     key: string;
