@@ -151,8 +151,7 @@ tsc: 33 → 28 erros.
   (cross-layer segue ON nas outras layers). Migrar p/ `@x` é polish futuro.
 - `public-api`/`no-public-api-sidestep` em `shared/`: imports por caminho de segmento são idiomáticos.
 - `fsd/inconsistent-naming` off: falso-positivo em `news` (substantivo, não plural).
-- `Pagination` não-dup (2 componentes distintos — UX), e dead code residual
-  (`FooterLinksSection`, `shared/ui/StyledSelect`, 0 consumidores).
+- `Pagination`: 2 componentes distintos (não dup real) — unificar exige decisão de UX.
 
 **Prioridade**: Baixa (layers + segmentos FSD completos, tsc 0, suite verde, lint verde).
 
