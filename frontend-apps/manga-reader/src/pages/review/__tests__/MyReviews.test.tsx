@@ -21,8 +21,16 @@ const mockReview = {
     id: 'r1',
     titleId: 't1',
     titleName: 'Berserk',
+    userName: 'Leitor',
     overallRating: 4.5,
+    funRating: 5,
+    artRating: 5,
+    storylineRating: 4,
+    charactersRating: 4,
+    originalityRating: 4,
+    pacingRating: 4,
     comment: 'Obra prima.',
+    createdAt: '2026-01-01T00:00:00Z',
 };
 
 describe('MyReviews', () => {

@@ -6,17 +6,15 @@ import Main from './Main';
 
 type PageShellProps = {
     children: ReactNode;
-    showAuth?: boolean;
-    showSearch?: boolean;
     mainClassName?: string;
     footerShowLinks?: boolean;
     footerStyles?: CSSProperties;
 };
 
-const PageShell = ({ children, showAuth, showSearch, mainClassName, footerShowLinks, footerStyles }: PageShellProps) => {
+const PageShell = ({ children, mainClassName, footerShowLinks, footerStyles }: PageShellProps) => {
     return (
         <>
-            <Header showAuth={showAuth} showSearch={showSearch} />
+            <Header />
             <Main className={mainClassName}>{children}</Main>
             <Footer showLinks={footerShowLinks} styles={footerStyles} />
         </>

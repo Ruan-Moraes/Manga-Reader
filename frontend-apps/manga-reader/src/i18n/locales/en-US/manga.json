@@ -67,7 +67,7 @@
         "backToCatalog": "Back to catalog",
         "addToLibrary": "Add to library",
         "removeFromLibrary": "Remove from library",
-        "ratingAria": "{{rating}} out of 5 stars, based on {{count}} votes",
+        "ratingAria": "{{rating}} out of 5 stars, based on {{voteCount}} votes",
         "votes": "votes",
         "synopsisAria": "Synopsis",
         "collapse": "Collapse",

@@ -10,9 +10,10 @@ import useAdminNewsActions from './useAdminNewsActions';
 import type { CreateNewsRequest } from '../type/admin.types';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 import { useDomainLabels, LABEL_TYPES } from '@entities/label';
-import type { NewsCategory } from '@entities/news';
 
-type FormState = Omit<CreateNewsRequest, 'title' | 'subtitle' | 'excerpt' | 'content'> & { category: NewsCategory };
+// category é um domain label dinâmico (useDomainLabels NEWS_CATEGORY) — string,
+// não o union hardcoded NewsCategory. Herda o tipo de CreateNewsRequest.
+type FormState = Omit<CreateNewsRequest, 'title' | 'subtitle' | 'excerpt' | 'content'>;
 
 const DEFAULT_FORM: FormState = {
     category: 'Principais',

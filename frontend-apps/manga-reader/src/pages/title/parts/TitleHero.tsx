@@ -55,7 +55,7 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
                     className="mb-4 flex items-center gap-2"
                     aria-label={t('titleDetails.ratingAria', {
                         rating: title.ratingAverage.toFixed(1),
-                        count: average.count.toLocaleString(),
+                        voteCount: average.count.toLocaleString(),
                     })}
                 >
                     <Stars value={title.ratingAverage} size={20} />

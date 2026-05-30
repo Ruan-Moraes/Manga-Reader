@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@ui/Modal';
 import { USER_SETTINGS_STORAGE_KEY } from '@shared/constant/USER_SETTINGS_STORAGE_KEY';
 
-import { sectionTitleClass, getStoredSettings, type TabKey, type UserSettings } from './settings.constants';
+import { getStoredSettings, type TabKey, type UserSettings } from './settings.constants';
 import AppearanceSettings from './tabs/AppearanceSettings';
 import LanguageSettings from './tabs/LanguageSettings';
 import NotificationSettings from './tabs/NotificationSettings';

@@ -31,16 +31,17 @@ describe('UserDetails', () => {
     beforeEach(() => {
         vi.mocked(useAuth).mockReturnValue({
             user: null,
-            isAuthenticated: false,
-            isLoading: false,
+            isLoggedIn: false,
             login: vi.fn(),
+            register: vi.fn(),
             logout: vi.fn(),
             setUser: vi.fn(),
         });
         vi.mocked(useUserDetails).mockReturnValue({
             user: mockUser,
             isLoading: false,
-        } as ReturnType<typeof useUserDetails>);
+            isError: false,
+        } as unknown as ReturnType<typeof useUserDetails>);
     });
 
     it('renders user name', () => {

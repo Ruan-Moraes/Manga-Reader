@@ -49,7 +49,7 @@ const Dashboard = () => {
     const description = isAdmin ? t('dashboard.home.adminDescription') : t('dashboard.home.posterDescription');
 
     return (
-        <PageShell showSearch footerShowLinks>
+        <PageShell footerShowLinks>
             <section className="flex flex-col gap-4">
                 <h2 className="font-bold text-lg">{title}</h2>
 

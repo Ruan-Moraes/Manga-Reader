@@ -14,7 +14,7 @@ const ChapterBottomBar = forwardRef<HTMLDivElement, ChapterBottomBarProps>(({ ch
             ref={ref}
         >
             <div className="grow">
-                <ChapterNavigation chapterId={chapterId} onChapterChange={onChapterChange} variant="chapter" menuPlacement="top" />
+                <ChapterNavigation chapterId={chapterId} onChapterChange={onChapterChange} menuPlacement="top" />
             </div>
         </div>
     );

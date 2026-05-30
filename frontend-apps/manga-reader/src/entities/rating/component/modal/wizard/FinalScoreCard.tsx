@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RatingStars from '../../RatingStars';
+import Illustration, { type IllustrationType } from '@shared/component/ui/Illustration';
 
 type Category = {
     readonly key: string;
-    readonly icon: string;
+    readonly iconType: IllustrationType;
 };
 
 type FinalScoreCardProps = {
@@ -86,7 +87,7 @@ const FinalScoreCard = ({ average, categoryRatings, categories, onSubmit, onBack
                     return (
                         <div key={cat.key} className="flex items-center justify-between gap-1">
                             <span className="flex items-center gap-1 text-xs">
-                                <span>{cat.icon}</span>
+                                <Illustration type={cat.iconType} className="w-4 h-4 object-contain" />
                                 <span className="text-tertiary">{t(`wizard.categoryLabels.${cat.key}`)}</span>
                             </span>
                             <div className="flex items-center gap-1">

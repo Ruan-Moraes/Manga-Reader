@@ -36,7 +36,6 @@ export const ReadingArea = ({
     chNum,
     page,
     isEnd,
-    titleId,
     ratingGiven,
     comment,
     onPrevPage,

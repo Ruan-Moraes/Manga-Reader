@@ -19,7 +19,7 @@ interface BottomToolbarProps {
 }
 
 export const BottomToolbar = forwardRef<HTMLDivElement, BottomToolbarProps>(
-    ({ page, progress, chNum, onPrevPage, onNextPage, onScrub, onPrevChapter, onNextChapter }, ref) => {
+    ({ page, progress, onPrevPage, onNextPage, onScrub, onPrevChapter, onNextChapter }, ref) => {
         const { t } = useTranslation('manga');
         return (
             <div

@@ -21,7 +21,6 @@ const AdminTitleForm = () => {
         isSubmitting,
         form,
         setForm,
-        selectedTags,
         setSelectedTags,
         name,
         setName,

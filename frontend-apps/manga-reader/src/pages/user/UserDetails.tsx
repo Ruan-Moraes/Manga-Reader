@@ -27,7 +27,7 @@ const UserDetails = () => {
 
     if (loading) {
         return (
-            <PageShell showSearch footerShowLinks>
+            <PageShell footerShowLinks>
                 <section className="flex flex-col gap-4">
                     <p className="text-sm text-tertiary">{t('details.loadingProfile')}</p>
                 </section>
@@ -37,7 +37,7 @@ const UserDetails = () => {
 
     if (!targetUser) {
         return (
-            <PageShell showSearch footerShowLinks>
+            <PageShell footerShowLinks>
                 <section className="flex flex-col gap-4">
                     <h2 className="font-bold text-lg">{t('details.notFoundTitle')}</h2>
                     <p className="text-sm text-tertiary">{t('details.notFoundMessage')}</p>
@@ -55,7 +55,7 @@ const UserDetails = () => {
         targetUser.role === 'admin' ? t('details.roles.admin') : targetUser.role === 'poster' ? t('details.roles.poster') : t('details.roles.reader');
 
     return (
-        <PageShell showSearch footerShowLinks>
+        <PageShell footerShowLinks>
             <section className="flex flex-col gap-4">
                 <h2 className="font-bold text-lg">{t('details.profileTitle', { name: targetUser.name })}</h2>
 

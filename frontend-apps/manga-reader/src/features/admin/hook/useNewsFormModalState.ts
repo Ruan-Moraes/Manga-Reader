@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 
 import { DEFAULT_LANGUAGE, type LanguageTag, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
 
-import type { NewsCategory } from '@entities/news';
-
 import type { AdminNews, CreateNewsRequest, UpdateNewsRequest } from '../type/admin.types';
 
 const splitContent = (text: string): string[] =>
@@ -13,7 +11,7 @@ const splitContent = (text: string): string[] =>
         .filter(Boolean);
 
 const useNewsFormModalState = (news: AdminNews | null | undefined, isOpen: boolean, onSubmit: (data: CreateNewsRequest | UpdateNewsRequest) => void) => {
-    const [category, setCategory] = useState<NewsCategory>('Principais');
+    const [category, setCategory] = useState<string>('Principais');
     const [coverImage, setCoverImage] = useState('');
     const [tags, setTags] = useState('');
     const [authorName, setAuthorName] = useState('');

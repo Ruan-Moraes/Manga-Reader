@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RatingStars from '../../RatingStars';
+import Illustration from '@shared/component/ui/Illustration';
 
 import FinalScoreCard from './FinalScoreCard';
 
@@ -165,7 +166,7 @@ const RatingWizard = ({ onSubmit, onCancel, isSubmitting = false }: RatingWizard
         return (
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col items-center gap-2 pt-2">
-                    <span className="text-2xl">{currentCategory.icon}</span>
+                    <Illustration type={currentCategory.iconType} className="w-8 h-8 object-contain" />
                     <h3 className="text-sm font-bold text-shadow-default">{t('wizard.rateLabel', { label: categoryLabel })}</h3>
                     <p className="text-xs text-tertiary text-center max-w-xs">{t(`wizard.categoryDescriptions.${currentCategory.key}`)}</p>
                 </div>
