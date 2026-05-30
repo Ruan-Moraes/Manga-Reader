@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../shared/constant/WEB_BASE_URL';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { getAdminEventDetail } from '../service/adminEventService';

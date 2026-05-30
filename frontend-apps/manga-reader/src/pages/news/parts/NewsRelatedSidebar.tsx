@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../shared/constant/WEB_BASE_URL';
 import { formatRelativeDate } from '@entities/news';
 import type { NewsItem } from '@entities/news';
 

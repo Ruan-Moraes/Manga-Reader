@@ -9,8 +9,8 @@ import { Tabs } from '@ui/Tabs';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 
-import { useTitle } from '@features/manga';
-import { useChapters } from '@features/chapter';
+import { useTitle } from '@entities/manga';
+import { useChapters } from '@entities/chapter';
 import { useRatings } from '@entities/rating';
 import { getGroupsByTitleId } from '@entities/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';

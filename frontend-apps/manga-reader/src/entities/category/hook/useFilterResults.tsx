@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { type PageResponse } from '@shared/service/http';
-import { type Title, filterTitles } from '@features/manga';
+import { type Title, filterTitles } from '@entities/manga';
 
 import type { Tag } from '../type/tag.types';
 import type { Sort } from '../type/sort.types';

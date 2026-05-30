@@ -7,7 +7,7 @@ import { MangaCard } from '@ui/MangaCard';
 import { Badge } from '@ui/Badge';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { Title } from '@features/manga';
+import type { Title } from '@entities/manga';
 
 type HomeTrendingProps = {
     trendingList: Title[];

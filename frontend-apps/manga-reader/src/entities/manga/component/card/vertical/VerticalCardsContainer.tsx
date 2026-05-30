@@ -6,7 +6,7 @@ import clsx from 'clsx';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { ROUTES } from '@shared/constant/ROUTES';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../../../shared/constant/WEB_BASE_URL';
 
 import { SectionHeader } from '../../../type/section-header.types';
 

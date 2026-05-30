@@ -1,5 +1,4 @@
 // Hooks
-export { default as useEvents } from './hook/useEvents';
 export { default as useEventForm } from './hook/useEventForm';
 export { default as useEventDetails } from './hook/useEventDetails';
 

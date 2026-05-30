@@ -577,7 +577,7 @@ Camadas FSD com import unidirecional (camada superior importa inferior, nunca o 
 `app → pages → widgets → features → entities → shared`. Aliases: `@app`, `@pages`, `@widgets`, `@features`, `@entities`, `@shared`, `@ui`.
 
 - **app**: só `router/` (PublicRoutes, ProtectedRoutes) + bootstrap em `main.tsx`. Sem páginas/widgets aqui.
-- **features vs entities**: `features/` = interações (verbos: login, bookmark, admin CRUD). `entities/` = modelos de domínio (nouns: User, Manga, News). Feature pode importar entity; entity **nunca** importa feature. Migração `features→entities` por batches (ver DT-24): Batch 1 = user, label, store, news, forum.
+- **features vs entities**: `features/` = interações (verbos: auth, library, admin, contact). `entities/` = modelos de domínio (12 nouns: user, manga, chapter, rating, comment, category, label, news, event, group, store, forum). Feature pode importar entity; entity **nunca** importa feature. Migração concluída (ver DT-24). Hook que combina dados de entity + `useAuth`/estado de UI é **page hook** (ex.: `pages/event/useEvents.tsx`), não fica em `entities/`.
 - **pages / widgets / features / entities**: cada slice expõe public API via `index.ts` (barrel). **Importar sempre da raiz do slice** (`@pages/home`, `@widgets/header`, `@features/auth`, `@entities/user`), nunca de arquivos internos — exceto `import()` dinâmico do router/`main.tsx` (code-splitting por página).
 - **widgets**: slices coesos por bloco de UI. `layouts/` contém os shells de rota (RootLayout, ChapterLayout, PageShell) — esses compõem `@widgets/header|footer|mobile-tab-bar` (desvio pragmático widget→widget, permitido na config do steiger).
 

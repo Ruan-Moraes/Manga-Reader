@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { requestPasswordReset, AuthShell, AuthField, AuthSubmit } from '@features/auth';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

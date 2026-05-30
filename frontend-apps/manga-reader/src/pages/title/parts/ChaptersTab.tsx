@@ -8,7 +8,7 @@ import { ChapterListItem } from '@ui/ChapterListItem';
 import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
 
-import type { Chapter } from '@features/chapter';
+import type { Chapter } from '@entities/chapter';
 
 type ChaptersTabProps = {
     titleId: string;

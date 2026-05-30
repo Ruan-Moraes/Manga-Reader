@@ -4,7 +4,9 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import { PageContainer } from '@ui/PageContainer';
 import { SectionHeader } from '@ui/SectionHeader';
 
-import { useEvents, type EventType } from '@features/event';
+import { type EventType } from '@entities/event';
+
+import useEvents from './useEvents';
 
 import { EventFilters } from './parts/EventFilters';
 import { EventList } from './parts/EventList';

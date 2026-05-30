@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { useAuth } from '@features/auth';
-import { useFilterResults } from '@features/category';
+import { useFilterResults } from '@entities/category';
 import { useSavedMangas } from '@features/library';
 import { getForumTopics } from '@entities/forum';
 import { getGroups } from '@entities/group';

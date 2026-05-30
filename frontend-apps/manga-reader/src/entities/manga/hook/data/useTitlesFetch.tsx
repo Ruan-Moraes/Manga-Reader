@@ -3,7 +3,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 import type { PageResponse } from '@shared/service/http';
 
-import { Title } from '@features/manga';
+import { Title } from '@entities/manga';
 
 import { getTitles } from '../../service/titleService';
 

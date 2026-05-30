@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
 import { useTranslation } from 'react-i18next';
 
+import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL.ts';
+
 import { formatRelativeDate } from '../service/newsService';
-import type { NewsItem } from '../type/news.types';
+
+import type { NewsItem } from '@entities/news';
 
 type HeroNewsProps = {
     news: NewsItem;

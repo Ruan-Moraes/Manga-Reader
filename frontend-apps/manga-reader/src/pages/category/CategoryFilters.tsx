@@ -16,7 +16,7 @@ import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 import { Badge } from '@ui/Badge';
 
-import { useCategoryFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@features/category';
+import { useCategoryFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@entities/category';
 
 import CategoryFilterPanel from './parts/CategoryFilterPanel';
 

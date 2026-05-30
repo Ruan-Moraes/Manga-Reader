@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import type { Tag } from '@features/category';
-import type { Sort } from '@features/category';
-import type { PublicationStatus } from '@features/category';
-import type { AdultContent } from '@features/category';
+import type { Tag } from '@entities/category';
+import type { Sort } from '@entities/category';
+import type { PublicationStatus } from '@entities/category';
+import type { AdultContent } from '@entities/category';
 
 const useCategoryFilters = () => {
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);

@@ -5,7 +5,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 
 import useTitlesFetch from '../../../hook/data/useTitlesFetch';
 
-import { SectionHeader } from '@features/manga';
+import { SectionHeader } from '@entities/manga';
 
 import AppLink from '@shared/component/link/element/AppLink';
 

@@ -7,7 +7,7 @@ import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { useEventDetails } from '@features/event';
+import { useEventDetails } from '@entities/event';
 import EventHero from './parts/EventHero';
 import EventBody from './parts/EventBody';
 import EventSidebar from './parts/EventSidebar';

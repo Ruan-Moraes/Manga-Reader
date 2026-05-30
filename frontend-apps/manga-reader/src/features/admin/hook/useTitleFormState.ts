@@ -3,14 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../shared/constant/WEB_BASE_URL';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { getAdminTitleDetail } from '../service/adminTitleService';
 import useAdminTitleActions from './useAdminTitleActions';
 import type { CreateTitleRequest } from '../type/admin.types';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 import { useDomainLabels, LABEL_TYPES } from '@entities/label';
-import { useTagsFetch, type Tag } from '@features/category';
+import { useTagsFetch, type Tag } from '@entities/category';
 
 type FormState = Omit<CreateTitleRequest, 'name' | 'synopsis'>;
 

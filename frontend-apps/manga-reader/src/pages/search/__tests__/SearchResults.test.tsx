@@ -9,7 +9,7 @@ const mSearch = {
     data: undefined as unknown,
 };
 
-vi.mock('@features/manga', () => ({
+vi.mock('@entities/manga', () => ({
     useSearchTitles: () => mSearch,
 }));
 

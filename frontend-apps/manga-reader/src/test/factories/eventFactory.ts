@@ -1,4 +1,4 @@
-import type { EventComment, EventData, EventStatus, EventTimeline, EventType, TicketType } from '@features/event/type/event.types';
+import type { EventComment, EventData, EventStatus, EventTimeline, EventType, TicketType } from '@entities/event/type/event.types';
 
 let eventCounter = 0;
 let ticketCounter = 0;

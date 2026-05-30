@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../shared/constant/WEB_BASE_URL';
 import { ArrowLeft } from 'lucide-react';
 
 import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
 import { Input } from '@ui/Input';
 import { Select } from '@ui/Select';
 import { Checkbox } from '@ui/Checkbox';
-import { TagSelectInput } from '@features/category';
+import { TagSelectInput } from '@entities/category';
 
 import useTitleFormState from '../hook/useTitleFormState';
 

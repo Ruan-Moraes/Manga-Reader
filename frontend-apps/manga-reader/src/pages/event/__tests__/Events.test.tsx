@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Events from '../Events';
-import type { EventData } from '@features/event';
+import type { EventData } from '@entities/event';
 
 const makeEvent = (overrides: Partial<EventData> = {}): EventData => ({
     id: '1',
@@ -92,13 +92,9 @@ const mEvents = {
     featured: MOCK_EVENTS[0],
 };
 
-vi.mock('@features/event', async importOriginal => {
-    const actual = await importOriginal<typeof import('@features/event')>();
-    return {
-        ...actual,
-        useEvents: () => mEvents,
-    };
-});
+vi.mock('../useEvents', () => ({
+    default: () => mEvents,
+}));
 
 beforeEach(() => {
     mEvents.activeTab = 'upcoming';

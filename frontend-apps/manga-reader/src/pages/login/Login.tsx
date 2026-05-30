@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAuth, AuthShell, AuthField, AuthSubmit } from '@features/auth';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 
 const DEMO_USER = {

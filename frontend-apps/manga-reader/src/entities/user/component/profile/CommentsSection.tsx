@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../../shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 

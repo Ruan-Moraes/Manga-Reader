@@ -100,17 +100,21 @@ e `widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/l
 - Boundary lint via **steiger** (`@feature-sliced/steiger-plugin`,
   `steiger.config.ts`, script `npm run lint:fsd`). **Verde** no escopo atual.
 
-**Em andamento — Fase 3 / Entities (2026-05-30)**: introdução da layer `entities/`
+**Concluído — Fase 3 / Entities (2026-05-30)**: layer `entities/` introduzida
 (alias `@entities`). Classificação: **12 entities** (user, manga, chapter, rating,
 comment, category, label, news, event, group, store, forum) vs **4 features**
-(auth, admin, library, contact). Migração **incremental por batches**:
+(auth, admin, library, contact). Migração **incremental por batches** (todos feitos):
 - **Batch 1 — feito**: `user, label, store, news, forum` (folhas, sem edges de saída).
 - **Batch 2 — feito**: `comment, group, rating` (edges só entre si e p/ entities; `category`
   movido p/ Batch 3 pois `category→manga` seria `entity→feature`).
-- **Batch 3 — pendente**: `manga, chapter, category` — ciclo de tipos manga↔chapter,
-  resolver via cross-import API FSD (`@x`) ou unir slice; mover `category` junto.
-- **Batch 4 — pendente**: `event` — antes mover `useAuth` de `event` p/ page/feature
-  (hoje `event→auth` viraria `entity→feature`, proibido).
+- **Batch 3 — feito**: `manga, chapter, category`. Ciclo manga↔chapter é só de tipos
+  (`type Chapter`/`type Title`) + 1 runtime one-way (`chapter` usa `useTitles` de `manga`);
+  sem ciclo de runtime, TS resolve, steiger não flaga same-layer. Movido as-is.
+- **Batch 4 — feito**: `event`. O hook gordo `useEvents` (data + UI state + `useAuth`)
+  foi reclassificado como **page hook** → movido p/ `pages/event/useEvents.tsx` (page
+  pode importar feature+entity). Resto do slice → `entities/event`. Resolve `event→auth`.
+
+**Migração de entities concluída.** `features/` agora só tem verbos: `admin, auth, contact, library`.
 
 **Pendente — outros** (regras desligadas no `steiger.config.ts`, reativar por item):
 - Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — `fsd/no-segmentless-slices`.
@@ -120,14 +124,14 @@ comment, category, label, news, event, group, store, forum) vs **4 features**
 - Stragglers `react-icons` (lib real é `lucide-react`): 2 arquivos mortos
   (`NavigationMenu`, `MainSearchInput`), resto migrar p/ lucide; dups stale em `shared/`.
 
-**Prioridade**: Média (não-bloqueante; foundations + entities batch 1 entregues).
+**Prioridade**: Média (não-bloqueante; layers FSD completas — app/pages/widgets/features/entities/shared. Resta hardening: segmentos, public-api shared, NavigationMenu, react-icons).
 
 ---
 
 ### DT-13 (resíduo): call-sites com basename hardcoded
 
 **Estado**: **Resolvido na fonte (2026-05-16)** — o basename agora é
-parametrizado por `VITE_BASE_URL` (`src/shared/constant/baseUrl.ts`,
+parametrizado por `VITE_BASE_URL` (`src/shared/constant/WEB_BASE_URL.ts`,
 `vite.config.ts` via `loadEnv`, `.env`/`.env.example`). `main.tsx`,
 `ProtectedRoutes`, `Login`, `SignUp`, `AdminSidebar` e `VerticalCardsContainer`
 usam a constante.

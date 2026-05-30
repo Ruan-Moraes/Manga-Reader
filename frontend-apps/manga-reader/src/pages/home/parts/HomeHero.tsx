@@ -9,7 +9,7 @@ import { Badge } from '@ui/Badge';
 import { Stars } from '@ui/Stars';
 import { Button } from '@ui/Button';
 import { Skeleton } from '@ui/Skeleton';
-import type { Title } from '@features/manga';
+import type { Title } from '@entities/manga';
 
 const HERO_INTERVAL = 8000;
 

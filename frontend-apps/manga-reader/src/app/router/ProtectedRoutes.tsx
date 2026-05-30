@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { showErrorToast } from '@shared/service/util/toastService';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../shared/constant/WEB_BASE_URL';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
 
 import { getStoredSession } from '@shared/service/session';

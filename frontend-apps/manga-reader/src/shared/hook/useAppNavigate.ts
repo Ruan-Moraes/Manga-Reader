@@ -1,5 +1,5 @@
 import { useNavigate, type NavigateOptions } from 'react-router-dom';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../constant/WEB_BASE_URL';
 
 const useAppNavigate = () => {
     const navigate = useNavigate();

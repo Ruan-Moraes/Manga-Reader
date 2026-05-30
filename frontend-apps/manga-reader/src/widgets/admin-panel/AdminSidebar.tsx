@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Home, Users, Book, FileText, Calendar, Tag, Layers, DollarSign, CreditCard, X } from 'lucide-react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../shared/constant/WEB_BASE_URL';
 
 type AdminSidebarProps = {
     isOpen: boolean;

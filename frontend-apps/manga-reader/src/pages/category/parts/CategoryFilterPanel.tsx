@@ -3,7 +3,7 @@ import { Checkbox } from '@ui/Checkbox';
 import { RadioGroup } from '@ui/Radio';
 import { Button } from '@ui/Button';
 
-import type { PublicationStatus, Tag } from '@features/category';
+import type { PublicationStatus, Tag } from '@entities/category';
 
 type CategoryFilterPanelProps = {
     tags: Tag[];

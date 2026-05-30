@@ -6,7 +6,7 @@ import { SectionHeader } from '@ui/SectionHeader';
 import { MangaCard } from '@ui/MangaCard';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { Title } from '@features/manga';
+import type { Title } from '@entities/manga';
 
 type HomeNewReleasesProps = {
     releases: Title[];

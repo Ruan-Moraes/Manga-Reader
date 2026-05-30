@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LogOut, Settings, Trash2 } from 'lucide-react';
 
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../shared/constant/WEB_BASE_URL';
 import { clearCache } from '@shared/service/util/queryCache';
 
 import UserSettingsModal from './settings/UserSettingsModal';

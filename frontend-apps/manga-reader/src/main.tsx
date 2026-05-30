@@ -25,7 +25,7 @@ import RouteErrorFallback from '@shared/component/errorBoundary/RouteErrorFallba
 
 import { initGlobalErrorHandler } from '@shared/service/errorReporting/globalErrorHandler';
 
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from './shared/constant/WEB_BASE_URL';
 
 import { RootLayout, ChapterLayout } from '@widgets/layouts';
 

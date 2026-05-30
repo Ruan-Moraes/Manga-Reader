@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { WEB_BASE_URL } from '@shared/constant/baseUrl';
+import { WEB_BASE_URL } from '../../../shared/constant/WEB_BASE_URL';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useTitles } from '@features/manga';
+import { useTitles } from '@entities/manga';
 
 const useChapterReader = () => {
     const navigate = useNavigate();

@@ -4,8 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { useAuth } from '@features/auth';
-import { filterEvents, getEvents } from '../service/eventService';
-import type { EventType } from '../type/event.types';
+import { filterEvents, getEvents, type EventType } from '@entities/event';
 
 const tabs = [
     { id: 'upcoming', labelKey: 'page.tabs.upcoming' },
