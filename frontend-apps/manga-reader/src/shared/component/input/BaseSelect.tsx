@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
+import { ChevronDown } from 'lucide-react';
 
 export type SelectOption = {
     value: string;
@@ -114,7 +114,7 @@ const BaseSelect = ({ label, options, value, onChange, disabled, error, name, id
                 onKeyDown={handleKeyDown}
             >
                 <span className="truncate">{displayLabel}</span>
-                <FiChevronDown className={`flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} size={14} />
+                <ChevronDown className={`flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} size={14} />
             </button>
 
             {isOpen && (

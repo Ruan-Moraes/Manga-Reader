@@ -48,14 +48,4 @@ export default defineConfig([
             'fsd/no-reserved-folder-names': 'off',
         },
     },
-
-    // DT-24 residue (deferred): pre-existing shared→features upward import in
-    // NavigationMenu. Rule stays ON everywhere else to catch new cross-layer
-    // regressions in app/pages/widgets/features.
-    {
-        files: ['./src/shared/component/menu/NavigationMenu.tsx'],
-        rules: {
-            'fsd/forbidden-imports': 'off',
-        },
-    },
 ]);

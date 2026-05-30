@@ -116,15 +116,22 @@ comment, category, label, news, event, group, store, forum) vs **4 features**
 
 **Migração de entities concluída.** `features/` agora só tem verbos: `admin, auth, contact, library`.
 
+**Concluído — dead code + react-icons (2026-05-30)**: removida a cópia stale
+pré-widgets em `shared/` (`menu/NavigationMenu`, `link/section/SidebarMenuContent`,
+`modal/settings/` inteiro, `input/MainSearchInput`) — só se auto-referenciava,
+zero consumidor externo. Resolveu o `shared→features` (NavigationMenu) e os
+componentes duplicados. `BaseSelect` migrado `react-icons/fi` → `lucide-react`.
+`react-icons` 100% eliminado. `fsd/forbidden-imports` agora **sem exceções** (verde).
+tsc: 33 → 28 erros.
+
 **Pendente — outros** (regras desligadas no `steiger.config.ts`, reativar por item):
 - Subdividir slices `pages/`/`widgets/` em segmentos (`ui/`, etc.) — `fsd/no-segmentless-slices`.
 - Public API nos segmentos de `shared/` → reativa `fsd/no-public-api-sidestep`.
-- Resolver import upward `shared→features` em `shared/component/menu/NavigationMenu.tsx`.
 - Renomear pasta reservada `shared/component/ui/` (`fsd/no-reserved-folder-names`).
-- Stragglers `react-icons` (lib real é `lucide-react`): 2 arquivos mortos
-  (`NavigationMenu`, `MainSearchInput`), resto migrar p/ lucide; dups stale em `shared/`.
+- Dead code residual: `shared/component/link/section/FooterLinksSection.tsx` (0 consumidores — verificar antes de remover).
+- ~17 erros de tipo reais restantes no tsc (enum NewsCategory, RatingWizard, RecentReviews, PageShell, Avatar, TitleDetails — ver relatório).
 
-**Prioridade**: Média (não-bloqueante; layers FSD completas — app/pages/widgets/features/entities/shared. Resta hardening: segmentos, public-api shared, NavigationMenu, react-icons).
+**Prioridade**: Média (não-bloqueante; layers FSD completas + dead code limpo. Resta hardening: segmentos, public-api shared, type errors).
 
 ---
 
