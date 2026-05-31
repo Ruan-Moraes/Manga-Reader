@@ -1,0 +1,5 @@
+{
+  "name": "@manga-reader/scripts",
+  "private": true,
+  "type": "module"
+}
