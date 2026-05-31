@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Link } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +30,7 @@ const NewsCard = ({ news, isRead, onToggleSave, onMarkRead }: NewsCardProps) => 
             </div>
             <div className="mt-2 space-y-2">
                 <h3 className="font-semibold leading-snug line-clamp-2">
-                    <Link to={`${WEB_BASE_URL}/news/${news.id}`} onClick={() => onMarkRead(news.id)}>
+                    <Link to={`${WEB_BASE_URL}${ROUTES.NEWS_DETAIL(news.id)}`} onClick={() => onMarkRead(news.id)}>
                         {news.title}
                     </Link>
                 </h3>

@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
@@ -25,7 +26,7 @@ const HomeContinueReading = ({ continueLoading, continueReading }: HomeContinueR
                 eyebrow={t('continueReading.eyebrow')}
                 title={t('continueReading.title')}
                 action={
-                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate('/library')}>
+                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate(ROUTES.LIBRARY)}>
                         {t('continueReading.viewAll')}
                     </Button>
                 }
@@ -49,7 +50,7 @@ const HomeContinueReading = ({ continueLoading, continueReading }: HomeContinueR
                                     title: m.name,
                                     cover: m.cover,
                                 }}
-                                onClick={() => navigate(`/titles/${m.titleId}`)}
+                                onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}
                             />
                         </div>
                     ))}

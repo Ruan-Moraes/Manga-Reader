@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
@@ -22,7 +23,7 @@ const HomeForYou = ({ forYou }: HomeForYouProps) => {
                 title={t('forYou.title')}
                 meta={t('forYou.meta')}
                 action={
-                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate('/genres')}>
+                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate(ROUTES.CATALOG)}>
                         {t('forYou.explore')}
                     </Button>
                 }
@@ -40,7 +41,7 @@ const HomeForYou = ({ forYou }: HomeForYouProps) => {
                             rating: m.ratingAverage,
                             chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                         }}
-                        onClick={() => navigate(`/titles/${m.id}`)}
+                        onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
                     />
                 ))}
             </div>

@@ -46,7 +46,7 @@ const DashboardGroupDetail = () => {
                     {t('common.back')}
                 </button>
                 <button
-                    onClick={() => navigate(`${WEB_BASE_URL}/dashboard/groups/${groupId}/edit`)}
+                    onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUP_EDIT(groupId)}`)}
                     className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                 >
                     {t('common.edit', 'Editar')}

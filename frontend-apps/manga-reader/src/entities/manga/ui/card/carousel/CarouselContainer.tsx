@@ -69,7 +69,7 @@ const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
         <section className="flex flex-col items-start">
             <div className="px-4 py-2 rounded-t-xs bg-tertiary">
                 <h2 className="flex flex-col items-center text-center">
-                    <AppLink link={ROUTES.FILTER_MOST_READ} text={title} className="text-shadow-default text-quaternary-default" />
+                    <AppLink link={ROUTES.CATALOG_SORT('most_read')} text={title} className="text-shadow-default text-quaternary-default" />
                     <span className="text-xs">({subTitle})</span>
                 </h2>
             </div>

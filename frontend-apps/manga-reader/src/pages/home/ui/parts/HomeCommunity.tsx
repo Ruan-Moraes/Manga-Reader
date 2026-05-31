@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
@@ -22,7 +23,7 @@ const HomeCommunity = ({ topics }: HomeCommunityProps) => {
                 eyebrow={t('community.eyebrow')}
                 title={t('community.title')}
                 action={
-                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate('/forum')}>
+                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate(ROUTES.FORUM)}>
                         {t('community.viewForum')}
                     </Button>
                 }
@@ -51,12 +52,12 @@ const HomeCommunity = ({ topics }: HomeCommunityProps) => {
                                 views={topic.viewCount}
                                 pinned={topic.isPinned}
                                 postedAt={formatRelativeDate(topic.createdAt)}
-                                onClick={() => navigate(`/forum/topic/${topic.id}`)}
+                                onClick={() => navigate(ROUTES.FORUM_TOPIC(topic.id))}
                             />
                         ))}
                     </div>
                     <div className="mt-4">
-                        <Button variant="raised" onClick={() => navigate('/forum')}>
+                        <Button variant="raised" onClick={() => navigate(ROUTES.FORUM)}>
                             {t('community.viewForumCta')}
                         </Button>
                     </div>

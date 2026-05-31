@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
@@ -21,7 +22,7 @@ const HomeGroups = ({ groups }: HomeGroupsProps) => {
             <SectionHeader
                 title={t('groups.title')}
                 action={
-                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate('/groups')}>
+                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate(ROUTES.GROUPS)}>
                         {t('groups.viewGroups')}
                     </Button>
                 }
@@ -50,7 +51,7 @@ const HomeGroups = ({ groups }: HomeGroupsProps) => {
                                 chaptersPublished: g.translatedWorks.reduce((s, w) => s + w.chapters, 0),
                                 tags: g.focusTags,
                             }}
-                            onClick={() => navigate(`/groups/${g.id}`)}
+                            onClick={() => navigate(ROUTES.GROUP_DETAIL(g.id))}
                         />
                     ))}
                 </div>

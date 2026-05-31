@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +46,7 @@ const ReviewCard = ({
     return (
         <Card variant="default" className="p-4">
             <div className="mb-3 flex items-center justify-between gap-2">
-                <Link to={`/titles/${review.titleId}`} className="text-mr-small font-mr-bold text-mr-fg hover:text-mr-accent transition-colors">
+                <Link to={ROUTES.TITLE_DETAIL(review.titleId)} className="text-mr-small font-mr-bold text-mr-fg hover:text-mr-accent transition-colors">
                     {review.titleName ?? t('myReviews.workPlaceholder', { id: review.titleId })}
                 </Link>
                 <Stars value={review.overallRating} size={16} />

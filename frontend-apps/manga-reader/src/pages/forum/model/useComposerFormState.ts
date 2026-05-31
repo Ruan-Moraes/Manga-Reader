@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -55,7 +56,7 @@ const useComposerFormState = () => {
         setSubmitting(true);
         setTimeout(() => {
             localStorage.removeItem(DRAFT_KEY);
-            navigate('/forum');
+            navigate(ROUTES.FORUM);
         }, 800);
     };
 

@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
@@ -68,7 +69,7 @@ const RecommendationsSection = ({ recommendations, isOwner, onUpdate }: Props) =
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                 {recommendations.map(rec => (
                     <div key={rec.titleId} className="relative group">
-                        <Link to={`${WEB_BASE_URL}/title/${rec.titleId}`} className="block overflow-hidden border rounded-xs border-tertiary">
+                        <Link to={`${WEB_BASE_URL}${ROUTES.TITLE_DETAIL(rec.titleId)}`} className="block overflow-hidden border rounded-xs border-tertiary">
                             {rec.titleCover ? (
                                 <img src={rec.titleCover} alt={rec.titleName} className="object-cover w-full h-40" />
                             ) : (

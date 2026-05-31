@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +18,7 @@ const HeroNews = ({ news }: HeroNewsProps) => {
 
     return (
         <Link
-            to={`${WEB_BASE_URL}/news/${news.id}`}
+            to={`${WEB_BASE_URL}${ROUTES.NEWS_DETAIL(news.id)}`}
             className="block overflow-hidden transition border rounded-2xl border-tertiary bg-secondary hover:-translate-y-1"
         >
             <div className="relative">

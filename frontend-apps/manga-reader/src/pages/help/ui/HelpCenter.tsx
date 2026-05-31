@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { MessageCircle, MessageSquare, AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -61,14 +62,14 @@ export default function HelpCenter() {
                             <Button
                                 variant="primary"
                                 icon={MessageCircle}
-                                onClick={() => navigate('/legal/contact')}
+                                onClick={() => navigate(ROUTES.LEGAL_CONTACT)}
                             >
                                 {t('contact.openTicket')}
                             </Button>
                             <Button
                                 variant="ghost"
                                 icon={MessageSquare}
-                                onClick={() => navigate('/forum')}
+                                onClick={() => navigate(ROUTES.FORUM)}
                             >
                                 {t('contact.askForum')}
                             </Button>
@@ -76,7 +77,7 @@ export default function HelpCenter() {
                                 variant="ghost"
                                 danger
                                 icon={AlertTriangle}
-                                onClick={() => navigate('/legal/contact')}
+                                onClick={() => navigate(ROUTES.LEGAL_CONTACT)}
                             >
                                 {t('contact.priority')}
                             </Button>

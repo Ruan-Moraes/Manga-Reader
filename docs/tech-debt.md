@@ -239,13 +239,20 @@ Auditoria por-membro de `shared/constant` (grep `ENUM.MEMBER` + checagem de aces
 `apiErrorMessages.ts`), `QUERY_KEYS` (17), `API_URLS` (3), `ROUTES` (22). Mantidos: `SOCIAL_MEDIA_COLORS` (uso dinâmico
 `[name]`), `WEB_BASE_URL`/`USER_SETTINGS_STORAGE_KEY`/`REDIRECT_AFTER_LOGIN_KEY`. tsc 0, lint verde, 818/818.
 
-#### 25.9 — Adotar `ROUTES` como fonte canônica de rotas — **pendente (futuro, baixa prioridade)**
-`ROUTES` está stale vs router real (`/title` singular vs `/titles` real; `/filter` vs `/genres`; faltam ~dezenas de rotas)
-e a navegação usa ~98 strings inline via `useAppNavigate`. Adotar canônico = reescrever `ROUTES` p/ casar o router +
-builders de param (`/titles/:id`) + migrar os 98 sites. Projeto dedicado, correctness-sensitive — não feito agora.
+#### 25.9 — `ROUTES` fonte canônica de rotas — ✅ Feito (2026-05-31)
+`ROUTES.ts` reescrito de `enum` stale → `const ROUTES = {…} as const`: estáticas string + **builders tipados**
+de param (`TITLE_DETAIL(id)`, `CHAPTER(id,n)`, `EVENT_DETAIL`, `FORUM_TOPIC`, `USER_DETAIL`, `DASHBOARD_*_EDIT`, …),
+cobrindo todo o inventário do router. Paths relativos sem `WEB_BASE_URL` (prefixo via `useAppNavigate`/`AppLink`).
+Migrados ~todos os call sites de navegação (navigate/Link/Navigate) p/ `ROUTES` — **136 usos**; 0 literais estáticos
+de navegação restantes (só sobram paths data-driven `${item.link}`). Duplicatas do router (`/title`↔`/titles`,
+`/event`↔`/events`, `/forum/:id`↔`/forum/topic/:id`) mantidas como alias; ROUTES emite só o canônico (plural).
+Bug corrigido: `NotFound` navegava p/ `/categories` inexistente → `ROUTES.CATALOG` (`/genres`).
+**Resíduo**: `ROUTES.HELP_ARTICLE(id)` aponta p/ `help/article/:id` que **ainda não tem página** (seção help WIP) —
+builder pronto, rota/página pendente. tsc 0, lint verde, 818/818.
 
 **Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files), 25.4 (Pagination + renomes), 25.5 (revisado),
-25.6 (testes), 25.7 (catalog-filter + lib + layer legacy eliminada), 25.8 (constantes mortas). Pendente: 25.9 (ROUTES canônico, futuro).
+25.6 (testes), 25.7 (catalog-filter + lib + layer legacy eliminada), 25.8 (constantes mortas), 25.9 (ROUTES canônico).
+**DT-25 fechado** (código). Resíduos: página help/article (WIP), e itens não-prod (DT-09 legais).
 
 ---
 

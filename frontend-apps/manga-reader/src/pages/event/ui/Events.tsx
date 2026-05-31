@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
@@ -39,7 +40,7 @@ const Events = () => {
                 onType={v => setType(v as 'all' | EventType)}
             />
 
-            <EventList events={events} featured={featured} isLoading={isLoading} onEventClick={id => navigate(`/events/${id}`)} />
+            <EventList events={events} featured={featured} isLoading={isLoading} onEventClick={id => navigate(ROUTES.EVENT_DETAIL(id))} />
         </PageContainer>
     );
 };

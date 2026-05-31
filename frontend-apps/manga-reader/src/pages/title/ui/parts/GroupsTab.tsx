@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
@@ -35,7 +36,7 @@ const GroupsTab = ({ groups }: GroupsTabProps) => {
                         chaptersPublished: 0,
                         tags: g.focusTags,
                     }}
-                    onClick={() => navigate(`/groups/${g.id}`)}
+                    onClick={() => navigate(ROUTES.GROUP_DETAIL(g.id))}
                 />
             ))}
         </div>

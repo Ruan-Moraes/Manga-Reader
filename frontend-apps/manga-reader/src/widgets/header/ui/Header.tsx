@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,13 +38,13 @@ const Header = () => {
                 user={navUser}
                 onNavigate={navigate}
                 onOpenSideMenu={() => setSideOpen(true)}
-                onSearchSubmit={q => navigate(`/search?q=${encodeURIComponent(q)}`)}
+                onSearchSubmit={q => navigate(`${ROUTES.SEARCH}?q=${encodeURIComponent(q)}`)}
                 onNotificationsClick={() => {}}
-                onLibraryClick={() => navigate('/library')}
-                onProfileClick={() => navigate('/profile')}
+                onLibraryClick={() => navigate(ROUTES.LIBRARY)}
+                onProfileClick={() => navigate(ROUTES.PROFILE)}
                 onSettingsClick={() => setSettingsOpen(true)}
                 onLogoutClick={handleLogout}
-                onAccountClick={() => navigate('/login')}
+                onAccountClick={() => navigate(ROUTES.LOGIN)}
             />
             <SideMenu
                 open={sideOpen}

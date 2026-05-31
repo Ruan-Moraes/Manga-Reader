@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import React from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 
@@ -40,7 +41,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
                     'text-quaternary-default': enabledColorWhenActive && isActive,
                 })}
                 style={inlineStyle}
-                to={isExternalLink ? link : `${WEB_BASE_URL}/` + link}
+                to={isExternalLink ? link : `${WEB_BASE_URL}${ROUTES.HOME}` + link}
             >
                 {children ?? text}
             </Link>

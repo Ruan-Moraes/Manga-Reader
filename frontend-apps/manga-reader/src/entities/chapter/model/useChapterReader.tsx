@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -49,7 +50,7 @@ const useChapterReader = () => {
 
     const handleChapterChange = useCallback(
         (value: string) => {
-            navigate(`${WEB_BASE_URL}/title/${titleId}/${value}`);
+            navigate(`${WEB_BASE_URL}${ROUTES.TITLE_DETAIL(titleId)}/${value}`);
         },
         [navigate, titleId],
     );

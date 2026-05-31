@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
@@ -78,7 +79,7 @@ const ChaptersTab = ({
                             number={Number(c.number)}
                             title={c.title}
                             publishedAt={c.releaseDate}
-                            onClick={() => navigate(`/titles/${titleId}/chapters/${c.number}`)}
+                            onClick={() => navigate(ROUTES.CHAPTER(titleId, c.number))}
                         />
                     ))}
                 </div>

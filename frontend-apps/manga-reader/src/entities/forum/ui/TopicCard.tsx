@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Link } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,7 @@ const TopicCard = ({ topic }: { topic: ForumTopic }) => {
 
     return (
         <Link
-            to={`${WEB_BASE_URL}/forum/${topic.id}`}
+            to={`${WEB_BASE_URL}${ROUTES.FORUM_TOPIC(topic.id)}`}
             className="flex gap-4 p-4 transition-colors border rounded-lg border-tertiary bg-secondary hover:bg-tertiary/30"
         >
             {/* Avatar */}

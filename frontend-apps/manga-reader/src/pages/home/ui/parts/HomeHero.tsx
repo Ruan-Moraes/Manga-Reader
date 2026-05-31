@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, BookOpen } from 'lucide-react';
@@ -61,16 +62,16 @@ const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
                         }
                         actions={
                             <>
-                                <Button variant="primary" icon={BookOpen} onClick={() => navigate(`/titles/${hero.id}`)}>
+                                <Button variant="primary" icon={BookOpen} onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))}>
                                     {t('hero.start')}
                                 </Button>
-                                <Button variant="raised" onClick={() => navigate(`/titles/${hero.id}`)}>
+                                <Button variant="raised" onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))}>
                                     {t('hero.add')}
                                 </Button>
                             </>
                         }
                         visual={
-                            <MangaPoster cover={hero.cover} alt={hero.name} size={280} elevated radius="md" onClick={() => navigate(`/titles/${hero.id}`)} />
+                            <MangaPoster cover={hero.cover} alt={hero.name} size={280} elevated radius="md" onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))} />
                         }
                     />
                     {featuredTitles.length > 1 && (

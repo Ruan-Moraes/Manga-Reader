@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -42,7 +43,7 @@ const EventDetails = () => {
                     title={t('notFound')}
                     description={t('notFoundDesc')}
                     action={
-                        <Button variant="primary" onClick={() => navigate('/events')}>
+                        <Button variant="primary" onClick={() => navigate(ROUTES.EVENTS)}>
                             {t('backToEventsShort')}
                         </Button>
                     }

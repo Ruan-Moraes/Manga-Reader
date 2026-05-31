@@ -51,7 +51,7 @@ const EventSidebar = ({ event, relatedEvents }: EventSidebarProps) => {
                 {relatedEvents.map(item => (
                     <Link
                         key={item.id}
-                        to={`${WEB_BASE_URL}${ROUTES.EVENT_DETAIL.replace(':eventId', item.id)}`}
+                        to={`${WEB_BASE_URL}${ROUTES.EVENT_DETAIL(item.id)}`}
                         className="flex items-center gap-2 p-2 rounded-lg bg-primary"
                     >
                         <img src={item.image} alt={item.title} className="object-cover w-12 h-12 rounded-lg" />

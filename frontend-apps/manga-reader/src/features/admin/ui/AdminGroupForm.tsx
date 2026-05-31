@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState, useEffect } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -52,7 +53,7 @@ const AdminGroupForm = () => {
             ...(banner ? { banner } : {}),
             ...(website ? { website } : {}),
         });
-        if (result) navigate(`${WEB_BASE_URL}/dashboard/groups/${groupId}`);
+        if (result) navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUP_DETAIL(groupId)}`);
     };
 
     if (isLoading) {
@@ -67,7 +68,7 @@ const AdminGroupForm = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/groups/${groupId}`)}
+                onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUP_DETAIL(groupId)}`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <ArrowLeft size={14} />

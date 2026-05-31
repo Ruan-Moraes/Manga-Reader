@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -104,7 +105,7 @@ const Library = () => {
                         title={t('emptyCollection.title')}
                         description={t('emptyCollection.description')}
                         action={
-                            <Button variant="primary" onClick={() => navigate('/genres')}>
+                            <Button variant="primary" onClick={() => navigate(ROUTES.CATALOG)}>
                                 {t('emptyCollection.discoverButton')}
                             </Button>
                         }
@@ -121,7 +122,7 @@ const Library = () => {
                                 cover: m.cover,
                             }}
                             size="md"
-                            onClick={() => navigate(`/titles/${m.titleId}`)}
+                            onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}
                         />
                     ))}
                 </div>
@@ -132,7 +133,7 @@ const Library = () => {
                             key={m.titleId}
                             className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent"
                         >
-                            <button type="button" className="flex flex-1 items-center gap-3 text-left" onClick={() => navigate(`/titles/${m.titleId}`)}>
+                            <button type="button" className="flex flex-1 items-center gap-3 text-left" onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}>
                                 <div
                                     className="size-12 shrink-0 rounded-mr-xs bg-cover bg-center bg-mr-tertiary/20"
                                     style={

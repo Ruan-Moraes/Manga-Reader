@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -74,7 +75,7 @@ const ForumComposer = () => {
                 <Switch checked={isSpoiler} onChange={setIsSpoiler} label={t('composer.spoilerLabel')} description={t('composer.spoilerDescription')} />
             </div>
 
-            <ComposerActions submitting={submitting} onCancel={() => navigate('/forum')} onSubmit={handleSubmit} />
+            <ComposerActions submitting={submitting} onCancel={() => navigate(ROUTES.FORUM)} onSubmit={handleSubmit} />
         </PageContainer>
     );
 };

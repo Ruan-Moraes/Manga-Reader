@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -49,7 +50,7 @@ const NewsDetails = () => {
                         title={t('details.notFound')}
                         description={t('details.notFoundDesc')}
                         action={
-                            <Button variant="primary" icon={ArrowLeft} onClick={() => navigate('/news')}>
+                            <Button variant="primary" icon={ArrowLeft} onClick={() => navigate(ROUTES.NEWS)}>
                                 {t('details.backButton')}
                             </Button>
                         }

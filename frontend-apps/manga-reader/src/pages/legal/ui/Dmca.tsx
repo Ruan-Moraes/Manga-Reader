@@ -1,4 +1,5 @@
 import useAppNavigate from '@shared/hook/useAppNavigate';
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Bell, AlertTriangle } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -106,7 +107,7 @@ export default function Dmca() {
                             {t('dmca.sections.como-pedir.channelLabel')}
                         </strong>{' '}
                         <a
-                            onClick={() => navigate('/legal/contact')}
+                            onClick={() => navigate(ROUTES.LEGAL_CONTACT)}
                             className="cursor-pointer text-mr-accent underline hover:no-underline"
                         >
                             {t('dmca.sections.como-pedir.channelLinkText')}
@@ -241,7 +242,7 @@ export default function Dmca() {
                 <Button
                     variant="primary"
                     icon={Bell}
-                    onClick={() => navigate('/legal/contact')}
+                    onClick={() => navigate(ROUTES.LEGAL_CONTACT)}
                 >
                     {t('dmca.footerCard.cta')}
                 </Button>

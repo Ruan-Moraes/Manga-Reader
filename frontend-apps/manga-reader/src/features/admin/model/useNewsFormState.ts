@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -84,17 +85,17 @@ const useNewsFormState = () => {
 
         if (isEditing && newsId) {
             const result = await handleUpdate(newsId, data);
-            if (result) navigate(`${WEB_BASE_URL}/dashboard/news`);
+            if (result) navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS}`);
         } else {
             const result = await handleCreate(data);
-            if (result) navigate(`${WEB_BASE_URL}/dashboard/news`);
+            if (result) navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS}`);
         }
     };
 
     const handleDeleteClick = async () => {
         if (!newsId || !confirm(t('dashboard.news.deleteConfirm'))) return;
         await handleDelete(newsId);
-        navigate(`${WEB_BASE_URL}/dashboard/news`);
+        navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS}`);
     };
 
     return {

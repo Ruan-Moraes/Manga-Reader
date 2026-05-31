@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +35,7 @@ const DashboardEvents = () => {
                 <div className="flex items-center gap-3">
                     <span className="text-sm text-tertiary">{t('dashboard.events.count', { count: totalElements })}</span>
                     <button
-                        onClick={() => navigate(`${WEB_BASE_URL}/dashboard/events/new`)}
+                        onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_EVENT_FORM}`)}
                         className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-dark"
                     >
                         <Plus size={14} />
@@ -65,7 +66,7 @@ const DashboardEvents = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
-                onEdit={event => navigate(`${WEB_BASE_URL}/dashboard/events/${event.id}/edit`)}
+                onEdit={event => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_EVENT_EDIT(event.id)}`)}
                 onDelete={setDeletingEvent}
             />
 

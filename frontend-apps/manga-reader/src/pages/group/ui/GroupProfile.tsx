@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -86,7 +87,7 @@ const GroupProfile = () => {
                     title={t('profile.notFoundTitle')}
                     description={t('profile.notFoundDesc')}
                     action={
-                        <Button variant="primary" onClick={() => navigate('/groups')}>
+                        <Button variant="primary" onClick={() => navigate(ROUTES.GROUPS)}>
                             {t('profile.backToGroupsShort')}
                         </Button>
                     }
@@ -99,7 +100,7 @@ const GroupProfile = () => {
         <PageContainer asMain size="default" paddingY="md">
             <GroupHeader group={group} following={following} activeTab={tab} onFollowToggle={() => setFollowing(f => !f)} onTabChange={setTab} />
 
-            {tab === 'works' && <GroupWorks works={group.works} onWorkClick={id => navigate(`/titles/${id}`)} />}
+            {tab === 'works' && <GroupWorks works={group.works} onWorkClick={id => navigate(ROUTES.TITLE_DETAIL(id))} />}
 
             {tab === 'activity' && (
                 <div className="flex flex-col gap-3">

@@ -1,4 +1,5 @@
 import useAppNavigate from '@shared/hook/useAppNavigate';
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Settings } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -278,7 +279,7 @@ export default function Privacy() {
                 <Button
                     variant="primary"
                     icon={Settings}
-                    onClick={() => navigate('/settings')}
+                    onClick={() => navigate(ROUTES.SETTINGS)}
                 >
                     {t('privacy.footerCard.cta')}
                 </Button>

@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Link } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +11,7 @@ const EventCard = ({ event }: { event: EventData }) => {
 
     return (
         <Link
-            to={`${WEB_BASE_URL}/event/${event.id}`}
+            to={`${WEB_BASE_URL}${ROUTES.EVENT_DETAIL(event.id)}`}
             className="overflow-hidden transition border group rounded-2xl border-tertiary bg-secondary hover:-translate-y-1 hover:shadow-xl hover:border-purple-400/70"
         >
             <img src={event.image} alt={event.title} className="object-cover w-full h-44" />

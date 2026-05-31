@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +33,7 @@ const ForumTopicPage = () => {
                     title={t('topic.notFound')}
                     description={t('topic.notFoundDesc')}
                     action={
-                        <Button variant="primary" onClick={() => navigate('/forum')}>
+                        <Button variant="primary" onClick={() => navigate(ROUTES.FORUM)}>
                             {t('topic.backToForum')}
                         </Button>
                     }
@@ -43,7 +44,7 @@ const ForumTopicPage = () => {
 
     return (
         <PageContainer asMain size="narrow" paddingY="md">
-            <TopicHeader topic={topic} onBack={() => navigate('/forum')} />
+            <TopicHeader topic={topic} onBack={() => navigate(ROUTES.FORUM)} />
 
             <CommentBox
                 author={{

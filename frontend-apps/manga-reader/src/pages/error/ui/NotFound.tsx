@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { Home, Search } from 'lucide-react';
@@ -17,10 +18,10 @@ const NotFound = () => {
                 description={t('notFound.pageDesc')}
                 action={
                     <div className="flex flex-wrap justify-center gap-3">
-                        <Button variant="primary" icon={Home} onClick={() => navigate('/')}>
+                        <Button variant="primary" icon={Home} onClick={() => navigate(ROUTES.HOME)}>
                             {t('notFound.goHome')}
                         </Button>
-                        <Button variant="ghost" icon={Search} onClick={() => navigate('/categories')}>
+                        <Button variant="ghost" icon={Search} onClick={() => navigate(ROUTES.CATALOG)}>
                             {t('notFound.searchWorks')}
                         </Button>
                     </div>

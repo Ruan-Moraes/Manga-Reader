@@ -52,7 +52,7 @@ const HighlightCardsContainer = ({ title, subTitle }: SectionHeader) => {
                 <h2 className="font-bold text-2xl">{title}</h2>
                 {subTitle && (
                     <p className="leading-none">
-                        <AppLink link={ROUTES.FILTER_ASCENSION} text={subTitle} className="text-xs text-quaternary-default" />
+                        <AppLink link={ROUTES.CATALOG_SORT('ascension')} text={subTitle} className="text-xs text-quaternary-default" />
                     </p>
                 )}
             </div>

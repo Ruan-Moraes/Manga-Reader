@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +22,7 @@ const UserModalHeader = () => {
         if (!userData) return;
 
         closeUserModal();
-        navigate(`${WEB_BASE_URL}/users/${userData.id}`);
+        navigate(`${WEB_BASE_URL}${ROUTES.USER_DETAIL(userData.id)}`);
     };
 
     if (!userData) return null;

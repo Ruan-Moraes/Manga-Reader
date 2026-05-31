@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
@@ -49,8 +50,8 @@ const News = () => {
                 </div>
             ) : (
                 <div className="mt-6 flex flex-col gap-6">
-                    {heroNews && <NewsHero news={heroNews} onClick={() => navigate(`/news/${heroNews.id}`)} />}
-                    <NewsFeed items={feedNews} hasMore={hasMoreItems} onItemClick={id => navigate(`/news/${id}`)} onLoadMore={loadMore} />
+                    {heroNews && <NewsHero news={heroNews} onClick={() => navigate(ROUTES.NEWS_DETAIL(heroNews.id))} />}
+                    <NewsFeed items={feedNews} hasMore={hasMoreItems} onItemClick={id => navigate(ROUTES.NEWS_DETAIL(id))} onLoadMore={loadMore} />
                 </div>
             )}
         </PageContainer>

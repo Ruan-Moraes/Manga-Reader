@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LogOut, AlertTriangle } from 'lucide-react';
@@ -57,7 +58,7 @@ const AccountTab = () => {
                 <p className="mb-1 text-mr-small font-mr-bold text-mr-danger">{t('profile.account.dangerZone')}</p>
                 <p className="mb-3 text-mr-tiny text-mr-fg-muted">{t('profile.account.dangerZoneDesc')}</p>
                 <div className="flex gap-2">
-                    <Button variant="ghost" icon={LogOut} onClick={() => navigate('/login')}>
+                    <Button variant="ghost" icon={LogOut} onClick={() => navigate(ROUTES.LOGIN)}>
                         {t('profile.account.logout')}
                     </Button>
                     <Button variant="ghost" icon={AlertTriangle} onClick={() => {}}>

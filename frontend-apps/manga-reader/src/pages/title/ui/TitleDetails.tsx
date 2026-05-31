@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -72,7 +73,7 @@ const TitleDetails = () => {
                     illustration="404"
                     title={t('titleDetails.notFound')}
                     action={
-                        <Button variant="primary" onClick={() => navigate('/genres')}>
+                        <Button variant="primary" onClick={() => navigate(ROUTES.CATALOG)}>
                             {t('titleDetails.backToCatalog')}
                         </Button>
                     }

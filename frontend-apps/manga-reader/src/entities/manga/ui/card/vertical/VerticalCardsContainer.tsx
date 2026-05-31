@@ -51,7 +51,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
 
     const handleClick = useCallback(() => {
         if (visible >= allChildren.length) {
-            navigate(WEB_BASE_URL + ROUTES.FILTER_MOST_RECENT);
+            navigate(WEB_BASE_URL + ROUTES.CATALOG_SORT('most_recent'));
         }
 
         if (visible < allChildren.length) {
@@ -65,7 +65,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
                 <h2 className="font-bold text-2xl">{title}</h2>
                 {subTitle && (
                     <p className="leading-none">
-                        <AppLink link={ROUTES.FILTER_MOST_RECENT} text={subTitle} className="text-xs text-quaternary-default" />
+                        <AppLink link={ROUTES.CATALOG_SORT('most_recent')} text={subTitle} className="text-xs text-quaternary-default" />
                     </p>
                 )}
             </div>

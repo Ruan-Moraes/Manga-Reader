@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -179,7 +180,7 @@ const TrendingSection = ({ mangas }: TrendingSectionProps) => {
                     return (
                         <li key={manga.id} className={`flex flex-col items-center gap-2 ${isFirst ? 'order-2' : idx === 0 ? 'order-1' : 'order-3'}`}>
                             <Badge variant={isFirst ? 'accent' : 'neutral'}>{rank === 1 ? 'Top 1' : rank === 2 ? '2º lugar' : '3º lugar'}</Badge>
-                            <MangaCard manga={manga} size={isFirst ? 'lg' : 'md'} featured={isFirst} onClick={() => navigate(`/titles/${manga.id}`)} />
+                            <MangaCard manga={manga} size={isFirst ? 'lg' : 'md'} featured={isFirst} onClick={() => navigate(ROUTES.TITLE_DETAIL(manga.id))} />
                         </li>
                     );
                 })}
@@ -189,13 +190,13 @@ const TrendingSection = ({ mangas }: TrendingSectionProps) => {
                 <p className="mr-label mb-3 text-mr-fg-subtle">{top3.length > 0 ? 'Top 3' : ''}</p>
                 <ol className="mb-6 flex flex-col gap-2 md:hidden" aria-label={t('trending.top3Aria')}>
                     {top3.map((manga, i) => (
-                        <RankedRow key={manga.id} rank={i + 1} manga={manga} onNavigate={() => navigate(`/titles/${manga.id}`)} />
+                        <RankedRow key={manga.id} rank={i + 1} manga={manga} onNavigate={() => navigate(ROUTES.TITLE_DETAIL(manga.id))} />
                     ))}
                 </ol>
                 <p className="mr-label mb-3 text-mr-fg-subtle">{t('trending.others')}</p>
                 <ol className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3" aria-label={t('trending.fullRankingAria')} start={4}>
                     {rest.map((manga, i) => (
-                        <RankedRow key={manga.id} rank={i + 4} manga={manga} onNavigate={() => navigate(`/titles/${manga.id}`)} />
+                        <RankedRow key={manga.id} rank={i + 4} manga={manga} onNavigate={() => navigate(ROUTES.TITLE_DETAIL(manga.id))} />
                     ))}
                 </ol>
             </div>

@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useCallback, useEffect, useState } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +58,7 @@ const ViewHistorySection = ({ userId, isOwner, viewHistoryVisibility }: Props) =
                     {items.map(item => (
                         <Link
                             key={`${item.titleId}-${item.viewedAt}`}
-                            to={`${WEB_BASE_URL}/title/${item.titleId}`}
+                            to={`${WEB_BASE_URL}${ROUTES.TITLE_DETAIL(item.titleId)}`}
                             className="block overflow-hidden border rounded-xs border-tertiary"
                         >
                             {item.titleCover ? (

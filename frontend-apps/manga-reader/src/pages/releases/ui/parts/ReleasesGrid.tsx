@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { MangaPoster } from '@ui/MangaPoster';
@@ -188,7 +189,7 @@ const ReleasesGrid = ({ groups, libraryOnly }: ReleasesGridProps) => {
                             <button
                                 key={item.id}
                                 type="button"
-                                onClick={() => navigate(`/titles/${item.mangaId}/chapters/${item.chapter}`)}
+                                onClick={() => navigate(ROUTES.CHAPTER(item.mangaId, item.chapter))}
                                 className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent"
                             >
                                 <MangaPoster size={48} radius="sm" />

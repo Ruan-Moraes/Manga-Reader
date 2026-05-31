@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { Play, Bookmark, Share2 } from 'lucide-react';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -73,7 +74,7 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
                 </section>
 
                 <div className="mb-5 flex flex-wrap gap-2">
-                    <Button variant="primary" icon={Play} onClick={() => navigate(`/titles/${title.id}/chapters/1`)}>
+                    <Button variant="primary" icon={Play} onClick={() => navigate(ROUTES.CHAPTER(title.id, 1))}>
                         {t('titleDetails.startReading')}
                     </Button>
                     <Button variant="raised" icon={Bookmark} onClick={() => setInLibrary(l => !l)}>

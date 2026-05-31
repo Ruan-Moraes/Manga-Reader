@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { HelpCircle, Languages, MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
 
@@ -160,7 +161,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
             icon: HelpCircle,
             accent: true,
             ariaLabel: t('footer.preferences.helpAria'),
-            onClick: () => navigate('/help'),
+            onClick: () => navigate(ROUTES.HELP),
         },
     ];
 

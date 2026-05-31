@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +47,7 @@ const UserProfile = () => {
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.stats.reading')}</p>
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                             {READING_NOW.map(m => (
-                                <MangaCard key={m.id} manga={m} progress={m.progress} onClick={() => navigate(`/titles/${m.id}`)} />
+                                <MangaCard key={m.id} manga={m} progress={m.progress} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
                             ))}
                         </div>
                     </section>
@@ -80,7 +81,7 @@ const UserProfile = () => {
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.tabs.comments')}</p>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             {GROUPS_FOLLOWED.map(g => (
-                                <GroupCard key={g.id} group={g} onClick={() => navigate(`/groups/${g.id}`)} />
+                                <GroupCard key={g.id} group={g} onClick={() => navigate(ROUTES.GROUP_DETAIL(g.id))} />
                             ))}
                         </div>
                     </section>
@@ -90,7 +91,7 @@ const UserProfile = () => {
             {tab === 'reading' && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {READING_NOW.map(m => (
-                        <MangaCard key={m.id} manga={m} progress={m.progress} onClick={() => navigate(`/titles/${m.id}`)} />
+                        <MangaCard key={m.id} manga={m} progress={m.progress} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
                     ))}
                 </div>
             )}
@@ -98,7 +99,7 @@ const UserProfile = () => {
             {tab === 'completed' && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {COMPLETED.map(m => (
-                        <MangaCard key={m.id} manga={m} onClick={() => navigate(`/titles/${m.id}`)} />
+                        <MangaCard key={m.id} manga={m} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
                     ))}
                 </div>
             )}

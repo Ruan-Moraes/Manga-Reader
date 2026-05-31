@@ -66,7 +66,7 @@ const DashboardTitles = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
-                onEdit={title => navigate(`${WEB_BASE_URL}/dashboard/titles/${title.id}/edit`)}
+                onEdit={title => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_TITLE_EDIT(title.id)}`)}
                 onDelete={setDeletingTitle}
             />
 

@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState, useCallback } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -79,7 +80,7 @@ const useResetPassword = () => {
 
                 showSuccessToast(message ?? t('resetPassword.success'));
 
-                navigate(`${WEB_BASE_URL}/login`);
+                navigate(`${WEB_BASE_URL}${ROUTES.LOGIN}`);
             } catch {
                 showErrorToast(t('validation.unexpectedError'));
             } finally {

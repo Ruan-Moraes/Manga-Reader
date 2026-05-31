@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +43,7 @@ const Groups = () => {
 
             <GroupFilters query={query} sortBy={sortBy} statusFilter={statusFilter} onQuery={setQuery} onSort={setSortBy} onStatus={setStatusFilter} />
 
-            <GroupList groups={groups} isLoading={isLoading} onGroupClick={id => navigate(`/groups/${id}`)} />
+            <GroupList groups={groups} isLoading={isLoading} onGroupClick={id => navigate(ROUTES.GROUP_DETAIL(id))} />
         </PageContainer>
     );
 };

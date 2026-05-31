@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -86,7 +87,7 @@ const SearchResults = () => {
                                     rating: title.ratingAverage,
                                     chapter: title.latestChapterNumber ? Number(title.latestChapterNumber) : undefined,
                                 }}
-                                onClick={() => navigate(`/titles/${title.id}`)}
+                                onClick={() => navigate(ROUTES.TITLE_DETAIL(title.id))}
                             />
                         ))}
                     </div>

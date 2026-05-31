@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
@@ -22,7 +23,7 @@ const HomeNewReleases = ({ releases }: HomeNewReleasesProps) => {
                 title={t('releases.title')}
                 meta={t('releases.meta')}
                 action={
-                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate('/genres?sort=most_recent')}>
+                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate(ROUTES.CATALOG_SORT('most_recent'))}>
                         {t('releases.viewAll')}
                     </Button>
                 }
@@ -47,7 +48,7 @@ const HomeNewReleases = ({ releases }: HomeNewReleasesProps) => {
                                 rating: m.ratingAverage,
                                 chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                             }}
-                            onClick={() => navigate(`/titles/${m.id}`)}
+                            onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
                         />
                     ))}
                 </div>

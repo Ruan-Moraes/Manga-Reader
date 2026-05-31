@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { ROUTES } from '@shared/constant/ROUTES';
 import { NavBar, SideMenu } from '@widgets/header';
 import { MobileTabBar } from '@widgets/mobile-tab-bar';
 import { Footer } from '@widgets/footer';
@@ -32,11 +33,11 @@ const DesignChrome = () => {
                 onOpenSideMenu={() => setSideOpen(true)}
                 onSearchSubmit={() => {}}
                 onNotificationsClick={() => {}}
-                onLibraryClick={() => navigate('/library')}
-                onProfileClick={() => navigate('/profile')}
+                onLibraryClick={() => navigate(ROUTES.LIBRARY)}
+                onProfileClick={() => navigate(ROUTES.PROFILE)}
                 onSettingsClick={() => {}}
                 onLogoutClick={() => {}}
-                onAccountClick={() => navigate('/login')}
+                onAccountClick={() => navigate(ROUTES.LOGIN)}
             />
 
             <SideMenu

@@ -1,4 +1,5 @@
 import { lazy, ReactNode, useEffect } from 'react';
+import { ROUTES } from '@shared/constant/ROUTES';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -47,7 +48,7 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
     }, [isAuthenticated, location, t]);
 
     if (!isAuthenticated) {
-        return <Navigate to={`${WEB_BASE_URL}/login`} replace />;
+        return <Navigate to={`${WEB_BASE_URL}${ROUTES.LOGIN}`} replace />;
     }
 
     return <>{children}</>;
@@ -60,7 +61,7 @@ const RoleGuard = ({ children, allowedRoles }: { children: ReactNode; allowedRol
     const role = session ? (mapAuthResponseToUser(session).role ?? 'user') : 'user';
 
     if (!session) {
-        return <Navigate to={`${WEB_BASE_URL}/login`} replace />;
+        return <Navigate to={`${WEB_BASE_URL}${ROUTES.LOGIN}`} replace />;
     }
 
     if (!allowedRoles.includes(role)) {

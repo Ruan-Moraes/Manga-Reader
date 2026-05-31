@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { MessageCircle, ChevronRight, Eye, ThumbsUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -112,7 +113,7 @@ const HelpArticlesSection = ({
                             <Button
                                 variant="primary"
                                 icon={MessageCircle}
-                                onClick={() => navigate('/legal/contact')}
+                                onClick={() => navigate(ROUTES.LEGAL_CONTACT)}
                             >
                                 {t('articles.openTicket')}
                             </Button>
@@ -125,7 +126,7 @@ const HelpArticlesSection = ({
                                 key={article.id}
                                 className="flex cursor-pointer items-center gap-4 bg-mr-surface px-4 py-4 transition-colors hover:bg-mr-accent-25"
                                 onClick={() =>
-                                    navigate(`/help/article/${article.id}`)
+                                    navigate(ROUTES.HELP_ARTICLE(article.id))
                                 }
                             >
                                 <span className="shrink-0 font-mr-mono text-mr-small font-mr-extrabold tabular-nums text-mr-accent">

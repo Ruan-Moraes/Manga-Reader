@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter, X } from 'lucide-react';
@@ -136,7 +137,7 @@ const CategoryFilters = () => {
                         </div>
                     )}
 
-                    <CategoryResults items={filtered} isLoading={isLoading} layout={layout} onNavigate={id => navigate(`/titles/${id}`)} onClearAll={clearAll} />
+                    <CategoryResults items={filtered} isLoading={isLoading} layout={layout} onNavigate={id => navigate(ROUTES.TITLE_DETAIL(id))} onClearAll={clearAll} />
 
                     {totalPages > 1 && (
                         <div className="mt-8">

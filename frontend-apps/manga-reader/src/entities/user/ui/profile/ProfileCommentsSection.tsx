@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useCallback, useEffect, useState } from 'react';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useTranslation } from 'react-i18next';
@@ -56,7 +57,7 @@ const ProfileCommentsSection = ({ userId, isOwner, commentVisibility }: Props) =
                 <ul className="space-y-2">
                     {comments.map(c => (
                         <li key={c.id} className="p-3 border rounded-xs border-tertiary bg-secondary/30">
-                            <Link to={`${WEB_BASE_URL}/title/${c.titleId}`} className="text-xs text-quaternary hover:underline">
+                            <Link to={`${WEB_BASE_URL}${ROUTES.TITLE_DETAIL(c.titleId)}`} className="text-xs text-quaternary hover:underline">
                                 {t('profile.comments.viewTitle')}
                             </Link>
                             <p className="mt-1 text-sm line-clamp-2">{c.textContent}</p>

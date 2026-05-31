@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
@@ -23,7 +24,7 @@ const HomeTrending = ({ trendingList }: HomeTrendingProps) => {
                 eyebrow={t('trending.eyebrow')}
                 title={t('trending.title')}
                 action={
-                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate('/genres?sort=most_read')}>
+                    <Button variant="ghost" size="sm" icon={ArrowRight} onClick={() => navigate(ROUTES.CATALOG_SORT('most_read'))}>
                         {t('trending.viewAll')}
                     </Button>
                 }
@@ -49,7 +50,7 @@ const HomeTrending = ({ trendingList }: HomeTrendingProps) => {
                                 chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                             }}
                             tag={<Badge variant="accent">#{i + 1}</Badge>}
-                            onClick={() => navigate(`/titles/${m.id}`)}
+                            onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
                         />
                     ))}
                 </div>

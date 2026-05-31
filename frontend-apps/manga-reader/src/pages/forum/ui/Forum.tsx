@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { Plus, Users } from 'lucide-react';
@@ -47,7 +48,7 @@ const Forum = () => {
                 page={page}
                 totalPages={totalPages}
                 onPageChange={setPage}
-                onTopicClick={id => navigate(`/forum/topic/${id}`)}
+                onTopicClick={id => navigate(ROUTES.FORUM_TOPIC(id))}
             />
         </PageContainer>
     );

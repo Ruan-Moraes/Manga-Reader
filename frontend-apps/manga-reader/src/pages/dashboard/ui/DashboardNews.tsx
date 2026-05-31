@@ -66,7 +66,7 @@ const DashboardNews = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
-                onEdit={n => navigate(`${WEB_BASE_URL}/dashboard/news/${n.id}/edit`)}
+                onEdit={n => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS_EDIT(n.id)}`)}
                 onDelete={setDeletingNews}
             />
 

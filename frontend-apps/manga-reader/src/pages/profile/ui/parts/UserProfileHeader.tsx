@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { Edit2, UserPlus } from 'lucide-react';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -48,7 +49,7 @@ const UserProfileHeader = ({ profile, isOwn, following, onFollowToggle }: UserPr
 
                     <div className="flex flex-col gap-2">
                         {isOwn ? (
-                            <Button variant="raised" icon={Edit2} onClick={() => navigate('/profile/edit')}>
+                            <Button variant="raised" icon={Edit2} onClick={() => navigate(ROUTES.PROFILE_EDIT)}>
                                 {t('profile.header.edit')}
                             </Button>
                         ) : (

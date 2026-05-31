@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -81,17 +82,17 @@ const useTitleFormState = () => {
 
         if (isEditing && titleId) {
             const result = await handleUpdate(titleId, data);
-            if (result) navigate(`${WEB_BASE_URL}/dashboard/titles`);
+            if (result) navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_TITLES}`);
         } else {
             const result = await handleCreate(data);
-            if (result) navigate(`${WEB_BASE_URL}/dashboard/titles`);
+            if (result) navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_TITLES}`);
         }
     };
 
     const handleDeleteClick = async () => {
         if (!titleId || !confirm(t('dashboard.titles.deleteConfirm'))) return;
         await handleDelete(titleId);
-        navigate(`${WEB_BASE_URL}/dashboard/titles`);
+        navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_TITLES}`);
     };
 
     return {

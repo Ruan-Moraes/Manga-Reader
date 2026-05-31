@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -15,8 +16,8 @@ const Chapter = () => {
 
     const reader = useChapterReader(titleId, chapter);
 
-    const navToTitle = () => navigate(`/titles/${titleId}`);
-    const navToChapter = (n: number) => navigate(`/titles/${titleId}/chapters/${n}`);
+    const navToTitle = () => navigate(ROUTES.TITLE_DETAIL(titleId));
+    const navToChapter = (n: number) => navigate(ROUTES.CHAPTER(titleId, n));
 
     return (
         <div className={`relative min-h-screen ${BG_CLASS[reader.bg]}`}>

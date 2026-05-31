@@ -1,3 +1,4 @@
+import { ROUTES } from '@shared/constant/ROUTES';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
@@ -51,7 +52,7 @@ const AdminEventForm = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate(`${WEB_BASE_URL}/dashboard/events`)}
+                onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_EVENTS}`)}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <ArrowLeft size={14} />
