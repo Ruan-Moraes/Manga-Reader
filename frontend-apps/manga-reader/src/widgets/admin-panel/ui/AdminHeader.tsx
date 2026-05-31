@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu } from 'lucide-react';
 
 import { Avatar } from '@ui/Avatar';
-import Logo from '@shared/component/logo/admin/Logo.tsx';
+import AdminLogo from '@shared/component/logo/admin/AdminLogo.tsx';
 
 import { useAuth } from '@features/auth';
 
@@ -25,7 +25,7 @@ const AdminHeader = ({ onToggleSidebar }: AdminHeaderProps) => {
                     </button>
                 </div>
                 <div className="hidden md:block">
-                    <Logo />
+                    <AdminLogo />
                 </div>
             </div>
             {user && (

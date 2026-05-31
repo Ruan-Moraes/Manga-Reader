@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useUserModalContext } from '../model/useUserModalContext';
 
-import { formatDate } from '@shared/util/formatters';
+import { formatDate } from '@shared/lib/formatters';
 
 const UserModalHeader = () => {
     const { t } = useTranslation('user');

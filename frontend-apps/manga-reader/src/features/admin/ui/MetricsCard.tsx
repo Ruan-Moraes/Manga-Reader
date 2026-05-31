@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 
 type MetricsCardProps = {
     label: string;

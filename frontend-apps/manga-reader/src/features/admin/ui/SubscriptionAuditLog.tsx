@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 
 import { getSubscriptionAuditLogs } from '../api/adminSubscriptionService';
 import type { SubscriptionAuditLogEntry } from '../model/admin.types';

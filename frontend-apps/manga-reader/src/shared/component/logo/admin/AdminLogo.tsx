@@ -4,7 +4,7 @@ type LogoTypes = {
     size?: 'xs' | 'sm' | 'md';
 };
 
-const Logo = ({ size = 'md' }: LogoTypes) => {
+const AdminLogo = ({ size = 'md' }: LogoTypes) => {
     const [logoError, setLogoError] = useState<boolean>(false);
 
     const sizeClasses = {
@@ -41,7 +41,7 @@ const Logo = ({ size = 'md' }: LogoTypes) => {
                 ) : (
                     <img
                         src={`${import.meta.env.BASE_URL}/android-chrome-512x512.png`}
-                        alt="Logo do Manga Reader"
+                        alt="AdminLogo do Manga Reader"
                         className={currentSize.img}
                         onError={() => setLogoError(true)}
                     />
@@ -55,4 +55,4 @@ const Logo = ({ size = 'md' }: LogoTypes) => {
     );
 };
 
-export default Logo;
+export default AdminLogo;

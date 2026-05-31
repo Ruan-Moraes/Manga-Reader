@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 
 import type { HighlightCard as HighlightCardProps } from '../../../model/title-card.types';
-import TitleDetails from '../../information/TitleDetails';
+import TitleInfoCard from '../../information/TitleInfoCard';
 import AppLink from '@shared/component/link/element/AppLink';
 
 import { RatingStars } from '@entities/rating/@x/manga';
@@ -74,7 +74,7 @@ const HighlightCard = ({
                         <div className="flex items-center justify-center h-44 mobile-md:h-56">
                             <span className="font-bold text-center text-tertiary">{t('loading')}</span>
                         </div>
-                        <TitleDetails
+                        <TitleInfoCard
                             showType={false}
                             shouldLoadCardData={true}
                             isLoading={isLoading}
@@ -115,7 +115,7 @@ const HighlightCard = ({
                                 )}
                             </AppLink>
                         </div>
-                        <TitleDetails
+                        <TitleInfoCard
                             showType={false}
                             shouldLoadCardData={false}
                             isLoading={isLoading}

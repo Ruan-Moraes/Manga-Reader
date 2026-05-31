@@ -1,6 +1,6 @@
 import { Chapter } from '../model/chapter.types';
 
-import { formatDate } from '@shared/util/formatters';
+import { formatDate } from '@shared/lib/formatters';
 
 import ChapterItem from './ChapterItem';
 import ChapterPagination from './ChapterPagination';

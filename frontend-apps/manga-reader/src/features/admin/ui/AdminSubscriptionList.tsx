@@ -4,7 +4,7 @@ import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminSubscription } from '../model/admin.types';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminSubscriptionListProps = {

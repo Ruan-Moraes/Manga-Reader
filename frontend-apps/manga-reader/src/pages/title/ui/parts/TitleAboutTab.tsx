@@ -6,7 +6,7 @@ type AboutTabProps = {
     title: Title;
 };
 
-const AboutTab = ({ title }: AboutTabProps) => {
+const TitleAboutTab = ({ title }: AboutTabProps) => {
     const { t } = useTranslation('manga');
 
     return (
@@ -29,4 +29,4 @@ const AboutTab = ({ title }: AboutTabProps) => {
     );
 };
 
-export default AboutTab;
+export default TitleAboutTab;

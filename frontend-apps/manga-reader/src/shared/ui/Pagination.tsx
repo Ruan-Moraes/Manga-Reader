@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Button } from './Button';
 
-import { paginationRange } from '../util/pagination.ts';
+import { paginationRange } from '@shared/lib/pagination';
 
 export interface PaginationProps {
     page: number;

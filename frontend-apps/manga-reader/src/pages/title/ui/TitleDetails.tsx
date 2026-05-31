@@ -19,7 +19,7 @@ import TitleHero from './parts/TitleHero';
 import ChaptersTab from './parts/ChaptersTab';
 import ReviewsTab from './parts/ReviewsTab';
 import GroupsTab from './parts/GroupsTab';
-import AboutTab from './parts/AboutTab';
+import TitleAboutTab from './parts/TitleAboutTab';
 
 const TitleDetails = () => {
     const { titleId } = useParams();
@@ -107,7 +107,7 @@ const TitleDetails = () => {
             )}
             {tab === 'reviews' && <ReviewsTab ratings={ratings} average={average} />}
             {tab === 'groups' && <GroupsTab groups={groups} />}
-            {tab === 'about' && <AboutTab title={title} />}
+            {tab === 'about' && <TitleAboutTab title={title} />}
         </PageContainer>
     );
 };

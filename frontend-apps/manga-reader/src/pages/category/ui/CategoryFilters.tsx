@@ -12,7 +12,7 @@ import { Button } from '@ui/Button';
 import { Drawer } from '@ui/Drawer';
 import { Pagination } from '@ui/Pagination';
 
-import { useCategoryFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@entities/category';
+import { useCatalogFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@entities/catalog-filter';
 
 import CategoryFilterPanel from './parts/CategoryFilterPanel';
 import CategoryResults from './parts/CategoryResults';
@@ -39,7 +39,7 @@ const CategoryFilters = () => {
     ];
 
     const { selectedTags, selectedSort, selectedStatus, page, handleSelectedTags, handleSortChange, handleStatusChange, handlePageChange } =
-        useCategoryFilters();
+        useCatalogFilters();
     const { data: tagsData } = useTagsFetch();
     const tags = tagsData ?? [];
 

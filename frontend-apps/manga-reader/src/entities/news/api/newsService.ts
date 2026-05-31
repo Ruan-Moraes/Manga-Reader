@@ -1,7 +1,7 @@
 import { api } from '@shared/service/http';
 import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 
 import type { NewsCategory, NewsFilter, NewsTabId, NewsItem } from '../model/news.types';
 

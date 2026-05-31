@@ -4,7 +4,7 @@ import type { TitleDetails as TitleDetailsProps } from '../../model/title-card.t
 
 import AppLink from '@shared/component/link/element/AppLink';
 
-const TitleDetails = ({
+const TitleInfoCard = ({
     showType,
     shouldLoadCardData,
     isLoading,
@@ -78,4 +78,4 @@ const TitleDetails = ({
     );
 };
 
-export default TitleDetails;
+export default TitleInfoCard;

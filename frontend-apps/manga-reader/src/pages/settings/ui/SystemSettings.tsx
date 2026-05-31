@@ -10,7 +10,7 @@ import AppearanceTab from './parts/AppearanceTab';
 import LanguageTab from './parts/LanguageTab';
 import AccessibilityTab from './parts/AccessibilityTab';
 import DataTab from './parts/DataTab';
-import AboutTab from './parts/AboutTab';
+import SettingsAboutTab from './parts/SettingsAboutTab';
 
 type SettingTab = 'reader' | 'appearance' | 'language' | 'accessibility' | 'data' | 'about';
 
@@ -43,7 +43,7 @@ const SystemSettings = () => {
             {tab === 'language' && <LanguageTab />}
             {tab === 'accessibility' && <AccessibilityTab onNavigateToAbout={() => setTab('about')} />}
             {tab === 'data' && <DataTab />}
-            {tab === 'about' && <AboutTab />}
+            {tab === 'about' && <SettingsAboutTab />}
         </PageContainer>
     );
 };

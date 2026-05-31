@@ -23,8 +23,8 @@ const mockTitle = {
     updatedAt: '2024-01-01',
 };
 
-vi.mock('@entities/category', async importOriginal => {
-    const actual = await importOriginal<typeof import('@entities/category')>();
+vi.mock('@entities/catalog-filter', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/catalog-filter')>();
     return {
         ...actual,
         useFilterResults: () => ({

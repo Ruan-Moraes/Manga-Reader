@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next';
 import DataTable, { type Column } from '@shared/component/table/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 
 import type { AdminTitle } from '../model/admin.types';
 import { Pencil, Trash2 } from 'lucide-react';

@@ -5,7 +5,7 @@ import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
 
 import type { AdminGroup } from '../model/admin.types';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 import { Pencil, Trash2 } from 'lucide-react';
 
 type AdminGroupListProps = {

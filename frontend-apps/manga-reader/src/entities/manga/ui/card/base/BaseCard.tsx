@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { BaseCard as BaseCardProps } from '../../../model/title-card.types';
 
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
-import TitleDetails from '../../information/TitleDetails';
+import TitleInfoCard from '../../information/TitleInfoCard';
 import TitleDescription from '../../information/TitleDescription';
 import { Image } from 'lucide-react';
 
@@ -60,7 +60,7 @@ const BaseCard = ({
                         </div>
                     )}
                 </div>
-                <TitleDetails
+                <TitleInfoCard
                     showType={showType}
                     shouldLoadCardData={shouldLoadCardData}
                     isLoading={isLoading}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,9 +9,8 @@ import NavMegaMenu from './NavMegaMenu';
 import NavActions from './NavActions';
 import NavSearch from './NavSearch';
 import useNavSearch from '../../model/useNavSearch';
+import useNavBarChrome from '../../model/useNavBarChrome';
 import Logo from '@shared/component/logo/Logo.tsx';
-
-const SCROLL_THRESHOLD = 8;
 
 export const NavBar = ({
     user,
@@ -28,56 +27,10 @@ export const NavBar = ({
     const { t } = useTranslation('layout');
 
     const [openSection, setOpenSection] = useState<string | null>(null);
-    const [isScrolled, setIsScrolled] = useState(false);
 
     const { searchValue, setSearchValue, searchFocused, setSearchFocused, inputRef, handleSearch, focusSearch } = useNavSearch(onSearchSubmit);
 
-    useEffect(() => {
-        let raf = 0;
-
-        const onScroll = () => {
-            if (raf) return;
-
-            raf = requestAnimationFrame(() => {
-                setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
-                raf = 0;
-            });
-        };
-
-        onScroll();
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-
-            if (raf) cancelAnimationFrame(raf);
-        };
-    }, []);
-
-    useEffect(() => {
-        const onKey = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-
-                focusSearch();
-
-                setSearchFocused(true);
-            }
-
-            if (e.key === 'Escape') {
-                setOpenSection(null);
-
-                setSearchFocused(false);
-
-                (document.activeElement as HTMLElement | null)?.blur?.();
-            }
-        };
-
-        document.addEventListener('keydown', onKey);
-
-        return () => document.removeEventListener('keydown', onKey);
-    }, [focusSearch, setSearchFocused]);
+    const { isScrolled } = useNavBarChrome({ focusSearch, setSearchFocused, setOpenSection });
 
     const desktopBandHeight = isScrolled ? 54 : 68;
     const desktopFieldHeight = isScrolled ? 38 : 42;

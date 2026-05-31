@@ -14,7 +14,7 @@ export { default as VerticalCardsContainer } from './ui/card/vertical/VerticalCa
 export { default as VerticalCard } from './ui/card/vertical/VerticalCard';
 
 // Components - Info & Actions
-export { default as TitleDetails } from './ui/information/TitleDetails';
+export { default as TitleInfoCard } from './ui/information/TitleInfoCard';
 export { default as TitleDescription } from './ui/information/TitleDescription';
 export { default as TitleActions } from './ui/action/TitleActions';
 

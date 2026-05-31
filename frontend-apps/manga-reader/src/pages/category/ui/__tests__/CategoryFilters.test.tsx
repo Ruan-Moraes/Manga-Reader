@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import CategoryFilters from '../CategoryFilters';
 import type { Title } from '@entities/manga';
-import type { Tag } from '@entities/category';
+import type { Tag } from '@entities/catalog-filter';
 
 const makeTitle = (overrides: Partial<Title> = {}): Title => ({
     id: '1',
@@ -49,8 +49,8 @@ const MOCK_TITLES: Title[] = [
     }),
 ];
 
-vi.mock('@entities/category', async importOriginal => {
-    const actual = await importOriginal<typeof import('@entities/category')>();
+vi.mock('@entities/catalog-filter', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/catalog-filter')>();
     return {
         ...actual,
         useTagsFetch: () => ({ data: MOCK_TAGS }),

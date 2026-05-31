@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { formatDate } from '@shared/util/formatters';
+import { formatDate } from '@shared/lib/formatters';
 
 type CommentMetadataProps = {
     createdAt: string;

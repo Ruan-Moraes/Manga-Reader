@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 
 import MetricsCard from '../MetricsCard';
 import type { RevenueTimeSeries } from '../../model/admin.types';

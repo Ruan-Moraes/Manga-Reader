@@ -8,7 +8,7 @@ import { PageShell } from '@widgets/layouts';
 import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
 import AppLink from '@shared/component/link/element/AppLink';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
-import { formatDate } from '@shared/util/formatters';
+import { formatDate } from '@shared/lib/formatters';
 
 import { useAuth } from '@features/auth';
 import { useUserDetails } from '@entities/user';

@@ -1,10 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import RatingStars from '../../RatingStars';
-import Illustration from '@ui/Illustration';
-
 import FinalScoreCard from './FinalScoreCard';
+import CategoryStep from './parts/CategoryStep';
+import StepIndicator from './parts/StepIndicator';
 
 import { RATING_CATEGORIES } from './ratingCategories';
 import { Button } from '@ui/Button';
@@ -108,111 +107,6 @@ const RatingWizard = ({ onSubmit, onCancel, isSubmitting = false }: RatingWizard
         setCategoryComments(Object.fromEntries(RATING_CATEGORIES.map(c => [c.key, ''])) as CategoryComments);
     };
 
-    const renderStepIndicator = () => (
-        <div className="overflow-x-auto scrollbar-hidden">
-            <div className="flex items-center gap-1 min-w-max pb-2">
-                {RATING_CATEGORIES.map((cat, i) => {
-                    const isCompleted = categoryRatings[cat.key] > 0;
-                    const isCurrent = i === currentStep;
-                    const isFuture = !isCompleted && !isCurrent;
-
-                    return (
-                        <button
-                            key={cat.key}
-                            type="button"
-                            onClick={() => handleStepClick(i)}
-                            className={`flex items-center gap-1 px-2 py-1 text-xs rounded-xs transition-colors cursor-pointer whitespace-nowrap ${
-                                isCurrent
-                                    ? 'font-bold text-white border-b-2 border-white'
-                                    : isCompleted
-                                      ? 'text-quaternary-default border-b-2 border-quaternary-default'
-                                      : ''
-                            } ${isFuture ? 'text-tertiary opacity-60' : ''}`}
-                        >
-                            <span>{isCompleted && !isCurrent ? '✓' : `${i + 1}`}</span>
-                            <span className="hidden mobile-md:inline">{t(`wizard.categoryLabels.${cat.key}`)}</span>
-                        </button>
-                    );
-                })}
-                <button
-                    type="button"
-                    onClick={() => allCategoriesRated && handleStepClick(TOTAL_STEPS - 1)}
-                    className={`flex items-center gap-1 px-2 py-1 text-xs rounded-xs transition-colors cursor-pointer whitespace-nowrap ${
-                        isFinalStep
-                            ? 'font-bold text-white border-b-2 border-white'
-                            : allCategoriesRated
-                              ? 'text-quaternary-default'
-                              : 'text-tertiary opacity-60'
-                    }`}
-                >
-                    <span>{t('wizard.finalStepLabel')}</span>
-                </button>
-            </div>
-        </div>
-    );
-
-    const renderCategoryStep = () => {
-        if (!currentCategory) return null;
-
-        const currentRating = categoryRatings[currentCategory.key];
-        const currentComment = categoryComments[currentCategory.key];
-
-        const isRated = currentRating > 0;
-
-        const canAdvance = isRated;
-
-        const categoryLabel = t(`wizard.categoryLabels.${currentCategory.key}`);
-
-        return (
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-col items-center gap-2 pt-2">
-                    <Illustration type={currentCategory.iconType} className="w-8 h-8 object-contain" />
-                    <h3 className="text-sm font-bold text-shadow-default">{t('wizard.rateLabel', { label: categoryLabel })}</h3>
-                    <p className="text-xs text-tertiary text-center max-w-xs">{t(`wizard.categoryDescriptions.${currentCategory.key}`)}</p>
-                </div>
-                <div className="flex justify-center py-2">
-                    <RatingStars value={isRated ? currentRating : 0} onChange={handleCategoryRating} size={28} showValue={isRated} halfPrecision />
-                </div>
-                <textarea
-                    value={currentComment}
-                    onChange={e => handleCategoryComment(e.target.value)}
-                    placeholder={t('wizard.commentPlaceholder')}
-                    rows={2}
-                    className="w-full p-2 text-xs border rounded-xs resize-none bg-primary-default border-tertiary placeholder:text-tertiary focus:border-quaternary-default focus:outline-none transition-colors"
-                />
-                <div className="flex gap-2">
-                    <button
-                        type="button"
-                        onClick={currentStep === 0 ? onCancel : handleBack}
-                        className="flex-1 px-4 py-2 text-sm border rounded-xs border-tertiary bg-tertiary hover:bg-secondary hover:border-secondary transition-colors cursor-pointer"
-                    >
-                        {currentStep === 0 ? t('wizard.cancel') : t('wizard.back')}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleNext}
-                        disabled={!canAdvance}
-                        className="flex-1 px-4 py-2 text-sm border rounded-xs bg-primary-default border-primary-default hover:bg-primary-opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                    >
-                        {t('wizard.next')}
-                    </button>
-                </div>
-            </div>
-        );
-    };
-
-    const renderFinalStep = () => (
-        <FinalScoreCard
-            average={computeAverage()}
-            categoryRatings={categoryRatings}
-            categories={RATING_CATEGORIES}
-            onSubmit={handleSubmit}
-            onBack={handleBack}
-            isSubmitting={isSubmitting}
-            allCategoriesRated={allCategoriesRated}
-        />
-    );
-
     return (
         <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -228,9 +122,38 @@ const RatingWizard = ({ onSubmit, onCancel, isSubmitting = false }: RatingWizard
                     {t('wizard.close')}
                 </Button>
             </div>
-            {renderStepIndicator()}
+            <StepIndicator
+                categoryRatings={categoryRatings}
+                currentStep={currentStep}
+                isFinalStep={isFinalStep}
+                allCategoriesRated={allCategoriesRated}
+                totalSteps={TOTAL_STEPS}
+                onStepClick={handleStepClick}
+            />
             <div key={currentStep} className="animate-fade-in" style={{ animation: 'fadeIn 300ms ease-in-out' }}>
-                {isFinalStep ? renderFinalStep() : renderCategoryStep()}
+                {isFinalStep || !currentCategory ? (
+                    <FinalScoreCard
+                        average={computeAverage()}
+                        categoryRatings={categoryRatings}
+                        categories={RATING_CATEGORIES}
+                        onSubmit={handleSubmit}
+                        onBack={handleBack}
+                        isSubmitting={isSubmitting}
+                        allCategoriesRated={allCategoriesRated}
+                    />
+                ) : (
+                    <CategoryStep
+                        category={currentCategory}
+                        rating={categoryRatings[currentCategory.key]}
+                        comment={categoryComments[currentCategory.key]}
+                        isFirstStep={currentStep === 0}
+                        onRate={handleCategoryRating}
+                        onComment={handleCategoryComment}
+                        onCancel={onCancel}
+                        onBack={handleBack}
+                        onNext={handleNext}
+                    />
+                )}
             </div>
         </div>
     );

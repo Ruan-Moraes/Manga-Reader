@@ -10,7 +10,7 @@ import useAdminTitleActions from './useAdminTitleActions';
 import type { CreateTitleRequest } from '../model/admin.types';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 import { useDomainLabels, LABEL_TYPES } from '@entities/label';
-import { useTagsFetch, type Tag } from '@entities/category';
+import { useTagsFetch, type Tag } from '@entities/catalog-filter';
 
 type FormState = Omit<CreateTitleRequest, 'name' | 'synopsis'>;
 

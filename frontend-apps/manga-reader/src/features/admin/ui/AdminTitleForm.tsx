@@ -7,7 +7,7 @@ import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
 import { Input } from '@ui/Input';
 import { Select } from '@ui/Select';
 import { Checkbox } from '@ui/Checkbox';
-import { TagSelectInput } from '@entities/category';
+import { TagSelectInput } from '@entities/catalog-filter';
 
 import useTitleFormState from '../model/useTitleFormState';
 

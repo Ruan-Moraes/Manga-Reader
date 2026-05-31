@@ -136,10 +136,10 @@ administrativo, qualquer dado persistido.
 
 ## Formatação de datas, números e moedas
 
-Helpers de `@shared/util/formatters` (respeitam `i18n.language`):
+Helpers de `@shared/lib/formatters` (respeitam `i18n.language`):
 
 ```tsx
-import { formatDate, formatCurrency } from '@shared/util/formatters';
+import { formatDate, formatCurrency } from '@shared/lib/formatters';
 
 formatDate(new Date()); // "19/04/2026" pt-BR, "4/19/2026" en-US
 formatCurrency(1999);   // "R$ 19,99" pt-BR, "$19.99" en-US

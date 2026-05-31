@@ -5,7 +5,7 @@ import { Kbd } from '@ui/Kbd';
 
 import { SettingSection } from './settingsShared';
 
-const AboutTab = () => {
+const SettingsAboutTab = () => {
     const { t } = useTranslation('user');
 
     const shortcuts = [
@@ -74,4 +74,4 @@ const AboutTab = () => {
     );
 };
 
-export default AboutTab;
+export default SettingsAboutTab;

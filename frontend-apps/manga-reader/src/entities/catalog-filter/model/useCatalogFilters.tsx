@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
 
-import type { Tag } from '@entities/category';
-import type { Sort } from '@entities/category';
-import type { PublicationStatus } from '@entities/category';
-import type { AdultContent } from '@entities/category';
+import type { Tag } from '@entities/catalog-filter';
+import type { Sort } from '@entities/catalog-filter';
+import type { PublicationStatus } from '@entities/catalog-filter';
+import type { AdultContent } from '@entities/catalog-filter';
 
-const useCategoryFilters = () => {
+const useCatalogFilters = () => {
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [selectedSort, setSelectedSort] = useState<Sort>('most_read');
     const [selectedStatus, setSelectedStatus] = useState<PublicationStatus>('all');
@@ -54,4 +54,4 @@ const useCategoryFilters = () => {
     };
 };
 
-export default useCategoryFilters;
+export default useCatalogFilters;

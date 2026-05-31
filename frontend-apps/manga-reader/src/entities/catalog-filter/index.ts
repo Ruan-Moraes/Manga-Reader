@@ -1,5 +1,5 @@
 export { default as useTagsFetch } from './model/useTagsFetch';
-export { default as useCategoryFilters } from './model/useCategoryFilters';
+export { default as useCatalogFilters } from './model/useCatalogFilters';
 export { default as useFilterResults } from './model/useFilterResults';
 
 export { default as TagSelectInput } from './ui/TagSelectInput';

@@ -43,6 +43,6 @@ export { default as ProfileSkeleton } from './ui/profile/ProfileSkeleton';
 export { default as ProfileEmptyState } from './ui/profile/ProfileEmptyState';
 export { default as ProfileEditModal } from './ui/profile/ProfileEditModal';
 export { default as RecommendationsSection } from './ui/profile/RecommendationsSection';
-export { default as CommentsSection } from './ui/profile/CommentsSection';
+export { default as ProfileCommentsSection } from './ui/profile/ProfileCommentsSection';
 export { default as ViewHistorySection } from './ui/profile/ViewHistorySection';
 export { default as PrivacySettingsForm } from './ui/profile/PrivacySettingsForm';

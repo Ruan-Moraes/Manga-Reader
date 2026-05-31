@@ -194,16 +194,23 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
   (user/title/news/event/group/content/finance/subscription/tag); `admin.types.ts` virou barrel re-export (imports estáveis).
 - ✅ **`features/admin/ui/AdminEventForm.tsx`** 242→~190 LOC: extraído `parts/EventFormField` (wrapper label+control)
   + helper `setField` (curry) — removida repetição de `setForm(f => ({...f, k}))` por campo.
-- **Restam**: `RatingWizard` (239 — aceitável p/ padrão wizard), `NavBar` (212 — já bem decomposto), páginas legais (ver DT-09).
+- ✅ **`RatingWizard.tsx`** 239→~150 LOC (2026-05-31): extraídos `wizard/parts/StepIndicator` + `wizard/parts/CategoryStep`.
+- ✅ **`NavBar.tsx`** 212→~155 LOC (2026-05-31): scroll + atalho Cmd+K extraídos p/ `widgets/header/model/useNavBarChrome.ts`;
+  removidos 3 `console.log` de debug residuais.
+- **Restam**: páginas legais (ver DT-09).
 
 #### 25.4 — Duplicação / nomes colididos (triar)
 - ✅ **`Pagination` unificado (2026-05-30)**: canônico `@ui/Pagination` (Button-based, acessível).
   Removidos `shared/component/navigation/Pagination` (icon) e re-export morto `entities/forum/ui/Pagination`;
   `DataTable` migrado (props `total/onChange` + guarda `>1`). `ChapterPagination`/`useCommentPagination` mantidos (não-dups).
-- **Não-dups (composição/contexto, só confunde por nome)**: `Footer`/`NavBar`/`SideMenu`/`MobileTabBar` — a versão widget **compõe** o kit `@ui` (ok); `AboutTab` (title vs settings), `TitleDetails` (page vs entity), `CommentsSection` (comment vs user/profile), `Logo` (main vs admin) — contextos diferentes. Considerar renomear p/ clareza.
+- **Não-dups (composição/contexto)**: `Footer`/`NavBar`/`SideMenu`/`MobileTabBar` — versão widget **compõe** o kit `@ui` (ok, mantido).
+- ✅ **Renomes de clareza (2026-05-31)**: `AboutTab`→`TitleAboutTab`/`SettingsAboutTab`;
+  entity `TitleDetails` (component)→`TitleInfoCard` (type `TitleDetailsProps` mantido; page `TitleDetails` mantido);
+  user-profile `CommentsSection`→`ProfileCommentsSection` (genérico `CommentsSection` de comment mantido);
+  admin `Logo`→`AdminLogo` (main `Logo` mantido). Barrels + import sites atualizados.
 
-#### 25.5 — Já aceito / deferido (não re-auditar)
-- `shared` public-api/sidestep (idiomático); `inconsistent-naming` off (`news`); 3 desvios same-layer (layout shells, design showcase) com exceção file-scoped.
+#### 25.5 — Já aceito / deferido (não re-auditar) — ✅ revisado 2026-05-31, sem ação
+- `shared` public-api/sidestep (idiomático); `inconsistent-naming` off (`news`); 3 desvios same-layer (layout shells, design showcase) com exceção file-scoped. **Exceções intencionais — mantidas.**
 
 #### 25.6 — Padronização de testes — ✅ Feito
 - Convenção `__tests__/` aplicada: 31 testes inline movidos p/ `__tests__/` do segmento
@@ -212,14 +219,15 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
   (inline + `__tests__/`); a versão `__tests__/` era superset → inline deletado.
 - Suite: 120 files / 817 tests, verde (−2 files, −9 testes redundantes).
 
-#### 25.7 — Estruturais observados — não corrigidos (escopo semântico/à parte)
-- `shared/util/` (formatters, pagination) vs `shared/service/util/` — 2 locais de "util".
-- `entities/category` carrega tag/sort/adult-content/publication-status + `tagService` — semanticamente é "tag/taxonomia", não "category".
-- `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (aceito).
+#### 25.7 — Estruturais observados — ✅ Feito (2026-05-31)
+- ✅ `entities/category` → **`entities/catalog-filter`** (mal-nomeado: filtros tag/sort/status/adult + `tagService`);
+  hook `useCategoryFilters`→`useCatalogFilters`; gateway `@x/category.ts`→`@x/catalog-filter.ts`; 10 consumidores + mocks atualizados.
+- ✅ `shared/util/` consolidado em **`shared/lib/`** (`formatters.ts` + `pagination.ts`, ~22 sites); `shared/service/util/`
+  permanece (são serviços, não utils puros). Dedup `formatRelativeTime` vs `formatRelativeDate` **deferido** (assinaturas distintas).
+- `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (**aceito**, mantido).
 
-**Prioridade**: Baixa. Resolvido 2026-05-30: 25.4 (Pagination unificado) + 25.3 parcial
-(DesignPrimitives, Footer, useCommentRichEditor, CategoryFilters quebrados). Restam: 25.3
-(admin.types/AdminEventForm/RatingWizard), renomes semânticos (25.7). Mocks (25.1) e DT-13 já stale.
+**Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files completos), 25.4 (Pagination + renomes de clareza),
+25.5 (revisado, sem ação), 25.6 (testes), 25.7 (catalog-filter + lib). Restam só itens não-código/não-prod (DT-09 legais).
 
 ---
 

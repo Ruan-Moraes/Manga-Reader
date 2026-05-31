@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 const useNavSearch = (onSearchSubmit?: (q: string) => void) => {
     const [searchValue, setSearchValue] = useState('');
     const [searchFocused, setSearchFocused] = useState(false);
+
     const searchContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -10,10 +11,16 @@ const useNavSearch = (onSearchSubmit?: (q: string) => void) => {
 
     const handleSearch = () => {
         const q = searchValue.trim();
-        if (!q) return;
+
+        if (!q) {
+            return;
+        }
+
         onSearchSubmit?.(q);
+
         setSearchValue('');
         setSearchFocused(false);
+
         inputRef.current?.blur();
     };
 

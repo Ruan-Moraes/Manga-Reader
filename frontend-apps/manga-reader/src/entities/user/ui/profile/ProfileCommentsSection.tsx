@@ -14,7 +14,7 @@ type Props = {
     commentVisibility: string;
 };
 
-const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
+const ProfileCommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
     const { t, i18n } = useTranslation('user');
     const [comments, setComments] = useState<CommentSummary[]>([]);
     const [page, setPage] = useState(0);
@@ -91,4 +91,4 @@ const CommentsSection = ({ userId, isOwner, commentVisibility }: Props) => {
     );
 };
 
-export default CommentsSection;
+export default ProfileCommentsSection;

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { FinancialSummary } from '../model/admin.types';
 import MetricsCard from './MetricsCard';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 
 type FinancialDashboardProps = {
     summary: FinancialSummary;

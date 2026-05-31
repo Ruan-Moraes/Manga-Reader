@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 
-import useCategoryFilters from '../useCategoryFilters';
+import useCatalogFilters from '../useCatalogFilters';
 
-describe('useCategoryFilters', () => {
+describe('useCatalogFilters', () => {
     it('deve iniciar com valores padrao', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         expect(result.current.selectedTags).toEqual([]);
         expect(result.current.selectedSort).toBe('most_read');
@@ -15,7 +15,7 @@ describe('useCategoryFilters', () => {
     });
 
     it('deve atualizar sort ao chamar handleSortChange', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         act(() => {
             result.current.handleSortChange('most_recent');
@@ -25,7 +25,7 @@ describe('useCategoryFilters', () => {
     });
 
     it('deve atualizar status ao chamar handleStatusChange', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         act(() => {
             result.current.handleStatusChange('complete');
@@ -35,7 +35,7 @@ describe('useCategoryFilters', () => {
     });
 
     it('deve atualizar adultContent ao chamar handleAdultContentChange', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         act(() => {
             result.current.handleAdultContentChange('adult_content');
@@ -45,7 +45,7 @@ describe('useCategoryFilters', () => {
     });
 
     it('deve atualizar tags ao chamar handleSelectedTags', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         act(() => {
             result.current.handleSelectedTags([{ value: 1, label: 'Action' }] as never[]);
@@ -55,7 +55,7 @@ describe('useCategoryFilters', () => {
     });
 
     it('deve gerenciar paginacao', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         act(() => {
             result.current.handlePageChange(3);
@@ -65,7 +65,7 @@ describe('useCategoryFilters', () => {
     });
 
     it('deve resetar pagina quando filtro muda', () => {
-        const { result } = renderHook(() => useCategoryFilters());
+        const { result } = renderHook(() => useCatalogFilters());
 
         act(() => {
             result.current.handlePageChange(5);

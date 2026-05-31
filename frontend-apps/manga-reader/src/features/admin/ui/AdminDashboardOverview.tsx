@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import type { DashboardMetrics } from '@features/admin';
-import { getLocale } from '@shared/util/formatters';
+import { getLocale } from '@shared/lib/formatters';
 import { AlertCircle, Book, Calendar, FileText, Layers, Users } from 'lucide-react';
 
 type MetricCardProps = {
