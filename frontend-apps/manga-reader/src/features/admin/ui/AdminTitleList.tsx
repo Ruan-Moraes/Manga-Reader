@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import DataTable, { type Column } from '@shared/component/table/DataTable';
+import DataTable, { type Column } from '@ui/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
 import { getLocale } from '@shared/lib/formatters';

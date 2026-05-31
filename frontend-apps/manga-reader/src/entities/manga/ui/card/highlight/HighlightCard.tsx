@@ -4,7 +4,7 @@ import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
 
 import type { HighlightCard as HighlightCardProps } from '../../../model/title-card.types';
 import TitleInfoCard from '../../information/TitleInfoCard';
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 import { RatingStars } from '@entities/rating/@x/manga';
 import { Image } from 'lucide-react';

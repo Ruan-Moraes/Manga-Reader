@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Checkbox } from '@ui/Checkbox';
 import { Input } from '@ui/Input';
-import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import LocalizedTextInput from '@ui/LocalizedTextInput';
 import useEventFormModalState from '../../model/useEventFormModalState';
 import FormModal from './FormModal';
 

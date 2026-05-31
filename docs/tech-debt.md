@@ -228,7 +228,10 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
   `shared/service/util/formatRelativeDate` horas/dias, e cópia própria em `forumService.ts` min/meses).
   Unificados num só: `shared/service/util/formatRelativeDate` (impl rica min/horas/dias/meses); `forumService`
   re-exporta; `formatRelativeTime` Intl removido. NOTE: strings pt-BR hardcoded — migração p/ Intl locale-aware fica como i18n debt à parte.
-- `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (**aceito permanente**, mantido).
+- ✅ **`shared/component/` (legacy) eliminada (2026-05-31)**: kit `@ui` é o **home único** de componentes.
+  Purgados ~32 arquivos dead (button/input/form/avatar/box/icon/modal-info/notification/paragraph/social-media/title/blur);
+  movidos os 12 vivos p/ `shared/ui` (AppLink, DataTable, TruncatedCell, LocalizedTextInput, ImageLightbox, Logo, AdminLogo,
+  ErrorBoundary, ErrorFallback, RouteErrorFallback, RouteSuspenseFallback, ToastProvider→ToastContainer). Pasta `shared/component/` removida.
 
 **Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files completos), 25.4 (Pagination + renomes de clareza),
 25.5 (revisado, sem ação), 25.6 (testes), 25.7 (catalog-filter + lib). Restam só itens não-código/não-prod (DT-09 legais).

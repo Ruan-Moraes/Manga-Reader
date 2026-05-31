@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '@ui/Input';
-import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import LocalizedTextInput from '@ui/LocalizedTextInput';
 import AdminModal from './AdminModal';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 

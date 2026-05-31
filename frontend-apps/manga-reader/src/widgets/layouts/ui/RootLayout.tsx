@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
 
-import RouteSuspenseFallback from '@shared/component/loading/RouteSuspenseFallback';
+import RouteSuspenseFallback from '@ui/RouteSuspenseFallback';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { Header } from '@widgets/header';

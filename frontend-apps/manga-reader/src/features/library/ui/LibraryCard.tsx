@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Select } from '@ui/Select';
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 import type { ReadingListType, SavedMangaItem } from '../model/saved-library.types';
 

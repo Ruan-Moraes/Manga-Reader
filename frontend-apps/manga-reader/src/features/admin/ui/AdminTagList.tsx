@@ -1,4 +1,4 @@
-import DataTable, { type Column } from '@shared/component/table/DataTable';
+import DataTable, { type Column } from '@ui/DataTable';
 import useSortableData from '@shared/hook/useSortableData';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';

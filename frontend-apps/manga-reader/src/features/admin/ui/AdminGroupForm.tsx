@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { getAdminGroupDetail } from '../api/adminGroupService';
 import useAdminGroupActions from '../model/useAdminGroupActions';
-import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 import { ArrowLeft } from 'lucide-react';
 

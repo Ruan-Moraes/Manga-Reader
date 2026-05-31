@@ -7,7 +7,7 @@ import useTitlesFetch from '../../../model/data/useTitlesFetch';
 
 import { SectionHeader } from '@entities/manga';
 
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 import HighlightCard from './HighlightCard';
 

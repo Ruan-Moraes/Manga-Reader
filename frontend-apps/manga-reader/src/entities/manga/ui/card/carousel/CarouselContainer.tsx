@@ -12,7 +12,7 @@ import { SectionHeader } from '../../../model/section-header.types';
 import useTitlesFetch from '../../../model/data/useTitlesFetch';
 
 import CarouselSlide from './CarouselSlide';
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 const CarouselContainer = ({ title, subTitle }: SectionHeader) => {
     const { data, status } = useTitlesFetch(QUERY_KEYS.TITLES_IN_THE_CAROUSEL, 0, 10);

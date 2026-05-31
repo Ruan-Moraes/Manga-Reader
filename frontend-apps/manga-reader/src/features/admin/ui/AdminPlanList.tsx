@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import DataTable, { type Column } from '@shared/component/table/DataTable';
-import TruncatedCell from '@shared/component/table/TruncatedCell';
+import DataTable, { type Column } from '@ui/DataTable';
+import TruncatedCell from '@ui/TruncatedCell';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminPlan } from '../model/admin.types';

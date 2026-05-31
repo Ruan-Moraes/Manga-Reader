@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import type { SortDirection } from '@shared/component/table/DataTable';
+import type { SortDirection } from '@ui/DataTable';
 import { getLocale } from '@shared/lib/formatters';
 
 type UseSortableDataReturn<T> = {

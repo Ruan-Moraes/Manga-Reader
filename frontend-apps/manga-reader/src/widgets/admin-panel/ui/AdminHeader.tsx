@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu } from 'lucide-react';
 
 import { Avatar } from '@ui/Avatar';
-import AdminLogo from '@shared/component/logo/admin/AdminLogo.tsx';
+import AdminLogo from '@ui/AdminLogo.tsx';
 
 import { useAuth } from '@features/auth';
 

@@ -1,12 +1,14 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer as ToastifyContainer } from 'react-toastify';
 
 import { TOAST_POSITIONS } from '@shared/constant/TOAST_POSITIONS';
 
-const ToastProvider = () => (
+// react-toastify viewport for toastService notifications (distinct from the
+// kit's context ToastProvider in @ui/Toast).
+const ToastContainer = () => (
     <>
-        <ToastContainer
+        <ToastifyContainer
             position={TOAST_POSITIONS.BOTTOM_RIGHT}
             autoClose={2500}
             closeButton={true}
@@ -20,4 +22,4 @@ const ToastProvider = () => (
     </>
 );
 
-export default ToastProvider;
+export default ToastContainer;

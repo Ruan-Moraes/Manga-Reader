@@ -18,10 +18,10 @@ import { CommentSortProvider } from '@entities/comment';
 
 import { queryClient } from '@shared/service/util/queryCache';
 
-import ToastProvider from '@shared/component/toast/ToastProvider';
+import ToastContainer from '@ui/ToastContainer';
 import { ToastProvider as DSToastProvider } from '@ui/Toast';
-import ErrorBoundary from '@shared/component/errorBoundary/ErrorBoundary';
-import RouteErrorFallback from '@shared/component/errorBoundary/RouteErrorFallback';
+import ErrorBoundary from '@ui/ErrorBoundary';
+import RouteErrorFallback from '@ui/RouteErrorFallback';
 
 import { initGlobalErrorHandler } from '@shared/service/errorReporting/globalErrorHandler';
 
@@ -90,7 +90,7 @@ createRoot(document.getElementById('root')!).render(
                     <UserModalProvider>
                         <CommentSortProvider>
                             <RouterProvider router={routes} />
-                            <ToastProvider />
+                            <ToastContainer />
                             {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
                         </CommentSortProvider>
                     </UserModalProvider>

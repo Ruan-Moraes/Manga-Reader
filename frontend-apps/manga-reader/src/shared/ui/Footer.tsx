@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 
-import Logo from '@shared/component/logo/Logo.tsx';
+import Logo from '@ui/Logo';
 import { cn } from '@shared/lib/cn';
 
 import { AppButton, PreferenceButton, SocialButton } from './footer/FooterButtons';

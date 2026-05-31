@@ -4,7 +4,7 @@ import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 
 import { useUserModalContext } from '../model/useUserModalContext';
 
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 

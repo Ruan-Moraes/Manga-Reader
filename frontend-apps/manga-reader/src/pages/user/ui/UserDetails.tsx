@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { PageShell } from '@widgets/layouts';
 
-import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
-import AppLink from '@shared/component/link/element/AppLink';
+import ImageLightbox from '@ui/ImageLightbox';
+import AppLink from '@ui/AppLink';
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 import { formatDate } from '@shared/lib/formatters';
 

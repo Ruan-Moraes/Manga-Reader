@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { VerticalCard as VerticalCardProps } from '../../../model/title-card.types';
 
 import { ERROR_MESSAGES } from '@shared/constant/ERROR_MESSAGES';
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 import { RatingStars } from '@entities/rating/@x/manga';
 import { Image } from 'lucide-react';

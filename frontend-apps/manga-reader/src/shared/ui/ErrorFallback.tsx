@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { WEB_BASE_URL } from '../../constant/WEB_BASE_URL';
+import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 
 interface ErrorFallbackProps {
     error: Error;

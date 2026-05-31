@@ -10,7 +10,7 @@ import NavActions from './NavActions';
 import NavSearch from './NavSearch';
 import useNavSearch from '../../model/useNavSearch';
 import useNavBarChrome from '../../model/useNavBarChrome';
-import Logo from '@shared/component/logo/Logo.tsx';
+import Logo from '@ui/Logo';
 
 export const NavBar = ({
     user,

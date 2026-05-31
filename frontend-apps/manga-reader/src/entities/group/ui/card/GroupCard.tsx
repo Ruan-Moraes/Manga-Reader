@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getGroupStatusLabelKey } from '../../api/groupService';
 import { Group } from '../../model/group.types';
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 import { ExternalLink } from 'lucide-react';
 
 type GroupCardProps = {

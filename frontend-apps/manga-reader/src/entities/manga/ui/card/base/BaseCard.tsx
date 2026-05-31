@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BaseCard as BaseCardProps } from '../../../model/title-card.types';
 
-import ImageLightbox from '@shared/component/modal/image/ImageLightbox';
+import ImageLightbox from '@ui/ImageLightbox';
 import TitleInfoCard from '../../information/TitleInfoCard';
 import TitleDescription from '../../information/TitleDescription';
 import { Image } from 'lucide-react';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@ui/Modal';
 import { Avatar } from '@ui/Avatar';
 import { GroupMember } from '../../model/group.types';
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 type GroupMemberModalProps = {
     isOpen: boolean;

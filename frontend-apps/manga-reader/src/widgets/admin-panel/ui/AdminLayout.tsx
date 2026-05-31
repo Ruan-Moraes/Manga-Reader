@@ -1,7 +1,7 @@
 import { Suspense, useCallback, useState } from 'react';
 import { Outlet, ScrollRestoration } from 'react-router-dom';
 
-import RouteSuspenseFallback from '@shared/component/loading/RouteSuspenseFallback';
+import RouteSuspenseFallback from '@ui/RouteSuspenseFallback';
 
 import AdminHeader from './AdminHeader';
 import AdminSidebar from './AdminSidebar';

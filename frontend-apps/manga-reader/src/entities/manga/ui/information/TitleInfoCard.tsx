@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { TitleDetails as TitleDetailsProps } from '../../model/title-card.types';
 
-import AppLink from '@shared/component/link/element/AppLink';
+import AppLink from '@ui/AppLink';
 
 const TitleInfoCard = ({
     showType,

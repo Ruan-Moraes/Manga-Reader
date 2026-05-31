@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 
 import FormModal from './FormModal';

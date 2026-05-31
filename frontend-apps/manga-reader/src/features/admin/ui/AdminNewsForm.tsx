@@ -4,7 +4,7 @@ import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { ArrowLeft } from 'lucide-react';
 
-import LocalizedTextInput from '@shared/component/form/LocalizedTextInput';
+import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { Input } from '@ui/Input';
 import { Select } from '@ui/Select';
 import { Checkbox } from '@ui/Checkbox';
