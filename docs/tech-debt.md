@@ -233,8 +233,19 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
   movidos os 12 vivos p/ `shared/ui` (AppLink, DataTable, TruncatedCell, LocalizedTextInput, ImageLightbox, Logo, AdminLogo,
   ErrorBoundary, ErrorFallback, RouteErrorFallback, RouteSuspenseFallback, ToastProvider→ToastContainer). Pasta `shared/component/` removida.
 
-**Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files completos), 25.4 (Pagination + renomes de clareza),
-25.5 (revisado, sem ação), 25.6 (testes), 25.7 (catalog-filter + lib). Restam só itens não-código/não-prod (DT-09 legais).
+#### 25.8 — Constantes legadas mortas — ✅ Feito (2026-05-31)
+Auditoria por-membro de `shared/constant` (grep `ENUM.MEMBER` + checagem de acesso dinâmico). Removidos ~53 itens mortos:
+`THEME_COLORS` (arquivo inteiro), `TOAST_POSITIONS` (5/6, mantido `BOTTOM_RIGHT`), `ERROR_MESSAGES` (6 superados por
+`apiErrorMessages.ts`), `QUERY_KEYS` (17), `API_URLS` (3), `ROUTES` (22). Mantidos: `SOCIAL_MEDIA_COLORS` (uso dinâmico
+`[name]`), `WEB_BASE_URL`/`USER_SETTINGS_STORAGE_KEY`/`REDIRECT_AFTER_LOGIN_KEY`. tsc 0, lint verde, 818/818.
+
+#### 25.9 — Adotar `ROUTES` como fonte canônica de rotas — **pendente (futuro, baixa prioridade)**
+`ROUTES` está stale vs router real (`/title` singular vs `/titles` real; `/filter` vs `/genres`; faltam ~dezenas de rotas)
+e a navegação usa ~98 strings inline via `useAppNavigate`. Adotar canônico = reescrever `ROUTES` p/ casar o router +
+builders de param (`/titles/:id`) + migrar os 98 sites. Projeto dedicado, correctness-sensitive — não feito agora.
+
+**Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files), 25.4 (Pagination + renomes), 25.5 (revisado),
+25.6 (testes), 25.7 (catalog-filter + lib + layer legacy eliminada), 25.8 (constantes mortas). Pendente: 25.9 (ROUTES canônico, futuro).
 
 ---
 

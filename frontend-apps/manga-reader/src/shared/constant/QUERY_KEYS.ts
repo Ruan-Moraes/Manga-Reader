@@ -1,35 +1,24 @@
 export enum QUERY_KEYS {
     // Titles
     TITLES = 'titles',
-    TITLE = 'title',
     TITLES_IN_THE_CAROUSEL = 'titlesCarousel',
     TITLES_ON_THE_RISE = 'titlesMostViewed',
     RANDOM_TITLES = 'randomTitles',
     UPDATED_TITLES = 'updatedTitles',
     TITLES_SEARCH = 'titlesSearch',
-    TITLES_BY_GENRE = 'titlesByGenre',
-    TITLES_FILTER = 'titlesFilter',
 
     // Chapters
     CHAPTERS = 'chapters',
-    CHAPTER = 'chapter',
 
     // Comments
     COMMENTS = 'comments',
 
-    // Ratings
-    RATINGS = 'ratings',
-    RATING_AVERAGE = 'ratingAverage',
-    USER_REVIEWS = 'userReviews',
-
     // Library
-    LIBRARY = 'library',
     LIBRARY_COUNTS = 'libraryCounts',
     LIBRARY_IDS = 'libraryIds',
 
     // Groups
     GROUPS = 'groups',
-    GROUP = 'group',
     GROUPS_BY_TITLE = 'groupsByTitle',
 
     // Tags
@@ -37,7 +26,6 @@ export enum QUERY_KEYS {
 
     // News
     NEWS = 'news',
-    NEWS_ITEM = 'newsItem',
 
     // Events
     EVENTS = 'events',
@@ -46,16 +34,9 @@ export enum QUERY_KEYS {
 
     // Forum
     FORUM_TOPICS = 'forumTopics',
-    FORUM_TOPIC = 'forumTopic',
-    FORUM_CATEGORIES = 'forumCategories',
-
-    // Stores
-    STORES = 'stores',
-    STORES_BY_TITLE = 'storesByTitle',
 
     // Users
     USER_PROFILE = 'userProfile',
-    AUTH_ME = 'authMe',
     USER_CONTENT_LOCALES = 'userContentLocales',
 
     // Admin
@@ -81,8 +62,6 @@ export enum QUERY_KEYS {
     ADMIN_TAGS = 'adminTags',
     ADMIN_PLANS = 'adminPlans',
     ADMIN_SUBSCRIPTION_LOGS = 'adminSubscriptionLogs',
-    MY_SUBSCRIPTION = 'mySubscription',
-    MY_SUBSCRIPTION_HISTORY = 'mySubscriptionHistory',
 
     // Domain Labels
     DOMAIN_LABELS = 'domainLabels',

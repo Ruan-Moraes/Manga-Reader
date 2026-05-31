@@ -19,7 +19,6 @@ export const API_URLS = {
     TITLES_BY_GENRE: `${BASE}/api/titles/genre`,
     TITLES_FILTER: `${BASE}/api/titles/filter`,
 
-    CHAPTERS: `${BASE}/api/chapters`,
 
     COMMENTS: `${BASE}/api/comments`,
 
@@ -61,6 +60,4 @@ export const API_URLS = {
     ADMIN_SUBSCRIPTIONS_SUMMARY: `${BASE}/api/admin/subscriptions/summary`,
     ADMIN_SUBSCRIPTIONS_GROWTH_SERIES: `${BASE}/api/admin/subscriptions/growth-series`,
     ADMIN_SUBSCRIPTION_PLANS: `${BASE}/api/admin/subscriptions/plans`,
-    SUBSCRIPTIONS_ME: `${BASE}/api/subscriptions/me`,
-    SUBSCRIPTIONS_HISTORY: `${BASE}/api/subscriptions/me/history`,
 } as const;
