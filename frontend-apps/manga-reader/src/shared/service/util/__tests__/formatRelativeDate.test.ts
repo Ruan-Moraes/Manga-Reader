@@ -3,11 +3,19 @@ import { describe, it, expect, vi } from 'vitest';
 import formatRelativeDate from '../formatRelativeDate';
 
 describe('formatRelativeDate', () => {
-    it('deve retornar "agora mesmo" para menos de 1 hora atras', () => {
+    it('deve retornar "agora mesmo" para menos de 1 minuto atras', () => {
         vi.useFakeTimers();
         vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
 
-        expect(formatRelativeDate('2025-06-15T11:45:00Z')).toBe('agora mesmo');
+        expect(formatRelativeDate('2025-06-15T11:59:30Z')).toBe('agora mesmo');
+        vi.useRealTimers();
+    });
+
+    it('deve retornar "ha X min" para menos de 1 hora atras', () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
+
+        expect(formatRelativeDate('2025-06-15T11:45:00Z')).toBe('há 15 min');
         vi.useRealTimers();
     });
 

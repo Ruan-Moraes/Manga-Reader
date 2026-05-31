@@ -1,17 +1,5 @@
 import i18n from '@/i18n/config';
 
-const RELATIVE_TIME_UNITS: {
-    unit: Intl.RelativeTimeFormatUnit;
-    seconds: number;
-}[] = [
-    { unit: 'year', seconds: 60 * 60 * 24 * 365 },
-    { unit: 'month', seconds: 60 * 60 * 24 * 30 },
-    { unit: 'week', seconds: 60 * 60 * 24 * 7 },
-    { unit: 'day', seconds: 60 * 60 * 24 },
-    { unit: 'hour', seconds: 60 * 60 },
-    { unit: 'minute', seconds: 60 },
-];
-
 export const getLocale = (): string => i18n.language || 'pt-BR';
 
 export const formatDate = (date: Date | string | number, options?: Intl.DateTimeFormatOptions): string => {
@@ -43,21 +31,3 @@ export const formatCurrency = (value: number, currency: string = 'BRL'): string 
         style: 'currency',
         currency,
     });
-
-export const formatRelativeTime = (date: Date | string | number): string => {
-    const value = date instanceof Date ? date : new Date(date);
-
-    const diffInSeconds = (value.getTime() - Date.now()) / 1000;
-
-    const formatter = new Intl.RelativeTimeFormat(getLocale(), {
-        numeric: 'auto',
-    });
-
-    for (const { unit, seconds } of RELATIVE_TIME_UNITS) {
-        if (Math.abs(diffInSeconds) >= seconds) {
-            return formatter.format(Math.round(diffInSeconds / seconds), unit);
-        }
-    }
-
-    return formatter.format(Math.round(diffInSeconds), 'second');
-};

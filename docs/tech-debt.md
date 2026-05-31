@@ -155,10 +155,10 @@ p/ `entities/<target>/@x/<consumer>.ts` (8 gateways, `export * from '..'`).
 `fsd/forbidden-imports` agora **100% ON** (sem exceção p/ entities; só ficam os 3
 desvios same-layer aceitos: layout shells + design showcase).
 
-**Pendente — deferido com rationale** (desligado no `steiger.config.ts`):
-- `public-api`/`no-public-api-sidestep` em `shared/`: imports por caminho de segmento são idiomáticos.
+**Permanente — won't-fix com rationale** (desligado no `steiger.config.ts`, 2026-05-31):
+- `public-api`/`no-public-api-sidestep` em `shared/`: imports por caminho de segmento são o **idioma deliberado** do projeto (@ui/Button, @shared/service/http). Ligar mediu **232 diagnósticos** e reverteria o idioma sem ganho → mantido OFF permanente.
 - `fsd/inconsistent-naming` off: falso-positivo em `news` (substantivo, não plural).
-- `Pagination`: 2 componentes distintos (não dup real) — unificar exige decisão de UX (escolhido `@ui/Pagination`, execução pendente).
+- `Pagination`: ✅ unificado em `@ui/Pagination` (2026-05-30).
 
 **Prioridade**: Baixa (FSD essencialmente completo: layers + segmentos + @x, tsc 0, suite verde, lint verde full).
 
@@ -223,8 +223,12 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
 - ✅ `entities/category` → **`entities/catalog-filter`** (mal-nomeado: filtros tag/sort/status/adult + `tagService`);
   hook `useCategoryFilters`→`useCatalogFilters`; gateway `@x/category.ts`→`@x/catalog-filter.ts`; 10 consumidores + mocks atualizados.
 - ✅ `shared/util/` consolidado em **`shared/lib/`** (`formatters.ts` + `pagination.ts`, ~22 sites); `shared/service/util/`
-  permanece (são serviços, não utils puros). Dedup `formatRelativeTime` vs `formatRelativeDate` **deferido** (assinaturas distintas).
-- `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (**aceito**, mantido).
+  permanece (são serviços, não utils puros).
+- ✅ **Dedup relative-date (2026-05-31)**: havia **3** formatadores (`shared/lib formatRelativeTime` Intl sem uso,
+  `shared/service/util/formatRelativeDate` horas/dias, e cópia própria em `forumService.ts` min/meses).
+  Unificados num só: `shared/service/util/formatRelativeDate` (impl rica min/horas/dias/meses); `forumService`
+  re-exporta; `formatRelativeTime` Intl removido. NOTE: strings pt-BR hardcoded — migração p/ Intl locale-aware fica como i18n debt à parte.
+- `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (**aceito permanente**, mantido).
 
 **Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files completos), 25.4 (Pagination + renomes de clareza),
 25.5 (revisado, sem ação), 25.6 (testes), 25.7 (catalog-filter + lib). Restam só itens não-código/não-prod (DT-09 legais).

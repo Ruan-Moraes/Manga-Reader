@@ -2,8 +2,9 @@ import { defineConfig } from 'steiger';
 import fsd from '@feature-sliced/steiger-plugin';
 
 // FSD boundary guardrail. Scope = the layers hardened in DT-24 (app, pages,
-// widgets, features). Rules tied to work explicitly deferred in DT-24 are
-// turned off here with a tracking note, NOT silently — re-enable per item.
+// widgets, features). Rules turned off below fall in two buckets, each noted:
+// (a) PERMANENT/won't-fix — intentional project idiom or false-positives;
+// (b) (none currently deferred — DT-25 closed the remaining items).
 export default defineConfig([
     ...fsd.configs.recommended,
 
@@ -21,18 +22,18 @@ export default defineConfig([
         ],
     },
 
-    // DT-24 residue (deferred): shared-layer hardening. Until shared segments
-    // expose public APIs, sidestep diagnostics are noise; enforced layers
-    // (pages/widgets/features) already pass. Re-enable with shared barrels.
+    // PERMANENT (won't-fix) — shared-layer public API by segment path.
+    // The project deliberately imports shared by segment path (@ui/Button,
+    // @shared/service/http, @shared/constant/QUERY_KEYS). Enforcing barrels here
+    // measured 232 sidestep diagnostics across the app and would reverse the
+    // established idiom for ~zero benefit (FSD treats `shared` as a layer without
+    // slices). Decided to keep OFF permanently — see DT-25.7.
     {
         rules: {
             'fsd/no-public-api-sidestep': 'off',
         },
     },
     {
-        // shared expõe API por caminho de segmento (@ui/Button, @shared/service/http),
-        // idiomático nesta layer — public-api por segmento fica deferido (ver DT-24).
-        // no-reserved-folder-names já resolvido (shared/component/ui removido).
         files: ['./src/shared/**'],
         rules: {
             'fsd/public-api': 'off',
@@ -53,7 +54,7 @@ export default defineConfig([
         },
     },
 
-    // Advisórios não aplicáveis a este app:
+    // PERMANENT (won't-fix) — advisories that are false-positives for this app:
     // - excessive-slicing: 28 páginas é o tamanho real do app (acima do limite 20).
     // - insignificant-slice: login/sign-up/forgot são rotas reais (router não conta como ref).
     // - inconsistent-naming: falso-positivo em `news` (substantivo de domínio, não plural).
