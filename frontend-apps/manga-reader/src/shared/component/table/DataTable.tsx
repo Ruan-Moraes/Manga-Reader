@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Pagination from '@shared/component/navigation/Pagination';
+import { Pagination } from '@ui/Pagination';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export type SortDirection = 'asc' | 'desc';
@@ -113,7 +113,7 @@ function DataTable<T>({
                     </tbody>
                 </table>
             </div>
-            <Pagination page={page + 1} totalPages={totalPages} onPageChange={p => onPageChange(p - 1)} />
+            {totalPages > 1 && <Pagination page={page + 1} total={totalPages} onChange={p => onPageChange(p - 1)} />}
         </div>
     );
 }

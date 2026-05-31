@@ -10,15 +10,12 @@ import { Select } from '@ui/Select';
 import { SegmentedControl } from '@ui/SegmentedControl';
 import { Button } from '@ui/Button';
 import { Drawer } from '@ui/Drawer';
-import { MangaCard } from '@ui/MangaCard';
 import { Pagination } from '@ui/Pagination';
-import { EmptyState } from '@ui/EmptyState';
-import { Skeleton } from '@ui/Skeleton';
-import { Badge } from '@ui/Badge';
 
 import { useCategoryFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@entities/category';
 
 import CategoryFilterPanel from './parts/CategoryFilterPanel';
+import CategoryResults from './parts/CategoryResults';
 
 type Layout = 'grid' | 'list';
 
@@ -139,68 +136,7 @@ const CategoryFilters = () => {
                         </div>
                     )}
 
-                    {isLoading ? (
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                            {Array.from({ length: 12 }).map((_, i) => (
-                                <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
-                            ))}
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <EmptyState
-                            illustration="duvida"
-                            title={t('filters.emptyTitle')}
-                            description={t('filters.emptyDesc')}
-                            action={
-                                <Button variant="raised" onClick={clearAll}>
-                                    {t('filters.clearFilters')}
-                                </Button>
-                            }
-                        />
-                    ) : layout === 'grid' ? (
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                            {filtered.map(m => (
-                                <MangaCard
-                                    key={m.id}
-                                    manga={{
-                                        id: m.id,
-                                        title: m.name,
-                                        author: m.author,
-                                        cover: m.cover,
-                                        rating: m.ratingAverage,
-                                        chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
-                                    }}
-                                    onClick={() => navigate(`/titles/${m.id}`)}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-2">
-                            {filtered.map(m => (
-                                <button
-                                    key={m.id}
-                                    type="button"
-                                    onClick={() => navigate(`/titles/${m.id}`)}
-                                    className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3 text-left transition-colors hover:border-mr-accent"
-                                >
-                                    <div
-                                        className="size-12 shrink-0 rounded-mr-xs bg-cover bg-center bg-mr-tertiary/20"
-                                        style={
-                                            m.cover
-                                                ? {
-                                                      backgroundImage: `url(${m.cover})`,
-                                                  }
-                                                : undefined
-                                        }
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="truncate text-mr-body font-mr-bold text-mr-fg">{m.name}</p>
-                                        <p className="text-mr-tiny text-mr-fg-muted">{m.author}</p>
-                                    </div>
-                                    {m.latestChapterNumber && <Badge variant="neutral">Cap. {m.latestChapterNumber}</Badge>}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    <CategoryResults items={filtered} isLoading={isLoading} layout={layout} onNavigate={id => navigate(`/titles/${id}`)} onClearAll={clearAll} />
 
                     {totalPages > 1 && (
                         <div className="mt-8">

@@ -20,7 +20,6 @@ export { default as useForumTopic } from './model/useForumTopic';
 
 // Components
 export { default as TopicCard } from './ui/TopicCard';
-export { default as Pagination } from './ui/Pagination';
 export { default as ForumStats } from './ui/ForumStats';
 export { default as ReplyCard } from './ui/ReplyCard';
 export { default as RelatedTopicCard } from './ui/RelatedTopicCard';

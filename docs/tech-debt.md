@@ -166,7 +166,7 @@ Varredura manual+heurística de `frontend-apps/manga-reader/src` (~720 arquivos)
 
 #### 25.1 — Código morto / obsoleto
 - ✅ **Feito**: `entities/comment/model/useCommentEditor.tsx` removido (0 consumidores; substituído por `useCommentRichEditor`).
-- **Mock data em runtime**: `pages/forum/ui/parts/forumTopicMock.ts` (usado por ForumTopic/TopicHeader/TopicReplies) e `pages/profile/ui/parts/userProfileMock.ts` (UserProfile/Header). **Em uso** — telas ainda não migradas p/ API real. Migrar + remover mock.
+- ✅ **Stale (2026-05-30)**: `pages/forum/ui/parts/forumTopicMock.ts` e `pages/profile/ui/parts/userProfileMock.ts` **não existem mais** — Forum/UserProfile já consomem API real (`forumService`/`userService`). Mocks restantes são só fixtures inline em `__tests__/`.
 - ✅ **Feito**: slice `pages/term/` removido (eram stubs `<Navigate>`). As rotas legadas
   `/terms-of-use` e `/dmca` agora redirecionam inline no router (`<Navigate to="/legal/...">`).
   Comportamento preservado, slice redundante eliminado.
@@ -178,13 +178,21 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
 `useSidebarMenuItems` + `useMenuData` (widgets/header, +removida `hooks/`), `useNavSearch`
 (widgets/header). tsc 0, lint verde, suite verde.
 
-#### 25.3 — Responsabilidade excessiva (god files, LOC)
-- **`pages/design/ui/DesignPrimitives.tsx` — 1516 LOC** (showcase do design-system). Quebrar por seção em `parts/`.
-- `shared/ui/Footer.tsx` (353) · `features/admin/model/admin.types.ts` (327 — split por subdomínio) · `entities/comment/model/internal/useCommentRichEditor.tsx` (285) · `features/admin/ui/AdminEventForm.tsx` (242) · `entities/rating/ui/modal/wizard/RatingWizard.tsx` (239) · `pages/category/ui/CategoryFilters.tsx` (216) · `widgets/header/ui/navbar/NavBar.tsx` (212).
-- Páginas legais (`Contact` 340, `Privacy` 290, `Dmca` 253) — texto jurídico placeholder inline; mover conteúdo p/ i18n/dados (ver DT-09).
+#### 25.3 — Responsabilidade excessiva (god files, LOC) — parcial ✅ (2026-05-30)
+- ✅ **`pages/design/ui/DesignPrimitives.tsx`** 1516→17 LOC: quebrado em `parts/` por fase
+  (`PrimitivesSection`, `CompositesSection`, `LayoutsSection`, `ContentCardsSection` + `showcaseShared`).
+- ✅ **`shared/ui/Footer.tsx`** 353→~135 LOC: extraído `footer/` (`footer.types`, `FooterColumnBlock`,
+  `NewsletterCard`, `FooterButtons`). Bug corrigido: `onSubscribe` chamado 2× → 1×.
+- ✅ **`entities/comment/model/internal/useCommentRichEditor.tsx`** 285→~140 LOC: extraídos
+  `useEditorPlaceholder` + `useCommentEditorImages`.
+- ✅ **`pages/category/ui/CategoryFilters.tsx`** 216→~150 LOC: extraído `parts/CategoryResults` (grid/list/empty/loading).
+- **Restam**: `features/admin/model/admin.types.ts` (327 — split por subdomínio), `AdminEventForm` (242),
+  `RatingWizard` (239), `NavBar` (212 — já bem decomposto), páginas legais (ver DT-09).
 
 #### 25.4 — Duplicação / nomes colididos (triar)
-- **`Pagination`** — 2 componentes distintos (`@ui` text vs `navigation/` icon). Unificar = UX (escolhido `@ui/Pagination`).
+- ✅ **`Pagination` unificado (2026-05-30)**: canônico `@ui/Pagination` (Button-based, acessível).
+  Removidos `shared/component/navigation/Pagination` (icon) e re-export morto `entities/forum/ui/Pagination`;
+  `DataTable` migrado (props `total/onChange` + guarda `>1`). `ChapterPagination`/`useCommentPagination` mantidos (não-dups).
 - **Não-dups (composição/contexto, só confunde por nome)**: `Footer`/`NavBar`/`SideMenu`/`MobileTabBar` — a versão widget **compõe** o kit `@ui` (ok); `AboutTab` (title vs settings), `TitleDetails` (page vs entity), `CommentsSection` (comment vs user/profile), `Logo` (main vs admin) — contextos diferentes. Considerar renomear p/ clareza.
 
 #### 25.5 — Já aceito / deferido (não re-auditar)
@@ -202,7 +210,9 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
 - `entities/category` carrega tag/sort/adult-content/publication-status + `tagService` — semanticamente é "tag/taxonomia", não "category".
 - `shared/component/` (legacy) vs `shared/ui/` (kit) — 2 camadas de componente (aceito).
 
-**Prioridade**: Baixa-Média. Restam: 25.3 (god files, ex. DesignPrimitives 1516L), mocks→API real (forum/profile), renomes semânticos (25.7).
+**Prioridade**: Baixa. Resolvido 2026-05-30: 25.4 (Pagination unificado) + 25.3 parcial
+(DesignPrimitives, Footer, useCommentRichEditor, CategoryFilters quebrados). Restam: 25.3
+(admin.types/AdminEventForm/RatingWizard), renomes semânticos (25.7). Mocks (25.1) e DT-13 já stale.
 
 ---
 
@@ -214,9 +224,10 @@ parametrizado por `VITE_BASE_URL` (`src/shared/constant/WEB_BASE_URL.ts`,
 `ProtectedRoutes`, `Login`, `SignUp`, `AdminSidebar` e `VerticalCardsContainer`
 usam a constante.
 
-**Resíduo**: ~50 strings `'/Manga-Reader/...'` ainda hardcoded em links/`navigate`
-espalhados (ex.: `news/*`, `event/*`, `dashboard/*`, `forum/*`). Migrar para
-`WEB_BASE_URL` é mecânico mas amplo (baixa prioridade).
+**Resíduo — ✅ Stale (2026-05-30)**: varredura não encontra mais strings
+`'/Manga-Reader/...'` hardcoded. O wrapper `useAppNavigate()`
+(`shared/hook/useAppNavigate.ts`) prefixa `WEB_BASE_URL` automaticamente em paths
+absolutos; call-sites usam paths limpos (`/forum`, `/titles/{id}`). Nada a migrar.
 
 ---
 
