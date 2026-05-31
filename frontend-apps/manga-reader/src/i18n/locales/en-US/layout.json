@@ -1,15 +1,8 @@
 {
     "header": {
-        "brand": "Manga Reader",
-        "signUp": "Sign up",
-        "login": "Login",
-        "logout": "Logout",
         "sessionEnded": "Session ended."
     },
     "footer": {
-        "usefulLinks": "Useful links",
-        "socialMedia": "Social media",
-        "otherLinks": "Other links",
         "tagline": "Read, discover and track your favorite manga, manhwa and manhua.",
         "navAriaLabel": "Footer",
         "expand": "Expand",
@@ -30,7 +23,6 @@
             "news": "News",
             "events": "Events",
             "forum": "Forum",
-            "groups": "Groups",
             "translationGroups": "Scan groups",
             "myMangas": "My mangas",
             "reviews": "Reviews",
@@ -43,7 +35,6 @@
             "signUp": "Create account",
             "help": "Help center",
             "contact": "Contact",
-            "publishWork": "I want to publish",
             "donate": "Support the project",
             "aboutUs": "About",
             "dmca": "DMCA",
@@ -82,8 +73,6 @@
             "help": "Help",
             "helpAria": "Open help center"
         },
-        "status": "All systems operating normally",
-        "copyright": "© {{year}} Manga Reader. All rights reserved.",
         "copyrightStudy": "© {{year}} Manga Reader. Built by Ruan — study project."
     },
     "socialMedia": {
@@ -92,18 +81,12 @@
     "search": {
         "placeholder": "Search titles, authors, groups...",
         "ariaLabel": "Search",
-        "menuPlaceholder": "Search mangas, news, groups...",
-        "submit": "Search",
         "suggestionsTitle": "Suggestions for you",
         "recentTitle": "Recent searches",
         "kbdHint": "Shortcut ⌘K to focus search"
     },
     "navigation": {
-        "openMenu": "Open menu",
-        "closeMenu": "Close menu",
-        "close": "Close",
-        "mainMenu": "Main menu",
-        "dialogLabel": "Main menu"
+        "openMenu": "Open menu"
     },
     "nav": {
         "ariaMain": "Main navigation",
@@ -113,20 +96,16 @@
             "system": "System"
         },
         "item": {
-            "home": "Home",
             "trending": "Trending",
             "releases": "Releases",
             "categories": "Categories",
-            "filter": "Filter",
-            "news": "News",
             "events": "Events",
             "translationGroups": "Groups & scans",
             "forum": "Forum",
             "reviews": "Reviews",
             "settings": "Settings",
             "helpCenter": "Help center",
-            "about": "About",
-            "downloads": "Downloads"
+            "about": "About"
         },
         "hint": {
             "trending": "Most read this week",
@@ -149,8 +128,7 @@
         },
         "aria": {
             "notifications": "Notifications",
-            "library": "Library",
-            "search": "Search"
+            "library": "Library"
         },
         "mobile": {
             "home": "Home",
@@ -218,15 +196,6 @@
             "groups": "Groups",
             "forum": "Forum",
             "profile": "My Profile"
-        },
-        "logoutMessage": "You have logged out.",
-        "role": {
-            "admin": "Administrator",
-            "adminBadge": "[Admin]",
-            "poster": "Poster",
-            "posterBadge": "[Poster]",
-            "user": "User",
-            "visitor": "Visitor"
         }
     }
 }

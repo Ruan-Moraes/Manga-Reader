@@ -67,8 +67,7 @@
                 "title": "Sua conta",
                 "tldr": "Você é responsável pela segurança da sua conta. Mantenha sua senha segura e nos avise se notar acesso não autorizado.",
                 "p1": "Para acessar recursos avançados do Manga Reader, você deve criar uma conta fornecendo um endereço de e-mail válido e uma senha. Você é responsável por manter a confidencialidade das suas credenciais e por todas as atividades realizadas em sua conta.",
-                "p2": "Você deve ter pelo menos 13 anos para criar uma conta. Ao se registrar, você confirma que as informações fornecidas são verdadeiras, precisas, atuais e completas. Contas falsas ou criadas por automação serão removidas sem aviso prévio.",
-                "p3": "Notifique-nos imediatamente em caso de suspeita de uso não autorizado da sua conta através dos canais de suporte disponíveis em <strong>/legal/contact</strong>."
+                "p2": "Você deve ter pelo menos 13 anos para criar uma conta. Ao se registrar, você confirma que as informações fornecidas são verdadeiras, precisas, atuais e completas. Contas falsas ou criadas por automação serão removidas sem aviso prévio."
             },
             "uso": {
                 "title": "Uso do serviço",
@@ -86,8 +85,7 @@
             "direitos-autorais": {
                 "title": "Direitos autorais",
                 "tldr": "Respeitamos os direitos dos criadores. Se você é titular de direitos e identificou violação, consulte nossa política DMCA.",
-                "p1": "O Manga Reader respeita os direitos de propriedade intelectual e espera que os usuários façam o mesmo. O conteúdo disponibilizado na plataforma por grupos de tradução parceiros deve obedecer às licenças aplicáveis.",
-                "p2": "Se você acredita que seu conteúdo foi publicado em violação a seus direitos autorais, consulte nossa Política DMCA em <strong>/legal/dmca</strong> para o procedimento de solicitação de remoção."
+                "p1": "O Manga Reader respeita os direitos de propriedade intelectual e espera que os usuários façam o mesmo. O conteúdo disponibilizado na plataforma por grupos de tradução parceiros deve obedecer às licenças aplicáveis."
             },
             "pagamentos": {
                 "title": "Apoio e pagamentos",
@@ -156,12 +154,30 @@
                 "title": "Quais dados coletamos",
                 "lead": "Coletamos os seguintes dados, dependendo de como você usa o serviço:",
                 "rows": [
-                    { "term": "Cadastro", "value": "E-mail, nome de exibição, senha (hash bcrypt — nunca em texto puro)." },
-                    { "term": "Perfil", "value": "Avatar, bio, idioma preferido, lista de conteúdo salvo." },
-                    { "term": "Uso", "value": "Histórico de leitura, capítulos lidos, avaliações, comentários." },
-                    { "term": "Dispositivo", "value": "IP, tipo de navegador, sistema operacional (logs de acesso)." },
-                    { "term": "Pagamentos", "value": "Dados processados pelo gateway (Stripe/Mercado Pago) — não armazenamos número de cartão." },
-                    { "term": "Comunicações", "value": "E-mails de suporte e notificações que você nos envia ou recebe." }
+                    {
+                        "term": "Cadastro",
+                        "value": "E-mail, nome de exibição, senha (hash bcrypt — nunca em texto puro)."
+                    },
+                    {
+                        "term": "Perfil",
+                        "value": "Avatar, bio, idioma preferido, lista de conteúdo salvo."
+                    },
+                    {
+                        "term": "Uso",
+                        "value": "Histórico de leitura, capítulos lidos, avaliações, comentários."
+                    },
+                    {
+                        "term": "Dispositivo",
+                        "value": "IP, tipo de navegador, sistema operacional (logs de acesso)."
+                    },
+                    {
+                        "term": "Pagamentos",
+                        "value": "Dados processados pelo gateway (Stripe/Mercado Pago) — não armazenamos número de cartão."
+                    },
+                    {
+                        "term": "Comunicações",
+                        "value": "E-mails de suporte e notificações que você nos envia ou recebe."
+                    }
                 ]
             },
             "uso": {
@@ -212,8 +228,7 @@
                     "Portabilidade para outro fornecedor;",
                     "Revogar consentimento a qualquer momento;",
                     "Opor-se ao tratamento realizado sem consentimento."
-                ],
-                "outro": "Para exercer esses direitos, acesse as Configurações da conta ou entre em contato com nosso DPO pelo e-mail <mail>dpo@manga-reader.example.com</mail>. Respondemos em até 15 dias úteis."
+                ]
             },
             "retencao": {
                 "title": "Retenção e exclusão",
@@ -237,9 +252,18 @@
             "dpo": {
                 "title": "Encarregado (DPO)",
                 "rows": [
-                    { "term": "Nome", "value": "Encarregado de Dados Manga Reader" },
-                    { "term": "E-mail", "value": "dpo@manga-reader.example.com" },
-                    { "term": "Endereço", "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100" }
+                    {
+                        "term": "Nome",
+                        "value": "Encarregado de Dados Manga Reader"
+                    },
+                    {
+                        "term": "E-mail",
+                        "value": "dpo@manga-reader.example.com"
+                    },
+                    {
+                        "term": "Endereço",
+                        "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100"
+                    }
                 ]
             }
         },
@@ -326,16 +350,27 @@
             },
             "reincidencia": {
                 "title": "Reincidência",
-                "p1": "O Manga Reader adota uma política de reincidência de acordo com o disposto em <strong>17 U.S.C. § 512(i)</strong>. Usuários que recebem múltiplas notificações válidas e confirmadas de violação de direitos autorais terão suas contas suspensas ou encerradas permanentemente, a critério da plataforma.",
                 "p2": "A definição de \"múltiplas\" leva em conta o contexto, frequência e gravidade de cada violação. Uma única violação grave pode resultar em encerramento imediato."
             },
             "agente": {
                 "title": "Agente designado",
                 "rows": [
-                    { "term": "Agente designado", "value": "Agente de Direitos Autorais — Manga Reader" },
-                    { "term": "E-mail", "value": "dmca@manga-reader.example.com" },
-                    { "term": "Canal prioritário", "value": "/legal/contact (tipo: DMCA)" },
-                    { "term": "Endereço postal", "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100, Brasil" }
+                    {
+                        "term": "Agente designado",
+                        "value": "Agente de Direitos Autorais — Manga Reader"
+                    },
+                    {
+                        "term": "E-mail",
+                        "value": "dmca@manga-reader.example.com"
+                    },
+                    {
+                        "term": "Canal prioritário",
+                        "value": "/legal/contact (tipo: DMCA)"
+                    },
+                    {
+                        "term": "Endereço postal",
+                        "value": "Av. Paulista, 1000 — São Paulo/SP, 01310-100, Brasil"
+                    }
                 ]
             }
         },
@@ -429,15 +464,20 @@
             },
             "success": {
                 "heading": "Mensagem enviada!",
-                "body": "Respondemos no e-mail <strong>{{email}}</strong> dentro do prazo do canal selecionado.",
                 "again": "Enviar outra mensagem"
             }
         },
         "postal": {
             "title": "Endereço postal",
             "rows": [
-                { "term": "Sede administrativa", "value": "Manga Reader Tecnologia Ltda.\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrasil" },
-                { "term": "Encarregado de dados (DPO)", "value": "dpo@manga-reader.example.com\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrasil" }
+                {
+                    "term": "Sede administrativa",
+                    "value": "Manga Reader Tecnologia Ltda.\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrasil"
+                },
+                {
+                    "term": "Encarregado de dados (DPO)",
+                    "value": "dpo@manga-reader.example.com\nAv. Paulista, 1000\nSão Paulo/SP — CEP 01310-100\nBrasil"
+                }
             ]
         }
     }

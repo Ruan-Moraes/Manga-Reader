@@ -1,8 +1,5 @@
 {
     "nav": {
-        "plans": "Planos",
-        "benefits": "Benefícios",
-        "faq": "FAQ",
         "cta": "Assine Agora",
         "menu_toggle": "Abrir menu"
     },
@@ -39,7 +36,6 @@
         "title": "Um acervo que cresce todo dia",
         "works_label": "Obras disponíveis",
         "chapters_label": "Capítulos para ler",
-        "loading": "Carregando...",
         "error": "Não foi possível carregar as estatísticas. Tente novamente mais tarde."
     },
     "features": {
@@ -61,12 +57,8 @@
             "monthly": "Mensal",
             "annual": "Anual"
         },
-        "discount_badge": "Economize 33%",
         "cta": "Assinar",
         "feature_list_title": "Incluído:",
-        "per_day": "/dia",
-        "per_month": "/mês",
-        "per_year": "/ano",
         "most_popular": "Mais Popular",
         "error": "Não foi possível carregar os planos. Tente novamente mais tarde."
     },

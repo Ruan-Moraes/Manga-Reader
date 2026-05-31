@@ -1,6 +1,5 @@
 {
     "modal": {
-        "close": "close",
         "openProfileAria": "Open {{name}}'s profile",
         "photoAlt": "{{name}}'s profile picture",
         "moderatorSince": "Moderator since {{date}}",
@@ -43,24 +42,7 @@
         }
     },
     "page": {
-        "title": "User Profile",
-        "nameLabel": "Name",
-        "bioLabel": "Bio",
-        "nameEmptyError": "Name cannot be empty.",
-        "bioMaxError": "Maximum 500 characters ({{length}}/500).",
-        "save": "Save changes",
-        "saving": "Saving...",
-        "loginPrompt": "Sign in to view your profile.",
-        "updateSuccess": "Profile updated successfully.",
-        "myLibraryTitle": "My Library",
-        "viewLibrary": "View Library",
-        "viewReviews": "View Reviews",
-        "stats": {
-            "reading": "Reading",
-            "wantToRead": "Want to Read",
-            "completed": "Completed",
-            "total": "Total"
-        }
+        "title": "User Profile"
     },
     "profile": {
         "banner": {
@@ -318,7 +300,6 @@
         },
         "modalTitle": "User settings",
         "modalSubtitle": "Tune your experience.",
-        "close": "Close",
         "tabs": {
             "reading": "Reading",
             "appearance": "Appearance",

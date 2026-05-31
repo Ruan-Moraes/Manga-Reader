@@ -2,35 +2,17 @@
     "sidebar": {
         "brand": "Admin Panel",
         "openMenu": "Open menu",
-        "closeMenu": "Close menu",
-        "sectionGeneral": "General",
-        "sectionContent": "Content",
-        "sectionCommunity": "Community",
-        "sectionMonetization": "Monetization",
-        "overview": "Overview",
-        "users": "Users",
-        "groups": "Groups",
-        "titles": "Titles",
-        "tags": "Tags",
-        "news": "News",
-        "events": "Events",
-        "financial": "Financial",
-        "subscriptions": "Subscriptions"
+        "closeMenu": "Close menu"
     },
     "common": {
         "cancel": "Cancel",
-        "confirm": "Confirm",
-        "confirming": "Confirming...",
         "save": "Save",
         "saving": "Saving...",
         "create": "Create",
         "edit": "Edit",
-        "remove": "Remove",
         "delete": "Delete",
         "deleting": "Deleting...",
         "deleteIdPrompt": "Type the ID to confirm:",
-        "close": "Close",
-        "empty": "—",
         "back": "Back to list",
         "search": "Search",
         "retry": "Try again"
@@ -189,7 +171,6 @@
         "periodMonthly": "Monthly",
         "periodAnnual": "Annual",
         "priceLabel": "Price (R$)",
-        "pricePlaceholder": "19.90",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Plan description",
         "featuresLabel": "Features (one per line)",
@@ -336,16 +317,12 @@
         "tags": {
             "title": "Tags",
             "search": "Search tags...",
-            "count_one": "{{count}} tag",
-            "count_other": "{{count}} tags",
             "new": "New Tag",
             "deleteTitle": "Delete Tag",
             "deleteConfirm": "Are you sure you want to delete the tag \"{{label}}\"?"
         },
         "users": {
             "title": "Users",
-            "count_one": "{{count}} user",
-            "count_other": "{{count}} users",
             "search": "Search by name or email...",
             "errorDetail": "Error loading user details.",
             "columnId": "ID",
@@ -365,8 +342,6 @@
         },
         "groups": {
             "title": "Groups",
-            "count_one": "{{count}} group",
-            "count_other": "{{count}} groups",
             "search": "Search by name...",
             "errorDetail": "Error loading group details.",
             "columnId": "ID",
@@ -385,8 +360,6 @@
         },
         "titles": {
             "title": "Titles",
-            "count_one": "{{count}} title",
-            "count_other": "{{count}} titles",
             "search": "Search by name...",
             "new": "New",
             "editTitle": "Edit Title",
@@ -409,7 +382,6 @@
                 "synopsis": "Synopsis",
                 "cover": "Cover URL",
                 "status": "Status",
-                "statusPlaceholder": "ONGOING, COMPLETED, HIATUS...",
                 "genres": "Genres (comma-separated)",
                 "genresPlaceholder": "Action, Adventure, Fantasy",
                 "author": "Author",
@@ -423,8 +395,6 @@
         },
         "events": {
             "title": "Events",
-            "count_one": "{{count}} event",
-            "count_other": "{{count}} events",
             "search": "Search by title...",
             "new": "New",
             "editTitle": "Edit Event",
@@ -463,8 +433,6 @@
         },
         "news": {
             "title": "News",
-            "count_one": "{{count}} article",
-            "count_other": "{{count}} articles",
             "search": "Search by title...",
             "new": "New",
             "editTitle": "Edit News",
@@ -500,8 +468,6 @@
         },
         "subscriptions": {
             "title": "Subscriptions",
-            "count_one": "{{count}} subscription",
-            "count_other": "{{count}} subscriptions",
             "grant": "Grant",
             "summary": {
                 "active": "Active Subscriptions",
@@ -521,7 +487,6 @@
             "periodAnnual": "Annual",
             "editAriaLabel": "Edit subscription",
             "deleteAriaLabel": "Revoke subscription",
-            "editTitle": "Update Status",
             "deleteTitle": "Revoke Subscription",
             "deleteConfirm": "This action will revoke the subscription, changing its status to Cancelled.",
             "tabs": {
@@ -535,7 +500,6 @@
             "statusExpired": "Expired",
             "statusCancelled": "Cancelled",
             "errorSummary": "Error loading subscription summary.",
-            "revokeConfirm": "Do you want to revoke this subscription?",
             "grantSuccess": "Subscription granted successfully.",
             "grantError": "Error granting subscription.",
             "revokeSuccess": "Subscription revoked successfully.",
@@ -549,8 +513,6 @@
             "title": "Financial",
             "errorSummary": "Error loading financial summary.",
             "payments": "Payments",
-            "count_one": "{{count}} payment",
-            "count_other": "{{count}} payments",
             "statusLabel": "Status:",
             "statusAll": "All",
             "summary": {
@@ -574,7 +536,6 @@
             "empty": "No payments found.",
             "editAriaLabel": "Update payment status",
             "deleteAriaLabel": "Mark payment as failed",
-            "editTitle": "Update Status",
             "deleteTitle": "Mark as Failed",
             "deleteConfirm": "This action will mark the payment as Failed."
         }

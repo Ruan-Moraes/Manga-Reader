@@ -2,35 +2,17 @@
     "sidebar": {
         "brand": "Painel Admin",
         "openMenu": "Abrir menu",
-        "closeMenu": "Fechar menu",
-        "sectionGeneral": "Geral",
-        "sectionContent": "Conteúdo",
-        "sectionCommunity": "Comunidade",
-        "sectionMonetization": "Monetização",
-        "overview": "Visão Geral",
-        "users": "Usuários",
-        "groups": "Grupos",
-        "titles": "Obras",
-        "tags": "Tags",
-        "news": "Notícias",
-        "events": "Eventos",
-        "financial": "Financeiro",
-        "subscriptions": "Assinaturas"
+        "closeMenu": "Fechar menu"
     },
     "common": {
         "cancel": "Cancelar",
-        "confirm": "Confirmar",
-        "confirming": "Confirmando...",
         "save": "Salvar",
         "saving": "Salvando...",
         "create": "Criar",
         "edit": "Editar",
-        "remove": "Remover",
         "delete": "Excluir",
         "deleting": "Excluindo...",
         "deleteIdPrompt": "Digite o ID para confirmar:",
-        "close": "Fechar",
-        "empty": "—",
         "back": "Voltar para lista",
         "search": "Buscar",
         "retry": "Tentar novamente"
@@ -189,7 +171,6 @@
         "periodMonthly": "Mensal",
         "periodAnnual": "Anual",
         "priceLabel": "Preço (R$)",
-        "pricePlaceholder": "19.90",
         "descriptionLabel": "Descrição",
         "descriptionPlaceholder": "Descrição do plano",
         "featuresLabel": "Features (uma por linha)",
@@ -336,16 +317,12 @@
         "tags": {
             "title": "Tags",
             "search": "Buscar tags...",
-            "count_one": "{{count}} tag",
-            "count_other": "{{count}} tags",
             "new": "Nova Tag",
             "deleteTitle": "Excluir Tag",
             "deleteConfirm": "Tem certeza que deseja excluir a tag \"{{label}}\"?"
         },
         "users": {
             "title": "Usuários",
-            "count_one": "{{count}} usuário",
-            "count_other": "{{count}} usuários",
             "search": "Buscar por nome ou email...",
             "errorDetail": "Erro ao carregar detalhes do usuário.",
             "columnId": "ID",
@@ -365,8 +342,6 @@
         },
         "groups": {
             "title": "Grupos",
-            "count_one": "{{count}} grupo",
-            "count_other": "{{count}} grupos",
             "search": "Buscar por nome...",
             "errorDetail": "Erro ao carregar detalhes do grupo.",
             "columnId": "ID",
@@ -385,8 +360,6 @@
         },
         "titles": {
             "title": "Títulos",
-            "count_one": "{{count}} título",
-            "count_other": "{{count}} títulos",
             "search": "Buscar por nome...",
             "new": "Novo",
             "editTitle": "Editar Título",
@@ -409,7 +382,6 @@
                 "synopsis": "Sinopse",
                 "cover": "Cover URL",
                 "status": "Status",
-                "statusPlaceholder": "ONGOING, COMPLETED, HIATUS...",
                 "genres": "Gêneros (separados por vírgula)",
                 "genresPlaceholder": "Action, Adventure, Fantasy",
                 "author": "Autor",
@@ -423,8 +395,6 @@
         },
         "events": {
             "title": "Eventos",
-            "count_one": "{{count}} evento",
-            "count_other": "{{count}} eventos",
             "search": "Buscar por título...",
             "new": "Novo",
             "editTitle": "Editar Evento",
@@ -463,8 +433,6 @@
         },
         "news": {
             "title": "Notícias",
-            "count_one": "{{count}} notícia",
-            "count_other": "{{count}} notícias",
             "search": "Buscar por título...",
             "new": "Nova",
             "editTitle": "Editar Notícia",
@@ -500,8 +468,6 @@
         },
         "subscriptions": {
             "title": "Assinaturas",
-            "count_one": "{{count}} assinatura",
-            "count_other": "{{count}} assinaturas",
             "grant": "Conceder",
             "summary": {
                 "active": "Assinaturas Ativas",
@@ -521,7 +487,6 @@
             "periodAnnual": "Anual",
             "editAriaLabel": "Editar assinatura",
             "deleteAriaLabel": "Revogar assinatura",
-            "editTitle": "Atualizar Status",
             "deleteTitle": "Revogar Assinatura",
             "deleteConfirm": "Esta ação irá revogar a assinatura, alterando seu status para Cancelada.",
             "tabs": {
@@ -535,7 +500,6 @@
             "statusExpired": "Expirada",
             "statusCancelled": "Cancelada",
             "errorSummary": "Erro ao carregar resumo de assinaturas.",
-            "revokeConfirm": "Deseja revogar esta assinatura?",
             "grantSuccess": "Assinatura concedida com sucesso.",
             "grantError": "Erro ao conceder assinatura.",
             "revokeSuccess": "Assinatura revogada com sucesso.",
@@ -549,8 +513,6 @@
             "title": "Financeiro",
             "errorSummary": "Erro ao carregar resumo financeiro.",
             "payments": "Pagamentos",
-            "count_one": "{{count}} pagamento",
-            "count_other": "{{count}} pagamentos",
             "statusLabel": "Status:",
             "statusAll": "Todos",
             "summary": {
@@ -574,7 +536,6 @@
             "empty": "Nenhum pagamento encontrado.",
             "editAriaLabel": "Atualizar status do pagamento",
             "deleteAriaLabel": "Marcar pagamento como falhou",
-            "editTitle": "Atualizar Status",
             "deleteTitle": "Marcar como Falhou",
             "deleteConfirm": "Esta ação irá marcar o pagamento como Falhou."
         }

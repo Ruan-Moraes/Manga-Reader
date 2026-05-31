@@ -1,8 +1,5 @@
 {
     "nav": {
-        "plans": "Plans",
-        "benefits": "Benefits",
-        "faq": "FAQ",
         "cta": "Subscribe Now",
         "menu_toggle": "Toggle menu"
     },
@@ -39,7 +36,6 @@
         "title": "A library that grows every day",
         "works_label": "Available titles",
         "chapters_label": "Chapters to read",
-        "loading": "Loading...",
         "error": "Could not load statistics. Please try again later."
     },
     "features": {
@@ -61,12 +57,8 @@
             "monthly": "Monthly",
             "annual": "Annual"
         },
-        "discount_badge": "Save 33%",
         "cta": "Subscribe",
         "feature_list_title": "Included:",
-        "per_day": "/day",
-        "per_month": "/month",
-        "per_year": "/year",
         "most_popular": "Most Popular",
         "error": "Could not load plans. Please try again later."
     },

@@ -1,17 +1,8 @@
 {
-    "status": {
-        "happening_now": "Acontecendo Agora",
-        "registrations_open": "Inscrições Abertas",
-        "coming_soon": "Em Breve",
-        "ended": "Encerrado"
-    },
     "loading": "Carregando evento...",
     "notFound": "Evento não encontrado.",
     "notFoundDesc": "Ele pode ter sido encerrado ou o link está errado.",
-    "backToEvents": "Voltar para eventos",
     "backToEventsShort": "Voltar aos eventos",
-    "commentPlaceholder": "Escreva um comentário...",
-    "publish": "Publicar",
     "details": {
         "schedule": "Data e programação",
         "startAt": "Início: {{date}}",
@@ -35,28 +26,13 @@
     },
     "page": {
         "title": "Eventos",
-        "subtitle": "Fique por dentro dos principais eventos do mundo dos mangás, convenções, lançamentos e atividades da comunidade.",
         "eyebrow": "Comunidade",
-        "create": "Criar Evento",
         "searchPlaceholder": "Buscar por nome ou local",
-        "typeAll": "Todos os tipos",
         "typeOptions": {
-            "all": "Todos os tipos",
-            "live": "Ao vivo"
+            "all": "Todos os tipos"
         },
-        "periodAll": "Todas as datas",
-        "periodToday": "Hoje",
-        "periodWeek": "Esta semana",
-        "periodMonth": "Este mês",
-        "sortDate": "Ordenar por data",
-        "sortPopularity": "Ordenar por popularidade",
-        "sortRelevance": "Ordenar por relevância",
-        "featured": "Evento destaque",
         "featuredLabel": "Em destaque",
         "allEventsLabel": "Todos os eventos",
-        "viewDetails": "Ver detalhes",
-        "eventsCount_one": "{{count}} evento",
-        "eventsCount_other": "{{count}} eventos",
         "emptyState": "Nenhum evento encontrado com os filtros atuais.",
         "emptyTitle": "Nenhum evento nesse período",
         "emptyDescription": "Tente outro filtro ou volte mais tarde.",

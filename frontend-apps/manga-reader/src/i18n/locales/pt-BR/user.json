@@ -1,6 +1,5 @@
 {
     "modal": {
-        "close": "fechar",
         "openProfileAria": "Abrir perfil de {{name}}",
         "photoAlt": "Foto de perfil de {{name}}",
         "moderatorSince": "Moderador desde {{date}}",
@@ -43,24 +42,7 @@
         }
     },
     "page": {
-        "title": "Perfil do Usuário",
-        "nameLabel": "Nome",
-        "bioLabel": "Bio",
-        "nameEmptyError": "Nome não pode ser vazio.",
-        "bioMaxError": "Máximo 500 caracteres ({{length}}/500).",
-        "save": "Salvar alterações",
-        "saving": "Salvando...",
-        "loginPrompt": "Faça login para visualizar seu perfil.",
-        "updateSuccess": "Perfil atualizado com sucesso.",
-        "myLibraryTitle": "Minha Biblioteca",
-        "viewLibrary": "Ver Biblioteca",
-        "viewReviews": "Ver Avaliações",
-        "stats": {
-            "reading": "Lendo",
-            "wantToRead": "Quero Ler",
-            "completed": "Concluído",
-            "total": "Total"
-        }
+        "title": "Perfil do Usuário"
     },
     "profile": {
         "banner": {
@@ -318,7 +300,6 @@
         },
         "modalTitle": "Configurações do usuário",
         "modalSubtitle": "Ajuste sua experiência.",
-        "close": "Fechar",
         "tabs": {
             "reading": "Leitura",
             "appearance": "Aparência",

@@ -19,7 +19,6 @@
         "dislike": "Dislike",
         "edit": "Edit",
         "delete": "Delete",
-        "report": "Report",
         "imageAlt": "Image {{index}}",
         "removeImage": "Remove image"
     },
@@ -29,11 +28,7 @@
     },
     "toast": {
         "created": "Comment sent successfully.",
-        "createError": "Error sending comment.",
-        "updated": "Comment updated successfully.",
-        "updateError": "Error updating comment.",
-        "deleted": "Comment deleted.",
-        "deleteError": "Error deleting comment."
+        "createError": "Error sending comment."
     },
     "delete": {
         "title": "Delete comment",
@@ -67,8 +62,6 @@
         "loading": "Loading comments...",
         "unknownError": "Unknown error",
         "hideDeep": "− Hide deep replies",
-        "showDeep_one": "+ Show {{count}} deep reply",
-        "showDeep_other": "+ Show {{count}} deep replies",
         "loadMore": "Load more comments",
         "empty": "No comments found."
     }

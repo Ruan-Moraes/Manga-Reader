@@ -2,35 +2,17 @@
     "sidebar": {
         "brand": "Panel Admin",
         "openMenu": "Abrir menú",
-        "closeMenu": "Cerrar menú",
-        "sectionGeneral": "General",
-        "sectionContent": "Contenido",
-        "sectionCommunity": "Comunidad",
-        "sectionMonetization": "Monetización",
-        "overview": "Resumen",
-        "users": "Usuarios",
-        "groups": "Grupos",
-        "titles": "Obras",
-        "tags": "Etiquetas",
-        "news": "Noticias",
-        "events": "Eventos",
-        "financial": "Financiero",
-        "subscriptions": "Suscripciones"
+        "closeMenu": "Cerrar menú"
     },
     "common": {
         "cancel": "Cancelar",
-        "confirm": "Confirmar",
-        "confirming": "Confirmando...",
         "save": "Guardar",
         "saving": "Guardando...",
         "create": "Crear",
         "edit": "Editar",
-        "remove": "Quitar",
         "delete": "Eliminar",
         "deleting": "Eliminando...",
         "deleteIdPrompt": "Escribe el ID para confirmar:",
-        "close": "Cerrar",
-        "empty": "—",
         "back": "Volver a la lista",
         "search": "Buscar",
         "retry": "Intentar de nuevo"
@@ -189,7 +171,6 @@
         "periodMonthly": "Mensual",
         "periodAnnual": "Anual",
         "priceLabel": "Precio (R$)",
-        "pricePlaceholder": "19.90",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Descripción del plan",
         "featuresLabel": "Funcionalidades (una por línea)",
@@ -336,16 +317,12 @@
         "tags": {
             "title": "Etiquetas",
             "search": "Buscar etiquetas...",
-            "count_one": "{{count}} etiqueta",
-            "count_other": "{{count}} etiquetas",
             "new": "Nueva Etiqueta",
             "deleteTitle": "Eliminar Etiqueta",
             "deleteConfirm": "¿Seguro que deseas eliminar la etiqueta \"{{label}}\"?"
         },
         "users": {
             "title": "Usuarios",
-            "count_one": "{{count}} usuario",
-            "count_other": "{{count}} usuarios",
             "search": "Buscar por nombre o email...",
             "errorDetail": "Error al cargar detalles del usuario.",
             "columnId": "ID",
@@ -365,8 +342,6 @@
         },
         "groups": {
             "title": "Grupos",
-            "count_one": "{{count}} grupo",
-            "count_other": "{{count}} grupos",
             "search": "Buscar por nombre...",
             "errorDetail": "Error al cargar detalles del grupo.",
             "columnId": "ID",
@@ -385,8 +360,6 @@
         },
         "titles": {
             "title": "Títulos",
-            "count_one": "{{count}} título",
-            "count_other": "{{count}} títulos",
             "search": "Buscar por nombre...",
             "new": "Nuevo",
             "editTitle": "Editar Título",
@@ -409,7 +382,6 @@
                 "synopsis": "Sinopsis",
                 "cover": "URL de portada",
                 "status": "Estado",
-                "statusPlaceholder": "ONGOING, COMPLETED, HIATUS...",
                 "genres": "Géneros (separados por coma)",
                 "genresPlaceholder": "Acción, Aventura, Fantasía",
                 "author": "Autor",
@@ -423,8 +395,6 @@
         },
         "events": {
             "title": "Eventos",
-            "count_one": "{{count}} evento",
-            "count_other": "{{count}} eventos",
             "search": "Buscar por título...",
             "new": "Nuevo",
             "editTitle": "Editar Evento",
@@ -463,8 +433,6 @@
         },
         "news": {
             "title": "Noticias",
-            "count_one": "{{count}} noticia",
-            "count_other": "{{count}} noticias",
             "search": "Buscar por título...",
             "new": "Nueva",
             "editTitle": "Editar Noticia",
@@ -500,8 +468,6 @@
         },
         "subscriptions": {
             "title": "Suscripciones",
-            "count_one": "{{count}} suscripción",
-            "count_other": "{{count}} suscripciones",
             "grant": "Conceder",
             "summary": {
                 "active": "Suscripciones Activas",
@@ -521,7 +487,6 @@
             "periodAnnual": "Anual",
             "editAriaLabel": "Editar suscripción",
             "deleteAriaLabel": "Revocar suscripción",
-            "editTitle": "Actualizar Estado",
             "deleteTitle": "Revocar Suscripción",
             "deleteConfirm": "Esta acción revocará la suscripción, cambiando su estado a Cancelada.",
             "tabs": {
@@ -535,7 +500,6 @@
             "statusExpired": "Expirada",
             "statusCancelled": "Cancelada",
             "errorSummary": "Error al cargar resumen de suscripciones.",
-            "revokeConfirm": "¿Deseas revocar esta suscripción?",
             "grantSuccess": "Suscripción concedida con éxito.",
             "grantError": "Error al conceder suscripción.",
             "revokeSuccess": "Suscripción revocada con éxito.",
@@ -549,8 +513,6 @@
             "title": "Financiero",
             "errorSummary": "Error al cargar resumen financiero.",
             "payments": "Pagos",
-            "count_one": "{{count}} pago",
-            "count_other": "{{count}} pagos",
             "statusLabel": "Estado:",
             "statusAll": "Todos",
             "summary": {
@@ -574,7 +536,6 @@
             "empty": "No se encontraron pagos.",
             "editAriaLabel": "Actualizar estado del pago",
             "deleteAriaLabel": "Marcar pago como fallido",
-            "editTitle": "Actualizar Estado",
             "deleteTitle": "Marcar como Fallido",
             "deleteConfirm": "Esta acción marcará el pago como Fallido."
         }

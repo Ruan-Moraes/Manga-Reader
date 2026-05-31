@@ -36,14 +36,8 @@
         "market": "Mercado",
         "international": "Internacional"
     },
-    "myNewsTabs": {
-        "saved": "Salvas",
-        "read": "Lidas",
-        "recommended": "Recomendadas"
-    },
     "page": {
         "title": "Notícias",
-        "subtitle": "Fique por dentro das últimas novidades do mundo dos mangás, animes, lançamentos e adaptações.",
         "eyebrow": "Novidades",
         "weekTitle": "O que rolou essa semana",
         "readMore": "Ler mais",
@@ -51,40 +45,19 @@
         "pinnedLabel": "Fixado",
         "emptyTitle": "Nada por aqui nessa categoria",
         "emptyDescription": "Tente outra categoria ou volte em breve.",
-        "unread": "{{count}} não lidas",
-        "filters": "Filtros",
         "searchPlaceholder": "Buscar por título, conteúdo, obra ou autor",
         "loadMore": "Carregar mais notícias",
-        "sidebar": {
-            "mostRead": "Mais lidas",
-            "myNews": "Minhas Notícias",
-            "savedDescription": "{{count}} notícias salvas para ler depois.",
-            "readDescription": "{{count}} notícias lidas no histórico recente.",
-            "recommendedDescription": "Recomendações baseadas em {{count}} leituras e categorias favoritas.",
-            "alertsTitle": "Alertas e notificações",
-            "alertsDescription": "Receba notificações de novas notícias das categorias preferidas e autores seguidos.",
-            "lastUpdate": "Última atualização: agora"
-        },
         "tabs": {
             "featured": "Principais",
             "releases": "Lançamentos",
             "adaptations": "Adaptações",
             "industry": "Indústria",
             "events": "Eventos",
-            "curiosities": "Curiosidades",
-            "saved": "Salvas",
-            "read": "Lidas",
-            "recommended": "Recomendadas"
-        },
-        "myNewsTabs": {
-            "saved": "Salvas",
-            "read": "Lidas",
-            "recommended": "Recomendadas"
+            "curiosities": "Curiosidades"
         }
     },
     "details": {
         "notFound": "Notícia não encontrada",
-        "back": "Voltar para notícias",
         "notFoundDesc": "Esse conteúdo pode ter sido removido ou o link está incorreto.",
         "backButton": "Voltar às notícias",
         "readingProgress": "Progresso de leitura",

@@ -1,52 +1,13 @@
 {
-    "action": {
-        "save": "Guardar",
-        "cancel": "Cancelar",
-        "confirm": "Confirmar",
-        "delete": "Eliminar",
-        "edit": "Editar",
-        "close": "Cerrar",
-        "submit": "Enviar",
-        "search": "Buscar",
-        "filter": "Filtrar",
-        "back": "Volver",
-        "next": "Siguiente",
-        "previous": "Anterior",
-        "loadMore": "Cargar más",
-        "reset": "Restablecer",
-        "apply": "Aplicar",
-        "yes": "Sí",
-        "no": "No",
-        "ok": "OK"
-    },
     "label": {
         "loading": "Cargando...",
-        "loadingMessage": "Por favor, espera un momento.",
-        "empty": "No se encontraron resultados.",
-        "error": "Ocurrió un error. Intenta nuevamente.",
-        "required": "Obligatorio",
-        "optional": "Opcional"
-    },
-    "validation": {
-        "required": "Este campo es obligatorio.",
-        "email": "Correo electrónico inválido.",
-        "minLength": "Mínimo de {{count}} caracteres.",
-        "maxLength": "Máximo de {{count}} caracteres."
-    },
-    "toast": {
-        "success": "Operación completada con éxito.",
-        "error": "Ocurrió un error.",
-        "warning": "Atención.",
-        "info": "Información."
+        "loadingMessage": "Por favor, espera un momento."
     },
     "guard": {
         "authRequired": "Acceso denegado. Debes iniciar sesión para acceder a esta página.",
         "dashboardForbidden": "No tienes permiso para acceder al panel."
     },
     "notFound": {
-        "title": "¡Vaya! Página no encontrada.",
-        "message": "Aquí no hay nada. ¿Te has perdido? Haz clic en el enlace de abajo para volver a la página de inicio.",
-        "linkText": "Volver a la página de inicio",
         "pageTitle": "Página no encontrada",
         "pageDesc": "La dirección a la que accediste no existe o ha sido eliminada. Verifica el enlace o vuelve al inicio.",
         "goHome": "Ir al inicio",
@@ -69,7 +30,6 @@
         "description2": "Completa el formulario a continuación con información sobre tu trabajo y nos pondremos en contacto pronto."
     },
     "language": {
-        "switchTo": "Cambiar idioma a {{language}}",
         "pt-BR": "Portugués (Brasil)",
         "en-US": "Inglés",
         "es-ES": "Español"

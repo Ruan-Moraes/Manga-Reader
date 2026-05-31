@@ -26,12 +26,8 @@
     "articles": {
         "categoriesEyebrow": "Navegue por tópico",
         "categoriesTitle": "Categorias",
-        "articlesCount_one": "{{count}} artigo",
-        "articlesCount_other": "{{count}} artigos",
         "resultsEyebrow": "Resultados para \"{{query}}\"",
         "popularEyebrow": "Mais buscados",
-        "resultsTitle_one": "{{count}} encontrado",
-        "resultsTitle_other": "{{count}} encontrados",
         "popularTitle": "Artigos populares",
         "emptyTitle": "Nada encontrado para \"{{query}}\"",
         "emptyDesc": "Tente termos diferentes ou abra um chamado com nossa equipe.",

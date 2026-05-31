@@ -36,14 +36,8 @@
         "market": "Market",
         "international": "International"
     },
-    "myNewsTabs": {
-        "saved": "Saved",
-        "read": "Read",
-        "recommended": "Recommended"
-    },
     "page": {
         "title": "News",
-        "subtitle": "Stay up to date with the latest news from the world of manga, anime, releases and adaptations.",
         "eyebrow": "Latest",
         "weekTitle": "What happened this week",
         "readMore": "Read more",
@@ -51,40 +45,19 @@
         "pinnedLabel": "Pinned",
         "emptyTitle": "Nothing here in this category",
         "emptyDescription": "Try another category or check back soon.",
-        "unread": "{{count}} unread",
-        "filters": "Filters",
         "searchPlaceholder": "Search by title, content, work or author",
         "loadMore": "Load more news",
-        "sidebar": {
-            "mostRead": "Most read",
-            "myNews": "My News",
-            "savedDescription": "{{count}} news saved for later.",
-            "readDescription": "{{count}} news read in recent history.",
-            "recommendedDescription": "Recommendations based on {{count}} reads and favorite categories.",
-            "alertsTitle": "Alerts and notifications",
-            "alertsDescription": "Receive notifications for new articles in your preferred categories and followed authors.",
-            "lastUpdate": "Last update: now"
-        },
         "tabs": {
             "featured": "Top",
             "releases": "Releases",
             "adaptations": "Adaptations",
             "industry": "Industry",
             "events": "Events",
-            "curiosities": "Curiosities",
-            "saved": "Saved",
-            "read": "Read",
-            "recommended": "Recommended"
-        },
-        "myNewsTabs": {
-            "saved": "Saved",
-            "read": "Read",
-            "recommended": "Recommended"
+            "curiosities": "Curiosities"
         }
     },
     "details": {
         "notFound": "News not found",
-        "back": "Back to news",
         "notFoundDesc": "This content may have been removed or the link is incorrect.",
         "backButton": "Back to news",
         "readingProgress": "Reading progress",

@@ -26,12 +26,8 @@
     "articles": {
         "categoriesEyebrow": "Browse by topic",
         "categoriesTitle": "Categories",
-        "articlesCount_one": "{{count}} article",
-        "articlesCount_other": "{{count}} articles",
         "resultsEyebrow": "Results for \"{{query}}\"",
         "popularEyebrow": "Most searched",
-        "resultsTitle_one": "{{count}} found",
-        "resultsTitle_other": "{{count}} found",
         "popularTitle": "Popular articles",
         "emptyTitle": "Nothing found for \"{{query}}\"",
         "emptyDesc": "Try different terms or open a ticket with our team.",

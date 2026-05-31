@@ -1,8 +1,5 @@
 {
     "nav": {
-        "plans": "Planes",
-        "benefits": "Beneficios",
-        "faq": "FAQ",
         "cta": "Suscríbete",
         "menu_toggle": "Abrir menú"
     },
@@ -39,7 +36,6 @@
         "title": "Una biblioteca que crece cada día",
         "works_label": "Obras disponibles",
         "chapters_label": "Capítulos para leer",
-        "loading": "Cargando...",
         "error": "No se pudieron cargar las estadísticas. Inténtelo de nuevo más tarde."
     },
     "features": {
@@ -61,12 +57,8 @@
             "monthly": "Mensual",
             "annual": "Anual"
         },
-        "discount_badge": "Ahorra 33%",
         "cta": "Suscribirme",
         "feature_list_title": "Incluye:",
-        "per_day": "/día",
-        "per_month": "/mes",
-        "per_year": "/año",
         "most_popular": "Más Popular",
         "error": "No se pudieron cargar los planes. Inténtelo de nuevo más tarde."
     },

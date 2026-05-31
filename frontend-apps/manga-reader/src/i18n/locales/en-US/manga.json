@@ -1,8 +1,6 @@
 {
     "loading": "Loading...",
-    "loadingCover": "Loading title image...",
     "imageUnavailable": "Image unavailable",
-    "coverLoadError": "Could not load image",
     "coverAlt": "Title cover: {{name}}",
     "zoomCoverAria": "Zoom cover: {{name}}",
     "errorTitle": "Oops! Something went wrong.",
@@ -11,7 +9,6 @@
     "synopsis": "Synopsis",
     "synopsisModalTitle": "Synopsis of {{name}}",
     "readMore": "Read more",
-    "close": "Close",
     "genres": "Genres",
     "details": {
         "popularity": "Popularity:",
@@ -29,20 +26,9 @@
         "loadMore": "Load More"
     },
     "actions": {
-        "bookmark": "Save",
-        "bookmarked": "Saved",
-        "like": "Like",
-        "groups": "Groups",
-        "cart": "Cart"
+        "like": "Like"
     },
     "titleDetails": {
-        "invalidIdTitle": "Invalid ID",
-        "errorTitle": "Oops! An error occurred.",
-        "communityAverage": "Community average:",
-        "authActionBookmark": "save to library",
-        "authActionRate": "rate",
-        "savedToLibrary": "Manga saved to your library.",
-        "removedFromLibrary": "Manga removed from your library.",
         "tabs": {
             "chapters": "Chapters",
             "reviews": "Reviews",
@@ -82,22 +68,6 @@
         "noReviews": "No reviews yet",
         "noGroups": "No groups found",
         "fullSynopsis": "Full synopsis"
-    },
-    "home": {
-        "alertTitle": "Notice!",
-        "alertMessage": "Site under development, some features may not be available.",
-        "carouselTitle": "Most viewed titles",
-        "carouselSubtitle": "Last 30 days",
-        "risingTitle": "Top 5 rising titles",
-        "randomTitle": "10 Random titles",
-        "updatedTitle": "Updated titles",
-        "seeMore": "See more..."
-    },
-    "chapterPage": {
-        "notFoundTitle": "Chapter not found",
-        "notFoundMessage": "The chapter you are trying to access does not exist.",
-        "backToTitle": "Back to title page",
-        "commentsHeading": "Comments"
     },
     "chapterEnd": {
         "title": "You finished chapter {{chNum}}!",
@@ -152,15 +122,11 @@
     "releases": {
         "eyebrow": "New chapters",
         "title": "Recent releases",
-        "todayMeta_one": "{{count}} chapter in the last 24h",
-        "todayMeta_other": "{{count}} chapters in the last 24h",
         "allLanguages": "All languages",
         "filterPlaceholder": "Filter by title",
         "libraryOnly": "My library only",
         "newBadge": "New",
         "markAllSeen": "Mark all as seen",
-        "chaptersCount_one": "{{count}} chapter",
-        "chaptersCount_other": "{{count}} chapters",
         "publishedAt": "published at {{time}}",
         "emptyLibrary": {
             "title": "No new chapters in your followed titles",
@@ -201,8 +167,6 @@
         "drawerAria": "Filters",
         "eyebrow": "Catalog",
         "title": "Explore",
-        "metaSuffix_one": "{{count}} title",
-        "metaSuffix_other": "{{count}} titles",
         "emptyTitle": "No titles found",
         "emptyDesc": "Try adjusting the filters or search for another term.",
         "clearFilters": "Clear filters"
@@ -217,15 +181,12 @@
         "errorTitle": "Search error",
         "errorDescription": "Could not load results. Please try again.",
         "noResultsTitle": "No results",
-        "noResultsDescription": "Nothing found for \"{{query}}\". Try other terms.",
-        "resultsMeta_one": "{{count}} title found",
-        "resultsMeta_other": "{{count}} titles found"
+        "noResultsDescription": "Nothing found for \"{{query}}\". Try other terms."
     },
     "chapter": {
         "heading": "Chapters:",
         "sortBy": "Sort by:",
         "searchPlaceholder": "Search Chapter",
-        "optionLabel": "Chapter {{number}}",
         "loadingOptions": "Loading...",
         "previous": "Previous",
         "next": "Next",
@@ -234,9 +195,6 @@
             "titleLabel": "Title:",
             "dateLabel": "Date:",
             "pagesLabel": "Pages:"
-        },
-        "pagination": {
-            "pageLabel": "Page <1>{{current}}</1> of <2>{{total}}</2>"
         },
         "coverLoading": "Loading title image...",
         "coverError": "Could not load image",

@@ -1,15 +1,8 @@
 {
     "header": {
-        "brand": "Manga Reader",
-        "signUp": "Registrarse",
-        "login": "Iniciar sesión",
-        "logout": "Salir",
         "sessionEnded": "Sesión finalizada."
     },
     "footer": {
-        "usefulLinks": "Enlaces útiles",
-        "socialMedia": "Redes sociales",
-        "otherLinks": "Otros enlaces",
         "tagline": "Lee, descubre y sigue tus mangas, manhwas y manhuas favoritos.",
         "navAriaLabel": "Pie de página",
         "expand": "Expandir",
@@ -30,7 +23,6 @@
             "news": "Noticias",
             "events": "Eventos",
             "forum": "Foro",
-            "groups": "Grupos",
             "translationGroups": "Grupos de scan",
             "myMangas": "Mis mangas",
             "reviews": "Reseñas",
@@ -43,7 +35,6 @@
             "signUp": "Crear cuenta",
             "help": "Centro de ayuda",
             "contact": "Contacto",
-            "publishWork": "Quiero publicar obra",
             "donate": "Apoyar el proyecto",
             "aboutUs": "Sobre nosotros",
             "dmca": "DMCA",
@@ -82,8 +73,6 @@
             "help": "Ayuda",
             "helpAria": "Abrir centro de ayuda"
         },
-        "status": "Todos los sistemas funcionando con normalidad",
-        "copyright": "© {{year}} Manga Reader. Todos los derechos reservados.",
         "copyrightStudy": "© {{year}} Manga Reader. Hecho por Ruan — proyecto de estudio."
     },
     "socialMedia": {
@@ -92,18 +81,12 @@
     "search": {
         "placeholder": "Buscar títulos, autores, grupos...",
         "ariaLabel": "Buscar",
-        "menuPlaceholder": "Buscar mangas, noticias, grupos...",
-        "submit": "Buscar",
         "suggestionsTitle": "Sugerencias para ti",
         "recentTitle": "Búsquedas recientes",
         "kbdHint": "Atajo ⌘K para enfocar la búsqueda"
     },
     "navigation": {
-        "openMenu": "Abrir menú",
-        "closeMenu": "Cerrar menú",
-        "close": "Cerrar",
-        "mainMenu": "Menú principal",
-        "dialogLabel": "Menú principal"
+        "openMenu": "Abrir menú"
     },
     "nav": {
         "ariaMain": "Navegación principal",
@@ -113,20 +96,16 @@
             "system": "Sistema"
         },
         "item": {
-            "home": "Inicio",
             "trending": "En tendencia",
             "releases": "Novedades",
             "categories": "Categorías",
-            "filter": "Filtrar",
-            "news": "Noticias",
             "events": "Eventos",
             "translationGroups": "Grupos y scans",
             "forum": "Foro",
             "reviews": "Reseñas",
             "settings": "Configuración",
             "helpCenter": "Centro de ayuda",
-            "about": "Acerca de",
-            "downloads": "Descargas"
+            "about": "Acerca de"
         },
         "hint": {
             "trending": "Más leídos de la semana",
@@ -149,8 +128,7 @@
         },
         "aria": {
             "notifications": "Notificaciones",
-            "library": "Biblioteca",
-            "search": "Buscar"
+            "library": "Biblioteca"
         },
         "mobile": {
             "home": "Inicio",
@@ -218,15 +196,6 @@
             "groups": "Grupos",
             "forum": "Foro",
             "profile": "Mi Perfil"
-        },
-        "logoutMessage": "Has cerrado sesión.",
-        "role": {
-            "admin": "Administrador",
-            "adminBadge": "[Admin]",
-            "poster": "Publicador",
-            "posterBadge": "[Publicador]",
-            "user": "Usuario",
-            "visitor": "Visitante"
         }
     }
 }

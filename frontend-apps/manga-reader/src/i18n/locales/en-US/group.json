@@ -1,8 +1,6 @@
 {
     "status": {
-        "active": "Active",
-        "inactive": "Inactive",
-        "hiatus": "On hiatus"
+        "active": "Active"
     },
     "container": {
         "defaultTitle": "Translation Groups",
@@ -11,10 +9,6 @@
     "card": {
         "avatarAlt": "Avatar of group {{name}}",
         "openSite": "Open official site",
-        "membersCount_one": "{{count}} member",
-        "membersCount_other": "{{count}} members",
-        "worksCount_one": "{{count}} work",
-        "worksCount_other": "{{count}} works",
         "viewDetails": "View details",
         "viewDetailsLong": "View group details"
     },
@@ -28,8 +22,6 @@
         "bannerAlt": "Banner of group {{name}}",
         "avatarAlt": "Avatar of {{name}}",
         "officialSite": "Official site",
-        "supporters_one": "{{count}} supporter",
-        "supporters_other": "{{count}} supporters",
         "verifiedAria": "Verified",
         "statusActive": "Active",
         "statusHiatus": "On hiatus",
@@ -52,7 +44,6 @@
     },
     "modal": {
         "title": "Translation Groups",
-        "close": "Close",
         "empty": "No translation group found for this title."
     },
     "member": {
@@ -87,39 +78,13 @@
         "featured": "Featured",
         "allGroups": "All groups"
     },
-    "listing": {
-        "title": "Translation Groups",
-        "subtitle": "Explore teams, filter by status/genre and sort by popularity.",
-        "searchPlaceholder": "Search by group name",
-        "statusAll": "All statuses",
-        "statusActive": "Active",
-        "statusHiatus": "On hiatus",
-        "statusInactive": "Inactive",
-        "genreAll": "All genres",
-        "sortPopularity": "Popularity",
-        "sortMembers": "Total members",
-        "sortTitles": "Translated works",
-        "sortRating": "Rating"
-    },
     "profile": {
         "notFoundTitle": "Group not found",
-        "notFoundMessage": "Could not locate the requested profile.",
         "notFoundDesc": "It may have been removed or the link is wrong.",
-        "backToGroups": "Back to Groups",
         "backToGroupsShort": "Back to groups",
         "aboutTitle": "About the group",
         "chapterPublished": "Chapter {{chapter}} published",
         "languagesTitle": "Languages",
-        "findUs": "Where to find us",
-        "foundationInfo": "Founded: {{year}} • Joined the platform: {{joinedAt}}",
-        "translatedWorks": "Translated works",
-        "sortPopularity": "Popularity",
-        "sortDate": "Last updated",
-        "sortChapters": "Chapters",
-        "chaptersCount_one": "{{count}} chapter",
-        "chaptersCount_other": "{{count}} chapters",
-        "statusOngoing": "Ongoing",
-        "statusCompleted": "Completed",
-        "loading": "Loading group profile..."
+        "findUs": "Where to find us"
     }
 }

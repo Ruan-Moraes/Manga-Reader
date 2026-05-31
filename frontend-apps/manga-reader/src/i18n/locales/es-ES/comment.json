@@ -19,7 +19,6 @@
         "dislike": "No me gusta",
         "edit": "Editar",
         "delete": "Eliminar",
-        "report": "Denunciar",
         "imageAlt": "Imagen {{index}}",
         "removeImage": "Eliminar imagen"
     },
@@ -29,11 +28,7 @@
     },
     "toast": {
         "created": "Comentario enviado con éxito.",
-        "createError": "Error al enviar el comentario.",
-        "updated": "Comentario actualizado con éxito.",
-        "updateError": "Error al actualizar el comentario.",
-        "deleted": "Comentario eliminado.",
-        "deleteError": "Error al eliminar el comentario."
+        "createError": "Error al enviar el comentario."
     },
     "delete": {
         "title": "Eliminar comentario",
@@ -67,8 +62,6 @@
         "loading": "Cargando comentarios...",
         "unknownError": "Error desconocido",
         "hideDeep": "− Ocultar respuestas profundas",
-        "showDeep_one": "+ Mostrar {{count}} respuesta profunda",
-        "showDeep_other": "+ Mostrar {{count}} respuestas profundas",
         "loadMore": "Ver más comentarios",
         "empty": "No se encontraron comentarios."
     }

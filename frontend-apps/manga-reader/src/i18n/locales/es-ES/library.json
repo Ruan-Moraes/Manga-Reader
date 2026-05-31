@@ -23,10 +23,7 @@
     },
     "page": {
         "title": "Mi Biblioteca",
-        "subtitle": "Gestiona tus mangas guardados por estado de lectura.",
         "eyebrow": "Tu colección",
-        "worksCount_one": "{{count}} obra",
-        "worksCount_other": "{{count}} obras",
         "addButton": "Agregar",
         "searchPlaceholder": "Buscar en la biblioteca",
         "sort": {
@@ -39,7 +36,6 @@
             "list": "Lista"
         },
         "remove": "Eliminar",
-        "retry": "Intentar de nuevo",
         "loadMore": "Cargar más"
     },
     "tabLabel": {

@@ -1,8 +1,6 @@
 {
     "status": {
-        "active": "Activo",
-        "inactive": "Inactivo",
-        "hiatus": "En pausa"
+        "active": "Activo"
     },
     "container": {
         "defaultTitle": "Grupos de Traducción",
@@ -11,10 +9,6 @@
     "card": {
         "avatarAlt": "Avatar del grupo {{name}}",
         "openSite": "Abrir sitio oficial",
-        "membersCount_one": "{{count}} miembro",
-        "membersCount_other": "{{count}} miembros",
-        "worksCount_one": "{{count}} obra",
-        "worksCount_other": "{{count}} obras",
         "viewDetails": "Ver detalles",
         "viewDetailsLong": "Ver detalles del grupo"
     },
@@ -28,8 +22,6 @@
         "bannerAlt": "Banner del grupo {{name}}",
         "avatarAlt": "Avatar de {{name}}",
         "officialSite": "Sitio oficial",
-        "supporters_one": "{{count}} apoyador",
-        "supporters_other": "{{count}} apoyadores",
         "verifiedAria": "Verificado",
         "statusActive": "Activo",
         "statusHiatus": "En hiato",
@@ -52,7 +44,6 @@
     },
     "modal": {
         "title": "Grupos de Traducción",
-        "close": "Cerrar",
         "empty": "No se encontró ningún grupo de traducción para esta obra."
     },
     "member": {
@@ -87,39 +78,13 @@
         "featured": "Destacados",
         "allGroups": "Todos los grupos"
     },
-    "listing": {
-        "title": "Grupos de Traducción",
-        "subtitle": "Explora equipos, filtra por estado/género y ordena por popularidad.",
-        "searchPlaceholder": "Buscar por nombre del grupo",
-        "statusAll": "Todos los estados",
-        "statusActive": "Activo",
-        "statusHiatus": "En pausa",
-        "statusInactive": "Inactivo",
-        "genreAll": "Todos los géneros",
-        "sortPopularity": "Popularidad",
-        "sortMembers": "Total de miembros",
-        "sortTitles": "Obras traducidas",
-        "sortRating": "Calificación"
-    },
     "profile": {
         "notFoundTitle": "Grupo no encontrado",
-        "notFoundMessage": "No se pudo localizar el perfil solicitado.",
         "notFoundDesc": "Puede que haya sido eliminado o el enlace sea incorrecto.",
-        "backToGroups": "Volver a Grupos",
         "backToGroupsShort": "Volver a grupos",
         "aboutTitle": "Sobre el grupo",
         "chapterPublished": "Capítulo {{chapter}} publicado",
         "languagesTitle": "Idiomas",
-        "findUs": "Dónde encontrarnos",
-        "foundationInfo": "Fundación: {{year}} • Entrada en la plataforma: {{joinedAt}}",
-        "translatedWorks": "Obras traducidas",
-        "sortPopularity": "Popularidad",
-        "sortDate": "Fecha de actualización",
-        "sortChapters": "Capítulos",
-        "chaptersCount_one": "{{count}} capítulo",
-        "chaptersCount_other": "{{count}} capítulos",
-        "statusOngoing": "En curso",
-        "statusCompleted": "Completo",
-        "loading": "Cargando perfil del grupo..."
+        "findUs": "Dónde encontrarnos"
     }
 }

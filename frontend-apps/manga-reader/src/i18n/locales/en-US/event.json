@@ -1,17 +1,8 @@
 {
-    "status": {
-        "happening_now": "Happening Now",
-        "registrations_open": "Registrations Open",
-        "coming_soon": "Coming Soon",
-        "ended": "Ended"
-    },
     "loading": "Loading event...",
     "notFound": "Event not found.",
     "notFoundDesc": "It may have been closed or the link is wrong.",
-    "backToEvents": "Back to events",
     "backToEventsShort": "Back to events",
-    "commentPlaceholder": "Write a comment...",
-    "publish": "Post",
     "details": {
         "schedule": "Date and schedule",
         "startAt": "Starts: {{date}}",
@@ -35,28 +26,13 @@
     },
     "page": {
         "title": "Events",
-        "subtitle": "Stay up to date with the main events in the manga world, conventions, releases and community activities.",
         "eyebrow": "Community",
-        "create": "Create Event",
         "searchPlaceholder": "Search by name or venue",
-        "typeAll": "All types",
         "typeOptions": {
-            "all": "All types",
-            "live": "Live"
+            "all": "All types"
         },
-        "periodAll": "All dates",
-        "periodToday": "Today",
-        "periodWeek": "This week",
-        "periodMonth": "This month",
-        "sortDate": "Sort by date",
-        "sortPopularity": "Sort by popularity",
-        "sortRelevance": "Sort by relevance",
-        "featured": "Featured event",
         "featuredLabel": "Featured",
         "allEventsLabel": "All events",
-        "viewDetails": "View details",
-        "eventsCount_one": "{{count}} event",
-        "eventsCount_other": "{{count}} events",
         "emptyState": "No events found with the current filters.",
         "emptyTitle": "No events in this period",
         "emptyDescription": "Try another filter or check back later.",
