@@ -24,6 +24,7 @@
     "page": {
         "title": "My Library",
         "eyebrow": "Your collection",
+        "worksCount": "{{count}} works",
         "addButton": "Add",
         "searchPlaceholder": "Search library",
         "sort": {

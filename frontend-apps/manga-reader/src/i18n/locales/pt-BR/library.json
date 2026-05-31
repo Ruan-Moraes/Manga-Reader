@@ -24,6 +24,7 @@
     "page": {
         "title": "Minha Biblioteca",
         "eyebrow": "Sua coleção",
+        "worksCount": "{{count}} obras",
         "addButton": "Adicionar",
         "searchPlaceholder": "Buscar na biblioteca",
         "sort": {

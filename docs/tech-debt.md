@@ -44,8 +44,12 @@ Verificação: `mvn test` → 1023 testes, 0 falhas, sem cascata transacional.
 ### DT-02 (parcial): Sem testes de componente / E2E
 
 **Estado**: A parte "8 testes falhando" está **resolvida/stale** — a suíte atual
-roda **333 testes em 48 arquivos, 0 falhas** (`npx vitest run`). Os 8 falhando
+roda **817 testes em 120 arquivos, 0 falhas** (`npx vitest run`). Os 8 falhando
 descritos em 2026-03 não existem mais.
+
+**Fix 2026-05-30**: 4 testes falhavam por **chaves i18n ausentes** (componente chamava
+`t(...)` sem chave nos 3 locales): `filters.metaSuffix` (manga), `page.worksCount` (library),
+`passwordStrength.{weak,medium,strong,great}` (auth). Chaves adicionadas em pt-BR/en-US/es-ES → suíte verde.
 
 **Adiado (não-prod)**: ainda **não há testes de componente nem E2E**
 (CommentsSection, Library, UserProfile, SearchResults sem cobertura; sem
@@ -186,8 +190,11 @@ Movidos de `ui/` p/ `model/` do slice: `useChapterReader` (pages/chapter), `useE
 - ✅ **`entities/comment/model/internal/useCommentRichEditor.tsx`** 285→~140 LOC: extraídos
   `useEditorPlaceholder` + `useCommentEditorImages`.
 - ✅ **`pages/category/ui/CategoryFilters.tsx`** 216→~150 LOC: extraído `parts/CategoryResults` (grid/list/empty/loading).
-- **Restam**: `features/admin/model/admin.types.ts` (327 — split por subdomínio), `AdminEventForm` (242),
-  `RatingWizard` (239), `NavBar` (212 — já bem decomposto), páginas legais (ver DT-09).
+- ✅ **`features/admin/model/admin.types.ts`** 327→11 LOC: split por subdomínio em `model/types/*`
+  (user/title/news/event/group/content/finance/subscription/tag); `admin.types.ts` virou barrel re-export (imports estáveis).
+- ✅ **`features/admin/ui/AdminEventForm.tsx`** 242→~190 LOC: extraído `parts/EventFormField` (wrapper label+control)
+  + helper `setField` (curry) — removida repetição de `setForm(f => ({...f, k}))` por campo.
+- **Restam**: `RatingWizard` (239 — aceitável p/ padrão wizard), `NavBar` (212 — já bem decomposto), páginas legais (ver DT-09).
 
 #### 25.4 — Duplicação / nomes colididos (triar)
 - ✅ **`Pagination` unificado (2026-05-30)**: canônico `@ui/Pagination` (Button-based, acessível).

@@ -9,6 +9,7 @@ import { Select } from '@ui/Select';
 import { Checkbox } from '@ui/Checkbox';
 
 import useEventFormState from '../model/useEventFormState';
+import EventFormField from './parts/EventFormField';
 
 const AdminEventForm = () => {
     const { t } = useTranslation('admin');
@@ -32,6 +33,11 @@ const AdminEventForm = () => {
         handleSubmit,
         handleDeleteClick,
     } = useEventFormState();
+
+    const setField =
+        <K extends keyof typeof form>(key: K) =>
+        (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+            setForm(f => ({ ...f, [key]: e.target.value }));
 
     if (isEditing && isLoading) {
         return (
@@ -72,124 +78,50 @@ const AdminEventForm = () => {
                 />
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{`${t('dashboard.events.form.startDate')} *`}</span>
-                        <Input
-                            type="datetime-local"
-                            placeholder=""
-                            value={form.startDate}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    startDate: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{`${t('dashboard.events.form.endDate')} *`}</span>
-                        <Input
-                            type="datetime-local"
-                            placeholder=""
-                            value={form.endDate}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    endDate: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
+                    <EventFormField label={t('dashboard.events.form.startDate')} required>
+                        <Input type="datetime-local" placeholder="" value={form.startDate} onChange={setField('startDate')} />
+                    </EventFormField>
+                    <EventFormField label={t('dashboard.events.form.endDate')} required>
+                        <Input type="datetime-local" placeholder="" value={form.endDate} onChange={setField('endDate')} />
+                    </EventFormField>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{`${t('dashboard.events.form.timeline')} *`}</span>
-                        <Select
-                            value={form.timeline}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    timeline: e.target.value,
-                                }))
-                            }
-                            options={timelineOptions}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{`${t('dashboard.events.form.status')} *`}</span>
-                        <Select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))} options={statusOptions} />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{`${t('dashboard.events.form.type')} *`}</span>
-                        <Select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} options={typeOptions} />
-                    </div>
+                    <EventFormField label={t('dashboard.events.form.timeline')} required>
+                        <Select value={form.timeline} onChange={setField('timeline')} options={timelineOptions} />
+                    </EventFormField>
+                    <EventFormField label={t('dashboard.events.form.status')} required>
+                        <Select value={form.status} onChange={setField('status')} options={statusOptions} />
+                    </EventFormField>
+                    <EventFormField label={t('dashboard.events.form.type')} required>
+                        <Select value={form.type} onChange={setField('type')} options={typeOptions} />
+                    </EventFormField>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.events.form.location')}</span>
-                        <Input
-                            type="text"
-                            placeholder=""
-                            value={form.locationLabel ?? ''}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    locationLabel: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.events.form.city')}</span>
-                        <Input
-                            type="text"
-                            placeholder=""
-                            value={form.locationCity ?? ''}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    locationCity: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
+                    <EventFormField label={t('dashboard.events.form.location')}>
+                        <Input type="text" placeholder="" value={form.locationLabel ?? ''} onChange={setField('locationLabel')} />
+                    </EventFormField>
+                    <EventFormField label={t('dashboard.events.form.city')}>
+                        <Input type="text" placeholder="" value={form.locationCity ?? ''} onChange={setField('locationCity')} />
+                    </EventFormField>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.events.form.organizer')}</span>
-                        <Input
-                            type="text"
-                            placeholder=""
-                            value={form.organizerName ?? ''}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    organizerName: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.events.form.price')}</span>
+                    <EventFormField label={t('dashboard.events.form.organizer')}>
+                        <Input type="text" placeholder="" value={form.organizerName ?? ''} onChange={setField('organizerName')} />
+                    </EventFormField>
+                    <EventFormField label={t('dashboard.events.form.price')}>
                         <Input
                             type="text"
                             placeholder={t('dashboard.events.form.pricePlaceholder')}
                             value={form.priceLabel ?? ''}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    priceLabel: e.target.value,
-                                }))
-                            }
+                            onChange={setField('priceLabel')}
                         />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.events.form.image')}</span>
-                        <Input type="text" placeholder="" value={form.image ?? ''} onChange={e => setForm(f => ({ ...f, image: e.target.value }))} />
-                    </div>
+                    </EventFormField>
+                    <EventFormField label={t('dashboard.events.form.image')}>
+                        <Input type="text" placeholder="" value={form.image ?? ''} onChange={setField('image')} />
+                    </EventFormField>
                 </div>
 
                 <div className="flex flex-wrap gap-4">

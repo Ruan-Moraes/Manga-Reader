@@ -167,6 +167,7 @@
         "drawerAria": "Filtros",
         "eyebrow": "Catálogo",
         "title": "Explorar",
+        "metaSuffix": "{{count}} obras",
         "emptyTitle": "Nenhuma obra encontrada",
         "emptyDesc": "Tente ajustar os filtros ou buscar por outro termo.",
         "clearFilters": "Limpar filtros"
