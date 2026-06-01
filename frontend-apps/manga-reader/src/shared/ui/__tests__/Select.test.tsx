@@ -17,7 +17,9 @@ describe('Select', () => {
 
     it('renderiza placeholder', () => {
         render(<Select options={OPTIONS} placeholder="Selecione" />);
-        expect(screen.getByText('Selecione')).toBeInTheDocument();
+        // O combobox visível (botão Radix) mostra o placeholder; o <select> nativo
+        // (aria-hidden) também o carrega como option — por isso checamos o botão.
+        expect(screen.getByRole('combobox')).toHaveTextContent('Selecione');
     });
 
     it('exibe erro', () => {
@@ -42,7 +44,8 @@ describe('Select', () => {
 
     it('opção com disabled', () => {
         render(<Select options={OPTIONS} />);
-        const optC = screen.getByRole('option', { name: 'Opção C' });
+        // Opções vivem no <select> nativo (aria-hidden) — buscar com hidden: true.
+        const optC = screen.getByRole('option', { name: 'Opção C', hidden: true });
         expect(optC).toBeDisabled();
     });
 });

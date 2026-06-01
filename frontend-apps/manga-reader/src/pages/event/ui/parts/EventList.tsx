@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
-import { EventCard } from '@ui/EventCard';
+import { EventCard, formatEventDate, type EventData, type EventType } from '@entities/event';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { formatEventDate, type EventData, type EventType } from '@entities/event';
 
 const TYPE_MAP: Record<EventType, 'launch' | 'meetup' | 'stream' | 'announcement'> = {
     Lançamento: 'launch',

@@ -1,8 +1,10 @@
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useAuth, AuthShell, AuthField, AuthSubmit } from '@features/auth';
+import { useAuth, AuthShell, AuthField, AuthSubmit, buildLoginSchema, type LoginFormValues } from '@features/auth';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
@@ -12,7 +14,6 @@ const DEMO_USER = {
     password: '123456',
 } as const;
 
-// Todo: Implementar o ZOD para validar e refatorar esse componente seguindo a lei da arquitera FSD e clean code.
 const Login = () => {
     const navigate = useNavigate();
 
@@ -20,33 +21,24 @@ const Login = () => {
 
     const { login } = useAuth();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(true);
-    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-    const [loading, setLoading] = useState(false);
 
-    const submit = async (e: FormEvent) => {
-        e.preventDefault();
+    const schema = useMemo(() => buildLoginSchema(t), [t]);
 
-        const errs: { email?: string; password?: string } = {};
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        setError,
+        formState: { errors, isSubmitting },
+    } = useForm<LoginFormValues>({
+        resolver: zodResolver(schema),
+        defaultValues: { email: '', password: '' },
+    });
 
-        if (!email.trim()) {
-            errs.email = t('login.emailRequired');
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-            errs.email = t('login.emailInvalid');
-        }
-
-        if (!password) errs.password = t('login.passwordRequired');
-
-        setErrors(errs);
-
-        if (Object.keys(errs).length) return;
-
-        setLoading(true);
-
+    const onSubmit = async (values: LoginFormValues) => {
         try {
-            await login({ email: email.trim(), password });
+            await login({ email: values.email.trim(), password: values.password });
 
             const redirectPath = localStorage.getItem(REDIRECT_AFTER_LOGIN_KEY);
 
@@ -57,18 +49,13 @@ const Login = () => {
                 navigate(WEB_BASE_URL);
             }
         } catch {
-            setErrors({
-                password: t('login.invalidCredentials'),
-            });
-        } finally {
-            setLoading(false);
+            setError('password', { message: t('login.invalidCredentials') });
         }
     };
 
     const fillDemo = () => {
-        setEmail(DEMO_USER.email);
-        setPassword(DEMO_USER.password);
-        setErrors({});
+        setValue('email', DEMO_USER.email, { shouldValidate: false });
+        setValue('password', DEMO_USER.password, { shouldValidate: false });
     };
 
     const go = (path: string) => (e: React.MouseEvent) => {
@@ -95,34 +82,46 @@ const Login = () => {
                 </>
             }
         >
-            <form onSubmit={submit} noValidate aria-label={t('login.formAria')}>
-                <AuthField
-                    label={t('login.emailLabel')}
-                    type="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder={t('login.emailPlaceholder')}
-                    error={errors.email}
+            <form onSubmit={handleSubmit(onSubmit)} noValidate aria-label={t('login.formAria')}>
+                <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                        <AuthField
+                            label={t('login.emailLabel')}
+                            type="email"
+                            autoComplete="email"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder={t('login.emailPlaceholder')}
+                            error={errors.email?.message}
+                        />
+                    )}
                 />
 
-                <AuthField
-                    label={t('login.passwordLabel')}
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder={t('login.passwordPlaceholder')}
-                    error={errors.password}
-                    rightSlot={
-                        <a
-                            href={`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`}
-                            onClick={go(`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`)}
-                            className="text-mr-tiny tracking-mr text-mr-fg-subtle no-underline hover:text-mr-fg"
-                        >
-                            {t('login.forgotPassword')}
-                        </a>
-                    }
+                <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                        <AuthField
+                            label={t('login.passwordLabel')}
+                            type="password"
+                            autoComplete="current-password"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder={t('login.passwordPlaceholder')}
+                            error={errors.password?.message}
+                            rightSlot={
+                                <a
+                                    href={`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`}
+                                    onClick={go(`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`)}
+                                    className="text-mr-tiny tracking-mr text-mr-fg-subtle no-underline hover:text-mr-fg"
+                                >
+                                    {t('login.forgotPassword')}
+                                </a>
+                            }
+                        />
+                    )}
                 />
 
                 <label className="mb-4 flex cursor-pointer items-center gap-2">
@@ -136,7 +135,7 @@ const Login = () => {
                     <span className="text-mr-small tracking-mr text-mr-gray-200">{t('login.rememberSession')}</span>
                 </label>
 
-                <AuthSubmit loading={loading}>{t('login.submit')}</AuthSubmit>
+                <AuthSubmit loading={isSubmitting}>{t('login.submit')}</AuthSubmit>
 
                 {import.meta.env.DEV && (
                     <div

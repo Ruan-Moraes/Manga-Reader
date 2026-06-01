@@ -10,7 +10,7 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ 1397 testes (1057 backend + 340 frontend) — **0 falhas** |
+| **Build** | ✅ 1898 testes (1064 backend + 834 frontend) — **0 falhas** |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
@@ -67,8 +67,8 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Pacotes compartilhados frontend | **4** (assets, design-tokens, tsconfig, types) |
 | Features frontend (manga-reader) | **17** módulos |
 | Idiomas suportados | **3** (pt-BR padrão/fallback, en-US, es-ES) |
-| Testes backend | **1057** (0 falhas) |
-| Testes frontend | **340** (50 arquivos, 0 falhas) |
+| Testes backend | **1064** (0 falhas) |
+| Testes frontend | **834** (124 arquivos, 0 falhas) |
 
 ---
 
@@ -350,6 +350,22 @@ Cada review possui notas por categoria:
 | `ratingAverage` | Média dos `overallRating` de todas as reviews |
 | `ratingCount` | Quantidade total de reviews |
 | `rankingScore` | Score ponderado para ranking |
+
+### Endpoints
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/ratings/title/{id}` | Lista avaliações (paginado) |
+| `GET` | `/api/ratings/title/{id}/average` | Média de estrelas + contagem |
+| `GET` | `/api/ratings/title/{id}/distribution` | Contagem por faixa de estrela (1–5) + total — agregação Mongo (`$round` do `overallRating`) |
+| `GET` | `/api/ratings/user` | Avaliações do usuário logado |
+| `POST` | `/api/ratings` | Submete/atualiza avaliação (6 categorias + comentário) |
+| `PUT` | `/api/ratings/{id}` | Atualiza avaliação |
+| `DELETE` | `/api/ratings/{id}` | Remove avaliação |
+
+> **Frontend:** a aba de avaliações da obra implementa o wizard de 6 categorias
+> (`RatingWizard`) e o gráfico de distribuição consome `/distribution` (dados
+> reais — substituiu percentuais hardcoded).
 
 ### Job Periódico
 

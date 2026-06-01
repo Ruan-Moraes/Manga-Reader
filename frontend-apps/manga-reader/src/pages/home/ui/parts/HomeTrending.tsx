@@ -4,11 +4,10 @@ import { ArrowRight } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard, type Title } from '@entities/manga';
 import { Badge } from '@ui/Badge';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { Title } from '@entities/manga';
 
 type HomeTrendingProps = {
     trendingList: Title[];
@@ -16,6 +15,7 @@ type HomeTrendingProps = {
 
 const HomeTrending = ({ trendingList }: HomeTrendingProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('home');
 
     return (

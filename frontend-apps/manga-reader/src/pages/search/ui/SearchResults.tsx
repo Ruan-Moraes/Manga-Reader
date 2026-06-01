@@ -7,12 +7,11 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import { PageContainer } from '@ui/PageContainer';
 import { SectionHeader } from '@ui/SectionHeader';
 import { SearchField } from '@ui/SearchField';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard, useSearchTitles } from '@entities/manga';
 import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { useSearchTitles } from '@entities/manga';
 
 const CARDS_PER_PAGE = 20;
 

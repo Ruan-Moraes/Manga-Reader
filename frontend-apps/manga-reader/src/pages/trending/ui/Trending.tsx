@@ -36,7 +36,7 @@ const Trending = () => {
             <SectionHeader eyebrow={t('trending.eyebrow')} title={t('trending.title')} meta={t('trending.meta')} className="mb-6" />
 
             <div className="mb-8 flex flex-wrap gap-3">
-                <SegmentedControl items={PERIOD_ITEMS} value={period} onChange={v => setPeriod(v as Period)} size="sm" />
+                <SegmentedControl items={PERIOD_ITEMS} value={period} onChange={v => setPeriod(v as Period)} size="md" unified={true} />
                 <Select value={cat} onChange={e => setCat(e.target.value)} options={CAT_OPTIONS} className="w-44" />
             </div>
 

@@ -62,6 +62,12 @@ beforeEach(() => {
                 success: true,
             }),
         ),
+        http.get('*/api/ratings/title/:id/distribution', () =>
+            HttpResponse.json({
+                data: { star1: 200, star2: 300, star3: 900, star4: 2700, star5: 10720, total: 14820 },
+                success: true,
+            }),
+        ),
         http.get('*/api/groups/title/:id', () => HttpResponse.json(wrapPage([]))),
     );
 });
@@ -116,6 +122,14 @@ describe('TitleDetails', () => {
         await waitFor(() => {
             expect(screen.getByRole('tab', { name: /resenhas/i })).toHaveAttribute('aria-selected', 'true');
         });
+    });
+
+    it('opens the rating wizard from the Resenhas tab write-review button', async () => {
+        const user = userEvent.setup();
+        renderWithId('1');
+        await user.click(await screen.findByRole('tab', { name: /resenhas/i }));
+        await user.click(await screen.findByRole('button', { name: /escrever resenha/i }));
+        expect(await screen.findByRole('dialog')).toBeInTheDocument();
     });
 
     it('shows genre badges', async () => {

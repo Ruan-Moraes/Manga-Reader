@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getStoredSession } from '@shared/service/session';
 
-import { CommentData } from '../model/comment.types';
+import { CommentData } from '@entities/comment';
 
 import CommentInput from './CommentInput';
 import SortComments from './SortComments';

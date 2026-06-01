@@ -8,7 +8,7 @@ import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { Card } from '@ui/Card';
 
-import type { ProfileData } from '@mock/userProfile';
+import type { ProfileData } from '@entities/user';
 
 type UserProfileHeaderProps = {
     profile: ProfileData;

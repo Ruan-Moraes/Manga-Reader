@@ -2,7 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
 
-import { getRatingsAverage, getRatingsByTitleId, submitRating as submitRatingService } from '../api/ratingService';
+import {
+    getRatingsAverage,
+    getRatingsByTitleId,
+    getRatingDistribution,
+    submitRating as submitRatingService,
+    type RatingDistribution,
+} from '../api/ratingService';
 
 import { MangaRating } from '@entities/rating';
 
@@ -11,12 +17,22 @@ type RatingAverageResult = {
     count: number;
 };
 
+const EMPTY_DISTRIBUTION: RatingDistribution = {
+    star1: 0,
+    star2: 0,
+    star3: 0,
+    star4: 0,
+    star5: 0,
+    total: 0,
+};
+
 const useRatings = (titleId: string) => {
     const [ratings, setRatings] = useState<MangaRating[]>([]);
     const [average, setAverage] = useState<RatingAverageResult>({
         average: 0,
         count: 0,
     });
+    const [distribution, setDistribution] = useState<RatingDistribution>(EMPTY_DISTRIBUTION);
 
     const loadRatings = useCallback(async () => {
         try {
@@ -38,11 +54,21 @@ const useRatings = (titleId: string) => {
         }
     }, [titleId]);
 
+    const loadDistribution = useCallback(async () => {
+        try {
+            setDistribution(await getRatingDistribution(titleId));
+        } catch {
+            setDistribution(EMPTY_DISTRIBUTION);
+        }
+    }, [titleId]);
+
     useEffect(() => {
         loadRatings();
 
         loadAverage();
-    }, [loadRatings, loadAverage]);
+
+        loadDistribution();
+    }, [loadRatings, loadAverage, loadDistribution]);
 
     const submitRating = useCallback(
         async (data: {
@@ -64,13 +90,16 @@ const useRatings = (titleId: string) => {
             await loadRatings();
 
             await loadAverage();
+
+            await loadDistribution();
         },
-        [loadRatings, loadAverage, titleId],
+        [loadRatings, loadAverage, loadDistribution, titleId],
     );
 
     return {
         ratings,
         average,
+        distribution,
         submitRating,
     };
 };

@@ -62,7 +62,7 @@ export const NavBar = ({
     return (
         <header role="banner" className="sticky top-0" style={headerStyle}>
             <div
-                className="mx-auto hidden max-w-mr-container items-center gap-[10px] px-[18px] md:flex"
+                className="mx-auto hidden max-w-mr-container items-center gap-[10px] px-4 sm:px-5 lg:px-6 md:flex"
                 style={{ height: desktopBandHeight, transition: 'height 0.3s ease' }}
             >
                 <button

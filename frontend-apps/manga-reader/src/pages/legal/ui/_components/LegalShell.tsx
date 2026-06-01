@@ -194,12 +194,12 @@ export const LegalShell = ({
                             </div>
                         </aside>
 
-                        <main className="min-w-0 flex-1 divide-y divide-mr-border-subtle">
+                        <div className="min-w-0 flex-1 divide-y divide-mr-border-subtle">
                             {children}
-                        </main>
+                        </div>
                     </div>
                 ) : (
-                    <main className="mx-auto">{children}</main>
+                    <div className="mx-auto">{children}</div>
                 )}
             </PageContainer>
         </div>

@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.rating.usecase.DeleteRatingUseCase;
 import com.mangareader.application.rating.usecase.GetRatingAverageUseCase;
+import com.mangareader.application.rating.usecase.GetRatingDistributionUseCase;
 import com.mangareader.application.rating.usecase.GetRatingsByTitleUseCase;
 import com.mangareader.application.rating.usecase.GetUserRatingsUseCase;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
 import com.mangareader.application.rating.usecase.UpdateRatingUseCase;
 import com.mangareader.presentation.rating.dto.RatingAverageResponse;
+import com.mangareader.presentation.rating.dto.RatingDistributionResponse;
 import com.mangareader.presentation.rating.dto.RatingResponse;
 import com.mangareader.presentation.rating.dto.SubmitRatingRequest;
 import com.mangareader.presentation.rating.dto.UpdateRatingRequest;
@@ -47,6 +49,7 @@ import lombok.RequiredArgsConstructor;
 public class RatingController {
     private final GetRatingsByTitleUseCase getRatingsByTitleUseCase;
     private final GetRatingAverageUseCase getRatingAverageUseCase;
+    private final GetRatingDistributionUseCase getRatingDistributionUseCase;
     private final SubmitRatingUseCase submitRatingUseCase;
     private final UpdateRatingUseCase updateRatingUseCase;
     private final DeleteRatingUseCase deleteRatingUseCase;
@@ -73,6 +76,14 @@ public class RatingController {
         var avg = getRatingAverageUseCase.execute(titleId);
 
         return ResponseEntity.ok(ApiResponse.success(new RatingAverageResponse(avg.average(), avg.count())));
+    }
+
+    @GetMapping("/title/{titleId}/distribution")
+    @Operation(summary = "Distribuição de avaliações", description = "Contagem de avaliações por faixa de estrela (1–5)")
+    public ResponseEntity<ApiResponse<RatingDistributionResponse>> getDistribution(@PathVariable String titleId) {
+        var distribution = getRatingDistributionUseCase.execute(titleId);
+
+        return ResponseEntity.ok(ApiResponse.success(RatingDistributionResponse.from(distribution)));
     }
 
     @GetMapping("/user")

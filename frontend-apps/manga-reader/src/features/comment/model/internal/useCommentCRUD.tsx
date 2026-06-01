@@ -5,7 +5,7 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 import { requireAuth } from '@shared/service/util/requireAuth';
 
-import { deleteComment as deleteCommentService, updateComment, createComment } from '../../api/commentService';
+import { deleteComment as deleteCommentService, updateComment, createComment } from '@entities/comment';
 
 const useCommentCRUD = () => {
     const queryClient = useQueryClient();

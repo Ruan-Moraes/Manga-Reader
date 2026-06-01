@@ -34,6 +34,49 @@
         "openTicket": "Abrir ticket",
         "helpful": "{{percent}}% útil"
     },
+    "article": {
+        "back": "Volver al Centro de Ayuda",
+        "views": "{{value}} visualizaciones",
+        "helpfulTitle": "¿Te resultó útil este artículo?",
+        "yes": "Sí, ayudó",
+        "no": "No lo resolvió",
+        "relatedTitle": "Artículos relacionados",
+        "notFoundTitle": "Artículo no encontrado",
+        "notFoundDesc": "El artículo que buscas no existe o fue movido. Vuelve al Centro de Ayuda y busca otro tema."
+    },
+    "articleBody": {
+        "1": [
+            "Para cambiar tu correo o contraseña, ve a Configuración → Cuenta. Allí encontrarás los campos de correo y contraseña con opción de edición.",
+            "Al cambiar el correo, enviamos un enlace de confirmación a la nueva dirección — el cambio solo se aplica después de que confirmes mediante ese enlace.",
+            "Para la contraseña, debes introducir la contraseña actual antes de definir la nueva. Usa al menos 8 caracteres, combinando letras y números, para mayor seguridad.",
+            "Si ya no tienes acceso al correo actual, abre un ticket con nuestro equipo para validar tu identidad manualmente."
+        ],
+        "2": [
+            "La dirección de lectura se puede ajustar tanto de forma global como por obra. Para el valor global, ve a Configuración → Lectura → Dirección.",
+            "Las opciones disponibles son: vertical continua (ideal para webtoons/manhwa), horizontal de izquierda a derecha y horizontal de derecha a izquierda (estándar del manga japonés).",
+            "Dentro del lector, el icono de engranaje permite sobrescribir la dirección solo para el capítulo actual, sin cambiar tu preferencia global."
+        ],
+        "3": [
+            "En la pantalla de inicio de sesión, haz clic en \"Olvidé mi contraseña\" e introduce el correo registrado. Enviaremos un enlace de restablecimiento válido por 30 minutos.",
+            "Revisa también la carpeta de spam si el correo no llega en unos minutos. El enlace solo puede usarse una vez.",
+            "Tras definir la nueva contraseña, todas las sesiones activas en otros dispositivos se cierran por seguridad."
+        ],
+        "4": [
+            "El idioma de la interfaz se cambia en Configuración → Idioma, o mediante el selector de idioma del menú. El cambio se aplica de inmediato.",
+            "El idioma de la interfaz es independiente del idioma del contenido (catálogo y comentarios), que configuras por separado en Idiomas de contenido.",
+            "Tu preferencia de idioma de la interfaz se guarda en el navegador; al iniciar sesión, acompaña a tu perfil."
+        ],
+        "5": [
+            "Para cancelar tu suscripción, ve a Configuración → Suscripción → Cancelar. La cancelación es inmediata, sin penalización.",
+            "Mantienes acceso a las funciones del plan colaborador hasta el final del periodo ya pagado — no hay reembolso proporcional del periodo en curso.",
+            "Tras finalizar el periodo, tu cuenta vuelve automáticamente al plan gratuito, sin perder el historial ni la biblioteca."
+        ],
+        "6": [
+            "Si la aplicación está lenta, empieza limpiando la caché en Configuración → Limpiar caché. Esto resuelve la mayoría de los bloqueos de imágenes.",
+            "Comprueba también tu conexión y si la app/navegador está actualizada. Las extensiones de bloqueo pueden interferir en la carga de las páginas.",
+            "Si la lentitud persiste, abre un ticket indicando tu dispositivo, navegador y el capítulo donde ocurre el problema — esto agiliza el diagnóstico."
+        ]
+    },
     "status": {
         "eyebrow": "Salud de la plataforma",
         "title": "Estado del sistema",

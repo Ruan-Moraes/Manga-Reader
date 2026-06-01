@@ -4,10 +4,9 @@ import { ArrowRight } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard, type Title } from '@entities/manga';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { Title } from '@entities/manga';
 
 type HomeNewReleasesProps = {
     releases: Title[];
@@ -15,6 +14,7 @@ type HomeNewReleasesProps = {
 
 const HomeNewReleases = ({ releases }: HomeNewReleasesProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('home');
 
     return (

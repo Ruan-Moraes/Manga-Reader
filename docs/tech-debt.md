@@ -65,19 +65,41 @@ lint → test → build (ver `deployment-plan.md`).
 
 ---
 
-### DT-08: Acessibilidade incompleta (a11y) — **Adiado (não-prod)**
+### DT-08: Acessibilidade incompleta (a11y) — **Passe direcionado feito; auditoria total adiada**
 
-Acessibilidade parcial (alguns `aria-label`, `role`, HTML semântico). Faltam
-labels em botões icon-only, landmarks consistentes e testes de a11y. Auditoria
-completa adiada como não-bloqueante.
+**Resolvido (2026-05-31)** — passe direcionado + fundação de teste:
+- **Landmarks**: corrigido `<main>` aninhado em `LegalShell` (PageContainer `asMain`
+  já provê o landmark; filhos internos viraram `<div>`). Convenção confirmada:
+  cada página possui seu próprio `<main>` via `PageContainer asMain` (~25 páginas),
+  AuthShell e o leitor de capítulo também — RootLayout **não** adiciona `<main>`
+  (evita aninhamento).
+- **Focus management**: novo hook `shared/hook/useFocusTrap.ts` (foco inicial +
+  ciclo Tab/Shift+Tab preso + restauração de foco ao fechar). Aplicado a `Drawer`
+  (cobre `SideMenu`, que o encapsula) e `AdminModal`. `Modal` usa `<dialog>` nativo
+  (trap + restauração nativos no browser). Bug a11y corrigido: `Drawer` usava
+  `<aside role="dialog">` (proibido por `aria-allowed-role`) → trocado por `<div>`.
+- **Focus ring**: utilitário único `@utility mr-focus-ring` (`styles/index.css`),
+  substituindo os triplos `focus-visible:outline-*` ad-hoc com offset inconsistente
+  (1/2/nenhum) nas primitivas do DS (Button, Switch, MangaCard, Logo, NavBar, Stars,
+  footer). Token `--mr-focus-ring` já existia + regra global `*:focus-visible`.
+- **Testes a11y**: `jest-axe` instalado, matcher `toHaveNoViolations` em
+  `src/test/setup.ts`, helper `src/test/helpers/axe.ts` (desliga regra `region`
+  para renders isolados sem o shell completo). Smoke tests em HelpCenter,
+  HelpArticle e Drawer.
+
+**Restante (adiado, não-bloqueante)**: auditoria sistemática por rota
+(landmarks/ordem de tab/ARIA em todas as telas), axe por rota, navegação por
+teclado completa fora dos overlays.
 
 ---
 
 ### DT-09: Conteúdo placeholder em páginas legais — **Adiado (não-prod)**
 
-Termos de Uso / DMCA / About com placeholder. Texto legal vinculante exige
-revisão jurídica — fora do escopo de código. Bloqueia produção; não-bloqueante
-para desenvolvimento.
+Termos de Uso / Privacidade / DMCA / Contato com placeholder. Estrutura/UI/i18n
+**prontas** (LegalShell + LegalSection + LegalCrossLinks, rotas registradas e
+alcançáveis, chaves em pt-BR/en-US/es-ES). Falta apenas o **texto legal
+vinculante**, que exige revisão jurídica — **não é tarefa de engenharia**.
+Bloqueia produção; não-bloqueante para desenvolvimento.
 
 ---
 
@@ -247,12 +269,15 @@ Migrados ~todos os call sites de navegação (navigate/Link/Navigate) p/ `ROUTES
 de navegação restantes (só sobram paths data-driven `${item.link}`). Duplicatas do router (`/title`↔`/titles`,
 `/event`↔`/events`, `/forum/:id`↔`/forum/topic/:id`) mantidas como alias; ROUTES emite só o canônico (plural).
 Bug corrigido: `NotFound` navegava p/ `/categories` inexistente → `ROUTES.CATALOG` (`/genres`).
-**Resíduo**: `ROUTES.HELP_ARTICLE(id)` aponta p/ `help/article/:id` que **ainda não tem página** (seção help WIP) —
-builder pronto, rota/página pendente. tsc 0, lint verde, 818/818.
+**Resíduo resolvido (2026-05-31)**: `ROUTES.HELP_ARTICLE(id)` → criada página
+`pages/help/ui/HelpArticle.tsx` (lê `ARTICLES` do mock por id + corpo via i18n
+`articleBody.{id}`, relacionados por categoria, estado not-found), rota
+`help/article/:articleId` registrada, chaves i18n em pt-BR/en-US/es-ES, teste de
+página. Link morto fechado.
 
 **Prioridade**: Baixa. Resolvido 2026-05-30/31: 25.3 (god files), 25.4 (Pagination + renomes), 25.5 (revisado),
 25.6 (testes), 25.7 (catalog-filter + lib + layer legacy eliminada), 25.8 (constantes mortas), 25.9 (ROUTES canônico).
-**DT-25 fechado** (código). Resíduos: página help/article (WIP), e itens não-prod (DT-09 legais).
+**DT-25 fechado** (código). Resíduo help/article **resolvido** (2026-05-31, ver DT-25 acima). Resta item não-prod (DT-09 legais).
 
 ---
 
@@ -379,13 +404,178 @@ Lado-código resolvido; resíduo só-infra documentado acima.
 
 ---
 
+## Auditoria FSD Frontend (2026-05-31)
+
+Varredura pasta-a-pasta do frontend (`frontend-apps/manga-reader/src`) por dívida
+**semântica/acoplamento** — invisível ao `lint:fsd` (steiger), que está verde.
+Remediação **leva-a-leva por camada** (shared→entities→features→widgets→pages→app).
+
+### DT-26: Componentes de domínio em `shared/ui` — **camada shared resolvida (2026-05-31)**
+
+7 cards "de entidade" viviam em `shared/ui` (camada base), vazando conhecimento de
+domínio. **Resolvido (shared leva)**: movidos os 6 cards consumidos para suas
+entidades — `MangaCard`→`entities/manga/ui`, `GroupCard`→`group`, `ReviewCard`→
+`rating`, `ForumTopicCard`→`forum`, `ChapterListItem`→`chapter`, `EventCard`→
+`event`. Descoberta: as entidades já tinham **cards duplicados mortos** (zero
+consumidores, migração FSD inacabada) — os 2 com colisão de nome exato (`EventCard`
+69L, `GroupCard` 83L dead) foram substituídos pelos vivos; os demais cards mortos
+(`entities/forum`: `TopicCard`/`ReplyCard`/`RelatedTopicCard`; `entities/rating`:
+`RecentReviews`) **permanecem exportados-sem-uso** → ver DT-34. ~26 import sites
+repontados p/ barrel da entidade + imports duplicados (`{ Card }` + `type`) mesclados
+com modificador `type` inline. `NotificationItem` fica em `shared/ui` (único consumidor
+= showcase `design/`, sem `entities/notification`). tsc 0, FSD verde, 819 testes.
+
+### DT-27: Guards de auth com lógica na camada `app/` — **Resolvido (2026-06-01)**
+
+`app/router/ProtectedRoutes.tsx` definia `AuthGuard`/`RoleGuard` (leitura de sessão,
+`mapAuthResponseToUser`, i18n + `showErrorToast`, side-effects de `localStorage`).
+**Movidos p/ `features/auth/ui/RouteGuards.tsx`** (exportados pelo barrel
+`@features/auth`); `mapAuthResponseToUser` virou import relativo dentro da feature.
+`ProtectedRoutes.tsx` ficou **compose-only** (lazy imports + arrays
+`protectedContentRoutes`/`adminRoute`), importando os guards de `@features/auth`.
+tsc 0, lint:fsd verde, 834 testes.
+
+### DT-28: `comment` mal classificado — **Resolvido com split ortodoxo (2026-05-31)**
+
+O slice `comment` era **misto**: modelo+exibição (entity) e interações (feature).
+A 1ª tentativa moveu tudo p/ `features/comment` (não-ortodoxo). **Corrigido com
+split FSD**:
+- **`entities/comment`** (substantivo/modelo): `comment.types`, `commentService`
+  (api), hooks de dados (`useComments`, `useCommentsFetch`, `useCommentPagination`,
+  `useCommentTree`), `CommentSortContext` (estado de ordenação) e os **átomos de
+  exibição burros** (`CommentUser`, `CommentMetadata`, `CommentContent`,
+  `CommentActions`). Importa `user` via `@entities/user/@x/comment` (cross-import
+  entity↔entity recriado).
+- **`features/comment`** (verbo/ação): orquestradores (`CommentsSection`,
+  `CommentsList`, `Comment`, `CommentInput`, `SortComments`), modais edit/delete,
+  e hooks de interação (`useCommentCRUD`, `useCommentReactions`, `useCommentModals`,
+  editores EasyMDE/rich/upload). Importa o modelo via `@entities/comment`.
+
+Regra dura validada pelo steiger: **nenhuma aresta `entity→feature`**;
+`feature→entity` ok. Consumidores externos repontados (`main.tsx` →
+`CommentSortProvider` de `@entities/comment`; factory de teste → `comment.types`).
+tsc 0, lint:fsd verde, testes do slice 32/32. Regra entity-vs-feature gravada no
+CLAUDE.md p/ não repetir o dilema.
+
+### DT-29: `entities/catalog-filter` mistura estado de UI — **Resolvido (2026-05-31)**
+
+Investigado: o slice é majoritariamente **entity-grade** — tipos de domínio (`Tag`,
+`Sort`, `PublicationStatus`, `AdultContent`), `tagService` (api), `useTagsFetch` e
+`useFilterResults` (queries reutilizáveis) e `TagSelectInput` (input do domínio tag,
+usado por `features/admin`). O único destoante era `useCatalogFilters` — **estado de
+UI puro** (`useState` de tags/sort/status/página, sem dados) consumido por **uma só**
+página. Pela regra do CLAUDE.md (hook que combina estado de UI ⇒ **page hook**),
+**movido `useCatalogFilters` → `pages/category/model/`** + removido do barrel da
+entity; `CategoryFilters` importa relativo. **Não** foi feito reclassificação total
+p/ feature: fragmentaria os tipos/serviço de tag e criaria acoplamento
+`feature→feature` com `admin` (net-negativo). tsc 0, lint:fsd verde, testes verdes.
+
+### DT-30: `Toast.tsx` god-file auto-sinalizado — **Resolvido (2026-05-31)**
+
+`shared/ui/Toast.tsx` (181L) abria com `// Todo: Refatorar.` (reducer+context+UI num
+arquivo). **Resolvido**: dividido em `shared/ui/toast/` (`types.ts`, `toastStyles.ts`,
+`ToastItem.tsx`, `ToastProvider.tsx`); `Toast.tsx` vira barrel estável (`@ui/Toast`
+inalterado p/ os 3 consumidores). Tipo interno `ToastItem`→`ToastEntry` (evita colisão
+com a view). Nota: este é o toast DS in-app (main.tsx + design); notificações
+transacionais usam o `toastService` react-toastify separado.
+
+### DT-31: Vazamento de tipos do `@mock` em pages — **Resolvido (2026-06-01)**
+
+`ForumTopic`/`UserProfile` (+parts) importavam dado runtime **e tipos** direto de
+`@mock`. **Corrigido**: tipos movidos p/ as entidades — `entities/forum/model/
+topic-detail.types.ts` (`TopicAuthor`/`TopicData`/`ReplyData`) e `entities/user/model/
+profile-detail.types.ts` (`ProfileData`), exportados pelos barrels; os mocks importam o
+tipo da entidade. Dado escondido atrás de **page hooks** (`pages/forum/model/
+useTopicDetail`, `pages/profile/model/useProfileData`) que importam `@mock` (page→mock,
+padrão documentado) — backend ⇒ só o hook muda. Nenhum componente importa `@mock`
+direto. tsc 0, lint:fsd verde, 834 testes.
+
+### DT-32: Slice `legal` fora de convenção — **Med, agendado (pages leva)**
+
+Usa `_components/` enquanto 15 outros slices de page usam `parts/`. `Contact.tsx`
+(340L) tem validação/submit de form inline (sem `model/`).
+
+### DT-33: `shared/lib` / `shared/ui` sem barrels — **Low, deferido (idiomático)**
+
+Imports profundos (`@ui/Button`, `@shared/lib/cn`). Per DT-24 é o idioma aceito e
+deferido (`no-public-api-sidestep`). Documentado p/ completude.
+
+### DT-34: Cards de entidade mortos (migração FSD inacabada) — **Resolvido (2026-05-31)**
+
+Exportados-sem-uso após DT-26 (0 consumidores, confirmado por grep). **Removidos**:
+`entities/forum/ui/{TopicCard,ReplyCard,RelatedTopicCard}`, `entities/rating/ui/RecentReviews`
++ exports nos barrels. Como `RecentReviews` era o **único** consumidor de
+`entities/comment/@x/rating` e `entities/user/@x/rating`, ambos os cross-imports
+foram deletados — **desacoplando `rating→comment`** e pré-limpando o caminho da
+DT-28 (move de comment p/ feature). tsc 0, lint:fsd verde, 834 testes.
+
+### Nota (Low, não agendado): god-components em `design/`
+
+`design/ui/parts/*` (`CompositesSection` 478L, `ContentCardsSection` 431L, etc.):
+telas **DEV-only** (`import.meta.env.DEV`). Deixadas como estão — baixo ROI.
+
+### DT-35: Sistema de avaliação por categorias não plugado + dado falso — **Resolvido (2026-05-31)**
+
+A aba de avaliações da obra tinha o botão "Escrever resenha" como **no-op** e
+exibia uma **distribuição de estrelas falsa** (percentuais `72/18/6/2` hardcoded)
+— dado fabricado visível ao cliente. O wizard de 6 categorias (`RatingWizard`),
+`useRating`/`useTitleModals` e `RatingModal` existiam mas estavam **órfãos**.
+**Resolvido**: (1) wizard plugado em `TitleDetails`/`ReviewsTab` (submit real →
+`submitRating` com toast + auth gate); (2) novo endpoint backend
+`GET /api/ratings/title/{id}/distribution` (agregação Mongo `$round` por estrela,
+sem cache) + `GetRatingDistributionUseCase`; (3) `ReviewsTab` renderiza a
+distribuição **real** em %. Testes: backend (usecase/controller/adapter-TC),
+frontend (ReviewsTab + TitleDetails). Polyfill `HTMLDialogElement.showModal/close`
+adicionado ao `setup.ts` (destrava testar `Modal` nativo).
+
+---
+
+## Auditoria de marcadores `// TODO` (2026-06-01)
+
+Sweep de `// TODO/Todo/FIXME` no projeto (4 acionáveis; resto = "todo o histórico"
+PT ou prop `placeholder`).
+
+### DT-36: `CHAPTER_OPTIONS` mock hardcoded — **Med, aberto**
+
+`entities/chapter/config/chapterOptions.ts` gera 10 capítulos fixos
+(`// TODO: Substituir por dados reais vindos do backend`). API já existe
+(`GET /api/titles/{id}/chapters`). Derivar do real (hook/entidade) e remover a const.
+
+### DT-37: Login/SignUp com validação manual, schemas Zod sem uso — **Resolvido (2026-06-01)**
+
+`Login`/`SignUp` validavam com `useState`/`errors` manuais; os schemas Zod existiam
+sem uso. **Refatorados p/ React Hook Form + zodResolver** usando
+`buildLoginSchema`/`buildSignUpSchema` (`features/auth`), via `Controller` (AuthField
+é controlado, sem ref). `buildSignUpSchema` alinhado ao form real (name/email/password/
+`accept`) — removidos `confirmPassword`/`acceptTerms`/`acceptDmca` que não existiam na
+UI. Mensagem `validation.passwordMin` corrigida p/ "8 caracteres" (pt/en/es) — batia
+com `min(8)` da UI/strength. Painel demo mantido (DEV-only, agora via `setValue`).
+Primeiro uso de RHF no repo (padrão estabelecido). tsc 0, lint:fsd verde, 834 testes.
+
+### DT-38: Preferência de idioma do Footer é stub — **Med, aberto (após WIP do Footer)**
+
+`widgets/footer/ui/Footer.tsx:140`: item de idioma sem handler
+(`// Todo: Implemente a lógica para mudar idioma…`). Ligar a `i18n.changeLanguage` /
+content-locales (reusar `LanguageSettings` do header); tema = indicar "em
+desenvolvimento". Footer em redesign WIP — coordenar.
+
+### DT-39: `parseStatus` na camada de apresentação (backend) — **Med, aberto**
+
+`presentation/event/controller/EventController.java:79`: `parseStatus` (parsing de
+enum) dentro do controller (`// TODO: Retirar essa lógica do controller`). Mover p/
+value-object/use-case. Auditar outros controllers por `parse*` na apresentação.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 3 | DT-08, DT-10, DT-24 |
+| **Média** | 7 | DT-08, DT-10, DT-24, DT-32, DT-36, DT-38, DT-39 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 2 | DT-03, DT-09 |
+| **Baixa** | 3 | DT-03, DT-09, DT-33 |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
+| **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
+| **Resolvidos 2026-06-01** | 3 | DT-27, DT-31, DT-37 |

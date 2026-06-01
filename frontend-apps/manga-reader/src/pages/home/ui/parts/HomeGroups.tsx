@@ -4,10 +4,9 @@ import { ArrowRight } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
-import { GroupCard } from '@ui/GroupCard';
+import { GroupCard, type Group } from '@entities/group';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import type { Group } from '@entities/group';
 
 type HomeGroupsProps = {
     groups: Group[];
@@ -15,6 +14,7 @@ type HomeGroupsProps = {
 
 const HomeGroups = ({ groups }: HomeGroupsProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('home');
 
     return (

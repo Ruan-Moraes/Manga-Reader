@@ -1,8 +1,10 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useAuth, AuthShell, AuthField, AuthSubmit } from '@features/auth';
+import { useAuth, AuthShell, AuthField, AuthSubmit, buildSignUpSchema, type SignUpFormValues } from '@features/auth';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { showSuccessToast } from '@shared/service/util/toastService';
@@ -27,51 +29,33 @@ function calcStrength(password: string) {
 const SignUp = () => {
     const navigate = useNavigate();
     const { t } = useTranslation('auth');
-    const { register } = useAuth();
+    const { register: registerUser } = useAuth();
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [accept, setAccept] = useState(false);
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [loading, setLoading] = useState(false);
+    const schema = useMemo(() => buildSignUpSchema(t), [t]);
 
+    const {
+        control,
+        handleSubmit,
+        watch,
+        setError,
+        formState: { errors, isSubmitting },
+    } = useForm<SignUpFormValues>({
+        resolver: zodResolver(schema),
+        defaultValues: { name: '', email: '', password: '', accept: false },
+    });
+
+    const password = watch('password');
     const strength = useMemo(() => calcStrength(password), [password]);
 
-    const submit = async (e: FormEvent) => {
-        e.preventDefault();
-
-        const errs: Record<string, string> = {};
-
-        if (!name.trim()) errs.name = t('signUp.nameError');
-
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = t('signUp.emailError');
-
-        if (password.length < 8) errs.password = t('signUp.passwordError');
-
-        if (!accept) errs.accept = t('signUp.termsError');
-
-        setErrors(errs);
-
-        if (Object.keys(errs).length) return;
-
-        setLoading(true);
+    const onSubmit = async (values: SignUpFormValues) => {
         try {
-            await register({
-                name: name.trim(),
-                email: email.trim(),
-                password,
-            });
+            await registerUser({ name: values.name.trim(), email: values.email.trim(), password: values.password });
 
             showSuccessToast(t('signUp.success'));
 
             navigate(WEB_BASE_URL);
         } catch {
-            setErrors({
-                email: t('signUp.createAccountError'),
-            });
-        } finally {
-            setLoading(false);
+            setError('email', { message: t('signUp.createAccountError') });
         }
     };
 
@@ -98,41 +82,59 @@ const SignUp = () => {
                 </>
             }
         >
-            <form onSubmit={submit} noValidate aria-label={t('signUp.formAria')}>
-                <AuthField
-                    label={t('signUp.nameLabel')}
-                    autoComplete="name"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder={t('signUp.namePlaceholder')}
-                    error={errors.name}
+            <form onSubmit={handleSubmit(onSubmit)} noValidate aria-label={t('signUp.formAria')}>
+                <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => (
+                        <AuthField
+                            label={t('signUp.nameLabel')}
+                            autoComplete="name"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder={t('signUp.namePlaceholder')}
+                            error={errors.name?.message}
+                        />
+                    )}
                 />
 
-                <AuthField
-                    label={t('signUp.emailLabel')}
-                    type="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder={t('signUp.emailPlaceholder')}
-                    error={errors.email}
+                <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                        <AuthField
+                            label={t('signUp.emailLabel')}
+                            type="email"
+                            autoComplete="email"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder={t('signUp.emailPlaceholder')}
+                            error={errors.email?.message}
+                        />
+                    )}
                 />
 
-                <AuthField
-                    label={t('signUp.passwordLabel')}
-                    type="password"
-                    autoComplete="new-password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder={t('signUp.passwordPlaceholder')}
-                    error={errors.password}
-                    rightSlot={
-                        strength.labelKey ? (
-                            <span className="text-mr-tiny font-mr-bold tracking-mr" style={{ color: strength.color }}>
-                                {t(strength.labelKey)}
-                            </span>
-                        ) : null
-                    }
+                <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                        <AuthField
+                            label={t('signUp.passwordLabel')}
+                            type="password"
+                            autoComplete="new-password"
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder={t('signUp.passwordPlaceholder')}
+                            error={errors.password?.message}
+                            rightSlot={
+                                strength.labelKey ? (
+                                    <span className="text-mr-tiny font-mr-bold tracking-mr" style={{ color: strength.color }}>
+                                        {t(strength.labelKey)}
+                                    </span>
+                                ) : null
+                            }
+                        />
+                    )}
                 />
 
                 {password && (
@@ -149,33 +151,39 @@ const SignUp = () => {
                     </div>
                 )}
 
-                <label className="mb-2 flex cursor-pointer items-start gap-2">
-                    <input
-                        type="checkbox"
-                        checked={accept}
-                        onChange={e => setAccept(e.target.checked)}
-                        className="mt-0.5 size-3.5 shrink-0"
-                        style={{ accentColor: '#ddda2a' }}
-                    />
-                    <span className="text-mr-small leading-snug tracking-mr text-mr-gray-200">
-                        {t('signUp.termsPrefix')}{' '}
-                        <a href="/legal/terms" onClick={go('/legal/terms')} className="text-mr-accent no-underline">
-                            {t('signUp.termsLinkLabel')}
-                        </a>{' '}
-                        {t('signUp.termsAnd')}{' '}
-                        <a href="/legal/privacy" onClick={go('/legal/privacy')} className="text-mr-accent no-underline">
-                            {t('signUp.privacyLinkLabel')}
-                        </a>
-                        .
-                    </span>
-                </label>
+                <Controller
+                    name="accept"
+                    control={control}
+                    render={({ field }) => (
+                        <label className="mb-2 flex cursor-pointer items-start gap-2">
+                            <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={e => field.onChange(e.target.checked)}
+                                className="mt-0.5 size-3.5 shrink-0"
+                                style={{ accentColor: '#ddda2a' }}
+                            />
+                            <span className="text-mr-small leading-snug tracking-mr text-mr-gray-200">
+                                {t('signUp.termsPrefix')}{' '}
+                                <a href="/legal/terms" onClick={go('/legal/terms')} className="text-mr-accent no-underline">
+                                    {t('signUp.termsLinkLabel')}
+                                </a>{' '}
+                                {t('signUp.termsAnd')}{' '}
+                                <a href="/legal/privacy" onClick={go('/legal/privacy')} className="text-mr-accent no-underline">
+                                    {t('signUp.privacyLinkLabel')}
+                                </a>
+                                .
+                            </span>
+                        </label>
+                    )}
+                />
                 {errors.accept && (
                     <div className="mb-3.5 text-mr-tiny tracking-mr" style={{ color: '#ff784f' }}>
-                        {errors.accept}
+                        {errors.accept.message}
                     </div>
                 )}
 
-                <AuthSubmit loading={loading}>{t('signUp.submit')}</AuthSubmit>
+                <AuthSubmit loading={isSubmitting}>{t('signUp.submit')}</AuthSubmit>
             </form>
         </AuthShell>
     );

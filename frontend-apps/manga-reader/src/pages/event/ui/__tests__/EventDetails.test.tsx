@@ -2,8 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import EventDetails from '../EventDetails';
-import type { EventData } from '@entities/event';
-import { useEventDetails } from '@entities/event';
+import { type EventData, useEventDetails } from '@entities/event';
 
 vi.mock('@entities/event', async importOriginal => {
     const actual = await importOriginal<typeof import('@entities/event')>();

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard } from '@entities/manga';
 import { Skeleton } from '@ui/Skeleton';
 
 type Layout = 'grid' | 'list';
@@ -30,7 +30,7 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {Array.from({ length: 12 }).map((_, i) => (
                     <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
                 ))}
@@ -55,7 +55,7 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
 
     if (layout === 'grid') {
         return (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {items.map(m => (
                     <MangaCard
                         key={m.id}

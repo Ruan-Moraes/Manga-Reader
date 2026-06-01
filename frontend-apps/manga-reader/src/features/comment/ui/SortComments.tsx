@@ -2,7 +2,7 @@ import { ArrowUpDown, CalendarArrowDown, CalendarArrowUp, ThumbsDown, ThumbsUp }
 
 import { IconButton } from '@ui/IconButton';
 
-import { SortType, useCommentSortContext } from '../model/CommentSortContext';
+import { SortType, useCommentSortContext } from '@entities/comment';
 
 type SortCommentsProps = {
     title: string;

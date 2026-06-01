@@ -9,7 +9,7 @@ import { CommentBox } from '@ui/CommentBox';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 
-import { TOPICS, REPLIES } from '@mock/forumTopic';
+import useTopicDetail from '../model/useTopicDetail';
 import TopicHeader from './parts/TopicHeader';
 import TopicReplies from './parts/TopicReplies';
 import TopicCommentInput from './parts/TopicCommentInput';
@@ -23,7 +23,7 @@ const ForumTopicPage = () => {
     const [votes, setVotes] = useState<Record<string, 'up' | 'down' | null>>({});
     const [reply, setReply] = useState('');
 
-    const topic = TOPICS[topicId ?? ''] ?? TOPICS['2'];
+    const { topic, replies } = useTopicDetail(topicId);
 
     if (!topic) {
         return (
@@ -64,7 +64,7 @@ const ForumTopicPage = () => {
 
             <TopicReplies
                 topic={topic}
-                replies={REPLIES}
+                replies={replies}
                 sort={sort}
                 onSortChange={setSort}
                 votes={votes}

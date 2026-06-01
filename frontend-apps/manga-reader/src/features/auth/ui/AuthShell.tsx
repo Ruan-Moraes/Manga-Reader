@@ -32,7 +32,7 @@ export const AuthShell = ({ eyebrow, title, subtitle, children, footer }: AuthSh
                     />
                     <div className="relative">
                         <div className="mb-8 flex items-center gap-2.5">
-                            <img src={`${import.meta.env.BASE_URL}/favicon-32x32.png`} width={32} height={32} alt="" />
+                            <img src={`${import.meta.env.BASE_URL}/favicon-64x64.png`} width={32} height={32} alt="" />
                             <span className="font-mr-sans text-[18px] font-mr-extrabold italic tracking-mr-logo text-mr-fg">
                                 Manga <span className="text-mr-accent">Reader</span>
                             </span>

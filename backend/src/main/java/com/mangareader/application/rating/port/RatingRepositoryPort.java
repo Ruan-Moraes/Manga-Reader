@@ -35,4 +35,21 @@ public interface RatingRepositoryPort {
     RatingAggregate aggregateByTitleId(String titleId);
 
     record RatingAggregate(double average, long count) {}
+
+    /**
+     * Agregação no banco: contagem de avaliações por faixa de estrela (1–5),
+     * agrupando pelo {@code overallRating} arredondado. Alimenta o gráfico de
+     * distribuição na aba de avaliações sem carregar a lista completa.
+     */
+    RatingDistribution distributionByTitleId(String titleId);
+
+    record RatingDistribution(long star1, long star2, long star3, long star4, long star5) {
+        public long total() {
+            return star1 + star2 + star3 + star4 + star5;
+        }
+
+        public static RatingDistribution empty() {
+            return new RatingDistribution(0, 0, 0, 0, 0);
+        }
+    }
 }

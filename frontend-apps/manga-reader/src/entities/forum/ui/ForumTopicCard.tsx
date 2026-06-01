@@ -3,9 +3,9 @@ import { Pin, MessageSquare, Eye } from 'lucide-react';
 
 import { cn } from '@shared/lib/cn';
 
-import { Avatar } from './Avatar';
-import { Badge } from './Badge';
-import { StatusDot } from './StatusDot';
+import { Avatar } from '@ui/Avatar';
+import { Badge } from '@ui/Badge';
+import { StatusDot } from '@ui/StatusDot';
 
 export interface ForumTopicCardProps {
     id: string;

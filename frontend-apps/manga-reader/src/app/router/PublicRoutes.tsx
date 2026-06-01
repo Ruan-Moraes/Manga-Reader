@@ -20,6 +20,7 @@ const LegalPrivacy = lazy(() => import('@pages/legal/ui/Privacy'));
 const LegalDmca = lazy(() => import('@pages/legal/ui/Dmca'));
 const LegalContact = lazy(() => import('@pages/legal/ui/Contact'));
 const HelpCenter = lazy(() => import('@pages/help/ui/HelpCenter'));
+const HelpArticle = lazy(() => import('@pages/help/ui/HelpArticle'));
 const UserProfile = lazy(() => import('@pages/profile/ui/UserProfile'));
 const ProfileEdit = lazy(() => import('@pages/profile/ui/Profile'));
 const Forum = lazy(() => import('@pages/forum/ui/Forum'));
@@ -87,6 +88,7 @@ export const contentRoutes = [
     { path: 'legal/dmca', element: <LegalDmca /> },
     { path: 'legal/contact', element: <LegalContact /> },
     { path: 'help', element: <HelpCenter /> },
+    { path: 'help/article/:articleId', element: <HelpArticle /> },
 
     ...(import.meta.env.DEV
         ? [

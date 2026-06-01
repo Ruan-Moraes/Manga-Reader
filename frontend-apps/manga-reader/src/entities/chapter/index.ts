@@ -1,4 +1,5 @@
 // Components
+export { default as ChapterListItem } from './ui/ChapterListItem';
 export { default as ChapterList } from './ui/ChapterList';
 export { default as ChapterFilter } from './ui/ChapterFilter';
 export { default as ChapterCoverImage } from './ui/ChapterCoverImage';

@@ -10,7 +10,7 @@ import { Tabs } from '@ui/Tabs';
 import { SearchField } from '@ui/SearchField';
 import { Select } from '@ui/Select';
 import { SegmentedControl } from '@ui/SegmentedControl';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard } from '@entities/manga';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
@@ -91,7 +91,7 @@ const Library = () => {
 
             {/* Content */}
             {loading ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {Array.from({ length: 12 }).map((_, i) => (
                         <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
                     ))}
@@ -112,7 +112,7 @@ const Library = () => {
                     />
                 )
             ) : layout === 'grid' ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {sorted.map(m => (
                         <MangaCard
                             key={m.titleId}

@@ -5,7 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const setSortTypeMock = vi.fn();
 let currentSortType: string | null = null;
 
-vi.mock('../../model/CommentSortContext', () => ({
+vi.mock('@entities/comment', () => ({
     useCommentSortContext: () => ({
         sortType: currentSortType,
         setSortType: setSortTypeMock,

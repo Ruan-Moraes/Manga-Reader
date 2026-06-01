@@ -4,9 +4,9 @@ import { Bookmark } from 'lucide-react';
 
 import { cn } from '@shared/lib/cn';
 
-import { Stars } from './Stars';
-import { IconButton } from './IconButton';
-import { ProgressBar } from './ProgressBar';
+import { Stars } from '@ui/Stars';
+import { IconButton } from '@ui/IconButton';
+import { ProgressBar } from '@ui/ProgressBar';
 
 export interface Manga {
     id: string;
@@ -51,7 +51,7 @@ const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, o
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             className={cn(
-                'block no-underline transition-transform duration-mr-default focus-visible:outline-2 focus-visible:outline-mr-accent',
+                'block no-underline transition-transform duration-mr-default mr-focus-ring',
                 lifted && '-translate-y-0.5',
             )}
         >

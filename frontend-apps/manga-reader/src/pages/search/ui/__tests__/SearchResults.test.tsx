@@ -9,9 +9,13 @@ const mSearch = {
     data: undefined as unknown,
 };
 
-vi.mock('@entities/manga', () => ({
-    useSearchTitles: () => mSearch,
-}));
+vi.mock('@entities/manga', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/manga')>();
+    return {
+        ...actual,
+        useSearchTitles: () => mSearch,
+    };
+});
 
 vi.mock('react-router-dom', async importOriginal => {
     const actual = await importOriginal<typeof import('react-router-dom')>();

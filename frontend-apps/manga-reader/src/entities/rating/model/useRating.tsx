@@ -4,7 +4,7 @@ import useRatings from './useRatings';
 import { showSuccessToast } from '@shared/service/util/toastService';
 
 const useRating = (titleId: string) => {
-    const { ratings, average, submitRating } = useRatings(titleId);
+    const { ratings, average, distribution, submitRating } = useRatings(titleId);
 
     const submit = useCallback(
         async (data: {
@@ -29,6 +29,7 @@ const useRating = (titleId: string) => {
     return {
         ratings,
         average,
+        distribution,
         submitRating: submit,
     };
 };

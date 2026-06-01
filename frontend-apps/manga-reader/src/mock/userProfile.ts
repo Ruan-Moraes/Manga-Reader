@@ -1,15 +1,4 @@
-export type ProfileData = {
-    handle: string;
-    name: string;
-    bio: string;
-    verified: boolean;
-    worksRead: number;
-    reviews: number;
-    followers: number;
-    following: number;
-    genres: string[];
-    isOwn?: boolean;
-};
+import type { ProfileData } from '@entities/user';
 
 export const PROFILES: Record<string, ProfileData> = {
     me: {

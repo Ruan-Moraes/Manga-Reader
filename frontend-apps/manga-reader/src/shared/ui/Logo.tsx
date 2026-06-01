@@ -20,12 +20,7 @@ const Logo = ({ size = 'md', onNavigate, ariaLabel = 'Manga Reader, ir para home
     const dims = sizeMap[size];
 
     return (
-        <button
-            type="button"
-            onClick={() => onNavigate('/')}
-            aria-label={ariaLabel}
-            className={`flex items-center ${dims.gap} cursor-pointer rounded-mr-xs focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2`}
-        >
+        <button type="button" onClick={() => onNavigate('/')} aria-label={ariaLabel} className={`flex items-center ${dims.gap} cursor-pointer mr-focus-ring`}>
             <span
                 className="flex items-center justify-center overflow-hidden"
                 style={{ width: dims.img, height: dims.img, borderRadius: 3 }}
@@ -35,7 +30,7 @@ const Logo = ({ size = 'md', onNavigate, ariaLabel = 'Manga Reader, ir para home
                     <span className="text-[10px] font-mr-extrabold text-mr-fg">MR</span>
                 ) : (
                     <img
-                        src={`${import.meta.env.BASE_URL}favicon-64x64.png`}
+                        src={`${import.meta.env.BASE_URL}/favicon-64x64.png`}
                         alt=""
                         width={dims.img}
                         height={dims.img}

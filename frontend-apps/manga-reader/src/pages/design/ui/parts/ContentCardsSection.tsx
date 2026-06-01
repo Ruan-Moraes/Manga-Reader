@@ -1,15 +1,15 @@
 import { Flag, Reply } from 'lucide-react';
 
 import { Badge } from '@ui/Badge';
-import { ChapterListItem } from '@ui/ChapterListItem';
+import { ChapterListItem } from '@entities/chapter';
 import { CommentBox } from '@ui/CommentBox';
-import { EventCard } from '@ui/EventCard';
-import { ForumTopicCard } from '@ui/ForumTopicCard';
-import { GroupCard } from '@ui/GroupCard';
-import { MangaCard } from '@ui/MangaCard';
+import { EventCard } from '@entities/event';
+import { ForumTopicCard } from '@entities/forum';
+import { GroupCard } from '@entities/group';
+import { MangaCard } from '@entities/manga';
 import { MangaPoster } from '@ui/MangaPoster';
 import { NotificationItem } from '@ui/NotificationItem';
-import { ReviewCard } from '@ui/ReviewCard';
+import { ReviewCard } from '@entities/rating';
 
 import { PhaseHeader, Section, SubSection } from './showcaseShared';
 

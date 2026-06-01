@@ -178,6 +178,42 @@ class RatingRepositoryAdapterTest {
     }
 
     @Nested
+    @DisplayName("distributionByTitleId")
+    class DistributionByTitleId {
+
+        @Test
+        @DisplayName("Deve contar avaliações por faixa de estrela (overallRating arredondado)")
+        void deveContarPorEstrela() {
+            // title-1: overall 4.3 (→4★) e 3.0 (→3★)
+            var dist = ratingRepository.distributionByTitleId("title-1");
+
+            assertThat(dist.star4()).isEqualTo(1);
+            assertThat(dist.star3()).isEqualTo(1);
+            assertThat(dist.star5()).isZero();
+            assertThat(dist.star2()).isZero();
+            assertThat(dist.star1()).isZero();
+            assertThat(dist.total()).isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("Deve agrupar avaliação 5.0 na faixa 5 estrelas")
+        void deveAgruparCincoEstrelas() {
+            var dist = ratingRepository.distributionByTitleId("title-2");
+
+            assertThat(dist.star5()).isEqualTo(1);
+            assertThat(dist.total()).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("Deve retornar distribuição vazia para título sem avaliações")
+        void deveRetornarVazioParaTituloSemAvaliacoes() {
+            var dist = ratingRepository.distributionByTitleId("title-inexistente");
+
+            assertThat(dist.total()).isZero();
+        }
+    }
+
+    @Nested
     @DisplayName("save")
     class Save {
 

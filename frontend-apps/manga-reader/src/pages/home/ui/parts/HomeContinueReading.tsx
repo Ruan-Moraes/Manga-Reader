@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard } from '@entities/manga';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
 import type { SavedMangaItem } from '@features/library';

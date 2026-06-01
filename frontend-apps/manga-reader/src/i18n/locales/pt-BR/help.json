@@ -34,6 +34,49 @@
         "openTicket": "Abrir chamado",
         "helpful": "{{percent}}% útil"
     },
+    "article": {
+        "back": "Voltar para a Central de Ajuda",
+        "views": "{{value}} visualizações",
+        "helpfulTitle": "Este artigo foi útil?",
+        "yes": "Sim, ajudou",
+        "no": "Não resolveu",
+        "relatedTitle": "Artigos relacionados",
+        "notFoundTitle": "Artigo não encontrado",
+        "notFoundDesc": "O artigo que você procura não existe ou foi movido. Volte para a Central de Ajuda e busque por outro tópico."
+    },
+    "articleBody": {
+        "1": [
+            "Para alterar seu e-mail ou senha, acesse Configurações → Conta. Lá você encontra os campos de e-mail e senha com a opção de edição.",
+            "Ao trocar o e-mail, enviamos um link de confirmação para o novo endereço — a mudança só é aplicada após você confirmar por esse link.",
+            "Para a senha, é necessário informar a senha atual antes de definir a nova. Use ao menos 8 caracteres, com letras e números, para mais segurança.",
+            "Se você não tem mais acesso ao e-mail atual, abra um chamado com nosso time para validar sua identidade manualmente."
+        ],
+        "2": [
+            "A direção de leitura pode ser ajustada tanto globalmente quanto por obra. Para o padrão global, vá em Configurações → Leitura → Direção.",
+            "As opções disponíveis são: vertical contínuo (ideal para webtoons/manhwas), horizontal da esquerda para a direita e horizontal da direita para a esquerda (padrão de mangás japoneses).",
+            "Dentro do leitor, o ícone de engrenagem permite sobrescrever a direção apenas para o capítulo atual, sem alterar sua preferência global."
+        ],
+        "3": [
+            "Na tela de login, clique em \"Esqueci minha senha\" e informe o e-mail cadastrado. Enviaremos um link de redefinição válido por 30 minutos.",
+            "Verifique também a caixa de spam caso o e-mail não chegue em alguns minutos. O link só pode ser usado uma vez.",
+            "Após definir a nova senha, todas as sessões ativas em outros dispositivos são encerradas por segurança."
+        ],
+        "4": [
+            "O idioma da interface é alterado em Configurações → Idioma, ou pelo seletor de idioma no menu. A mudança é aplicada imediatamente.",
+            "O idioma da interface é independente do idioma do conteúdo (catálogo e comentários), que você configura separadamente em Idiomas de conteúdo.",
+            "Sua preferência de idioma da interface fica salva no navegador; ao entrar na sua conta, ela acompanha seu perfil."
+        ],
+        "5": [
+            "Para cancelar sua assinatura, acesse Configurações → Assinatura → Cancelar. O cancelamento é imediato, sem multa.",
+            "Você mantém acesso aos recursos do plano apoiador até o fim do período já pago — não há reembolso proporcional de período em andamento.",
+            "Após o fim do período, sua conta volta ao plano gratuito automaticamente, sem perda do histórico e da biblioteca."
+        ],
+        "6": [
+            "Se o aplicativo está lento, comece limpando o cache em Configurações → Limpar cache. Isso resolve a maioria dos travamentos de imagem.",
+            "Verifique também sua conexão e se o app/navegador está atualizado. Extensões de bloqueio podem interferir no carregamento das páginas.",
+            "Se a lentidão persistir, abra um chamado informando seu dispositivo, navegador e o capítulo onde o problema acontece — isso acelera o diagnóstico."
+        ]
+    },
     "status": {
         "eyebrow": "Saúde da plataforma",
         "title": "Status do sistema",

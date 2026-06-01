@@ -1,15 +1,14 @@
-import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
+
+import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { Select } from '@ui/Select';
 import { SegmentedControl } from '@ui/SegmentedControl';
 import { SearchField } from '@ui/SearchField';
-import { ChapterListItem } from '@ui/ChapterListItem';
+import { ChapterListItem, type Chapter } from '@entities/chapter';
 import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
-
-import type { Chapter } from '@entities/chapter';
 
 type ChaptersTabProps = {
     titleId: string;
@@ -41,6 +40,7 @@ const ChaptersTab = ({
     onPageChange,
 }: ChaptersTabProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('manga');
 
     const langOptions = [
@@ -59,12 +59,12 @@ const ChaptersTab = ({
         <>
             <div className="mb-4 flex flex-wrap gap-3">
                 <Select value={lang} onChange={e => onLangChange(e.target.value)} options={langOptions} className="w-44" />
-                <SegmentedControl items={orderItems} value={order} onChange={v => onOrderChange(v as 'asc' | 'desc')} size="sm" />
+                <SegmentedControl items={orderItems} value={order} onChange={v => onOrderChange(v as 'asc' | 'desc')} size="md" unified={true} />
                 <SearchField value={search} onChange={onSearchChange} placeholder={t('chapter.searchPlaceholder')} className="flex-1 min-w-[180px]" />
             </div>
 
             {isLoading ? (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col">
                     {Array.from({ length: 5 }).map((_, i) => (
                         <div key={i} className="h-16 animate-pulse rounded bg-mr-tertiary/20" />
                     ))}
@@ -72,7 +72,7 @@ const ChaptersTab = ({
             ) : filtered.length === 0 ? (
                 <EmptyState illustration="pensando" title={t('titleDetails.noChapters')} />
             ) : (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col">
                     {filtered.map(c => (
                         <ChapterListItem
                             key={c.number}

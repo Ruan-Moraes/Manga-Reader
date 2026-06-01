@@ -29,7 +29,7 @@ export const SocialButton = ({ social }: { social: FooterSocialLink }) => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={social.ariaLabel}
-            className="inline-flex size-10 items-center justify-center rounded-[2px] border border-mr-gray-700 bg-mr-secondary text-mr-fg-muted no-underline transition-colors duration-200 hover:border-mr-accent hover:text-mr-accent focus-visible:border-mr-accent focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2"
+            className="inline-flex size-10 items-center justify-center rounded-[2px] border border-mr-gray-700 bg-mr-secondary text-mr-fg-muted no-underline transition-colors duration-200 hover:border-mr-accent hover:text-mr-accent focus-visible:border-mr-accent mr-focus-ring"
         >
             <Icon className="size-[18px]" aria-hidden="true" />
         </a>
@@ -47,7 +47,7 @@ export const PreferenceButton = ({ item }: { item: FooterPreferenceItem }) => {
             aria-label={item.ariaLabel}
             className={cn(
                 'inline-flex min-h-[36px] items-center gap-2 rounded-[2px] border px-3 py-1.5 text-[12px] font-mr-semibold transition-colors duration-200',
-                'focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2',
+                'mr-focus-ring',
                 accent
                     ? 'border-transparent bg-transparent text-mr-accent'
                     : 'border-mr-gray-700 bg-transparent text-mr-fg-muted hover:border-mr-accent hover:text-mr-accent',

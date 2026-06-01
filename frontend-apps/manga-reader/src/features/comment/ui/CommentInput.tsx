@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import useEasyMDE from '../model/internal/useEasyMDE';
 import useCommentImageUpload from '../model/internal/useCommentImageUpload';
-import { createComment } from '../api/commentService';
+import { createComment } from '@entities/comment';
 
 import { IconButton } from '@ui/IconButton';
 import { Button } from '@ui/Button';

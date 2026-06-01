@@ -26,7 +26,7 @@ export const FooterColumnBlock = ({
             aria-label={isOpen ? `${collapseLabel}: ${column.title}` : `${expandLabel}: ${column.title}`}
             className="flex w-full min-h-[48px] items-center justify-between gap-3 py-3 md:hidden"
         >
-            <span className="text-xs font-mr-extrabold uppercase tracking-[0.1rem] pb-[0.125rem] border-b border-mr-tertiary">{column.title}</span>
+            <span className="text-xs font-mr-extrabold uppercase tracking-[0.1rem] pb-[0.125rem] md:border-b border-mr-tertiary">{column.title}</span>
             <ChevronDown
                 aria-hidden="true"
                 className="size-4 text-mr-fg-subtle transition-transform duration-200"

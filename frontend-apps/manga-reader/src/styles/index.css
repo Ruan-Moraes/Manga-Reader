@@ -319,6 +319,18 @@ a:focus-visible {
     outline-offset: 2px;
 }
 
+/* Canonical focus ring for components that opt out of the global default
+   (e.g. elements with `outline: none` resets) or want an explicit, uniform
+   focus affordance. Single source of truth — replaces ad-hoc
+   `focus-visible:outline-*` triples scattered across the DS primitives. */
+@utility mr-focus-ring {
+    &:focus-visible {
+        outline: 2px solid var(--mr-focus-ring);
+        outline-offset: 2px;
+        border-radius: var(--mr-radius-xs);
+    }
+}
+
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {

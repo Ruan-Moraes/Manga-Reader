@@ -1,6 +1,5 @@
-import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
-import { HelpCircle, Languages, MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
+import { Languages, MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
 
 import { Footer as DSFooter } from '@ui/Footer';
 import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, FooterSocialLink, FooterStatusInfo } from '@ui/Footer';
@@ -138,6 +137,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
         statusAriaLabel: t('footer.statusBanner.ariaLabel'),
     };
 
+    // Todo: Implemente a lógica para mudar o idioma (conteúdo e interface) e, no tema, apenas indique que estamos em desenvolvimento.
     const preferenceItems: FooterPreferenceItem[] = [
         {
             key: 'language',
@@ -154,14 +154,6 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
             icon: Moon,
             showChevron: true,
             ariaLabel: t('footer.preferences.themeAria'),
-        },
-        {
-            key: 'help',
-            label: t('footer.preferences.help'),
-            icon: HelpCircle,
-            accent: true,
-            ariaLabel: t('footer.preferences.helpAria'),
-            onClick: () => navigate(ROUTES.HELP),
         },
     ];
 

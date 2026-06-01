@@ -1,69 +1,123 @@
-import { ROUTES } from '@shared/constant/ROUTES';
-import { Link } from 'react-router-dom';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
-import { useTranslation } from 'react-i18next';
-import { statusLabelKey, formatEventDate } from '../api/eventService';
-import type { EventData } from '../model/event.types';
-import { Calendar, Clock, MapPin, Share2, Users } from 'lucide-react';
+import { memo } from 'react';
 
-const EventCard = ({ event }: { event: EventData }) => {
-    const { t } = useTranslation('event');
+import { cn } from '@shared/lib/cn';
+
+import { Button } from '@ui/Button';
+import { Badge } from '@ui/Badge';
+import { Avatar } from '@ui/Avatar';
+
+export interface EventCardProps {
+    event: {
+        id: string;
+        title: string;
+        type: 'launch' | 'meetup' | 'stream' | 'announcement';
+        when: string;
+        location?: string;
+        coverImage?: string;
+        coverGradient?: string;
+        organizer?: { name: string; avatar?: string };
+        attendees?: number;
+        going?: boolean;
+        special?: boolean;
+        past?: boolean;
+    };
+    onClick?: () => void;
+    onToggleGoing?: () => void;
+}
+
+const typeBadge = {
+    launch: { variant: 'accent' as const, label: 'Lançamento' },
+    meetup: { variant: 'neutral' as const, label: 'Encontro' },
+    stream: { variant: 'danger' as const, label: 'Ao vivo' },
+    announcement: { variant: 'neutral' as const, label: 'Anúncio' },
+};
+
+const EventCardBase = ({ event, onClick, onToggleGoing }: EventCardProps) => {
+    const t = typeBadge[event.type];
+
+    if (event.special) {
+        return (
+            <article
+                onClick={onClick}
+                className={cn(
+                    'group flex cursor-pointer flex-col overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface transition-all duration-mr-default',
+                    'hover:-translate-y-0.5 hover:border-mr-accent-50',
+                    event.past && 'opacity-55',
+                )}
+            >
+                <div
+                    className="relative h-44"
+                    style={{
+                        background: event.coverGradient ?? 'linear-gradient(135deg, #2a1f3a, #161616)',
+                    }}
+                >
+                    {event.coverImage && <img src={event.coverImage} alt="" className="size-full object-cover" />}
+                    <div className="absolute left-3 top-3">
+                        <Badge variant={t.variant}>{t.label}</Badge>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-3 p-4">
+                    <h3 className="text-mr-h3 font-mr-extrabold leading-tight tracking-mr text-mr-fg">{event.title}</h3>
+                    <div className="flex flex-wrap items-center gap-2 text-mr-tiny text-mr-fg-subtle">
+                        <span className="font-mr-bold uppercase tracking-[0.08em] text-mr-fg">{event.when}</span>
+                        {event.location && (
+                            <>
+                                <span>·</span>
+                                <span>{event.location}</span>
+                            </>
+                        )}
+                    </div>
+                    {event.organizer && (
+                        <div className="flex items-center gap-2 text-mr-tiny text-mr-fg-muted">
+                            <Avatar src={event.organizer.avatar} name={event.organizer.name} size={24} />
+                            <span>{event.organizer.name}</span>
+                            {event.attendees != null && <span>· {event.attendees} confirmados</span>}
+                        </div>
+                    )}
+                    {!event.past && onToggleGoing && (
+                        <Button
+                            variant={event.going ? 'ghost' : 'primary'}
+                            aria-pressed={event.going}
+                            onClick={e => {
+                                e.stopPropagation();
+                                onToggleGoing();
+                            }}
+                        >
+                            {event.going ? 'Vou comparecer' : 'Tenho interesse'}
+                        </Button>
+                    )}
+                    {event.past && <div className="mr-label text-mr-fg-subtle">Encerrado</div>}
+                </div>
+            </article>
+        );
+    }
 
     return (
-        <Link
-            to={`${WEB_BASE_URL}${ROUTES.EVENT_DETAIL(event.id)}`}
-            className="overflow-hidden transition border group rounded-2xl border-tertiary bg-secondary hover:-translate-y-1 hover:shadow-xl hover:border-purple-400/70"
+        <article
+            onClick={onClick}
+            className="group flex cursor-pointer gap-3 rounded-mr-md border border-mr-border bg-mr-surface p-4 transition-all hover:-translate-y-0.5 hover:border-mr-accent-50"
         >
-            <img src={event.image} alt={event.title} className="object-cover w-full h-44" />
-            <div className="p-4 space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                    <span className="px-2 py-1 text-xs font-semibold text-white bg-purple-600 rounded-full">{t(statusLabelKey[event.status])}</span>
-                    <button
-                        type="button"
-                        aria-label="Compartilhar evento"
-                        className="p-2 border rounded-full border-tertiary"
-                        onClick={eventClick => eventClick.preventDefault()}
-                    >
-                        <Share2 />
-                    </button>
-                </div>
-                <h3 className="text-lg font-bold">{event.title}</h3>
-                <div className="space-y-1 text-sm text-tertiary">
-                    <p className="flex items-center gap-2">
-                        <Clock /> {formatEventDate(event.startDate)}
-                    </p>
-                    <p className="flex items-center gap-2">
-                        <MapPin /> {event.location.label}
-                    </p>
-                </div>
-                <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="px-2 py-1 border rounded-full border-tertiary">{event.type}</span>
-                    <span className="px-2 py-1 border rounded-full border-tertiary">{event.priceLabel}</span>
-                </div>
-                <p className="text-sm">
-                    {t('card.organizer')} <span className="font-medium text-purple-400">{event.organizer.name}</span>
-                </p>
-                <div className="flex items-center justify-between text-sm">
-                    <span className="inline-flex items-center gap-1">
-                        <Users />{' '}
-                        {t('card.participantsCount', {
-                            count: event.participants,
-                        })}
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                        <Calendar /> {t('card.save')}
-                    </span>
-                </div>
-                <button
-                    type="button"
-                    onClick={eventClick => eventClick.preventDefault()}
-                    className="w-full px-3 py-2 mt-1 text-sm font-semibold text-purple-900 transition bg-white rounded-lg group-hover:bg-purple-200"
-                >
-                    {event.amIParticipating ? t('card.confirmed') : t('card.interested')}
-                </button>
+            <div
+                className="size-20 shrink-0 overflow-hidden rounded-mr-sm"
+                style={{
+                    background: event.coverGradient ?? 'linear-gradient(135deg, #2a1f3a, #161616)',
+                }}
+            >
+                {event.coverImage && <img src={event.coverImage} alt="" className="size-full object-cover" />}
             </div>
-        </Link>
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <Badge variant={t.variant}>{t.label}</Badge>
+                <h3 className="truncate text-mr-h4 font-mr-extrabold tracking-mr text-mr-fg">{event.title}</h3>
+                <div className="flex flex-wrap gap-2 text-mr-tiny text-mr-fg-subtle">
+                    <span className="font-mr-bold text-mr-fg">{event.when}</span>
+                    {event.location && <span>· {event.location}</span>}
+                    {event.attendees != null && <span>· {event.attendees} indo</span>}
+                </div>
+            </div>
+        </article>
     );
 };
+
+export const EventCard = memo(EventCardBase);
 
 export default EventCard;

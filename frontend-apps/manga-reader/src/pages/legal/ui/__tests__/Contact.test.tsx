@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import Contact from '../Contact';
@@ -48,11 +48,12 @@ describe('Contact', () => {
 
     it('shows success state after valid submission', async () => {
         const user = userEvent.setup();
-        renderWithProviders(<Contact />);
+        const { container } = renderWithProviders(<Contact />);
 
         await user.type(screen.getByLabelText(/^Nome/i), 'Ruan Barbosa');
         await user.type(screen.getByLabelText(/^E-mail/i), 'ruan@test.com');
-        await user.selectOptions(screen.getByLabelText(/^Assunto/i), 'general');
+        // Select é custom (Radix + <select> nativo escondido); dirige o nativo.
+        fireEvent.change(container.querySelector('select')!, { target: { value: 'general' } });
         await user.type(screen.getByLabelText(/^Mensagem/i), 'Minha mensagem com detalhe suficiente.');
 
         await user.click(screen.getByRole('button', { name: /enviar mensagem/i }));
@@ -67,11 +68,11 @@ describe('Contact', () => {
 
     it('renders reset button after success and allows resetting', async () => {
         const user = userEvent.setup();
-        renderWithProviders(<Contact />);
+        const { container } = renderWithProviders(<Contact />);
 
         await user.type(screen.getByLabelText(/^Nome/i), 'Ruan Barbosa');
         await user.type(screen.getByLabelText(/^E-mail/i), 'ruan@test.com');
-        await user.selectOptions(screen.getByLabelText(/^Assunto/i), 'general');
+        fireEvent.change(container.querySelector('select')!, { target: { value: 'general' } });
         await user.type(screen.getByLabelText(/^Mensagem/i), 'Mensagem longa o suficiente aqui.');
 
         await user.click(screen.getByRole('button', { name: /enviar mensagem/i }));

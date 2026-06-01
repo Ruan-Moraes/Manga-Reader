@@ -4,10 +4,9 @@ import { ArrowRight } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
-import { ForumTopicCard } from '@ui/ForumTopicCard';
+import { ForumTopicCard, formatRelativeDate, type ForumTopic } from '@entities/forum';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
-import { formatRelativeDate, type ForumTopic } from '@entities/forum';
 
 type HomeCommunityProps = {
     topics: ForumTopic[];

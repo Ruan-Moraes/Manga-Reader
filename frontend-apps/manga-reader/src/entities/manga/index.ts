@@ -6,6 +6,8 @@ export { default as useTitleModals } from './model/useTitleModals';
 export { default as useSearchTitles } from './model/useSearchTitles';
 
 // Components - Cards
+export { default as MangaCard } from './ui/MangaCard';
+export type { Manga, MangaCardProps } from './ui/MangaCard';
 export { default as BaseCard } from './ui/card/base/BaseCard';
 export { default as CarouselContainer } from './ui/card/carousel/CarouselContainer';
 export { default as HighlightCardsContainer } from './ui/card/highlight/HighlightCardsContainer';

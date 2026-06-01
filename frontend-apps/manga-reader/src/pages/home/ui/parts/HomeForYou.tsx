@@ -4,9 +4,8 @@ import { ArrowRight } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard, type Title } from '@entities/manga';
 import { Button } from '@ui/Button';
-import type { Title } from '@entities/manga';
 
 type HomeForYouProps = {
     forYou: Title[];

@@ -10,9 +10,9 @@ import { Tabs } from '@ui/Tabs';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 
-import { useTitle } from '@entities/manga';
+import { useTitle, useTitleModals } from '@entities/manga';
 import { useChapters } from '@entities/chapter';
-import { useRatings } from '@entities/rating';
+import { useRating, RatingModal } from '@entities/rating';
 import { getGroupsByTitleId } from '@entities/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
@@ -35,7 +35,8 @@ const TitleDetails = () => {
 
     const { title, isLoading, isError } = useTitle(titleId ?? '');
     const { chapters, totalPages, isLoading: chaptersLoading } = useChapters(titleId ?? '', { page: chPage, direction: order });
-    const { ratings, average } = useRatings(titleId ?? '');
+    const { ratings, average, distribution, submitRating } = useRating(titleId ?? '');
+    const { isRatingModalOpen, openRatingModal, closeRatingModal } = useTitleModals();
     const { data: groupsPage } = useQuery({
         queryKey: [QUERY_KEYS.GROUPS_BY_TITLE, titleId],
         queryFn: () => getGroupsByTitleId(titleId!, 0, 10),
@@ -106,9 +107,11 @@ const TitleDetails = () => {
                     onPageChange={setChPage}
                 />
             )}
-            {tab === 'reviews' && <ReviewsTab ratings={ratings} average={average} />}
+            {tab === 'reviews' && <ReviewsTab ratings={ratings} average={average} distribution={distribution} onWriteReview={openRatingModal} />}
             {tab === 'groups' && <GroupsTab groups={groups} />}
             {tab === 'about' && <TitleAboutTab title={title} />}
+
+            <RatingModal isModalOpen={isRatingModalOpen} closeModal={closeRatingModal} onSubmitRating={submitRating} />
         </PageContainer>
     );
 };

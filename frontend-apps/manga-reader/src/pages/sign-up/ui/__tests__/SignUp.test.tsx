@@ -69,7 +69,7 @@ describe('SignUp', () => {
         renderWithProviders(<SignUp />);
         await user.click(screen.getByRole('button', { name: /criar conta/i }));
         await waitFor(() => {
-            expect(screen.getByText(/diga como podemos te chamar/i)).toBeInTheDocument();
+            expect(screen.getByText(/nome é obrigatório/i)).toBeInTheDocument();
         });
     });
 
@@ -81,7 +81,7 @@ describe('SignUp', () => {
         await user.type(screen.getByPlaceholderText(/mínimo 8 caracteres/i), 'Senha123!');
         await user.click(screen.getByRole('button', { name: /criar conta/i }));
         await waitFor(() => {
-            expect(screen.getByText(/e-mail inválido/i)).toBeInTheDocument();
+            expect(screen.getByText(/formato de email inválido/i)).toBeInTheDocument();
         });
     });
 
@@ -103,7 +103,7 @@ describe('SignUp', () => {
         await fillForm(user, { accept: false });
         await user.click(screen.getByRole('button', { name: /criar conta/i }));
         await waitFor(() => {
-            expect(screen.getByText(/preciso aceitar os termos/i)).toBeInTheDocument();
+            expect(screen.getByText(/aceitar os termos de uso/i)).toBeInTheDocument();
         });
     });
 

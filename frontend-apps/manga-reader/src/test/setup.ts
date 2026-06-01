@@ -1,7 +1,11 @@
 import '@testing-library/jest-dom/vitest';
 import i18n from '@/i18n/config';
 import { cleanup } from '@testing-library/react';
-import { afterEach, beforeAll, afterAll, vi } from 'vitest';
+import { afterEach, beforeAll, afterAll, expect, vi } from 'vitest';
+import { toHaveNoViolations } from 'jest-axe';
+
+// Accessibility assertions (axe-core) — enables `expect(...).toHaveNoViolations()`
+expect.extend(toHaveNoViolations);
 
 // jsdom does not implement IntersectionObserver
 class MockIntersectionObserver {
@@ -14,6 +18,22 @@ Object.defineProperty(window, 'IntersectionObserver', {
     configurable: true,
     value: MockIntersectionObserver,
 });
+
+// jsdom does not implement <dialog> showModal/close — polyfill so components
+// built on the native <dialog> (e.g. shared/ui/Modal) are testable.
+if (typeof HTMLDialogElement !== 'undefined') {
+    if (!HTMLDialogElement.prototype.showModal) {
+        HTMLDialogElement.prototype.showModal = function showModal() {
+            this.open = true;
+        };
+    }
+    if (!HTMLDialogElement.prototype.close) {
+        HTMLDialogElement.prototype.close = function close() {
+            this.open = false;
+            this.dispatchEvent(new Event('close'));
+        };
+    }
+}
 
 import { server } from './mocks/server';
 

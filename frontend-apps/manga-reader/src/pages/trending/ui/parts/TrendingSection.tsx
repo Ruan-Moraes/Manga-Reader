@@ -2,7 +2,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { MangaCard } from '@ui/MangaCard';
+import { MangaCard } from '@entities/manga';
 import { Badge } from '@ui/Badge';
 
 export type TrendingManga = {

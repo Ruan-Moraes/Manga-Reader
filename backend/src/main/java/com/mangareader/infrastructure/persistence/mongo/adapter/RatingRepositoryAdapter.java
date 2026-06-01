@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
 
@@ -83,5 +84,29 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
                 : new RatingAggregate(doc.average(), doc.count());
     }
 
+    @Override
+    public RatingDistribution distributionByTitleId(String titleId) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("titleId").is(titleId)),
+                Aggregation.project()
+                        .and(ArithmeticOperators.Round.roundValueOf("overallRating")).as("star"),
+                Aggregation.group("star").count().as("count"),
+                Aggregation.project("count").and("_id").as("star"));
+
+        AggregationResults<StarBucket> results = mongoTemplate.aggregate(
+                aggregation, MangaRating.class, StarBucket.class);
+
+        long[] counts = new long[6]; // índice 1..5
+
+        for (StarBucket bucket : results.getMappedResults()) {
+            int star = (int) Math.max(1, Math.min(5, Math.round(bucket.star())));
+            counts[star] += bucket.count();
+        }
+
+        return new RatingDistribution(counts[1], counts[2], counts[3], counts[4], counts[5]);
+    }
+
     private record AggDoc(double average, long count) {}
+
+    private record StarBucket(double star, long count) {}
 }

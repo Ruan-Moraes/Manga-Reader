@@ -9,6 +9,8 @@ export { AUTH_KEY } from './config/AUTH_KEY';
 export { buildLoginSchema, buildSignUpSchema } from './model/authSchemas';
 export type { LoginFormValues, SignUpFormValues } from './model/authSchemas';
 
+export { AuthGuard, RoleGuard } from './ui/RouteGuards';
+
 export { AuthShell } from './ui/AuthShell';
 export { AuthField } from './ui/AuthField';
 export { AuthSubmit } from './ui/AuthSubmit';

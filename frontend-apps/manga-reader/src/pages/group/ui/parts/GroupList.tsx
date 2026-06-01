@@ -1,11 +1,9 @@
 import { useTranslation } from 'react-i18next';
 
-import { GroupCard } from '@ui/GroupCard';
+import { GroupCard, type Group } from '@entities/group';
 import { Badge } from '@ui/Badge';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
-
-import type { Group } from '@entities/group';
 
 interface GroupListProps {
     groups: Group[];

@@ -3,11 +3,11 @@ import { ThumbsUp, MessageSquare, Star } from 'lucide-react';
 
 import { cn } from '@shared/lib/cn';
 
-import { Avatar } from './Avatar';
-import { Badge } from './Badge';
-import { Stars } from './Stars';
-import { MangaPoster } from './MangaPoster';
-import type { CommentAuthor } from './CommentBox';
+import { Avatar } from '@ui/Avatar';
+import { Badge } from '@ui/Badge';
+import { Stars } from '@ui/Stars';
+import { MangaPoster } from '@ui/MangaPoster';
+import type { CommentAuthor } from '@ui/CommentBox';
 
 export interface ReviewCardProps {
     author: CommentAuthor;

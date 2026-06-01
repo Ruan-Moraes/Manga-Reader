@@ -1,30 +1,4 @@
-export type TopicAuthor = {
-    name: string;
-    handle: string;
-    badge: 'mod' | 'author' | undefined;
-};
-
-export type TopicData = {
-    id: string;
-    title: string;
-    category: string;
-    pinned: boolean;
-    author: TopicAuthor;
-    postedAt: string;
-    views: number;
-    replies: number;
-    live: number;
-    content: string;
-};
-
-export type ReplyData = {
-    id: string;
-    author: TopicAuthor;
-    when: string;
-    upvotes: number;
-    downvotes: number;
-    children: string;
-};
+import type { TopicData, ReplyData } from '@entities/forum';
 
 export const TOPICS: Record<string, TopicData> = {
     '2': {

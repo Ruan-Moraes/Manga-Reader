@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 
 import { IconButton } from './IconButton';
+import useFocusTrap from '@shared/hook/useFocusTrap';
 
 export interface DrawerProps {
     open: boolean;
@@ -17,12 +18,12 @@ export interface DrawerProps {
 }
 
 export const Drawer = ({ open, onClose, side = 'right', width = 380, top = 0, title, children, footer }: DrawerProps) => {
-    const closeBtnRef = useRef<HTMLButtonElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    useFocusTrap(open, panelRef);
 
     useEffect(() => {
         if (!open) return;
-
-        closeBtnRef.current?.focus();
 
         const onKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -47,11 +48,13 @@ export const Drawer = ({ open, onClose, side = 'right', width = 380, top = 0, ti
                 onClick={onClose}
                 aria-hidden="true"
             />
-            <aside
+            <div
+                ref={panelRef}
+                tabIndex={-1}
                 role="dialog"
                 aria-modal="true"
                 aria-label={title}
-                className={`fixed flex flex-col overflow-hidden border-mr-border bg-mr-gray-900 ${borderSide} ${slideAnim}`}
+                className={`fixed flex flex-col overflow-hidden border-mr-border bg-mr-gray-900 outline-none ${borderSide} ${slideAnim}`}
                 style={{
                     top,
                     height: `calc(100dvh - ${top}px)`,
@@ -62,12 +65,12 @@ export const Drawer = ({ open, onClose, side = 'right', width = 380, top = 0, ti
                 {title && (
                     <header className="flex shrink-0 items-center justify-between border-b border-mr-border-subtle p-3">
                         <h2 className="text-mr-h4 font-mr-extrabold">{title}</h2>
-                        <IconButton ref={closeBtnRef} icon={X} aria-label="Fechar" onClick={onClose} />
+                        <IconButton icon={X} aria-label="Fechar" onClick={onClose} />
                     </header>
                 )}
                 <div className="flex-1 overflow-y-auto p-4">{children}</div>
                 {footer && <footer className="shrink-0 border-t border-mr-border-subtle p-4">{footer}</footer>}
-            </aside>
+            </div>
         </>
     );
 };

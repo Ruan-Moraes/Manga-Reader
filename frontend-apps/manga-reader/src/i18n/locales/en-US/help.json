@@ -34,6 +34,49 @@
         "openTicket": "Open ticket",
         "helpful": "{{percent}}% helpful"
     },
+    "article": {
+        "back": "Back to Help Center",
+        "views": "{{value}} views",
+        "helpfulTitle": "Was this article helpful?",
+        "yes": "Yes, it helped",
+        "no": "Didn't solve it",
+        "relatedTitle": "Related articles",
+        "notFoundTitle": "Article not found",
+        "notFoundDesc": "The article you're looking for doesn't exist or has been moved. Head back to the Help Center and search for another topic."
+    },
+    "articleBody": {
+        "1": [
+            "To change your email or password, go to Settings → Account. There you'll find the email and password fields with edit options.",
+            "When changing your email, we send a confirmation link to the new address — the change only takes effect after you confirm via that link.",
+            "For the password, you must enter your current password before setting a new one. Use at least 8 characters, mixing letters and numbers, for better security.",
+            "If you no longer have access to your current email, open a ticket with our team to verify your identity manually."
+        ],
+        "2": [
+            "Reading direction can be set both globally and per title. For the global default, go to Settings → Reading → Direction.",
+            "The available options are: continuous vertical (ideal for webtoons/manhwa), horizontal left-to-right, and horizontal right-to-left (the standard for Japanese manga).",
+            "Inside the reader, the gear icon lets you override the direction for the current chapter only, without changing your global preference."
+        ],
+        "3": [
+            "On the login screen, click \"Forgot my password\" and enter your registered email. We'll send a reset link valid for 30 minutes.",
+            "Also check your spam folder if the email doesn't arrive within a few minutes. The link can only be used once.",
+            "After setting the new password, all active sessions on other devices are ended for security."
+        ],
+        "4": [
+            "The interface language is changed in Settings → Language, or via the language selector in the menu. The change applies immediately.",
+            "The interface language is independent from the content language (catalog and comments), which you set separately under Content languages.",
+            "Your interface language preference is stored in the browser; when you sign in, it follows your profile."
+        ],
+        "5": [
+            "To cancel your subscription, go to Settings → Subscription → Cancel. Cancellation is immediate, with no penalty.",
+            "You keep access to supporter-plan features until the end of the period already paid — there is no prorated refund for the current period.",
+            "After the period ends, your account automatically returns to the free plan, with no loss of history or library."
+        ],
+        "6": [
+            "If the app is slow, start by clearing the cache in Settings → Clear cache. This fixes most image-loading stutters.",
+            "Also check your connection and whether the app/browser is up to date. Blocking extensions can interfere with page loading.",
+            "If the slowness persists, open a ticket with your device, browser and the chapter where the problem happens — this speeds up diagnosis."
+        ]
+    },
     "status": {
         "eyebrow": "Platform health",
         "title": "System status",

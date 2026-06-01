@@ -30,8 +30,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mangareader.application.rating.port.RatingRepositoryPort.RatingDistribution;
 import com.mangareader.application.rating.usecase.DeleteRatingUseCase;
 import com.mangareader.application.rating.usecase.GetRatingAverageUseCase;
+import com.mangareader.application.rating.usecase.GetRatingDistributionUseCase;
 import com.mangareader.application.rating.usecase.GetRatingsByTitleUseCase;
 import com.mangareader.application.rating.usecase.GetUserRatingsUseCase;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
@@ -53,6 +55,9 @@ class RatingControllerTest {
 
     @MockitoBean
     private GetRatingAverageUseCase getRatingAverageUseCase;
+
+    @MockitoBean
+    private GetRatingDistributionUseCase getRatingDistributionUseCase;
 
     @MockitoBean
     private SubmitRatingUseCase submitRatingUseCase;
@@ -140,6 +145,35 @@ class RatingControllerTest {
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.average").value(4.2))
                     .andExpect(jsonPath("$.data.count").value(150));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/ratings/title/{titleId}/distribution")
+    class GetDistribution {
+        @Test
+        @DisplayName("Deve retornar 200 com a contagem por estrela e o total")
+        void deveRetornar200ComDistribuicao() throws Exception {
+            when(getRatingDistributionUseCase.execute("title-1"))
+                    .thenReturn(new RatingDistribution(2, 1, 5, 20, 72));
+
+            mockMvc.perform(get("/api/ratings/title/title-1/distribution"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.star1").value(2))
+                    .andExpect(jsonPath("$.data.star5").value(72))
+                    .andExpect(jsonPath("$.data.total").value(100));
+        }
+
+        @Test
+        @DisplayName("Deve retornar todos zero quando título não tem avaliações")
+        void deveRetornarZeros() throws Exception {
+            when(getRatingDistributionUseCase.execute("title-vazio"))
+                    .thenReturn(RatingDistribution.empty());
+
+            mockMvc.perform(get("/api/ratings/title/title-vazio/distribution"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.total").value(0));
         }
     }
 

@@ -6,13 +6,13 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { PageContainer } from '@ui/PageContainer';
 import { Tabs } from '@ui/Tabs';
-import { MangaCard } from '@ui/MangaCard';
-import { ReviewCard } from '@ui/ReviewCard';
-import { GroupCard } from '@ui/GroupCard';
+import { MangaCard } from '@entities/manga';
+import { ReviewCard } from '@entities/rating';
+import { GroupCard } from '@entities/group';
 
+import useProfileData from '../model/useProfileData';
 import UserProfileHeader from './parts/UserProfileHeader';
 import ActivityTab from './parts/ActivityTab';
-import { PROFILES, READING_NOW, COMPLETED, REVIEWS, GROUPS_FOLLOWED, ACTIVITY } from '@mock/userProfile';
 
 const UserProfile = () => {
     const { handle } = useParams();
@@ -22,8 +22,7 @@ const UserProfile = () => {
     const [following, setFollowing] = useState(false);
     const [votes, setVotes] = useState<Record<number, 'up' | null>>({});
 
-    const profile = PROFILES[handle ?? 'me'] ?? PROFILES['me'];
-    const isOwn = !!profile.isOwn;
+    const { profile, isOwn, readingNow, completed, reviews, groupsFollowed, activity } = useProfileData(handle);
 
     const tabItems = [
         { value: 'overview', label: t('profile.tabs.overview') },
@@ -46,7 +45,7 @@ const UserProfile = () => {
                     <section>
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.stats.reading')}</p>
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                            {READING_NOW.map(m => (
+                            {readingNow.map(m => (
                                 <MangaCard key={m.id} manga={m} progress={m.progress} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
                             ))}
                         </div>
@@ -54,7 +53,7 @@ const UserProfile = () => {
                     <section>
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.tabs.recommendations')}</p>
                         <div className="flex flex-col gap-3">
-                            {REVIEWS.map((r, i) => (
+                            {reviews.map((r, i) => (
                                 <ReviewCard
                                     key={i}
                                     author={r.author}
@@ -80,7 +79,7 @@ const UserProfile = () => {
                     <section>
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.tabs.comments')}</p>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                            {GROUPS_FOLLOWED.map(g => (
+                            {groupsFollowed.map(g => (
                                 <GroupCard key={g.id} group={g} onClick={() => navigate(ROUTES.GROUP_DETAIL(g.id))} />
                             ))}
                         </div>
@@ -90,7 +89,7 @@ const UserProfile = () => {
 
             {tab === 'reading' && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {READING_NOW.map(m => (
+                    {readingNow.map(m => (
                         <MangaCard key={m.id} manga={m} progress={m.progress} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
                     ))}
                 </div>
@@ -98,7 +97,7 @@ const UserProfile = () => {
 
             {tab === 'completed' && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {COMPLETED.map(m => (
+                    {completed.map(m => (
                         <MangaCard key={m.id} manga={m} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
                     ))}
                 </div>
@@ -106,7 +105,7 @@ const UserProfile = () => {
 
             {tab === 'reviews' && (
                 <div className="flex flex-col gap-3">
-                    {REVIEWS.map((r, i) => (
+                    {reviews.map((r, i) => (
                         <ReviewCard
                             key={i}
                             author={r.author}
@@ -130,7 +129,7 @@ const UserProfile = () => {
                 </div>
             )}
 
-            {tab === 'activity' && <ActivityTab activity={ACTIVITY} profileName={profile.name} />}
+            {tab === 'activity' && <ActivityTab activity={activity} profileName={profile.name} />}
         </PageContainer>
     );
 };

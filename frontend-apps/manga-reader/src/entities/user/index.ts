@@ -12,6 +12,7 @@ export type {
     VisibilitySetting,
     SocialLinkResponse,
 } from './model/user.types';
+export type { ProfileData } from './model/profile-detail.types';
 
 // Hooks
 export { default as useUserProfile } from './model/useUserProfile';

@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@ui/Avatar';
-import { statusLabelKey } from '@entities/event';
-import type { EventData } from '@entities/event';
+import { statusLabelKey, type EventData } from '@entities/event';
 
 type EventHeroProps = {
     event: EventData;

@@ -2,6 +2,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter, X } from 'lucide-react';
+
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { PageContainer } from '@ui/PageContainer';
@@ -13,8 +14,9 @@ import { Button } from '@ui/Button';
 import { Drawer } from '@ui/Drawer';
 import { Pagination } from '@ui/Pagination';
 
-import { useCatalogFilters, useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@entities/catalog-filter';
+import { useFilterResults, useTagsFetch, type Sort, type PublicationStatus, type Tag } from '@entities/catalog-filter';
 
+import useCatalogFilters from '../model/useCatalogFilters';
 import CategoryFilterPanel from './parts/CategoryFilterPanel';
 import CategoryResults from './parts/CategoryResults';
 
@@ -22,7 +24,9 @@ type Layout = 'grid' | 'list';
 
 const CategoryFilters = () => {
     const { t } = useTranslation('manga');
+
     const navigate = useAppNavigate();
+
     const [query, setQuery] = useState('');
     const [layout, setLayout] = useState<Layout>('grid');
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -42,6 +46,7 @@ const CategoryFilters = () => {
     const { selectedTags, selectedSort, selectedStatus, page, handleSelectedTags, handleSortChange, handleStatusChange, handlePageChange } =
         useCatalogFilters();
     const { data: tagsData } = useTagsFetch();
+
     const tags = tagsData ?? [];
 
     const { data, isLoading } = useFilterResults({
@@ -57,12 +62,14 @@ const CategoryFilters = () => {
 
     const toggleTag = (tag: Tag) => {
         const exists = selectedTags.some(t => t.value === tag.value);
+
         handleSelectedTags(exists ? selectedTags.filter(t => t.value !== tag.value) : [...selectedTags, tag]);
     };
     const clearAll = () => {
         handleSelectedTags([]);
         handleStatusChange('all');
     };
+
     const activeCount = selectedTags.length + (selectedStatus !== 'all' ? 1 : 0);
     const filtered = results.filter(m => !query || m.name.toLowerCase().includes(query.toLowerCase()));
 
@@ -76,7 +83,7 @@ const CategoryFilters = () => {
     };
 
     return (
-        <PageContainer asMain size="wide" paddingY="md">
+        <PageContainer asMain size="default" paddingY="md">
             <SectionHeader
                 eyebrow={t('filters.eyebrow')}
                 title={t('filters.title')}
@@ -117,7 +124,7 @@ const CategoryFilters = () => {
                     <div className="mb-4 flex flex-wrap gap-3">
                         <SearchField value={query} onChange={setQuery} placeholder={t('filters.searchPlaceholder')} className="flex-1 min-w-[200px]" />
                         <Select value={selectedSort} onChange={e => handleSortChange(e.target.value as Sort)} options={sortOptions} className="w-44" />
-                        <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="sm" />
+                        <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="md" unified={true} />
                     </div>
 
                     {selectedTags.length > 0 && (
@@ -137,7 +144,13 @@ const CategoryFilters = () => {
                         </div>
                     )}
 
-                    <CategoryResults items={filtered} isLoading={isLoading} layout={layout} onNavigate={id => navigate(ROUTES.TITLE_DETAIL(id))} onClearAll={clearAll} />
+                    <CategoryResults
+                        items={filtered}
+                        isLoading={isLoading}
+                        layout={layout}
+                        onNavigate={id => navigate(ROUTES.TITLE_DETAIL(id))}
+                        onClearAll={clearAll}
+                    />
 
                     {totalPages > 1 && (
                         <div className="mt-8">

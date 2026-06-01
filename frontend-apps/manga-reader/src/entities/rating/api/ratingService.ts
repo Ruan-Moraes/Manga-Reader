@@ -70,6 +70,21 @@ export const getRatingsAverage = async (titleId: string): Promise<RatingAverageR
     return response.data.data;
 };
 
+export type RatingDistribution = {
+    star1: number;
+    star2: number;
+    star3: number;
+    star4: number;
+    star5: number;
+    total: number;
+};
+
+export const getRatingDistribution = async (titleId: string): Promise<RatingDistribution> => {
+    const response = await api.get<ApiResponse<RatingDistribution>>(`${API_URLS.RATINGS}/title/${titleId}/distribution`);
+
+    return response.data.data;
+};
+
 export const submitRating = async (data: {
     titleId: string;
     funRating: number;

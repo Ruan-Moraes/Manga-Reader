@@ -22,7 +22,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
             onClick={() => onChange(!checked)}
             className={cn(
                 'flex w-full items-center justify-between gap-3 rounded-mr-xs border border-mr-border-subtle bg-mr-surface p-3 text-left transition-colors duration-mr-default',
-                'focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2',
+                'mr-focus-ring',
                 disabled && 'cursor-not-allowed opacity-mr-disabled',
                 className,
             )}

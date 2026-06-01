@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { Sparkles, BookOpen } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
+
 import { HeroSection } from '@ui/HeroSection';
 import { MangaPoster } from '@ui/MangaPoster';
 import { Badge } from '@ui/Badge';
 import { Stars } from '@ui/Stars';
 import { Button } from '@ui/Button';
 import { Skeleton } from '@ui/Skeleton';
+
 import type { Title } from '@entities/manga';
 
 const HERO_INTERVAL = 8000;
@@ -20,19 +22,25 @@ type HomeHeroProps = {
 
 const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('home');
 
     const [heroIdx, setHeroIdx] = useState(0);
     const [paused, setPaused] = useState(false);
+
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
         if (featuredTitles.length < 2) return;
+
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         if (prefersReduced || paused) return;
+
         timerRef.current = setInterval(() => {
             setHeroIdx(i => (i + 1) % featuredTitles.length);
         }, HERO_INTERVAL);
+
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };

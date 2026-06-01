@@ -3,20 +3,22 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
-import { type User } from '@entities/user/@x/comment';
+import { type User } from '@entities/user';
 
 import useCommentModals from '../model/internal/useCommentModals';
 import useCommentScrollToParent from '../model/internal/useCommentScrollToParent';
 
-import { type CommentProps } from '../model/comment.types';
+import {
+    type CommentProps,
+    CommentMetadata,
+    CommentUser,
+    CommentContent,
+    CommentActions,
+} from '@entities/comment';
 
 import DeleteModal from './modal/delete-comment/DeleteModal';
 import EditModal from './modal/edit-comment/EditModal';
 import InlineReplyInput from './InlineReplyInput';
-import CommentMetadata from './header/CommentMetadata';
-import CommentUser from './header/CommentUser';
-import CommentContent from './body/CommentContent';
-import CommentActions from './footer/CommentActions';
 
 const MAX_VISUAL_DEPTH = 5;
 

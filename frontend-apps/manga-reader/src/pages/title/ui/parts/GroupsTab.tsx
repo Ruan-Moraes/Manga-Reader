@@ -2,10 +2,9 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
-import { GroupCard } from '@ui/GroupCard';
+import { GroupCard, type GroupSummary } from '@entities/group';
 import { EmptyState } from '@ui/EmptyState';
 
-import type { GroupSummary } from '@entities/group';
 
 type GroupsTabProps = {
     groups: GroupSummary[];

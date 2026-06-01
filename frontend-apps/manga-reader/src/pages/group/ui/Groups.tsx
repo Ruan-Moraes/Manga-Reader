@@ -1,7 +1,8 @@
-import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { PageContainer } from '@ui/PageContainer';
@@ -15,7 +16,9 @@ import { GroupList } from './parts/GroupList';
 
 const Groups = () => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('group');
+
     const [query, setQuery] = useState('');
     const [sortBy, setSortBy] = useState<SortBy>('popularity');
     const [statusFilter, setStatusFilter] = useState<'all' | GroupStatus>('all');
@@ -28,7 +31,7 @@ const Groups = () => {
     });
 
     return (
-        <PageContainer asMain size="wide" paddingY="md">
+        <PageContainer asMain size="default" paddingY="md">
             <SectionHeader
                 eyebrow={t('page.eyebrow')}
                 title={t('page.title')}

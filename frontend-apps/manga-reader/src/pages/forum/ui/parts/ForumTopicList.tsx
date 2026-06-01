@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
-import { ForumTopicCard } from '@ui/ForumTopicCard';
+import { ForumTopicCard, formatRelativeDate, type ForumTopic } from '@entities/forum';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 import { Pagination } from '@ui/Pagination';
 
-import { formatRelativeDate, type ForumTopic } from '@entities/forum';
 
 interface ForumTopicListProps {
     topics: ForumTopic[];

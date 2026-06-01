@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user/@x/comment';
-import { type CommentData } from '../model/comment.types';
+import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user';
+import { type CommentData, useCommentTree, useCommentPagination } from '@entities/comment';
 
-import useCommentTree from '../model/internal/useCommentTree';
 import useCommentCRUD from '../model/internal/useCommentCRUD';
-import useCommentPagination from '../model/useCommentPagination';
 import useCommentReactions from '../model/internal/useCommentReactions';
 import Comment from './Comment';
 

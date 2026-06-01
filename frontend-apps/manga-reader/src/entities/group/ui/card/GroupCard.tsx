@@ -1,83 +1,113 @@
-import { useTranslation } from 'react-i18next';
+import { memo } from 'react';
+import { BadgeCheck } from 'lucide-react';
 
-import { getGroupStatusLabelKey } from '../../api/groupService';
-import { Group } from '../../model/group.types';
-import AppLink from '@ui/AppLink';
-import { ExternalLink } from 'lucide-react';
+import { cn } from '@shared/lib/cn';
 
-type GroupCardProps = {
-    group: Group;
-    isLoading?: boolean;
+import { Avatar } from '@ui/Avatar';
+import { Badge } from '@ui/Badge';
+import { Button } from '@ui/Button';
+import { StatusDot } from '@ui/StatusDot';
+
+export interface GroupCardProps {
+    group: {
+        id: string;
+        name: string;
+        handle?: string;
+        avatar?: string;
+        banner?: string;
+        status: 'active' | 'hiatus' | 'inactive';
+        members: number;
+        projects: number;
+        chaptersPublished: number;
+        tags?: string[];
+        verified?: boolean;
+    };
+    onClick?: () => void;
+    following?: boolean;
+    onToggleFollow?: () => void;
+}
+
+const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+
+const statusLabel = {
+    active: 'Ativo',
+    hiatus: 'Em hiato',
+    inactive: 'Inativo',
 };
 
-const statusColorMap = {
-    active: 'bg-green-400',
-    hiatus: 'bg-yellow-400',
-    inactive: 'bg-red-400',
-};
+const statusKind = {
+    active: 'operating',
+    hiatus: 'degraded',
+    inactive: 'idle',
+} as const;
 
-const GroupCard = ({ group, isLoading = false }: GroupCardProps) => {
-    const { t } = useTranslation('group');
+const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardProps) => (
+    <article
+        onClick={onClick}
+        className={cn(
+            'group flex cursor-pointer flex-col overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface transition-all duration-mr-default',
+            'hover:-translate-y-0.5 hover:border-mr-accent-50',
+        )}
+    >
+        <div
+            className="h-[72px] w-full"
+            style={{
+                background: group.banner ?? 'linear-gradient(135deg, #2a1f3a, #161616)',
+            }}
+        />
+        <div className="-mt-6 flex flex-col gap-3 p-4">
+            <Avatar src={group.avatar} name={group.name} size={64} />
+            <div>
+                <h3 className="inline-flex items-center gap-1.5 text-mr-h4 font-mr-extrabold tracking-mr text-mr-fg">
+                    {group.name}
+                    {group.verified && <BadgeCheck className="size-4 text-mr-accent" aria-label="Grupo verificado" />}
+                </h3>
+                {group.handle && <div className="text-mr-tiny text-mr-fg-subtle">@{group.handle}</div>}
+            </div>
 
-    if (isLoading) {
-        return (
-            <article className="flex flex-col gap-3 p-4 border rounded-xs border-tertiary animate-pulse bg-secondary/40">
-                <div className="mx-auto w-20 h-20 rounded-full bg-tertiary" />
-                <div className="w-2/3 h-4 rounded-xs bg-tertiary" />
-                <div className="w-full h-3 rounded-xs bg-tertiary" />
-                <div className="w-1/2 h-3 rounded-xs bg-tertiary" />
-            </article>
-        );
-    }
+            <div className="flex items-center gap-2 text-mr-tiny">
+                <StatusDot status={statusKind[group.status]} />
+                <span className="font-mr-bold uppercase tracking-[0.08em] text-mr-fg-muted">{statusLabel[group.status]}</span>
+            </div>
 
-    return (
-        <article className="flex flex-col gap-4 p-4 border rounded-xs border-tertiary bg-secondary/40 hover:-translate-y-1 hover:shadow-elevated transition-all duration-200">
-            <img
-                src={group.logo}
-                alt={t('card.avatarAlt', { name: group.name })}
-                className="object-cover mx-auto w-20 h-20 rounded-full border border-quaternary"
-            />
+            <div className="flex flex-wrap gap-4 text-mr-tiny text-mr-fg-muted">
+                <span>
+                    <strong className="font-mr-extrabold text-mr-fg">{fmt(group.members)}</strong> seguidores
+                </span>
+                <span>
+                    <strong className="font-mr-extrabold text-mr-fg">{group.projects}</strong> obras
+                </span>
+                <span>
+                    <strong className="font-mr-extrabold text-mr-fg">{fmt(group.chaptersPublished)}</strong> capítulos
+                </span>
+            </div>
 
-            <div className="flex flex-col gap-2">
-                <h3 className="text-base font-bold text-center">{group.name}</h3>
-
-                <div className="flex flex-wrap gap-1 justify-center">
-                    {group.genres.map(genre => (
-                        <span key={genre} className="px-2 py-1 text-[0.65rem] border rounded-xs border-tertiary bg-primary">
-                            {genre}
-                        </span>
+            {group.tags && group.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                    {group.tags.map(t => (
+                        <Badge key={t} variant="neutral">
+                            {t}
+                        </Badge>
                     ))}
                 </div>
+            )}
 
-                <div className="flex justify-between items-center text-xs">
-                    <span className="flex gap-2 items-center">
-                        <span className={`h-2 w-2 rounded-full ${statusColorMap[group.status]}`} />
-                        {t(getGroupStatusLabelKey(group.status))}
-                    </span>
-                    <a
-                        href={group.website}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="transition-colors text-tertiary hover:text-quaternary"
-                        title={t('card.openSite')}
-                    >
-                        <ExternalLink size={14} />
-                    </a>
-                </div>
+            {onToggleFollow && (
+                <Button
+                    variant={following ? 'ghost' : 'primary'}
+                    block
+                    aria-pressed={following}
+                    onClick={e => {
+                        e.stopPropagation();
+                        onToggleFollow();
+                    }}
+                >
+                    {following ? 'Seguindo' : 'Seguir grupo'}
+                </Button>
+            )}
+        </div>
+    </article>
+);
 
-                <div className="flex justify-between text-xs text-tertiary">
-                    <span>
-                        {t('card.membersCount', {
-                            count: group.members.length,
-                        })}
-                    </span>
-                    <span>{t('card.worksCount', { count: group.totalTitles })}</span>
-                </div>
-
-                <AppLink link={`groups/${group.id}`} text={t('card.viewDetails')} className="text-xs" />
-            </div>
-        </article>
-    );
-};
-
+export const GroupCard = memo(GroupCardBase);
 export default GroupCard;

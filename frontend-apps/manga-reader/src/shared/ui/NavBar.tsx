@@ -139,7 +139,7 @@ export const NavBar = ({
                                     <button
                                         type="button"
                                         aria-label={`Conta de ${user.name}`}
-                                        className="rounded-mr-xs focus-visible:outline-2 focus-visible:outline-mr-accent"
+                                        className="mr-focus-ring"
                                     >
                                         <Avatar src={user.avatar} name={user.name} size={32} onClick={undefined} />
                                     </button>

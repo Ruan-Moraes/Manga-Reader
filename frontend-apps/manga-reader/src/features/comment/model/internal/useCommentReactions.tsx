@@ -5,7 +5,7 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { requireAuth } from '@shared/service/util/requireAuth';
 import { getStoredSession } from '@shared/service/session';
 
-import { getUserReactions, likeComment, dislikeComment } from '../../api/commentService';
+import { getUserReactions, likeComment, dislikeComment } from '@entities/comment';
 
 const useCommentReactions = (commentIds: string[]) => {
     const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CommentBox } from '@ui/CommentBox';
 import { Select } from '@ui/Select';
-import type { ReplyData } from '@mock/forumTopic';
+import type { ReplyData } from '@entities/forum';
 
 type Props = {
     topic: { replies: number };

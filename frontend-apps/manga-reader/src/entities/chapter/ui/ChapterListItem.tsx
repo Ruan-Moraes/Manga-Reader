@@ -2,9 +2,9 @@ import { MoreHorizontal, CheckCircle2, Download } from 'lucide-react';
 
 import { cn } from '@shared/lib/cn';
 
-import { IconButton } from './IconButton';
-import { Avatar } from './Avatar';
-import { ProgressBar } from './ProgressBar';
+import { IconButton } from '@ui/IconButton';
+import { Avatar } from '@ui/Avatar';
+import { ProgressBar } from '@ui/ProgressBar';
 
 export interface ChapterListItemProps {
     number: number;

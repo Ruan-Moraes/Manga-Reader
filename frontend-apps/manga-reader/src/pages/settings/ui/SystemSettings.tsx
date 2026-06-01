@@ -31,7 +31,7 @@ const SystemSettings = () => {
     ];
 
     return (
-        <PageContainer asMain size="narrow" paddingY="md">
+        <PageContainer asMain size="default" paddingY="md">
             <SectionHeader eyebrow={t('settings.system.eyebrow')} title={t('settings.system.title')} meta={t('settings.system.meta')} className="mb-6" />
 
             <div className="mb-6">
