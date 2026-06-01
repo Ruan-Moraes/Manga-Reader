@@ -20,4 +20,18 @@ public enum EventStatus {
     public String getValue() {
         return value;
     }
+
+    /**
+     * Resolve um status a partir do seu {@code value} (frontend) ou do nome do enum,
+     * case-insensitive. Mantém o parsing no domínio, fora dos controllers.
+     */
+    public static EventStatus fromValue(String value) {
+        for (EventStatus status : values()) {
+            if (status.value.equalsIgnoreCase(value) || status.name().equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+
+        throw new IllegalArgumentException("Status de evento inválido: " + value);
+    }
 }

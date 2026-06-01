@@ -64,7 +64,7 @@ public class LibraryController {
             @RequestParam(required = false) String list
     ) {
         var result = (list != null)
-                ? getUserLibraryByListUseCase.execute(userId, parseReadingList(list), pageable)
+                ? getUserLibraryByListUseCase.execute(userId, ReadingListType.fromValue(list), pageable)
                 : getUserLibraryUseCase.execute(userId, pageable);
 
         var mapped = result.map(libraryMapper::toResponse);
@@ -93,7 +93,7 @@ public class LibraryController {
         var input = new SaveToLibraryUseCase.SaveToLibraryInput(
                 userId,
                 request.titleId(),
-                parseReadingList(request.list())
+                ReadingListType.fromValue(request.list())
         );
 
         var saved = saveToLibraryUseCase.execute(input);
@@ -112,7 +112,7 @@ public class LibraryController {
         var input = new ChangeReadingListUseCase.ChangeListInput(
                 userId,
                 titleId,
-                parseReadingList(request.list())
+                ReadingListType.fromValue(request.list())
         );
 
         var saved = changeReadingListUseCase.execute(input);
@@ -129,14 +129,5 @@ public class LibraryController {
         removeFromLibraryUseCase.execute(userId, titleId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    private ReadingListType parseReadingList(String list) {
-        return switch (list) {
-            case "Lendo" -> ReadingListType.LENDO;
-            case "Quero Ler" -> ReadingListType.QUERO_LER;
-            case "Concluído" -> ReadingListType.CONCLUIDO;
-            default -> ReadingListType.valueOf(list);
-        };
     }
 }

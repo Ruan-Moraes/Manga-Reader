@@ -19,4 +19,18 @@ public enum ReadingListType {
     public String getDisplayName() {
         return displayName;
     }
+
+    /**
+     * Resolve um tipo a partir do {@code displayName} (ex.: "Quero Ler") ou do nome
+     * do enum, case-insensitive. Mantém o parsing no domínio, fora dos controllers.
+     */
+    public static ReadingListType fromValue(String value) {
+        for (ReadingListType type : values()) {
+            if (type.displayName.equalsIgnoreCase(value) || type.name().equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+
+        throw new IllegalArgumentException("Tipo de lista de leitura inválido: " + value);
+    }
 }

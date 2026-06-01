@@ -66,7 +66,7 @@ public class NewsController {
                     ignoreRequestSort = true)
             Pageable pageable
     ) {
-        var cat = parseCategory(category);
+        var cat = NewsCategory.fromValue(category);
 
         var result = getNewsByCategoryUseCase.execute(cat, pageable);
 
@@ -88,15 +88,5 @@ public class NewsController {
         var mapped = result.map(newsMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
-    }
-
-    private NewsCategory parseCategory(String value) {
-        for (NewsCategory cat : NewsCategory.values()) {
-            if (cat.getDisplayName().equalsIgnoreCase(value) || cat.name().equalsIgnoreCase(value)) {
-                return cat;
-            }
-        }
-
-        throw new IllegalArgumentException("Categoria de notícia inválida: " + value);
     }
 }

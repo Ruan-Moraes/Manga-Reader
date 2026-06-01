@@ -25,4 +25,18 @@ public enum NewsCategory {
     public String getDisplayName() {
         return displayName;
     }
+
+    /**
+     * Resolve uma categoria a partir do {@code displayName} ou do nome do enum,
+     * case-insensitive. Mantém o parsing no domínio, fora dos controllers.
+     */
+    public static NewsCategory fromValue(String value) {
+        for (NewsCategory category : values()) {
+            if (category.displayName.equalsIgnoreCase(value) || category.name().equalsIgnoreCase(value)) {
+                return category;
+            }
+        }
+
+        throw new IllegalArgumentException("Categoria de notícia inválida: " + value);
+    }
 }

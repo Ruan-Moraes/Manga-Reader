@@ -565,11 +565,16 @@ Primeiro uso de RHF no repo (padrão estabelecido). tsc 0, lint:fsd verde, 834 t
 content-locales (reusar `LanguageSettings` do header); tema = indicar "em
 desenvolvimento". Footer em redesign WIP — coordenar.
 
-### DT-39: `parseStatus` na camada de apresentação (backend) — **Med, aberto**
+### DT-39: parsing de enum na camada de apresentação (backend) — **Resolvido (2026-06-01)**
 
-`presentation/event/controller/EventController.java:79`: `parseStatus` (parsing de
-enum) dentro do controller (`// TODO: Retirar essa lógica do controller`). Mover p/
-value-object/use-case. Auditar outros controllers por `parse*` na apresentação.
+A auditoria achou o mesmo anti-padrão em **4 controllers** (parsing de enum
+duplicado na apresentação): `EventController.parseStatus`, `NewsController.parseCategory`,
+`ForumController.parseCategory`, `LibraryController.parseReadingList`. **Movido p/ o
+domínio**: cada enum ganhou `fromValue(String)` (match por value/displayName **ou**
+nome do enum, case-insensitive, lança `IllegalArgumentException`) — `EventStatus`,
+`NewsCategory`, `ForumCategory`, `ReadingListType`. Os 4 controllers chamam
+`Enum.fromValue(...)`; métodos privados removidos. +4 testes de domínio. mvn verde
+(51 testes dos 8 alvos).
 
 ---
 
@@ -579,9 +584,9 @@ value-object/use-case. Auditar outros controllers por `parse*` na apresentação
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 5 | DT-08, DT-10, DT-24, DT-38, DT-39 |
+| **Média** | 4 | DT-08, DT-10, DT-24, DT-38 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
 | **Baixa** | 3 | DT-03, DT-09, DT-33 |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
-| **Resolvidos 2026-06-01** | 5 | DT-27, DT-31, DT-32, DT-36, DT-37 |
+| **Resolvidos 2026-06-01** | 6 | DT-27, DT-31, DT-32, DT-36, DT-37, DT-39 |

@@ -67,23 +67,12 @@ public class EventController {
                     ignoreRequestSort = true)
             Pageable pageable
     ) {
-        var eventStatus = parseStatus(status);
+        var eventStatus = EventStatus.fromValue(status);
 
         var result = getEventsByStatusUseCase.execute(eventStatus, pageable);
 
         var mapped = result.map(eventMapper::toSummary);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
-    }
-
-    // TODO: Retirar essa lógica do controller
-    private EventStatus parseStatus(String value) {
-        for (EventStatus s : EventStatus.values()) {
-            if (s.getValue().equalsIgnoreCase(value) || s.name().equalsIgnoreCase(value)) {
-                return s;
-            }
-        }
-
-        throw new IllegalArgumentException("Status de evento inválido: " + value);
     }
 }

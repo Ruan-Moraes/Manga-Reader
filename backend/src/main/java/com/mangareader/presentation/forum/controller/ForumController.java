@@ -96,7 +96,7 @@ public class ForumController {
             Pageable pageable,
             @RequestParam(required = false) String language
     ) {
-        var cat = parseCategory(category);
+        var cat = ForumCategory.fromValue(category);
 
         var result = getForumTopicsByCategoryUseCase.execute(cat, pageable, "all".equalsIgnoreCase(language));
 
@@ -111,7 +111,7 @@ public class ForumController {
             @Valid @RequestBody CreateTopicRequest request,
             @CurrentUserId UUID userId
     ) {
-        var cat = parseCategory(request.category());
+        var cat = ForumCategory.fromValue(request.category());
 
         var input = new CreateForumTopicUseCase.CreateTopicInput(
                 userId,
@@ -149,7 +149,7 @@ public class ForumController {
             @Valid @RequestBody UpdateTopicRequest request,
             @CurrentUserId UUID userId
     ) {
-        ForumCategory cat = request.category() != null ? parseCategory(request.category()) : null;
+        ForumCategory cat = request.category() != null ? ForumCategory.fromValue(request.category()) : null;
 
         var input = new UpdateForumTopicUseCase.UpdateTopicInput(
                 id, userId,
@@ -180,15 +180,5 @@ public class ForumController {
                 .toList();
 
         return ResponseEntity.ok(ApiResponse.success(categories));
-    }
-
-    private ForumCategory parseCategory(String value) {
-        for (ForumCategory cat : ForumCategory.values()) {
-            if (cat.getDisplayName().equalsIgnoreCase(value) || cat.name().equalsIgnoreCase(value)) {
-                return cat;
-            }
-        }
-
-        throw new IllegalArgumentException("Categoria de fórum inválida: " + value);
     }
 }
