@@ -3,9 +3,9 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { Bell, AlertTriangle } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { LegalShell } from './_components/LegalShell';
-import { LegalSection } from './_components/LegalSection';
-import { LegalCrossLinks } from './_components/LegalCrossLinks';
+import { LegalShell } from './parts/LegalShell';
+import { LegalSection } from './parts/LegalSection';
+import { LegalCrossLinks } from './parts/LegalCrossLinks';
 import { Card } from '@ui/Card';
 import { Button } from '@ui/Button';
 

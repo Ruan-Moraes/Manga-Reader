@@ -490,10 +490,13 @@ useTopicDetail`, `pages/profile/model/useProfileData`) que importam `@mock` (pag
 padrão documentado) — backend ⇒ só o hook muda. Nenhum componente importa `@mock`
 direto. tsc 0, lint:fsd verde, 834 testes.
 
-### DT-32: Slice `legal` fora de convenção — **Med, agendado (pages leva)**
+### DT-32: Slice `legal` fora de convenção — **Resolvido (2026-06-01)**
 
-Usa `_components/` enquanto 15 outros slices de page usam `parts/`. `Contact.tsx`
-(340L) tem validação/submit de form inline (sem `model/`).
+**Renomeado `pages/legal/ui/_components/` → `parts/`** (LegalShell/LegalSection/
+LegalCrossLinks; imports atualizados em Terms/Privacy/Dmca/Contact) — alinhado aos 15
+outros slices. **Extraída** a lógica de form de `Contact.tsx` (state/validate/submit/
+reset) p/ page hook `pages/legal/model/useContactForm.ts`; a UI ficou só apresentação.
+tsc 0, lint:fsd verde, 834 testes.
 
 ### DT-33: `shared/lib` / `shared/ui` sem barrels — **Low, deferido (idiomático)**
 
@@ -535,11 +538,14 @@ adicionado ao `setup.ts` (destrava testar `Modal` nativo).
 Sweep de `// TODO/Todo/FIXME` no projeto (4 acionáveis; resto = "todo o histórico"
 PT ou prop `placeholder`).
 
-### DT-36: `CHAPTER_OPTIONS` mock hardcoded — **Med, aberto**
+### DT-36: `CHAPTER_OPTIONS` mock hardcoded — **Resolvido (2026-06-01)**
 
-`entities/chapter/config/chapterOptions.ts` gera 10 capítulos fixos
-(`// TODO: Substituir por dados reais vindos do backend`). API já existe
-(`GET /api/titles/{id}/chapters`). Derivar do real (hook/entidade) e remover a const.
+Investigado: a const só alimentava `ChapterNavigation` ← `ChapterBottomBar`, **ambos
+código morto** (0 consumidores; o leitor real usa seu próprio
+`pages/chapter/ui/parts/BottomToolbar`). Não era "ligar dado real" e sim código morto
+superseded. **Removidos** `entities/chapter/ui/{ChapterBottomBar,ChapterNavigation}.tsx`
++ `entities/chapter/config/chapterOptions.ts` (+ dir `config` vazio) + exports do barrel.
+tsc 0, lint:fsd verde, 834 testes.
 
 ### DT-37: Login/SignUp com validação manual, schemas Zod sem uso — **Resolvido (2026-06-01)**
 
@@ -573,9 +579,9 @@ value-object/use-case. Auditar outros controllers por `parse*` na apresentação
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 7 | DT-08, DT-10, DT-24, DT-32, DT-36, DT-38, DT-39 |
+| **Média** | 5 | DT-08, DT-10, DT-24, DT-38, DT-39 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
 | **Baixa** | 3 | DT-03, DT-09, DT-33 |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
-| **Resolvidos 2026-06-01** | 3 | DT-27, DT-31, DT-37 |
+| **Resolvidos 2026-06-01** | 5 | DT-27, DT-31, DT-32, DT-36, DT-37 |

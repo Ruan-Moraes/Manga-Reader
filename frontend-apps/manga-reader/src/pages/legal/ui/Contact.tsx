@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     MessageCircle,
     Mail,
@@ -10,8 +9,9 @@ import {
 } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { LegalShell } from './_components/LegalShell';
-import { LegalCrossLinks } from './_components/LegalCrossLinks';
+import { LegalShell } from './parts/LegalShell';
+import { LegalCrossLinks } from './parts/LegalCrossLinks';
+import useContactForm from '../model/useContactForm';
 import { Input } from '@ui/Input';
 import { Textarea } from '@ui/Textarea';
 import { Select } from '@ui/Select';
@@ -36,72 +36,12 @@ const TOPIC_KEYS = [
     'priority',
 ] as const;
 
-const SUBMIT_DELAY_MS = 1000;
-
-type Status = 'idle' | 'submitting' | 'sent';
-
 type Row = { term: string; value: string };
 
 export default function Contact() {
     const { t } = useTranslation('legal');
 
-    const [form, setForm] = useState({
-        name: '',
-        email: '',
-        topic: '',
-        message: '',
-    });
-    const [errors, setErrors] = useState<
-        Partial<Record<keyof typeof form, string>>
-    >({});
-    const [status, setStatus] = useState<Status>('idle');
-
-    const set =
-        (key: keyof typeof form) =>
-        (
-            e: React.ChangeEvent<
-                HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-            >,
-        ) => setForm(f => ({ ...f, [key]: e.target.value }));
-
-    const validate = () => {
-        const e: typeof errors = {};
-
-        if (!form.name.trim()) e.name = t('contact.form.errors.nameRequired');
-        if (!form.email.trim())
-            e.email = t('contact.form.errors.emailRequired');
-        else if (!/\S+@\S+\.\S+/.test(form.email))
-            e.email = t('contact.form.errors.emailInvalid');
-        if (!form.topic) e.topic = t('contact.form.errors.topicRequired');
-        if (!form.message.trim())
-            e.message = t('contact.form.errors.messageRequired');
-        else if (form.message.trim().length < 10)
-            e.message = t('contact.form.errors.messageTooShort');
-
-        return e;
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const errs = validate();
-
-        setErrors(errs);
-
-        if (Object.keys(errs).length > 0) return;
-
-        setStatus('submitting');
-
-        await new Promise(r => setTimeout(r, SUBMIT_DELAY_MS));
-
-        setStatus('sent');
-    };
-
-    const reset = () => {
-        setForm({ name: '', email: '', topic: '', message: '' });
-        setErrors({});
-        setStatus('idle');
-    };
+    const { form, errors, status, set, handleSubmit, reset } = useContactForm();
 
     const topicOptions = [
         {
