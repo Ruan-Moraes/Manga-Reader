@@ -65,7 +65,11 @@ lint → test → build (ver `deployment-plan.md`).
 
 ---
 
-### DT-08: Acessibilidade incompleta (a11y) — **Passe direcionado feito; auditoria total adiada**
+### DT-08: Acessibilidade incompleta (a11y) — **Passe direcionado + axe expandido; auditoria total ainda aberta**
+
+**Atualização (2026-06-01)**: smoke axe (`axeComponent`) estendido p/ rota `AboutUs`
+(além de HelpCenter/HelpArticle/Drawer). **Restante (aberto)**: axe por rota em todas
+as telas + auditoria de ordem de tab/foco por página — item grande, mantido aberto.
 
 **Resolvido (2026-05-31)** — passe direcionado + fundação de teste:
 - **Landmarks**: corrigido `<main>` aninhado em `LegalShell` (PageContainer `asMain`
@@ -112,7 +116,14 @@ infraestrutura grande — adiado como não-bloqueante.
 
 ---
 
-### DT-24: Migração FSD frontend incompleta
+### DT-24: Migração FSD frontend incompleta — **Fechado: resíduos aceitos (2026-06-01)**
+
+**Avaliação final (2026-06-01)**: a migração FSD está concluída (camadas completas,
+lint:fsd verde). Os resíduos listados (cross-import `@x` p/ entity↔entity e
+`no-public-api-sidestep` em `shared/`) são **idiomáticos e aceitos**: o `@x` é aplicado
+onde necessário (ex.: `user/@x/comment`, `manga/@x/*` — adicionados nas DTs 28/26) e as
+regras steiger correspondentes seguem **off** de propósito (ver `steiger.config.ts`).
+Sem ação pendente — ver também DT-33.
 
 **Concluído — Fase 1 (2026-05-30)**: separadas as camadas FSD `pages` (ex-`app/route`)
 e `widgets` (ex-`app/layout`, slices: header/footer/mobile-tab-bar/admin-panel/layouts).
@@ -498,10 +509,14 @@ outros slices. **Extraída** a lógica de form de `Contact.tsx` (state/validate/
 reset) p/ page hook `pages/legal/model/useContactForm.ts`; a UI ficou só apresentação.
 tsc 0, lint:fsd verde, 834 testes.
 
-### DT-33: `shared/lib` / `shared/ui` sem barrels — **Low, deferido (idiomático)**
+### DT-33: `shared/lib` / `shared/ui` sem barrels — **Fechado: aceito (não-fix) (2026-06-01)**
 
-Imports profundos (`@ui/Button`, `@shared/lib/cn`). Per DT-24 é o idioma aceito e
-deferido (`no-public-api-sidestep`). Documentado p/ completude.
+Avaliado e **aceito como idiomático**. `@ui/X` e `@shared/lib/X` (acesso por caminho
+de segmento) é o padrão do projeto e a regra `fsd/no-public-api-sidestep` está
+deliberadamente **off** p/ `shared/` (ver `steiger.config.ts`). Adicionar um barrel em
+`shared/ui` (58 arquivos) + repontar centenas de imports `@ui/X`→`@ui` seria churn alto
+com ROI negativo; um barrel em `shared/lib` (3 arquivos) ficaria sem consumidores. Não
+há mudança de código — decisão registrada.
 
 ### DT-34: Cards de entidade mortos (migração FSD inacabada) — **Resolvido (2026-05-31)**
 
@@ -558,12 +573,13 @@ UI. Mensagem `validation.passwordMin` corrigida p/ "8 caracteres" (pt/en/es) —
 com `min(8)` da UI/strength. Painel demo mantido (DEV-only, agora via `setValue`).
 Primeiro uso de RHF no repo (padrão estabelecido). tsc 0, lint:fsd verde, 834 testes.
 
-### DT-38: Preferência de idioma do Footer é stub — **Med, aberto (após WIP do Footer)**
+### DT-38: Preferência de idioma do Footer era stub — **Resolvido (2026-06-01)**
 
-`widgets/footer/ui/Footer.tsx:140`: item de idioma sem handler
-(`// Todo: Implemente a lógica para mudar idioma…`). Ligar a `i18n.changeLanguage` /
-content-locales (reusar `LanguageSettings` do header); tema = indicar "em
-desenvolvimento". Footer em redesign WIP — coordenar.
+`widgets/footer/ui/Footer.tsx`: item de idioma agora **cicla o idioma de UI** entre os
+`SUPPORTED_LANGUAGES` via `i18n.changeLanguage` (`cycleUiLanguage`); o `value` reflete o
+idioma atual automaticamente. Item de tema dispara `showInfoToast` "em desenvolvimento"
+(nova chave `footer.preferences.themeWip` em pt/en/es). TODO removido. (Idioma de
+**conteúdo** continua em Configurações — fora do escopo do footer.) tsc 0, 835 testes.
 
 ### DT-39: parsing de enum na camada de apresentação (backend) — **Resolvido (2026-06-01)**
 
@@ -584,9 +600,10 @@ nome do enum, case-insensitive, lança `IllegalArgumentException`) — `EventSta
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 4 | DT-08, DT-10, DT-24, DT-38 |
+| **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 3 | DT-03, DT-09, DT-33 |
+| **Baixa** | 2 | DT-03, DT-09 |
+| **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
-| **Resolvidos 2026-06-01** | 6 | DT-27, DT-31, DT-32, DT-36, DT-37, DT-39 |
+| **Resolvidos 2026-06-01** | 7 | DT-27, DT-31, DT-32, DT-36, DT-37, DT-38, DT-39 |

@@ -71,7 +71,8 @@
             "themeValue": "Oscuro",
             "themeAria": "Cambiar tema",
             "help": "Ayuda",
-            "helpAria": "Abrir centro de ayuda"
+            "helpAria": "Abrir centro de ayuda",
+            "themeWip": "Tema en desarrollo."
         },
         "copyrightStudy": "© {{year}} Manga Reader. Hecho por Ruan — proyecto de estudio."
     },

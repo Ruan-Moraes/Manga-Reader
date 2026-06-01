@@ -71,7 +71,8 @@
             "themeValue": "Dark",
             "themeAria": "Change theme",
             "help": "Help",
-            "helpAria": "Open help center"
+            "helpAria": "Open help center",
+            "themeWip": "Theme is in development."
         },
         "copyrightStudy": "© {{year}} Manga Reader. Built by Ruan — study project."
     },

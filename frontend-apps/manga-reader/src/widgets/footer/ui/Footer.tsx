@@ -7,6 +7,8 @@ import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, Foo
 import { useAuth } from '@features/auth';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
+import { showInfoToast } from '@shared/service/util/toastService';
+import { SUPPORTED_LANGUAGES } from '@/i18n/config';
 
 type FooterProps = {
     styles?: React.CSSProperties;
@@ -29,7 +31,7 @@ const mkLink = (label: string, path: string, onNavigate: (p: string) => void): F
 const mkExternal = (label: string, href: string): FooterLink => ({ label, href, external: true });
 
 const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
-    const { t } = useTranslation('layout');
+    const { t, i18n } = useTranslation('layout');
     const { isLoggedIn } = useAuth();
 
     const defaultNavigate = useAppNavigate();
@@ -137,7 +139,16 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
         statusAriaLabel: t('footer.statusBanner.ariaLabel'),
     };
 
-    // Todo: Implemente a lógica para mudar o idioma (conteúdo e interface) e, no tema, apenas indique que estamos em desenvolvimento.
+    // Idioma da UI: cicla entre os idiomas suportados (i18next + localStorage).
+    // O idioma de conteúdo é gerido em Configurações; tema ainda em desenvolvimento.
+    const cycleUiLanguage = () => {
+        const current = i18n.language as (typeof SUPPORTED_LANGUAGES)[number];
+        const idx = SUPPORTED_LANGUAGES.indexOf(current);
+        const next = SUPPORTED_LANGUAGES[(idx + 1) % SUPPORTED_LANGUAGES.length];
+
+        void i18n.changeLanguage(next);
+    };
+
     const preferenceItems: FooterPreferenceItem[] = [
         {
             key: 'language',
@@ -146,6 +157,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
             icon: Languages,
             showChevron: true,
             ariaLabel: t('footer.preferences.languageAria'),
+            onClick: cycleUiLanguage,
         },
         {
             key: 'theme',
@@ -154,6 +166,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
             icon: Moon,
             showChevron: true,
             ariaLabel: t('footer.preferences.themeAria'),
+            onClick: () => showInfoToast(t('footer.preferences.themeWip')),
         },
     ];
 
