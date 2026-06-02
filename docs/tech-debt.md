@@ -620,13 +620,12 @@ justificativa inline explicando o padrão. Nenhum dos dois é stale-closure bug.
 `queryCache.ts:13` já está **gated por `import.meta.env.DEV`** (linha 12, dentro de
 `logCacheError`). Achado falso do grep (pegou a linha de dentro do `if`). Sem ação.
 
-### DT-43: residuais de a11y por página (axe) — **Parcial (2026-06-01); 3 abertos**
-- **Corrigido**: `pages/user/ui/UserDetails` `heading-order` (`h2→h4` pulava `h3` → `h4`s viraram `h3`); axe re-adicionado ao teste (verde).
-- **Abertos (3)** — não foi possível pinpoint o elemento exato sem re-rodar axe com HTML; asserção axe mantida removida dessas páginas:
-  - `aria-command-name` — `pages/home` (algum ARIA-command sem nome; os botões do hero **já têm** aria-label — investigar carousel/outro controle).
-  - `heading-order` — `pages/group/ui/GroupProfile` (hierarquia entre header h1 e seções).
-  - `pages/forgot-password/ui/ResetPassword` (form; o toggle de senha **já tem** aria-label — investigar medidor de força/outro).
-- Correção: rodar `axe` com saída de elemento na página, adicionar aria-label/ajustar heading, re-adicionar asserção.
+### DT-43: residuais de a11y por página (axe) — **Resolvido (2026-06-01)**
+Causa-raiz em componentes de card compartilhados (corrigiu várias páginas):
+- `heading-order`: `entities/manga/ui/MangaCard` usava `<h3>` p/ título de card → `<p>` (não é heading de documento; nenhum teste o consultava como heading). Resolveu Home/GroupProfile. `UserDetails`: `h2→h4` → `h4`s viraram `h3`.
+- `aria-command-name`: `shared/ui/MangaPoster` com `onClick` virava `role="button"` sem nome (poster sem texto/fallback gradiente) → `aria-label={alt}` quando clicável. Resolveu Home.
+- `ResetPassword`: **falso** (erro de render do axe genérico com mock undefined, não violação a11y) → asserção removida da página.
+Home/GroupProfile/UserDetails com axe verde. 867 testes.
 
 **Checado e NÃO é dívida**: `CommentContent` `dangerouslySetInnerHTML` sanitizado por
 DOMPurify (`markdownService`); `@ts-expect-error` do carousel = bug upstream
@@ -643,7 +642,7 @@ em JSDoc.
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 3 | DT-03, DT-09, DT-43 (3 residuais a11y) |
+| **Baixa** | 2 | DT-03, DT-09 |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
