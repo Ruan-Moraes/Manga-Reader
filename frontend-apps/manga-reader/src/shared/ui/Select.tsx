@@ -37,19 +37,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 
             nativeInputValueSetter?.call(internalRef.current, val);
 
+            // Dispara o evento nativo de change no <select> escondido, que já está
+            // ligado a `onChange` (inclusive react-hook-form) — sem cast sintético.
             const event = new Event('change', { bubbles: true });
 
             internalRef.current.dispatchEvent(event);
-
-            // Chamar o onChange se fornecido (importante para react-hook-form)
-            if (onChange) {
-                const changeEvent = {
-                    target: internalRef.current,
-                    currentTarget: internalRef.current,
-                } as unknown as React.ChangeEvent<HTMLSelectElement>;
-
-                onChange(changeEvent);
-            }
         }
     };
 

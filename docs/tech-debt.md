@@ -605,29 +605,28 @@ nome do enum, case-insensitive, lança `IllegalArgumentException`) — `EventSta
 Varredura concreta: `:any`=0, `catch{}`=0, `@ts-ignore`=0, TODO residual=0 →
 codebase limpo. Achados reais (todos Baixa):
 
-### DT-40: cast inseguro no Select — **Baixa, aberto**
-- `shared/ui/Select.tsx:49`: `{ target, currentTarget } as unknown as React.ChangeEvent<HTMLSelectElement>` na ponte RHF do Radix.
-- Impacto: type-unsafe; já há `dispatchEvent('change')` nativo acima — o `onChange` sintético é redundante/frágil.
-- Correção: remover o `onChange` sintético (confiar no evento nativo) ou tipar `ChangeEvent` parcial sem `as unknown`.
+### DT-40: cast inseguro no Select — **Resolvido (2026-06-01)**
+`shared/ui/Select.tsx`: **removido** o bloco `onChange` sintético com `as unknown as` —
+o `dispatchEvent('change')` no `<select>` nativo (que tem `onChange={onChange}`) já
+aciona RHF/consumidores. Sem cast. Select/Contact/Trending verdes.
 
-### DT-41: supressões `react-hooks/exhaustive-deps` — **Baixa, aberto**
-- `pages/legal/ui/parts/LegalShell.tsx:52` (scroll-spy) e `features/comment/model/internal/useEasyMDE.tsx:64`.
-- Impacto: risco de stale-closure se deps reais mudarem.
-- Correção: incluir deps corretas/refs e remover o disable; se intencional, documentar o porquê específico.
+### DT-41: supressões `react-hooks/exhaustive-deps` — **Resolvido (2026-06-01)**
+`useEasyMDE.tsx:64` **já tinha** justificativa detalhada (init imperativo só-mount) —
+não era dívida. `LegalShell.tsx:52` (scroll-spy): o disable é **intencional e correto**
+(dep real = conteúdo `idKey`, não a identidade do array `ids`) — adicionada
+justificativa inline explicando o padrão. Nenhum dos dois é stale-closure bug.
 
-### DT-42: `console.error` em util de runtime — **Baixa, aberto**
-- `shared/service/util/queryCache.ts:13`.
-- Impacto: log não-centralizado em prod.
-- Correção: logger compartilhado ou gate por `import.meta.env.DEV`.
+### DT-42: `console.error` em util de runtime — **Inválido (não é dívida) (2026-06-01)**
+`queryCache.ts:13` já está **gated por `import.meta.env.DEV`** (linha 12, dentro de
+`logCacheError`). Achado falso do grep (pegou a linha de dentro do `if`). Sem ação.
 
-### DT-43: residuais de a11y por página (axe) — **Baixa, aberto**
-Violações reais encontradas pelo axe e ainda não corrigidas (asserção removida da
-página p/ suíte verde; regra + página registradas):
-- `aria-command-name` — `pages/home` (elemento ARIA-command sem nome acessível).
-- `heading-order` — `pages/group/ui/GroupProfile` e `pages/user/ui/UserDetails` (nível de heading pulado).
-- `pages/forgot-password/ui/ResetPassword` (violação a11y no form — reinvestigar regra).
-Correção: por página (aria-label no controle / ajustar hierarquia de heading), depois
-re-adicionar a asserção axe ao teste.
+### DT-43: residuais de a11y por página (axe) — **Parcial (2026-06-01); 3 abertos**
+- **Corrigido**: `pages/user/ui/UserDetails` `heading-order` (`h2→h4` pulava `h3` → `h4`s viraram `h3`); axe re-adicionado ao teste (verde).
+- **Abertos (3)** — não foi possível pinpoint o elemento exato sem re-rodar axe com HTML; asserção axe mantida removida dessas páginas:
+  - `aria-command-name` — `pages/home` (algum ARIA-command sem nome; os botões do hero **já têm** aria-label — investigar carousel/outro controle).
+  - `heading-order` — `pages/group/ui/GroupProfile` (hierarquia entre header h1 e seções).
+  - `pages/forgot-password/ui/ResetPassword` (form; o toggle de senha **já tem** aria-label — investigar medidor de força/outro).
+- Correção: rodar `axe` com saída de elemento na página, adicionar aria-label/ajustar heading, re-adicionar asserção.
 
 **Checado e NÃO é dívida**: `CommentContent` `dangerouslySetInnerHTML` sanitizado por
 DOMPurify (`markdownService`); `@ts-expect-error` do carousel = bug upstream
@@ -644,7 +643,7 @@ em JSDoc.
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 6 | DT-03, DT-09, DT-40, DT-41, DT-42, DT-43 |
+| **Baixa** | 3 | DT-03, DT-09, DT-43 (3 residuais a11y) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |

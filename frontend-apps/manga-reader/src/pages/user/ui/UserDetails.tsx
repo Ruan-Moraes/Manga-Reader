@@ -72,7 +72,7 @@ const UserDetails = () => {
                         </button>
 
                         <div className="p-3 border rounded-xs border-tertiary bg-secondary/40">
-                            <h4 className="mb-2 text-sm font-semibold">{t('details.accountSection')}</h4>
+                            <h3 className="mb-2 text-sm font-semibold">{t('details.accountSection')}</h3>
                             <ul className="space-y-1 text-xs text-tertiary">
                                 <li>
                                     <span className="font-semibold text-primary-default">{t('details.roleLabel')}</span> {roleLabel}
@@ -113,7 +113,7 @@ const UserDetails = () => {
 
                         {targetUser.socialMediasLinks && targetUser.socialMediasLinks.length > 0 && (
                             <div>
-                                <h4 className="mb-2 text-sm font-semibold">{t('details.socialMediaSection')}</h4>
+                                <h3 className="mb-2 text-sm font-semibold">{t('details.socialMediaSection')}</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {targetUser.socialMediasLinks.map(socialMedia => (
                                         <div
@@ -132,7 +132,7 @@ const UserDetails = () => {
 
                         {targetUser.recommendedTitles && targetUser.recommendedTitles.length > 0 && (
                             <div>
-                                <h4 className="mb-2 text-sm font-semibold">{t('details.recommendedSection')}</h4>
+                                <h3 className="mb-2 text-sm font-semibold">{t('details.recommendedSection')}</h3>
                                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                                     {targetUser.recommendedTitles.map(title => (
                                         <Link

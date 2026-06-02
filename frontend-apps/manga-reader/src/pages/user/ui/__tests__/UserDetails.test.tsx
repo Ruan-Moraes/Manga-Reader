@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import UserDetails from '../UserDetails';
 
 vi.mock('@entities/user', async importOriginal => {
@@ -28,6 +29,11 @@ const mockUser = {
 };
 
 describe('UserDetails', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<UserDetails />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         vi.mocked(useAuth).mockReturnValue({
             user: null,

@@ -49,6 +49,9 @@ function useScrollSpy(ids: string[]) {
             if (el) observer.observe(el);
         });
         return () => observer.disconnect();
+        // `ids` é lido aqui, mas a dep correta é o seu *conteúdo* (`idKey`), não a
+        // identidade do array (que muda a cada render). Reexecutar por identidade
+        // recriaria o IntersectionObserver sem necessidade. Omissão intencional.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [idKey]);
 
