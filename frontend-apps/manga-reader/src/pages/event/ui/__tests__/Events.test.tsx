@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Events from '../Events';
 import type { EventData } from '@entities/event';
 
@@ -106,6 +107,11 @@ beforeEach(() => {
 const setup = () => renderWithProviders(<Events />);
 
 describe('Events', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Events />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders heading', () => {
         setup();
         expect(screen.getByRole('heading', { name: /eventos/i })).toBeInTheDocument();

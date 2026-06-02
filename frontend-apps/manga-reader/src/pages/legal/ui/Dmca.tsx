@@ -129,7 +129,7 @@ export default function Dmca() {
                     ))}
                 </ol>
 
-                <aside className="mt-4 flex gap-3 rounded-mr-sm border border-mr-danger/40 border-l-[3px] border-l-mr-danger bg-[rgba(255,120,79,0.06)] p-3">
+                <div className="mt-4 flex gap-3 rounded-mr-sm border border-mr-danger/40 border-l-[3px] border-l-mr-danger bg-[rgba(255,120,79,0.06)] p-3">
                     <AlertTriangle className="size-4 shrink-0 text-mr-danger mt-0.5" />
                     <p className="text-mr-small text-[#ffb59c]">
                         <strong>
@@ -137,7 +137,7 @@ export default function Dmca() {
                         </strong>{' '}
                         {t('dmca.sections.informacoes.warningBody')}
                     </p>
-                </aside>
+                </div>
             </LegalSection>
 
             <LegalSection

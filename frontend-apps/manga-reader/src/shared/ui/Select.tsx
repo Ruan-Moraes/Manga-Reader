@@ -19,7 +19,7 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
-    { options, placeholder, error, hint, disabled, className, id, value, onChange, ...rest },
+    { options, placeholder, error, hint, disabled, className, id, value, onChange, 'aria-label': ariaLabel, ...rest },
     ref,
 ) {
     const describedBy = hint || error ? `${id ?? 'select'}-hint` : undefined;
@@ -71,6 +71,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
                         )}
                         aria-invalid={!!error || undefined}
                         aria-describedby={describedBy}
+                        aria-label={ariaLabel ?? (typeof displayLabel === 'string' && displayLabel ? displayLabel : undefined)}
                     >
                         <span className={cn('block truncate', !selectedOption && 'text-mr-fg-muted')}>{displayLabel}</span>
                         <ChevronDown className="pointer-events-none absolute right-3 size-4 text-mr-tertiary transition-transform duration-mr-default data-[state=open]:rotate-180" />

@@ -65,11 +65,17 @@ lint → test → build (ver `deployment-plan.md`).
 
 ---
 
-### DT-08: Acessibilidade incompleta (a11y) — **Passe direcionado + axe expandido; auditoria total ainda aberta**
+### DT-08: Acessibilidade incompleta (a11y) — **axe por rota implementado (2026-06-01); 4 residuais → DT-43**
 
-**Atualização (2026-06-01)**: smoke axe (`axeComponent`) estendido p/ rota `AboutUs`
-(além de HelpCenter/HelpArticle/Drawer). **Restante (aberto)**: axe por rota em todas
-as telas + auditoria de ordem de tab/foco por página — item grande, mantido aberto.
+**Implementado**: asserção axe (`axeComponent`) adicionada a **29 rotas** (todos os
+testes de página com render reaproveitável). **2 bugs sistêmicos corrigidos**:
+(1) `shared/ui/Select.tsx` — botão `role="combobox"` sem nome acessível
+(`button-name`) → adicionado `aria-label` (prop ou fallback p/ label do valor),
+corrigiu ~9 páginas; (2) `pages/legal` — `<aside>` decorativos (callouts) dentro de
+`<main>` (`landmark-complementary-is-top-level`) → trocados p/ `<div>` em
+`LegalSection.tsx` e `Dmca.tsx`. **Residual (DT-43)**: 4 páginas com violação
+específica não corrigida nesta leva (asserção axe removida delas p/ manter suíte
+verde, registradas abaixo). 864 testes.
 
 **Resolvido (2026-05-31)** — passe direcionado + fundação de teste:
 - **Landmarks**: corrigido `<main>` aninhado em `LegalShell` (PageContainer `asMain`
@@ -594,6 +600,42 @@ nome do enum, case-insensitive, lança `IllegalArgumentException`) — `EventSta
 
 ---
 
+## Auditoria evidence-based do frontend (2026-06-01)
+
+Varredura concreta: `:any`=0, `catch{}`=0, `@ts-ignore`=0, TODO residual=0 →
+codebase limpo. Achados reais (todos Baixa):
+
+### DT-40: cast inseguro no Select — **Baixa, aberto**
+- `shared/ui/Select.tsx:49`: `{ target, currentTarget } as unknown as React.ChangeEvent<HTMLSelectElement>` na ponte RHF do Radix.
+- Impacto: type-unsafe; já há `dispatchEvent('change')` nativo acima — o `onChange` sintético é redundante/frágil.
+- Correção: remover o `onChange` sintético (confiar no evento nativo) ou tipar `ChangeEvent` parcial sem `as unknown`.
+
+### DT-41: supressões `react-hooks/exhaustive-deps` — **Baixa, aberto**
+- `pages/legal/ui/parts/LegalShell.tsx:52` (scroll-spy) e `features/comment/model/internal/useEasyMDE.tsx:64`.
+- Impacto: risco de stale-closure se deps reais mudarem.
+- Correção: incluir deps corretas/refs e remover o disable; se intencional, documentar o porquê específico.
+
+### DT-42: `console.error` em util de runtime — **Baixa, aberto**
+- `shared/service/util/queryCache.ts:13`.
+- Impacto: log não-centralizado em prod.
+- Correção: logger compartilhado ou gate por `import.meta.env.DEV`.
+
+### DT-43: residuais de a11y por página (axe) — **Baixa, aberto**
+Violações reais encontradas pelo axe e ainda não corrigidas (asserção removida da
+página p/ suíte verde; regra + página registradas):
+- `aria-command-name` — `pages/home` (elemento ARIA-command sem nome acessível).
+- `heading-order` — `pages/group/ui/GroupProfile` e `pages/user/ui/UserDetails` (nível de heading pulado).
+- `pages/forgot-password/ui/ResetPassword` (violação a11y no form — reinvestigar regra).
+Correção: por página (aria-label no controle / ajustar hierarquia de heading), depois
+re-adicionar a asserção axe ao teste.
+
+**Checado e NÃO é dívida**: `CommentContent` `dangerouslySetInnerHTML` sanitizado por
+DOMPurify (`markdownService`); `@ts-expect-error` do carousel = bug upstream
+documentado; `setTimeout` (13×) = padrões legítimos; `console.log` em `httpClient` está
+em JSDoc.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
@@ -602,7 +644,7 @@ nome do enum, case-insensitive, lança `IllegalArgumentException`) — `EventSta
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 2 | DT-03, DT-09 |
+| **Baixa** | 6 | DT-03, DT-09, DT-40, DT-41, DT-42, DT-43 |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |

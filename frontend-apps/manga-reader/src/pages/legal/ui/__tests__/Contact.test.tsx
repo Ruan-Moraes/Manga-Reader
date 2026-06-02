@@ -2,9 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Contact from '../Contact';
 
 describe('Contact', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Contact />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders page title', () => {
         renderWithProviders(<Contact />);
         expect(screen.getByRole('heading', { name: /contatos/i, level: 1 })).toBeInTheDocument();

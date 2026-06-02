@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Loading from '../Loading';
 
 vi.mock('@widgets/layouts/ui/PageShell', () => ({
@@ -8,6 +9,11 @@ vi.mock('@widgets/layouts/ui/PageShell', () => ({
 }));
 
 describe('Loading', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Loading />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders loading heading', () => {
         renderWithProviders(<Loading />);
         expect(screen.getByRole('heading', { name: /carregando/i })).toBeInTheDocument();

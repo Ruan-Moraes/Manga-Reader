@@ -2,9 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import HelpCenter from '../HelpCenter';
 
 describe('HelpCenter', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<HelpCenter />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders h1', () => {
         renderWithProviders(<HelpCenter />);
         expect(

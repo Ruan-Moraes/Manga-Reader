@@ -31,14 +31,14 @@ export const LegalSection = ({
             </h2>
 
             {tldr && (
-                <aside className="mt-4 rounded-mr-sm border border-mr-accent/30 border-l-[3px] border-l-mr-accent bg-mr-accent-25/30 p-4">
+                <div className="mt-4 rounded-mr-sm border border-mr-accent/30 border-l-[3px] border-l-mr-accent bg-mr-accent-25/30 p-4">
                     <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent">
                         {t('section.tldrLabel')}
                     </p>
                     <p className="mt-1 text-mr-small text-mr-fg-muted leading-relaxed">
                         {tldr}
                     </p>
-                </aside>
+                </div>
             )}
 
             <div className="prose-legal mt-4 flex flex-col gap-3 text-mr-body leading-relaxed text-mr-fg-muted">

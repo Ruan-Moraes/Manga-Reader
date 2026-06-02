@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 
 const registerMock = vi.fn();
 const navigateMock = vi.fn();
@@ -47,6 +48,11 @@ const fillForm = async (
 };
 
 describe('SignUp', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<SignUp />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         vi.clearAllMocks();
         registerMock.mockResolvedValue(undefined);

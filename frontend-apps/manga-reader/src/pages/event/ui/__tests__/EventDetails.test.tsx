@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import EventDetails from '../EventDetails';
 import { type EventData, useEventDetails } from '@entities/event';
 
@@ -48,6 +49,11 @@ const mockEvent: EventData = {
 };
 
 describe('EventDetails', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<EventDetails />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         vi.mocked(useEventDetails).mockReturnValue({
             event: mockEvent,

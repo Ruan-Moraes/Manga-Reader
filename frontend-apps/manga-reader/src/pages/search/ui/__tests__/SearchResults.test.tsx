@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 
 const mSearch = {
     isLoading: false,
@@ -34,6 +35,11 @@ vi.mock('@widgets/layouts/ui/Main', () => ({
 import SearchResults from '../SearchResults';
 
 describe('SearchResults route', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<SearchResults />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         mSearch.isLoading = false;
         mSearch.isError = false;

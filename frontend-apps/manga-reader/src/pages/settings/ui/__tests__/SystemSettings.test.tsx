@@ -2,9 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import SystemSettings from '../SystemSettings';
 
 describe('SystemSettings', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<SystemSettings />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders main landmark', () => {
         renderWithProviders(<SystemSettings />);
         expect(screen.getByRole('main')).toBeInTheDocument();

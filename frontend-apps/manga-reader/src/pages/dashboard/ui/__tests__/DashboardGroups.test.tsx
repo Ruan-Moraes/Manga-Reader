@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import DashboardGroups from '../DashboardGroups';
 
 const mState = {
@@ -26,6 +27,11 @@ vi.mock('@features/admin', () => ({
 }));
 
 describe('DashboardGroups', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<DashboardGroups />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         mState.groups = [];
         mState.isLoading = false;

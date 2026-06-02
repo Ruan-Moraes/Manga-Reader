@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import MyReviews from '../MyReviews';
 
 vi.mock('@entities/rating', async importOriginal => {
@@ -34,6 +35,11 @@ const mockReview = {
 };
 
 describe('MyReviews', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<MyReviews />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         vi.mocked(getUserReviews).mockResolvedValue({
             content: [],

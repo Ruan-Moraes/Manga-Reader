@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Forum from '../Forum';
 import type { ForumTopic } from '@entities/forum';
 
@@ -87,6 +88,11 @@ beforeEach(() => {
 const setup = () => renderWithProviders(<Forum />);
 
 describe('Forum', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Forum />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders Fórum heading', () => {
         setup();
         const headings = screen.getAllByRole('heading', { name: /fórum/i });

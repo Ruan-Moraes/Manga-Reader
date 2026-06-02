@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Library from '../Library';
 import type { SavedMangaItem } from '@features/library';
 
@@ -126,6 +127,11 @@ beforeEach(() => {
 const setup = () => renderWithProviders(<Library />);
 
 describe('Library', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Library />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders heading and total count', () => {
         setup();
         expect(screen.getByRole('heading', { name: /minha biblioteca/i })).toBeInTheDocument();

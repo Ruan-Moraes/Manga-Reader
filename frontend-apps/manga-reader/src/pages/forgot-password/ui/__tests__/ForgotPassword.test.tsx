@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 
 const { requestResetMock, navigateMock } = vi.hoisted(() => ({
     requestResetMock: vi.fn(),
@@ -27,6 +28,11 @@ vi.mock('react-router-dom', async orig => {
 import ForgotPassword from '../ForgotPassword';
 
 describe('ForgotPassword', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<ForgotPassword />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         vi.clearAllMocks();
         requestResetMock.mockResolvedValue('ok');

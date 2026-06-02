@@ -57,7 +57,7 @@ export default function useContactForm() {
 
     const reset = () => {
         setForm({ name: '', email: '', topic: '', message: '' });
-        
+
         setErrors({});
 
         setStatus('idle');

@@ -1,9 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Privacy from '../Privacy';
 
 describe('Privacy', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Privacy />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders page title', () => {
         renderWithProviders(<Privacy />);
         expect(

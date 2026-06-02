@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import News from '../News';
 import type { NewsItem } from '@entities/news';
 
@@ -118,6 +119,11 @@ beforeEach(() => {
 const setup = () => renderWithProviders(<News />);
 
 describe('News', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<News />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders section heading', () => {
         setup();
         expect(screen.getByRole('heading', { name: /rolou essa semana/i })).toBeInTheDocument();

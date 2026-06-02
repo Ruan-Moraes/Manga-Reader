@@ -1,9 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Dmca from '../Dmca';
 
 describe('Dmca', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Dmca />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders page title', () => {
         renderWithProviders(<Dmca />);
         expect(screen.getByRole('heading', { name: /dmca/i, level: 1 })).toBeInTheDocument();

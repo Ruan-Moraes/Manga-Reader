@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Groups from '../Groups';
 import type { Group } from '@entities/group';
 
@@ -97,6 +98,11 @@ beforeEach(() => {
 const setup = () => renderWithProviders(<Groups />);
 
 describe('Groups', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Groups />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders heading', () => {
         setup();
         expect(screen.getByRole('heading', { name: /grupos/i })).toBeInTheDocument();

@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import CategoryFilters from '../CategoryFilters';
 import type { Title } from '@entities/manga';
 import type { Tag } from '@entities/catalog-filter';
@@ -68,6 +69,11 @@ beforeEach(() => {
 const setup = () => renderWithProviders(<CategoryFilters />);
 
 describe('CategoryFilters', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<CategoryFilters />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders obra count and search field', () => {
         setup();
         expect(screen.getByRole('searchbox')).toBeInTheDocument();

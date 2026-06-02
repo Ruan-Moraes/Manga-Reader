@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 
 const loginMock = vi.fn();
 const navigateMock = vi.fn();
@@ -31,6 +32,11 @@ vi.mock('react-router-dom', async orig => {
 import Login from '../Login';
 
 describe('Login', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<Login />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     beforeEach(() => {
         vi.clearAllMocks();
         loginMock.mockResolvedValue(undefined);

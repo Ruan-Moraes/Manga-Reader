@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import PublishWork from '../PublishWork';
 
 vi.mock('@features/contact', () => ({
@@ -8,6 +9,11 @@ vi.mock('@features/contact', () => ({
 }));
 
 describe('PublishWork', () => {
+    it('has no axe violations', async () => {
+        const { container } = renderWithProviders(<PublishWork />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
+
     it('renders page title', () => {
         renderWithProviders(<PublishWork />);
         expect(screen.getByText('Publicar trabalho')).toBeInTheDocument();
