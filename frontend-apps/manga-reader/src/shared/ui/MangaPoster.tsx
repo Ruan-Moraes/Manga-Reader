@@ -25,6 +25,7 @@ const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape 
         <div
             onClick={onClick}
             role={onClick ? 'button' : undefined}
+            aria-label={onClick ? alt || undefined : undefined}
             tabIndex={onClick ? 0 : undefined}
             onKeyDown={
                 onClick

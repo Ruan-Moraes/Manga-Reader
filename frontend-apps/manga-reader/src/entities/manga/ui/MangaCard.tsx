@@ -94,14 +94,14 @@ const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, o
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 to-transparent" />
 
                 <div className="absolute inset-x-0 bottom-0 p-2">
-                    <h3
+                    <p
                         className={cn(
                             'line-clamp-2 font-mr-extrabold leading-tight tracking-mr text-mr-fg [text-shadow:0_1px_4px_rgba(0,0,0,0.8)]',
                             sizeTitle[size],
                         )}
                     >
                         {manga.title}
-                    </h3>
+                    </p>
                     {manga.author && <div className="mt-0.5 truncate text-[11px] text-mr-fg-subtle">{manga.author}</div>}
                     {(manga.rating != null || manga.chapter != null) && (
                         <div className="mt-1 flex items-center justify-between gap-2 text-[11px] text-mr-fg-muted">

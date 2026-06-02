@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import Home from '../Home';
 
 const mockTitle = {
@@ -68,6 +69,8 @@ vi.mock('@entities/group', async importOriginal => {
 });
 
 describe('Home', () => {
+    it('axe', async () => { const { container } = renderWithProviders(<Home />); expect(await axeComponent(container)).toHaveNoViolations(); });
+
     it('renders main landmark', () => {
         renderWithProviders(<Home />);
         expect(screen.getByRole('main')).toBeInTheDocument();

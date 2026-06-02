@@ -3,11 +3,14 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
+import { axeComponent } from '@/test/helpers/axe';
 import GroupProfile from '../GroupProfile';
 
 const setup = () => renderWithProviders(<GroupProfile />);
 
 describe('GroupProfile', () => {
+    it('axe', async () => { const { container } = renderWithProviders(<GroupProfile />); expect(await axeComponent(container)).toHaveNoViolations(); });
+
     it('renders group name heading (defaults to id=1)', () => {
         setup();
         expect(screen.getByRole('heading', { name: /scan brasileiro/i })).toBeInTheDocument();
