@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Languages, MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
+import { MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
 
 import { Footer as DSFooter } from '@ui/Footer';
 import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, FooterSocialLink, FooterStatusInfo } from '@ui/Footer';
@@ -8,7 +8,8 @@ import { useAuth } from '@features/auth';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { showInfoToast } from '@shared/service/util/toastService';
-import { SUPPORTED_LANGUAGES } from '@/i18n/config';
+
+import LanguagePreferenceMenu from './LanguagePreferenceMenu';
 
 type FooterProps = {
     styles?: React.CSSProperties;
@@ -31,7 +32,8 @@ const mkLink = (label: string, path: string, onNavigate: (p: string) => void): F
 const mkExternal = (label: string, href: string): FooterLink => ({ label, href, external: true });
 
 const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
-    const { t, i18n } = useTranslation('layout');
+    const { t } = useTranslation('layout');
+
     const { isLoggedIn } = useAuth();
 
     const defaultNavigate = useAppNavigate();
@@ -139,26 +141,9 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
         statusAriaLabel: t('footer.statusBanner.ariaLabel'),
     };
 
-    // Idioma da UI: cicla entre os idiomas suportados (i18next + localStorage).
-    // O idioma de conteúdo é gerido em Configurações; tema ainda em desenvolvimento.
-    const cycleUiLanguage = () => {
-        const current = i18n.language as (typeof SUPPORTED_LANGUAGES)[number];
-        const idx = SUPPORTED_LANGUAGES.indexOf(current);
-        const next = SUPPORTED_LANGUAGES[(idx + 1) % SUPPORTED_LANGUAGES.length];
-
-        void i18n.changeLanguage(next);
-    };
-
+    // Idioma (UI + conteúdo) gerido pelo dropdown de dois eixos (LanguagePreferenceMenu);
+    // tema ainda em desenvolvimento.
     const preferenceItems: FooterPreferenceItem[] = [
-        {
-            key: 'language',
-            label: t('footer.preferences.language'),
-            value: t('footer.preferences.languageValue'),
-            icon: Languages,
-            showChevron: true,
-            ariaLabel: t('footer.preferences.languageAria'),
-            onClick: cycleUiLanguage,
-        },
         {
             key: 'theme',
             label: t('footer.preferences.theme'),
@@ -179,6 +164,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
             apps={apps}
             socials={socials}
             preferenceItems={preferenceItems}
+            preferences={<LanguagePreferenceMenu />}
             onBrandNavigate={navigate}
             texts={{
                 tagline: t('footer.tagline'),

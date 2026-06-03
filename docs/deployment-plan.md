@@ -115,14 +115,14 @@ docker run -d \
 ### 3.2. Frontend
 
 ```bash
-# Instalar dependências
-cd frontend
-npm install
+# Instalar dependências (pnpm workspace)
+cd frontend-apps
+pnpm install
 
 # Build de produção
-VITE_API_BASE_URL=https://api.mangareader.com npm run build
+VITE_API_BASE_URL=https://api.mangareader.com pnpm --filter manga-reader build
 
-# Output: dist/
+# Output: frontend-apps/manga-reader/dist/
 # Servir com Nginx ou upload para CDN
 ```
 
@@ -250,10 +250,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: cd frontend && npm ci
-      - run: cd frontend && npm run lint
-      - run: cd frontend && npx tsc --noEmit
-      # - run: cd frontend && npm test  # Quando testes existirem
+      - uses: pnpm/action-setup@v4
+      - run: cd frontend-apps && pnpm install --frozen-lockfile
+      - run: cd frontend-apps && pnpm --filter manga-reader lint:fsd
+      - run: cd frontend-apps/manga-reader && npx tsc --noEmit
+      - run: cd frontend-apps/manga-reader && npx vitest run --pool=forks
 
   frontend-build:
     needs: frontend-check
@@ -262,12 +263,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: cd frontend && npm ci
-      - run: cd frontend && VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} npm run build
+      - uses: pnpm/action-setup@v4
+      - run: cd frontend-apps && pnpm install --frozen-lockfile
+      - run: cd frontend-apps && VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} pnpm --filter manga-reader build
       - uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: frontend/dist
+          path: frontend-apps/manga-reader/dist
 
   # ──── BACKEND ────
   backend-test:

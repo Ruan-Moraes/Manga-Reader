@@ -9,6 +9,10 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mangareader.domain.manga.entity.Title;
 
 @DisplayName("LocalizedString")
 class LocalizedStringTest {
@@ -137,6 +141,54 @@ class LocalizedStringTest {
             var b = LocalizedString.ofDefault("Olá");
 
             assertThat(a).isEqualTo(b).hasSameHashCodeAs(b);
+        }
+    }
+
+    @Nested
+    @DisplayName("Serialização Jackson (cache Redis)")
+    class Serializacao {
+        @Test
+        @DisplayName("Round-trip Jackson reconstrói via @JsonCreator (regressão cache)")
+        void roundTripJackson() throws Exception {
+            var mapper = new ObjectMapper();
+            var ls = LocalizedString.of(Map.of("pt-BR", "Olá", "en-US", "Hello"));
+
+            String json = mapper.writeValueAsString(ls);
+            var back = mapper.readValue(json, LocalizedString.class);
+
+            assertThat(back).isEqualTo(ls);
+            assertThat(back.resolve(EN_US)).isEqualTo("Hello");
+        }
+
+        @Test
+        @DisplayName("Title aninhado sobrevive ao GenericJackson2JsonRedisSerializer")
+        void roundTripRedisSerializer() {
+            var serializer = new GenericJackson2JsonRedisSerializer();
+            var title = Title.builder()
+                    .id("2")
+                    .name(LocalizedString.of(Map.of("pt-BR", "Olá", "en-US", "Hello")))
+                    .synopsis(LocalizedString.ofDefault("Sinopse"))
+                    .build();
+
+            byte[] bytes = serializer.serialize(title);
+            var back = (Title) serializer.deserialize(bytes);
+
+            assertThat(back.getName()).isEqualTo(title.getName());
+            assertThat(back.getName().resolve(EN_US)).isEqualTo("Hello");
+            assertThat(back.getSynopsis().resolve(PT_BR)).isEqualTo("Sinopse");
+        }
+
+        @Test
+        @DisplayName("Entrada legada sem 'values' desserializa para vazio (sem NPE)")
+        void roundTripLegacyShape() {
+            var serializer = new GenericJackson2JsonRedisSerializer();
+
+            String legacy = "{\"@class\":\"com.mangareader.shared.domain.i18n.LocalizedString\","
+                    + "\"empty\":false}";
+
+            var back = (LocalizedString) serializer.deserialize(legacy.getBytes());
+
+            assertThat(back.isEmpty()).isTrue();
         }
     }
 }

@@ -6,6 +6,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Value Object imutável que representa um texto traduzível em múltiplos idiomas.
  *
@@ -14,6 +19,7 @@ import java.util.Objects;
  *
  * <p>Persistido como JSONB em PostgreSQL e como subdocumento em MongoDB.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class LocalizedString {
     public static final String DEFAULT_TAG = "pt-BR";
 
@@ -34,16 +40,24 @@ public final class LocalizedString {
         return new LocalizedString(values);
     }
 
+    /** Reconstrução via cache Redis (Jackson). Tolera {@code values} ausente/legado → vazio. */
+    @JsonCreator
+    static LocalizedString fromJson(@JsonProperty("values") Map<String, String> values) {
+        return new LocalizedString(values);
+    }
+
     public static LocalizedString ofDefault(String value) {
         Objects.requireNonNull(value, "value");
 
         return new LocalizedString(Map.of(DEFAULT_TAG, value));
     }
 
+    @JsonProperty("values")
     public Map<String, String> values() {
         return values;
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return values.isEmpty();
     }

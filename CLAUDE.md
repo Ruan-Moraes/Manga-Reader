@@ -17,16 +17,22 @@ mvn package -DskipTests                         # Build JAR
 mvn spring-boot:run                             # Iniciar (Docker Compose sobe automaticamente)
 ```
 
-### Frontend (`/frontend/`)
+### Frontend (`/frontend-apps/manga-reader/`)
+
+pnpm workspace (raiz `frontend-apps/`). Rodar por workspace com `--filter manga-reader`
+ou `cd frontend-apps/manga-reader` + `npx`:
 
 ```bash
-npm run dev         # Dev server :5173 (proxy API → :8080)
-npm run build       # TypeScript check + production build
-npm run lint        # ESLint
-npm run format      # Prettier
-npm test            # Vitest
-npm run test:watch  # Watch mode
+pnpm --filter manga-reader dev          # Dev server :5173 (proxy API → :8080)
+pnpm --filter manga-reader build        # TypeScript check + production build
+pnpm --filter manga-reader lint:fsd     # Boundary lint (steiger) — gate que importa, verde
+npx tsc --noEmit                        # Type-check gate (rodar dentro do app)
+npx vitest run --pool=forks             # Suíte completa (--pool=forks obrigatório neste sandbox)
 ```
+
+> `npm run lint` (eslint+prettier) é **vermelho no baseline** repo-wide — não usar
+> `format`/`--fix` para "corrigir" arquivos (colapsa o JSX expandido do projeto).
+> Combinar o estilo dos vizinhos. `lint:fsd` (steiger) e `tsc --noEmit` são os gates.
 
 ### Infra
 
@@ -420,6 +426,7 @@ Toda mudança que toca persistência deve manter ou adicionar:
 - **MSW handlers**: padrão `*/api/...` wildcard (baseURL pode ser vazio em testes)
 - **QueryClient em testes**: sempre `retry: false` e `gcTime: 0` via `createTestQueryClient()` de `src/test/testUtils.tsx`
 - **Isolamento de auth**: `localStorage.clear()` roda no `afterEach` (setupTests.ts)
+- **Auth via Context**: `useAuth` lê o `AuthProvider` (`@features/auth`) — estado de sessão compartilhado entre Header/Footer/Login (sem isso o header não atualizava pós-login até refresh). `AuthProvider` está no provider tree em `main.tsx`. `renderWithProviders` e `createWrapper` (`src/test/`) já envolvem em `AuthProvider`; teste que mocka `@features/auth/api/authService` parcialmente **deve** stubar `getStoredSession` (ex.: `() => null`) pois o provider o consome no mount.
 - **Toast mocking**: `vi.mock('@shared/service/util/toastService')`
 
 ### Cobertura Exigida por Tipo de Mudança
@@ -497,6 +504,7 @@ class UserControllerTest {
 - **H2 vs PostgreSQL**: H2 não suporta JSONB — evitar `entityManager.clear()` + re-read em entities com colunas JSONB. H2 também não detecta problemas PostgreSQL-specific (arrays, partial indexes, JSONB operators). **Tech debt**: avaliar migração de testes JPA para TestContainers PostgreSQL — ver `docs/tech-debt.md`.
 - **H2 collation**: collation ASCII difere do PostgreSQL — usar labels ASCII-only em dados de teste
 - **Lombok booleans**: getter de `boolean highlighted` é `isHighlighted()`, não `getHighlighted()`
+- **IDs de Title são strings Mongo (frontend)**: `Title.id` é `ObjectId` (string), **não** numérico. Não validar fetch de título com `validateId(Number(id))` — `Number("507f…")` é `NaN` e a query nunca carrega no reload. Usar `enabled: Boolean(id)` + fetch direto pela string (ver `useTitleFetch`). Teste de regressão em `useTitleFetch.test.tsx`.
 - **Docker API version**: `docker-java.properties` em test resources define `api.version=1.44` para compatibilidade Docker 29+ com TestContainers 1.20.x
 - **MongoDB indexes**: após `mongoTemplate.dropCollection()` no `@BeforeEach`, indexes compostos devem ser recriados manualmente via `IndexResolver`
 - **Singleton TestContainers (DT-20/DT-22)**: `MongoTestContainerConfig` e `PostgresTestContainerConfig` mantêm o container como **singleton por JVM** (iniciado em bloco `static`, `stop()` no-op, startup timeout 120s). Evita restart por contexto Spring (cache LRU) que causava `DataAccessResourceFailure: Connection refused` intermitente. Não criar `@Bean static Container` gerido pelo ciclo do Spring.
@@ -516,7 +524,7 @@ JPA `@OneToMany` usa `FetchType.LAZY` por padrão. Quando um use case retorna en
 Antes de considerar qualquer tarefa concluída:
 
 1. `mvn test` passa com **0 failures, 0 errors**
-2. `cd frontend && npx tsc --noEmit` compila com **0 errors**
+2. `cd frontend-apps/manga-reader && npx tsc --noEmit` compila com **0 errors**
 3. Todo requisito novo/alterado tem teste correspondente
 4. Nenhum teste existente foi quebrado ou deletado sem justificativa
 5. Commits pequenos e focados com mensagens claras
@@ -534,12 +542,12 @@ Antes de considerar qualquer tarefa concluída:
 | Novo use case/entity | Atualizar `README.md` (métricas), `CLAUDE.md` (domínios se aplicável) |
 | Nova tela/página | Implementar i18n obrigatoriamente; documentar chaves em `locales/README.md` |
 | Bug fix com lição aprendida | Atualizar `CLAUDE.md` (Known Test Limitations) |
-| Mudança de arquitetura | Atualizar `docs/overview.md`, `docs/backend-analysis.md` ou `docs/frontend-analysis.md` |
+| Mudança de arquitetura | Atualizar `CLAUDE.md` (Architecture/patterns) e `README.md` (§2) |
 | Novo tech debt identificado | Adicionar em `docs/tech-debt.md` com prioridade e impacto |
 | Tech debt resolvido | Remover de `docs/tech-debt.md`, atualizar `README.md` |
-| Nova tarefa pendente | Adicionar em `docs/pending-tasks.md` |
-| Tarefa concluída | Remover de `docs/pending-tasks.md` |
-| Mudança de versão de dependência | Atualizar `README.md` (Stack), `docs/overview.md` |
+| Nova tarefa/dívida ou backlog de produto | Adicionar em `docs/tech-debt.md` |
+| Tarefa/dívida concluída | Marcar resolvida em `docs/tech-debt.md` |
+| Mudança de versão de dependência | Atualizar `README.md` (Stack) |
 | Mudança na contagem de testes | Atualizar `README.md` |
 | Adição/modificação de strings i18n | Atualizar todos os idiomas suportados (pt, en, es) em `locales/` |
 
@@ -559,7 +567,7 @@ backend/src/main/java/com/mangareader/
 ├── presentation/{domain}/mapper/      # MapStruct mappers
 └── shared/                            # Cross-cutting: configs, exceptions, constants
 
-frontend/src/
+frontend-apps/manga-reader/src/
 ├── app/      # Router config + route guards (@app) — FSD app layer
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,

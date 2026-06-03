@@ -10,7 +10,7 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ 1898 testes (1064 backend + 834 frontend) — **0 falhas** |
+| **Build** | ✅ 1942 testes (1064 backend + 878 frontend) — **0 falhas** |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
@@ -30,8 +30,7 @@
 [🔲] Fase 10:  Produção (CI/CD, infra cloud, deploy, monitoramento)
 ```
 
-> Estado de fase i18n é vivo — fonte de verdade em [`docs/i18n.md`](docs/i18n.md) e [`docs/pending-tasks.md`](docs/pending-tasks.md).
-> Documentação técnica detalhada em [`/docs`](docs/overview.md).
+> Convenções i18n consolidadas em [`docs/i18n-guide.md`](docs/i18n-guide.md). Pendências e dívidas técnicas em [`docs/tech-debt.md`](docs/tech-debt.md).
 
 ---
 
@@ -68,7 +67,7 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Features frontend (manga-reader) | **17** módulos |
 | Idiomas suportados | **3** (pt-BR padrão/fallback, en-US, es-ES) |
 | Testes backend | **1064** (0 falhas) |
-| Testes frontend | **834** (124 arquivos, 0 falhas) |
+| Testes frontend | **878** (126 arquivos, 0 falhas) |
 
 ---
 
@@ -226,14 +225,9 @@ pnpm --filter manga-reader test:watch       # Watch mode
 ```
 Manga-Reader/
 ├── docs/                        # Documentação técnica
-│   ├── overview.md              # Visão geral e estado atual
-│   ├── frontend-analysis.md     # Análise técnica do frontend
-│   ├── backend-analysis.md      # Análise técnica do backend
-│   ├── tech-debt.md             # Dívidas técnicas (prioridade + impacto)
-│   ├── pending-tasks.md         # Tarefas pendentes por área
+│   ├── tech-debt.md             # Dívidas técnicas + backlog (fonte única)
 │   ├── deployment-plan.md       # Plano de deploy em produção
-│   ├── i18n.md                  # Plano vivo / log de execução i18n
-│   └── i18n-guide.md            # Receita de convenções i18n consolidadas
+│   └── i18n-guide.md            # Convenções i18n consolidadas
 │
 ├── backend/
 │   ├── docker-compose.yml       # Infra de desenvolvimento
@@ -319,8 +313,7 @@ Para evitar duplicação e drift, dívidas técnicas e roadmap são mantidos com
 
 | Documento | Conteúdo |
 |-----------|----------|
-| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas com prioridade e impacto |
-| [`docs/pending-tasks.md`](docs/pending-tasks.md) | Tarefas pendentes por área |
+| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas + backlog de produto (prioridade e impacto) |
 | [`docs/deployment-plan.md`](docs/deployment-plan.md) | Plano de produção (infra, CI/CD, segurança) |
 
 Resumo das pendências de alto nível: `@Transactional` em use cases multi-repository, code splitting / Error Boundaries no frontend, acessibilidade (ARIA), CI/CD pipeline, infra cloud + deploy.
@@ -377,15 +370,12 @@ Cada review possui notas por categoria:
 
 | Documento | Descrição |
 |-----------|-----------|
-| [`docs/overview.md`](docs/overview.md) | Visão geral, stack, arquitetura, fase atual |
-| [`docs/frontend-analysis.md`](docs/frontend-analysis.md) | Análise técnica do frontend |
-| [`docs/backend-analysis.md`](docs/backend-analysis.md) | Análise técnica do backend |
-| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas (impacto + prioridade) |
-| [`docs/pending-tasks.md`](docs/pending-tasks.md) | Tarefas pendentes por área |
+| [`CLAUDE.md`](CLAUDE.md) | Arquitetura, patterns e convenções do projeto |
+| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas + backlog de produto (impacto + prioridade) |
 | [`docs/deployment-plan.md`](docs/deployment-plan.md) | Variáveis, infra, build, Nginx, CI/CD, segurança |
-| [`docs/i18n.md`](docs/i18n.md) | Plano vivo / log de execução de i18n de conteúdo |
-| [`docs/i18n-guide.md`](docs/i18n-guide.md) | Receita de convenções i18n consolidadas |
+| [`docs/i18n-guide.md`](docs/i18n-guide.md) | Convenções i18n consolidadas (catálogo + UGC) |
 | [`frontend-apps/manga-reader/src/i18n/locales/README.md`](frontend-apps/manga-reader/src/i18n/locales/README.md) | Guia dos arquivos de tradução (react-i18next) |
+| Swagger UI (`/swagger-ui.html`) | Referência viva da API REST |
 
 ---
 

@@ -32,7 +32,9 @@
         "tabs": {
             "chapters": "Capítulos",
             "reviews": "Resenhas",
+            "comments": "Comentários",
             "groups": "Grupos",
+            "stores": "Lojas",
             "about": "Sobre"
         },
         "order": {
@@ -50,6 +52,9 @@
             "en": "EN"
         },
         "notFound": "Obra não encontrada",
+        "notFoundDesc": "A obra que você procura não existe ou foi removida. Verifique o link ou explore o catálogo.",
+        "goHome": "Ir para o início",
+        "browseCatalog": "Explorar catálogo",
         "backToCatalog": "Voltar ao catálogo",
         "addToLibrary": "Adicionar à biblioteca",
         "removeFromLibrary": "Remover da biblioteca",
@@ -142,6 +147,8 @@
         "filtersButton": "Filtros",
         "filtersButtonCount": "Filtros ({{count}})",
         "genres": "Gêneros",
+        "tagSearchPlaceholder": "Buscar gênero...",
+        "noTagsFound": "Nenhum gênero encontrado",
         "status": "Status",
         "clearAll": "Limpar tudo",
         "apply": "Aplicar",

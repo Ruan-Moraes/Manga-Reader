@@ -72,7 +72,10 @@
             "themeAria": "Cambiar tema",
             "help": "Ayuda",
             "helpAria": "Abrir centro de ayuda",
-            "themeWip": "Tema en desarrollo."
+            "themeWip": "Tema en desarrollo.",
+            "uiGroup": "Interfaz",
+            "contentGroup": "Contenido",
+            "contentLoginHint": "Inicia sesión para elegir"
         },
         "copyrightStudy": "© {{year}} Manga Reader. Hecho por Ruan — proyecto de estudio."
     },

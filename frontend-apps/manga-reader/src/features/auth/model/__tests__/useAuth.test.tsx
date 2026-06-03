@@ -1,18 +1,24 @@
 import { act, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { renderHook } from '@testing-library/react';
+import type { ReactNode } from 'react';
 
 import { server } from '@/test/mocks/server';
 import { mockAuthResponse } from '@/test/mocks/handlers';
 import { seedAuthSession } from '@/test/testUtils';
 
+import { AuthProvider } from '../AuthProvider';
 import useAuth from '../useAuth';
+
+const wrapper = ({ children }: { children: ReactNode }) => <AuthProvider>{children}</AuthProvider>;
+
+const renderAuth = () => renderHook(() => useAuth(), { wrapper });
 
 describe('useAuth', () => {
     // ── Estado inicial ────────────────────────────────────────────────────
 
     it('deve inicializar com user null quando não há sessão armazenada', () => {
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         expect(result.current.user).toBeNull();
         expect(result.current.isLoggedIn).toBe(false);
@@ -21,7 +27,7 @@ describe('useAuth', () => {
     it('deve carregar user do /me quando sessão existe no localStorage', async () => {
         seedAuthSession();
 
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await waitFor(() => expect(result.current.user).not.toBeNull());
 
@@ -39,7 +45,7 @@ describe('useAuth', () => {
             }),
         );
 
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         // Aguarda o efeito mount processar e setar null
         await waitFor(() => {
@@ -53,7 +59,7 @@ describe('useAuth', () => {
     // ── Login ─────────────────────────────────────────────────────────────
 
     it('deve retornar user com role mapeado após login', async () => {
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         let loggedUser;
         await act(async () => {
@@ -70,7 +76,7 @@ describe('useAuth', () => {
     });
 
     it('deve persistir sessão no localStorage após login', async () => {
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await act(async () => {
             await result.current.login({
@@ -93,7 +99,7 @@ describe('useAuth', () => {
             }),
         );
 
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await expect(
             act(async () => {
@@ -108,7 +114,7 @@ describe('useAuth', () => {
     // ── Register ──────────────────────────────────────────────────────────
 
     it('deve retornar user após registro', async () => {
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         let registeredUser;
         await act(async () => {
@@ -131,7 +137,7 @@ describe('useAuth', () => {
             }),
         );
 
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await expect(
             act(async () => {
@@ -147,7 +153,7 @@ describe('useAuth', () => {
     // ── Logout ────────────────────────────────────────────────────────────
 
     it('deve limpar user após logout', async () => {
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         // Login primeiro
         await act(async () => {
@@ -168,6 +174,34 @@ describe('useAuth', () => {
         expect(result.current.isLoggedIn).toBe(false);
     });
 
+    // ── Estado compartilhado (regressão Bug 1) ────────────────────────────
+
+    it('deve compartilhar estado entre consumidores sob o mesmo provider', async () => {
+        // Dois consumidores independentes do mesmo AuthProvider — simula
+        // Login + Header. Após login num, o outro reflete sem remount.
+        const { result } = renderHook(
+            () => ({ a: useAuth(), b: useAuth() }),
+            { wrapper },
+        );
+
+        expect(result.current.b.isLoggedIn).toBe(false);
+
+        await act(async () => {
+            await result.current.a.login({ email: 'test@example.com', password: 'password123' });
+        });
+
+        expect(result.current.b.isLoggedIn).toBe(true);
+        expect(result.current.b.user?.id).toBe(mockAuthResponse.userId);
+    });
+
+    it('deve lançar erro quando usado fora de um AuthProvider', () => {
+        const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        expect(() => renderHook(() => useAuth())).toThrow(/AuthProvider/);
+
+        spy.mockRestore();
+    });
+
     // ── Role mapping ──────────────────────────────────────────────────────
 
     it('deve mapear ADMIN para admin', async () => {
@@ -180,7 +214,7 @@ describe('useAuth', () => {
             }),
         );
 
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await act(async () => {
             await result.current.login({
@@ -202,7 +236,7 @@ describe('useAuth', () => {
             }),
         );
 
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await act(async () => {
             await result.current.login({
@@ -215,7 +249,7 @@ describe('useAuth', () => {
     });
 
     it('deve mapear MEMBER para user', async () => {
-        const { result } = renderHook(() => useAuth());
+        const { result } = renderAuth();
 
         await act(async () => {
             await result.current.login({

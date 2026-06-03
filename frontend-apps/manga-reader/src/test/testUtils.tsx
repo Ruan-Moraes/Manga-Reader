@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, type RenderHookOptions } from '@testing-library/react';
 import type { ReactNode } from 'react';
 
+import { AuthProvider } from '@features/auth';
+
 const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
 
 export function createTestQueryClient() {
@@ -15,7 +17,11 @@ export function createTestQueryClient() {
 
 export function createWrapper() {
     const queryClient = createTestQueryClient();
-    return ({ children }: { children: ReactNode }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+    return ({ children }: { children: ReactNode }) => (
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>{children}</AuthProvider>
+        </QueryClientProvider>
+    );
 }
 
 export function renderHookWithProviders<TResult, TProps>(hook: (props: TProps) => TResult, options?: Omit<RenderHookOptions<TProps>, 'wrapper'>) {

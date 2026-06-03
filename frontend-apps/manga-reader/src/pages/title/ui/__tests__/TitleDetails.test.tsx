@@ -69,6 +69,8 @@ beforeEach(() => {
             }),
         ),
         http.get('*/api/groups/title/:id', () => HttpResponse.json(wrapPage([]))),
+        http.get('*/api/comments/title/:id', () => HttpResponse.json(wrapPage([]))),
+        http.get('*/api/stores/title/:id', () => HttpResponse.json(wrapPage([]))),
     );
 });
 
@@ -98,7 +100,10 @@ describe('TitleDetails', () => {
 
     it('renders main landmark', async () => {
         renderWithId('1');
-        expect(await screen.findByRole('main')).toBeInTheDocument();
+        // Aguarda o conteúdo carregar (o skeleton também usa <main>, então
+        // assertamos após o heading para pegar o landmark do estado final).
+        await screen.findByRole('heading', { name: /berserk/i });
+        expect(screen.getByRole('main')).toBeInTheDocument();
     });
 
     it('renders Capítulos tab active by default', async () => {
@@ -107,12 +112,30 @@ describe('TitleDetails', () => {
         expect(tab).toHaveAttribute('aria-selected', 'true');
     });
 
-    it('renders all 4 tabs', async () => {
+    it('renders all 6 tabs', async () => {
         renderWithId('1');
         expect(await screen.findByRole('tab', { name: /capítulos/i })).toBeInTheDocument();
         expect(screen.getByRole('tab', { name: /resenhas/i })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: /comentários/i })).toBeInTheDocument();
         expect(screen.getByRole('tab', { name: /grupos/i })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: /lojas/i })).toBeInTheDocument();
         expect(screen.getByRole('tab', { name: /sobre/i })).toBeInTheDocument();
+    });
+
+    it('switches to Lojas tab and fetches stores by title', async () => {
+        const user = userEvent.setup();
+        renderWithId('1');
+        await user.click(await screen.findByRole('tab', { name: /lojas/i }));
+        await waitFor(() => {
+            expect(screen.getByRole('tab', { name: /lojas/i })).toHaveAttribute('aria-selected', 'true');
+        });
+    });
+
+    it('shows not-found state with home and catalog buttons for missing title', async () => {
+        renderWithId('not-a-number');
+        expect(await screen.findByText(/obra não encontrada/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /ir para o início/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /explorar catálogo/i })).toBeInTheDocument();
     });
 
     it('switches to Resenhas tab', async () => {

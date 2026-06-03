@@ -1,4 +1,6 @@
 export { default as useAuth } from './model/useAuth';
+export { AuthProvider } from './model/AuthProvider';
+export type { AuthContextValue } from './model/AuthProvider';
 export { default as useForgotPassword } from './model/useForgotPassword';
 export { default as useResetPassword } from './model/useResetPassword';
 

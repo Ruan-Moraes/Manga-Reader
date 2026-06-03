@@ -7,10 +7,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Variante de {@link LocalizedString} para listas (ex.: {@code features[]}, {@code content[]}).
  * Cada language tag mapeia para uma {@code List<String>}.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class LocalizedStringList {
     public static final String DEFAULT_TAG = LocalizedString.DEFAULT_TAG;
 
@@ -36,16 +42,24 @@ public final class LocalizedStringList {
         return new LocalizedStringList(values);
     }
 
+    /** Reconstrução via cache Redis (Jackson). Tolera {@code values} ausente/legado → vazio. */
+    @JsonCreator
+    static LocalizedStringList fromJson(@JsonProperty("values") Map<String, List<String>> values) {
+        return new LocalizedStringList(values);
+    }
+
     public static LocalizedStringList ofDefault(List<String> value) {
         Objects.requireNonNull(value, "value");
 
         return new LocalizedStringList(Map.of(DEFAULT_TAG, value));
     }
 
+    @JsonProperty("values")
     public Map<String, List<String>> values() {
         return values;
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return values.isEmpty();
     }

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { Home, Search } from 'lucide-react';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { PageContainer } from '@ui/PageContainer';
@@ -19,8 +20,11 @@ import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import TitleHero from './parts/TitleHero';
 import ChaptersTab from './parts/ChaptersTab';
 import ReviewsTab from './parts/ReviewsTab';
+import CommentsTab from './parts/CommentsTab';
 import GroupsTab from './parts/GroupsTab';
+import StoresTab from './parts/StoresTab';
 import TitleAboutTab from './parts/TitleAboutTab';
+import TitleDetailsSkeleton from './parts/TitleDetailsSkeleton';
 
 const TitleDetails = () => {
     const { titleId } = useParams();
@@ -47,36 +51,32 @@ const TitleDetails = () => {
     const tabItems = [
         { value: 'chapters', label: t('titleDetails.tabs.chapters') },
         { value: 'reviews', label: t('titleDetails.tabs.reviews') },
+        { value: 'comments', label: t('titleDetails.tabs.comments') },
         { value: 'groups', label: t('titleDetails.tabs.groups') },
+        { value: 'stores', label: t('titleDetails.tabs.stores') },
         { value: 'about', label: t('titleDetails.tabs.about') },
     ];
 
     if (isLoading) {
-        return (
-            <PageContainer asMain size="default" paddingY="md">
-                <div className="animate-pulse space-y-6">
-                    <div className="flex gap-8">
-                        <div className="h-[220px] w-[156px] shrink-0 rounded-mr-md bg-mr-tertiary/20" />
-                        <div className="flex-1 space-y-3 py-2">
-                            <div className="h-8 w-2/3 rounded bg-mr-tertiary/20" />
-                            <div className="h-4 w-1/3 rounded bg-mr-tertiary/20" />
-                        </div>
-                    </div>
-                </div>
-            </PageContainer>
-        );
+        return <TitleDetailsSkeleton />;
     }
 
     if (isError || !title) {
         return (
-            <PageContainer asMain size="default" paddingY="md">
+            <PageContainer asMain paddingY="lg" className="flex items-center justify-center min-h-[60vh]">
                 <EmptyState
                     illustration="404"
                     title={t('titleDetails.notFound')}
+                    description={t('titleDetails.notFoundDesc')}
                     action={
-                        <Button variant="primary" onClick={() => navigate(ROUTES.CATALOG)}>
-                            {t('titleDetails.backToCatalog')}
-                        </Button>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            <Button variant="primary" icon={Home} onClick={() => navigate(ROUTES.HOME)}>
+                                {t('titleDetails.goHome')}
+                            </Button>
+                            <Button variant="ghost" icon={Search} onClick={() => navigate(ROUTES.CATALOG)}>
+                                {t('titleDetails.browseCatalog')}
+                            </Button>
+                        </div>
                     }
                 />
             </PageContainer>
@@ -108,7 +108,9 @@ const TitleDetails = () => {
                 />
             )}
             {tab === 'reviews' && <ReviewsTab ratings={ratings} average={average} distribution={distribution} onWriteReview={openRatingModal} />}
+            {tab === 'comments' && <CommentsTab titleId={titleId ?? ''} />}
             {tab === 'groups' && <GroupsTab groups={groups} />}
+            {tab === 'stores' && <StoresTab titleId={titleId ?? ''} />}
             {tab === 'about' && <TitleAboutTab title={title} />}
 
             <RatingModal isModalOpen={isRatingModalOpen} closeModal={closeRatingModal} onSubmitRating={submitRating} />

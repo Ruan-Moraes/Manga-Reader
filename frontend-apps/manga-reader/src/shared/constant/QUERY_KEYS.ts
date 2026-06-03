@@ -13,6 +13,9 @@ export enum QUERY_KEYS {
     // Comments
     COMMENTS = 'comments',
 
+    // Stores
+    STORES_BY_TITLE = 'storesByTitle',
+
     // Library
     LIBRARY_COUNTS = 'libraryCounts',
     LIBRARY_IDS = 'libraryIds',

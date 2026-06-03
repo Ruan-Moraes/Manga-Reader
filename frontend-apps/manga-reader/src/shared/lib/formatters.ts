@@ -2,8 +2,18 @@ import i18n from '@/i18n/config';
 
 export const getLocale = (): string => i18n.language || 'pt-BR';
 
-export const formatDate = (date: Date | string | number, options?: Intl.DateTimeFormatOptions): string => {
+export const formatDate = (date: Date | string | number | null | undefined, options?: Intl.DateTimeFormatOptions): string => {
+    if (date == null) {
+        return '';
+    }
+
     const value = date instanceof Date ? date : new Date(date);
+
+    // Intl.DateTimeFormat.format lança RangeError ("Invalid time value") para
+    // datas inválidas — não derrubar a tela inteira por um dado malformado.
+    if (Number.isNaN(value.getTime())) {
+        return '';
+    }
 
     return new Intl.DateTimeFormat(getLocale(), options).format(value);
 };

@@ -1,22 +1,18 @@
-import {
-    MessageCircle,
-    Mail,
-    Shield,
-    Copyright,
-    AlertTriangle,
-    Headphones,
-    BookOpen,
-} from 'lucide-react';
+import { MessageCircle, Mail, Shield, Copyright, AlertTriangle, Headphones, BookOpen } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { LegalShell } from './parts/LegalShell';
 import { LegalCrossLinks } from './parts/LegalCrossLinks';
+
 import useContactForm from '../model/useContactForm';
+
 import { Input } from '@ui/Input';
 import { Textarea } from '@ui/Textarea';
 import { Select } from '@ui/Select';
 import { Label } from '@ui/Label';
 import { Button } from '@ui/Button';
+
+import { illustrationUrl } from '@shared/lib/illustrations';
 
 const CHANNEL_META = [
     { key: 'general', icon: MessageCircle, priority: false },
@@ -27,14 +23,7 @@ const CHANNEL_META = [
     { key: 'priority', icon: AlertTriangle, priority: true },
 ] as const;
 
-const TOPIC_KEYS = [
-    'general',
-    'content',
-    'privacy',
-    'dmca',
-    'billing',
-    'priority',
-] as const;
+const TOPIC_KEYS = ['general', 'content', 'privacy', 'dmca', 'billing', 'priority'] as const;
 
 type Row = { term: string; value: string };
 
@@ -60,18 +49,10 @@ export default function Contact() {
     }) as Row[];
 
     return (
-        <LegalShell
-            page="contact"
-            title={t('contact.title')}
-            sub={t('contact.sub')}
-            updated={t('contact.updated')}
-            toc={null}
-        >
+        <LegalShell page="contact" title={t('contact.title')} sub={t('contact.sub')} updated={t('contact.updated')} toc={null}>
             {/* Section 1 — Channels */}
             <section className="mb-10">
-                <h2 className="mb-4 text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">
-                    {t('contact.channelsTitle')}
-                </h2>
+                <h2 className="mb-4 text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">{t('contact.channelsTitle')}</h2>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {CHANNEL_META.map(ch => {
                         const Icon = ch.icon;
@@ -97,17 +78,11 @@ export default function Contact() {
                                         <Icon className="size-5" />
                                     </div>
                                     <div>
-                                        <p className="mr-label text-mr-fg-subtle">
-                                            {label}
-                                        </p>
-                                        <p className="text-mr-small font-mr-extrabold text-mr-fg">
-                                            {title}
-                                        </p>
+                                        <p className="mr-label text-mr-fg-subtle">{label}</p>
+                                        <p className="text-mr-small font-mr-extrabold text-mr-fg">{title}</p>
                                     </div>
                                 </header>
-                                <p className="text-mr-tiny text-mr-fg-muted">
-                                    {desc}
-                                </p>
+                                <p className="text-mr-tiny text-mr-fg-muted">{desc}</p>
                                 <a
                                     href={`mailto:${email}`}
                                     className="inline-flex items-center gap-1.5 self-start rounded-mr-full border border-mr-border px-3 py-1 text-mr-tiny text-mr-accent hover:border-mr-accent transition-colors"
@@ -116,14 +91,9 @@ export default function Contact() {
                                     {email}
                                 </a>
                                 <p className="text-mr-tiny text-mr-fg-subtle">
-                                    {t('contact.slaLabel')}{' '}
-                                    <strong className="text-mr-fg">{sla}</strong>
+                                    {t('contact.slaLabel')} <strong className="text-mr-fg">{sla}</strong>
                                 </p>
-                                {ch.priority && (
-                                    <p className="text-mr-tiny text-mr-danger">
-                                        {t('contact.priorityWarning')}
-                                    </p>
-                                )}
+                                {ch.priority && <p className="text-mr-tiny text-mr-danger">{t('contact.priorityWarning')}</p>}
                             </article>
                         );
                     })}
@@ -132,34 +102,16 @@ export default function Contact() {
 
             {/* Section 2 — Form */}
             <section className="mb-10">
-                <h2 className="mb-1 text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">
-                    {t('contact.form.title')}
-                </h2>
-                <p className="mb-6 text-mr-small text-mr-fg-muted">
-                    {t('contact.form.sub')}
-                </p>
+                <h2 className="mb-1 text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">{t('contact.form.title')}</h2>
+                <p className="mb-6 text-mr-small text-mr-fg-muted">{t('contact.form.sub')}</p>
 
                 {status === 'sent' ? (
-                    <div
-                        role="status"
-                        className="flex flex-col items-center gap-4 py-10 text-center"
-                    >
-                        <img
-                            src={`${import.meta.env.BASE_URL}/illustrations/feliz.png`}
-                            alt=""
-                            className="h-28 w-auto"
-                        />
+                    <div role="status" className="flex flex-col items-center gap-4 py-10 text-center">
+                        <img src={illustrationUrl('feliz')} alt="" className="h-28 w-auto" />
                         <div>
-                            <p className="text-mr-h3 font-mr-extrabold text-mr-fg">
-                                {t('contact.form.success.heading')}
-                            </p>
+                            <p className="text-mr-h3 font-mr-extrabold text-mr-fg">{t('contact.form.success.heading')}</p>
                             <p className="mt-1 text-mr-body text-mr-fg-muted">
-                                <Trans
-                                    i18nKey="contact.form.success.body"
-                                    ns="legal"
-                                    values={{ email: form.email }}
-                                    components={{ strong: <strong /> }}
-                                />
+                                <Trans i18nKey="contact.form.success.body" ns="legal" values={{ email: form.email }} components={{ strong: <strong /> }} />
                             </p>
                         </div>
                         <Button variant="ghost" onClick={reset}>
@@ -167,11 +119,7 @@ export default function Contact() {
                         </Button>
                     </div>
                 ) : (
-                    <form
-                        onSubmit={handleSubmit}
-                        noValidate
-                        className="flex flex-col gap-4"
-                    >
+                    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <Label htmlFor="contact-name" required>
@@ -179,9 +127,7 @@ export default function Contact() {
                                 </Label>
                                 <Input
                                     id="contact-name"
-                                    placeholder={t(
-                                        'contact.form.namePlaceholder',
-                                    )}
+                                    placeholder={t('contact.form.namePlaceholder')}
                                     value={form.name}
                                     onChange={set('name')}
                                     error={errors.name}
@@ -194,9 +140,7 @@ export default function Contact() {
                                 <Input
                                     id="contact-email"
                                     type="email"
-                                    placeholder={t(
-                                        'contact.form.emailPlaceholder',
-                                    )}
+                                    placeholder={t('contact.form.emailPlaceholder')}
                                     value={form.email}
                                     onChange={set('email')}
                                     error={errors.email}
@@ -208,13 +152,7 @@ export default function Contact() {
                             <Label htmlFor="contact-topic" required>
                                 {t('contact.form.topic')}
                             </Label>
-                            <Select
-                                id="contact-topic"
-                                value={form.topic}
-                                onChange={set('topic')}
-                                options={topicOptions}
-                                error={errors.topic}
-                            />
+                            <Select id="contact-topic" value={form.topic} onChange={set('topic')} options={topicOptions} error={errors.topic} />
                         </div>
 
                         <div>
@@ -223,9 +161,7 @@ export default function Contact() {
                             </Label>
                             <Textarea
                                 id="contact-message"
-                                placeholder={t(
-                                    'contact.form.messagePlaceholder',
-                                )}
+                                placeholder={t('contact.form.messagePlaceholder')}
                                 value={form.message}
                                 onChange={set('message')}
                                 error={errors.message}
@@ -235,16 +171,9 @@ export default function Contact() {
 
                         <div className="flex items-center justify-between gap-4">
                             <p className="text-mr-tiny text-mr-fg-subtle">
-                                {t('contact.form.responseTime')}{' '}
-                                <strong className="text-mr-fg">
-                                    {t('contact.form.responseTimeValue')}
-                                </strong>
+                                {t('contact.form.responseTime')} <strong className="text-mr-fg">{t('contact.form.responseTimeValue')}</strong>
                             </p>
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                loading={status === 'submitting'}
-                            >
+                            <Button type="submit" variant="primary" loading={status === 'submitting'}>
                                 {t('contact.form.submit')}
                             </Button>
                         </div>
@@ -254,21 +183,12 @@ export default function Contact() {
 
             {/* Section 3 — Postal */}
             <section className="mb-10">
-                <h2 className="mb-4 text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">
-                    {t('contact.postal.title')}
-                </h2>
+                <h2 className="mb-4 text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">{t('contact.postal.title')}</h2>
                 <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {postalRows.map(row => (
-                        <div
-                            key={row.term}
-                            className="rounded-mr-sm border border-mr-border bg-mr-surface p-4"
-                        >
-                            <dt className="mr-label text-mr-accent uppercase tracking-[0.08em]">
-                                {row.term}
-                            </dt>
-                            <dd className="mt-2 whitespace-pre-line text-mr-small text-mr-fg-muted">
-                                {row.value}
-                            </dd>
+                        <div key={row.term} className="rounded-mr-sm border border-mr-border bg-mr-surface p-4">
+                            <dt className="mr-label text-mr-accent uppercase tracking-[0.08em]">{row.term}</dt>
+                            <dd className="mt-2 whitespace-pre-line text-mr-small text-mr-fg-muted">{row.value}</dd>
                         </div>
                     ))}
                 </dl>

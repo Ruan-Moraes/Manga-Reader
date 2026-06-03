@@ -32,7 +32,9 @@
         "tabs": {
             "chapters": "Chapters",
             "reviews": "Reviews",
+            "comments": "Comments",
             "groups": "Groups",
+            "stores": "Stores",
             "about": "About"
         },
         "order": {
@@ -50,6 +52,9 @@
             "en": "EN"
         },
         "notFound": "Title not found",
+        "notFoundDesc": "The title you are looking for does not exist or has been removed. Check the link or browse the catalog.",
+        "goHome": "Go to home",
+        "browseCatalog": "Browse catalog",
         "backToCatalog": "Back to catalog",
         "addToLibrary": "Add to library",
         "removeFromLibrary": "Remove from library",
@@ -142,6 +147,8 @@
         "filtersButton": "Filters",
         "filtersButtonCount": "Filters ({{count}})",
         "genres": "Genres",
+        "tagSearchPlaceholder": "Search genre...",
+        "noTagsFound": "No genres found",
         "status": "Status",
         "clearAll": "Clear all",
         "apply": "Apply",

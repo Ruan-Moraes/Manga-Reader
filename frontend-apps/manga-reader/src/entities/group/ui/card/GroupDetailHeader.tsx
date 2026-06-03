@@ -1,8 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
+import { Avatar } from '@ui/Avatar';
+
 import { getGroupStatusLabelKey } from '../../api/groupService';
 import { Group } from '../../model/group.types';
 import { ExternalLink, Users } from 'lucide-react';
+
+const BANNER_FALLBACK = 'linear-gradient(135deg, #2a1f3a, #161616)';
 
 type GroupDetailHeaderProps = {
     group: Group;
@@ -21,18 +25,20 @@ const GroupDetailHeader = ({ group, onOpenMembers }: GroupDetailHeaderProps) => 
     return (
         <section className="overflow-hidden border rounded-xs border-tertiary bg-secondary/40">
             <div className="relative h-40 mobile-lg:h-52">
-                <img src={group.banner} alt={t('header.bannerAlt', { name: group.name })} className="object-cover w-full h-full" />
+                {group.banner ? (
+                    <img src={group.banner} alt={t('header.bannerAlt', { name: group.name })} className="object-cover w-full h-full" />
+                ) : (
+                    <div className="w-full h-full" style={{ background: BANNER_FALLBACK }} aria-hidden="true" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/70 to-transparent" />
             </div>
 
             <div className="relative p-4 -mt-12">
                 <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div className="flex gap-4 items-end">
-                        <img
-                            src={group.logo}
-                            alt={t('header.avatarAlt', { name: group.name })}
-                            className="object-cover w-20 h-20 rounded-full border-2 border-quaternary"
-                        />
+                        <div className="overflow-hidden border-2 rounded-mr-xs border-quaternary" aria-label={t('header.avatarAlt', { name: group.name })}>
+                            <Avatar src={group.logo || undefined} name={group.name} size={96} />
+                        </div>
 
                         <div>
                             <h2 className="text-2xl font-bold">{group.name}</h2>

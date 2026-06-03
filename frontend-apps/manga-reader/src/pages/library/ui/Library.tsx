@@ -1,7 +1,5 @@
-import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useAppNavigate from '@shared/hook/useAppNavigate';
 import { Plus } from 'lucide-react';
 
 import { PageContainer } from '@ui/PageContainer';
@@ -10,10 +8,14 @@ import { Tabs } from '@ui/Tabs';
 import { SearchField } from '@ui/SearchField';
 import { Select } from '@ui/Select';
 import { SegmentedControl } from '@ui/SegmentedControl';
-import { MangaCard } from '@entities/manga';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
+
+import useAppNavigate from '@shared/hook/useAppNavigate';
+import { ROUTES } from '@shared/constant/ROUTES';
+
+import { MangaCard } from '@entities/manga';
 
 import { useSavedMangas, type ReadingListType } from '@features/library';
 
@@ -22,7 +24,9 @@ type Layout = 'grid' | 'list';
 
 const Library = () => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('library');
+
     const [query, setQuery] = useState('');
     const [sort, setSort] = useState('recent');
     const [layout, setLayout] = useState<Layout>('grid');
@@ -34,6 +38,7 @@ const Library = () => {
     const sorted = [...filtered].sort((a, b) => {
         if (sort === 'az') return a.name.localeCompare(b.name);
         if (sort === 'za') return b.name.localeCompare(a.name);
+
         return new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime();
     });
 
@@ -65,7 +70,7 @@ const Library = () => {
     ];
 
     return (
-        <PageContainer asMain size="wide" paddingY="md">
+        <PageContainer asMain size="default" paddingY="md">
             <SectionHeader
                 eyebrow={t('page.eyebrow')}
                 title={t('page.title')}
@@ -82,14 +87,12 @@ const Library = () => {
                 <Tabs items={tabItems} value={activeTab} onChange={v => changeTab(v as ActiveTab)} variant="underline" />
             </div>
 
-            {/* Toolbar */}
             <div className="mb-6 flex flex-wrap gap-3">
                 <SearchField value={query} onChange={setQuery} placeholder={t('page.searchPlaceholder')} className="flex-1 min-w-[180px]" />
                 <Select value={sort} onChange={e => setSort(e.target.value)} options={sortOptions} className="w-40" />
-                <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="sm" />
+                <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="md" unified={true} />
             </div>
 
-            {/* Content */}
             {loading ? (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {Array.from({ length: 12 }).map((_, i) => (

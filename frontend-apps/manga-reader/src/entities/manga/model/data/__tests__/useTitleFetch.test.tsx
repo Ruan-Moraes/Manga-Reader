@@ -28,12 +28,32 @@ describe('useTitleFetch', () => {
         expect(result.current.data).toEqual(titulo);
     });
 
-    it('deve retornar erro quando id e invalido (NaN)', async () => {
-        const { result } = renderHook(() => useTitleFetch('abc'), { wrapper });
+    // Regressão do bug de reload: IDs de título são strings do MongoDB (ObjectId),
+    // não numéricos. A query deve carregá-los sem rejeitar por Number()/NaN.
+    it('deve retornar titulo para id string (ObjectId Mongo) no reload', async () => {
+        const objectId = '507f1f77bcf86cd799439011';
+        const titulo = buildTitle({ id: objectId, name: 'Berserk' });
+
+        server.use(http.get(`*${API_URLS.TITLES}/${objectId}`, () => HttpResponse.json({ data: titulo, success: true })));
+
+        const { result } = renderHook(() => useTitleFetch(objectId), { wrapper });
 
         await waitFor(() => {
-            expect(result.current.isError).toBe(true);
+            expect(result.current.isSuccess).toBe(true);
         });
+
+        expect(result.current.data).toEqual(titulo);
+    });
+
+    it('nao dispara fetch quando id e vazio (enabled: false)', async () => {
+        const { result } = renderHook(() => useTitleFetch(''), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.fetchStatus).toBe('idle');
+        });
+
+        expect(result.current.data).toBeUndefined();
+        expect(result.current.isError).toBe(false);
     });
 
     it('deve retornar erro quando API falha', async () => {

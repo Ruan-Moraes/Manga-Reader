@@ -15,6 +15,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { UserModalProvider } from '@entities/user';
 import { CommentSortProvider } from '@entities/comment';
+import { AuthProvider } from '@features/auth';
 
 import { queryClient } from '@shared/service/util/queryCache';
 
@@ -87,13 +88,15 @@ createRoot(document.getElementById('root')!).render(
         <ErrorBoundary>
             <QueryClientProvider client={queryClient}>
                 <DSToastProvider>
-                    <UserModalProvider>
-                        <CommentSortProvider>
-                            <RouterProvider router={routes} />
-                            <ToastContainer />
-                            {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-                        </CommentSortProvider>
-                    </UserModalProvider>
+                    <AuthProvider>
+                        <UserModalProvider>
+                            <CommentSortProvider>
+                                <RouterProvider router={routes} />
+                                <ToastContainer />
+                                {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+                            </CommentSortProvider>
+                        </UserModalProvider>
+                    </AuthProvider>
                 </DSToastProvider>
             </QueryClientProvider>
         </ErrorBoundary>

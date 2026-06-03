@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 18 de maio de 2026
+> Última atualização: 1 de junho de 2026
 
 ---
 
@@ -634,6 +634,30 @@ em JSDoc.
 
 ---
 
+## Backlog de produto pendente (consolidado de pending-tasks, 2026-06-01)
+
+### DT-44: Funcionalidades não implementadas — **Adiado (não-prod)**
+
+Itens de produto que ainda não existem no código, preservados aqui após a remoção
+do antigo `pending-tasks.md` (cuja maior parte já estava resolvida/stale). Todos
+**não-bloqueantes** enquanto o projeto não vai a produção:
+
+- **Upload de arquivos**: capas de título, avatares de usuário, páginas de
+  capítulo. Hoje todas as imagens são URLs externas/seed; não há pipeline de
+  upload/storage.
+- **Endpoints ausentes**: `news/{id}/related`, `events/{id}/related`,
+  `groups/{id}/members/{memberId}` (detalhe de membro). Seções de UI
+  correspondentes ficam sem dados quando aplicável.
+- **Busca global cross-domain** e **filtros avançados** em listagens (além dos
+  filtros de catálogo já existentes).
+- **Validação client-side dos forms restantes**: Forgot/Reset Password, Edit
+  Profile, Publish Work, Create Event, Forum Topic. (Login/SignUp já migrados p/
+  React Hook Form + Zod — ver DT-06/DT-37; os demais herdam o mesmo padrão.)
+
+**Prioridade**: Baixa. Sem agendamento até a fase de produção.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
@@ -642,7 +666,7 @@ em JSDoc.
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 2 | DT-03, DT-09 |
+| **Baixa** | 3 | DT-03, DT-09, DT-44 (backlog de produto) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |

@@ -166,7 +166,9 @@ type TrendingSectionProps = { mangas: TrendingManga[] };
 
 const TrendingSection = ({ mangas }: TrendingSectionProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('home');
+
     const top3 = mangas.slice(0, 3);
     const rest = mangas.slice(3);
     const podiumOrder = [top3[1], top3[0], top3[2]];

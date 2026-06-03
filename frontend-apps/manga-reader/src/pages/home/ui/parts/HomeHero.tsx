@@ -79,7 +79,14 @@ const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
                             </>
                         }
                         visual={
-                            <MangaPoster cover={hero.cover} alt={hero.name} size={280} elevated radius="md" onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))} />
+                            <MangaPoster
+                                cover={hero.cover}
+                                alt={hero.name}
+                                size={280}
+                                elevated
+                                radius="md"
+                                onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))}
+                            />
                         }
                     />
                     {featuredTitles.length > 1 && (

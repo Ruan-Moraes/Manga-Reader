@@ -2,11 +2,14 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 
-import useAppNavigate from '@shared/hook/useAppNavigate';
-import { SectionHeader } from '@ui/SectionHeader';
-import { MangaCard } from '@entities/manga';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
+import { SectionHeader } from '@ui/SectionHeader';
+
+import useAppNavigate from '@shared/hook/useAppNavigate';
+
+import { MangaCard } from '@entities/manga';
+
 import type { SavedMangaItem } from '@features/library';
 
 const MangaCardSkeleton = () => <Skeleton variant="rect" height={260} className="rounded-mr-md shrink-0 w-[140px] sm:w-auto" />;
@@ -18,6 +21,7 @@ type HomeContinueReadingProps = {
 
 const HomeContinueReading = ({ continueLoading, continueReading }: HomeContinueReadingProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('home');
 
     return (

@@ -85,7 +85,7 @@ const NavActions = ({
                             <button
                                 type="button"
                                 aria-label={t('nav.action.accountOf', { name: user.name })}
-                                className="inline-flex items-center justify-center rounded-mr-full border border-mr-gray-700 transition-colors duration-mr-default hover:border-mr-accent focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2"
+                                className="inline-flex items-center justify-center rounded-mr-xs border border-mr-gray-700 transition-colors duration-mr-default hover:border-mr-accent focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2"
                                 style={dim}
                             >
                                 <Avatar src={user.avatar} name={user.name} size={40} />

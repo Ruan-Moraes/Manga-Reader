@@ -63,8 +63,10 @@ public class TitleController {
     @Operation(summary = "Buscar título por ID", description = "Retorna os detalhes de um título específico")
     public ResponseEntity<ApiResponse<TitleResponse>> getById(@PathVariable String id) {
         var title = getTitleByIdUseCase.execute(id);
+
         var stats = getChapterStatsUseCase.execute(List.of(id))
                 .getOrDefault(id, ChapterStats.EMPTY);
+
         return ResponseEntity.ok(ApiResponse.success(titleMapper.toResponse(title, stats)));
     }
 
@@ -120,6 +122,7 @@ public class TitleController {
 
     private Page<TitleResponse> mapWithStats(Page<Title> result) {
         var titleIds = result.getContent().stream().map(Title::getId).toList();
+
         var stats = getChapterStatsUseCase.execute(titleIds);
 
         return result.map(title -> titleMapper.toResponse(
