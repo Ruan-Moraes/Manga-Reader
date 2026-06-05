@@ -6,7 +6,7 @@
 
 ## Build & Run
 
-### Backend (`/backend/`)
+### Backend (`/api/server/`)
 
 ```bash
 mvn test                                        # Todos os testes (JUnit 5 + Mockito + H2 + TestContainers)
@@ -36,7 +36,7 @@ npx vitest run --pool=forks             # Suíte completa (--pool=forks obrigat�
 
 ### Infra
 
-Docker Compose em `/backend/docker-compose.yml`: PostgreSQL 17, MongoDB 8.0, RabbitMQ 4, Redis 7. Gerenciado automaticamente via `spring-boot-docker-compose`.
+Docker Compose em `/api/docker-compose.yml`: PostgreSQL 17, MongoDB 8.0, RabbitMQ 4, Redis 7. Gerenciado automaticamente via `spring-boot-docker-compose`. Prod: `/api/docker-compose.prod.yml` (inclui serviço `app` com build em `./server`).
 
 ---
 
@@ -556,7 +556,7 @@ Antes de considerar qualquer tarefa concluída:
 ## Source Layout
 
 ```
-backend/src/main/java/com/mangareader/
+api/server/src/main/java/com/mangareader/
 ├── domain/{domain}/entity/            # Entities e VOs
 ├── application/{domain}/usecase/      # Use cases
 ├── application/{domain}/port/         # Port interfaces (in/out)
