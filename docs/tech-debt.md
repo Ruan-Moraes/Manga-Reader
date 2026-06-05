@@ -658,15 +658,68 @@ do antigo `pending-tasks.md` (cuja maior parte já estava resolvida/stale). Todo
 
 ---
 
+### DT-45: Rating API — campos avançados de resenha — **Pendente**
+
+**Estado**: Pendente. O frontend já consome os campos opcionalmente (2026-06-03);
+o backend ainda não os persiste nem expõe.
+
+Campos a adicionar ao documento `MangaRating` (MongoDB, via Mongock):
+- `reviewTitle: String` (max 80) — título opcional da resenha
+- `spoiler: Boolean` — autor marcou como spoiler
+- `top: Boolean` — destaque por moderação ou score
+- `upvotes: Long` — votos "Útil" recebidos
+- `downvotes: Long` — votos "Contrário" recebidos (validação da comunidade)
+
+**Novo endpoint de voto** (autenticado, toggle; voto único por usuário com valor
+`up`/`down` — votar de novo no mesmo lado remove; votar no oposto troca):
+- `POST /api/ratings/{id}/vote` body `{ value: "up" | "down" }` → `{ upvotes, downvotes, myVote }`
+  (1 voto/usuário/resenha; não pode votar na própria)
+- `DELETE /api/ratings/{id}/vote` (remove o voto do usuário)
+
+Scope backend: nova entidade `ReviewVote` (Mongo: `ratingId`, `userId`, `value`, `createdAt`,
+índice único `(ratingId, userId)`), `CastReviewVoteUseCase`/`RemoveReviewVoteUseCase`,
+`RatingController` +2 endpoints, DTO `MangaRatingResponse` atualizado, Mongock `ChangeUnit`
+com defaults (`spoiler: false`, `top: false`, `upvotes: 0`, `downvotes: 0`).
+
+Frontend já implementa estado otimista (Útil/Contrário no `ReviewCard`); ao ligar o backend,
+substituir o `useState` local por mutation que chama `/vote`.
+
+**Prioridade**: Média. Bloqueia votação Útil/Contrário e filtro de spoilers persistente.
+
+---
+
+### DT-46: Store API — campos de compra e metadados de loja — **Pendente**
+
+**Estado**: Pendente. O frontend usa mock (`@mock/store.ts`) enquanto o backend não retorna
+os campos novos (2026-06-03). A aba Lojas mostra apenas nome + link enquanto não há preços.
+
+Campos a adicionar à entidade `Store` (PostgreSQL, Flyway `V21__store_add_fields.sql`):
+- `price`, `oldPrice` (Integer, centavos BRL) — integração com parceiros
+- `category: StoreCategory` enum (`OFICIAL / NOVA / USADO`)
+- `official: Boolean` — loja verificada/parceira oficial
+- `ratingCount: Integer` — total de avaliações da loja (fonte externa)
+- `format: String` — formato do produto ("Volume único · brochura")
+- `shipping: String` — informação de entrega
+- `note: String` — destaque promocional ("Menor preço novo")
+- `mono: String`, `color: String` — metadados de logo placeholder
+
+Scope backend: domain entity `Store`, `V21__store_add_fields.sql`, DTOs (`StoreResponse`) atualizados,
+`StoresController`. Integração real com parceiros (scraping/API de preços) é fase posterior.
+Quando implementado: remover o fallback para `@mock/store.ts` no `StoresTab.tsx`.
+
+**Prioridade**: Baixa. Sem agendamento até integração com parceiros de venda.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
+| **Média** | 3 | DT-08 (axe por rota — parcial), DT-10, DT-45 (rating campos avançados) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 3 | DT-03, DT-09, DT-44 (backlog de produto) |
+| **Baixa** | 4 | DT-03, DT-09, DT-44 (backlog de produto), DT-46 (store campos compra) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |

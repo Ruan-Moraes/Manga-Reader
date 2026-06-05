@@ -1,0 +1,23 @@
+{
+    "card": {
+        "access": "Visit",
+        "official": "Official",
+        "goToStore": "Go to store"
+    },
+    "container": {
+        "empty": "No partner available.",
+        "title": "Where to buy",
+        "count_one": "{{count}} store",
+        "count_other": "{{count}} stores"
+    },
+    "modal": {
+        "title": "Where to Buy",
+        "subtitle": "Pick a partner store and continue to their official site."
+    },
+    "empty": {
+        "title": "No stores available",
+        "desc": "We haven't found stores selling this title yet. We can notify you as soon as it shows up at a partner store.",
+        "notify": "Notify me when available",
+        "notified": "You'll be notified by email"
+    }
+}

@@ -77,15 +77,15 @@
 
 ```bash
 # Build do JAR
-cd backend
+cd api
 ./mvnw clean package -DskipTests
 
 # Build da imagem Docker (multi-stage)
-docker build -t manga-reader-backend:latest .
+docker build -t manga-reader-api:latest .
 
 # Execução
 docker run -d \
-  --name manga-reader-backend \
+  --name manga-reader-api \
   -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=prod \
   -e DATABASE_URL=jdbc:postgresql://host:5432/mangareader \
@@ -103,7 +103,7 @@ docker run -d \
   -e MAIL_USERNAME=noreply@mangareader.com \
   -e MAIL_PASSWORD=secret \
   -e MAIL_FROM=noreply@mangareader.com \
-  manga-reader-backend:latest
+  manga-reader-api:latest
 ```
 
 **Dockerfile já existente** com:
@@ -116,13 +116,13 @@ docker run -d \
 
 ```bash
 # Instalar dependências (pnpm workspace)
-cd frontend-apps
+cd web
 pnpm install
 
 # Build de produção
 VITE_API_BASE_URL=https://api.mangareader.com pnpm --filter manga-reader build
 
-# Output: frontend-apps/manga-reader/dist/
+# Output: web/manga-reader/dist/
 # Servir com Nginx ou upload para CDN
 ```
 
@@ -134,7 +134,7 @@ O arquivo `docker-compose.prod.yml` já existe no backend e pode ser usado como 
 
 ```bash
 # No servidor de produção
-cd backend
+cd api
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
@@ -251,10 +251,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
       - uses: pnpm/action-setup@v4
-      - run: cd frontend-apps && pnpm install --frozen-lockfile
-      - run: cd frontend-apps && pnpm --filter manga-reader lint:fsd
-      - run: cd frontend-apps/manga-reader && npx tsc --noEmit
-      - run: cd frontend-apps/manga-reader && npx vitest run --pool=forks
+      - run: cd web && pnpm install --frozen-lockfile
+      - run: cd web && pnpm --filter manga-reader lint:fsd
+      - run: cd web/manga-reader && npx tsc --noEmit
+      - run: cd web/manga-reader && npx vitest run --pool=forks
 
   frontend-build:
     needs: frontend-check
@@ -264,12 +264,12 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
       - uses: pnpm/action-setup@v4
-      - run: cd frontend-apps && pnpm install --frozen-lockfile
-      - run: cd frontend-apps && VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} pnpm --filter manga-reader build
+      - run: cd web && pnpm install --frozen-lockfile
+      - run: cd web && VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} pnpm --filter manga-reader build
       - uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: frontend-apps/manga-reader/dist
+          path: web/manga-reader/dist
 
   # ──── BACKEND ────
   backend-test:
@@ -286,10 +286,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { java-version: '23', distribution: 'temurin' }
-      - run: cd backend && ./mvnw test
+      - run: cd api && ./mvnw test
 
   backend-build:
-    needs: backend-test
+    needs: api-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -301,14 +301,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: ./api
           push: ${{ github.event_name == 'push' }}
-          tags: ghcr.io/${{ github.repository }}/backend:latest
+          tags: ghcr.io/${{ github.repository }}/api:latest
 
   # ──── DEPLOY ────
   deploy:
     if: github.event_name == 'push'
-    needs: [frontend-build, backend-build]
+    needs: [frontend-build, api-build]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to server

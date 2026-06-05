@@ -20,6 +20,10 @@
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
        ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy)
+       │      └─ ✅ Modal de configurações do usuário (Informações/Redes/Recomendações/Grupos/Privacidade),
+       │             aberto de "Editar perfil" e do avatar; distinto da página de config. de SISTEMA (/settings).
+       │             Endpoints novos: `GET /api/users/me/groups`, `DELETE /api/users/me` (exclusão/anonimização).
+       │             Recomendações limitadas a 6 (vitrine). i18n pt/en/es.
        ├─ ✅ 9c-testes: Testes frontend (50 arquivos, 340 testes — services, hooks, utils, componentes)
        ├─ ✅ 9d-i18n: Internacionalização (pt-BR, en-US, es-ES)
        │      ├─ ✅ Infra frontend (i18next + LanguageSwitcher + namespaces)
@@ -177,7 +181,7 @@ frontend-apps/
 ### Backend
 
 ```bash
-cd backend
+cd api
 
 # Contêineres Docker sobem automaticamente via spring-boot-docker-compose
 mvn spring-boot:run
@@ -193,7 +197,7 @@ docker compose up -d && mvn spring-boot:run
 ### Frontend
 
 ```bash
-cd frontend-apps
+cd web
 pnpm install                      # instala todo o workspace
 
 pnpm --filter manga-reader dev    # app principal (dev server, proxy /api → :8080)
@@ -204,7 +208,7 @@ pnpm --filter landing-page dev    # landing page
 
 ```bash
 # Backend (1057 testes)
-cd backend
+cd api
 mvn test                                    # Todos
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
 mvn test -Dtest=**/application/**/*Test     # Apenas use cases
@@ -213,7 +217,7 @@ mvn test -Dtest=**/infrastructure/**/*Test  # JPA + MongoDB + Security
 mvn test -Dtest.excludedGroups=testcontainers  # Suíte leve, SEM Docker (pula testes de container)
 
 # Frontend (340 testes)
-cd frontend-apps
+cd web
 pnpm --filter manga-reader test             # Vitest
 pnpm --filter manga-reader test:watch       # Watch mode
 ```
@@ -374,7 +378,7 @@ Cada review possui notas por categoria:
 | [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas + backlog de produto (impacto + prioridade) |
 | [`docs/deployment-plan.md`](docs/deployment-plan.md) | Variáveis, infra, build, Nginx, CI/CD, segurança |
 | [`docs/i18n-guide.md`](docs/i18n-guide.md) | Convenções i18n consolidadas (catálogo + UGC) |
-| [`frontend-apps/manga-reader/src/i18n/locales/README.md`](frontend-apps/manga-reader/src/i18n/locales/README.md) | Guia dos arquivos de tradução (react-i18next) |
+| [`frontend-apps/manga-reader/src/i18n/locales/README.md`](web/manga-reader/src/i18n/locales/README.md) | Guia dos arquivos de tradução (react-i18next) |
 | Swagger UI (`/swagger-ui.html`) | Referência viva da API REST |
 
 ---

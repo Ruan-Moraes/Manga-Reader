@@ -1,0 +1,582 @@
+{
+    "modal": {
+        "openProfileAria": "Abrir perfil de {{name}}",
+        "photoAlt": "Foto de perfil de {{name}}",
+        "moderatorSince": "Moderador desde {{date}}",
+        "memberSince": "Membro desde {{date}}",
+        "badges": {
+            "moderator": "Moderador",
+            "member": "Membro"
+        },
+        "body": {
+            "bio": "Bio:",
+            "socialMedia": "Redes sociais:",
+            "statistics": "Estatísticas:",
+            "commentsCount": "{{count}} Comentários",
+            "likesCount": "{{count}} Likes",
+            "dislikesCount": "{{count}} Deslikes",
+            "recommendedWorks": "Obras que recomendo:",
+            "workAlt": "Imagem de uma obra"
+        }
+    },
+    "details": {
+        "loadingProfile": "Carregando perfil...",
+        "notFoundTitle": "Usuário não encontrado",
+        "notFoundMessage": "Não foi possível carregar o perfil solicitado.",
+        "profileTitle": "Perfil de {{name}}",
+        "photoAlt": "Foto de perfil de {{name}}",
+        "accountSection": "Conta",
+        "roleLabel": "Cargo:",
+        "memberSince": "Membro desde:",
+        "moderatorSince": "Moderação desde:",
+        "commentsLabel": "comentários",
+        "likesLabel": "likes",
+        "dislikesLabel": "dislikes",
+        "socialMediaSection": "Redes sociais",
+        "recommendedSection": "Obras recomendadas",
+        "recommendedAlt": "Obra recomendada",
+        "roles": {
+            "admin": "Administrador",
+            "poster": "Postador",
+            "reader": "Leitor"
+        }
+    },
+    "page": {
+        "title": "Perfil do Usuário"
+    },
+    "profile": {
+        "banner": {
+            "alt": "Banner do perfil",
+            "changePhoto": "Alterar foto de perfil"
+        },
+        "header": {
+            "memberSince": "Membro desde {{date}}",
+            "edit": "Editar perfil",
+            "roles": {
+                "admin": "Administrador",
+                "poster": "Postador",
+                "reader": "Leitor"
+            },
+            "follow": "Seguir",
+            "following": "Seguindo"
+        },
+        "stats": {
+            "reading": "Lendo",
+            "wantToRead": "Quero Ler",
+            "completed": "Concluído",
+            "total": "Total",
+            "comments": "Comentários",
+            "ratings": "Avaliações"
+        },
+        "tabs": {
+            "about": "Sobre",
+            "recommendations": "Recomendados",
+            "comments": "Comentários",
+            "history": "Histórico",
+            "settings": "Configurações",
+            "overview": "Visão Geral",
+            "readingNow": "Lendo Agora",
+            "completedList": "Concluídos",
+            "reviews": "Resenhas"
+        },
+        "sectionHeader": {
+            "eyebrow": "Sua conta",
+            "meta": "Mudanças são salvas conforme você edita"
+        },
+        "noActivity": "Nenhuma atividade pública",
+        "editTabs": {
+            "account": "Conta",
+            "identity": "Identidade",
+            "recommendations": "Recomendações",
+            "notifications": "Notificações",
+            "privacy": "Privacidade"
+        },
+        "identity": {
+            "displayNameLabel": "Nome de exibição",
+            "handleLabel": "Handle (@)",
+            "bioLabel": "Bio",
+            "pronounLabel": "Pronome",
+            "locationLabel": "Localidade",
+            "locationPlaceholder": "Cidade, país",
+            "pronouns": {
+                "preferNotToSay": "Preferir não dizer",
+                "he": "ele/dele",
+                "she": "ela/dela",
+                "they": "elu/delu",
+                "other": "Outros"
+            }
+        },
+        "privacy": {
+            "doNotTrack": "Não rastreado",
+            "private": "Privado",
+            "public": "Público",
+            "publicDescription": "Visível para todos",
+            "privateDescription": "Apenas você pode ver",
+            "doNotTrackDescription": "Dados não coletados",
+            "commentVisibility": "Visibilidade dos Comentários",
+            "historyVisibility": "Visibilidade do Histórico",
+            "save": "Salvar configurações",
+            "saving": "Salvando...",
+            "savedMessage": "Configurações de privacidade atualizadas.",
+            "doNotTrackConfirm": "Ao selecionar \"Não rastrear\", todo o seu histórico de visualização será permanentemente deletado. Deseja continuar?"
+        },
+        "recommendations": {
+            "empty": "Nenhuma recomendação ainda.",
+            "emptyOwner": "Adicione até 10 títulos recomendados ao seu perfil.",
+            "addPlaceholder": "ID do título",
+            "add": "Adicionar",
+            "adding": "Adicionando...",
+            "noCover": "Sem capa",
+            "genresLabel": "Gêneros favoritos",
+            "languagesLabel": "Idiomas de leitura preferidos",
+            "adultContentLabel": "Mostrar conteúdo +18",
+            "adultContentDesc": "Conteúdo adulto será exibido no catálogo e recomendações."
+        },
+        "notifications": {
+            "inAppSection": "No app",
+            "newChapterLabel": "Novo capítulo",
+            "newChapterDesc": "Obras na sua biblioteca lançaram novos capítulos.",
+            "replyLabel": "Resposta",
+            "replyDesc": "Alguém respondeu seu comentário ou resenha.",
+            "mentionLabel": "Menção",
+            "mentionDesc": "Alguém te marcou em um comentário ou tópico.",
+            "groupLabel": "Grupo",
+            "groupDesc": "Atividade em grupos que você segue.",
+            "emailSection": "Por email",
+            "newsletterLabel": "Newsletter semanal",
+            "newsletterDesc": "Destaques da semana, novidades e lançamentos."
+        },
+        "account": {
+            "changePhoto": "Alterar foto",
+            "removePhoto": "Remover",
+            "emailLabel": "Email",
+            "changeEmail": "Alterar",
+            "securitySection": "Segurança",
+            "changePassword": "Alterar senha",
+            "dangerZone": "Zona de perigo",
+            "dangerZoneDesc": "Estas ações são permanentes e não podem ser desfeitas.",
+            "logout": "Sair",
+            "deleteAccount": "Excluir conta"
+        },
+        "comments": {
+            "empty": "Nenhum comentário encontrado.",
+            "viewTitle": "Ver título",
+            "previous": "Anterior",
+            "next": "Próximo"
+        },
+        "history": {
+            "empty": "Nenhum histórico de visualização.",
+            "previous": "Anterior",
+            "next": "Próximo",
+            "noCover": "Sem capa"
+        },
+        "edit": {
+            "title": "Editar Perfil",
+            "nameLabel": "Nome",
+            "bioLabel": "Bio",
+            "photoUrlLabel": "URL da Foto",
+            "bannerUrlLabel": "URL do Banner",
+            "socialLinksLabel": "Redes Sociais",
+            "addLink": "+ Adicionar",
+            "platformPlaceholder": "Plataforma",
+            "urlPlaceholder": "URL",
+            "save": "Salvar",
+            "saving": "Salvando...",
+            "savedMessage": "Perfil atualizado com sucesso.",
+            "eyebrow": "PERFIL",
+            "autosaveHint": "Alterações salvas automaticamente",
+            "systemSettingsLink": "Preferências do sistema →",
+            "loading": "Carregando…",
+            "saved": "Alterações salvas",
+            "saveError": "Não foi possível salvar. Tente novamente.",
+            "close": "Fechar",
+            "tabs": {
+                "info": "Informações",
+                "social": "Redes",
+                "recommendations": "Recomendações",
+                "groups": "Grupos",
+                "privacy": "Privacidade"
+            },
+            "info": {
+                "photoLabel": "Foto do perfil",
+                "photoHint": "Cole a URL de uma imagem quadrada (até 2MB).",
+                "photoPlaceholder": "https://…",
+                "nameLabel": "Nome",
+                "bioLabel": "Biografia",
+                "bioHint": "{{count}}/{{max}} caracteres. Use pra contar quem você é como leitor.",
+                "userLabel": "Usuário",
+                "userHint": "Aparece como @{{handle}} nos comentários e no link do perfil.",
+                "changePhoto": "Trocar",
+                "removePhoto": "Remover"
+            },
+            "social": {
+                "intro": "Adicione suas redes para que outros leitores possam te encontrar. Tudo é opcional."
+            },
+            "recommendations": {
+                "intro": "Escolha até 6 obras para mostrar no topo do seu perfil.",
+                "counter": "{{count}} de {{max}} selecionadas",
+                "clear": "Limpar",
+                "empty": "Nenhuma obra selecionada ainda.",
+                "remove": "Remover"
+            },
+            "groups": {
+                "intro": "Vincule-se a grupos de scan para aparecer nas obras que eles traduzem.",
+                "members": "{{count}} membros",
+                "unlink": "Desvincular",
+                "link": "Vincular",
+                "linkedHeading": "Vinculado a {{count}} grupos",
+                "linkedEmpty": "Você ainda não está vinculado a nenhum grupo.",
+                "availableHeading": "Outros grupos disponíveis",
+                "availableEmpty": "Nenhum grupo disponível."
+            },
+            "privacy": {
+                "intro": "Controle o que aparece publicamente no seu perfil.",
+                "historyLabel": "Mostrar histórico de leituras",
+                "commentsLabel": "Exibir meus comentários nas obras",
+                "dangerZone": "ZONA DE RISCO",
+                "deleteDesc": "Apagar sua conta remove comentários, listas e seguidores. Essa ação não pode ser desfeita.",
+                "deleteConfirmPlaceholder": "Digite \"{{name}}\" para confirmar",
+                "deleteAccount": "Apagar conta",
+                "historyDesc": "Quando ativo, outros leitores podem ver tudo que você já leu — capítulos, datas e ritmo.",
+                "commentsDesc": "Mantém visível a lista de reviews e respostas que você deixou. Desativar oculta sem apagar.",
+                "deleteConfirm": "Confirmar exclusão",
+                "deleteCancel": "Cancelar"
+            },
+            "cancel": "Cancelar"
+        }
+    },
+    "settings": {
+        "descriptionGuest": "As opções ficam salvas localmente até você entrar na conta.",
+        "privacy": {
+            "title": "Privacidade",
+            "description": "Controle o que outros usuários podem ver no seu perfil.",
+            "showReadingHistory": "Exibir histórico de leitura no perfil",
+            "showOnlineStatus": "Mostrar status online",
+            "adultContentLabel": "Conteúdo adulto",
+            "adultContent": {
+                "hide": "Ocultar",
+                "blur": "Desfocar",
+                "show": "Exibir"
+            },
+            "publicProfile": "Perfil público",
+            "publicProfileDesc": "Seu perfil é visível para todos. Desabilitar oculta tudo exceto seu handle.",
+            "libraryVisibility": "Visibilidade da biblioteca",
+            "visPublic": "Público",
+            "visFriends": "Só amigos",
+            "visPrivate": "Privado",
+            "publicActivity": "Atividade pública",
+            "publicActivityDesc": "Outros usuários veem o que você leu e comentou recentemente.",
+            "yourData": "Seus dados",
+            "downloadData": "Baixar meus dados (JSON)"
+        },
+        "reader": {
+            "navigationSection": "Navegação",
+            "defaultDirection": "Direção padrão",
+            "readingMode": "Modo de leitura",
+            "modeVertical": "Vertical",
+            "modePaged": "Paginado",
+            "modeDouble": "Duplo",
+            "imagesSection": "Imagens",
+            "imageQualityLabel": "Qualidade",
+            "qualityAuto": "Automático",
+            "qualityLow": "Baixa",
+            "qualityMedium": "Média",
+            "qualityHigh": "Alta",
+            "qualityOriginal": "Original",
+            "progressSection": "Progresso",
+            "markReadAuto": "Marcar como lido automaticamente",
+            "markReadAutoDesc": "Marca o capítulo ao atingir a última página."
+        },
+        "reading": {
+            "title": "Modo de leitura",
+            "modeLabel": "Modo",
+            "directionLabel": "Direção",
+            "imageQualityLabel": "Qualidade de imagem",
+            "preloadPages": "Pré-carregamento de páginas: {{count}}",
+            "autoNextChapter": "Abrir próximo capítulo automaticamente",
+            "showPageNumber": "Exibir número da página",
+            "mode": {
+                "continuous": "Contínuo",
+                "paged": "Paginado"
+            },
+            "direction": {
+                "ltr": "Esquerda → direita",
+                "rtl": "Direita → esquerda",
+                "vertical": "Rolagem vertical"
+            },
+            "imageQuality": {
+                "auto": "Automática",
+                "high": "Alta",
+                "dataSaver": "Economia de dados"
+            }
+        },
+        "notifications": {
+            "title": "Notificações",
+            "description": "Defina quais eventos devem gerar alertas na sua conta.",
+            "items": {
+                "newChapterFromFollowed": "Novos capítulos dos mangás seguidos",
+                "recommendations": "Recomendações personalizadas",
+                "communityNews": "Notícias da comunidade",
+                "events": "Eventos e lançamentos",
+                "email": "Notificações por e-mail",
+                "push": "Notificações push no navegador"
+            }
+        },
+        "appearance": {
+            "title": "Aparência",
+            "themeLabel": "Tema",
+            "compactMode": "Layout compacto na biblioteca/listagens",
+            "matureBlur": "Aplicar blur em miniaturas maduras",
+            "theme": {
+                "system": "Sistema",
+                "light": "Claro",
+                "dark": "Escuro",
+                "lightSoon": "Claro (em breve)",
+                "followSystem": "Seguir sistema"
+            },
+            "themeSection": "Tema",
+            "textSection": "Texto e layout",
+            "fontSizeLabel": "Tamanho de fonte global",
+            "fontSize": {
+                "compact": "Compacto",
+                "default": "Padrão",
+                "comfortable": "Confortável"
+            },
+            "motionSection": "Movimento",
+            "animationsLabel": "Animações da interface",
+            "animationsDesc": "Desativar respeita prefers-reduced-motion do sistema."
+        },
+        "language": {
+            "title": "Idioma",
+            "uiLanguageLabel": "Idioma da interface",
+            "preferredContentLanguageLabel": "Idioma preferido dos capítulos",
+            "interfaceSection": "Interface",
+            "contentSection": "Idiomas de leitura preferidos",
+            "ptBR": "Português (BR)",
+            "enUS": "English (US)",
+            "ja": "日本語",
+            "checkboxPtBR": "Português (PT-BR)",
+            "checkboxEn": "English"
+        },
+        "modalTitle": "Configurações do usuário",
+        "modalSubtitle": "Ajuste sua experiência.",
+        "tabs": {
+            "reading": "Leitura",
+            "appearance": "Aparência",
+            "language": "Idioma",
+            "notifications": "Notificações",
+            "privacy": "Privacidade"
+        },
+        "system": {
+            "eyebrow": "Sistema",
+            "title": "Configurações",
+            "metaPrefix": "Alterações aplicadas em tempo real",
+            "metaSynced": "sincronizado com sua conta",
+            "metaLocal": "salvo só neste dispositivo",
+            "reloadBanner": "Algumas mudanças só aparecem após recarregar a página.",
+            "reloadAction": "Recarregar",
+            "soon": "Em breve",
+            "tabs": {
+                "reader": "Leitor",
+                "appearance": "Aparência",
+                "language": "Idioma e região",
+                "accessibility": "Acessibilidade",
+                "data": "Dados",
+                "about": "Sobre"
+            },
+            "reader": {
+                "sectionNavigation": "Navegação",
+                "sectionImages": "Imagens",
+                "sectionProgress": "Progresso",
+                "direction": "Direção de leitura",
+                "directionLtr": "Esq. → dir.",
+                "directionRtl": "Dir. → esq.",
+                "directionWebtoon": "Webtoon",
+                "directionToast": "Direção de leitura atualizada",
+                "mode": "Modo de leitura",
+                "modeVertical": "Vertical",
+                "modePaged": "Página",
+                "modeDouble": "Duplo",
+                "modeToast": "Modo de leitura atualizado",
+                "fit": "Ajuste",
+                "fitWidth": "Largura",
+                "fitHeight": "Altura",
+                "fitOriginal": "Original",
+                "fitToast": "Ajuste atualizado",
+                "quality": "Qualidade",
+                "qualityAuto": "Automática",
+                "qualityLow": "Baixa",
+                "qualityMedium": "Média",
+                "qualityHigh": "Alta",
+                "qualityOriginal": "Original",
+                "qualityToast": "Qualidade atualizada",
+                "gap": "Espaço entre páginas",
+                "gapDesc": "Distância entre páginas no modo vertical.",
+                "gapToast": "Espaçamento atualizado",
+                "background": "Fundo",
+                "bgBlack": "Preto",
+                "bgDark": "Escuro",
+                "bgPaper": "Papel",
+                "backgroundToast": "Fundo atualizado",
+                "autoMark": "Marcar como lido automaticamente",
+                "autoMarkDesc": "Marca o capítulo ao atingir a última página.",
+                "autoMarkToast": "Configuração salva",
+                "preload": "Pré-carregar próximas páginas",
+                "preloadDesc": "Quantas páginas carregar adiante.",
+                "preloadToast": "Pré-carregamento atualizado"
+            },
+            "appearance": {
+                "sectionTheme": "Tema",
+                "sectionInterface": "Interface",
+                "theme": "Tema",
+                "themeDark": "Escuro",
+                "themeLight": "Claro",
+                "themeSystem": "Sistema",
+                "themeToast": "Tema atualizado",
+                "fontSize": "Tamanho da fonte",
+                "fontCompact": "Compacto",
+                "fontDefault": "Padrão",
+                "fontComfortable": "Confortável",
+                "fontToast": "Tamanho da fonte atualizado",
+                "density": "Densidade",
+                "densityComfortable": "Confortável",
+                "densityCompact": "Compacta",
+                "densityToast": "Densidade atualizada",
+                "animations": "Animações da interface",
+                "animationsDesc": "Transições e efeitos de movimento na interface.",
+                "animationsToast": "Configuração salva"
+            },
+            "language": {
+                "sectionInterface": "Interface",
+                "sectionRegion": "Região",
+                "interfaceLang": "Idioma da interface",
+                "interfaceLangDesc": "Aplicado após recarregar a página.",
+                "interfaceToast": "Idioma da interface atualizado",
+                "langPtFull": "Português (BR)",
+                "langEnFull": "English (US)",
+                "langJaFull": "日本語",
+                "readingLangs": "Idiomas de leitura preferidos",
+                "readingLangsDesc": "Ordem de preferência para catálogo e conteúdo.",
+                "readingToast": "Idiomas de leitura atualizados",
+                "langPt": "Português (BR)",
+                "langEn": "English (US)",
+                "langJa": "日本語",
+                "dateFormat": "Formato de data",
+                "dateDMon": "12 mai",
+                "dateDM": "12/05",
+                "dateMonD": "May 12",
+                "dateToast": "Formato de data atualizado",
+                "timezone": "Fuso horário",
+                "timezoneToast": "Fuso horário atualizado"
+            },
+            "a11y": {
+                "sectionMotion": "Movimento e contraste",
+                "sectionShortcuts": "Atalhos",
+                "reduceMotion": "Reduzir movimento",
+                "reduceMotionDesc": "Minimiza animações e transições.",
+                "reduceMotionToast": "Configuração salva",
+                "highContrast": "Aumentar contraste",
+                "highContrastDesc": "Em breve.",
+                "captions": "Legendas em vídeos",
+                "captionsDesc": "Em breve.",
+                "shortcuts": "Atalhos de teclado",
+                "shortcutsDesc": "Veja a lista completa na aba Sobre.",
+                "shortcutsAction": "Ver lista"
+            },
+            "data": {
+                "guestNotice": "Entre na sua conta para exportar e sincronizar.",
+                "sectionStorage": "Armazenamento",
+                "sectionLibrary": "Biblioteca",
+                "sectionHistory": "Histórico",
+                "cacheTitle": "Cache do leitor",
+                "cacheUsageLabel": "Uso",
+                "cacheUsage": "{{used}} MB de {{total}} MB",
+                "clear": "Limpar",
+                "cacheCleared": "Cache do leitor limpo",
+                "cacheConfirmTitle": "Limpar cache do leitor?",
+                "cacheConfirmBody": "As páginas em cache serão removidas deste dispositivo.",
+                "exportTitle": "Exportar minha biblioteca",
+                "exportDesc": "Baixe sua lista completa em CSV ou JSON.",
+                "exportAction": "Exportar",
+                "exportStarted": "Exportação iniciada",
+                "importTitle": "Importar lista",
+                "importDesc": "Traga sua lista de outro serviço.",
+                "importAction": "Importar",
+                "importModalTitle": "Importar lista",
+                "importModalDesc": "Escolha a origem da importação.",
+                "importStarted": "Importação iniciada",
+                "importSource": {
+                    "mal": "MyAnimeList",
+                    "anilist": "AniList",
+                    "csv": "Arquivo CSV"
+                },
+                "historyTitle": "Histórico de leitura",
+                "historyDesc": "Remova tudo o que você leu deste dispositivo.",
+                "historyCleared": "Histórico de leitura limpo",
+                "historyConfirmTitle": "Limpar histórico de leitura?",
+                "historyConfirmBody": "Seu histórico de leitura será removido permanentemente.",
+                "confirmCancel": "Cancelar",
+                "confirmClear": "Limpar",
+                "confirmIrreversible": "Esta ação não pode ser desfeita."
+            },
+            "about": {
+                "sectionVersion": "Versão",
+                "version": "v0.9.4 · build 2026.06.01 · a1b2c3d",
+                "link": {
+                    "status": "Status do sistema",
+                    "changelog": "Changelog",
+                    "repo": "Repositório"
+                },
+                "sectionShortcuts": "Atalhos de teclado",
+                "keysHeader": "Teclas",
+                "actionHeader": "Ação",
+                "shortcut": {
+                    "navigatePages": "Navegar entre páginas",
+                    "navigateAlt": "Navegar (alternativo)",
+                    "fullscreen": "Tela cheia",
+                    "addLibrary": "Adicionar à biblioteca",
+                    "quickSearch": "Busca rápida",
+                    "publish": "Publicar comentário",
+                    "close": "Fechar"
+                }
+            }
+        },
+        "accessibility": {
+            "section": "Movimento e contraste",
+            "reducedMotionLabel": "Reduzir movimento",
+            "reducedMotionDesc": "Remove transições e animações desnecessárias.",
+            "highContrastLabel": "Aumentar contraste",
+            "highContrastDesc": "Em breve — melhora legibilidade de texto.",
+            "shortcutsLink": "Ver lista de atalhos de teclado →"
+        },
+        "data": {
+            "cacheSection": "Cache",
+            "readerCache": "Cache do leitor",
+            "clearCache": "Limpar",
+            "librarySection": "Biblioteca",
+            "exportLibrary": "Exportar minha biblioteca (CSV/JSON)",
+            "importList": "Importar lista (MAL / AniList)",
+            "historySection": "Histórico",
+            "clearHistory": "Limpar histórico de leitura"
+        },
+        "about": {
+            "versionSection": "Versão",
+            "versionLabel": "Versão",
+            "commitLabel": "Commit",
+            "systemStatus": "Status do sistema",
+            "changelog": "Changelog",
+            "shortcutsSection": "Atalhos de teclado",
+            "keysHeader": "Tecla(s)",
+            "actionHeader": "Ação",
+            "shortcuts": {
+                "navigatePages": "Navegar entre páginas",
+                "navigateAlt": "Navegar (alternativo)",
+                "fullscreen": "Tela cheia",
+                "addLibrary": "Adicionar à biblioteca",
+                "quickSearch": "Abrir busca rápida",
+                "publish": "Publicar (fórum/comentário)",
+                "close": "Fechar modal / voltar"
+            }
+        }
+    }
+}

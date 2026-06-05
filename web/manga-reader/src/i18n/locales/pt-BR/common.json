@@ -1,0 +1,61 @@
+{
+    "label": {
+        "loading": "Carregando...",
+        "loadingMessage": "Por favor, aguarde um momento."
+    },
+    "guard": {
+        "authRequired": "Acesso negado. Você precisa estar autenticado para acessar esta página.",
+        "dashboardForbidden": "Você não possui permissão para acessar o dashboard."
+    },
+    "notFound": {
+        "pageTitle": "Página não encontrada",
+        "pageDesc": "O endereço que você acessou não existe ou foi removido. Verifique o link ou volte para o início.",
+        "goHome": "Ir para o início",
+        "searchWorks": "Buscar obras"
+    },
+    "aboutUs": {
+        "eyebrow": "A plataforma",
+        "title": "Quem somos?",
+        "missionTitle": "Nossa missão",
+        "missionContent": "Somos uma plataforma dedicada à leitura e catalogação de mangás, manhwas e manhuas. Nossa missão é reunir leitores apaixonados e criar uma comunidade vibrante em torno das histórias em quadrinhos asiáticas.",
+        "offerTitle": "O que oferecemos",
+        "offerContent": "Catálogo extenso de obras, sistema de biblioteca pessoal, fórum de discussões, grupos de leitura e muito mais. Tudo em um só lugar, gratuito e sem anúncios.",
+        "communityTitle": "Comunidade",
+        "communityContent": "Acreditamos que a melhor experiência de leitura é compartilhada. Por isso, investimos em ferramentas que conectam leitores, tradutores e fãs de todo o Brasil."
+    },
+    "publishWork": {
+        "eyebrow": "Para criadores",
+        "title": "Publicar trabalho",
+        "description1": "Se você é um autor e deseja publicar seu trabalho em nossa plataforma, entre em contato conosco. Aceitamos mangás, webtoons, fanfics, fanarts e outros trabalhos criativos.",
+        "description2": "Preencha o formulário abaixo com informações sobre seu trabalho e entraremos em contato em breve."
+    },
+    "language": {
+        "pt-BR": "Português (Brasil)",
+        "en-US": "Inglês",
+        "es-ES": "Espanhol"
+    },
+    "image": {
+        "close": "Fechar visualização",
+        "unavailable": "Imagem não disponível"
+    },
+    "composer": {
+        "write": "Escrever",
+        "preview": "Pré-visualizar",
+        "previewEmpty": "Nada para pré-visualizar ainda.",
+        "submit": "Comentar",
+        "cancel": "Cancelar",
+        "hint": "Suporta Markdown — **negrito**, *itálico*, ||spoiler||",
+        "uploadImage": "Enviar imagem",
+        "removeImage": "Remover imagem",
+        "imageAlt": "Imagem {{index}}",
+        "tools": {
+            "bold": "Negrito",
+            "italic": "Itálico",
+            "code": "Código",
+            "quote": "Citação",
+            "list": "Lista",
+            "link": "Link",
+            "spoiler": "Spoiler"
+        }
+    }
+}

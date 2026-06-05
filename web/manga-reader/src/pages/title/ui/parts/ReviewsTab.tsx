@@ -1,0 +1,292 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Check, ChevronDown, Filter, Plus } from 'lucide-react';
+
+import { cn } from '@shared/lib/cn';
+import { Button } from '@ui/Button';
+import { Meter } from '@ui/Meter';
+import { Stars } from '@ui/Stars';
+import Illustration from '@ui/Illustration';
+import { ReviewCard, type MangaRating, type RatingDistribution } from '@entities/rating';
+import useAppNavigate from '@shared/hook/useAppNavigate';
+import { ROUTES } from '@shared/constant/ROUTES';
+import formatRelativeDate from '@shared/service/util/formatRelativeDate';
+
+type Average = { average: number; count: number };
+
+type ReviewsTabProps = {
+    ratings: MangaRating[];
+    average: Average;
+    distribution: RatingDistribution;
+    onWriteReview: () => void;
+    isLoggedIn?: boolean;
+};
+
+type SortKey = 'top' | 'recent' | 'high' | 'low';
+
+const SORT_KEYS: SortKey[] = ['top', 'recent', 'high', 'low'];
+
+function pctOf(n: number, total: number) {
+    return total > 0 ? Math.round((n / total) * 100) : 0;
+}
+
+/** Data absoluta + relativa robusta: '31 mai 2026 · há 3 dias'. Vazio se inválida. */
+function buildWhen(createdAt?: string): string {
+    if (!createdAt) return '';
+
+    const date = new Date(createdAt);
+    if (Number.isNaN(date.getTime())) return '';
+
+    const absolute = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+
+    return `${absolute} · ${formatRelativeDate(createdAt)}`;
+}
+
+function RatingSummary({
+    dist,
+    total,
+    avg,
+    activeStar,
+    onFilterStar,
+}: {
+    dist: RatingDistribution;
+    total: number;
+    avg: number;
+    activeStar: number | null;
+    onFilterStar: (star: number | null) => void;
+}) {
+    const { t } = useTranslation('rating');
+
+    return (
+        <section
+            className="mb-6 flex flex-col gap-4 rounded-[12px] border border-[#333] bg-[#1c1c1d] p-4 sm:flex-row sm:items-center sm:gap-6"
+            aria-label={t('reviews.summary.aria')}
+        >
+            <div className="flex flex-col items-center gap-1 sm:border-r sm:border-[#333] sm:pr-6">
+                <p className="text-[clamp(48px,8vw,56px)] font-mr-extrabold leading-none text-mr-fg">{avg.toFixed(1)}</p>
+                <Stars value={avg} size={18} />
+                <p className="text-[13px] text-mr-fg-subtle">{t('reviews.ratingsCount', { count: total })}</p>
+            </div>
+
+            <div className="flex flex-1 flex-col gap-1.5">
+                {([5, 4, 3, 2, 1] as const).map(star => {
+                    const count = dist[`star${star}` as keyof RatingDistribution] as number;
+                    const p = pctOf(count, total);
+                    const active = activeStar === star;
+                    return (
+                        <button
+                            key={star}
+                            type="button"
+                            onClick={() => onFilterStar(active ? null : star)}
+                            aria-pressed={active}
+                            title={active ? t('reviews.summary.removeFilter') : t('reviews.summary.filterBy', { count: star })}
+                            className={cn(
+                                'flex items-center gap-2 rounded-mr-xs px-2 py-1 text-[13px] transition-colors',
+                                active ? 'bg-mr-accent-25' : 'hover:bg-mr-secondary',
+                            )}
+                        >
+                            <span className="flex w-8 shrink-0 items-center justify-end gap-0.5 text-mr-fg-subtle">
+                                {star}
+                                <svg width={10} height={10} viewBox="0 0 24 24" fill="var(--mr-accent)" aria-hidden="true">
+                                    <polygon points="12 2 15 9 22 9 17 14 19 22 12 17 5 22 7 14 2 9 9 9" />
+                                </svg>
+                            </span>
+                            <Meter value={p} height={9} trackClassName="bg-mr-gray-700" className="flex-1" />
+                            <span className="w-8 text-right tabular-nums text-mr-fg-subtle">{p}%</span>
+                            <span className="w-8 text-right tabular-nums text-mr-fg-subtle">{count}</span>
+                        </button>
+                    );
+                })}
+
+                {activeStar && (
+                    <button
+                        type="button"
+                        className="mt-1 flex items-center gap-1.5 self-start rounded-mr-xs bg-mr-accent-25 px-2 py-1 text-[12px] font-mr-bold text-mr-accent hover:bg-mr-accent-50"
+                        onClick={() => onFilterStar(null)}
+                    >
+                        <Check className="size-3" aria-hidden="true" />
+                        {t('reviews.summary.clearFilterStar', { star: activeStar })}
+                    </button>
+                )}
+            </div>
+        </section>
+    );
+}
+
+function SortDropdown({ sort, onChange }: { sort: SortKey; onChange: (s: SortKey) => void }) {
+    const { t } = useTranslation('rating');
+
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div className="relative">
+            <button
+                type="button"
+                onClick={() => setOpen(o => !o)}
+                aria-haspopup="listbox"
+                aria-expanded={open}
+                className="flex h-9 items-center gap-2 rounded-mr-xs border border-mr-tertiary bg-mr-secondary px-3 text-[13px] font-mr-bold text-mr-fg hover:border-mr-accent-50"
+            >
+                <Filter className="size-3.5" aria-hidden="true" />
+                <span>{t(`reviews.sort.${sort}`)}</span>
+                <ChevronDown className={cn('size-3.5 transition-transform duration-200', open && 'rotate-180')} aria-hidden="true" />
+            </button>
+            {open && (
+                <>
+                    <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+                    <ul
+                        role="listbox"
+                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-mr-md border border-[#444] bg-[#1a1a1b] py-1 shadow-[0_12px_32px_rgba(0,0,0,.55)]"
+                    >
+                        {SORT_KEYS.map(key => (
+                            <li
+                                key={key}
+                                role="option"
+                                aria-selected={sort === key}
+                                onClick={() => {
+                                    onChange(key);
+                                    setOpen(false);
+                                }}
+                                className={cn(
+                                    'flex cursor-pointer items-center justify-between px-3 py-2 text-[13px] transition-colors',
+                                    sort === key ? 'bg-mr-accent-25 font-mr-bold text-mr-accent' : 'text-mr-fg hover:bg-mr-secondary',
+                                )}
+                            >
+                                {t(`reviews.sort.${key}`)}
+                                {sort === key && <Check className="size-3.5 text-mr-accent" aria-hidden="true" />}
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
+        </div>
+    );
+}
+
+function ReviewsToolbar({ count, sort, onSort, onWrite }: { count: number; sort: SortKey; onSort: (s: SortKey) => void; onWrite: () => void }) {
+    const { t } = useTranslation('rating');
+
+    return (
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+                <Button variant="primary" size="sm" icon={Plus} onClick={onWrite}>
+                    {t('reviews.write')}
+                </Button>
+                <span className="text-[13px] text-mr-fg-subtle">{t('reviews.reviewsCount', { count })}</span>
+            </div>
+            <SortDropdown sort={sort} onChange={onSort} />
+        </div>
+    );
+}
+
+function LoginPrompt({ onLogin, onRegister }: { onLogin: () => void; onRegister: () => void }) {
+    const { t } = useTranslation('rating');
+
+    return (
+        <div className="mb-4 flex flex-col items-center gap-4 rounded-mr-lg border border-[#333] bg-[#1c1c1d] p-6 text-center sm:flex-row sm:text-left">
+            <Illustration type="pensando" alt="" width={92} height={92} className="shrink-0" />
+            <div className="min-w-0">
+                <h3 className="text-[16px] font-mr-extrabold text-mr-fg">{t('reviews.login.title')}</h3>
+                <p className="mt-1 text-[14px] text-mr-fg-muted">{t('reviews.login.desc')}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                    <Button variant="primary" size="sm" onClick={onLogin}>
+                        {t('reviews.login.signIn')}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={onRegister}>
+                        {t('reviews.login.signUp')}
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function sortRatings(ratings: MangaRating[], sort: SortKey): MangaRating[] {
+    return [...ratings].sort((a, b) => {
+        if (sort === 'top') return (b.upvotes ?? 0) - (a.upvotes ?? 0);
+        if (sort === 'recent') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        if (sort === 'high') return b.overallRating - a.overallRating;
+        if (sort === 'low') return a.overallRating - b.overallRating;
+        return 0;
+    });
+}
+
+const ReviewsTab = ({ ratings, average, distribution, onWriteReview, isLoggedIn = false }: ReviewsTabProps) => {
+    const { t } = useTranslation('rating');
+
+    const navigate = useAppNavigate();
+
+    const [sort, setSort] = useState<SortKey>('top');
+    const [filterStar, setFilterStar] = useState<number | null>(null);
+    const [votes, setVotes] = useState<Record<string, 'up' | 'down' | null>>({});
+
+    const handleVote = (id: string, vote: 'up' | 'down') => {
+        setVotes(p => ({ ...p, [id]: p[id] === vote ? null : vote }));
+    };
+
+    const filtered = filterStar != null ? ratings.filter(r => Math.round(r.overallRating) === filterStar) : ratings;
+    const sorted = sortRatings(filtered, sort);
+
+    return (
+        <>
+            <RatingSummary dist={distribution} total={distribution.total} avg={average.average} activeStar={filterStar} onFilterStar={setFilterStar} />
+
+            {isLoggedIn ? (
+                <ReviewsToolbar count={ratings.length} sort={sort} onSort={setSort} onWrite={onWriteReview} />
+            ) : (
+                <LoginPrompt onLogin={() => navigate(ROUTES.LOGIN)} onRegister={() => navigate(ROUTES.SIGN_UP)} />
+            )}
+
+            <div className="flex flex-col gap-3">
+                {sorted.length === 0 && ratings.length === 0 ? (
+                    <div className="flex flex-col items-center gap-4 py-12 text-center">
+                        <Illustration type="pensando" alt="" width={120} height={120} />
+                        <div>
+                            <h3 className="text-[18px] font-mr-extrabold text-mr-fg">{t('reviews.empty.title')}</h3>
+                            <p className="mt-1 text-[14px] text-mr-fg-muted">{t('reviews.empty.desc')}</p>
+                        </div>
+                        {isLoggedIn && (
+                            <Button variant="primary" icon={Plus} onClick={onWriteReview}>
+                                {t('reviews.write')}
+                            </Button>
+                        )}
+                    </div>
+                ) : sorted.length === 0 ? (
+                    <div className="flex flex-col items-center gap-3 py-8 text-center">
+                        <p className="text-[15px] font-mr-bold text-mr-fg">{t('reviews.empty.noMatch', { star: filterStar })}</p>
+                        <button type="button" onClick={() => setFilterStar(null)} className="text-[13px] font-mr-bold text-mr-accent hover:underline">
+                            {t('reviews.empty.clearFilter')}
+                        </button>
+                    </div>
+                ) : (
+                    sorted.map(r => (
+                        <ReviewCard
+                            key={r.id}
+                            author={{ name: r.userName }}
+                            when={buildWhen(r.createdAt)}
+                            rating={r.overallRating}
+                            title={r.reviewTitle}
+                            upvotes={r.upvotes ?? 0}
+                            myVote={votes[r.id] ?? null}
+                            onVote={vote => handleVote(r.id, vote)}
+                            badge={r.top ? 'top' : null}
+                            spoiler={r.spoiler}
+                            reviewScores={{
+                                funRating: r.funRating,
+                                artRating: r.artRating,
+                                storylineRating: r.storylineRating,
+                                charactersRating: r.charactersRating,
+                                originalityRating: r.originalityRating,
+                                pacingRating: r.pacingRating,
+                            }}
+                        >
+                            {r.comment ?? ''}
+                        </ReviewCard>
+                    ))
+                )}
+            </div>
+        </>
+    );
+};
+
+export default ReviewsTab;
