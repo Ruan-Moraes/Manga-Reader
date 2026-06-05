@@ -72,6 +72,7 @@ target/
 # =====================================================
 # IDE - JetBrains (WebStorm / IntelliJ / etc)
 # =====================================================
+.idea/
 *.iml
 *.iws
 *.ipr
@@ -79,13 +80,23 @@ out/
 .idea_modules/
 
 # JetBrains user specific
-
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
 
 # Datasources
-
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
 
 # Plugins
-
+.idea/**/sonarlint/
+.idea/**/sonarIssues.xml
+.idea/**/markdown-navigator/
+.idea/codestream.xml
 
 # =====================================================
 # Eclipse / Other IDE
@@ -117,9 +128,8 @@ node-compile-cache/
 coverage/
 *.tsbuildinfo
 
-/web/design_handoff_header_redesign/
-/web/Manga Reader Design System/
-/web/design_handoff_footer_redesign/
+/frontend-apps/design_handoff_header_redesign/
+/frontend-apps/Manga Reader Design System/
+/frontend-apps/design_handoff_footer_redesign/
+/frontend-apps/design_handoff_header_redesign/
 /.junie/
-/web/design_handoff_system_settings/
-/web/design_handoff_resenhas_lojas_redesign/
