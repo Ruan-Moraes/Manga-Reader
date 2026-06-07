@@ -70,7 +70,7 @@ class UpdateRatingUseCaseTest {
         void deveAtualizarApenasFunRating() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -90,7 +90,7 @@ class UpdateRatingUseCaseTest {
         void deveAtualizarApenasComment() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, null, null, null, null, null, "Novo comentário");
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, null, null, null, null, null, "Novo comentário", null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -108,7 +108,7 @@ class UpdateRatingUseCaseTest {
         void deveAtualizarMultiplasCategorias() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, 5.0, null, null, 4.5, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, null, 5.0, null, null, 4.5, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -128,7 +128,7 @@ class UpdateRatingUseCaseTest {
         void deveAtualizarTodosCampos() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 4.0, 4.5, "Atualizado!");
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 4.0, 4.5, "Atualizado!", null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -157,7 +157,7 @@ class UpdateRatingUseCaseTest {
         void devePublicarEventoRatingUpdated() {
             // Arrange
             MangaRating existing = buildExistingRating();
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
             when(ratingRepository.save(any(MangaRating.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -180,7 +180,7 @@ class UpdateRatingUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando avaliação não existe")
         void deveLancarExcecaoQuandoAvaliacaoNaoExiste() {
             // Arrange
-            var input = new UpdateRatingInput(RATING_ID, USER_ID, 4.0, null, null, null, null, null, null);
+            var input = new UpdateRatingInput(RATING_ID, USER_ID, 4.0, null, null, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
@@ -195,7 +195,7 @@ class UpdateRatingUseCaseTest {
             // Arrange
             MangaRating existing = buildExistingRating();
             UUID outroUsuario = UUID.randomUUID();
-            var input = new UpdateRatingInput(RATING_ID, outroUsuario, 5.0, null, null, null, null, null, null);
+            var input = new UpdateRatingInput(RATING_ID, outroUsuario, 5.0, null, null, null, null, null, null, null, null);
             when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
 
             // Act & Assert

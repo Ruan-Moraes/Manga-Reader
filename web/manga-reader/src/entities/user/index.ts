@@ -46,6 +46,7 @@ export {
 
 // Utils
 export { buildUserModalPayload } from './lib/buildUserModalPayload';
+export { applyReduceMotion, initAccessibilityFromStorage, SETTINGS_STORAGE_KEY } from './lib/accessibility';
 
 // Components
 export { default as UserModal } from './ui/UserModal';

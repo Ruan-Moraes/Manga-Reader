@@ -14,6 +14,16 @@ public record StoreResponse(
         String website,
         String availability,
         Double rating,
-        List<String> features
+        List<String> features,
+        Integer price,
+        Integer oldPrice,
+        String category,
+        boolean official,
+        Integer ratingCount,
+        String format,
+        String shipping,
+        String note,
+        String mono,
+        String color
 ) {
 }

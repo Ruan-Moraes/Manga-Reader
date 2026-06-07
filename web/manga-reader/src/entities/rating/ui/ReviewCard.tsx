@@ -79,16 +79,14 @@ export const ReviewCard = ({
 
     const [expanded, setExpanded] = useState(false);
     const [spoilerShown, setSpoilerShown] = useState(false);
-    const [voted, setVoted] = useState<'up' | 'down' | null>(myVote ?? null);
     const [breakOpen, setBreakOpen] = useState(false);
 
-    const upCount = (upvotes ?? 0) + (voted === 'up' ? 1 : 0);
-    const downCount = (downvotes ?? 0) + (voted === 'down' ? 1 : 0);
+    // Componente controlado (DT-47): contadores e voto vêm das props (verdade do
+    // servidor, atualizada otimisticamente pela mutation no cache).
     const collapsed = isLong && !expanded;
     const veiled = spoiler && !spoilerShown;
 
     const handleVote = (vote: 'up' | 'down') => {
-        setVoted(prev => (prev === vote ? null : vote));
         onVote?.(vote);
     };
 
@@ -209,8 +207,8 @@ export const ReviewCard = ({
                     <ActionBar
                         vote={
                             <VotePill
-                                value={upCount - downCount}
-                                active={voted}
+                                value={(upvotes ?? 0) - (downvotes ?? 0)}
+                                active={myVote ?? null}
                                 onUp={() => handleVote('up')}
                                 onDown={() => handleVote('down')}
                                 label={t('card.voteGroup')}

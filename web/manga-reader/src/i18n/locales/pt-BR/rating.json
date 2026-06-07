@@ -123,6 +123,8 @@
             "low": "Nota mais baixa"
         },
         "write": "Escrever resenha",
+        "loadMore": "Carregar mais",
+        "voteError": "Não foi possível registrar seu voto. Tente novamente.",
         "reviewsCount_one": "{{count}} resenha",
         "reviewsCount_other": "{{count}} resenhas",
         "ratingsCount_one": "{{count}} avaliação",

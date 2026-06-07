@@ -19,5 +19,11 @@ public record RatingResponse(
         double originalityRating,
         double pacingRating,
         String comment,
+        String reviewTitle,
+        boolean spoiler,
+        boolean top,
+        long upvotes,
+        long downvotes,
+        String myVote,
         String createdAt
 ) {}

@@ -6,7 +6,6 @@ import { showErrorToast, showSuccessToast } from '@shared/service/util/toastServ
 
 import { removeRecommendation } from '../../../api/userService';
 import { type EnrichedProfile, type RecommendedTitle } from '../../../model/user.types';
-import { PE, peIntro } from './peShared';
 
 const MAX = 6;
 
@@ -41,52 +40,45 @@ const RecomendacoesTab = ({ profile, onSaved }: Props) => {
 
     return (
         <div>
-            <p style={{ ...peIntro, marginBottom: 14 }}>{t('profile.edit.recommendations.intro')}</p>
+            <p className="mb-3.5 text-mr-small leading-relaxed text-mr-gray-200">{t('profile.edit.recommendations.intro')}</p>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, padding: '8px 12px', background: PE.cardBg, border: `1px solid ${PE.cardBorder}`, borderRadius: 2 }}>
-                <span style={{ fontSize: 12, color: PE.fg, fontWeight: 700 }}>{t('profile.edit.recommendations.counter', { count: items.length, max: MAX })}</span>
+            <div className="mb-3 flex items-center justify-between rounded-mr-xs border border-[#333333] bg-[#1f1f20] px-3 py-2">
+                <span className="text-mr-small font-mr-bold text-mr-fg">{t('profile.edit.recommendations.counter', { count: items.length, max: MAX })}</span>
                 {items.length > 0 && (
-                    <button type="button" onClick={clearAll} style={{ background: 'none', border: 0, color: PE.danger, fontSize: 11, fontWeight: 700, cursor: 'pointer', padding: 0, fontFamily: 'inherit', letterSpacing: '.0625rem' }}>
+                    <button
+                        type="button"
+                        onClick={clearAll}
+                        className="mr-focus-ring cursor-pointer border-0 bg-transparent p-0 font-mr-sans text-mr-tiny font-mr-bold tracking-mr text-mr-danger"
+                    >
                         {t('profile.edit.recommendations.clear')}
                     </button>
                 )}
             </div>
 
             {items.length === 0 ? (
-                <p style={{ fontSize: 12, color: PE.hint, textAlign: 'center', padding: '24px 0' }}>{t('profile.edit.recommendations.empty')}</p>
+                <p className="py-6 text-center text-mr-small text-mr-gray-300">{t('profile.edit.recommendations.empty')}</p>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: 10 }}>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-2.5">
                     {items.map(rec => (
                         <button
                             key={rec.titleId}
                             type="button"
                             onClick={() => toggleOff(rec.titleId)}
                             aria-label={t('profile.edit.recommendations.remove')}
-                            style={{
-                                position: 'relative',
-                                padding: 0,
-                                cursor: 'pointer',
-                                background: 'linear-gradient(135deg,#2a1f0f,#161616)',
-                                border: `1px solid ${PE.accent}`,
-                                borderRadius: 4,
-                                aspectRatio: '2/3',
-                                overflow: 'hidden',
-                                boxShadow: '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25)',
-                                transition: 'all .2s',
-                            }}
+                            className="mr-focus-ring relative aspect-[2/3] cursor-pointer overflow-hidden rounded-mr-sm border border-mr-accent bg-[linear-gradient(135deg,#2a1f0f,#161616)] p-0 shadow-[-0.25rem_0.25rem_0_0_rgba(221,218,42,0.25)] transition-all duration-200"
                         >
                             {rec.titleCover ? (
-                                <img src={rec.titleCover} alt={rec.titleName} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={rec.titleCover} alt={rec.titleName} className="absolute inset-0 size-full object-cover" />
                             ) : (
-                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'clamp(20px,5vw,32px)', fontWeight: 800, color: 'rgba(221,218,42,0.4)' }}>
+                                <div className="absolute inset-0 flex items-center justify-center text-[clamp(20px,5vw,32px)] font-mr-extrabold text-[rgba(221,218,42,0.4)]">
                                     {rec.titleName?.charAt(0) ?? '?'}
                                 </div>
                             )}
-                            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%', background: 'linear-gradient(180deg, transparent 0%, rgba(22,22,22,0.95) 80%)' }} />
-                            <div style={{ position: 'absolute', left: 6, right: 6, bottom: 6, color: '#fff', fontSize: 10, fontWeight: 700, lineHeight: 1.2, textAlign: 'left', letterSpacing: '.05em', textShadow: '0 1px 2px rgba(0,0,0,0.8)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            <div className="absolute inset-x-0 bottom-0 h-[55%] bg-[linear-gradient(180deg,transparent_0%,rgba(22,22,22,0.95)_80%)]" />
+                            <div className="absolute inset-x-1.5 bottom-1.5 line-clamp-2 text-left text-[10px] font-mr-bold leading-tight tracking-[.05em] text-mr-fg [text-shadow:0_1px_2px_rgba(0,0,0,0.8)]">
                                 {rec.titleName}
                             </div>
-                            <div style={{ position: 'absolute', top: 6, right: 6, width: 22, height: 22, background: PE.accent, color: '#161616', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div className="absolute right-1.5 top-1.5 flex size-[22px] items-center justify-center rounded-mr-xs bg-mr-accent text-mr-primary">
                                 <Check size={14} />
                             </div>
                         </button>

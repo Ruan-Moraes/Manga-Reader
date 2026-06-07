@@ -43,7 +43,9 @@ public class SubmitRatingUseCase {
             double charactersRating,
             double originalityRating,
             double pacingRating,
-            String comment
+            String comment,
+            String reviewTitle,
+            boolean spoiler
     ) {}
 
     @CacheEvict(value = CacheNames.RATING_AVERAGE, key = "#input.titleId()")
@@ -70,6 +72,8 @@ public class SubmitRatingUseCase {
         rating.setPacingRating(input.pacingRating());
         rating.setOverallRating(rating.calculateOverallRating());
         rating.setComment(input.comment());
+        rating.setReviewTitle(input.reviewTitle());
+        rating.setSpoiler(input.spoiler());
         rating.setUserName(user.getName());
 
         String titleName = titleRepository.findById(input.titleId())

@@ -6,7 +6,9 @@ import { showErrorToast, showSuccessToast } from '@shared/service/util/toastServ
 
 import { deleteMyAccount, updatePrivacySettings } from '../../../api/userService';
 import { type EnrichedProfile, type VisibilitySetting } from '../../../model/user.types';
-import { PE, peInput, peIntro } from './peShared';
+import { cn } from '@shared/lib/cn';
+
+import { peIntro } from './peShared';
 
 const isPublic = (v?: VisibilitySetting) => v === 'PUBLIC';
 const toVisibility = (on: boolean): VisibilitySetting => (on ? 'PUBLIC' : 'PRIVATE');
@@ -17,9 +19,17 @@ const PEToggle = ({ checked, onChange }: { checked: boolean; onChange: (v: boole
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        style={{ position: 'relative', width: 44, height: 24, padding: 0, background: checked ? PE.accent : '#333', border: `1px solid ${checked ? PE.accent : '#444'}`, borderRadius: 999, cursor: 'pointer', transition: 'all .2s', flexShrink: 0 }}
+        className={cn(
+            'mr-focus-ring relative h-6 w-11 shrink-0 cursor-pointer rounded-full border p-0 transition-all duration-200',
+            checked ? 'border-mr-accent bg-mr-accent' : 'border-[#444] bg-[#333]',
+        )}
     >
-        <span style={{ position: 'absolute', top: 2, left: checked ? 22 : 2, width: 18, height: 18, background: checked ? '#161616' : '#999', borderRadius: 999, transition: 'left .2s, background .2s' }} />
+        <span
+            className={cn(
+                'absolute top-0.5 size-[18px] rounded-full transition-[left,background] duration-200',
+                checked ? 'left-[22px] bg-mr-primary' : 'left-0.5 bg-mr-gray-300',
+            )}
+        />
     </button>
 );
 
@@ -73,50 +83,63 @@ const PrivacidadeTab = ({ profile, onAccountDeleted }: Props) => {
 
     return (
         <div>
-            <p style={peIntro}>{t('profile.edit.privacy.intro')}</p>
+            <p className={peIntro}>{t('profile.edit.privacy.intro')}</p>
 
             {items.map(it => {
                 const Icon = it.icon;
                 return (
-                    <div key={it.key} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: 14, marginBottom: 10, background: PE.cardBg, border: `1px solid ${PE.cardBorder}`, borderRadius: 4 }}>
-                        <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(221,218,42,0.1)', borderRadius: 2, color: PE.accent, flexShrink: 0 }}>
+                    <div key={it.key} className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-[#333333] bg-[#1f1f20] p-3.5">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent">
                             <Icon size={18} />
                         </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 700, color: PE.fg, marginBottom: 4, letterSpacing: '.0625rem' }}>{it.title}</div>
-                            <div style={{ fontSize: 12, color: PE.hint, lineHeight: 1.5 }}>{it.desc}</div>
+                        <div className="min-w-0 flex-1">
+                            <div className="mb-1 text-[13px] font-mr-bold tracking-mr text-mr-fg">{it.title}</div>
+                            <div className="text-mr-small leading-normal text-mr-gray-300">{it.desc}</div>
                         </div>
                         <PEToggle checked={it.checked} onChange={it.onChange} />
                     </div>
                 );
             })}
 
-            <div style={{ padding: 14, background: 'rgba(255,120,79,0.08)', border: '1px solid rgba(255,120,79,0.4)', borderRadius: 4, marginTop: 14 }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: PE.danger, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>{t('profile.edit.privacy.dangerZone')}</div>
-                <p style={{ fontSize: 12, color: PE.intro, lineHeight: 1.6, margin: '0 0 10px' }}>{t('profile.edit.privacy.deleteDesc')}</p>
+            <div className="mt-3.5 rounded-mr-sm border border-[rgba(255,120,79,0.4)] bg-[rgba(255,120,79,0.08)] p-3.5">
+                <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label text-mr-danger">{t('profile.edit.privacy.dangerZone')}</div>
+                <p className="mb-2.5 text-mr-small leading-relaxed text-mr-gray-200">{t('profile.edit.privacy.deleteDesc')}</p>
 
                 {!confirming ? (
-                    <button type="button" onClick={() => setConfirming(true)} style={{ padding: '8px 12px', background: 'transparent', color: PE.danger, border: `1px solid ${PE.danger}`, borderRadius: 2, fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '.0625rem' }}>
+                    <button
+                        type="button"
+                        onClick={() => setConfirming(true)}
+                        className="mr-focus-ring cursor-pointer rounded-mr-xs border border-mr-danger bg-transparent px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr text-mr-danger"
+                    >
                         {t('profile.edit.privacy.deleteAccount')}
                     </button>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div className="flex flex-col gap-2">
                         <input
                             value={confirmText}
                             placeholder={t('profile.edit.privacy.deleteConfirmPlaceholder', { name: profile.name })}
                             onChange={e => setConfirmText(e.target.value)}
-                            style={{ ...peInput, border: `1px solid ${PE.danger}` }}
+                            className="box-border h-10 w-full rounded-mr-xs border border-mr-danger bg-mr-secondary px-3 font-mr-sans text-[13px] tracking-mr text-mr-fg outline-none"
                         />
-                        <div style={{ display: 'flex', gap: 8 }}>
+                        <div className="flex gap-2">
                             <button
                                 type="button"
                                 disabled={!canDelete}
                                 onClick={confirmDelete}
-                                style={{ padding: '8px 12px', background: canDelete ? PE.danger : 'transparent', color: canDelete ? '#161616' : PE.tertiary, border: `1px solid ${canDelete ? PE.danger : PE.tertiary}`, borderRadius: 2, fontSize: 11, fontWeight: 700, cursor: canDelete ? 'pointer' : 'default', fontFamily: 'inherit', letterSpacing: '.0625rem' }}
+                                className={cn(
+                                    'rounded-mr-xs border px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr',
+                                    canDelete
+                                        ? 'mr-focus-ring cursor-pointer border-mr-danger bg-mr-danger text-mr-primary'
+                                        : 'cursor-default border-mr-tertiary bg-transparent text-mr-tertiary',
+                                )}
                             >
                                 {t('profile.edit.privacy.deleteConfirm')}
                             </button>
-                            <button type="button" onClick={() => { setConfirming(false); setConfirmText(''); }} style={{ padding: '8px 12px', background: PE.fieldBg, color: PE.fg, border: `1px solid ${PE.tertiary}`, borderRadius: 2, fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '.0625rem' }}>
+                            <button
+                                type="button"
+                                onClick={() => { setConfirming(false); setConfirmText(''); }}
+                                className="mr-focus-ring cursor-pointer rounded-mr-xs border border-mr-tertiary bg-mr-secondary px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr text-mr-fg"
+                            >
                                 {t('profile.edit.privacy.deleteCancel')}
                             </button>
                         </div>

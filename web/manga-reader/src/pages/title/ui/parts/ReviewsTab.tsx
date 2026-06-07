@@ -1,3 +1,5 @@
+// TODO: Refatorar esse componente. Muitas coisas internas pode ser compartilhado por todo o projeto e muitas responsabilidaes.
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown, Filter, Plus } from 'lucide-react';
@@ -7,7 +9,7 @@ import { Button } from '@ui/Button';
 import { Meter } from '@ui/Meter';
 import { Stars } from '@ui/Stars';
 import Illustration from '@ui/Illustration';
-import { ReviewCard, type MangaRating, type RatingDistribution } from '@entities/rating';
+import { ReviewCard, useReviews, useReviewVote, REVIEW_SORT_KEYS, type RatingDistribution, type ReviewSortKey } from '@entities/rating';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { ROUTES } from '@shared/constant/ROUTES';
 import formatRelativeDate from '@shared/service/util/formatRelativeDate';
@@ -15,16 +17,12 @@ import formatRelativeDate from '@shared/service/util/formatRelativeDate';
 type Average = { average: number; count: number };
 
 type ReviewsTabProps = {
-    ratings: MangaRating[];
+    titleId: string;
     average: Average;
     distribution: RatingDistribution;
     onWriteReview: () => void;
     isLoggedIn?: boolean;
 };
-
-type SortKey = 'top' | 'recent' | 'high' | 'low';
-
-const SORT_KEYS: SortKey[] = ['top', 'recent', 'high', 'low'];
 
 function pctOf(n: number, total: number) {
     return total > 0 ? Math.round((n / total) * 100) : 0;
@@ -113,7 +111,7 @@ function RatingSummary({
     );
 }
 
-function SortDropdown({ sort, onChange }: { sort: SortKey; onChange: (s: SortKey) => void }) {
+function SortDropdown({ sort, onChange }: { sort: ReviewSortKey; onChange: (s: ReviewSortKey) => void }) {
     const { t } = useTranslation('rating');
 
     const [open, setOpen] = useState(false);
@@ -138,7 +136,7 @@ function SortDropdown({ sort, onChange }: { sort: SortKey; onChange: (s: SortKey
                         role="listbox"
                         className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-mr-md border border-[#444] bg-[#1a1a1b] py-1 shadow-[0_12px_32px_rgba(0,0,0,.55)]"
                     >
-                        {SORT_KEYS.map(key => (
+                        {REVIEW_SORT_KEYS.map(key => (
                             <li
                                 key={key}
                                 role="option"
@@ -163,7 +161,7 @@ function SortDropdown({ sort, onChange }: { sort: SortKey; onChange: (s: SortKey
     );
 }
 
-function ReviewsToolbar({ count, sort, onSort, onWrite }: { count: number; sort: SortKey; onSort: (s: SortKey) => void; onWrite: () => void }) {
+function ReviewsToolbar({ count, sort, onSort, onWrite }: { count: number; sort: ReviewSortKey; onSort: (s: ReviewSortKey) => void; onWrite: () => void }) {
     const { t } = useTranslation('rating');
 
     return (
@@ -201,44 +199,35 @@ function LoginPrompt({ onLogin, onRegister }: { onLogin: () => void; onRegister:
     );
 }
 
-function sortRatings(ratings: MangaRating[], sort: SortKey): MangaRating[] {
-    return [...ratings].sort((a, b) => {
-        if (sort === 'top') return (b.upvotes ?? 0) - (a.upvotes ?? 0);
-        if (sort === 'recent') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        if (sort === 'high') return b.overallRating - a.overallRating;
-        if (sort === 'low') return a.overallRating - b.overallRating;
-        return 0;
-    });
-}
-
-const ReviewsTab = ({ ratings, average, distribution, onWriteReview, isLoggedIn = false }: ReviewsTabProps) => {
+const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn = false }: ReviewsTabProps) => {
     const { t } = useTranslation('rating');
 
     const navigate = useAppNavigate();
 
-    const [sort, setSort] = useState<SortKey>('top');
+    const [sort, setSort] = useState<ReviewSortKey>('top');
     const [filterStar, setFilterStar] = useState<number | null>(null);
-    const [votes, setVotes] = useState<Record<string, 'up' | 'down' | null>>({});
+
+    // Resenhas paginadas (load-more) com ordenação/filtro server-side (DT-47).
+    const { reviews, fetchNextPage, hasNextPage, isFetchingNextPage } = useReviews(titleId, { sort, star: filterStar });
+    const voteMutation = useReviewVote(titleId);
 
     const handleVote = (id: string, vote: 'up' | 'down') => {
-        setVotes(p => ({ ...p, [id]: p[id] === vote ? null : vote }));
+        const current = reviews.find(r => r.id === id)?.myVote ?? null;
+        voteMutation.mutate({ id, value: vote, currentVote: current });
     };
-
-    const filtered = filterStar != null ? ratings.filter(r => Math.round(r.overallRating) === filterStar) : ratings;
-    const sorted = sortRatings(filtered, sort);
 
     return (
         <>
             <RatingSummary dist={distribution} total={distribution.total} avg={average.average} activeStar={filterStar} onFilterStar={setFilterStar} />
 
             {isLoggedIn ? (
-                <ReviewsToolbar count={ratings.length} sort={sort} onSort={setSort} onWrite={onWriteReview} />
+                <ReviewsToolbar count={distribution.total} sort={sort} onSort={setSort} onWrite={onWriteReview} />
             ) : (
                 <LoginPrompt onLogin={() => navigate(ROUTES.LOGIN)} onRegister={() => navigate(ROUTES.SIGN_UP)} />
             )}
 
             <div className="flex flex-col gap-3">
-                {sorted.length === 0 && ratings.length === 0 ? (
+                {reviews.length === 0 && filterStar == null ? (
                     <div className="flex flex-col items-center gap-4 py-12 text-center">
                         <Illustration type="pensando" alt="" width={120} height={120} />
                         <div>
@@ -251,7 +240,7 @@ const ReviewsTab = ({ ratings, average, distribution, onWriteReview, isLoggedIn 
                             </Button>
                         )}
                     </div>
-                ) : sorted.length === 0 ? (
+                ) : reviews.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 py-8 text-center">
                         <p className="text-[15px] font-mr-bold text-mr-fg">{t('reviews.empty.noMatch', { star: filterStar })}</p>
                         <button type="button" onClick={() => setFilterStar(null)} className="text-[13px] font-mr-bold text-mr-accent hover:underline">
@@ -259,30 +248,45 @@ const ReviewsTab = ({ ratings, average, distribution, onWriteReview, isLoggedIn 
                         </button>
                     </div>
                 ) : (
-                    sorted.map(r => (
-                        <ReviewCard
-                            key={r.id}
-                            author={{ name: r.userName }}
-                            when={buildWhen(r.createdAt)}
-                            rating={r.overallRating}
-                            title={r.reviewTitle}
-                            upvotes={r.upvotes ?? 0}
-                            myVote={votes[r.id] ?? null}
-                            onVote={vote => handleVote(r.id, vote)}
-                            badge={r.top ? 'top' : null}
-                            spoiler={r.spoiler}
-                            reviewScores={{
-                                funRating: r.funRating,
-                                artRating: r.artRating,
-                                storylineRating: r.storylineRating,
-                                charactersRating: r.charactersRating,
-                                originalityRating: r.originalityRating,
-                                pacingRating: r.pacingRating,
-                            }}
-                        >
-                            {r.comment ?? ''}
-                        </ReviewCard>
-                    ))
+                    <>
+                        {reviews.map(r => (
+                            <ReviewCard
+                                key={r.id}
+                                author={{ name: r.userName }}
+                                when={buildWhen(r.createdAt)}
+                                rating={r.overallRating}
+                                title={r.reviewTitle}
+                                upvotes={r.upvotes ?? 0}
+                                downvotes={r.downvotes ?? 0}
+                                myVote={r.myVote ?? null}
+                                onVote={vote => handleVote(r.id, vote)}
+                                badge={r.top ? 'top' : null}
+                                spoiler={r.spoiler}
+                                reviewScores={{
+                                    funRating: r.funRating,
+                                    artRating: r.artRating,
+                                    storylineRating: r.storylineRating,
+                                    charactersRating: r.charactersRating,
+                                    originalityRating: r.originalityRating,
+                                    pacingRating: r.pacingRating,
+                                }}
+                            >
+                                {r.comment ?? ''}
+                            </ReviewCard>
+                        ))}
+
+                        {hasNextPage && (
+                            <Button
+                                variant="ghost"
+                                className="self-center"
+                                loading={isFetchingNextPage}
+                                disabled={isFetchingNextPage}
+                                onClick={() => fetchNextPage()}
+                            >
+                                {t('reviews.loadMore')}
+                            </Button>
+                        )}
+                    </>
                 )}
             </div>
         </>

@@ -17,10 +17,10 @@ mvn package -DskipTests                         # Build JAR
 mvn spring-boot:run                             # Iniciar (Docker Compose sobe automaticamente)
 ```
 
-### Frontend (`/frontend-apps/manga-reader/`)
+### Frontend (`/web/manga-reader/`)
 
-pnpm workspace (raiz `frontend-apps/`). Rodar por workspace com `--filter manga-reader`
-ou `cd frontend-apps/manga-reader` + `npx`:
+pnpm workspace (raiz `web/`). Rodar por workspace com `--filter manga-reader`
+ou `cd web/manga-reader` + `npx`:
 
 ```bash
 pnpm --filter manga-reader dev          # Dev server :5173 (proxy API → :8080)
@@ -385,6 +385,22 @@ Toda mudança que toca persistência deve manter ou adicionar:
 - Textos longos (nomes, labels): usar `hidden sm:inline` para versões completas em mobile
 - Breakpoints customizados: `mobile-sm` (320px), `mobile-md` (375px), `mobile-lg` (425px)
 
+### Styling — Tailwind por Padrão
+- Estilizar com **classes Tailwind** (tokens `mr-*` definidos em `src/styles/index.css`,
+  ex.: `bg-mr-secondary`, `text-mr-accent`, `border-mr-separator`, `rounded-mr-xs`,
+  `font-mr-bold`). `style={{}}` inline é **proibido para valores estáticos**.
+- Inline (`style={{}}`) permitido **apenas** para valores dinâmicos calculados em
+  runtime (ex.: posição/altura derivada de medição, cor vinda de dado). A mesma regra
+  vale para web e mobile.
+- Cores, spacing e radii: usar tokens do tema (`--mr-*` / `@theme` em `index.css`),
+  **não** hex solto. Se faltar um token, criar um novo em vez de inline.
+- `cn` (`@shared/lib/cn`) é só `clsx` (sem tailwind-merge): **não** sobreponha duas
+  utilitárias para a mesma propriedade (ex.: `h-10` + `h-full`) esperando override;
+  use uma variante de classe dedicada.
+- Variáveis dinâmicas que viram classe condicional: passar a classe inteira no
+  ramo (`checked ? 'left-[22px] bg-mr-primary' : 'left-0.5 bg-mr-gray-300'`), nunca
+  interpolar valor dentro do nome da classe.
+
 ### Internationalization (i18n) — Obrigatório em Novas Telas
 - **Toda tela nova** deve implementar suporte a i18n (português, inglês, espanhol, mínimo)
 - **Nenhum texto hardcoded** em componentes — usar chaves de tradução
@@ -524,7 +540,7 @@ JPA `@OneToMany` usa `FetchType.LAZY` por padrão. Quando um use case retorna en
 Antes de considerar qualquer tarefa concluída:
 
 1. `mvn test` passa com **0 failures, 0 errors**
-2. `cd frontend-apps/manga-reader && npx tsc --noEmit` compila com **0 errors**
+2. `cd web/manga-reader && npx tsc --noEmit` compila com **0 errors**
 3. Todo requisito novo/alterado tem teste correspondente
 4. Nenhum teste existente foi quebrado ou deletado sem justificativa
 5. Commits pequenos e focados com mensagens claras
@@ -567,7 +583,7 @@ api/server/src/main/java/com/mangareader/
 ├── presentation/{domain}/mapper/      # MapStruct mappers
 └── shared/                            # Cross-cutting: configs, exceptions, constants
 
-frontend-apps/manga-reader/src/
+web/manga-reader/src/
 ├── app/      # Router config + route guards (@app) — FSD app layer
 ├── pages/    # Route-level pages, 1 slice por rota (@pages) — FSD pages layer
 ├── widgets/  # Blocos compostos: header/, footer/, mobile-tab-bar/,

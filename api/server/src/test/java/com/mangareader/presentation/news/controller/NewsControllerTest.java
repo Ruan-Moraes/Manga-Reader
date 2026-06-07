@@ -171,12 +171,12 @@ class NewsControllerTest {
         }
 
         @Test
-        @DisplayName("Deve retornar 500 para categoria inválida (IllegalArgumentException sem handler específico)")
-        void deveRetornar500ParaCategoriaInvalida() throws Exception {
-            // IllegalArgumentException não tem handler específico no GlobalExceptionHandler,
-            // por isso cai no handler genérico que retorna 500.
+        @DisplayName("Deve retornar 400 para categoria inválida (IllegalArgumentException)")
+        void deveRetornar400ParaCategoriaInvalida() throws Exception {
+            // IllegalArgumentException (ex.: NewsCategory.fromValue com valor inválido)
+            // é tratada pelo GlobalExceptionHandler como 400 Bad Request (DT-45).
             mockMvc.perform(get("/api/news/category/CATEGORIA_INVALIDA"))
-                    .andExpect(status().isInternalServerError());
+                    .andExpect(status().isBadRequest());
         }
 
         @Test

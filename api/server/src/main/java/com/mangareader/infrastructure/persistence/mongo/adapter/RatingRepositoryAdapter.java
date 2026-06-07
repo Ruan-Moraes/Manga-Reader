@@ -3,12 +3,14 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort;
@@ -52,8 +54,20 @@ public class RatingRepositoryAdapter implements RatingRepositoryPort {
     }
 
     @Override
-    public Page<MangaRating> findByTitleId(String titleId, Pageable pageable) {
-        return repository.findByTitleId(titleId, pageable);
+    public Page<MangaRating> findByTitleId(String titleId, Integer star, Pageable pageable) {
+        if (star == null) {
+            return repository.findByTitleId(titleId, pageable);
+        }
+
+        // Faixa equivalente a Math.round(overallRating) == star: [star-0.5, star+0.5).
+        Query query = new Query(Criteria.where("titleId").is(titleId)
+                .and("overallRating").gte(star - 0.5).lt(star + 0.5))
+                .with(pageable);
+
+        long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), MangaRating.class);
+        var content = mongoTemplate.find(query, MangaRating.class);
+
+        return new PageImpl<>(content, pageable, total);
     }
 
     @Override

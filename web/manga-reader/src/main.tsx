@@ -13,7 +13,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { UserModalProvider, ProfileSettingsModalProvider } from '@entities/user';
+import { UserModalProvider, ProfileSettingsModalProvider, initAccessibilityFromStorage } from '@entities/user';
 import { CommentSortProvider } from '@entities/comment';
 import { AuthProvider } from '@features/auth';
 
@@ -57,6 +57,9 @@ const prefetchOnIdle = () => {
 };
 
 prefetchOnIdle();
+
+// Aplica a preferência de "reduzir movimento" no boot, antes do primeiro render.
+initAccessibilityFromStorage();
 
 // i18n — ao trocar idioma, invalida cache React Query.
 // Backend resolve LocalizedString por Accept-Language e particiona UGC,

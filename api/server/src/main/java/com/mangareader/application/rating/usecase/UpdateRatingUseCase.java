@@ -37,7 +37,9 @@ public class UpdateRatingUseCase {
             Double charactersRating,
             Double originalityRating,
             Double pacingRating,
-            String comment
+            String comment,
+            String reviewTitle,
+            Boolean spoiler
     ) {}
 
     @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
@@ -75,6 +77,14 @@ public class UpdateRatingUseCase {
 
         if (input.comment() != null) {
             rating.setComment(input.comment());
+        }
+
+        if (input.reviewTitle() != null) {
+            rating.setReviewTitle(input.reviewTitle());
+        }
+
+        if (input.spoiler() != null) {
+            rating.setSpoiler(input.spoiler());
         }
 
         rating.setOverallRating(rating.calculateOverallRating());

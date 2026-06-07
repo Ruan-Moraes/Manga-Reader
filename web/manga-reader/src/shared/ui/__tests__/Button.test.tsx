@@ -77,7 +77,7 @@ describe('Button', () => {
 
     it('size sm aplica classe correta', () => {
         render(<Button size="sm">Mini</Button>);
-        expect(screen.getByRole('button').className).toMatch(/h-8/);
+        expect(screen.getByRole('button').className).toMatch(/py-1/);
     });
 
     it('aceita className extra sem sobrescrever base', () => {

@@ -74,7 +74,7 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve criar avaliação quando usuário nunca avaliou o título")
         void deveCriarAvaliacaoQuandoUsuarioNuncaAvaliou() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 5.0, 3.5, 4.0, 3.0, 4.5, "Ótimo mangá!");
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 5.0, 3.5, 4.0, 3.0, 4.5, "Ótimo mangá!", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
@@ -103,7 +103,7 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve preencher userName a partir do User encontrado")
         void devePreencherUserNameDoUsuario() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, null);
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, null, null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
@@ -120,7 +120,7 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve publicar evento 'rating.submitted' após salvar")
         void devePublicarEventoAposSalvar() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom");
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
@@ -160,7 +160,7 @@ class SubmitRatingUseCaseTest {
                     .comment("Comentário antigo")
                     .build();
 
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 3.5, 4.0, "Agora está ótimo!");
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 3.5, 4.0, "Agora está ótimo!", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.of(existing));
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
@@ -186,7 +186,7 @@ class SubmitRatingUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando usuário não existe")
         void deveLancarExcecaoQuandoUsuarioNaoExiste() {
             // Arrange
-            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom");
+            var input = new SubmitRatingInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
             // Act & Assert

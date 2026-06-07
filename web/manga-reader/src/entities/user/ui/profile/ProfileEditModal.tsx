@@ -1,20 +1,19 @@
-import { type CSSProperties, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Compass, Settings, Sparkles, User, Users, X, type LucideIcon } from 'lucide-react';
 
-import { useMediaQuery } from '@shared/lib/useMediaQuery';
+import { type ProfileSettingsTab, useProfileSettingsModal } from '@entities/user';
+
 
 import useEnrichedProfile from '../../model/useEnrichedProfile';
-import { type ProfileSettingsTab, useProfileSettingsModal } from '../../model/ProfileSettingsModalContext';
+
 import InformacoesTab from './tabs/InformacoesTab';
 import RedesTab from './tabs/RedesTab';
 import RecomendacoesTab from './tabs/RecomendacoesTab';
 import GruposTab from './tabs/GruposTab';
 import PrivacidadeTab from './tabs/PrivacidadeTab';
-import { PE } from './tabs/peShared';
 
 type Props = {
-    /** Disparado após a conta ser excluída — a camada superior trata logout/redirect. */
     onAccountDeleted?: () => void;
 };
 
@@ -26,15 +25,8 @@ const TABS: { key: ProfileSettingsTab; labelKey: string; icon: LucideIcon }[] = 
     { key: 'privacidade', labelKey: 'profile.edit.tabs.privacy', icon: Settings },
 ];
 
-/**
- * Modal de configurações do usuário (edição de perfil), pixel-perfect ao handoff
- * `design_handoff_profile_edit_modal/mockup/modal.jsx`. Aberto de dois pontos:
- * o botão "Editar perfil" e a opção "Configurações" do avatar. Distinto das
- * configurações de SISTEMA (página /settings).
- */
 const ProfileEditModal = ({ onAccountDeleted }: Props) => {
     const { isOpen, closeProfileSettings } = useProfileSettingsModal();
-    const compact = useMediaQuery('(max-width: 639px)');
 
     useEffect(() => {
         if (!isOpen) return;
@@ -55,35 +47,18 @@ const ProfileEditModal = ({ onAccountDeleted }: Props) => {
 
     if (!isOpen) return null;
 
-    const overlay: CSSProperties = {
-        position: 'fixed',
-        inset: 0,
-        zIndex: 50,
-        background: 'rgba(10,10,10,0.78)',
-        backdropFilter: 'blur(6px)',
-        display: 'flex',
-        alignItems: compact ? 'stretch' : 'flex-start',
-        justifyContent: 'center',
-        padding: compact ? 0 : 'min(40px, 4vh) 12px',
-        overflowY: 'auto',
-    };
-
-    const dialog: CSSProperties = {
-        width: '100%',
-        maxWidth: compact ? '100%' : 760,
-        background: '#161616',
-        border: compact ? 'none' : `1px solid ${PE.fieldBorder}`,
-        borderRadius: compact ? 0 : 8,
-        boxShadow: compact ? 'none' : '-0.5rem 0.5rem 0 0 rgba(221,218,42,0.25)',
-        display: 'flex',
-        flexDirection: 'column',
-        maxHeight: compact ? '100%' : '92vh',
-        overflow: 'hidden',
-    };
-
     return (
-        <div style={overlay} onClick={closeProfileSettings}>
-            <div role="dialog" aria-modal="true" aria-label="Editar perfil" onClick={e => e.stopPropagation()} style={dialog}>
+        <div
+            onClick={closeProfileSettings}
+            className="fixed inset-0 z-50 flex items-stretch justify-center overflow-y-auto bg-[rgba(10,10,10,0.78)] p-0 backdrop-blur-[6px] sm:items-start sm:px-3 sm:py-[min(40px,4vh)]"
+        >
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Editar perfil"
+                onClick={e => e.stopPropagation()}
+                className="flex max-h-full w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-mr-primary sm:max-h-[92vh] sm:max-w-[760px] sm:rounded-mr-md sm:border sm:border-mr-gray-700 sm:shadow-[-0.5rem_0.5rem_0_0_rgba(221,218,42,0.25)]"
+            >
                 <ProfileEditModalContent onAccountDeleted={onAccountDeleted} />
             </div>
         </div>
@@ -92,32 +67,33 @@ const ProfileEditModal = ({ onAccountDeleted }: Props) => {
 
 const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
     const { t } = useTranslation('user');
+
     const { activeTab, setActiveTab, closeProfileSettings } = useProfileSettingsModal();
     const { profile, loading, refetch } = useEnrichedProfile();
 
     return (
         <>
-            {/* header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderBottom: `1px solid ${PE.cardBorder}` }}>
-                <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, color: PE.accent, textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 2 }}>{t('profile.edit.eyebrow')}</div>
-                    <h2 style={{ fontSize: 18, fontWeight: 700, color: '#fff', margin: 0, letterSpacing: '.0625rem', whiteSpace: 'nowrap' }}>{t('profile.edit.title')}</h2>
+            <div className="flex items-center justify-between border-b border-[#333333] px-5 py-4">
+                <div className="min-w-0">
+                    <div className="mb-0.5 text-mr-tiny font-mr-extrabold uppercase tracking-[.1em] text-mr-accent">{t('profile.edit.eyebrow')}</div>
+                    <h2 className="whitespace-nowrap text-[18px] font-mr-bold tracking-mr text-mr-fg">{t('profile.edit.title')}</h2>
                 </div>
                 <button
                     type="button"
                     aria-label={t('profile.edit.close')}
                     onClick={closeProfileSettings}
-                    style={{ background: 'none', border: 0, color: PE.hint, cursor: 'pointer', padding: 6, minHeight: 44, minWidth: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    className="mr-focus-ring flex min-h-11 min-w-11 cursor-pointer items-center justify-center border-0 bg-transparent p-1.5 text-mr-gray-300 hover:text-mr-fg"
                 >
                     <X size={22} />
                 </button>
             </div>
 
-            {/* tabs */}
-            <div role="tablist" style={{ display: 'flex', gap: 0, borderBottom: `1px solid ${PE.cardBorder}`, overflowX: 'auto', whiteSpace: 'nowrap', flexShrink: 0 }}>
+            <div role="tablist" className="flex shrink-0 overflow-x-auto whitespace-nowrap border-b border-[#333333]">
                 {TABS.map(tab => {
                     const Icon = tab.icon;
+
                     const active = activeTab === tab.key;
+
                     return (
                         <button
                             key={tab.key}
@@ -125,23 +101,7 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                             role="tab"
                             aria-selected={active}
                             onClick={() => setActiveTab(tab.key)}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 6,
-                                padding: '12px 14px',
-                                background: 'none',
-                                border: 0,
-                                borderBottom: `2px solid ${active ? PE.accent : 'transparent'}`,
-                                color: active ? PE.accent : PE.hint,
-                                fontSize: 12,
-                                fontWeight: 700,
-                                cursor: 'pointer',
-                                fontFamily: 'inherit',
-                                letterSpacing: '.0625rem',
-                                whiteSpace: 'nowrap',
-                                minHeight: 44,
-                            }}
+                            className={`mr-focus-ring inline-flex min-h-11 cursor-pointer items-center gap-1.5 whitespace-nowrap border-0 border-b-2 bg-transparent px-3.5 py-3 font-mr-sans text-mr-small font-mr-bold tracking-mr ${active ? 'border-mr-accent text-mr-accent' : 'border-transparent text-mr-gray-300'}`}
                         >
                             <Icon size={14} />
                             {t(tab.labelKey)}
@@ -151,9 +111,9 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
             </div>
 
             {/* body */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '18px 20px' }}>
+            <div className="flex-1 overflow-y-auto px-5 py-[18px]">
                 {loading || !profile ? (
-                    <p style={{ fontSize: 12, color: PE.hint, textAlign: 'center', padding: '32px 0' }}>{t('profile.edit.loading')}</p>
+                    <p className="py-8 text-center text-mr-small text-mr-gray-300">{t('profile.edit.loading')}</p>
                 ) : (
                     <>
                         {activeTab === 'informacoes' && <InformacoesTab profile={profile} onSaved={refetch} />}
@@ -173,14 +133,21 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                 )}
             </div>
 
-            {/* footer */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '14px 20px', borderTop: `1px solid ${PE.cardBorder}`, background: PE.mutedBg, flexShrink: 0 }}>
-                <span style={{ fontSize: 11, color: PE.hint }}>{t('profile.edit.autosaveHint')}</span>
-                <div style={{ display: 'flex', gap: 8 }}>
-                    <button type="button" onClick={closeProfileSettings} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '0 16px', height: 44, borderRadius: 2, fontWeight: 700, fontSize: 14, cursor: 'pointer', letterSpacing: '.0625rem', fontFamily: 'inherit', background: PE.fieldBg, color: '#fff', border: `1px solid ${PE.tertiary}` }}>
+            <div className="flex shrink-0 items-center justify-between gap-2.5 border-t border-[#333333] bg-mr-gray-900 px-5 py-3.5">
+                <span className="text-mr-tiny text-mr-gray-300">{t('profile.edit.autosaveHint')}</span>
+                <div className="flex gap-2">
+                    <button
+                        type="button"
+                        onClick={closeProfileSettings}
+                        className="mr-focus-ring inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-mr-xs border border-mr-tertiary bg-mr-secondary px-4 font-mr-sans text-mr-body font-mr-bold tracking-mr text-mr-fg"
+                    >
                         {t('profile.edit.cancel')}
                     </button>
-                    <button type="button" onClick={closeProfileSettings} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '0 16px', height: 44, borderRadius: 2, fontWeight: 700, fontSize: 14, cursor: 'pointer', letterSpacing: '.0625rem', fontFamily: 'inherit', background: PE.accent, color: '#161616', border: `1px solid ${PE.accent}` }}>
+                    <button
+                        type="button"
+                        onClick={closeProfileSettings}
+                        className="mr-focus-ring inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-mr-xs border border-mr-accent bg-mr-accent px-4 font-mr-sans text-mr-body font-mr-bold tracking-mr text-mr-primary"
+                    >
                         {t('profile.edit.save')}
                     </button>
                 </div>

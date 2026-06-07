@@ -7,7 +7,9 @@ import { showErrorToast, showSuccessToast } from '@shared/service/util/toastServ
 
 import useUserGroups from '../../../model/useUserGroups';
 import { type UserGroupItem } from '../../../api/userService';
-import { PE, peEyebrow, peIntro } from './peShared';
+import { cn } from '@shared/lib/cn';
+
+import { peEyebrow } from './peShared';
 
 const initials = (name: string) =>
     name
@@ -34,28 +36,18 @@ const GruposTab = () => {
         }
     };
 
-    if (loading) return <p style={{ fontSize: 12, color: PE.hint, textAlign: 'center', padding: '32px 0' }}>{t('profile.edit.loading')}</p>;
-    if (error) return <p style={{ fontSize: 12, color: PE.danger, textAlign: 'center', padding: '32px 0' }}>{error}</p>;
+    if (loading) return <p className="py-8 text-center text-mr-small text-mr-gray-300">{t('profile.edit.loading')}</p>;
+    if (error) return <p className="py-8 text-center text-mr-small text-mr-danger">{error}</p>;
 
     const actionBtn = (g: UserGroupItem, linked: boolean) => (
         <button
             type="button"
             disabled={pendingId === g.id}
             onClick={() => run(g.id, linked ? unlink : link)}
-            style={{
-                padding: '8px 12px',
-                background: linked ? 'transparent' : PE.accent,
-                color: linked ? PE.danger : '#161616',
-                border: `1px solid ${linked ? PE.danger : PE.accent}`,
-                borderRadius: 2,
-                fontSize: 11,
-                fontWeight: 700,
-                cursor: pendingId === g.id ? 'default' : 'pointer',
-                opacity: pendingId === g.id ? 0.6 : 1,
-                fontFamily: 'inherit',
-                letterSpacing: '.0625rem',
-                whiteSpace: 'nowrap',
-            }}
+            className={cn(
+                'mr-focus-ring cursor-pointer whitespace-nowrap rounded-mr-xs border px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr disabled:cursor-default disabled:opacity-60',
+                linked ? 'border-mr-danger bg-transparent text-mr-danger' : 'border-mr-accent bg-mr-accent text-mr-primary',
+            )}
         >
             {linked ? t('profile.edit.groups.unlink') : t('profile.edit.groups.link')}
         </button>
@@ -64,21 +56,15 @@ const GruposTab = () => {
     const row = (g: UserGroupItem, linked: boolean) => (
         <div
             key={g.id}
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: 12,
-                marginBottom: 8,
-                background: linked ? PE.cardBg : PE.mutedBg,
-                border: `1px solid ${linked ? PE.accent : PE.cardBorder}`,
-                borderRadius: 4,
-            }}
+            className={cn(
+                'mb-2 flex items-center gap-3 rounded-mr-sm border p-3',
+                linked ? 'border-mr-accent bg-[#1f1f20]' : 'border-[#333333] bg-mr-gray-900',
+            )}
         >
             <Avatar src={g.logo ?? undefined} name={initials(g.name)} size={40} />
-            <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: PE.fg, letterSpacing: '.0625rem' }}>{g.name}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: PE.hint, marginTop: 2 }}>
+            <div className="min-w-0 flex-1">
+                <div className="text-[13px] font-mr-bold tracking-mr text-mr-fg">{g.name}</div>
+                <div className="mt-0.5 flex items-center gap-1.5 text-mr-tiny text-mr-gray-300">
                     {linked && g.role && <Badge variant="neutral">{g.role}</Badge>}
                     <span>{t('profile.edit.groups.members', { count: g.memberCount })}</span>
                 </div>
@@ -89,24 +75,24 @@ const GruposTab = () => {
 
     return (
         <div>
-            <p style={{ ...peIntro, marginBottom: 14 }}>{t('profile.edit.groups.intro')}</p>
+            <p className="mb-3.5 text-mr-small leading-relaxed text-mr-gray-200">{t('profile.edit.groups.intro')}</p>
 
             {groups.linked.length > 0 && (
-                <div style={{ marginBottom: 18 }}>
-                    <div style={peEyebrow(PE.accent)}>{t('profile.edit.groups.linkedHeading', { count: groups.linked.length })}</div>
+                <div className="mb-[18px]">
+                    <div className={peEyebrow('accent')}>{t('profile.edit.groups.linkedHeading', { count: groups.linked.length })}</div>
                     {groups.linked.map(g => row(g, true))}
                 </div>
             )}
 
             {groups.available.length > 0 && (
                 <div>
-                    <div style={peEyebrow(PE.tertiary)}>{t('profile.edit.groups.availableHeading')}</div>
+                    <div className={peEyebrow('muted')}>{t('profile.edit.groups.availableHeading')}</div>
                     {groups.available.map(g => row(g, false))}
                 </div>
             )}
 
             {groups.linked.length === 0 && groups.available.length === 0 && (
-                <p style={{ fontSize: 12, color: PE.hint, textAlign: 'center', padding: '24px 0' }}>{t('profile.edit.groups.availableEmpty')}</p>
+                <p className="py-6 text-center text-mr-small text-mr-gray-300">{t('profile.edit.groups.availableEmpty')}</p>
             )}
         </div>
     );

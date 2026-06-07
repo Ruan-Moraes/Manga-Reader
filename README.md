@@ -10,12 +10,12 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ 1942 testes (1064 backend + 878 frontend) — **0 falhas** |
+| **Build** | ✅ 2000 testes (1122 backend + 878 frontend) — **0 falhas** |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
 [✅] Fase 6:   Frontend UI (páginas, features, layout, guards)
-[✅] Fase 7:   Testes do backend (1057 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
+[✅] Fase 7:   Testes do backend (1122 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
 [✅] Fase 8:   Integração frontend ↔ backend (features com API real)
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
@@ -70,7 +70,7 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Pacotes compartilhados frontend | **4** (assets, design-tokens, tsconfig, types) |
 | Features frontend (manga-reader) | **17** módulos |
 | Idiomas suportados | **3** (pt-BR padrão/fallback, en-US, es-ES) |
-| Testes backend | **1064** (0 falhas) |
+| Testes backend | **1122** (0 falhas) |
 | Testes frontend | **878** (126 arquivos, 0 falhas) |
 
 ---
@@ -116,7 +116,7 @@ frontend-apps/
 
 | Banco | Tech | Responsável por |
 |-------|------|----------------|
-| **PostgreSQL** | JPA/Hibernate + Flyway (19 migrations, 14 repos) | users, groups, events, forum, library, stores, tags, subscriptions, payments, domain labels |
+| **PostgreSQL** | JPA/Hibernate + Flyway (22 migrations, 14 repos) | users, groups, events, forum, library, stores, tags, subscriptions, payments, domain labels |
 | **MongoDB** | Spring Data Mongo + Mongock (9 migrations, 8 repos) | titles, **chapters** (coleção própria — DT-17, `GET /api/titles/{id}/chapters` paginado + `direction` asc/desc numérico — DT-19), comments, ratings, news, view history |
 
 ---
@@ -207,7 +207,7 @@ pnpm --filter landing-page dev    # landing page
 ### Testes
 
 ```bash
-# Backend (1057 testes)
+# Backend (1122 testes)
 cd api
 mvn test                                    # Todos
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
@@ -259,7 +259,7 @@ Manga-Reader/
 
 **170+ arquivos · 1397 testes · 0 falhas**
 
-### Backend — 1057 testes
+### Backend — 1122 testes
 
 | Camada | Anotação | Abordagem |
 |--------|----------|-----------|
@@ -356,13 +356,17 @@ Cada review possui notas por categoria:
 | `GET` | `/api/ratings/title/{id}/average` | Média de estrelas + contagem |
 | `GET` | `/api/ratings/title/{id}/distribution` | Contagem por faixa de estrela (1–5) + total — agregação Mongo (`$round` do `overallRating`) |
 | `GET` | `/api/ratings/user` | Avaliações do usuário logado |
-| `POST` | `/api/ratings` | Submete/atualiza avaliação (6 categorias + comentário) |
+| `POST` | `/api/ratings` | Submete/atualiza avaliação (6 categorias + comentário + título/spoiler) |
 | `PUT` | `/api/ratings/{id}` | Atualiza avaliação |
 | `DELETE` | `/api/ratings/{id}` | Remove avaliação |
+| `POST` | `/api/ratings/{id}/vote` | Vota Útil/Contrário (`{value: "up"｜"down"}`, toggle; 1 voto/usuário; não vota a própria) |
+| `DELETE` | `/api/ratings/{id}/vote` | Remove o voto do usuário |
 
 > **Frontend:** a aba de avaliações da obra implementa o wizard de 6 categorias
-> (`RatingWizard`) e o gráfico de distribuição consome `/distribution` (dados
-> reais — substituiu percentuais hardcoded).
+> (`RatingWizard`), o gráfico de distribuição consome `/distribution` (dados
+> reais — substituiu percentuais hardcoded) e os votos Útil/Contrário no `ReviewCard`
+> chamam `/vote` (DT-45). Campos avançados (`reviewTitle`, `spoiler`, `top`, `upvotes`,
+> `downvotes`, `myVote`) vêm do backend.
 
 ### Job Periódico
 

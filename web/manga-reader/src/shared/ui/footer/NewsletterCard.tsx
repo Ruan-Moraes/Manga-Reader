@@ -44,7 +44,7 @@ export const NewsletterCard = ({ onSubscribe, texts }: { onSubscribe?: (email: s
                         placeholder={texts.newsletterPlaceholder}
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        className="h-11 min-w-0 flex-1 rounded-[2px] border border-mr-tertiary bg-transparent px-3 text-[13px] text-mr-fg outline-none transition-colors duration-200 placeholder:text-mr-fg-subtle focus:border-mr-accent mr-focus-ring"
+                        className="py-2.5 min-w-0 flex-1 rounded-[2px] border border-mr-tertiary bg-transparent px-3 text-[13px] text-mr-fg outline-none transition-colors duration-200 placeholder:text-mr-fg-subtle focus:border-mr-accent mr-focus-ring"
                     />
                     <button
                         type="submit"

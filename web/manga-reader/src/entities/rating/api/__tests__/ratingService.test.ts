@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import { getRatingsByTitleId, getRatingsAverage, submitRating, getUserReviews, updateReview, deleteReview } from '../ratingService';
+import { getRatingsByTitleId, getRatingsAverage, submitRating, getUserReviews, updateReview, deleteReview, castReviewVote, removeReviewVote } from '../ratingService';
 
 const buildRatingResponse = (overrides = {}) => ({
     id: 'rating-1',
@@ -177,6 +177,71 @@ describe('ratingService', () => {
             server.use(http.get(`*${API_URLS.RATINGS}/title/title-1/average`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(getRatingsAverage('title-1')).rejects.toThrow();
+        });
+    });
+
+    describe('getRatingsByTitleId - campos avançados (DT-45)', () => {
+        it('deve mapear reviewTitle, spoiler, top, upvotes, downvotes e myVote', async () => {
+            const rating = buildRatingResponse({
+                reviewTitle: 'Imperdível',
+                spoiler: true,
+                top: true,
+                upvotes: 12,
+                downvotes: 3,
+                myVote: 'up',
+            });
+
+            server.use(
+                http.get(`*${API_URLS.RATINGS}/title/title-1`, () =>
+                    HttpResponse.json({ data: buildPageResponse([rating]), success: true }),
+                ),
+            );
+
+            const result = await getRatingsByTitleId('title-1');
+
+            expect(result.content[0]).toMatchObject({
+                reviewTitle: 'Imperdível',
+                spoiler: true,
+                top: true,
+                upvotes: 12,
+                downvotes: 3,
+                myVote: 'up',
+            });
+        });
+    });
+
+    describe('castReviewVote', () => {
+        it('deve enviar value e retornar contadores + myVote', async () => {
+            server.use(
+                http.post(`*${API_URLS.RATINGS}/rating-1/vote`, () =>
+                    HttpResponse.json({ data: { upvotes: 8, downvotes: 1, myVote: 'up' }, success: true }),
+                ),
+            );
+
+            const result = await castReviewVote('rating-1', 'up');
+
+            expect(result).toEqual({ upvotes: 8, downvotes: 1, myVote: 'up' });
+        });
+
+        it('deve lançar erro quando API retorna 409 (voto próprio)', async () => {
+            server.use(http.post(`*${API_URLS.RATINGS}/rating-1/vote`, () => HttpResponse.json(null, { status: 409 })));
+
+            await expect(castReviewVote('rating-1', 'down')).rejects.toThrow();
+        });
+    });
+
+    describe('removeReviewVote', () => {
+        it('deve remover voto e retornar contadores com myVote nulo', async () => {
+            server.use(
+                http.delete(`*${API_URLS.RATINGS}/rating-1/vote`, () =>
+                    HttpResponse.json({ data: { upvotes: 7, downvotes: 1, myVote: null }, success: true }),
+                ),
+            );
+
+            const result = await removeReviewVote('rating-1');
+
+            expect(result.upvotes).toBe(7);
+            expect(result.myVote).toBeNull();
         });
     });
 

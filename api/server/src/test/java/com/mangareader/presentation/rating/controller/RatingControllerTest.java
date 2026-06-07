@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Import;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,14 +32,20 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mangareader.application.rating.port.RatingRepositoryPort.RatingDistribution;
+import com.mangareader.application.rating.port.ReviewVoteRepositoryPort;
+import com.mangareader.application.rating.usecase.CastReviewVoteUseCase;
 import com.mangareader.application.rating.usecase.DeleteRatingUseCase;
 import com.mangareader.application.rating.usecase.GetRatingAverageUseCase;
 import com.mangareader.application.rating.usecase.GetRatingDistributionUseCase;
 import com.mangareader.application.rating.usecase.GetRatingsByTitleUseCase;
 import com.mangareader.application.rating.usecase.GetUserRatingsUseCase;
+import com.mangareader.application.rating.usecase.RemoveReviewVoteUseCase;
+import com.mangareader.application.rating.usecase.ReviewVoteResult;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
 import com.mangareader.application.rating.usecase.UpdateRatingUseCase;
 import com.mangareader.domain.rating.entity.MangaRating;
+import com.mangareader.domain.rating.valueobject.VoteValue;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
@@ -70,6 +77,15 @@ class RatingControllerTest {
 
     @MockitoBean
     private GetUserRatingsUseCase getUserRatingsUseCase;
+
+    @MockitoBean
+    private CastReviewVoteUseCase castReviewVoteUseCase;
+
+    @MockitoBean
+    private RemoveReviewVoteUseCase removeReviewVoteUseCase;
+
+    @MockitoBean
+    private ReviewVoteRepositoryPort reviewVoteRepository;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -108,7 +124,7 @@ class RatingControllerTest {
         void deveRetornar200ComAvaliacoes() throws Exception {
             var ratings = List.of(buildRating("r1"), buildRating("r2"));
 
-            when(getRatingsByTitleUseCase.execute(any(), any(Pageable.class)))
+            when(getRatingsByTitleUseCase.execute(any(), any(), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(ratings));
 
             mockMvc.perform(get("/api/ratings/title/title-1"))
@@ -122,12 +138,25 @@ class RatingControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia quando título não tem avaliações")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getRatingsByTitleUseCase.execute(any(), any(Pageable.class)))
+            when(getRatingsByTitleUseCase.execute(any(), any(), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/ratings/title/title-sem-avaliacao"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve repassar o filtro ?star=5 ao use case")
+        void deveRepassarFiltroStar() throws Exception {
+            when(getRatingsByTitleUseCase.execute(any(), any(), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(buildRating("r1"))));
+
+            mockMvc.perform(get("/api/ratings/title/title-1").param("star", "5"))
+                    .andExpect(status().isOk());
+
+            verify(getRatingsByTitleUseCase).execute(org.mockito.ArgumentMatchers.eq("title-1"),
+                    org.mockito.ArgumentMatchers.eq(5), any(Pageable.class));
         }
     }
 
@@ -328,6 +357,80 @@ class RatingControllerTest {
 
             mockMvc.perform(delete("/api/ratings/r-x").principal(mockAuth()))
                     .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /api/ratings/{id}/vote")
+    class Vote {
+        @Test
+        @DisplayName("Deve retornar 200 com contadores e myVote ao votar 'up'")
+        void deveRetornar200AoVotar() throws Exception {
+            when(castReviewVoteUseCase.execute(any(), any(), org.mockito.ArgumentMatchers.eq(VoteValue.UP)))
+                    .thenReturn(new ReviewVoteResult(8, 1, VoteValue.UP));
+
+            mockMvc.perform(post("/api/ratings/r1/vote")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"value": "up"}
+                                    """)
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.upvotes").value(8))
+                    .andExpect(jsonPath("$.data.downvotes").value(1))
+                    .andExpect(jsonPath("$.data.myVote").value("up"));
+        }
+
+        @Test
+        @DisplayName("Deve retornar 400 quando value é inválido")
+        void deveRetornar400ValueInvalido() throws Exception {
+            mockMvc.perform(post("/api/ratings/r1/vote")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"value": "sideways"}
+                                    """)
+                            .principal(mockAuth()))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 400 quando value está em branco")
+        void deveRetornar400ValueEmBranco() throws Exception {
+            mockMvc.perform(post("/api/ratings/r1/vote")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"value": ""}
+                                    """)
+                            .principal(mockAuth()))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 409 ao votar na própria resenha")
+        void deveRetornar409VotoProprio() throws Exception {
+            when(castReviewVoteUseCase.execute(any(), any(), any()))
+                    .thenThrow(new BusinessRuleException("Não é possível votar na própria resenha", 409));
+
+            mockMvc.perform(post("/api/ratings/r1/vote")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"value": "down"}
+                                    """)
+                            .principal(mockAuth()))
+                    .andExpect(status().isConflict());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 200 e myVote nulo ao remover o voto")
+        void deveRetornar200AoRemoverVoto() throws Exception {
+            when(removeReviewVoteUseCase.execute(any(), any()))
+                    .thenReturn(new ReviewVoteResult(7, 1, null));
+
+            mockMvc.perform(delete("/api/ratings/r1/vote").principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.upvotes").value(7))
+                    .andExpect(jsonPath("$.data.myVote").doesNotExist());
         }
     }
 }

@@ -57,7 +57,7 @@ const ChaptersTab = ({
 
     return (
         <>
-            <div className="mb-4 flex flex-wrap gap-">
+            <div className="mb-4 flex flex-wrap gap-2">
                 <Select value={lang} onChange={e => onLangChange(e.target.value)} options={langOptions} className="w-44" />
                 <SegmentedControl items={orderItems} value={order} onChange={v => onOrderChange(v as 'asc' | 'desc')} size="md" unified={true} />
                 <SearchField value={search} onChange={onSearchChange} placeholder={t('chapter.searchPlaceholder')} className="flex-1 min-w-[180px]" />

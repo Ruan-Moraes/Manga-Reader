@@ -21,7 +21,12 @@ public interface RatingRepositoryPort {
 
     long countByTitleId(String titleId);
 
-    Page<MangaRating> findByTitleId(String titleId, Pageable pageable);
+    /**
+     * Avaliações de um título, opcionalmente filtradas por faixa de estrela.
+     * {@code star} nulo retorna todas; caso contrário filtra por
+     * {@code overallRating} ∈ [star-0.5, star+0.5) (equivale a {@code Math.round}).
+     */
+    Page<MangaRating> findByTitleId(String titleId, Integer star, Pageable pageable);
 
     Page<MangaRating> findByUserId(String userId, Pageable pageable);
 

@@ -1,74 +1,35 @@
-import { type CSSProperties, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
+
+import { cn } from '@shared/lib/cn';
 
 /**
- * Estilos fiéis ao handoff `design_handoff_profile_edit_modal/mockup`.
- * Inline para reproduzir o pixel exato (cores/spacing/radii do mockup), sem
- * depender de utilitários que arredondam os valores. Tokens equivalem aos
- * `--mr-*` de `colors_and_type.css`.
+ * Estilos do modal de edição de perfil, em classes Tailwind (tokens `mr-*` de
+ * `styles/index.css`). Migrado de `style` inline para Tailwind conforme a regra de
+ * styling do CLAUDE.md — inline fica reservado a valores dinâmicos de runtime.
  */
-export const PE = {
-    accent: '#ddda2a',
-    danger: '#FF784F',
-    fieldBg: '#252526',
-    fieldBorder: '#444444',
-    cardBg: '#1f1f20',
-    cardBorder: '#333333',
-    mutedBg: '#1a1a1a',
-    tertiary: '#727273',
-    hint: '#999999',
-    intro: '#cccccc',
-    fg: '#ffffff',
-} as const;
 
-export const peInput: CSSProperties = {
-    width: '100%',
-    height: 40,
-    padding: '0 12px',
-    background: PE.fieldBg,
-    color: PE.fg,
-    border: `1px solid ${PE.fieldBorder}`,
-    borderRadius: 2,
-    fontSize: 13,
-    fontFamily: 'inherit',
-    letterSpacing: '.0625rem',
-    boxSizing: 'border-box',
-    outline: 'none',
-};
+// Input padrão (altura fixa).
+export const peInput =
+    'box-border h-10 w-full rounded-mr-xs border border-mr-gray-700 bg-mr-secondary px-3 font-mr-sans text-[13px] tracking-mr text-mr-fg outline-none';
 
-export const peIntro: CSSProperties = {
-    fontSize: 12,
-    color: PE.intro,
-    lineHeight: 1.6,
-    marginTop: 0,
-    marginBottom: 18,
-};
+// Input "nu" para uso dentro de um grupo com prefixo (sem borda/fundo próprios).
+export const peInputBare = 'h-full w-full border-0 bg-transparent px-3 font-mr-sans text-[13px] tracking-mr text-mr-fg outline-none';
 
-export const peSmallBtn = (kind: 'ghost' | 'danger'): CSSProperties => ({
-    padding: '6px 10px',
-    background: 'transparent',
-    color: kind === 'danger' ? PE.danger : PE.fg,
-    border: `1px solid ${kind === 'danger' ? PE.danger : PE.tertiary}`,
-    borderRadius: 2,
-    fontSize: 11,
-    fontWeight: 700,
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-    letterSpacing: '.0625rem',
-});
+export const peIntro = 'mb-[18px] text-mr-small leading-relaxed text-mr-gray-200';
 
-export const peEyebrow = (color: string): CSSProperties => ({
-    fontSize: 11,
-    fontWeight: 800,
-    color,
-    textTransform: 'uppercase',
-    letterSpacing: '.08em',
-    marginBottom: 8,
-});
+export const peSmallBtn = (kind: 'ghost' | 'danger') =>
+    cn(
+        'cursor-pointer rounded-mr-xs border bg-transparent px-2.5 py-1.5 text-mr-tiny font-mr-bold tracking-mr',
+        kind === 'danger' ? 'border-mr-danger text-mr-danger' : 'border-mr-tertiary text-mr-fg',
+    );
+
+export const peEyebrow = (tone: 'accent' | 'muted' = 'accent') =>
+    cn('mb-2 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label', tone === 'accent' ? 'text-mr-accent' : 'text-mr-tertiary');
 
 export const PEField = ({ label, hint, children }: { label: string; hint?: ReactNode; children: ReactNode }) => (
-    <label style={{ display: 'block', marginBottom: 14 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: PE.accent, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 6 }}>{label}</div>
+    <label className="mb-[14px] block">
+        <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label text-mr-accent">{label}</div>
         {children}
-        {hint && <div style={{ fontSize: 11, color: PE.hint, marginTop: 4, lineHeight: 1.5 }}>{hint}</div>}
+        {hint && <div className="mt-1 text-mr-tiny leading-normal text-mr-fg-subtle">{hint}</div>}
     </label>
 );

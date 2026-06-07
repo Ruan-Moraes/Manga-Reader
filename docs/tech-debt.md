@@ -658,10 +658,32 @@ do antigo `pending-tasks.md` (cuja maior parte já estava resolvida/stale). Todo
 
 ---
 
-### DT-45: Rating API — campos avançados de resenha — **Pendente**
+### DT-45: Rating API — campos avançados de resenha — **Resolvido (2026-06-06)**
 
-**Estado**: Pendente. O frontend já consome os campos opcionalmente (2026-06-03);
-o backend ainda não os persiste nem expõe.
+**Estado**: **Resolvido (2026-06-06)**. Backend persiste e expõe os campos; votação
+Útil/Contrário ligada ponta a ponta.
+- **Domínio**: `MangaRating` ganhou `reviewTitle`, `spoiler`, `top`, `upvotes`, `downvotes`
+  (defaults via `@Builder.Default`). Nova entidade `ReviewVote` (`review_votes`, índice
+  único `(ratingId, userId)`) + enum `VoteValue {UP, DOWN}` com `fromValue` (padrão DT-39).
+- **Application**: `ReviewVoteRepositoryPort` + `CastReviewVoteUseCase`/`RemoveReviewVoteUseCase`
+  (`@Transactional("mongoTransactionManager")`). Toggle: mesmo lado remove, oposto troca,
+  voto-próprio proibido (`BusinessRuleException` 409). `SubmitRating`/`UpdateRating` aceitam
+  `reviewTitle`/`spoiler`.
+- **Persistência**: `ReviewVoteMongoRepository`/`Adapter`; Mongock
+  `V010AddReviewFieldsAndVoteIndexes` (backfill idempotente dos defaults + índice único).
+- **Presentation**: `POST /api/ratings/{id}/vote` (body `{value}`) e `DELETE /api/ratings/{id}/vote`
+  → `ReviewVoteResponse(upvotes, downvotes, myVote)`. `RatingResponse` ganhou os campos + `myVote`
+  resolvido em lote na listagem (`findByRatingIdInAndUserId`, sem N+1; anônimo ⇒ null).
+  `GlobalExceptionHandler`: `IllegalArgumentException` → 400 (melhora também os endpoints DT-39).
+- **Frontend**: `ratingService` mapeia os campos novos + `castReviewVote`/`removeReviewVote`;
+  `ReviewsTab` dispara mutation real (otimista, revert + toast no erro). Chave i18n
+  `rating:reviews.voteError` (pt/en/es) e mensagens de validação `validation.rating.reviewTitle.size`/
+  `validation.review.vote.required` nos 3 idiomas.
+- **Testes**: `VoteValueTest`, `Cast/RemoveReviewVoteUseCaseTest`, `RatingControllerTest`
+  (+voto), `ReviewVoteRepositoryAdapterTest` (TestContainers), `ratingService` (+voto).
+
+**Histórico (pendente até 2026-06-03)**: O frontend já consumia os campos opcionalmente;
+o backend ainda não os persistia nem expunha.
 
 Campos a adicionar ao documento `MangaRating` (MongoDB, via Mongock):
 - `reviewTitle: String` (max 80) — título opcional da resenha
@@ -688,10 +710,22 @@ substituir o `useState` local por mutation que chama `/vote`.
 
 ---
 
-### DT-46: Store API — campos de compra e metadados de loja — **Pendente**
+### DT-46: Store API — campos de compra e metadados de loja — **Resolvido (2026-06-06)**
 
-**Estado**: Pendente. O frontend usa mock (`@mock/store.ts`) enquanto o backend não retorna
-os campos novos (2026-06-03). A aba Lojas mostra apenas nome + link enquanto não há preços.
+**Estado**: **Resolvido (2026-06-06)**. Backend persiste e expõe os campos; frontend
+consome a API real (mock removido).
+- **Migration**: `V22__store_add_fields.sql` (⚠️ **V22** — `V21` já era `user_add_deactivation`;
+  o doc citava V21 por engano). Colunas `price`, `old_price`, `category`, `official`,
+  `rating_count`, `format`, `shipping`, `note`, `mono`, `color`.
+- **Domínio**: enum `StoreCategory {OFICIAL, NOVA, USADO}` (`fromValue`, padrão DT-39);
+  `Store` ganhou os campos. `StoreResponse`/`StoreMapper` expõem-nos (category lowercased,
+  como `availability`). `StoreSeed` (dev) enriquecido com preços/categoria/metadados.
+- **Frontend**: `StoresTab` consome `data.content` direto (fallback `MOCK_STORES` removido);
+  `@mock/store.ts` deletado (e seu re-export em `mock/index.ts`). `storeService` mapeia 1:1.
+- **Testes**: `StoreCategoryTest`, `StoreMapperTest` (campos novos + category lowercase).
+
+**Histórico (pendente até 2026-06-03)**: O frontend usava mock (`@mock/store.ts`) enquanto
+o backend não retornava os campos novos.
 
 Campos a adicionar à entidade `Store` (PostgreSQL, Flyway `V21__store_add_fields.sql`):
 - `price`, `oldPrice` (Integer, centavos BRL) — integração com parceiros
@@ -711,16 +745,45 @@ Quando implementado: remover o fallback para `@mock/store.ts` no `StoresTab.tsx`
 
 ---
 
+### DT-47: Integração completa da aba de Resenhas (persistência) — **Resolvido (2026-06-06)**
+
+**Estado**: **Resolvido (2026-06-06)**. A camada de dados de rating foi migrada para
+TanStack Query e a aba de Resenhas passou a persistir de forma confiável (base p/ o
+trabalho futuro dependente disso).
+- **Backend**: `GET /api/ratings/title/{id}` ganhou filtro `?star=` (range query
+  `overallRating ∈ [star-0.5, star+0.5)` no `RatingRepositoryAdapter`, equivalente a
+  `Math.round`) e `upvotes` no whitelist de ordenação (sort "top" server-side).
+  `GetRatingsByTitleUseCase` e `RatingRepositoryPort.findByTitleId` aceitam `Integer star`.
+- **Frontend (TanStack Query)**: removidos os hooks manuais `useRatings`/`useRating`
+  (useState/useEffect). Novos hooks: `useReviews` (`useInfiniteQuery`, **load-more**
+  server-side, queryKey por sort+star), `useRatingSummary` (média+distribuição),
+  `useSubmitReview` (mutation upsert com `requireAuth`+toast, **invalida** as queries) e
+  `useReviewVote` (mutation **otimista** no cache + **reconciliação** com os contadores
+  do servidor, rollback no erro). `reviewTitle`/`spoiler` agora tipados de ponta a ponta.
+- **UI**: `ReviewCard` virou **controlado** (exibe `upvotes/downvotes/myVote` das props);
+  `ReviewsTab` ordena/filtra por estrela via servidor e tem botão "Carregar mais"
+  (i18n `reviews.loadMore` pt/en/es). `TitleDetails` religado aos novos hooks.
+- **Testes**: backend (`GetRatingsByTitleUseCaseTest` star, `RatingControllerTest` param
+  star, `RatingRepositoryAdapterStarFilterTest` TestContainers); frontend
+  (`useReviews`, `useReviewVote`, `useSubmitReview`, `ratingService`).
+
+**Nota de ambiente**: neste working tree WIP, os testes de **componente** (jest-dom) e o
+`lint:fsd` (plugin steiger ausente) não rodam — pré-existente, alheio a esta mudança. Os
+testes de hook/serviço (sem jest-dom) rodam verdes.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 3 | DT-08 (axe por rota — parcial), DT-10, DT-45 (rating campos avançados) |
+| **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 4 | DT-03, DT-09, DT-44 (backlog de produto), DT-46 (store campos compra) |
+| **Baixa** | 3 | DT-03, DT-09, DT-44 (backlog de produto) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
 | **Resolvidos 2026-06-01** | 7 | DT-27, DT-31, DT-32, DT-36, DT-37, DT-38, DT-39 |
+| **Resolvidos 2026-06-06** | 2 | DT-45 (rating campos avançados + voto), DT-46 (store campos de compra) |

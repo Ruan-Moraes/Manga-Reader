@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mangareader.domain.rating.entity.MangaRating;
+import com.mangareader.domain.rating.valueobject.VoteValue;
 import com.mangareader.presentation.rating.dto.RatingResponse;
 
 /**
@@ -18,6 +19,14 @@ public final class RatingMapper {
     private RatingMapper() {}
 
     public static RatingResponse toResponse(MangaRating rating) {
+        return toResponse(rating, null);
+    }
+
+    /**
+     * @param myVote voto do usuário autenticado nesta resenha ({@code null}
+     *               quando anônimo ou sem voto).
+     */
+    public static RatingResponse toResponse(MangaRating rating, VoteValue myVote) {
         if (rating == null) return null;
 
         return new RatingResponse(
@@ -33,6 +42,12 @@ public final class RatingMapper {
                 rating.getOriginalityRating(),
                 rating.getPacingRating(),
                 rating.getComment(),
+                rating.getReviewTitle(),
+                rating.isSpoiler(),
+                rating.isTop(),
+                rating.getUpvotes(),
+                rating.getDownvotes(),
+                myVote != null ? myVote.name().toLowerCase() : null,
                 formatDate(rating.getCreatedAt())
         );
     }

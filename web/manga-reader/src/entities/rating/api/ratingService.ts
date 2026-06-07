@@ -21,6 +21,12 @@ type RatingResponse = {
     originalityRating: number;
     pacingRating: number;
     comment?: string;
+    reviewTitle?: string;
+    spoiler?: boolean;
+    top?: boolean;
+    upvotes?: number;
+    downvotes?: number;
+    myVote?: 'up' | 'down' | null;
     createdAt: string;
 };
 
@@ -46,6 +52,12 @@ const toMangaRating = (r: RatingResponse): MangaRating => ({
     originalityRating: r.originalityRating,
     pacingRating: r.pacingRating,
     comment: r.comment,
+    reviewTitle: r.reviewTitle,
+    spoiler: r.spoiler,
+    top: r.top,
+    upvotes: r.upvotes,
+    downvotes: r.downvotes,
+    myVote: r.myVote,
     createdAt: r.createdAt,
 });
 
@@ -53,8 +65,24 @@ const toMangaRating = (r: RatingResponse): MangaRating => ({
 // Public API — Ratings
 // ---------------------------------------------------------------------------
 
-export const getRatingsByTitleId = async (titleId: string, page = 0, size = 20): Promise<PageResponse<MangaRating>> => {
-    const response = await api.get<ApiResponse<PageResponse<RatingResponse>>>(`${API_URLS.RATINGS}/title/${titleId}`, { params: { page, size } });
+export type GetReviewsParams = {
+    page?: number;
+    size?: number;
+    /** Campo de ordenação do backend: createdAt | overallRating | upvotes */
+    sort?: string;
+    direction?: 'asc' | 'desc';
+    /** Filtro por faixa de estrela (1–5) */
+    star?: number;
+};
+
+export const getRatingsByTitleId = async (titleId: string, { page = 0, size = 20, sort, direction, star }: GetReviewsParams = {}): Promise<PageResponse<MangaRating>> => {
+    const params: Record<string, string | number> = { page, size };
+
+    if (sort) params.sort = sort;
+    if (direction) params.direction = direction;
+    if (star != null) params.star = star;
+
+    const response = await api.get<ApiResponse<PageResponse<RatingResponse>>>(`${API_URLS.RATINGS}/title/${titleId}`, { params });
 
     const pageData = response.data.data;
 
@@ -94,10 +122,36 @@ export const submitRating = async (data: {
     originalityRating: number;
     pacingRating: number;
     comment?: string;
+    reviewTitle?: string;
+    spoiler?: boolean;
 }): Promise<MangaRating> => {
     const response = await api.post<ApiResponse<RatingResponse>>(API_URLS.RATINGS, data);
 
     return toMangaRating(response.data.data);
+};
+
+// ---------------------------------------------------------------------------
+// Public API — Review Votes (DT-45)
+// ---------------------------------------------------------------------------
+
+export type ReviewVoteResult = {
+    upvotes: number;
+    downvotes: number;
+    myVote?: 'up' | 'down' | null;
+};
+
+/** Registra voto Útil/Contrário (toggle no backend). */
+export const castReviewVote = async (id: string, value: 'up' | 'down'): Promise<ReviewVoteResult> => {
+    const response = await api.post<ApiResponse<ReviewVoteResult>>(`${API_URLS.RATINGS}/${id}/vote`, { value });
+
+    return response.data.data;
+};
+
+/** Remove o voto do usuário na resenha. */
+export const removeReviewVote = async (id: string): Promise<ReviewVoteResult> => {
+    const response = await api.delete<ApiResponse<ReviewVoteResult>>(`${API_URLS.RATINGS}/${id}/vote`);
+
+    return response.data.data;
 };
 
 // ---------------------------------------------------------------------------

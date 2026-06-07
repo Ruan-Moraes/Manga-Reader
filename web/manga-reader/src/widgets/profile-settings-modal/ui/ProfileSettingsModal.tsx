@@ -2,6 +2,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { ProfileEditModal } from '@entities/user';
+
 import { useAuth } from '@features/auth';
 
 /**
@@ -11,12 +12,14 @@ import { useAuth } from '@features/auth';
  */
 const ProfileSettingsModal = () => {
     const { logout } = useAuth();
+
     const navigate = useAppNavigate();
 
     return (
         <ProfileEditModal
             onAccountDeleted={() => {
                 logout();
+
                 navigate(ROUTES.HOME);
             }}
         />

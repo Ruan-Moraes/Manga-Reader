@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class GetRatingsByTitleUseCase {
     private final RatingRepositoryPort ratingRepository;
 
-    public Page<MangaRating> execute(String titleId, Pageable pageable) {
-        return ratingRepository.findByTitleId(titleId, pageable);
+    public Page<MangaRating> execute(String titleId, Integer star, Pageable pageable) {
+        return ratingRepository.findByTitleId(titleId, star, pageable);
     }
 }

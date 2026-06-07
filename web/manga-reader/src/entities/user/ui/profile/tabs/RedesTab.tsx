@@ -6,7 +6,7 @@ import { showErrorToast, showSuccessToast } from '@shared/service/util/toastServ
 import { updateProfile } from '../../../api/userService';
 import useDebouncedCallback from '../../../lib/useDebouncedCallback';
 import { type EnrichedProfile } from '../../../model/user.types';
-import { PE, PEField, peInput, peIntro } from './peShared';
+import { PEField, peInputBare, peIntro } from './peShared';
 
 const AUTOSAVE_MS = 1000;
 
@@ -52,16 +52,16 @@ const RedesTab = ({ profile, onSaved }: Props) => {
 
     return (
         <div>
-            <p style={peIntro}>{t('profile.edit.social.intro')}</p>
+            <p className={peIntro}>{t('profile.edit.social.intro')}</p>
             {FIELDS.map(f => (
                 <PEField key={f.key} label={f.label}>
-                    <div style={{ display: 'flex', alignItems: 'center', height: 40, background: PE.fieldBg, border: `1px solid ${PE.fieldBorder}`, borderRadius: 2 }}>
-                        <span style={{ padding: '0 10px', color: PE.tertiary, fontSize: 12, letterSpacing: '.0625rem', borderRight: `1px solid ${PE.fieldBorder}`, height: '100%', display: 'flex', alignItems: 'center' }}>{f.prefix}</span>
+                    <div className="flex h-10 items-center rounded-mr-xs border border-mr-gray-700 bg-mr-secondary">
+                        <span className="flex h-full items-center border-r border-mr-gray-700 px-2.5 text-mr-small tracking-mr text-mr-tertiary">{f.prefix}</span>
                         <input
                             value={handles[f.key] || ''}
                             placeholder={f.placeholder}
                             onChange={e => onChange(f.key, e.target.value)}
-                            style={{ ...peInput, height: '100%', border: 0, background: 'transparent', padding: '0 12px' }}
+                            className={peInputBare}
                         />
                     </div>
                 </PEField>

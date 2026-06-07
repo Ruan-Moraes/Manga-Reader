@@ -13,6 +13,11 @@ export enum QUERY_KEYS {
     // Comments
     COMMENTS = 'comments',
 
+    // Ratings / Reviews
+    RATINGS_BY_TITLE = 'ratingsByTitle',
+    RATING_AVERAGE = 'ratingAverage',
+    RATING_DISTRIBUTION = 'ratingDistribution',
+
     // Stores
     STORES_BY_TITLE = 'storesByTitle',
 

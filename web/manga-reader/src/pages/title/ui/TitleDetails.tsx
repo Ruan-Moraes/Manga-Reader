@@ -13,7 +13,7 @@ import { EmptyState } from '@ui/EmptyState';
 
 import { useTitle, useTitleModals } from '@entities/manga';
 import { useChapters } from '@entities/chapter';
-import { useRating, RatingModal } from '@entities/rating';
+import { useRatingSummary, useSubmitReview, RatingModal } from '@entities/rating';
 import { getGroupsByTitleId } from '@entities/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { useAuth } from '@features/auth';
@@ -28,9 +28,10 @@ import TitleAboutTab from './parts/TitleAboutTab';
 import TitleDetailsSkeleton from './parts/TitleDetailsSkeleton';
 
 const TitleDetails = () => {
+    const { t } = useTranslation('manga');
+
     const { titleId } = useParams();
     const navigate = useAppNavigate();
-    const { t } = useTranslation('manga');
 
     const [tab, setTab] = useState('chapters');
     const [lang, setLang] = useState('all');
@@ -40,14 +41,17 @@ const TitleDetails = () => {
 
     const { title, isLoading, isError } = useTitle(titleId ?? '');
     const { chapters, totalPages, isLoading: chaptersLoading } = useChapters(titleId ?? '', { page: chPage, direction: order });
-    const { ratings, average, distribution, submitRating } = useRating(titleId ?? '');
+    const { average, distribution } = useRatingSummary(titleId ?? '');
+    const submitReview = useSubmitReview(titleId ?? '');
     const { isRatingModalOpen, openRatingModal, closeRatingModal } = useTitleModals();
     const { isLoggedIn } = useAuth();
+
     const { data: groupsPage } = useQuery({
         queryKey: [QUERY_KEYS.GROUPS_BY_TITLE, titleId],
         queryFn: () => getGroupsByTitleId(titleId!, 0, 10),
         enabled: Boolean(titleId),
     });
+
     const groups = groupsPage?.content ?? [];
 
     const tabItems = [
@@ -88,11 +92,9 @@ const TitleDetails = () => {
     return (
         <PageContainer asMain size="default" paddingY="md">
             <TitleHero title={title} average={average} groupCount={groups.length} />
-
             <div className="mb-6 sticky top-0 z-10 bg-mr-primary pt-1 pb-1">
                 <Tabs items={tabItems} value={tab} onChange={setTab} variant="underline" />
             </div>
-
             {tab === 'chapters' && (
                 <ChaptersTab
                     titleId={titleId ?? ''}
@@ -109,13 +111,20 @@ const TitleDetails = () => {
                     onPageChange={setChPage}
                 />
             )}
-            {tab === 'reviews' && <ReviewsTab ratings={ratings} average={average} distribution={distribution} onWriteReview={openRatingModal} isLoggedIn={isLoggedIn} />}
+
+            {tab === 'reviews' && <ReviewsTab titleId={titleId ?? ''} average={average} distribution={distribution} onWriteReview={openRatingModal} isLoggedIn={isLoggedIn} />}
             {tab === 'comments' && <CommentsTab titleId={titleId ?? ''} />}
             {tab === 'groups' && <GroupsTab groups={groups} />}
             {tab === 'stores' && <StoresTab titleId={titleId ?? ''} />}
             {tab === 'about' && <TitleAboutTab title={title} />}
 
-            <RatingModal isModalOpen={isRatingModalOpen} closeModal={closeRatingModal} onSubmitRating={submitRating} />
+            <RatingModal
+                isModalOpen={isRatingModalOpen}
+                closeModal={closeRatingModal}
+                onSubmitRating={data => submitReview.mutate(data)}
+                isSubmitting={submitReview.isPending}
+                titleName={title.name}
+            />
         </PageContainer>
     );
 };

@@ -402,6 +402,17 @@ select:focus-visible {
     }
 }
 
+/* Toggle manual de acessibilidade (settings → reduceMotion): força a redução
+   independentemente da preferência do SO. Espelha o @media acima. */
+html.mr-reduce-motion *,
+html.mr-reduce-motion *::before,
+html.mr-reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+
 .splide__arrows svg {
     fill: var(--mr-tertiary);
 }

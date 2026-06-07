@@ -8,6 +8,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.mangareader.domain.store.valueobject.StoreAvailability;
+import com.mangareader.domain.store.valueobject.StoreCategory;
 import com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringJsonConverter;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -68,6 +69,41 @@ public class Store {
     private StoreAvailability availability;
 
     private Double rating;
+
+    /** Preço atual em centavos BRL (ex.: 3990 = R$ 39,90). DT-46. */
+    private Integer price;
+
+    /** Preço original riscado em centavos BRL. */
+    @Column(name = "old_price")
+    private Integer oldPrice;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private StoreCategory category;
+
+    /** Loja oficial/verificada. */
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean official = false;
+
+    /** Total de avaliações da loja (fonte externa). */
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+
+    /** Formato do produto (ex.: "Volume único · brochura"). */
+    private String format;
+
+    /** Informação de frete/entrega. */
+    private String shipping;
+
+    /** Nota curta de destaque (ex.: "Menor preço novo"). */
+    private String note;
+
+    /** Monograma 1–2 letras para o logo placeholder. */
+    private String mono;
+
+    /** Cor de fundo do logo monograma. */
+    private String color;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")

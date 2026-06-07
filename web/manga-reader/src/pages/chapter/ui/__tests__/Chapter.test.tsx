@@ -4,11 +4,14 @@ import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
+
 import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
+
 import Chapter from '../Chapter';
 
 const renderChapter = (titleId = '1', chapter = '1') => {
     const client = createTestQueryClient();
+
     return render(
         <QueryClientProvider client={client}>
             <MemoryRouter initialEntries={[`/titles/${titleId}/chapters/${chapter}`]}>
@@ -69,8 +72,11 @@ describe('Chapter (Reader)', () => {
 
     it('opens settings drawer on settings button click', async () => {
         const user = userEvent.setup();
+
         renderChapter();
+
         await user.click(screen.getByRole('button', { name: /configurações/i }));
+
         expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 });

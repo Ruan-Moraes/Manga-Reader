@@ -1,7 +1,9 @@
 import type { FocusEvent, KeyboardEvent, RefObject } from 'react';
 import { useRef } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+import IconButton from '@ui/IconButton.tsx';
 
 import { cn } from '@shared/lib/cn';
 
@@ -34,24 +36,26 @@ const SUGGESTIONS: Suggestion[] = [
 const RECENTS = ['berserk', 'one piece capítulo 1120', 'grupo: Tsuki Scans'];
 
 const NavSearch = ({
-    value,
-    onChange,
-    focused,
-    onFocus,
-    onBlur,
-    onSubmit,
-    onSelectRecent,
-    onSelectSuggestion,
-    inputRef,
-    height = 42,
-    showShortcut = true,
-}: Props) => {
+                       value,
+                       onChange,
+                       focused,
+                       onFocus,
+                       onBlur,
+                       onSubmit,
+                       onSelectRecent,
+                       onSelectSuggestion,
+                       inputRef,
+                       height = 42,
+                       showShortcut = true,
+                   }: Props) => {
     const { t } = useTranslation('layout');
+
     const containerRef = useRef<HTMLDivElement>(null);
 
     const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+
             onSubmit();
         }
     };
@@ -64,16 +68,12 @@ const NavSearch = ({
         <div ref={containerRef} onBlur={handleBlur} className="relative w-full">
             <label
                 className={cn(
-                    'flex w-full items-center gap-[10px] border bg-mr-primary px-[14px] transition-colors duration-mr-default',
+                    'flex w-full items-center gap-[10px] border bg-mr-primary p-1.5 transition-colors duration-mr-default',
                     focused ? 'border-mr-accent' : 'border-mr-tertiary',
                 )}
-                style={{ height, borderRadius: 2, paddingRight: 10 }}
+                style={{ height, borderRadius: 2 }}
             >
-                <Search
-                    aria-hidden="true"
-                    strokeWidth={2}
-                    className={cn('size-[18px] shrink-0 transition-colors duration-mr-default', focused ? 'text-mr-accent' : 'text-mr-tertiary')}
-                />
+                <Search aria-hidden="true" className="size-5 shrink-0 text-mr-tertiary" />
                 <input
                     ref={inputRef}
                     type="search"
@@ -89,20 +89,18 @@ const NavSearch = ({
                 {showShortcut && !value && (
                     <kbd
                         aria-label={t('search.kbdHint')}
-                        className="inline-flex items-center font-mr-mono text-[11px] text-mr-gray-300"
+                        className="flex items-stretch font-mr-mono text-[11px] text-mr-gray-300 rounded-xs bg-mr-gray-800 border border-mr-gray-700 px-1.5 py-0.5"
                         style={{
-                            padding: '3px 7px',
-                            background: 'var(--mr-gray-800)',
-                            border: '1px solid var(--mr-gray-700)',
-                            borderRadius: 2,
                             letterSpacing: '0.0625rem',
                         }}
                     >
-                        ⌘K
+                        <span className="flex items-center justify-center text-[14px] mb-0.5">⌘</span>
+                        <span className="flex items-center justify-center">K</span>
                     </kbd>
                 )}
+                {value && <IconButton icon={X} size="sm" variant="primary" aria-label="Limpar busca"
+                                      onClick={() => onChange('')} />}
             </label>
-
             {focused && (
                 <div
                     role="listbox"
@@ -114,7 +112,8 @@ const NavSearch = ({
                         zIndex: 50,
                     }}
                 >
-                    <div className="px-2 pb-1 pt-2 text-[10px] font-mr-extrabold uppercase text-mr-accent" style={{ letterSpacing: '0.12em' }}>
+                    <div className="px-2 pb-1 pt-2 text-[10px] font-mr-extrabold uppercase text-mr-accent"
+                         style={{ letterSpacing: '0.12em' }}>
                         {t('search.suggestionsTitle')}
                     </div>
                     <ul className="flex flex-col">
@@ -142,17 +141,20 @@ const NavSearch = ({
                                         }}
                                     />
                                     <span className="flex min-w-0 flex-col">
-                                        <span className="text-[13px] font-mr-bold leading-tight text-mr-fg" style={{ letterSpacing: '0.0625rem' }}>
+                                        <span className="text-[13px] font-mr-bold leading-tight text-mr-fg"
+                                              style={{ letterSpacing: '0.0625rem' }}>
                                             {s.title}
                                         </span>
-                                        <span className="mt-[2px] text-[11px] leading-tight text-mr-gray-300">{s.meta}</span>
+                                        <span
+                                            className="mt-[2px] text-[11px] leading-tight text-mr-gray-300">{s.meta}</span>
                                     </span>
                                 </button>
                             </li>
                         ))}
                     </ul>
 
-                    <div className="mt-2 px-2 pb-1 pt-1 text-[10px] font-mr-extrabold uppercase text-mr-accent" style={{ letterSpacing: '0.12em' }}>
+                    <div className="mt-2 px-2 pb-1 pt-1 text-[10px] font-mr-extrabold uppercase text-mr-accent"
+                         style={{ letterSpacing: '0.12em' }}>
                         {t('search.recentTitle')}
                     </div>
                     <ul className="flex flex-col">

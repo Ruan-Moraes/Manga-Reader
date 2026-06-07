@@ -20,4 +20,8 @@ export type MangaRating = {
     spoiler?: boolean;
     /** Votos "Útil" recebidos */
     upvotes?: number;
+    /** Votos "Contrário" recebidos */
+    downvotes?: number;
+    /** Voto do usuário autenticado nesta resenha */
+    myVote?: 'up' | 'down' | null;
 };

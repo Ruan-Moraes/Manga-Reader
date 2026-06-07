@@ -29,9 +29,9 @@ const variantClass: Record<NonNullable<ButtonProps['variant']>, string> = {
 };
 
 const sizeClass: Record<NonNullable<ButtonProps['size']>, string> = {
-    sm: 'h-8 px-3 text-mr-small gap-mr-xs',
-    md: 'h-11 px-4 text-mr-body gap-mr-sm',
-    lg: 'h-13 px-5 text-mr-h4 gap-mr-sm',
+    sm: 'h-7 px-3 text-mr-small gap-mr-xs',
+    md: 'h-10 px-4 text-mr-body gap-mr-sm',
+    lg: 'h-12 px-5 text-mr-h4 gap-mr-sm',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(

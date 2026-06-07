@@ -32,7 +32,19 @@ public class StoreMapper {
                         ? store.getAvailability().name().toLowerCase()
                         : null,
                 store.getRating(),
-                store.getFeatures()
+                store.getFeatures(),
+                store.getPrice(),
+                store.getOldPrice(),
+                store.getCategory() != null
+                        ? store.getCategory().name().toLowerCase()
+                        : null,
+                store.isOfficial(),
+                store.getRatingCount(),
+                store.getFormat(),
+                store.getShipping(),
+                store.getNote(),
+                store.getMono(),
+                store.getColor()
         );
     }
 

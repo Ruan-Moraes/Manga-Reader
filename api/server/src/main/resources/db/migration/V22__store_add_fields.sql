@@ -1,0 +1,12 @@
+-- DT-46: campos de compra e metadados de loja.
+-- Preços em centavos BRL (INTEGER). category alimenta o agrupamento da aba Lojas.
+ALTER TABLE stores ADD COLUMN price        INTEGER;
+ALTER TABLE stores ADD COLUMN old_price    INTEGER;
+ALTER TABLE stores ADD COLUMN category     VARCHAR(20);
+ALTER TABLE stores ADD COLUMN official     BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE stores ADD COLUMN rating_count INTEGER;
+ALTER TABLE stores ADD COLUMN format       VARCHAR(120);
+ALTER TABLE stores ADD COLUMN shipping     VARCHAR(200);
+ALTER TABLE stores ADD COLUMN note         VARCHAR(200);
+ALTER TABLE stores ADD COLUMN mono         VARCHAR(4);
+ALTER TABLE stores ADD COLUMN color        VARCHAR(20);

@@ -47,10 +47,10 @@ class GetRatingsByTitleUseCaseTest {
                     MangaRating.builder().id("r3").titleId(TITLE_ID).overallRating(4.0).userName("User C").build()
             );
             Page<MangaRating> page = new PageImpl<>(ratings, pageable, 3);
-            when(ratingRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(page);
+            when(ratingRepository.findByTitleId(TITLE_ID, null, pageable)).thenReturn(page);
 
             // Act
-            Page<MangaRating> result = getRatingsByTitleUseCase.execute(TITLE_ID, pageable);
+            Page<MangaRating> result = getRatingsByTitleUseCase.execute(TITLE_ID, null, pageable);
 
             // Assert
             assertThat(result.getContent()).hasSize(3);
@@ -64,14 +64,27 @@ class GetRatingsByTitleUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(0, 20);
             Page<MangaRating> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-            when(ratingRepository.findByTitleId(TITLE_ID, pageable)).thenReturn(emptyPage);
+            when(ratingRepository.findByTitleId(TITLE_ID, null, pageable)).thenReturn(emptyPage);
 
             // Act
-            Page<MangaRating> result = getRatingsByTitleUseCase.execute(TITLE_ID, pageable);
+            Page<MangaRating> result = getRatingsByTitleUseCase.execute(TITLE_ID, null, pageable);
 
             // Assert
             assertThat(result.getContent()).isEmpty();
             assertThat(result.getTotalElements()).isZero();
+        }
+
+        @Test
+        @DisplayName("Deve repassar o filtro de estrela ao repositório")
+        void deveRepassarFiltroDeEstrela() {
+            Pageable pageable = PageRequest.of(0, 20);
+            Page<MangaRating> page = new PageImpl<>(
+                    List.of(MangaRating.builder().id("r1").titleId(TITLE_ID).overallRating(5.0).build()), pageable, 1);
+            when(ratingRepository.findByTitleId(TITLE_ID, 5, pageable)).thenReturn(page);
+
+            Page<MangaRating> result = getRatingsByTitleUseCase.execute(TITLE_ID, 5, pageable);
+
+            assertThat(result.getContent()).hasSize(1);
         }
     }
 }

@@ -28,7 +28,7 @@ export const VotePill = ({
     upLabel = 'Votar a favor',
     downLabel = 'Votar contra',
 }: VotePillProps) => (
-    <div role="group" aria-label={label} className="inline-flex h-8 items-center gap-0.5 rounded-mr-full border border-mr-chip-border bg-mr-chip px-1">
+    <div role="group" aria-label={label} className="inline-flex py-1 items-center gap-0.5 rounded-mr-full border border-mr-chip-border bg-mr-chip px-1">
         <button
             type="button"
             onClick={onUp}

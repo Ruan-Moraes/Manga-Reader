@@ -105,7 +105,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar página de ratings do título")
         void deveRetornarPaginaDeRatings() {
-            var page = ratingRepository.findByTitleId("title-1", PageRequest.of(0, 1));
+            var page = ratingRepository.findByTitleId("title-1", null, PageRequest.of(0, 1));
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getTotalElements()).isEqualTo(2);
         }

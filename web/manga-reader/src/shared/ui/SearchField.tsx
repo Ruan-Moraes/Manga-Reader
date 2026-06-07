@@ -15,9 +15,9 @@ export interface SearchFieldProps extends Omit<InputHTMLAttributes<HTMLInputElem
 }
 
 const sizeMap: Record<NonNullable<SearchFieldProps['size']>, string> = {
-    sm: 'h-9',
-    md: 'h-11',
-    lg: 'h-14',
+    sm: 'py-1',
+    md: 'py-2',
+    lg: 'py-3.5',
 };
 
 export const SearchField = ({ value, onChange, shortcut, hideClear, size = 'md', placeholder, className, disabled, ...rest }: SearchFieldProps) => (
@@ -30,7 +30,7 @@ export const SearchField = ({ value, onChange, shortcut, hideClear, size = 'md',
             className,
         )}
     >
-        <Search className="size-4 shrink-0 text-mr-tertiary" aria-hidden="true" />
+        <Search className="size-5 shrink-0 text-mr-tertiary" aria-hidden="true" />
         <input
             type="search"
             value={value}

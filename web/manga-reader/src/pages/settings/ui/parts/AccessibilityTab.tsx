@@ -32,10 +32,6 @@ const AccessibilityTab = ({ state, onNavigateToAbout }: AccessibilityTabProps) =
                 <SettingRow label={t('settings.system.a11y.highContrast')} desc={t('settings.system.a11y.highContrastDesc')}>
                     <Switch bare checked={ac.highContrast} onChange={() => {}} disabled aria-label={t('settings.system.a11y.highContrast')} />
                 </SettingRow>
-
-                <SettingRow label={t('settings.system.a11y.captions')} desc={t('settings.system.a11y.captionsDesc')}>
-                    <Switch bare checked={ac.captions} onChange={() => {}} disabled aria-label={t('settings.system.a11y.captions')} />
-                </SettingRow>
             </SettingSection>
 
             <SettingSection title={t('settings.system.a11y.sectionShortcuts')}>

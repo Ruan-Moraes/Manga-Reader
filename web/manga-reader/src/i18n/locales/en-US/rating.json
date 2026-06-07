@@ -123,6 +123,8 @@
             "low": "Lowest rating"
         },
         "write": "Write review",
+        "loadMore": "Load more",
+        "voteError": "Could not register your vote. Please try again.",
         "reviewsCount_one": "{{count}} review",
         "reviewsCount_other": "{{count}} reviews",
         "ratingsCount_one": "{{count}} rating",

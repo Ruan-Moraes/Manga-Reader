@@ -1,7 +1,10 @@
 package com.mangareader.presentation.rating.controller;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +16,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mangareader.application.rating.port.ReviewVoteRepositoryPort;
+import com.mangareader.application.rating.usecase.CastReviewVoteUseCase;
 import com.mangareader.application.rating.usecase.DeleteRatingUseCase;
 import com.mangareader.application.rating.usecase.GetRatingAverageUseCase;
 import com.mangareader.application.rating.usecase.GetRatingDistributionUseCase;
 import com.mangareader.application.rating.usecase.GetRatingsByTitleUseCase;
 import com.mangareader.application.rating.usecase.GetUserRatingsUseCase;
+import com.mangareader.application.rating.usecase.RemoveReviewVoteUseCase;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
 import com.mangareader.application.rating.usecase.UpdateRatingUseCase;
+import com.mangareader.domain.rating.entity.MangaRating;
+import com.mangareader.domain.rating.valueobject.VoteValue;
 import com.mangareader.presentation.rating.dto.RatingAverageResponse;
 import com.mangareader.presentation.rating.dto.RatingDistributionResponse;
 import com.mangareader.presentation.rating.dto.RatingResponse;
+import com.mangareader.presentation.rating.dto.ReviewVoteRequest;
+import com.mangareader.presentation.rating.dto.ReviewVoteResponse;
 import com.mangareader.presentation.rating.dto.SubmitRatingRequest;
 import com.mangareader.presentation.rating.dto.UpdateRatingRequest;
 import com.mangareader.presentation.rating.mapper.RatingMapper;
@@ -54,20 +65,23 @@ public class RatingController {
     private final UpdateRatingUseCase updateRatingUseCase;
     private final DeleteRatingUseCase deleteRatingUseCase;
     private final GetUserRatingsUseCase getUserRatingsUseCase;
+    private final CastReviewVoteUseCase castReviewVoteUseCase;
+    private final RemoveReviewVoteUseCase removeReviewVoteUseCase;
+    private final ReviewVoteRepositoryPort reviewVoteRepository;
 
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar avaliações", description = "Retorna avaliações de um título com paginação")
     public ResponseEntity<ApiResponse<PageResponse<RatingResponse>>> getByTitle(
             @PathVariable String titleId,
+            @CurrentUserId UUID userId,
+            @RequestParam(required = false) Integer star,
             @PageParams(defaultSort = "createdAt", defaultDirection = "desc",
-                    allow = {"createdAt", "updatedAt", "overallRating"})
+                    allow = {"createdAt", "updatedAt", "overallRating", "upvotes"})
             Pageable pageable
     ) {
-        var result = getRatingsByTitleUseCase.execute(titleId, pageable);
+        var result = getRatingsByTitleUseCase.execute(titleId, star, pageable);
 
-        var mapped = result.map(RatingMapper::toResponse);
-
-        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(toResponseWithMyVote(result, userId))));
     }
 
     @GetMapping("/title/{titleId}/average")
@@ -96,9 +110,25 @@ public class RatingController {
     ) {
         var result = getUserRatingsUseCase.execute(userId, pageable);
 
-        var mapped = result.map(RatingMapper::toResponse);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(toResponseWithMyVote(result, userId))));
+    }
 
-        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
+    /**
+     * Mapeia uma página de avaliações para DTO, resolvendo {@code myVote} do
+     * usuário autenticado em lote (uma query, sem N+1). Anônimo ({@code userId}
+     * nulo) ⇒ {@code myVote} nulo.
+     */
+    private Page<RatingResponse> toResponseWithMyVote(Page<MangaRating> page, UUID userId) {
+        if (userId == null || page.isEmpty()) {
+            return page.map(RatingMapper::toResponse);
+        }
+
+        Map<String, VoteValue> votesByRating = reviewVoteRepository
+                .findByRatingIdInAndUserId(page.map(MangaRating::getId).getContent(), userId.toString())
+                .stream()
+                .collect(Collectors.toMap(v -> v.getRatingId(), v -> v.getValue(), (a, b) -> a));
+
+        return page.map(rating -> RatingMapper.toResponse(rating, votesByRating.get(rating.getId())));
     }
 
     @PostMapping
@@ -116,7 +146,9 @@ public class RatingController {
                 request.charactersRating(),
                 request.originalityRating(),
                 request.pacingRating(),
-                request.comment()
+                request.comment(),
+                request.reviewTitle(),
+                request.spoiler()
         );
 
         var rating = submitRatingUseCase.execute(input);
@@ -141,7 +173,9 @@ public class RatingController {
                 request.charactersRating(),
                 request.originalityRating(),
                 request.pacingRating(),
-                request.comment()
+                request.comment(),
+                request.reviewTitle(),
+                request.spoiler()
         );
 
         var rating = updateRatingUseCase.execute(input);
@@ -157,5 +191,28 @@ public class RatingController {
     ) {
         deleteRatingUseCase.execute(id, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/vote")
+    @Operation(summary = "Votar em resenha", description = "Registra voto Útil/Contrário (toggle); 1 voto por usuário")
+    public ResponseEntity<ApiResponse<ReviewVoteResponse>> vote(
+            @PathVariable String id,
+            @Valid @RequestBody ReviewVoteRequest request,
+            @CurrentUserId UUID userId
+    ) {
+        var result = castReviewVoteUseCase.execute(id, userId, VoteValue.fromValue(request.value()));
+
+        return ResponseEntity.ok(ApiResponse.success(ReviewVoteResponse.from(result)));
+    }
+
+    @DeleteMapping("/{id}/vote")
+    @Operation(summary = "Remover voto de resenha", description = "Remove o voto do usuário na resenha")
+    public ResponseEntity<ApiResponse<ReviewVoteResponse>> removeVote(
+            @PathVariable String id,
+            @CurrentUserId UUID userId
+    ) {
+        var result = removeReviewVoteUseCase.execute(id, userId);
+
+        return ResponseEntity.ok(ApiResponse.success(ReviewVoteResponse.from(result)));
     }
 }

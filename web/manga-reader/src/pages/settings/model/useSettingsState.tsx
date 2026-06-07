@@ -3,9 +3,16 @@ import { useTranslation } from 'react-i18next';
 
 import { useToast } from '@ui/Toast';
 import { useAuth } from '@features/auth';
-import { DEFAULT_USER_SETTINGS, type UserSettings, useUserSettings, useContentLocales } from '@entities/user';
+import {
+    DEFAULT_USER_SETTINGS,
+    type UserSettings,
+    useUserSettings,
+    useContentLocales,
+    applyReduceMotion,
+    SETTINGS_STORAGE_KEY,
+} from '@entities/user';
 
-const STORAGE_KEY = 'mr.settings.v1';
+const STORAGE_KEY = SETTINGS_STORAGE_KEY;
 const SYNC_DEBOUNCE_MS = 400;
 const TOAST_DURATION_MS = 2200;
 
@@ -123,6 +130,12 @@ export function useSettingsState() {
         },
         [],
     );
+
+    // Aplica "reduzir movimento" no <html> sempre que mudar (inclui hidratação do
+    // servidor). Sem cleanup de propósito: a classe deve persistir ao sair da tela.
+    useEffect(() => {
+        applyReduceMotion(settings.accessibility.reduceMotion);
+    }, [settings.accessibility.reduceMotion]);
 
     // Idioma da interface — client-only (i18n + localStorage), exige reload.
     const interfaceLang = i18n.language;
