@@ -5,12 +5,13 @@ import { API_URLS } from '@shared/constant/API_URLS';
 import { type CommentData } from '../model/comment.types';
 
 // ---------------------------------------------------------------------------
-// Types — espelham os DTOs do api
+// Types — espelham os DTOs do api (modelo de comentário unificado + voto único)
 // ---------------------------------------------------------------------------
 
 type CommentResponse = {
     id: string;
-    titleId: string;
+    targetType: string;
+    targetId: string;
     parentCommentId: string | null;
     userId: string;
     userName: string;
@@ -21,13 +22,23 @@ type CommentResponse = {
     updatedAt: string;
     textContent: string | null;
     imageContent: string | null;
-    likeCount: string;
-    dislikeCount: string;
+    upvotes: number;
+    downvotes: number;
     language?: string;
+};
+
+type VoteResponse = {
+    upvotes: number;
+    downvotes: number;
+    myVote?: 'up' | 'down' | null;
 };
 
 // ---------------------------------------------------------------------------
 // Mapper — api → frontend shape
+//
+// O backend padronizou os votos (upvotes/downvotes/myVote). O modelo interno do
+// frontend mantém likeCount/dislikeCount (string) e userReaction (LIKE/DISLIKE)
+// — a tradução acontece aqui, na borda, para não propagar a mudança de contrato.
 // ---------------------------------------------------------------------------
 
 const toCommentData = (c: CommentResponse): CommentData => ({
@@ -45,8 +56,8 @@ const toCommentData = (c: CommentResponse): CommentData => ({
     updatedAt: c.updatedAt,
     textContent: c.textContent,
     imageContent: c.imageContent,
-    likeCount: c.likeCount,
-    dislikeCount: c.dislikeCount,
+    likeCount: String(c.upvotes),
+    dislikeCount: String(c.downvotes),
     language: c.language,
 });
 
@@ -74,7 +85,8 @@ export const getCommentsByTitleId = async (
 
 export const createComment = async (data: { titleId: string; textContent: string; parentCommentId?: string | null }): Promise<CommentData> => {
     const response = await api.post<ApiResponse<CommentResponse>>(API_URLS.COMMENTS, {
-        titleId: data.titleId,
+        targetType: 'TITLE',
+        targetId: data.titleId,
         textContent: data.textContent,
         parentCommentId: data.parentCommentId ?? null,
     });
@@ -92,22 +104,34 @@ export const deleteComment = async (id: string): Promise<void> => {
     await api.delete(`${API_URLS.COMMENTS}/${id}`);
 };
 
-export const likeComment = async (id: string): Promise<CommentData> => {
-    const response = await api.post<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}/like`);
+// Modelo de voto único: um endpoint /vote (toggle). likeComment/dislikeComment
+// são atalhos para value 'up'/'down', preservando a API consumida pelos hooks.
+const castVote = async (id: string, value: 'up' | 'down'): Promise<VoteResponse> => {
+    const response = await api.post<ApiResponse<VoteResponse>>(`${API_URLS.COMMENTS}/${id}/vote`, { value });
 
-    return toCommentData(response.data.data);
+    return response.data.data;
 };
 
-export const dislikeComment = async (id: string): Promise<CommentData> => {
-    const response = await api.post<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}/dislike`);
+export const likeComment = (id: string): Promise<VoteResponse> => castVote(id, 'up');
 
-    return toCommentData(response.data.data);
+export const dislikeComment = (id: string): Promise<VoteResponse> => castVote(id, 'down');
+
+export const removeCommentVote = async (id: string): Promise<VoteResponse> => {
+    const response = await api.delete<ApiResponse<VoteResponse>>(`${API_URLS.COMMENTS}/${id}/vote`);
+
+    return response.data.data;
 };
 
 export const getUserReactions = async (commentIds: string[]): Promise<Record<string, string>> => {
-    const response = await api.get<ApiResponse<Record<string, string>>>(`${API_URLS.COMMENTS}/user-reactions`, {
+    const response = await api.get<ApiResponse<Record<string, 'up' | 'down'>>>(`${API_URLS.COMMENTS}/user-votes`, {
         params: { commentIds: commentIds.join(',') },
     });
 
-    return response.data.data;
+    // Traduz o voto padronizado (up/down) para o modelo interno (LIKE/DISLIKE).
+    const out: Record<string, string> = {};
+    for (const [id, vote] of Object.entries(response.data.data)) {
+        out[id] = vote === 'up' ? 'LIKE' : 'DISLIKE';
+    }
+
+    return out;
 };

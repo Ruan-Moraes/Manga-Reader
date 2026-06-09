@@ -8,7 +8,8 @@ import { getCommentsByTitleId, createComment, updateComment, deleteComment, like
 
 const buildCommentResponse = (overrides = {}) => ({
     id: 'comment-1',
-    titleId: 'title-1',
+    targetType: 'TITLE',
+    targetId: 'title-1',
     parentCommentId: null,
     userId: 'user-1',
     userName: 'Test User',
@@ -19,8 +20,8 @@ const buildCommentResponse = (overrides = {}) => ({
     updatedAt: '2025-01-01T00:00:00Z',
     textContent: 'Comentario de teste',
     imageContent: null,
-    likeCount: '5',
-    dislikeCount: '1',
+    upvotes: 5,
+    downvotes: 1,
     ...overrides,
 });
 
@@ -50,6 +51,8 @@ describe('commentService', () => {
             expect(result.content).toHaveLength(2);
             expect(result.content[0].user.name).toBe('Test User');
             expect(result.content[0].isOwner).toBe(false);
+            expect(result.content[0].likeCount).toBe('5');
+            expect(result.content[0].dislikeCount).toBe('1');
         });
 
         it('deve propagar erro quando API falha', async () => {
@@ -60,26 +63,26 @@ describe('commentService', () => {
     });
 
     describe('createComment', () => {
-        it('deve criar comentario e retornar dados mapeados', async () => {
-            const comment = buildCommentResponse({
-                textContent: 'Novo comentario',
-            });
+        it('deve criar comentario e enviar targetType/targetId', async () => {
+            const comment = buildCommentResponse({ textContent: 'Novo comentario' });
 
-            server.use(http.post(`*${API_URLS.COMMENTS}`, () => HttpResponse.json({ data: comment, success: true })));
+            server.use(
+                http.post(`*${API_URLS.COMMENTS}`, async ({ request }) => {
+                    const body = (await request.json()) as Record<string, unknown>;
+                    expect(body.targetType).toBe('TITLE');
+                    expect(body.targetId).toBe('title-1');
+                    return HttpResponse.json({ data: comment, success: true });
+                }),
+            );
 
-            const result = await createComment({
-                titleId: 'title-1',
-                textContent: 'Novo comentario',
-            });
+            const result = await createComment({ titleId: 'title-1', textContent: 'Novo comentario' });
 
             expect(result.textContent).toBe('Novo comentario');
             expect(result.user.id).toBe('user-1');
         });
 
         it('deve enviar parentCommentId quando fornecido', async () => {
-            const comment = buildCommentResponse({
-                parentCommentId: 'parent-1',
-            });
+            const comment = buildCommentResponse({ parentCommentId: 'parent-1' });
 
             server.use(
                 http.post(`*${API_URLS.COMMENTS}`, async ({ request }) => {
@@ -89,31 +92,19 @@ describe('commentService', () => {
                 }),
             );
 
-            await createComment({
-                titleId: 'title-1',
-                textContent: 'Resposta',
-                parentCommentId: 'parent-1',
-            });
+            await createComment({ titleId: 'title-1', textContent: 'Resposta', parentCommentId: 'parent-1' });
         });
 
         it('deve lançar erro quando API retorna 500 no createComment', async () => {
             server.use(http.post(`*${API_URLS.COMMENTS}`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(
-                createComment({
-                    titleId: 'title-1',
-                    textContent: 'Novo comentario',
-                }),
-            ).rejects.toThrow();
+            await expect(createComment({ titleId: 'title-1', textContent: 'Novo comentario' })).rejects.toThrow();
         });
     });
 
     describe('updateComment', () => {
         it('deve atualizar comentario e retornar dados mapeados', async () => {
-            const comment = buildCommentResponse({
-                textContent: 'Texto editado',
-                edited: true,
-            });
+            const comment = buildCommentResponse({ textContent: 'Texto editado', edited: true });
 
             server.use(http.put(`*${API_URLS.COMMENTS}/comment-1`, () => HttpResponse.json({ data: comment, success: true })));
 
@@ -145,46 +136,52 @@ describe('commentService', () => {
     });
 
     describe('likeComment', () => {
-        it('deve dar like e retornar comentario atualizado', async () => {
-            const comment = buildCommentResponse({ likeCount: '6' });
-
-            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () => HttpResponse.json({ data: comment, success: true })));
+        it('deve votar up via /vote e retornar contadores', async () => {
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/vote`, async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                expect(body.value).toBe('up');
+                return HttpResponse.json({ data: { upvotes: 6, downvotes: 1, myVote: 'up' }, success: true });
+            }));
 
             const result = await likeComment('comment-1');
 
-            expect(result.likeCount).toBe('6');
+            expect(result.upvotes).toBe(6);
+            expect(result.myVote).toBe('up');
         });
 
         it('deve lançar erro quando API retorna 500 no likeComment', async () => {
-            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/like`, () => HttpResponse.json(null, { status: 500 })));
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/vote`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(likeComment('comment-1')).rejects.toThrow();
         });
     });
 
     describe('dislikeComment', () => {
-        it('deve dar dislike e retornar comentario atualizado', async () => {
-            const comment = buildCommentResponse({ dislikeCount: '2' });
-
-            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () => HttpResponse.json({ data: comment, success: true })));
+        it('deve votar down via /vote e retornar contadores', async () => {
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/vote`, async ({ request }) => {
+                const body = (await request.json()) as Record<string, unknown>;
+                expect(body.value).toBe('down');
+                return HttpResponse.json({ data: { upvotes: 5, downvotes: 2, myVote: 'down' }, success: true });
+            }));
 
             const result = await dislikeComment('comment-1');
 
-            expect(result.dislikeCount).toBe('2');
+            expect(result.downvotes).toBe(2);
+            expect(result.myVote).toBe('down');
         });
 
         it('deve lançar erro quando API retorna 500 no dislikeComment', async () => {
-            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/dislike`, () => HttpResponse.json(null, { status: 500 })));
+            server.use(http.post(`*${API_URLS.COMMENTS}/comment-1/vote`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(dislikeComment('comment-1')).rejects.toThrow();
         });
     });
 
     describe('getUserReactions', () => {
-        it('deve retornar mapa de reacoes do usuario', async () => {
-            const reactions = { 'comment-1': 'LIKE', 'comment-2': 'DISLIKE' };
+        it('deve traduzir votos up/down para LIKE/DISLIKE', async () => {
+            const votes = { 'comment-1': 'up', 'comment-2': 'down' };
 
-            server.use(http.get(`*${API_URLS.COMMENTS}/user-reactions`, () => HttpResponse.json({ data: reactions, success: true })));
+            server.use(http.get(`*${API_URLS.COMMENTS}/user-votes`, () => HttpResponse.json({ data: votes, success: true })));
 
             const result = await getUserReactions(['comment-1', 'comment-2']);
 
