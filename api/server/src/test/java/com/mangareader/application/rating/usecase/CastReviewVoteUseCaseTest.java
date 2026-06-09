@@ -22,7 +22,8 @@ import com.mangareader.application.rating.port.RatingRepositoryPort;
 import com.mangareader.application.rating.port.ReviewVoteRepositoryPort;
 import com.mangareader.domain.rating.entity.MangaRating;
 import com.mangareader.domain.rating.entity.ReviewVote;
-import com.mangareader.domain.rating.valueobject.VoteValue;
+import com.mangareader.shared.application.vote.VoteResult;
+import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -60,7 +61,7 @@ class CastReviewVoteUseCaseTest {
         when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.empty());
 
-        ReviewVoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.UP);
+        VoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.UP);
 
         assertThat(result.upvotes()).isEqualTo(4);
         assertThat(result.myVote()).isEqualTo(VoteValue.UP);
@@ -79,7 +80,7 @@ class CastReviewVoteUseCaseTest {
         when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.of(existing));
 
-        ReviewVoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.UP);
+        VoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.UP);
 
         assertThat(result.upvotes()).isEqualTo(3);
         assertThat(result.myVote()).isNull();
@@ -94,7 +95,7 @@ class CastReviewVoteUseCaseTest {
         when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.of(existing));
 
-        ReviewVoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.DOWN);
+        VoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.DOWN);
 
         assertThat(result.upvotes()).isEqualTo(3);
         assertThat(result.downvotes()).isEqualTo(3);

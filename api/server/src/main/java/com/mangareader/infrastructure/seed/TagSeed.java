@@ -34,30 +34,30 @@ public class TagSeed implements EntitySeeder {
         }
 
         var tags = List.of(
-                tag("Ação", "Action", "Acción"),
-                tag("Aventura", "Adventure", "Aventura"),
-                tag("Comédia", "Comedy", "Comedia"),
-                tag("Drama", "Drama", "Drama"),
-                tag("Fantasia", "Fantasy", "Fantasía"),
-                tag("Ficção Científica", "Science Fiction", "Ciencia Ficción"),
-                tag("Horror", "Horror", "Horror"),
-                tag("Mistério", "Mystery", "Misterio"),
-                tag("Romance", "Romance", "Romance"),
-                tag("Seinen", "Seinen", "Seinen"),
-                tag("Shoujo", "Shoujo", "Shoujo"),
-                tag("Shounen", "Shounen", "Shounen"),
-                tag("Slice of Life", "Slice of Life", "Slice of Life"),
-                tag("Sobrenatural", "Supernatural", "Sobrenatural"),
-                tag("Suspense", "Thriller", "Suspense"),
-                tag("Esportes", "Sports", "Deportes"),
-                tag("Artes Marciais", "Martial Arts", "Artes Marciales"),
-                tag("Histórico", "Historical", "Histórico"),
-                tag("Culinária", "Culinary", "Culinaria"),
-                tag("Urbano", "Urban", "Urbano"),
-                tag("RPG", "RPG", "RPG"),
-                tag("Escolar", "School", "Escolar"),
-                tag("Mecha", "Mecha", "Mecha"),
-                tag("Musical", "Musical", "Musical")
+                tag("ACTION", "Ação", "Action", "Acción"),
+                tag("ADVENTURE", "Aventura", "Adventure", "Aventura"),
+                tag("COMEDY", "Comédia", "Comedy", "Comedia"),
+                tag("DRAMA", "Drama", "Drama", "Drama"),
+                tag("FANTASY", "Fantasia", "Fantasy", "Fantasía"),
+                tag("SCIENCE_FICTION", "Ficção Científica", "Science Fiction", "Ciencia Ficción"),
+                tag("HORROR", "Horror", "Horror", "Horror"),
+                tag("MYSTERY", "Mistério", "Mystery", "Misterio"),
+                tag("ROMANCE", "Romance", "Romance", "Romance"),
+                tag("SEINEN", "Seinen", "Seinen", "Seinen"),
+                tag("SHOUJO", "Shoujo", "Shoujo", "Shoujo"),
+                tag("SHOUNEN", "Shounen", "Shounen", "Shounen"),
+                tag("SLICE_OF_LIFE", "Slice of Life", "Slice of Life", "Slice of Life"),
+                tag("SUPERNATURAL", "Sobrenatural", "Supernatural", "Sobrenatural"),
+                tag("THRILLER", "Suspense", "Thriller", "Suspense"),
+                tag("SPORTS", "Esportes", "Sports", "Deportes"),
+                tag("MARTIAL_ARTS", "Artes Marciais", "Martial Arts", "Artes Marciales"),
+                tag("HISTORICAL", "Histórico", "Historical", "Histórico"),
+                tag("CULINARY", "Culinária", "Culinary", "Culinaria"),
+                tag("URBAN", "Urbano", "Urban", "Urbano"),
+                tag("RPG", "RPG", "RPG", "RPG"),
+                tag("SCHOOL", "Escolar", "School", "Escolar"),
+                tag("MECHA", "Mecha", "Mecha", "Mecha"),
+                tag("MUSICAL", "Musical", "Musical", "Musical")
         );
 
         tagRepository.saveAll(tags);
@@ -65,8 +65,9 @@ public class TagSeed implements EntitySeeder {
         log.info("✓ {} tags de demonstração criadas.", tags.size());
     }
 
-    private static Tag tag(String pt, String en, String es) {
+    private static Tag tag(String slug, String pt, String en, String es) {
         return Tag.builder()
+                .slug(slug)
                 .label(LocalizedString.of(Map.of("pt-BR", pt, "en-US", en, "es-ES", es)))
                 .build();
     }

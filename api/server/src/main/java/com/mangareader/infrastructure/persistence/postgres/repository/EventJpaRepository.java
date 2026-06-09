@@ -1,11 +1,14 @@
 package com.mangareader.infrastructure.persistence.postgres.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,13 +17,27 @@ import com.mangareader.domain.event.valueobject.EventStatus;
 
 /**
  * Repositório JPA para eventos.
+ * <p>
+ * {@code organizer} é {@code @ManyToOne(LAZY)} e é mapeado tanto no detalhe quanto no
+ * resumo (listagem). Como o mapeamento ocorre fora da transação do use case, os finders
+ * usam {@code @EntityGraph} para carregá-lo junto (ManyToOne → seguro com paginação,
+ * sem N+1 nem {@code LazyInitializationException}).
  */
 public interface EventJpaRepository extends JpaRepository<Event, UUID> {
+    @EntityGraph(attributePaths = "organizer")
+    Optional<Event> findById(UUID id);
+
+    @EntityGraph(attributePaths = "organizer")
     List<Event> findByStatus(EventStatus status);
 
+    @EntityGraph(attributePaths = "organizer")
     List<Event> findAllByOrderByStartDateDesc();
 
+    @EntityGraph(attributePaths = "organizer")
     Page<Event> findByStatus(EventStatus status, Pageable pageable);
+
+    @EntityGraph(attributePaths = "organizer")
+    Page<Event> findAll(Pageable pageable);
 
     long countByStatus(EventStatus status);
 
@@ -45,4 +62,12 @@ public interface EventJpaRepository extends JpaRepository<Event, UUID> {
             """,
             nativeQuery = true)
     Page<Event> searchByTitle(@Param("q") String q, Pageable pageable);
+
+    /**
+     * PERF-6: reconcilia {@code participants} com a contagem real de inscritos.
+     * Bulk update idempotente — corrige o drift (o contador não é mantido no join/leave).
+     */
+    @Modifying
+    @Query("UPDATE Event e SET e.participants = (SELECT COUNT(p) FROM EventParticipant p WHERE p.event = e)")
+    int reconcileParticipants();
 }

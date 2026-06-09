@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mangareader.domain.rating.entity.MangaRating;
-import com.mangareader.domain.rating.valueobject.VoteValue;
 import com.mangareader.presentation.rating.dto.RatingResponse;
+import com.mangareader.shared.domain.vote.VoteValue;
 
 /**
  * Mapper para converter entidade MangaRating em DTO de resposta.
@@ -33,6 +33,7 @@ public final class RatingMapper {
                 rating.getId(),
                 rating.getTitleId(),
                 rating.getTitleName(),
+                rating.getUserId(),
                 rating.getUserName(),
                 rating.getOverallRating(),
                 rating.getFunRating(),
@@ -48,7 +49,9 @@ public final class RatingMapper {
                 rating.getUpvotes(),
                 rating.getDownvotes(),
                 myVote != null ? myVote.name().toLowerCase() : null,
-                formatDate(rating.getCreatedAt())
+                rating.isEdited(),
+                formatDate(rating.getCreatedAt()),
+                formatDate(rating.getUpdatedAt())
         );
     }
 

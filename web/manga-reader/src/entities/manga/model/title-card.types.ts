@@ -12,7 +12,6 @@ export type CarouselCard = Omit<
     | 'popularity'
     | 'ratingAverage'
     | 'ratingCount'
-    | 'rankingScore'
     | 'author'
     | 'artist'
     | 'publisher'

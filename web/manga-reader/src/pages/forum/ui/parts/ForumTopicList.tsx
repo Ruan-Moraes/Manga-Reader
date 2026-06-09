@@ -5,7 +5,6 @@ import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 import { Pagination } from '@ui/Pagination';
 
-
 interface ForumTopicListProps {
     topics: ForumTopic[];
     allTopicsCount: number;

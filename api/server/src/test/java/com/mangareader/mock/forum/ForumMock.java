@@ -50,7 +50,7 @@ public final class ForumMock {
                 .topic(topic)
                 .author(author)
                 .content("(Editado) Corrigi a informacao anterior. A versao correta e a 3.4.3.")
-                .isEdited(true)
+                .edited(true)
                 .likes(3)
                 .build();
     }

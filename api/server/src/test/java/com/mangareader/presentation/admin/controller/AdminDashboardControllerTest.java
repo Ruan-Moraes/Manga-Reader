@@ -66,7 +66,7 @@ class AdminDashboardControllerTest {
     @DisplayName("Deve retornar 200 com métricas de conteúdo")
     void deveRetornar200ComMetricasDeConteudo() throws Exception {
         var topTitle = new TopTitleResponse(
-                "t1", "Top Title", "cover.jpg", "MANGA", 9.5, 4.8, 100L
+                "t1", "Top Title", "cover.jpg", "MANGA", 4.8, 100L
         );
         var metrics = new ContentMetricsResponse(
                 Map.of("ONGOING", 50L, "COMPLETED", 30L),

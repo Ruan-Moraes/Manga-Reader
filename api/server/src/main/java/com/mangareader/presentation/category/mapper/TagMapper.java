@@ -24,7 +24,7 @@ public class TagMapper {
     private final LocalizedMappingHelper i18n;
 
     public TagResponse toResponse(Tag tag) {
-        return new TagResponse(tag.getId(), i18n.toResolvedString(tag.getLabel()));
+        return new TagResponse(tag.getId(), tag.getSlug(), i18n.toResolvedString(tag.getLabel()));
     }
 
     public List<TagResponse> toResponseList(List<Tag> tags) {
@@ -32,6 +32,6 @@ public class TagMapper {
     }
 
     public TagAdminResponse toAdminResponse(Tag tag) {
-        return new TagAdminResponse(tag.getId(), i18n.toMap(tag.getLabel()));
+        return new TagAdminResponse(tag.getId(), tag.getSlug(), i18n.toMap(tag.getLabel()));
     }
 }

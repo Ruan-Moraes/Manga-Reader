@@ -13,7 +13,12 @@ export type TopicData = {
     category: string;
     pinned: boolean;
     author: TopicAuthor;
+    /** ISO de criação — formatado na exibição (relativo + tooltip dia+hora). */
     postedAt: string;
+    /** ISO da última modificação — tooltip no selo "(editado)". */
+    updatedAt?: string;
+    /** Conteúdo editado após a criação. */
+    edited?: boolean;
     views: number;
     replies: number;
     live: number;
@@ -23,7 +28,12 @@ export type TopicData = {
 export type ReplyData = {
     id: string;
     author: TopicAuthor;
+    /** ISO de criação — formatado na exibição (relativo + tooltip dia+hora). */
     when: string;
+    /** ISO da última modificação — tooltip no selo "(editado)". */
+    updatedAt?: string;
+    /** Conteúdo editado após a criação. */
+    edited?: boolean;
     upvotes: number;
     downvotes: number;
     children: string;

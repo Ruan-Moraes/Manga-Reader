@@ -31,9 +31,6 @@ class TitleTest {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Aventura pirata épica"))
                 .genres(List.of("Action", "Adventure"))
                 .popularity("1")
-                .ratingAverage(4.5)
-                .ratingCount(100L)
-                .rankingScore(4.3)
                 .author("Eiichiro Oda")
                 .artist("Eiichiro Oda")
                 .publisher("Shueisha")
@@ -47,9 +44,6 @@ class TitleTest {
         assertThat(title.getGenres().size()).isEqualTo(2);
         assertThat(title.getGenres().get(0)).isEqualTo("Action");
         assertThat(title.getPopularity()).isEqualTo("1");
-        assertThat(title.getRatingAverage()).isEqualTo(4.5);
-        assertThat(title.getRatingCount()).isEqualTo(100L);
-        assertThat(title.getRankingScore()).isEqualTo(4.3);
         assertThat(title.getAuthor()).isEqualTo("Eiichiro Oda");
         assertThat(title.getArtist()).isEqualTo("Eiichiro Oda");
         assertThat(title.getPublisher()).isEqualTo("Shueisha");
@@ -85,9 +79,6 @@ class TitleTest {
         assertThat(title.getArtist()).isNull();
         assertThat(title.getPublisher()).isNull();
         assertThat(title.getPopularity()).isNull();
-        assertThat(title.getRatingAverage()).isNull();
-        assertThat(title.getRatingCount()).isNull();
-        assertThat(title.getRankingScore()).isNull();
         assertThat(title.getCreatedAt()).isNull();
         assertThat(title.getUpdatedAt()).isNull();
 
@@ -136,15 +127,9 @@ class TitleTest {
                 .build();
 
         title.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Atualizado"));
-        title.setRatingAverage(3.0);
-        title.setRatingCount(50L);
-        title.setRankingScore(2.8);
         title.setPopularity("5");
 
         assertThat(title.getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Atualizado");
-        assertThat(title.getRatingAverage()).isEqualTo(3.0);
-        assertThat(title.getRatingCount()).isEqualTo(50L);
-        assertThat(title.getRankingScore()).isEqualTo(2.8);
         assertThat(title.getPopularity()).isEqualTo("5");
     }
 }

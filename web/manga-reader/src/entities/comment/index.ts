@@ -14,15 +14,7 @@ export { CommentSortProvider, useCommentSortContext } from './model/CommentSortC
 export type { SortType } from './model/CommentSortContext';
 
 // Services (data access)
-export {
-    getCommentsByTitleId,
-    createComment,
-    updateComment,
-    deleteComment,
-    likeComment,
-    dislikeComment,
-    getUserReactions,
-} from './api/commentService';
+export { getCommentsByTitleId, createComment, updateComment, deleteComment, likeComment, dislikeComment, getUserReactions } from './api/commentService';
 
 // Display atoms (dumb — props/callbacks only)
 export { default as CommentUser } from './ui/header/CommentUser';

@@ -20,7 +20,6 @@ export const buildTitle = (overrides: Partial<Title> = {}): Title => {
         popularity: 'HIGH',
         ratingAverage: 4.5,
         ratingCount: 100,
-        rankingScore: 85,
         adult: false,
         status: 'ongoing',
         author: 'Autor Teste',
@@ -48,8 +47,8 @@ export const titlePresets = {
     noChapters: () => buildTitle({ chapters: [] }),
     withFiftyChapters: () => buildTitle({ chapters: buildChapterList(50) }),
 
-    unrated: () => buildTitle({ ratingAverage: 0, ratingCount: 0, rankingScore: 0 }),
-    perfectRating: () => buildTitle({ ratingAverage: 5, ratingCount: 9999, rankingScore: 100 }),
+    unrated: () => buildTitle({ ratingAverage: 0, ratingCount: 0 }),
+    perfectRating: () => buildTitle({ ratingAverage: 5, ratingCount: 9999 }),
 
     popularityHigh: () => buildTitle({ popularity: 'HIGH' }),
     popularityMedium: () => buildTitle({ popularity: 'MEDIUM' }),

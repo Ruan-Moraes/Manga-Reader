@@ -30,17 +30,17 @@ import com.mangareader.application.rating.usecase.RemoveReviewVoteUseCase;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
 import com.mangareader.application.rating.usecase.UpdateRatingUseCase;
 import com.mangareader.domain.rating.entity.MangaRating;
-import com.mangareader.domain.rating.valueobject.VoteValue;
 import com.mangareader.presentation.rating.dto.RatingAverageResponse;
 import com.mangareader.presentation.rating.dto.RatingDistributionResponse;
 import com.mangareader.presentation.rating.dto.RatingResponse;
-import com.mangareader.presentation.rating.dto.ReviewVoteRequest;
-import com.mangareader.presentation.rating.dto.ReviewVoteResponse;
 import com.mangareader.presentation.rating.dto.SubmitRatingRequest;
 import com.mangareader.presentation.rating.dto.UpdateRatingRequest;
 import com.mangareader.presentation.rating.mapper.RatingMapper;
+import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
+import com.mangareader.shared.dto.VoteRequest;
+import com.mangareader.shared.dto.VoteResponse;
 import com.mangareader.shared.web.PageParams;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -111,6 +111,19 @@ public class RatingController {
         var result = getUserRatingsUseCase.execute(userId, pageable);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(toResponseWithMyVote(result, userId))));
+    }
+
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Resenhas de um usuário", description = "Retorna as avaliações feitas por um usuário (perfil público), com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<RatingResponse>>> getByUser(
+            @PathVariable UUID userId,
+            @PageParams(defaultSort = "createdAt", defaultDirection = "desc",
+                    ignoreRequestSort = true)
+            Pageable pageable
+    ) {
+        var result = getUserRatingsUseCase.execute(userId, pageable);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(result.map(RatingMapper::toResponse))));
     }
 
     /**
@@ -195,24 +208,24 @@ public class RatingController {
 
     @PostMapping("/{id}/vote")
     @Operation(summary = "Votar em resenha", description = "Registra voto Útil/Contrário (toggle); 1 voto por usuário")
-    public ResponseEntity<ApiResponse<ReviewVoteResponse>> vote(
+    public ResponseEntity<ApiResponse<VoteResponse>> vote(
             @PathVariable String id,
-            @Valid @RequestBody ReviewVoteRequest request,
+            @Valid @RequestBody VoteRequest request,
             @CurrentUserId UUID userId
     ) {
         var result = castReviewVoteUseCase.execute(id, userId, VoteValue.fromValue(request.value()));
 
-        return ResponseEntity.ok(ApiResponse.success(ReviewVoteResponse.from(result)));
+        return ResponseEntity.ok(ApiResponse.success(VoteResponse.from(result)));
     }
 
     @DeleteMapping("/{id}/vote")
     @Operation(summary = "Remover voto de resenha", description = "Remove o voto do usuário na resenha")
-    public ResponseEntity<ApiResponse<ReviewVoteResponse>> removeVote(
+    public ResponseEntity<ApiResponse<VoteResponse>> removeVote(
             @PathVariable String id,
             @CurrentUserId UUID userId
     ) {
         var result = removeReviewVoteUseCase.execute(id, userId);
 
-        return ResponseEntity.ok(ApiResponse.success(ReviewVoteResponse.from(result)));
+        return ResponseEntity.ok(ApiResponse.success(VoteResponse.from(result)));
     }
 }

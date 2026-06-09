@@ -10,6 +10,7 @@ public record RatingResponse(
         String id,
         String titleId,
         String titleName,
+        String userId,
         String userName,
         double overallRating,
         double funRating,
@@ -25,5 +26,7 @@ public record RatingResponse(
         long upvotes,
         long downvotes,
         String myVote,
-        String createdAt
+        boolean edited,
+        String createdAt,
+        String updatedAt
 ) {}

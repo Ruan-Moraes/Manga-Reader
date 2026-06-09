@@ -1,9 +1,4 @@
-# ==============================================================================
-# Manga Reader — Production Profile
-# ==============================================================================
 # Todas as connection strings vêm de variáveis de ambiente.
-# Não há valores sensíveis hardcoded.
-# ==============================================================================
 
 spring:
   docker:
@@ -43,8 +38,6 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.starttls.required: true
-
-# Logging controlado por logback-spring.xml
 app:
   jwt:
     secret: ${JWT_SECRET}

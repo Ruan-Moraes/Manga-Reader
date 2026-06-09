@@ -41,11 +41,11 @@ class UpdateCommentUseCaseTest {
     private Comment buildComment() {
         return Comment.builder()
                 .id(COMMENT_ID)
-                .titleId("title-1")
+                .targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("title-1")
                 .userId(USER_ID.toString())
                 .userName("Ruan Silva")
                 .textContent("Texto original")
-                .wasEdited(false)
+                .edited(false)
                 .build();
     }
 
@@ -68,7 +68,8 @@ class UpdateCommentUseCaseTest {
 
             // Assert
             assertThat(result.getTextContent()).isEqualTo("Texto atualizado");
-            assertThat(result.isWasEdited()).isTrue();
+            assertThat(result.isEdited()).isTrue();
+            assertThat(result.getUpdatedAt()).isNotNull();
         }
 
         @Test
@@ -87,7 +88,7 @@ class UpdateCommentUseCaseTest {
             ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
             verify(commentRepository).save(captor.capture());
             assertThat(captor.getValue().getTextContent()).isEqualTo("Novo texto");
-            assertThat(captor.getValue().isWasEdited()).isTrue();
+            assertThat(captor.getValue().isEdited()).isTrue();
         }
     }
 

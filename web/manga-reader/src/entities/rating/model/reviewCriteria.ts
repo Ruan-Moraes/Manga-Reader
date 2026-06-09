@@ -12,10 +12,7 @@ export const REVIEW_CRITERIA = [
     { key: 'originalityRating', labelKey: 'criteria.orig.name', descKey: 'criteria.orig.desc' },
     { key: 'pacingRating', labelKey: 'criteria.pace.name', descKey: 'criteria.pace.desc' },
 ] as const satisfies ReadonlyArray<{
-    key: keyof Pick<
-        MangaRating,
-        'funRating' | 'artRating' | 'storylineRating' | 'charactersRating' | 'originalityRating' | 'pacingRating'
-    >;
+    key: keyof Pick<MangaRating, 'funRating' | 'artRating' | 'storylineRating' | 'charactersRating' | 'originalityRating' | 'pacingRating'>;
     labelKey: string;
     descKey: string;
 }>;

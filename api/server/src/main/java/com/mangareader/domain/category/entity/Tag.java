@@ -22,7 +22,9 @@ import lombok.Setter;
 /**
  * Tag / gênero disponível no sistema (PostgreSQL).
  * <p>
- * Após Fase B i18n: campo único {@code label} multilíngue (JSONB).
+ * Após Fase B i18n: {@code label} multilíngue (JSONB) para apresentação;
+ * {@code slug} é a chave canônica imutável (identificador de domínio, mono-idioma),
+ * referenciada pelos gêneros dos títulos no MongoDB.
  */
 @Entity
 @Table(name = "tags")
@@ -35,6 +37,10 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /** Chave canônica estável (UPPER_SNAKE, ex.: {@code ACTION}). Única, imutável. */
+    @Column(name = "slug", length = 60, nullable = false, unique = true)
+    private String slug;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Convert(converter = LocalizedStringJsonConverter.class)

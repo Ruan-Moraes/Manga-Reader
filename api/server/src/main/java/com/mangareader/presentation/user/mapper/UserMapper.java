@@ -126,7 +126,7 @@ public final class UserMapper {
     private static CommentSummaryResponse toCommentSummaryResponse(Comment comment) {
         return new CommentSummaryResponse(
                 comment.getId(),
-                comment.getTitleId(),
+                comment.getTargetId(),
                 comment.getTextContent(),
                 comment.getCreatedAt() != null ? comment.getCreatedAt().toString() : null
         );

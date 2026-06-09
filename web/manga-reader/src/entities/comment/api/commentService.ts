@@ -16,8 +16,9 @@ type CommentResponse = {
     userName: string;
     userPhoto: string;
     isHighlighted: boolean;
-    wasEdited: boolean;
+    edited: boolean;
     createdAt: string;
+    updatedAt: string;
     textContent: string | null;
     imageContent: string | null;
     likeCount: string;
@@ -39,8 +40,9 @@ const toCommentData = (c: CommentResponse): CommentData => ({
     },
     isOwner: false, // determinado pelo componente via auth context
     isHighlighted: c.isHighlighted,
-    wasEdited: c.wasEdited,
+    edited: c.edited,
     createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
     textContent: c.textContent,
     imageContent: c.imageContent,
     likeCount: c.likeCount,

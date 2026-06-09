@@ -30,7 +30,7 @@ describe('TagFormModal', () => {
     });
 
     it('preloads label from existing tag', () => {
-        render(<TagFormModal isOpen onClose={() => {}} onSubmit={() => {}} isSubmitting={false} tag={{ value: 1, label: { 'pt-BR': 'Drama' } }} />);
+        render(<TagFormModal isOpen onClose={() => {}} onSubmit={() => {}} isSubmitting={false} tag={{ value: 1, slug: 'DRAMA', label: { 'pt-BR': 'Drama' } }} />);
         expect(screen.getByRole('textbox')).toHaveValue('Drama');
     });
 });

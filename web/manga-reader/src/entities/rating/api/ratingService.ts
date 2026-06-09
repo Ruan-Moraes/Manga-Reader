@@ -12,6 +12,7 @@ type RatingResponse = {
     id: string;
     titleId: string;
     titleName?: string;
+    userId: string;
     userName: string;
     overallRating: number;
     funRating: number;
@@ -27,7 +28,9 @@ type RatingResponse = {
     upvotes?: number;
     downvotes?: number;
     myVote?: 'up' | 'down' | null;
+    edited?: boolean;
     createdAt: string;
+    updatedAt?: string;
 };
 
 type RatingAverageResponse = {
@@ -43,6 +46,7 @@ const toMangaRating = (r: RatingResponse): MangaRating => ({
     id: r.id,
     titleId: r.titleId,
     titleName: r.titleName,
+    userId: r.userId,
     userName: r.userName,
     overallRating: r.overallRating,
     funRating: r.funRating,
@@ -58,7 +62,9 @@ const toMangaRating = (r: RatingResponse): MangaRating => ({
     upvotes: r.upvotes,
     downvotes: r.downvotes,
     myVote: r.myVote,
+    edited: r.edited,
     createdAt: r.createdAt,
+    updatedAt: r.updatedAt,
 });
 
 // ---------------------------------------------------------------------------
@@ -75,7 +81,10 @@ export type GetReviewsParams = {
     star?: number;
 };
 
-export const getRatingsByTitleId = async (titleId: string, { page = 0, size = 20, sort, direction, star }: GetReviewsParams = {}): Promise<PageResponse<MangaRating>> => {
+export const getRatingsByTitleId = async (
+    titleId: string,
+    { page = 0, size = 20, sort, direction, star }: GetReviewsParams = {},
+): Promise<PageResponse<MangaRating>> => {
     const params: Record<string, string | number> = { page, size };
 
     if (sort) params.sort = sort;
@@ -169,6 +178,18 @@ export const getUserReviews = async (page = 0, size = 20): Promise<PageResponse<
     };
 };
 
+/** Resenhas públicas de um usuário específico (perfil de terceiros). */
+export const getUserReviewsById = async (userId: string, page = 0, size = 20): Promise<PageResponse<MangaRating>> => {
+    const response = await api.get<ApiResponse<PageResponse<RatingResponse>>>(`${API_URLS.RATINGS}/user/${userId}`, { params: { page, size } });
+
+    const pageData = response.data.data;
+
+    return {
+        ...pageData,
+        content: pageData.content.map(toMangaRating),
+    };
+};
+
 export const updateReview = async (data: {
     id: string;
     funRating?: number;
@@ -178,6 +199,8 @@ export const updateReview = async (data: {
     originalityRating?: number;
     pacingRating?: number;
     comment?: string;
+    reviewTitle?: string;
+    spoiler?: boolean;
 }): Promise<MangaRating> => {
     const { id, ...body } = data;
     const response = await api.put<ApiResponse<RatingResponse>>(`${API_URLS.RATINGS}/${id}`, body);

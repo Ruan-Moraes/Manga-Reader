@@ -5,7 +5,6 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import { GroupCard, type GroupSummary } from '@entities/group';
 import { EmptyState } from '@ui/EmptyState';
 
-
 type GroupsTabProps = {
     groups: GroupSummary[];
 };

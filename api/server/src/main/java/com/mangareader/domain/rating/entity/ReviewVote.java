@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mangareader.domain.rating.valueobject.VoteValue;
+import com.mangareader.shared.domain.vote.VoteValue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +22,8 @@ import lombok.Setter;
  * {@code ratingId + userId}). O valor pode ser {@link VoteValue#UP} ("Útil")
  * ou {@link VoteValue#DOWN} ("Contrário"). DT-45.
  */
-@Document(collection = "review_votes")
-@CompoundIndex(name = "idx_review_vote_rating_user", def = "{'ratingId': 1, 'userId': 1}", unique = true)
+@Document(collection = "reviews_votes")
+@CompoundIndex(name = "idx_reviews_votes_review_user", def = "{'ratingId': 1, 'userId': 1}", unique = true)
 @Getter
 @Setter
 @NoArgsConstructor

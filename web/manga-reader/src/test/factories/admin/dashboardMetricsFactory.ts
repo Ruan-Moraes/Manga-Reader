@@ -59,7 +59,6 @@ export const buildTopTitle = (overrides: Partial<TopTitle> = {}): TopTitle => {
         name: `Top ${topTitleCounter}`,
         cover: `/covers/top-${topTitleCounter}.jpg`,
         type: 'MANGA',
-        rankingScore: 100 - topTitleCounter,
         ratingAverage: 4.9 - topTitleCounter * 0.05,
         ratingCount: 5000 - topTitleCounter * 100,
         ...overrides,
@@ -71,13 +70,11 @@ export const topTitlePresets = {
         buildTopTitle({
             cover: null,
             type: null,
-            rankingScore: null,
             ratingAverage: null,
             ratingCount: null,
         }),
     chartTopper: (): TopTitle =>
         buildTopTitle({
-            rankingScore: 100,
             ratingAverage: 5,
             ratingCount: 9999,
         }),

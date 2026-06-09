@@ -1,5 +1,6 @@
 package com.mangareader.application.manga.port;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ public interface TitleRepositoryPort {
     List<Title> findAll();
 
     Optional<Title> findById(String id);
+
+    /** Carga em lote por ids (evita N+1). Ordem não garantida. */
+    List<Title> findByIds(Collection<String> ids);
 
     List<Title> searchByName(String query);
 
@@ -37,6 +41,4 @@ public interface TitleRepositoryPort {
     long count();
 
     long countByStatus(String status);
-
-    List<Title> findTopByRankingScore(int limit);
 }

@@ -6,11 +6,12 @@ import type { AdminTag, CreateTagRequest, UpdateTagRequest } from '../model/admi
 
 type AdminTagApi = {
     value: number;
+    slug: string;
     label: Record<string, string>;
 };
 
 const fromAdminTagApi = (raw: AdminTagApi): AdminTag => {
-    return { value: raw.value, label: raw.label };
+    return { value: raw.value, slug: raw.slug, label: raw.label };
 };
 
 export const getAdminTags = async (page = 0, size = 20, search?: string): Promise<PageResponse<AdminTag>> => {

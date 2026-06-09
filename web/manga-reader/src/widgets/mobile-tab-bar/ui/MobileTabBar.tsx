@@ -8,10 +8,7 @@ export interface LayoutMobileTabBarProps {
     onNavigate: (path: string) => void;
 }
 
-export const MobileTabBar = ({
-    activeKey,
-    onNavigate,
-}: LayoutMobileTabBarProps) => {
+export const MobileTabBar = ({ activeKey, onNavigate }: LayoutMobileTabBarProps) => {
     const { t } = useTranslation('layout');
 
     return (

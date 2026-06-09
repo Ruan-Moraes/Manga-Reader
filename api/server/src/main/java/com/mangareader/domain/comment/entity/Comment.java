@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +17,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Comentário em um título (MongoDB).
+ * Comentário unificado (MongoDB) — padrão arquitetural oficial do projeto.
  * <p>
- * Compatível com o frontend ({@code CommentData} em comment.types.ts):
- * <pre>{ id, parentCommentId, user, isOwner, isHighlighted, wasEdited, createdAt, textContent, imageContent, dislikeCount, likeCount }</pre>
+ * Uma única coleção {@code comments} guarda TODO comentário e resposta de
+ * qualquer domínio (obra/título, resenha, tópico de fórum), identificado por
+ * {@code targetType} + {@code targetId}. Resposta é um comentário com
+ * {@code parentCommentId} preenchido (autorreferência → profundidade
+ * ilimitada). Não há coleções separadas de "replies".
+ * <p>
+ * Votos seguem o modelo único (ver {@link CommentVote}); contadores
+ * {@code upvotes}/{@code downvotes} ficam desnormalizados aqui para leitura
+ * barata na listagem.
  */
 @Document(collection = "comments")
+@CompoundIndex(name = "idx_comment_target_thread", def = "{'targetType': 1, 'targetId': 1, 'parentCommentId': 1}")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,8 +40,12 @@ public class Comment {
     @Id
     private String id;
 
+    /** Tipo da entidade-alvo comentada (TITLE, REVIEW, FORUM_TOPIC). */
+    private CommentTarget targetType;
+
+    /** Id da entidade-alvo (titleId, reviewId ou forumTopicId). */
     @Indexed
-    private String titleId;
+    private String targetId;
 
     /** null se for comentário root; ID do pai se for resposta. */
     @Indexed
@@ -46,7 +61,7 @@ public class Comment {
     private boolean isHighlighted = false;
 
     @Builder.Default
-    private boolean wasEdited = false;
+    private boolean edited = false;
 
     private String textContent;
     private String imageContent;
@@ -54,18 +69,23 @@ public class Comment {
     /**
      * Idioma de exibição configurado pelo usuário no momento da criação (BCP 47).
      * UGC é particionado por idioma — listagens filtram por este campo.
-     * Etapa 2 i18n.
      */
     @Indexed
     @Builder.Default
     private String language = "pt-BR";
 
     @Builder.Default
-    private int likeCount = 0;
+    private long upvotes = 0;
 
     @Builder.Default
-    private int dislikeCount = 0;
+    private long downvotes = 0;
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    /**
+     * Última modificação de conteúdo (setada manualmente na edição). Inicializada
+     * igual a {@code createdAt} na criação.
+     */
+    private LocalDateTime updatedAt;
 }

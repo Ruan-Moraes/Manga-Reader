@@ -8,22 +8,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 
 /**
- * Spring Data MongoDB repository para comentários.
+ * Spring Data MongoDB repository para comentários unificados.
  */
 public interface CommentMongoRepository extends MongoRepository<Comment, String> {
-    List<Comment> findByTitleIdAndParentCommentIdIsNull(String titleId);
+    List<Comment> findByTargetTypeAndTargetIdAndParentCommentIdIsNull(CommentTarget targetType, String targetId);
+
+    List<Comment> findByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 
     List<Comment> findByParentCommentId(String parentCommentId);
 
-    Page<Comment> findByTitleId(String titleId, Pageable pageable);
+    Page<Comment> findByTargetTypeAndTargetId(CommentTarget targetType, String targetId, Pageable pageable);
 
-    Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable);
-
-    Page<Comment> findByTitleIdAndLanguageIn(String titleId, Collection<String> languages, Pageable pageable);
+    Page<Comment> findByTargetTypeAndTargetIdAndLanguageIn(
+            CommentTarget targetType, String targetId, Collection<String> languages, Pageable pageable);
 
     Page<Comment> findByUserId(String userId, Pageable pageable);
 
     long countByUserId(String userId);
+
+    long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 }

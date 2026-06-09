@@ -90,10 +90,10 @@ validações / mensagens de erro do backend respeitam a UI atual via
 
 Dois eixos separados, armazenamento distinto:
 
-| Eixo | O que cobre | Onde mora |
-|------|-------------|-----------|
-| **UI language** | interface estática | estes JSONs + `localStorage` (`i18nextLng`) |
-| **Content language** | catálogo + UGC (Title, News, Tag, Chapter, Comment, ForumTopic) | `users.content_locales` (JSONB) no backend |
+| Eixo                 | O que cobre                                                     | Onde mora                                   |
+| -------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| **UI language**      | interface estática                                              | estes JSONs + `localStorage` (`i18nextLng`) |
+| **Content language** | catálogo + UGC (Title, News, Tag, Chapter, Comment, ForumTopic) | `users.content_locales` (JSONB) no backend  |
 
 - **Content lang** sincroniza via hook `useContentLocales(isLoggedIn)`
   (`entities/user/model/useContentLocales.tsx`) — só para users autenticados.
@@ -104,6 +104,7 @@ Dois eixos separados, armazenamento distinto:
 
 Tela de preferências globais não-perfil (leitor, aparência, idioma/região, acessibilidade, dados,
 sobre). Strings sob o namespace **`user` → `settings.system.*`** (pt-BR/en-US/es-ES). Persistência:
+
 - Preferências (reader/appearance/locale/a11y) salvas live em `localStorage` (`mr.settings.v1`) e
   sincronizadas via `useUserSettings(isLoggedIn)` → `GET`/`PATCH /api/users/me/settings` (JSONB no
   backend). **UI lang** continua client-only (i18n + reload banner); **idiomas de leitura** reusam
@@ -151,7 +152,7 @@ Helpers de `@shared/lib/formatters` (respeitam `i18n.language`):
 import { formatDate, formatCurrency } from '@shared/lib/formatters';
 
 formatDate(new Date()); // "19/04/2026" pt-BR, "4/19/2026" en-US
-formatCurrency(1999);   // "R$ 19,99" pt-BR, "$19.99" en-US
+formatCurrency(1999); // "R$ 19,99" pt-BR, "$19.99" en-US
 ```
 
 ## Backend

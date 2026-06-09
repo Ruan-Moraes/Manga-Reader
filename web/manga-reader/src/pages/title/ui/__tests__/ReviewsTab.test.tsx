@@ -20,6 +20,7 @@ const distribution: RatingDistribution = { star1: 2, star2: 3, star3: 5, star4: 
 const buildRating = (overrides: Partial<MangaRating> = {}): MangaRating => ({
     id: 'r1',
     titleId: 't1',
+    userId: 'u1',
     userName: 'Guts',
     overallRating: 4.8,
     funRating: 5,

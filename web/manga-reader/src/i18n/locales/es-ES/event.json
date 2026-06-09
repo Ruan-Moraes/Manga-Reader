@@ -18,6 +18,7 @@
         "comments": "Comentarios y novedades",
         "tickets": "Entradas e inscripción",
         "ticketSlots": "Plazas: {{count}}",
+        "free": "Gratis",
         "register": "Inscribirme",
         "organizer": "Organizador",
         "contact": "Contacto: {{value}}",

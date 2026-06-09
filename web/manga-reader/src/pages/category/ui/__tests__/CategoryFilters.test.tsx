@@ -20,7 +20,6 @@ const makeTitle = (overrides: Partial<Title> = {}): Title => ({
     popularity: '100',
     ratingAverage: 4.5,
     ratingCount: 10,
-    rankingScore: 0.9,
     adult: false,
     status: 'ONGOING',
     author: 'Author',
@@ -32,9 +31,9 @@ const makeTitle = (overrides: Partial<Title> = {}): Title => ({
 });
 
 const MOCK_TAGS: Tag[] = [
-    { value: 1, label: 'Seinen' },
-    { value: 2, label: 'Shounen' },
-    { value: 3, label: 'Isekai' },
+    { value: 1, slug: 'SEINEN', label: 'Seinen' },
+    { value: 2, slug: 'SHOUNEN', label: 'Shounen' },
+    { value: 3, slug: 'ISEKAI', label: 'Isekai' },
 ];
 
 const MOCK_TITLES: Title[] = [

@@ -89,6 +89,9 @@ public class UpdateRatingUseCase {
 
         rating.setOverallRating(rating.calculateOverallRating());
 
+        rating.setEdited(true);
+        rating.setUpdatedAt(java.time.LocalDateTime.now());
+
         MangaRating saved = ratingRepository.save(rating);
 
         eventPublisher.publish("rating.updated", new RatingEvent(rating.getTitleId(), input.userId().toString()));

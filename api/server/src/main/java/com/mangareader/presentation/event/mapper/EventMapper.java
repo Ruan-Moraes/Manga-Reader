@@ -148,7 +148,8 @@ public class EventMapper {
                 .map(t -> new EventTicketResponse(
                         t.getId().toString(),
                         t.getName(),
-                        t.getPrice(),
+                        t.getPriceInCents(),
+                        t.getCurrency(),
                         t.getAvailable()
                 ))
                 .toList();

@@ -53,6 +53,11 @@ public class RatingSeed implements EntitySeeder {
             for (int i = 0; i < amount; i++) {
                 int seed = titleIdx * 100 + i;
 
+                // Datas variadas no passado para a demo (criação espalhada; algumas editadas).
+                java.time.LocalDateTime createdAt = java.time.LocalDateTime.now().minusDays((seed % 90) + 1L).minusHours(seed % 24);
+                boolean edited = seed % 4 == 0;
+                java.time.LocalDateTime updatedAt = edited ? createdAt.plusDays(1L + (seed % 5)) : createdAt;
+
                 double fun = Math.max(1.0, Math.min(5.0, ((seed) % 9 + 1) * 0.5));
                 double art = Math.max(1.0, Math.min(5.0, ((seed + 3) % 9 + 1) * 0.5));
                 double storyline = Math.max(1.0, Math.min(5.0, ((seed + 6) % 9 + 1) * 0.5));
@@ -74,6 +79,9 @@ public class RatingSeed implements EntitySeeder {
                         .pacingRating(pacing)
                         .overallRating(overall)
                         .comment(seed % 3 != 0 ? RATING_COMMENTS[seed % RATING_COMMENTS.length] : null)
+                        .edited(edited)
+                        .createdAt(createdAt)
+                        .updatedAt(updatedAt)
                         .build();
 
                 ratingRepository.save(rating);

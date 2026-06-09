@@ -4,7 +4,6 @@ import { EventCard, formatEventDate, type EventData, type EventType } from '@ent
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-
 const TYPE_MAP: Record<EventType, 'launch' | 'meetup' | 'stream' | 'announcement'> = {
     Lançamento: 'launch',
     Meetup: 'meetup',

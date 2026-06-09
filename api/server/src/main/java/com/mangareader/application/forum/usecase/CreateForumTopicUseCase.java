@@ -39,6 +39,7 @@ public class CreateForumTopicUseCase {
                 .category(input.category())
                 .tags(input.tags() != null ? input.tags() : new java.util.ArrayList<>())
                 .language(localeResolver.currentLanguageTag())
+                .updatedAt(java.time.LocalDateTime.now())
                 .build();
 
         ForumTopic saved = forumRepository.save(topic);

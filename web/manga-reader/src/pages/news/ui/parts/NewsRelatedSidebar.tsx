@@ -19,7 +19,11 @@ const NewsRelatedSidebar = ({ related }: NewsRelatedSidebarProps) => {
                 <h3 className="font-semibold">{t('details.relatedTitle')}</h3>
                 <div className="flex gap-3 overflow-x-auto xl:block xl:space-y-2">
                     {related.map(item => (
-                        <Link key={item.id} to={`${WEB_BASE_URL}${ROUTES.NEWS_DETAIL(item.id)}`} className="block min-w-56 rounded-lg bg-primary p-2 xl:min-w-0">
+                        <Link
+                            key={item.id}
+                            to={`${WEB_BASE_URL}${ROUTES.NEWS_DETAIL(item.id)}`}
+                            className="block min-w-56 rounded-lg bg-primary p-2 xl:min-w-0"
+                        >
                             <p className="text-sm font-medium line-clamp-2">{item.title}</p>
                             <p className="text-xs text-tertiary">
                                 {t(`tabs.${item.category}`, {

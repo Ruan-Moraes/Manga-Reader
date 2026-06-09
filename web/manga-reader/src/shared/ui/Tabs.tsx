@@ -40,9 +40,7 @@ export const Tabs = ({ items, value, onChange, variant = 'underline', size = 'md
                             onClick={() => onChange(it.value)}
                             className={cn(
                                 'inline-flex h-[46px] items-center gap-2 rounded-mr-xs border-l-2 px-3 text-left font-mr-bold transition-colors duration-mr-default',
-                                active
-                                    ? 'border-mr-accent bg-mr-accent-10 text-mr-accent'
-                                    : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
+                                active ? 'border-mr-accent bg-mr-accent-10 text-mr-accent' : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
                                 it.disabled && 'cursor-not-allowed opacity-mr-disabled',
                             )}
                         >

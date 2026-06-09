@@ -19,7 +19,6 @@ export const API_URLS = {
     TITLES_BY_GENRE: `${BASE}/api/titles/genre`,
     TITLES_FILTER: `${BASE}/api/titles/filter`,
 
-
     COMMENTS: `${BASE}/api/comments`,
 
     RATINGS: `${BASE}/api/ratings`,

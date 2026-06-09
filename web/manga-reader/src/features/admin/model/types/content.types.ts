@@ -3,7 +3,6 @@ export type TopTitle = {
     name: string;
     cover: string | null;
     type: string | null;
-    rankingScore: number | null;
     ratingAverage: number | null;
     ratingCount: number | null;
 };

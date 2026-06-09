@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.GenreValidator;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -20,11 +21,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateTitleUseCase {
     private final TitleRepositoryPort titleRepository;
+    private final GenreValidator genreValidator;
 
     public Title execute(Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
                          List<String> genres, String status, String author,
                          String artist, String publisher, boolean adult) {
+        genreValidator.validate(genres);
+
         Title title = Title.builder()
                 .name(toLocalized(name))
                 .type(type)

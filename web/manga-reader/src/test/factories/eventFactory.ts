@@ -16,16 +16,17 @@ export const buildTicketType = (overrides: Partial<TicketType> = {}): TicketType
     return {
         id: `ticket-${ticketCounter}`,
         name: `Ingresso ${ticketCounter}`,
-        price: 'R$ 50,00',
+        priceInCents: 5000,
+        currency: 'BRL',
         available: 100,
         ...overrides,
     };
 };
 
 export const ticketTypePresets = {
-    free: () => buildTicketType({ price: 'Grátis', name: 'Entrada Gratuita' }),
-    cheap: () => buildTicketType({ price: 'R$ 10,00', available: 500 }),
-    vip: () => buildTicketType({ price: 'R$ 500,00', available: 20 }),
+    free: () => buildTicketType({ priceInCents: 0, name: 'Entrada Gratuita' }),
+    cheap: () => buildTicketType({ priceInCents: 1000, available: 500 }),
+    vip: () => buildTicketType({ priceInCents: 50000, available: 20 }),
     soldOut: () => buildTicketType({ available: 0 }),
 };
 

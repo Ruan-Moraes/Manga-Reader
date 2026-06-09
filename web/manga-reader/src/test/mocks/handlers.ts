@@ -65,8 +65,9 @@ export const mockComment = {
     userName: 'Test User',
     userPhoto: 'https://example.com/photo.jpg',
     isHighlighted: false,
-    wasEdited: false,
+    edited: false,
     createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     textContent: 'Great manga!',
     imageContent: null,
     likeCount: '0',
@@ -111,7 +112,7 @@ export const handlers = [
     }),
 
     http.put('*/api/comments/:id', () => {
-        return HttpResponse.json(wrap({ ...mockComment, wasEdited: true }));
+        return HttpResponse.json(wrap({ ...mockComment, edited: true }));
     }),
 
     http.post('*/api/comments', () => {

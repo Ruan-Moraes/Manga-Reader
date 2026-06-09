@@ -21,7 +21,6 @@ const mockTitle = {
     popularity: 'HIGH',
     ratingAverage: 4.9,
     ratingCount: 14820,
-    rankingScore: 99,
     adult: false,
     status: 'ongoing',
     author: 'Kentaro Miura',

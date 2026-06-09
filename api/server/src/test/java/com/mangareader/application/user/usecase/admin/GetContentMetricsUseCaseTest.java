@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.event.port.EventRepositoryPort;
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.event.valueobject.EventStatus;
 import com.mangareader.domain.manga.entity.Title;
@@ -24,6 +26,9 @@ class GetContentMetricsUseCaseTest {
 
     @Mock
     private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private TitleRatingAggregateReadPort ratingAggregateReadPort;
 
     @Mock
     private EventRepositoryPort eventRepository;
@@ -39,7 +44,7 @@ class GetContentMetricsUseCaseTest {
     void deveAgregarContagemDeTitulosPorStatus() {
         when(titleRepository.countByStatus(any())).thenReturn(10L);
         when(eventRepository.countByStatus(any(EventStatus.class))).thenReturn(5L);
-        when(titleRepository.findTopByRankingScore(10)).thenReturn(List.of());
+        when(ratingAggregateReadPort.findTop(10)).thenReturn(List.of());
 
         var result = useCase.execute();
 
@@ -48,27 +53,27 @@ class GetContentMetricsUseCaseTest {
     }
 
     @Test
-    @DisplayName("Deve retornar top 10 títulos com dados mapeados")
+    @DisplayName("Deve retornar top títulos com nota vinda do agregado")
     void deveRetornarTopTitulos() {
         Title title = Title.builder()
                 .id("t1")
                 .name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Top Manga"))
                 .cover("cover.jpg")
                 .type("MANGA")
-                .rankingScore(9.5)
-                .ratingAverage(4.8)
-                .ratingCount(100L)
                 .build();
+        var view = new TitleRatingAggregateView("t1", 4.8, 100, 0, 0, 0, 0, 0);
 
         when(titleRepository.countByStatus(any())).thenReturn(0L);
         when(eventRepository.countByStatus(any(EventStatus.class))).thenReturn(0L);
-        when(titleRepository.findTopByRankingScore(10)).thenReturn(List.of(title));
+        when(ratingAggregateReadPort.findTop(10)).thenReturn(List.of(view));
+        when(titleRepository.findByIds(List.of("t1"))).thenReturn(List.of(title));
         when(localeResolutionService.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn("Top Manga");
 
         var result = useCase.execute();
 
         assertThat(result.topTitles()).hasSize(1);
         assertThat(result.topTitles().getFirst().name()).isEqualTo("Top Manga");
-        assertThat(result.topTitles().getFirst().rankingScore()).isEqualTo(9.5);
+        assertThat(result.topTitles().getFirst().ratingAverage()).isEqualTo(4.8);
+        assertThat(result.topTitles().getFirst().ratingCount()).isEqualTo(100L);
     }
 }

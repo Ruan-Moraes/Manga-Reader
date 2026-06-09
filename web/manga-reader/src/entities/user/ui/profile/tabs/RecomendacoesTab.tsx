@@ -35,7 +35,10 @@ const RecomendacoesTab = ({ profile, onSaved }: Props) => {
     const clearAll = () => {
         const previous = items;
         setItems([]);
-        removeMany(previous.map(r => r.titleId), previous);
+        removeMany(
+            previous.map(r => r.titleId),
+            previous,
+        );
     };
 
     return (

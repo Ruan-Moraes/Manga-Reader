@@ -15,9 +15,10 @@ import org.springframework.context.annotation.Profile;
 /**
  * Topologia RabbitMQ: exchange, filas e bindings.
  * <p>
- * Exchange {@code manga.events} (topic, durable) com filas:
+ * Exchange {@code manga.events} (topic, durable). O monolito apenas <b>publica</b>
+ * eventos {@code rating.*} (consumidos pelo serviço {@code rating-aggregator},
+ * que declara a própria fila) e mantém a fila de denormalização de usuário:
  * <ul>
- *   <li>{@code manga.rating.recalculate} — routing key {@code rating.#}</li>
  *   <li>{@code manga.user.denormalize} — routing key {@code user.profile.updated}</li>
  * </ul>
  * Desabilitado no profile "test".
@@ -27,10 +28,8 @@ import org.springframework.context.annotation.Profile;
 public class RabbitMQConfig {
     public static final String EXCHANGE = "manga.events";
 
-    public static final String QUEUE_RATING_RECALCULATE = "manga.rating.recalculate";
     public static final String QUEUE_USER_DENORMALIZE   = "manga.user.denormalize";
 
-    public static final String ROUTING_KEY_RATING       = "rating.#";
     public static final String ROUTING_KEY_USER_PROFILE = "user.profile.updated";
 
     @Bean
@@ -39,20 +38,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue ratingRecalculateQueue() {
-        return QueueBuilder.durable(QUEUE_RATING_RECALCULATE).build();
-    }
-
-    @Bean
     public Queue userDenormalizeQueue() {
         return QueueBuilder.durable(QUEUE_USER_DENORMALIZE).build();
-    }
-
-    @Bean
-    public Binding ratingBinding(Queue ratingRecalculateQueue, TopicExchange mangaEventsExchange) {
-        return BindingBuilder.bind(ratingRecalculateQueue)
-                .to(mangaEventsExchange)
-                .with(ROUTING_KEY_RATING);
     }
 
     @Bean

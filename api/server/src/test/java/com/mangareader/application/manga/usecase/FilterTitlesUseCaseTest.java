@@ -20,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
@@ -33,6 +35,9 @@ class FilterTitlesUseCaseTest {
     private TitleRepositoryPort titleRepository;
 
     @Mock
+    private TitleRatingAggregateReadPort ratingAggregateReadPort;
+
+    @Mock
     private LocaleResolutionService localeResolutionService;
 
     @InjectMocks
@@ -42,13 +47,17 @@ class FilterTitlesUseCaseTest {
 
     private List<Title> buildSampleTitles() {
         return List.of(
-                Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).popularity("5000").ratingAverage(4.5)
+                Title.builder().id("1").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto")).popularity("5000")
                         .createdAt(LocalDateTime.of(2020, 1, 1, 0, 0)).build(),
-                Title.builder().id("2").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Bleach")).popularity("3000").ratingAverage(3.8)
+                Title.builder().id("2").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Bleach")).popularity("3000")
                         .createdAt(LocalDateTime.of(2022, 6, 15, 0, 0)).build(),
-                Title.builder().id("3").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Attack on Titan")).popularity("8000").ratingAverage(4.8)
+                Title.builder().id("3").name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Attack on Titan")).popularity("8000")
                         .createdAt(LocalDateTime.of(2021, 3, 10, 0, 0)).build()
         );
+    }
+
+    private TitleRatingAggregateView view(String titleId, double average) {
+        return new TitleRatingAggregateView(titleId, average, 0, 0, 0, 0, 0, 0);
     }
 
     @Nested
@@ -180,6 +189,10 @@ class FilterTitlesUseCaseTest {
         void mostRatedDeveOrdenarPorScoreDecrescente() {
             when(titleRepository.findByFilters(isNull(), isNull(), isNull()))
                     .thenReturn(buildSampleTitles());
+            when(ratingAggregateReadPort.findByTitleIdIn(any())).thenReturn(java.util.Map.of(
+                    "1", view("1", 4.5),
+                    "2", view("2", 3.8),
+                    "3", view("3", 4.8)));
 
             Page<Title> result = filterTitlesUseCase.execute(null, null, null, SortCriteria.MOST_RATED, PAGEABLE);
 

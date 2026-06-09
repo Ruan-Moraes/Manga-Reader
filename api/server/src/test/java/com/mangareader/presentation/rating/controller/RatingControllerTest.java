@@ -40,11 +40,11 @@ import com.mangareader.application.rating.usecase.GetRatingDistributionUseCase;
 import com.mangareader.application.rating.usecase.GetRatingsByTitleUseCase;
 import com.mangareader.application.rating.usecase.GetUserRatingsUseCase;
 import com.mangareader.application.rating.usecase.RemoveReviewVoteUseCase;
-import com.mangareader.application.rating.usecase.ReviewVoteResult;
 import com.mangareader.application.rating.usecase.SubmitRatingUseCase;
 import com.mangareader.application.rating.usecase.UpdateRatingUseCase;
 import com.mangareader.domain.rating.entity.MangaRating;
-import com.mangareader.domain.rating.valueobject.VoteValue;
+import com.mangareader.shared.application.vote.VoteResult;
+import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
@@ -224,6 +224,23 @@ class RatingControllerTest {
     }
 
     @Nested
+    @DisplayName("GET /api/ratings/user/{userId}")
+    class GetByUser {
+        @Test
+        @DisplayName("Deve retornar 200 com avaliações públicas de um usuário")
+        void deveRetornar200ComResenhasDoUsuario() throws Exception {
+            var ratings = List.of(buildRating("r1"));
+            when(getUserRatingsUseCase.execute(any(), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(ratings));
+
+            mockMvc.perform(get("/api/ratings/user/{userId}", UUID.randomUUID()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.content.length()").value(1));
+        }
+    }
+
+    @Nested
     @DisplayName("POST /api/ratings")
     class Submit {
         @Test
@@ -367,7 +384,7 @@ class RatingControllerTest {
         @DisplayName("Deve retornar 200 com contadores e myVote ao votar 'up'")
         void deveRetornar200AoVotar() throws Exception {
             when(castReviewVoteUseCase.execute(any(), any(), org.mockito.ArgumentMatchers.eq(VoteValue.UP)))
-                    .thenReturn(new ReviewVoteResult(8, 1, VoteValue.UP));
+                    .thenReturn(new VoteResult(8, 1, VoteValue.UP));
 
             mockMvc.perform(post("/api/ratings/r1/vote")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -425,7 +442,7 @@ class RatingControllerTest {
         @DisplayName("Deve retornar 200 e myVote nulo ao remover o voto")
         void deveRetornar200AoRemoverVoto() throws Exception {
             when(removeReviewVoteUseCase.execute(any(), any()))
-                    .thenReturn(new ReviewVoteResult(7, 1, null));
+                    .thenReturn(new VoteResult(7, 1, null));
 
             mockMvc.perform(delete("/api/ratings/r1/vote").principal(mockAuth()))
                     .andExpect(status().isOk())

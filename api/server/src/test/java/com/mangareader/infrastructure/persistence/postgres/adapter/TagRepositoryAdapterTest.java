@@ -44,7 +44,10 @@ class TagRepositoryAdapterTest {
     }
 
     private static Tag tag(String label) {
-        return Tag.builder().label(LocalizedString.of(Map.of("pt-BR", label))).build();
+        return Tag.builder()
+                .slug(com.mangareader.domain.category.entity.TagSlug.canonical(label))
+                .label(LocalizedString.of(Map.of("pt-BR", label)))
+                .build();
     }
 
     @Nested

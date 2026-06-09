@@ -72,6 +72,23 @@ public class LibraryController {
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
 
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Biblioteca de um usuário", description = "Retorna mangás salvos de um usuário (perfil público), com paginação. Filtrável por lista.")
+    public ResponseEntity<ApiResponse<PageResponse<SavedMangaResponse>>> getUserLibrary(
+            @PathVariable UUID userId,
+            @PageParams(defaultSort = "savedAt", defaultDirection = "desc")
+            Pageable pageable,
+            @RequestParam(required = false) String list
+    ) {
+        var result = (list != null)
+                ? getUserLibraryByListUseCase.execute(userId, ReadingListType.fromValue(list), pageable)
+                : getUserLibraryUseCase.execute(userId, pageable);
+
+        var mapped = result.map(libraryMapper::toResponse);
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
+    }
+
     @GetMapping("/counts")
     @Operation(summary = "Contagens da biblioteca", description = "Retorna a quantidade de mangás por lista de leitura")
     public ResponseEntity<ApiResponse<LibraryCountsResponse>> getCounts(

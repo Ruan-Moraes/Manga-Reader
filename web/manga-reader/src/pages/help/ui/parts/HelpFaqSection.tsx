@@ -8,31 +8,21 @@ import { FAQ_KEYS } from './helpData';
 
 const HelpFaqSection = () => {
     const { t } = useTranslation('help');
-    const [helpfulVotes, setHelpfulVotes] = useState<
-        Record<string, boolean | null>
-    >({});
+    const [helpfulVotes, setHelpfulVotes] = useState<Record<string, boolean | null>>({});
 
     return (
         <section className="mb-12">
-            <SectionHeader
-                eyebrow={t('faq.eyebrow')}
-                title={t('faq.title')}
-                className="mb-6"
-            />
+            <SectionHeader eyebrow={t('faq.eyebrow')} title={t('faq.title')} className="mb-6" />
             <div className="flex flex-col gap-2">
                 {FAQ_KEYS.map(key => (
                     <AccordionItem key={key} title={t(`faqItems.${key}.q`)}>
-                        <p className="text-mr-body text-mr-fg-muted leading-relaxed">
-                            {t(`faqItems.${key}.a`)}
-                        </p>
+                        <p className="text-mr-body text-mr-fg-muted leading-relaxed">{t(`faqItems.${key}.a`)}</p>
                         <div className="mt-3 flex items-center gap-3 text-mr-tiny text-mr-fg-subtle">
                             <span>{t('faq.helpful')}</span>
                             <button
                                 type="button"
                                 aria-label={t('faq.yesAria')}
-                                onClick={() =>
-                                    setHelpfulVotes(v => ({ ...v, [key]: true }))
-                                }
+                                onClick={() => setHelpfulVotes(v => ({ ...v, [key]: true }))}
                                 className={`inline-flex items-center gap-1 hover:text-mr-accent ${helpfulVotes[key] === true ? 'text-mr-accent' : ''}`}
                             >
                                 <ThumbsUp className="size-3.5" /> {t('faq.yes')}

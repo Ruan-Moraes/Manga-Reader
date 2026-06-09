@@ -4,10 +4,10 @@ import { formatDate } from '@shared/lib/formatters';
 
 type CommentMetadataProps = {
     createdAt: string;
-    wasEdited: boolean;
+    edited: boolean;
 };
 
-const CommentMetadata = ({ createdAt, wasEdited }: CommentMetadataProps) => {
+const CommentMetadata = ({ createdAt, edited }: CommentMetadataProps) => {
     const { t } = useTranslation('comment');
 
     return (
@@ -23,7 +23,7 @@ const CommentMetadata = ({ createdAt, wasEdited }: CommentMetadataProps) => {
                     })}
                 </span>
             </div>
-            {wasEdited && (
+            {edited && (
                 <div className="px-2 py-1 rounded-xs shadow-lg bg-primary-default">
                     <span className=" text-shadow-default">{t('metadata.edited')}</span>
                 </div>

@@ -41,8 +41,14 @@ public class EventTicket {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 50)
-    private String price;
+    /** Preço em centavos (inteiro). Mesma convenção de subscription_plans.price_in_cents. */
+    @Column(name = "price_in_cents", nullable = false)
+    @Builder.Default
+    private long priceInCents = 0;
+
+    @Column(nullable = false, length = 3)
+    @Builder.Default
+    private String currency = "BRL";
 
     @Builder.Default
     private int available = 0;

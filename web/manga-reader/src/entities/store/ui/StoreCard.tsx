@@ -13,15 +13,7 @@ interface StoreCardProps {
 
 function StoreLogo({ store, size = 48 }: { store: Store; size?: number }) {
     if (store.logo) {
-        return (
-            <img
-                src={store.logo}
-                alt={store.name}
-                width={size}
-                height={size}
-                className="rounded-mr-sm object-contain"
-            />
-        );
+        return <img src={store.logo} alt={store.name} width={size} height={size} className="rounded-mr-sm object-contain" />;
     }
     return (
         <span
@@ -71,9 +63,7 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
                         </span>
                     )}
                 </div>
-                {store.description && (
-                    <p className="mt-0.5 text-[12px] text-mr-fg-subtle line-clamp-1">{store.description}</p>
-                )}
+                {store.description && <p className="mt-0.5 text-[12px] text-mr-fg-subtle line-clamp-1">{store.description}</p>}
             </div>
 
             <Button

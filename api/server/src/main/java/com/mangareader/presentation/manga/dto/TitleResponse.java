@@ -19,7 +19,6 @@ public record TitleResponse(
         String popularity,
         Double ratingAverage,
         Long ratingCount,
-        Double rankingScore,
         boolean adult,
         String status,
         String author,

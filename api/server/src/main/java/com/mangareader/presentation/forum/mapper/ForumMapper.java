@@ -51,6 +51,7 @@ public class ForumMapper {
                 category,
                 topic.getTags(),
                 formatDateTime(topic.getCreatedAt()),
+                formatDateTime(topic.getUpdatedAt()),
                 formatDateTime(topic.getLastActivityAt()),
                 topic.getViewCount(),
                 topic.getReplyCount(),
@@ -58,6 +59,7 @@ public class ForumMapper {
                 topic.isPinned(),
                 topic.isLocked(),
                 topic.isSolved(),
+                topic.isEdited(),
                 mapReplies(topic.getReplies(), postCountFn)
         );
     }
@@ -84,13 +86,15 @@ public class ForumMapper {
                 category,
                 topic.getTags(),
                 formatDateTime(topic.getCreatedAt()),
+                formatDateTime(topic.getUpdatedAt()),
                 formatDateTime(topic.getLastActivityAt()),
                 topic.getViewCount(),
                 topic.getReplyCount(),
                 topic.getLikeCount(),
                 topic.isPinned(),
                 topic.isLocked(),
-                topic.isSolved()
+                topic.isSolved(),
+                topic.isEdited()
         );
     }
 
@@ -124,6 +128,7 @@ public class ForumMapper {
                         mapAuthor(r.getAuthor(), postCountFn),
                         r.getContent(),
                         formatDateTime(r.getCreatedAt()),
+                        formatDateTime(r.getUpdatedAt()),
                         r.getLikes(),
                         r.isEdited(),
                         r.isBestAnswer()

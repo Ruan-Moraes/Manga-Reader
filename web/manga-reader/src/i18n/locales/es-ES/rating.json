@@ -39,7 +39,9 @@
         "successBody": "Tu calificación general fue {{overall}}. Gracias por contribuir con la comunidad.",
         "successCta": "Ver mi reseña",
         "progress": "{{rated}} de {{total}} criterios",
-        "rateCriterion": "Valora {{name}}"
+        "rateCriterion": "Valora {{name}}",
+        "editLabel": "Editar reseña",
+        "save": "Guardar"
     },
     "myReviews": {
         "title": "Mis Reseñas",
@@ -158,6 +160,12 @@
         "breakdown": "Notas por criterio",
         "helpful": "Útil",
         "unhelpful": "En contra",
-        "voteGroup": "Votar en la reseña"
+        "voteGroup": "Votar en la reseña",
+        "edited": "editado",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "deleteConfirm": "¿Eliminar esta reseña?",
+        "deleteYes": "Sí",
+        "deleteNo": "No"
     }
 }

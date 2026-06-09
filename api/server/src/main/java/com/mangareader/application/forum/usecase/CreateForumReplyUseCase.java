@@ -40,6 +40,7 @@ public class CreateForumReplyUseCase {
                 .author(author)
                 .content(input.content())
                 .language(localeResolver.currentLanguageTag())
+                .updatedAt(java.time.LocalDateTime.now())
                 .build();
 
         topic.getReplies().add(reply);

@@ -49,7 +49,7 @@ export const buildForumReply = (overrides: Partial<ForumReply> = {}): ForumReply
         content: `Conteudo da resposta ${forumReplyCounter}.`,
         createdAt: '2026-03-20T10:00:00Z',
         likes: 5,
-        isEdited: false,
+        edited: false,
         isBestAnswer: false,
         ...overrides,
     };
@@ -59,7 +59,7 @@ export const forumReplyPresets = {
     plain: () => buildForumReply(),
     edited: () =>
         buildForumReply({
-            isEdited: true,
+            edited: true,
             content: 'Conteudo editado da resposta.',
         }),
     bestAnswer: () => buildForumReply({ isBestAnswer: true, likes: 50 }),

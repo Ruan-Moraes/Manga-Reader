@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import com.mangareader.domain.comment.valueobject.CommentTarget;
+
 class CommentTest {
 
     @Nested
@@ -16,16 +18,17 @@ class CommentTest {
         @DisplayName("Deve iniciar com valores default corretos no builder")
         void shouldInitializeDefaultValuesWhenUsingBuilder() {
             Comment comment = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE)
+                    .targetId("title-1")
                     .userId("user-1")
                     .userName("João")
                     .textContent("Ótimo capítulo!")
                     .build();
 
             assertThat(comment.isHighlighted()).isFalse();
-            assertThat(comment.isWasEdited()).isFalse();
-            assertThat(comment.getLikeCount()).isEqualTo(0);
-            assertThat(comment.getDislikeCount()).isEqualTo(0);
+            assertThat(comment.isEdited()).isFalse();
+            assertThat(comment.getUpvotes()).isZero();
+            assertThat(comment.getDownvotes()).isZero();
         }
 
         @Test
@@ -33,31 +36,33 @@ class CommentTest {
         void shouldSetAllFieldsViaBuilder() {
             Comment comment = Comment.builder()
                     .id("comment-abc")
-                    .titleId("title-1")
+                    .targetType(CommentTarget.FORUM_TOPIC)
+                    .targetId("topic-1")
                     .parentCommentId("parent-xyz")
                     .userId("user-1")
                     .userName("Maria")
                     .userPhoto("https://example.com/photo.jpg")
                     .isHighlighted(true)
-                    .wasEdited(true)
+                    .edited(true)
                     .textContent("Texto do comentário")
                     .imageContent("https://example.com/img.png")
-                    .likeCount(15)
-                    .dislikeCount(3)
+                    .upvotes(15)
+                    .downvotes(3)
                     .build();
 
             assertThat(comment.getId()).isEqualTo("comment-abc");
-            assertThat(comment.getTitleId()).isEqualTo("title-1");
+            assertThat(comment.getTargetType()).isEqualTo(CommentTarget.FORUM_TOPIC);
+            assertThat(comment.getTargetId()).isEqualTo("topic-1");
             assertThat(comment.getParentCommentId()).isEqualTo("parent-xyz");
             assertThat(comment.getUserId()).isEqualTo("user-1");
             assertThat(comment.getUserName()).isEqualTo("Maria");
             assertThat(comment.getUserPhoto()).isEqualTo("https://example.com/photo.jpg");
             assertThat(comment.isHighlighted()).isTrue();
-            assertThat(comment.isWasEdited()).isTrue();
+            assertThat(comment.isEdited()).isTrue();
             assertThat(comment.getTextContent()).isEqualTo("Texto do comentário");
             assertThat(comment.getImageContent()).isEqualTo("https://example.com/img.png");
-            assertThat(comment.getLikeCount()).isEqualTo(15);
-            assertThat(comment.getDislikeCount()).isEqualTo(3);
+            assertThat(comment.getUpvotes()).isEqualTo(15);
+            assertThat(comment.getDownvotes()).isEqualTo(3);
         }
     }
 
@@ -69,7 +74,8 @@ class CommentTest {
         @DisplayName("Comentário raiz deve ter parentCommentId nulo")
         void rootCommentShouldHaveNullParentId() {
             Comment root = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE)
+                    .targetId("title-1")
                     .userId("user-1")
                     .textContent("Comentário raiz")
                     .build();
@@ -81,13 +87,13 @@ class CommentTest {
         @DisplayName("Resposta deve ter parentCommentId preenchido")
         void replyShouldHaveParentId() {
             Comment reply = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE)
+                    .targetId("title-1")
                     .userId("user-2")
                     .parentCommentId("comment-root")
                     .textContent("Concordo!")
                     .build();
 
-            assertThat(reply.getParentCommentId()).isNotNull();
             assertThat(reply.getParentCommentId()).isEqualTo("comment-root");
         }
     }
@@ -97,36 +103,38 @@ class CommentTest {
     class MutationTests {
 
         @Test
-        @DisplayName("Deve suportar incremento de likes/dislikes via setters")
-        void shouldSupportLikeDislikeModification() {
+        @DisplayName("Deve suportar incremento de votos via setters")
+        void shouldSupportVoteModification() {
             Comment comment = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE)
+                    .targetId("title-1")
                     .userId("user-1")
                     .textContent("Bom!")
                     .build();
 
-            comment.setLikeCount(comment.getLikeCount() + 1);
-            assertThat(comment.getLikeCount()).isEqualTo(1);
+            comment.setUpvotes(comment.getUpvotes() + 1);
+            assertThat(comment.getUpvotes()).isEqualTo(1);
 
-            comment.setDislikeCount(comment.getDislikeCount() + 1);
-            assertThat(comment.getDislikeCount()).isEqualTo(1);
+            comment.setDownvotes(comment.getDownvotes() + 1);
+            assertThat(comment.getDownvotes()).isEqualTo(1);
         }
 
         @Test
         @DisplayName("Deve marcar como editado via setter")
         void shouldMarkAsEdited() {
             Comment comment = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE)
+                    .targetId("title-1")
                     .userId("user-1")
                     .textContent("Texto original")
                     .build();
 
-            assertThat(comment.isWasEdited()).isFalse();
+            assertThat(comment.isEdited()).isFalse();
 
-            comment.setWasEdited(true);
+            comment.setEdited(true);
             comment.setTextContent("Texto editado");
 
-            assertThat(comment.isWasEdited()).isTrue();
+            assertThat(comment.isEdited()).isTrue();
             assertThat(comment.getTextContent()).isEqualTo("Texto editado");
         }
 
@@ -134,7 +142,8 @@ class CommentTest {
         @DisplayName("Deve marcar como destacado via setter")
         void shouldMarkAsHighlighted() {
             Comment comment = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE)
+                    .targetId("title-1")
                     .userId("user-1")
                     .textContent("Comentário importante")
                     .build();
@@ -155,7 +164,7 @@ class CommentTest {
             Comment comment = new Comment();
 
             assertThat(comment.getId()).isNull();
-            assertThat(comment.getTitleId()).isNull();
+            assertThat(comment.getTargetId()).isNull();
             assertThat(comment.getParentCommentId()).isNull();
             assertThat(comment.getUserId()).isNull();
             assertThat(comment.getUserName()).isNull();

@@ -21,7 +21,8 @@ import com.mangareader.application.rating.port.RatingRepositoryPort;
 import com.mangareader.application.rating.port.ReviewVoteRepositoryPort;
 import com.mangareader.domain.rating.entity.MangaRating;
 import com.mangareader.domain.rating.entity.ReviewVote;
-import com.mangareader.domain.rating.valueobject.VoteValue;
+import com.mangareader.shared.application.vote.VoteResult;
+import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +53,7 @@ class RemoveReviewVoteUseCaseTest {
         when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.of(existing));
 
-        ReviewVoteResult result = useCase.execute(RATING_ID, VOTER);
+        VoteResult result = useCase.execute(RATING_ID, VOTER);
 
         assertThat(result.upvotes()).isEqualTo(4);
         assertThat(result.myVote()).isNull();
@@ -66,7 +67,7 @@ class RemoveReviewVoteUseCaseTest {
         when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(rating(5, 1)));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.empty());
 
-        ReviewVoteResult result = useCase.execute(RATING_ID, VOTER);
+        VoteResult result = useCase.execute(RATING_ID, VOTER);
 
         assertThat(result.upvotes()).isEqualTo(5);
         verify(reviewVoteRepository, never()).delete(any());

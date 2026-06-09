@@ -1,8 +1,11 @@
 package com.mangareader.infrastructure.persistence.postgres.adapter;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,6 +38,20 @@ public class TagRepositoryAdapter implements TagRepositoryPort {
     @Override
     public Optional<Tag> findById(Long id) {
         return jpaRepository.findById(id);
+    }
+
+    @Override
+    public Set<String> findExistingSlugs(Collection<String> slugs) {
+        if (slugs == null || slugs.isEmpty()) {
+            return Set.of();
+        }
+
+        var wanted = Set.copyOf(slugs);
+
+        return jpaRepository.findAll().stream()
+                .map(Tag::getSlug)
+                .filter(wanted::contains)
+                .collect(Collectors.toSet());
     }
 
     @Override

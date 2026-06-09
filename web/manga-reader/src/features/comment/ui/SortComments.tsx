@@ -21,11 +21,46 @@ const SortComments = ({ title }: SortCommentsProps) => {
         <div className="flex flex-wrap items-center gap-3">
             <span className="text-mr-small font-mr-semibold text-mr-fg-subtle">{title}</span>
             <div className="inline-flex items-center gap-0.5 rounded-mr-full border border-mr-chip-border bg-mr-chip p-0.5">
-                <IconButton icon={ArrowUpDown} aria-label="Sort default" size="sm" variant="ghost" onClick={() => setSortType(null)} className={activeClass(sortType === null)} />
-                <IconButton icon={ThumbsDown} aria-label="Sort by dislikes" size="sm" variant="ghost" onClick={() => handleSortClick('dislikes')} className={activeClass(sortType === 'dislikes')} />
-                <IconButton icon={ThumbsUp} aria-label="Sort by likes" size="sm" variant="ghost" onClick={() => handleSortClick('likes')} className={activeClass(sortType === 'likes')} />
-                <IconButton icon={CalendarArrowDown} aria-label="Sort by oldest" size="sm" variant="ghost" onClick={() => handleSortClick('oldest')} className={activeClass(sortType === 'oldest')} />
-                <IconButton icon={CalendarArrowUp} aria-label="Sort by newest" size="sm" variant="ghost" onClick={() => handleSortClick('newest')} className={activeClass(sortType === 'newest')} />
+                <IconButton
+                    icon={ArrowUpDown}
+                    aria-label="Sort default"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setSortType(null)}
+                    className={activeClass(sortType === null)}
+                />
+                <IconButton
+                    icon={ThumbsDown}
+                    aria-label="Sort by dislikes"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('dislikes')}
+                    className={activeClass(sortType === 'dislikes')}
+                />
+                <IconButton
+                    icon={ThumbsUp}
+                    aria-label="Sort by likes"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('likes')}
+                    className={activeClass(sortType === 'likes')}
+                />
+                <IconButton
+                    icon={CalendarArrowDown}
+                    aria-label="Sort by oldest"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('oldest')}
+                    className={activeClass(sortType === 'oldest')}
+                />
+                <IconButton
+                    icon={CalendarArrowUp}
+                    aria-label="Sort by newest"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleSortClick('newest')}
+                    className={activeClass(sortType === 'newest')}
+                />
             </div>
         </div>
     );

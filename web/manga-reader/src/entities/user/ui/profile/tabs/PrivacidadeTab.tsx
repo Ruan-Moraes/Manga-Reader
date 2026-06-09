@@ -75,8 +75,22 @@ const PrivacidadeTab = ({ profile, onAccountDeleted }: Props) => {
     };
 
     const items: { key: string; title: string; desc: string; icon: LucideIcon; checked: boolean; onChange: (v: boolean) => void }[] = [
-        { key: 'history', title: t('profile.edit.privacy.historyLabel'), desc: t('profile.edit.privacy.historyDesc'), icon: Library, checked: showHistory, onChange: toggleHistory },
-        { key: 'comments', title: t('profile.edit.privacy.commentsLabel'), desc: t('profile.edit.privacy.commentsDesc'), icon: MessageSquare, checked: showComments, onChange: toggleComments },
+        {
+            key: 'history',
+            title: t('profile.edit.privacy.historyLabel'),
+            desc: t('profile.edit.privacy.historyDesc'),
+            icon: Library,
+            checked: showHistory,
+            onChange: toggleHistory,
+        },
+        {
+            key: 'comments',
+            title: t('profile.edit.privacy.commentsLabel'),
+            desc: t('profile.edit.privacy.commentsDesc'),
+            icon: MessageSquare,
+            checked: showComments,
+            onChange: toggleComments,
+        },
     ];
 
     const canDelete = confirmText.trim() === profile.name && !deleting;
@@ -137,7 +151,10 @@ const PrivacidadeTab = ({ profile, onAccountDeleted }: Props) => {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => { setConfirming(false); setConfirmText(''); }}
+                                onClick={() => {
+                                    setConfirming(false);
+                                    setConfirmText('');
+                                }}
                                 className="mr-focus-ring cursor-pointer rounded-mr-xs border border-mr-tertiary bg-mr-secondary px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr text-mr-fg"
                             >
                                 {t('profile.edit.privacy.deleteCancel')}

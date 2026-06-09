@@ -9,5 +9,6 @@ import java.util.Map;
  */
 public record TagAdminResponse(
         Long value,
+        String slug,
         Map<String, String> label
 ) {}

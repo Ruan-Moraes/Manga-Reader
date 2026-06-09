@@ -33,14 +33,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.mangareader.application.comment.usecase.CastCommentVoteUseCase;
 import com.mangareader.application.comment.usecase.CreateCommentUseCase;
 import com.mangareader.application.comment.usecase.DeleteCommentUseCase;
-import com.mangareader.application.comment.usecase.GetCommentsByTitleUseCase;
-import com.mangareader.application.comment.usecase.GetUserReactionsUseCase;
-import com.mangareader.application.comment.usecase.ReactToCommentUseCase;
+import com.mangareader.application.comment.usecase.GetCommentsByTargetUseCase;
+import com.mangareader.application.comment.usecase.GetUserCommentVotesUseCase;
+import com.mangareader.application.comment.usecase.RemoveCommentVoteUseCase;
 import com.mangareader.application.comment.usecase.UpdateCommentUseCase;
 import com.mangareader.domain.comment.entity.Comment;
-import com.mangareader.domain.comment.valueobject.ReactionType;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
+import com.mangareader.shared.application.vote.VoteResult;
+import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.application.auth.port.TokenPort;
 
 @WebMvcTest(CommentController.class)
@@ -53,7 +56,7 @@ class CommentControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GetCommentsByTitleUseCase getCommentsByTitleUseCase;
+    private GetCommentsByTargetUseCase getCommentsByTargetUseCase;
 
     @MockitoBean
     private CreateCommentUseCase createCommentUseCase;
@@ -65,10 +68,13 @@ class CommentControllerTest {
     private DeleteCommentUseCase deleteCommentUseCase;
 
     @MockitoBean
-    private ReactToCommentUseCase reactToCommentUseCase;
+    private CastCommentVoteUseCase castCommentVoteUseCase;
 
     @MockitoBean
-    private GetUserReactionsUseCase getUserReactionsUseCase;
+    private RemoveCommentVoteUseCase removeCommentVoteUseCase;
+
+    @MockitoBean
+    private GetUserCommentVotesUseCase getUserCommentVotesUseCase;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -84,12 +90,13 @@ class CommentControllerTest {
     private Comment buildComment(String id) {
         return Comment.builder()
                 .id(id)
-                .titleId("title-1")
+                .targetType(CommentTarget.TITLE)
+                .targetId("title-1")
                 .userId(USER_ID.toString())
                 .userName("Ruan")
                 .textContent("Ótimo capítulo!")
-                .likeCount(5)
-                .dislikeCount(1)
+                .upvotes(5)
+                .downvotes(1)
                 .createdAt(LocalDateTime.of(2026, 3, 10, 14, 0))
                 .build();
     }
@@ -102,7 +109,8 @@ class CommentControllerTest {
         @DisplayName("Deve retornar 200 com comentários paginados")
         void deveRetornar200ComComentarios() throws Exception {
             var comments = List.of(buildComment("c1"), buildComment("c2"));
-            when(getCommentsByTitleUseCase.execute(eq("title-1"), any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
+            when(getCommentsByTargetUseCase.execute(eq(CommentTarget.TITLE), eq("title-1"),
+                    any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
                     .thenReturn(new PageImpl<>(comments));
 
             mockMvc.perform(get("/api/comments/title/title-1"))
@@ -115,7 +123,8 @@ class CommentControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getCommentsByTitleUseCase.execute(eq("title-x"), any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
+            when(getCommentsByTargetUseCase.execute(eq(CommentTarget.TITLE), eq("title-x"),
+                    any(Pageable.class), org.mockito.ArgumentMatchers.anyBoolean()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/comments/title/title-x"))
@@ -137,7 +146,7 @@ class CommentControllerTest {
             mockMvc.perform(post("/api/comments")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "title-1", "textContent": "Ótimo capítulo!"}
+                                    {"targetType": "TITLE", "targetId": "title-1", "textContent": "Ótimo capítulo!"}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isCreated())
@@ -146,12 +155,12 @@ class CommentControllerTest {
         }
 
         @Test
-        @DisplayName("Deve retornar 400 quando titleId está em branco")
-        void deveRetornar400TitleIdEmBranco() throws Exception {
+        @DisplayName("Deve retornar 400 quando targetId está em branco")
+        void deveRetornar400TargetIdEmBranco() throws Exception {
             mockMvc.perform(post("/api/comments")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "", "textContent": "Comentário"}
+                                    {"targetType": "TITLE", "targetId": "", "textContent": "Comentário"}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -163,7 +172,7 @@ class CommentControllerTest {
             mockMvc.perform(post("/api/comments")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"titleId": "title-1", "textContent": ""}
+                                    {"targetType": "TITLE", "targetId": "title-1", "textContent": ""}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
@@ -219,62 +228,78 @@ class CommentControllerTest {
     }
 
     @Nested
-    @DisplayName("POST /api/comments/{id}/like e /dislike")
-    class Reactions {
+    @DisplayName("POST /api/comments/{id}/vote")
+    class Vote {
 
         @Test
-        @DisplayName("Deve retornar 200 ao curtir comentário")
-        void deveRetornar200AoCurtir() throws Exception {
-            var comment = buildComment("c1");
-            when(reactToCommentUseCase.execute("c1", ReactionType.LIKE, USER_ID.toString()))
-                    .thenReturn(comment);
+        @DisplayName("Deve retornar 200 com contadores e myVote ao votar 'up'")
+        void deveRetornar200AoVotar() throws Exception {
+            when(castCommentVoteUseCase.execute(eq("c1"), eq(USER_ID.toString()), eq(VoteValue.UP)))
+                    .thenReturn(new VoteResult(6, 1, VoteValue.UP));
 
-            mockMvc.perform(post("/api/comments/c1/like")
+            mockMvc.perform(post("/api/comments/c1/vote")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"value": "up"}
+                                    """)
                             .principal(mockAuth()))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.success").value(true));
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.upvotes").value(6))
+                    .andExpect(jsonPath("$.data.myVote").value("up"));
         }
 
         @Test
-        @DisplayName("Deve retornar 200 ao descurtir comentário")
-        void deveRetornar200AoDescurtir() throws Exception {
-            var comment = buildComment("c1");
-            when(reactToCommentUseCase.execute("c1", ReactionType.DISLIKE, USER_ID.toString()))
-                    .thenReturn(comment);
-
-            mockMvc.perform(post("/api/comments/c1/dislike")
+        @DisplayName("Deve retornar 400 quando value é inválido")
+        void deveRetornar400ValueInvalido() throws Exception {
+            mockMvc.perform(post("/api/comments/c1/vote")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"value": "sideways"}
+                                    """)
                             .principal(mockAuth()))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 200 e myVote nulo ao remover o voto")
+        void deveRetornar200AoRemoverVoto() throws Exception {
+            when(removeCommentVoteUseCase.execute("c1", USER_ID.toString()))
+                    .thenReturn(new VoteResult(5, 1, null));
+
+            mockMvc.perform(delete("/api/comments/c1/vote").principal(mockAuth()))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.success").value(true));
+                    .andExpect(jsonPath("$.data.upvotes").value(5))
+                    .andExpect(jsonPath("$.data.myVote").doesNotExist());
         }
     }
 
     @Nested
-    @DisplayName("GET /api/comments/user-reactions")
-    class UserReactions {
+    @DisplayName("GET /api/comments/user-votes")
+    class UserVotes {
 
         @Test
-        @DisplayName("Deve retornar 200 com mapa de reações")
-        void deveRetornar200ComReacoes() throws Exception {
-            when(getUserReactionsUseCase.execute(List.of("c1", "c2"), USER_ID.toString()))
-                    .thenReturn(Map.of("c1", ReactionType.LIKE, "c2", ReactionType.DISLIKE));
+        @DisplayName("Deve retornar 200 com mapa de votos")
+        void deveRetornar200ComVotos() throws Exception {
+            when(getUserCommentVotesUseCase.execute(List.of("c1", "c2"), USER_ID.toString()))
+                    .thenReturn(Map.of("c1", VoteValue.UP, "c2", VoteValue.DOWN));
 
-            mockMvc.perform(get("/api/comments/user-reactions")
+            mockMvc.perform(get("/api/comments/user-votes")
                             .param("commentIds", "c1", "c2")
                             .principal(mockAuth()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.c1").value("LIKE"))
-                    .andExpect(jsonPath("$.data.c2").value("DISLIKE"));
+                    .andExpect(jsonPath("$.data.c1").value("up"))
+                    .andExpect(jsonPath("$.data.c2").value("down"));
         }
 
         @Test
         @DisplayName("Deve retornar 200 com mapa vazio")
         void deveRetornar200ComMapaVazio() throws Exception {
-            when(getUserReactionsUseCase.execute(List.of("c1"), USER_ID.toString()))
+            when(getUserCommentVotesUseCase.execute(List.of("c1"), USER_ID.toString()))
                     .thenReturn(Map.of());
 
-            mockMvc.perform(get("/api/comments/user-reactions")
+            mockMvc.perform(get("/api/comments/user-votes")
                             .param("commentIds", "c1")
                             .principal(mockAuth()))
                     .andExpect(status().isOk())

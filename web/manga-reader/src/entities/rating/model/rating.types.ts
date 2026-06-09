@@ -2,6 +2,7 @@ export type MangaRating = {
     id: string;
     titleId: string;
     titleName?: string;
+    userId: string;
     userName: string;
     overallRating: number;
     funRating: number;
@@ -12,6 +13,10 @@ export type MangaRating = {
     pacingRating: number;
     comment?: string;
     createdAt: string;
+    /** Data da última modificação de conteúdo (ISO) */
+    updatedAt?: string;
+    /** Resenha foi editada após a criação */
+    edited?: boolean;
     /** Título opcional da resenha */
     reviewTitle?: string;
     /** Resenha marcada como Top pela comunidade */

@@ -66,16 +66,7 @@ function scrollTo(id: string) {
     window.scrollTo({ top: y, behavior: 'smooth' });
 }
 
-export const LegalShell = ({
-    page,
-    eyebrow,
-    title,
-    sub,
-    updated,
-    version,
-    toc,
-    children,
-}: LegalShellProps) => {
+export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, children }: LegalShellProps) => {
     const navigate = useAppNavigate();
     const { t } = useTranslation('legal');
     const tocIds = toc?.map(it => it.id) ?? [];
@@ -88,28 +79,14 @@ export const LegalShell = ({
             {/* Hero */}
             <div className="border-b border-mr-border-subtle bg-mr-secondary py-8 sm:py-10">
                 <PageContainer>
-                    <p className="mr-label mb-2 text-mr-accent">
-                        {resolvedEyebrow}
-                    </p>
-                    <h1 className="text-mr-h1 font-mr-extrabold tracking-mr text-mr-fg">
-                        {title}
-                    </h1>
-                    {sub && (
-                        <p className="mt-2 max-w-2xl text-mr-body text-mr-fg-muted">
-                            {sub}
-                        </p>
-                    )}
+                    <p className="mr-label mb-2 text-mr-accent">{resolvedEyebrow}</p>
+                    <h1 className="text-mr-h1 font-mr-extrabold tracking-mr text-mr-fg">{title}</h1>
+                    {sub && <p className="mt-2 max-w-2xl text-mr-body text-mr-fg-muted">{sub}</p>}
 
                     {/* Meta */}
                     <div className="mt-4 flex flex-wrap items-center gap-2">
-                        {updated && (
-                            <Badge variant="neutral">
-                                {t('shell.updated', { date: updated })}
-                            </Badge>
-                        )}
-                        {version && (
-                            <Badge variant="neutral">{version}</Badge>
-                        )}
+                        {updated && <Badge variant="neutral">{t('shell.updated', { date: updated })}</Badge>}
+                        {version && <Badge variant="neutral">{version}</Badge>}
                         <Badge variant="neutral">{t('shell.language')}</Badge>
                     </div>
 
@@ -130,9 +107,7 @@ export const LegalShell = ({
                                     onClick={() => navigate(tab.path)}
                                     className={cn(
                                         'inline-flex shrink-0 items-center gap-1.5 rounded-mr-xs px-3 py-2 text-mr-small font-mr-bold transition-colors',
-                                        active
-                                            ? 'bg-mr-accent text-mr-primary'
-                                            : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
+                                        active ? 'bg-mr-accent text-mr-primary' : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
                                     )}
                                 >
                                     <Icon className="size-3.5" />
@@ -149,10 +124,7 @@ export const LegalShell = ({
                 {toc && toc.length > 0 ? (
                     <div className="flex gap-10">
                         {/* TOC mobile chips */}
-                        <nav
-                            aria-label={t('shell.tocAriaLabel')}
-                            className="mb-6 flex gap-2 overflow-x-auto [scrollbar-width:none] lg:hidden"
-                        >
+                        <nav aria-label={t('shell.tocAriaLabel')} className="mb-6 flex gap-2 overflow-x-auto [scrollbar-width:none] lg:hidden">
                             {toc.map(item => (
                                 <button
                                     key={item.id}
@@ -171,14 +143,9 @@ export const LegalShell = ({
                         </nav>
 
                         {/* TOC desktop sidebar */}
-                        <aside
-                            aria-label={t('shell.tocAriaLabel')}
-                            className="hidden w-[260px] shrink-0 lg:block"
-                        >
+                        <aside aria-label={t('shell.tocAriaLabel')} className="hidden w-[260px] shrink-0 lg:block">
                             <div className="sticky top-24 flex flex-col gap-0.5">
-                                <p className="mr-label mb-3 text-mr-fg-subtle">
-                                    {t('shell.tocHeading')}
-                                </p>
+                                <p className="mr-label mb-3 text-mr-fg-subtle">{t('shell.tocHeading')}</p>
                                 {toc.map(item => (
                                     <button
                                         key={item.id}
@@ -186,9 +153,7 @@ export const LegalShell = ({
                                         onClick={() => scrollTo(item.id)}
                                         className={cn(
                                             'rounded-mr-xs px-3 py-2 text-left text-mr-small transition-colors',
-                                            activeId === item.id
-                                                ? 'bg-mr-accent-25 font-mr-bold text-mr-accent'
-                                                : 'text-mr-fg-muted hover:text-mr-fg',
+                                            activeId === item.id ? 'bg-mr-accent-25 font-mr-bold text-mr-accent' : 'text-mr-fg-muted hover:text-mr-fg',
                                         )}
                                     >
                                         {item.label}
@@ -197,9 +162,7 @@ export const LegalShell = ({
                             </div>
                         </aside>
 
-                        <div className="min-w-0 flex-1 divide-y divide-mr-border-subtle">
-                            {children}
-                        </div>
+                        <div className="min-w-0 flex-1 divide-y divide-mr-border-subtle">{children}</div>
                     </div>
                 ) : (
                     <div className="mx-auto">{children}</div>

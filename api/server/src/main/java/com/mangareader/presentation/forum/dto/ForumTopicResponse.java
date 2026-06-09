@@ -18,6 +18,7 @@ public record ForumTopicResponse(
         String category,
         List<String> tags,
         String createdAt,
+        String updatedAt,
         String lastActivityAt,
         int viewCount,
         int replyCount,
@@ -25,5 +26,6 @@ public record ForumTopicResponse(
         boolean isPinned,
         boolean isLocked,
         boolean isSolved,
+        boolean edited,
         List<ForumReplyResponse> replies
 ) {}

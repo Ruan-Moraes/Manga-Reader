@@ -72,7 +72,7 @@ public final class EventMock {
                 .id(UUID.randomUUID())
                 .event(event)
                 .name("Entrada Gratuita")
-                .price("Gratis")
+                .priceInCents(0)
                 .available(500)
                 .build();
     }
@@ -82,7 +82,7 @@ public final class EventMock {
                 .id(UUID.randomUUID())
                 .event(event)
                 .name("VIP")
-                .price("R$ 150,00")
+                .priceInCents(15000)
                 .available(50)
                 .build();
     }
@@ -92,7 +92,7 @@ public final class EventMock {
                 .id(UUID.randomUUID())
                 .event(event)
                 .name("Early Bird")
-                .price("R$ 80,00")
+                .priceInCents(8000)
                 .available(0)
                 .build();
     }

@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.GenreValidator;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -26,6 +27,9 @@ class UpdateTitleUseCaseTest {
 
     @Mock
     private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private GenreValidator genreValidator;
 
     @InjectMocks
     private UpdateTitleUseCase updateTitleUseCase;

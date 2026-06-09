@@ -1,5 +1,3 @@
--- Preferências globais do sistema (não-perfil): leitor, aparência, idioma/região e acessibilidade.
--- Armazenadas como JSONB (mesmo mecanismo de content_locales). Default espelha UserSettings.defaults().
 ALTER TABLE users
     ADD COLUMN settings JSONB NOT NULL DEFAULT '{
         "reader": {

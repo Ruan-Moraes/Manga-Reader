@@ -64,6 +64,9 @@ class AdminTitleControllerTest {
     @MockitoBean
     private DeleteTitleUseCase deleteTitleUseCase;
 
+    @MockitoBean
+    private com.mangareader.application.manga.port.TitleRatingAggregateReadPort ratingAggregateReadPort;
+
     @org.junit.jupiter.api.BeforeEach
     void stubChapterCounts() {
         org.mockito.Mockito.lenient()
@@ -89,8 +92,6 @@ class AdminTitleControllerTest {
                 .artist("Kishimoto")
                 .publisher("Shueisha")
                 .adult(false)
-                .ratingAverage(4.5)
-                .ratingCount(100L)
                 .createdAt(LocalDateTime.of(2026, 1, 1, 0, 0))
                 .updatedAt(LocalDateTime.of(2026, 1, 1, 0, 0))
                 .build();

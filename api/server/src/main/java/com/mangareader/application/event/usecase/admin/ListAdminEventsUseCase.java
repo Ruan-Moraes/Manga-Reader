@@ -20,8 +20,16 @@ public class ListAdminEventsUseCase {
 
     @Transactional(readOnly = true)
     public Page<Event> execute(String search, Pageable pageable) {
-        return (search != null && !search.isBlank())
+        Page<Event> result = (search != null && !search.isBlank())
                 ? eventRepository.searchByTitle(search, pageable)
                 : eventRepository.findAll(pageable);
+
+        // searchByTitle é native query (sem @EntityGraph): força o organizer LAZY dentro
+        // da transação, pois o mapper admin o lê (getOrganizerName) fora dela.
+        result.getContent().forEach(e -> {
+            if (e.getOrganizer() != null) e.getOrganizer().getOrganizerName();
+        });
+
+        return result;
     }
 }

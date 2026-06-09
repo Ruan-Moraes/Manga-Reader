@@ -37,8 +37,7 @@ const SystemSettings = () => {
         <span className="flex items-center gap-2">
             <span className="inline-block size-2 shrink-0 rounded-mr-full bg-mr-accent" aria-hidden="true" />
             <span>
-                {t('settings.system.metaPrefix')} ·{' '}
-                {state.isLoggedIn ? t('settings.system.metaSynced') : t('settings.system.metaLocal')}
+                {t('settings.system.metaPrefix')} · {state.isLoggedIn ? t('settings.system.metaSynced') : t('settings.system.metaLocal')}
             </span>
         </span>
     );

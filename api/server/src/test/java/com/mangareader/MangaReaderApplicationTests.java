@@ -21,7 +21,6 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @DisplayName("MangaReaderApplication — carga de contexto")
 @Tag("testcontainers")
 class MangaReaderApplicationTests {
-
     @Test
     @DisplayName("Deve carregar o contexto Spring completo")
     void contextLoads() {

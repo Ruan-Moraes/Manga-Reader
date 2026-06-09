@@ -9,9 +9,9 @@ import type { Tag } from '@entities/catalog-filter';
 import CategoryFilterPanel from '../parts/CategoryFilterPanel';
 
 const TAGS: Tag[] = [
-    { value: 1, label: 'Seinen' },
-    { value: 2, label: 'Shounen' },
-    { value: 3, label: 'Isekai' },
+    { value: 1, slug: 'SEINEN', label: 'Seinen' },
+    { value: 2, slug: 'SHOUNEN', label: 'Shounen' },
+    { value: 3, slug: 'ISEKAI', label: 'Isekai' },
 ];
 
 const setup = (overrides = {}) =>

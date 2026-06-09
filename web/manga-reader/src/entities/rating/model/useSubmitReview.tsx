@@ -41,6 +41,7 @@ const useSubmitReview = (titleId: string) => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RATINGS_BY_TITLE, titleId] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RATING_AVERAGE, titleId] });
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.RATING_DISTRIBUTION, titleId] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_REVIEWS] });
         },
         // Erros de rede já são exibidos pelo interceptor HTTP; auth-required já
         // exibiu seu próprio toast via requireAuth.

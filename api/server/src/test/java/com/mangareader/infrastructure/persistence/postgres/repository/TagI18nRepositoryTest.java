@@ -31,7 +31,7 @@ class TagI18nRepositoryTest {
                 "en-US", "Action",
                 "es-ES", "Acción"));
 
-        var tag = Tag.builder().label(label).build();
+        var tag = Tag.builder().slug("ACTION").label(label).build();
 
         Long id = tagRepository.saveAndFlush(tag).getId();
 
@@ -45,7 +45,7 @@ class TagI18nRepositoryTest {
     @Test
     @DisplayName("Deve aplicar fallback pt-BR quando idioma solicitado não existe")
     void fallbackPtBr() {
-        var tag = Tag.builder().label(LocalizedString.ofDefault("Drama")).build();
+        var tag = Tag.builder().slug("DRAMA").label(LocalizedString.ofDefault("Drama")).build();
 
         var saved = tagRepository.saveAndFlush(tag);
         var reloaded = tagRepository.findById(saved.getId()).orElseThrow();
@@ -56,7 +56,7 @@ class TagI18nRepositoryTest {
     @Test
     @DisplayName("LocalizedString vazia deve persistir como objeto JSON vazio")
     void persisteVazia() {
-        var tag = Tag.builder().label(LocalizedString.empty()).build();
+        var tag = Tag.builder().slug("EMPTY").label(LocalizedString.empty()).build();
 
         var saved = tagRepository.saveAndFlush(tag);
         var reloaded = tagRepository.findById(saved.getId()).orElseThrow();

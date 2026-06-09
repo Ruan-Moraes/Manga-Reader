@@ -3,14 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Pencil, Trash2 } from 'lucide-react';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
-import formatRelativeDate from '@shared/service/util/formatRelativeDate';
+import { formatPostDate } from '@shared/service/util/formatPostDate';
 import { useMediaQuery } from '@shared/lib/useMediaQuery';
 import { type User } from '@entities/user';
 
-import { PostShell } from '@ui/PostShell';
-import { PostHeader } from '@ui/PostHeader';
+import { ThreadPost } from '@ui/ThreadPost';
 import { VotePill } from '@ui/VotePill';
-import { ActionBar } from '@ui/ActionBar';
 import { IconButton } from '@ui/IconButton';
 
 import useCommentModals from '../model/internal/useCommentModals';
@@ -78,6 +76,8 @@ const Comment = ({
         recommendedTitles: user.recommendedTitles,
     };
 
+    const when = formatPostDate(data.createdAt);
+
     const isReply = depth > 0;
     const replies = data.children ?? [];
     const userReaction = reactionsMap[data.id] ?? null;
@@ -98,14 +98,15 @@ const Comment = ({
     ) : null;
 
     return (
-        <div id={`comment-${data.id}`}>
-            <PostShell
+        <>
+            <ThreadPost
+                anchorId={`comment-${data.id}`}
                 avatar={{ src: user.photo, name: user.name }}
                 avatarSize={avatarSizeForDepth(depth)}
                 onClickAvatar={() => onClickProfile(userData)}
                 flat={isReply}
                 highlighted={data.isHighlighted}
-                className={isReply ? 'cs-flat-post' : undefined}
+                shellClassName={isReply ? 'cs-flat-post' : undefined}
                 replyingTo={
                     isReply && parentUserName ? (
                         <button
@@ -117,37 +118,39 @@ const Comment = ({
                         </button>
                     ) : null
                 }
+                name={user.name}
+                time={when.label}
+                timeTitle={when.title}
+                onClickName={() => onClickProfile(userData)}
+                nameProfileLabel={t('user.viewProfileAria', { name: user.name })}
+                badges={
+                    <CommentBadges
+                        isMember={!!user.member?.isMember}
+                        isModerator={!!user.moderator?.isModerator}
+                        edited={data.edited}
+                        updatedAt={data.updatedAt}
+                    />
+                }
+                body={<CommentContent textContent={data.textContent} imageContent={data.imageContent} user={userData} />}
+                vote={
+                    <VotePill
+                        value={score}
+                        active={activeVote}
+                        onUp={() => onLike(data.id)}
+                        onDown={() => onDislike(data.id)}
+                        label={t('actions.voteGroup')}
+                        upLabel={t('actions.like')}
+                        downLabel={t('actions.dislike')}
+                    />
+                }
+                onReply={() => {
+                    if (!requireAuth(t('reply.authAction'))) return;
+
+                    setIsReplying(true);
+                }}
+                replyLabel={t('actions.reply')}
+                actions={ownerActions}
             >
-                <PostHeader
-                    name={user.name}
-                    time={formatRelativeDate(data.createdAt)}
-                    onClickName={() => onClickProfile(userData)}
-                    nameProfileLabel={t('user.viewProfileAria', { name: user.name })}
-                    highlighted={data.isHighlighted}
-                    badges={<CommentBadges isMember={!!user.member?.isMember} isModerator={!!user.moderator?.isModerator} wasEdited={data.wasEdited} />}
-                />
-                <CommentContent textContent={data.textContent} imageContent={data.imageContent} user={userData} />
-                <ActionBar
-                    vote={
-                        <VotePill
-                            value={score}
-                            active={activeVote}
-                            onUp={() => onLike(data.id)}
-                            onDown={() => onDislike(data.id)}
-                            label={t('actions.voteGroup')}
-                            upLabel={t('actions.like')}
-                            downLabel={t('actions.dislike')}
-                        />
-                    }
-                    onReply={() => {
-                        if (!requireAuth(t('reply.authAction'))) return;
-
-                        setIsReplying(true);
-                    }}
-                    replyLabel={t('actions.reply')}
-                    extra={ownerActions}
-                />
-
                 {isReplying &&
                     (isDesktop ? (
                         <InlineReplyInput onSubmit={handleReplySubmit} onCancel={() => setIsReplying(false)} />
@@ -194,7 +197,7 @@ const Comment = ({
                         )}
                     />
                 )}
-            </PostShell>
+            </ThreadPost>
 
             <DeleteModal
                 isOpen={isDeleteModalOpen}
@@ -211,7 +214,7 @@ const Comment = ({
                 initialText={data.textContent}
                 initialImages={data.imageContent}
             />
-        </div>
+        </>
     );
 };
 

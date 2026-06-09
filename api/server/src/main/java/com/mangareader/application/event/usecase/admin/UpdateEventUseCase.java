@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.event.port.EventOrganizerRepositoryPort;
 import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.domain.event.valueobject.EventLocation;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UpdateEventUseCase {
     private final EventRepositoryPort eventRepository;
+    private final EventOrganizerRepositoryPort organizerRepository;
 
     @Transactional
     public Event execute(UUID eventId,
@@ -52,7 +54,7 @@ public class UpdateEventUseCase {
         if (status != null) event.setStatus(status);
         if (type != null) event.setType(type);
         if (location != null) event.setLocation(location);
-        if (organizer != null) event.setOrganizer(organizer);
+        if (organizer != null) event.setOrganizer(organizerRepository.findOrCreate(organizer));
         if (priceLabel != null) event.setPriceLabel(priceLabel);
         if (isFeatured != null) event.setFeatured(isFeatured);
         if (schedule != null) event.setSchedule(schedule);

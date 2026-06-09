@@ -46,6 +46,30 @@ public class EventSeed implements EntitySeeder {
 
         var now = LocalDateTime.now();
 
+        // Organizadores normalizados (BCNF-01): uma instância por organizador, reutilizada
+        // entre eventos. external_id (organizerId) é único — não duplicar.
+        var org1 = EventOrganizer.builder().organizerId("org-1").organizerName("AnimeCon Brasil")
+                .organizerAvatar("https://i.pravatar.cc/100?img=40").organizerProfileLink("/profile/animecon")
+                .organizerContact("contato@animecon.com.br").build();
+        var org2 = EventOrganizer.builder().organizerId("org-2").organizerName("Panini Comics")
+                .organizerAvatar("https://i.pravatar.cc/100?img=41").organizerProfileLink("/profile/panini")
+                .organizerContact("eventos@panini.com.br").build();
+        var org3 = EventOrganizer.builder().organizerId("org-3").organizerName("MangaReader")
+                .organizerAvatar("https://i.pravatar.cc/100?img=42").organizerProfileLink("/profile/mangareader")
+                .organizerContact("live@mangareader.com").build();
+        var org4 = EventOrganizer.builder().organizerId("org-4").organizerName("SESC SP")
+                .organizerAvatar("https://i.pravatar.cc/100?img=43").organizerProfileLink("/profile/sesc")
+                .organizerContact("cultural@sescsp.org.br").build();
+        var org5 = EventOrganizer.builder().organizerId("org-5").organizerName("Comunidade MangaReader RJ")
+                .organizerAvatar("https://i.pravatar.cc/100?img=44").organizerProfileLink("/profile/mangareader-rj")
+                .organizerContact("rj@mangareader.com").build();
+        var org6 = EventOrganizer.builder().organizerId("org-6").organizerName("Manga Fest")
+                .organizerAvatar("https://i.pravatar.cc/100?img=45").organizerProfileLink("/profile/mangafest")
+                .organizerContact("contato@mangafest.com.br").build();
+        var org7 = EventOrganizer.builder().organizerId("org-7").organizerName("Scanlation Brasil")
+                .organizerAvatar("https://i.pravatar.cc/100?img=46").organizerProfileLink("/profile/scanlation-br")
+                .organizerContact("contato@scanlationbr.com").build();
+
         var animeCon = Event.builder()
                 .title(ls("AnimeCon SP 2026", "AnimeCon SP 2026", "AnimeCon SP 2026"))
                 .subtitle(ls(
@@ -69,11 +93,7 @@ public class EventSeed implements EntitySeeder {
                         .city("São Paulo").isOnline(false)
                         .mapLink("https://maps.google.com/?q=Sao+Paulo+Expo")
                         .directions("Próximo ao metrô Jabaquara").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-1").organizerName("AnimeCon Brasil")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=40")
-                        .organizerProfileLink("/profile/animecon")
-                        .organizerContact("contato@animecon.com.br").build())
+                .organizer(org1)
                 .priceLabel("A partir de R$ 89,90")
                 .participants(1200).interested(4500).isFeatured(true)
                 .schedule(List.of(
@@ -87,9 +107,9 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         animeCon.getTickets().addAll(List.of(
-                EventTicket.builder().event(animeCon).name("Ingresso Dia Único").price("R$ 89,90").available(500).build(),
-                EventTicket.builder().event(animeCon).name("Passaporte 3 Dias").price("R$ 199,90").available(200).build(),
-                EventTicket.builder().event(animeCon).name("VIP + Meet & Greet").price("R$ 349,90").available(50).build()
+                EventTicket.builder().event(animeCon).name("Ingresso Dia Único").priceInCents(8990).available(500).build(),
+                EventTicket.builder().event(animeCon).name("Passaporte 3 Dias").priceInCents(19990).available(200).build(),
+                EventTicket.builder().event(animeCon).name("VIP + Meet & Greet").priceInCents(34990).available(50).build()
         ));
 
         var autografos = Event.builder()
@@ -117,11 +137,7 @@ public class EventSeed implements EntitySeeder {
                         .address("Av. Paulista, 2073").city("São Paulo")
                         .isOnline(false).mapLink("https://maps.google.com/?q=Livraria+Cultura+Paulista")
                         .directions("Metrô Consolação").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-2").organizerName("Panini Comics")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=41")
-                        .organizerProfileLink("/profile/panini")
-                        .organizerContact("eventos@panini.com.br").build())
+                .organizer(org2)
                 .priceLabel("Gratuito com compra do volume")
                 .participants(80).interested(350)
                 .schedule(List.of(
@@ -134,7 +150,7 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         autografos.getTickets().add(
-                EventTicket.builder().event(autografos).name("Acesso com livro").price("Gratuito").available(100).build()
+                EventTicket.builder().event(autografos).name("Acesso com livro").priceInCents(0).available(100).build()
         );
 
         var live = Event.builder()
@@ -161,11 +177,7 @@ public class EventSeed implements EntitySeeder {
                         .label("YouTube / Twitch").address("Online")
                         .city("Online").isOnline(true)
                         .mapLink("https://youtube.com/@mangareader").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-3").organizerName("MangaReader")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=42")
-                        .organizerProfileLink("/profile/mangareader")
-                        .organizerContact("live@mangareader.com").build())
+                .organizer(org3)
                 .priceLabel("Gratuito")
                 .participants(340).interested(1200).isFeatured(true)
                 .build();
@@ -194,11 +206,7 @@ public class EventSeed implements EntitySeeder {
                         .label("SESC Pompeia").address("Rua Clélia, 93")
                         .city("São Paulo").isOnline(false)
                         .mapLink("https://maps.google.com/?q=SESC+Pompeia").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-4").organizerName("SESC SP")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=43")
-                        .organizerProfileLink("/profile/sesc")
-                        .organizerContact("cultural@sescsp.org.br").build())
+                .organizer(org4)
                 .priceLabel("R$ 25,00")
                 .participants(60).interested(200)
                 .build();
@@ -227,11 +235,7 @@ public class EventSeed implements EntitySeeder {
                         .label("Café Otaku").address("Rua da Glória, 322")
                         .city("Rio de Janeiro").isOnline(false)
                         .mapLink("https://maps.google.com/?q=Cafe+Otaku+RJ").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-5").organizerName("Comunidade MangaReader RJ")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=44")
-                        .organizerProfileLink("/profile/mangareader-rj")
-                        .organizerContact("rj@mangareader.com").build())
+                .organizer(org5)
                 .priceLabel("Gratuito")
                 .participants(25).interested(80)
                 .build();
@@ -260,11 +264,7 @@ public class EventSeed implements EntitySeeder {
                         .label("Discord MangaReader").address("Online")
                         .city("Online").isOnline(true)
                         .mapLink("https://discord.gg/mangareader").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-3").organizerName("MangaReader")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=42")
-                        .organizerProfileLink("/profile/mangareader")
-                        .organizerContact("live@mangareader.com").build())
+                .organizer(org3)
                 .priceLabel("Gratuito")
                 .participants(0).interested(450).isFeatured(true)
                 .build();
@@ -290,11 +290,7 @@ public class EventSeed implements EntitySeeder {
                         .label("Expominas").address("Av. Amazonas, 6200")
                         .city("Belo Horizonte").isOnline(false)
                         .mapLink("https://maps.google.com/?q=Expominas+BH").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-6").organizerName("Manga Fest")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=45")
-                        .organizerProfileLink("/profile/mangafest")
-                        .organizerContact("contato@mangafest.com.br").build())
+                .organizer(org6)
                 .priceLabel("R$ 60,00")
                 .participants(800).interested(2500)
                 .schedule(List.of(
@@ -306,8 +302,8 @@ public class EventSeed implements EntitySeeder {
                 .build();
 
         convencaoPassada.getTickets().addAll(List.of(
-                EventTicket.builder().event(convencaoPassada).name("Ingresso Unitário").price("R$ 60,00").available(0).build(),
-                EventTicket.builder().event(convencaoPassada).name("Passaporte Completo").price("R$ 130,00").available(0).build()
+                EventTicket.builder().event(convencaoPassada).name("Ingresso Unitário").priceInCents(6000).available(0).build(),
+                EventTicket.builder().event(convencaoPassada).name("Passaporte Completo").priceInCents(13000).available(0).build()
         ));
 
         var workshopOnline = Event.builder()
@@ -334,17 +330,13 @@ public class EventSeed implements EntitySeeder {
                         .label("Zoom").address("Online")
                         .city("Online").isOnline(true)
                         .mapLink("https://zoom.us/mangareader-workshop").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-3").organizerName("MangaReader")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=42")
-                        .organizerProfileLink("/profile/mangareader")
-                        .organizerContact("workshops@mangareader.com").build())
+                .organizer(org3)
                 .priceLabel("R$ 39,90")
                 .participants(40).interested(180)
                 .build();
 
         workshopOnline.getTickets().add(
-                EventTicket.builder().event(workshopOnline).name("Acesso ao Workshop").price("R$ 39,90").available(60).build()
+                EventTicket.builder().event(workshopOnline).name("Acesso ao Workshop").priceInCents(3990).available(60).build()
         );
 
         var lancamentoOngoing = Event.builder()
@@ -371,11 +363,7 @@ public class EventSeed implements EntitySeeder {
                         .label("Livraria Saraiva — Shopping Eldorado")
                         .address("Av. Rebouças, 3970").city("São Paulo")
                         .isOnline(false).mapLink("https://maps.google.com/?q=Saraiva+Eldorado").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-2").organizerName("Panini Comics")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=41")
-                        .organizerProfileLink("/profile/panini")
-                        .organizerContact("eventos@panini.com.br").build())
+                .organizer(org2)
                 .priceLabel("Gratuito")
                 .participants(55).interested(300).isFeatured(true)
                 .specialGuests(List.of("Kazuki Morimoto"))
@@ -405,11 +393,7 @@ public class EventSeed implements EntitySeeder {
                         .label("WeWork Paulista").address("Av. Paulista, 1374")
                         .city("São Paulo").isOnline(false)
                         .mapLink("https://maps.google.com/?q=WeWork+Paulista").build())
-                .organizer(EventOrganizer.builder()
-                        .organizerId("org-7").organizerName("Scanlation Brasil")
-                        .organizerAvatar("https://i.pravatar.cc/100?img=46")
-                        .organizerProfileLink("/profile/scanlation-br")
-                        .organizerContact("contato@scanlationbr.com").build())
+                .organizer(org7)
                 .priceLabel("Gratuito")
                 .participants(35).interested(90)
                 .build();

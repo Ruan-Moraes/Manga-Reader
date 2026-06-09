@@ -71,9 +71,10 @@ class TagTest {
         @Test
         @DisplayName("Deve criar tag via AllArgsConstructor")
         void shouldCreateViaAllArgs() {
-            Tag tag = new Tag(5L, LocalizedString.ofDefault("Fantasy"));
+            Tag tag = new Tag(5L, "FANTASY", LocalizedString.ofDefault("Fantasy"));
 
             assertThat(tag.getId()).isEqualTo(5L);
+            assertThat(tag.getSlug()).isEqualTo("FANTASY");
             assertThat(tag.getLabel().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Fantasy");
         }
     }

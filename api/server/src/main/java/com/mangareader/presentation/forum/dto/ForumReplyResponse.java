@@ -10,7 +10,8 @@ public record ForumReplyResponse(
         ForumAuthorResponse author,
         String content,
         String createdAt,
+        String updatedAt,
         int likes,
-        boolean isEdited,
+        boolean edited,
         boolean isBestAnswer
 ) {}

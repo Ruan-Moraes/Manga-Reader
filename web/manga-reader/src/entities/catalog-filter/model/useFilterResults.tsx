@@ -22,7 +22,7 @@ const useFilterResults = ({ genres, sort, status, adultContent, page, size = 20 
     const params: Record<string, string | string[] | number | boolean> = {};
 
     if (genres.length > 0) {
-        params.genres = genres.map(t => t.label);
+        params.genres = genres.map(t => t.slug);
     }
 
     if (sort) {

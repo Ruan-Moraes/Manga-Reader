@@ -18,6 +18,7 @@
         "comments": "Comments and feed",
         "tickets": "Tickets and registration",
         "ticketSlots": "Slots: {{count}}",
+        "free": "Free",
         "register": "Register",
         "organizer": "Organizer",
         "contact": "Contact: {{value}}",

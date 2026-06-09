@@ -13,8 +13,9 @@ export const buildCommentData = (overrides: Partial<CommentData> = {}): CommentD
         user: buildUser(),
         isOwner: false,
         isHighlighted: false,
-        wasEdited: false,
+        edited: false,
         createdAt: '2026-03-15T10:00:00Z',
+        updatedAt: '2026-03-15T10:00:00Z',
         textContent: `Texto do comentario ${commentCounter}.`,
         imageContent: null,
         likeCount: '0',
@@ -30,7 +31,7 @@ export const commentDataPresets = {
 
     owner: () => buildCommentData({ isOwner: true }),
     highlighted: () => buildCommentData({ isHighlighted: true }),
-    edited: () => buildCommentData({ wasEdited: true, textContent: 'Editado.' }),
+    edited: () => buildCommentData({ edited: true, textContent: 'Editado.' }),
 
     withImage: () =>
         buildCommentData({

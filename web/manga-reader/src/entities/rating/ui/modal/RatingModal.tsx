@@ -28,6 +28,8 @@ type RatingModalProps = {
     isSubmitting?: boolean;
     /** Título da obra, exibido no cabeçalho do formulário */
     titleName?: string;
+    /** Valores iniciais — quando presentes, o modal entra em modo edição. */
+    initial?: Partial<RatingSubmitData>;
 };
 
 type Scores = Partial<Record<ReviewCriterionKey, number>>;
@@ -37,17 +39,28 @@ function ReviewFormBody({
     onCancel,
     onSubmit,
     isSubmitting,
+    initial,
 }: {
     titleName?: string;
     onCancel: () => void;
     onSubmit: (data: RatingSubmitData) => void;
     isSubmitting?: boolean;
+    initial?: Partial<RatingSubmitData>;
 }) {
     const { t } = useTranslation('rating');
-    const [scores, setScores] = useState<Scores>({});
-    const [reviewTitle, setReviewTitle] = useState('');
-    const [comment, setComment] = useState('');
-    const [spoiler, setSpoiler] = useState(false);
+    const isEdit = initial != null;
+    const [scores, setScores] = useState<Scores>(() =>
+        initial
+            ? REVIEW_CRITERIA.reduce<Scores>((acc, c) => {
+                  const value = initial[c.key];
+                  if (value) acc[c.key] = value;
+                  return acc;
+              }, {})
+            : {},
+    );
+    const [reviewTitle, setReviewTitle] = useState(initial?.reviewTitle ?? '');
+    const [comment, setComment] = useState(initial?.comment ?? '');
+    const [spoiler, setSpoiler] = useState(initial?.spoiler ?? false);
 
     const rated = REVIEW_CRITERIA.filter(c => (scores[c.key] ?? 0) > 0).length;
     const pct = Math.round((rated / REVIEW_CRITERIA.length) * 100);
@@ -93,10 +106,7 @@ function ReviewFormBody({
                     <span>{pct}%</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--mr-gray-700)' }}>
-                    <div
-                        className="h-full rounded-full transition-[width] duration-500"
-                        style={{ width: `${pct}%`, background: 'var(--mr-accent)' }}
-                    />
+                    <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${pct}%`, background: 'var(--mr-accent)' }} />
                 </div>
             </div>
 
@@ -173,7 +183,7 @@ function ReviewFormBody({
                     {t('modal.cancel')}
                 </Button>
                 <Button variant="primary" size="sm" disabled={!canSubmit || isSubmitting} loading={isSubmitting} onClick={handleSubmit}>
-                    {canSubmit ? t('modal.publish') : t('modal.publishDisabled')}
+                    {isEdit ? t('modal.save') : canSubmit ? t('modal.publish') : t('modal.publishDisabled')}
                 </Button>
             </div>
         </div>
@@ -187,9 +197,7 @@ function ReviewSuccess({ overall, onDone }: { overall: number; onDone: () => voi
             <Illustration type="feliz" alt="" width={120} height={120} />
             <div>
                 <h3 className="text-[20px] font-mr-extrabold text-mr-fg">{t('modal.successTitle')}</h3>
-                <p className="mt-1 text-[14px] text-mr-fg-muted">
-                    {t('modal.successBody', { overall: overall.toFixed(1) })}
-                </p>
+                <p className="mt-1 text-[14px] text-mr-fg-muted">{t('modal.successBody', { overall: overall.toFixed(1) })}</p>
             </div>
             <Button variant="primary" onClick={onDone}>
                 {t('modal.successCta')}
@@ -198,14 +206,12 @@ function ReviewSuccess({ overall, onDone }: { overall: number; onDone: () => voi
     );
 }
 
-const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = false, titleName }: RatingModalProps) => {
+const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = false, titleName, initial }: RatingModalProps) => {
     const { t } = useTranslation('rating');
     const [done, setDone] = useState<number | null>(null);
 
     const handleSubmit = (data: RatingSubmitData) => {
-        const vals = [data.funRating, data.artRating, data.storylineRating, data.charactersRating, data.originalityRating, data.pacingRating].filter(
-            Boolean,
-        );
+        const vals = [data.funRating, data.artRating, data.storylineRating, data.charactersRating, data.originalityRating, data.pacingRating].filter(Boolean);
         const overall = vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : 0;
         onSubmitRating(data);
         setDone(overall);
@@ -217,9 +223,15 @@ const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = f
     };
 
     return (
-        <Modal open={isModalOpen} onClose={handleClose} title={done == null ? t('modal.evaluateLabel') : ''} size="md" hideClose={done != null}>
+        <Modal
+            open={isModalOpen}
+            onClose={handleClose}
+            title={done == null ? (initial ? t('modal.editLabel') : t('modal.evaluateLabel')) : ''}
+            size="md"
+            hideClose={done != null}
+        >
             {done == null ? (
-                <ReviewFormBody titleName={titleName} onCancel={handleClose} onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+                <ReviewFormBody titleName={titleName} onCancel={handleClose} onSubmit={handleSubmit} isSubmitting={isSubmitting} initial={initial} />
             ) : (
                 <ReviewSuccess overall={done} onDone={handleClose} />
             )}

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.event.port.EventOrganizerRepositoryPort;
 import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.domain.event.valueobject.EventLocation;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateEventUseCase {
     private final EventRepositoryPort eventRepository;
+    private final EventOrganizerRepositoryPort organizerRepository;
 
     @Transactional
     public Event execute(Map<String, String> title, Map<String, String> subtitle,
@@ -46,7 +48,7 @@ public class CreateEventUseCase {
                 .status(status)
                 .type(type)
                 .location(location)
-                .organizer(organizer)
+                .organizer(organizerRepository.findOrCreate(organizer))
                 .priceLabel(priceLabel)
                 .isFeatured(isFeatured)
                 .schedule(schedule != null ? schedule : List.of())

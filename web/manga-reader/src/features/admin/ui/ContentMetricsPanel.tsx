@@ -81,7 +81,6 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
                                     <th className="py-2 text-left font-medium text-tertiary w-8">{t('dashboard.overview.metrics.columns.rank')}</th>
                                     <th className="py-2 text-left font-medium text-tertiary">{t('dashboard.overview.metrics.columns.title')}</th>
                                     <th className="py-2 text-left font-medium text-tertiary">{t('dashboard.overview.metrics.columns.type')}</th>
-                                    <th className="py-2 text-right font-medium text-tertiary">{t('dashboard.overview.metrics.columns.rankingScore')}</th>
                                     <th className="py-2 text-right font-medium text-tertiary">{t('dashboard.overview.metrics.columns.rating')}</th>
                                 </tr>
                             </thead>
@@ -91,7 +90,6 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
                                         <td className="py-2 font-mono text-xs text-tertiary">{idx + 1}</td>
                                         <td className="py-2 font-medium">{title.name}</td>
                                         <td className="py-2 text-xs text-tertiary">{title.type ?? '—'}</td>
-                                        <td className="py-2 text-right">{title.rankingScore?.toFixed(1) ?? '—'}</td>
                                         <td className="py-2 text-right text-xs text-tertiary">
                                             {title.ratingAverage?.toFixed(1) ?? '—'}
                                             {title.ratingCount ? ` (${title.ratingCount})` : ''}

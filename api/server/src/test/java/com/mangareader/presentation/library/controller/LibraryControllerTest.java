@@ -98,6 +98,36 @@ class LibraryControllerTest {
     }
 
     @Nested
+    @DisplayName("GET /api/library/user/{userId}")
+    class GetUserLibraryPublic {
+
+        @Test
+        @DisplayName("Deve retornar 200 com a biblioteca de um usuário")
+        void deveRetornar200ComBibliotecaDeUsuario() throws Exception {
+            var items = List.of(buildSavedManga("t1"));
+            when(getUserLibraryUseCase.execute(any(UUID.class), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(items));
+
+            mockMvc.perform(get("/api/library/user/{userId}", UUID.randomUUID()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.content.length()").value(1));
+        }
+
+        @Test
+        @DisplayName("Deve filtrar por lista quando informada")
+        void deveFiltrarPorLista() throws Exception {
+            var items = List.of(buildSavedManga("t1"));
+            when(getUserLibraryByListUseCase.execute(any(UUID.class), any(ReadingListType.class), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(items));
+
+            mockMvc.perform(get("/api/library/user/{userId}", UUID.randomUUID()).param("list", "LENDO"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.length()").value(1));
+        }
+    }
+
+    @Nested
     @DisplayName("GET /api/library")
     class GetLibrary {
 

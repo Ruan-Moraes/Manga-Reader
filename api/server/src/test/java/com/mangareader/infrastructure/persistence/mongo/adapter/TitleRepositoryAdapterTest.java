@@ -201,7 +201,7 @@ class TitleRepositoryAdapterTest {
         @Test
         @DisplayName("Deve atualizar título existente")
         void deveAtualizarTituloExistente() {
-            naruto.setRatingAverage(3.5);
+            naruto.setPopularity("4200");
 
             titleRepository.save(naruto);
 
@@ -209,7 +209,7 @@ class TitleRepositoryAdapterTest {
 
             assertThat(updated).isPresent();
 
-            assertThat(updated.get().getRatingAverage()).isEqualTo(3.5);
+            assertThat(updated.get().getPopularity()).isEqualTo("4200");
         }
     }
 

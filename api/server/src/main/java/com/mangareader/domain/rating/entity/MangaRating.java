@@ -52,42 +52,35 @@ public class MangaRating {
 
     private String comment;
 
-    /** Título opcional da resenha (máx. 80 caracteres). */
     private String reviewTitle;
 
-    /** Autor marcou a resenha como contendo spoilers. */
     @Builder.Default
     private boolean spoiler = false;
 
-    /** Destaque por moderação ou score (resenha "Top"). */
     @Builder.Default
     private boolean top = false;
 
-    /** Votos "Útil" acumulados. */
     @Builder.Default
     private long upvotes = 0;
 
-    /** Votos "Contrário" acumulados (validação da comunidade). */
     @Builder.Default
     private long downvotes = 0;
 
-    /**
-     * Idioma de exibição do usuário no momento da criação (BCP 47).
-     * UGC é particionado por idioma. Etapa 2 i18n.
-     */
     @Builder.Default
     private String language = "pt-BR";
+
+    @Builder.Default
+    private boolean edited = false;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    /**
-     * Calcula o overallRating como a média das 6 categorias,
-     * arredondado para 1 casa decimal.
-     */
+    private LocalDateTime updatedAt;
+
     public double calculateOverallRating() {
         double sum = funRating + artRating + storylineRating
                 + charactersRating + originalityRating + pacingRating;
+
         return Math.round(sum / 6.0 * 10.0) / 10.0;
     }
 }

@@ -186,14 +186,14 @@ class EventTest {
             EventTicket vip = EventTicket.builder()
                     .event(event)
                     .name("VIP")
-                    .price("R$ 200,00")
+                    .priceInCents(20000)
                     .available(50)
                     .build();
 
             EventTicket standard = EventTicket.builder()
                     .event(event)
                     .name("Padrão")
-                    .price("R$ 50,00")
+                    .priceInCents(5000)
                     .available(200)
                     .build();
 
@@ -209,7 +209,7 @@ class EventTest {
         void ticketShouldHaveDefaultAvailableZero() {
             EventTicket ticket = EventTicket.builder()
                     .name("Ingresso")
-                    .price("R$ 100,00")
+                    .priceInCents(10000)
                     .build();
 
             assertThat(ticket.getAvailable()).isEqualTo(0);

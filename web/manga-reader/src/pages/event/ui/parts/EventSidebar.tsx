@@ -4,6 +4,7 @@ import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { Avatar } from '@ui/Avatar';
 import type { EventData } from '@entities/event';
+import { formatCurrency } from '@shared/lib/formatters';
 import { Users } from 'lucide-react';
 
 type EventSidebarProps = {
@@ -21,7 +22,7 @@ const EventSidebar = ({ event, relatedEvents }: EventSidebarProps) => {
                 {(event.tickets ?? []).map(ticket => (
                     <div key={ticket.id} className="p-2 text-sm rounded-lg bg-primary">
                         <p className="font-medium">{ticket.name}</p>
-                        <p>{ticket.price}</p>
+                        <p>{ticket.priceInCents === 0 ? t('details.free') : formatCurrency(ticket.priceInCents / 100, ticket.currency)}</p>
                         <p className="text-tertiary">
                             {t('details.ticketSlots', {
                                 count: ticket.available,
@@ -49,11 +50,7 @@ const EventSidebar = ({ event, relatedEvents }: EventSidebarProps) => {
             <div className="p-4 space-y-2 border rounded-xl border-tertiary bg-secondary">
                 <h3 className="font-semibold">{t('details.related')}</h3>
                 {relatedEvents.map(item => (
-                    <Link
-                        key={item.id}
-                        to={`${WEB_BASE_URL}${ROUTES.EVENT_DETAIL(item.id)}`}
-                        className="flex items-center gap-2 p-2 rounded-lg bg-primary"
-                    >
+                    <Link key={item.id} to={`${WEB_BASE_URL}${ROUTES.EVENT_DETAIL(item.id)}`} className="flex items-center gap-2 p-2 rounded-lg bg-primary">
                         <img src={item.image} alt={item.title} className="object-cover w-12 h-12 rounded-lg" />
                         <div>
                             <p className="text-sm font-medium">{item.title}</p>

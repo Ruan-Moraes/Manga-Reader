@@ -11,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import com.mangareader.infrastructure.persistence.mongo.converter.LocalizedStringMongoConverters;
@@ -20,6 +21,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
 @Configuration
+@EnableMongoAuditing
 public class MongoConfiguration extends AbstractMongoClientConfiguration {
     @Value("${spring.data.mongodb.uri}")
     private String mongoUri;

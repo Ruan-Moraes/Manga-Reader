@@ -25,14 +25,16 @@ class EventTicketTest {
                     .id(id)
                     .event(event)
                     .name("VIP")
-                    .price("R$ 150,00")
+                    .priceInCents(15000)
+                    .currency("BRL")
                     .available(100)
                     .build();
 
             assertThat(ticket.getId()).isEqualTo(id);
             assertThat(ticket.getEvent()).isEqualTo(event);
             assertThat(ticket.getName()).isEqualTo("VIP");
-            assertThat(ticket.getPrice()).isEqualTo("R$ 150,00");
+            assertThat(ticket.getPriceInCents()).isEqualTo(15000);
+            assertThat(ticket.getCurrency()).isEqualTo("BRL");
             assertThat(ticket.getAvailable()).isEqualTo(100);
         }
 
@@ -41,10 +43,11 @@ class EventTicketTest {
         void shouldDefaultAvailableToZero() {
             EventTicket ticket = EventTicket.builder()
                     .name("Standard")
-                    .price("R$ 50,00")
+                    .priceInCents(5000)
                     .build();
 
             assertThat(ticket.getAvailable()).isEqualTo(0);
+            assertThat(ticket.getCurrency()).isEqualTo("BRL");
         }
     }
 
@@ -60,7 +63,7 @@ class EventTicketTest {
             assertThat(ticket.getId()).isNull();
             assertThat(ticket.getEvent()).isNull();
             assertThat(ticket.getName()).isNull();
-            assertThat(ticket.getPrice()).isNull();
+            assertThat(ticket.getPriceInCents()).isZero();
         }
     }
 }

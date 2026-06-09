@@ -7,7 +7,9 @@ export type EventType = 'Convenção' | 'Lançamento' | 'Live' | 'Workshop' | 'M
 export type TicketType = {
     id: string;
     name: string;
-    price: string;
+    /** Preço em centavos (inteiro). Formatação localizada via formatCurrency. */
+    priceInCents: number;
+    currency: string;
     available: number;
 };
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
 import com.mangareader.application.manga.usecase.admin.CreateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.DeleteTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
@@ -45,6 +46,7 @@ public class AdminTitleController {
     private final UpdateTitleUseCase updateTitleUseCase;
     private final DeleteTitleUseCase deleteTitleUseCase;
     private final ChapterRepositoryPort chapterRepository;
+    private final TitleRatingAggregateReadPort ratingAggregateReadPort;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<AdminTitleResponse>>> listTitles(
@@ -62,9 +64,10 @@ public class AdminTitleController {
 
         var ids = result.getContent().stream().map(Title::getId).toList();
         var counts = chapterRepository.countByTitleIdIn(ids);
+        var ratings = ratingAggregateReadPort.findByTitleIdIn(ids);
 
         var mapped = result.map(t -> AdminTitleMapper.toResponse(
-                t, counts.getOrDefault(t.getId(), 0L)));
+                t, counts.getOrDefault(t.getId(), 0L), ratings.get(t.getId())));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -74,7 +77,8 @@ public class AdminTitleController {
         var title = getAdminTitleUseCase.execute(id);
 
         return ResponseEntity.ok(ApiResponse.success(
-                AdminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id))));
+                AdminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id),
+                        ratingAggregateReadPort.findByTitleId(id).orElse(null))));
     }
 
     @PostMapping
@@ -103,7 +107,8 @@ public class AdminTitleController {
         );
 
         return ResponseEntity.ok(ApiResponse.success(
-                AdminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id))));
+                AdminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id),
+                        ratingAggregateReadPort.findByTitleId(id).orElse(null))));
     }
 
     @DeleteMapping("/{id}")

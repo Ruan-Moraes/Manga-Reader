@@ -61,7 +61,7 @@ const useTitleFormState = () => {
                 adult: existing.adult,
             });
             const matched = existing.genres
-                .map(g => allTags.find(tag => tag.label.toLowerCase() === g.toLowerCase()))
+                .map(g => allTags.find(tag => tag.slug === g))
                 .filter((tag): tag is Tag => tag !== undefined);
             setSelectedTags(matched);
             setName(existing.name ?? {});
@@ -77,7 +77,7 @@ const useTitleFormState = () => {
             ...form,
             name,
             ...(Object.keys(synopsis).length ? { synopsis } : {}),
-            genres: selectedTags.map(tag => tag.label),
+            genres: selectedTags.map(tag => tag.slug),
         };
 
         if (isEditing && titleId) {

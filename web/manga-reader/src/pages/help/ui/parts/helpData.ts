@@ -1,12 +1,4 @@
-import {
-    BookOpen,
-    Shield,
-    Settings,
-    Users,
-    MessageCircle,
-    AlertTriangle,
-    Globe,
-} from 'lucide-react';
+import { BookOpen, Shield, Settings, Users, MessageCircle, AlertTriangle, Globe } from 'lucide-react';
 
 export const CATEGORIES = [
     { slug: 'account', icon: Users, count: 12 },
@@ -41,5 +33,4 @@ export const STATUS_TILES = [
 
 export type StatusKey = 'operating' | 'degraded' | 'idle' | 'maintenance';
 
-export const fmt = (n: number) =>
-    n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+export const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));

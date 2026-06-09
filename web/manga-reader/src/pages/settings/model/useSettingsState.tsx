@@ -3,14 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useToast } from '@ui/Toast';
 import { useAuth } from '@features/auth';
-import {
-    DEFAULT_USER_SETTINGS,
-    type UserSettings,
-    useUserSettings,
-    useContentLocales,
-    applyReduceMotion,
-    SETTINGS_STORAGE_KEY,
-} from '@entities/user';
+import { DEFAULT_USER_SETTINGS, type UserSettings, useUserSettings, useContentLocales, applyReduceMotion, SETTINGS_STORAGE_KEY } from '@entities/user';
 
 const STORAGE_KEY = SETTINGS_STORAGE_KEY;
 const SYNC_DEBOUNCE_MS = 400;

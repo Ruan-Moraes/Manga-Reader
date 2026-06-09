@@ -54,8 +54,10 @@ public class SubmitRatingUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", input.userId()));
 
         // Upsert: atualiza se já existe, cria se não
-        MangaRating rating = ratingRepository
-                .findByTitleIdAndUserId(input.titleId(), input.userId().toString())
+        var existing = ratingRepository.findByTitleIdAndUserId(input.titleId(), input.userId().toString());
+        boolean isEdit = existing.isPresent();
+
+        MangaRating rating = existing
                 .orElseGet(() -> MangaRating.builder()
                         .titleId(input.titleId())
                         .userId(input.userId().toString())
@@ -81,6 +83,13 @@ public class SubmitRatingUseCase {
                 .orElse(input.titleId());
 
         rating.setTitleName(titleName);
+
+        // Edição de resenha existente marca edited + updatedAt; criação inicializa updatedAt = agora.
+        rating.setUpdatedAt(java.time.LocalDateTime.now());
+
+        if (isEdit) {
+            rating.setEdited(true);
+        }
 
         MangaRating saved = ratingRepository.save(rating);
 

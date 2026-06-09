@@ -9,10 +9,21 @@ import { Button } from '@ui/Button';
 import { Meter } from '@ui/Meter';
 import { Stars } from '@ui/Stars';
 import Illustration from '@ui/Illustration';
-import { ReviewCard, useReviews, useReviewVote, REVIEW_SORT_KEYS, type RatingDistribution, type ReviewSortKey } from '@entities/rating';
+import {
+    ReviewCard,
+    RatingModal,
+    useReviews,
+    useReviewVote,
+    useUpdateReview,
+    useDeleteReview,
+    REVIEW_SORT_KEYS,
+    type MangaRating,
+    type RatingDistribution,
+    type ReviewSortKey,
+} from '@entities/rating';
+import { useAuth } from '@features/auth';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { ROUTES } from '@shared/constant/ROUTES';
-import formatRelativeDate from '@shared/service/util/formatRelativeDate';
 
 type Average = { average: number; count: number };
 
@@ -26,18 +37,6 @@ type ReviewsTabProps = {
 
 function pctOf(n: number, total: number) {
     return total > 0 ? Math.round((n / total) * 100) : 0;
-}
-
-/** Data absoluta + relativa robusta: '31 mai 2026 · há 3 dias'. Vazio se inválida. */
-function buildWhen(createdAt?: string): string {
-    if (!createdAt) return '';
-
-    const date = new Date(createdAt);
-    if (Number.isNaN(date.getTime())) return '';
-
-    const absolute = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
-
-    return `${absolute} · ${formatRelativeDate(createdAt)}`;
 }
 
 function RatingSummary({
@@ -209,12 +208,28 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
 
     // Resenhas paginadas (load-more) com ordenação/filtro server-side (DT-47).
     const { reviews, fetchNextPage, hasNextPage, isFetchingNextPage } = useReviews(titleId, { sort, star: filterStar });
+
     const voteMutation = useReviewVote(titleId);
 
+    const { user } = useAuth();
+    const currentUserId = user?.id;
+
+    const [editing, setEditing] = useState<MangaRating | null>(null);
+    const updateReviewMutation = useUpdateReview(titleId);
+    const deleteReviewMutation = useDeleteReview(titleId);
+
     const handleVote = (id: string, vote: 'up' | 'down') => {
-        const current = reviews.find(r => r.id === id)?.myVote ?? null;
-        voteMutation.mutate({ id, value: vote, currentVote: current });
+        // Não chama o backend se não autenticado ou se o usuário vota na própria resenha.
+        if (!currentUserId) return;
+
+        const review = reviews.find(r => r.id === id);
+        if (!review || review.userId === currentUserId) return;
+
+        voteMutation.mutate({ id, value: vote, currentVote: review.myVote ?? null });
     };
+
+    const ownerActions = (r: MangaRating) =>
+        currentUserId && r.userId === currentUserId ? { onEdit: () => setEditing(r), onDelete: () => deleteReviewMutation.mutate(r.id) } : {};
 
     return (
         <>
@@ -253,7 +268,9 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
                             <ReviewCard
                                 key={r.id}
                                 author={{ name: r.userName }}
-                                when={buildWhen(r.createdAt)}
+                                when={r.createdAt}
+                                edited={r.edited}
+                                updatedAt={r.updatedAt}
                                 rating={r.overallRating}
                                 title={r.reviewTitle}
                                 upvotes={r.upvotes ?? 0}
@@ -262,6 +279,7 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
                                 onVote={vote => handleVote(r.id, vote)}
                                 badge={r.top ? 'top' : null}
                                 spoiler={r.spoiler}
+                                {...ownerActions(r)}
                                 reviewScores={{
                                     funRating: r.funRating,
                                     artRating: r.artRating,
@@ -289,6 +307,27 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
                     </>
                 )}
             </div>
+
+            {editing && (
+                <RatingModal
+                    isModalOpen
+                    closeModal={() => setEditing(null)}
+                    titleName={editing.titleName}
+                    isSubmitting={updateReviewMutation.isPending}
+                    initial={{
+                        funRating: editing.funRating,
+                        artRating: editing.artRating,
+                        storylineRating: editing.storylineRating,
+                        charactersRating: editing.charactersRating,
+                        originalityRating: editing.originalityRating,
+                        pacingRating: editing.pacingRating,
+                        comment: editing.comment,
+                        reviewTitle: editing.reviewTitle,
+                        spoiler: editing.spoiler,
+                    }}
+                    onSubmitRating={data => updateReviewMutation.mutate({ id: editing.id, ...data }, { onSuccess: () => setEditing(null) })}
+                />
+            )}
         </>
     );
 };

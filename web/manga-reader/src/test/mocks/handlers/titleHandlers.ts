@@ -23,7 +23,6 @@ export const titleHandlers = [
                 popularity: 'HIGH',
                 ratingAverage: 4.5,
                 ratingCount: 100,
-                rankingScore: 85,
                 author: 'Autor Mock',
                 artist: 'Artista Mock',
                 publisher: 'Publisher Mock',

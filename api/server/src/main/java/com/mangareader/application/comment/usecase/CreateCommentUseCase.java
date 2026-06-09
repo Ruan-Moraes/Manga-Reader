@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -15,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.UUID;
 
 /**
- * Cria um novo comentário (root ou resposta).
+ * Cria um novo comentário unificado (root ou resposta) em qualquer alvo.
  */
 @Service
 @Transactional("mongoTransactionManager")
@@ -26,7 +27,8 @@ public class CreateCommentUseCase {
     private final LocaleResolutionService localeResolver;
 
     public record CreateCommentInput(
-            String titleId,
+            CommentTarget targetType,
+            String targetId,
             String textContent,
             String imageContent,
             String parentCommentId,
@@ -44,7 +46,8 @@ public class CreateCommentUseCase {
         }
 
         Comment comment = Comment.builder()
-                .titleId(input.titleId())
+                .targetType(input.targetType())
+                .targetId(input.targetId())
                 .parentCommentId(input.parentCommentId())
                 .userId(input.userId().toString())
                 .userName(user.getName())
@@ -52,10 +55,11 @@ public class CreateCommentUseCase {
                 .textContent(input.textContent())
                 .imageContent(input.imageContent())
                 .isHighlighted(false)
-                .wasEdited(false)
-                .likeCount(0)
-                .dislikeCount(0)
+                .edited(false)
+                .upvotes(0)
+                .downvotes(0)
                 .language(localeResolver.currentLanguageTag())
+                .updatedAt(java.time.LocalDateTime.now())
                 .build();
 
         return commentRepository.save(comment);

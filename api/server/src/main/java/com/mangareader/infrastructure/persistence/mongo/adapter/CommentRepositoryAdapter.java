@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.infrastructure.persistence.mongo.repository.CommentMongoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,13 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     private final CommentMongoRepository repository;
 
     @Override
-    public List<Comment> findByTitleIdAndParentCommentIdIsNull(String titleId) {
-        return repository.findByTitleIdAndParentCommentIdIsNull(titleId);
+    public List<Comment> findByTargetTypeAndTargetIdAndParentCommentIdIsNull(CommentTarget targetType, String targetId) {
+        return repository.findByTargetTypeAndTargetIdAndParentCommentIdIsNull(targetType, targetId);
+    }
+
+    @Override
+    public List<Comment> findByTargetTypeAndTargetId(CommentTarget targetType, String targetId) {
+        return repository.findByTargetTypeAndTargetId(targetType, targetId);
     }
 
     @Override
@@ -48,18 +54,14 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     }
 
     @Override
-    public Page<Comment> findByTitleId(String titleId, Pageable pageable) {
-        return repository.findByTitleId(titleId, pageable);
+    public Page<Comment> findByTargetTypeAndTargetId(CommentTarget targetType, String targetId, Pageable pageable) {
+        return repository.findByTargetTypeAndTargetId(targetType, targetId, pageable);
     }
 
     @Override
-    public Page<Comment> findByTitleIdAndLanguage(String titleId, String language, Pageable pageable) {
-        return repository.findByTitleIdAndLanguage(titleId, language, pageable);
-    }
-
-    @Override
-    public Page<Comment> findByTitleIdAndLanguageIn(String titleId, Collection<String> languages, Pageable pageable) {
-        return repository.findByTitleIdAndLanguageIn(titleId, languages, pageable);
+    public Page<Comment> findByTargetTypeAndTargetIdAndLanguageIn(
+            CommentTarget targetType, String targetId, Collection<String> languages, Pageable pageable) {
+        return repository.findByTargetTypeAndTargetIdAndLanguageIn(targetType, targetId, languages, pageable);
     }
 
     @Override
@@ -70,5 +72,10 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     @Override
     public long countByUserId(String userId) {
         return repository.countByUserId(userId);
+    }
+
+    @Override
+    public long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId) {
+        return repository.countByTargetTypeAndTargetId(targetType, targetId);
     }
 }

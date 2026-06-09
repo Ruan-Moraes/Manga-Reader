@@ -112,7 +112,9 @@ const TitleDetails = () => {
                 />
             )}
 
-            {tab === 'reviews' && <ReviewsTab titleId={titleId ?? ''} average={average} distribution={distribution} onWriteReview={openRatingModal} isLoggedIn={isLoggedIn} />}
+            {tab === 'reviews' && (
+                <ReviewsTab titleId={titleId ?? ''} average={average} distribution={distribution} onWriteReview={openRatingModal} isLoggedIn={isLoggedIn} />
+            )}
             {tab === 'comments' && <CommentsTab titleId={titleId ?? ''} />}
             {tab === 'groups' && <GroupsTab groups={groups} />}
             {tab === 'stores' && <StoresTab titleId={titleId ?? ''} />}

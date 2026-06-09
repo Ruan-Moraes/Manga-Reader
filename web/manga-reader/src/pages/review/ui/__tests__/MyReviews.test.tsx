@@ -22,6 +22,7 @@ const mockReview = {
     id: 'r1',
     titleId: 't1',
     titleName: 'Berserk',
+    userId: 'u1',
     userName: 'Leitor',
     overallRating: 4.5,
     funRating: 5,

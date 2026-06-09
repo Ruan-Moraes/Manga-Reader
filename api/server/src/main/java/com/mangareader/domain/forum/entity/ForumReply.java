@@ -58,9 +58,9 @@ public class ForumReply {
     @Builder.Default
     private int likes = 0;
 
-    @Column(name = "is_edited")
+    @Column(name = "edited")
     @Builder.Default
-    private boolean isEdited = false;
+    private boolean edited = false;
 
     @Column(name = "is_best_answer")
     @Builder.Default
@@ -69,4 +69,8 @@ public class ForumReply {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    /** Última modificação de conteúdo (setada manualmente na edição). */
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

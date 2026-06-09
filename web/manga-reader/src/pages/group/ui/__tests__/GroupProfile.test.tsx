@@ -9,7 +9,10 @@ import GroupProfile from '../GroupProfile';
 const setup = () => renderWithProviders(<GroupProfile />);
 
 describe('GroupProfile', () => {
-    it('axe', async () => { const { container } = renderWithProviders(<GroupProfile />); expect(await axeComponent(container)).toHaveNoViolations(); });
+    it('axe', async () => {
+        const { container } = renderWithProviders(<GroupProfile />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
 
     it('renders group name heading (defaults to id=1)', () => {
         setup();

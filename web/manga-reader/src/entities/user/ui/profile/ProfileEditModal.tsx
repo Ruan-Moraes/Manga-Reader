@@ -4,7 +4,6 @@ import { Compass, Settings, Sparkles, User, Users, X, type LucideIcon } from 'lu
 
 import { type ProfileSettingsTab, useProfileSettingsModal } from '@entities/user';
 
-
 import useEnrichedProfile from '../../model/useEnrichedProfile';
 
 import InformacoesTab from './tabs/InformacoesTab';

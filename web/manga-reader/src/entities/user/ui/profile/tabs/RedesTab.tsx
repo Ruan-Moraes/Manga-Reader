@@ -56,7 +56,9 @@ const RedesTab = ({ profile, onSaved }: Props) => {
             {FIELDS.map(f => (
                 <PEField key={f.key} label={f.label}>
                     <div className="flex h-10 items-center rounded-mr-xs border border-mr-gray-700 bg-mr-secondary">
-                        <span className="flex h-full items-center border-r border-mr-gray-700 px-2.5 text-mr-small tracking-mr text-mr-tertiary">{f.prefix}</span>
+                        <span className="flex h-full items-center border-r border-mr-gray-700 px-2.5 text-mr-small tracking-mr text-mr-tertiary">
+                            {f.prefix}
+                        </span>
                         <input
                             value={handles[f.key] || ''}
                             placeholder={f.placeholder}

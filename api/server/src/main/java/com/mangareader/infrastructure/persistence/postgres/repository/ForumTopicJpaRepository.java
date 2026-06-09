@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
@@ -43,4 +45,13 @@ public interface ForumTopicJpaRepository extends JpaRepository<ForumTopic, UUID>
     Page<ForumTopic> findByTitleContainingIgnoreCaseAndLanguageIn(String query, Collection<String> languages, Pageable pageable);
 
     long countByAuthorId(java.util.UUID authorId);
+
+    /**
+     * PERF-6: reconcilia o contador desnormalizado {@code replyCount} com a contagem real
+     * de respostas. Bulk update idempotente (SET = COUNT) — corrige drift sem risco de
+     * double-count, independentemente dos incrementos feitos pelos use cases.
+     */
+    @Modifying
+    @Query("UPDATE ForumTopic t SET t.replyCount = (SELECT COUNT(r) FROM ForumReply r WHERE r.topic = t)")
+    int reconcileReplyCounts();
 }

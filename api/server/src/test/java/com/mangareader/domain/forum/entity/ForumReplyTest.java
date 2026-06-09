@@ -61,7 +61,7 @@ class ForumReplyTest {
                     .author(author)
                     .content("Resposta detalhada com a solução")
                     .likes(10)
-                    .isEdited(true)
+                    .edited(true)
                     .isBestAnswer(true)
                     .build();
 

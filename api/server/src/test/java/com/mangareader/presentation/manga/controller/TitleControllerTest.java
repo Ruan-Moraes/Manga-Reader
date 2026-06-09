@@ -64,6 +64,12 @@ class TitleControllerTest {
     private GetChapterStatsUseCase getChapterStatsUseCase;
 
     @MockitoBean
+    private com.mangareader.application.manga.port.TitleRatingAggregateReadPort ratingAggregateReadPort;
+
+    @MockitoBean
+    private com.mangareader.application.manga.service.GenreVocabulary genreVocabulary;
+
+    @MockitoBean
     private TokenPort tokenPort;
 
     @MockitoBean
@@ -80,6 +86,8 @@ class TitleControllerTest {
                 .thenReturn(Map.of(
                         "t1", new ChapterStats(12L, "12"),
                         "t2", new ChapterStats(5L, "5")));
+
+        when(genreVocabulary.bySlug()).thenReturn(Map.of());
     }
 
 
@@ -92,7 +100,6 @@ class TitleControllerTest {
                 .synopsis(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Um caçador fraco se torna o mais forte"))
                 .genres(List.of("Ação", "Aventura"))
                 .popularity("1000")
-                .ratingAverage(4.5)
                 .author("Chugong")
                 .artist("DUBU")
                 .publisher("D&C Media")

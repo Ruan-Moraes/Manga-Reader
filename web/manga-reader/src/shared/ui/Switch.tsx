@@ -14,14 +14,22 @@ export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
 }
 
 const Track = ({ checked }: { checked: boolean }) => (
-    <span className={cn('relative ml-auto h-5 w-9 shrink-0 rounded-mr-full transition-colors duration-mr-default', checked ? 'bg-mr-accent' : 'bg-mr-gray-700')}>
+    <span
+        className={cn('relative ml-auto h-5 w-9 shrink-0 rounded-mr-full transition-colors duration-mr-default', checked ? 'bg-mr-accent' : 'bg-mr-gray-700')}
+    >
         <span
-            className={cn('absolute top-0.5 size-4 rounded-mr-full transition-all duration-mr-default', checked ? 'left-[18px] bg-mr-primary' : 'left-0.5 bg-white')}
+            className={cn(
+                'absolute top-0.5 size-4 rounded-mr-full transition-all duration-mr-default',
+                checked ? 'left-[18px] bg-mr-primary' : 'left-0.5 bg-white',
+            )}
         />
     </span>
 );
 
-export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch({ checked, onChange, label, description, disabled, bare, className, ...rest }, ref) {
+export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch(
+    { checked, onChange, label, description, disabled, bare, className, ...rest },
+    ref,
+) {
     if (bare) {
         return (
             <button
@@ -31,7 +39,11 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
                 aria-checked={checked}
                 disabled={disabled}
                 onClick={() => onChange(!checked)}
-                className={cn('mr-focus-ring inline-flex rounded-mr-full transition-opacity duration-mr-default', disabled && 'cursor-not-allowed opacity-mr-disabled', className)}
+                className={cn(
+                    'mr-focus-ring inline-flex rounded-mr-full transition-opacity duration-mr-default',
+                    disabled && 'cursor-not-allowed opacity-mr-disabled',
+                    className,
+                )}
                 {...rest}
             >
                 <Track checked={checked} />

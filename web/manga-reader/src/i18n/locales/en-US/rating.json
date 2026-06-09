@@ -39,7 +39,9 @@
         "successBody": "Your overall score was {{overall}}. Thank you for contributing to the community.",
         "successCta": "View my review",
         "progress": "{{rated}} of {{total}} criteria",
-        "rateCriterion": "Rate {{name}}"
+        "rateCriterion": "Rate {{name}}",
+        "editLabel": "Edit review",
+        "save": "Save"
     },
     "myReviews": {
         "title": "My Reviews",
@@ -158,6 +160,12 @@
         "breakdown": "Score breakdown",
         "helpful": "Helpful",
         "unhelpful": "Not helpful",
-        "voteGroup": "Vote on review"
+        "voteGroup": "Vote on review",
+        "edited": "edited",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Delete this review?",
+        "deleteYes": "Yes",
+        "deleteNo": "No"
     }
 }

@@ -4,13 +4,7 @@ import { SegmentedControl } from '@ui/SegmentedControl';
 import { Select } from '@ui/Select';
 import { Switch } from '@ui/Switch';
 import { Slider } from '@ui/Slider';
-import type {
-    ImageQuality,
-    ReaderBackground,
-    ReadingDirection,
-    ReadingFit,
-    ReadingMode,
-} from '@entities/user';
+import type { ImageQuality, ReaderBackground, ReadingDirection, ReadingFit, ReadingMode } from '@entities/user';
 
 import { SettingSection, SettingRow } from './settingsShared';
 import type { SettingsState } from '../../model/useSettingsState';

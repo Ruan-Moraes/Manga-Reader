@@ -32,7 +32,8 @@ public class UpdateCommentUseCase {
         }
 
         comment.setTextContent(input.textContent());
-        comment.setWasEdited(true);
+        comment.setEdited(true);
+        comment.setUpdatedAt(java.time.LocalDateTime.now());
 
         return commentRepository.save(comment);
     }

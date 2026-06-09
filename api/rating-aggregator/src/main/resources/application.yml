@@ -1,0 +1,48 @@
+# ==============================================================================
+# Rating Aggregator — Configuração Principal
+# ==============================================================================
+# Serviço dedicado: consome eventos rating.* (RabbitMQ) + job de reconciliação
+# e mantém a coleção title_rating_aggregate (fonte oficial de nota/contagem).
+#
+# A infra (Mongo/RabbitMQ) é subida pelo api/server (spring-boot-docker-compose);
+# este serviço apenas se conecta — por isso docker.compose fica desligado.
+# ==============================================================================
+
+server:
+  port: 8081
+spring:
+  application:
+    name: rating-aggregator
+  # Carrega o .env (formato chave=valor) como properties, se existir.
+  # Permite que AGGREGATOR_ADMIN_TOKEN venha do .env também no `mvn spring-boot:run`
+  # (sem isso, .env só é lido pelo docker-compose).
+  config:
+    import: optional:file:./.env[.properties]
+  docker:
+    compose:
+      enabled: false
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mangareader
+      auto-index-creation: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: manga
+    password: manga_secret
+mongock:
+  migration-scan-package: com.mangareader.aggregator.infrastructure.migration
+  transactional: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+aggregator:
+  reconciliation:
+    # Diário às 03:00. Rede de segurança contra eventos perdidos.
+    cron: "0 0 3 * * *"
+  admin:
+    # Senha do gatilho manual POST /admin/reconcile (header X-Admin-Token).
+    # Vazio = endpoint desativado. Em produção, sobrescrever via env.
+    token: ${AGGREGATOR_ADMIN_TOKEN:}

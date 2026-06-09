@@ -63,8 +63,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Em um mundo onde armaduras vivas dominam os campos de batalha, um ferreiro órfão descobre que seu sangue pode despertar a lendária Armadura Negra.",
                                 "In a world where living armors rule the battlefields, an orphan blacksmith discovers his blood can awaken the legendary Black Armor.",
                                 "En un mundo donde armaduras vivientes dominan los campos de batalla, un herrero huérfano descubre que su sangre puede despertar la legendaria Armadura Negra."))
-                        .genres(List.of("Ação", "Fantasia", "Aventura"))
-                        .popularity("98").ratingAverage(3.0)
+                        .genres(List.of("ACTION", "FANTASY", "ADVENTURE"))
+                        .popularity("98")
                         .author("Takeshi Yamamoto").artist("Takeshi Yamamoto").publisher("Panini")
                         .build(),
 
@@ -77,8 +77,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Após acordar 500 anos no futuro, um espadachim medieval precisa dominar tecnologia avançada para sobreviver em uma sociedade que erradicou a violência.",
                                 "After waking 500 years in the future, a medieval swordsman must master advanced technology to survive in a society that eradicated violence.",
                                 "Tras despertar 500 años en el futuro, un espadachín medieval debe dominar tecnología avanzada para sobrevivir en una sociedad que erradicó la violencia."))
-                        .genres(List.of("Ação", "Ficção Científica", "Drama"))
-                        .popularity("94").ratingAverage(2.9)
+                        .genres(List.of("ACTION", "SCIENCE_FICTION", "DRAMA"))
+                        .popularity("94")
                         .author("Park Ji-Won").artist("Lee Soo-Hyun").publisher("NewPOP")
                         .build(),
 
@@ -91,8 +91,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Em Tóquio, uma florista de dia e hacker de noite se vê envolvida em uma conspiração corporativa quando suas duas vidas colidem.",
                                 "In Tokyo, a florist by day and hacker by night gets entangled in a corporate conspiracy when her two lives collide.",
                                 "En Tokio, una florista de día y hacker de noche se ve envuelta en una conspiración corporativa cuando sus dos vidas colisionan."))
-                        .genres(List.of("Suspense", "Seinen", "Urbano"))
-                        .popularity("87").ratingAverage(1.5)
+                        .genres(List.of("THRILLER", "SEINEN", "URBAN"))
+                        .popularity("87")
                         .author("Yuki Aoi").artist("Yuki Aoi").publisher("JBC")
                         .build(),
 
@@ -105,8 +105,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Um grupo de exploradores parte rumo à estrela Polaris seguindo mapas antigos que prometem revelar a origem da humanidade.",
                                 "A group of explorers sets out toward the star Polaris following ancient maps that promise to reveal humanity's origin.",
                                 "Un grupo de exploradores parte hacia la estrella Polaris siguiendo mapas antiguos que prometen revelar el origen de la humanidad."))
-                        .genres(List.of("Aventura", "Fantasia", "Histórico"))
-                        .popularity("91").ratingAverage(3.7)
+                        .genres(List.of("ADVENTURE", "FANTASY", "HISTORICAL"))
+                        .popularity("91")
                         .author("Hiroshi Tanaka").artist("Hiroshi Tanaka").publisher("Panini")
                         .build(),
 
@@ -119,8 +119,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Um jovem artista marcial descobre que possui a habilidade rara de cortar o vento, tornando-se alvo de clãs rivais que desejam dominar essa técnica lendária.",
                                 "A young martial artist discovers he has the rare ability to cut the wind, becoming the target of rival clans seeking to master this legendary technique.",
                                 "Un joven artista marcial descubre que posee la rara habilidad de cortar el viento, convirtiéndose en blanco de clanes rivales que desean dominar esta técnica legendaria."))
-                        .genres(List.of("Ação", "Artes Marciais", "Drama"))
-                        .popularity("89").ratingAverage(2.6)
+                        .genres(List.of("ACTION", "MARTIAL_ARTS", "DRAMA"))
+                        .popularity("89")
                         .author("Kim Dae-Sung").artist("Kim Dae-Sung").publisher("NewPOP")
                         .build(),
 
@@ -133,8 +133,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Quando os portões celestiais se abrem, um jovem monge é escolhido como o último guardião entre o mundo mortal e o reino dos deuses.",
                                 "When the celestial gates open, a young monk is chosen as the last guardian between the mortal world and the realm of gods.",
                                 "Cuando se abren las puertas celestiales, un joven monje es elegido como el último guardián entre el mundo mortal y el reino de los dioses."))
-                        .genres(List.of("Fantasia", "Sobrenatural", "Aventura"))
-                        .popularity("92").ratingAverage(1.8)
+                        .genres(List.of("FANTASY", "SUPERNATURAL", "ADVENTURE"))
+                        .popularity("92")
                         .author("Chen Wei").artist("Liu Xing").publisher("Panini")
                         .build(),
 
@@ -147,8 +147,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Uma jovem artesã de porcelana descobre que suas criações ganham vida própria, revelando sentimentos que ela há muito tempo tentava esconder.",
                                 "A young porcelain artisan discovers her creations come to life, revealing feelings she had long tried to hide.",
                                 "Una joven artesana de porcelana descubre que sus creaciones cobran vida propia, revelando sentimientos que ella intentaba ocultar desde hace mucho."))
-                        .genres(List.of("Romance", "Shoujo", "Slice of Life"))
-                        .popularity("85").ratingAverage(0.3)
+                        .genres(List.of("ROMANCE", "SHOUJO", "SLICE_OF_LIFE"))
+                        .popularity("85")
                         .author("Sakura Miyazaki").artist("Sakura Miyazaki").publisher("JBC")
                         .build(),
 
@@ -161,8 +161,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Em um futuro distópico, um programador descobre que a IA governante esconde um protocolo secreto que pode libertar ou destruir a humanidade.",
                                 "In a dystopian future, a programmer discovers that the ruling AI hides a secret protocol that can either free or destroy humanity.",
                                 "En un futuro distópico, un programador descubre que la IA gobernante esconde un protocolo secreto que puede liberar o destruir a la humanidad."))
-                        .genres(List.of("Ficção Científica", "Thriller", "Seinen"))
-                        .popularity("90").ratingAverage(2.8)
+                        .genres(List.of("SCIENCE_FICTION", "THRILLER", "SEINEN"))
+                        .popularity("90")
                         .author("Park Min-Ho").artist("Park Min-Ho").publisher("NewPOP")
                         .build(),
 
@@ -175,9 +175,9 @@ public class TitleSeed implements EntitySeeder {
                                 "Em uma cidade tomada por cultos sobrenaturais, um detetive desacreditado investiga desaparecimentos que levam a rituais ancestrais de sangue.",
                                 "In a city overrun by supernatural cults, a discredited detective investigates disappearances that lead to ancient blood rituals.",
                                 "En una ciudad dominada por cultos sobrenaturales, un detective desacreditado investiga desapariciones que llevan a rituales ancestrales de sangre."))
-                        .genres(List.of("Horror", "Suspense", "Seinen", "+18"))
+                        .genres(List.of("HORROR", "THRILLER", "SEINEN"))
                         .adult(true)
-                        .popularity("72").ratingAverage(4.2)
+                        .popularity("72")
                         .status("ongoing")
                         .author("Kazuki Morimoto").artist("Kazuki Morimoto").publisher("Panini")
                         .build(),
@@ -191,8 +191,8 @@ public class TitleSeed implements EntitySeeder {
                                 "Um monge errante busca fragmentos de um espelho místico que reflete verdades ocultas, enquanto enfrenta seus próprios demônios internos.",
                                 "A wandering monk searches for fragments of a mystical mirror that reflects hidden truths while confronting his own inner demons.",
                                 "Un monje errante busca fragmentos de un espejo místico que refleja verdades ocultas, mientras enfrenta sus propios demonios internos."))
-                        .genres(List.of("Fantasia", "Filosófico", "Aventura"))
-                        .popularity("10").ratingAverage(0.0)
+                        .genres(List.of("FANTASY", "ADVENTURE"))
+                        .popularity("10")
                         .status("hiatus")
                         .author("Zhang Liang").artist("Zhang Liang").publisher("JBC")
                         .build()

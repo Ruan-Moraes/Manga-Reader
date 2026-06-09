@@ -63,6 +63,42 @@ services:
         limits:
           memory: 768M
           cpus: "1.0"
+  rating-aggregator:
+    build:
+      context: ./rating-aggregator
+      dockerfile: Dockerfile
+    container_name: mangareader-rating-aggregator
+    ports:
+      - "8081:8081"
+    environment:
+      # Spring relaxed binding: SPRING_DATA_MONGODB_URI -> spring.data.mongodb.uri etc.
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mangareader
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: manga
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      AGGREGATOR_ADMIN_TOKEN: ${AGGREGATOR_ADMIN_TOKEN}
+      JAVA_OPTS: >-
+        -Xms128m -Xmx256m
+        -XX:+UseG1GC
+        -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.5"
   postgres:
     image: postgres:17-alpine
     container_name: mangareader-postgres

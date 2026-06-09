@@ -179,10 +179,7 @@ describe('useAuth', () => {
     it('deve compartilhar estado entre consumidores sob o mesmo provider', async () => {
         // Dois consumidores independentes do mesmo AuthProvider — simula
         // Login + Header. Após login num, o outro reflete sem remount.
-        const { result } = renderHook(
-            () => ({ a: useAuth(), b: useAuth() }),
-            { wrapper },
-        );
+        const { result } = renderHook(() => ({ a: useAuth(), b: useAuth() }), { wrapper });
 
         expect(result.current.b.isLoggedIn).toBe(false);
 

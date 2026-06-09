@@ -22,8 +22,9 @@ import lombok.Setter;
 /**
  * Título de mangá/manhwa/manhua (MongoDB).
  * <p>
- * Campos de rating (ratingAverage, ratingCount, rankingScore) são
- * consolidados por um job periódico a partir das reviews (MangaRating).
+ * Nota, contagem e ranking <b>não</b> ficam aqui: são consolidados pelo serviço
+ * {@code rating-aggregator} na coleção {@code title_rating_aggregate} (fonte
+ * única de leitura). Ver {@code TitleRatingAggregateReadPort}.
  */
 @Document(collection = "titles")
 @Getter
@@ -51,10 +52,6 @@ public class Title {
 
     @Indexed
     private String popularity;
-
-    private Double ratingAverage;
-    private Long ratingCount;
-    private Double rankingScore;
 
     @Builder.Default
     private boolean adult = false;

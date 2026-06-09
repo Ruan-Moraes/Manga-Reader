@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig;
 
 @DataMongoTest
@@ -43,7 +44,7 @@ class CommentRepositoryAdapterTest {
         mongoTemplate.dropCollection(Comment.class);
 
         rootComment1 = mongoTemplate.save(Comment.builder()
-                .titleId("title-1")
+                .targetType(CommentTarget.TITLE).targetId("title-1")
                 .userId("user-1")
                 .userName("Ruan")
                 .textContent("Primeiro comentario root")
@@ -51,7 +52,7 @@ class CommentRepositoryAdapterTest {
                 .build());
 
         rootComment2 = mongoTemplate.save(Comment.builder()
-                .titleId("title-1")
+                .targetType(CommentTarget.TITLE).targetId("title-1")
                 .userId("user-2")
                 .userName("Maria")
                 .textContent("Segundo comentario root")
@@ -59,7 +60,7 @@ class CommentRepositoryAdapterTest {
                 .build());
 
         replyToRoot1 = mongoTemplate.save(Comment.builder()
-                .titleId("title-1")
+                .targetType(CommentTarget.TITLE).targetId("title-1")
                 .parentCommentId(rootComment1.getId())
                 .userId("user-3")
                 .userName("Carlos")
@@ -68,7 +69,7 @@ class CommentRepositoryAdapterTest {
                 .build());
 
         otherTitleComment = mongoTemplate.save(Comment.builder()
-                .titleId("title-2")
+                .targetType(CommentTarget.TITLE).targetId("title-2")
                 .userId("user-1")
                 .userName("Ruan")
                 .textContent("Comentario em outro titulo")
@@ -83,7 +84,7 @@ class CommentRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar página de comentários do título")
         void deveRetornarPaginaDeComentarios() {
-            var page = commentRepository.findByTitleId("title-1", PageRequest.of(0, 2));
+            var page = commentRepository.findByTargetTypeAndTargetId(CommentTarget.TITLE, "title-1", PageRequest.of(0, 2));
             assertThat(page.getContent()).hasSize(2);
             assertThat(page.getTotalElements()).isEqualTo(3);
         }
@@ -96,7 +97,7 @@ class CommentRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar apenas comentários root do título")
         void deveRetornarApenasComentariosRoot() {
-            var result = commentRepository.findByTitleIdAndParentCommentIdIsNull("title-1");
+            var result = commentRepository.findByTargetTypeAndTargetIdAndParentCommentIdIsNull(CommentTarget.TITLE, "title-1");
             assertThat(result).hasSize(2)
                     .extracting(Comment::getTextContent)
                     .containsExactlyInAnyOrder("Primeiro comentario root", "Segundo comentario root");
@@ -151,7 +152,7 @@ class CommentRepositoryAdapterTest {
         @DisplayName("Deve persistir novo comentário e gerar ID")
         void devePersistirNovoComentario() {
             var newComment = Comment.builder()
-                    .titleId("title-1")
+                    .targetType(CommentTarget.TITLE).targetId("title-1")
                     .userId("user-5")
                     .userName("Ana")
                     .textContent("Novo comentario")

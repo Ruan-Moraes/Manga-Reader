@@ -100,6 +100,11 @@ public class ForumTopic {
     @Builder.Default
     private boolean isSolved = false;
 
+    /** Conteúdo do tópico foi editado após a criação. */
+    @Column(name = "edited")
+    @Builder.Default
+    private boolean edited = false;
+
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ForumReply> replies = new ArrayList<>();
@@ -111,4 +116,8 @@ public class ForumTopic {
     @Column(name = "last_activity_at")
     @UpdateTimestamp
     private LocalDateTime lastActivityAt;
+
+    /** Última modificação de conteúdo (setada manualmente na edição; distinta de lastActivityAt). */
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

@@ -1,6 +1,7 @@
 package com.mangareader.presentation.manga.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.usecase.ChapterStats;
 import com.mangareader.application.manga.usecase.FilterTitlesUseCase;
 import com.mangareader.application.manga.usecase.GetChapterStatsUseCase;
@@ -46,6 +49,7 @@ public class TitleController {
     private final GetTitlesByGenreUseCase getTitlesByGenreUseCase;
     private final FilterTitlesUseCase filterTitlesUseCase;
     private final GetChapterStatsUseCase getChapterStatsUseCase;
+    private final TitleRatingAggregateReadPort ratingAggregateReadPort;
     private final TitleMapper titleMapper;
 
     @GetMapping
@@ -67,7 +71,9 @@ public class TitleController {
         var stats = getChapterStatsUseCase.execute(List.of(id))
                 .getOrDefault(id, ChapterStats.EMPTY);
 
-        return ResponseEntity.ok(ApiResponse.success(titleMapper.toResponse(title, stats)));
+        var rating = ratingAggregateReadPort.findByTitleId(id).orElse(null);
+
+        return ResponseEntity.ok(ApiResponse.success(titleMapper.toResponse(title, stats, rating)));
     }
 
     @GetMapping("/search")
@@ -124,8 +130,11 @@ public class TitleController {
         var titleIds = result.getContent().stream().map(Title::getId).toList();
 
         var stats = getChapterStatsUseCase.execute(titleIds);
+        Map<String, TitleRatingAggregateView> ratings = ratingAggregateReadPort.findByTitleIdIn(titleIds);
 
         return result.map(title -> titleMapper.toResponse(
-                title, stats.getOrDefault(title.getId(), ChapterStats.EMPTY)));
+                title,
+                stats.getOrDefault(title.getId(), ChapterStats.EMPTY),
+                ratings.get(title.getId())));
     }
 }

@@ -36,18 +36,18 @@ const SUGGESTIONS: Suggestion[] = [
 const RECENTS = ['berserk', 'one piece capítulo 1120', 'grupo: Tsuki Scans'];
 
 const NavSearch = ({
-                       value,
-                       onChange,
-                       focused,
-                       onFocus,
-                       onBlur,
-                       onSubmit,
-                       onSelectRecent,
-                       onSelectSuggestion,
-                       inputRef,
-                       height = 42,
-                       showShortcut = true,
-                   }: Props) => {
+    value,
+    onChange,
+    focused,
+    onFocus,
+    onBlur,
+    onSubmit,
+    onSelectRecent,
+    onSelectSuggestion,
+    inputRef,
+    height = 42,
+    showShortcut = true,
+}: Props) => {
     const { t } = useTranslation('layout');
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -98,8 +98,7 @@ const NavSearch = ({
                         <span className="flex items-center justify-center">K</span>
                     </kbd>
                 )}
-                {value && <IconButton icon={X} size="sm" variant="primary" aria-label="Limpar busca"
-                                      onClick={() => onChange('')} />}
+                {value && <IconButton icon={X} size="sm" variant="primary" aria-label="Limpar busca" onClick={() => onChange('')} />}
             </label>
             {focused && (
                 <div
@@ -112,8 +111,7 @@ const NavSearch = ({
                         zIndex: 50,
                     }}
                 >
-                    <div className="px-2 pb-1 pt-2 text-[10px] font-mr-extrabold uppercase text-mr-accent"
-                         style={{ letterSpacing: '0.12em' }}>
+                    <div className="px-2 pb-1 pt-2 text-[10px] font-mr-extrabold uppercase text-mr-accent" style={{ letterSpacing: '0.12em' }}>
                         {t('search.suggestionsTitle')}
                     </div>
                     <ul className="flex flex-col">
@@ -141,20 +139,17 @@ const NavSearch = ({
                                         }}
                                     />
                                     <span className="flex min-w-0 flex-col">
-                                        <span className="text-[13px] font-mr-bold leading-tight text-mr-fg"
-                                              style={{ letterSpacing: '0.0625rem' }}>
+                                        <span className="text-[13px] font-mr-bold leading-tight text-mr-fg" style={{ letterSpacing: '0.0625rem' }}>
                                             {s.title}
                                         </span>
-                                        <span
-                                            className="mt-[2px] text-[11px] leading-tight text-mr-gray-300">{s.meta}</span>
+                                        <span className="mt-[2px] text-[11px] leading-tight text-mr-gray-300">{s.meta}</span>
                                     </span>
                                 </button>
                             </li>
                         ))}
                     </ul>
 
-                    <div className="mt-2 px-2 pb-1 pt-1 text-[10px] font-mr-extrabold uppercase text-mr-accent"
-                         style={{ letterSpacing: '0.12em' }}>
+                    <div className="mt-2 px-2 pb-1 pt-1 text-[10px] font-mr-extrabold uppercase text-mr-accent" style={{ letterSpacing: '0.12em' }}>
                         {t('search.recentTitle')}
                     </div>
                     <ul className="flex flex-col">

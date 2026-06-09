@@ -66,7 +66,7 @@ class GetUserCommentsUseCaseTest {
         void deveRetornarComentariosQuandoDono() {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PRIVATE)));
 
-            Comment comment = Comment.builder().id("c1").titleId("t1").textContent("Ótimo!").build();
+            Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Ótimo!").build();
             when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
 
@@ -87,7 +87,7 @@ class GetUserCommentsUseCaseTest {
             UUID viewerId = UUID.randomUUID();
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
 
-            Comment comment = Comment.builder().id("c1").titleId("t1").textContent("Bom!").build();
+            Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Bom!").build();
             when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
 

@@ -17,6 +17,7 @@ export enum QUERY_KEYS {
     RATINGS_BY_TITLE = 'ratingsByTitle',
     RATING_AVERAGE = 'ratingAverage',
     RATING_DISTRIBUTION = 'ratingDistribution',
+    USER_REVIEWS = 'userReviews',
 
     // Stores
     STORES_BY_TITLE = 'storesByTitle',
@@ -24,6 +25,7 @@ export enum QUERY_KEYS {
     // Library
     LIBRARY_COUNTS = 'libraryCounts',
     LIBRARY_IDS = 'libraryIds',
+    LIBRARY_BY_USER = 'libraryByUser',
 
     // Groups
     GROUPS = 'groups',

@@ -9,6 +9,7 @@ export const buildMangaRating = (overrides: Partial<MangaRating> = {}): MangaRat
         id: `rating-${ratingCounter}`,
         titleId: `title-${ratingCounter}`,
         titleName: `Titulo ${ratingCounter}`,
+        userId: `user-${ratingCounter}`,
         userName: `Usuario ${ratingCounter}`,
         overallRating: 4,
         funRating: 4,

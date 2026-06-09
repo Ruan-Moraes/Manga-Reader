@@ -14,8 +14,9 @@ const buildCommentResponse = (overrides = {}) => ({
     userName: 'Test User',
     userPhoto: 'photo.jpg',
     isHighlighted: false,
-    wasEdited: false,
+    edited: false,
     createdAt: '2025-01-01T00:00:00Z',
+    updatedAt: '2025-01-01T00:00:00Z',
     textContent: 'Comentario de teste',
     imageContent: null,
     likeCount: '5',
@@ -111,7 +112,7 @@ describe('commentService', () => {
         it('deve atualizar comentario e retornar dados mapeados', async () => {
             const comment = buildCommentResponse({
                 textContent: 'Texto editado',
-                wasEdited: true,
+                edited: true,
             });
 
             server.use(http.put(`*${API_URLS.COMMENTS}/comment-1`, () => HttpResponse.json({ data: comment, success: true })));
@@ -119,7 +120,7 @@ describe('commentService', () => {
             const result = await updateComment('comment-1', 'Texto editado');
 
             expect(result.textContent).toBe('Texto editado');
-            expect(result.wasEdited).toBe(true);
+            expect(result.edited).toBe(true);
         });
 
         it('deve lançar erro quando API retorna 500 no updateComment', async () => {

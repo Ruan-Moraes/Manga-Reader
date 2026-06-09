@@ -17,33 +17,21 @@ type HelpArticlesSectionProps = {
     onCategoryToggle: (slug: string) => void;
 };
 
-const HelpArticlesSection = ({
-    query,
-    activeCategory,
-    onCategoryToggle,
-}: HelpArticlesSectionProps) => {
+const HelpArticlesSection = ({ query, activeCategory, onCategoryToggle }: HelpArticlesSectionProps) => {
     const navigate = useAppNavigate();
     const { t } = useTranslation('help');
     const hasQuery = query.length > 0;
 
     const filtered = ARTICLES.filter(a => {
         if (activeCategory && a.cat !== activeCategory) return false;
-        if (
-            query &&
-            !t(`items.${a.id}`).toLowerCase().includes(query.toLowerCase())
-        )
-            return false;
+        if (query && !t(`items.${a.id}`).toLowerCase().includes(query.toLowerCase())) return false;
         return true;
     });
 
     return (
         <>
             <section className="mb-12">
-                <SectionHeader
-                    eyebrow={t('articles.categoriesEyebrow')}
-                    title={t('articles.categoriesTitle')}
-                    className="mb-6"
-                />
+                <SectionHeader eyebrow={t('articles.categoriesEyebrow')} title={t('articles.categoriesTitle')} className="mb-6" />
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {CATEGORIES.map(cat => {
                         const Icon = cat.icon;
@@ -54,11 +42,7 @@ const HelpArticlesSection = ({
                                 interactive
                                 variant="default"
                                 onClick={() => onCategoryToggle(cat.slug)}
-                                className={
-                                    active
-                                        ? 'border-mr-accent bg-mr-accent-25/30'
-                                        : ''
-                                }
+                                className={active ? 'border-mr-accent bg-mr-accent-25/30' : ''}
                             >
                                 <div className="flex items-center gap-3">
                                     <div
@@ -67,12 +51,8 @@ const HelpArticlesSection = ({
                                         <Icon className="size-5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <div className="font-mr-extrabold text-mr-fg">
-                                            {t(`categories.${cat.slug}.label`)}
-                                        </div>
-                                        <div className="truncate text-mr-tiny text-mr-fg-muted">
-                                            {t(`categories.${cat.slug}.desc`)}
-                                        </div>
+                                        <div className="font-mr-extrabold text-mr-fg">{t(`categories.${cat.slug}.label`)}</div>
+                                        <div className="truncate text-mr-tiny text-mr-fg-muted">{t(`categories.${cat.slug}.desc`)}</div>
                                     </div>
                                 </div>
                                 <div className="mt-3">
@@ -90,11 +70,7 @@ const HelpArticlesSection = ({
 
             <section className="mb-12">
                 <SectionHeader
-                    eyebrow={
-                        hasQuery
-                            ? t('articles.resultsEyebrow', { query })
-                            : t('articles.popularEyebrow')
-                    }
+                    eyebrow={hasQuery ? t('articles.resultsEyebrow', { query }) : t('articles.popularEyebrow')}
                     title={
                         hasQuery
                             ? t('articles.resultsTitle', {
@@ -110,11 +86,7 @@ const HelpArticlesSection = ({
                         title={t('articles.emptyTitle', { query })}
                         description={t('articles.emptyDesc')}
                         action={
-                            <Button
-                                variant="primary"
-                                icon={MessageCircle}
-                                onClick={() => navigate(ROUTES.LEGAL_CONTACT)}
-                            >
+                            <Button variant="primary" icon={MessageCircle} onClick={() => navigate(ROUTES.LEGAL_CONTACT)}>
                                 {t('articles.openTicket')}
                             </Button>
                         }
@@ -125,22 +97,16 @@ const HelpArticlesSection = ({
                             <article
                                 key={article.id}
                                 className="flex cursor-pointer items-center gap-4 bg-mr-surface px-4 py-4 transition-colors hover:bg-mr-accent-25"
-                                onClick={() =>
-                                    navigate(ROUTES.HELP_ARTICLE(article.id))
-                                }
+                                onClick={() => navigate(ROUTES.HELP_ARTICLE(article.id))}
                             >
                                 <span className="shrink-0 font-mr-mono text-mr-small font-mr-extrabold tabular-nums text-mr-accent">
                                     {String(idx + 1).padStart(2, '0')}
                                 </span>
                                 <div className="min-w-0 flex-1">
                                     <div className="mb-1">
-                                        <Badge variant="neutral">
-                                            {t(`categories.${article.cat}.label`)}
-                                        </Badge>
+                                        <Badge variant="neutral">{t(`categories.${article.cat}.label`)}</Badge>
                                     </div>
-                                    <p className="truncate text-mr-body font-mr-bold text-mr-fg">
-                                        {t(`items.${article.id}`)}
-                                    </p>
+                                    <p className="truncate text-mr-body font-mr-bold text-mr-fg">{t(`items.${article.id}`)}</p>
                                     <div className="mt-1 flex gap-3 text-mr-tiny text-mr-fg-subtle">
                                         <span className="inline-flex items-center gap-1">
                                             <Eye className="size-3" />

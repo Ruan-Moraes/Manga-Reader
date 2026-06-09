@@ -56,6 +56,8 @@ const ForumTopicPage = () => {
                 isOp
                 author={topic.author}
                 when={topic.postedAt}
+                edited={topic.edited}
+                updatedAt={topic.updatedAt}
                 content={topic.content}
                 upvotes={312}
                 downvotes={4}

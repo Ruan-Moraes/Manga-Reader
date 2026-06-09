@@ -2,12 +2,15 @@ package com.mangareader.application.manga.usecase;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
+import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FilterTitlesUseCase {
     private final TitleRepositoryPort titleRepository;
+    private final TitleRatingAggregateReadPort ratingAggregateReadPort;
     private final LocaleResolutionService localeResolutionService;
 
     public Page<Title> execute(List<String> genres, String status, Boolean adult,
@@ -47,10 +51,14 @@ public class FilterTitlesUseCase {
                     .sorted(Comparator.comparing(
                             (Title t) -> parseNumeric(t.getPopularity())).reversed())
                     .toList();
-            case MOST_RATED -> titles.stream()
-                    .sorted(Comparator.comparing(
-                            (Title t) -> t.getRatingAverage() != null ? t.getRatingAverage() : 0.0).reversed())
-                    .toList();
+            case MOST_RATED -> {
+                Map<String, TitleRatingAggregateView> ratings = ratingAggregateReadPort
+                        .findByTitleIdIn(titles.stream().map(Title::getId).toList());
+                yield titles.stream()
+                        .sorted(Comparator.comparing(
+                                (Title t) -> ratingAverageOf(ratings, t.getId())).reversed())
+                        .toList();
+            }
             case MOST_RECENT -> titles.stream()
                     .sorted(Comparator.comparing(
                             Title::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
@@ -69,6 +77,11 @@ public class FilterTitlesUseCase {
                 yield shuffled;
             }
         };
+    }
+
+    private static double ratingAverageOf(Map<String, TitleRatingAggregateView> ratings, String titleId) {
+        var view = ratings.get(titleId);
+        return view != null ? view.ratingAverage() : 0.0;
     }
 
     private double parseNumeric(String value) {

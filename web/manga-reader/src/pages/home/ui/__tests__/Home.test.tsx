@@ -16,7 +16,6 @@ const mockTitle = {
     ratingCount: 1000,
     type: 'Manga',
     popularity: '1',
-    rankingScore: 0.99,
     adult: false,
     artist: 'K. Miura',
     publisher: 'Hakusensha',
@@ -69,7 +68,10 @@ vi.mock('@entities/group', async importOriginal => {
 });
 
 describe('Home', () => {
-    it('axe', async () => { const { container } = renderWithProviders(<Home />); expect(await axeComponent(container)).toHaveNoViolations(); });
+    it('axe', async () => {
+        const { container } = renderWithProviders(<Home />);
+        expect(await axeComponent(container)).toHaveNoViolations();
+    });
 
     it('renders main landmark', () => {
         renderWithProviders(<Home />);

@@ -16,7 +16,6 @@ public record ContentMetricsResponse(
             String name,
             String cover,
             String type,
-            Double rankingScore,
             Double ratingAverage,
             Long ratingCount
     ) {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.GenreValidator;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UpdateTitleUseCase {
     private final TitleRepositoryPort titleRepository;
+    private final GenreValidator genreValidator;
 
     public Title execute(String titleId, Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
@@ -28,6 +30,8 @@ public class UpdateTitleUseCase {
                          String author, String artist, String publisher, Boolean adult) {
         Title title = titleRepository.findById(titleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Title", "id", titleId));
+
+        if (genres != null) genreValidator.validate(genres);
 
         if (name != null) title.setName(LocalizedString.of(name));
         if (type != null) title.setType(type);

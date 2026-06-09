@@ -44,11 +44,7 @@ export default defineConfig([
     // - layouts/ (shells de rota) compõem header/footer/mobile-tab-bar (widget→widget).
     // - design/ é showcase e compõe os forms de login/sign-up/forgot-password (page→page).
     {
-        files: [
-            './src/widgets/layouts/ui/RootLayout.tsx',
-            './src/widgets/layouts/ui/PageShell.tsx',
-            './src/pages/design/ui/DesignAuth.tsx',
-        ],
+        files: ['./src/widgets/layouts/ui/RootLayout.tsx', './src/widgets/layouts/ui/PageShell.tsx', './src/pages/design/ui/DesignAuth.tsx'],
         rules: {
             'fsd/forbidden-imports': 'off',
         },
@@ -68,5 +64,4 @@ export default defineConfig([
 
     // entity↔entity cross-refs agora via FSD cross-import API (@x):
     // entities/<target>/@x/<consumer>.ts. forbidden-imports volta a ON full.
-
 ]);

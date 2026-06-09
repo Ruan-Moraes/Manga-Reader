@@ -1,6 +1,6 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 1 de junho de 2026
+> Última atualização: 8 de junho de 2026
 
 ---
 
@@ -773,13 +773,75 @@ testes de hook/serviço (sem jest-dom) rodam verdes.
 
 ---
 
+### DT-48: Perfil — seções ainda simuladas (sem backend) — **Em aberto (Baixa)**
+
+**Contexto**: a página de perfil (`pages/profile/ui/UserProfile.tsx`) foi migrada de
+100% mock para **dados reais** no que já tem backend: header/bio, stats (contagens),
+**resenhas** (`GET /api/ratings/user/{userId}` — novo), recomendações, comentários
+recentes e listas **lendo/concluído** (`GET /api/library/user/{userId}` — novo), tudo
+de **qualquer** usuário via `useEnrichedProfile`/`useUserReviews`/`useUserLibrary`.
+
+**Ainda simulado** (mock em `src/mock/userProfile.ts`, marcado com `// TODO(tech-debt)`):
+
+- **Seguidores/seguindo** — não existe domínio social (follow/unfollow, contagens, listas).
+- **Gêneros favoritos** do usuário — sem fonte no backend.
+- **Grupos seguidos** — `GroupController` não expõe "grupos de um usuário".
+- **Feed de atividade** — sem agregação (há `recentViewHistory`, mas não o feed completo).
+- **Handle/username e selo "verificado"** — não existem no perfil do backend (handle hoje
+  é derivado do nome no front).
+
+**Impacto**: parte do perfil mistura dado real + fake. Não bloqueante.
+
+**Recomendação**: criar os domínios/endpoints (grafo social, grupos por usuário, gêneros
+favoritos, activity feed, username) quando a feature de rede social entrar no roadmap.
+
+### DT-49: Biblioteca pública sem checagem de visibilidade — **Em aberto (Baixa)**
+
+`GET /api/library/user/{userId}` (novo) expõe a biblioteca de qualquer usuário sem
+respeitar privacidade. O enriched profile já filtra comentários/histórico por
+`VisibilitySetting`; a biblioteca pública deveria seguir o mesmo padrão.
+
+---
+
+### DT-50: Persistência de comentários (resenha, obra, fórum) não padronizada — **Em aberto (Média)**
+
+Os três domínios de comentário/UGC gravam interações de formas divergentes — bancos,
+nomes de coluna e estruturas diferentes — dificultando que um dev reconheça que seguem a
+mesma lógica. Objetivo: contratos/colunas consistentes (mesmos nomes) entre os domínios,
+ainda que em tabelas/coleções distintas.
+
+**Já padronizado nesta leva (2026-06-08)** — indicador de edição + data de modificação:
+- Flag canônico **`edited`** nos 3 domínios (renomeado de `wasEdited`/`is_edited`).
+- Coluna/campo **`updatedAt`/`updated_at`** (última modificação de conteúdo, setada
+  manualmente na edição) adicionada onde faltava; resenha ganhou `edited` + `updatedAt`.
+- Migrations: Mongock `V013StandardizeEditedAndUpdatedAt` (ratings/comments),
+  Flyway `V32__forum_standardize_edited_updated.sql` (forum_topics/forum_replies).
+- UI: base compartilhada `shared/ui/ThreadPost` (obra + fórum com DOM/CSS idênticos);
+  resenha exibe criação + selo "(editado)" com tooltip da data de modificação.
+
+**Pendente (a padronizar):**
+- **Corpo do texto**: `comment` (resenha, Mongo) vs `textContent` (obra, Mongo) vs
+  `content` (fórum, Postgres) → convergir para um nome único.
+- **Autor**: Mongo desnormaliza `userId` + `userName` (+`userPhoto`); Postgres usa FK
+  `author_id` → alinhar a forma de referenciar o autor.
+- **Reactions/votos**: coleção `comment_reactions` (obra) vs `review_votes` (resenha) vs
+  campos inline `likes`/`like_count` (fórum) → estrutura única reconciliável.
+- **Dual-DB**: obra/resenha em MongoDB, fórum em PostgreSQL — manter lógica/contrato
+  equivalentes mesmo em stores distintos.
+
+**Recomendação**: usar a skill `database-design` + `docs/database-modeling.md` antes de
+alterar coluna/coleção; migrar de forma incremental (um eixo por vez: corpo → autor →
+reactions), com backfill idempotente antes de qualquer drop.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 2 | DT-08 (axe por rota — parcial), DT-10 |
+| **Média** | 3 | DT-08 (axe por rota — parcial), DT-10, DT-50 (persistência de comentários) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
 | **Baixa** | 3 | DT-03, DT-09, DT-44 (backlog de produto) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |

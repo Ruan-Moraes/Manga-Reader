@@ -22,6 +22,7 @@ import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.comment.usecase.CreateCommentUseCase.CreateCommentInput;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
@@ -66,7 +67,7 @@ class CreateCommentUseCaseTest {
         void deveCriarComentarioRaizComDadosDoUsuario() {
             // Arrange
             CreateCommentInput input = new CreateCommentInput(
-                    TITLE_ID, "Ótimo mangá!", null, null, USER_ID
+                    CommentTarget.TITLE, TITLE_ID, "Ótimo mangá!", null, null, USER_ID
             );
             User user = buildUser();
 
@@ -77,7 +78,8 @@ class CreateCommentUseCaseTest {
             Comment result = createCommentUseCase.execute(input);
 
             // Assert
-            assertThat(result.getTitleId()).isEqualTo(TITLE_ID);
+            assertThat(result.getTargetId()).isEqualTo(TITLE_ID);
+            assertThat(result.getTargetType()).isEqualTo(CommentTarget.TITLE);
             assertThat(result.getTextContent()).isEqualTo("Ótimo mangá!");
             assertThat(result.getUserId()).isEqualTo(USER_ID.toString());
             assertThat(result.getUserName()).isEqualTo("Ruan Silva");
@@ -90,7 +92,7 @@ class CreateCommentUseCaseTest {
         void deveInicializarContadoresEFlags() {
             // Arrange
             CreateCommentInput input = new CreateCommentInput(
-                    TITLE_ID, "Texto", null, null, USER_ID
+                    CommentTarget.TITLE, TITLE_ID, "Texto", null, null, USER_ID
             );
 
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
@@ -101,9 +103,9 @@ class CreateCommentUseCaseTest {
 
             // Assert
             assertThat(result.isHighlighted()).isFalse();
-            assertThat(result.isWasEdited()).isFalse();
-            assertThat(result.getLikeCount()).isZero();
-            assertThat(result.getDislikeCount()).isZero();
+            assertThat(result.isEdited()).isFalse();
+            assertThat(result.getUpvotes()).isZero();
+            assertThat(result.getDownvotes()).isZero();
         }
     }
 
@@ -117,7 +119,7 @@ class CreateCommentUseCaseTest {
             // Arrange
             String parentId = "parent-comment-id";
             CreateCommentInput input = new CreateCommentInput(
-                    TITLE_ID, "Concordo!", null, parentId, USER_ID
+                    CommentTarget.TITLE, TITLE_ID, "Concordo!", null, parentId, USER_ID
             );
             Comment parentComment = Comment.builder().id(parentId).build();
 
@@ -138,7 +140,7 @@ class CreateCommentUseCaseTest {
         void deveLancarExcecaoQuandoComentarioPaiNaoExiste() {
             // Arrange
             CreateCommentInput input = new CreateCommentInput(
-                    TITLE_ID, "Resposta", null, "pai-inexistente", USER_ID
+                    CommentTarget.TITLE, TITLE_ID, "Resposta", null, "pai-inexistente", USER_ID
             );
 
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
@@ -162,7 +164,7 @@ class CreateCommentUseCaseTest {
         void deveLancarExcecaoQuandoUsuarioNaoExiste() {
             // Arrange
             CreateCommentInput input = new CreateCommentInput(
-                    TITLE_ID, "Texto", null, null, USER_ID
+                    CommentTarget.TITLE, TITLE_ID, "Texto", null, null, USER_ID
             );
 
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
@@ -185,7 +187,7 @@ class CreateCommentUseCaseTest {
         void deveCriarComentarioComTextoEImagem() {
             // Arrange
             CreateCommentInput input = new CreateCommentInput(
-                    TITLE_ID, "Veja esta cena!", "https://example.com/img.png", null, USER_ID
+                    CommentTarget.TITLE, TITLE_ID, "Veja esta cena!", "https://example.com/img.png", null, USER_ID
             );
 
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));

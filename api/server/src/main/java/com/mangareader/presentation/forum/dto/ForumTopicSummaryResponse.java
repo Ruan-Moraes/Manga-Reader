@@ -20,11 +20,13 @@ public record ForumTopicSummaryResponse(
         String category,
         List<String> tags,
         String createdAt,
+        String updatedAt,
         String lastActivityAt,
         int viewCount,
         int replyCount,
         int likeCount,
         boolean isPinned,
         boolean isLocked,
-        boolean isSolved
+        boolean isSolved,
+        boolean edited
 ) {}

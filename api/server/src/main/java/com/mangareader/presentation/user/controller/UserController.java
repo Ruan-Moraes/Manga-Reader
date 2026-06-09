@@ -307,7 +307,7 @@ public class UserController {
 
         Page<EnrichedProfileResponse.CommentSummaryResponse> response = comments.map(c ->
                 new EnrichedProfileResponse.CommentSummaryResponse(
-                        c.getId(), c.getTitleId(), c.getTextContent(),
+                        c.getId(), c.getTargetId(), c.getTextContent(),
                         c.getCreatedAt() != null ? c.getCreatedAt().toString() : null));
 
         return ResponseEntity.ok(ApiResponse.success(response));

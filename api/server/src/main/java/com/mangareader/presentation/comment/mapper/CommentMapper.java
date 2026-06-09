@@ -22,18 +22,20 @@ public final class CommentMapper {
 
         return new CommentResponse(
                 comment.getId(),
-                comment.getTitleId(),
+                comment.getTargetType() != null ? comment.getTargetType().name() : null,
+                comment.getTargetId(),
                 comment.getParentCommentId(),
                 comment.getUserId(),
                 comment.getUserName(),
                 comment.getUserPhoto(),
                 comment.isHighlighted(),
-                comment.isWasEdited(),
+                comment.isEdited(),
                 formatDate(comment.getCreatedAt()),
+                formatDate(comment.getUpdatedAt()),
                 comment.getTextContent(),
                 comment.getImageContent(),
-                String.valueOf(comment.getLikeCount()),
-                String.valueOf(comment.getDislikeCount())
+                comment.getUpvotes(),
+                comment.getDownvotes()
         );
     }
 

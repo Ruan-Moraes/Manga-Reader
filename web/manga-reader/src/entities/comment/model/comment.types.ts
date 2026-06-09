@@ -8,9 +8,10 @@ export type CommentData = {
 
     isOwner: boolean;
     isHighlighted: boolean;
-    wasEdited: boolean;
+    edited: boolean;
 
     createdAt: string;
+    updatedAt: string;
 
     textContent: string | null;
     imageContent: string | null;

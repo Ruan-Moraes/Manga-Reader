@@ -41,3 +41,11 @@ export const getLibraryCounts = async (): Promise<LibraryCounts> => {
 
     return response.data.data;
 };
+
+/** Biblioteca pública de um usuário (perfil), opcionalmente filtrada por lista. */
+export const getUserLibraryById = async (userId: string, list?: ReadingListType, page = 0, size = 20): Promise<PageResponse<SavedMangaItem>> => {
+    const params = list ? { list, page, size } : { page, size };
+    const response = await api.get<ApiResponse<PageResponse<SavedMangaItem>>>(`${API_URLS.LIBRARY}/user/${userId}`, { params });
+
+    return response.data.data;
+};

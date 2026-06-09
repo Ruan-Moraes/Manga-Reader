@@ -12,7 +12,6 @@ import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-
 const CARDS_PER_PAGE = 20;
 
 const SearchResults = () => {

@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.mangareader.application.event.port.EventOrganizerRepositoryPort;
 import com.mangareader.application.event.port.EventRepositoryPort;
 import com.mangareader.domain.event.entity.Event;
 import com.mangareader.domain.event.valueobject.EventLocation;
@@ -29,6 +30,9 @@ class CreateEventUseCaseTest {
 
     @Mock
     private EventRepositoryPort eventRepository;
+
+    @Mock
+    private EventOrganizerRepositoryPort organizerRepository;
 
     @InjectMocks
     private CreateEventUseCase createEventUseCase;

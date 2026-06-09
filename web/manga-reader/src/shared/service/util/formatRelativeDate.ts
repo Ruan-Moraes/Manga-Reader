@@ -5,20 +5,25 @@
 // O api serializa `createdAt` com ISO_LOCAL_DATE_TIME, que pode trazer fração
 // de segundo com até 9 dígitos (nanos). `new Date(...)` no JS só aceita 3 (ms) e
 // retorna Invalid Date — por isso normalizamos antes de parsear.
-const parseDate = (input: string): number => {
-    if (!input) return NaN;
+// Normaliza o ISO da API (ISO_LOCAL_DATE_TIME, fração até 9 dígitos/nanos) para
+// um `Date` válido. Exportada para reuso por formatadores absolutos (formatPostDate).
+export const parseApiDate = (input: string): Date | null => {
+    if (!input) return null;
 
     const normalized = input
         .replace(' ', 'T') // tolera "yyyy-MM-dd HH:mm:ss"
         .replace(/(\.\d{3})\d+/, '$1'); // corta nanos → ms
 
-    return new Date(normalized).getTime();
+    const date = new Date(normalized);
+    return Number.isNaN(date.getTime()) ? null : date;
 };
 
 const formatRelativeDate = (date: string): string => {
-    const time = parseDate(date);
+    const parsed = parseApiDate(date);
 
-    if (Number.isNaN(time)) return '';
+    if (!parsed) return '';
+
+    const time = parsed.getTime();
 
     const diffMs = Date.now() - time;
     const diffMin = Math.floor(diffMs / 60_000);

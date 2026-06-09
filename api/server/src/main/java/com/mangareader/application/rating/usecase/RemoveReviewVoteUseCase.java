@@ -8,7 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.rating.port.RatingRepositoryPort;
 import com.mangareader.application.rating.port.ReviewVoteRepositoryPort;
 import com.mangareader.domain.rating.entity.MangaRating;
-import com.mangareader.domain.rating.valueobject.VoteValue;
+import com.mangareader.shared.application.vote.VoteResult;
+import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class RemoveReviewVoteUseCase {
     private final RatingRepositoryPort ratingRepository;
     private final ReviewVoteRepositoryPort reviewVoteRepository;
 
-    public ReviewVoteResult execute(String ratingId, UUID userId) {
+    public VoteResult execute(String ratingId, UUID userId) {
         MangaRating rating = ratingRepository.findById(ratingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rating", "id", ratingId));
 
@@ -41,6 +42,6 @@ public class RemoveReviewVoteUseCase {
                     ratingRepository.save(rating);
                 });
 
-        return new ReviewVoteResult(rating.getUpvotes(), rating.getDownvotes(), null);
+        return new VoteResult(rating.getUpvotes(), rating.getDownvotes(), null);
     }
 }

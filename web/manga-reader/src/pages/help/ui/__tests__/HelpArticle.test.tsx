@@ -15,9 +15,7 @@ const renderAt = (path: string) =>
 describe('HelpArticle', () => {
     it('renders the article title for a known id', () => {
         renderAt('/help/article/1');
-        expect(
-            screen.getByRole('heading', { name: 'Como mudar meu e-mail ou senha?' }),
-        ).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Como mudar meu e-mail ou senha?' })).toBeInTheDocument();
     });
 
     it('renders the article body paragraphs', () => {

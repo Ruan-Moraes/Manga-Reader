@@ -56,12 +56,12 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
                 <div
                     className="mb-4 flex items-center gap-2"
                     aria-label={t('titleDetails.ratingAria', {
-                        rating: title.ratingAverage.toFixed(1),
+                        rating: average.average.toFixed(1),
                         voteCount: average.count.toLocaleString(),
                     })}
                 >
-                    <Stars value={title.ratingAverage} size={20} />
-                    <span className="text-mr-small font-mr-bold text-mr-fg">{title.ratingAverage.toFixed(1)}</span>
+                    <Stars value={average.average} size={20} />
+                    <span className="text-mr-small font-mr-bold text-mr-fg">{average.average.toFixed(1)}</span>
                     <span className="text-mr-tiny text-mr-fg-subtle">
                         · {average.count.toLocaleString()} {t('titleDetails.votes')}
                     </span>

@@ -12,16 +12,7 @@ type CommentsTabProps = {
 const CommentsTab = ({ titleId }: CommentsTabProps) => {
     const { comments, isLoading, isError, error, refetchComments } = useComments(titleId);
 
-    return (
-        <CommentsSection
-            titleId={titleId}
-            comments={comments}
-            isLoading={isLoading}
-            isError={isError}
-            error={error}
-            onCommentCreated={refetchComments}
-        />
-    );
+    return <CommentsSection titleId={titleId} comments={comments} isLoading={isLoading} isError={isError} error={error} onCommentCreated={refetchComments} />;
 };
 
 export default CommentsTab;

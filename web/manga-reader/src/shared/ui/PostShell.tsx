@@ -1,18 +1,16 @@
 import type { ReactNode } from 'react';
 
 import { cn } from '@shared/lib/cn';
+
 import { Avatar } from '@ui/Avatar';
 
 export interface PostShellProps {
     avatar: { src?: string; name: string };
     avatarSize?: number;
     onClickAvatar?: () => void;
-    /** Resposta aninhada: sem moldura de card. */
     flat?: boolean;
-    /** Post de destaque (autor original / fixado). */
     op?: boolean;
     highlighted?: boolean;
-    /** Faixa "respondendo a @fulano" acima do header. */
     replyingTo?: ReactNode;
     children: ReactNode;
     className?: string;
@@ -33,7 +31,7 @@ export const PostShell = ({ avatar, avatarSize = 40, onClickAvatar, flat, op, hi
         )}
     >
         <Avatar src={avatar.src} name={avatar.name} size={avatarSize} onClick={onClickAvatar} />
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-6">
             {replyingTo}
             {children}
         </div>

@@ -62,6 +62,9 @@ public class UpdateForumTopicUseCase {
             topic.setTags(input.tags());
         }
 
+        topic.setEdited(true);
+        topic.setUpdatedAt(java.time.LocalDateTime.now());
+
         ForumTopic saved = forumRepository.save(topic);
         saved.getAuthor().getName();
         saved.getReplies().forEach(r -> r.getAuthor().getName());

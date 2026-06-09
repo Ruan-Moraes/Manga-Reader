@@ -14,8 +14,9 @@ export type ForumReply = {
     author: ForumAuthor;
     content: string;
     createdAt: string;
+    updatedAt?: string;
     likes: number;
-    isEdited: boolean;
+    edited: boolean;
     isBestAnswer: boolean;
 };
 
@@ -28,6 +29,7 @@ export type ForumTopic = {
     tags: string[];
     language?: string;
     createdAt: string;
+    updatedAt?: string;
     lastActivityAt: string;
     viewCount: number;
     replyCount: number;
@@ -35,6 +37,7 @@ export type ForumTopic = {
     isPinned: boolean;
     isLocked: boolean;
     isSolved: boolean;
+    edited?: boolean;
     // Listagem não retorna replies (só replyCount); detalhe
     // (getForumTopicById) traz o array completo.
     replies?: ForumReply[];

@@ -2,6 +2,7 @@ import type { LocalizedString } from '@shared/type/i18n';
 
 export type AdminTag = {
     value: number;
+    slug: string;
     label: LocalizedString;
 };
 

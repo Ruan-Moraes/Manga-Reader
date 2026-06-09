@@ -76,10 +76,7 @@ const LanguageTab = ({ state }: { state: SettingsState }) => {
                             const isFallback = lang === FALLBACK_LANG;
 
                             return (
-                                <li
-                                    key={lang}
-                                    className="flex items-center gap-3 rounded-mr-xs border border-mr-separator bg-mr-secondary px-3 py-2"
-                                >
+                                <li key={lang} className="flex items-center gap-3 rounded-mr-xs border border-mr-separator bg-mr-secondary px-3 py-2">
                                     <span className="w-5 shrink-0 text-center text-mr-small font-mr-bold text-mr-fg-subtle">{index + 1}</span>
                                     <span className="min-w-0 flex-1 truncate text-mr-body font-mr-bold text-mr-fg">{t(labelKeyFor(lang))}</span>
                                     {isFallback && (
