@@ -819,19 +819,39 @@ ainda que em tabelas/coleções distintas.
 - UI: base compartilhada `shared/ui/ThreadPost` (obra + fórum com DOM/CSS idênticos);
   resenha exibe criação + selo "(editado)" com tooltip da data de modificação.
 
-**Pendente (a padronizar):**
-- **Corpo do texto**: `comment` (resenha, Mongo) vs `textContent` (obra, Mongo) vs
-  `content` (fórum, Postgres) → convergir para um nome único.
-- **Autor**: Mongo desnormaliza `userId` + `userName` (+`userPhoto`); Postgres usa FK
-  `author_id` → alinhar a forma de referenciar o autor.
-- **Reactions/votos**: coleção `comment_reactions` (obra) vs `review_votes` (resenha) vs
-  campos inline `likes`/`like_count` (fórum) → estrutura única reconciliável.
-- **Dual-DB**: obra/resenha em MongoDB, fórum em PostgreSQL — manter lógica/contrato
-  equivalentes mesmo em stores distintos.
+**Decisão arquitetural oficial (2026-06-09)** — *comentário unificado*:
+uma única coleção `comments` guarda TODO comentário e resposta de qualquer domínio
+(obra, resenha, fórum), polimórfica por `targetType` (`TITLE|REVIEW|FORUM_TOPIC`) +
+`targetId`, com autorreferência `parentCommentId` (profundidade ilimitada). Proibido
+criar coleções/tabelas separadas de "replies". Voto único (padrão resenha):
+`VoteValue{UP,DOWN}` + contadores `upvotes`/`downvotes` + doc `<pai>_votes`.
 
-**Recomendação**: usar a skill `database-design` + `docs/database-modeling.md` antes de
-alterar coluna/coleção; migrar de forma incremental (um eixo por vez: corpo → autor →
-reactions), com backfill idempotente antes de qualquer drop.
+**Padronizado nesta leva (2026-06-09)** — voto único + nomenclatura de votos:
+- `shared/domain/vote/VoteValue`, `shared/application/vote/VoteResult`,
+  `shared/dto/VoteResponse`+`VoteRequest` (remove `ReviewVoteResult/Response/Request`).
+- **Obra**: `comment_reactions`/`ReactionType` → `comments_votes`/`CommentVote` (UP/DOWN);
+  `likeCount`/`dislikeCount` → `upvotes`/`downvotes`; `titleId` → `targetType`+`targetId`;
+  endpoints `/like`+`/dislike` → `/vote` (toggle) e `/user-reactions` → `/user-votes`;
+  bloqueio de self-vote. Frontend adapta no boundary do service.
+- **Resenha**: votos passam a usar os tipos compartilhados; `review_votes` →
+  `reviews_votes` (convenção `<pai>_votes`).
+- Migrations Mongock `V014RenameReviewVotesCollection`, `V015UnifyCommentVotes`.
+
+**Pendente (próxima fase — fórum → Mongo):**
+- Migrar `forum_topics`/`forum_replies` (Postgres) para Mongo; **réplicas viram
+  `comments` `targetType=FORUM_TOPIC`** (elimina `forum_replies`). Autor vira snapshot
+  `userId/userName/userPhoto`. Runner cross-DB `V016MigrateForumToMongo` (lê JPA, grava
+  Mongo, valida contagem) + Flyway `V33` drop das tabelas (deploy em 2 fases).
+- `CounterReconciliationJob`: versão Mongo dos contadores `upvotes`/`downvotes`/`replyCount`
+  (`SET = COUNT`), hoje só Postgres.
+- **Corpo do texto**: convergir `comment`/`content` para `textContent` (já no `comments`).
+- **Rename `ratings`→`reviews`** (coleção + pacote `domain.rating` + `title_rating_aggregate`):
+  adiado por blast radius (módulo `rating-aggregator` + métricas admin + denormalização +
+  ~6 changeunits históricas referenciam o literal). `ratings` não é ambíguo; baixa prioridade.
+- Profundidade ilimitada: paginação/lazy-load de threads profundas (evitar N+1/payload grande).
+
+**Recomendação**: usar a skill `database-design` + `docs/database-modeling.md`; migrar o
+fórum com backfill idempotente e verificação de contagem antes de qualquer drop.
 
 ---
 
