@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetDomainLabelsByTypeUseCase {
-
     private final DomainLabelRepositoryPort repository;
 
     public List<DomainLabel> execute(String type) {

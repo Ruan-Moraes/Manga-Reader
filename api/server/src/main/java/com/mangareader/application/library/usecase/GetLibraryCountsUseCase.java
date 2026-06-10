@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetLibraryCountsUseCase {
-
     private final LibraryRepositoryPort libraryRepository;
 
     public record LibraryCounts(long lendo, long queroLer, long concluido, long total) {}

@@ -32,13 +32,16 @@ public class GenreVocabulary {
     /** Mapa slug → label multilíngue. Slug ausente do vocabulário não aparece no mapa. */
     public Map<String, LocalizedString> bySlug() {
         long now = System.currentTimeMillis();
+
         Cached current = cache.get();
 
         if (current == null || now > current.expiresAt()) {
             Map<String, LocalizedString> fresh = tagRepository.findAll().stream()
                     .filter(t -> t.getSlug() != null)
                     .collect(Collectors.toMap(Tag::getSlug, Tag::getLabel, (a, b) -> a));
+
             current = new Cached(fresh, now + TTL_MS);
+
             cache.set(current);
         }
 

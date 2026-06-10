@@ -29,7 +29,9 @@ public class RemoveCommentVoteUseCase {
 
         voteRepository.findByCommentIdAndUserId(commentId, userId).ifPresent(vote -> {
             VoteToggle.undo(comment, vote.getValue());
+
             voteRepository.delete(vote);
+
             commentRepository.save(comment);
         });
 

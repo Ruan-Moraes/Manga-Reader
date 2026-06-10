@@ -11,7 +11,7 @@ type Props = {
     sort: string;
     onSortChange: (v: string) => void;
     votes: Record<string, 'up' | 'down' | null>;
-    onVote: (id: string, v: 'up' | 'down' | null) => void;
+    onVote: (id: string, v: 'up' | 'down') => void;
     onReply: (handle: string) => void;
 };
 

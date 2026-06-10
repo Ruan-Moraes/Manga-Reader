@@ -1,5 +1,5 @@
-// Shapes for the forum topic-detail view (currently served by the mock in
-// `@mock/forumTopic` via the `pages/forum` page hook; swap to API later).
+// Shapes for the forum topic-detail view (served by the forum API via the
+// `pages/forum` page hook `useTopicDetail`).
 
 export type TopicAuthor = {
     name: string;
@@ -23,6 +23,10 @@ export type TopicData = {
     replies: number;
     live: number;
     content: string;
+    // Voto padronizado (modelo único) — contadores + voto do usuário.
+    upvotes: number;
+    downvotes: number;
+    myVote: 'up' | 'down' | null;
 };
 
 export type ReplyData = {

@@ -81,11 +81,13 @@ public class FilterTitlesUseCase {
 
     private static double ratingAverageOf(Map<String, TitleRatingAggregateView> ratings, String titleId) {
         var view = ratings.get(titleId);
+
         return view != null ? view.ratingAverage() : 0.0;
     }
 
     private double parseNumeric(String value) {
         if (value == null || value.isBlank()) return 0.0;
+
         try {
             return Double.parseDouble(value.replaceAll("[^\\d.]", ""));
         } catch (NumberFormatException e) {

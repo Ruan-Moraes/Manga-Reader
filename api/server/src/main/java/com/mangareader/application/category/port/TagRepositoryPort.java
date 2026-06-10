@@ -18,7 +18,6 @@ public interface TagRepositoryPort {
 
     Optional<Tag> findById(Long id);
 
-    /** Subconjunto de {@code slugs} que existe no vocabulário (validação de gênero). */
     Set<String> findExistingSlugs(Collection<String> slugs);
 
     Optional<Tag> findByLabelIgnoreCase(String label);

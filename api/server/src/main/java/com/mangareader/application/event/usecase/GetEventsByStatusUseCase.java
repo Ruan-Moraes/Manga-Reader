@@ -11,9 +11,6 @@ import com.mangareader.domain.event.valueobject.EventStatus;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Filtra eventos por status.
- */
 @Service
 @RequiredArgsConstructor
 public class GetEventsByStatusUseCase {
@@ -21,7 +18,6 @@ public class GetEventsByStatusUseCase {
 
     @Transactional(readOnly = true)
     public Page<Event> execute(EventStatus status, Pageable pageable) {
-        // Listagem usa EventSummaryResponse (sem tickets) — não força lazy.
         return eventRepository.findByStatus(status, pageable);
     }
 }

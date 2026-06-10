@@ -14,13 +14,8 @@ import java.util.Optional;
 public interface TitleRatingAggregateReadPort {
     Optional<TitleRatingAggregateView> findByTitleId(String titleId);
 
-    /** Busca em lote (evita N+1 em listagens). Títulos sem agregado ficam de fora do mapa. */
     Map<String, TitleRatingAggregateView> findByTitleIdIn(Collection<String> titleIds);
 
-    /**
-     * Top agregados ordenados por nota ({@code ratingAverage} desc, depois
-     * {@code totalRatings} desc). Fonte oficial para rankings de leitura.
-     */
     List<TitleRatingAggregateView> findTop(int limit);
 
     /**

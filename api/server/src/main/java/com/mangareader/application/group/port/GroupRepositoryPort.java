@@ -35,10 +35,8 @@ public interface GroupRepositoryPort {
 
     Page<Group> findByTitleId(String titleId, Pageable pageable);
 
-    /** Grupos em que o usuário é membro efetivo (com members carregados). */
     List<Group> findGroupsByMemberUserId(UUID userId);
 
-    /** Grupos em que o usuário NÃO é membro efetivo (com members carregados). */
     List<Group> findAvailableGroupsForUser(UUID userId);
 
     Page<Group> findAll(Pageable pageable);

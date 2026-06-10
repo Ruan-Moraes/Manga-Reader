@@ -30,6 +30,7 @@ public class GetChapterStatsUseCase {
         Map<String, String> latest = chapterRepository.latestChapterNumberByTitleIdIn(titleIds);
 
         Map<String, ChapterStats> stats = new HashMap<>();
+
         for (String titleId : titleIds) {
             long count = counts.getOrDefault(titleId, 0L);
 

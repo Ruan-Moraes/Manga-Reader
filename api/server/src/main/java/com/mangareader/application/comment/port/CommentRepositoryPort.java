@@ -31,7 +31,6 @@ public interface CommentRepositoryPort {
 
     Page<Comment> findByTargetTypeAndTargetId(CommentTarget targetType, String targetId, Pageable pageable);
 
-    /** Listagem particionada por idioma (UGC). */
     Page<Comment> findByTargetTypeAndTargetIdAndLanguageIn(
             CommentTarget targetType, String targetId, Collection<String> languages, Pageable pageable);
 
@@ -39,7 +38,6 @@ public interface CommentRepositoryPort {
 
     long countByUserId(String userId);
 
-    /** Contagem de comentários de um alvo (ex.: replyCount de um tópico de fórum). */
     long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 
     /** Remove todos os comentários de um alvo (cascata ao excluir o subject, ex.: tópico de fórum). */

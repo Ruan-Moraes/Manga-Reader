@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DomainLabelService {
-
     private final DomainLabelRepositoryPort repository;
     private final LocalizedMappingHelper i18n;
 

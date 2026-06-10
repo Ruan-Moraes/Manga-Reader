@@ -122,14 +122,21 @@ export const removeCommentVote = async (id: string): Promise<VoteResponse> => {
     return response.data.data;
 };
 
-export const getUserReactions = async (commentIds: string[]): Promise<Record<string, string>> => {
+/** Votos do usuário em lote, no contrato padronizado (up/down). */
+export const getUserCommentVotes = async (commentIds: string[]): Promise<Record<string, 'up' | 'down'>> => {
     const response = await api.get<ApiResponse<Record<string, 'up' | 'down'>>>(`${API_URLS.COMMENTS}/user-votes`, {
         params: { commentIds: commentIds.join(',') },
     });
 
+    return response.data.data;
+};
+
+export const getUserReactions = async (commentIds: string[]): Promise<Record<string, string>> => {
+    const votes = await getUserCommentVotes(commentIds);
+
     // Traduz o voto padronizado (up/down) para o modelo interno (LIKE/DISLIKE).
     const out: Record<string, string> = {};
-    for (const [id, vote] of Object.entries(response.data.data)) {
+    for (const [id, vote] of Object.entries(votes)) {
         out[id] = vote === 'up' ? 'LIKE' : 'DISLIKE';
     }
 

@@ -11,9 +11,6 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Busca um evento pelo ID.
- */
 @Service
 @RequiredArgsConstructor
 public class GetEventByIdUseCase {

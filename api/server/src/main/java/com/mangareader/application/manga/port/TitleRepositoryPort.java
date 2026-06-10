@@ -17,7 +17,6 @@ public interface TitleRepositoryPort {
 
     Optional<Title> findById(String id);
 
-    /** Carga em lote por ids (evita N+1). Ordem não garantida. */
     List<Title> findByIds(Collection<String> ids);
 
     List<Title> searchByName(String query);

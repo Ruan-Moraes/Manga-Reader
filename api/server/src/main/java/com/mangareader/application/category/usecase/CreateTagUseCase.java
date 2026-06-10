@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CreateTagUseCase {
-
     private final TagRepositoryPort tagRepository;
 
     @Transactional
@@ -44,6 +43,7 @@ public class CreateTagUseCase {
 
     private String generateUniqueSlug(Map<String, String> label) {
         String source = label.get("en-US");
+
         if (source == null || source.isBlank()) {
             source = label.get(LocalizedString.DEFAULT_TAG);
         }
@@ -53,6 +53,7 @@ public class CreateTagUseCase {
         List<String> candidates = java.util.stream.Stream.concat(
                 java.util.stream.Stream.of(base),
                 IntStream.rangeClosed(2, 99).mapToObj(i -> base + "_" + i)).toList();
+
         Set<String> taken = tagRepository.findExistingSlugs(candidates);
 
         return candidates.stream()
@@ -61,14 +62,18 @@ public class CreateTagUseCase {
                 .orElseThrow(() -> new IllegalStateException("Não foi possível gerar slug único para: " + base));
     }
 
+    // Todo: Remover codigo duplicado: CreateTagUseCase e UpdateTagUseCase
     private String resolvePtBR(Map<String, String> label) {
         if (label == null) {
             throw new IllegalArgumentException("Label da tag não pode estar em branco");
         }
+
         String ptBR = label.get(LocalizedString.DEFAULT_TAG);
+
         if (ptBR == null || ptBR.isBlank()) {
             throw new IllegalArgumentException("Label da tag não pode estar em branco");
         }
+
         return ptBR;
     }
 }

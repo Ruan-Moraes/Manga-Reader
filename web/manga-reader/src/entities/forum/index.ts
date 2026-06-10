@@ -3,6 +3,8 @@ export {
     getForumTopics,
     getForumTopicById,
     getForumCategories,
+    voteForumTopic,
+    removeForumTopicVote,
     filterForumTopics,
     formatRelativeDate,
     getCategoryColor,

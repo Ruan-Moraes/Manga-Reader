@@ -10,9 +10,6 @@ import com.mangareader.domain.event.entity.Event;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Retorna todos os eventos ordenados por data de início.
- */
 @Service
 @RequiredArgsConstructor
 public class GetEventsUseCase {
@@ -20,8 +17,6 @@ public class GetEventsUseCase {
 
     @Transactional(readOnly = true)
     public Page<Event> execute(Pageable pageable) {
-        // Listagem usa EventSummaryResponse (sem tickets) — não força a
-        // coleção lazy por evento (era N+1).
         return eventRepository.findAll(pageable);
     }
 }

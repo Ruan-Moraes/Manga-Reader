@@ -29,6 +29,7 @@ public class GenreValidator {
         }
 
         Set<String> existing = tagRepository.findExistingSlugs(genres);
+
         Set<String> unknown = new TreeSet<>(genres);
         unknown.removeAll(existing);
 

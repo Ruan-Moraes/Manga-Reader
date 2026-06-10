@@ -24,12 +24,15 @@ const ForumTopicPage = () => {
     const navigate = useAppNavigate();
 
     const [sort, setSort] = useState('top');
-    const [votes, setVotes] = useState<Record<string, 'up' | 'down' | null>>({});
 
     const composerRef = useRef<ComposerHandle>(null);
     const handleReply = (handle: string) => composerRef.current?.insertMention(handle.replace(/^@/, ''));
 
-    const { topic, replies } = useTopicDetail(topicId);
+    const { topic, replies, replyVotes, loading, voteTopic, voteReply } = useTopicDetail(topicId);
+
+    if (loading) {
+        return null;
+    }
 
     if (!topic) {
         return (
@@ -59,10 +62,10 @@ const ForumTopicPage = () => {
                 edited={topic.edited}
                 updatedAt={topic.updatedAt}
                 content={topic.content}
-                upvotes={312}
-                downvotes={4}
-                myVote={votes['op'] ?? null}
-                onVote={v => setVotes(prev => ({ ...prev, op: v }))}
+                upvotes={topic.upvotes}
+                downvotes={topic.downvotes}
+                myVote={topic.myVote}
+                onVote={voteTopic}
                 onReply={() => handleReply(topic.author.handle)}
             />
 
@@ -71,8 +74,8 @@ const ForumTopicPage = () => {
                 replies={replies}
                 sort={sort}
                 onSortChange={setSort}
-                votes={votes}
-                onVote={(id, v) => setVotes(prev => ({ ...prev, [id]: v }))}
+                votes={replyVotes}
+                onVote={voteReply}
                 onReply={handleReply}
             />
 

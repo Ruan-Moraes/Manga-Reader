@@ -1,9 +1,11 @@
 package com.mangareader.infrastructure.scheduling;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,7 +31,8 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * Postgres: {@code groups.totalTitles} e {@code events.participants}.
  * Mongo: {@code forum_topics.replyCount} a partir de {@code comments}
- * ({@code targetType=FORUM_TOPIC}) — modelo de comentário unificado.
+ * (comentário unificado) e {@code upvotes}/{@code downvotes} dos três pais
+ * votáveis a partir das coleções {@code <pai>_votes} (modelo de voto único).
  */
 @Component
 @Profile("!test")
@@ -48,7 +51,13 @@ public class CounterReconciliationJob {
         int evts = events.reconcileParticipants();
         long topics = reconcileForumReplyCounts();
 
-        log.info("Reconciliação de contadores: groups={}, events={}, forum_topics={}", grps, evts, topics);
+        long commentVotes = reconcileVoteCounters("comments_votes", "commentId", "comments");
+        long reviewVotes = reconcileVoteCounters("reviews_votes", "ratingId", "ratings");
+        long topicVotes = reconcileVoteCounters("forum_topics_votes", "topicId", "forum_topics");
+
+        log.info("Reconciliação de contadores: groups={}, events={}, forum_topics(replyCount)={}, "
+                        + "votos(comments={}, ratings={}, forum_topics={})",
+                grps, evts, topics, commentVotes, reviewVotes, topicVotes);
     }
 
     /**
@@ -60,7 +69,7 @@ public class CounterReconciliationJob {
         Map<String, Long> countsByTopic = new HashMap<>();
 
         mongoTemplate.getCollection("comments")
-                .aggregate(java.util.List.of(
+                .aggregate(List.of(
                         new Document("$match", new Document("targetType", "FORUM_TOPIC")),
                         new Document("$group", new Document("_id", "$targetId")
                                 .append("count", new Document("$sum", 1)))))
@@ -81,5 +90,65 @@ public class CounterReconciliationJob {
         }
 
         return bulk.execute().getModifiedCount();
+    }
+
+    /**
+     * {@code <pai>.upvotes/downvotes = COUNT(votos UP/DOWN do pai)}.
+     * <p>
+     * Uma agregação na coleção de votos + bulk update nos pais votados; pais sem
+     * voto algum mas com contador > 0 são zerados via {@code $nin} (sem carregar
+     * todos os ids do pai em memória — importante para {@code comments}).
+     */
+    private long reconcileVoteCounters(String votesCollection, String parentIdField, String parentCollection) {
+        record VoteCounts(long up, long down) {}
+        Map<Object, VoteCounts> byParent = new HashMap<>();
+
+        mongoTemplate.getCollection(votesCollection)
+                .aggregate(List.of(new Document("$group", new Document("_id", "$" + parentIdField)
+                        .append("up", conditionalSum("UP"))
+                        .append("down", conditionalSum("DOWN")))))
+                .forEach(doc -> byParent.put(
+                        toParentId(doc.get("_id")),
+                        new VoteCounts(((Number) doc.get("up")).longValue(), ((Number) doc.get("down")).longValue())));
+
+        long modified = 0;
+
+        if (!byParent.isEmpty()) {
+            BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, parentCollection);
+
+            byParent.forEach((id, counts) -> bulk.updateOne(
+                    new Query(Criteria.where("_id").is(id)),
+                    new Update().set("upvotes", counts.up()).set("downvotes", counts.down())));
+
+            modified += bulk.execute().getModifiedCount();
+        }
+
+        modified += mongoTemplate.getCollection(parentCollection).updateMany(
+                new Document("_id", new Document("$nin", List.copyOf(byParent.keySet())))
+                        .append("$or", List.of(
+                                new Document("upvotes", new Document("$gt", 0)),
+                                new Document("downvotes", new Document("$gt", 0)))),
+                new Document("$set", new Document("upvotes", 0L).append("downvotes", 0L)))
+                .getModifiedCount();
+
+        return modified;
+    }
+
+    private static Document conditionalSum(String voteValue) {
+        return new Document("$sum",
+                new Document("$cond", List.of(new Document("$eq", List.of("$value", voteValue)), 1, 0)));
+    }
+
+    /**
+     * Os votos guardam o id do pai como String; o {@code _id} do pai pode ser
+     * ObjectId (documentos criados pela app) ou String (seeds/UUIDs migrados do
+     * Postgres). Converte hex válido para ObjectId para o update casar.
+     */
+    private static Object toParentId(Object raw) {
+        if (raw instanceof String s && ObjectId.isValid(s)) {
+            return new ObjectId(s);
+        }
+
+        return raw;
     }
 }

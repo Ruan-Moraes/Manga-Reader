@@ -39,14 +39,18 @@ public class UpdateTagUseCase {
         return tagRepository.save(tag);
     }
 
+    // Todo: Remover codigo duplicado: CreateTagUseCase e UpdateTagUseCase
     private String resolvePtBR(Map<String, String> label) {
         if (label == null) {
             throw new IllegalArgumentException("Label da tag não pode estar em branco");
         }
+
         String ptBR = label.get(LocalizedString.DEFAULT_TAG);
+
         if (ptBR == null || ptBR.isBlank()) {
             throw new IllegalArgumentException("Label da tag não pode estar em branco");
         }
+
         return ptBR;
     }
 }
