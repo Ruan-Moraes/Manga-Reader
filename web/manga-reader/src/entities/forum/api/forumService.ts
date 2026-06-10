@@ -73,6 +73,13 @@ export const getForumCategories = async (): Promise<ForumCategory[]> => {
     return response.data.data;
 };
 
+/** Cria resposta (comentário unificado no backend); retorna o tópico atualizado com replies. */
+export const createForumReply = async (topicId: string, content: string): Promise<ForumTopic> => {
+    const response = await api.post<ApiResponse<ForumTopic>>(`${API_URLS.FORUM}/${topicId}/replies`, { content });
+
+    return response.data.data;
+};
+
 type VoteResponse = {
     upvotes: number;
     downvotes: number;

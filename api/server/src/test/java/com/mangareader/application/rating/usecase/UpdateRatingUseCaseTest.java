@@ -57,7 +57,7 @@ class UpdateRatingUseCaseTest {
                 .originalityRating(3.0)
                 .pacingRating(3.0)
                 .overallRating(3.0)
-                .comment("Comentário original")
+                .textContent("Comentário original")
                 .build();
     }
 
@@ -80,7 +80,7 @@ class UpdateRatingUseCaseTest {
             // Assert
             assertThat(result.getFunRating()).isEqualTo(5.0);
             assertThat(result.getArtRating()).isEqualTo(3.0);
-            assertThat(result.getComment()).isEqualTo("Comentário original");
+            assertThat(result.getTextContent()).isEqualTo("Comentário original");
             // overallRating recalculado: (5+3+3+3+3+3)/6 = 3.3
             assertThat(result.getOverallRating()).isEqualTo(3.3);
         }
@@ -99,7 +99,7 @@ class UpdateRatingUseCaseTest {
 
             // Assert
             assertThat(result.getFunRating()).isEqualTo(3.0);
-            assertThat(result.getComment()).isEqualTo("Novo comentário");
+            assertThat(result.getTextContent()).isEqualTo("Novo comentário");
             assertThat(result.getOverallRating()).isEqualTo(3.0);
         }
 
@@ -142,7 +142,7 @@ class UpdateRatingUseCaseTest {
             assertThat(result.getCharactersRating()).isEqualTo(4.5);
             assertThat(result.getOriginalityRating()).isEqualTo(4.0);
             assertThat(result.getPacingRating()).isEqualTo(4.5);
-            assertThat(result.getComment()).isEqualTo("Atualizado!");
+            assertThat(result.getTextContent()).isEqualTo("Atualizado!");
             // (5+5+4+4.5+4+4.5)/6 = 4.5
             assertThat(result.getOverallRating()).isEqualTo(4.5);
         }

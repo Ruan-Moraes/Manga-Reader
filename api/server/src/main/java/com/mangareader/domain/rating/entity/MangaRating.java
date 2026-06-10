@@ -52,7 +52,7 @@ public class MangaRating implements HasVoteCounters {
 
     private double overallRating;
 
-    private String comment;
+    private String textContent;
 
     private String reviewTitle;
 

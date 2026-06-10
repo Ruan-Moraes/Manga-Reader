@@ -856,9 +856,20 @@ criar coleções/tabelas separadas de "replies". Voto único (padrão resenha):
 - UI de voto do fórum ligada ao API: tópico via `/api/forum/{id}/vote`, replies via
   `/api/comments/{id}/vote` (`useTopicDetail` trocou o mock pelo API real).
 
+**Entregue também (2026-06-10, leva 3 — auditoria final):**
+- **Corpo do texto convergido**: `ratings.comment` → `textContent` (entity, contrato API,
+  Mongock `V017`); frontend traduz na borda do `ratingService` (modelo interno intacto).
+- **Perfil corrigido**: "comentários do usuário" filtram `targetType=TITLE` — respostas de
+  fórum não vazam mais para o perfil com link de obra quebrado
+  (`findByUserIdAndTargetType`/`countByUserIdAndTargetType`).
+- **Responder tópico ligado ao API**: `TopicCommentInput` era no-op (mock); agora
+  `createForumReply` → `POST /api/forum/{id}/replies` e a thread recarrega.
+- **Cascata de votos**: excluir comentário remove `comments_votes` dele; excluir tópico
+  remove também os votos das respostas (`deleteByCommentId`/`deleteByCommentIdIn`).
+- Handlers de voto no front com `catch` (409 self-vote não vira unhandled rejection).
+
 **Pendente:**
-- **Corpo do texto**: convergir `comment` (resenha) para `textContent` (já padrão no `comments`).
-- Testes de página do fórum (`ForumTopic.test.tsx`) referenciam o mock antigo e dependem de
+- Testes de página do fórum (`ForumTopic.test.tsx`) referenciam o fluxo antigo e dependem de
   jest-dom (quebrado no sandbox) — reescrever com msw quando o baseline for consertado.
 - **Rename `ratings`→`reviews`** (coleção + pacote `domain.rating` + `title_rating_aggregate`):
   adiado por blast radius (módulo `rating-aggregator` + métricas admin + denormalização +

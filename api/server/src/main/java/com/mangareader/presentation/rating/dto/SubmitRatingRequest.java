@@ -38,7 +38,7 @@ public record SubmitRatingRequest(
         double pacingRating,
 
         @Size(max = 2000, message = "{validation.rating.comment.size}")
-        String comment,
+        String textContent,
 
         @Size(max = 80, message = "{validation.rating.reviewTitle.size}")
         String reviewTitle,

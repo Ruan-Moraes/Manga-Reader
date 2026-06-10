@@ -29,6 +29,7 @@ import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase.EnrichedProfile;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.ViewHistory;
@@ -77,7 +78,7 @@ class GetEnrichedProfileUseCaseTest {
     }
 
     private void stubStats() {
-        when(commentRepository.countByUserId(USER_ID.toString())).thenReturn(5L);
+        when(commentRepository.countByUserIdAndTargetType(USER_ID.toString(), CommentTarget.TITLE)).thenReturn(5L);
         when(ratingRepository.countByUserId(USER_ID.toString())).thenReturn(3L);
         when(libraryRepository.countByUserIdAndList(eq(USER_ID), any(ReadingListType.class))).thenReturn(2L);
         when(recommendationRepository.findByUserIdOrderByPosition(USER_ID)).thenReturn(List.of());
@@ -95,7 +96,7 @@ class GetEnrichedProfileUseCaseTest {
             stubStats();
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Ótimo!").build();
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
 
             ViewHistory vh = ViewHistory.builder().titleId("t1").titleName("One Piece").build();
@@ -122,7 +123,7 @@ class GetEnrichedProfileUseCaseTest {
             stubStats();
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Bom!").build();
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
             when(viewHistoryRepository.findByUserIdOrderByViewedAtDesc(eq(USER_ID.toString()), any(Pageable.class)))
                     .thenReturn(Page.empty());
@@ -155,7 +156,7 @@ class GetEnrichedProfileUseCaseTest {
             stubStats();
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Ok").build();
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
 
             EnrichedProfile result = getEnrichedProfileUseCase.execute(USER_ID, VIEWER_ID);
@@ -170,7 +171,7 @@ class GetEnrichedProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             stubStats();
 
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(Page.empty());
 
             EnrichedProfile result = getEnrichedProfileUseCase.execute(USER_ID, VIEWER_ID);
@@ -205,13 +206,13 @@ class GetEnrichedProfileUseCaseTest {
             User user = buildUser(VisibilitySetting.PUBLIC, VisibilitySetting.PUBLIC);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
-            when(commentRepository.countByUserId(USER_ID.toString())).thenReturn(10L);
+            when(commentRepository.countByUserIdAndTargetType(USER_ID.toString(), CommentTarget.TITLE)).thenReturn(10L);
             when(ratingRepository.countByUserId(USER_ID.toString())).thenReturn(5L);
             when(libraryRepository.countByUserIdAndList(USER_ID, ReadingListType.LENDO)).thenReturn(3L);
             when(libraryRepository.countByUserIdAndList(USER_ID, ReadingListType.QUERO_LER)).thenReturn(7L);
             when(libraryRepository.countByUserIdAndList(USER_ID, ReadingListType.CONCLUIDO)).thenReturn(2L);
             when(recommendationRepository.findByUserIdOrderByPosition(USER_ID)).thenReturn(List.of());
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(Page.empty());
             when(viewHistoryRepository.findByUserIdOrderByViewedAtDesc(eq(USER_ID.toString()), any(Pageable.class)))
                     .thenReturn(Page.empty());

@@ -43,7 +43,7 @@ public class SubmitRatingUseCase {
             double charactersRating,
             double originalityRating,
             double pacingRating,
-            String comment,
+            String textContent,
             String reviewTitle,
             boolean spoiler
     ) {}
@@ -73,7 +73,7 @@ public class SubmitRatingUseCase {
         rating.setOriginalityRating(input.originalityRating());
         rating.setPacingRating(input.pacingRating());
         rating.setOverallRating(rating.calculateOverallRating());
-        rating.setComment(input.comment());
+        rating.setTextContent(input.textContent());
         rating.setReviewTitle(input.reviewTitle());
         rating.setSpoiler(input.spoiler());
         rating.setUserName(user.getName());

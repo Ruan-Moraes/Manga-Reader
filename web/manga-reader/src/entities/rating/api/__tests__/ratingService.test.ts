@@ -27,7 +27,7 @@ const buildRatingResponse = (overrides = {}) => ({
     charactersRating: 4,
     originalityRating: 4,
     pacingRating: 5,
-    comment: 'Otimo manga',
+    textContent: 'Otimo manga',
     createdAt: '2025-01-01T00:00:00Z',
     ...overrides,
 });
@@ -128,7 +128,7 @@ describe('ratingService', () => {
 
     describe('updateReview', () => {
         it('deve atualizar review e retornar dados mapeados', async () => {
-            const rating = buildRatingResponse({ comment: 'Atualizado' });
+            const rating = buildRatingResponse({ textContent: 'Atualizado' });
 
             server.use(http.put(`*${API_URLS.RATINGS}/rating-1`, () => HttpResponse.json({ data: rating, success: true })));
 

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -36,6 +37,8 @@ public class GetUserCommentsUseCase {
             return Page.empty(pageable);
         }
 
-        return commentRepository.findByUserId(targetUserId.toString(), pageable);
+        // Perfil lista comentários em OBRAS (frontend monta link /title/{targetId});
+        // respostas de fórum (targetType=FORUM_TOPIC) ficam de fora.
+        return commentRepository.findByUserIdAndTargetType(targetUserId.toString(), CommentTarget.TITLE, pageable);
     }
 }

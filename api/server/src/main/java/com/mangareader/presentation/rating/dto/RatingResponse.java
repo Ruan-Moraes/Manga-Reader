@@ -19,7 +19,7 @@ public record RatingResponse(
         double charactersRating,
         double originalityRating,
         double pacingRating,
-        String comment,
+        String textContent,
         String reviewTitle,
         boolean spoiler,
         boolean top,

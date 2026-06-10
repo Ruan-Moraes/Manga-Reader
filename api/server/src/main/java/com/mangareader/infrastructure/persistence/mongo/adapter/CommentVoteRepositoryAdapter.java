@@ -35,4 +35,14 @@ public class CommentVoteRepositoryAdapter implements CommentVoteRepositoryPort {
     public void delete(CommentVote vote) {
         repository.delete(vote);
     }
+
+    @Override
+    public void deleteByCommentId(String commentId) {
+        repository.deleteByCommentId(commentId);
+    }
+
+    @Override
+    public void deleteByCommentIdIn(List<String> commentIds) {
+        repository.deleteByCommentIdIn(commentIds);
+    }
 }

@@ -96,7 +96,7 @@ class SubmitRatingUseCaseTest {
             assertThat(result.getOriginalityRating()).isEqualTo(3.0);
             assertThat(result.getPacingRating()).isEqualTo(4.5);
             assertThat(result.getOverallRating()).isEqualTo(4.0); // (4+5+3.5+4+3+4.5)/6 = 4.0
-            assertThat(result.getComment()).isEqualTo("Ótimo mangá!");
+            assertThat(result.getTextContent()).isEqualTo("Ótimo mangá!");
         }
 
         @Test
@@ -157,7 +157,7 @@ class SubmitRatingUseCaseTest {
                     .originalityRating(2.0)
                     .pacingRating(2.0)
                     .overallRating(2.0)
-                    .comment("Comentário antigo")
+                    .textContent("Comentário antigo")
                     .build();
 
             var input = new SubmitRatingInput(TITLE_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 3.5, 4.0, "Agora está ótimo!", null, false);
@@ -173,7 +173,7 @@ class SubmitRatingUseCaseTest {
             assertThat(result.getId()).isEqualTo("rating-existing-id");
             assertThat(result.getFunRating()).isEqualTo(5.0);
             assertThat(result.getArtRating()).isEqualTo(5.0);
-            assertThat(result.getComment()).isEqualTo("Agora está ótimo!");
+            assertThat(result.getTextContent()).isEqualTo("Agora está ótimo!");
             assertThat(result.getUserName()).isEqualTo(USER_NAME);
         }
     }

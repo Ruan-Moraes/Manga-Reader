@@ -63,7 +63,7 @@ class RatingRepositoryAdapterTest {
                 .originalityRating(4.0)
                 .pacingRating(4.5)
                 .overallRating(4.3)
-                .comment("Muito bom")
+                .textContent("Muito bom")
                 .createdAt(LocalDateTime.of(2024, 1, 1, 10, 0))
                 .build());
 
@@ -78,7 +78,7 @@ class RatingRepositoryAdapterTest {
                 .originalityRating(3.0)
                 .pacingRating(3.0)
                 .overallRating(3.0)
-                .comment("Razoavel")
+                .textContent("Razoavel")
                 .createdAt(LocalDateTime.of(2024, 1, 2, 10, 0))
                 .build());
 
@@ -93,7 +93,7 @@ class RatingRepositoryAdapterTest {
                 .originalityRating(5.0)
                 .pacingRating(5.0)
                 .overallRating(5.0)
-                .comment("Obra prima")
+                .textContent("Obra prima")
                 .createdAt(LocalDateTime.of(2024, 1, 3, 10, 0))
                 .build());
     }

@@ -16,4 +16,10 @@ public interface CommentVoteRepositoryPort {
     CommentVote save(CommentVote vote);
 
     void delete(CommentVote vote);
+
+    /** Remove todos os votos de um comentário (cascata ao excluir o comentário). */
+    void deleteByCommentId(String commentId);
+
+    /** Remove os votos de vários comentários (cascata ao excluir um tópico com suas respostas). */
+    void deleteByCommentIdIn(List<String> commentIds);
 }

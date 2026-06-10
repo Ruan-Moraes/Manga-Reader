@@ -65,13 +65,13 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     }
 
     @Override
-    public Page<Comment> findByUserId(String userId, Pageable pageable) {
-        return repository.findByUserId(userId, pageable);
+    public Page<Comment> findByUserIdAndTargetType(String userId, CommentTarget targetType, Pageable pageable) {
+        return repository.findByUserIdAndTargetType(userId, targetType, pageable);
     }
 
     @Override
-    public long countByUserId(String userId) {
-        return repository.countByUserId(userId);
+    public long countByUserIdAndTargetType(String userId, CommentTarget targetType) {
+        return repository.countByUserIdAndTargetType(userId, targetType);
     }
 
     @Override

@@ -4,6 +4,7 @@ export {
     getForumTopicById,
     getForumCategories,
     voteForumTopic,
+    createForumReply,
     removeForumTopicVote,
     filterForumTopics,
     formatRelativeDate,

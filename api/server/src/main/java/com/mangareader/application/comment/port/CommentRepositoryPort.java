@@ -34,9 +34,10 @@ public interface CommentRepositoryPort {
     Page<Comment> findByTargetTypeAndTargetIdAndLanguageIn(
             CommentTarget targetType, String targetId, Collection<String> languages, Pageable pageable);
 
-    Page<Comment> findByUserId(String userId, Pageable pageable);
+    /** Comentários do usuário num tipo de alvo (perfil lista só TITLE — links de obra). */
+    Page<Comment> findByUserIdAndTargetType(String userId, CommentTarget targetType, Pageable pageable);
 
-    long countByUserId(String userId);
+    long countByUserIdAndTargetType(String userId, CommentTarget targetType);
 
     long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 

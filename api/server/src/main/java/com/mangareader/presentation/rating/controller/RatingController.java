@@ -159,7 +159,7 @@ public class RatingController {
                 request.charactersRating(),
                 request.originalityRating(),
                 request.pacingRating(),
-                request.comment(),
+                request.textContent(),
                 request.reviewTitle(),
                 request.spoiler()
         );
@@ -186,7 +186,7 @@ public class RatingController {
                 request.charactersRating(),
                 request.originalityRating(),
                 request.pacingRating(),
-                request.comment(),
+                request.textContent(),
                 request.reviewTitle(),
                 request.spoiler()
         );

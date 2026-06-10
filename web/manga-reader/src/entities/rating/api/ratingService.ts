@@ -21,7 +21,7 @@ type RatingResponse = {
     charactersRating: number;
     originalityRating: number;
     pacingRating: number;
-    comment?: string;
+    textContent?: string;
     reviewTitle?: string;
     spoiler?: boolean;
     top?: boolean;
@@ -55,7 +55,7 @@ const toMangaRating = (r: RatingResponse): MangaRating => ({
     charactersRating: r.charactersRating,
     originalityRating: r.originalityRating,
     pacingRating: r.pacingRating,
-    comment: r.comment,
+    comment: r.textContent,
     reviewTitle: r.reviewTitle,
     spoiler: r.spoiler,
     top: r.top,
@@ -134,7 +134,10 @@ export const submitRating = async (data: {
     reviewTitle?: string;
     spoiler?: boolean;
 }): Promise<MangaRating> => {
-    const response = await api.post<ApiResponse<RatingResponse>>(API_URLS.RATINGS, data);
+    // Contrato do backend usa textContent (padrão do comentário unificado);
+    // o modelo interno do front mantém `comment` — tradução na borda.
+    const { comment, ...rest } = data;
+    const response = await api.post<ApiResponse<RatingResponse>>(API_URLS.RATINGS, { ...rest, textContent: comment });
 
     return toMangaRating(response.data.data);
 };
@@ -202,8 +205,8 @@ export const updateReview = async (data: {
     reviewTitle?: string;
     spoiler?: boolean;
 }): Promise<MangaRating> => {
-    const { id, ...body } = data;
-    const response = await api.put<ApiResponse<RatingResponse>>(`${API_URLS.RATINGS}/${id}`, body);
+    const { id, comment, ...rest } = data;
+    const response = await api.put<ApiResponse<RatingResponse>>(`${API_URLS.RATINGS}/${id}`, { ...rest, textContent: comment });
 
     return toMangaRating(response.data.data);
 };

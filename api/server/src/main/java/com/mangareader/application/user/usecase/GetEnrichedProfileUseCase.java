@@ -15,6 +15,7 @@ import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserRecommendation;
@@ -74,7 +75,7 @@ public class GetEnrichedProfileUseCase {
 
         String userIdStr = targetUserId.toString();
 
-        long commentsCount = commentRepository.countByUserId(userIdStr);
+        long commentsCount = commentRepository.countByUserIdAndTargetType(userIdStr, CommentTarget.TITLE);
         long ratingsCount = ratingRepository.countByUserId(userIdStr);
         long lendo = libraryRepository.countByUserIdAndList(targetUserId, ReadingListType.LENDO);
         long queroLer = libraryRepository.countByUserIdAndList(targetUserId, ReadingListType.QUERO_LER);
@@ -88,7 +89,7 @@ public class GetEnrichedProfileUseCase {
         List<Comment> recentComments = null;
 
         if (isOwner || user.getCommentVisibility() == VisibilitySetting.PUBLIC) {
-            var page = commentRepository.findByUserId(userIdStr,
+            var page = commentRepository.findByUserIdAndTargetType(userIdStr, CommentTarget.TITLE,
                     PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdAt")));
 
             recentComments = page.getContent();

@@ -35,7 +35,7 @@ public final class RatingMock {
                 .originalityRating(4.0)
                 .pacingRating(4.5)
                 .overallRating(4.7)
-                .comment("Obra-prima absoluta! A arte é deslumbrante e a história prende do começo ao fim.")
+                .textContent("Obra-prima absoluta! A arte é deslumbrante e a história prende do começo ao fim.")
                 .createdAt(LocalDateTime.of(2025, 1, 10, 14, 30))
                 .build();
     }
@@ -53,7 +53,7 @@ public final class RatingMock {
                 .originalityRating(3.0)
                 .pacingRating(3.0)
                 .overallRating(3.0)
-                .comment("Uma obra decente, mas nada que se destaque.")
+                .textContent("Uma obra decente, mas nada que se destaque.")
                 .createdAt(LocalDateTime.of(2025, 1, 15, 10, 0))
                 .build();
     }
@@ -71,7 +71,7 @@ public final class RatingMock {
                 .originalityRating(2.0)
                 .pacingRating(1.0)
                 .overallRating(1.5)
-                .comment("Não consegui passar do terceiro capítulo. Ritmo muito lento.")
+                .textContent("Não consegui passar do terceiro capítulo. Ritmo muito lento.")
                 .createdAt(LocalDateTime.of(2025, 2, 1, 9, 0))
                 .build();
     }
@@ -89,7 +89,7 @@ public final class RatingMock {
                 .originalityRating(5.0)
                 .pacingRating(5.0)
                 .overallRating(5.0)
-                .comment("Perfeição. Cada página é uma obra de arte.")
+                .textContent("Perfeição. Cada página é uma obra de arte.")
                 .createdAt(LocalDateTime.of(2025, 2, 10, 16, 0))
                 .build();
     }
@@ -124,7 +124,7 @@ public final class RatingMock {
                 .originalityRating(0.5)
                 .pacingRating(0.5)
                 .overallRating(0.5)
-                .comment("Não é pra mim.")
+                .textContent("Não é pra mim.")
                 .createdAt(LocalDateTime.of(2025, 3, 5, 8, 0))
                 .build();
     }
@@ -141,7 +141,7 @@ public final class RatingMock {
                 .originalityRating(4.0)
                 .pacingRating(4.0)
                 .overallRating(4.0)
-                .comment("Boa leitura.")
+                .textContent("Boa leitura.")
                 .build();
     }
 

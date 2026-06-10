@@ -42,7 +42,7 @@ public final class RatingMapper {
                 rating.getCharactersRating(),
                 rating.getOriginalityRating(),
                 rating.getPacingRating(),
-                rating.getComment(),
+                rating.getTextContent(),
                 rating.getReviewTitle(),
                 rating.isSpoiler(),
                 rating.isTop(),

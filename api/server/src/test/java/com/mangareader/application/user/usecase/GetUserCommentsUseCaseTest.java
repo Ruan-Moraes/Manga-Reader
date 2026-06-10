@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -67,7 +68,7 @@ class GetUserCommentsUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PRIVATE)));
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Ótimo!").build();
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
 
             Page<Comment> result = getUserCommentsUseCase.execute(USER_ID, USER_ID, PAGEABLE);
@@ -88,7 +89,7 @@ class GetUserCommentsUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Bom!").build();
-            when(commentRepository.findByUserId(eq(USER_ID.toString()), any(Pageable.class)))
+            when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of(comment)));
 
             Page<Comment> result = getUserCommentsUseCase.execute(USER_ID, viewerId, PAGEABLE);
@@ -105,7 +106,7 @@ class GetUserCommentsUseCaseTest {
             Page<Comment> result = getUserCommentsUseCase.execute(USER_ID, viewerId, PAGEABLE);
 
             assertThat(result.getContent()).isEmpty();
-            verify(commentRepository, never()).findByUserId(any(), any(Pageable.class));
+            verify(commentRepository, never()).findByUserIdAndTargetType(any(), any(), any(Pageable.class));
         }
 
         @Test

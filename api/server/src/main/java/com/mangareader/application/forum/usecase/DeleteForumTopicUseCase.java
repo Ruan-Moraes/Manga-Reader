@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
+import com.mangareader.application.comment.port.CommentVoteRepositoryPort;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.application.forum.port.ForumTopicVoteRepositoryPort;
+import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.shared.exception.BusinessRuleException;
@@ -27,6 +29,7 @@ public class DeleteForumTopicUseCase {
 
     private final ForumRepositoryPort forumRepository;
     private final CommentRepositoryPort commentRepository;
+    private final CommentVoteRepositoryPort commentVoteRepository;
     private final ForumTopicVoteRepositoryPort voteRepository;
 
     public void execute(String topicId, UUID userId) {
@@ -35,6 +38,12 @@ public class DeleteForumTopicUseCase {
 
         if (!topic.getAuthorId().equals(userId.toString())) {
             throw new BusinessRuleException("Você só pode remover seus próprios tópicos", 403);
+        }
+
+        var replyIds = commentRepository.findByTargetTypeAndTargetId(CommentTarget.FORUM_TOPIC, topicId)
+                .stream().map(Comment::getId).toList();
+        if (!replyIds.isEmpty()) {
+            commentVoteRepository.deleteByCommentIdIn(replyIds);
         }
 
         commentRepository.deleteByTargetTypeAndTargetId(CommentTarget.FORUM_TOPIC, topicId);

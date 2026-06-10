@@ -78,7 +78,7 @@ public class RatingSeed implements EntitySeeder {
                         .originalityRating(originality)
                         .pacingRating(pacing)
                         .overallRating(overall)
-                        .comment(seed % 3 != 0 ? RATING_COMMENTS[seed % RATING_COMMENTS.length] : null)
+                        .textContent(seed % 3 != 0 ? RATING_COMMENTS[seed % RATING_COMMENTS.length] : null)
                         .edited(edited)
                         .createdAt(createdAt)
                         .updatedAt(updatedAt)

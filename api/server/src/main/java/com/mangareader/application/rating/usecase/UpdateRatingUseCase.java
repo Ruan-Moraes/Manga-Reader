@@ -37,7 +37,7 @@ public class UpdateRatingUseCase {
             Double charactersRating,
             Double originalityRating,
             Double pacingRating,
-            String comment,
+            String textContent,
             String reviewTitle,
             Boolean spoiler
     ) {}
@@ -75,8 +75,8 @@ public class UpdateRatingUseCase {
             rating.setPacingRating(input.pacingRating());
         }
 
-        if (input.comment() != null) {
-            rating.setComment(input.comment());
+        if (input.textContent() != null) {
+            rating.setTextContent(input.textContent());
         }
 
         if (input.reviewTitle() != null) {

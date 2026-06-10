@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
+import com.mangareader.application.comment.port.CommentVoteRepositoryPort;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -28,6 +29,9 @@ class DeleteCommentUseCaseTest {
 
     @Mock
     private CommentRepositoryPort commentRepository;
+
+    @Mock
+    private CommentVoteRepositoryPort voteRepository;
 
     @InjectMocks
     private DeleteCommentUseCase deleteCommentUseCase;
@@ -55,6 +59,7 @@ class DeleteCommentUseCaseTest {
             deleteCommentUseCase.execute(COMMENT_ID, USER_ID);
 
             // Assert
+            verify(voteRepository).deleteByCommentId(COMMENT_ID);
             verify(commentRepository).deleteById(COMMENT_ID);
         }
     }

@@ -28,7 +28,7 @@ const ForumTopicPage = () => {
     const composerRef = useRef<ComposerHandle>(null);
     const handleReply = (handle: string) => composerRef.current?.insertMention(handle.replace(/^@/, ''));
 
-    const { topic, replies, replyVotes, loading, voteTopic, voteReply } = useTopicDetail(topicId);
+    const { topic, replies, replyVotes, loading, voteTopic, voteReply, postReply } = useTopicDetail(topicId);
 
     if (loading) {
         return null;
@@ -79,7 +79,7 @@ const ForumTopicPage = () => {
                 onReply={handleReply}
             />
 
-            <TopicCommentInput composerRef={composerRef} />
+            <TopicCommentInput composerRef={composerRef} onSubmit={postReply} />
         </PageContainer>
     );
 };

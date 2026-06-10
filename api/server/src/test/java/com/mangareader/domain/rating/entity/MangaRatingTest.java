@@ -51,7 +51,7 @@ class MangaRatingTest {
                     .originalityRating(4.0)
                     .pacingRating(3.0)
                     .overallRating(4.0)
-                    .comment("Excelente mangá!")
+                    .textContent("Excelente mangá!")
                     .build();
 
             assertThat(rating.getId()).isEqualTo("rating-abc");
@@ -66,7 +66,7 @@ class MangaRatingTest {
             assertThat(rating.getOriginalityRating()).isEqualTo(4.0);
             assertThat(rating.getPacingRating()).isEqualTo(3.0);
             assertThat(rating.getOverallRating()).isEqualTo(4.0);
-            assertThat(rating.getComment()).isEqualTo("Excelente mangá!");
+            assertThat(rating.getTextContent()).isEqualTo("Excelente mangá!");
         }
 
         @Test
@@ -84,7 +84,7 @@ class MangaRatingTest {
                     .build();
 
             assertThat(rating.getFunRating()).isEqualTo(3.0);
-            assertThat(rating.getComment()).isNull();
+            assertThat(rating.getTextContent()).isNull();
         }
     }
 
@@ -156,16 +156,16 @@ class MangaRatingTest {
                     .charactersRating(3.0)
                     .originalityRating(3.0)
                     .pacingRating(3.0)
-                    .comment("Bom")
+                    .textContent("Bom")
                     .build();
 
             rating.setFunRating(5.0);
             rating.setArtRating(4.5);
-            rating.setComment("Na verdade, é perfeito!");
+            rating.setTextContent("Na verdade, é perfeito!");
 
             assertThat(rating.getFunRating()).isEqualTo(5.0);
             assertThat(rating.getArtRating()).isEqualTo(4.5);
-            assertThat(rating.getComment()).isEqualTo("Na verdade, é perfeito!");
+            assertThat(rating.getTextContent()).isEqualTo("Na verdade, é perfeito!");
         }
     }
 
@@ -183,7 +183,7 @@ class MangaRatingTest {
             assertThat(rating.getUserId()).isNull();
             assertThat(rating.getUserName()).isNull();
             assertThat(rating.getTitleName()).isNull();
-            assertThat(rating.getComment()).isNull();
+            assertThat(rating.getTextContent()).isNull();
             assertThat(rating.getCreatedAt()).isNull();
             assertThat(rating.getOverallRating()).isEqualTo(0.0);
             assertThat(rating.getFunRating()).isEqualTo(0.0);

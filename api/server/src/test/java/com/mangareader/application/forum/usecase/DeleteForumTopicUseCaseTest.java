@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
+import com.mangareader.application.comment.port.CommentVoteRepositoryPort;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.application.forum.port.ForumTopicVoteRepositoryPort;
 import com.mangareader.domain.comment.valueobject.CommentTarget;
@@ -36,6 +37,9 @@ class DeleteForumTopicUseCaseTest {
 
     @Mock
     private CommentRepositoryPort commentRepository;
+
+    @Mock
+    private CommentVoteRepositoryPort commentVoteRepository;
 
     @Mock
     private ForumTopicVoteRepositoryPort voteRepository;
@@ -65,6 +69,8 @@ class DeleteForumTopicUseCaseTest {
         @DisplayName("Deve excluir tópico, respostas (comments) e votos quando usuário é o autor")
         void deveExcluirTopicoEmCascata() {
             when(forumRepository.findById(TOPIC_ID)).thenReturn(Optional.of(buildTopic()));
+            when(commentRepository.findByTargetTypeAndTargetId(CommentTarget.FORUM_TOPIC, TOPIC_ID))
+                    .thenReturn(java.util.List.of());
 
             deleteForumTopicUseCase.execute(TOPIC_ID, AUTHOR_ID);
 

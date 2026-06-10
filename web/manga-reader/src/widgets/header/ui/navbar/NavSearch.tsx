@@ -35,6 +35,23 @@ const SUGGESTIONS: Suggestion[] = [
 
 const RECENTS = ['berserk', 'one piece capítulo 1120', 'grupo: Tsuki Scans'];
 
+type ClearSearchButtonProps = {
+    onClear: () => void;
+};
+
+// TODO: Criar um componente em shared e usar em toda barra de pesquisa do projeto.
+const ClearSearchButton = ({ onClear }: ClearSearchButtonProps) => (
+    <IconButton
+        type="button"
+        icon={X}
+        aria-label="Limpar pesquisa"
+        onMouseDown={e => e.preventDefault()}
+        onClick={onClear}
+        // TODO: Conserta estilo do botao.
+        className="p-2 shrink-0 rounded-mr-xs bg-mr-accent-25 text-mr-accent transition-colors duration-mr-default hover:bg-mr-accent/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mr-accent"
+    />
+);
+
 const NavSearch = ({
     value,
     onChange,
@@ -62,6 +79,11 @@ const NavSearch = ({
 
     const handleBlur = (e: FocusEvent<HTMLDivElement>) => {
         if (!containerRef.current?.contains(e.relatedTarget as Node | null)) onBlur();
+    };
+
+    const clearSearch = () => {
+        onChange('');
+        inputRef.current?.focus();
     };
 
     return (
@@ -98,7 +120,7 @@ const NavSearch = ({
                         <span className="flex items-center justify-center">K</span>
                     </kbd>
                 )}
-                {value && <IconButton icon={X} size="sm" variant="primary" aria-label="Limpar busca" onClick={() => onChange('')} />}
+                {value && <ClearSearchButton onClear={clearSearch} />}
             </label>
             {focused && (
                 <div

@@ -5,9 +5,10 @@ import { Composer, type ComposerHandle } from '@ui/Composer';
 
 type Props = {
     composerRef?: Ref<ComposerHandle>;
+    onSubmit: (content: string) => void | Promise<void>;
 };
 
-const TopicCommentInput = ({ composerRef }: Props) => {
+const TopicCommentInput = ({ composerRef, onSubmit }: Props) => {
     const { t } = useTranslation('forum');
 
     return (
@@ -18,8 +19,8 @@ const TopicCommentInput = ({ composerRef }: Props) => {
                 ariaLabel={t('topic.replyLabel')}
                 placeholder={t('topic.commentPlaceholder')}
                 submitLabel={t('composer.publishButton')}
-                onSubmit={() => {
-                    // Fórum ainda em mock — persistência entra ao ligar a API.
+                onSubmit={async textContent => {
+                    if (textContent) await onSubmit(textContent);
                 }}
             />
         </div>

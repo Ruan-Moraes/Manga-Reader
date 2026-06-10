@@ -107,6 +107,21 @@ Auditoria do entregue achou e corrigiu 2 bugs + 1 duplicação:
   até o Mongo ser confirmado em produção. Não criar V33 no mesmo deploy do V016 — a ordem
   Flyway×Mongock no boot não garante o backfill antes do drop.
 
+## 5.1 Leva 3 — auditoria final (2026-06-10)
+
+Bugs/lacunas achados na revisão pós-migração e corrigidos:
+- **Perfil vazava replies de fórum**: `GET /users/{id}/comments` e o perfil enriquecido
+  listavam TODO comment do usuário; o frontend monta link `/title/{targetId}` → reply de
+  fórum viraria link quebrado. Queries agora filtram `targetType=TITLE`.
+- **Responder tópico era no-op**: o composer da página tinha `onSubmit` vazio (era mock).
+  Ligado a `POST /api/forum/{id}/replies` com recarga da thread.
+- **Votos órfãos**: excluir comentário/tópico não removia documentos de `comments_votes`.
+  Cascata fechada nos use cases de delete.
+- **Unhandled rejection no voto** (ex.: 409 self-vote) — handlers com catch.
+- **Convergência final de naming**: `ratings.comment` → `textContent` (entity + API +
+  Mongock `V017` `$rename`); frontend traduz na borda do `ratingService` — todos os corpos
+  de texto do UGC agora usam `textContent`.
+
 ## 6. Débitos técnicos identificados
 
 - Reconciliação Mongo dos contadores `upvotes`/`downvotes`/`replyCount` (job hoje só Postgres).

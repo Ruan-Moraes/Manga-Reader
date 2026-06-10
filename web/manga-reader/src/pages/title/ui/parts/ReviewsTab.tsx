@@ -166,7 +166,7 @@ function ReviewsToolbar({ count, sort, onSort, onWrite }: { count: number; sort:
     return (
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-                <Button variant="primary" size="sm" icon={Plus} onClick={onWrite}>
+                <Button size="sm" variant="primary" icon={Plus} onClick={onWrite}>
                     {t('reviews.write')}
                 </Button>
                 <span className="text-[13px] text-mr-fg-subtle">{t('reviews.reviewsCount', { count })}</span>
@@ -250,7 +250,7 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
                             <p className="mt-1 text-[14px] text-mr-fg-muted">{t('reviews.empty.desc')}</p>
                         </div>
                         {isLoggedIn && (
-                            <Button variant="primary" icon={Plus} onClick={onWriteReview}>
+                            <Button size="sm" variant="primary" icon={Plus} onClick={onWriteReview}>
                                 {t('reviews.write')}
                             </Button>
                         )}

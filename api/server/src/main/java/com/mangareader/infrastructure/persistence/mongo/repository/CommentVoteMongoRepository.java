@@ -11,4 +11,8 @@ public interface CommentVoteMongoRepository extends MongoRepository<CommentVote,
     Optional<CommentVote> findByCommentIdAndUserId(String commentId, String userId);
 
     List<CommentVote> findByCommentIdInAndUserId(List<String> commentIds, String userId);
+
+    void deleteByCommentId(String commentId);
+
+    void deleteByCommentIdIn(List<String> commentIds);
 }

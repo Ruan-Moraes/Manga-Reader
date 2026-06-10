@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { requireAuth } from '@shared/service/util/requireAuth';
 import { getStoredSession } from '@shared/service/session';
 
-import { getForumTopicById, voteForumTopic } from '@entities/forum';
+import { createForumReply, getForumTopicById, voteForumTopic } from '@entities/forum';
 import type { ForumAuthor, ForumTopic, ReplyData, TopicData } from '@entities/forum';
 import { likeComment, dislikeComment, getUserCommentVotes } from '@entities/comment';
 
@@ -60,9 +60,25 @@ export default function useTopicDetail(topicId: string | undefined) {
         async (value: 'up' | 'down') => {
             if (!topic || !requireAuth('votar')) return;
 
-            const result = await voteForumTopic(topic.id, value);
-            setTopic(prev =>
-                prev && { ...prev, upvotes: result.upvotes, downvotes: result.downvotes, myVote: result.myVote ?? null });
+            try {
+                const result = await voteForumTopic(topic.id, value);
+                setTopic(prev =>
+                    prev && { ...prev, upvotes: result.upvotes, downvotes: result.downvotes, myVote: result.myVote ?? null });
+            } catch {
+                // Voto rejeitado (ex.: 409 no próprio post) — estado do servidor não mudou.
+            }
+        },
+        [topic],
+    );
+
+    const postReply = useCallback(
+        async (content: string) => {
+            if (!topic || !content.trim() || !requireAuth('responder')) return;
+
+            // O endpoint devolve o tópico completo atualizado (replyCount + replies).
+            const updated = await createForumReply(topic.id, content);
+            setTopic(toTopicData(updated));
+            setReplies((updated.replies ?? []).map(r => toReplyData(r, updated.author.id)));
         },
         [topic],
     );
@@ -70,13 +86,17 @@ export default function useTopicDetail(topicId: string | undefined) {
     const voteReply = useCallback(async (replyId: string, value: 'up' | 'down') => {
         if (!requireAuth('votar')) return;
 
-        const result = await (value === 'up' ? likeComment(replyId) : dislikeComment(replyId));
-        setReplies(prev =>
-            prev.map(r => (r.id === replyId ? { ...r, upvotes: result.upvotes, downvotes: result.downvotes } : r)));
-        setReplyVotes(prev => ({ ...prev, [replyId]: result.myVote ?? null }));
+        try {
+            const result = await (value === 'up' ? likeComment(replyId) : dislikeComment(replyId));
+            setReplies(prev =>
+                prev.map(r => (r.id === replyId ? { ...r, upvotes: result.upvotes, downvotes: result.downvotes } : r)));
+            setReplyVotes(prev => ({ ...prev, [replyId]: result.myVote ?? null }));
+        } catch {
+            // Voto rejeitado (ex.: 409 no próprio post) — estado do servidor não mudou.
+        }
     }, []);
 
-    return { topic, replies, replyVotes, loading, voteTopic, voteReply };
+    return { topic, replies, replyVotes, loading, voteTopic, voteReply, postReply };
 }
 
 // ---------------------------------------------------------------------------

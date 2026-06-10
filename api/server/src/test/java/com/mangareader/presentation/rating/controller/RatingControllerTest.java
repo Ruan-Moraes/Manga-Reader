@@ -112,7 +112,7 @@ class RatingControllerTest {
                 .originalityRating(3.5)
                 .pacingRating(4.0)
                 .overallRating(4.3)
-                .comment("Ótimo mangá!")
+                .textContent("Ótimo mangá!")
                 .build();
     }
 
@@ -259,7 +259,7 @@ class RatingControllerTest {
                                         "charactersRating": 4.5,
                                         "originalityRating": 3.5,
                                         "pacingRating": 4.0,
-                                        "comment": "Excelente!"
+                                        "textContent": "Excelente!"
                                     }
                                     """)
                             .principal(mockAuth()))
@@ -331,7 +331,7 @@ class RatingControllerTest {
             mockMvc.perform(put("/api/ratings/r1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"funRating": 3.0, "comment": "Revisando minha opinião"}
+                                    {"funRating": 3.0, "textContent": "Revisando minha opinião"}
                                     """)
                             .principal(mockAuth()))
                     .andExpect(status().isOk())

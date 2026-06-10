@@ -25,9 +25,9 @@ public interface CommentMongoRepository extends MongoRepository<Comment, String>
     Page<Comment> findByTargetTypeAndTargetIdAndLanguageIn(
             CommentTarget targetType, String targetId, Collection<String> languages, Pageable pageable);
 
-    Page<Comment> findByUserId(String userId, Pageable pageable);
+    Page<Comment> findByUserIdAndTargetType(String userId, CommentTarget targetType, Pageable pageable);
 
-    long countByUserId(String userId);
+    long countByUserIdAndTargetType(String userId, CommentTarget targetType);
 
     long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 
