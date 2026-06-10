@@ -15,7 +15,10 @@ export type ForumReply = {
     content: string;
     createdAt: string;
     updatedAt?: string;
-    likes: number;
+    // Voto padronizado (modelo único): respostas são comentários unificados;
+    // votar nelas usa os endpoints de /api/comments.
+    upvotes: number;
+    downvotes: number;
     edited: boolean;
     isBestAnswer: boolean;
 };
@@ -33,7 +36,10 @@ export type ForumTopic = {
     lastActivityAt: string;
     viewCount: number;
     replyCount: number;
-    likeCount: number;
+    // Voto padronizado (modelo único, igual a resenhas/comentários).
+    upvotes: number;
+    downvotes: number;
+    myVote?: 'up' | 'down' | null;
     isPinned: boolean;
     isLocked: boolean;
     isSolved: boolean;

@@ -79,17 +79,33 @@ Auditoria do entregue achou e corrigiu 2 bugs + 1 duplicação:
 - **Dados**: V015 faz backfill idempotente (`titleId`→`targetId`, `targetType=TITLE`,
   `like/dislikeCount`→`upvotes/downvotes`, `comment_reactions`→`comments_votes`).
 
-## 5. Pendente — próxima fase (fórum → Mongo)
+## 5. Fórum → Mongo (ENTREGUE, 2026-06-09)
 
-Maior e mais arriscado item, deixado com roadmap preciso (ver
-`/.claude/plans/prompt-aprimorado-realize-deep-wind.md` e DT-50):
-- `forum_topics` → coleção Mongo (subject; autor vira snapshot); **`forum_replies` eliminado
-  → vira `comments` `targetType=FORUM_TOPIC`**; votos `forum_topics_votes`.
-- Runner cross-DB `V016MigrateForumToMongo` (lê JPA, grava Mongo, valida contagem) +
-  Flyway `V33` drop das tabelas — **deploy em 2 fases** (backfill+leitura Mongo → confirmar → drop).
-- Frontend do fórum: réplicas passam a consumir o comment service.
-- Motivo do faseamento: forum acopla `User` (role/memberSince/postCount), `CounterReconciliationJob`
-  e `ForumSeed`; exige verificação iterativa que não cabia num único passo seguro.
+- **Domínio**: `ForumTopic` virou documento Mongo (`forum_topics`) com autor em snapshot;
+  `ForumReply` **eliminado** — réplica é `comments` `targetType=FORUM_TOPIC`
+  (`is_best_answer`→`isHighlighted`). `ForumTopicVote` (`forum_topics_votes`) com índice
+  único `{topicId,userId}`. Tópico implementa `HasVoteCounters` e usa o `VoteToggle`
+  compartilhado (3º domínio reusando a mesma regra — zero cópia).
+- **Use cases**: criação/edição/listagem reapontados pro Mongo
+  (`@Transactional("mongoTransactionManager")`); `CreateForumReplyUseCase` delega ao
+  `CreateCommentUseCase` e mantém `replyCount`/`lastActivityAt`; delete em cascata
+  (comments + votos do tópico); `Cast/RemoveForumTopicVoteUseCase` com bloqueio self-vote.
+- **Apresentação**: `ForumMapper` monta autor com dados vivos do Postgres em UMA busca em
+  lote por página (`findAllById` novo no `UserRepositoryPort`) + `myVote` em lote pelos
+  votos — sem N+1. DTOs com contrato único `upvotes/downvotes/myVote`. Endpoints
+  `POST/DELETE /api/forum/{id}/vote`; voto em resposta usa `/api/comments/{id}/vote`.
+- **Dados**: `V016MigrateForumToMongo` lê o Postgres por **JDBC puro** (desacoplado das
+  entidades JPA removidas), grava topics + replies(comments), **verifica contagem
+  origem==destino e aborta em divergência**; cria os índices das coleções novas.
+  `CounterReconciliationJob` ganhou reconcile Mongo do `replyCount`. `ForumSeed`
+  reescrito para o modelo novo.
+- **Frontend**: `forum.types.ts` com `upvotes/downvotes/myVote`; `voteForumTopic`/
+  `removeForumTopicVote` no service; sort "popular" por `upvotes`. Replies continuam
+  embutidas no detalhe do tópico (contrato preservado — zero rework de página).
+- **Fase 2 (deploy separado, deliberadamente NÃO incluída)**: Flyway
+  `V33__drop_forum_postgres_tables.sql`. As tabelas Postgres ficam intactas como rollback
+  até o Mongo ser confirmado em produção. Não criar V33 no mesmo deploy do V016 — a ordem
+  Flyway×Mongock no boot não garante o backfill antes do drop.
 
 ## 6. Débitos técnicos identificados
 

@@ -33,7 +33,8 @@ const buildTopic = (overrides: Partial<ForumTopic> = {}): ForumTopic => ({
     createdAt: '2025-01-01T00:00:00Z',
     lastActivityAt: '2025-01-02T00:00:00Z',
     replyCount: 5,
-    likeCount: 10,
+    upvotes: 10,
+    downvotes: 0,
     viewCount: 100,
     isPinned: false,
     isLocked: false,
@@ -144,7 +145,7 @@ describe('forumService', () => {
         });
 
         it('deve ordenar por popularidade', () => {
-            const topics = [buildTopic({ id: 't1', likeCount: 5, isPinned: false }), buildTopic({ id: 't2', likeCount: 20, isPinned: false })];
+            const topics = [buildTopic({ id: 't1', upvotes: 5, isPinned: false }), buildTopic({ id: 't2', upvotes: 20, isPinned: false })];
 
             const result = filterForumTopics(topics, { sort: 'popular' });
 
@@ -152,7 +153,7 @@ describe('forumService', () => {
         });
 
         it('deve manter pinados no topo independente da ordenacao', () => {
-            const topics = [buildTopic({ id: 't1', likeCount: 100, isPinned: false }), buildTopic({ id: 't2', likeCount: 1, isPinned: true })];
+            const topics = [buildTopic({ id: 't1', upvotes: 100, isPinned: false }), buildTopic({ id: 't2', upvotes: 1, isPinned: true })];
 
             const result = filterForumTopics(topics, { sort: 'popular' });
 

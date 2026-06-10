@@ -3,7 +3,9 @@ package com.mangareader.presentation.forum.dto;
 /**
  * DTO de resposta de um tópico do fórum.
  * <p>
- * Compatível com {@code ForumReply} em forum.types.ts.
+ * A resposta é um comentário unificado ({@code targetType=FORUM_TOPIC});
+ * {@code isBestAnswer} corresponde ao {@code isHighlighted} do comentário.
+ * Votos por resposta usam os endpoints de comentário ({@code /api/comments}).
  */
 public record ForumReplyResponse(
         String id,
@@ -11,7 +13,8 @@ public record ForumReplyResponse(
         String content,
         String createdAt,
         String updatedAt,
-        int likes,
+        long upvotes,
+        long downvotes,
         boolean edited,
         boolean isBestAnswer
 ) {}

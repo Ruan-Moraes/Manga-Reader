@@ -30,4 +30,6 @@ public interface CommentMongoRepository extends MongoRepository<Comment, String>
     long countByUserId(String userId);
 
     long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
+
+    void deleteByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 }

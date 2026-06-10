@@ -1,6 +1,7 @@
 package com.mangareader.mock.forum;
 
-import com.mangareader.domain.forum.entity.ForumReply;
+import com.mangareader.domain.comment.entity.Comment;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
 import com.mangareader.domain.user.entity.User;
@@ -10,151 +11,132 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Mocks do fórum no modelo unificado: tópico Mongo com autor em snapshot;
+ * respostas são comentários ({@code targetType=FORUM_TOPIC}).
+ */
 public final class ForumMock {
 
     private ForumMock() {}
 
     // ── Fixed IDs ──────────────────────────────────────────────────────────
 
-    public static final UUID TOPIC_1_ID = UUID.fromString("30000000-0000-0000-0000-000000000001");
-    public static final UUID TOPIC_2_ID = UUID.fromString("30000000-0000-0000-0000-000000000002");
-    public static final UUID TOPIC_3_ID = UUID.fromString("30000000-0000-0000-0000-000000000003");
-    public static final UUID TOPIC_4_ID = UUID.fromString("30000000-0000-0000-0000-000000000004");
-    public static final UUID TOPIC_5_ID = UUID.fromString("30000000-0000-0000-0000-000000000005");
+    public static final String TOPIC_1_ID = "30000000-0000-0000-0000-000000000001";
+    public static final String TOPIC_2_ID = "30000000-0000-0000-0000-000000000002";
+    public static final String TOPIC_3_ID = "30000000-0000-0000-0000-000000000003";
+    public static final String TOPIC_4_ID = "30000000-0000-0000-0000-000000000004";
+    public static final String TOPIC_5_ID = "30000000-0000-0000-0000-000000000005";
 
-    // ── Replies ────────────────────────────────────────────────────────────
+    // ── Replies (comments targetType=FORUM_TOPIC) ──────────────────────────
 
-    public static ForumReply simpleReply(ForumTopic topic, User author, String content) {
-        return ForumReply.builder()
-                .id(UUID.randomUUID())
-                .topic(topic)
-                .author(author)
-                .content(content)
+    public static Comment simpleReply(ForumTopic topic, User author, String content) {
+        return Comment.builder()
+                .id(UUID.randomUUID().toString())
+                .targetType(CommentTarget.FORUM_TOPIC)
+                .targetId(topic.getId())
+                .userId(author.getId().toString())
+                .userName(author.getName())
+                .userPhoto(author.getPhotoUrl())
+                .textContent(content)
                 .build();
     }
 
-    public static ForumReply bestAnswerReply(ForumTopic topic, User author) {
-        return ForumReply.builder()
-                .id(UUID.randomUUID())
-                .topic(topic)
-                .author(author)
-                .content("Essa e a resposta marcada como melhor. Voce precisa instalar o Java 23 e executar mvn spring-boot:run.")
-                .isBestAnswer(true)
-                .likes(15)
+    public static Comment bestAnswerReply(ForumTopic topic, User author) {
+        return Comment.builder()
+                .id(UUID.randomUUID().toString())
+                .targetType(CommentTarget.FORUM_TOPIC)
+                .targetId(topic.getId())
+                .userId(author.getId().toString())
+                .userName(author.getName())
+                .userPhoto(author.getPhotoUrl())
+                .textContent("Essa e a resposta marcada como melhor. Voce precisa instalar o Java 23 e executar mvn spring-boot:run.")
+                .isHighlighted(true)
+                .upvotes(15)
                 .build();
     }
 
-    public static ForumReply editedReply(ForumTopic topic, User author) {
-        return ForumReply.builder()
-                .id(UUID.randomUUID())
-                .topic(topic)
-                .author(author)
-                .content("(Editado) Corrigi a informacao anterior. A versao correta e a 3.4.3.")
+    public static Comment editedReply(ForumTopic topic, User author) {
+        return Comment.builder()
+                .id(UUID.randomUUID().toString())
+                .targetType(CommentTarget.FORUM_TOPIC)
+                .targetId(topic.getId())
+                .userId(author.getId().toString())
+                .userName(author.getName())
+                .userPhoto(author.getPhotoUrl())
+                .textContent("(Editado) Corrigi a informacao anterior. A versao correta e a 3.4.3.")
                 .edited(true)
-                .likes(3)
+                .upvotes(3)
                 .build();
     }
 
     // ── Topics ─────────────────────────────────────────────────────────────
 
+    private static ForumTopic.ForumTopicBuilder topicBuilder(String id, User author) {
+        return ForumTopic.builder()
+                .id(id)
+                .authorId(author.getId().toString())
+                .authorName(author.getName())
+                .authorPhoto(author.getPhotoUrl());
+    }
+
     public static ForumTopic discussionTopic() {
-        User author = UserMock.reader();
-        ForumTopic topic = ForumTopic.builder()
-                .id(TOPIC_1_ID)
-                .author(author)
+        return topicBuilder(TOPIC_1_ID, UserMock.reader())
                 .title("Qual o melhor manga de 2025 ate agora?")
                 .content("Quero saber a opiniao de voces. Pra mim, Cronicas de Polaris esta imbativel.")
                 .category(ForumCategory.GERAL)
                 .tags(new ArrayList<>(List.of("manga", "2025", "ranking")))
                 .viewCount(320)
                 .replyCount(12)
-                .likeCount(28)
-                .replies(new ArrayList<>())
+                .upvotes(28)
                 .build();
-
-        topic.getReplies().add(simpleReply(topic, UserMock.moderator(),
-                "Concordo com Polaris, mas Reino de Aco tambem esta excelente."));
-        topic.getReplies().add(simpleReply(topic, UserMock.poster(),
-                "Pra mim Protocolo Zero leva o titulo."));
-
-        return topic;
     }
 
     public static ForumTopic questionTopic() {
-        User author = UserMock.poster();
-        ForumTopic topic = ForumTopic.builder()
-                .id(TOPIC_2_ID)
-                .author(author)
+        return topicBuilder(TOPIC_2_ID, UserMock.poster())
                 .title("Como configurar o ambiente de desenvolvimento?")
                 .content("Estou tentando rodar o projeto localmente mas nao consigo configurar o Docker.")
                 .category(ForumCategory.SUPORTE)
                 .tags(new ArrayList<>(List.of("docker", "setup", "dev")))
                 .viewCount(150)
                 .replyCount(5)
-                .likeCount(8)
+                .upvotes(8)
                 .isSolved(true)
-                .replies(new ArrayList<>())
                 .build();
-
-        topic.getReplies().add(bestAnswerReply(topic, UserMock.admin()));
-        topic.getReplies().add(simpleReply(topic, author, "Funcionou! Obrigado!"));
-
-        return topic;
     }
 
     public static ForumTopic pinnedTopic() {
-        ForumTopic topic = ForumTopic.builder()
-                .id(TOPIC_3_ID)
-                .author(UserMock.admin())
+        return topicBuilder(TOPIC_3_ID, UserMock.admin())
                 .title("Regras do forum - leia antes de postar")
                 .content("1. Sem spoilers sem tag\n2. Respeite outros membros\n3. Sem spam ou auto-promocao")
                 .category(ForumCategory.NOTICIAS)
                 .tags(new ArrayList<>(List.of("regras", "importante")))
                 .viewCount(5000)
                 .replyCount(0)
-                .likeCount(150)
+                .upvotes(150)
                 .isPinned(true)
                 .isLocked(true)
-                .replies(new ArrayList<>())
                 .build();
-
-        return topic;
     }
 
     public static ForumTopic reviewTopic() {
-        User author = UserMock.moderator();
-        ForumTopic topic = ForumTopic.builder()
-                .id(TOPIC_4_ID)
-                .author(author)
+        return topicBuilder(TOPIC_4_ID, UserMock.moderator())
                 .title("Review: Flores de Neon - Vale a pena ler?")
                 .content("Acabei de terminar Flores de Neon e quero compartilhar minha opiniao detalhada.")
                 .category(ForumCategory.RECOMENDACOES)
                 .tags(new ArrayList<>(List.of("review", "Flores de Neon", "manhua")))
                 .viewCount(85)
                 .replyCount(3)
-                .likeCount(12)
-                .replies(new ArrayList<>())
+                .upvotes(12)
                 .build();
-
-        topic.getReplies().add(simpleReply(topic, UserMock.reader(),
-                "Obrigado pela review! Vou comecar a ler."));
-        topic.getReplies().add(editedReply(topic, UserMock.poster()));
-
-        return topic;
     }
 
     public static ForumTopic emptyTopic() {
-        return ForumTopic.builder()
-                .id(TOPIC_5_ID)
-                .author(UserMock.withoutBio())
+        return topicBuilder(TOPIC_5_ID, UserMock.withoutBio())
                 .title("Alguem mais leu Coracao de Porcelana?")
                 .content("Comecei a ler ontem mas nao achei ninguem discutindo.")
                 .category(ForumCategory.GERAL)
                 .tags(new ArrayList<>())
                 .viewCount(5)
-                .replyCount(0)
-                .likeCount(0)
-                .replies(new ArrayList<>())
                 .build();
     }
 
@@ -165,17 +147,15 @@ public final class ForumMock {
                 reviewTopic(), emptyTopic());
     }
 
-    public static List<ForumTopic> pinnedTopics() {
-        return List.of(pinnedTopic());
-    }
-
     public static List<ForumTopic> byCategory(ForumCategory category) {
         return allTopics().stream()
                 .filter(t -> t.getCategory() == category)
                 .toList();
     }
 
-    public static List<ForumTopic> withReplies() {
-        return List.of(discussionTopic(), questionTopic(), reviewTopic());
+    public static List<Comment> repliesFor(ForumTopic topic) {
+        return List.of(
+                simpleReply(topic, UserMock.moderator(), "Concordo com Polaris, mas Reino de Aco tambem esta excelente."),
+                bestAnswerReply(topic, UserMock.admin()));
     }
 }

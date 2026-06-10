@@ -1,5 +1,7 @@
 package com.mangareader.application.user.port;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,6 +16,9 @@ import com.mangareader.domain.user.valueobject.UserRole;
  */
 public interface UserRepositoryPort {
     Optional<User> findById(UUID id);
+
+    /** Busca em lote — resolve autores de uma página de UGC numa única query (sem N+1). */
+    List<User> findAllById(Collection<UUID> ids);
 
     Optional<User> findByEmail(String email);
 

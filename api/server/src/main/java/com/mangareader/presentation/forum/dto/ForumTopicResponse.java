@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  * DTO completo de tópico do fórum retornado ao frontend.
  * <p>
- * Compatível com {@code ForumTopic} em forum.types.ts.
+ * Votos seguem o contrato único ({@code upvotes}/{@code downvotes}/
+ * {@code myVote}). Replies são comentários unificados mapeados para
+ * {@link ForumReplyResponse}.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ForumTopicResponse(
@@ -21,8 +23,10 @@ public record ForumTopicResponse(
         String updatedAt,
         String lastActivityAt,
         int viewCount,
-        int replyCount,
-        int likeCount,
+        long replyCount,
+        long upvotes,
+        long downvotes,
+        String myVote,
         boolean isPinned,
         boolean isLocked,
         boolean isSolved,

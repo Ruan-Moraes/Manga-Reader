@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
-import com.mangareader.domain.user.entity.User;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GetForumTopicsUseCase")
@@ -44,11 +42,9 @@ class GetForumTopicsUseCaseTest {
     void deveRetornarPaginaComTopicos() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        User author = User.builder().id(UUID.randomUUID()).name("Autor").build();
-
         List<ForumTopic> topics = List.of(
-                ForumTopic.builder().title("Tópico 1").category(ForumCategory.GERAL).author(author).build(),
-                ForumTopic.builder().title("Tópico 2").category(ForumCategory.TEORIAS).author(author).build()
+                ForumTopic.builder().title("Tópico 1").category(ForumCategory.GERAL).authorId("author-1").authorName("Autor").build(),
+                ForumTopic.builder().title("Tópico 2").category(ForumCategory.TEORIAS).authorId("author-1").authorName("Autor").build()
         );
 
         Page<ForumTopic> page = new PageImpl<>(topics, pageable, 2);
@@ -83,12 +79,10 @@ class GetForumTopicsUseCaseTest {
     void crossLanguageBypassaParticao() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        User author = User.builder().id(UUID.randomUUID()).name("Autor").build();
-
         List<ForumTopic> topics = List.of(
-                ForumTopic.builder().title("PT").language("pt-BR").author(author).build(),
-                ForumTopic.builder().title("EN").language("en-US").author(author).build(),
-                ForumTopic.builder().title("ES").language("es-ES").author(author).build()
+                ForumTopic.builder().title("PT").language("pt-BR").authorId("author-1").authorName("Autor").build(),
+                ForumTopic.builder().title("EN").language("en-US").authorId("author-1").authorName("Autor").build(),
+                ForumTopic.builder().title("ES").language("es-ES").authorId("author-1").authorName("Autor").build()
         );
 
         Page<ForumTopic> page = new PageImpl<>(topics, pageable, 3);

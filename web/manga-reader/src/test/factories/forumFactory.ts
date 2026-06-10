@@ -48,7 +48,8 @@ export const buildForumReply = (overrides: Partial<ForumReply> = {}): ForumReply
         author: buildForumAuthor(),
         content: `Conteudo da resposta ${forumReplyCounter}.`,
         createdAt: '2026-03-20T10:00:00Z',
-        likes: 5,
+        upvotes: 5,
+        downvotes: 0,
         edited: false,
         isBestAnswer: false,
         ...overrides,
@@ -62,8 +63,8 @@ export const forumReplyPresets = {
             edited: true,
             content: 'Conteudo editado da resposta.',
         }),
-    bestAnswer: () => buildForumReply({ isBestAnswer: true, likes: 50 }),
-    popular: () => buildForumReply({ likes: 999 }),
+    bestAnswer: () => buildForumReply({ isBestAnswer: true, upvotes: 50 }),
+    popular: () => buildForumReply({ upvotes: 999 }),
     fromAdmin: () => buildForumReply({ author: forumAuthorPresets.admin() }),
 };
 
@@ -81,7 +82,8 @@ export const buildForumTopic = (overrides: Partial<ForumTopic> = {}): ForumTopic
         lastActivityAt: '2026-03-20T10:00:00Z',
         viewCount: 100,
         replyCount: 5,
-        likeCount: 10,
+        upvotes: 10,
+        downvotes: 0,
         isPinned: false,
         isLocked: false,
         isSolved: false,
@@ -119,7 +121,7 @@ export const forumTopicPresets = {
         buildForumTopic({
             viewCount: 50000,
             replyCount: 500,
-            likeCount: 1000,
+            upvotes: 1000,
         }),
 
     withTags: () =>

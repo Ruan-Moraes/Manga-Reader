@@ -3,7 +3,6 @@ package com.mangareader.application.forum.usecase;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
@@ -13,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Retorna tópicos do fórum com paginação, particionados pelo idioma do
- * usuário (UGC i18n — Etapa 3).
+ * usuário (UGC i18n). Listagem usa só o escalar {@code replyCount} — as
+ * respostas (comments) vêm apenas no detalhe.
  */
 @Service
 @RequiredArgsConstructor
@@ -21,20 +21,15 @@ public class GetForumTopicsUseCase {
     private final ForumRepositoryPort forumRepository;
     private final LocaleResolutionService localeResolver;
 
-    @Transactional(readOnly = true)
     public Page<ForumTopic> execute(Pageable pageable) {
         return execute(pageable, false);
     }
 
     /**
      * @param crossLanguage quando {@code true}, retorna tópicos de todos os idiomas
-     *                      (uso admin/moderação). Quando {@code false}, particiona
-     *                      pelo idioma do usuário ativo.
+     *                      (uso admin/moderação).
      */
-    @Transactional(readOnly = true)
     public Page<ForumTopic> execute(Pageable pageable, boolean crossLanguage) {
-        // author vem via @EntityGraph nas queries de listagem; replies NÃO são
-        // carregadas (DTO de listagem usa só o escalar replyCount).
         return crossLanguage
                 ? forumRepository.findAll(pageable)
                 : forumRepository.findByLanguageIn(localeResolver.currentContentLanguageTags(), pageable);

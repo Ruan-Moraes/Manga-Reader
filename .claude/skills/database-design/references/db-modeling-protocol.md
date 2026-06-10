@@ -10,7 +10,8 @@ Detalhe das *Database Modeling Guidelines* (`docs/database-modeling.md`). Exempl
 |---------------------------|---------------------------------|
 | users, groups, group_users, group_works | titles |
 | events, event_tickets, event_participants, event_organizers | chapters |
-| forum_topics, forum_replies | comments |
+| — (forum migrou p/ Mongo em V016; tabelas dropam na fase 2/V33) | comments (unificado: obra/resenha/fórum), comments_votes |
+| | forum_topics, forum_topics_votes, reviews_votes |
 | user_libraries, user_recommendations, user_social_links | ratings, title_rating_aggregate |
 | stores, store_titles | news |
 | subscriptions, subscription_plans, gift_codes, payments, subscription_audit_logs | |
@@ -131,8 +132,9 @@ int reconcileReplyCounts();
 idempotente → sem double-count. **Não use trigger.** Contadores sem fonte (likes/views/popularity/
 rating/interested) ficam só por incremento — documentar.
 
-Reconciliáveis hoje: `forum_topics.reply_count`←`forum_replies`, `groups.total_titles`←`group_works`,
-`events.participants`←`event_participants`.
+Reconciliáveis hoje: `groups.total_titles`←`group_works`,
+`events.participants`←`event_participants` (Postgres) e
+`forum_topics.replyCount`←`comments {targetType=FORUM_TOPIC}` (Mongo, mesmo job).
 
 ---
 

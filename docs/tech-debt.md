@@ -837,14 +837,25 @@ criar coleções/tabelas separadas de "replies". Voto único (padrão resenha):
   `reviews_votes` (convenção `<pai>_votes`).
 - Migrations Mongock `V014RenameReviewVotesCollection`, `V015UnifyCommentVotes`.
 
-**Pendente (próxima fase — fórum → Mongo):**
-- Migrar `forum_topics`/`forum_replies` (Postgres) para Mongo; **réplicas viram
-  `comments` `targetType=FORUM_TOPIC`** (elimina `forum_replies`). Autor vira snapshot
-  `userId/userName/userPhoto`. Runner cross-DB `V016MigrateForumToMongo` (lê JPA, grava
-  Mongo, valida contagem) + Flyway `V33` drop das tabelas (deploy em 2 fases).
-- `CounterReconciliationJob`: versão Mongo dos contadores `upvotes`/`downvotes`/`replyCount`
-  (`SET = COUNT`), hoje só Postgres.
-- **Corpo do texto**: convergir `comment`/`content` para `textContent` (já no `comments`).
+**Fórum → Mongo ENTREGUE (2026-06-09):**
+- `forum_topics` migrou para coleção Mongo (autor snapshot `authorId/authorName/authorPhoto`,
+  `like_count`→`upvotes`); **réplicas viram `comments` `targetType=FORUM_TOPIC`**
+  (`forum_replies` eliminado; `is_best_answer`→`isHighlighted`). Votos de tópico em
+  `forum_topics_votes` (use cases via `VoteToggle`), endpoints `/api/forum/{id}/vote`.
+- Runner cross-DB `V016MigrateForumToMongo` (JDBC puro + verificação de contagem,
+  aborta em divergência; cria índices das coleções novas).
+  **Fase 2 pendente:** Flyway `V33__drop_forum_postgres_tables.sql` — criar SOMENTE
+  num deploy posterior, após confirmar o Mongo em produção (tabelas PG ficam como
+  rollback até lá).
+- `CounterReconciliationJob` agora reconcilia também no Mongo:
+  `forum_topics.replyCount = COUNT(comments do tópico)`.
+
+**Pendente:**
+- Reconciliação dos contadores `upvotes`/`downvotes` (fonte = coleções `*_votes`)
+  — só `replyCount` entrou no job; votos seguem por incremento.
+- Votos de respostas do fórum no frontend (backend pronto via `/api/comments/{id}/vote`;
+  UI ainda não expõe).
+- **Corpo do texto**: convergir `comment` (resenha) para `textContent` (já padrão no `comments`).
 - **Rename `ratings`→`reviews`** (coleção + pacote `domain.rating` + `title_rating_aggregate`):
   adiado por blast radius (módulo `rating-aggregator` + métricas admin + denormalização +
   ~6 changeunits históricas referenciam o literal). `ratings` não é ambíguo; baixa prioridade.

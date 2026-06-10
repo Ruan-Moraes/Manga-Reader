@@ -1,35 +1,23 @@
-package com.mangareader.application.forum.port;
+package com.mangareader.infrastructure.persistence.mongo.repository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
 
 /**
- * Port de saída — acesso a dados de Forum Topics (MongoDB).
- * <p>
- * Respostas não passam por aqui: são comentários unificados
- * ({@code CommentRepositoryPort}, targetType=FORUM_TOPIC).
+ * Spring Data MongoDB repository para tópicos do fórum.
  */
-public interface ForumRepositoryPort {
-    Page<ForumTopic> findAll(Pageable pageable);
-
-    /** Listagem particionada por idioma (UGC). */
+public interface ForumTopicMongoRepository extends MongoRepository<ForumTopic, String> {
     Page<ForumTopic> findByLanguageIn(Collection<String> languages, Pageable pageable);
-
-    Optional<ForumTopic> findById(String id);
 
     Page<ForumTopic> findByCategory(ForumCategory category, Pageable pageable);
 
     Page<ForumTopic> findByCategoryAndLanguageIn(ForumCategory category, Collection<String> languages, Pageable pageable);
 
-    ForumTopic save(ForumTopic topic);
-
     long countByAuthorId(String authorId);
-
-    void deleteById(String id);
 }

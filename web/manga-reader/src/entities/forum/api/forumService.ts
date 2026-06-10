@@ -35,7 +35,7 @@ const sortTopics = (topics: ForumTopic[], sort: ForumSort): ForumTopic[] => {
     const sorted = [...unpinned].sort((a, b) => {
         switch (sort) {
             case 'popular':
-                return b.likeCount - a.likeCount;
+                return b.upvotes - a.upvotes;
             case 'most-replies':
                 return b.replyCount - a.replyCount;
             case 'oldest':
@@ -69,6 +69,25 @@ export const getForumTopicById = async (id: string): Promise<ForumTopic> => {
 
 export const getForumCategories = async (): Promise<ForumCategory[]> => {
     const response = await api.get<ApiResponse<ForumCategory[]>>(`${API_URLS.FORUM}/categories`);
+
+    return response.data.data;
+};
+
+type VoteResponse = {
+    upvotes: number;
+    downvotes: number;
+    myVote?: 'up' | 'down' | null;
+};
+
+/** Voto padronizado no tópico (toggle no backend). */
+export const voteForumTopic = async (id: string, value: 'up' | 'down'): Promise<VoteResponse> => {
+    const response = await api.post<ApiResponse<VoteResponse>>(`${API_URLS.FORUM}/${id}/vote`, { value });
+
+    return response.data.data;
+};
+
+export const removeForumTopicVote = async (id: string): Promise<VoteResponse> => {
+    const response = await api.delete<ApiResponse<VoteResponse>>(`${API_URLS.FORUM}/${id}/vote`);
 
     return response.data.data;
 };

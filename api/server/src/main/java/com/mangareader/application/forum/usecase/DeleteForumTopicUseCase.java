@@ -5,7 +5,10 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.forum.port.ForumRepositoryPort;
+import com.mangareader.application.forum.port.ForumTopicVoteRepositoryPort;
+import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -13,25 +16,29 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Remove um tópico do fórum.
- * <p>
- * Somente o autor do tópico pode removê-lo.
+ * Remove um tópico do fórum (somente o autor), em cascata: as respostas
+ * (comments targetType=FORUM_TOPIC) e os votos do tópico vão junto — sem FK no
+ * Mongo, a cascata é responsabilidade do use case.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class DeleteForumTopicUseCase {
 
     private final ForumRepositoryPort forumRepository;
+    private final CommentRepositoryPort commentRepository;
+    private final ForumTopicVoteRepositoryPort voteRepository;
 
-    @Transactional
-    public void execute(UUID topicId, UUID userId) {
+    public void execute(String topicId, UUID userId) {
         ForumTopic topic = forumRepository.findById(topicId)
                 .orElseThrow(() -> new ResourceNotFoundException("ForumTopic", "id", topicId));
 
-        if (!topic.getAuthor().getId().equals(userId)) {
+        if (!topic.getAuthorId().equals(userId.toString())) {
             throw new BusinessRuleException("Você só pode remover seus próprios tópicos", 403);
         }
 
+        commentRepository.deleteByTargetTypeAndTargetId(CommentTarget.FORUM_TOPIC, topicId);
+        voteRepository.deleteByTopicId(topicId);
         forumRepository.deleteById(topicId);
     }
 }

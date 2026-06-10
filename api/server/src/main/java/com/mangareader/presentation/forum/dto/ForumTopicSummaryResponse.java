@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * DTO de tópico do fórum para LISTAGEM — sem o array de replies.
  * <p>
  * Listagens expõem apenas {@code replyCount} (escalar desnormalizado em
- * {@code ForumTopic}). O array completo de replies vem só no detalhe
- * ({@link ForumTopicResponse}), evitando N+1 aninhado na listagem.
+ * {@code ForumTopic}). As respostas completas vêm só no detalhe
+ * ({@link ForumTopicResponse}).
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ForumTopicSummaryResponse(
@@ -23,8 +23,10 @@ public record ForumTopicSummaryResponse(
         String updatedAt,
         String lastActivityAt,
         int viewCount,
-        int replyCount,
-        int likeCount,
+        long replyCount,
+        long upvotes,
+        long downvotes,
+        String myVote,
         boolean isPinned,
         boolean isLocked,
         boolean isSolved,

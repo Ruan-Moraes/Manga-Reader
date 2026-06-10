@@ -41,4 +41,7 @@ public interface CommentRepositoryPort {
 
     /** Contagem de comentários de um alvo (ex.: replyCount de um tópico de fórum). */
     long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
+
+    /** Remove todos os comentários de um alvo (cascata ao excluir o subject, ex.: tópico de fórum). */
+    void deleteByTargetTypeAndTargetId(CommentTarget targetType, String targetId);
 }

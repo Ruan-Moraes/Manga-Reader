@@ -1,5 +1,7 @@
 package com.mangareader.infrastructure.persistence.postgres.adapter;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +27,11 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public Optional<User> findById(UUID id) {
         return jpaRepository.findById(id);
+    }
+
+    @Override
+    public List<User> findAllById(Collection<UUID> ids) {
+        return jpaRepository.findAllById(ids);
     }
 
     @Override

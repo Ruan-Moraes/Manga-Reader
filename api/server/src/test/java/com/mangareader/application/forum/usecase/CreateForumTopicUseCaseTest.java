@@ -21,10 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.application.forum.usecase.CreateForumTopicUseCase.CreateTopicInput;
+import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
 import com.mangareader.domain.user.entity.User;
-import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRepository;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,10 +36,10 @@ class CreateForumTopicUseCaseTest {
     private ForumRepositoryPort forumRepository;
 
     @Mock
-    private UserJpaRepository userRepository;
+    private UserRepositoryPort userRepository;
 
     @Mock
-    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;
+    private LocaleResolutionService localeResolver;
 
     @InjectMocks
     private CreateForumTopicUseCase createForumTopicUseCase;
@@ -51,6 +52,7 @@ class CreateForumTopicUseCaseTest {
                 .name("Ruan Silva")
                 .email("ruan@email.com")
                 .passwordHash("hash")
+                .photoUrl("https://example.com/photo.jpg")
                 .build();
     }
 
@@ -59,19 +61,18 @@ class CreateForumTopicUseCaseTest {
     class Sucesso {
 
         @Test
-        @DisplayName("Deve criar tópico com autor, título, conteúdo, categoria e tags")
+        @DisplayName("Deve criar tópico com autor em snapshot, título, conteúdo, categoria e tags")
         void deveCriarTopicoCompleto() {
-            // Arrange
             var input = new CreateTopicInput(USER_ID, "Melhor mangá de 2026?",
                     "Qual vocês acham o melhor?", ForumCategory.GERAL, List.of("discussão", "2026"));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(forumRepository.save(any(ForumTopic.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            // Act
             ForumTopic result = createForumTopicUseCase.execute(input);
 
-            // Assert
-            assertThat(result.getAuthor().getId()).isEqualTo(USER_ID);
+            assertThat(result.getAuthorId()).isEqualTo(USER_ID.toString());
+            assertThat(result.getAuthorName()).isEqualTo("Ruan Silva");
+            assertThat(result.getAuthorPhoto()).isEqualTo("https://example.com/photo.jpg");
             assertThat(result.getTitle()).isEqualTo("Melhor mangá de 2026?");
             assertThat(result.getContent()).isEqualTo("Qual vocês acham o melhor?");
             assertThat(result.getCategory()).isEqualTo(ForumCategory.GERAL);
@@ -81,30 +82,24 @@ class CreateForumTopicUseCaseTest {
         @Test
         @DisplayName("Deve usar lista vazia quando tags é null")
         void deveUsarListaVaziaQuandoTagsNull() {
-            // Arrange
             var input = new CreateTopicInput(USER_ID, "Sem tags", "Conteúdo", ForumCategory.SUPORTE, null);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(forumRepository.save(any(ForumTopic.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            // Act
             ForumTopic result = createForumTopicUseCase.execute(input);
 
-            // Assert
             assertThat(result.getTags()).isEmpty();
         }
 
         @Test
         @DisplayName("Deve persistir o tópico via repositório")
         void devePersistirTopico() {
-            // Arrange
             var input = new CreateTopicInput(USER_ID, "Título", "Conteúdo", ForumCategory.GERAL, null);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(forumRepository.save(any(ForumTopic.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            // Act
             createForumTopicUseCase.execute(input);
 
-            // Assert
             ArgumentCaptor<ForumTopic> captor = ArgumentCaptor.forClass(ForumTopic.class);
             verify(forumRepository).save(captor.capture());
             assertThat(captor.getValue().getTitle()).isEqualTo("Título");
@@ -118,11 +113,9 @@ class CreateForumTopicUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando autor não existe")
         void deveLancarExcecaoQuandoAutorNaoExiste() {
-            // Arrange
             var input = new CreateTopicInput(USER_ID, "Título", "Conteúdo", ForumCategory.GERAL, null);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-            // Act & Assert
             assertThatThrownBy(() -> createForumTopicUseCase.execute(input))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("User");

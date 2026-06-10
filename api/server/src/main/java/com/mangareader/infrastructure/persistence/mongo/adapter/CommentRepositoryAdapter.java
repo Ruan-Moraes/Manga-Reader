@@ -78,4 +78,9 @@ public class CommentRepositoryAdapter implements CommentRepositoryPort {
     public long countByTargetTypeAndTargetId(CommentTarget targetType, String targetId) {
         return repository.countByTargetTypeAndTargetId(targetType, targetId);
     }
+
+    @Override
+    public void deleteByTargetTypeAndTargetId(CommentTarget targetType, String targetId) {
+        repository.deleteByTargetTypeAndTargetId(targetType, targetId);
+    }
 }

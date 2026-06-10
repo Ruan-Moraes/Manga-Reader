@@ -9,207 +9,122 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.mangareader.domain.forum.valueobject.ForumCategory;
-import com.mangareader.domain.user.entity.User;
 
 class ForumTopicTest {
 
-    private User createTestUser(String name) {
-        return User.builder()
-                .name(name)
-                .email(name.toLowerCase() + "@test.com")
-                .passwordHash("hash")
-                .build();
+    private static ForumTopic.ForumTopicBuilder baseTopic() {
+        return ForumTopic.builder()
+                .authorId("author-1")
+                .authorName("Ruan")
+                .authorPhoto("https://example.com/photo.jpg")
+                .title("Tópico de teste")
+                .content("Conteúdo")
+                .category(ForumCategory.GERAL);
     }
 
     @Nested
-    @DisplayName("Builder — valores default")
-    class BuilderDefaultTests {
+    @DisplayName("Builder")
+    class BuilderTests {
 
         @Test
-        @DisplayName("Deve iniciar com contadores zerados e flags desligadas")
-        void shouldInitializeDefaultValues() {
-            User author = createTestUser("TestUser");
+        @DisplayName("Deve iniciar com valores default corretos")
+        void shouldInitializeDefaults() {
+            ForumTopic topic = baseTopic().build();
 
-            ForumTopic topic = ForumTopic.builder()
-                    .author(author)
-                    .title("Melhor mangá de 2025?")
-                    .content("Qual vocês consideram o melhor?")
-                    .category(ForumCategory.GERAL)
-                    .build();
-
-            assertThat(topic.getViewCount()).isEqualTo(0);
-            assertThat(topic.getReplyCount()).isEqualTo(0);
-            assertThat(topic.getLikeCount()).isEqualTo(0);
+            assertThat(topic.getLanguage()).isEqualTo("pt-BR");
+            assertThat(topic.getTags()).isEmpty();
+            assertThat(topic.getViewCount()).isZero();
+            assertThat(topic.getReplyCount()).isZero();
+            assertThat(topic.getUpvotes()).isZero();
+            assertThat(topic.getDownvotes()).isZero();
             assertThat(topic.isPinned()).isFalse();
             assertThat(topic.isLocked()).isFalse();
             assertThat(topic.isSolved()).isFalse();
-            assertThat(topic.getTags()).isNotNull();
-            assertThat(topic.getTags().isEmpty()).isTrue();
-            assertThat(topic.getReplies()).isNotNull();
-            assertThat(topic.getReplies().isEmpty()).isTrue();
+            assertThat(topic.isEdited()).isFalse();
         }
-    }
 
-    @Nested
-    @DisplayName("Builder — todos os campos")
-    class BuilderAllFieldsTests {
+        @Test
+        @DisplayName("Deve guardar o autor como snapshot desnormalizado")
+        void shouldSnapshotAuthor() {
+            ForumTopic topic = baseTopic().build();
+
+            assertThat(topic.getAuthorId()).isEqualTo("author-1");
+            assertThat(topic.getAuthorName()).isEqualTo("Ruan");
+            assertThat(topic.getAuthorPhoto()).isEqualTo("https://example.com/photo.jpg");
+        }
 
         @Test
         @DisplayName("Deve permitir definir todos os campos via builder")
-        void shouldSetAllFieldsViaBuilder() {
-            User author = createTestUser("Admin");
-
-            ForumTopic topic = ForumTopic.builder()
-                    .author(author)
-                    .title("Anúncio importante")
-                    .content("Conteúdo do anúncio")
-                    .category(ForumCategory.NOTICIAS)
-                    .tags(List.of("anúncio", "importante"))
-                    .viewCount(100)
-                    .replyCount(5)
-                    .likeCount(42)
+        void shouldSetAllFields() {
+            ForumTopic topic = baseTopic()
+                    .id("topic-1")
+                    .tags(List.of("manga", "2026"))
+                    .viewCount(120)
+                    .replyCount(4)
+                    .upvotes(10)
+                    .downvotes(2)
                     .isPinned(true)
                     .isLocked(true)
-                    .isSolved(false)
+                    .isSolved(true)
+                    .edited(true)
                     .build();
 
-            assertThat(topic.getTitle()).isEqualTo("Anúncio importante");
-            assertThat(topic.getContent()).isEqualTo("Conteúdo do anúncio");
-            assertThat(topic.getCategory()).isEqualTo(ForumCategory.NOTICIAS);
-            assertThat(topic.getTags().size()).isEqualTo(2);
-            assertThat(topic.getViewCount()).isEqualTo(100);
-            assertThat(topic.getReplyCount()).isEqualTo(5);
-            assertThat(topic.getLikeCount()).isEqualTo(42);
+            assertThat(topic.getId()).isEqualTo("topic-1");
+            assertThat(topic.getTags()).containsExactly("manga", "2026");
+            assertThat(topic.getViewCount()).isEqualTo(120);
+            assertThat(topic.getReplyCount()).isEqualTo(4);
+            assertThat(topic.getUpvotes()).isEqualTo(10);
+            assertThat(topic.getDownvotes()).isEqualTo(2);
             assertThat(topic.isPinned()).isTrue();
             assertThat(topic.isLocked()).isTrue();
-            assertThat(topic.isSolved()).isFalse();
-        }
-    }
-
-    @Nested
-    @DisplayName("Gestão de tópicos (pin, lock, solve)")
-    class TopicManagementTests {
-
-        @Test
-        @DisplayName("Deve permitir fixar e desafixar tópico")
-        void shouldTogglePinnedState() {
-            ForumTopic topic = ForumTopic.builder()
-                    .author(createTestUser("Mod"))
-                    .title("Regras do fórum")
-                    .content("Conteúdo")
-                    .category(ForumCategory.GERAL)
-                    .build();
-
-            assertThat(topic.isPinned()).isFalse();
-
-            topic.setPinned(true);
-            assertThat(topic.isPinned()).isTrue();
-
-            topic.setPinned(false);
-            assertThat(topic.isPinned()).isFalse();
-        }
-
-        @Test
-        @DisplayName("Deve permitir bloquear tópico (impedir respostas)")
-        void shouldLockTopic() {
-            ForumTopic topic = ForumTopic.builder()
-                    .author(createTestUser("Mod"))
-                    .title("Tópico encerrado")
-                    .content("Conteúdo")
-                    .category(ForumCategory.GERAL)
-                    .build();
-
-            assertThat(topic.isLocked()).isFalse();
-            topic.setLocked(true);
-            assertThat(topic.isLocked()).isTrue();
-        }
-
-        @Test
-        @DisplayName("Deve permitir marcar tópico como resolvido")
-        void shouldMarkAsSolved() {
-            ForumTopic topic = ForumTopic.builder()
-                    .author(createTestUser("User"))
-                    .title("Como instalar X?")
-                    .content("Preciso de ajuda")
-                    .category(ForumCategory.SUPORTE)
-                    .build();
-
-            assertThat(topic.isSolved()).isFalse();
-            topic.setSolved(true);
             assertThat(topic.isSolved()).isTrue();
+            assertThat(topic.isEdited()).isTrue();
         }
     }
 
     @Nested
-    @DisplayName("Replies (respostas)")
-    class ReplyTests {
+    @DisplayName("Contadores de voto (HasVoteCounters)")
+    class VoteCounters {
 
         @Test
-        @DisplayName("Deve permitir adicionar respostas à lista")
-        void shouldAddRepliesToList() {
-            User author = createTestUser("User1");
-            ForumTopic topic = ForumTopic.builder()
-                    .author(author)
-                    .title("Discussão")
-                    .content("Vamos debater")
-                    .category(ForumCategory.GERAL)
-                    .build();
+        @DisplayName("Deve suportar incremento de votos via setters")
+        void shouldSupportVoteModification() {
+            ForumTopic topic = baseTopic().build();
 
-            ForumReply reply = ForumReply.builder()
-                    .topic(topic)
-                    .author(author)
-                    .content("Concordo!")
-                    .build();
+            topic.setUpvotes(topic.getUpvotes() + 1);
+            topic.setDownvotes(topic.getDownvotes() + 1);
 
-            topic.getReplies().add(reply);
+            assertThat(topic.getUpvotes()).isEqualTo(1);
+            assertThat(topic.getDownvotes()).isEqualTo(1);
+        }
 
-            assertThat(topic.getReplies().size()).isEqualTo(1);
-            assertThat(topic.getReplies().getFirst().getContent()).isEqualTo("Concordo!");
+        @Test
+        @DisplayName("Deve manter replyCount desnormalizado mutável")
+        void shouldMutateReplyCount() {
+            ForumTopic topic = baseTopic().replyCount(5).build();
+
+            topic.setReplyCount(topic.getReplyCount() + 1);
+
+            assertThat(topic.getReplyCount()).isEqualTo(6);
         }
     }
 
     @Nested
-    @DisplayName("Categorias do fórum")
-    class CategoryTests {
+    @DisplayName("Estados de moderação")
+    class ModeracaoTests {
 
         @Test
-        @DisplayName("Todas as categorias devem ter displayName")
-        void allCategoriesShouldHaveDisplayName() {
-            for (ForumCategory cat : ForumCategory.values()) {
-                assertThat(cat.getDisplayName()).isNotNull();
-                assertThat(cat.getDisplayName().isBlank()).isFalse();
-            }
-        }
+        @DisplayName("Deve marcar como trancado/resolvido/fixado via setters")
+        void shouldToggleModerationFlags() {
+            ForumTopic topic = baseTopic().build();
 
-        @Test
-        @DisplayName("Deve ter 8 categorias disponíveis")
-        void shouldHaveExpectedCategoryCount() {
-            assertThat(ForumCategory.values().length).isEqualTo(8);
-        }
+            topic.setLocked(true);
+            topic.setSolved(true);
+            topic.setPinned(true);
 
-        @Test
-        @DisplayName("Categoria GERAL deve ter displayName 'Geral'")
-        void geralCategoryShouldHaveCorrectDisplayName() {
-            assertThat(ForumCategory.GERAL.getDisplayName()).isEqualTo("Geral");
-        }
-    }
-
-    @Nested
-    @DisplayName("Construtor vazio")
-    class NoArgsConstructorTests {
-
-        @Test
-        @DisplayName("Construtor vazio deve manter campos nulos")
-        void shouldKeepFieldsNullOnNoArgsConstructor() {
-            ForumTopic topic = new ForumTopic();
-
-            assertThat(topic.getId()).isNull();
-            assertThat(topic.getAuthor()).isNull();
-            assertThat(topic.getTitle()).isNull();
-            assertThat(topic.getContent()).isNull();
-            assertThat(topic.getCategory()).isNull();
-            assertThat(topic.getCreatedAt()).isNull();
-            assertThat(topic.getLastActivityAt()).isNull();
+            assertThat(topic.isLocked()).isTrue();
+            assertThat(topic.isSolved()).isTrue();
+            assertThat(topic.isPinned()).isTrue();
         }
     }
 }

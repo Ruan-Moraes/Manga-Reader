@@ -3,29 +3,16 @@ package com.mangareader.domain.forum.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mangareader.domain.forum.valueobject.ForumCategory;
-import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.domain.vote.HasVoteCounters;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,91 +20,88 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Tópico do fórum (PostgreSQL).
+ * Tópico do fórum (MongoDB) — subject do modelo de comentário unificado.
  * <p>
- * Compatível com o frontend ({@code ForumTopic} em forum.types.ts).
+ * As respostas NÃO ficam aqui: são documentos da coleção {@code comments} com
+ * {@code targetType=FORUM_TOPIC} e {@code targetId} = id deste tópico
+ * (padrão arquitetural oficial — sem coleções de "replies").
+ * <p>
+ * Autor é snapshot desnormalizado ({@code authorId}/{@code authorName}/
+ * {@code authorPhoto}), como nos demais UGC do Mongo; dados vivos do autor
+ * (role, postCount, joinedAt) são resolvidos na apresentação a partir do
+ * Postgres. Votos seguem o modelo único ({@code forum_topics_votes});
+ * {@code replyCount} é desnormalizado e reconciliado por job
+ * ({@code SET = COUNT} sobre {@code comments}).
+ * <p>
+ * Índices reais criados em V016 (auto-index-creation=false; anotações são
+ * documentação).
  */
-@Entity
-@Table(name = "forum_topics")
+@Document(collection = "forum_topics")
+@CompoundIndex(name = "idx_forum_topics_category_language", def = "{'category': 1, 'language': 1, 'createdAt': -1}")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ForumTopic {
+public class ForumTopic implements HasVoteCounters {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    @Indexed
+    private String authorId;
 
-    @Column(nullable = false, length = 300)
+    private String authorName;
+    private String authorPhoto;
+
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     /**
      * Idioma do post (BCP 47). UGC é particionado — listagens filtram por
-     * este campo para evitar contaminação cross-language. Etapa 2/3 i18n.
+     * este campo para evitar contaminação cross-language.
      */
-    @Column(nullable = false, length = 10)
+    @Indexed
     @Builder.Default
     private String language = "pt-BR";
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
     private ForumCategory category;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
     @Builder.Default
     private List<String> tags = new ArrayList<>();
 
-    @Column(name = "view_count")
     @Builder.Default
     private int viewCount = 0;
 
-    @Column(name = "reply_count")
+    /** Desnormalizado: COUNT de comments {targetType=FORUM_TOPIC, targetId=id}. */
     @Builder.Default
-    private int replyCount = 0;
+    private long replyCount = 0;
 
-    @Column(name = "like_count")
     @Builder.Default
-    private int likeCount = 0;
+    private long upvotes = 0;
 
-    @Column(name = "is_pinned")
+    @Builder.Default
+    private long downvotes = 0;
+
     @Builder.Default
     private boolean isPinned = false;
 
-    @Column(name = "is_locked")
     @Builder.Default
     private boolean isLocked = false;
 
-    @Column(name = "is_solved")
     @Builder.Default
     private boolean isSolved = false;
 
     /** Conteúdo do tópico foi editado após a criação. */
-    @Column(name = "edited")
     @Builder.Default
     private boolean edited = false;
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ForumReply> replies = new ArrayList<>();
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @Column(name = "last_activity_at")
-    @UpdateTimestamp
+    /** Última atividade (criação, edição ou nova resposta). */
     private LocalDateTime lastActivityAt;
 
-    /** Última modificação de conteúdo (setada manualmente na edição; distinta de lastActivityAt). */
-    @Column(name = "updated_at")
+    /** Última modificação de conteúdo (setada manualmente na edição). */
     private LocalDateTime updatedAt;
 }

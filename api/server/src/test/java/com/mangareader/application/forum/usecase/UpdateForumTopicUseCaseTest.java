@@ -21,10 +21,8 @@ import com.mangareader.application.forum.port.ForumRepositoryPort;
 import com.mangareader.application.forum.usecase.UpdateForumTopicUseCase.UpdateTopicInput;
 import com.mangareader.domain.forum.entity.ForumTopic;
 import com.mangareader.domain.forum.valueobject.ForumCategory;
-import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
-import com.mangareader.mock.user.UserMock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UpdateForumTopicUseCase")
@@ -36,14 +34,14 @@ class UpdateForumTopicUseCaseTest {
     @InjectMocks
     private UpdateForumTopicUseCase updateForumTopicUseCase;
 
-    private final UUID TOPIC_ID = UUID.randomUUID();
+    private static final String TOPIC_ID = "topic-1";
     private final UUID AUTHOR_ID = UUID.randomUUID();
 
     private ForumTopic buildTopic() {
-        User author = UserMock.withId(AUTHOR_ID);
         return ForumTopic.builder()
                 .id(TOPIC_ID)
-                .author(author)
+                .authorId(AUTHOR_ID.toString())
+                .authorName("Autor")
                 .title("Título Original")
                 .content("Conteúdo original")
                 .category(ForumCategory.GERAL)

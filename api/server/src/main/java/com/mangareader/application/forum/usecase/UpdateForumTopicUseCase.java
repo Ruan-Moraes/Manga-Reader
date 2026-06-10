@@ -1,5 +1,6 @@
 package com.mangareader.application.forum.usecase;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,17 +16,17 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Atualiza um tópico existente do fórum.
- * <p>
- * Somente o autor do tópico pode editá-lo.
+ * Atualiza um tópico existente do fórum. Somente o autor pode editá-lo;
+ * tópico trancado não é editável.
  */
 @Service
+@Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class UpdateForumTopicUseCase {
     private final ForumRepositoryPort forumRepository;
 
     public record UpdateTopicInput(
-            UUID topicId,
+            String topicId,
             UUID userId,
             String title,
             String content,
@@ -33,12 +34,11 @@ public class UpdateForumTopicUseCase {
             List<String> tags
     ) {}
 
-    @Transactional
     public ForumTopic execute(UpdateTopicInput input) {
         ForumTopic topic = forumRepository.findById(input.topicId())
                 .orElseThrow(() -> new ResourceNotFoundException("ForumTopic", "id", input.topicId()));
 
-        if (!topic.getAuthor().getId().equals(input.userId())) {
+        if (!topic.getAuthorId().equals(input.userId().toString())) {
             throw new BusinessRuleException("Você só pode editar seus próprios tópicos", 403);
         }
 
@@ -62,13 +62,11 @@ public class UpdateForumTopicUseCase {
             topic.setTags(input.tags());
         }
 
+        LocalDateTime now = LocalDateTime.now();
         topic.setEdited(true);
-        topic.setUpdatedAt(java.time.LocalDateTime.now());
+        topic.setUpdatedAt(now);
+        topic.setLastActivityAt(now);
 
-        ForumTopic saved = forumRepository.save(topic);
-        saved.getAuthor().getName();
-        saved.getReplies().forEach(r -> r.getAuthor().getName());
-
-        return saved;
+        return forumRepository.save(topic);
     }
 }
