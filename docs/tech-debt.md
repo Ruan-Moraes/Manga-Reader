@@ -850,12 +850,16 @@ criar coleções/tabelas separadas de "replies". Voto único (padrão resenha):
 - `CounterReconciliationJob` agora reconcilia também no Mongo:
   `forum_topics.replyCount = COUNT(comments do tópico)`.
 
+**Entregue também (2026-06-09, leva 2):**
+- `CounterReconciliationJob` reconcilia `upvotes`/`downvotes` dos 3 pais votáveis a partir
+  de `<pai>_votes` (agregação + bulk update; zera órfãos via `$nin`).
+- UI de voto do fórum ligada ao API: tópico via `/api/forum/{id}/vote`, replies via
+  `/api/comments/{id}/vote` (`useTopicDetail` trocou o mock pelo API real).
+
 **Pendente:**
-- Reconciliação dos contadores `upvotes`/`downvotes` (fonte = coleções `*_votes`)
-  — só `replyCount` entrou no job; votos seguem por incremento.
-- Votos de respostas do fórum no frontend (backend pronto via `/api/comments/{id}/vote`;
-  UI ainda não expõe).
 - **Corpo do texto**: convergir `comment` (resenha) para `textContent` (já padrão no `comments`).
+- Testes de página do fórum (`ForumTopic.test.tsx`) referenciam o mock antigo e dependem de
+  jest-dom (quebrado no sandbox) — reescrever com msw quando o baseline for consertado.
 - **Rename `ratings`→`reviews`** (coleção + pacote `domain.rating` + `title_rating_aggregate`):
   adiado por blast radius (módulo `rating-aggregator` + métricas admin + denormalização +
   ~6 changeunits históricas referenciam o literal). `ratings` não é ambíguo; baixa prioridade.
