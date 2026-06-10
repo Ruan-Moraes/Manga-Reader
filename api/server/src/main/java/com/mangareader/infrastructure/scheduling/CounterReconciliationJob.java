@@ -52,7 +52,7 @@ public class CounterReconciliationJob {
         long topics = reconcileForumReplyCounts();
 
         long commentVotes = reconcileVoteCounters("comments_votes", "commentId", "comments");
-        long reviewVotes = reconcileVoteCounters("reviews_votes", "ratingId", "ratings");
+        long reviewVotes = reconcileVoteCounters("reviews_votes", "ratingId", "reviews");
         long topicVotes = reconcileVoteCounters("forum_topics_votes", "topicId", "forum_topics");
 
         log.info("Reconciliação de contadores: groups={}, events={}, forum_topics(replyCount)={}, "

@@ -20,7 +20,7 @@ import lombok.Setter;
  * <p>
  * {@code titleId} é o {@code _id} da coleção (1 documento por título).
  */
-@Document(collection = "title_rating_aggregate")
+@Document(collection = "reviews_aggregate")
 @Getter
 @Setter
 @NoArgsConstructor

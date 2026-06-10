@@ -17,10 +17,10 @@ import {
     useUpdateReview,
     useDeleteReview,
     REVIEW_SORT_KEYS,
-    type MangaRating,
+    type Review,
     type RatingDistribution,
     type ReviewSortKey,
-} from '@entities/rating';
+} from '@entities/review';
 import { useAuth } from '@features/auth';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { ROUTES } from '@shared/constant/ROUTES';
@@ -214,7 +214,7 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
     const { user } = useAuth();
     const currentUserId = user?.id;
 
-    const [editing, setEditing] = useState<MangaRating | null>(null);
+    const [editing, setEditing] = useState<Review | null>(null);
     const updateReviewMutation = useUpdateReview(titleId);
     const deleteReviewMutation = useDeleteReview(titleId);
 
@@ -228,7 +228,7 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
         voteMutation.mutate({ id, value: vote, currentVote: review.myVote ?? null });
     };
 
-    const ownerActions = (r: MangaRating) =>
+    const ownerActions = (r: Review) =>
         currentUserId && r.userId === currentUserId ? { onEdit: () => setEditing(r), onDelete: () => deleteReviewMutation.mutate(r.id) } : {};
 
     return (

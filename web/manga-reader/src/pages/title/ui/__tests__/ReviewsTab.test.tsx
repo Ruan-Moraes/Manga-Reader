@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MangaRating, RatingDistribution } from '@entities/rating';
+import type { Review, RatingDistribution } from '@entities/review';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
@@ -17,7 +17,7 @@ vi.mock('@features/auth', () => ({
 const average = { average: 4.9, count: 14820 };
 const distribution: RatingDistribution = { star1: 2, star2: 3, star3: 5, star4: 20, star5: 70, total: 100 };
 
-const buildRating = (overrides: Partial<MangaRating> = {}): MangaRating => ({
+const buildRating = (overrides: Partial<Review> = {}): Review => ({
     id: 'r1',
     titleId: 't1',
     userId: 'u1',
@@ -34,7 +34,7 @@ const buildRating = (overrides: Partial<MangaRating> = {}): MangaRating => ({
     ...overrides,
 });
 
-const page = (content: MangaRating[]) => ({
+const page = (content: Review[]) => ({
     content,
     page: 0,
     size: 10,
@@ -44,8 +44,8 @@ const page = (content: MangaRating[]) => ({
 });
 
 /** Registra o handler de listagem de resenhas (server-side, DT-47). */
-const mockReviews = (content: MangaRating[]) =>
-    server.use(http.get(`*${API_URLS.RATINGS}/title/t1`, () => HttpResponse.json({ data: page(content), success: true })));
+const mockReviews = (content: Review[]) =>
+    server.use(http.get(`*${API_URLS.REVIEWS}/title/t1`, () => HttpResponse.json({ data: page(content), success: true })));
 
 const renderTab = (props: Partial<Parameters<typeof ReviewsTab>[0]> = {}) =>
     renderWithProviders(<ReviewsTab titleId="t1" average={average} distribution={distribution} onWriteReview={() => {}} {...props} />);

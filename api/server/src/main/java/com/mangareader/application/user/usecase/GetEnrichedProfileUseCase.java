@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.library.port.LibraryRepositoryPort;
-import com.mangareader.application.rating.port.RatingRepositoryPort;
+import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -36,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class GetEnrichedProfileUseCase {
     private final UserRepositoryPort userRepository;
     private final CommentRepositoryPort commentRepository;
-    private final RatingRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort ratingRepository;
     private final LibraryRepositoryPort libraryRepository;
     private final RecommendationRepositoryPort recommendationRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;

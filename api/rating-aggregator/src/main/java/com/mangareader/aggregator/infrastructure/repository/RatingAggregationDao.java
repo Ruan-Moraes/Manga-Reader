@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class RatingAggregationDao {
-    private static final String RATINGS_COLLECTION = "ratings";
+    private static final String RATINGS_COLLECTION = "reviews";
 
     private final MongoTemplate mongoTemplate;
 

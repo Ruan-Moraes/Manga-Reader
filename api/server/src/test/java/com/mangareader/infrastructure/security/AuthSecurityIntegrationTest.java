@@ -352,9 +352,9 @@ class AuthSecurityIntegrationTest {
         }
 
         @Test
-        @DisplayName("POST /api/ratings sem token deve retornar 401 (protegido)")
+        @DisplayName("POST /api/reviews sem token deve retornar 401 (protegido)")
         void protectedEndpointShouldRequireToken() throws Exception {
-            mockMvc.perform(post("/api/ratings")
+            mockMvc.perform(post("/api/reviews")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{}"))
                     .andExpect(status().isUnauthorized());

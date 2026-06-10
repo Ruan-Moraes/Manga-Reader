@@ -21,7 +21,7 @@ export const API_URLS = {
 
     COMMENTS: `${BASE}/api/comments`,
 
-    RATINGS: `${BASE}/api/ratings`,
+    REVIEWS: `${BASE}/api/reviews`,
 
     LIBRARY: `${BASE}/api/library`,
 

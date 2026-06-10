@@ -6,7 +6,7 @@ import { GroupCard } from '@entities/group';
 import { MangaCard } from '@entities/manga';
 import { MangaPoster } from '@ui/MangaPoster';
 import { NotificationItem } from '@ui/NotificationItem';
-import { ReviewCard } from '@entities/rating';
+import { ReviewCard } from '@entities/review';
 
 import { PhaseHeader, Section, SubSection } from './showcaseShared';
 

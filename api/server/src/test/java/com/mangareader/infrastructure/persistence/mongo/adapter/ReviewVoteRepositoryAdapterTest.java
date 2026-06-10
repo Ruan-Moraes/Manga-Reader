@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.mangareader.domain.rating.entity.ReviewVote;
+import com.mangareader.domain.review.entity.ReviewVote;
 import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig;
 import com.mangareader.infrastructure.persistence.mongo.repository.ReviewVoteMongoRepository;

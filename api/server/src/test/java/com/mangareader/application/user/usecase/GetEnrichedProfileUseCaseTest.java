@@ -23,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.library.port.LibraryRepositoryPort;
-import com.mangareader.application.rating.port.RatingRepositoryPort;
+import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -48,7 +48,7 @@ class GetEnrichedProfileUseCaseTest {
     private CommentRepositoryPort commentRepository;
 
     @Mock
-    private RatingRepositoryPort ratingRepository;
+    private ReviewRepositoryPort ratingRepository;
 
     @Mock
     private LibraryRepositoryPort libraryRepository;

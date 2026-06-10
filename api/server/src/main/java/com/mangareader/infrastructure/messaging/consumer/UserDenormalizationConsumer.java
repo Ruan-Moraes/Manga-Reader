@@ -71,7 +71,7 @@ public class UserDenormalizationConsumer {
 
         Update update = new Update().set("userName", event.newName());
 
-        var result = mongoTemplate.updateMulti(query, update, "ratings");
+        var result = mongoTemplate.updateMulti(query, update, "reviews");
 
         log.debug("Updated {} ratings for userId {}", result.getModifiedCount(), event.userId());
     }

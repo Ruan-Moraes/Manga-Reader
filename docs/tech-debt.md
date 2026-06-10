@@ -871,9 +871,14 @@ criar coleções/tabelas separadas de "replies". Voto único (padrão resenha):
 **Pendente:**
 - Testes de página do fórum (`ForumTopic.test.tsx`) referenciam o fluxo antigo e dependem de
   jest-dom (quebrado no sandbox) — reescrever com msw quando o baseline for consertado.
-- **Rename `ratings`→`reviews`** (coleção + pacote `domain.rating` + `title_rating_aggregate`):
-  adiado por blast radius (módulo `rating-aggregator` + métricas admin + denormalização +
-  ~6 changeunits históricas referenciam o literal). `ratings` não é ambíguo; baixa prioridade.
+- **Rename `ratings`→`reviews` ENTREGUE (2026-06-10)**: coleções `reviews`/`reviews_aggregate`
+  (Mongock V018 no server + V002 no aggregator — renames idempotentes nos DOIS changelogs
+  porque a ordem de boot dos dois apps não é garantida); pacotes `domain/application/
+  presentation.rating`→`.review` e classes `MangaRating`→`Review`, `Rating*`→`Review*`;
+  rota `/api/ratings`→`/api/reviews` (+ `SecurityConfig` permitAll atualizado); frontend
+  `entities/rating`→`entities/review` + `API_URLS.REVIEWS`. Mantidos por serem contrato
+  cross-módulo/conceito de nota: `RatingEvent`, `TitleRatingAggregate*` (classes internas;
+  coleção renomeada), `RatingStars`/`RatingModal`/`useRatingSummary` (são sobre a NOTA).
 - Profundidade ilimitada: paginação/lazy-load de threads profundas (evitar N+1/payload grande).
 
 **Recomendação**: usar a skill `database-design` + `docs/database-modeling.md`; migrar o

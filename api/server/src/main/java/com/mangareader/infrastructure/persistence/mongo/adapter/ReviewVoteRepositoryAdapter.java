@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.mangareader.application.rating.port.ReviewVoteRepositoryPort;
-import com.mangareader.domain.rating.entity.ReviewVote;
+import com.mangareader.application.review.port.ReviewVoteRepositoryPort;
+import com.mangareader.domain.review.entity.ReviewVote;
 import com.mangareader.infrastructure.persistence.mongo.repository.ReviewVoteMongoRepository;
 
 import lombok.RequiredArgsConstructor;

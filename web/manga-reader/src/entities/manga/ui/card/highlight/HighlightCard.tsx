@@ -6,7 +6,7 @@ import type { HighlightCard as HighlightCardProps } from '../../../model/title-c
 import TitleInfoCard from '../../information/TitleInfoCard';
 import AppLink from '@ui/AppLink';
 
-import { RatingStars } from '@entities/rating/@x/manga';
+import { RatingStars } from '@entities/review/@x/manga';
 import { Image } from 'lucide-react';
 
 const HighlightCard = ({

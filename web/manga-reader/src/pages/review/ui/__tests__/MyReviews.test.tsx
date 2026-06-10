@@ -4,8 +4,8 @@ import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import { axeComponent } from '@/test/helpers/axe';
 import MyReviews from '../MyReviews';
 
-vi.mock('@entities/rating', async importOriginal => {
-    const actual = await importOriginal<typeof import('@entities/rating')>();
+vi.mock('@entities/review', async importOriginal => {
+    const actual = await importOriginal<typeof import('@entities/review')>();
     return {
         ...actual,
         getUserReviews: vi.fn(),
@@ -16,7 +16,7 @@ vi.mock('@entities/rating', async importOriginal => {
 
 vi.mock('@shared/service/util/toastService');
 
-import { getUserReviews } from '@entities/rating';
+import { getUserReviews } from '@entities/review';
 
 const mockReview = {
     id: 'r1',

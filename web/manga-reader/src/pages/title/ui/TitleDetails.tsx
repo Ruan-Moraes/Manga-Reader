@@ -13,7 +13,7 @@ import { EmptyState } from '@ui/EmptyState';
 
 import { useTitle, useTitleModals } from '@entities/manga';
 import { useChapters } from '@entities/chapter';
-import { useRatingSummary, useSubmitReview, RatingModal } from '@entities/rating';
+import { useRatingSummary, useSubmitReview, RatingModal } from '@entities/review';
 import { getGroupsByTitleId } from '@entities/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { useAuth } from '@features/auth';

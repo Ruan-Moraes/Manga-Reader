@@ -14,14 +14,14 @@ import { Card } from '@ui/Card';
 
 import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
 
-import { getUserReviews, updateReview, deleteReview, type MangaRating } from '@entities/rating';
+import { getUserReviews, updateReview, deleteReview, type Review } from '@entities/review';
 
 const ReviewCard = ({
     review,
     onUpdate,
     onDelete,
 }: {
-    review: MangaRating;
+    review: Review;
     onUpdate: (id: string, comment: string) => Promise<void>;
     onDelete: (id: string) => void;
 }) => {
@@ -99,7 +99,7 @@ const ReviewCard = ({
 
 const MyReviews = () => {
     const { t } = useTranslation('rating');
-    const [reviews, setReviews] = useState<MangaRating[]>([]);
+    const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMore, setHasMore] = useState(false);

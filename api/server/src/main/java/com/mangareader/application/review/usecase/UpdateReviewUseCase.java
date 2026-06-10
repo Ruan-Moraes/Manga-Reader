@@ -1,0 +1,101 @@
+package com.mangareader.application.review.usecase;
+
+import java.util.UUID;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mangareader.application.review.port.ReviewRepositoryPort;
+import com.mangareader.application.shared.event.RatingEvent;
+import com.mangareader.application.shared.port.EventPublisherPort;
+import com.mangareader.domain.review.entity.Review;
+import com.mangareader.shared.constant.CacheNames;
+import com.mangareader.shared.exception.BusinessRuleException;
+import com.mangareader.shared.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Atualiza uma avaliação existente.
+ * <p>
+ * Verifica se a avaliação pertence ao usuário autenticado.
+ */
+@Service
+@Transactional("mongoTransactionManager")
+@RequiredArgsConstructor
+public class UpdateReviewUseCase {
+    private final ReviewRepositoryPort ratingRepository;
+    private final EventPublisherPort eventPublisher;
+
+    public record UpdateReviewInput(
+            String ratingId,
+            UUID userId,
+            Double funRating,
+            Double artRating,
+            Double storylineRating,
+            Double charactersRating,
+            Double originalityRating,
+            Double pacingRating,
+            String textContent,
+            String reviewTitle,
+            Boolean spoiler
+    ) {}
+
+    @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
+    public Review execute(UpdateReviewInput input) {
+        Review rating = ratingRepository.findById(input.ratingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Rating", "id", input.ratingId()));
+
+        if (!rating.getUserId().equals(input.userId().toString())) {
+            throw new BusinessRuleException("Você só pode editar suas próprias avaliações", 403);
+        }
+
+        if (input.funRating() != null) {
+            rating.setFunRating(input.funRating());
+        }
+
+        if (input.artRating() != null) {
+            rating.setArtRating(input.artRating());
+        }
+
+        if (input.storylineRating() != null) {
+            rating.setStorylineRating(input.storylineRating());
+        }
+
+        if (input.charactersRating() != null) {
+            rating.setCharactersRating(input.charactersRating());
+        }
+
+        if (input.originalityRating() != null) {
+            rating.setOriginalityRating(input.originalityRating());
+        }
+
+        if (input.pacingRating() != null) {
+            rating.setPacingRating(input.pacingRating());
+        }
+
+        if (input.textContent() != null) {
+            rating.setTextContent(input.textContent());
+        }
+
+        if (input.reviewTitle() != null) {
+            rating.setReviewTitle(input.reviewTitle());
+        }
+
+        if (input.spoiler() != null) {
+            rating.setSpoiler(input.spoiler());
+        }
+
+        rating.setOverallRating(rating.calculateOverallRating());
+
+        rating.setEdited(true);
+        rating.setUpdatedAt(java.time.LocalDateTime.now());
+
+        Review saved = ratingRepository.save(rating);
+
+        eventPublisher.publish("rating.updated", new RatingEvent(rating.getTitleId(), input.userId().toString()));
+
+        return saved;
+    }
+}

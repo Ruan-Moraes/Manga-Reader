@@ -12,7 +12,7 @@ import lombok.Getter;
  * (schema owner). Aqui mapeamos apenas os campos lidos. {@code titleId} é o
  * {@code _id}.
  */
-@Document(collection = "title_rating_aggregate")
+@Document(collection = "reviews_aggregate")
 @Getter
 public class TitleRatingAggregateDocument {
     @Id

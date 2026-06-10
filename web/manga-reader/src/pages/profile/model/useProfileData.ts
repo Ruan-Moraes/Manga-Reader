@@ -1,5 +1,5 @@
 import { useEnrichedProfile, type ProfileData } from '@entities/user';
-import { useUserReviews, type MangaRating } from '@entities/rating';
+import { useUserReviews, type Review } from '@entities/review';
 import { useUserLibrary, type SavedMangaItem } from '@features/library';
 import { type Manga } from '@entities/manga';
 
@@ -51,7 +51,7 @@ export default function useProfileData(userId?: string) {
         profile,
         readingNow: lendo.map(toMangaFromLibrary),
         completed: concluido.map(toMangaFromLibrary),
-        reviews: reviews as MangaRating[],
+        reviews: reviews as Review[],
         recommendations: (enriched?.recommendations ?? []).map<Manga>(r => ({
             id: r.titleId,
             title: r.titleName,

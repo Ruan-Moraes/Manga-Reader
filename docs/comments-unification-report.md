@@ -122,6 +122,26 @@ Bugs/lacunas achados na revisão pós-migração e corrigidos:
   Mongock `V017` `$rename`); frontend traduz na borda do `ratingService` — todos os corpos
   de texto do UGC agora usam `textContent`.
 
+## 5.2 Leva 4 — rename `ratings`→`reviews` (2026-06-10)
+
+Último item de nomenclatura do plano original, antes adiado por blast radius:
+- **Dados**: coleções `ratings`→`reviews` e `title_rating_aggregate`→`reviews_aggregate`.
+  Mongock **V018** (server) + **V002** (rating-aggregator) — renames idempotentes nos DOIS
+  changelogs porque os apps compartilham o banco sem ordem de boot garantida; quem chegar
+  primeiro renomeia, o outro vira no-op. Índices herdados renomeados (`idx_reviews_*`).
+- **Código**: pacotes `*.rating`→`*.review`; `MangaRating`→`Review` e `Rating*`→`Review*`
+  (~42 arquivos + 31 renames de arquivo, tokens explícitos para não tocar `funRating` etc.).
+- **API**: rota `/api/ratings`→`/api/reviews` — incluindo o `permitAll` do `SecurityConfig`
+  (sem isso a listagem anônima de resenhas quebraria) e o teste de segurança.
+- **Frontend**: `entities/rating`→`entities/review`, `ratingService`→`reviewService`,
+  tipo `MangaRating`→`Review`, `API_URLS.REVIEWS`.
+- **Mantidos de propósito**: `RatingEvent` e `TitleRatingAggregate*` (contrato/conceito
+  cross-módulo com o aggregator; coleção renomeada, classes não) e `RatingStars`/
+  `RatingModal`/`useRatingSummary` no front (são sobre a NOTA, não sobre a resenha).
+
+Verificação: server 1009 testes / aggregator 7 / 0 falhas; `tsc` limpo; vitest das áreas
+84 testes com as mesmas 21 falhas do baseline jest-dom (comparado via stash — zero regressão).
+
 ## 6. Débitos técnicos identificados
 
 - Reconciliação Mongo dos contadores `upvotes`/`downvotes`/`replyCount` (job hoje só Postgres).

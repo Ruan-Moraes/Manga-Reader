@@ -1,8 +1,8 @@
-import type { MangaRating } from '@entities/rating/model/rating.types';
+import type { Review } from '@entities/review/model/review.types';
 
 let ratingCounter = 0;
 
-export const buildMangaRating = (overrides: Partial<MangaRating> = {}): MangaRating => {
+export const buildMangaRating = (overrides: Partial<Review> = {}): Review => {
     ratingCounter += 1;
 
     return {
@@ -77,4 +77,4 @@ export const mangaRatingPresets = {
     noTitleName: () => buildMangaRating({ titleName: undefined }),
 };
 
-export const buildMangaRatingList = (count = 10): MangaRating[] => Array.from({ length: count }, () => buildMangaRating());
+export const buildMangaRatingList = (count = 10): Review[] => Array.from({ length: count }, () => buildMangaRating());

@@ -7,7 +7,7 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import formatRelativeDate from '@shared/service/util/formatRelativeDate';
 
 import { MangaCard } from '@entities/manga';
-import { ReviewCard, RatingModal, useUpdateReview, useDeleteReview, type MangaRating } from '@entities/rating';
+import { ReviewCard, RatingModal, useUpdateReview, useDeleteReview, type Review } from '@entities/review';
 import { GroupCard } from '@entities/group';
 
 import { PageContainer } from '@ui/PageContainer';
@@ -20,7 +20,7 @@ import useProfileData from '../model/useProfileData';
 import UserProfileHeader from './parts/UserProfileHeader';
 import ActivityTab from './parts/ActivityTab';
 
-const ProfileReviewCard = ({ review, onEdit, onDelete }: { review: MangaRating; onEdit?: () => void; onDelete?: () => void }) => (
+const ProfileReviewCard = ({ review, onEdit, onDelete }: { review: Review; onEdit?: () => void; onDelete?: () => void }) => (
     <ReviewCard
         author={{ name: review.userName }}
         when={formatRelativeDate(review.createdAt)}
@@ -59,11 +59,11 @@ const UserProfile = () => {
 
     const { loading, error, profile, isOwn, readingNow, completed, reviews, recommendations, groupsFollowed, activity } = useProfileData(userId);
 
-    const [editing, setEditing] = useState<MangaRating | null>(null);
+    const [editing, setEditing] = useState<Review | null>(null);
     const updateReviewMutation = useUpdateReview(editing?.titleId);
     const deleteReviewMutation = useDeleteReview();
 
-    const ownerActions = (r: MangaRating) => (isOwn ? { onEdit: () => setEditing(r), onDelete: () => deleteReviewMutation.mutate(r.id) } : {});
+    const ownerActions = (r: Review) => (isOwn ? { onEdit: () => setEditing(r), onDelete: () => deleteReviewMutation.mutate(r.id) } : {});
 
     const tabItems = [
         { value: 'overview', label: t('profile.tabs.overview') },

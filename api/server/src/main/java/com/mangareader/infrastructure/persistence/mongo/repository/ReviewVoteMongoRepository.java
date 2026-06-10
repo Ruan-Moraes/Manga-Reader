@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.mangareader.domain.rating.entity.ReviewVote;
+import com.mangareader.domain.review.entity.ReviewVote;
 
 /**
  * Spring Data MongoDB repository para votos de resenha. DT-45.

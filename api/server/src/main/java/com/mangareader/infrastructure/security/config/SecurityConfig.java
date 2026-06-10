@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/titles/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/titles").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/ratings/title/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/title/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/groups/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/groups").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/news/**").permitAll()
