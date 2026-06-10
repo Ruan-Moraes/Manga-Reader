@@ -40,8 +40,14 @@ export default function useTopicDetail(topicId: string | undefined) {
                 setReplies(mappedReplies);
 
                 if (getStoredSession() && mappedReplies.length > 0) {
-                    const votes = await getUserCommentVotes(mappedReplies.map(r => r.id));
-                    if (!cancelled) setReplyVotes(votes);
+                    // Falha aqui não pode derrubar o tópico (o catch externo trata
+                    // "tópico não encontrado") — votos apenas ficam sem destaque.
+                    try {
+                        const votes = await getUserCommentVotes(mappedReplies.map(r => r.id));
+                        if (!cancelled) setReplyVotes(votes);
+                    } catch {
+                        /* estado de voto indisponível; segue sem destaque */
+                    }
                 }
             })
             .catch(() => {
@@ -75,10 +81,14 @@ export default function useTopicDetail(topicId: string | undefined) {
         async (content: string) => {
             if (!topic || !content.trim() || !requireAuth('responder')) return;
 
-            // O endpoint devolve o tópico completo atualizado (replyCount + replies).
-            const updated = await createForumReply(topic.id, content);
-            setTopic(toTopicData(updated));
-            setReplies((updated.replies ?? []).map(r => toReplyData(r, updated.author.id)));
+            try {
+                // O endpoint devolve o tópico completo atualizado (replyCount + replies).
+                const updated = await createForumReply(topic.id, content);
+                setTopic(toTopicData(updated));
+                setReplies((updated.replies ?? []).map(r => toReplyData(r, updated.author.id)));
+            } catch {
+                // Resposta rejeitada (ex.: 400 em tópico trancado) — thread inalterada.
+            }
         },
         [topic],
     );
