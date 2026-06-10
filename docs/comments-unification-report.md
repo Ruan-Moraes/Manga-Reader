@@ -49,6 +49,27 @@ contrato (upvotes/downvotes; create com targetType/targetId; `/vote`; `/user-vot
 traduzido para o modelo interno). Zero churn em types/hook/componentes. Service test 14 verde,
 sem novos erros de `tsc`.
 
+### 3.1 Correções da auditoria (2026-06-09, revisão pós-entrega)
+
+Auditoria do entregue achou e corrigiu 2 bugs + 1 duplicação:
+
+- **V015 — conflito de índice (boot failure)**: o rename de coleção carrega os índices;
+  recriar o único composto `{commentId,userId}` com outro nome dispararia
+  IndexOptionsConflict (erro 85). Corrigido: drop do índice herdado antes do create
+  (`idx_comments_votes_comment_user`), e drop dos simples órfãos redundantes.
+- **V015 — collection scan**: `$rename titleId→targetId` não atualiza índices; o
+  `idx_comments_titleId` ficava morto e nenhum índice cobria `{targetType,targetId}`.
+  Corrigido: drop do índice morto + `idx_comments_target_language`
+  `{targetType,targetId,language,createdAt desc}` (cobre listagem particionada + sort).
+- **V014**: índice herdado renomeado para `idx_reviews_votes_review_user` (casa com a
+  anotação). Anotações das entities atualizadas (com `auto-index-creation=false`,
+  anotação é documentação — índice real vem da migration).
+- **`VoteToggle` compartilhado** (`shared/application/vote`): regra única do toggle
+  (cria/remove/troca + clamp ≥0) extraída dos use cases de resenha e comentário
+  (eliminando ~40 linhas duplicadas ×2; fase do fórum reutiliza). Entities votáveis
+  implementam `HasVoteCounters`. Use cases mantêm só validação + persistência.
+  `VoteToggleTest` cobre a regra direto; **suíte completa: 1027 testes, 0 falhas**.
+
 ## 4. Impactos da migração
 
 - **Contrato de API quebrado** (comentários de obra): `/like`,`/dislike`,`/user-reactions`

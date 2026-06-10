@@ -22,8 +22,9 @@ import lombok.Setter;
  * usuário por comentário (índice composto único {@code commentId + userId}),
  * valor {@link VoteValue#UP}/{@link VoteValue#DOWN}.
  */
+// Índice real criado em V015 (auto-index-creation=false; anotação é documentação).
 @Document(collection = "comments_votes")
-@CompoundIndex(name = "idx_comment_vote_comment_user", def = "{'commentId': 1, 'userId': 1}", unique = true)
+@CompoundIndex(name = "idx_comments_votes_comment_user", def = "{'commentId': 1, 'userId': 1}", unique = true)
 @Getter
 @Setter
 @NoArgsConstructor

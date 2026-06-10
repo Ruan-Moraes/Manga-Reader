@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mangareader.domain.comment.valueobject.CommentTarget;
+import com.mangareader.shared.domain.vote.HasVoteCounters;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,14 +30,15 @@ import lombok.Setter;
  * {@code upvotes}/{@code downvotes} ficam desnormalizados aqui para leitura
  * barata na listagem.
  */
+// Índice real criado em V015 (auto-index-creation=false; anotação é documentação).
 @Document(collection = "comments")
-@CompoundIndex(name = "idx_comment_target_thread", def = "{'targetType': 1, 'targetId': 1, 'parentCommentId': 1}")
+@CompoundIndex(name = "idx_comments_target_language", def = "{'targetType': 1, 'targetId': 1, 'language': 1, 'createdAt': -1}")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Comment {
+public class Comment implements HasVoteCounters {
     @Id
     private String id;
 

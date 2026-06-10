@@ -1,6 +1,8 @@
 package com.mangareader.infrastructure.persistence.mongo.migration;
 
+import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 
 import com.mongodb.MongoNamespace;
 
@@ -14,7 +16,13 @@ import lombok.extern.slf4j.Slf4j;
  * para a convenção {@code <pai>_votes}: {@code review_votes} → {@code reviews_votes}
  * (consistente com {@code comments_votes}).
  *
- * <p>Idempotente: só renomeia se a coleção de origem existir e a de destino não.
+ * <p>O rename de coleção carrega os índices junto; o único composto
+ * {@code {ratingId, userId}} (V010) é renomeado para
+ * {@code idx_reviews_votes_review_user} (drop antes do create — mesmas chaves
+ * com nome diferente disparam IndexOptionsConflict, erro 85).
+ *
+ * <p>Idempotente: rename só ocorre se origem existir e destino não; passos de
+ * índice só tocam o que ainda não foi migrado.
  */
 @Slf4j
 @ChangeUnit(id = "V014-rename-reviews-votes-collection", order = "014", author = "mangareader")
@@ -38,6 +46,22 @@ public class V014RenameReviewVotesCollection {
             log.info("V014 — rename ignorado (source existe={}, target existe={})",
                     mongoTemplate.collectionExists(SOURCE), mongoTemplate.collectionExists(TARGET));
         }
+
+        renameUniqueIndex();
+    }
+
+    /** Renomeia o índice único herdado (V010) para casar com a anotação de ReviewVote. */
+    private void renameUniqueIndex() {
+        var ops = mongoTemplate.indexOps(TARGET);
+
+        boolean oldExists = ops.getIndexInfo().stream()
+                .anyMatch(idx -> "idx_review_vote_rating_user".equals(idx.getName()));
+        if (oldExists) {
+            ops.dropIndex("idx_review_vote_rating_user");
+        }
+
+        var unique = new Document("ratingId", 1).append("userId", 1);
+        ops.ensureIndex(new CompoundIndexDefinition(unique).unique().named("idx_reviews_votes_review_user"));
     }
 
     @RollbackExecution
