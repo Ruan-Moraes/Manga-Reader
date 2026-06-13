@@ -29,4 +29,9 @@ describe('PostHeader', () => {
         expect(screen.getByText('AUTOR')).toBeInTheDocument();
         expect(screen.getByText('4.5')).toBeInTheDocument();
     });
+
+    it('renderiza o slot meta (ex.: selo editado) inline após o tempo', () => {
+        render(<PostHeader name="Mika" time="há 2 horas" meta={<span>(editado)</span>} />);
+        expect(screen.getByText('(editado)')).toBeTruthy();
+    });
 });

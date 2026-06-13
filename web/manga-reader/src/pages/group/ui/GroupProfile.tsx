@@ -114,7 +114,7 @@ const GroupProfile = () => {
                             when: 'há 2 semanas',
                         },
                     ].map(item => (
-                        <div key={item.title} className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3">
+                        <div key={item.title} className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3">
                             <div className="size-10 shrink-0 rounded-mr-xs bg-mr-tertiary/20" />
                             <div className="flex-1">
                                 <p className="text-mr-small font-mr-bold text-mr-fg">{item.title}</p>

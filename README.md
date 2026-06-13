@@ -156,6 +156,14 @@ frontend-apps/
 | react-i18next | — | Internacionalização |
 | Vitest + @testing-library/react + MSW v2 | — | Testes |
 
+### Serviços de aplicação
+
+| Serviço | Porta | Responsabilidade |
+|---------|-------|------------------|
+| `api/server` | 8080 | API principal (Clean Architecture, 12 domínios) |
+| [`api/rating-aggregator`](api/rating-aggregator) | 8081 | Agregação de avaliações (`title_rating_aggregate`) |
+| [`api/counter-reconciler`](api/counter-reconciler) | 8082 | Reconciliação dos contadores desnormalizados (drift) |
+
 ### Infraestrutura (Docker Compose)
 
 | Serviço | Versão | Porta |

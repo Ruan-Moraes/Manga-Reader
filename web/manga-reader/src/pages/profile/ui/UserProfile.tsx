@@ -76,10 +76,10 @@ const UserProfile = () => {
     if (loading) {
         return (
             <PageContainer asMain size="default" paddingY="md">
-                <Skeleton className="mb-6 h-[260px] w-full rounded-mr-md" />
+                <Skeleton className="mb-6 h-[260px] w-full rounded-mr-xs" />
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {Array.from({ length: 6 }).map((_, i) => (
-                        <Skeleton key={i} className="aspect-[2/3] w-full rounded-mr-md" />
+                        <Skeleton key={i} className="aspect-[2/3] w-full rounded-mr-xs" />
                     ))}
                 </div>
             </PageContainer>

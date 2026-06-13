@@ -34,7 +34,7 @@ export default function Gift() {
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`flex-1 rounded-md py-2 text-sm font-semibold transition-colors cursor-pointer ${
+                            className={`flex-1 rounded-xs py-2 text-sm font-semibold transition-colors cursor-pointer ${
                                 activeTab === tab
                                     ? 'bg-accent text-primary'
                                     : 'text-tertiary hover:text-white'

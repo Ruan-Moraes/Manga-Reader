@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useMediaQuery } from '@shared/lib/useMediaQuery';
-import { type User, useUserModalContext, UserModal, buildUserModalPayload } from '@entities/user';
+import { type User, useUserModalContext } from '@entities/user';
 import { type CommentData, type CommentReactions, useCommentTree, useCommentPagination } from '@entities/comment';
 
 import useCommentCRUD from '../model/internal/useCommentCRUD';
@@ -23,7 +23,7 @@ type CommentsListProps = {
 
 const CommentsList = ({ titleId, comments, isLoading, isError, error }: CommentsListProps) => {
     const { t } = useTranslation('comment');
-    const { openUserModal, setUserData } = useUserModalContext();
+    const { openUserModalById } = useUserModalContext();
 
     const { deleteComment, editComment, replyComment } = useCommentCRUD();
 
@@ -43,10 +43,9 @@ const CommentsList = ({ titleId, comments, isLoading, isError, error }: Comments
 
     const handleClickProfile = useCallback(
         (user: User): void => {
-            setUserData(buildUserModalPayload(user));
-            openUserModal();
+            openUserModalById(user.id, { name: user.name, photo: user.photo });
         },
-        [openUserModal, setUserData],
+        [openUserModalById],
     );
 
     if (isLoading) {
@@ -59,7 +58,6 @@ const CommentsList = ({ titleId, comments, isLoading, isError, error }: Comments
 
     return (
         <div className="flex flex-col gap-3">
-            <UserModal />
             {visibleItems.map(root => (
                 <Comment
                     key={root.id}

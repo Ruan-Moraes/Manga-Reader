@@ -11,7 +11,7 @@ const TitleDetailsSkeleton = () => (
     <PageContainer asMain size="default" paddingY="md">
         {/* Hero: capa + coluna de metadados (espelha TitleHero) */}
         <div className="mb-8 flex flex-col gap-6 md:flex-row md:gap-8">
-            <div className={`h-[220px] w-[156px] shrink-0 self-start rounded-mr-md ${shimmer}`} />
+            <div className={`h-[220px] w-[156px] shrink-0 self-start rounded-mr-xs ${shimmer}`} />
 
             <div className="flex-1 min-w-0 space-y-3 py-1">
                 {/* Badges de gênero */}
@@ -31,9 +31,9 @@ const TitleDetailsSkeleton = () => (
                 </div>
                 {/* Botões de ação */}
                 <div className="flex flex-wrap gap-2 pt-1">
-                    <div className={`h-10 w-36 rounded-mr-md ${shimmer}`} />
-                    <div className={`h-10 w-32 rounded-mr-md ${shimmer}`} />
-                    <div className={`h-10 w-10 rounded-mr-md ${shimmer}`} />
+                    <div className={`h-10 w-36 rounded-mr-xs ${shimmer}`} />
+                    <div className={`h-10 w-32 rounded-mr-xs ${shimmer}`} />
+                    <div className={`h-10 w-10 rounded-mr-xs ${shimmer}`} />
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@ const TitleDetailsSkeleton = () => (
         {/* Conteúdo (espelha a aba Capítulos default) */}
         <div className="flex flex-col gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className={`h-14 w-full rounded-mr-md ${shimmer}`} />
+                <div key={i} className={`h-14 w-full rounded-mr-xs ${shimmer}`} />
             ))}
         </div>
     </PageContainer>

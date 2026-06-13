@@ -31,7 +31,7 @@ export const AccordionItem = ({ title, children, defaultOpen = false, open, onOp
     return (
         <article
             className={cn(
-                'overflow-hidden rounded-mr-md border bg-mr-surface transition-colors duration-mr-default',
+                'overflow-hidden rounded-mr-xs border bg-mr-surface transition-colors duration-mr-default',
                 isOpen ? 'border-mr-accent' : 'border-mr-border',
             )}
         >

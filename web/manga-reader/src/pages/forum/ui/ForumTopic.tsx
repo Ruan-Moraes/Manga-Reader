@@ -10,6 +10,9 @@ import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import type { ComposerHandle } from '@ui/Composer';
 
+import { useUserModalContext } from '@entities/user';
+import type { TopicAuthor } from '@entities/forum';
+
 import useTopicDetail from '../model/useTopicDetail';
 
 import TopicHeader from './parts/TopicHeader';
@@ -19,9 +22,14 @@ import ForumPost from './parts/ForumPost';
 
 const ForumTopicPage = () => {
     const { t } = useTranslation('forum');
+    const { t: tUser } = useTranslation('user');
     const { topicId } = useParams();
 
     const navigate = useAppNavigate();
+
+    const { openUserModalById } = useUserModalContext();
+
+    const openAuthorProfile = (author: TopicAuthor) => openUserModalById(author.userId, { name: author.name });
 
     const [sort, setSort] = useState('top');
 
@@ -67,6 +75,8 @@ const ForumTopicPage = () => {
                 myVote={topic.myVote}
                 onVote={voteTopic}
                 onReply={() => handleReply(topic.author.handle)}
+                onClickAuthor={() => openAuthorProfile(topic.author)}
+                authorProfileLabel={tUser('modal.openProfileAria', { name: topic.author.name })}
             />
 
             <TopicReplies
@@ -77,6 +87,7 @@ const ForumTopicPage = () => {
                 votes={replyVotes}
                 onVote={voteReply}
                 onReply={handleReply}
+                onOpenProfile={openAuthorProfile}
             />
 
             <TopicCommentInput composerRef={composerRef} onSubmit={postReply} />

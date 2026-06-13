@@ -87,7 +87,7 @@ export default function ContentCardsSection() {
             {/* CHAPTER LIST ITEM */}
             <Section title="ChapterListItem">
                 <SubSection label="Estados: lido, atual, com group">
-                    <div className="w-full rounded-mr-md border border-mr-border overflow-hidden">
+                    <div className="w-full rounded-mr-xs border border-mr-border overflow-hidden">
                         <ChapterListItem
                             number={1120}
                             title="O amanhecer da nova era"
@@ -286,7 +286,7 @@ export default function ContentCardsSection() {
             {/* NOTIFICATION ITEM */}
             <Section title="NotificationItem">
                 <SubSection label="Tipos e estados">
-                    <div className="w-full rounded-mr-md border border-mr-border overflow-hidden">
+                    <div className="w-full rounded-mr-xs border border-mr-border overflow-hidden">
                         <NotificationItem
                             id="1"
                             kind="chapter"

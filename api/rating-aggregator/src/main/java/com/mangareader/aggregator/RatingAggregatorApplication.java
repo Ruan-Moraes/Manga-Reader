@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Serviço de agregação de avaliações.
  * <p>
- * Mantém a coleção {@code title_rating_aggregate} (fonte oficial de nota/contagem)
+ * Mantém a coleção {@code reviews_aggregate} (fonte oficial de nota/contagem)
  * a partir de dois gatilhos:
  * <ul>
  *   <li>eventos {@code rating.*} consumidos do RabbitMQ (submit/update/delete);</li>

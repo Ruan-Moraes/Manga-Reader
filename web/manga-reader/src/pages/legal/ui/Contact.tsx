@@ -69,7 +69,7 @@ export default function Contact() {
                                 aria-label={t('contact.channelAriaLabel', {
                                     name: title,
                                 })}
-                                className="flex flex-col gap-3 rounded-mr-md border border-mr-border bg-mr-surface p-4"
+                                className="flex flex-col gap-3 rounded-mr-xs border border-mr-border bg-mr-surface p-4"
                             >
                                 <header className="flex items-center gap-3">
                                     <div

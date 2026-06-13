@@ -2,6 +2,7 @@ package com.mangareader.aggregator.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +35,7 @@ class RecalculateTitleRatingUseCaseTest {
         useCase.execute("t1");
 
         ArgumentCaptor<TitleRatingAggregate> captor = ArgumentCaptor.forClass(TitleRatingAggregate.class);
-        org.mockito.Mockito.verify(aggregateRepository).save(captor.capture());
+        verify(aggregateRepository).save(captor.capture());
 
         TitleRatingAggregate saved = captor.getValue();
         assertThat(saved.getTitleId()).isEqualTo("t1");
@@ -54,7 +55,7 @@ class RecalculateTitleRatingUseCaseTest {
         useCase.execute("t2");
 
         ArgumentCaptor<TitleRatingAggregate> captor = ArgumentCaptor.forClass(TitleRatingAggregate.class);
-        org.mockito.Mockito.verify(aggregateRepository).save(captor.capture());
+        verify(aggregateRepository).save(captor.capture());
 
         TitleRatingAggregate saved = captor.getValue();
         assertThat(saved.getRatingAverage()).isZero();

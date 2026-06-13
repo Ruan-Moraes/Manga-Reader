@@ -16,7 +16,7 @@
     <name>Manga Reader Rating Aggregator</name>
     <description>Serviço dedicado de agregação de avaliações (obra_avaliacao):
         consome eventos de rating (RabbitMQ) + job de reconciliação e mantém a
-        coleção title_rating_aggregate, fonte oficial de nota/contagem.</description>
+        coleção reviews_aggregate, fonte oficial de nota/contagem.</description>
 
     <properties>
         <java.version>23</java.version>

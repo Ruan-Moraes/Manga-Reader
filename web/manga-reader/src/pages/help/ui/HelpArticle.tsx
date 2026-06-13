@@ -83,7 +83,7 @@ export default function HelpArticle() {
                     ))}
                 </article>
 
-                <section className="mt-10 rounded-mr-md border border-mr-border bg-mr-surface p-5">
+                <section className="mt-10 rounded-mr-xs border border-mr-border bg-mr-surface p-5">
                     <p className="mb-3 text-mr-body font-mr-bold text-mr-fg">{t('article.helpfulTitle')}</p>
                     <div className="flex gap-2">
                         <Button variant="ghost" icon={ThumbsUp}>
@@ -98,7 +98,7 @@ export default function HelpArticle() {
                 {related.length > 0 && (
                     <section className="mt-10">
                         <SectionHeader title={t('article.relatedTitle')} as="h2" size="sm" className="mb-4" />
-                        <div className="flex flex-col divide-y divide-mr-border-subtle overflow-hidden rounded-mr-md border border-mr-border">
+                        <div className="flex flex-col divide-y divide-mr-border-subtle overflow-hidden rounded-mr-xs border border-mr-border">
                             {related.map(a => (
                                 <button
                                     key={a.id}
@@ -114,7 +114,7 @@ export default function HelpArticle() {
                     </section>
                 )}
 
-                <section className="mt-10 flex flex-col items-start gap-3 rounded-mr-md border border-mr-border-subtle bg-mr-secondary p-5 sm:flex-row sm:items-center sm:justify-between">
+                <section className="mt-10 flex flex-col items-start gap-3 rounded-mr-xs border border-mr-border-subtle bg-mr-secondary p-5 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p className="text-mr-body font-mr-extrabold text-mr-fg">{t('contact.title')}</p>
                         <p className="text-mr-small text-mr-fg-muted">{t('contact.eyebrow')}</p>

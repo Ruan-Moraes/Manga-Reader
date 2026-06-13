@@ -13,6 +13,7 @@ import { Stars } from '@ui/Stars';
 import { MangaPoster } from '@ui/MangaPoster';
 import { PostShell } from '@ui/PostShell';
 import { PostHeader } from '@ui/PostHeader';
+import { EditedFlag } from '@ui/EditedFlag';
 import { VotePill } from '@ui/VotePill';
 import { ActionBar } from '@ui/ActionBar';
 import { Meter } from '@ui/Meter';
@@ -60,6 +61,10 @@ export interface ReviewCardProps {
     onEdit?: () => void;
     /** Ação de excluir (só dono) — quando presente, exibe botão Excluir com confirmação. */
     onDelete?: () => void;
+    /** Abre o modal do autor ao clicar no avatar/nome. */
+    onClickAuthor?: () => void;
+    /** Rótulo acessível do botão de perfil (avatar/nome). */
+    authorProfileLabel?: string;
 }
 
 export const ReviewCard = ({
@@ -82,6 +87,8 @@ export const ReviewCard = ({
     density = 'comfortable',
     onEdit,
     onDelete,
+    onClickAuthor,
+    authorProfileLabel,
 }: ReviewCardProps) => {
     const { t } = useTranslation('rating');
 
@@ -111,26 +118,20 @@ export const ReviewCard = ({
     };
 
     return (
-        <article
-            onClick={onClick}
-            className={cn(
-                'rounded-mr-md border border-mr-border bg-mr-surface p-4 transition-colors duration-200 hover:border-mr-border-subtle',
-                onClick && 'cursor-pointer',
-                badge === 'top' && 'border-mr-accent-50 shadow-mr-elevated',
-            )}
-        >
-            <PostShell avatar={{ src: author.avatar, name: author.name }} avatarSize={compact ? 32 : 44} flat>
+        <article onClick={onClick} className={cn(onClick && 'cursor-pointer')}>
+            <PostShell
+                avatar={{ src: author.avatar, name: author.name }}
+                avatarSize={compact ? 32 : 44}
+                op={badge === 'top'}
+                onClickAvatar={onClickAuthor}
+            >
                 <PostHeader
                     name={author.name}
                     time={whenDate.label}
                     timeTitle={whenDate.title}
-                    badges={
-                        edited ? (
-                            <span className="text-mr-tiny text-mr-fg-subtle" title={editedDate.title}>
-                                ({t('card.edited')})
-                            </span>
-                        ) : undefined
-                    }
+                    onClickName={onClickAuthor}
+                    nameProfileLabel={authorProfileLabel}
+                    meta={edited ? <EditedFlag label={t('card.edited')} title={editedDate.title} /> : undefined}
                     right={
                         <span className="flex items-center gap-1.5">
                             <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
@@ -139,8 +140,7 @@ export const ReviewCard = ({
                     }
                 />
 
-                <div className="flex flex-col gap-2">
-                    {title && <h3 className="text-[15px] font-mr-extrabold text-mr-fg">{title}</h3>}
+                {title && <h3 className="text-[15px] font-mr-extrabold text-mr-fg">{title}</h3>}
 
                     {/* Corpo — véu pontilhado quando spoiler, senão o texto */}
                     {veiled ? (
@@ -150,7 +150,7 @@ export const ReviewCard = ({
                                 event.stopPropagation();
                                 setSpoilerShown(true);
                             }}
-                            className="flex w-full items-center justify-center gap-2 rounded-mr-md border border-dashed border-mr-border-subtle bg-mr-surface-muted p-[18px] text-mr-small font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-accent cursor-pointer"
+                            className="flex w-full items-center justify-center gap-2 rounded-mr-xs border border-dashed border-mr-border-subtle bg-mr-surface-muted p-[18px] text-mr-small font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-accent cursor-pointer"
                         >
                             <Eye className="size-4" aria-hidden="true" />
                             {t('card.showSpoiler')}
@@ -193,7 +193,7 @@ export const ReviewCard = ({
                                 {t('card.breakdown')}
                             </button>
                             {breakOpen && (
-                                <div className="mt-1 flex flex-col gap-2.5 rounded-mr-md border border-mr-border bg-mr-surface-muted p-3">
+                                <div className="mt-1 flex flex-col gap-2.5 rounded-mr-xs border border-mr-border bg-mr-surface-muted p-3">
                                     {REVIEW_CRITERIA.map(criterion => {
                                         const value = reviewScores[criterion.key] ?? 0;
                                         const label = t(criterion.labelKey);
@@ -288,7 +288,6 @@ export const ReviewCard = ({
                             <MangaPoster cover={manga.cover} fallbackGradient={manga.gradient} alt="" size={88} radius="sm" />
                         </div>
                     )}
-                </div>
             </PostShell>
         </article>
     );

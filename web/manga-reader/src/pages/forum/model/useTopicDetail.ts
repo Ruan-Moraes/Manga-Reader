@@ -114,6 +114,7 @@ export default function useTopicDetail(topicId: string | undefined) {
 // ---------------------------------------------------------------------------
 
 const toAuthor = (author: ForumAuthor, topicAuthorId: string): TopicData['author'] => ({
+    userId: author.id,
     name: author.name,
     handle: `@${author.name.replace(/\s+/g, '').toLowerCase()}`,
     badge: author.role === 'moderator' || author.role === 'admin'

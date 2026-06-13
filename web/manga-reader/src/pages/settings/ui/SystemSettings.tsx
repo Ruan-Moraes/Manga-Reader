@@ -58,7 +58,7 @@ const SystemSettings = () => {
             <SectionHeader eyebrow={t('settings.system.eyebrow')} title={t('settings.system.title')} meta={meta} className="mb-6" />
 
             {state.needsReload && (
-                <div className="mb-6 flex flex-col gap-3 rounded-mr-md border border-mr-accent-50 bg-mr-accent-10 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="mb-6 flex flex-col gap-3 rounded-mr-xs border border-mr-accent-50 bg-mr-accent-10 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="flex items-center gap-2 text-mr-small text-mr-fg">
                         <RefreshCw className="size-4 shrink-0 text-mr-accent" aria-hidden="true" />
                         {t('settings.system.reloadBanner')}

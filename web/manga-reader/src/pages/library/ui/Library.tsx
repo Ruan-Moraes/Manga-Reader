@@ -96,7 +96,7 @@ const Library = () => {
             {loading ? (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {Array.from({ length: 12 }).map((_, i) => (
-                        <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
+                        <Skeleton key={i} variant="rect" height={260} className="rounded-mr-xs" />
                     ))}
                 </div>
             ) : sorted.length === 0 ? (
@@ -134,7 +134,7 @@ const Library = () => {
                     {sorted.map(m => (
                         <div
                             key={m.titleId}
-                            className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent"
+                            className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent"
                         >
                             <button type="button" className="flex flex-1 items-center gap-3 text-left" onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}>
                                 <div

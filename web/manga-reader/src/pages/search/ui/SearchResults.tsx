@@ -52,7 +52,7 @@ const SearchResults = () => {
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
                     {Array.from({ length: 12 }).map((_, i) => (
                         <div key={i} className="flex flex-col gap-2">
-                            <Skeleton variant="rect" height={220} className="rounded-mr-md" />
+                            <Skeleton variant="rect" height={220} className="rounded-mr-xs" />
                             <Skeleton variant="text" lines={2} />
                         </div>
                     ))}

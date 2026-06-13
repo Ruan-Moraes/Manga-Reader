@@ -31,7 +31,7 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
 
     if (isLoading) {
         return (
-            <div className="animate-pulse flex items-center gap-3 rounded-mr-md border border-[#333] bg-[#1c1c1d] p-4">
+            <div className="animate-pulse flex items-center gap-3 rounded-mr-xs border border-[#333] bg-[#1c1c1d] p-4">
                 <div className="size-12 rounded-mr-sm bg-mr-gray-700 shrink-0" />
                 <div className="flex-1">
                     <div className="mb-2 h-3 w-1/2 rounded bg-mr-gray-700" />
@@ -45,7 +45,7 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
     return (
         <article
             className={cn(
-                'flex items-center gap-3 rounded-mr-md border bg-[#1c1c1d] p-4 transition-colors duration-200',
+                'flex items-center gap-3 rounded-mr-xs border bg-[#1c1c1d] p-4 transition-colors duration-200',
                 store.official ? 'border-mr-accent' : 'border-[#333]',
             )}
         >
@@ -56,7 +56,7 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
                     <p className="text-[14px] font-mr-bold text-mr-fg">{store.name}</p>
                     {store.official && (
                         <span
-                            className="inline-flex items-center gap-0.5 rounded-sm px-1 py-0.5 text-[10px] font-mr-bold uppercase tracking-mr-label text-mr-accent"
+                            className="inline-flex items-center gap-0.5 rounded-xs px-1 py-0.5 text-[10px] font-mr-bold uppercase tracking-mr-label text-mr-accent"
                             style={{ background: 'rgba(221,218,42,.15)' }}
                         >
                             ✓ {t('card.official')}

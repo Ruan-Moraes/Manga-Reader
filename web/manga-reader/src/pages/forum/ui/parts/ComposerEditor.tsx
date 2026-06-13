@@ -110,7 +110,7 @@ const ComposerEditor = ({ content, onChange, preview, onTogglePreview, error }: 
             )}
 
             {preview ? (
-                <div className="min-h-[200px] rounded-mr-md border border-mr-border bg-mr-surface p-4 text-mr-small text-mr-fg-muted whitespace-pre-wrap">
+                <div className="min-h-[200px] rounded-mr-xs border border-mr-border bg-mr-surface p-4 text-mr-small text-mr-fg-muted whitespace-pre-wrap">
                     {content || <span className="italic text-mr-fg-subtle">{t('composer.previewEmpty')}</span>}
                 </div>
             ) : (

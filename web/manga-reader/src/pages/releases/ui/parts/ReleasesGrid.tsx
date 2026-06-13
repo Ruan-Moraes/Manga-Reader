@@ -190,7 +190,7 @@ const ReleasesGrid = ({ groups, libraryOnly }: ReleasesGridProps) => {
                                 key={item.id}
                                 type="button"
                                 onClick={() => navigate(ROUTES.CHAPTER(item.mangaId, item.chapter))}
-                                className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent"
+                                className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent"
                             >
                                 <MangaPoster size={48} radius="sm" />
                                 <div className="flex-1 min-w-0">

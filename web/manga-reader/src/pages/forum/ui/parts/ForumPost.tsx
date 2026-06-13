@@ -5,6 +5,7 @@ import { formatPostDate } from '@shared/service/util/formatPostDate';
 import { ThreadPost } from '@ui/ThreadPost';
 import { VotePill } from '@ui/VotePill';
 import { RoleChip, type Role } from '@ui/RoleChip';
+import { EditedFlag } from '@ui/EditedFlag';
 import { Markdown } from '@ui/Markdown';
 import type { TopicAuthor } from '@entities/forum';
 
@@ -23,6 +24,10 @@ type ForumPostProps = {
     myVote?: 'up' | 'down' | null;
     onVote?: (vote: 'up' | 'down') => void;
     onReply?: () => void;
+    /** Abre o modal de perfil ao clicar no avatar/nome. */
+    onClickAuthor?: () => void;
+    /** Rótulo acessível do botão de perfil (avatar/nome). */
+    authorProfileLabel?: string;
 };
 
 const roleFor = (isOp: boolean, badge: TopicAuthor['badge']): Role | null => {
@@ -32,7 +37,21 @@ const roleFor = (isOp: boolean, badge: TopicAuthor['badge']): Role | null => {
     return null;
 };
 
-const ForumPost = ({ author, when, edited = false, updatedAt, content, isOp = false, upvotes, downvotes = 0, myVote = null, onVote, onReply }: ForumPostProps) => {
+const ForumPost = ({
+    author,
+    when,
+    edited = false,
+    updatedAt,
+    content,
+    isOp = false,
+    upvotes,
+    downvotes = 0,
+    myVote = null,
+    onVote,
+    onReply,
+    onClickAuthor,
+    authorProfileLabel,
+}: ForumPostProps) => {
     const { t } = useTranslation('forum');
 
     const role = roleFor(isOp, author.badge);
@@ -41,28 +60,23 @@ const ForumPost = ({ author, when, edited = false, updatedAt, content, isOp = fa
     const whenDate = formatPostDate(when);
     const editedDate = formatPostDate(updatedAt);
 
-    const badges =
-        role || edited ? (
-            <>
-                {role && <RoleChip role={role} />}
-                {edited && (
-                    <span className="text-mr-tiny text-mr-fg-subtle" title={editedDate.title}>
-                        ({t('post.edited')})
-                    </span>
-                )}
-            </>
-        ) : undefined;
+    const badges = role ? <RoleChip role={role} /> : undefined;
+    const meta = edited ? <EditedFlag label={t('post.edited')} title={editedDate.title} /> : undefined;
 
     return (
         <ThreadPost
             avatar={{ name: author.name }}
             avatarSize={isOp ? 44 : 38}
+            onClickAvatar={onClickAuthor}
             flat={!isOp}
             op={isOp}
             name={author.name}
             handle={handle}
+            onClickName={onClickAuthor}
+            nameProfileLabel={authorProfileLabel}
             time={whenDate.label}
             timeTitle={whenDate.title}
+            meta={meta}
             badges={badges}
             body={<Markdown text={content} className="text-mr-body leading-[1.62] text-mr-fg-muted" />}
             vote={<VotePill value={score} active={myVote} onUp={() => onVote?.('up')} onDown={() => onVote?.('down')} label={t('reply.reply')} />}

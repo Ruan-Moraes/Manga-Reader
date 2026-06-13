@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Recalcula e persiste o agregado de avaliação de um título a partir da
- * coleção {@code ratings}, fazendo upsert em {@code title_rating_aggregate}.
+ * coleção {@code reviews}, fazendo upsert em {@code reviews_aggregate}.
  * <p>
  * Sem avaliações ⇒ grava agregado zerado (mantém a obra como fonte válida com
  * nota 0 / 0 avaliações, evitando divergência com "documento ausente").

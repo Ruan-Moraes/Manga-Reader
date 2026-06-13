@@ -28,7 +28,7 @@ const ForumTopicCardBase = ({ title, category, author, postedAt, lastReplyAt, re
     <article
         onClick={onClick}
         className={cn(
-            'group flex cursor-pointer gap-3 rounded-mr-md border bg-mr-surface p-4 transition-all duration-mr-default',
+            'group flex cursor-pointer gap-3 rounded-mr-xs border bg-mr-surface p-4 transition-all duration-mr-default',
             'hover:-translate-y-0.5 hover:border-mr-accent-50',
             pinned ? 'border-l-[3px] border-l-mr-accent border-mr-border' : 'border-mr-border',
         )}

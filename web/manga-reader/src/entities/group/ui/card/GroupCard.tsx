@@ -45,7 +45,7 @@ const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardP
     <article
         onClick={onClick}
         className={cn(
-            'group flex cursor-pointer flex-col overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface transition-all duration-mr-default',
+            'group flex cursor-pointer flex-col overflow-hidden rounded-mr-xs border border-mr-border bg-mr-surface transition-all duration-mr-default',
             'hover:-translate-y-0.5 hover:border-mr-accent-50',
         )}
     >

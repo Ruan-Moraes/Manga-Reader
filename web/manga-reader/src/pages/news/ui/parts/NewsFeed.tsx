@@ -28,7 +28,7 @@ export const NewsFeed = ({ items, hasMore, onItemClick, onLoadMore }: NewsFeedPr
                 {items.map(item => (
                     <article
                         key={item.id}
-                        className="flex cursor-pointer flex-col overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface transition-all duration-mr-default hover:-translate-y-0.5 hover:border-mr-accent-50"
+                        className="flex cursor-pointer flex-col overflow-hidden rounded-mr-xs border border-mr-border bg-mr-surface transition-all duration-mr-default hover:-translate-y-0.5 hover:border-mr-accent-50"
                         onClick={() => onItemClick(item.id)}
                     >
                         <div className="h-1 w-full bg-mr-tertiary" />

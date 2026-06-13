@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { Select } from '@ui/Select';
-import type { ReplyData } from '@entities/forum';
+import type { ReplyData, TopicAuthor } from '@entities/forum';
 
 import ForumPost from './ForumPost';
 
@@ -13,10 +13,12 @@ type Props = {
     votes: Record<string, 'up' | 'down' | null>;
     onVote: (id: string, v: 'up' | 'down') => void;
     onReply: (handle: string) => void;
+    onOpenProfile: (author: TopicAuthor) => void;
 };
 
-const TopicReplies = ({ topic, replies, sort, onSortChange, votes, onVote, onReply }: Props) => {
+const TopicReplies = ({ topic, replies, sort, onSortChange, votes, onVote, onReply, onOpenProfile }: Props) => {
     const { t } = useTranslation('forum');
+    const { t: tUser } = useTranslation('user');
 
     const SORT_OPTIONS = [
         { value: 'top', label: t('topic.replySortTop') },
@@ -45,6 +47,8 @@ const TopicReplies = ({ topic, replies, sort, onSortChange, votes, onVote, onRep
                         myVote={votes[reply.id] ?? null}
                         onVote={v => onVote(reply.id, v)}
                         onReply={() => onReply(reply.author.handle)}
+                        onClickAuthor={() => onOpenProfile(reply.author)}
+                        authorProfileLabel={tUser('modal.openProfileAria', { name: reply.author.name })}
                     />
                 ))}
             </div>

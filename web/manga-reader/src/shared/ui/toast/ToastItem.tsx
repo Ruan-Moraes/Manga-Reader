@@ -47,7 +47,7 @@ export function ToastItem({ item, onDismiss }: ToastItemProps) {
                 hoverRef.current = false;
             }}
             className={cn(
-                'flex items-start gap-3 rounded-mr-md border border-l-4 border-mr-border bg-mr-surface p-3 shadow-mr-elevated animate-mr-toast-in',
+                'flex items-start gap-3 rounded-mr-xs border border-l-4 border-mr-border bg-mr-surface p-3 shadow-mr-elevated animate-mr-toast-in',
                 toneLeftBorder[item.tone],
             )}
         >

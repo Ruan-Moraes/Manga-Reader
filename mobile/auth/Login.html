@@ -1,155 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Manga Reader — Login (App móvel)</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="colors_and_type.css" />
-<style>
-  html, body { margin: 0; height: 100%; }
-  body {
-    background:
-      radial-gradient(1100px 700px at 50% -8%, #1d1d1d 0%, transparent 60%),
-      #0c0c0c;
-    min-height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    box-sizing: border-box;
-  }
-  #root { display: flex; align-items: center; justify-content: center; }
-  @keyframes mr-spin { to { transform: rotate(360deg); } }
-  /* placeholder color inside the native frame */
-  input::placeholder { color: #5a5a5b; opacity: 1; }
-  input { -webkit-text-fill-color: currentColor; }
-  /* hide scrollbar inside device for a cleaner native look */
-  ::-webkit-scrollbar { width: 0; height: 0; }
-</style>
-</head>
-<body>
-<div id="root"></div>
-
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-
-<script type="text/babel" src="login-icons.jsx"></script>
-<script type="text/babel" src="ios-frame.jsx"></script>
-<script type="text/babel" src="tweaks-panel.jsx"></script>
-<script type="text/babel" src="auth-kit.jsx"></script>
-<script type="text/babel" src="login-screen.jsx"></script>
-
-<script type="text/babel" data-presets="react">
-const {
-  useTweaks: useTw, TweaksPanel: Panel, TweakSection: Section,
-  TweakRadio: Radio, TweakSelect: Select, TweakToggle: Toggle,
-  TweakColor: ColorPick, TweakText: TextField,
-} = window;
-
-// EDITMODE — persisted tweak values
-const TWEAK_DEFAULTS = {
-  layout: 'mascote',          // mascote | logo | minimal
-  accent: '#ddda2a',
-  radius: '2',                // 2 | 4 | 8 (angular signature → mais arredondado)
-  heading: 'Que bom te ver de novo',
-  state: 'interativo',        // interativo | erro | carregando | sucesso
-  showSocial: true,
-  showBiometric: true,
-  showDemo: true,
-};
-
-const ACCENTS = ['#ddda2a', '#FF784F', '#8b5cf6', '#22d3ee'];
-
-function App() {
-  const [t, setTweak] = useTw(TWEAK_DEFAULTS);
-  const radius = parseInt(t.radius, 10) || 2;
-
-  // glow + offset shadow derived from chosen accent
-  const accentVars = {
-    '--accent': t.accent,
-    '--accent-25': hexA(t.accent, 0.25),
-    '--accent-glow': hexA(t.accent, 0.18),
-  };
-
-  return (
-    <div style={accentVars}>
-      <window.IOSDevice dark width={402} height={874}>
-        <window.LoginScreen
-          key={t.state}
-          layout={t.layout}
-          radius={radius}
-          heading={t.heading}
-          showSocial={t.showSocial}
-          showBiometric={t.showBiometric}
-          showDemo={t.showDemo}
-          reviewState={t.state}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Manga Reader — Login (App móvel)</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,800&family=Fira+Code:wght@400;500&display=swap"
+            rel="stylesheet"
         />
-      </window.IOSDevice>
+        <link rel="stylesheet" href="colors_and_type.css" />
+        <style>
+            html,
+            body {
+                margin: 0;
+                height: 100%;
+            }
+            body {
+                background: radial-gradient(1100px 700px at 50% -8%, #1d1d1d 0%, transparent 60%), #0c0c0c;
+                min-height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 40px 20px;
+                box-sizing: border-box;
+            }
+            #root {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            @keyframes mr-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            /* placeholder color inside the native frame */
+            input::placeholder {
+                color: #5a5a5b;
+                opacity: 1;
+            }
+            input {
+                -webkit-text-fill-color: currentColor;
+            }
+            /* hide scrollbar inside device for a cleaner native look */
+            ::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
 
-      <Panel title="Tweaks">
-        <Section label="Layout">
-          <Radio label="Topo da tela" value={t.layout}
-            options={[
-              { value: 'mascote', label: 'Mascote' },
-              { value: 'logo', label: 'Logo' },
-              { value: 'minimal', label: 'Mínimo' },
-            ]}
-            onChange={(v) => setTweak('layout', v)} />
-          <Select label="Cantos (raio)" value={t.radius}
-            options={[
-              { value: '2', label: 'Angular · 2px (assinatura)' },
-              { value: '4', label: 'Suave · 4px' },
-              { value: '8', label: 'Arredondado · 8px' },
-            ]}
-            onChange={(v) => setTweak('radius', v)} />
-          <TextField label="Título" value={t.heading}
-            placeholder="Saudação do topo"
-            onChange={(v) => setTweak('heading', v)} />
-        </Section>
+        <script
+            src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+            integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+            integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+            integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+            crossorigin="anonymous"
+        ></script>
 
-        <Section label="Cor de destaque">
-          <ColorPick label="Accent" value={t.accent} options={ACCENTS}
-            onChange={(v) => setTweak('accent', v)} />
-        </Section>
+        <script type="text/babel" src="login-icons.jsx"></script>
+        <script type="text/babel" src="ios-frame.jsx"></script>
+        <script type="text/babel" src="tweaks-panel.jsx"></script>
+        <script type="text/babel" src="auth-kit.jsx"></script>
+        <script type="text/babel" src="login-screen.jsx"></script>
 
-        <Section label="Métodos de entrada">
-          <Toggle label="Login social (Google / Apple)" value={t.showSocial}
-            onChange={(v) => setTweak('showSocial', v)} />
-          <Toggle label="Biometria (Face ID)" value={t.showBiometric}
-            onChange={(v) => setTweak('showBiometric', v)} />
-          <Toggle label="Bloco de credenciais demo" value={t.showDemo}
-            onChange={(v) => setTweak('showDemo', v)} />
-        </Section>
+        <script type="text/babel" data-presets="react">
+            const {
+                useTweaks: useTw,
+                TweaksPanel: Panel,
+                TweakSection: Section,
+                TweakRadio: Radio,
+                TweakSelect: Select,
+                TweakToggle: Toggle,
+                TweakColor: ColorPick,
+                TweakText: TextField,
+            } = window;
 
-        <Section label="Estado da tela (revisão)">
-          <Radio label="Estado" value={t.state}
-            options={[
-              { value: 'interativo', label: 'Interativo' },
-              { value: 'erro', label: 'Erro' },
-              { value: 'carregando', label: 'Loading' },
-              { value: 'sucesso', label: 'Sucesso' },
-            ]}
-            onChange={(v) => setTweak('state', v)} />
-        </Section>
-      </Panel>
-    </div>
-  );
-}
+            // EDITMODE — persisted tweak values
+            const TWEAK_DEFAULTS = {
+                layout: 'mascote', // mascote | logo | minimal
+                accent: '#ddda2a',
+                radius: '2', // 2 | 4 | 8 (angular signature → mais arredondado)
+                heading: 'Que bom te ver de novo',
+                state: 'interativo', // interativo | erro | carregando | sucesso
+                showSocial: true,
+                showBiometric: true,
+                showDemo: true,
+            };
 
-function hexA(hex, a) {
-  const h = hex.replace('#', '');
-  const n = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
-  const r = parseInt(n.slice(0, 2), 16);
-  const g = parseInt(n.slice(2, 4), 16);
-  const b = parseInt(n.slice(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${a})`;
-}
+            const ACCENTS = ['#ddda2a', '#FF784F', '#8b5cf6', '#22d3ee'];
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-</script>
-</body>
+            function App() {
+                const [t, setTweak] = useTw(TWEAK_DEFAULTS);
+                const radius = parseInt(t.radius, 10) || 2;
+
+                // glow + offset shadow derived from chosen accent
+                const accentVars = {
+                    '--accent': t.accent,
+                    '--accent-25': hexA(t.accent, 0.25),
+                    '--accent-glow': hexA(t.accent, 0.18),
+                };
+
+                return (
+                    <div style={accentVars}>
+                        <window.IOSDevice dark width={402} height={874}>
+                            <window.LoginScreen
+                                key={t.state}
+                                layout={t.layout}
+                                radius={radius}
+                                heading={t.heading}
+                                showSocial={t.showSocial}
+                                showBiometric={t.showBiometric}
+                                showDemo={t.showDemo}
+                                reviewState={t.state}
+                            />
+                        </window.IOSDevice>
+
+                        <Panel title="Tweaks">
+                            <Section label="Layout">
+                                <Radio
+                                    label="Topo da tela"
+                                    value={t.layout}
+                                    options={[
+                                        { value: 'mascote', label: 'Mascote' },
+                                        { value: 'logo', label: 'Logo' },
+                                        { value: 'minimal', label: 'Mínimo' },
+                                    ]}
+                                    onChange={v => setTweak('layout', v)}
+                                />
+                                <Select
+                                    label="Cantos (raio)"
+                                    value={t.radius}
+                                    options={[
+                                        { value: '2', label: 'Angular · 2px (assinatura)' },
+                                        { value: '4', label: 'Suave · 4px' },
+                                        { value: '8', label: 'Arredondado · 8px' },
+                                    ]}
+                                    onChange={v => setTweak('radius', v)}
+                                />
+                                <TextField label="Título" value={t.heading} placeholder="Saudação do topo" onChange={v => setTweak('heading', v)} />
+                            </Section>
+
+                            <Section label="Cor de destaque">
+                                <ColorPick label="Accent" value={t.accent} options={ACCENTS} onChange={v => setTweak('accent', v)} />
+                            </Section>
+
+                            <Section label="Métodos de entrada">
+                                <Toggle label="Login social (Google / Apple)" value={t.showSocial} onChange={v => setTweak('showSocial', v)} />
+                                <Toggle label="Biometria (Face ID)" value={t.showBiometric} onChange={v => setTweak('showBiometric', v)} />
+                                <Toggle label="Bloco de credenciais demo" value={t.showDemo} onChange={v => setTweak('showDemo', v)} />
+                            </Section>
+
+                            <Section label="Estado da tela (revisão)">
+                                <Radio
+                                    label="Estado"
+                                    value={t.state}
+                                    options={[
+                                        { value: 'interativo', label: 'Interativo' },
+                                        { value: 'erro', label: 'Erro' },
+                                        { value: 'carregando', label: 'Loading' },
+                                        { value: 'sucesso', label: 'Sucesso' },
+                                    ]}
+                                    onChange={v => setTweak('state', v)}
+                                />
+                            </Section>
+                        </Panel>
+                    </div>
+                );
+            }
+
+            function hexA(hex, a) {
+                const h = hex.replace('#', '');
+                const n =
+                    h.length === 3
+                        ? h
+                              .split('')
+                              .map(c => c + c)
+                              .join('')
+                        : h;
+                const r = parseInt(n.slice(0, 2), 16);
+                const g = parseInt(n.slice(2, 4), 16);
+                const b = parseInt(n.slice(4, 6), 16);
+                return `rgba(${r}, ${g}, ${b}, ${a})`;
+            }
+
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        </script>
+    </body>
 </html>

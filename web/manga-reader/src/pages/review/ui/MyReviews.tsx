@@ -151,7 +151,7 @@ const MyReviews = () => {
             {loading && (
                 <div className="flex flex-col gap-3">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} variant="rect" height={140} className="rounded-mr-md" />
+                        <Skeleton key={i} variant="rect" height={140} className="rounded-mr-xs" />
                     ))}
                 </div>
             )}

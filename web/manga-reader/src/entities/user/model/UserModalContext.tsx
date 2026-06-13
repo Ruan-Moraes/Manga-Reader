@@ -1,25 +1,30 @@
 import { createContext, ReactNode, useCallback, useState } from 'react';
 
-import { type User } from '../model/user.types';
+/** Dados mínimos para preencher o cabeçalho instantaneamente enquanto o perfil é buscado. */
+export type UserModalSeed = { name: string; photo?: string };
 
 type UserModalContextProps = {
     isUserModalOpen: boolean;
+    /** Id do usuário cujo perfil será buscado por id ao abrir. */
+    userId: string | null;
+    /** Nome/foto já conhecidos (ex.: do comentário/resenha) para render imediato. */
+    seed: UserModalSeed | null;
 
-    openUserModal: () => void;
+    /** Abre o modal e dispara a busca do perfil completo por id. */
+    openUserModalById: (userId: string, seed?: UserModalSeed) => void;
     closeUserModal: () => void;
-
-    userData: User | null;
-    setUserData: (userData: User) => void;
 };
 
 const UserModalContext = createContext<UserModalContextProps | null>(null);
 
 const UserModalProvider = ({ children }: { children: ReactNode }) => {
     const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [seed, setSeed] = useState<UserModalSeed | null>(null);
 
-    const [userData, setUserData] = useState<User | null>(null);
-
-    const openUserModal = useCallback(() => {
+    const openUserModalById = useCallback((id: string, nextSeed?: UserModalSeed) => {
+        setUserId(id);
+        setSeed(nextSeed ?? null);
         setIsUserModalOpen(true);
     }, []);
 
@@ -31,10 +36,10 @@ const UserModalProvider = ({ children }: { children: ReactNode }) => {
         <UserModalContext.Provider
             value={{
                 isUserModalOpen,
-                openUserModal,
+                userId,
+                seed,
+                openUserModalById,
                 closeUserModal,
-                userData,
-                setUserData,
             }}
         >
             {children}

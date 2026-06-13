@@ -22,6 +22,7 @@ import {
     type ReviewSortKey,
 } from '@entities/review';
 import { useAuth } from '@features/auth';
+import { useUserModalContext } from '@entities/user';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { ROUTES } from '@shared/constant/ROUTES';
 
@@ -133,7 +134,7 @@ function SortDropdown({ sort, onChange }: { sort: ReviewSortKey; onChange: (s: R
                     <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
                     <ul
                         role="listbox"
-                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-mr-md border border-[#444] bg-[#1a1a1b] py-1 shadow-[0_12px_32px_rgba(0,0,0,.55)]"
+                        className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-mr-xs border border-[#444] bg-[#1a1a1b] py-1 shadow-[0_12px_32px_rgba(0,0,0,.55)]"
                     >
                         {REVIEW_SORT_KEYS.map(key => (
                             <li
@@ -185,7 +186,7 @@ function LoginPrompt({ onLogin, onRegister }: { onLogin: () => void; onRegister:
             <div className="min-w-0">
                 <h3 className="text-[16px] font-mr-extrabold text-mr-fg">{t('reviews.login.title')}</h3>
                 <p className="mt-1 text-[14px] text-mr-fg-muted">{t('reviews.login.desc')}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
                     <Button variant="primary" size="sm" onClick={onLogin}>
                         {t('reviews.login.signIn')}
                     </Button>
@@ -200,8 +201,11 @@ function LoginPrompt({ onLogin, onRegister }: { onLogin: () => void; onRegister:
 
 const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn = false }: ReviewsTabProps) => {
     const { t } = useTranslation('rating');
+    const { t: tUser } = useTranslation('user');
 
     const navigate = useAppNavigate();
+
+    const { openUserModalById } = useUserModalContext();
 
     const [sort, setSort] = useState<ReviewSortKey>('top');
     const [filterStar, setFilterStar] = useState<number | null>(null);
@@ -268,6 +272,8 @@ const ReviewsTab = ({ titleId, average, distribution, onWriteReview, isLoggedIn 
                             <ReviewCard
                                 key={r.id}
                                 author={{ name: r.userName }}
+                                onClickAuthor={() => openUserModalById(r.userId, { name: r.userName })}
+                                authorProfileLabel={tUser('modal.openProfileAria', { name: r.userName })}
                                 when={r.createdAt}
                                 edited={r.edited}
                                 updatedAt={r.updatedAt}

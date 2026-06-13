@@ -34,7 +34,7 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
                 type="button"
                 onClick={() => setLightboxOpen(true)}
                 aria-label={t('titleDetails.expandCover')}
-                className="shrink-0 self-start cursor-zoom-in rounded-mr-md mr-focus-ring"
+                className="shrink-0 self-start cursor-zoom-in rounded-mr-xs mr-focus-ring"
             >
                 <MangaPoster size={220} cover={title.cover} alt={title.name} radius="md" />
             </button>

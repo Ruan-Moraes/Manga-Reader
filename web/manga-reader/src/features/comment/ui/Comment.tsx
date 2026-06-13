@@ -10,6 +10,7 @@ import { type User } from '@entities/user';
 import { ThreadPost } from '@ui/ThreadPost';
 import { VotePill } from '@ui/VotePill';
 import { IconButton } from '@ui/IconButton';
+import { EditedFlag } from '@ui/EditedFlag';
 
 import useCommentModals from '../model/internal/useCommentModals';
 import useCommentScrollToParent from '../model/internal/useCommentScrollToParent';
@@ -123,14 +124,8 @@ const Comment = ({
                 timeTitle={when.title}
                 onClickName={() => onClickProfile(userData)}
                 nameProfileLabel={t('user.viewProfileAria', { name: user.name })}
-                badges={
-                    <CommentBadges
-                        isMember={!!user.member?.isMember}
-                        isModerator={!!user.moderator?.isModerator}
-                        edited={data.edited}
-                        updatedAt={data.updatedAt}
-                    />
-                }
+                meta={data.edited ? <EditedFlag label={t('metadata.edited')} title={formatPostDate(data.updatedAt).title} /> : undefined}
+                badges={<CommentBadges isMember={!!user.member?.isMember} isModerator={!!user.moderator?.isModerator} />}
                 body={<CommentContent textContent={data.textContent} imageContent={data.imageContent} user={userData} />}
                 vote={
                     <VotePill

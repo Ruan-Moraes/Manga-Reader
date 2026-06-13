@@ -2,99 +2,96 @@ import { useTranslation } from 'react-i18next';
 
 import { SOCIAL_MEDIA_COLORS } from '@shared/constant/SOCIAL_MEDIA_COLORS';
 
-import { useUserModalContext } from '../model/useUserModalContext';
-
 import AppLink from '@ui/AppLink';
+
+import { type User } from '../model/user.types';
 
 type SocialMediaName = keyof typeof SOCIAL_MEDIA_COLORS;
 
-const UserModalBody = () => {
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <section className="flex flex-col gap-2">
+        <h4 className="mr-label text-mr-fg-subtle">{title}</h4>
+        {children}
+    </section>
+);
+
+const Skeleton = () => (
+    <div className="flex flex-col gap-4" aria-hidden="true">
+        <div className="h-3 w-24 rounded-mr-xs bg-mr-surface-muted" />
+        <div className="h-12 w-full rounded-mr-xs bg-mr-surface-muted" />
+        <div className="h-3 w-20 rounded-mr-xs bg-mr-surface-muted" />
+        <div className="flex gap-2">
+            <div className="h-24 w-20 rounded-mr-sm bg-mr-surface-muted" />
+            <div className="h-24 w-20 rounded-mr-sm bg-mr-surface-muted" />
+            <div className="h-24 w-20 rounded-mr-sm bg-mr-surface-muted" />
+        </div>
+    </div>
+);
+
+/** Corpo do modal: bio, redes, estatísticas e recomendados — todos vindos de dados reais. */
+const UserModalBody = ({ user, loading }: { user: User | null; loading: boolean }) => {
     const { t } = useTranslation('user');
-    const { userData } = useUserModalContext();
+
+    if (loading) return <Skeleton />;
+
+    if (!user) return null;
+
+    const stats = user.statistics;
+    const recommended = user.recommendedTitles ?? [];
+    const social = user.socialMediasLinks ?? [];
+
+    const hasStats = !!stats && (stats.comments != null || stats.likes != null || stats.dislikes != null);
 
     return (
-        <div className="flex flex-col gap-4 mt-2">
-            {userData?.bio && (
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.bio')}</h4>
-                    <p className="text-xs text-shadow-default">{userData.bio}</p>
-                </div>
+        <div className="flex flex-col gap-4">
+            {user.bio && (
+                <Section title={t('modal.body.bio')}>
+                    <p className="text-mr-small leading-relaxed text-mr-fg-muted">{user.bio}</p>
+                </Section>
             )}
-            {userData?.socialMediasLinks && (
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.socialMedia')}</h4>
-                    <div className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
-                        {userData.socialMediasLinks.map(socialMedia => (
+
+            {social.length > 0 && (
+                <Section title={t('modal.body.socialMedia')}>
+                    <div className="flex flex-wrap gap-2">
+                        {social.map(socialMedia => (
                             <div
                                 key={socialMedia.link}
-                                className="flex items-center justify-center p-2 border border-tertiary text-shadow-default"
-                                style={{
-                                    backgroundColor: SOCIAL_MEDIA_COLORS[socialMedia.name as SocialMediaName],
-                                }}
+                                className="flex items-center justify-center rounded-mr-xs px-2 py-1 text-shadow-default"
+                                style={{ backgroundColor: SOCIAL_MEDIA_COLORS[socialMedia.name as SocialMediaName] }}
                             >
-                                <AppLink className="text-xs leading-none" link={socialMedia.link} text={socialMedia.name} />
+                                <AppLink className="text-mr-tiny font-mr-bold leading-none" link={socialMedia.link} text={socialMedia.name} />
                             </div>
                         ))}
                     </div>
-                </div>
+                </Section>
             )}
-            {userData?.statistics && (
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.statistics')}</h4>
-                    <ul className="flex gap-1 overflow-x-auto flex-nowrap scrollbar-hidden">
-                        <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                            <span className="text-xs leading-none text-center text-nowrap">{t('modal.body.commentsCount', { count: 1000 })}</span>
+
+            {hasStats && (
+                <Section title={t('modal.body.statistics')}>
+                    <ul className="flex flex-wrap gap-2">
+                        <li className="rounded-mr-full bg-mr-accent-25 px-3 py-1 text-mr-small font-mr-bold text-mr-fg">
+                            {t('modal.body.commentsCount', { count: stats!.comments ?? 0 })}
                         </li>
-                        <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                            <span className="text-xs leading-none text-center text-nowrap">{t('modal.body.likesCount', { count: 1000 })}</span>
+                        <li className="rounded-mr-full bg-mr-accent-25 px-3 py-1 text-mr-small font-mr-bold text-mr-fg">
+                            {t('modal.body.likesCount', { count: stats!.likes ?? 0 })}
                         </li>
-                        <li className="flex items-center gap-1 p-2 rounded-xs bg-quaternary-opacity-25">
-                            <span className="text-xs leading-none text-center text-nowrap">{t('modal.body.dislikesCount', { count: 1000 })}</span>
+                        <li className="rounded-mr-full bg-mr-accent-25 px-3 py-1 text-mr-small font-mr-bold text-mr-fg">
+                            {t('modal.body.dislikesCount', { count: stats!.dislikes ?? 0 })}
                         </li>
                     </ul>
-                </div>
+                </Section>
             )}
-            {userData?.recommendedTitles && (
-                <div className="flex flex-col gap-2">
-                    <h4 className="font-bold leading-none text-shadow-default">{t('modal.body.recommendedWorks')}</h4>
-                    <div className="flex gap-2 overflow-x-auto flex-nowrap scrollbar-hidden">
-                        <div className="h-32 w-28 shrink-0">
-                            <img
-                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                                alt={t('modal.body.workAlt')}
-                                className="object-cover w-full h-full rounded-xs"
-                            />
-                        </div>
-                        <div className="h-32 w-28 shrink-0">
-                            <img
-                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                                alt={t('modal.body.workAlt')}
-                                className="object-cover w-full h-full rounded-xs"
-                            />
-                        </div>
-                        <div className="h-32 w-28 shrink-0">
-                            <img
-                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                                alt={t('modal.body.workAlt')}
-                                className="object-cover w-full h-full rounded-xs"
-                            />
-                        </div>
-                        <div className="h-32 w-28 shrink-0">
-                            <img
-                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                                alt={t('modal.body.workAlt')}
-                                className="object-cover w-full h-full rounded-xs"
-                            />
-                        </div>
-                        <div className="h-32 w-28 shrink-0">
-                            <img
-                                src="https://i.pinimg.com/280x280_RS/48/de/69/48de698ef6a556f7fc5d10b365170951.jpg"
-                                alt={t('modal.body.workAlt')}
-                                className="object-cover w-full h-full rounded-xs"
-                            />
-                        </div>
+
+            {recommended.length > 0 && (
+                <Section title={t('modal.body.recommendedWorks')}>
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hidden">
+                        {recommended.map(title => (
+                            <AppLink key={title.link} link={title.link} className="h-32 w-24 shrink-0">
+                                <img src={title.image} alt={t('modal.body.workAlt')} className="size-full rounded-mr-sm border border-mr-border object-cover" />
+                            </AppLink>
+                        ))}
                     </div>
-                </div>
+                </Section>
             )}
         </div>
     );

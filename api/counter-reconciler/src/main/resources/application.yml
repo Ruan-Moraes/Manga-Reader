@@ -1,0 +1,43 @@
+# ==============================================================================
+# Counter Reconciler — Configuração Principal
+# ==============================================================================
+# Serviço dedicado: recalcula periodicamente os contadores desnormalizados a
+# partir de sua fonte (SET = COUNT idempotente), corrigindo drift.
+#
+# A infra (Postgres/Mongo) é subida pelo api/server (spring-boot-docker-compose);
+# este serviço apenas se conecta — por isso docker.compose fica desligado.
+# ==============================================================================
+
+server:
+  port: 8082
+spring:
+  application:
+    name: counter-reconciler
+  # Carrega o .env (formato chave=valor) como properties, se existir.
+  # Permite que RECONCILER_ADMIN_TOKEN venha do .env também no `mvn spring-boot:run`.
+  config:
+    import: optional:file:./.env[.properties]
+  docker:
+    compose:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mangareader
+    username: manga
+    password: manga_secret
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mangareader
+      auto-index-creation: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+reconciler:
+  reconciliation:
+    # De hora em hora (no minuto 0). Rede de segurança contra drift dos contadores.
+    cron: "0 0 * * * *"
+  admin:
+    # Senha do gatilho manual POST /admin/reconcile (header X-Admin-Token).
+    # Vazio = endpoint desativado. Em produção, sobrescrever via env.
+    token: ${RECONCILER_ADMIN_TOKEN:}

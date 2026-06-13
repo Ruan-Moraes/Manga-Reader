@@ -8,6 +8,7 @@ import { Header } from '@widgets/header';
 import { Footer } from '@widgets/footer';
 import { MobileTabBar } from '@widgets/mobile-tab-bar';
 import { ProfileSettingsModal } from '@widgets/profile-settings-modal';
+import { UserModal } from '@entities/user';
 
 const TAB_KEYS: Record<string, string> = {
     '/': 'home',
@@ -46,6 +47,7 @@ const RootLayout = () => {
                     <MobileTabBar activeKey={getActiveTabKey(pathname)} onNavigate={navigate} />
                 </div>
                 <ProfileSettingsModal />
+                <UserModal />
             </Suspense>
         </>
     );

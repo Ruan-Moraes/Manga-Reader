@@ -37,10 +37,10 @@ const News = () => {
 
             {isLoading ? (
                 <div className="mt-6 flex flex-col gap-3">
-                    <Skeleton variant="rect" height={180} className="rounded-mr-md" />
+                    <Skeleton variant="rect" height={180} className="rounded-mr-xs" />
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <Skeleton key={i} variant="rect" height={180} className="rounded-mr-md" />
+                            <Skeleton key={i} variant="rect" height={180} className="rounded-mr-xs" />
                         ))}
                     </div>
                 </div>

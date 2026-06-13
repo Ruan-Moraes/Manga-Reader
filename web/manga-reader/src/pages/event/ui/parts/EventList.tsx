@@ -27,7 +27,7 @@ export const EventList = ({ events, featured, isLoading, onEventClick }: EventLi
         return (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
-                    <Skeleton key={i} variant="rect" height={160} className="rounded-mr-md" />
+                    <Skeleton key={i} variant="rect" height={160} className="rounded-mr-xs" />
                 ))}
             </div>
         );

@@ -54,7 +54,7 @@ const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, o
         >
             <div
                 className={cn(
-                    'relative aspect-[2/3] overflow-hidden rounded-mr-md border bg-mr-surface',
+                    'relative aspect-[2/3] overflow-hidden rounded-mr-xs border bg-mr-surface',
                     featured ? 'border-mr-accent shadow-mr-elevated' : 'border-mr-border',
                     lifted && !featured && 'shadow-mr-elevated',
                 )}

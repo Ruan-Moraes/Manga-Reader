@@ -31,7 +31,7 @@ export const GroupList = ({ groups, isLoading, onGroupClick }: GroupListProps) =
         return (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {Array.from({ length: 8 }).map((_, i) => (
-                    <Skeleton key={i} variant="rect" height={220} className="rounded-mr-md" />
+                    <Skeleton key={i} variant="rect" height={220} className="rounded-mr-xs" />
                 ))}
             </div>
         );

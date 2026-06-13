@@ -24,11 +24,11 @@ const ChapterCoverImage = ({ currentTitle, isLoading, imageError, onImageError }
                     )}
                     {!imageError && isLoading && (
                         <div>
-                            <span className="object-cover w-full rounded-md h-80">{t('chapter.coverLoading')}</span>
+                            <span className="object-cover w-full rounded-xs h-80">{t('chapter.coverLoading')}</span>
                         </div>
                     )}
                     {!imageError && !isLoading && (
-                        <img src={currentTitle?.cover} alt={currentTitle?.name} onError={onImageError} className="object-cover w-full rounded-md h-80" />
+                        <img src={currentTitle?.cover} alt={currentTitle?.name} onError={onImageError} className="object-cover w-full rounded-xs h-80" />
                     )}
                 </div>
             </div>

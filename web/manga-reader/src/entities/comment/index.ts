@@ -17,7 +17,5 @@ export type { SortType } from './model/CommentSortContext';
 export { getCommentsByTitleId, createComment, updateComment, deleteComment, likeComment, dislikeComment, getUserReactions, getUserCommentVotes } from './api/commentService';
 
 // Display atoms (dumb — props/callbacks only)
-export { default as CommentUser } from './ui/header/CommentUser';
-export { default as CommentMetadata } from './ui/header/CommentMetadata';
 export { default as CommentContent } from './ui/body/CommentContent';
 export { default as CommentActions } from './ui/footer/CommentActions';

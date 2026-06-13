@@ -12,7 +12,7 @@ import { MangaCard } from '@entities/manga';
 
 import type { SavedMangaItem } from '@features/library';
 
-const MangaCardSkeleton = () => <Skeleton variant="rect" height={260} className="rounded-mr-md shrink-0 w-[140px] sm:w-auto" />;
+const MangaCardSkeleton = () => <Skeleton variant="rect" height={260} className="rounded-mr-xs shrink-0 w-[140px] sm:w-auto" />;
 
 type HomeContinueReadingProps = {
     continueLoading: boolean;

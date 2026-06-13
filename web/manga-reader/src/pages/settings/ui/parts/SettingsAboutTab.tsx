@@ -28,7 +28,7 @@ const SettingsAboutTab = () => {
     return (
         <>
             <SettingSection title={t('settings.system.about.sectionVersion')}>
-                <div className="flex items-center gap-3 rounded-mr-md border border-mr-gray-800 bg-mr-secondary p-4">
+                <div className="flex items-center gap-3 rounded-mr-xs border border-mr-gray-800 bg-mr-secondary p-4">
                     <img
                         src={`${import.meta.env.BASE_URL}/favicon-64x64.png`}
                         alt=""

@@ -56,7 +56,7 @@ const ProfileEditModal = ({ onAccountDeleted }: Props) => {
                 aria-modal="true"
                 aria-label="Editar perfil"
                 onClick={e => e.stopPropagation()}
-                className="flex max-h-full w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-mr-primary sm:max-h-[92vh] sm:max-w-[760px] sm:rounded-mr-md sm:border sm:border-mr-gray-700 sm:shadow-[-0.5rem_0.5rem_0_0_rgba(221,218,42,0.25)]"
+                className="flex max-h-full w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-mr-primary sm:max-h-[92vh] sm:max-w-[760px] sm:rounded-mr-xs sm:border sm:border-mr-gray-700 sm:shadow-[-0.5rem_0.5rem_0_0_rgba(221,218,42,0.25)]"
             >
                 <ProfileEditModalContent onAccountDeleted={onAccountDeleted} />
             </div>

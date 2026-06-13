@@ -4,8 +4,10 @@ import DOMPurify from 'dompurify';
 const renderer = new marked.Renderer();
 
 const originalLink = renderer.link;
+
 renderer.link = function (args) {
     const html = originalLink.call(this, args);
+
     return html
         .replace('<a ', '<a target="_blank" rel="noopener noreferrer" ')
         .replace('target="_blank" rel="noopener noreferrer" target="_blank"', 'target="_blank" rel="noopener noreferrer"');
@@ -46,10 +48,6 @@ const PURIFY_CONFIG = {
     ALLOW_DATA_ATTR: false,
 };
 
-// Marca spoilers `||texto||` como <span> ocultável antes do parse markdown.
-// O conteúdo do spoiler é tratado como texto plano (sem markdown aninhado),
-// igual ao protótipo. Casa apenas pares na mesma linha, sem conflitar com
-// pipes de tabela GFM (um único `|`).
 const SPOILER_RE = /\|\|([^|\n]+?)\|\|/g;
 
 const markSpoilers = (text: string): string => text.replace(SPOILER_RE, '<span class="md-spoiler" tabindex="0">$1</span>');

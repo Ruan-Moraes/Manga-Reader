@@ -32,7 +32,7 @@ const HomeNewReleases = ({ releases }: HomeNewReleasesProps) => {
             {releases.length === 0 ? (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                     {Array.from({ length: 5 }).map((_, i) => (
-                        <Skeleton key={i} variant="rect" height={260} className="rounded-mr-md" />
+                        <Skeleton key={i} variant="rect" height={260} className="rounded-mr-xs" />
                     ))}
                 </div>
             ) : (

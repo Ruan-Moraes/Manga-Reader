@@ -110,7 +110,7 @@ const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
                     )}
                 </>
             ) : (
-                <Skeleton variant="rect" height={400} className="rounded-mr-md" />
+                <Skeleton variant="rect" height={400} className="rounded-mr-xs" />
             )}
         </section>
     );

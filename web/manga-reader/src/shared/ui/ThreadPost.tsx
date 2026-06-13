@@ -25,6 +25,8 @@ export interface ThreadPostProps {
     timeTitle?: string;
     onClickName?: () => void;
     nameProfileLabel?: string;
+    /** Metadados inline após o tempo (ex.: selo "(editado)"). */
+    meta?: ReactNode;
     badges?: ReactNode;
     headerRight?: ReactNode;
 
@@ -66,6 +68,7 @@ export const ThreadPost = ({
     timeTitle,
     onClickName,
     nameProfileLabel,
+    meta,
     badges,
     headerRight,
     body,
@@ -93,6 +96,7 @@ export const ThreadPost = ({
                 timeTitle={timeTitle}
                 onClickName={onClickName}
                 nameProfileLabel={nameProfileLabel}
+                meta={meta}
                 badges={badges}
                 right={headerRight}
                 highlighted={highlighted}

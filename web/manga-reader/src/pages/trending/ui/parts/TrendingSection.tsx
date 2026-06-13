@@ -146,7 +146,7 @@ export const RankedRow = ({ rank, manga, onNavigate }: { rank: number; manga: Tr
         <button
             type="button"
             onClick={onNavigate}
-            className="flex w-full items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent"
+            className="flex w-full items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent"
         >
             <span className="shrink-0 font-mono text-[2rem] font-black leading-none text-mr-accent" aria-label={`${rank}º lugar`}>
                 {rank}

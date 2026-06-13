@@ -92,7 +92,7 @@ const HelpArticlesSection = ({ query, activeCategory, onCategoryToggle }: HelpAr
                         }
                     />
                 ) : (
-                    <div className="flex flex-col divide-y divide-mr-border-subtle rounded-mr-md border border-mr-border overflow-hidden">
+                    <div className="flex flex-col divide-y divide-mr-border-subtle rounded-mr-xs border border-mr-border overflow-hidden">
                         {filtered.map((article, idx) => (
                             <article
                                 key={article.id}

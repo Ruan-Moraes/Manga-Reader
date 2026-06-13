@@ -1,3 +1,5 @@
+// TODO: Verificar se esse componente esta com responsabilidades extras
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +9,7 @@ import Illustration from '@ui/Illustration';
 import { Modal } from '@ui/Modal';
 import { StarsInput } from '@ui/Stars';
 
-import { REVIEW_CRITERIA, type ReviewCriterionKey } from '../../model/reviewCriteria';
+import { REVIEW_CRITERIA, type ReviewCriterionKey } from '@entities/review';
 
 type RatingSubmitData = {
     funRating: number;
@@ -161,7 +163,7 @@ function ReviewFormBody({
                         onClick={() => setSpoiler(s => !s)}
                         aria-pressed={spoiler}
                         className={cn(
-                            'flex items-center gap-1.5 rounded-mr-full px-3 py-1 text-[12px] font-mr-bold transition-colors',
+                            'flex items-center gap-1.5 rounded-mr-xs px-3 py-1 text-[12px] font-mr-bold transition-colors',
                             spoiler
                                 ? 'border border-[var(--mr-danger)] bg-[rgba(255,120,79,.18)] text-[var(--mr-danger)]'
                                 : 'border border-mr-tertiary bg-mr-secondary text-mr-fg-subtle hover:border-[var(--mr-danger)] hover:text-[var(--mr-danger)]',
@@ -192,6 +194,7 @@ function ReviewFormBody({
 
 function ReviewSuccess({ overall, onDone }: { overall: number; onDone: () => void }) {
     const { t } = useTranslation('rating');
+
     return (
         <div className="flex flex-col items-center gap-4 py-4 text-center">
             <Illustration type="feliz" alt="" width={120} height={120} />
@@ -208,6 +211,7 @@ function ReviewSuccess({ overall, onDone }: { overall: number; onDone: () => voi
 
 const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = false, titleName, initial }: RatingModalProps) => {
     const { t } = useTranslation('rating');
+
     const [done, setDone] = useState<number | null>(null);
 
     const handleSubmit = (data: RatingSubmitData) => {
@@ -219,6 +223,7 @@ const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = f
 
     const handleClose = () => {
         setDone(null);
+
         closeModal();
     };
 
@@ -227,7 +232,7 @@ const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = f
             open={isModalOpen}
             onClose={handleClose}
             title={done == null ? (initial ? t('modal.editLabel') : t('modal.evaluateLabel')) : ''}
-            size="md"
+            size="lg"
             hideClose={done != null}
         >
             {done == null ? (

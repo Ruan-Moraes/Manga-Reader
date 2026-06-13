@@ -678,7 +678,6 @@ html.mr-reduce-motion *::after {
     background: var(--mr-gray-800);
     color: transparent;
     border-radius: 0.1875rem;
-    padding: 0 0.25rem;
     box-shadow: inset 0 0 0 1px var(--mr-gray-700);
     cursor: pointer;
     user-select: none;
@@ -696,28 +695,23 @@ html.mr-reduce-motion *::after {
     outline: none;
 }
 
-/* ============================================================
-   Threading de comentários — trilho + cotovelo (porte de cs.css)
-   ============================================================ */
 .cs-replies {
-    margin-top: 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
 }
 
 .cs-thread {
     position: relative;
-    padding-left: 24px;
+    padding-left: 28px;
 }
 
-/* trilho vertical */
 .cs-thread::before {
     content: '';
     position: absolute;
-    left: 7px;
+    left: 8px;
     top: 0;
-    bottom: 0;
+    bottom: 14px;
     width: 2px;
     background: var(--mr-rail-soft);
     border-radius: 2px;
@@ -727,13 +721,12 @@ html.mr-reduce-motion *::after {
     background: var(--mr-rail);
 }
 
-/* cotovelo para cada resposta */
 .cs-thread::after {
     content: '';
     position: absolute;
-    left: 7px;
-    top: 26px;
-    width: 15px;
+    left: 8px;
+    top: 28px;
+    width: 16px;
     height: 2px;
     background: var(--mr-rail-soft);
     border-radius: 2px;
@@ -743,15 +736,14 @@ html.mr-reduce-motion *::after {
     background: var(--mr-rail);
 }
 
-/* colapsar / expandir thread */
 .cs-collapse {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     align-self: flex-start;
     background: none;
     border: 0;
-    padding: 6px 0;
+    padding: 2px 0 6px;
     cursor: pointer;
     font-family: inherit;
     color: var(--mr-fg-subtle);
@@ -798,7 +790,7 @@ html.mr-reduce-motion *::after {
 /* destaque temporário do comentário pai ao clicar na menção (1,25s) */
 .cs-highlight {
     animation: cs-highlight-pulse 1.25s ease-out;
-    border-radius: var(--mr-radius-md);
+    border-radius: var(--mr-radius-xs);
 }
 
 @keyframes cs-highlight-pulse {
@@ -810,30 +802,29 @@ html.mr-reduce-motion *::after {
     }
 }
 
-/* mobile: trilho mais estreito + tint nas respostas aninhadas */
 @media (max-width: 767px) {
     .cs-thread {
-        padding-left: 12px;
+        padding-left: 16px;
     }
 
     .cs-thread::before {
-        left: 4px;
+        left: 5px;
     }
 
     .cs-thread::after {
-        left: 4px;
-        width: 6px;
+        left: 5px;
+        width: 9px;
     }
 
     .cs-continue {
-        margin-left: 12px;
+        margin-left: 16px;
     }
 
     .cs-thread .cs-flat-post {
         background: rgba(255, 255, 255, 0.025);
         border: 1px solid var(--mr-border);
         border-radius: 8px;
-        padding: 10px 10px;
+        padding: 11px 12px;
     }
 }
 
@@ -858,10 +849,6 @@ html.mr-reduce-motion *::after {
 
     .cs-thread .cs-flat-post {
         padding: 8px 9px;
-    }
-
-    .cs-composer {
-        padding: 10px;
     }
 
     .cs-composer textarea {

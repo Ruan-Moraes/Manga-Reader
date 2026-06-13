@@ -12,30 +12,38 @@ const MAX_LENGTH = 2000;
 
 export interface ComposerHandle {
     focus: () => void;
-    /** Pré-preenche uma menção `@handle` e foca (usado por "Responder" do fórum). */
     insertMention: (handle: string) => void;
 }
 
 export interface ComposerProps {
-    /** Variante de resposta: avatar menor. */
     compact?: boolean;
     placeholder?: string;
     submitLabel?: string;
-    /** Rótulo acessível do textarea (ex.: "Sua resposta"). */
     ariaLabel?: string;
     onCancel?: () => void;
-    /** Sem moldura externa (sem borda/fundo/avatar) — p/ usar dentro de modal. */
     bare?: boolean;
-    /** Persiste o conteúdo. Se resolver sem erro, o composer limpa o texto. */
+    /** Estica o editor para ocupar toda a altura do contêiner pai (ex.: modal de resposta). */
+    fill?: boolean;
     onSubmit: (textContent: string | null, imageContent: string | null) => void | Promise<void>;
-    /** Anexos (opcional) — injetados pelo dono; sem eles, não há upload nem thumbnails. */
     images?: string[];
     onAddImage?: () => void;
     onRemoveImage?: (index: number) => void;
 }
 
 export const Composer = forwardRef<ComposerHandle, ComposerProps>(
-    ({ compact = false, placeholder, submitLabel, ariaLabel, onCancel, bare = false, onSubmit, images, onAddImage, onRemoveImage }, ref) => {
+    ({
+         compact = false,
+         placeholder,
+         submitLabel,
+         ariaLabel,
+         onCancel,
+         bare = false,
+         fill = false,
+         onSubmit,
+         images,
+         onAddImage,
+         onRemoveImage,
+     }, ref) => {
         const { t } = useTranslation('common');
 
         const [tab, setTab] = useState<'write' | 'preview'>('write');
@@ -121,21 +129,20 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
 
         return (
             <div
-                className={cn(
-                    'cs-composer',
+                className={
                     bare
-                        ? ''
+                        ? cn(fill && 'flex flex-1 flex-col')
                         : cn(
-                              'grid gap-3 rounded-mr-md border bg-mr-surface p-3.5 transition-colors md:grid-cols-[auto_1fr]',
-                              focused ? 'border-mr-accent-50 shadow-mr-elevated' : 'border-mr-border',
-                          ),
-                )}
+                            'grid gap-3 rounded-mr-xs border bg-mr-surface p-3.5 transition-colors md:grid-cols-[auto_1fr]',
+                            focused ? 'border-mr-accent-50 shadow-mr-elevated' : 'border-mr-border',
+                        )
+                }
             >
                 <div className={bare ? 'hidden' : 'hidden md:block'}>
                     <Avatar src={session?.photoUrl} name={session?.name ?? 'Você'} size={compact ? 32 : 40} />
                 </div>
 
-                <div className="flex min-w-0 flex-col gap-2.5">
+                <div className={cn('flex min-w-0 flex-col gap-2.5', fill && 'flex-1')}>
                     {/* abas */}
                     <div className="flex gap-0.5 border-b border-mr-border">
                         {(['write', 'preview'] as const).map(key => (
@@ -195,11 +202,14 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
                                 onChange={event => setValue(event.target.value)}
                                 onFocus={() => setFocused(true)}
                                 onBlur={() => setFocused(false)}
-                                className="min-h-24 w-full resize-y rounded-[6px] border border-mr-border bg-mr-surface-muted px-3 py-3 text-mr-body leading-relaxed text-mr-fg placeholder:text-mr-tertiary focus:border-mr-accent focus:outline-none"
+                                className={cn(
+                                    'min-h-24 w-full resize-y rounded-xs border border-mr-border bg-mr-surface-muted px-3 py-3 text-mr-body leading-relaxed text-mr-fg placeholder:text-mr-tertiary focus:border-mr-accent focus:outline-none',
+                                    fill && 'flex-1 resize-none',
+                                )}
                             />
                         </>
                     ) : (
-                        <div className="min-h-24 rounded-[6px] border border-mr-border bg-mr-surface-muted px-3 py-3">
+                        <div className={cn('min-h-24 overflow-y-auto rounded-xs border border-mr-border bg-mr-surface-muted px-3 py-3', fill && 'flex-1')}>
                             {value.trim() ? (
                                 <Markdown text={value} className="text-mr-body leading-[1.62] text-mr-fg-muted" />
                             ) : (
@@ -212,7 +222,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
                         <div className="flex flex-wrap gap-2">
                             {images!.map((src, index) => (
                                 <div key={src} className="relative inline-block">
-                                    <img src={src} alt={t('composer.imageAlt', { index: index + 1 })} className="max-h-40 rounded-mr-xs object-cover" />
+                                    <img src={src} alt={t('composer.imageAlt', { index: index + 1 })}
+                                         className="max-h-40 rounded-mr-xs object-cover" />
                                     <button
                                         type="button"
                                         onClick={() => onRemoveImage?.(index)}
@@ -228,7 +239,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
 
                     {/* rodapé */}
                     <div className="flex flex-wrap items-center justify-between gap-3 max-md:justify-end">
-                        <span className="inline-flex flex-wrap items-center gap-1.5 text-[11.5px] text-mr-tertiary max-md:hidden">
+                        <span
+                            className="inline-flex flex-wrap items-center gap-1.5 text-[11.5px] text-mr-tertiary max-md:hidden">
                             <HelpCircle className="size-3" aria-hidden="true" />
                             {t('composer.hint')}
                         </span>

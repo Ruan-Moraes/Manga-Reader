@@ -1,6 +1,7 @@
 {
     "modal": {
         "openProfileAria": "Abrir perfil de {{name}}",
+        "viewProfile": "Ver perfil completo",
         "photoAlt": "Foto de perfil de {{name}}",
         "moderatorSince": "Moderador desde {{date}}",
         "memberSince": "Membro desde {{date}}",

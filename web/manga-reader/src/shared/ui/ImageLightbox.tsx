@@ -41,9 +41,9 @@ const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
 
             <div className="relative z-10 flex flex-col items-center gap-3 mx-4 max-w-full max-h-full">
                 {src ? (
-                    <img src={src} alt={alt} className="object-contain max-h-[80vh] w-auto rounded-mr-md" style={{ transition: 'opacity 300ms' }} />
+                    <img src={src} alt={alt} className="object-contain max-h-[80vh] w-auto rounded-mr-xs" style={{ transition: 'opacity 300ms' }} />
                 ) : (
-                    <div className="flex flex-col items-center justify-center w-64 h-64 bg-secondary rounded-mr-md">
+                    <div className="flex flex-col items-center justify-center w-64 h-64 bg-secondary rounded-mr-xs">
                         <Image size={64} className="text-tertiary" />
                         <span className="mt-2 text-sm text-tertiary">{t('image.unavailable')}</span>
                     </div>

@@ -16,7 +16,7 @@ export const AuthShell = ({ eyebrow, title, subtitle, children, footer }: AuthSh
 
     return (
         <div className="mx-auto w-full max-w-[880px] px-4 py-6">
-            <div className="grid grid-cols-1 overflow-hidden rounded-mr-md border border-[#2a2a2a] bg-mr-gray-900 lg:grid-cols-[360px_minmax(0,1fr)]">
+            <div className="grid grid-cols-1 overflow-hidden rounded-mr-xs border border-[#2a2a2a] bg-mr-gray-900 lg:grid-cols-[360px_minmax(0,1fr)]">
                 <aside
                     className="relative hidden min-h-[480px] overflow-hidden border-r border-[#2a2a2a] p-8 lg:block"
                     style={{

@@ -18,10 +18,11 @@ const ReplyModal = ({ isOpen, onSubmit, onCancel }: ReplyModalProps) => {
     const { images, addImage, removeImage } = useCommentImageUpload();
 
     return (
-        <Modal open={isOpen} onClose={onCancel} title={t('reply.modalTitle')} size="md">
+        <Modal open={isOpen} onClose={onCancel} title={t('reply.modalTitle')} size="md" bodyClassName="flex min-h-[45vh] flex-col">
             <Composer
                 compact
                 bare
+                fill
                 placeholder={t('reply.placeholder')}
                 submitLabel={t('reply.action')}
                 ariaLabel={t('reply.modalTitle')}

@@ -26,7 +26,7 @@ import com.mangareader.aggregator.infrastructure.repository.TitleRatingAggregate
 
 /**
  * Integração Mongo (TestContainers) do agregado: DAO de leitura sobre
- * {@code ratings}, backfill do Mongock e recompute end-to-end.
+ * {@code reviews}, backfill do Mongock e recompute end-to-end.
  */
 @DataMongoTest
 @Import({RatingAggregationDao.class})
@@ -48,7 +48,7 @@ class TitleRatingAggregateMongoTest {
 
     @BeforeEach
     void setUp() {
-        mongoTemplate.getCollection("ratings").drop();
+        mongoTemplate.getCollection("reviews").drop();
         aggregateRepository.deleteAll();
 
         // t1: notas 5,4,3 → média 4.0, dist star5=1,star4=1,star3=1
@@ -60,7 +60,7 @@ class TitleRatingAggregateMongoTest {
     }
 
     private void insertRating(String titleId, double overallRating) {
-        mongoTemplate.getCollection("ratings").insertOne(
+        mongoTemplate.getCollection("reviews").insertOne(
                 new Document("titleId", titleId).append("overallRating", overallRating));
     }
 
@@ -82,7 +82,8 @@ class TitleRatingAggregateMongoTest {
     @Test
     @DisplayName("Backfill V001 cria agregados para todos os títulos avaliados")
     void backfillCriaAgregados() {
-        new V001CreateTitleRatingAggregate(mongoTemplate).execute();
+        new V001CreateTitleRatingAggregate(mongoTemplate, ratingAggregationDao,
+                new RecalculateTitleRatingUseCase(ratingAggregationDao, aggregateRepository)).execute();
 
         TitleRatingAggregate t1 = aggregateRepository.findById("t1").orElseThrow();
         assertThat(t1.getRatingAverage()).isEqualTo(4.0);

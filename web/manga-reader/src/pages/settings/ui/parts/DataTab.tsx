@@ -16,7 +16,7 @@ const CACHE_TOTAL_MB = 512;
 type ConfirmKind = 'cache' | 'history' | null;
 
 const DataRow = ({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) => (
-    <div className="flex flex-col gap-3 rounded-mr-md border border-mr-gray-800 bg-mr-secondary p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 rounded-mr-xs border border-mr-gray-800 bg-mr-secondary p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
             <p className="text-mr-body font-mr-bold text-mr-fg">{title}</p>
             {desc && <p className="mt-0.5 text-mr-small text-mr-fg-subtle">{desc}</p>}
@@ -52,7 +52,7 @@ const DataTab = ({ state }: { state: SettingsState }) => {
     return (
         <>
             {!isLoggedIn && (
-                <p className="mb-5 rounded-mr-md border border-mr-gray-800 bg-mr-secondary p-3 text-mr-small text-mr-fg-muted">
+                <p className="mb-5 rounded-mr-xs border border-mr-gray-800 bg-mr-secondary p-3 text-mr-small text-mr-fg-muted">
                     {t('settings.system.data.guestNotice')}
                 </p>
             )}
@@ -64,7 +64,7 @@ const DataTab = ({ state }: { state: SettingsState }) => {
                             {t('settings.system.data.clear')}
                         </Button>
                     </DataRow>
-                    <div className="rounded-mr-md border border-mr-gray-800 bg-mr-secondary p-4">
+                    <div className="rounded-mr-xs border border-mr-gray-800 bg-mr-secondary p-4">
                         <div className="mb-2 flex items-center justify-between text-mr-small">
                             <span className="text-mr-fg-muted">{t('settings.system.data.cacheUsageLabel')}</span>
                             <span className="font-mr-mono tabular-nums text-mr-fg">

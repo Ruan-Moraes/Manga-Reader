@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -60,13 +59,5 @@ public interface GroupJpaRepository extends JpaRepository<Group, UUID> {
                   AND m.type = com.mangareader.domain.group.valueobject.GroupUserType.MEMBER
             )""")
     List<Group> findAvailableGroupsForUser(@Param("userId") UUID userId);
-
-    /**
-     * PERF-6: reconcilia {@code totalTitles} com a contagem real de obras do grupo.
-     * Bulk update idempotente — corrige drift dos incrementos de Add/RemoveWork.
-     */
-    @Modifying
-    @Query("UPDATE Group g SET g.totalTitles = (SELECT COUNT(w) FROM GroupWork w WHERE w.group = g)")
-    int reconcileTotalTitles();
 
 }

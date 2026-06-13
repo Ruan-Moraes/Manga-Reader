@@ -43,7 +43,7 @@ const LocalizedTextInput = ({
     const hasContent = (lang: LanguageTag) => Boolean(value[lang] && value[lang]!.trim().length > 0);
 
     const inputClasses =
-        'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white';
+        'w-full rounded-xs border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white';
 
     return (
         <div className="flex flex-col gap-2">

@@ -6,7 +6,8 @@
 # Requer .env com as variáveis:
 #   DATABASE_PASSWORD, MONGODB_PASSWORD, RABBITMQ_PASSWORD, REDIS_PASSWORD,
 #   JWT_SECRET, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD,
-#   MAIL_FROM, APP_BASE_URL, CORS_ALLOWED_ORIGINS
+#   MAIL_FROM, APP_BASE_URL, CORS_ALLOWED_ORIGINS,
+#   AGGREGATOR_ADMIN_TOKEN, RECONCILER_ADMIN_TOKEN
 # ==============================================================================
 
 services:
@@ -89,6 +90,41 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.5"
+  counter-reconciler:
+    build:
+      context: ./counter-reconciler
+      dockerfile: Dockerfile
+    container_name: mangareader-counter-reconciler
+    ports:
+      - "8082:8082"
+    environment:
+      # Spring relaxed binding: SPRING_DATASOURCE_URL -> spring.datasource.url etc.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mangareader
+      SPRING_DATASOURCE_USERNAME: manga
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mangareader
+      RECONCILER_ADMIN_TOKEN: ${RECONCILER_ADMIN_TOKEN}
+      JAVA_OPTS: >-
+        -Xms128m -Xmx256m
+        -XX:+UseG1GC
+        -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8082/actuator/health"]
       interval: 30s
       timeout: 5s
       retries: 5

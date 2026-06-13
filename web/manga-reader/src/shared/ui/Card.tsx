@@ -12,9 +12,9 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantClass: Record<CardVariant, string> = {
-    default: 'rounded-mr-md bg-mr-surface border border-mr-border',
+    default: 'rounded-mr-xs bg-mr-surface border border-mr-border',
     flat: 'rounded-mr-xs bg-mr-surface border border-mr-border',
-    elevated: 'rounded-mr-md bg-mr-surface border border-mr-border shadow-mr-elevated',
+    elevated: 'rounded-mr-xs bg-mr-surface border border-mr-border shadow-mr-elevated',
 };
 
 const paddingClass: Record<CardPadding, string> = {

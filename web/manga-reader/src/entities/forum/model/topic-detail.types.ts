@@ -2,6 +2,8 @@
 // `pages/forum` page hook `useTopicDetail`).
 
 export type TopicAuthor = {
+    /** Id do usuário — usado para abrir o modal de perfil (busca por id). */
+    userId: string;
     name: string;
     handle: string;
     badge: 'mod' | 'author' | undefined;

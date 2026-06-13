@@ -24,7 +24,7 @@ export const ForumTopicList = ({ topics, allTopicsCount, page, totalPages, onPag
         return (
             <div className="flex flex-col gap-2">
                 {Array.from({ length: 5 }).map((_, i) => (
-                    <Skeleton key={i} variant="rect" height={88} className="rounded-mr-md" />
+                    <Skeleton key={i} variant="rect" height={88} className="rounded-mr-xs" />
                 ))}
             </div>
         );

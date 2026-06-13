@@ -20,7 +20,7 @@ const HelpStatusSection = () => {
                             key={tile.key}
                             role="status"
                             aria-label={`${label}: ${statusText}`}
-                            className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3"
+                            className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3"
                         >
                             <StatusDot status={tile.status} />
                             <span className="flex-1 text-mr-small font-mr-bold text-mr-fg">{label}</span>

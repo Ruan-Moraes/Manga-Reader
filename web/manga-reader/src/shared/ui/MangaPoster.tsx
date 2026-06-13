@@ -15,7 +15,7 @@ export interface MangaPosterProps {
 
 const radiusMap = {
     sm: 'rounded-mr-sm',
-    md: 'rounded-mr-md',
+    md: 'rounded-mr-xs',
     lg: 'rounded-mr-lg',
 };
 
