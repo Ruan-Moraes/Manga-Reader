@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.TitleAssociationWriter;
+import com.mangareader.application.manga.service.TitleReferenceCleaner;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -23,6 +25,12 @@ class DeleteTitleUseCaseTest {
 
     @Mock
     private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private TitleAssociationWriter associationWriter;
+
+    @Mock
+    private TitleReferenceCleaner referenceCleaner;
 
     @InjectMocks
     private DeleteTitleUseCase deleteTitleUseCase;
@@ -35,6 +43,8 @@ class DeleteTitleUseCaseTest {
 
         deleteTitleUseCase.execute("title-1");
 
+        verify(associationWriter).clear("title-1");
+        verify(referenceCleaner).clear("title-1");
         verify(titleRepository).deleteById("title-1");
     }
 
