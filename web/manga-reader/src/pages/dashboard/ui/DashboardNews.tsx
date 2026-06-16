@@ -1,24 +1,45 @@
 import { useState } from 'react';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
-import { ROUTES } from '@shared/constant/ROUTES';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Search } from 'lucide-react';
-import { AdminNewsList, ConfirmDeleteWithIdModal, useAdminNews, useAdminNewsActions, type AdminNews } from '@features/admin';
+
+import {
+    AdminNewsList,
+    NewsFormModal,
+    ConfirmDeleteWithIdModal,
+    useAdminNews,
+    useAdminNewsActions,
+    type AdminNews,
+    type CreateNewsRequest,
+    type UpdateNewsRequest,
+} from '@features/admin';
+import ListPageHeader from './parts/ListPageHeader';
 
 const DashboardNews = () => {
     const { t } = useTranslation('admin');
     const { news, page, totalPages, totalElements, isLoading, search, setSearch, setPage } = useAdminNews();
-    const { isSubmitting, handleDelete } = useAdminNewsActions();
+    const { isSubmitting, handleCreate, handleUpdate, handleDelete } = useAdminNewsActions();
 
-    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState(search);
+    const [formOpen, setFormOpen] = useState(false);
+    const [editing, setEditing] = useState<AdminNews | null>(null);
     const [deletingNews, setDeletingNews] = useState<AdminNews | null>(null);
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
+    const submitSearch = () => {
         setSearch(searchInput);
         setPage(0);
+    };
+
+    const openNew = () => {
+        setEditing(null);
+        setFormOpen(true);
+    };
+    const openEdit = (item: AdminNews) => {
+        setEditing(item);
+        setFormOpen(true);
+    };
+
+    const handleFormSubmit = async (data: CreateNewsRequest | UpdateNewsRequest) => {
+        const result = editing ? await handleUpdate(editing.id, data) : await handleCreate(data as CreateNewsRequest);
+        if (result) setFormOpen(false);
     };
 
     const confirmDelete = async () => {
@@ -30,35 +51,17 @@ const DashboardNews = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-                <h1 className="text-lg font-bold">{t('dashboard.news.title')}</h1>
-                <div className="flex items-center gap-3">
-                    <span className="text-sm text-tertiary">{t('dashboard.news.count', { count: totalElements })}</span>
-                    <button
-                        onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS_FORM}`)}
-                        className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-dark"
-                    >
-                        <Plus size={14} />
-                        {t('dashboard.news.new')}
-                    </button>
-                </div>
-            </div>
-
-            <form onSubmit={handleSearch} className="flex gap-2">
-                <div className="relative flex-1">
-                    <Search size={16} className="absolute text-tertiary left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                        type="text"
-                        value={searchInput}
-                        onChange={e => setSearchInput(e.target.value)}
-                        placeholder={t('dashboard.news.search')}
-                        className="w-full py-2 pl-9 pr-3 text-sm border rounded-xs bg-secondary border-tertiary"
-                    />
-                </div>
-                <button type="submit" className="px-4 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/30">
-                    {t('common.search')}
-                </button>
-            </form>
+            <ListPageHeader
+                title={t('dashboard.news.title')}
+                count={t('dashboard.news.count', { count: totalElements })}
+                onNew={openNew}
+                newLabel={t('dashboard.news.new')}
+                searchValue={searchInput}
+                onSearchChange={setSearchInput}
+                onSubmitSearch={submitSearch}
+                searchPlaceholder={t('dashboard.news.search')}
+                searchButtonLabel={t('common.search')}
+            />
 
             <AdminNewsList
                 news={news}
@@ -66,8 +69,21 @@ const DashboardNews = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
-                onEdit={n => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS_EDIT(n.id)}`)}
+                onEdit={openEdit}
+                onRowClick={openEdit}
                 onDelete={setDeletingNews}
+            />
+
+            <NewsFormModal
+                isOpen={formOpen}
+                onClose={() => setFormOpen(false)}
+                onSubmit={handleFormSubmit}
+                news={editing}
+                isSubmitting={isSubmitting}
+                onDelete={() => {
+                    setDeletingNews(editing);
+                    setFormOpen(false);
+                }}
             />
 
             <ConfirmDeleteWithIdModal

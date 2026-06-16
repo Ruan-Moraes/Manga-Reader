@@ -2,7 +2,9 @@
     "sidebar": {
         "brand": "Admin Panel",
         "openMenu": "Open menu",
-        "closeMenu": "Close menu"
+        "closeMenu": "Close menu",
+        "authors": "Authors",
+        "publishers": "Publishers"
     },
     "common": {
         "cancel": "Cancel",
@@ -28,7 +30,8 @@
         "daysPlaceholder": "7",
         "cancel": "Cancel",
         "confirm": "Confirm Ban",
-        "confirming": "Banning..."
+        "confirming": "Banning...",
+        "warning": "<b>{{name}}</b> will lose access immediately. You can revert this later."
     },
     "changeRole": {
         "title": "Change role of {{name}}",
@@ -40,7 +43,10 @@
             "MEMBER": "Member",
             "MODERATOR": "Moderator",
             "ADMIN": "Administrator"
-        }
+        },
+        "fieldLabel": "User role",
+        "fieldHint": "Sets the access level on the platform.",
+        "save": "Save"
     },
     "changeGroupRole": {
         "title": "Change role of {{name}}",
@@ -55,7 +61,8 @@
             "QC": "QC",
             "CLEANER": "Cleaner",
             "TYPESETTER": "Typesetter"
-        }
+        },
+        "fieldLabel": "{{name}} role"
     },
     "updateSubscriptionStatus": {
         "title": "Update subscription status",
@@ -68,7 +75,8 @@
             "ACTIVE": "Active",
             "EXPIRED": "Expired",
             "CANCELLED": "Cancelled"
-        }
+        },
+        "fieldLabel": "Subscription status"
     },
     "planList": {
         "columnPeriod": "Period",
@@ -198,7 +206,10 @@
         "changeRole": "Change Role",
         "ban": "Ban",
         "unban": "Remove Ban",
-        "unbanning": "Removing..."
+        "unbanning": "Removing...",
+        "modalTitle": "User details",
+        "unbanTitle": "Unban user",
+        "unbanMessage": "{{name}} will regain access to the platform."
     },
     "groupDetail": {
         "info": "Information",
@@ -223,7 +234,10 @@
         "actions": {
             "role": "Role",
             "remove": "Remove"
-        }
+        },
+        "modalTitle": "Group details",
+        "edit": "Edit",
+        "changeMemberRole": "Change role"
     },
     "grantSubscription": {
         "title": "Grant Subscription",
@@ -246,7 +260,8 @@
             "COMPLETED": "Completed",
             "FAILED": "Failed",
             "REFUNDED": "Refunded"
-        }
+        },
+        "fieldLabel": "Payment status"
     },
     "revenueChart": {
         "title": "Monthly Revenue",
@@ -310,7 +325,15 @@
                     "title": "Title",
                     "type": "Type",
                     "rating": "Rating"
-                }
+                },
+                "usersTotal": "{{count}} users",
+                "totalCount": "{{count}} total"
+            },
+            "subtitle": "Real-time platform summary.",
+            "roles": {
+                "ADMIN": "Admin",
+                "MODERATOR": "Moderator",
+                "MEMBER": "Member"
             }
         },
         "tags": {
@@ -318,7 +341,8 @@
             "search": "Search tags...",
             "new": "New Tag",
             "deleteTitle": "Delete Tag",
-            "deleteConfirm": "Are you sure you want to delete the tag \"{{label}}\"?"
+            "deleteConfirm": "Are you sure you want to delete the tag \"{{label}}\"?",
+            "count": "{{count}} tags"
         },
         "users": {
             "title": "Users",
@@ -337,7 +361,8 @@
             "editAriaLabel": "Edit user",
             "deleteAriaLabel": "Delete user",
             "deleteTitle": "Delete User",
-            "deleteConfirm": "This action is irreversible. The user will be permanently removed from the platform."
+            "deleteConfirm": "This action is irreversible. The user will be permanently removed from the platform.",
+            "count": "{{count}} users"
         },
         "groups": {
             "title": "Groups",
@@ -355,7 +380,9 @@
             "editAriaLabel": "Edit group",
             "deleteAriaLabel": "Delete group",
             "deleteTitle": "Delete Group",
-            "deleteConfirm": "This action is irreversible. The group will be permanently removed from the platform."
+            "deleteConfirm": "This action is irreversible. The group will be permanently removed from the platform.",
+            "count": "{{count}} groups",
+            "editTitle": "Edit group"
         },
         "titles": {
             "title": "Titles",
@@ -389,8 +416,20 @@
                 "adult": "Adult content",
                 "typeManga": "Manga",
                 "typeManhwa": "Manhwa",
-                "typeManhua": "Manhua"
-            }
+                "typeManhua": "Manhua",
+                "modalSubtitle": "Localized fields can be filled in pt-BR, en-US and es-ES.",
+                "authors": "Authors",
+                "authorsHint": "Add authors and set each one’s role.",
+                "authorsSearch": "Search author by name...",
+                "authorsEmpty": "No authors found.",
+                "removeAuthor": "Remove author",
+                "publishers": "Publishers",
+                "publishersSearch": "Search publisher by name...",
+                "publishersEmpty": "No publishers found.",
+                "removePublisher": "Remove publisher"
+            },
+            "count": "{{count}} titles",
+            "columnAuthor": "Author"
         },
         "events": {
             "title": "Events",
@@ -427,8 +466,10 @@
                 "pricePlaceholder": "$50.00",
                 "image": "Image URL",
                 "online": "Online",
-                "featured": "Featured"
-            }
+                "featured": "Featured",
+                "modalSubtitle": "Localized fields can be filled in pt-BR, en-US and es-ES."
+            },
+            "count": "{{count}} events"
         },
         "news": {
             "title": "News",
@@ -462,8 +503,10 @@
                 "tags": "Tags (comma-separated)",
                 "tagsPlaceholder": "manga, anime, release",
                 "exclusive": "Exclusive",
-                "featured": "Featured"
-            }
+                "featured": "Featured",
+                "modalSubtitle": "Localized fields can be filled in pt-BR, en-US and es-ES."
+            },
+            "count": "{{count}} news"
         },
         "subscriptions": {
             "title": "Subscriptions",
@@ -506,7 +549,9 @@
             "plansManage": "Manage subscription plans",
             "planNew": "New Plan",
             "logSubIdLabel": "Subscription ID:",
-            "logSubIdPlaceholder": "Paste subscription UUID"
+            "logSubIdPlaceholder": "Paste subscription UUID",
+            "count": "{{count}} subscriptions",
+            "subtitle": "Plans, recurring payments and history."
         },
         "financial": {
             "title": "Financial",
@@ -536,7 +581,123 @@
             "editAriaLabel": "Update payment status",
             "deleteAriaLabel": "Mark payment as failed",
             "deleteTitle": "Mark as Failed",
-            "deleteConfirm": "This action will mark the payment as Failed."
+            "deleteConfirm": "This action will mark the payment as Failed.",
+            "count": "{{count}} payments",
+            "subtitle": "Payments, revenue and audit."
+        },
+        "status": {
+            "title": {
+                "ONGOING": "Ongoing",
+                "COMPLETED": "Completed",
+                "HIATUS": "Hiatus",
+                "CANCELLED": "Cancelled"
+            },
+            "event": {
+                "HAPPENING_NOW": "Happening now",
+                "REGISTRATIONS_OPEN": "Registrations open",
+                "COMING_SOON": "Coming soon",
+                "ENDED": "Ended"
+            },
+            "payment": {
+                "COMPLETED": "Completed",
+                "REFUNDED": "Refunded",
+                "PENDING": "Pending",
+                "FAILED": "Failed"
+            },
+            "group": {
+                "ACTIVE": "Active",
+                "HIATUS": "Hiatus",
+                "INACTIVE": "Inactive"
+            }
+        },
+        "authors": {
+            "title": "Authors",
+            "count": "{{count}} authors",
+            "new": "New author",
+            "search": "Search by name...",
+            "deleteTitle": "Delete author",
+            "deleteConfirm": "This action is irreversible. The author will be permanently removed."
+        },
+        "publishers": {
+            "title": "Publishers",
+            "count": "{{count}} publishers",
+            "new": "New publisher",
+            "search": "Search by name...",
+            "deleteTitle": "Delete publisher",
+            "deleteConfirm": "This action is irreversible. The publisher will be permanently removed."
         }
+    },
+    "subscriptionGrowthChart": {
+        "title": "Subscription growth",
+        "new": "New: {{count}}",
+        "cancelled": "Cancelled: {{count}}",
+        "balance": "Net: {{value}}",
+        "newLegend": "New",
+        "cancelledLegend": "Cancelled"
+    },
+    "subscriptionAudit": {
+        "selectPrompt": "Select a subscription to view its logs.",
+        "empty": "No logs found for this subscription.",
+        "by": "By:",
+        "action": {
+            "CREATED": "Created",
+            "CANCELLED": "Cancelled",
+            "EXPIRED": "Expired",
+            "GRANTED": "Granted",
+            "REVOKED": "Revoked",
+            "STATUS_CHANGED": "Status changed"
+        }
+    },
+    "authorList": {
+        "columnName": "Name",
+        "columnSlug": "Slug",
+        "columnNationality": "Nationality",
+        "columnCreatedAt": "Created at",
+        "columnActions": "Actions",
+        "empty": "No authors found.",
+        "editAriaLabel": "Edit author",
+        "deleteAriaLabel": "Delete author"
+    },
+    "publisherList": {
+        "columnName": "Name",
+        "columnSlug": "Slug",
+        "columnCountry": "Country",
+        "columnWebsite": "Website",
+        "columnCreatedAt": "Created at",
+        "columnActions": "Actions",
+        "empty": "No publishers found.",
+        "editAriaLabel": "Edit publisher",
+        "deleteAriaLabel": "Delete publisher"
+    },
+    "authorForm": {
+        "newTitle": "New author",
+        "editTitle": "Edit author",
+        "name": "Name",
+        "namePlaceholder": "Author name",
+        "slug": "Slug",
+        "slugHint": "Generated from the name; editable.",
+        "bio": "Biography",
+        "bioPlaceholder": "Short author biography",
+        "nationality": "Nationality",
+        "nationalityHint": "2-letter ISO code (e.g. JP, KR, BR)."
+    },
+    "publisherForm": {
+        "newTitle": "New publisher",
+        "editTitle": "Edit publisher",
+        "name": "Name",
+        "namePlaceholder": "Publisher name",
+        "slug": "Slug",
+        "slugHint": "Generated from the name; editable.",
+        "country": "Country",
+        "countryHint": "2-letter ISO code (e.g. JP, KR, BR).",
+        "website": "Website"
+    },
+    "titleAuthorRole": {
+        "AUTHOR": "Author",
+        "ARTIST": "Artist",
+        "STORY": "Writer",
+        "LETTERER": "Letterer",
+        "COLORIST": "Colorist",
+        "EDITOR": "Editor"
     }
 }

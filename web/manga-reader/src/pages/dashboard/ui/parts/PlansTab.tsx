@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
+import { Plus } from 'lucide-react';
 
 import { AdminPlanList, PlanFormModal, type AdminPlan } from '@features/admin';
+import { Button } from '@ui/Button';
 import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
 
 type PlanSubmitData = {
@@ -44,17 +46,18 @@ const PlansTab = ({
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-sm text-tertiary">{t('dashboard.subscriptions.plansManage')}</span>
-                <button
-                    type="button"
+                <span className="text-mr-small text-mr-fg-subtle">{t('dashboard.subscriptions.plansManage')}</span>
+                <Button
+                    variant="primary"
+                    size="sm"
+                    icon={Plus}
                     onClick={() => {
                         setEditingPlan(null);
                         setIsPlanFormOpen(true);
                     }}
-                    className="px-3 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                 >
                     {t('dashboard.subscriptions.planNew')}
-                </button>
+                </Button>
             </div>
 
             <AdminPlanList

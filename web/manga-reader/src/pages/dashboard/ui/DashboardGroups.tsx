@@ -1,55 +1,63 @@
 import { useState } from 'react';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
-import { ROUTES } from '@shared/constant/ROUTES';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search } from 'lucide-react';
-import { AdminGroupList, ConfirmDeleteWithIdModal, useAdminGroups, useAdminGroupActions, type AdminGroup } from '@features/admin';
+
+import {
+    AdminGroupList,
+    AdminGroupDetailModal,
+    GroupFormModal,
+    ConfirmDeleteWithIdModal,
+    useAdminGroups,
+    useAdminGroupActions,
+    type AdminGroup,
+    type GroupFormSubmitPayload,
+} from '@features/admin';
+import ListPageHeader from './parts/ListPageHeader';
+
+type ModalKind = 'detail' | 'edit' | 'delete' | null;
 
 const DashboardGroups = () => {
     const { t } = useTranslation('admin');
     const { groups, page, totalPages, totalElements, isLoading, search, setSearch, setPage } = useAdminGroups();
-    const { isSubmitting, handleDelete } = useAdminGroupActions();
+    const { isSubmitting, handleUpdate, handleDelete } = useAdminGroupActions();
 
-    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState(search);
-    const [deletingGroup, setDeletingGroup] = useState<AdminGroup | null>(null);
+    const [selected, setSelected] = useState<AdminGroup | null>(null);
+    const [modal, setModal] = useState<ModalKind>(null);
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
+    const submitSearch = () => {
         setSearch(searchInput);
         setPage(0);
     };
 
+    const openDetail = (group: AdminGroup) => {
+        setSelected(group);
+        setModal('detail');
+    };
+
+    const handleFormSubmit = async (data: GroupFormSubmitPayload) => {
+        if (!selected) return;
+        const result = await handleUpdate(selected.id, data);
+        if (result) setModal('detail');
+    };
+
     const confirmDelete = async () => {
-        if (deletingGroup) {
-            await handleDelete(deletingGroup.id);
-            setDeletingGroup(null);
-        }
+        if (!selected) return;
+        await handleDelete(selected.id);
+        setModal(null);
+        setSelected(null);
     };
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-                <h1 className="text-lg font-bold">{t('dashboard.groups.title')}</h1>
-                <span className="text-sm text-tertiary">{t('dashboard.groups.count', { count: totalElements })}</span>
-            </div>
-
-            <form onSubmit={handleSearch} className="flex gap-2">
-                <div className="relative flex-1">
-                    <Search size={16} className="absolute text-tertiary left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                        type="text"
-                        value={searchInput}
-                        onChange={e => setSearchInput(e.target.value)}
-                        placeholder={t('dashboard.groups.search')}
-                        className="w-full py-2 pl-9 pr-3 text-sm border rounded-xs bg-secondary border-tertiary"
-                    />
-                </div>
-                <button type="submit" className="px-4 py-2 text-sm font-semibold border rounded-xs border-tertiary hover:bg-tertiary/30">
-                    {t('common.search')}
-                </button>
-            </form>
+            <ListPageHeader
+                title={t('dashboard.groups.title')}
+                count={t('dashboard.groups.count', { count: totalElements })}
+                searchValue={searchInput}
+                onSearchChange={setSearchInput}
+                onSubmitSearch={submitSearch}
+                searchPlaceholder={t('dashboard.groups.search')}
+                searchButtonLabel={t('common.search')}
+            />
 
             <AdminGroupList
                 groups={groups}
@@ -57,15 +65,35 @@ const DashboardGroups = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 onPageChange={setPage}
-                onEdit={group => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUPS}/${group.id}`)}
-                onDelete={setDeletingGroup}
+                onEdit={openDetail}
+                onRowClick={openDetail}
+                onDelete={group => {
+                    setSelected(group);
+                    setModal('delete');
+                }}
+            />
+
+            <AdminGroupDetailModal
+                isOpen={modal === 'detail'}
+                onClose={() => setModal(null)}
+                groupId={selected?.id ?? null}
+                onEdit={() => setModal('edit')}
+                onDelete={() => setModal('delete')}
+            />
+
+            <GroupFormModal
+                isOpen={modal === 'edit'}
+                onClose={() => setModal('detail')}
+                onSubmit={handleFormSubmit}
+                group={selected}
+                isSubmitting={isSubmitting}
             />
 
             <ConfirmDeleteWithIdModal
-                isOpen={deletingGroup !== null}
-                onClose={() => setDeletingGroup(null)}
+                isOpen={modal === 'delete'}
+                onClose={() => setModal(selected ? 'detail' : null)}
                 onConfirm={confirmDelete}
-                entityId={deletingGroup?.id ?? ''}
+                entityId={selected?.id ?? ''}
                 title={t('dashboard.groups.deleteTitle')}
                 message={t('dashboard.groups.deleteConfirm')}
                 isSubmitting={isSubmitting}

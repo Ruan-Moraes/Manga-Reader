@@ -9,6 +9,8 @@ import {
     type AdminSubscription,
 } from '@features/admin';
 import { Select } from '@ui/Select';
+import { Button } from '@ui/Button';
+import { Plus } from 'lucide-react';
 
 const STATUS_OPTIONS = ['', 'ACTIVE', 'EXPIRED', 'CANCELLED'] as const;
 
@@ -70,8 +72,8 @@ const SubscriptionsTab = ({
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm text-tertiary">{t('dashboard.subscriptions.statusLabel')}</span>
+                <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="text-mr-small font-mr-bold text-mr-fg-subtle">{t('dashboard.subscriptions.statusLabel')}</span>
                     <div className="min-w-[10rem]">
                         <Select
                             value={statusFilter}
@@ -85,19 +87,15 @@ const SubscriptionsTab = ({
                             }))}
                         />
                     </div>
-                    <span className="text-sm text-tertiary">
+                    <span className="text-mr-small text-mr-fg-subtle">
                         {t('dashboard.subscriptions.count', {
                             count: totalElements,
                         })}
                     </span>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setIsGrantOpen(true)}
-                    className="px-3 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
-                >
+                <Button variant="primary" size="sm" icon={Plus} onClick={() => setIsGrantOpen(true)}>
                     {t('dashboard.subscriptions.grant')}
-                </button>
+                </Button>
             </div>
 
             <AdminSubscriptionList

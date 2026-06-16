@@ -15,6 +15,7 @@ import {
     type AdminSubscription,
     type AdminPlan,
 } from '@features/admin';
+import { Tabs } from '@ui/Tabs';
 import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
 
@@ -134,40 +135,30 @@ const DashboardSubscriptions = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">{t('dashboard.subscriptions.title')}</h1>
+            <div>
+                <h1 className="text-[26px] font-mr-extrabold leading-tight text-mr-fg md:text-[30px]">{t('dashboard.subscriptions.title')}</h1>
+                <p className="mt-1.5 text-mr-small text-mr-fg-subtle">{t('dashboard.subscriptions.subtitle')}</p>
+            </div>
 
             {isLoadingSummary ? (
                 <div className="grid gap-3 sm:grid-cols-3">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-24 rounded-xs bg-tertiary/30 animate-pulse" />
+                        <div key={i} className="h-24 animate-mr-pulse rounded-mr-md bg-mr-gray-800" />
                     ))}
                 </div>
             ) : isErrorSummary || !summary ? (
-                <p className="text-sm text-tertiary">{t('dashboard.subscriptions.errorSummary')}</p>
+                <p className="text-mr-small text-mr-fg-subtle">{t('dashboard.subscriptions.errorSummary')}</p>
             ) : (
                 <SubscriptionSummaryCards summary={summary} />
             )}
 
             {isLoadingGrowth ? (
-                <div className="h-64 rounded-xs bg-tertiary/30 animate-pulse" />
+                <div className="h-64 animate-mr-pulse rounded-mr-md bg-mr-gray-800" />
             ) : growthData ? (
                 <SubscriptionGrowthChart entries={growthData.entries} />
             ) : null}
 
-            <div className="flex gap-1 overflow-x-auto border-b border-b-tertiary">
-                {tabs.map(tab => (
-                    <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => setActiveTab(tab.key)}
-                        className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
-                            activeTab === tab.key ? 'border-b-2 border-quaternary-default text-quaternary-default' : 'text-tertiary hover:text-primary'
-                        }`}
-                    >
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
+            <Tabs items={tabs.map(tab => ({ value: tab.key, label: tab.label }))} value={activeTab} onChange={value => setActiveTab(value as Tab)} />
 
             {activeTab === 'subscriptions' && (
                 <SubscriptionsTab

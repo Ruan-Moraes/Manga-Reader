@@ -20,9 +20,12 @@ vi.mock('@features/admin', () => ({
     useAdminGroups: () => mState,
     useAdminGroupActions: () => ({
         isSubmitting: false,
+        handleUpdate: vi.fn(),
         handleDelete: vi.fn(),
     }),
     AdminGroupList: ({ isLoading }: { isLoading: boolean }) => <div data-testid="group-list">{isLoading ? 'loading' : 'list'}</div>,
+    AdminGroupDetailModal: () => null,
+    GroupFormModal: () => null,
     ConfirmDeleteWithIdModal: () => null,
 }));
 

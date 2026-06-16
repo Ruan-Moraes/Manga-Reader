@@ -18,8 +18,18 @@ const mState = {
 
 vi.mock('@features/admin', () => ({
     useAdminUsers: () => mState,
-    useAdminUserActions: () => ({ isSubmitting: false, handleDelete: vi.fn() }),
+    useAdminUserActions: () => ({
+        isSubmitting: false,
+        handleChangeRole: vi.fn(),
+        handleBan: vi.fn(),
+        handleUnban: vi.fn(),
+        handleDelete: vi.fn(),
+    }),
     AdminUserList: ({ isLoading }: { isLoading: boolean }) => <div data-testid="user-list">{isLoading ? 'loading' : 'list'}</div>,
+    AdminUserDetailModal: () => null,
+    ChangeRoleModal: () => null,
+    BanUserModal: () => null,
+    ConfirmModal: () => null,
     ConfirmDeleteWithIdModal: () => null,
 }));
 

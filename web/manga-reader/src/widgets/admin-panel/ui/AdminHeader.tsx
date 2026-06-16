@@ -17,24 +17,24 @@ const AdminHeader = ({ onToggleSidebar }: AdminHeaderProps) => {
     const { t } = useTranslation('admin');
 
     return (
-        <header className="flex items-center justify-between px-3 py-2 border-b bg-secondary border-b-tertiary">
-            <div>
-                <div className="flex items-center">
-                    <button type="button" onClick={onToggleSidebar} className="rounded-xs md:hidden hover:bg-tertiary/30" aria-label={t('sidebar.openMenu')}>
-                        <Menu size={26} />
-                    </button>
-                </div>
-                <div className="hidden md:block">
-                    <AdminLogo />
-                </div>
-            </div>
+        <header className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-mr-tertiary bg-mr-primary px-3.5 md:h-[60px] md:px-6">
+            <button
+                type="button"
+                onClick={onToggleSidebar}
+                className="flex size-10 shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors hover:border-mr-border hover:bg-mr-accent-25 lg:hidden"
+                aria-label={t('sidebar.openMenu')}
+            >
+                <Menu size={22} />
+            </button>
+            <AdminLogo />
+            <div className="flex-1" />
             {user && (
-                <div className="flex items-center gap-2">
-                    <span className="text-sm flex flex-col items-end">
-                        <span className="font-bold">{user.name}</span>
-                        <span className="text-[0.625rem]">({user.id})</span>
+                <div className="flex items-center gap-2.5">
+                    <span className="hidden flex-col items-end leading-tight md:flex">
+                        <span className="text-mr-small font-mr-bold whitespace-nowrap text-mr-fg">{user.name}</span>
+                        <span className="font-mr-mono text-[10px] tracking-normal text-mr-fg-subtle">#{user.id}</span>
                     </span>
-                    <Avatar src={user.photo} name={user.name} size={40} />
+                    <Avatar src={user.photo} name={user.name} size={36} />
                 </div>
             )}
         </header>

@@ -77,6 +77,8 @@ export const ROUTES = {
     DASHBOARD_GROUP_DETAIL: (groupId: string) => `/dashboard/groups/${groupId}`,
     DASHBOARD_GROUP_EDIT: (groupId: string) => `/dashboard/groups/${groupId}/edit`,
     DASHBOARD_TAGS: '/dashboard/tags',
+    DASHBOARD_AUTHORS: '/dashboard/authors',
+    DASHBOARD_PUBLISHERS: '/dashboard/publishers',
     DASHBOARD_FINANCIAL: '/dashboard/financial',
     DASHBOARD_SUBSCRIPTIONS: '/dashboard/subscriptions',
 } as const;

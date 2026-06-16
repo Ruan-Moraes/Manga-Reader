@@ -29,6 +29,10 @@ export const API_URLS = {
 
     TAGS: `${BASE}/api/tags`,
 
+    AUTHORS: `${BASE}/api/authors`,
+
+    PUBLISHERS: `${BASE}/api/publishers`,
+
     LABELS: `${BASE}/api/labels`,
 
     NEWS: `${BASE}/api/news`,
@@ -50,6 +54,8 @@ export const API_URLS = {
     ADMIN_NEWS: `${BASE}/api/admin/news`,
     ADMIN_EVENTS: `${BASE}/api/admin/events`,
     ADMIN_GROUPS: `${BASE}/api/admin/groups`,
+    ADMIN_AUTHORS: `${BASE}/api/admin/authors`,
+    ADMIN_PUBLISHERS: `${BASE}/api/admin/publishers`,
     ADMIN_DASHBOARD_METRICS: `${BASE}/api/admin/dashboard/metrics`,
     ADMIN_DASHBOARD_CONTENT_METRICS: `${BASE}/api/admin/dashboard/content-metrics`,
     ADMIN_PAYMENTS: `${BASE}/api/admin/payments`,

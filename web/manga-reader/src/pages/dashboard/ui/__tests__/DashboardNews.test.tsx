@@ -18,8 +18,9 @@ const mState = {
 
 vi.mock('@features/admin', () => ({
     useAdminNews: () => mState,
-    useAdminNewsActions: () => ({ isSubmitting: false, handleDelete: vi.fn() }),
+    useAdminNewsActions: () => ({ isSubmitting: false, handleCreate: vi.fn(), handleUpdate: vi.fn(), handleDelete: vi.fn() }),
     AdminNewsList: ({ isLoading }: { isLoading: boolean }) => <div data-testid="news-list">{isLoading ? 'loading' : 'list'}</div>,
+    NewsFormModal: () => null,
     ConfirmDeleteWithIdModal: () => null,
 }));
 

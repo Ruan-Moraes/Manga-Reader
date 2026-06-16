@@ -20,9 +20,12 @@ vi.mock('@features/admin', () => ({
     useAdminEvents: () => mState,
     useAdminEventActions: () => ({
         isSubmitting: false,
+        handleCreate: vi.fn(),
+        handleUpdate: vi.fn(),
         handleDelete: vi.fn(),
     }),
     AdminEventList: ({ isLoading }: { isLoading: boolean }) => <div data-testid="event-list">{isLoading ? 'loading' : 'list'}</div>,
+    EventFormModal: () => null,
     ConfirmDeleteWithIdModal: () => null,
 }));
 

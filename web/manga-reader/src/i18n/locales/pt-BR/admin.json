@@ -2,7 +2,9 @@
     "sidebar": {
         "brand": "Painel Admin",
         "openMenu": "Abrir menu",
-        "closeMenu": "Fechar menu"
+        "closeMenu": "Fechar menu",
+        "authors": "Autores",
+        "publishers": "Editoras"
     },
     "common": {
         "cancel": "Cancelar",
@@ -28,7 +30,8 @@
         "daysPlaceholder": "7",
         "cancel": "Cancelar",
         "confirm": "Confirmar Ban",
-        "confirming": "Banindo..."
+        "confirming": "Banindo...",
+        "warning": "<b>{{name}}</b> perderá acesso imediatamente. Você pode reverter depois."
     },
     "changeRole": {
         "title": "Alterar role de {{name}}",
@@ -40,7 +43,10 @@
             "MEMBER": "Membro",
             "MODERATOR": "Moderador",
             "ADMIN": "Administrador"
-        }
+        },
+        "fieldLabel": "Role do usuário",
+        "fieldHint": "Define o nível de acesso na plataforma.",
+        "save": "Salvar"
     },
     "changeGroupRole": {
         "title": "Alterar role de {{name}}",
@@ -55,7 +61,8 @@
             "QC": "QC",
             "CLEANER": "Cleaner",
             "TYPESETTER": "Typesetter"
-        }
+        },
+        "fieldLabel": "Função de {{name}}"
     },
     "updateSubscriptionStatus": {
         "title": "Atualizar status da assinatura",
@@ -68,7 +75,8 @@
             "ACTIVE": "Ativa",
             "EXPIRED": "Expirada",
             "CANCELLED": "Cancelada"
-        }
+        },
+        "fieldLabel": "Status da assinatura"
     },
     "planList": {
         "columnPeriod": "Período",
@@ -198,7 +206,10 @@
         "changeRole": "Alterar Role",
         "ban": "Banir",
         "unban": "Remover Ban",
-        "unbanning": "Removendo..."
+        "unbanning": "Removendo...",
+        "modalTitle": "Detalhes do usuário",
+        "unbanTitle": "Desbanir usuário",
+        "unbanMessage": "{{name}} voltará a ter acesso à plataforma."
     },
     "groupDetail": {
         "info": "Informações",
@@ -223,7 +234,10 @@
         "actions": {
             "role": "Role",
             "remove": "Remover"
-        }
+        },
+        "modalTitle": "Detalhes do grupo",
+        "edit": "Editar",
+        "changeMemberRole": "Alterar função"
     },
     "grantSubscription": {
         "title": "Conceder Assinatura",
@@ -246,7 +260,8 @@
             "COMPLETED": "Concluído",
             "FAILED": "Falhou",
             "REFUNDED": "Reembolsado"
-        }
+        },
+        "fieldLabel": "Status do pagamento"
     },
     "revenueChart": {
         "title": "Receita Mensal",
@@ -309,8 +324,16 @@
                     "rank": "#",
                     "title": "Obra",
                     "type": "Tipo",
-                    "rating": "Rating"
-                }
+                    "rating": "Avaliação"
+                },
+                "usersTotal": "{{count}} usuários",
+                "totalCount": "{{count}} no total"
+            },
+            "subtitle": "Resumo da plataforma em tempo real.",
+            "roles": {
+                "ADMIN": "Admin",
+                "MODERATOR": "Moderador",
+                "MEMBER": "Membro"
             }
         },
         "tags": {
@@ -318,7 +341,8 @@
             "search": "Buscar tags...",
             "new": "Nova Tag",
             "deleteTitle": "Excluir Tag",
-            "deleteConfirm": "Tem certeza que deseja excluir a tag \"{{label}}\"?"
+            "deleteConfirm": "Tem certeza que deseja excluir a tag \"{{label}}\"?",
+            "count": "{{count}} tags"
         },
         "users": {
             "title": "Usuários",
@@ -337,7 +361,8 @@
             "editAriaLabel": "Editar usuário",
             "deleteAriaLabel": "Excluir usuário",
             "deleteTitle": "Excluir Usuário",
-            "deleteConfirm": "Esta ação é irreversível. O usuário será removido permanentemente da plataforma."
+            "deleteConfirm": "Esta ação é irreversível. O usuário será removido permanentemente da plataforma.",
+            "count": "{{count}} usuários"
         },
         "groups": {
             "title": "Grupos",
@@ -355,7 +380,9 @@
             "editAriaLabel": "Editar grupo",
             "deleteAriaLabel": "Excluir grupo",
             "deleteTitle": "Excluir Grupo",
-            "deleteConfirm": "Esta ação é irreversível. O grupo será removido permanentemente da plataforma."
+            "deleteConfirm": "Esta ação é irreversível. O grupo será removido permanentemente da plataforma.",
+            "count": "{{count}} grupos",
+            "editTitle": "Editar grupo"
         },
         "titles": {
             "title": "Títulos",
@@ -389,8 +416,20 @@
                 "adult": "Conteúdo adulto",
                 "typeManga": "Mangá",
                 "typeManhwa": "Manhwa",
-                "typeManhua": "Manhua"
-            }
+                "typeManhua": "Manhua",
+                "modalSubtitle": "Campos com idioma podem ser preenchidos em pt-BR, en-US e es-ES.",
+                "authors": "Autores",
+                "authorsHint": "Adicione autores e defina o papel de cada um.",
+                "authorsSearch": "Buscar autor por nome...",
+                "authorsEmpty": "Nenhum autor encontrado.",
+                "removeAuthor": "Remover autor",
+                "publishers": "Editoras",
+                "publishersSearch": "Buscar editora por nome...",
+                "publishersEmpty": "Nenhuma editora encontrada.",
+                "removePublisher": "Remover editora"
+            },
+            "count": "{{count}} obras",
+            "columnAuthor": "Autor"
         },
         "events": {
             "title": "Eventos",
@@ -427,8 +466,10 @@
                 "pricePlaceholder": "R$ 50,00",
                 "image": "Imagem URL",
                 "online": "Online",
-                "featured": "Destaque"
-            }
+                "featured": "Destaque",
+                "modalSubtitle": "Campos com idioma podem ser preenchidos em pt-BR, en-US e es-ES."
+            },
+            "count": "{{count}} eventos"
         },
         "news": {
             "title": "Notícias",
@@ -462,8 +503,10 @@
                 "tags": "Tags (separadas por vírgula)",
                 "tagsPlaceholder": "manga, anime, lançamento",
                 "exclusive": "Exclusiva",
-                "featured": "Destaque"
-            }
+                "featured": "Destaque",
+                "modalSubtitle": "Campos com idioma podem ser preenchidos em pt-BR, en-US e es-ES."
+            },
+            "count": "{{count}} notícias"
         },
         "subscriptions": {
             "title": "Assinaturas",
@@ -506,7 +549,9 @@
             "plansManage": "Gerenciar planos de assinatura",
             "planNew": "Novo Plano",
             "logSubIdLabel": "ID da Assinatura:",
-            "logSubIdPlaceholder": "Cole o UUID da assinatura"
+            "logSubIdPlaceholder": "Cole o UUID da assinatura",
+            "count": "{{count}} assinaturas",
+            "subtitle": "Planos, pagamentos recorrentes e histórico."
         },
         "financial": {
             "title": "Financeiro",
@@ -536,7 +581,123 @@
             "editAriaLabel": "Atualizar status do pagamento",
             "deleteAriaLabel": "Marcar pagamento como falhou",
             "deleteTitle": "Marcar como Falhou",
-            "deleteConfirm": "Esta ação irá marcar o pagamento como Falhou."
+            "deleteConfirm": "Esta ação irá marcar o pagamento como Falhou.",
+            "count": "{{count}} pagamentos",
+            "subtitle": "Pagamentos, receita e auditoria."
+        },
+        "status": {
+            "title": {
+                "ONGOING": "Em andamento",
+                "COMPLETED": "Concluído",
+                "HIATUS": "Hiato",
+                "CANCELLED": "Cancelado"
+            },
+            "event": {
+                "HAPPENING_NOW": "Acontecendo agora",
+                "REGISTRATIONS_OPEN": "Inscrições abertas",
+                "COMING_SOON": "Em breve",
+                "ENDED": "Encerrado"
+            },
+            "payment": {
+                "COMPLETED": "Concluído",
+                "REFUNDED": "Reembolsado",
+                "PENDING": "Pendente",
+                "FAILED": "Falhou"
+            },
+            "group": {
+                "ACTIVE": "Ativo",
+                "HIATUS": "Hiato",
+                "INACTIVE": "Inativo"
+            }
+        },
+        "authors": {
+            "title": "Autores",
+            "count": "{{count}} autores",
+            "new": "Novo autor",
+            "search": "Buscar por nome...",
+            "deleteTitle": "Excluir autor",
+            "deleteConfirm": "Esta ação é irreversível. O autor será removido permanentemente."
+        },
+        "publishers": {
+            "title": "Editoras",
+            "count": "{{count}} editoras",
+            "new": "Nova editora",
+            "search": "Buscar por nome...",
+            "deleteTitle": "Excluir editora",
+            "deleteConfirm": "Esta ação é irreversível. A editora será removida permanentemente."
         }
+    },
+    "subscriptionGrowthChart": {
+        "title": "Crescimento de assinaturas",
+        "new": "Novas: {{count}}",
+        "cancelled": "Canceladas: {{count}}",
+        "balance": "Saldo: {{value}}",
+        "newLegend": "Novas",
+        "cancelledLegend": "Canceladas"
+    },
+    "subscriptionAudit": {
+        "selectPrompt": "Selecione uma assinatura para ver os logs.",
+        "empty": "Nenhum log encontrado para esta assinatura.",
+        "by": "Por:",
+        "action": {
+            "CREATED": "Criada",
+            "CANCELLED": "Cancelada",
+            "EXPIRED": "Expirada",
+            "GRANTED": "Concedida",
+            "REVOKED": "Revogada",
+            "STATUS_CHANGED": "Status alterado"
+        }
+    },
+    "authorList": {
+        "columnName": "Nome",
+        "columnSlug": "Slug",
+        "columnNationality": "Nacionalidade",
+        "columnCreatedAt": "Criado em",
+        "columnActions": "Ações",
+        "empty": "Nenhum autor encontrado.",
+        "editAriaLabel": "Editar autor",
+        "deleteAriaLabel": "Excluir autor"
+    },
+    "publisherList": {
+        "columnName": "Nome",
+        "columnSlug": "Slug",
+        "columnCountry": "País",
+        "columnWebsite": "Website",
+        "columnCreatedAt": "Criado em",
+        "columnActions": "Ações",
+        "empty": "Nenhuma editora encontrada.",
+        "editAriaLabel": "Editar editora",
+        "deleteAriaLabel": "Excluir editora"
+    },
+    "authorForm": {
+        "newTitle": "Novo autor",
+        "editTitle": "Editar autor",
+        "name": "Nome",
+        "namePlaceholder": "Nome do autor",
+        "slug": "Slug",
+        "slugHint": "Gerado a partir do nome; editável.",
+        "bio": "Biografia",
+        "bioPlaceholder": "Breve biografia do autor",
+        "nationality": "Nacionalidade",
+        "nationalityHint": "Código ISO de 2 letras (ex.: JP, KR, BR)."
+    },
+    "publisherForm": {
+        "newTitle": "Nova editora",
+        "editTitle": "Editar editora",
+        "name": "Nome",
+        "namePlaceholder": "Nome da editora",
+        "slug": "Slug",
+        "slugHint": "Gerado a partir do nome; editável.",
+        "country": "País",
+        "countryHint": "Código ISO de 2 letras (ex.: JP, KR, BR).",
+        "website": "Website"
+    },
+    "titleAuthorRole": {
+        "AUTHOR": "Autor",
+        "ARTIST": "Artista",
+        "STORY": "Roteirista",
+        "LETTERER": "Letrista",
+        "COLORIST": "Colorista",
+        "EDITOR": "Editor"
     }
 }

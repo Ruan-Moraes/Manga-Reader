@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AdminTagList, TagFormModal, ConfirmDeleteWithIdModal, useAdminTags, useAdminTagActions, type AdminTag } from '@features/admin';
+import ListPageHeader from './parts/ListPageHeader';
 
 const DashboardTags = () => {
     const { t } = useTranslation('admin');
@@ -41,30 +42,20 @@ const DashboardTags = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">{t('dashboard.tags.title')}</h1>
-
-            <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={e => {
-                            setSearch(e.target.value);
-                            setPage(0);
-                        }}
-                        placeholder={t('dashboard.tags.search')}
-                        className="px-3 py-2 text-sm border rounded-xs bg-secondary border-tertiary"
-                    />
-                    <span className="text-sm text-tertiary">{t('dashboard.tags.count', { count: totalElements })}</span>
-                </div>
-                <button
-                    type="button"
-                    onClick={openCreateForm}
-                    className="px-3 py-2 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
-                >
-                    {t('dashboard.tags.new')}
-                </button>
-            </div>
+            <ListPageHeader
+                title={t('dashboard.tags.title')}
+                count={t('dashboard.tags.count', { count: totalElements })}
+                onNew={openCreateForm}
+                newLabel={t('dashboard.tags.new')}
+                searchValue={search}
+                onSearchChange={value => {
+                    setSearch(value);
+                    setPage(0);
+                }}
+                onSubmitSearch={() => setPage(0)}
+                searchPlaceholder={t('dashboard.tags.search')}
+                searchButtonLabel={t('common.search')}
+            />
 
             <AdminTagList
                 tags={tags}

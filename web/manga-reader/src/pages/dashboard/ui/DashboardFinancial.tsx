@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -21,19 +21,11 @@ const STATUS_OPTIONS = ['', 'PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'] as con
 const DashboardFinancial = () => {
     const { t } = useTranslation('admin');
 
-    const statusLabels = useMemo<Record<string, string>>(
-        () => ({
-            '': t('dashboard.financial.statusAll'),
-        }),
-        [t],
-    );
+    const statusLabel = (option: string) => (option ? t(`dashboard.status.payment.${option}`, { defaultValue: option }) : t('dashboard.financial.statusAll'));
 
     const { payments, page, totalPages, totalElements, isLoading, statusFilter, setStatusFilter, setPage } = useAdminPayments();
-
     const { summary, isLoading: isLoadingSummary, isError: isErrorSummary } = useFinancialSummary();
-
     const { isSubmitting, handleUpdateStatus } = useAdminPaymentActions();
-
     const { data: revenueSeries, isLoading: isLoadingRevenue } = useRevenueSeries(12);
 
     const [editingPayment, setEditingPayment] = useState<AdminPayment | null>(null);
@@ -55,22 +47,25 @@ const DashboardFinancial = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-lg font-bold">{t('dashboard.financial.title')}</h1>
+            <div>
+                <h1 className="text-[26px] font-mr-extrabold leading-tight text-mr-fg md:text-[30px]">{t('dashboard.financial.title')}</h1>
+                <p className="mt-1.5 text-mr-small text-mr-fg-subtle">{t('dashboard.financial.subtitle')}</p>
+            </div>
 
             {isLoadingSummary ? (
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="h-24 rounded-xs bg-tertiary/30 animate-pulse" />
+                        <div key={i} className="h-24 animate-mr-pulse rounded-mr-md bg-mr-gray-800" />
                     ))}
                 </div>
             ) : isErrorSummary || !summary ? (
-                <p className="text-sm text-tertiary">{t('dashboard.financial.errorSummary')}</p>
+                <p className="text-mr-small text-mr-fg-subtle">{t('dashboard.financial.errorSummary')}</p>
             ) : (
                 <FinancialDashboard summary={summary} />
             )}
 
             {isLoadingRevenue ? (
-                <div className="h-64 rounded-xs bg-tertiary/30 animate-pulse" />
+                <div className="h-64 animate-mr-pulse rounded-mr-md bg-mr-gray-800" />
             ) : revenueSeries ? (
                 <>
                     <RevenueKPICards data={revenueSeries} />
@@ -78,13 +73,13 @@ const DashboardFinancial = () => {
                 </>
             ) : null}
 
-            <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
-                <h2 className="text-base font-bold">{t('dashboard.financial.payments')}</h2>
-                <span className="text-sm text-tertiary">{t('dashboard.financial.count', { count: totalElements })}</span>
+            <div className="mt-3 flex flex-wrap items-end justify-between gap-2">
+                <h2 className="text-[18px] font-mr-bold tracking-mr text-mr-fg">{t('dashboard.financial.payments')}</h2>
+                <span className="text-mr-small text-mr-fg-subtle">{t('dashboard.financial.count', { count: totalElements })}</span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm text-tertiary">{t('dashboard.financial.statusLabel')}</span>
+            <div className="flex flex-wrap items-center gap-2.5">
+                <span className="text-mr-small font-mr-bold text-mr-fg-subtle">{t('dashboard.financial.statusLabel')}</span>
                 <div className="min-w-[10rem]">
                     <Select
                         value={statusFilter}
@@ -92,10 +87,7 @@ const DashboardFinancial = () => {
                             setStatusFilter(e.target.value);
                             setPage(0);
                         }}
-                        options={STATUS_OPTIONS.map(option => ({
-                            value: option,
-                            label: statusLabels[option] ?? option,
-                        }))}
+                        options={STATUS_OPTIONS.map(option => ({ value: option, label: statusLabel(option) }))}
                     />
                 </div>
             </div>

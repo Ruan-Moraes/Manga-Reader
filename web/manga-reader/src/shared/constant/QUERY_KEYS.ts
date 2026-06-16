@@ -71,6 +71,8 @@ export enum QUERY_KEYS {
     ADMIN_SUBSCRIPTION_SUMMARY = 'adminSubscriptionSummary',
     ADMIN_SUBSCRIPTION_GROWTH = 'adminSubscriptionGrowth',
     ADMIN_TAGS = 'adminTags',
+    ADMIN_AUTHORS = 'adminAuthors',
+    ADMIN_PUBLISHERS = 'adminPublishers',
     ADMIN_PLANS = 'adminPlans',
     ADMIN_SUBSCRIPTION_LOGS = 'adminSubscriptionLogs',
 

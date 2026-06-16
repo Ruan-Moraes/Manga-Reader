@@ -43,16 +43,16 @@ const LocalizedTextInput = ({
     const hasContent = (lang: LanguageTag) => Boolean(value[lang] && value[lang]!.trim().length > 0);
 
     const inputClasses =
-        'w-full rounded-xs border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white';
+        'w-full rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 py-2 text-mr-body text-mr-fg placeholder:text-mr-tertiary transition-colors hover:border-mr-accent-50 focus:border-mr-accent focus:outline-none';
 
     return (
         <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label className="text-mr-small font-mr-bold text-mr-fg-muted">
                 {label}
-                {isRequired(DEFAULT_LANGUAGE) && <span className="ml-1 text-red-500">*</span>}
+                {isRequired(DEFAULT_LANGUAGE) && <span className="ml-1 text-mr-danger">*</span>}
             </label>
 
-            <div className="flex gap-1 border-b border-gray-200 dark:border-gray-700" role="tablist" aria-label={label}>
+            <div className="flex gap-1 border-b border-mr-border-subtle" role="tablist" aria-label={label}>
                 {SUPPORTED_LANGUAGES.map(lang => {
                     const filled = hasContent(lang);
                     const required = isRequired(lang);
@@ -67,20 +67,18 @@ const LocalizedTextInput = ({
                             aria-selected={isActive}
                             aria-controls={`i18n-panel-${lang}`}
                             onClick={() => setActiveTab(lang)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
-                                isActive
-                                    ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                            className={`flex items-center gap-1.5 px-3 py-1.5 text-mr-tiny font-mr-bold transition-colors ${
+                                isActive ? 'border-b-2 border-mr-accent text-mr-accent' : 'text-mr-fg-subtle hover:text-mr-fg'
                             }`}
                         >
                             <span>{t(`i18n.language.${lang}`, lang)}</span>
                             {filled && (
-                                <span className="text-green-500" aria-label={t('i18n.filled', 'preenchido')}>
+                                <span className="text-mr-accent" aria-label={t('i18n.filled', 'preenchido')}>
                                     ●
                                 </span>
                             )}
                             {missing && (
-                                <span className="text-red-500" aria-label={t('i18n.missing', 'faltando')}>
+                                <span className="text-mr-danger" aria-label={t('i18n.missing', 'faltando')}>
                                     ●
                                 </span>
                             )}
@@ -97,7 +95,7 @@ const LocalizedTextInput = ({
                         placeholder={placeholder}
                         rows={rows}
                         maxLength={maxLength}
-                        className={inputClasses}
+                        className={`${inputClasses} resize-y leading-relaxed`}
                     />
                 ) : (
                     <input
@@ -106,7 +104,7 @@ const LocalizedTextInput = ({
                         onChange={e => handleChange(activeTab, e.target.value)}
                         placeholder={placeholder}
                         maxLength={maxLength}
-                        className={inputClasses}
+                        className={`${inputClasses} h-[42px]`}
                     />
                 )}
             </div>
