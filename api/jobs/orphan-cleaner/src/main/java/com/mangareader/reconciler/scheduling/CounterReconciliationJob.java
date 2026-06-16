@@ -1,8 +1,11 @@
 package com.mangareader.reconciler.scheduling;
 
+import java.util.Map;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.mangareader.reconciler.infrastructure.crossdb.OrphanTitleRefReconciler;
 import com.mangareader.reconciler.infrastructure.mongo.ForumReplyCountReconciler;
 import com.mangareader.reconciler.infrastructure.mongo.VoteCounterReconciler;
 import com.mangareader.reconciler.infrastructure.postgres.PostgresCounterReconciler;
@@ -11,12 +14,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Orquestra a reconciliação dos contadores desnormalizados (rede de segurança
- * contra drift). Cada fonte é reconciliada por um colaborador dedicado;
+ * Orquestra duas redes de segurança contra drift entre Postgres e Mongo: a
+ * reconciliação dos contadores desnormalizados (de hora em hora) e a limpeza de
+ * referências órfãs cross-DB (diária). Cada fonte tem um colaborador dedicado;
  * este job apenas coordena e reporta.
  * <p>
- * A lógica fica em {@link #reconcile()} (testável sem o agendador); o cron
- * apenas a dispara.
+ * A lógica fica em {@link #reconcile()} / {@link #reconcileOrphans()} (testáveis
+ * sem o agendador); os crons apenas as disparam.
  */
 @Component
 @RequiredArgsConstructor
@@ -25,8 +29,9 @@ public class CounterReconciliationJob {
     private final PostgresCounterReconciler postgresReconciler;
     private final ForumReplyCountReconciler forumReplyReconciler;
     private final VoteCounterReconciler voteReconciler;
+    private final OrphanTitleRefReconciler orphanReconciler;
 
-    /** De hora em hora (no minuto 0), por padrão. */
+    /** Contadores: de hora em hora (no minuto 0), por padrão. */
     @Scheduled(cron = "${reconciler.reconciliation.cron:0 0 * * * *}")
     public void scheduledReconcile() {
         ReconciliationReport report = reconcile();
@@ -35,9 +40,17 @@ public class CounterReconciliationJob {
                 report.groups(), report.events(), report.forumReplies(), report.votes());
     }
 
+    /** Órfãos cross-DB: diária (03:30), por padrão. Mais pesado e sem urgência. */
+    @Scheduled(cron = "${reconciler.orphan.cron:0 30 3 * * *}")
+    public void scheduledOrphanCleanup() {
+        Map<String, Integer> removed = reconcileOrphans();
+
+        log.info("Limpeza de órfãos cross-DB: {}", removed);
+    }
+
     /**
-     * Reconcilia todas as fontes e devolve o resumo do que foi corrigido.
-     * Idempotente — seguro para rodar a qualquer momento.
+     * Reconcilia os contadores de todas as fontes e devolve o resumo do que foi
+     * corrigido. Idempotente — seguro para rodar a qualquer momento.
      */
     public ReconciliationReport reconcile() {
         int groups = postgresReconciler.reconcileTotalTitles();
@@ -45,5 +58,22 @@ public class CounterReconciliationJob {
         long forumReplies = forumReplyReconciler.reconcile();
 
         return new ReconciliationReport(groups, events, forumReplies, voteReconciler.reconcileAll());
+    }
+
+    /**
+     * Remove as referências órfãs cross-DB e, se apagou obras de grupo, reconcilia
+     * {@code groups.total_titles} para refletir a limpeza na mesma passada.
+     * Idempotente.
+     *
+     * @return mapa {@code tabela -> linhas removidas}.
+     */
+    public Map<String, Integer> reconcileOrphans() {
+        Map<String, Integer> removed = orphanReconciler.reconcile();
+
+        if (removed.getOrDefault("group_works", 0) > 0) {
+            postgresReconciler.reconcileTotalTitles();
+        }
+
+        return removed;
     }
 }

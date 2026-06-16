@@ -56,15 +56,17 @@ public class AdminReconcileController {
         }
 
         ReconciliationReport report = reconciliationJob.reconcile();
+        Map<String, Integer> orphanRefs = reconciliationJob.reconcileOrphans();
 
-        log.info("Reconcile manual concluído — groups={}, events={}, forum_topics={}, votos={}",
-                report.groups(), report.events(), report.forumReplies(), report.votes());
+        log.info("Reconcile manual concluído — groups={}, events={}, forum_topics={}, votos={}, órfãos={}",
+                report.groups(), report.events(), report.forumReplies(), report.votes(), orphanRefs);
 
         return ResponseEntity.ok(Map.of(
                 "groups", report.groups(),
                 "events", report.events(),
                 "forumReplies", report.forumReplies(),
-                "votes", report.votes()));
+                "votes", report.votes(),
+                "orphanRefs", orphanRefs));
     }
 
     /** Comparação em tempo constante (evita timing attack na senha). */

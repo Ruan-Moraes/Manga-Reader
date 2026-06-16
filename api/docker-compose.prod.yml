@@ -13,7 +13,7 @@
 services:
   app:
     build:
-      context: ./server
+      context: ./core
       dockerfile: Dockerfile
     container_name: mangareader-app
     ports:
@@ -66,7 +66,7 @@ services:
           cpus: "1.0"
   rating-aggregator:
     build:
-      context: ./rating-aggregator
+      context: ./jobs/rating-aggregator
       dockerfile: Dockerfile
     container_name: mangareader-rating-aggregator
     ports:
@@ -100,11 +100,11 @@ services:
         limits:
           memory: 384M
           cpus: "0.5"
-  counter-reconciler:
+  orphan-cleaner:
     build:
-      context: ./counter-reconciler
+      context: ./jobs/orphan-cleaner
       dockerfile: Dockerfile
-    container_name: mangareader-counter-reconciler
+    container_name: mangareader-orphan-cleaner
     ports:
       - "8082:8082"
     environment:

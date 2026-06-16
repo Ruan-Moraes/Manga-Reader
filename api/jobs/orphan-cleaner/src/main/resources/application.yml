@@ -1,10 +1,11 @@
 # ==============================================================================
-# Counter Reconciler — Configuração Principal
+# Orphan Cleaner — Configuração Principal
 # ==============================================================================
-# Serviço dedicado: recalcula periodicamente os contadores desnormalizados a
-# partir de sua fonte (SET = COUNT idempotente), corrigindo drift.
+# Serviço dedicado a duas redes de segurança Postgres↔Mongo: reconcilia os
+# contadores desnormalizados (SET = COUNT idempotente, de hora em hora) e limpa as
+# referências órfãs cross-DB (title_id sem título no Mongo, diariamente).
 #
-# A infra (Postgres/Mongo) é subida pelo api/server (spring-boot-docker-compose);
+# A infra (Postgres/Mongo) é subida pelo api/core (spring-boot-docker-compose);
 # este serviço apenas se conecta — por isso docker.compose fica desligado.
 # ==============================================================================
 
@@ -12,7 +13,7 @@ server:
   port: 8082
 spring:
   application:
-    name: counter-reconciler
+    name: orphan-cleaner
   # Carrega o .env (formato chave=valor) como properties, se existir.
   # Permite que RECONCILER_ADMIN_TOKEN venha do .env também no `mvn spring-boot:run`.
   config:
@@ -37,6 +38,10 @@ reconciler:
   reconciliation:
     # De hora em hora (no minuto 0). Rede de segurança contra drift dos contadores.
     cron: "0 0 * * * *"
+  orphan:
+    # Diária às 03:30. Limpeza de refs órfãs cross-DB (title_id sem título no Mongo).
+    # Mais pesada (full-scan por title_id) e sem urgência — daí separada e noturna.
+    cron: "0 30 3 * * *"
   admin:
     # Senha do gatilho manual POST /admin/reconcile (header X-Admin-Token).
     # Vazio = endpoint desativado. Em produção, sobrescrever via env.

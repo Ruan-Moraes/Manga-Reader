@@ -11,14 +11,14 @@
         <relativePath/>
     </parent>
     <groupId>com.mangareader</groupId>
-    <artifactId>counter-reconciler</artifactId>
+    <artifactId>orphan-cleaner</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Manga Reader Counter Reconciler</name>
-    <description>Serviço dedicado de reconciliação dos contadores desnormalizados:
-        recalcula periodicamente cada contador a partir de sua fonte (bulk update
-        idempotente SET = COUNT), corrigindo drift sem risco de double-count.
-        Postgres: groups.total_titles e events.participants. Mongo:
-        forum_topics.replyCount e upvotes/downvotes dos três pais votáveis.</description>
+    <name>Manga Reader Orphan Cleaner</name>
+    <description>Serviço dedicado de redes de segurança entre Postgres e Mongo:
+        (1) reconciliação dos contadores desnormalizados (bulk SET = COUNT idempotente,
+        de hora em hora) — groups.total_titles, events.participants, forum_topics.replyCount
+        e upvotes/downvotes dos três pais votáveis; (2) limpeza diária de referências
+        órfãs cross-DB (linhas Postgres com title_id sem título correspondente no Mongo).</description>
 
     <properties>
         <java.version>23</java.version>
