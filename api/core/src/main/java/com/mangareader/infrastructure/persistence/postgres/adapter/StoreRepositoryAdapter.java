@@ -56,4 +56,9 @@ public class StoreRepositoryAdapter implements StoreRepositoryPort {
     public Page<Store> findAll(Pageable pageable) {
         return jpaRepository.findAll(pageable);
     }
+
+    @Override
+    public void deleteByTitleId(String titleId) {
+        jpaRepository.deleteTitlesByTitleId(titleId);
+    }
 }

@@ -87,6 +87,15 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public void deleteWorksByTitleId(String titleId) {
+        List<UUID> affected = repository.findGroupIdsByWorkTitleId(titleId);
+
+        if (repository.deleteWorksByTitleId(titleId) > 0 && !affected.isEmpty()) {
+            repository.reconcileTotalTitlesForIds(affected);
+        }
+    }
+
+    @Override
     public List<Group> findGroupsByMemberUserId(UUID userId) {
         return repository.findGroupsByMemberUserId(userId);
     }

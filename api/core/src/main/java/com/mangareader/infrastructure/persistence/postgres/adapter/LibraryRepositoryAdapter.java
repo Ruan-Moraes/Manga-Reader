@@ -49,6 +49,11 @@ public class LibraryRepositoryAdapter implements LibraryRepositoryPort {
     }
 
     @Override
+    public void deleteByTitleId(String titleId) {
+        repository.deleteByTitleId(titleId);
+    }
+
+    @Override
     public Page<SavedManga> findByUserId(UUID userId, Pageable pageable) {
         return repository.findByUserId(userId, pageable);
     }

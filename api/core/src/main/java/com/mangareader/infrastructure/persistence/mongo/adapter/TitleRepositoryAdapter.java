@@ -67,6 +67,12 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
 
     @Override
     public List<Title> findByFilters(List<String> genres, String status, Boolean adult) {
+        return findByFilters(genres, status, adult, null);
+    }
+
+    @Override
+    public List<Title> findByFilters(List<String> genres, String status, Boolean adult,
+                                     java.util.Collection<String> restrictIds) {
         List<Criteria> conditions = new ArrayList<>();
 
         if (genres != null && !genres.isEmpty()) {
@@ -79,6 +85,10 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
 
         if (adult != null) {
             conditions.add(Criteria.where("adult").is(adult));
+        }
+
+        if (restrictIds != null) {
+            conditions.add(Criteria.where("_id").in(restrictIds));
         }
 
         Query query = new Query();

@@ -8,7 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mangareader.shared.domain.i18n.LocalizedString;
@@ -59,7 +58,6 @@ public class Title {
     @Indexed
     private String status;
 
-    @TextIndexed(weight = 5)
     private String author;
 
     private String artist;

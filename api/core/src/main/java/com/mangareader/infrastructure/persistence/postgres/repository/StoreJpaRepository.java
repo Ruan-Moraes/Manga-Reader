@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +21,9 @@ public interface StoreJpaRepository extends JpaRepository<Store, UUID> {
 
     @Query("SELECT DISTINCT s FROM Store s JOIN s.titles t WHERE t.titleId = :titleId")
     Page<Store> findByTitleId(@Param("titleId") String titleId, Pageable pageable);
+
+    /** Remove o título de todas as lojas (limpeza de órfão cross-DB). */
+    @Modifying
+    @Query("DELETE FROM StoreTitle t WHERE t.titleId = :titleId")
+    int deleteTitlesByTitleId(@Param("titleId") String titleId);
 }
