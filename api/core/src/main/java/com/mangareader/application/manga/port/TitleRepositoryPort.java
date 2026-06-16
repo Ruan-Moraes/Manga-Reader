@@ -25,6 +25,13 @@ public interface TitleRepositoryPort {
 
     List<Title> findByFilters(List<String> genres, String status, Boolean adult);
 
+    /**
+     * Como {@link #findByFilters(List, String, Boolean)}, mas restringe o resultado
+     * aos {@code restrictIds} ({@code _id $in}). {@code null} = sem restrição.
+     */
+    List<Title> findByFilters(List<String> genres, String status, Boolean adult,
+                              Collection<String> restrictIds);
+
     Title save(Title title);
 
     void deleteById(String id);

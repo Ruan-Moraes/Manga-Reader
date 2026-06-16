@@ -70,6 +70,15 @@ class TitleControllerTest {
     private com.mangareader.application.manga.service.GenreVocabulary genreVocabulary;
 
     @MockitoBean
+    private com.mangareader.application.author.port.TitleAuthorRepositoryPort titleAuthorRepository;
+
+    @MockitoBean
+    private com.mangareader.application.publisher.port.TitlePublisherRepositoryPort titlePublisherRepository;
+
+    @MockitoBean
+    private com.mangareader.application.manga.service.TitleAssociationReader titleAssociationReader;
+
+    @MockitoBean
     private TokenPort tokenPort;
 
     @MockitoBean
@@ -81,6 +90,9 @@ class TitleControllerTest {
                     com.mangareader.shared.domain.i18n.LocalizedString ls = inv.getArgument(0);
                     return ls == null ? "" : ls.resolve(java.util.Locale.forLanguageTag("pt-BR"));
                 });
+
+        when(titleAssociationReader.authorsByTitle(any())).thenReturn(Map.of());
+        when(titleAssociationReader.publishersByTitle(any())).thenReturn(Map.of());
 
         when(getChapterStatsUseCase.execute(any()))
                 .thenReturn(Map.of(
@@ -234,7 +246,7 @@ class TitleControllerTest {
         void deveRetornar200ComFiltro() throws Exception {
             var titles = List.of(buildTitle("t1"));
 
-            when(filterTitlesUseCase.execute(any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/filter")
@@ -248,7 +260,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve usar MOST_READ como fallback para sort inválido")
         void deveUsarFallbackParaSortInvalido() throws Exception {
-            when(filterTitlesUseCase.execute(any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/titles/filter").param("sort", "INVALIDO"))
@@ -261,7 +273,7 @@ class TitleControllerTest {
         void deveFiltrarPorStatusEAdult() throws Exception {
             var titles = List.of(buildTitle("t1"));
 
-            when(filterTitlesUseCase.execute(any(), eq("ONGOING"), eq(false), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), eq("ONGOING"), eq(false), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/filter")

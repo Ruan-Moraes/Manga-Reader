@@ -36,6 +36,7 @@ import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
 import com.mangareader.domain.manga.entity.Title;
 
 @WebMvcTest(AdminTitleController.class)
+@org.springframework.context.annotation.Import(com.mangareader.presentation.admin.mapper.AdminTitleMapper.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("AdminTitleController")
 class AdminTitleControllerTest {
@@ -67,6 +68,15 @@ class AdminTitleControllerTest {
     @MockitoBean
     private com.mangareader.application.manga.port.TitleRatingAggregateReadPort ratingAggregateReadPort;
 
+    @MockitoBean
+    private com.mangareader.application.author.port.TitleAuthorRepositoryPort titleAuthorRepository;
+
+    @MockitoBean
+    private com.mangareader.application.publisher.port.TitlePublisherRepositoryPort titlePublisherRepository;
+
+    @MockitoBean
+    private com.mangareader.application.manga.service.TitleAssociationReader titleAssociationReader;
+
     @org.junit.jupiter.api.BeforeEach
     void stubChapterCounts() {
         org.mockito.Mockito.lenient()
@@ -77,6 +87,12 @@ class AdminTitleControllerTest {
                 .when(chapterRepository.countByTitleId(
                         org.mockito.ArgumentMatchers.anyString()))
                 .thenReturn(0L);
+        org.mockito.Mockito.lenient()
+                .when(titleAssociationReader.authorsByTitle(org.mockito.ArgumentMatchers.any()))
+                .thenReturn(java.util.Map.of());
+        org.mockito.Mockito.lenient()
+                .when(titleAssociationReader.publishersByTitle(org.mockito.ArgumentMatchers.any()))
+                .thenReturn(java.util.Map.of());
     }
 
     private Title buildTitle() {
@@ -137,7 +153,8 @@ class AdminTitleControllerTest {
     void deveRetornar201AoCriarTitulo() throws Exception {
         Title created = buildTitle();
         when(createTitleUseCase.execute(
-                any(), anyString(), any(), any(), any(), any(), any(), any(), any(), any(boolean.class)
+                any(), anyString(), any(), any(), any(), any(), any(), any(), any(), any(boolean.class),
+                any(), any()
         )).thenReturn(created);
 
         mockMvc.perform(post("/api/admin/titles")
@@ -161,7 +178,7 @@ class AdminTitleControllerTest {
         updated.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto Shippuden"));
         when(updateTitleUseCase.execute(
                 eq("title-1"), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/titles/title-1")

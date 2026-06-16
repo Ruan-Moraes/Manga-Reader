@@ -2,6 +2,7 @@ package com.mangareader.application.manga.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.mangareader.application.author.port.TitleAuthorRepositoryPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -39,6 +41,9 @@ class FilterTitlesUseCaseTest {
 
     @Mock
     private LocaleResolutionService localeResolutionService;
+
+    @Mock
+    private TitleAuthorRepositoryPort titleAuthorRepository;
 
     @InjectMocks
     private FilterTitlesUseCase filterTitlesUseCase;
@@ -309,6 +314,41 @@ class FilterTitlesUseCaseTest {
 
             assertThat(result.getContent().get(0).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Com popularidade");
             assertThat(result.getContent().get(1).getName().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEqualTo("Sem popularidade");
+        }
+    }
+
+    @Nested
+    @DisplayName("Filtro por autor (busca invertida)")
+    class FiltroPorAutor {
+        @Test
+        @DisplayName("Deve restringir a query Mongo aos títulos do autor")
+        void deveRestringirAosTitulosDoAutor() {
+            when(titleAuthorRepository.findTitleIdsByAuthorId(7L))
+                    .thenReturn(List.of("1", "3"));
+            when(titleRepository.findByFilters(isNull(), isNull(), isNull(), eq(List.of("1", "3"))))
+                    .thenReturn(List.of(
+                            Title.builder().id("1").name(LocalizedString.ofDefault("Naruto")).build(),
+                            Title.builder().id("3").name(LocalizedString.ofDefault("AoT")).build()));
+
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, 7L, null, PAGEABLE);
+
+            assertThat(result.getContent()).hasSize(2);
+            verify(titleRepository).findByFilters(isNull(), isNull(), isNull(), eq(List.of("1", "3")));
+        }
+
+        @Test
+        @DisplayName("Deve retornar página vazia sem ir ao Mongo quando autor não tem títulos")
+        void deveCurtoCircuitarQuandoAutorSemTitulos() {
+            when(titleAuthorRepository.findTitleIdsByAuthorId(99L)).thenReturn(List.of());
+
+            Page<Title> result = filterTitlesUseCase.execute(null, null, null, 99L, null, PAGEABLE);
+
+            assertThat(result.getContent()).isEmpty();
+            assertThat(result.getTotalElements()).isZero();
+            verify(titleRepository, org.mockito.Mockito.never())
+                    .findByFilters(any(), any(), any(), any());
+            verify(titleRepository, org.mockito.Mockito.never())
+                    .findByFilters(any(), any(), any());
         }
     }
 }

@@ -5,11 +5,15 @@ import java.util.Map;
 
 import com.mangareader.shared.application.i18n.RequiredLanguages;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
  * Request para criação de título (admin). Mapas multilíngues; pt-BR obrigatório no name.
+ * <p>
+ * {@code authors}/{@code publishers} são opcionais e populam as junções relacionais
+ * em paralelo aos campos texto {@code author}/{@code artist}/{@code publisher}.
  */
 public record CreateTitleRequest(
         @NotNull(message = "{validation.title.name.required}") @RequiredLanguages Map<String, String> name,
@@ -21,6 +25,8 @@ public record CreateTitleRequest(
         String author,
         String artist,
         String publisher,
-        boolean adult
+        boolean adult,
+        @Valid List<AuthorAssignmentRequest> authors,
+        List<Long> publishers
 ) {
 }

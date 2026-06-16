@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.mangareader.presentation.manga.dto.TitleAuthorResponse;
+import com.mangareader.presentation.manga.dto.TitlePublisherResponse;
+
 /**
  * Resposta admin de título. Mapas multilíngues para name/synopsis.
  */
@@ -18,6 +21,8 @@ public record AdminTitleResponse(
         String author,
         String artist,
         String publisher,
+        List<TitleAuthorResponse> authors,
+        List<TitlePublisherResponse> publishers,
         boolean adult,
         Double ratingAverage,
         Long ratingCount,

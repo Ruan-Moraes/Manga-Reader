@@ -24,6 +24,8 @@ public record TitleResponse(
         String author,
         String artist,
         String publisher,
+        List<TitleAuthorResponse> authors,
+        List<TitlePublisherResponse> publishers,
         String createdAt,
         String updatedAt,
         Integer chaptersCount,

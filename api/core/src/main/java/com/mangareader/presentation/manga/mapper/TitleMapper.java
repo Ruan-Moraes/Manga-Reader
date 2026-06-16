@@ -4,13 +4,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.mangareader.application.author.port.TitleAuthorRepositoryPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.service.GenreVocabulary;
 import com.mangareader.application.manga.usecase.ChapterStats;
+import com.mangareader.application.publisher.port.TitlePublisherRepositoryPort;
+import com.mangareader.domain.author.entity.TitleAuthor;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.domain.publisher.entity.TitlePublisher;
 import com.mangareader.presentation.manga.dto.TitleResponse;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 import com.mangareader.shared.domain.i18n.LocalizedString;
@@ -36,6 +41,8 @@ public class TitleMapper {
 
     private final LocalizedMappingHelper i18n;
     private final GenreVocabulary genreVocabulary;
+    private final TitleAuthorRepositoryPort titleAuthorRepository;
+    private final TitlePublisherRepositoryPort titlePublisherRepository;
 
     public TitleResponse toResponse(Title title) {
         return toResponse(title, ChapterStats.EMPTY, null);
@@ -48,6 +55,27 @@ public class TitleMapper {
     public TitleResponse toResponse(Title title, ChapterStats stats, TitleRatingAggregateView rating) {
         if (title == null) return null;
 
+        return build(title, stats, rating,
+                titleAuthorRepository.findByTitleId(title.getId()),
+                titlePublisherRepository.findByTitleId(title.getId()));
+    }
+
+    /**
+     * Overload de listagem (DT-52): recebe as junções pré-carregadas em lote
+     * ({@link com.mangareader.application.manga.service.TitleAssociationReader}),
+     * evitando o N+1 de buscar autores/editoras por título.
+     */
+    public TitleResponse toResponse(Title title, ChapterStats stats, TitleRatingAggregateView rating,
+            Map<String, List<TitleAuthor>> authorsByTitle, Map<String, List<TitlePublisher>> publishersByTitle) {
+        if (title == null) return null;
+
+        return build(title, stats, rating,
+                authorsByTitle.getOrDefault(title.getId(), List.of()),
+                publishersByTitle.getOrDefault(title.getId(), List.of()));
+    }
+
+    private TitleResponse build(Title title, ChapterStats stats, TitleRatingAggregateView rating,
+            List<TitleAuthor> authorLinks, List<TitlePublisher> publisherLinks) {
         var chapterStats = stats != null ? stats : ChapterStats.EMPTY;
 
         double ratingAverage = rating != null ? rating.ratingAverage() : 0.0;
@@ -68,6 +96,8 @@ public class TitleMapper {
                 title.getAuthor(),
                 title.getArtist(),
                 title.getPublisher(),
+                TitleAssociationMapper.toAuthorResponses(authorLinks),
+                TitleAssociationMapper.toPublisherResponses(publisherLinks),
                 formatDate(title.getCreatedAt()),
                 formatDate(title.getUpdatedAt()),
                 (int) chapterStats.chaptersCount(),

@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.mangareader.application.author.port.TitleAuthorRepositoryPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
@@ -19,7 +20,11 @@ import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Filtra títulos por gêneros, status e conteúdo adulto, e aplica ordenação.
+ * Filtra títulos por gêneros, status, conteúdo adulto e autor, e aplica ordenação.
+ * <p>
+ * O filtro por {@code authorId} é uma busca invertida: resolve os {@code title_id}s
+ * no PostgreSQL ({@code title_authors}) e restringe a query Mongo via {@code $in}.
+ * Autor sem títulos ⇒ página vazia (short-circuit, sem ida ao Mongo).
  */
 @Service
 @RequiredArgsConstructor
@@ -27,10 +32,26 @@ public class FilterTitlesUseCase {
     private final TitleRepositoryPort titleRepository;
     private final TitleRatingAggregateReadPort ratingAggregateReadPort;
     private final LocaleResolutionService localeResolutionService;
+    private final TitleAuthorRepositoryPort titleAuthorRepository;
 
     public Page<Title> execute(List<String> genres, String status, Boolean adult,
                                SortCriteria sort, Pageable pageable) {
-        List<Title> titles = titleRepository.findByFilters(genres, status, adult);
+        return execute(genres, status, adult, null, sort, pageable);
+    }
+
+    public Page<Title> execute(List<String> genres, String status, Boolean adult,
+                               Long authorId, SortCriteria sort, Pageable pageable) {
+        List<Title> titles;
+
+        if (authorId != null) {
+            List<String> restrictIds = titleAuthorRepository.findTitleIdsByAuthorId(authorId);
+            if (restrictIds.isEmpty()) {
+                return new PageImpl<>(List.of(), pageable, 0);
+            }
+            titles = titleRepository.findByFilters(genres, status, adult, restrictIds);
+        } else {
+            titles = titleRepository.findByFilters(genres, status, adult);
+        }
 
         List<Title> sorted = applySort(titles, sort);
 

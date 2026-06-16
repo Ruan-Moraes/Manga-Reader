@@ -20,6 +20,7 @@ import com.mangareader.application.manga.usecase.GetChapterStatsUseCase;
 import com.mangareader.application.manga.usecase.GetTitleByIdUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesByGenreUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesUseCase;
+import com.mangareader.application.manga.service.TitleAssociationReader;
 import com.mangareader.application.manga.usecase.SearchTitlesUseCase;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
@@ -50,6 +51,7 @@ public class TitleController {
     private final FilterTitlesUseCase filterTitlesUseCase;
     private final GetChapterStatsUseCase getChapterStatsUseCase;
     private final TitleRatingAggregateReadPort ratingAggregateReadPort;
+    private final TitleAssociationReader titleAssociationReader;
     private final TitleMapper titleMapper;
 
     @GetMapping
@@ -108,6 +110,7 @@ public class TitleController {
             @RequestParam(required = false) List<String> genres,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Boolean adult,
+            @RequestParam(required = false) Long authorId,
             @RequestParam(required = false, defaultValue = "MOST_READ") String sort,
             @PageParams(defaultSort = "name", defaultDirection = "asc",
                     ignoreRequestSort = true)
@@ -121,7 +124,7 @@ public class TitleController {
             sortCriteria = SortCriteria.MOST_READ;
         }
 
-        var result = filterTitlesUseCase.execute(genres, status, adult, sortCriteria, pageable);
+        var result = filterTitlesUseCase.execute(genres, status, adult, authorId, sortCriteria, pageable);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapWithStats(result))));
     }
@@ -131,10 +134,14 @@ public class TitleController {
 
         var stats = getChapterStatsUseCase.execute(titleIds);
         Map<String, TitleRatingAggregateView> ratings = ratingAggregateReadPort.findByTitleIdIn(titleIds);
+        var authorsByTitle = titleAssociationReader.authorsByTitle(titleIds);
+        var publishersByTitle = titleAssociationReader.publishersByTitle(titleIds);
 
         return result.map(title -> titleMapper.toResponse(
                 title,
                 stats.getOrDefault(title.getId(), ChapterStats.EMPTY),
-                ratings.get(title.getId())));
+                ratings.get(title.getId()),
+                authorsByTitle,
+                publishersByTitle));
     }
 }
