@@ -27,7 +27,7 @@ separada.
 
 ## 3. Alterações realizadas (entregue, build verde)
 
-**Backend** (`api/server`):
+**Backend** (`api/core`):
 - `shared/domain/vote/VoteValue`, `shared/application/vote/VoteResult`,
   `shared/dto/VoteResponse`+`VoteRequest`. Removidos `ReviewVoteResult/Response/Request`,
   `ReactionType`.

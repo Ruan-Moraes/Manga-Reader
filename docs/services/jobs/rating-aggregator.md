@@ -28,7 +28,7 @@ Por que um serviço separado (e não dentro da API):
   request da API.
 - **Responsabilidade única** — a API persiste as avaliações individuais; este serviço
   consolida a visão agregada.
-- Espelha o serviço irmão [`orphan-cleaner`](../orphan-cleaner) (mesmo padrão
+- Espelha o serviço irmão [`orphan-cleaner`](orphan-cleaner) (mesmo padrão
   de agendamento + endpoint manual).
 
 ---

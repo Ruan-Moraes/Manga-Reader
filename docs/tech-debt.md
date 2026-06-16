@@ -113,12 +113,37 @@ Bloqueia produção; não-bloqueante para desenvolvimento.
 
 ---
 
-### DT-10: Refs cross-database sem job de limpeza — **Adiado (não-prod)**
+### DT-10: Refs cross-database sem job de limpeza — **Resolvido (2026-06-16)**
 
-Refs cross-DB (`user_libraries.title_id`, `group_works.title_id`,
-`store_titles.title_id`) **já estão documentadas** via Javadoc nas entidades
-`SavedManga`, `GroupWork`, `StoreTitle`. O **job de limpeza de órfãos** é
-infraestrutura grande — adiado como não-bloqueante.
+Refs cross-DB sem FK física (`user_libraries.title_id`, `group_works.title_id`,
+`store_titles.title_id`, `title_authors.title_id`, `title_publishers.title_id`)
+apontam para `titles._id` no Mongo. Quando um título era apagado do Mongo, as linhas
+filhas no Postgres ficavam órfãs indefinidamente.
+
+**Solução em duas camadas (mesmo princípio dos contadores: caminho quente + rede de
+segurança no caminho frio):**
+
+1. **Síncrona** — `DeleteTitleUseCase` agora chama `TitleReferenceCleaner`
+   (`@Transactional("transactionManager")`), que apaga as refs das 3 tabelas que antes
+   vazavam (`user_libraries`, `group_works`, `store_titles`) e reconcilia
+   `groups.total_titles` dos grupos afetados. As junções `title_authors`/`title_publishers`
+   já eram limpas por `TitleAssociationWriter`.
+2. **Assíncrona (safety net)** — `OrphanTitleRefReconciler` no serviço
+   [`api/jobs/orphan-cleaner`](../api/jobs/orphan-cleaner) (ex-`counter-reconciler`, renomeado): job
+   diário (03:30) que varre os `title_id` distintos das 5 tabelas, confere existência em
+   `titles` (batch `$in`, tratando `_id` ObjectId/String) e apaga os órfãos em lote. **Guard
+   anti-wipe:** não apaga nada se o Mongo não devolve nenhum título (provável falha de
+   conexão). Cobre deletes feitos fora do use case (script, migração, delete direto, bug).
+
+**Suporte:** migration `V34` adiciona índices em `title_id` para `user_libraries`,
+`group_works`, `store_titles` (os de `title_authors`/`title_publishers` já existiam — V33;
+os índices compostos das outras lideram por `user_id`/`group_id`/`store_id`, sem servir a
+varredura por `title_id`).
+
+**Limite conhecido:** a limpeza síncrona não é atômica com a escrita Mongo do título (corre
+no tx manager JPA, igual a `TitleAssociationWriter` — ver DT-52); o job diário é justamente a
+rede de segurança para essa janela. A loja (`store_titles`) não tem contador desnormalizado
+de títulos a reparar (só `stores.rating_count`, de fonte externa).
 
 ---
 
@@ -886,17 +911,87 @@ fórum com backfill idempotente e verificação de contagem antes de qualquer dr
 
 ---
 
+### DT-51: Páginas/rotas de formulário legadas do admin (pós-redesign para modais) — **Em aberto (Baixa)**
+
+O redesign da área admin (`/dashboard/*`) moveu **toda criação/edição para modais via shared
+`Modal`** (TitleFormModal, NewsFormModal, EventFormModal, GroupFormModal, AdminGroupDetailModal,
+AdminUserDetailModal). As **páginas de rota antigas continuam montadas no router** mas as listas
+**não navegam mais para elas** — só são alcançáveis por URL direta (deep-link). Carregam tokens
+legados (`bg-quaternary-default`, `text-tertiary`, etc.) e duplicam a UI de formulário já coberta
+pelos modais.
+
+**Candidatos a remoção:**
+- **Páginas-form** (`features/admin/ui/`): `AdminTitleForm`, `AdminNewsForm`, `AdminEventForm`,
+  `AdminGroupForm` (+ exports no barrel `features/admin/index.ts`).
+- **Hooks de rota** (acoplados a `useParams`/`useNavigate`): `useTitleFormState`,
+  `useNewsFormState`, `useEventFormState`.
+- **Rotas** em `app/router/ProtectedRoutes.tsx`: `titles/new`, `titles/:titleId/edit`,
+  `news/new`, `news/:newsId/edit`, `events/new`, `events/:eventId/edit`, `groups/:groupId/edit`.
+- **Constantes** `ROUTES.DASHBOARD_*_FORM` / `DASHBOARD_*_EDIT` (`shared/constant/ROUTES`).
+- **`FormModal`** (`features/admin/ui/modal/`) — wrapper baseado em `AdminModal` com tokens antigos.
+- **`AdminModal`** — wrapper de portal; remover só quando sem consumidores.
+- Some junto a dívida de rainbow/legacy em `PlanFormFeaturesInput`, `PlanFormPriceRows`
+  (se `PlanFormModal` for migrado para shared `Modal`).
+
+**Por quê:** elimina duplicação de UI de formulário, remove os últimos tokens fora do DS no fluxo
+admin e reduz superfície de rotas órfãs.
+
+**Pré-condições (bloqueiam a remoção):**
+1. **Decisão de produto:** criar/editar por URL direta deve deixar de existir? (hoje é só
+   deep-link; nenhum link in-app aponta pra lá, exceto a cadeia `DashboardGroupDetail` →
+   `DASHBOARD_GROUP_EDIT`).
+2. **`FormModal` ainda é usado por `PlanFormModal`** — migrar `PlanFormModal` para shared `Modal`
+   ANTES de remover `FormModal`.
+3. **`AdminModal`**: confirmar consumidores restantes (`grep -rn AdminModal src`) — ex.: modais
+   ainda não migrados — antes de deletar.
+4. Atualizar/remover testes que renderizam essas páginas e ajustar mocks de `@features/admin`.
+
+**Manter (NÃO remover agora):**
+- `DashboardUserDetail` (`/users/:userId`) e `DashboardGroupDetail` (`/groups/:groupId`) — úteis
+  como deep-link de detalhe; já tokenizados. Reavaliar quando houver decisão de produto.
+
+**Esforço:** médio (router público + barrel + remoção encadeada de hooks/rotas/constantes +
+ajuste de testes). Risco médio-alto por mexer no router. Estimativa ~0,5–1 dia.
+
+---
+
+### DT-52: Escrita cross-DB não-atômica em autores/editoras de título — **Em aberto (Média)**
+
+`CreateTitleUseCase`/`UpdateTitleUseCase`/`DeleteTitleUseCase` são `@Transactional("mongoTransactionManager")`
+(escrita do `Title` no Mongo), mas chamam `TitleAssociationWriter` que grava as junções
+`title_authors`/`title_publishers` no **Postgres** via o tx manager JPA (primário). As duas
+escritas **não são atômicas**: se a gravação Mongo falhar após as junções (ou vice-versa), há
+divergência. Hoje é tolerável porque os campos texto `author`/`artist`/`publisher` continuam a
+fonte canônica e as junções são paralelas/compat (ver Etapas 5–6 da modelagem de autores).
+
+**N+1 nos mappers — Resolvido (2026-06-16):** os mappers `TitleMapper`/`AdminTitleMapper`
+buscavam as junções **por título** (`findByTitleId`) ao montar a resposta → N+1 nas listagens
+pública e admin. Resolvido com `TitleAssociationReader` (batch `findByTitleIdIn` → map por
+`titleId`) carregado uma vez por página nos call sites de listagem (`TitleController#mapWithStats`,
+`AdminTitleController#listTitles`), passado para overloads `toResponse(..., authorsByTitle,
+publishersByTitle)`. Os paths single-fetch (detalhe) seguem usando `findByTitleId`.
+
+**O que resta em aberto:** apenas a escrita cross-DB não-atômica descrita acima.
+
+**Quando fechar:** ao tornar as junções a fonte canônica (remover os campos texto). Aí avaliar
+outbox/saga ou mover o título para Postgres.
+
+**Esforço:** médio. Risco baixo enquanto os campos texto coexistirem.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
 | **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 3 | DT-08 (axe por rota — parcial), DT-10, DT-50 (persistência de comentários) |
+| **Média** | 3 | DT-08 (axe por rota — parcial), DT-50 (persistência de comentários), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 3 | DT-03, DT-09, DT-44 (backlog de produto) |
+| **Baixa** | 4 | DT-03, DT-09, DT-44 (backlog de produto), DT-51 (rotas/forms legados do admin) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |
 | **Resolvidos 2026-06-01** | 7 | DT-27, DT-31, DT-32, DT-36, DT-37, DT-38, DT-39 |
 | **Resolvidos 2026-06-06** | 2 | DT-45 (rating campos avançados + voto), DT-46 (store campos de compra) |
+| **Resolvidos 2026-06-16** | 1 | DT-10 (limpeza de órfãos cross-DB: síncrona + job diário `orphan-cleaner`) |

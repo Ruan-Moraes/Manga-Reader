@@ -4,7 +4,7 @@
 # Serviço dedicado: consome eventos rating.* (RabbitMQ) + job de reconciliação
 # e mantém a coleção reviews_aggregate (fonte oficial de nota/contagem).
 #
-# A infra (Mongo/RabbitMQ) é subida pelo api/server (spring-boot-docker-compose);
+# A infra (Mongo/RabbitMQ) é subida pelo api/core (spring-boot-docker-compose);
 # este serviço apenas se conecta — por isso docker.compose fica desligado.
 # ==============================================================================
 

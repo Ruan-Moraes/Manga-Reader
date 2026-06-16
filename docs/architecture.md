@@ -26,9 +26,9 @@ Auth, User, Manga, Comment, Rating, Library, Group, News, Event, Forum, Category
 | PostgreSQL | JPA/Hibernate + Flyway | users, groups, events, forum, library, stores, tags |
 | MongoDB | Spring Data Mongo + Mongock | titles, chapters, comments, ratings, news, **title_rating_aggregate** |
 
-### Serviço de Agregação de Avaliações (`api/rating-aggregator`)
+### Serviço de Agregação de Avaliações (`api/jobs/rating-aggregator`)
 
-Módulo Spring Boot **separado** do monolito (`api/server`), porta 8081. É o **dono** da coleção `title_rating_aggregate` (= `obra_avaliacao`), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
+Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **dono** da coleção `title_rating_aggregate` (= `obra_avaliacao`), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
 
 - **Por quê**: nota/contagem eram divergentes — listagens liam `Title.ratingAverage/ratingCount` (nunca atualizados; o "job periódico" do javadoc não existia) e o detalhe lia agregação `AVG/COUNT` ao vivo. Agora há fonte única denormalizada, sem agregação pesada por request.
 - **Recompute (2 gatilhos)**: (1) consome `RatingEvent` (`rating.*`: submit/update/delete) do RabbitMQ (exchange `manga.events`, fila própria `manga.rating.aggregate`, routing `rating.#`) e recalcula o título; (2) job `@Scheduled` de reconciliação (rede de segurança). Mongock `V001` faz backfill a partir de `ratings`.

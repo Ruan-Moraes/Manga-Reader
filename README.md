@@ -160,9 +160,9 @@ frontend-apps/
 
 | Serviço | Porta | Responsabilidade |
 |---------|-------|------------------|
-| `api/server` | 8080 | API principal (Clean Architecture, 12 domínios) |
-| [`api/rating-aggregator`](api/rating-aggregator) | 8081 | Agregação de avaliações (`title_rating_aggregate`) |
-| [`api/counter-reconciler`](api/counter-reconciler) | 8082 | Reconciliação dos contadores desnormalizados (drift) |
+| `api/core` | 8080 | API principal (Clean Architecture, 12 domínios) |
+| [`api/jobs/rating-aggregator`](api/jobs/rating-aggregator) | 8081 | Agregação de avaliações (`title_rating_aggregate`) |
+| [`api/jobs/orphan-cleaner`](api/jobs/orphan-cleaner) | 8082 | Reconciliação dos contadores desnormalizados (drift) + limpeza de refs órfãs cross-DB |
 
 ### Infraestrutura (Docker Compose)
 

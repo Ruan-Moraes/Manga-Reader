@@ -4,7 +4,7 @@ Estrutura de pastas (backend + frontend FSD): onde colocar cada arquivo,
 entity×feature, regras de boundary/import. Referenciado por `CLAUDE.md`.
 
 ```
-api/server/src/main/java/com/mangareader/
+api/core/src/main/java/com/mangareader/
 ├── domain/{domain}/entity/            # Entities e VOs
 ├── application/{domain}/usecase/      # Use cases
 ├── application/{domain}/port/         # Port interfaces (in/out)
