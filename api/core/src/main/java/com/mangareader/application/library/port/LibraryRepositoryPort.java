@@ -24,6 +24,9 @@ public interface LibraryRepositoryPort {
 
     void deleteByUserIdAndTitleId(UUID userId, String titleId);
 
+    /** Remove o título da biblioteca de todos os usuários (limpeza de órfão cross-DB). */
+    void deleteByTitleId(String titleId);
+
     Page<SavedManga> findByUserId(UUID userId, Pageable pageable);
 
     Page<SavedManga> findByUserIdAndList(UUID userId, ReadingListType list, Pageable pageable);

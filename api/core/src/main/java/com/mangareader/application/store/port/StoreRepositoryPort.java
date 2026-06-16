@@ -29,4 +29,7 @@ public interface StoreRepositoryPort {
     Page<Store> findByTitleId(String titleId, Pageable pageable);
 
     Page<Store> findAll(Pageable pageable);
+
+    /** Remove o título de todas as lojas (limpeza de órfão cross-DB). */
+    void deleteByTitleId(String titleId);
 }

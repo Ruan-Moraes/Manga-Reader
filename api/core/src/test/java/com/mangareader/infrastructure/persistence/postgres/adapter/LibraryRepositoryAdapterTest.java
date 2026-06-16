@@ -185,4 +185,28 @@ class LibraryRepositoryAdapterTest {
             assertThat(libraryRepository.findByUserId(user.getId())).hasSize(2);
         }
     }
+
+    @Nested
+    @DisplayName("deleteByTitleId")
+    class DeleteByTitleId {
+
+        @Test
+        @DisplayName("Deve remover o título da biblioteca de todos os usuários")
+        void deveRemoverDeTodosUsuarios() {
+            var other = entityManager.persistAndFlush(User.builder()
+                    .name("Outro").email("outro@email.com").passwordHash("hash").build());
+            entityManager.persistAndFlush(SavedManga.builder()
+                    .user(other).titleId("title-1").name("One Piece")
+                    .cover("c.jpg").type("Mangá").list(ReadingListType.LENDO).build());
+
+            libraryRepository.deleteByTitleId("title-1");
+            entityManager.flush();
+            entityManager.clear();
+
+            assertThat(libraryRepository.findByUserIdAndTitleId(user.getId(), "title-1")).isEmpty();
+            assertThat(libraryRepository.findByUserIdAndTitleId(other.getId(), "title-1")).isEmpty();
+            // demais títulos do usuário preservados
+            assertThat(libraryRepository.findByUserId(user.getId())).hasSize(2);
+        }
+    }
 }

@@ -35,6 +35,12 @@ public interface GroupRepositoryPort {
 
     Page<Group> findByTitleId(String titleId, Pageable pageable);
 
+    /**
+     * Remove de todos os grupos as obras que referenciam o título e reconcilia
+     * {@code total_titles} dos grupos afetados (limpeza de órfão cross-DB).
+     */
+    void deleteWorksByTitleId(String titleId);
+
     List<Group> findGroupsByMemberUserId(UUID userId);
 
     List<Group> findAvailableGroupsForUser(UUID userId);

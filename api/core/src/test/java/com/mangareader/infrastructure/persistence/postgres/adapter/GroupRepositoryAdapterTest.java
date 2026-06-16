@@ -271,4 +271,45 @@ class GroupRepositoryAdapterTest {
             assertThat(groupRepository.findById(groupB.getId())).isEmpty();
         }
     }
+
+    @Nested
+    @DisplayName("deleteWorksByTitleId")
+    class DeleteWorksByTitleId {
+
+        @Test
+        @DisplayName("Deve remover obras do título e reconciliar total_titles dos grupos afetados")
+        void deveRemoverObrasEReconciliar() {
+            // groupA já tem a obra title-mongo-456; adiciona outra que deve permanecer
+            var keep = GroupWork.builder()
+                    .group(groupA).titleId("title-keep").title("Outro").build();
+            groupA.getTranslatedWorks().add(keep);
+            groupA.setTotalTitles(99); // drift proposital
+            entityManager.persistAndFlush(groupA);
+            entityManager.clear();
+
+            groupRepository.deleteWorksByTitleId("title-mongo-456");
+            entityManager.flush();
+            entityManager.clear();
+
+            assertThat(groupRepository.findByTitleId("title-mongo-456")).isEmpty();
+            assertThat(groupRepository.findByTitleId("title-keep")).hasSize(1);
+            assertThat(groupRepository.findById(groupA.getId()).orElseThrow().getTotalTitles())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("Não altera total_titles de grupos sem o título")
+        void naoAlteraGruposSemTitulo() {
+            groupB.setTotalTitles(7);
+            entityManager.persistAndFlush(groupB);
+            entityManager.clear();
+
+            groupRepository.deleteWorksByTitleId("title-mongo-456");
+            entityManager.flush();
+            entityManager.clear();
+
+            assertThat(groupRepository.findById(groupB.getId()).orElseThrow().getTotalTitles())
+                    .isEqualTo(7);
+        }
+    }
 }

@@ -180,4 +180,26 @@ class StoreRepositoryAdapterTest {
             assertThat(storeRepository.findById(storeB.getId())).isEmpty();
         }
     }
+
+    @Nested
+    @DisplayName("deleteByTitleId")
+    class DeleteByTitleId {
+
+        @Test
+        @DisplayName("Deve remover o título de todas as lojas, preservando as lojas")
+        void deveRemoverItensDeTodasLojas() {
+            var another = StoreTitle.builder()
+                    .store(storeB).titleId("title-mongo-123").url("https://mangastore.jp/op").build();
+            storeB.getTitles().add(another);
+            entityManager.persistAndFlush(storeB);
+            entityManager.clear();
+
+            storeRepository.deleteByTitleId("title-mongo-123");
+            entityManager.flush();
+            entityManager.clear();
+
+            assertThat(storeRepository.findByTitleId("title-mongo-123")).isEmpty();
+            assertThat(storeRepository.findAll()).hasSize(2);
+        }
+    }
 }
