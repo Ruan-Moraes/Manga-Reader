@@ -27,7 +27,7 @@ const ConfirmDeleteModal = ({ isOpen, onClose, onConfirm, title, message, isSubm
                         type="button"
                         onClick={onConfirm}
                         disabled={isSubmitting}
-                        className="px-3 py-1.5 text-sm font-semibold text-red-300 rounded-xs bg-red-500/20 hover:bg-red-500/30 disabled:opacity-50"
+                        className="px-3 py-1.5 text-sm font-semibold text-mr-danger rounded-xs bg-mr-danger-15 hover:bg-mr-danger-15 disabled:opacity-50"
                     >
                         {isSubmitting ? t('common.deleting') : t('common.delete')}
                     </button>

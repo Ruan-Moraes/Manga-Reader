@@ -1,12 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
+
 import DataTable, { type Column } from '@ui/DataTable';
+import { StatusPill } from '@ui/StatusPill';
+import { Avatar } from '@ui/Avatar';
 import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
+import { getLocale } from '@shared/lib/formatters';
 
 import type { AdminGroup } from '../model/admin.types';
-import { getLocale } from '@shared/lib/formatters';
-import { Pencil, Trash2 } from 'lucide-react';
+import { GROUP_STATUS_TONE, statusLabelKey, toneFor } from '../model/statusTone';
+import RowActions from './parts/RowActions';
 
 type AdminGroupListProps = {
     groups: AdminGroup[];
@@ -16,103 +20,86 @@ type AdminGroupListProps = {
     onPageChange: (page: number) => void;
     onEdit: (group: AdminGroup) => void;
     onDelete: (group: AdminGroup) => void;
+    onRowClick?: (group: AdminGroup) => void;
 };
 
 const formatDate = (date: string | null) => {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString(getLocale(), {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
-};
-
-const StatusBadge = ({ status }: { status: string }) => {
-    const colors: Record<string, string> = {
-        ACTIVE: 'bg-green-500/20 text-green-300',
-        INACTIVE: 'bg-tertiary/30 text-tertiary',
-        HIATUS: 'bg-yellow-500/20 text-yellow-300',
-    };
-
-    return <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[status] ?? 'bg-tertiary/30'}`}>{status}</span>;
+    return new Date(date).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
 const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (group: AdminGroup) => void, onDelete: (group: AdminGroup) => void): Column<AdminGroup>[] => [
     {
         key: 'id',
         header: t('dashboard.groups.columnId'),
-        hiddenOnMobile: true,
-        render: group => <span className="font-mono text-xs text-tertiary">{group.id.slice(0, 8)}</span>,
+        hideBelow: 'md',
+        render: group => <span className="font-mr-mono text-mr-tiny text-mr-fg-subtle">{group.id.slice(0, 8)}</span>,
     },
     {
         key: 'name',
         header: t('dashboard.groups.columnName'),
         sortable: true,
-        render: group => <span className="font-medium">{group.name?.[lang] ?? group.name?.['pt-BR'] ?? ''}</span>,
+        render: group => {
+            const name = group.name?.[lang] ?? group.name?.['pt-BR'] ?? '';
+
+            return (
+                <span className="flex items-center gap-2.5">
+                    <Avatar name={name} size={32} />
+                    <span className="font-mr-bold text-mr-fg">{name}</span>
+                </span>
+            );
+        },
     },
     {
         key: 'username',
         header: t('dashboard.groups.columnUsername'),
         sortable: true,
-        render: group => <span className="text-tertiary">@{group.username}</span>,
+        hideBelow: 'sm',
+        render: group => <span className="font-mr-mono text-mr-tiny text-mr-accent">@{group.username}</span>,
     },
     {
         key: 'status',
         header: t('dashboard.groups.columnStatus'),
         sortable: true,
-        render: group => <StatusBadge status={group.status} />,
+        render: group => <StatusPill tone={toneFor(GROUP_STATUS_TONE, group.status)}>{t(statusLabelKey('group', group.status), { defaultValue: group.status })}</StatusPill>,
     },
     {
         key: 'membersCount',
         header: t('dashboard.groups.columnMembers'),
         sortable: true,
-        render: group => <span className="text-xs text-tertiary">{group.membersCount}</span>,
+        hideBelow: 'md',
+        render: group => <span className="tabular-nums text-mr-fg-subtle">{group.membersCount}</span>,
     },
     {
         key: 'totalTitles',
         header: t('dashboard.groups.columnTitles'),
         sortable: true,
-        render: group => <span className="text-xs text-tertiary">{group.totalTitles}</span>,
+        hideBelow: 'md',
+        render: group => <span className="tabular-nums text-mr-fg-subtle">{group.totalTitles}</span>,
     },
     {
         key: 'platformJoinedAt',
         header: t('dashboard.groups.columnJoinedAt'),
         sortable: true,
-        render: group => <span className="text-xs text-tertiary">{formatDate(group.platformJoinedAt)}</span>,
+        hideBelow: 'md',
+        render: group => <span className="text-mr-fg-subtle">{formatDate(group.platformJoinedAt)}</span>,
     },
     {
         key: 'actions',
         header: t('dashboard.groups.columnActions'),
+        align: 'right',
         render: group => (
-            <div className="flex items-center justify-end gap-2">
-                <button
-                    type="button"
-                    onClick={e => {
-                        e.stopPropagation();
-                        onEdit(group);
-                    }}
-                    className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                    aria-label={t('dashboard.groups.editAriaLabel')}
-                >
-                    <Pencil size={14} />
-                </button>
-                <button
-                    type="button"
-                    onClick={e => {
-                        e.stopPropagation();
-                        onDelete(group);
-                    }}
-                    className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
-                    aria-label={t('dashboard.groups.deleteAriaLabel')}
-                >
-                    <Trash2 size={14} />
-                </button>
-            </div>
+            <RowActions
+                onEdit={() => onEdit(group)}
+                onDelete={() => onDelete(group)}
+                editLabel={t('dashboard.groups.editAriaLabel')}
+                deleteLabel={t('dashboard.groups.deleteAriaLabel')}
+            />
         ),
     },
 ];
 
-const AdminGroupList = ({ groups, page, totalPages, isLoading, onPageChange, onEdit, onDelete }: AdminGroupListProps) => {
+const AdminGroupList = ({ groups, page, totalPages, isLoading, onPageChange, onEdit, onDelete, onRowClick }: AdminGroupListProps) => {
     const { t, i18n } = useTranslation('admin');
     const lang = i18n.language as LanguageTag;
     const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(groups);
@@ -127,6 +114,7 @@ const AdminGroupList = ({ groups, page, totalPages, isLoading, onPageChange, onE
             onPageChange={onPageChange}
             isLoading={isLoading}
             emptyMessage={t('dashboard.groups.empty')}
+            onRowClick={onRowClick}
             sortBy={sortBy}
             sortDirection={sortDirection}
             onSort={handleSort}

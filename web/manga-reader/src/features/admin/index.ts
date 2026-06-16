@@ -27,6 +27,12 @@ export type {
     AdminTag,
     CreateTagRequest,
     UpdateTagRequest,
+    AdminAuthor,
+    CreateAuthorRequest,
+    UpdateAuthorRequest,
+    AdminPublisher,
+    CreatePublisherRequest,
+    UpdatePublisherRequest,
     AdminPlan,
     CreatePlanRequest,
     UpdatePlanRequest,
@@ -77,6 +83,10 @@ export { default as useAdminSubscriptionSummary } from './model/useAdminSubscrip
 // Hooks — Tags
 export { default as useAdminTags } from './model/useAdminTags';
 export { default as useAdminTagActions } from './model/useAdminTagActions';
+export { default as useAdminAuthors } from './model/useAdminAuthors';
+export { default as useAdminAuthorActions } from './model/useAdminAuthorActions';
+export { default as useAdminPublishers } from './model/useAdminPublishers';
+export { default as useAdminPublisherActions } from './model/useAdminPublisherActions';
 
 // Hooks — Plans
 export { default as useAdminPlans } from './model/useAdminPlans';
@@ -108,8 +118,15 @@ export { default as FinancialDashboard } from './ui/FinancialDashboard';
 export { default as BanUserModal } from './ui/modal/BanUserModal';
 export { default as ChangeRoleModal } from './ui/modal/ChangeRoleModal';
 export { default as ChangeGroupRoleModal } from './ui/modal/ChangeGroupRoleModal';
+export { default as GroupFormModal, type GroupFormSubmitPayload } from './ui/modal/GroupFormModal';
+export { default as AdminGroupDetailModal } from './ui/modal/AdminGroupDetailModal';
 export { default as UpdatePaymentStatusModal } from './ui/modal/UpdatePaymentStatusModal';
 export { default as ConfirmDeleteWithIdModal } from './ui/modal/ConfirmDeleteWithIdModal';
+export { default as ConfirmModal } from './ui/modal/ConfirmModal';
+export { default as AdminUserDetailModal } from './ui/modal/AdminUserDetailModal';
+export { default as TitleFormModal } from './ui/modal/TitleFormModal';
+export { default as NewsFormModal } from './ui/modal/NewsFormModal';
+export { default as EventFormModal } from './ui/modal/EventFormModal';
 
 // Components — Charts
 export { default as RevenueChart } from './ui/chart/RevenueChart';
@@ -131,6 +148,10 @@ export { default as UpdateSubscriptionStatusModal } from './ui/modal/UpdateSubsc
 // Components — Tags
 export { default as AdminTagList } from './ui/AdminTagList';
 export { default as TagFormModal } from './ui/modal/TagFormModal';
+export { default as AdminAuthorList } from './ui/AdminAuthorList';
+export { default as AuthorFormModal } from './ui/modal/AuthorFormModal';
+export { default as AdminPublisherList } from './ui/AdminPublisherList';
+export { default as PublisherFormModal } from './ui/modal/PublisherFormModal';
 
 // Components — Plans & Subscription extras
 export { default as AdminPlanList } from './ui/AdminPlanList';

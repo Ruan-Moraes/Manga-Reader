@@ -21,6 +21,8 @@ const DashboardGroupForm = lazy(() => import('@features/admin').then(m => ({ def
 const DashboardFinancial = lazy(() => import('@pages/dashboard/ui/DashboardFinancial'));
 const DashboardSubscriptions = lazy(() => import('@pages/dashboard/ui/DashboardSubscriptions'));
 const DashboardTags = lazy(() => import('@pages/dashboard/ui/DashboardTags'));
+const DashboardAuthors = lazy(() => import('@pages/dashboard/ui/DashboardAuthors'));
+const DashboardPublishers = lazy(() => import('@pages/dashboard/ui/DashboardPublishers'));
 
 export const protectedContentRoutes = [
     {
@@ -76,6 +78,8 @@ export const adminRoute = [
             { path: 'groups/:groupId', element: <DashboardGroupDetail /> },
             { path: 'groups/:groupId/edit', element: <DashboardGroupForm /> },
             { path: 'tags', element: <DashboardTags /> },
+            { path: 'authors', element: <DashboardAuthors /> },
+            { path: 'publishers', element: <DashboardPublishers /> },
             { path: 'financial', element: <DashboardFinancial /> },
             { path: 'subscriptions', element: <DashboardSubscriptions /> },
         ],

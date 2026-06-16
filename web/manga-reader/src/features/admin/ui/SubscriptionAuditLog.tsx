@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { getLocale } from '@shared/lib/formatters';
+import { toneFillClass, type StatusTone } from '@ui/StatusPill';
+import { cn } from '@shared/lib/cn';
 
 import { getSubscriptionAuditLogs } from '../api/adminSubscriptionService';
 import type { SubscriptionAuditLogEntry } from '../model/admin.types';
@@ -10,34 +13,21 @@ type SubscriptionAuditLogProps = {
     subscriptionId: string | null;
 };
 
-const ACTION_LABELS: Record<string, string> = {
-    CREATED: 'Criada',
-    CANCELLED: 'Cancelada',
-    EXPIRED: 'Expirada',
-    GRANTED: 'Concedida',
-    REVOKED: 'Revogada',
-    STATUS_CHANGED: 'Status alterado',
-};
-
-const ACTION_COLORS: Record<string, string> = {
-    CREATED: 'bg-green-500/20 text-green-300',
-    GRANTED: 'bg-blue-500/20 text-blue-300',
-    CANCELLED: 'bg-red-500/20 text-red-300',
-    REVOKED: 'bg-red-500/20 text-red-300',
-    EXPIRED: 'bg-yellow-500/20 text-yellow-300',
-    STATUS_CHANGED: 'bg-purple-500/20 text-purple-300',
+const ACTION_TONE: Record<string, StatusTone> = {
+    CREATED: 'live',
+    GRANTED: 'open',
+    CANCELLED: 'ended',
+    REVOKED: 'ended',
+    EXPIRED: 'soon',
+    STATUS_CHANGED: 'open',
 };
 
 const formatDate = (date: string) =>
-    new Date(date).toLocaleString(getLocale(), {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    new Date(date).toLocaleString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 const SubscriptionAuditLog = ({ subscriptionId }: SubscriptionAuditLogProps) => {
+    const { t } = useTranslation('admin');
+
     const { data, isLoading } = useQuery({
         queryKey: [QUERY_KEYS.ADMIN_SUBSCRIPTION_LOGS, subscriptionId],
         queryFn: () => getSubscriptionAuditLogs(subscriptionId!, 0, 50),
@@ -45,14 +35,14 @@ const SubscriptionAuditLog = ({ subscriptionId }: SubscriptionAuditLogProps) => 
     });
 
     if (!subscriptionId) {
-        return <p className="py-8 text-sm text-center text-tertiary">Selecione uma assinatura para ver os logs.</p>;
+        return <p className="py-8 text-center text-mr-small text-mr-fg-subtle">{t('subscriptionAudit.selectPrompt')}</p>;
     }
 
     if (isLoading) {
         return (
             <div className="flex flex-col gap-2">
                 {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="h-12 rounded-xs bg-tertiary/30 animate-pulse" />
+                    <div key={i} className="h-12 animate-mr-pulse rounded-mr-xs bg-mr-gray-800" />
                 ))}
             </div>
         );
@@ -61,25 +51,26 @@ const SubscriptionAuditLog = ({ subscriptionId }: SubscriptionAuditLogProps) => 
     const logs: SubscriptionAuditLogEntry[] = data?.content ?? [];
 
     if (logs.length === 0) {
-        return <p className="py-8 text-sm text-center text-tertiary">Nenhum log encontrado para esta assinatura.</p>;
+        return <p className="py-8 text-center text-mr-small text-mr-fg-subtle">{t('subscriptionAudit.empty')}</p>;
     }
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
             {logs.map(log => (
-                <div key={log.id} className="flex flex-col gap-1 p-3 border rounded-xs border-tertiary/50">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${ACTION_COLORS[log.action] ?? 'bg-tertiary/30'}`}>
-                            {ACTION_LABELS[log.action] ?? log.action}
-                        </span>
-                        <span className="text-xs text-tertiary">{formatDate(log.createdAt)}</span>
+                <div key={log.id} className="flex gap-3 border-b border-mr-gray-900 py-3 last:border-b-0">
+                    <span className={cn('mt-1.5 size-2.5 shrink-0 rounded-mr-full', toneFillClass[ACTION_TONE[log.action] ?? 'soon'])} />
+                    <div className="flex min-w-0 flex-col gap-0.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-mr-small font-mr-bold text-mr-fg">{t(`subscriptionAudit.action.${log.action}`, { defaultValue: log.action })}</span>
+                            <span className="text-mr-tiny text-mr-fg-subtle">{formatDate(log.createdAt)}</span>
+                        </div>
+                        {log.details && <p className="text-mr-tiny text-mr-fg-subtle">{log.details}</p>}
+                        {log.performedBy && (
+                            <p className="text-mr-tiny text-mr-fg-subtle">
+                                {t('subscriptionAudit.by')} <span className="font-mr-mono">{log.performedBy.slice(0, 8)}</span>
+                            </p>
+                        )}
                     </div>
-                    {log.details && <p className="text-xs text-tertiary">{log.details}</p>}
-                    {log.performedBy && (
-                        <p className="text-xs text-tertiary">
-                            Por: <span className="font-mono">{log.performedBy.slice(0, 8)}</span>
-                        </p>
-                    )}
                 </div>
             ))}
         </div>

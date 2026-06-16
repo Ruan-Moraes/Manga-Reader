@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Modal } from '@ui/Modal';
+import { Button } from '@ui/Button';
 import { Input } from '@ui/Input';
 import LocalizedTextInput from '@ui/LocalizedTextInput';
-import AdminModal from './AdminModal';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 
 import type { AdminGroup } from '../../model/admin.types';
+import Field from '../parts/Field';
 
 export type GroupFormSubmitPayload = {
     name: LocalizedString;
@@ -23,6 +25,7 @@ type GroupFormModalProps = {
     group?: AdminGroup | null;
     isSubmitting: boolean;
 };
+
 
 const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: GroupFormModalProps) => {
     const { t } = useTranslation('admin');
@@ -51,10 +54,8 @@ const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: Grou
 
     const ptName = (name[DEFAULT_LANGUAGE] ?? '').trim();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const save = () => {
         if (!ptName) return;
-
         onSubmit({
             name,
             description,
@@ -65,12 +66,24 @@ const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: Grou
     };
 
     return (
-        <AdminModal isOpen={isOpen} onClose={onClose}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-2">
-                <h3 className="text-sm font-bold">{group ? t('groupForm.editTitle', 'Editar Grupo') : t('groupForm.newTitle', 'Novo Grupo')}</h3>
-
+        <Modal
+            open={isOpen}
+            onClose={onClose}
+            title={group ? t('groupForm.editTitle', 'Editar Grupo') : t('groupForm.newTitle', 'Novo Grupo')}
+            size="md"
+            footer={
+                <>
+                    <Button variant="ghost" size="sm" onClick={onClose}>
+                        {t('common.cancel', 'Cancelar')}
+                    </Button>
+                    <Button variant="primary" size="sm" disabled={!ptName} loading={isSubmitting} onClick={save}>
+                        {t('common.save', 'Salvar')}
+                    </Button>
+                </>
+            }
+        >
+            <div className="flex flex-col gap-4 p-2">
                 <LocalizedTextInput label={t('groupForm.name', 'Nome')} value={name} onChange={setName} maxLength={100} />
-
                 <LocalizedTextInput
                     label={t('groupForm.description', 'Descrição')}
                     value={description}
@@ -80,36 +93,17 @@ const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: Grou
                     requiredLanguages={[]}
                     maxLength={2000}
                 />
-
-                <div className="flex flex-col gap-1.5">
-                    <span className="text-xs font-bold">{t('groupForm.logo', 'Logo (URL)')}</span>
-                    <Input type="text" value={logo} onChange={e => setLogo(e.target.value)} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                    <span className="text-xs font-bold">{t('groupForm.banner', 'Banner (URL)')}</span>
-                    <Input type="text" value={banner} onChange={e => setBanner(e.target.value)} />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                    <span className="text-xs font-bold">{t('groupForm.website', 'Website')}</span>
-                    <Input type="text" value={website} onChange={e => setWebsite(e.target.value)} />
-                </div>
-
-                <div className="flex justify-end gap-2">
-                    <button type="button" onClick={onClose} className="px-3 py-1.5 text-sm rounded-xs hover:bg-tertiary/30">
-                        {t('common.cancel', 'Cancelar')}
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={isSubmitting || !ptName}
-                        className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80 disabled:opacity-50"
-                    >
-                        {isSubmitting ? t('common.saving', 'Salvando...') : t('common.save', 'Salvar')}
-                    </button>
-                </div>
-            </form>
-        </AdminModal>
+                <Field label={t('groupForm.logo', 'Logo (URL)')}>
+                    <Input type="text" placeholder="https://..." value={logo} onChange={e => setLogo(e.target.value)} />
+                </Field>
+                <Field label={t('groupForm.banner', 'Banner (URL)')}>
+                    <Input type="text" placeholder="https://..." value={banner} onChange={e => setBanner(e.target.value)} />
+                </Field>
+                <Field label={t('groupForm.website', 'Website')}>
+                    <Input type="text" placeholder="https://..." value={website} onChange={e => setWebsite(e.target.value)} />
+                </Field>
+            </div>
+        </Modal>
     );
 };
 

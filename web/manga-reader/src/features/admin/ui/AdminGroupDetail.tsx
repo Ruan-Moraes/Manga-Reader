@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { resolveLocalized } from '@shared/type/i18n';
+import { StatusPill } from '@ui/StatusPill';
 
 import type { AdminGroup, GroupMember } from '../model/admin.types';
+import { GROUP_STATUS_TONE, statusLabelKey, toneFor } from '../model/statusTone';
 import useAdminGroupActions from '../model/useAdminGroupActions';
 import ChangeGroupRoleModal from './modal/ChangeGroupRoleModal';
 import AdminGroupMembersTable from './AdminGroupMembersTable';
@@ -15,16 +17,6 @@ type AdminGroupDetailProps = {
 const formatDateTime = (date: string | null, locale: string) => {
     if (!date) return '—';
     return new Date(date).toLocaleString(locale);
-};
-
-const StatusBadge = ({ status }: { status: string }) => {
-    const colors: Record<string, string> = {
-        ACTIVE: 'bg-green-500/20 text-green-300',
-        INACTIVE: 'bg-tertiary/30 text-tertiary',
-        HIATUS: 'bg-yellow-500/20 text-yellow-300',
-    };
-
-    return <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[status] ?? 'bg-tertiary/30'}`}>{status}</span>;
 };
 
 const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
@@ -59,7 +51,7 @@ const AdminGroupDetail = ({ group }: AdminGroupDetailProps) => {
                     <h2 className="text-lg font-bold">{resolveLocalized(group.name, i18n.language)}</h2>
                     <p className="text-sm text-tertiary">@{group.username}</p>
                     <div className="flex gap-2 mt-2">
-                        <StatusBadge status={group.status} />
+                        <StatusPill tone={toneFor(GROUP_STATUS_TONE, group.status)}>{t(statusLabelKey('group', group.status), { defaultValue: group.status })}</StatusPill>
                     </div>
                 </div>
             </div>

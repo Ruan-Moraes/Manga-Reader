@@ -9,3 +9,5 @@ export * from './types/content.types';
 export * from './types/finance.types';
 export * from './types/subscription.types';
 export * from './types/tag.types';
+export * from './types/author.types';
+export * from './types/publisher.types';

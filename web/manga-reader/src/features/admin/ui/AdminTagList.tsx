@@ -1,11 +1,12 @@
-import DataTable, { type Column } from '@ui/DataTable';
-import useSortableData from '@shared/hook/useSortableData';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
+import DataTable, { type Column } from '@ui/DataTable';
+import useSortableData from '@shared/hook/useSortableData';
 import type { LanguageTag } from '@shared/type/i18n';
+
 import type { AdminTag } from '../model/admin.types';
-import { Pencil, Trash2 } from 'lucide-react';
+import RowActions from './parts/RowActions';
 
 type AdminTagListProps = {
     tags: AdminTag[];
@@ -21,43 +22,26 @@ const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (tag: AdminTag) =
     {
         key: 'value',
         header: t('tagList.columnId'),
-        hiddenOnMobile: true,
-        render: tag => <span className="font-mono text-xs text-tertiary">{tag.value}</span>,
+        hideBelow: 'sm',
+        render: tag => <span className="font-mr-mono text-mr-tiny text-mr-fg-subtle">{tag.value}</span>,
     },
     {
         key: 'label',
         header: t('tagList.columnName'),
         sortable: true,
-        render: tag => <span className="font-medium">{tag.label?.[lang] ?? tag.label?.['pt-BR'] ?? ''}</span>,
+        render: tag => <span className="font-mr-bold text-mr-fg">{tag.label?.[lang] ?? tag.label?.['pt-BR'] ?? ''}</span>,
     },
     {
         key: 'actions',
         header: t('tagList.columnActions'),
+        align: 'right',
         render: tag => (
-            <div className="flex items-center justify-end gap-2">
-                <button
-                    type="button"
-                    onClick={e => {
-                        e.stopPropagation();
-                        onEdit(tag);
-                    }}
-                    className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                    aria-label={t('tagList.editAriaLabel')}
-                >
-                    <Pencil size={14} />
-                </button>
-                <button
-                    type="button"
-                    onClick={e => {
-                        e.stopPropagation();
-                        onDelete(tag);
-                    }}
-                    className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
-                    aria-label={t('tagList.deleteAriaLabel')}
-                >
-                    <Trash2 size={14} />
-                </button>
-            </div>
+            <RowActions
+                onEdit={() => onEdit(tag)}
+                onDelete={() => onDelete(tag)}
+                editLabel={t('tagList.editAriaLabel')}
+                deleteLabel={t('tagList.deleteAriaLabel')}
+            />
         ),
     },
 ];

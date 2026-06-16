@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import DataTable, { type Column } from '@ui/DataTable';
+import { StatusPill } from '@ui/StatusPill';
 import TruncatedCell from '@ui/TruncatedCell';
 import useSortableData from '@shared/hook/useSortableData';
 
 import type { AdminPlan } from '../model/admin.types';
-import { Pencil } from 'lucide-react';
+import RowActions from './parts/RowActions';
 
 type AdminPlanListProps = {
     plans: AdminPlan[];
@@ -29,61 +31,38 @@ const AdminPlanList = ({ plans, page, totalPages, isLoading, onPageChange, onEdi
         [t],
     );
 
-    const formatPrice = (cents: number) =>
-        (cents / 100).toLocaleString(i18n.language, {
-            style: 'currency',
-            currency: 'BRL',
-        });
+    const formatPrice = (cents: number) => (cents / 100).toLocaleString(i18n.language, { style: 'currency', currency: 'BRL' });
 
     const columns: Column<AdminPlan>[] = [
         {
             key: 'period',
             header: t('planList.columnPeriod'),
             sortable: true,
-            render: plan => <span className="font-medium">{periodLabels[plan.period] ?? plan.period}</span>,
+            render: plan => <span className="font-mr-bold text-mr-fg">{periodLabels[plan.period] ?? plan.period}</span>,
         },
         {
             key: 'priceInCents',
             header: t('planList.columnPrice'),
             sortable: true,
-            render: plan => <span className="font-medium">{formatPrice(plan.priceInCents)}</span>,
+            render: plan => <span className="font-mr-bold tabular-nums text-mr-fg">{formatPrice(plan.priceInCents)}</span>,
         },
         {
             key: 'description',
             header: t('planList.columnDescription'),
-            hiddenOnMobile: true,
+            hideBelow: 'md',
             render: plan => <TruncatedCell content={plan.description} title={t('planList.descriptionTooltip')} />,
         },
         {
             key: 'active',
             header: t('planList.columnStatus'),
             sortable: true,
-            render: plan => (
-                <span
-                    className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${plan.active ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`}
-                >
-                    {plan.active ? t('planList.statusActive') : t('planList.statusInactive')}
-                </span>
-            ),
+            render: plan => <StatusPill tone={plan.active ? 'live' : 'soon'}>{plan.active ? t('planList.statusActive') : t('planList.statusInactive')}</StatusPill>,
         },
         {
             key: 'actions',
             header: t('planList.columnActions'),
-            render: plan => (
-                <div className="flex items-center justify-end gap-2">
-                    <button
-                        type="button"
-                        onClick={e => {
-                            e.stopPropagation();
-                            onEdit(plan);
-                        }}
-                        className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                        aria-label={t('planList.editAriaLabel')}
-                    >
-                        <Pencil size={14} />
-                    </button>
-                </div>
-            ),
+            align: 'right',
+            render: plan => <RowActions onEdit={() => onEdit(plan)} editLabel={t('planList.editAriaLabel')} deleteLabel={t('planList.editAriaLabel')} />,
         },
     ];
 

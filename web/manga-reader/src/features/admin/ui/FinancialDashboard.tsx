@@ -1,25 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
 import type { FinancialSummary } from '../model/admin.types';
+import { PAYMENT_STATUS_TONE, statusLabelKey, toneFor } from '../model/statusTone';
 import MetricsCard from './MetricsCard';
+import { StatusPill } from '@ui/StatusPill';
 import { getLocale } from '@shared/lib/formatters';
 
 type FinancialDashboardProps = {
     summary: FinancialSummary;
 };
 
-const formatCurrency = (value: number) =>
-    new Intl.NumberFormat(getLocale(), {
-        style: 'currency',
-        currency: 'BRL',
-    }).format(value ?? 0);
-
-const STATUS_COLORS: Record<string, string> = {
-    PENDING: 'bg-yellow-500/20 text-yellow-300',
-    COMPLETED: 'bg-green-500/20 text-green-300',
-    FAILED: 'bg-red-500/20 text-red-300',
-    REFUNDED: 'bg-blue-500/20 text-blue-300',
-};
+const formatCurrency = (value: number) => new Intl.NumberFormat(getLocale(), { style: 'currency', currency: 'BRL' }).format(value ?? 0);
 
 const FinancialDashboard = ({ summary }: FinancialDashboardProps) => {
     const { t } = useTranslation('admin');
@@ -33,27 +24,25 @@ const FinancialDashboard = ({ summary }: FinancialDashboardProps) => {
                 <MetricsCard label={t('dashboard.financial.summary.pendingRevenue')} value={formatCurrency(summary.pendingRevenue)} accent="warning" />
             </div>
 
-            <div className="p-4 border rounded-xs bg-secondary border-tertiary">
-                <h3 className="mb-3 text-sm font-semibold">{t('dashboard.financial.summary.distributionByStatus')}</h3>
+            <div className="rounded-mr-md border border-mr-border bg-mr-surface p-[18px]">
+                <h3 className="mb-3 text-[15px] font-mr-bold text-mr-fg">{t('dashboard.financial.summary.distributionByStatus')}</h3>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-mr-small">
                         <thead>
-                            <tr className="border-b border-tertiary">
-                                <th className="py-2 text-left font-medium text-tertiary">{t('dashboard.financial.columnStatus')}</th>
-                                <th className="py-2 text-right font-medium text-tertiary">{t('dashboard.financial.summary.quantity')}</th>
-                                <th className="py-2 text-right font-medium text-tertiary">{t('dashboard.financial.summary.totalAmount')}</th>
+                            <tr className="border-b border-mr-border">
+                                <th className="py-2 text-left text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-fg-subtle">{t('dashboard.financial.columnStatus')}</th>
+                                <th className="py-2 text-right text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-fg-subtle">{t('dashboard.financial.summary.quantity')}</th>
+                                <th className="py-2 text-right text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-fg-subtle">{t('dashboard.financial.summary.totalAmount')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {statuses.map(status => (
-                                <tr key={status} className="border-b border-tertiary/30">
-                                    <td className="py-2">
-                                        <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${STATUS_COLORS[status] ?? 'bg-tertiary/30'}`}>
-                                            {status}
-                                        </span>
+                                <tr key={status} className="border-b border-mr-gray-900 last:border-b-0">
+                                    <td className="py-2.5">
+                                        <StatusPill tone={toneFor(PAYMENT_STATUS_TONE, status)}>{t(statusLabelKey('payment', status), { defaultValue: status })}</StatusPill>
                                     </td>
-                                    <td className="py-2 text-right">{summary.countsByStatus[status] ?? 0}</td>
-                                    <td className="py-2 text-right text-xs text-tertiary">{formatCurrency(summary.amountsByStatus[status] ?? 0)}</td>
+                                    <td className="py-2.5 text-right tabular-nums text-mr-fg">{summary.countsByStatus[status] ?? 0}</td>
+                                    <td className="py-2.5 text-right tabular-nums text-mr-fg-subtle">{formatCurrency(summary.amountsByStatus[status] ?? 0)}</td>
                                 </tr>
                             ))}
                         </tbody>

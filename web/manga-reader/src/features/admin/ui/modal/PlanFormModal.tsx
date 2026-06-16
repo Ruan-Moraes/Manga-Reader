@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Checkbox } from '@ui/Checkbox';
+import { Switch } from '@ui/Switch';
 import { Select } from '@ui/Select';
 import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
@@ -145,7 +145,7 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
 
             <PlanFormFeaturesInput value={features} onChange={setFeatures} />
 
-            {plan && <Checkbox label={t('planForm.activeLabel')} checked={active} onChange={e => setActive(e.target.checked)} />}
+            {plan && <Switch label={t('planForm.activeLabel')} checked={active} onChange={setActive} />}
         </FormModal>
     );
 };

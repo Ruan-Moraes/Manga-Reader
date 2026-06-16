@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
+import { Modal } from '@ui/Modal';
+import { Button } from '@ui/Button';
 import { Input } from '@ui/Input';
 import { Select } from '@ui/Select';
 import { Textarea } from '@ui/Textarea';
-import AdminModal from './AdminModal';
 
 type BanUserModalProps = {
     isOpen: boolean;
@@ -19,6 +20,14 @@ const BanUserModal = ({ isOpen, onClose, onConfirm, userName, isSubmitting }: Ba
     const [reason, setReason] = useState('');
     const [duration, setDuration] = useState('permanent');
     const [customDays, setCustomDays] = useState('7');
+
+    useEffect(() => {
+        if (isOpen) {
+            setReason('');
+            setDuration('permanent');
+            setCustomDays('7');
+        }
+    }, [isOpen]);
 
     const handleConfirm = () => {
         if (!reason.trim()) return;
@@ -35,62 +44,53 @@ const BanUserModal = ({ isOpen, onClose, onConfirm, userName, isSubmitting }: Ba
     };
 
     return (
-        <AdminModal isOpen={isOpen} onClose={onClose}>
-            <div className="flex flex-col gap-4 p-2">
-                <h3 className="text-sm font-bold">{t('banUser.title', { name: userName })}</h3>
+        <Modal
+            open={isOpen}
+            onClose={onClose}
+            title={t('banUser.title', { name: userName })}
+            size="sm"
+            danger
+            footer={
+                <>
+                    <Button variant="ghost" size="sm" onClick={onClose}>
+                        {t('banUser.cancel')}
+                    </Button>
+                    <Button variant="ghost" size="sm" danger disabled={!reason.trim()} loading={isSubmitting} onClick={handleConfirm}>
+                        {t('banUser.confirm')}
+                    </Button>
+                </>
+            }
+        >
+            <div className="flex flex-col gap-4">
+                <p className="text-mr-body leading-relaxed text-mr-fg-muted">
+                    <Trans i18nKey="banUser.warning" ns="admin" values={{ name: userName }} components={{ b: <b className="text-mr-fg" /> }} />
+                </p>
 
                 <label className="flex flex-col gap-1.5">
-                    <span className="text-xs font-bold">{t('banUser.reasonLabel')}</span>
+                    <span className="text-mr-small font-mr-bold text-mr-fg-muted">{t('banUser.reasonLabel')}</span>
                     <Textarea value={reason} onChange={e => setReason(e.target.value)} placeholder={t('banUser.reasonPlaceholder')} rows={3} />
                 </label>
 
-                <div className="flex flex-col gap-1.5">
-                    <span className="text-xs font-bold">{t('banUser.durationLabel')}</span>
+                <label className="flex flex-col gap-1.5">
+                    <span className="text-mr-small font-mr-bold text-mr-fg-muted">{t('banUser.durationLabel')}</span>
                     <Select
-                        options={[
-                            {
-                                value: 'permanent',
-                                label: t('banUser.durationPermanent'),
-                            },
-                            {
-                                value: 'temporary',
-                                label: t('banUser.durationTemporary'),
-                            },
-                        ]}
                         value={duration}
                         onChange={e => setDuration(e.target.value)}
+                        options={[
+                            { value: 'permanent', label: t('banUser.durationPermanent') },
+                            { value: 'temporary', label: t('banUser.durationTemporary') },
+                        ]}
                     />
-                </div>
+                </label>
 
                 {duration === 'temporary' && (
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('banUser.daysLabel')}</span>
-                        <Input
-                            type="number"
-                            min="1"
-                            max="365"
-                            value={customDays}
-                            onChange={e => setCustomDays(e.target.value)}
-                            placeholder={t('banUser.daysPlaceholder')}
-                        />
-                    </div>
+                    <label className="flex flex-col gap-1.5">
+                        <span className="text-mr-small font-mr-bold text-mr-fg-muted">{t('banUser.daysLabel')}</span>
+                        <Input type="number" min="1" max="365" value={customDays} onChange={e => setCustomDays(e.target.value)} placeholder={t('banUser.daysPlaceholder')} />
+                    </label>
                 )}
-
-                <div className="flex justify-end gap-2 pt-2">
-                    <button type="button" onClick={onClose} className="px-3 py-1.5 text-sm border rounded-xs border-tertiary hover:bg-tertiary/30">
-                        {t('banUser.cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleConfirm}
-                        disabled={!reason.trim() || isSubmitting}
-                        className="px-3 py-1.5 text-sm font-semibold text-red-100 bg-red-600 rounded-xs hover:bg-red-700 disabled:opacity-50"
-                    >
-                        {isSubmitting ? t('banUser.confirming') : t('banUser.confirm')}
-                    </button>
-                </div>
             </div>
-        </AdminModal>
+        </Modal>
     );
 };
 

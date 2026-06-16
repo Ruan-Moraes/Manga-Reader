@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
+
 import DataTable, { type Column } from '@ui/DataTable';
+import { StatusPill } from '@ui/StatusPill';
 import useSortableData from '@shared/hook/useSortableData';
+import { getLocale } from '@shared/lib/formatters';
 
 import type { AdminSubscription } from '../model/admin.types';
-import { getLocale } from '@shared/lib/formatters';
-import { Pencil, Trash2 } from 'lucide-react';
+import { SUBSCRIPTION_STATUS_TONE, toneFor } from '../model/statusTone';
+import RowActions from './parts/RowActions';
 
 type AdminSubscriptionListProps = {
     subscriptions: AdminSubscription[];
@@ -17,24 +20,9 @@ type AdminSubscriptionListProps = {
     onDelete: (subscription: AdminSubscription) => void;
 };
 
-const STATUS_COLORS: Record<string, string> = {
-    ACTIVE: 'bg-green-500/20 text-green-300',
-    EXPIRED: 'bg-yellow-500/20 text-yellow-300',
-    CANCELLED: 'bg-red-500/20 text-red-300',
-};
+const formatDate = (date: string) => new Date(date).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString(getLocale(), {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
-
-const formatPrice = (cents: number) =>
-    (cents / 100).toLocaleString(getLocale(), {
-        style: 'currency',
-        currency: 'BRL',
-    });
+const formatPrice = (cents: number) => (cents / 100).toLocaleString(getLocale(), { style: 'currency', currency: 'BRL' });
 
 const buildColumns = (t: TFunction, onEdit: (sub: AdminSubscription) => void, onDelete: (sub: AdminSubscription) => void): Column<AdminSubscription>[] => {
     const periodLabels: Record<string, string> = {
@@ -53,14 +41,14 @@ const buildColumns = (t: TFunction, onEdit: (sub: AdminSubscription) => void, on
         {
             key: 'id',
             header: t('dashboard.subscriptions.columnId'),
-            hiddenOnMobile: true,
-            render: sub => <span className="font-mono text-xs text-tertiary">{sub.id.slice(0, 8)}</span>,
+            hideBelow: 'md',
+            render: sub => <span className="font-mr-mono text-mr-tiny text-mr-fg-subtle">{sub.id.slice(0, 8)}</span>,
         },
         {
             key: 'userId',
             header: t('dashboard.subscriptions.columnUserId'),
-            hiddenOnMobile: true,
-            render: sub => <span className="font-mono text-xs text-tertiary">{sub.userId.slice(0, 8)}</span>,
+            hideBelow: 'md',
+            render: sub => <span className="font-mr-mono text-mr-tiny text-mr-fg-subtle">{sub.userId.slice(0, 8)}</span>,
         },
         {
             key: 'planPeriod',
@@ -68,8 +56,8 @@ const buildColumns = (t: TFunction, onEdit: (sub: AdminSubscription) => void, on
             sortable: true,
             render: sub => (
                 <div className="flex flex-col">
-                    <span className="font-medium">{periodLabels[sub.planPeriod] ?? sub.planPeriod}</span>
-                    <span className="text-xs text-tertiary">{formatPrice(sub.planPriceInCents)}</span>
+                    <span className="font-mr-bold text-mr-fg">{periodLabels[sub.planPeriod] ?? sub.planPeriod}</span>
+                    <span className="text-mr-tiny tabular-nums text-mr-fg-subtle">{formatPrice(sub.planPriceInCents)}</span>
                 </div>
             ),
         },
@@ -77,53 +65,33 @@ const buildColumns = (t: TFunction, onEdit: (sub: AdminSubscription) => void, on
             key: 'status',
             header: t('dashboard.subscriptions.columnStatus'),
             sortable: true,
-            render: sub => (
-                <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${STATUS_COLORS[sub.status] ?? 'bg-tertiary/30'}`}>
-                    {statusLabels[sub.status] ?? sub.status}
-                </span>
-            ),
+            render: sub => <StatusPill tone={toneFor(SUBSCRIPTION_STATUS_TONE, sub.status)}>{statusLabels[sub.status] ?? sub.status}</StatusPill>,
         },
         {
             key: 'startDate',
             header: t('dashboard.subscriptions.columnStart'),
             sortable: true,
-            render: sub => <span className="text-xs">{formatDate(sub.startDate)}</span>,
+            hideBelow: 'sm',
+            render: sub => <span className="text-mr-fg-subtle">{formatDate(sub.startDate)}</span>,
         },
         {
             key: 'endDate',
             header: t('dashboard.subscriptions.columnEnd'),
-            hiddenOnMobile: true,
+            hideBelow: 'md',
             sortable: true,
-            render: sub => <span className="text-xs">{formatDate(sub.endDate)}</span>,
+            render: sub => <span className="text-mr-fg-subtle">{formatDate(sub.endDate)}</span>,
         },
         {
             key: 'actions',
             header: t('dashboard.subscriptions.columnActions'),
+            align: 'right',
             render: sub => (
-                <div className="flex items-center justify-end gap-2">
-                    <button
-                        type="button"
-                        onClick={e => {
-                            e.stopPropagation();
-                            onEdit(sub);
-                        }}
-                        className="p-1.5 border rounded-xs border-tertiary hover:bg-tertiary/20 transition-colors"
-                        aria-label={t('dashboard.subscriptions.editAriaLabel')}
-                    >
-                        <Pencil size={14} />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={e => {
-                            e.stopPropagation();
-                            onDelete(sub);
-                        }}
-                        className="p-1.5 border rounded-xs border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
-                        aria-label={t('dashboard.subscriptions.deleteAriaLabel')}
-                    >
-                        <Trash2 size={14} />
-                    </button>
-                </div>
+                <RowActions
+                    onEdit={() => onEdit(sub)}
+                    onDelete={() => onDelete(sub)}
+                    editLabel={t('dashboard.subscriptions.editAriaLabel')}
+                    deleteLabel={t('dashboard.subscriptions.deleteAriaLabel')}
+                />
             ),
         },
     ];

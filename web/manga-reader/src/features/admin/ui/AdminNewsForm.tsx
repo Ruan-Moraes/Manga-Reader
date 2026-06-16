@@ -159,7 +159,7 @@ const AdminNewsForm = () => {
                             type="button"
                             onClick={handleDeleteClick}
                             disabled={isSubmitting}
-                            className="px-4 py-2 text-sm font-semibold text-red-300 border rounded-xs border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
+                            className="px-4 py-2 text-sm font-semibold text-mr-danger border rounded-xs border-[rgba(255,120,79,0.4)] hover:bg-mr-danger-15 disabled:opacity-50"
                         >
                             {t('common.delete')}
                         </button>

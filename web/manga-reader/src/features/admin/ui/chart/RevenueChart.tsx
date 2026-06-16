@@ -28,16 +28,16 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<
     const data = payload[0].payload;
 
     return (
-        <div className="rounded-xs border border-tertiary bg-secondary p-3 text-sm shadow-lg">
-            <p className="font-semibold">{formatMonth(data.yearMonth, i18n.language)}</p>
-            <p className="text-green-400">
+        <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-mr-small shadow-mr-black">
+            <p className="font-mr-bold text-mr-fg">{formatMonth(data.yearMonth, i18n.language)}</p>
+            <p className="text-mr-accent">
                 {t('revenueChart.revenue', {
                     value: formatCurrency(data.revenue, i18n.language),
                 })}
             </p>
-            <p className="text-tertiary">{t('revenueChart.transactions', { count: data.count })}</p>
+            <p className="text-mr-fg-subtle">{t('revenueChart.transactions', { count: data.count })}</p>
             {data.growthPercent !== 0 && (
-                <p className={data.growthPercent > 0 ? 'text-green-400' : 'text-red-400'}>
+                <p className={data.growthPercent > 0 ? 'text-mr-accent' : 'text-mr-danger'}>
                     {t('revenueChart.growthVsPrevious', {
                         value: `${data.growthPercent > 0 ? '+' : ''}${data.growthPercent.toFixed(1)}`,
                     })}
@@ -56,26 +56,26 @@ const RevenueChart = ({ entries }: Props) => {
     }));
 
     return (
-        <div className="rounded-xs border border-tertiary bg-secondary p-4">
-            <h3 className="mb-4 text-sm font-bold">{t('revenueChart.title')}</h3>
+        <div className="rounded-mr-md border border-mr-border bg-mr-surface p-[18px]">
+            <h3 className="mb-4 text-[15px] font-mr-bold text-mr-fg">{t('revenueChart.title')}</h3>
             <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>
                         <defs>
                             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#ddda2a" stopOpacity={0.12} />
+                                <stop offset="95%" stopColor="#ddda2a" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="label" tick={{ fill: '#9ca3af', fontSize: 12 }} tickLine={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
+                        <XAxis dataKey="label" tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} />
                         <YAxis
-                            tick={{ fill: '#9ca3af', fontSize: 12 }}
+                            tick={{ fill: '#999999', fontSize: 12 }}
                             tickLine={false}
                             tickFormatter={v => `R$${(v as number).toLocaleString(i18n.language)}`}
                         />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Area type="monotone" dataKey="revenueFormatted" stroke="#22c55e" strokeWidth={2} fill="url(#revenueGradient)" />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#727273' }} />
+                        <Area type="monotone" dataKey="revenueFormatted" stroke="#ddda2a" strokeWidth={2} fill="url(#revenueGradient)" />
                     </AreaChart>
                 </ResponsiveContainer>
             </div>

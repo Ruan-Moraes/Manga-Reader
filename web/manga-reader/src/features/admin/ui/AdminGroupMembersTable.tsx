@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
+import { Badge } from '@ui/Badge';
+
 import type { GroupMember } from '../model/admin.types';
 
 const formatDateTime = (date: string | null, locale: string) => {
@@ -8,16 +10,9 @@ const formatDateTime = (date: string | null, locale: string) => {
 };
 
 const RoleBadge = ({ role }: { role: string | null }) => {
-    const colors: Record<string, string> = {
-        LIDER: 'bg-red-500/20 text-red-300',
-        TRADUTOR: 'bg-blue-500/20 text-blue-300',
-        REVISOR: 'bg-yellow-500/20 text-yellow-300',
-        QC: 'bg-purple-500/20 text-purple-300',
-        CLEANER: 'bg-green-500/20 text-green-300',
-        TYPESETTER: 'bg-cyan-500/20 text-cyan-300',
-    };
+    if (!role) return <span className="text-mr-fg-subtle">—</span>;
 
-    return <span className={`px-2 py-0.5 text-xs font-semibold rounded-xs ${colors[role ?? ''] ?? 'bg-tertiary/30'}`}>{role ?? '—'}</span>;
+    return <Badge variant={role === 'LIDER' ? 'accent' : 'neutral'}>{role}</Badge>;
 };
 
 type AdminGroupMembersTableProps = {
@@ -82,7 +77,7 @@ const AdminGroupMembersTable = ({ members, isSubmitting, onEditRole, onRemove }:
                                             <button
                                                 onClick={() => onRemove(member.userId, member.userName)}
                                                 disabled={isSubmitting}
-                                                className="px-2 py-1 text-xs text-red-400 border rounded-xs border-red-500/30 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                                                className="px-2 py-1 text-xs text-mr-danger border rounded-mr-xs border-[rgba(255,120,79,0.4)] hover:bg-mr-danger-15 transition-colors disabled:opacity-50"
                                             >
                                                 {t('groupDetail.actions.remove')}
                                             </button>

@@ -25,7 +25,7 @@ const PlanFormFeaturesInput = ({ value, onChange }: PlanFormFeaturesInputProps) 
         <div className="flex flex-col gap-1.5">
             <span className="text-xs font-bold">
                 {t('planForm.featuresLabel')}
-                <span className="ml-1 text-red-500">*</span>
+                <span className="ml-1 text-mr-danger">*</span>
             </span>
             <div className="flex gap-1 border-b border-tertiary">
                 {SUPPORTED_LANGUAGES.map(lang => {

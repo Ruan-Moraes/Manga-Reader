@@ -36,7 +36,7 @@ const PlanFormPriceRows = ({ rows, currencyOptions, onChange }: PlanFormPriceRow
         <div className="flex flex-col gap-2">
             <span className="text-xs font-bold">
                 {t('planForm.priceLabel')}
-                <span className="ml-1 text-red-500">*</span>
+                <span className="ml-1 text-mr-danger">*</span>
             </span>
 
             {rows.map((row, idx) => (
@@ -70,7 +70,7 @@ const PlanFormPriceRows = ({ rows, currencyOptions, onChange }: PlanFormPriceRow
                         <button
                             type="button"
                             onClick={() => removePriceRow(idx)}
-                            className="mt-1.5 p-1.5 text-red-400 border border-red-500/30 rounded-xs hover:bg-red-500/10"
+                            className="mt-1.5 p-1.5 text-mr-danger border border-[rgba(255,120,79,0.4)] rounded-xs hover:bg-mr-danger-15"
                         >
                             <Trash2 size={14} />
                         </button>
