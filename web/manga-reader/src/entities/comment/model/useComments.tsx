@@ -1,6 +1,6 @@
 import useCommentsFetch from './data/useCommentsFetch';
 
-const useComments = (id: string, page = 0, size = 20, options: { crossLanguage?: boolean } = {}) => {
+const useComments = (id: string, page = 0, size = 20, options: { crossLanguage?: boolean; targetType?: string } = {}) => {
     const { data: pageData, isLoading, isError, error, refetch } = useCommentsFetch(id, page, size, options);
 
     return {

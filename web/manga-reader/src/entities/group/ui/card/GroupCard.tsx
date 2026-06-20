@@ -110,4 +110,5 @@ const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardP
 );
 
 export const GroupCard = memo(GroupCardBase);
+
 export default GroupCard;

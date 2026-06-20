@@ -27,11 +27,13 @@ import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase.EnrichedProfile;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
@@ -59,6 +61,9 @@ class GetEnrichedProfileUseCaseTest {
     @Mock
     private ViewHistoryRepositoryPort viewHistoryRepository;
 
+    @Mock
+    private UserProfileSettingsResolver profileSettingsResolver;
+
     @InjectMocks
     private GetEnrichedProfileUseCase getEnrichedProfileUseCase;
 
@@ -66,15 +71,20 @@ class GetEnrichedProfileUseCaseTest {
     private final UUID VIEWER_ID = UUID.randomUUID();
 
     private User buildUser(VisibilitySetting commentVis, VisibilitySetting historyVis) {
-        return User.builder()
+        User user = User.builder()
                 .id(USER_ID)
                 .name("Ruan Silva")
                 .email("ruan@email.com")
                 .passwordHash("hash")
                 .role(UserRole.MEMBER)
-                .commentVisibility(commentVis)
-                .viewHistoryVisibility(historyVis)
                 .build();
+        UserProfileSettings settings = UserProfileSettings.defaults(user);
+        settings.setCommentVisibility(commentVis);
+        settings.setViewHistoryVisibility(historyVis);
+
+        when(profileSettingsResolver.getOrDefault(user)).thenReturn(settings);
+
+        return user;
     }
 
     private void stubStats() {

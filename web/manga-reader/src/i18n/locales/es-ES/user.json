@@ -191,6 +191,11 @@
             "saved": "Cambios guardados",
             "saveError": "No se pudo guardar. Inténtalo de nuevo.",
             "close": "Cerrar",
+            "status": {
+                "saving": "Guardando cambios...",
+                "saved": "Cambios guardados",
+                "error": "Error al guardar"
+            },
             "tabs": {
                 "info": "Información",
                 "social": "Redes",
@@ -232,14 +237,26 @@
             },
             "privacy": {
                 "intro": "Controla lo que aparece públicamente en tu perfil.",
-                "historyLabel": "Mostrar historial de lectura",
-                "commentsLabel": "Mostrar mis comentarios en las obras",
+                "historyLabel": "Historial de lectura",
+                "commentsLabel": "Comentarios en las obras",
+                "adultContentLabel": "Contenido adulto",
+                "adultContentDesc": "Elige cómo aparecen los títulos +18 en el catálogo y recomendaciones.",
+                "adultContent": {
+                    "blur": "Desenfocar",
+                    "hide": "Ocultar",
+                    "show": "Mostrar"
+                },
                 "dangerZone": "ZONA DE RIESGO",
-                "deleteDesc": "Eliminar tu cuenta borra comentarios, listas y seguidores. Esta acción no se puede deshacer.",
+                "deleteDesc": "Eliminar tu cuenta desactiva el acceso y anonimiza datos personales. Esta acción no se puede deshacer.",
                 "deleteConfirmPlaceholder": "Escribe \"{{name}}\" para confirmar",
                 "deleteAccount": "Eliminar cuenta",
-                "historyDesc": "Cuando está activo, otros lectores pueden ver todo lo que has leído — capítulos, fechas y ritmo.",
-                "commentsDesc": "Mantiene visibles tus reseñas y respuestas. Desactivarlo las oculta sin borrarlas.",
+                "historyDesc": "Define si otros lectores pueden ver títulos leídos, fechas y ritmo.",
+                "commentsDesc": "Define si reseñas y respuestas aparecen en tu perfil público.",
+                "deleteImpact": {
+                    "profile": "Nombre, email, bio, foto, banner, redes y recomendaciones se eliminarán o anonimizarán.",
+                    "activity": "El perfil dejará de identificarte en áreas públicas de la plataforma.",
+                    "access": "Tendrás que crear otra cuenta para volver a usar funciones autenticadas."
+                },
                 "deleteConfirm": "Confirmar eliminación",
                 "deleteCancel": "Cancelar"
             },
@@ -373,7 +390,11 @@
             "title": "Configuración",
             "metaPrefix": "Cambios aplicados en tiempo real",
             "metaSynced": "sincronizado con tu cuenta",
+            "metaSyncing": "sincronizando con tu cuenta",
+            "metaError": "sincronización pendiente",
             "metaLocal": "guardado solo en este dispositivo",
+            "syncErrorBanner": "No fue posible sincronizar los últimos cambios. Siguen guardados en este dispositivo.",
+            "syncRetry": "Intentar de nuevo",
             "reloadBanner": "Algunos cambios solo aparecen tras recargar la página.",
             "reloadAction": "Recargar",
             "soon": "Pronto",
@@ -482,7 +503,8 @@
                 "reduceMotionDesc": "Minimiza animaciones y transiciones.",
                 "reduceMotionToast": "Configuración guardada",
                 "highContrast": "Aumentar contraste",
-                "highContrastDesc": "Próximamente.",
+                "highContrastDesc": "Aumenta el contraste de texto, bordes y foco.",
+                "highContrastToast": "Contraste actualizado",
                 "shortcuts": "Atajos de teclado",
                 "shortcutsDesc": "Consulta la lista completa en la pestaña Acerca de.",
                 "shortcutsAction": "Ver lista"

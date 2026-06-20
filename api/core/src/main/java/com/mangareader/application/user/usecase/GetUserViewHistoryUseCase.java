@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
@@ -23,13 +25,15 @@ import lombok.RequiredArgsConstructor;
 public class GetUserViewHistoryUseCase {
     private final GetUserProfileUseCase getUserProfileUseCase;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
+    private final UserProfileSettingsResolver profileSettingsResolver;
 
     public Page<ViewHistory> execute(UUID targetUserId, UUID viewerUserId, Pageable pageable) {
         User user = getUserProfileUseCase.execute(targetUserId);
 
         boolean isOwner = viewerUserId != null && viewerUserId.equals(targetUserId);
+        UserProfileSettings settings = profileSettingsResolver.getOrDefault(user);
 
-        if (!isOwner && user.getViewHistoryVisibility() != VisibilitySetting.PUBLIC) {
+        if (!isOwner && settings.getViewHistoryVisibility() != VisibilitySetting.PUBLIC) {
             return Page.empty(pageable);
         }
 

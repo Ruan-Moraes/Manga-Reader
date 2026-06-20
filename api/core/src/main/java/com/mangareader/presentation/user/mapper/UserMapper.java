@@ -84,7 +84,8 @@ public final class UserMapper {
         PrivacySettingsResponse privacySettings = isOwner
                 ? new PrivacySettingsResponse(
                         profile.commentVisibility().name(),
-                        profile.viewHistoryVisibility().name())
+                        profile.viewHistoryVisibility().name(),
+                        profile.adultContentPreference().name())
                 : null;
 
         return new EnrichedProfileResponse(

@@ -13,7 +13,7 @@ public record UserSettingsResponse(Reader reader, Appearance appearance, Locale 
 
     public record Locale(String dateFormat, String timezone) {}
 
-    public record Accessibility(boolean reduceMotion, boolean highContrast, boolean captions) {}
+    public record Accessibility(boolean reduceMotion, boolean highContrast) {}
 
     public static UserSettingsResponse from(UserSettings s) {
         var r = s.reader();
@@ -25,6 +25,6 @@ public record UserSettingsResponse(Reader reader, Appearance appearance, Locale 
                 new Reader(r.direction().name(), r.mode().name(), r.fit().name(), r.quality().name(), r.gap(), r.background().name(), r.autoMarkRead(), r.preload()),
                 new Appearance(a.theme().name(), a.fontSize().name(), a.density().name(), a.animations()),
                 new Locale(l.dateFormat().name(), l.timezone()),
-                new Accessibility(ac.reduceMotion(), ac.highContrast(), ac.captions()));
+                new Accessibility(ac.reduceMotion(), ac.highContrast()));
     }
 }

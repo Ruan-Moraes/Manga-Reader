@@ -11,10 +11,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.UserRole;
-import com.mangareader.domain.user.valueobject.UserSettings;
-import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -70,30 +67,10 @@ public class User {
     @Builder.Default
     private UserRole role = UserRole.MEMBER;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "comment_visibility", nullable = false, length = 20)
-    @Builder.Default
-    private VisibilitySetting commentVisibility = VisibilitySetting.PUBLIC;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "view_history_visibility", nullable = false, length = 20)
-    @Builder.Default
-    private VisibilitySetting viewHistoryVisibility = VisibilitySetting.PUBLIC;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "adult_content_preference", nullable = false, length = 20)
-    @Builder.Default
-    private AdultContentPreference adultContentPreference = AdultContentPreference.BLUR;
-
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "content_locales", columnDefinition = "jsonb", nullable = false)
     @Builder.Default
     private List<String> contentLocales = new ArrayList<>(List.of("pt-BR"));
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "settings", columnDefinition = "jsonb", nullable = false)
-    @Builder.Default
-    private UserSettings settings = UserSettings.defaults();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -169,15 +146,6 @@ public class User {
         this.bannerUrl = null;
         this.socialLinks.clear();
         this.recommendations.clear();
-    }
-
-    public void updateSettings(UserSettings settings) {
-        if (settings == null) {
-            throw new IllegalArgumentException("settings must not be null");
-        }
-
-        // O VO valida ranges/enums no construtor; aqui apenas garantimos não-nulo e persistimos.
-        this.settings = settings;
     }
 
     private static String normalizeTag(String tag) {

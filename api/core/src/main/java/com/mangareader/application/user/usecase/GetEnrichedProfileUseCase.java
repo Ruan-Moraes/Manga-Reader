@@ -14,12 +14,15 @@ import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.entity.UserRecommendation;
 import com.mangareader.domain.user.entity.ViewHistory;
+import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -40,6 +43,7 @@ public class GetEnrichedProfileUseCase {
     private final LibraryRepositoryPort libraryRepository;
     private final RecommendationRepositoryPort recommendationRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
+    private final UserProfileSettingsResolver profileSettingsResolver;
 
     public record EnrichedProfile(
             User user,
@@ -49,6 +53,7 @@ public class GetEnrichedProfileUseCase {
             List<ViewHistory> recentHistory,
             VisibilitySetting commentVisibility,
             VisibilitySetting viewHistoryVisibility,
+            AdultContentPreference adultContentPreference,
             boolean isOwner
     ) {}
 
@@ -72,6 +77,7 @@ public class GetEnrichedProfileUseCase {
         user.getRecommendations().size();
 
         boolean isOwner = viewerUserId != null && viewerUserId.equals(targetUserId);
+        UserProfileSettings settings = profileSettingsResolver.getOrDefault(user);
 
         String userIdStr = targetUserId.toString();
 
@@ -88,7 +94,7 @@ public class GetEnrichedProfileUseCase {
 
         List<Comment> recentComments = null;
 
-        if (isOwner || user.getCommentVisibility() == VisibilitySetting.PUBLIC) {
+        if (isOwner || settings.getCommentVisibility() == VisibilitySetting.PUBLIC) {
             var page = commentRepository.findByUserIdAndTargetType(userIdStr, CommentTarget.TITLE,
                     PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdAt")));
 
@@ -97,7 +103,7 @@ public class GetEnrichedProfileUseCase {
 
         List<ViewHistory> recentHistory = null;
 
-        if (isOwner || user.getViewHistoryVisibility() == VisibilitySetting.PUBLIC) {
+        if (isOwner || settings.getViewHistoryVisibility() == VisibilitySetting.PUBLIC) {
             var page = viewHistoryRepository.findByUserIdOrderByViewedAtDesc(userIdStr,
                     PageRequest.of(0, 10));
 
@@ -106,7 +112,8 @@ public class GetEnrichedProfileUseCase {
 
         return new EnrichedProfile(
                 user, stats, recommendations, recentComments, recentHistory,
-                user.getCommentVisibility(), user.getViewHistoryVisibility(), isOwner
+                settings.getCommentVisibility(), settings.getViewHistoryVisibility(),
+                settings.getAdultContentPreference(), isOwner
         );
     }
 }

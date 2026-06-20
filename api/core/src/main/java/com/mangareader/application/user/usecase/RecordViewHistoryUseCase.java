@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
@@ -32,12 +34,14 @@ public class RecordViewHistoryUseCase {
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final TitleRepositoryPort titleRepository;
     private final LocaleResolutionService localeResolutionService;
+    private final UserProfileSettingsResolver profileSettingsResolver;
 
     public void execute(UUID userId, String titleId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        UserProfileSettings settings = profileSettingsResolver.getOrDefault(user);
 
-        if (user.getViewHistoryVisibility() == VisibilitySetting.DO_NOT_TRACK) {
+        if (settings.getViewHistoryVisibility() == VisibilitySetting.DO_NOT_TRACK) {
             return;
         }
 

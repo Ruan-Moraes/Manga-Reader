@@ -10,11 +10,12 @@ import useCommentImageUpload from '../model/internal/useCommentImageUpload';
 
 type CommentInputProps = {
     placeholder: string;
-    titleId: string;
+    targetId: string;
+    targetType: string;
     onCommentCreated?: () => void;
 };
 
-const CommentInput = ({ placeholder, titleId, onCommentCreated }: CommentInputProps) => {
+const CommentInput = ({ placeholder, targetId, targetType, onCommentCreated }: CommentInputProps) => {
     const { t } = useTranslation('comment');
 
     const { images, addImage, removeImage, clearImages } = useCommentImageUpload();
@@ -32,7 +33,8 @@ const CommentInput = ({ placeholder, titleId, onCommentCreated }: CommentInputPr
 
         try {
             await createComment({
-                titleId,
+                targetType,
+                targetId,
                 textContent: textContent ?? '',
                 parentCommentId: null,
             });

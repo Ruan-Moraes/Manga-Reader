@@ -1,131 +1,340 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { ROUTES } from '@shared/constant/ROUTES';
+import useAppNavigate from '@shared/hook/useAppNavigate';
+import { readStoredUserSettings, subscribeStoredUserSettings, updateStoredUserSettings, SETTINGS_STORAGE_KEY, type UserSettings } from '@entities/user';
+
+import { TOTAL_PAGES } from './readerData';
 
 export type ReadMode = 'vertical' | 'paged' | 'double';
 export type Direction = 'ltr' | 'rtl';
 export type Fit = 'width' | 'height' | 'original';
 export type Bg = 'black' | 'dark' | 'paper';
 
-export const BG_CLASS: Record<Bg, string> = {
-    black: 'bg-black',
-    dark: 'bg-[#111]',
-    paper: 'bg-[#f5f0e8]',
+export const TOTAL = TOTAL_PAGES;
+
+interface ReaderPrefs {
+    mode: ReadMode;
+    direction: Direction;
+    fit: Fit;
+    gap: number;
+    bg: Bg;
+    inlineCmts: boolean;
+}
+
+const PREFS_KEY = 'reader:prefs';
+const posKey = (titleId: string | undefined) => `reader:pos:${titleId ?? 'unknown'}`;
+
+const DEFAULT_PREFS: ReaderPrefs = {
+    mode: 'vertical',
+    direction: 'rtl',
+    fit: 'width',
+    gap: 8,
+    bg: 'dark',
+    inlineCmts: true,
 };
 
-export const TOTAL_PAGES = 18;
+const toReaderPrefs = (settings: UserSettings, previous?: ReaderPrefs): ReaderPrefs => ({
+    mode: settings.reader.direction === 'WEBTOON' ? 'vertical' : (settings.reader.mode.toLowerCase() as ReadMode),
+    direction: settings.reader.direction === 'LTR' ? 'ltr' : 'rtl',
+    fit: settings.reader.fit.toLowerCase() as Fit,
+    gap: settings.reader.gap,
+    bg: settings.reader.background.toLowerCase() as Bg,
+    inlineCmts: previous?.inlineCmts ?? DEFAULT_PREFS.inlineCmts,
+});
 
-export const PAGE_PLACEHOLDERS = Array.from({ length: TOTAL_PAGES }, (_, i) => ({
-    num: i + 1,
-    gradient: `linear-gradient(160deg, #1a1a1a ${i % 2 === 0 ? '0%' : '20%'}, #252526 100%)`,
-}));
+const toSettingsMode = (mode: ReadMode): UserSettings['reader']['mode'] => mode.toUpperCase() as UserSettings['reader']['mode'];
+const toSettingsDirection = (direction: Direction): UserSettings['reader']['direction'] => (direction === 'ltr' ? 'LTR' : 'RTL');
+const toSettingsFit = (fit: Fit): UserSettings['reader']['fit'] => fit.toUpperCase() as UserSettings['reader']['fit'];
+const toSettingsBackground = (bg: Bg): UserSettings['reader']['background'] => bg.toUpperCase() as UserSettings['reader']['background'];
 
-export const KEYBOARD_SHORTCUTS = [
-    { id: 'prevPage', keys: ['←', 'K'], action: 'Página anterior' },
-    { id: 'nextPage', keys: ['→', 'J'], action: 'Próxima página' },
-    { id: 'settings', keys: ['S'], action: 'Configurações' },
-    { id: 'saveLibrary', keys: ['B'], action: 'Salvar na biblioteca' },
-    { id: 'close', keys: ['Esc'], action: 'Fechar drawer / voltar' },
-] as const;
+const samePrefs = (left: ReaderPrefs, right: ReaderPrefs) =>
+    left.mode === right.mode &&
+    left.direction === right.direction &&
+    left.fit === right.fit &&
+    left.gap === right.gap &&
+    left.bg === right.bg &&
+    left.inlineCmts === right.inlineCmts;
 
-/** Height of the sticky reader chrome in pixels. */
-export const CHROME_HEIGHT = 56;
+const readPrefs = (): ReaderPrefs => {
+    try {
+        const systemPrefs = toReaderPrefs(readStoredUserSettings());
+        const raw = localStorage.getItem(PREFS_KEY);
 
-export function useChapterReader(titleId: string | undefined, chapter: string | undefined) {
-    const [page, setPage] = useState(1);
-    const [mode, setMode] = useState<ReadMode>('vertical');
-    const [dir, setDir] = useState<Direction>('rtl');
-    const [fit, setFit] = useState<Fit>('width');
-    const [bg, setBg] = useState<Bg>('dark');
-    const [saved, setSaved] = useState(false);
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [commentsOpen, setCommentsOpen] = useState(false);
-    const [comment, setComment] = useState('');
-    const [ratingGiven, setRatingGiven] = useState(0);
-
-    const chromeRef = useRef<HTMLDivElement>(null);
-    const bottomRef = useRef<HTMLDivElement>(null);
-    const lastScroll = useRef(0);
-
-    const chNum = chapter ?? '1';
-    const step = mode === 'double' ? 2 : 1;
-    const isEnd = page >= TOTAL_PAGES;
-    const progress = Math.round((page / TOTAL_PAGES) * 100);
-
-    const prevPage = () => setPage(p => Math.max(1, p - step));
-    const nextPage = () => {
-        if (page + step > TOTAL_PAGES) return;
-        setPage(p => Math.min(TOTAL_PAGES, p + step));
-    };
-
-    const handleScroll = useCallback(() => {
-        if (drawerOpen) return;
-        const delta = window.scrollY - lastScroll.current;
-        lastScroll.current = window.scrollY;
-        const hide = delta > 4 && window.scrollY > 120;
-        const show = delta < -4;
-        if (hide || show) {
-            const opacity = hide ? '0' : '1';
-            const pointerEvents = hide ? 'none' : 'auto';
-            chromeRef.current?.style.setProperty('opacity', opacity);
-            chromeRef.current?.style.setProperty('pointer-events', pointerEvents);
-            bottomRef.current?.style.setProperty('opacity', opacity);
-            bottomRef.current?.style.setProperty('pointer-events', pointerEvents);
+        if (!raw) {
+            return systemPrefs;
         }
-    }, [drawerOpen]);
 
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [handleScroll]);
+        const legacy = JSON.parse(raw) as Partial<ReaderPrefs>;
 
+        if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
+            return { ...DEFAULT_PREFS, ...legacy };
+        }
+
+        return { ...systemPrefs, inlineCmts: legacy.inlineCmts ?? systemPrefs.inlineCmts };
+    } catch {
+        return DEFAULT_PREFS;
+    }
+};
+
+const readSavedPage = (titleId: string | undefined, chapter: number): number => {
+    try {
+        const raw = localStorage.getItem(posKey(titleId));
+        if (!raw) return 1;
+        const pos = JSON.parse(raw) as { chapter?: number; page?: number };
+        return pos.chapter === chapter && pos.page ? Math.min(TOTAL, Math.max(1, pos.page)) : 1;
+    } catch {
+        return 1;
+    }
+};
+
+export function useChapterReader(titleId: string | undefined, chapterParam: string | undefined) {
+    const navigate = useAppNavigate();
+    const chapter = Number(chapterParam) || 1;
+
+    const initialPrefs = useMemo(readPrefs, []);
+
+    const [mode, setMode] = useState<ReadMode>(initialPrefs.mode);
+    const [direction, setDirection] = useState<Direction>(initialPrefs.direction);
+    const [fit, setFit] = useState<Fit>(initialPrefs.fit);
+    const [gap, setGap] = useState<number>(initialPrefs.gap);
+    const [bg, setBg] = useState<Bg>(initialPrefs.bg);
+    const [inlineCmts, setInlineCmts] = useState<boolean>(initialPrefs.inlineCmts);
+
+    const [page, setPage] = useState(() => readSavedPage(titleId, chapter));
+    const [saved, setSaved] = useState(false);
+
+    const [topbarHidden, setTopbarHidden] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(false);
+    const [chaptersOpen, setChaptersOpen] = useState(false);
+    const [commentsOpen, setCommentsOpen] = useState(false);
+
+    const [rating, setRating] = useState(0);
+
+    const listRef = useRef<HTMLDivElement>(null);
+    const lastY = useRef(0);
+    const didInitPrefs = useRef(false);
+    const applyingExternalPrefs = useRef(false);
+
+    const step = mode === 'double' ? 2 : 1;
+    const lastPage = mode === 'vertical' ? TOTAL : TOTAL + 1;
+
+    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg, inlineCmts }), [mode, direction, fit, gap, bg, inlineCmts]);
+
+    const applyPrefs = useCallback(
+        (next: ReaderPrefs) => {
+            if (samePrefs(currentPrefs, next)) return;
+
+            applyingExternalPrefs.current = true;
+            setMode(next.mode);
+            setDirection(next.direction);
+            setFit(next.fit);
+            setGap(next.gap);
+            setBg(next.bg);
+            setInlineCmts(next.inlineCmts);
+        },
+        [currentPrefs],
+    );
+
+    // ---------- persist preferences ----------
     useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
+        if (!didInitPrefs.current) {
+            didInitPrefs.current = true;
+            return;
+        }
+
+        if (applyingExternalPrefs.current) {
+            applyingExternalPrefs.current = false;
+            return;
+        }
+
+        try {
+            localStorage.setItem(PREFS_KEY, JSON.stringify(currentPrefs));
+        } catch {
+            /* ignore */
+        }
+
+        updateStoredUserSettings(current => ({
+            ...current,
+            reader: {
+                ...current.reader,
+                mode: toSettingsMode(mode),
+                direction: mode === 'vertical' && current.reader.direction === 'WEBTOON' ? 'WEBTOON' : toSettingsDirection(direction),
+                fit: toSettingsFit(fit),
+                gap,
+                background: toSettingsBackground(bg),
+            },
+        }));
+    }, [currentPrefs, mode, direction, fit, gap, bg]);
+
+    useEffect(
+        () =>
+            subscribeStoredUserSettings(settings => {
+                applyPrefs(toReaderPrefs(settings, currentPrefs));
+            }),
+        [applyPrefs, currentPrefs],
+    );
+
+    // ---------- persist reading position ----------
+    useEffect(() => {
+        try {
+            localStorage.setItem(posKey(titleId), JSON.stringify({ chapter, page }));
+        } catch {
+            /* ignore */
+        }
+    }, [titleId, chapter, page]);
+
+    // ---------- navigation ----------
+    const goNext = useCallback(() => {
+        if (mode === 'vertical') {
+            const el = listRef.current?.querySelector(`[data-rd-page="${page + 1}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+        setPage(p => Math.min(lastPage, p + step));
+    }, [mode, page, lastPage, step]);
+
+    const goPrev = useCallback(() => {
+        if (mode === 'vertical') {
+            const el = listRef.current?.querySelector(`[data-rd-page="${Math.max(1, page - 1)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+        setPage(p => Math.max(1, p - step));
+    }, [mode, page, step]);
+
+    const goToPage = useCallback(
+        (n: number) => {
+            const target = Math.max(1, Math.min(TOTAL, n));
+            if (mode === 'vertical') {
+                const el = listRef.current?.querySelector(`[data-rd-page="${target}"]`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            setPage(target);
+        },
+        [mode],
+    );
+
+    const switchChapter = useCallback(
+        (delta: number) => {
+            const next = Math.max(1, chapter + delta);
+            if (next === chapter) return;
+            setChaptersOpen(false);
+            navigate(ROUTES.CHAPTER(titleId ?? '', next));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        [chapter, navigate, titleId],
+    );
+
+    const pickChapter = useCallback(
+        (n: number) => {
+            setChaptersOpen(false);
+            if (n === chapter) return;
+            navigate(ROUTES.CHAPTER(titleId ?? '', n));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        [chapter, navigate, titleId],
+    );
+
+    const goBack = useCallback(() => navigate(ROUTES.TITLE_DETAIL(titleId ?? '')), [navigate, titleId]);
+
+    // ---------- scroll: auto-hide chrome + page tracking (vertical) ----------
+    useEffect(() => {
+        const onScroll = () => {
+            const y = window.scrollY;
+            setTopbarHidden(y > 120 && y > lastY.current);
+            lastY.current = y;
+
+            if (mode !== 'vertical' || !listRef.current) return;
+            const pages = listRef.current.querySelectorAll<HTMLElement>('[data-rd-page]');
+            let bestIdx = 1;
+            let bestDist = Infinity;
+            pages.forEach(el => {
+                const r = el.getBoundingClientRect();
+                const dist = Math.abs(r.top + r.height / 2 - window.innerHeight / 2);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestIdx = Number(el.dataset.rdPage);
+                }
+            });
+            setPage(prev => (bestIdx !== prev ? bestIdx : prev));
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, [mode]);
+
+    // ---------- keyboard shortcuts ----------
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement | null;
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+            if (e.key === 'Escape') {
+                if (settingsOpen) return setSettingsOpen(false);
+                if (chaptersOpen) return setChaptersOpen(false);
+                if (commentsOpen) return setCommentsOpen(false);
+                return;
+            }
             if (e.key === 'ArrowRight' || e.key === 'j' || e.key === 'J') {
-                if (mode !== 'vertical') setPage(p => Math.min(TOTAL_PAGES, p + step));
+                e.preventDefault();
+                goNext();
             }
             if (e.key === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
-                if (mode !== 'vertical') setPage(p => Math.max(1, p - step));
+                e.preventDefault();
+                goPrev();
             }
-            if (e.key === 's' || e.key === 'S') setDrawerOpen(o => !o);
-            if (e.key === 'Escape') {
-                setDrawerOpen(false);
-                setCommentsOpen(false);
-            }
-            if (e.key === 'b' || e.key === 'B') setSaved(s => !s);
+            if (e.key === 's' || e.key === 'S') setSettingsOpen(v => !v);
         };
-        window.addEventListener('keydown', handler);
-        return () => window.removeEventListener('keydown', handler);
-    }, [mode, step]);
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [goNext, goPrev, settingsOpen, chaptersOpen, commentsOpen]);
+
+    const fillPct = ((page - 1) / Math.max(1, TOTAL - 1)) * 100;
+    const isEnd = mode !== 'vertical' && page > TOTAL;
 
     return {
-        page,
+        // route-derived
+        chapter,
+        // prefs
         mode,
-        dir,
+        direction,
         fit,
+        gap,
         bg,
-        saved,
-        drawerOpen,
-        commentsOpen,
-        comment,
-        ratingGiven,
-        chNum,
-        step,
-        isEnd,
-        progress,
-        chromeRef,
-        bottomRef,
-        titleId,
-        setPage,
+        inlineCmts,
         setMode,
-        setDir,
+        setDirection,
         setFit,
+        setGap,
         setBg,
+        setInlineCmts,
+        // reading state
+        page,
+        setPage,
+        saved,
         setSaved,
-        setDrawerOpen,
+        step,
+        fillPct,
+        isEnd,
+        // panels
+        topbarHidden,
+        settingsOpen,
+        setSettingsOpen,
+        chaptersOpen,
+        setChaptersOpen,
+        commentsOpen,
         setCommentsOpen,
-        setComment,
-        setRatingGiven,
-        prevPage,
-        nextPage,
+        // end of chapter
+        rating,
+        setRating,
+        // refs + actions
+        listRef,
+        goNext,
+        goPrev,
+        goToPage,
+        switchChapter,
+        pickChapter,
+        goBack,
     };
 }
+
+export type ReaderState = ReturnType<typeof useChapterReader>;

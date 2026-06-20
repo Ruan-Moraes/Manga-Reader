@@ -36,7 +36,6 @@ export interface LocaleSettings {
 export interface AccessibilitySettings {
     reduceMotion: boolean;
     highContrast: boolean;
-    captions: boolean;
 }
 
 export interface UserSettings {
@@ -51,5 +50,5 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
     reader: { direction: 'RTL', mode: 'VERTICAL', fit: 'WIDTH', quality: 'AUTO', gap: 8, background: 'DARK', autoMarkRead: true, preload: 3 },
     appearance: { theme: 'DARK', fontSize: 'DEFAULT', density: 'COMFORTABLE', animations: true },
     locale: { dateFormat: 'D_MON', timezone: 'America/Sao_Paulo' },
-    accessibility: { reduceMotion: false, highContrast: false, captions: false },
+    accessibility: { reduceMotion: false, highContrast: false },
 };

@@ -14,6 +14,9 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mangareader.shared.constant.CacheNames;
 
 /**
@@ -29,7 +32,7 @@ public class CacheConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         var jsonSerializer = RedisSerializationContext.SerializationPair
-                .fromSerializer(new GenericJackson2JsonRedisSerializer());
+                .fromSerializer(redisJsonSerializer());
 
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
@@ -50,6 +53,17 @@ public class CacheConfig {
                 .cacheDefaults(defaultConfig)
                 .withInitialCacheConfigurations(perCacheTtl)
                 .transactionAware()
+                .build();
+    }
+
+    static GenericJackson2JsonRedisSerializer redisJsonSerializer() {
+        var mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return GenericJackson2JsonRedisSerializer.builder()
+                .objectMapper(mapper)
+                .defaultTyping(true)
                 .build();
     }
 }

@@ -31,14 +31,15 @@ export type CommentWithChildren = CommentData & {
 export type CommentReactions = Record<string, string | null | undefined>;
 
 export type CommentCallbacks = {
-    titleId: string;
+    targetId: string;
+    targetType: string;
     /** Profundidade visual máxima antes do link "continuar conversa" (mobile 2 / desktop 3). */
     maxDepth: number;
     reactionsMap: CommentReactions;
     onClickProfile: (user: User) => void;
     onClickEdit: (id: string, newTextContent: string | null, newImageContent: string | null) => void;
     onClickDelete: (id: string) => void;
-    onClickReply: (id: string, titleId: string, textContent: string | null, imageContent: string | null) => void;
+    onClickReply: (id: string, targetId: string, textContent: string | null, imageContent: string | null) => void;
     onLike: (id: string) => void;
     onDislike: (id: string) => void;
 };

@@ -6,7 +6,8 @@
         "sortLabel": "Sort comments by:",
         "count_one": "{{count}} comment",
         "count_other": "{{count}} comments",
-        "markdownHint": "Markdown supported — **bold**, *italic*, ||spoiler||"
+        "markdownHint": "Markdown supported — **bold**, *italic*, ||spoiler||",
+        "crossLanguage": "All languages (admin)"
     },
     "reply": {
         "placeholder": "Write your reply...",
@@ -30,11 +31,20 @@
     },
     "validation": {
         "empty": "Write something before sending.",
-        "loginRequired": "comment"
+        "loginRequired": "comment",
+        "authDelete": "delete comments",
+        "authEdit": "edit comments",
+        "authReply": "reply to comments"
     },
     "toast": {
         "created": "Comment sent successfully.",
-        "createError": "Error sending comment."
+        "createError": "Error sending comment.",
+        "deleted": "Comment deleted successfully.",
+        "deleteError": "Error deleting comment.",
+        "edited": "Comment edited successfully.",
+        "editError": "Error editing comment.",
+        "replied": "Reply added successfully.",
+        "replyError": "Error adding reply."
     },
     "delete": {
         "title": "Delete comment",

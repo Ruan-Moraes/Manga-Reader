@@ -22,8 +22,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.auth.usecase.SignUpUseCase.SignUpInput;
 import com.mangareader.application.auth.usecase.SignUpUseCase.SignUpOutput;
+import com.mangareader.application.user.port.UserProfileSettingsRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.port.UserSystemSettingsRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
+import com.mangareader.domain.user.entity.UserSystemSettings;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.shared.exception.DuplicateResourceException;
 
@@ -33,6 +37,12 @@ class SignUpUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
+
+    @Mock
+    private UserProfileSettingsRepositoryPort profileSettingsRepository;
+
+    @Mock
+    private UserSystemSettingsRepositoryPort systemSettingsRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -105,6 +115,8 @@ class SignUpUseCaseTest {
             // Assert
             ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
             verify(userRepository).save(userCaptor.capture());
+            verify(profileSettingsRepository).save(any(UserProfileSettings.class));
+            verify(systemSettingsRepository).save(any(UserSystemSettings.class));
 
             User savedUser = userCaptor.getValue();
             assertThat(savedUser.getName()).isEqualTo(NAME);
@@ -131,6 +143,8 @@ class SignUpUseCaseTest {
                     .hasMessageContaining(EMAIL);
 
             verify(userRepository, never()).save(any());
+            verify(profileSettingsRepository, never()).save(any());
+            verify(systemSettingsRepository, never()).save(any());
             verify(tokenPort, never()).generateAccessToken(any(), any(), any());
         }
     }

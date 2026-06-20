@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 
 import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
+import { DEFAULT_USER_SETTINGS, SETTINGS_STORAGE_KEY } from '@entities/user';
 
 import Chapter from '../Chapter';
 
@@ -78,5 +79,40 @@ describe('Chapter (Reader)', () => {
         await user.click(screen.getByRole('button', { name: /configurações/i }));
 
         expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
+
+    it('starts reader controls from global system settings', async () => {
+        const user = userEvent.setup();
+
+        localStorage.setItem(
+            SETTINGS_STORAGE_KEY,
+            JSON.stringify({
+                ...DEFAULT_USER_SETTINGS,
+                reader: { ...DEFAULT_USER_SETTINGS.reader, mode: 'PAGED', direction: 'LTR', fit: 'ORIGINAL', gap: 16, background: 'PAPER' },
+            }),
+        );
+
+        renderChapter();
+
+        await user.click(screen.getByRole('button', { name: /configurações/i }));
+
+        expect(screen.getByRole('button', { name: /paginado/i }).getAttribute('aria-pressed')).toBe('true');
+        expect(screen.getByRole('button', { name: /^ltr$/i }).getAttribute('aria-pressed')).toBe('true');
+        expect(screen.getByRole('button', { name: /original/i }).getAttribute('aria-pressed')).toBe('true');
+        expect(screen.getByRole('button', { name: /papel/i }).getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('writes reader drawer changes back to global system settings', async () => {
+        const user = userEvent.setup();
+
+        renderChapter();
+
+        await user.click(screen.getByRole('button', { name: /configurações/i }));
+        await user.click(screen.getByRole('button', { name: /dupla/i }));
+
+        await waitFor(() => {
+            const stored = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? '{}');
+            expect(stored.reader.mode).toBe('DOUBLE');
+        });
     });
 });

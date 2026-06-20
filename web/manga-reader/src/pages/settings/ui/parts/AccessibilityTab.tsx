@@ -30,7 +30,12 @@ const AccessibilityTab = ({ state, onNavigateToAbout }: AccessibilityTabProps) =
                 </SettingRow>
 
                 <SettingRow label={t('settings.system.a11y.highContrast')} desc={t('settings.system.a11y.highContrastDesc')}>
-                    <Switch bare checked={ac.highContrast} onChange={() => {}} disabled aria-label={t('settings.system.a11y.highContrast')} />
+                    <Switch
+                        bare
+                        checked={ac.highContrast}
+                        onChange={v => updateGroup('accessibility', { highContrast: v }, t('settings.system.a11y.highContrastToast'))}
+                        aria-label={t('settings.system.a11y.highContrast')}
+                    />
                 </SettingRow>
             </SettingSection>
 

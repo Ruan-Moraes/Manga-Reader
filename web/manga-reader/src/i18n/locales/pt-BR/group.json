@@ -10,7 +10,11 @@
         "avatarAlt": "Avatar do grupo {{name}}",
         "openSite": "Abrir site oficial",
         "viewDetails": "Ver detalhes",
-        "viewDetailsLong": "Ver detalhes do grupo"
+        "viewDetailsLong": "Ver detalhes do grupo",
+        "followers": "seguidores",
+        "works": "obras",
+        "follow": "Seguir",
+        "following": "Seguindo"
     },
     "summary": {
         "statusLabel": "Status",
@@ -59,10 +63,11 @@
         "eyebrow": "Comunidade",
         "title": "Grupos de scan",
         "meta": "{{count}} grupos",
-        "claimGroup": "Reivindicar grupo"
+        "claimGroup": "Reivindicar grupo",
+        "sub": "Conheça os grupos que traduzem as obras que você lê. Siga, acompanhe lançamentos e descubra novos coletivos."
     },
     "filters": {
-        "searchPlaceholder": "Buscar grupo...",
+        "searchPlaceholder": "Buscar grupo ou gênero...",
         "sortMostActive": "Mais ativos",
         "sortMostFollowers": "Mais seguidores",
         "sortMostWorks": "Mais obras",
@@ -70,7 +75,9 @@
         "statusAll": "Todos",
         "statusActive": "Ativos",
         "statusHiatus": "Em hiato",
-        "statusInactive": "Inativos"
+        "statusInactive": "Inativos",
+        "sortMostChapters": "Mais capítulos",
+        "sortAlpha": "A → Z"
     },
     "list": {
         "empty": "Nenhum grupo encontrado",
@@ -85,6 +92,29 @@
         "aboutTitle": "Sobre o grupo",
         "chapterPublished": "Capítulo {{chapter}} publicado",
         "languagesTitle": "Idiomas",
-        "findUs": "Onde nos encontrar"
+        "findUs": "Onde nos encontrar",
+        "back": "Voltar",
+        "followGroup": "Seguir grupo",
+        "following": "Seguindo",
+        "tabAbout": "Sobre",
+        "tabWorks": "Obras",
+        "tabTeam": "Equipe",
+        "tabDiscussion": "Discussão",
+        "statFollowers": "Seguidores",
+        "statWorks": "Obras",
+        "statChapters": "Capítulos",
+        "statMembers": "Membros",
+        "since": "desde {{year}}",
+        "aboutHeading": "Sobre o grupo",
+        "genresHeading": "Gêneros traduzidos",
+        "whereToFind": "Onde encontrar",
+        "socialSite": "Site",
+        "noSocials": "Sem links cadastrados.",
+        "worksCount": "Obras traduzidas — {{count}}",
+        "worksEmpty": "Esse grupo ainda não tem obras catalogadas.",
+        "teamCount": "Equipe — {{count}} integrantes",
+        "discussionHeading": "Discussão recente",
+        "discussionText": "O fórum interno do grupo aparece aqui.",
+        "viewInForum": "Ver no fórum"
     }
 }

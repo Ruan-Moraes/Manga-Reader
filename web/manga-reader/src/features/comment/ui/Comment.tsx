@@ -34,7 +34,8 @@ const Comment = ({
     data,
     depth = 0,
     parentUserName = null,
-    titleId,
+    targetId,
+    targetType,
     maxDepth,
     reactionsMap,
     onClickProfile,
@@ -87,7 +88,7 @@ const Comment = ({
     const reachedMaxDepth = depth + 1 >= maxDepth;
 
     const handleReplySubmit = (replyText: string | null, replyImage: string | null) => {
-        onClickReply(data.id, titleId, replyText, replyImage);
+        onClickReply(data.id, targetId, replyText, replyImage);
         setIsReplying(false);
     };
 
@@ -163,7 +164,8 @@ const Comment = ({
                                 data={reply}
                                 depth={depth + 1}
                                 parentUserName={user.name}
-                                titleId={titleId}
+                                targetId={targetId}
+                                targetType={targetType}
                                 maxDepth={maxDepth}
                                 reactionsMap={reactionsMap}
                                 onClickProfile={onClickProfile}
@@ -179,7 +181,8 @@ const Comment = ({
                                 data={{ ...node, children: [] }}
                                 depth={maxDepth}
                                 parentUserName={pName}
-                                titleId={titleId}
+                                targetId={targetId}
+                                targetType={targetType}
                                 maxDepth={maxDepth}
                                 reactionsMap={reactionsMap}
                                 onClickProfile={onClickProfile}

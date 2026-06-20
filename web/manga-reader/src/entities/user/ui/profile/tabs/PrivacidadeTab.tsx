@@ -1,66 +1,164 @@
-import { useState } from 'react';
+import { useState, type Dispatch } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Library, MessageSquare, type LucideIcon } from 'lucide-react';
+import { Library, MessageSquare, ShieldAlert, type LucideIcon } from 'lucide-react';
 
 import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 
 import { deleteMyAccount, updatePrivacySettings } from '../../../api/userService';
-import { type EnrichedProfile, type VisibilitySetting } from '../../../model/user.types';
+import { type AdultContentPreference, type EnrichedProfile, type VisibilitySetting } from '../../../model/user.types';
 import { cn } from '@shared/lib/cn';
 
 import { peIntro } from './peShared';
 
-const isPublic = (v?: VisibilitySetting) => v === 'PUBLIC';
-const toVisibility = (on: boolean): VisibilitySetting => (on ? 'PUBLIC' : 'PRIVATE');
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+type SaveStatusChangeHandler = Dispatch<SaveStatus>;
+type VisibilityChangeHandler = Dispatch<VisibilitySetting>;
+type AdultContentChangeHandler = Dispatch<AdultContentPreference>;
 
-const PEToggle = ({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) => (
-    <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        className={cn(
-            'mr-focus-ring relative h-6 w-11 shrink-0 cursor-pointer rounded-full border p-0 transition-all duration-200',
-            checked ? 'border-mr-accent bg-mr-accent' : 'border-[#444] bg-[#333]',
-        )}
-    >
-        <span
-            className={cn(
-                'absolute top-0.5 size-[18px] rounded-full transition-[left,background] duration-200',
-                checked ? 'left-[22px] bg-mr-primary' : 'left-0.5 bg-mr-gray-300',
-            )}
-        />
-    </button>
-);
+type Props = {
+    profile: EnrichedProfile;
+    onAccountDeleted: () => void;
+    onSaveStatusChange?: SaveStatusChangeHandler;
+};
 
-type Props = { profile: EnrichedProfile; onAccountDeleted: () => void };
+const VISIBILITY_OPTIONS: VisibilitySetting[] = ['PUBLIC', 'PRIVATE', 'DO_NOT_TRACK'];
 
-const PrivacidadeTab = ({ profile, onAccountDeleted }: Props) => {
+const visibilityLabelKey: Record<VisibilitySetting, string> = {
+    PUBLIC: 'public',
+    PRIVATE: 'private',
+    DO_NOT_TRACK: 'doNotTrack',
+};
+
+const defaultVisibility = (visibility?: VisibilitySetting) => visibility ?? 'PUBLIC';
+const defaultAdultContent = (preference?: AdultContentPreference) => preference ?? 'BLUR';
+
+const VisibilitySegment = ({ id, value, onChange }: { id: string; value: VisibilitySetting; onChange: VisibilityChangeHandler }) => {
     const { t } = useTranslation('user');
 
-    const [showHistory, setShowHistory] = useState(isPublic(profile.privacySettings?.viewHistoryVisibility));
-    const [showComments, setShowComments] = useState(isPublic(profile.privacySettings?.commentVisibility));
+    return (
+        <div className="grid gap-2 sm:grid-cols-3" role="radiogroup">
+            {VISIBILITY_OPTIONS.map(option => {
+                const selected = value === option;
+                const labelKey = visibilityLabelKey[option];
+
+                return (
+                    <button
+                        key={option}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        aria-label={t(`profile.privacy.${labelKey}`)}
+                        onClick={() => onChange(option)}
+                        className={cn(
+                            'mr-focus-ring min-h-[70px] cursor-pointer rounded-mr-xs border p-2.5 text-left transition-colors',
+                            selected
+                                ? 'border-mr-accent bg-mr-accent-10 text-mr-fg'
+                                : 'border-[#3a3a3a] bg-mr-secondary text-mr-gray-300 hover:border-mr-tertiary',
+                        )}
+                        data-testid={`${id}-${option}`}
+                    >
+                        <span className="block text-mr-tiny font-mr-extrabold uppercase tracking-mr-label">{t(`profile.privacy.${labelKey}`)}</span>
+                        <span className="mt-1 block text-mr-tiny leading-snug text-mr-gray-300">{t(`profile.privacy.${labelKey}Description`)}</span>
+                    </button>
+                );
+            })}
+        </div>
+    );
+};
+
+const ADULT_CONTENT_OPTIONS: AdultContentPreference[] = ['BLUR', 'HIDE', 'SHOW'];
+
+const AdultContentSegment = ({ value, onChange }: { value: AdultContentPreference; onChange: AdultContentChangeHandler }) => {
+    const { t } = useTranslation('user');
+
+    return (
+        <div className="grid gap-2 sm:grid-cols-3" role="radiogroup">
+            {ADULT_CONTENT_OPTIONS.map(option => {
+                const selected = value === option;
+                const label = t(`profile.edit.privacy.adultContent.${option.toLowerCase()}`);
+
+                return (
+                    <button
+                        key={option}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        aria-label={label}
+                        onClick={() => onChange(option)}
+                        className={cn(
+                            'mr-focus-ring min-h-[58px] cursor-pointer rounded-mr-xs border p-2.5 text-left transition-colors',
+                            selected
+                                ? 'border-mr-accent bg-mr-accent-10 text-mr-fg'
+                                : 'border-[#3a3a3a] bg-mr-secondary text-mr-gray-300 hover:border-mr-tertiary',
+                        )}
+                    >
+                        <span className="block text-mr-tiny font-mr-extrabold uppercase tracking-mr-label">{label}</span>
+                    </button>
+                );
+            })}
+        </div>
+    );
+};
+
+const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props) => {
+    const { t } = useTranslation('user');
+
+    const [historyVisibility, setHistoryVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.viewHistoryVisibility));
+    const [commentVisibility, setCommentVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.commentVisibility));
+    const [adultContentPreference, setAdultContentPreference] = useState<AdultContentPreference>(
+        defaultAdultContent(profile.privacySettings?.adultContentPreference),
+    );
     const [confirming, setConfirming] = useState(false);
     const [confirmText, setConfirmText] = useState('');
     const [deleting, setDeleting] = useState(false);
 
     const persist = async (patch: Parameters<typeof updatePrivacySettings>[0], rollback: () => void) => {
+        onSaveStatusChange?.('saving');
+
         try {
-            await updatePrivacySettings(patch);
+            const next = await updatePrivacySettings(patch);
+
+            setCommentVisibility(next.commentVisibility);
+            setHistoryVisibility(next.viewHistoryVisibility);
+            setAdultContentPreference(defaultAdultContent(next.adultContentPreference));
+            onSaveStatusChange?.('saved');
             showSuccessToast(t('profile.edit.saved'));
         } catch {
             rollback();
+            onSaveStatusChange?.('error');
             showErrorToast(t('profile.edit.saveError'));
         }
     };
 
-    const toggleHistory = (on: boolean) => {
-        setShowHistory(on);
-        persist({ viewHistoryVisibility: toVisibility(on) }, () => setShowHistory(!on));
+    const changeHistory = (next: VisibilitySetting) => {
+        if (next === historyVisibility) return;
+
+        if (next === 'DO_NOT_TRACK' && historyVisibility !== 'DO_NOT_TRACK' && !window.confirm(t('profile.privacy.doNotTrackConfirm'))) {
+            return;
+        }
+
+        const previous = historyVisibility;
+
+        setHistoryVisibility(next);
+        void persist({ viewHistoryVisibility: next }, () => setHistoryVisibility(previous));
     };
-    const toggleComments = (on: boolean) => {
-        setShowComments(on);
-        persist({ commentVisibility: toVisibility(on) }, () => setShowComments(!on));
+
+    const changeComments = (next: VisibilitySetting) => {
+        if (next === commentVisibility) return;
+
+        const previous = commentVisibility;
+
+        setCommentVisibility(next);
+        void persist({ commentVisibility: next }, () => setCommentVisibility(previous));
+    };
+
+    const changeAdultContent = (next: AdultContentPreference) => {
+        if (next === adultContentPreference) return;
+
+        const previous = adultContentPreference;
+
+        setAdultContentPreference(next);
+        void persist({ adultContentPreference: next }, () => setAdultContentPreference(previous));
     };
 
     const confirmDelete = async () => {
@@ -74,22 +172,29 @@ const PrivacidadeTab = ({ profile, onAccountDeleted }: Props) => {
         }
     };
 
-    const items: { key: string; title: string; desc: string; icon: LucideIcon; checked: boolean; onChange: (v: boolean) => void }[] = [
+    const items: {
+        key: string;
+        title: string;
+        desc: string;
+        icon: LucideIcon;
+        value: VisibilitySetting;
+        onChange: VisibilityChangeHandler;
+    }[] = [
         {
             key: 'history',
             title: t('profile.edit.privacy.historyLabel'),
             desc: t('profile.edit.privacy.historyDesc'),
             icon: Library,
-            checked: showHistory,
-            onChange: toggleHistory,
+            value: historyVisibility,
+            onChange: changeHistory,
         },
         {
             key: 'comments',
             title: t('profile.edit.privacy.commentsLabel'),
             desc: t('profile.edit.privacy.commentsDesc'),
             icon: MessageSquare,
-            checked: showComments,
-            onChange: toggleComments,
+            value: commentVisibility,
+            onChange: changeComments,
         },
     ];
 
@@ -108,16 +213,32 @@ const PrivacidadeTab = ({ profile, onAccountDeleted }: Props) => {
                         </div>
                         <div className="min-w-0 flex-1">
                             <div className="mb-1 text-[13px] font-mr-bold tracking-mr text-mr-fg">{it.title}</div>
-                            <div className="text-mr-small leading-normal text-mr-gray-300">{it.desc}</div>
+                            <div className="mb-3 text-mr-small leading-normal text-mr-gray-300">{it.desc}</div>
+                            <VisibilitySegment id={it.key} value={it.value} onChange={it.onChange} />
                         </div>
-                        <PEToggle checked={it.checked} onChange={it.onChange} />
                     </div>
                 );
             })}
 
+            <div className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-[#333333] bg-[#1f1f20] p-3.5">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent">
+                    <ShieldAlert size={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <div className="mb-1 text-[13px] font-mr-bold tracking-mr text-mr-fg">{t('profile.edit.privacy.adultContentLabel')}</div>
+                    <div className="mb-3 text-mr-small leading-normal text-mr-gray-300">{t('profile.edit.privacy.adultContentDesc')}</div>
+                    <AdultContentSegment value={adultContentPreference} onChange={changeAdultContent} />
+                </div>
+            </div>
+
             <div className="mt-3.5 rounded-mr-sm border border-[rgba(255,120,79,0.4)] bg-[rgba(255,120,79,0.08)] p-3.5">
                 <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label text-mr-danger">{t('profile.edit.privacy.dangerZone')}</div>
                 <p className="mb-2.5 text-mr-small leading-relaxed text-mr-gray-200">{t('profile.edit.privacy.deleteDesc')}</p>
+                <ul className="mb-3 list-disc space-y-1 pl-4 text-mr-tiny leading-relaxed text-mr-gray-300">
+                    <li>{t('profile.edit.privacy.deleteImpact.profile')}</li>
+                    <li>{t('profile.edit.privacy.deleteImpact.activity')}</li>
+                    <li>{t('profile.edit.privacy.deleteImpact.access')}</li>
+                </ul>
 
                 {!confirming ? (
                     <button

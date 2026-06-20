@@ -70,6 +70,7 @@ export type CommentSummary = {
 export type PrivacySettings = {
     commentVisibility: VisibilitySetting;
     viewHistoryVisibility: VisibilitySetting;
+    adultContentPreference: AdultContentPreference;
 };
 
 export type SocialLinkResponse = {

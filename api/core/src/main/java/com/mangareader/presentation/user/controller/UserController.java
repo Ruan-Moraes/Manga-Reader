@@ -25,6 +25,7 @@ import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase;
 import com.mangareader.application.user.usecase.GetUserGroupsUseCase;
 import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
+import com.mangareader.application.user.usecase.GetUserSettingsUseCase;
 import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
@@ -37,6 +38,7 @@ import com.mangareader.application.user.usecase.UpdateUserProfileUseCase.SocialL
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.presentation.user.dto.AddRecommendationRequest;
 import com.mangareader.presentation.user.dto.EnrichedProfileResponse;
@@ -74,6 +76,7 @@ public class UserController {
     private final ReorderRecommendationsUseCase reorderRecommendationsUseCase;
     private final UpdatePrivacySettingsUseCase updatePrivacySettingsUseCase;
     private final UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
+    private final GetUserSettingsUseCase getUserSettingsUseCase;
     private final UpdateUserSettingsUseCase updateUserSettingsUseCase;
     private final GetUserCommentsUseCase getUserCommentsUseCase;
     private final RecordViewHistoryUseCase recordViewHistoryUseCase;
@@ -220,14 +223,16 @@ public class UserController {
         var input = new UpdatePrivacySettingsUseCase.PrivacyInput(
                 userId,
                 request.commentVisibility() != null ? VisibilitySetting.valueOf(request.commentVisibility()) : null,
-                request.viewHistoryVisibility() != null ? VisibilitySetting.valueOf(request.viewHistoryVisibility()) : null
+                request.viewHistoryVisibility() != null ? VisibilitySetting.valueOf(request.viewHistoryVisibility()) : null,
+                request.adultContentPreference() != null ? AdultContentPreference.valueOf(request.adultContentPreference()) : null
         );
 
-        var user = updatePrivacySettingsUseCase.execute(input);
+        var settings = updatePrivacySettingsUseCase.execute(input);
 
         var response = new EnrichedProfileResponse.PrivacySettingsResponse(
-                user.getCommentVisibility().name(),
-                user.getViewHistoryVisibility().name()
+                settings.getCommentVisibility().name(),
+                settings.getViewHistoryVisibility().name(),
+                settings.getAdultContentPreference().name()
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -274,9 +279,8 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserSettingsResponse>> getMySettings(Authentication auth) {
         UUID userId = (UUID) auth.getPrincipal();
 
-        User user = getUserProfileUseCase.execute(userId);
-
-        return ResponseEntity.ok(ApiResponse.success(UserSettingsResponse.from(user.getSettings())));
+        return ResponseEntity.ok(ApiResponse.success(
+                UserSettingsResponse.from(getUserSettingsUseCase.execute(userId))));
     }
 
     @PatchMapping("/me/settings")
@@ -287,9 +291,9 @@ public class UserController {
     ) {
         UUID userId = (UUID) auth.getPrincipal();
 
-        User user = updateUserSettingsUseCase.execute(userId, UserSettingsMapper.toDomain(request));
-
-        return ResponseEntity.ok(ApiResponse.success(UserSettingsResponse.from(user.getSettings())));
+        return ResponseEntity.ok(ApiResponse.success(
+                UserSettingsResponse.from(updateUserSettingsUseCase.execute(
+                        userId, UserSettingsMapper.toDomain(request)))));
     }
 
     @GetMapping("/{id}/comments")

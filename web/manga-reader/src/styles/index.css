@@ -259,6 +259,79 @@ html {
     color-scheme: dark;
 }
 
+html.mr-theme-system {
+    color-scheme: dark light;
+}
+
+html.mr-font-compact {
+    --mr-fs-h1: 30px;
+    --mr-fs-h2: 22px;
+    --mr-fs-h3: 18px;
+    --mr-fs-h4: 15px;
+    --mr-fs-body: 13px;
+    --mr-fs-small: 11px;
+    --mr-fs-tiny: 10px;
+}
+
+html.mr-font-comfortable {
+    --mr-fs-h1: 34px;
+    --mr-fs-h2: 26px;
+    --mr-fs-h3: 22px;
+    --mr-fs-h4: 17px;
+    --mr-fs-body: 15px;
+    --mr-fs-small: 13px;
+    --mr-fs-tiny: 12px;
+}
+
+html.mr-density-compact {
+    --mr-space-sm: 6px;
+    --mr-space-md: 12px;
+    --mr-space-lg: 18px;
+    --mr-space-xl: 24px;
+    --mr-space-2xl: 36px;
+    --mr-space-3xl: 48px;
+}
+
+html.mr-high-contrast {
+    --mr-bg: #000000;
+    --mr-surface: #181818;
+    --mr-surface-muted: #0d0d0d;
+    --mr-border: #8c8c8c;
+    --mr-border-subtle: #b0b0b0;
+    --mr-separator: #5f5f5f;
+    --mr-fg: #ffffff;
+    --mr-fg-muted: #f2f2f2;
+    --mr-fg-subtle: #d8d8d8;
+    --mr-link: #fff86a;
+    --mr-focus-ring: #fff86a;
+}
+
+html.mr-font-compact .text-mr-body {
+    font-size: 13px;
+}
+
+html.mr-font-compact .text-mr-small {
+    font-size: 11px;
+}
+
+html.mr-font-compact .text-mr-tiny,
+html.mr-font-compact .text-mr-label {
+    font-size: 10px;
+}
+
+html.mr-font-comfortable .text-mr-body {
+    font-size: 15px;
+}
+
+html.mr-font-comfortable .text-mr-small {
+    font-size: 13px;
+}
+
+html.mr-font-comfortable .text-mr-tiny,
+html.mr-font-comfortable .text-mr-label {
+    font-size: 12px;
+}
+
 body {
     font-family: var(--mr-font-sans);
     font-size: var(--mr-fs-body);
@@ -406,7 +479,10 @@ select:focus-visible {
    independentemente da preferência do SO. Espelha o @media acima. */
 html.mr-reduce-motion *,
 html.mr-reduce-motion *::before,
-html.mr-reduce-motion *::after {
+html.mr-reduce-motion *::after,
+html.mr-no-animations *,
+html.mr-no-animations *::before,
+html.mr-no-animations *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

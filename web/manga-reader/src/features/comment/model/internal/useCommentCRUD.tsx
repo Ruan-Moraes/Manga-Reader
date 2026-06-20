@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
@@ -7,8 +8,9 @@ import { requireAuth } from '@shared/service/util/requireAuth';
 
 import { deleteComment as deleteCommentService, updateComment, createComment } from '@entities/comment';
 
-const useCommentCRUD = () => {
+const useCommentCRUD = (targetType: string) => {
     const queryClient = useQueryClient();
+    const { t } = useTranslation('comment');
 
     const deleteCommentMutation = useMutation({
         mutationFn: async (id: string) => {
@@ -17,14 +19,10 @@ const useCommentCRUD = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
-            showSuccessToast(`Comentário deletado com sucesso.`, {
-                toastId: 'delete-comment-success',
-            });
+            showSuccessToast(t('toast.deleted'), { toastId: 'delete-comment-success' });
         },
         onError: () => {
-            showErrorToast('Erro ao deletar comentário.', {
-                toastId: 'delete-comment-error',
-            });
+            showErrorToast(t('toast.deleteError'), { toastId: 'delete-comment-error' });
         },
     });
 
@@ -34,65 +32,57 @@ const useCommentCRUD = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
-            showSuccessToast('Comentário editado com sucesso.', {
-                toastId: 'edit-comment-success',
-            });
+            showSuccessToast(t('toast.edited'), { toastId: 'edit-comment-success' });
         },
         onError: () => {
-            showErrorToast('Erro ao editar comentário.', {
-                toastId: 'edit-comment-error',
-            });
+            showErrorToast(t('toast.editError'), { toastId: 'edit-comment-error' });
         },
     });
 
     const replyCommentMutation = useMutation({
-        mutationFn: async ({ id, titleId, textContent }: { id: string; titleId: string; textContent: string | null; imageContent: string | null }) => {
+        mutationFn: async ({ id, targetId, textContent }: { id: string; targetId: string; textContent: string | null }) => {
             return await createComment({
-                titleId,
+                targetType,
+                targetId,
                 textContent: textContent ?? '',
                 parentCommentId: id,
             });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
-            showSuccessToast('Resposta adicionada com sucesso.', {
-                toastId: 'reply-comment-success',
-            });
+            showSuccessToast(t('toast.replied'), { toastId: 'reply-comment-success' });
         },
         onError: () => {
-            showErrorToast('Erro ao responder comentário.', {
-                toastId: 'reply-comment-error',
-            });
+            showErrorToast(t('toast.replyError'), { toastId: 'reply-comment-error' });
         },
     });
 
     const deleteComment = useCallback(
         (id: string) => {
-            if (!requireAuth('deletar comentários')) return;
+            if (!requireAuth(t('validation.authDelete'))) return;
             deleteCommentMutation.mutate(id);
         },
-        [deleteCommentMutation],
+        [deleteCommentMutation, t],
     );
 
     const editComment = useCallback(
         (id: string, newTextContent: string | null, newImageContent: string | null) => {
-            if (!requireAuth('editar comentários')) return;
+            if (!requireAuth(t('validation.authEdit'))) return;
             editCommentMutation.mutate({ id, newTextContent, newImageContent });
         },
-        [editCommentMutation],
+        [editCommentMutation, t],
     );
 
     const replyComment = useCallback(
-        (id: string, titleId: string, textContent: string | null, imageContent: string | null) => {
-            if (!requireAuth('responder comentários')) return;
+        (id: string, targetId: string, textContent: string | null, _imageContent: string | null) => {
+            if (!requireAuth(t('validation.authReply'))) return;
             replyCommentMutation.mutate({
                 id,
-                titleId,
+                targetId,
                 textContent,
-                imageContent,
             });
         },
-        [replyCommentMutation],
+        [replyCommentMutation, t],
     );
 
     return {

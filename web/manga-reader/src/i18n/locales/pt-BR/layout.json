@@ -125,7 +125,7 @@
         },
         "action": {
             "profile": "Perfil",
-            "settings": "Configurações",
+            "settings": "Configurações do perfil",
             "logout": "Sair",
             "login": "Entrar",
             "accountOf": "Conta de {{name}}"
@@ -184,7 +184,7 @@
             "siteSettings": "Configurações do Site"
         },
         "action": {
-            "settings": "Configurações",
+            "settings": "Configurações do perfil",
             "clearCache": "Limpar cache",
             "logout": "Sair"
         },

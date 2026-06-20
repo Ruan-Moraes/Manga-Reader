@@ -22,8 +22,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
@@ -39,21 +41,31 @@ class GetUserViewHistoryUseCaseTest {
     @Mock
     private ViewHistoryRepositoryPort viewHistoryRepository;
 
+    @Mock
+    private UserProfileSettingsResolver profileSettingsResolver;
+
     @InjectMocks
     private GetUserViewHistoryUseCase useCase;
 
     private final Pageable pageable = PageRequest.of(0, 10);
 
-    private User buildUser(UUID id, VisibilitySetting visibility) {
-        User user = User.builder()
+    private User buildUser(UUID id) {
+        return User.builder()
                 .id(id)
                 .name("Ruan")
                 .email("ruan@email.com")
                 .passwordHash("hash")
                 .role(UserRole.MEMBER)
                 .build();
+    }
 
-        user.setViewHistoryVisibility(visibility);
+    private User stubUser(UUID id, VisibilitySetting visibility) {
+        User user = buildUser(id);
+        UserProfileSettings settings = UserProfileSettings.defaults(user);
+        settings.setViewHistoryVisibility(visibility);
+
+        when(getUserProfileUseCase.execute(id)).thenReturn(user);
+        when(profileSettingsResolver.getOrDefault(user)).thenReturn(settings);
 
         return user;
     }
@@ -67,8 +79,7 @@ class GetUserViewHistoryUseCaseTest {
     @DisplayName("Dono vê o próprio histórico mesmo quando PRIVATE")
     void donoVeProprioHistoricoMesmoPrivate() {
         UUID userId = UUID.randomUUID();
-        when(getUserProfileUseCase.execute(userId))
-                .thenReturn(buildUser(userId, VisibilitySetting.PRIVATE));
+        stubUser(userId, VisibilitySetting.PRIVATE);
         when(viewHistoryRepository.findByUserIdOrderByViewedAtDesc(eq(userId.toString()), any()))
                 .thenReturn(samplePage());
 
@@ -82,8 +93,7 @@ class GetUserViewHistoryUseCaseTest {
     void naoDonoVeQuandoPublic() {
         UUID targetId = UUID.randomUUID();
         UUID viewerId = UUID.randomUUID();
-        when(getUserProfileUseCase.execute(targetId))
-                .thenReturn(buildUser(targetId, VisibilitySetting.PUBLIC));
+        stubUser(targetId, VisibilitySetting.PUBLIC);
         when(viewHistoryRepository.findByUserIdOrderByViewedAtDesc(eq(targetId.toString()), any()))
                 .thenReturn(samplePage());
 
@@ -97,8 +107,7 @@ class GetUserViewHistoryUseCaseTest {
     void naoDonoRecebeVazioQuandoPrivate() {
         UUID targetId = UUID.randomUUID();
         UUID viewerId = UUID.randomUUID();
-        when(getUserProfileUseCase.execute(targetId))
-                .thenReturn(buildUser(targetId, VisibilitySetting.PRIVATE));
+        stubUser(targetId, VisibilitySetting.PRIVATE);
 
         Page<ViewHistory> result = useCase.execute(targetId, viewerId, pageable);
 

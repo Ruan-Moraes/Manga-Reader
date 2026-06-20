@@ -27,7 +27,9 @@ import com.mangareader.application.auth.usecase.RefreshTokenUseCase;
 import com.mangareader.application.auth.usecase.ResetPasswordUseCase;
 import com.mangareader.application.auth.usecase.SignInUseCase;
 import com.mangareader.application.auth.usecase.SignUpUseCase;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.application.auth.port.TokenPort;
 
@@ -56,6 +58,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private ResetPasswordUseCase resetPasswordUseCase;
+
+    @MockitoBean
+    private UserProfileSettingsResolver profileSettingsResolver;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -257,6 +262,7 @@ class AuthControllerTest {
                     .passwordHash("h").role(UserRole.MEMBER).photoUrl("https://photo.url")
                     .build();
             when(getCurrentUserUseCase.execute(userId)).thenReturn(user);
+            when(profileSettingsResolver.getOrDefault(user)).thenReturn(UserProfileSettings.defaults(user));
 
             Authentication auth = org.mockito.Mockito.mock(Authentication.class);
             when(auth.getPrincipal()).thenReturn(userId);

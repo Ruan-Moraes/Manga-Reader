@@ -63,11 +63,18 @@ class UserSettingsTest {
     }
 
     @Test
+    @DisplayName("Deve rejeitar timezone inválido")
+    void deveRejeitarTimezoneInvalido() {
+        assertThatThrownBy(() -> new LocaleSettings(DateFormatPreference.D_MON, "America/Invalid"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("Deve rejeitar grupo nulo no agregado")
     void deveRejeitarGrupoNulo() {
         var appearance = new AppearanceSettings(ThemePreference.DARK, FontSizePreference.DEFAULT, DensityPreference.COMFORTABLE, true);
         var locale = new LocaleSettings(DateFormatPreference.D_MON, "UTC");
-        var a11y = new AccessibilitySettings(false, false, false);
+        var a11y = new AccessibilitySettings(false, false);
 
         assertThatThrownBy(() -> new UserSettings(null, appearance, locale, a11y))
                 .isInstanceOf(IllegalArgumentException.class);

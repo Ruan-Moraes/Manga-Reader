@@ -21,7 +21,10 @@
       "Bash(find *)",
       "Bash(grep *)",
       "Bash(rg *)",
-      "Bash(cat *)"
+      "Bash(cat *)",
+      "Bash(make build-app-fresh *)",
+      "Bash(make package *)",
+      "Bash(pnpm --filter manga-reader lint:fsd)"
     ]
   }
 }

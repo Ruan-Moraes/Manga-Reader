@@ -11,21 +11,22 @@ import Comment from './Comment';
 
 const DESKTOP_MEDIA_QUERY = '(min-width: 768px)';
 const MAX_DEPTH_DESKTOP = 7;
-const MAX_DEPTH_MOBILE = 1;
+const MAX_DEPTH_MOBILE = 2;
 
 type CommentsListProps = {
-    titleId: string;
+    targetId: string;
+    targetType: string;
     comments?: CommentData[];
     isLoading?: boolean;
     isError?: boolean;
     error?: Error | null;
 };
 
-const CommentsList = ({ titleId, comments, isLoading, isError, error }: CommentsListProps) => {
+const CommentsList = ({ targetId, targetType, comments, isLoading, isError, error }: CommentsListProps) => {
     const { t } = useTranslation('comment');
     const { openUserModalById } = useUserModalContext();
 
-    const { deleteComment, editComment, replyComment } = useCommentCRUD();
+    const { deleteComment, editComment, replyComment } = useCommentCRUD(targetType);
 
     const { getCommentsTreeNested } = useCommentTree(comments || []);
 
@@ -63,7 +64,8 @@ const CommentsList = ({ titleId, comments, isLoading, isError, error }: Comments
                     key={root.id}
                     data={root}
                     depth={0}
-                    titleId={titleId}
+                    targetId={targetId}
+                    targetType={targetType}
                     maxDepth={maxDepth}
                     reactionsMap={reactionsMap as CommentReactions}
                     onClickProfile={handleClickProfile}

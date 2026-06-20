@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import { getCommentsByTitleId, createComment, updateComment, deleteComment, likeComment, dislikeComment, getUserReactions } from '../commentService';
+import { getCommentsByTarget, getCommentsByTitleId, createComment, updateComment, deleteComment, likeComment, dislikeComment, getUserReactions } from '../commentService';
 
 const buildCommentResponse = (overrides = {}) => ({
     id: 'comment-1',
@@ -26,6 +26,63 @@ const buildCommentResponse = (overrides = {}) => ({
 });
 
 describe('commentService', () => {
+    describe('getCommentsByTarget', () => {
+        it('deve chamar URL correta para targetType NEWS', async () => {
+            const comments = [buildCommentResponse({ targetType: 'NEWS', targetId: 'news-1' })];
+
+            server.use(
+                http.get(`*${API_URLS.COMMENTS}/news/news-1`, () =>
+                    HttpResponse.json({
+                        data: { content: comments, page: 0, size: 20, totalElements: 1, totalPages: 1, last: true },
+                        success: true,
+                    }),
+                ),
+            );
+
+            const result = await getCommentsByTarget('NEWS', 'news-1');
+            expect(result.content).toHaveLength(1);
+        });
+
+        it('deve chamar URL correta para targetType CHAPTER', async () => {
+            const comments = [buildCommentResponse({ targetType: 'CHAPTER', targetId: 'chapter-uuid' })];
+
+            server.use(
+                http.get(`*${API_URLS.COMMENTS}/chapter/chapter-uuid`, () =>
+                    HttpResponse.json({
+                        data: { content: comments, page: 0, size: 20, totalElements: 1, totalPages: 1, last: true },
+                        success: true,
+                    }),
+                ),
+            );
+
+            const result = await getCommentsByTarget('CHAPTER', 'chapter-uuid');
+            expect(result.content).toHaveLength(1);
+        });
+
+        it('deve passar parametro language=all quando crossLanguage=true', async () => {
+            let capturedUrl: URL | null = null;
+
+            server.use(
+                http.get(`*${API_URLS.COMMENTS}/title/title-1`, ({ request }) => {
+                    capturedUrl = new URL(request.url);
+                    return HttpResponse.json({
+                        data: { content: [], page: 0, size: 20, totalElements: 0, totalPages: 0, last: true },
+                        success: true,
+                    });
+                }),
+            );
+
+            await getCommentsByTarget('TITLE', 'title-1', 0, 20, { crossLanguage: true });
+            expect(capturedUrl!.searchParams.get('language')).toBe('all');
+        });
+
+        it('deve lançar erro quando API retorna 500', async () => {
+            server.use(http.get(`*${API_URLS.COMMENTS}/title/title-1`, () => HttpResponse.json(null, { status: 500 })));
+
+            await expect(getCommentsByTarget('TITLE', 'title-1')).rejects.toThrow();
+        });
+    });
+
     describe('getCommentsByTitleId', () => {
         it('deve retornar pagina de comentarios mapeados', async () => {
             const comments = [buildCommentResponse(), buildCommentResponse({ id: 'comment-2' })];
@@ -75,7 +132,7 @@ describe('commentService', () => {
                 }),
             );
 
-            const result = await createComment({ titleId: 'title-1', textContent: 'Novo comentario' });
+            const result = await createComment({ targetType: 'TITLE', targetId: 'title-1', textContent: 'Novo comentario' });
 
             expect(result.textContent).toBe('Novo comentario');
             expect(result.user.id).toBe('user-1');
@@ -92,13 +149,13 @@ describe('commentService', () => {
                 }),
             );
 
-            await createComment({ titleId: 'title-1', textContent: 'Resposta', parentCommentId: 'parent-1' });
+            await createComment({ targetType: 'TITLE', targetId: 'title-1', textContent: 'Resposta', parentCommentId: 'parent-1' });
         });
 
         it('deve lançar erro quando API retorna 500 no createComment', async () => {
             server.use(http.post(`*${API_URLS.COMMENTS}`, () => HttpResponse.json(null, { status: 500 })));
 
-            await expect(createComment({ titleId: 'title-1', textContent: 'Novo comentario' })).rejects.toThrow();
+            await expect(createComment({ targetType: 'TITLE', targetId: 'title-1', textContent: 'Novo comentario' })).rejects.toThrow();
         });
     });
 

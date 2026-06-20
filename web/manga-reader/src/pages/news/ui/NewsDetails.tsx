@@ -11,10 +11,11 @@ import { Skeleton } from '@ui/Skeleton';
 import { IconButton } from '@ui/IconButton';
 
 import { useNewsDetails } from '@entities/news';
+import { useComments } from '@entities/comment';
+import { CommentsSection } from '@features/comment';
 
 import NewsArticleHeader from './parts/NewsArticleHeader';
 import NewsArticleBody from './parts/NewsArticleBody';
-import NewsCommentsSection from './parts/NewsCommentsSection';
 import NewsRelatedSidebar from './parts/NewsRelatedSidebar';
 
 const NewsDetails = () => {
@@ -22,8 +23,11 @@ const NewsDetails = () => {
     const navigate = useAppNavigate();
     const { t } = useTranslation('news');
 
-    const { news, commentSort, setCommentSort, showSpoilers, setShowSpoilers, readingProgress, relatedNews, sortedComments, isLoading } =
-        useNewsDetails(newsId);
+    const { news, readingProgress, relatedNews, isLoading } = useNewsDetails(newsId);
+
+    const { comments, totalElements: commentsTotalElements, isLoading: commentsLoading, isError: commentsError, error: commentsErrorObj, refetchComments } = useComments(newsId ?? '', 0, 20, {
+        targetType: 'NEWS',
+    });
 
     return (
         <>
@@ -64,12 +68,15 @@ const NewsDetails = () => {
                         <section className="grid gap-6 xl:grid-cols-3">
                             <div className="flex flex-col gap-4 xl:col-span-2">
                                 <NewsArticleBody news={news} />
-                                <NewsCommentsSection
-                                    comments={sortedComments}
-                                    commentSort={commentSort}
-                                    setCommentSort={setCommentSort}
-                                    showSpoilers={showSpoilers}
-                                    setShowSpoilers={setShowSpoilers}
+                                <CommentsSection
+                                    targetType="NEWS"
+                                    targetId={newsId ?? ''}
+                                    comments={comments}
+                                    totalElements={commentsTotalElements}
+                                    isLoading={commentsLoading}
+                                    isError={commentsError}
+                                    error={commentsErrorObj}
+                                    onCommentCreated={refetchComments}
                                 />
                             </div>
 

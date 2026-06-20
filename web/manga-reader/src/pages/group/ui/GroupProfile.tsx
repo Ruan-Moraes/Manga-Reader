@@ -1,87 +1,64 @@
-import { ROUTES } from '@shared/constant/ROUTES';
-import { useState } from 'react';
+// TODO: Usar o container oficial do projeto (PagContainer), ele esta ruim de largura no geral, eu quero que ele tenha a largura default.
+
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Check, ChevronLeft } from 'lucide-react';
+
+import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-
-import { PageContainer } from '@ui/PageContainer';
-import { Badge } from '@ui/Badge';
+import { cn } from '@shared/lib/cn';
 import { Button } from '@ui/Button';
-import { Card } from '@ui/Card';
 import { EmptyState } from '@ui/EmptyState';
+import { useGroupDetails, type Group } from '@entities/group';
 
-import { GroupHeader } from './parts/GroupHeader';
-import { GroupMembers } from './parts/GroupMembers';
-import { GroupWorks } from './parts/GroupWorks';
+import { SquareAvatar } from '@ui/SquareAvatar';
+import { GroupAbout, GroupDiscussion, GroupTeam, GroupWorks } from './parts/GroupTabs';
 
-const GROUPS: Record<
-    string,
-    {
-        id: string;
-        name: string;
-        handle: string;
-        status: 'active' | 'hiatus' | 'inactive';
-        verified: boolean;
-        members: number;
-        projects: number;
-        chaptersPublished: number;
-        avgDays: number;
-        bio: string;
-        tags: string[];
-        works: Array<{
-            id: string;
-            title: string;
-            author?: string;
-            cover?: string;
-            rating?: number;
-            chapter?: number;
-        }>;
-        membersList: Array<{ name: string; role: string; joinedAt: string }>;
-    }
-> = {
-    '1': {
-        id: '1',
-        name: 'Scan Brasileiro',
-        handle: '@scan-br',
-        status: 'active',
-        verified: true,
-        members: 1240,
-        projects: 58,
-        chaptersPublished: 3400,
-        avgDays: 7,
-        bio: 'O maior e mais respeitado grupo de tradução de mangás do Brasil desde 2012. Focados em Seinen e Josei de alta qualidade, com revisão técnica e lettering profissional.',
-        tags: ['Seinen', 'Josei', 'pt-BR'],
-        works: [
-            { id: '1', title: 'Berserk', rating: 4.9, chapter: 370 },
-            { id: '2', title: 'Vagabond', rating: 4.9, chapter: 327 },
-            { id: '3', title: 'Vinland Saga', rating: 4.8, chapter: 210 },
-            { id: '4', title: 'Frieren', rating: 4.9, chapter: 120 },
-            { id: '5', title: 'Dungeon Meshi', rating: 4.8, chapter: 97 },
-            { id: '6', title: 'Homunculus', rating: 4.7, chapter: 201 },
-        ],
-        membersList: [
-            { name: 'akira_scan', role: 'Fundador', joinedAt: 'mar 2012' },
-            { name: 'lettering_br', role: 'Lettering', joinedAt: 'jun 2013' },
-            { name: 'revisor_01', role: 'Revisor', joinedAt: 'jan 2015' },
-            { name: 'trad_pt', role: 'Tradutor', joinedAt: 'ago 2017' },
-            { name: 'clean_master', role: 'Limpeza', joinedAt: 'fev 2020' },
-            { name: 'qc_sato', role: 'QC', joinedAt: 'out 2021' },
-        ],
-    },
-};
+type Tab = 'about' | 'works' | 'team' | 'discussion';
+
+const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+const totalChapters = (g: Group) => (g.translatedWorks ?? []).reduce((sum, w) => sum + (w.chapters ?? 0), 0);
 
 const GroupProfile = () => {
     const { groupId } = useParams();
-    const navigate = useAppNavigate();
-    const { t } = useTranslation('group');
-    const [following, setFollowing] = useState(false);
-    const [tab, setTab] = useState('works');
 
-    const group = GROUPS[groupId ?? ''] ?? GROUPS['1'];
+    const navigate = useAppNavigate();
+
+    const { t } = useTranslation('group');
+
+    const { group, isLoading } = useGroupDetails(groupId);
+    const [following, setFollowing] = useState(false);
+    const [tab, setTab] = useState<Tab>('about');
+
+    const stats = useMemo(
+        () =>
+            group
+                ? [
+                      { label: t('profile.statFollowers'), value: compact(group.supporters?.length ?? 0) },
+                      { label: t('profile.statWorks'), value: String(group.totalTitles) },
+                      { label: t('profile.statChapters'), value: String(totalChapters(group)) },
+                      { label: t('profile.statMembers'), value: String(group.members.length) },
+                  ]
+                : [],
+        [group, t],
+    );
+
+    // TODO: USAR O LOADING PADRAO DA APLICACAO
+    if (isLoading) {
+        return (
+            <div className="mx-auto max-w-[1240px]">
+                <div className="h-[180px] animate-mr-pulse bg-mr-gray-900" />
+                <div className="px-4">
+                    <div className="-mt-11 size-[88px] animate-mr-pulse rounded-mr-xs border-[3px] border-mr-primary bg-mr-gray-800" />
+                </div>
+            </div>
+        );
+    }
 
     if (!group) {
         return (
-            <PageContainer asMain size="default" paddingY="md">
+            <div className="mx-auto max-w-[1240px] px-4 py-10">
                 <EmptyState
                     illustration="404"
                     title={t('profile.notFoundTitle')}
@@ -92,77 +69,88 @@ const GroupProfile = () => {
                         </Button>
                     }
                 />
-            </PageContainer>
+            </div>
         );
     }
 
+    const tabs: Array<[Tab, string]> = [
+        ['about', t('profile.tabAbout')],
+        ['works', t('profile.tabWorks')],
+        ['team', t('profile.tabTeam')],
+        ['discussion', t('profile.tabDiscussion')],
+    ];
+
     return (
-        <PageContainer asMain size="default" paddingY="md">
-            <GroupHeader group={group} following={following} activeTab={tab} onFollowToggle={() => setFollowing(f => !f)} onTabChange={setTab} />
+        <main className="mx-auto max-w-[1240px]">
+            <div
+                className="relative h-[180px]"
+                style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'linear-gradient(135deg,#2a1f0f,#161616)' }}
+            >
+                <button
+                    type="button"
+                    onClick={() => navigate(ROUTES.GROUPS)}
+                    className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-mr-xs border border-mr-gray-700 bg-[rgba(22,22,22,0.7)] px-2.5 py-2 text-mr-small font-mr-bold tracking-mr text-mr-fg backdrop-blur-sm cursor-pointer mr-focus-ring"
+                >
+                    <ChevronLeft className="size-3.5" strokeWidth={2} aria-hidden="true" />
+                    {t('profile.back')}
+                </button>
+            </div>
 
-            {tab === 'works' && <GroupWorks works={group.works} onWorkClick={id => navigate(ROUTES.TITLE_DETAIL(id))} />}
+            <div className="relative -mt-11 px-4">
+                <div className="flex flex-wrap items-end gap-3.5">
+                    <SquareAvatar name={group.name} logo={group.logo || undefined} size={88} fontSize={28} className="tracking-mr border-[3px] border-mr-primary" />
+                    <div className="min-w-0 flex-[1_1_240px] pb-1.5">
+                        <h1 className="m-0 text-[clamp(20px,4vw,26px)] font-mr-bold tracking-mr text-mr-fg">{group.name}</h1>
+                        <div className="mt-0.5 text-mr-small text-mr-fg-muted">
+                            @{group.username} · {t('profile.since', { year: group.foundedYear })}
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setFollowing(f => !f)}
+                        className={cn(
+                            'inline-flex h-10 items-center gap-1.5 rounded-mr-xs border border-mr-accent px-[18px] text-mr-small font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring',
+                            following ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
+                        )}
+                    >
+                        {following && <Check className="size-3.5" strokeWidth={2} aria-hidden="true" />}
+                        {following ? t('profile.following') : t('profile.followGroup')}
+                    </button>
+                </div>
 
-            {tab === 'activity' && (
-                <div className="flex flex-col gap-3">
-                    {[
-                        { title: 'Berserk', chapter: 370, when: 'há 2 dias' },
-                        { title: 'Vagabond', chapter: 327, when: 'há 5 dias' },
-                        { title: 'Frieren', chapter: 120, when: 'há 1 semana' },
-                        {
-                            title: 'Dungeon Meshi',
-                            chapter: 97,
-                            when: 'há 2 semanas',
-                        },
-                    ].map(item => (
-                        <div key={item.title} className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3">
-                            <div className="size-10 shrink-0 rounded-mr-xs bg-mr-tertiary/20" />
-                            <div className="flex-1">
-                                <p className="text-mr-small font-mr-bold text-mr-fg">{item.title}</p>
-                                <p className="text-mr-tiny text-mr-fg-muted">
-                                    {t('profile.chapterPublished', {
-                                        chapter: item.chapter,
-                                    })}
-                                </p>
-                            </div>
-                            <span className="text-mr-tiny text-mr-fg-subtle">{item.when}</span>
+                <div className="mt-[18px] flex flex-wrap gap-6 border-b border-[#333] pb-3.5">
+                    {stats.map(s => (
+                        <div key={s.label}>
+                            <div className="text-mr-h3 font-mr-extrabold text-mr-accent">{s.value}</div>
+                            <div className="text-mr-tiny font-mr-bold uppercase tracking-[0.08em] text-mr-fg-muted">{s.label}</div>
                         </div>
                     ))}
                 </div>
-            )}
 
-            {tab === 'members' && <GroupMembers members={group.membersList} />}
-
-            {tab === 'about' && (
-                <div className="max-w-[640px]">
-                    <Card variant="default" className="p-6">
-                        <h2 className="mb-3 text-mr-h3 font-mr-extrabold text-mr-fg">{t('profile.aboutTitle')}</h2>
-                        <p className="mb-6 text-mr-small leading-relaxed text-mr-fg-muted">{group.bio}</p>
-
-                        <h3 className="mb-2 text-mr-small font-mr-bold text-mr-fg">{t('profile.languagesTitle')}</h3>
-                        <div className="mb-6 flex gap-2">
-                            {group.tags.map(tag => (
-                                <Badge key={tag} variant="neutral">
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-
-                        <h3 className="mb-2 text-mr-small font-mr-bold text-mr-fg">{t('profile.findUs')}</h3>
-                        <div className="flex flex-col gap-1 text-mr-small text-mr-accent">
-                            <a href="#" className="hover:underline">
-                                Discord
-                            </a>
-                            <a href="#" className="hover:underline">
-                                Twitter / X
-                            </a>
-                            <a href="#" className="hover:underline">
-                                contato@scan-br.com
-                            </a>
-                        </div>
-                    </Card>
+                <div className="flex overflow-x-auto whitespace-nowrap border-b border-[#333]">
+                    {tabs.map(([k, label]) => (
+                        <button
+                            key={k}
+                            type="button"
+                            onClick={() => setTab(k)}
+                            className={cn(
+                                'border-b-2 px-4 py-3 text-mr-small font-mr-bold tracking-mr cursor-pointer',
+                                tab === k ? 'border-mr-accent text-mr-accent' : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
+                            )}
+                        >
+                            {label}
+                        </button>
+                    ))}
                 </div>
-            )}
-        </PageContainer>
+
+                <div className="py-[18px] pb-[60px]">
+                    {tab === 'about' && <GroupAbout group={group} />}
+                    {tab === 'works' && <GroupWorks group={group} onOpenTitle={id => navigate(ROUTES.TITLE_DETAIL(id))} />}
+                    {tab === 'team' && <GroupTeam group={group} />}
+                    {tab === 'discussion' && <GroupDiscussion onViewForum={() => navigate(ROUTES.FORUM)} />}
+                </div>
+            </div>
+        </main>
     );
 };
 

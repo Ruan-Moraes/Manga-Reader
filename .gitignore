@@ -92,6 +92,9 @@ out/
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 
+# AI
+/.junie/
+
 # Plugins
 .idea/**/sonarlint/
 .idea/**/sonarIssues.xml
@@ -132,4 +135,4 @@ coverage/
 /frontend-apps/Manga Reader Design System/
 /frontend-apps/design_handoff_footer_redesign/
 /frontend-apps/design_handoff_header_redesign/
-/.junie/
+/web/manga-reader/Manga Reader Design System/

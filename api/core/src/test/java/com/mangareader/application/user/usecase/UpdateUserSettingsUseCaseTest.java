@@ -16,7 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.port.UserSystemSettingsRepositoryPort;
+import com.mangareader.application.user.service.UserSystemSettingsResolver;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserSystemSettings;
 import com.mangareader.domain.user.valueobject.UserSettings;
 import com.mangareader.domain.user.valueobject.UserSettings.AppearanceSettings;
 import com.mangareader.domain.user.valueobject.UserSettings.DateFormatPreference;
@@ -36,6 +39,12 @@ class UpdateUserSettingsUseCaseTest {
     @Mock
     private UserRepositoryPort userRepository;
 
+    @Mock
+    private UserSystemSettingsResolver systemSettingsResolver;
+
+    @Mock
+    private UserSystemSettingsRepositoryPort systemSettingsRepository;
+
     @InjectMocks
     private UpdateUserSettingsUseCase useCase;
 
@@ -51,7 +60,7 @@ class UpdateUserSettingsUseCaseTest {
                 5);
         var appearance = new AppearanceSettings(ThemePreference.SYSTEM, FontSizePreference.COMFORTABLE, DensityPreference.COMPACT, false);
         var locale = new LocaleSettings(DateFormatPreference.MON_D, "UTC");
-        var a11y = new UserSettings.AccessibilitySettings(true, false, false);
+        var a11y = new UserSettings.AccessibilitySettings(true, false);
 
         return new UserSettings(reader, appearance, locale, a11y);
     }
@@ -61,14 +70,16 @@ class UpdateUserSettingsUseCaseTest {
     void deveAtualizar() {
         UUID userId = UUID.randomUUID();
         User user = UserMock.withId(userId);
+        UserSystemSettings systemSettings = UserSystemSettings.defaults(user);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(systemSettingsResolver.getOrCreate(user)).thenReturn(systemSettings);
+        when(systemSettingsRepository.save(any(UserSystemSettings.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        User result = useCase.execute(userId, sample());
+        UserSettings result = useCase.execute(userId, sample());
 
-        assertThat(result.getSettings().reader().direction()).isEqualTo(ReadingDirection.LTR);
-        assertThat(result.getSettings().reader().gap()).isEqualTo(16);
-        assertThat(result.getSettings().locale().timezone()).isEqualTo("UTC");
+        assertThat(result.reader().direction()).isEqualTo(ReadingDirection.LTR);
+        assertThat(result.reader().gap()).isEqualTo(16);
+        assertThat(result.locale().timezone()).isEqualTo("UTC");
     }
 
     @Test

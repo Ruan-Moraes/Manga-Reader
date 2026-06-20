@@ -59,21 +59,24 @@ const toCommentData = (c: CommentResponse): CommentData => ({
     likeCount: String(c.upvotes),
     dislikeCount: String(c.downvotes),
     language: c.language,
+    // userReaction não vem da listagem — é preenchido posteriormente por getUserReactions()
 });
 
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
-export const getCommentsByTitleId = async (
-    titleId: string,
+export const getCommentsByTarget = async (
+    targetType: string,
+    targetId: string,
     page = 0,
     size = 20,
     options: { crossLanguage?: boolean } = {},
 ): Promise<PageResponse<CommentData>> => {
     const params: Record<string, string | number> = { page, size };
     if (options.crossLanguage) params.language = 'all';
-    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(`${API_URLS.COMMENTS}/title/${titleId}`, { params });
+    const segment = targetType.toLowerCase();
+    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(`${API_URLS.COMMENTS}/${segment}/${targetId}`, { params });
 
     const pageData = response.data.data;
 
@@ -83,10 +86,18 @@ export const getCommentsByTitleId = async (
     };
 };
 
-export const createComment = async (data: { titleId: string; textContent: string; parentCommentId?: string | null }): Promise<CommentData> => {
+/** @deprecated Use getCommentsByTarget('TITLE', titleId) */
+export const getCommentsByTitleId = (
+    titleId: string,
+    page = 0,
+    size = 20,
+    options: { crossLanguage?: boolean } = {},
+): Promise<PageResponse<CommentData>> => getCommentsByTarget('TITLE', titleId, page, size, options);
+
+export const createComment = async (data: { targetType: string; targetId: string; textContent: string; parentCommentId?: string | null }): Promise<CommentData> => {
     const response = await api.post<ApiResponse<CommentResponse>>(API_URLS.COMMENTS, {
-        targetType: 'TITLE',
-        targetId: data.titleId,
+        targetType: data.targetType,
+        targetId: data.targetId,
         textContent: data.textContent,
         parentCommentId: data.parentCommentId ?? null,
     });

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Compass, Settings, Sparkles, User, Users, X, type LucideIcon } from 'lucide-react';
 
@@ -15,6 +15,8 @@ import PrivacidadeTab from './tabs/PrivacidadeTab';
 type Props = {
     onAccountDeleted?: () => void;
 };
+
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 const TABS: { key: ProfileSettingsTab; labelKey: string; icon: LucideIcon }[] = [
     { key: 'informacoes', labelKey: 'profile.edit.tabs.info', icon: User },
@@ -69,6 +71,16 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
 
     const { activeTab, setActiveTab, closeProfileSettings } = useProfileSettingsModal();
     const { profile, loading, refetch } = useEnrichedProfile();
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+
+    const statusLabel =
+        saveStatus === 'saving'
+            ? t('profile.edit.status.saving')
+            : saveStatus === 'saved'
+              ? t('profile.edit.status.saved')
+              : saveStatus === 'error'
+                ? t('profile.edit.status.error')
+                : t('profile.edit.autosaveHint');
 
     return (
         <>
@@ -122,6 +134,7 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                         {activeTab === 'privacidade' && (
                             <PrivacidadeTab
                                 profile={profile}
+                                onSaveStatusChange={setSaveStatus}
                                 onAccountDeleted={() => {
                                     closeProfileSettings();
                                     onAccountDeleted?.();
@@ -133,7 +146,9 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
             </div>
 
             <div className="flex shrink-0 items-center justify-between gap-2.5 border-t border-[#333333] bg-mr-gray-900 px-5 py-3.5">
-                <span className="text-mr-tiny text-mr-gray-300">{t('profile.edit.autosaveHint')}</span>
+                <span className="text-mr-tiny text-mr-gray-300" role="status">
+                    {statusLabel}
+                </span>
                 <div className="flex gap-2">
                     <button
                         type="button"

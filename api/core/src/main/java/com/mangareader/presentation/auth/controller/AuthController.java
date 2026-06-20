@@ -17,6 +17,7 @@ import com.mangareader.application.auth.usecase.RefreshTokenUseCase;
 import com.mangareader.application.auth.usecase.ResetPasswordUseCase;
 import com.mangareader.application.auth.usecase.SignInUseCase;
 import com.mangareader.application.auth.usecase.SignUpUseCase;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.presentation.auth.dto.AuthResponse;
 import com.mangareader.presentation.auth.dto.ForgotPasswordRequest;
@@ -47,6 +48,7 @@ public class AuthController {
     private final GetCurrentUserUseCase getCurrentUserUseCase;
     private final ForgotPasswordUseCase forgotPasswordUseCase;
     private final ResetPasswordUseCase resetPasswordUseCase;
+    private final UserProfileSettingsResolver profileSettingsResolver;
 
     @PostMapping("/sign-in")
     @Operation(summary = "Login", description = "Autentica o usuário e retorna tokens JWT")
@@ -124,6 +126,7 @@ public class AuthController {
         }
 
         User user = getCurrentUserUseCase.execute(userId);
+        var settings = profileSettingsResolver.getOrDefault(user);
 
         var response = new AuthResponse(
                 null, null,
@@ -132,7 +135,7 @@ public class AuthController {
                 user.getEmail(),
                 user.getRole().name(),
                 user.getPhotoUrl(),
-                user.getAdultContentPreference().name()
+                settings.getAdultContentPreference().name()
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));

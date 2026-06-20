@@ -1,0 +1,41 @@
+/* events.css — grids responsivos dos eventos (handoff 04-eventos/design/events.css).
+   O restante do estilo é inline/Tailwind nos componentes. */
+
+.events-page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 16px 12px;
+}
+
+.events-special-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(0, 1fr);
+}
+.events-normal-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+    .events-page {
+        padding: 24px 20px;
+    }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+    .events-normal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (min-width: 1024px) {
+    .events-page {
+        padding: 28px 24px;
+    }
+    .events-special-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .events-normal-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

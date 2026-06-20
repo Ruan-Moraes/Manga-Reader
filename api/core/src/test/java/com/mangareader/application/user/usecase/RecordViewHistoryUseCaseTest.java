@@ -23,8 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
@@ -44,6 +46,9 @@ class RecordViewHistoryUseCaseTest {
     @Mock
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
 
+    @Mock
+    private UserProfileSettingsResolver profileSettingsResolver;
+
     @InjectMocks
     private RecordViewHistoryUseCase recordViewHistoryUseCase;
 
@@ -51,13 +56,18 @@ class RecordViewHistoryUseCaseTest {
     private final String TITLE_ID = "title-abc-123";
 
     private User buildUser(VisibilitySetting historyVis) {
-        return User.builder()
+        User user = User.builder()
                 .id(USER_ID)
                 .name("Ruan Silva")
                 .email("ruan@email.com")
                 .passwordHash("hash")
-                .viewHistoryVisibility(historyVis)
                 .build();
+        UserProfileSettings settings = UserProfileSettings.defaults(user);
+        settings.setViewHistoryVisibility(historyVis);
+
+        when(profileSettingsResolver.getOrDefault(user)).thenReturn(settings);
+
+        return user;
     }
 
     @Nested

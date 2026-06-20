@@ -6,21 +6,24 @@ import type { PageResponse } from '@shared/service/http';
 
 import { CommentData } from '../../model/comment.types';
 
-import validateId from '@shared/service/util/validateId';
-import { getCommentsByTitleId } from '../../api/commentService';
+import { getCommentsByTarget } from '../../api/commentService';
 
-const useCommentsFetch = (id: string, page = 0, size = 20, options: { crossLanguage?: boolean } = {}): UseQueryResult<PageResponse<CommentData>, Error> => {
-    const { crossLanguage = false } = options;
+const useCommentsFetch = (
+    id: string,
+    page = 0,
+    size = 20,
+    options: { crossLanguage?: boolean; targetType?: string } = {},
+): UseQueryResult<PageResponse<CommentData>, Error> => {
+    const { crossLanguage = false, targetType = 'TITLE' } = options;
     return useQuery<PageResponse<CommentData>, Error>({
-        queryKey: [QUERY_KEYS.COMMENTS, id, page, size, crossLanguage],
+        queryKey: [QUERY_KEYS.COMMENTS, targetType, id, page, size, crossLanguage],
+        enabled: !!id,
         queryFn: async () => {
+            if (!id || id.trim() === '') throw new Error(ERROR_MESSAGES.INVALID_ID_ERROR);
             try {
-                validateId(Number(id));
-
-                return await getCommentsByTitleId(id, page, size, {
-                    crossLanguage,
-                });
-            } catch {
+                return await getCommentsByTarget(targetType, id, page, size, { crossLanguage });
+            } catch (err) {
+                if (import.meta.env.DEV) console.error('[useCommentsFetch]', err);
                 throw new Error(ERROR_MESSAGES.FETCH_COMMENTS_ERROR);
             }
         },

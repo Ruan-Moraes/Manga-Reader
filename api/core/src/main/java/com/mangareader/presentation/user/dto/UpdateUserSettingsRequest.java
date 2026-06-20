@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
  * Payload de atualização das preferências do sistema. Espelha {@code UserSettings} com validação de
@@ -46,8 +48,14 @@ public record UpdateUserSettingsRequest(
 
     public record Locale(
             @NotNull(message = "{validation.settings.required}") DateFormatPreference dateFormat,
-            @NotBlank(message = "{validation.settings.required}") String timezone
+            @NotBlank(message = "{validation.settings.required}")
+            @Size(max = 100, message = "{validation.settings.range}")
+            @Pattern(
+                    regexp = "America/Sao_Paulo|America/New_York|Europe/Lisbon|Asia/Tokyo|UTC",
+                    message = "{validation.settings.range}"
+            )
+            String timezone
     ) {}
 
-    public record Accessibility(boolean reduceMotion, boolean highContrast, boolean captions) {}
+    public record Accessibility(boolean reduceMotion, boolean highContrast) {}
 }

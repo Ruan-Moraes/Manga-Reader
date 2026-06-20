@@ -176,6 +176,7 @@ describe('userService', () => {
             const settings = {
                 commentVisibility: 'PUBLIC' as const,
                 viewHistoryVisibility: 'PRIVATE' as const,
+                adultContentPreference: 'BLUR' as const,
             };
 
             server.use(http.patch(`*${API_URLS.USERS}/me/privacy`, () => HttpResponse.json({ data: settings, success: true })));

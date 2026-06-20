@@ -4,17 +4,22 @@ import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft } from 'lucide-react';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import { getAdminGroupDetail } from '../api/adminGroupService';
-import useAdminGroupActions from '../model/useAdminGroupActions';
-import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
-import { ArrowLeft } from 'lucide-react';
+
+import { getAdminGroupDetail } from '@features/admin';
+
+import useAdminGroupActions from '../model/useAdminGroupActions';
+
+import LocalizedTextInput from '@ui/LocalizedTextInput';
 
 const AdminGroupForm = () => {
     const { t } = useTranslation('admin');
+
     const { groupId } = useParams<{ groupId: string }>();
+
     const navigate = useNavigate();
 
     const { handleUpdate, isSubmitting } = useAdminGroupActions();
@@ -45,7 +50,9 @@ const AdminGroupForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         if (!groupId || !ptName) return;
+
         const result = await handleUpdate(groupId, {
             name,
             description,
@@ -53,6 +60,7 @@ const AdminGroupForm = () => {
             ...(banner ? { banner } : {}),
             ...(website ? { website } : {}),
         });
+
         if (result) navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUP_DETAIL(groupId)}`);
     };
 

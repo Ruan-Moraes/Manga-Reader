@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getNewsById, getRelatedNews } from '../api/newsService';
 import type { NewsItem } from '../model/news.types';
@@ -34,23 +34,7 @@ const useNewsDetails = (newsId: string | undefined) => {
             .catch(() => setRelatedNews([]));
     }, [news]);
 
-    const [commentSort, setCommentSort] = useState<'recent' | 'relevant'>('recent');
-    const [showSpoilers, setShowSpoilers] = useState(false);
     const [readingProgress, setReadingProgress] = useState(0);
-
-    const sortedComments = useMemo(() => {
-        if (!news) {
-            return [];
-        }
-
-        return [...news.comments].sort((a, b) => {
-            if (commentSort === 'relevant') {
-                return b.likes - a.likes;
-            }
-
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        });
-    }, [commentSort, news]);
 
     useEffect(() => {
         if (!news) {
@@ -72,13 +56,8 @@ const useNewsDetails = (newsId: string | undefined) => {
     return {
         news,
         isLoading,
-        commentSort,
-        setCommentSort,
-        showSpoilers,
-        setShowSpoilers,
         readingProgress,
         relatedNews,
-        sortedComments,
     };
 };
 

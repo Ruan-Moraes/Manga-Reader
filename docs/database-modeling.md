@@ -30,8 +30,8 @@
 ### jsonb vs tabela — regra de decisão
 
 - **jsonb aceitável**: dado **opaco/de exibição**, nunca usado em `WHERE`/`JOIN`/`GROUP BY` no
-  Postgres. Ex.: `users.settings`, i18n `name`/`description` (`LocalizedString`), `content_locales`,
-  arrays de exibição (`events.gallery`, `groups.focus_tags`, `forum_topics.tags`).
+  Postgres. Ex.: i18n `name`/`description` (`LocalizedString`), `content_locales`, arrays de
+  exibição (`events.gallery`, `groups.focus_tags`, `forum_topics.tags`).
 - **Normalizar para tabela** assim que o campo precisar ser **filtrado, agregado ou ter FK** no
   Postgres. (Filtro de gênero hoje é no Mongo via `$all`, por isso as arrays de gênero do Postgres
   seguem jsonb — reabrir se surgir filtro relacional.)

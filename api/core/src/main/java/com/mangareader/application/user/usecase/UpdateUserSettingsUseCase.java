@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.port.UserSystemSettingsRepositoryPort;
+import com.mangareader.application.user.service.UserSystemSettingsResolver;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserSystemSettings;
 import com.mangareader.domain.user.valueobject.UserSettings;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -16,14 +19,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UpdateUserSettingsUseCase {
     private final UserRepositoryPort userRepository;
+    private final UserSystemSettingsResolver systemSettingsResolver;
+    private final UserSystemSettingsRepositoryPort systemSettingsRepository;
 
     @Transactional
-    public User execute(UUID userId, UserSettings settings) {
+    public UserSettings execute(UUID userId, UserSettings settings) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        user.updateSettings(settings);
+        if (settings == null) {
+            throw new IllegalArgumentException("settings must not be null");
+        }
 
-        return userRepository.save(user);
+        UserSystemSettings systemSettings = systemSettingsResolver.getOrCreate(user);
+        systemSettings.updateSettings(settings);
+
+        return systemSettingsRepository.save(systemSettings).toSettings();
     }
 }

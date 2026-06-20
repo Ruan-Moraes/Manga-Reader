@@ -6,7 +6,8 @@
         "sortLabel": "Ordenar comentarios por:",
         "count_one": "{{count}} comentario",
         "count_other": "{{count}} comentarios",
-        "markdownHint": "Soporta Markdown — **negrita**, *cursiva*, ||spoiler||"
+        "markdownHint": "Soporta Markdown — **negrita**, *cursiva*, ||spoiler||",
+        "crossLanguage": "Todos los idiomas (admin)"
     },
     "reply": {
         "placeholder": "Escribe tu respuesta...",
@@ -30,11 +31,20 @@
     },
     "validation": {
         "empty": "Escribe algo antes de enviar.",
-        "loginRequired": "comentar"
+        "loginRequired": "comentar",
+        "authDelete": "eliminar comentarios",
+        "authEdit": "editar comentarios",
+        "authReply": "responder comentarios"
     },
     "toast": {
         "created": "Comentario enviado con éxito.",
-        "createError": "Error al enviar el comentario."
+        "createError": "Error al enviar el comentario.",
+        "deleted": "Comentario eliminado con éxito.",
+        "deleteError": "Error al eliminar el comentario.",
+        "edited": "Comentario editado con éxito.",
+        "editError": "Error al editar el comentario.",
+        "replied": "Respuesta añadida con éxito.",
+        "replyError": "Error al añadir la respuesta."
     },
     "delete": {
         "title": "Eliminar comentario",

@@ -130,6 +130,7 @@ export const buildSocialLinkResponse = (overrides: Partial<SocialLinkResponse> =
 export const buildPrivacySettings = (overrides: Partial<PrivacySettings> = {}): PrivacySettings => ({
     commentVisibility: 'PUBLIC',
     viewHistoryVisibility: 'PUBLIC',
+    adultContentPreference: 'BLUR',
     ...overrides,
 });
 

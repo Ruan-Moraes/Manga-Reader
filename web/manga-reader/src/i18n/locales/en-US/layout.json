@@ -125,7 +125,7 @@
         },
         "action": {
             "profile": "Profile",
-            "settings": "Settings",
+            "settings": "Profile settings",
             "logout": "Logout",
             "login": "Sign in",
             "accountOf": "Account of {{name}}"
@@ -184,7 +184,7 @@
             "siteSettings": "Site Settings"
         },
         "action": {
-            "settings": "Settings",
+            "settings": "Profile settings",
             "clearCache": "Clear cache",
             "logout": "Logout"
         },

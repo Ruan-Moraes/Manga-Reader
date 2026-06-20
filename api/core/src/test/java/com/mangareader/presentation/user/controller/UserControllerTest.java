@@ -27,6 +27,7 @@ import com.mangareader.application.user.usecase.AddRecommendationUseCase;
 import com.mangareader.application.user.usecase.GetEnrichedProfileUseCase;
 import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
+import com.mangareader.application.user.usecase.GetUserSettingsUseCase;
 import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
@@ -34,6 +35,7 @@ import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
 import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.valueobject.UserSettings;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -68,6 +70,9 @@ class UserControllerTest {
 
     @MockitoBean
     private com.mangareader.application.user.usecase.UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
+
+    @MockitoBean
+    private GetUserSettingsUseCase getUserSettingsUseCase;
 
     @MockitoBean
     private com.mangareader.application.user.usecase.UpdateUserSettingsUseCase updateUserSettingsUseCase;
@@ -324,7 +329,7 @@ class UserControllerTest {
               "reader": {"direction":"RTL","mode":"VERTICAL","fit":"WIDTH","quality":"AUTO","gap":8,"background":"DARK","autoMarkRead":true,"preload":3},
               "appearance": {"theme":"DARK","fontSize":"DEFAULT","density":"COMFORTABLE","animations":true},
               "locale": {"dateFormat":"D_MON","timezone":"America/Sao_Paulo"},
-              "accessibility": {"reduceMotion":false,"highContrast":false,"captions":false}
+              "accessibility": {"reduceMotion":false,"highContrast":false}
             }
             """;
 
@@ -334,7 +339,7 @@ class UserControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com as configurações do usuário")
         void deveRetornar200() throws Exception {
-            when(getUserProfileUseCase.execute(USER_ID)).thenReturn(buildUser(USER_ID));
+            when(getUserSettingsUseCase.execute(USER_ID)).thenReturn(UserSettings.defaults());
 
             mockMvc.perform(get("/api/users/me/settings").principal(mockAuth()))
                     .andExpect(status().isOk())
@@ -350,7 +355,7 @@ class UserControllerTest {
         @Test
         @DisplayName("Deve retornar 200 ao atualizar configurações válidas")
         void deveRetornar200() throws Exception {
-            when(updateUserSettingsUseCase.execute(any(), any())).thenReturn(buildUser(USER_ID));
+            when(updateUserSettingsUseCase.execute(any(), any())).thenReturn(UserSettings.defaults());
 
             mockMvc.perform(patch("/api/users/me/settings")
                             .contentType(MediaType.APPLICATION_JSON)

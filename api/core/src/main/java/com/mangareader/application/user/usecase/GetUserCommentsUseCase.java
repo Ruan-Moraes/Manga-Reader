@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -26,14 +28,16 @@ import lombok.RequiredArgsConstructor;
 public class GetUserCommentsUseCase {
     private final UserRepositoryPort userRepository;
     private final CommentRepositoryPort commentRepository;
+    private final UserProfileSettingsResolver profileSettingsResolver;
 
     public Page<Comment> execute(UUID targetUserId, UUID viewerUserId, Pageable pageable) {
         User user = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", targetUserId));
 
         boolean isOwner = viewerUserId != null && viewerUserId.equals(targetUserId);
+        UserProfileSettings settings = profileSettingsResolver.getOrDefault(user);
 
-        if (!isOwner && user.getCommentVisibility() != VisibilitySetting.PUBLIC) {
+        if (!isOwner && settings.getCommentVisibility() != VisibilitySetting.PUBLIC) {
             return Page.empty(pageable);
         }
 

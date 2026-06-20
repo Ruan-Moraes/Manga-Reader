@@ -10,9 +10,9 @@ type CommentsTabProps = {
  * composição/listagem para a feature de comentários (mesma integração de News).
  */
 const CommentsTab = ({ titleId }: CommentsTabProps) => {
-    const { comments, isLoading, isError, error, refetchComments } = useComments(titleId);
+    const { comments, totalElements, isLoading, isError, error, refetchComments } = useComments(titleId);
 
-    return <CommentsSection titleId={titleId} comments={comments} isLoading={isLoading} isError={isError} error={error} onCommentCreated={refetchComments} />;
+    return <CommentsSection targetType="TITLE" targetId={titleId} comments={comments} totalElements={totalElements} isLoading={isLoading} isError={isError} error={error} onCommentCreated={refetchComments} />;
 };
 
 export default CommentsTab;

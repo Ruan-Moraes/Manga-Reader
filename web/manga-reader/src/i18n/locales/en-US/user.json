@@ -191,6 +191,11 @@
             "saved": "Changes saved",
             "saveError": "Couldn't save. Please try again.",
             "close": "Close",
+            "status": {
+                "saving": "Saving changes...",
+                "saved": "Changes saved",
+                "error": "Save failed"
+            },
             "tabs": {
                 "info": "Info",
                 "social": "Social",
@@ -232,14 +237,26 @@
             },
             "privacy": {
                 "intro": "Control what appears publicly on your profile.",
-                "historyLabel": "Show reading history",
-                "commentsLabel": "Show my comments on titles",
+                "historyLabel": "Reading history",
+                "commentsLabel": "Comments on titles",
+                "adultContentLabel": "Adult content",
+                "adultContentDesc": "Choose how 18+ titles appear in the catalog and recommendations.",
+                "adultContent": {
+                    "blur": "Blur",
+                    "hide": "Hide",
+                    "show": "Show"
+                },
                 "dangerZone": "DANGER ZONE",
-                "deleteDesc": "Deleting your account removes comments, lists and followers. This action cannot be undone.",
+                "deleteDesc": "Deleting your account disables access and anonymizes personal data. This action cannot be undone.",
                 "deleteConfirmPlaceholder": "Type \"{{name}}\" to confirm",
                 "deleteAccount": "Delete account",
-                "historyDesc": "When on, other readers can see everything you have read — chapters, dates and pace.",
-                "commentsDesc": "Keeps your reviews and replies visible. Turning it off hides them without deleting.",
+                "historyDesc": "Defines whether other readers can see read titles, dates and pace.",
+                "commentsDesc": "Defines whether reviews and replies appear on your public profile.",
+                "deleteImpact": {
+                    "profile": "Name, email, bio, photo, banner, social links and recommendations will be removed or anonymized.",
+                    "activity": "The profile will no longer identify you in public platform areas.",
+                    "access": "You will need to create another account to use authenticated features again."
+                },
                 "deleteConfirm": "Confirm deletion",
                 "deleteCancel": "Cancel"
             },
@@ -373,7 +390,11 @@
             "title": "Settings",
             "metaPrefix": "Changes applied in real time",
             "metaSynced": "synced with your account",
+            "metaSyncing": "syncing with your account",
+            "metaError": "sync pending",
             "metaLocal": "saved on this device only",
+            "syncErrorBanner": "We could not sync your latest changes. They are still saved on this device.",
+            "syncRetry": "Try again",
             "reloadBanner": "Some changes only appear after reloading the page.",
             "reloadAction": "Reload",
             "soon": "Soon",
@@ -482,7 +503,8 @@
                 "reduceMotionDesc": "Minimizes animations and transitions.",
                 "reduceMotionToast": "Setting saved",
                 "highContrast": "Increase contrast",
-                "highContrastDesc": "Coming soon.",
+                "highContrastDesc": "Increases contrast for text, borders and focus.",
+                "highContrastToast": "Contrast updated",
                 "shortcuts": "Keyboard shortcuts",
                 "shortcutsDesc": "See the full list in the About tab.",
                 "shortcutsAction": "View list"

@@ -1,7 +1,9 @@
 package com.mangareader.domain.user.valueobject;
 
+import java.util.Set;
+
 /**
- * Preferências globais do sistema (não-perfil) do usuário, persistidas como JSONB.
+ * Preferências globais do sistema (não-perfil) do usuário.
  *
  * <p>Agrupa leitor, aparência, idioma/região (apenas formato de data e fuso — o idioma da interface
  * é client-only e os idiomas de leitura vivem em {@code contentLocales}) e acessibilidade. É um value
@@ -13,6 +15,14 @@ public record UserSettings(
         LocaleSettings locale,
         AccessibilitySettings accessibility
 ) {
+    public static final Set<String> SUPPORTED_TIMEZONES = Set.of(
+            "America/Sao_Paulo",
+            "America/New_York",
+            "Europe/Lisbon",
+            "Asia/Tokyo",
+            "UTC"
+    );
+
     public UserSettings {
         if (reader == null || appearance == null || locale == null || accessibility == null) {
             throw new IllegalArgumentException("settings groups must not be null");
@@ -75,6 +85,9 @@ public record UserSettings(
             if (timezone == null || timezone.isBlank()) {
                 throw new IllegalArgumentException("timezone must not be blank");
             }
+            if (!SUPPORTED_TIMEZONES.contains(timezone)) {
+                throw new IllegalArgumentException("timezone is not supported");
+            }
         }
 
         public static LocaleSettings defaults() {
@@ -82,9 +95,9 @@ public record UserSettings(
         }
     }
 
-    public record AccessibilitySettings(boolean reduceMotion, boolean highContrast, boolean captions) {
+    public record AccessibilitySettings(boolean reduceMotion, boolean highContrast) {
         public static AccessibilitySettings defaults() {
-            return new AccessibilitySettings(false, false, false);
+            return new AccessibilitySettings(false, false);
         }
     }
 

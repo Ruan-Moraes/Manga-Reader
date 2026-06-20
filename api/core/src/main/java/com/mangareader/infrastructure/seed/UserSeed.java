@@ -8,9 +8,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
+import com.mangareader.domain.user.entity.UserSystemSettings;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.infrastructure.persistence.postgres.repository.UserJpaRepository;
+import com.mangareader.infrastructure.persistence.postgres.repository.UserProfileSettingsJpaRepository;
+import com.mangareader.infrastructure.persistence.postgres.repository.UserSystemSettingsJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserSeed implements EntitySeeder {
     private final UserJpaRepository userRepository;
+    private final UserProfileSettingsJpaRepository profileSettingsRepository;
+    private final UserSystemSettingsJpaRepository systemSettingsRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -115,8 +121,6 @@ public class UserSeed implements EntitySeeder {
                         .bio("Leitora ávida de romance e fantasia. Prefere manter perfil discreto.")
                         .photoUrl("https://i.pravatar.cc/100?img=29")
                         .role(UserRole.MEMBER)
-                        .commentVisibility(VisibilitySetting.PRIVATE)
-                        .viewHistoryVisibility(VisibilitySetting.DO_NOT_TRACK)
                         .build(),
                 User.builder()
                         .name("Diego Martins")
@@ -129,7 +133,24 @@ public class UserSeed implements EntitySeeder {
                         .build()
         );
 
-        userRepository.saveAll(users);
+        var savedUsers = userRepository.saveAll(users);
+        var profileSettings = savedUsers.stream()
+                .map(user -> {
+                    var settings = UserProfileSettings.defaults(user);
+
+                    if ("sofia@mangareader.com".equals(user.getEmail())) {
+                        settings.setCommentVisibility(VisibilitySetting.PRIVATE);
+                        settings.setViewHistoryVisibility(VisibilitySetting.DO_NOT_TRACK);
+                    }
+
+                    return settings;
+                })
+                .toList();
+
+        profileSettingsRepository.saveAll(profileSettings);
+        systemSettingsRepository.saveAll(savedUsers.stream()
+                .map(UserSystemSettings::defaults)
+                .toList());
 
         log.info("✓ {} usuários de demonstração criados.", users.size());
     }

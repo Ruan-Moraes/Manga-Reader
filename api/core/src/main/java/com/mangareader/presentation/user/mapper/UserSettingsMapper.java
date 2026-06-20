@@ -24,6 +24,6 @@ public final class UserSettingsMapper {
                 new ReaderSettings(r.direction(), r.mode(), r.fit(), r.quality(), r.gap(), r.background(), r.autoMarkRead(), r.preload()),
                 new AppearanceSettings(a.theme(), a.fontSize(), a.density(), a.animations()),
                 new LocaleSettings(l.dateFormat(), l.timezone()),
-                new AccessibilitySettings(ac.reduceMotion(), ac.highContrast(), ac.captions()));
+                new AccessibilitySettings(ac.reduceMotion(), ac.highContrast()));
     }
 }

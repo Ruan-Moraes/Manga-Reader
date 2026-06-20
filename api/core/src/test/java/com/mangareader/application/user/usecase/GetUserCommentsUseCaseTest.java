@@ -26,9 +26,11 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -42,20 +44,33 @@ class GetUserCommentsUseCaseTest {
     @Mock
     private CommentRepositoryPort commentRepository;
 
+    @Mock
+    private UserProfileSettingsResolver profileSettingsResolver;
+
     @InjectMocks
     private GetUserCommentsUseCase getUserCommentsUseCase;
 
     private final UUID USER_ID = UUID.randomUUID();
     private final Pageable PAGEABLE = PageRequest.of(0, 10);
 
-    private User buildUser(VisibilitySetting commentVis) {
+    private User buildUser() {
         return User.builder()
                 .id(USER_ID)
                 .name("Ruan Silva")
                 .email("ruan@email.com")
                 .passwordHash("hash")
-                .commentVisibility(commentVis)
                 .build();
+    }
+
+    private User stubUserWithCommentVisibility(VisibilitySetting commentVis) {
+        User user = buildUser();
+        UserProfileSettings settings = UserProfileSettings.defaults(user);
+        settings.setCommentVisibility(commentVis);
+
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        when(profileSettingsResolver.getOrDefault(user)).thenReturn(settings);
+
+        return user;
     }
 
     @Nested
@@ -65,7 +80,7 @@ class GetUserCommentsUseCaseTest {
         @Test
         @DisplayName("Deve retornar comentários quando é o dono, mesmo com visibilidade PRIVATE")
         void deveRetornarComentariosQuandoDono() {
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PRIVATE)));
+            stubUserWithCommentVisibility(VisibilitySetting.PRIVATE);
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Ótimo!").build();
             when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
@@ -86,7 +101,7 @@ class GetUserCommentsUseCaseTest {
         @DisplayName("Deve retornar comentários quando visibilidade é PUBLIC")
         void deveRetornarComentariosQuandoPublic() {
             UUID viewerId = UUID.randomUUID();
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
+            stubUserWithCommentVisibility(VisibilitySetting.PUBLIC);
 
             Comment comment = Comment.builder().id("c1").targetType(com.mangareader.domain.comment.valueobject.CommentTarget.TITLE).targetId("t1").textContent("Bom!").build();
             when(commentRepository.findByUserIdAndTargetType(eq(USER_ID.toString()), eq(CommentTarget.TITLE), any(Pageable.class)))
@@ -101,7 +116,7 @@ class GetUserCommentsUseCaseTest {
         @DisplayName("Deve retornar página vazia quando visibilidade é PRIVATE")
         void deveRetornarVazioQuandoPrivate() {
             UUID viewerId = UUID.randomUUID();
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PRIVATE)));
+            stubUserWithCommentVisibility(VisibilitySetting.PRIVATE);
 
             Page<Comment> result = getUserCommentsUseCase.execute(USER_ID, viewerId, PAGEABLE);
 
@@ -113,7 +128,7 @@ class GetUserCommentsUseCaseTest {
         @DisplayName("Deve retornar página vazia quando visibilidade é DO_NOT_TRACK")
         void deveRetornarVazioQuandoDoNotTrack() {
             UUID viewerId = UUID.randomUUID();
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.DO_NOT_TRACK)));
+            stubUserWithCommentVisibility(VisibilitySetting.DO_NOT_TRACK);
 
             Page<Comment> result = getUserCommentsUseCase.execute(USER_ID, viewerId, PAGEABLE);
 
@@ -123,7 +138,7 @@ class GetUserCommentsUseCaseTest {
         @Test
         @DisplayName("Deve retornar página vazia quando viewer é null e visibilidade é PRIVATE")
         void deveRetornarVazioQuandoViewerNull() {
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PRIVATE)));
+            stubUserWithCommentVisibility(VisibilitySetting.PRIVATE);
 
             Page<Comment> result = getUserCommentsUseCase.execute(USER_ID, null, PAGEABLE);
 

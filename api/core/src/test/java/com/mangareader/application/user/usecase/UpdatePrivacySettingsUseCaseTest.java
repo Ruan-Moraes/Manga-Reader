@@ -18,10 +18,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.mangareader.application.user.port.UserProfileSettingsRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
+import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase.PrivacyInput;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.UserProfileSettings;
+import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -31,6 +35,12 @@ class UpdatePrivacySettingsUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
+
+    @Mock
+    private UserProfileSettingsRepositoryPort profileSettingsRepository;
+
+    @Mock
+    private UserProfileSettingsResolver profileSettingsResolver;
 
     @Mock
     private ViewHistoryRepositoryPort viewHistoryRepository;
@@ -46,9 +56,11 @@ class UpdatePrivacySettingsUseCaseTest {
                 .name("Ruan Silva")
                 .email("ruan@email.com")
                 .passwordHash("hash")
-                .commentVisibility(VisibilitySetting.PUBLIC)
-                .viewHistoryVisibility(VisibilitySetting.PUBLIC)
                 .build();
+    }
+
+    private UserProfileSettings buildSettings(User user) {
+        return UserProfileSettings.defaults(user);
     }
 
     @Nested
@@ -59,29 +71,48 @@ class UpdatePrivacySettingsUseCaseTest {
         @DisplayName("Deve atualizar visibilidade de comentários e histórico")
         void deveAtualizarVisibilidades() {
             User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            var input = new PrivacyInput(USER_ID, VisibilitySetting.PRIVATE, VisibilitySetting.PRIVATE);
-            User result = updatePrivacySettingsUseCase.execute(input);
+            var input = new PrivacyInput(USER_ID, VisibilitySetting.PRIVATE, VisibilitySetting.PRIVATE, null);
+            UserProfileSettings result = updatePrivacySettingsUseCase.execute(input);
 
             assertThat(result.getCommentVisibility()).isEqualTo(VisibilitySetting.PRIVATE);
             assertThat(result.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.PRIVATE);
-            verify(userRepository).save(user);
+            verify(profileSettingsRepository).save(settings);
         }
 
         @Test
         @DisplayName("Deve manter configuração quando campo é null no input")
         void deveManterConfiguracaoQuandoNull() {
             User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            var input = new PrivacyInput(USER_ID, null, null);
-            User result = updatePrivacySettingsUseCase.execute(input);
+            var input = new PrivacyInput(USER_ID, null, null, null);
+            UserProfileSettings result = updatePrivacySettingsUseCase.execute(input);
 
             assertThat(result.getCommentVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
             assertThat(result.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
+        }
+
+        @Test
+        @DisplayName("Deve atualizar preferência de conteúdo adulto")
+        void deveAtualizarPreferenciaAdulto() {
+            User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            var input = new PrivacyInput(USER_ID, null, null, AdultContentPreference.HIDE);
+            UserProfileSettings result = updatePrivacySettingsUseCase.execute(input);
+
+            assertThat(result.getAdultContentPreference()).isEqualTo(AdultContentPreference.HIDE);
         }
     }
 
@@ -93,10 +124,12 @@ class UpdatePrivacySettingsUseCaseTest {
         @DisplayName("Deve deletar todo o histórico quando viewHistoryVisibility muda para DO_NOT_TRACK")
         void deveDeletarHistoricoQuandoDoNotTrack() {
             User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            var input = new PrivacyInput(USER_ID, null, VisibilitySetting.DO_NOT_TRACK);
+            var input = new PrivacyInput(USER_ID, null, VisibilitySetting.DO_NOT_TRACK, null);
             updatePrivacySettingsUseCase.execute(input);
 
             verify(viewHistoryRepository).deleteAllByUserId(USER_ID.toString());
@@ -106,10 +139,12 @@ class UpdatePrivacySettingsUseCaseTest {
         @DisplayName("Não deve deletar histórico quando visibilidade muda para PRIVATE")
         void naoDeveDeletarQuandoPrivate() {
             User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            var input = new PrivacyInput(USER_ID, null, VisibilitySetting.PRIVATE);
+            var input = new PrivacyInput(USER_ID, null, VisibilitySetting.PRIVATE, null);
             updatePrivacySettingsUseCase.execute(input);
 
             verify(viewHistoryRepository, never()).deleteAllByUserId(any());
@@ -125,7 +160,7 @@ class UpdatePrivacySettingsUseCaseTest {
         void deveLancarExcecaoQuandoUsuarioNaoExiste() {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-            var input = new PrivacyInput(USER_ID, VisibilitySetting.PRIVATE, null);
+            var input = new PrivacyInput(USER_ID, VisibilitySetting.PRIVATE, null, null);
 
             assertThatThrownBy(() -> updatePrivacySettingsUseCase.execute(input))
                     .isInstanceOf(ResourceNotFoundException.class)

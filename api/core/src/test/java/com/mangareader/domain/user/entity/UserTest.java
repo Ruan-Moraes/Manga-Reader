@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.mangareader.domain.user.valueobject.UserRole;
-import com.mangareader.domain.user.valueobject.VisibilitySetting;
 
 class UserTest {
     @Test
@@ -25,30 +24,6 @@ class UserTest {
         assertThat(user.getRole()).isEqualTo(UserRole.MEMBER);
         assertThat(user.getSocialLinks()).isNotNull();
         assertThat(user.getSocialLinks().isEmpty()).isTrue();
-    }
-
-    @Test
-    @DisplayName("Deve iniciar commentVisibility com PUBLIC no builder padrão")
-    void shouldInitializeCommentVisibilityAsPublic() {
-        User user = User.builder()
-                .name("User Test")
-                .email("user@test.com")
-                .passwordHash("hash")
-                .build();
-
-        assertThat(user.getCommentVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
-    }
-
-    @Test
-    @DisplayName("Deve iniciar viewHistoryVisibility com PUBLIC no builder padrão")
-    void shouldInitializeViewHistoryVisibilityAsPublic() {
-        User user = User.builder()
-                .name("User Test")
-                .email("user@test.com")
-                .passwordHash("hash")
-                .build();
-
-        assertThat(user.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
     }
 
     @Test
@@ -75,32 +50,6 @@ class UserTest {
                 .build();
 
         assertThat(user.getBannerUrl()).isEqualTo("https://example.com/banner.jpg");
-    }
-
-    @Test
-    @DisplayName("Deve permitir sobrescrever visibilidade de comentários no builder")
-    void shouldOverrideCommentVisibility() {
-        User user = User.builder()
-                .name("User Test")
-                .email("user@test.com")
-                .passwordHash("hash")
-                .commentVisibility(VisibilitySetting.PRIVATE)
-                .build();
-
-        assertThat(user.getCommentVisibility()).isEqualTo(VisibilitySetting.PRIVATE);
-    }
-
-    @Test
-    @DisplayName("Deve permitir sobrescrever visibilidade do histórico no builder")
-    void shouldOverrideViewHistoryVisibility() {
-        User user = User.builder()
-                .name("User Test")
-                .email("user@test.com")
-                .passwordHash("hash")
-                .viewHistoryVisibility(VisibilitySetting.DO_NOT_TRACK)
-                .build();
-
-        assertThat(user.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.DO_NOT_TRACK);
     }
 
     @Test

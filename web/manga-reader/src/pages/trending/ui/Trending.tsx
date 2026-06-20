@@ -12,7 +12,9 @@ type Period = 'today' | 'week' | 'month' | 'all';
 
 const Trending = () => {
     const { t } = useTranslation('home');
+
     const [period, setPeriod] = useState<Period>('week');
+
     const [cat, setCat] = useState('all');
 
     const PERIOD_ITEMS = [
@@ -32,7 +34,7 @@ const Trending = () => {
     ];
 
     return (
-        <PageContainer asMain size="wide" paddingY="md">
+        <PageContainer asMain size="default" paddingY="md">
             <SectionHeader eyebrow={t('trending.eyebrow')} title={t('trending.title')} meta={t('trending.meta')} className="mb-6" />
 
             <div className="mb-8 flex flex-wrap gap-3">

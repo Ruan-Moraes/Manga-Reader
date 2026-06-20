@@ -2,6 +2,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { PageContainer } from '@ui/PageContainer';
 import { SectionHeader } from '@ui/SectionHeader';
@@ -16,7 +17,7 @@ import { showSuccessToast, showErrorToast } from '@shared/service/util/toastServ
 
 import { getUserReviews, updateReview, deleteReview, type Review } from '@entities/review';
 
-const ReviewCard = ({
+const MyReviewCard = ({
     review,
     onUpdate,
     onDelete,
@@ -99,6 +100,7 @@ const ReviewCard = ({
 
 const MyReviews = () => {
     const { t } = useTranslation('rating');
+    const navigate = useAppNavigate();
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
@@ -162,7 +164,7 @@ const MyReviews = () => {
                     title={t('myReviews.emptyState', 'Nenhuma resenha ainda')}
                     description={t('myReviews.emptyDesc')}
                     action={
-                        <Button variant="primary" onClick={() => window.location.assign('/genres')}>
+                        <Button variant="primary" onClick={() => navigate(ROUTES.CATALOG)}>
                             {t('myReviews.discoverWorks')}
                         </Button>
                     }
@@ -173,7 +175,7 @@ const MyReviews = () => {
                 <>
                     <div className="flex flex-col gap-3">
                         {reviews.map(review => (
-                            <ReviewCard key={review.id} review={review} onUpdate={handleUpdate} onDelete={handleDelete} />
+                            <MyReviewCard key={review.id} review={review} onUpdate={handleUpdate} onDelete={handleDelete} />
                         ))}
                     </div>
 

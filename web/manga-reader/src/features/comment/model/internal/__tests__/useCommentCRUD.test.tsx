@@ -26,7 +26,7 @@ describe('useCommentCRUD', () => {
     });
 
     it('deve deletar comentário e mostrar toast de sucesso', async () => {
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.deleteComment('comment-1');
@@ -44,7 +44,7 @@ describe('useCommentCRUD', () => {
             }),
         );
 
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.deleteComment('comment-nonexistent');
@@ -56,7 +56,7 @@ describe('useCommentCRUD', () => {
     });
 
     it('deve editar comentário e mostrar toast de sucesso', async () => {
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.editComment('comment-1', 'Updated text', null);
@@ -74,7 +74,7 @@ describe('useCommentCRUD', () => {
             }),
         );
 
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.editComment('comment-1', 'Will fail', null);
@@ -86,7 +86,7 @@ describe('useCommentCRUD', () => {
     });
 
     it('deve responder comentário e mostrar toast de sucesso', async () => {
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.replyComment('comment-1', 'title-1', 'Nice reply!', null);
@@ -104,7 +104,7 @@ describe('useCommentCRUD', () => {
             }),
         );
 
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.replyComment('comment-1', 'title-1', 'Will fail', null);
@@ -124,7 +124,7 @@ describe('useCommentCRUD', () => {
             }),
         );
 
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.deleteComment('comment-1');
@@ -143,7 +143,7 @@ describe('useCommentCRUD', () => {
             }),
         );
 
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.deleteComment('comment-1');
@@ -155,7 +155,7 @@ describe('useCommentCRUD', () => {
     it('deve bloquear mutações quando não autenticado', () => {
         vi.mocked(requireAuth).mockReturnValue(false);
 
-        const { result } = renderHookWithProviders(() => useCommentCRUD());
+        const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
             result.current.deleteComment('comment-1');

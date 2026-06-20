@@ -20,7 +20,11 @@ vi.mock('../../../api/userService', () => ({
         recommendations: [],
         recentComments: null,
         recentViewHistory: null,
-        privacySettings: null,
+        privacySettings: {
+            commentVisibility: 'PUBLIC',
+            viewHistoryVisibility: 'PRIVATE',
+            adultContentPreference: 'BLUR',
+        },
         isOwner: true,
     }),
     getEnrichedProfile: vi.fn(),
@@ -56,16 +60,16 @@ const renderModal = () =>
 describe('ProfileEditModal', () => {
     it('renders the modal heading', () => {
         renderModal();
-        expect(screen.getByRole('heading')).toBeInTheDocument();
+        expect(screen.getByRole('heading')).toBeTruthy();
     });
 
     it('loads and pre-fills the profile name', async () => {
         renderModal();
-        expect(await screen.findByDisplayValue('Leitor BR')).toBeInTheDocument();
+        expect(await screen.findByDisplayValue('Leitor BR')).toBeTruthy();
     });
 
     it('loads and pre-fills the bio', async () => {
         renderModal();
-        expect(await screen.findByDisplayValue('Bio de teste')).toBeInTheDocument();
+        expect(await screen.findByDisplayValue('Bio de teste')).toBeTruthy();
     });
 });

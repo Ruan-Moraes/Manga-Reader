@@ -1,145 +1,63 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { Fragment, type RefObject } from 'react';
 
+import { INLINE_MARKERS, TOTAL_PAGES } from '../../model/readerData';
 import type { Direction, Fit, ReadMode } from '../../model/useChapterReader';
-import { PAGE_PLACEHOLDERS, TOTAL_PAGES } from '../../model/useChapterReader';
-import { EndCard } from './EndCard';
+import { EndOfChapter } from './EndOfChapter';
+import { InlineCommentMarker } from './InlineCommentMarker';
+import { ReaderPagePlaceholder } from './ReaderPagePlaceholder';
+
+interface EndProps {
+    chapter: number;
+    rating: number;
+    onRate: (n: number) => void;
+    ratingAverage: number;
+    ratingCount: number;
+    onNext: () => void;
+    onBack: () => void;
+    onForum: () => void;
+}
 
 interface ReadingAreaProps {
     mode: ReadMode;
-    dir: Direction;
+    direction: Direction;
     fit: Fit;
-    chNum: string;
+    gap: number;
+    chapter: number;
     page: number;
-    isEnd: boolean;
-    titleId: string | undefined;
-    ratingGiven: number;
-    comment: string;
-    onPrevPage: () => void;
-    onNextPage: () => void;
-    onRate: (v: number) => void;
-    onComment: (v: string) => void;
-    onNavigateNext: () => void;
-    onNavigateBack: () => void;
+    inlineCmts: boolean;
+    listRef: RefObject<HTMLDivElement | null>;
+    end: EndProps;
 }
 
-const fitMaxWidth = (fit: Fit): number | 'none' => {
-    if (fit === 'width') return 800;
-    if (fit === 'height') return 600;
-    return 'none';
-};
+const PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1);
 
-export const ReadingArea = ({
-    mode,
-    dir,
-    fit,
-    chNum,
-    page,
-    isEnd,
-    ratingGiven,
-    comment,
-    onPrevPage,
-    onNextPage,
-    onRate,
-    onComment,
-    onNavigateNext,
-    onNavigateBack,
-}: ReadingAreaProps) => {
-    const { t } = useTranslation('manga');
-    const endCardProps = {
-        chNum,
-        rating: ratingGiven,
-        onRate,
-        comment,
-        onComment,
-        onNext: onNavigateNext,
-        onBack: onNavigateBack,
-    };
-
-    if (mode === 'vertical') {
-        return (
-            <div className="mx-auto flex flex-col items-center" style={{ gap: 8, maxWidth: fitMaxWidth(fit) }}>
-                {PAGE_PLACEHOLDERS.map(pg => (
-                    <div key={pg.num} data-page={pg.num}>
-                        <div
-                            className="w-full"
-                            style={{ height: 600, background: pg.gradient }}
-                            role="img"
-                            aria-label={t('reader.pageAria', {
-                                page: pg.num,
-                                chNum,
-                            })}
-                        />
-                    </div>
-                ))}
-
-                <div className="w-full max-w-[640px] py-16">
-                    <EndCard {...endCardProps} />
-                </div>
-            </div>
-        );
-    }
-
-    const pageMaxWidth = mode === 'double' ? 360 : 560;
-    const leftRailAction = dir === 'rtl' ? onNextPage : onPrevPage;
-    const rightRailAction = dir === 'rtl' ? onPrevPage : onNextPage;
+export const ReadingArea = ({ mode, direction, fit, gap, chapter, page, inlineCmts, listRef, end }: ReadingAreaProps) => {
+    const rowDir = direction === 'rtl' ? 'row-reverse' : 'row';
 
     return (
-        <div
-            className="relative flex min-h-[calc(100vh-112px)] items-center justify-center px-4"
-            style={fit === 'height' ? { maxWidth: '70vh', maxHeight: '80vh', margin: '0 auto' } : {}}
-        >
-            <button
-                type="button"
-                onClick={leftRailAction}
-                aria-label={t('reader.prevRegionAria')}
-                className="absolute left-0 top-0 hidden h-full w-16 cursor-pointer items-center justify-center opacity-0 transition-opacity hover:opacity-100 lg:flex"
-            >
-                <ChevronLeft className="size-8 text-white/60" />
-            </button>
+        <div className="reader-area" data-mode={mode} style={{ ['--reader-gap' as string]: `${gap}px` }}>
+            {mode === 'vertical' && (
+                <div className="reader-pages-vertical" ref={listRef}>
+                    {PAGES.map(n => (
+                        <Fragment key={n}>
+                            <ReaderPagePlaceholder n={n} chapter={chapter} />
+                            {inlineCmts && INLINE_MARKERS[n] && <InlineCommentMarker n={n} info={INLINE_MARKERS[n]} />}
+                        </Fragment>
+                    ))}
+                    <EndOfChapter {...end} />
+                </div>
+            )}
 
-            <div className={`flex gap-2 ${dir === 'rtl' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div
-                    className="aspect-[2/3] flex-1"
-                    style={{
-                        background: PAGE_PLACEHOLDERS[page - 1]?.gradient ?? '#111',
-                        minWidth: 240,
-                        maxWidth: pageMaxWidth,
-                    }}
-                    role="img"
-                    aria-label={t('reader.pageAria', { page, chNum })}
-                />
-                {mode === 'double' && page + 1 <= TOTAL_PAGES && (
-                    <div
-                        className="aspect-[2/3] flex-1"
-                        style={{
-                            background: PAGE_PLACEHOLDERS[page]?.gradient ?? '#111',
-                            minWidth: 240,
-                            maxWidth: 360,
-                        }}
-                        role="img"
-                        aria-label={t('reader.pageAria', {
-                            page: page + 1,
-                            chNum,
-                        })}
-                    />
-                )}
-            </div>
+            {mode === 'paged' && (
+                <div className="reader-paged-stage" data-fit={fit} style={{ flexDirection: rowDir }}>
+                    {page > TOTAL_PAGES ? <EndOfChapter {...end} /> : <ReaderPagePlaceholder n={page} chapter={chapter} />}
+                </div>
+            )}
 
-            <button
-                type="button"
-                onClick={rightRailAction}
-                aria-label={t('reader.nextRegionAria')}
-                className="absolute right-0 top-0 hidden h-full w-16 cursor-pointer items-center justify-center opacity-0 transition-opacity hover:opacity-100 lg:flex"
-            >
-                <ChevronRight className="size-8 text-white/60" />
-            </button>
-
-            {isEnd && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-                    <div className="w-full max-w-[480px] p-6">
-                        <EndCard {...endCardProps} />
-                    </div>
+            {mode === 'double' && (
+                <div className="reader-double-stage" style={{ flexDirection: rowDir }}>
+                    <ReaderPagePlaceholder n={page} chapter={chapter} />
+                    {page + 1 <= TOTAL_PAGES && <ReaderPagePlaceholder n={page + 1} chapter={chapter} />}
                 </div>
             )}
         </div>
