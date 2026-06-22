@@ -13,7 +13,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Atualiza o texto de um comentário existente.
+ * Atualiza o conteúdo de um comentário existente.
  */
 @Service
 @Transactional("mongoTransactionManager")
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UpdateCommentUseCase {
     private final CommentRepositoryPort commentRepository;
 
-    public record UpdateCommentInput(String commentId, String textContent, UUID userId) {}
+    public record UpdateCommentInput(String commentId, String textContent, String imageContent, UUID userId) {}
 
     public Comment execute(UpdateCommentInput input) {
         Comment comment = commentRepository.findById(input.commentId())
@@ -31,10 +31,19 @@ public class UpdateCommentUseCase {
             throw new BusinessRuleException("Você só pode editar seus próprios comentários.", 403);
         }
 
+        if (isBlank(input.textContent()) && isBlank(input.imageContent())) {
+            throw new BusinessRuleException("Comentário deve conter texto ou imagem", 400);
+        }
+
         comment.setTextContent(input.textContent());
+        comment.setImageContent(input.imageContent());
         comment.setEdited(true);
         comment.setUpdatedAt(java.time.LocalDateTime.now());
 
         return commentRepository.save(comment);
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { useTitle } from '@entities/manga';
+import { useChapter } from '@entities/chapter';
 
 import { useChapterReader } from '../model/useChapterReader';
 import type { ChapterListItem } from './parts/ChapterDropdown';
@@ -25,6 +26,7 @@ const Chapter = () => {
 
     const r = useChapterReader(titleId, chapterParam);
     const { title } = useTitle(titleId ?? '');
+    const { chapter: chapterData } = useChapter(titleId, chapterParam);
 
     const displayTitle = title?.name ?? t('reader.untitled');
     const status = title?.status ?? '';
@@ -83,7 +85,6 @@ const Chapter = () => {
                     gap={r.gap}
                     chapter={r.chapter}
                     page={r.page}
-                    inlineCmts={r.inlineCmts}
                     listRef={r.listRef}
                     end={endProps}
                 />
@@ -109,13 +110,11 @@ const Chapter = () => {
                     fit={r.fit}
                     gap={r.gap}
                     bg={r.bg}
-                    inlineCmts={r.inlineCmts}
                     onMode={r.setMode}
                     onDirection={r.setDirection}
                     onFit={r.setFit}
                     onGap={r.setGap}
                     onBg={r.setBg}
-                    onInlineCmts={r.setInlineCmts}
                     onClose={() => r.setSettingsOpen(false)}
                 />
             )}
@@ -123,6 +122,7 @@ const Chapter = () => {
             {r.commentsOpen && (
                 <ReaderCommentsPanel
                     chapter={r.chapter}
+                    chapterId={chapterData?.id}
                     onClose={() => r.setCommentsOpen(false)}
                 />
             )}

@@ -87,7 +87,8 @@
         "ariaLabel": "Search",
         "suggestionsTitle": "Suggestions for you",
         "recentTitle": "Recent searches",
-        "kbdHint": "Shortcut ⌘K to focus search"
+        "kbdHint": "Shortcut ⌘K to focus search",
+        "clearAria": "Clear search"
     },
     "navigation": {
         "openMenu": "Open menu"

@@ -110,6 +110,14 @@ public class V015UnifyCommentVotes {
     }
 
     private void migrateVoteIndexes() {
+        // No fluxo normal a coleção sempre existe aqui (V003 cria comment_reactions,
+        // que migrateVotesCollection renomeia para comments_votes). Este guard é só
+        // uma rede de segurança: sem ele, ensureIndex criaria uma comments_votes vazia
+        // caso a coleção tenha sido dropada manualmente ou as migrations rodem fora de ordem.
+        if (!mongoTemplate.collectionExists(VOTES_TARGET)) {
+            return;
+        }
+
         // Índices simples herdados de V003: commentId é prefixo do composto único
         // (redundante) e userId não atende query nenhuma.
         dropIndexIfExists(VOTES_TARGET, "idx_comment_reactions_commentId");
@@ -134,8 +142,17 @@ public class V015UnifyCommentVotes {
         }
     }
 
+    /**
+     * Rollback simétrico ao {@link #execute()}: desfaz tanto os renames de campo
+     * em {@code comments} quanto a padronização de votos (coleção + campo
+     * {@code value}). Idempotente — cada passo só toca o que ainda está migrado.
+     * O {@code targetType="TITLE"} setado no execute não é revertido de propósito:
+     * não há como saber em quais documentos o campo era originalmente ausente, e
+     * mantê-lo é inofensivo.
+     */
     @RollbackExecution
     public void rollback() {
+        // (1) comments: desfaz renames de campo e remove o índice novo.
         var comments = mongoTemplate.getCollection(COMMENTS);
         comments.updateMany(new Document("targetId", new Document("$exists", true)),
                 new Document("$rename", new Document("targetId", "titleId")));
@@ -144,5 +161,22 @@ public class V015UnifyCommentVotes {
         comments.updateMany(new Document("downvotes", new Document("$exists", true)),
                 new Document("$rename", new Document("downvotes", "dislikeCount")));
         dropIndexIfExists(COMMENTS, "idx_comments_target_language");
+
+        // (2) comments_votes -> comment_reactions: reconverte value -> reactionType
+        // e renomeia a coleção de volta, deixando o schema legível pelo código antigo.
+        if (mongoTemplate.collectionExists(VOTES_TARGET)) {
+            var votes = mongoTemplate.getCollection(VOTES_TARGET);
+            votes.updateMany(new Document("value", "UP"),
+                    new Document("$set", new Document("reactionType", "LIKE")));
+            votes.updateMany(new Document("value", "DOWN"),
+                    new Document("$set", new Document("reactionType", "DISLIKE")));
+            votes.updateMany(new Document("value", new Document("$exists", true)),
+                    new Document("$unset", new Document("value", "")));
+
+            if (!mongoTemplate.collectionExists(VOTES_SOURCE)) {
+                String db = mongoTemplate.getDb().getName();
+                votes.renameCollection(new MongoNamespace(db, VOTES_SOURCE));
+            }
+        }
     }
 }

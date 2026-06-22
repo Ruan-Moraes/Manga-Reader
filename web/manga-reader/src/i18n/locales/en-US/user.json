@@ -213,7 +213,9 @@
                 "userLabel": "Username",
                 "userHint": "Shown as @{{handle}} in comments and your profile link.",
                 "changePhoto": "Change",
-                "removePhoto": "Remove"
+                "removePhoto": "Remove",
+                "genresLabel": "Favorite genres",
+                "genresHint": "{{count}}/{{max}} selected. Picked manually; shown on your profile."
             },
             "social": {
                 "intro": "Add your social networks so other readers can find you. Everything is optional."

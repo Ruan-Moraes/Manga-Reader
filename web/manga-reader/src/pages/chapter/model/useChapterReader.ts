@@ -19,7 +19,6 @@ interface ReaderPrefs {
     fit: Fit;
     gap: number;
     bg: Bg;
-    inlineCmts: boolean;
 }
 
 const PREFS_KEY = 'reader:prefs';
@@ -31,16 +30,14 @@ const DEFAULT_PREFS: ReaderPrefs = {
     fit: 'width',
     gap: 8,
     bg: 'dark',
-    inlineCmts: true,
 };
 
-const toReaderPrefs = (settings: UserSettings, previous?: ReaderPrefs): ReaderPrefs => ({
+const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     mode: settings.reader.direction === 'WEBTOON' ? 'vertical' : (settings.reader.mode.toLowerCase() as ReadMode),
     direction: settings.reader.direction === 'LTR' ? 'ltr' : 'rtl',
     fit: settings.reader.fit.toLowerCase() as Fit,
     gap: settings.reader.gap,
     bg: settings.reader.background.toLowerCase() as Bg,
-    inlineCmts: previous?.inlineCmts ?? DEFAULT_PREFS.inlineCmts,
 });
 
 const toSettingsMode = (mode: ReadMode): UserSettings['reader']['mode'] => mode.toUpperCase() as UserSettings['reader']['mode'];
@@ -53,8 +50,7 @@ const samePrefs = (left: ReaderPrefs, right: ReaderPrefs) =>
     left.direction === right.direction &&
     left.fit === right.fit &&
     left.gap === right.gap &&
-    left.bg === right.bg &&
-    left.inlineCmts === right.inlineCmts;
+    left.bg === right.bg;
 
 const readPrefs = (): ReaderPrefs => {
     try {
@@ -65,13 +61,27 @@ const readPrefs = (): ReaderPrefs => {
             return systemPrefs;
         }
 
-        const legacy = JSON.parse(raw) as Partial<ReaderPrefs>;
+        const stored = JSON.parse(raw) as Partial<ReaderPrefs> & { inlineCmts?: unknown };
 
-        if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
-            return { ...DEFAULT_PREFS, ...legacy };
+        // Migração: o campo `inlineCmts` foi removido do leitor — limpa resíduos persistidos.
+        if ('inlineCmts' in stored) {
+            const { inlineCmts: _removed, ...cleaned } = stored;
+            try {
+                localStorage.setItem(PREFS_KEY, JSON.stringify(cleaned));
+            } catch {
+                /* ignore */
+            }
+            if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
+                return { ...DEFAULT_PREFS, ...cleaned };
+            }
+            return systemPrefs;
         }
 
-        return { ...systemPrefs, inlineCmts: legacy.inlineCmts ?? systemPrefs.inlineCmts };
+        if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
+            return { ...DEFAULT_PREFS, ...stored };
+        }
+
+        return systemPrefs;
     } catch {
         return DEFAULT_PREFS;
     }
@@ -99,7 +109,6 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const [fit, setFit] = useState<Fit>(initialPrefs.fit);
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
-    const [inlineCmts, setInlineCmts] = useState<boolean>(initialPrefs.inlineCmts);
 
     const [page, setPage] = useState(() => readSavedPage(titleId, chapter));
     const [saved, setSaved] = useState(false);
@@ -119,7 +128,7 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const step = mode === 'double' ? 2 : 1;
     const lastPage = mode === 'vertical' ? TOTAL : TOTAL + 1;
 
-    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg, inlineCmts }), [mode, direction, fit, gap, bg, inlineCmts]);
+    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg }), [mode, direction, fit, gap, bg]);
 
     const applyPrefs = useCallback(
         (next: ReaderPrefs) => {
@@ -131,7 +140,6 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
             setFit(next.fit);
             setGap(next.gap);
             setBg(next.bg);
-            setInlineCmts(next.inlineCmts);
         },
         [currentPrefs],
     );
@@ -170,7 +178,7 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     useEffect(
         () =>
             subscribeStoredUserSettings(settings => {
-                applyPrefs(toReaderPrefs(settings, currentPrefs));
+                applyPrefs(toReaderPrefs(settings));
             }),
         [applyPrefs, currentPrefs],
     );
@@ -300,13 +308,11 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         fit,
         gap,
         bg,
-        inlineCmts,
         setMode,
         setDirection,
         setFit,
         setGap,
         setBg,
-        setInlineCmts,
         // reading state
         page,
         setPage,

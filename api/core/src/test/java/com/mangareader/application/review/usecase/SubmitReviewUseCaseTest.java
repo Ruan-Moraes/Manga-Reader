@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +36,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 class SubmitRatingUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Mock
     private UserRepositoryPort userRepository;
@@ -76,10 +77,10 @@ class SubmitRatingUseCaseTest {
             // Arrange
             var input = new SubmitReviewInput(TITLE_ID, USER_ID, 4.0, 5.0, 3.5, 4.0, 3.0, 4.5, "Ótimo mangá!", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
-            when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(reviewRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
             when(localeResolver.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn(TITLE_NAME);
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = submitRatingUseCase.execute(input);
@@ -105,9 +106,9 @@ class SubmitRatingUseCaseTest {
             // Arrange
             var input = new SubmitReviewInput(TITLE_ID, USER_ID, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, null, null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
-            when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(reviewRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = submitRatingUseCase.execute(input);
@@ -122,9 +123,9 @@ class SubmitRatingUseCaseTest {
             // Arrange
             var input = new SubmitReviewInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
-            when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(reviewRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             submitRatingUseCase.execute(input);
@@ -162,9 +163,9 @@ class SubmitRatingUseCaseTest {
 
             var input = new SubmitReviewInput(TITLE_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 3.5, 4.0, "Agora está ótimo!", null, false);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
-            when(ratingRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.of(existing));
+            when(reviewRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.of(existing));
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault(TITLE_NAME)).build()));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = submitRatingUseCase.execute(input);
@@ -193,6 +194,23 @@ class SubmitRatingUseCaseTest {
             assertThatThrownBy(() -> submitRatingUseCase.execute(input))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("User");
+        }
+
+        @Test
+        @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")
+        void deveLancarExcecaoQuandoTituloNaoExiste() {
+            // Arrange
+            var input = new SubmitReviewInput(TITLE_ID, USER_ID, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, "Bom", null, false);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
+            when(reviewRepository.findByTitleIdAndUserId(TITLE_ID, USER_ID.toString())).thenReturn(Optional.empty());
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.empty());
+
+            // Act & Assert
+            assertThatThrownBy(() -> submitRatingUseCase.execute(input))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("Title");
+
+            verify(reviewRepository, never()).save(any());
         }
     }
 }

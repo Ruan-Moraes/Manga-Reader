@@ -3,6 +3,7 @@ import { Outlet, ScrollRestoration } from 'react-router-dom';
 
 import RouteSuspenseFallback from '@ui/RouteSuspenseFallback';
 
+import AdminFloatingActions from './AdminFloatingActions';
 import AdminHeader from './AdminHeader';
 import AdminSidebar from './AdminSidebar';
 
@@ -27,6 +28,7 @@ const AdminLayout = () => {
                                 </Suspense>
                             </div>
                         </main>
+                        <AdminFloatingActions />
                     </div>
                 </div>
             </div>

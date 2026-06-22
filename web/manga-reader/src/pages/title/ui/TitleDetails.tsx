@@ -123,7 +123,7 @@ const TitleDetails = () => {
             <RatingModal
                 isModalOpen={isRatingModalOpen}
                 closeModal={closeRatingModal}
-                onSubmitRating={data => submitReview.mutate(data)}
+                onSubmitRating={data => submitReview.mutateAsync(data).then(() => undefined)}
                 isSubmitting={submitReview.isPending}
                 titleName={title.name}
             />

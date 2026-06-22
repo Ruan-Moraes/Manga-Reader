@@ -10,7 +10,7 @@ import { getStoredSession } from '@shared/service/session';
 
 import { type UserRole } from '@entities/user';
 
-import { mapAuthResponseToUser } from '@features/auth';
+import { mapAuthResponseToUser } from '../api/authService';
 
 /** Redirects to login when there is no stored session, remembering the target path. */
 export const AuthGuard = ({ children }: { children: ReactNode }) => {

@@ -25,6 +25,7 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 @DisplayName("TitleRatingAggregateReadAdapter — Integração MongoDB")
 @Tag("testcontainers")
 class TitleRatingAggregateReadAdapterTest {
+    private static final String COLLECTION = "reviews_aggregate";
 
     @Autowired
     private TitleRatingAggregateReadPort readPort;
@@ -34,9 +35,9 @@ class TitleRatingAggregateReadAdapterTest {
 
     @BeforeEach
     void setUp() {
-        mongoTemplate.getCollection("title_rating_aggregate").drop();
+        mongoTemplate.getCollection(COLLECTION).drop();
 
-        mongoTemplate.getCollection("title_rating_aggregate").insertMany(List.of(
+        mongoTemplate.getCollection(COLLECTION).insertMany(List.of(
                 aggregateDoc("t1", 4.3, 7, 0, 1, 1, 2, 3),
                 aggregateDoc("t2", 2.0, 1, 0, 1, 0, 0, 0)));
     }

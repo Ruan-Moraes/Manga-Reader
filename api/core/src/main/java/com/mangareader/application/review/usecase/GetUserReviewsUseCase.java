@@ -17,9 +17,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GetUserReviewsUseCase {
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
 
     public Page<Review> execute(UUID userId, Pageable pageable) {
-        return ratingRepository.findByUserId(userId.toString(), pageable);
+        return reviewRepository.findByUserId(userId.toString(), pageable);
     }
 }

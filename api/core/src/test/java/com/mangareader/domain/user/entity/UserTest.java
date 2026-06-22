@@ -145,6 +145,65 @@ class UserTest {
     }
 
     @Test
+    @DisplayName("Deve iniciar favoriteGenres vazio no builder padrão")
+    void shouldInitializeFavoriteGenresEmpty() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        assertThat(user.getFavoriteGenres()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("updateFavoriteGenres deve remover duplicatas preservando a ordem")
+    void shouldDedupeFavoriteGenres() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        user.updateFavoriteGenres(List.of("acao", "aventura", "acao"));
+
+        assertThat(user.getFavoriteGenres()).containsExactly("acao", "aventura");
+    }
+
+    @Test
+    @DisplayName("updateFavoriteGenres deve aparar espacos antes de persistir")
+    void shouldTrimFavoriteGenres() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        user.updateFavoriteGenres(List.of(" acao ", "aventura"));
+
+        assertThat(user.getFavoriteGenres()).containsExactly("acao", "aventura");
+    }
+
+    @Test
+    @DisplayName("updateFavoriteGenres deve aceitar lista vazia (limpa a seleção)")
+    void shouldAcceptEmptyFavoriteGenres() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        user.updateFavoriteGenres(List.of("acao"));
+        user.updateFavoriteGenres(Collections.emptyList());
+
+        assertThat(user.getFavoriteGenres()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("updateFavoriteGenres deve rejeitar entrada em branco")
+    void shouldRejectBlankFavoriteGenre() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> user.updateFavoriteGenres(List.of("acao", "  ")));
+    }
+
+    @Test
+    @DisplayName("updateFavoriteGenres deve rejeitar acima do limite")
+    void shouldRejectTooManyFavoriteGenres() {
+        User user = User.builder().name("X").email("x@x.com").passwordHash("h").build();
+
+        List<String> tooMany = java.util.stream.IntStream.rangeClosed(1, User.MAX_FAVORITE_GENRES + 1)
+                .mapToObj(i -> "g" + i)
+                .toList();
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> user.updateFavoriteGenres(tooMany));
+    }
+
+    @Test
     @DisplayName("Construtor vazio deve manter campos opcionais nulos")
     void shouldKeepOptionalFieldsNullOnNoArgsConstructor() {
         User user = new User();

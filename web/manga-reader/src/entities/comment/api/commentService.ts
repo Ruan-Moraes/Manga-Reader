@@ -66,6 +66,17 @@ const toCommentData = (c: CommentResponse): CommentData => ({
 // Public API
 // ---------------------------------------------------------------------------
 
+const getCommentsPath = (targetType: string, targetId: string) => {
+    const normalizedType = targetType.toUpperCase();
+    const encodedId = encodeURIComponent(targetId);
+
+    if (normalizedType === 'TITLE') {
+        return `${API_URLS.COMMENTS}/title/${encodedId}`;
+    }
+
+    return `${API_URLS.COMMENTS}/target/${encodeURIComponent(normalizedType)}/${encodedId}`;
+};
+
 export const getCommentsByTarget = async (
     targetType: string,
     targetId: string,
@@ -75,8 +86,10 @@ export const getCommentsByTarget = async (
 ): Promise<PageResponse<CommentData>> => {
     const params: Record<string, string | number> = { page, size };
     if (options.crossLanguage) params.language = 'all';
-    const segment = targetType.toLowerCase();
-    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(`${API_URLS.COMMENTS}/${segment}/${targetId}`, { params });
+    const response = await api.get<ApiResponse<PageResponse<CommentResponse>>>(
+        getCommentsPath(targetType, targetId),
+        { params },
+    );
 
     const pageData = response.data.data;
 
@@ -94,19 +107,29 @@ export const getCommentsByTitleId = (
     options: { crossLanguage?: boolean } = {},
 ): Promise<PageResponse<CommentData>> => getCommentsByTarget('TITLE', titleId, page, size, options);
 
-export const createComment = async (data: { targetType: string; targetId: string; textContent: string; parentCommentId?: string | null }): Promise<CommentData> => {
+export const createComment = async (data: {
+    targetType: string;
+    targetId: string;
+    textContent: string;
+    imageContent?: string | null;
+    parentCommentId?: string | null;
+}): Promise<CommentData> => {
     const response = await api.post<ApiResponse<CommentResponse>>(API_URLS.COMMENTS, {
         targetType: data.targetType,
         targetId: data.targetId,
         textContent: data.textContent,
+        imageContent: data.imageContent ?? null,
         parentCommentId: data.parentCommentId ?? null,
     });
 
     return toCommentData(response.data.data);
 };
 
-export const updateComment = async (id: string, textContent: string): Promise<CommentData> => {
-    const response = await api.put<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}`, { textContent });
+export const updateComment = async (id: string, textContent: string, imageContent?: string | null): Promise<CommentData> => {
+    const response = await api.put<ApiResponse<CommentResponse>>(`${API_URLS.COMMENTS}/${id}`, {
+        textContent,
+        imageContent: imageContent ?? null,
+    });
 
     return toCommentData(response.data.data);
 };

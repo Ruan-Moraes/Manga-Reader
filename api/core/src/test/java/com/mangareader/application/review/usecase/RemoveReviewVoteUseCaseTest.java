@@ -30,7 +30,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 class RemoveReviewVoteUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Mock
     private ReviewVoteRepositoryPort reviewVoteRepository;
@@ -50,7 +50,7 @@ class RemoveReviewVoteUseCaseTest {
     void deveRemoverVoto() {
         Review r = rating(5, 1);
         var existing = ReviewVote.builder().ratingId(RATING_ID).userId(VOTER.toString()).value(VoteValue.UP).build();
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.of(existing));
 
         VoteResult result = useCase.execute(RATING_ID, VOTER);
@@ -58,26 +58,26 @@ class RemoveReviewVoteUseCaseTest {
         assertThat(result.upvotes()).isEqualTo(4);
         assertThat(result.myVote()).isNull();
         verify(reviewVoteRepository).delete(existing);
-        verify(ratingRepository).save(r);
+        verify(reviewRepository).save(r);
     }
 
     @Test
     @DisplayName("Idempotente: sem voto apenas retorna contadores, sem salvar")
     void deveSerIdempotenteSemVoto() {
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(rating(5, 1)));
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(rating(5, 1)));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.empty());
 
         VoteResult result = useCase.execute(RATING_ID, VOTER);
 
         assertThat(result.upvotes()).isEqualTo(5);
         verify(reviewVoteRepository, never()).delete(any());
-        verify(ratingRepository, never()).save(any());
+        verify(reviewRepository, never()).save(any());
     }
 
     @Test
     @DisplayName("Deve lançar ResourceNotFoundException quando a resenha não existe")
     void deveLancarQuandoResenhaNaoExiste() {
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.empty());
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.execute(RATING_ID, VOTER))
                 .isInstanceOf(ResourceNotFoundException.class);

@@ -5,6 +5,7 @@ import { Menu, MessagesSquare, Plus, Search, X } from 'lucide-react';
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { illustrationUrl } from '@shared/lib/illustrations';
+
 import { Button } from '@ui/Button';
 
 import { useForumFilters } from '../model/useForumFilters';
@@ -28,16 +29,20 @@ const TABS: Array<[ForumTab, string, string]> = [
 
 const Forum = () => {
     const { t } = useTranslation('forum');
+
     const navigate = useAppNavigate();
 
     const { category, setCategory, tab, setTab, topics } = useForumFilters();
+
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [hovered, setHovered] = useState<HoveredUser | null>(null);
 
     const categoryLabel = FORUM_CATEGORIES.find(c => c.key === category)?.label ?? t('ui.homeTitle');
+
     const pensando = illustrationUrl('pensando');
 
     const openTopic = (id: string) => navigate(ROUTES.FORUM_TOPIC(id.replace('t', '')));
+
     const openCompose = () => navigate(ROUTES.FORUM_NEW);
 
     return (

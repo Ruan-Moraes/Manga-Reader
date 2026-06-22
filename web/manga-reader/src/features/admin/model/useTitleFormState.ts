@@ -20,9 +20,6 @@ const DEFAULT_FORM: FormState = {
     cover: '',
     genres: [],
     status: '',
-    author: '',
-    artist: '',
-    publisher: '',
     adult: false,
 };
 
@@ -55,9 +52,8 @@ const useTitleFormState = () => {
                 cover: existing.cover ?? '',
                 genres: existing.genres,
                 status: existing.status ?? '',
-                author: existing.author ?? '',
-                artist: existing.artist ?? '',
-                publisher: existing.publisher ?? '',
+                authors: existing.authors?.map(author => ({ authorId: author.authorId, role: author.role })) ?? [],
+                publishers: existing.publishers?.map(publisher => publisher.id) ?? [],
                 adult: existing.adult,
             });
             const matched = existing.genres

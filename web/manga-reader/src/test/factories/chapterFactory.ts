@@ -6,6 +6,7 @@ export const buildChapter = (overrides: Partial<Chapter> = {}): Chapter => {
     chapterCounter += 1;
 
     return {
+        id: `chapter-${chapterCounter}`,
         number: String(chapterCounter),
         title: `Capitulo ${chapterCounter}`,
         releaseDate: '2026-01-15T10:00:00Z',

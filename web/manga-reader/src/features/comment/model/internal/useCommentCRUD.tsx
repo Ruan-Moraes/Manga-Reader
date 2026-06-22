@@ -27,8 +27,16 @@ const useCommentCRUD = (targetType: string) => {
     });
 
     const editCommentMutation = useMutation({
-        mutationFn: async ({ id, newTextContent }: { id: string; newTextContent: string | null; newImageContent: string | null }) => {
-            return await updateComment(id, newTextContent ?? '');
+        mutationFn: async ({
+            id,
+            newTextContent,
+            newImageContent,
+        }: {
+            id: string;
+            newTextContent: string | null;
+            newImageContent: string | null;
+        }) => {
+            return await updateComment(id, newTextContent ?? '', newImageContent);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
@@ -40,11 +48,22 @@ const useCommentCRUD = (targetType: string) => {
     });
 
     const replyCommentMutation = useMutation({
-        mutationFn: async ({ id, targetId, textContent }: { id: string; targetId: string; textContent: string | null }) => {
+        mutationFn: async ({
+            id,
+            targetId,
+            textContent,
+            imageContent,
+        }: {
+            id: string;
+            targetId: string;
+            textContent: string | null;
+            imageContent: string | null;
+        }) => {
             return await createComment({
                 targetType,
                 targetId,
                 textContent: textContent ?? '',
+                imageContent,
                 parentCommentId: id,
             });
         },
@@ -74,12 +93,13 @@ const useCommentCRUD = (targetType: string) => {
     );
 
     const replyComment = useCallback(
-        (id: string, targetId: string, textContent: string | null, _imageContent: string | null) => {
+        (id: string, targetId: string, textContent: string | null, imageContent: string | null) => {
             if (!requireAuth(t('validation.authReply'))) return;
             replyCommentMutation.mutate({
                 id,
                 targetId,
                 textContent,
+                imageContent,
             });
         },
         [replyCommentMutation, t],

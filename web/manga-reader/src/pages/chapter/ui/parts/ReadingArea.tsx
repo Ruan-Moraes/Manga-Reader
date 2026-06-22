@@ -1,9 +1,8 @@
-import { Fragment, type RefObject } from 'react';
+import { type RefObject } from 'react';
 
-import { INLINE_MARKERS, TOTAL_PAGES } from '../../model/readerData';
+import { TOTAL_PAGES } from '../../model/readerData';
 import type { Direction, Fit, ReadMode } from '../../model/useChapterReader';
 import { EndOfChapter } from './EndOfChapter';
-import { InlineCommentMarker } from './InlineCommentMarker';
 import { ReaderPagePlaceholder } from './ReaderPagePlaceholder';
 
 interface EndProps {
@@ -24,14 +23,13 @@ interface ReadingAreaProps {
     gap: number;
     chapter: number;
     page: number;
-    inlineCmts: boolean;
     listRef: RefObject<HTMLDivElement | null>;
     end: EndProps;
 }
 
 const PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1);
 
-export const ReadingArea = ({ mode, direction, fit, gap, chapter, page, inlineCmts, listRef, end }: ReadingAreaProps) => {
+export const ReadingArea = ({ mode, direction, fit, gap, chapter, page, listRef, end }: ReadingAreaProps) => {
     const rowDir = direction === 'rtl' ? 'row-reverse' : 'row';
 
     return (
@@ -39,10 +37,7 @@ export const ReadingArea = ({ mode, direction, fit, gap, chapter, page, inlineCm
             {mode === 'vertical' && (
                 <div className="reader-pages-vertical" ref={listRef}>
                     {PAGES.map(n => (
-                        <Fragment key={n}>
-                            <ReaderPagePlaceholder n={n} chapter={chapter} />
-                            {inlineCmts && INLINE_MARKERS[n] && <InlineCommentMarker n={n} info={INLINE_MARKERS[n]} />}
-                        </Fragment>
+                        <ReaderPagePlaceholder key={n} n={n} chapter={chapter} />
                     ))}
                     <EndOfChapter {...end} />
                 </div>

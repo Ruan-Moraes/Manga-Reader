@@ -181,6 +181,7 @@ export const buildEnrichedProfile = (overrides: Partial<EnrichedProfile> = {}): 
         bannerUrl: '/banners/default.png',
         role: 'user',
         socialLinks: [],
+        favoriteGenres: [],
         createdAt: '2025-06-01T12:00:00Z',
         stats: buildProfileStats(),
         recommendations: [],

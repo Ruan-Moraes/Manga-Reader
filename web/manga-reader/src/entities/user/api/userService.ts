@@ -29,6 +29,22 @@ export const updateProfile = async (payload: UpdateProfilePayload): Promise<User
     return response.data.data;
 };
 
+export type FavoriteGenres = {
+    favoriteGenres: string[];
+};
+
+export const getFavoriteGenres = async (): Promise<string[]> => {
+    const response = await api.get<ApiResponse<FavoriteGenres>>(`${API_URLS.USERS}/me/favorite-genres`);
+
+    return response.data.data.favoriteGenres;
+};
+
+export const updateFavoriteGenres = async (favoriteGenres: string[]): Promise<string[]> => {
+    const response = await api.patch<ApiResponse<FavoriteGenres>>(`${API_URLS.USERS}/me/favorite-genres`, { favoriteGenres });
+
+    return response.data.data.favoriteGenres;
+};
+
 export const getEnrichedProfile = async (userId: string): Promise<EnrichedProfile> => {
     const response = await api.get<ApiResponse<EnrichedProfile>>(`${API_URLS.USERS}/${userId}/profile`);
 

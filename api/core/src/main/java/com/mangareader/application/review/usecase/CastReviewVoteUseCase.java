@@ -29,30 +29,30 @@ import lombok.RequiredArgsConstructor;
 @Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class CastReviewVoteUseCase {
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
     private final ReviewVoteRepositoryPort reviewVoteRepository;
 
-    public VoteResult execute(String ratingId, UUID userId, VoteValue value) {
-        Review rating = ratingRepository.findById(ratingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Rating", "id", ratingId));
+    public VoteResult execute(String reviewId, UUID userId, VoteValue value) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
 
         String voterId = userId.toString();
 
-        if (voterId.equals(rating.getUserId())) {
+        if (voterId.equals(review.getUserId())) {
             throw new BusinessRuleException("Não é possível votar na própria resenha", 409);
         }
 
-        ReviewVote existing = reviewVoteRepository.findByRatingIdAndUserId(ratingId, voterId).orElse(null);
+        ReviewVote existing = reviewVoteRepository.findByRatingIdAndUserId(reviewId, voterId).orElse(null);
 
         VoteValue myVote = VoteToggle.apply(
-                rating,
+                review,
                 existing != null ? existing.getValue() : null,
                 value,
                 new VoteToggle.VoteStore() {
                     @Override
                     public void create(VoteValue v) {
                         reviewVoteRepository.save(ReviewVote.builder()
-                                .ratingId(ratingId)
+                                .ratingId(reviewId)
                                 .userId(voterId)
                                 .value(v)
                                 .build());
@@ -70,8 +70,8 @@ public class CastReviewVoteUseCase {
                     }
                 });
 
-        ratingRepository.save(rating);
+        reviewRepository.save(review);
 
-        return new VoteResult(rating.getUpvotes(), rating.getDownvotes(), myVote);
+        return new VoteResult(review.getUpvotes(), review.getDownvotes(), myVote);
     }
 }

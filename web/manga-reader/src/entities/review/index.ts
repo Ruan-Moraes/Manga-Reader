@@ -11,6 +11,8 @@ export { default as useDeleteReview } from './model/useDeleteReview';
 export { default as ReviewCard } from './ui/ReviewCard';
 export { default as RatingStars } from './ui/RatingStars';
 export { default as RatingModal } from './ui/modal/RatingModal';
+export { default as RatingSummary, type RatingSummaryProps } from './ui/RatingSummary';
+export { default as ReviewSortDropdown, type ReviewSortDropdownProps } from './ui/ReviewSortDropdown';
 
 // Services
 export {

@@ -25,7 +25,7 @@ import com.mangareader.domain.review.entity.Review;
 class GetRatingsByTitleUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @InjectMocks
     private GetReviewsByTitleUseCase getRatingsByTitleUseCase;
@@ -47,7 +47,7 @@ class GetRatingsByTitleUseCaseTest {
                     Review.builder().id("r3").titleId(TITLE_ID).overallRating(4.0).userName("User C").build()
             );
             Page<Review> page = new PageImpl<>(ratings, pageable, 3);
-            when(ratingRepository.findByTitleId(TITLE_ID, null, pageable)).thenReturn(page);
+            when(reviewRepository.findByTitleId(TITLE_ID, null, pageable)).thenReturn(page);
 
             // Act
             Page<Review> result = getRatingsByTitleUseCase.execute(TITLE_ID, null, pageable);
@@ -64,7 +64,7 @@ class GetRatingsByTitleUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(0, 20);
             Page<Review> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-            when(ratingRepository.findByTitleId(TITLE_ID, null, pageable)).thenReturn(emptyPage);
+            when(reviewRepository.findByTitleId(TITLE_ID, null, pageable)).thenReturn(emptyPage);
 
             // Act
             Page<Review> result = getRatingsByTitleUseCase.execute(TITLE_ID, null, pageable);
@@ -80,7 +80,7 @@ class GetRatingsByTitleUseCaseTest {
             Pageable pageable = PageRequest.of(0, 20);
             Page<Review> page = new PageImpl<>(
                     List.of(Review.builder().id("r1").titleId(TITLE_ID).overallRating(5.0).build()), pageable, 1);
-            when(ratingRepository.findByTitleId(TITLE_ID, 5, pageable)).thenReturn(page);
+            when(reviewRepository.findByTitleId(TITLE_ID, 5, pageable)).thenReturn(page);
 
             Page<Review> result = getRatingsByTitleUseCase.execute(TITLE_ID, 5, pageable);
 

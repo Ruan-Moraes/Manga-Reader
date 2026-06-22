@@ -4,7 +4,16 @@ import { http, HttpResponse } from 'msw';
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
 
-import { getCommentsByTarget, getCommentsByTitleId, createComment, updateComment, deleteComment, likeComment, dislikeComment, getUserReactions } from '../commentService';
+import {
+    getCommentsByTarget,
+    getCommentsByTitleId,
+    createComment,
+    updateComment,
+    deleteComment,
+    likeComment,
+    dislikeComment,
+    getUserReactions,
+} from '../commentService';
 
 const buildCommentResponse = (overrides = {}) => ({
     id: 'comment-1',
@@ -27,11 +36,11 @@ const buildCommentResponse = (overrides = {}) => ({
 
 describe('commentService', () => {
     describe('getCommentsByTarget', () => {
-        it('deve chamar URL correta para targetType NEWS', async () => {
-            const comments = [buildCommentResponse({ targetType: 'NEWS', targetId: 'news-1' })];
+        it('deve chamar endpoint generico para targetType REVIEW', async () => {
+            const comments = [buildCommentResponse({ targetType: 'REVIEW', targetId: 'review-1' })];
 
             server.use(
-                http.get(`*${API_URLS.COMMENTS}/news/news-1`, () =>
+                http.get(`*${API_URLS.COMMENTS}/target/REVIEW/review-1`, () =>
                     HttpResponse.json({
                         data: { content: comments, page: 0, size: 20, totalElements: 1, totalPages: 1, last: true },
                         success: true,
@@ -39,15 +48,15 @@ describe('commentService', () => {
                 ),
             );
 
-            const result = await getCommentsByTarget('NEWS', 'news-1');
+            const result = await getCommentsByTarget('REVIEW', 'review-1');
             expect(result.content).toHaveLength(1);
         });
 
-        it('deve chamar URL correta para targetType CHAPTER', async () => {
+        it('deve chamar endpoint generico para targetType CHAPTER', async () => {
             const comments = [buildCommentResponse({ targetType: 'CHAPTER', targetId: 'chapter-uuid' })];
 
             server.use(
-                http.get(`*${API_URLS.COMMENTS}/chapter/chapter-uuid`, () =>
+                http.get(`*${API_URLS.COMMENTS}/target/CHAPTER/chapter-uuid`, () =>
                     HttpResponse.json({
                         data: { content: comments, page: 0, size: 20, totalElements: 1, totalPages: 1, last: true },
                         success: true,
@@ -152,6 +161,25 @@ describe('commentService', () => {
             await createComment({ targetType: 'TITLE', targetId: 'title-1', textContent: 'Resposta', parentCommentId: 'parent-1' });
         });
 
+        it('deve enviar imageContent quando fornecido', async () => {
+            const comment = buildCommentResponse({ imageContent: 'https://example.com/image.png' });
+
+            server.use(
+                http.post(`*${API_URLS.COMMENTS}`, async ({ request }) => {
+                    const body = (await request.json()) as Record<string, unknown>;
+                    expect(body.imageContent).toBe('https://example.com/image.png');
+                    return HttpResponse.json({ data: comment, success: true });
+                }),
+            );
+
+            await createComment({
+                targetType: 'TITLE',
+                targetId: 'title-1',
+                textContent: 'Resposta',
+                imageContent: 'https://example.com/image.png',
+            });
+        });
+
         it('deve lançar erro quando API retorna 500 no createComment', async () => {
             server.use(http.post(`*${API_URLS.COMMENTS}`, () => HttpResponse.json(null, { status: 500 })));
 
@@ -161,13 +189,24 @@ describe('commentService', () => {
 
     describe('updateComment', () => {
         it('deve atualizar comentario e retornar dados mapeados', async () => {
-            const comment = buildCommentResponse({ textContent: 'Texto editado', edited: true });
+            const comment = buildCommentResponse({
+                textContent: 'Texto editado',
+                imageContent: 'https://example.com/edit.png',
+                edited: true,
+            });
 
-            server.use(http.put(`*${API_URLS.COMMENTS}/comment-1`, () => HttpResponse.json({ data: comment, success: true })));
+            server.use(
+                http.put(`*${API_URLS.COMMENTS}/comment-1`, async ({ request }) => {
+                    const body = (await request.json()) as Record<string, unknown>;
+                    expect(body.imageContent).toBe('https://example.com/edit.png');
+                    return HttpResponse.json({ data: comment, success: true });
+                }),
+            );
 
-            const result = await updateComment('comment-1', 'Texto editado');
+            const result = await updateComment('comment-1', 'Texto editado', 'https://example.com/edit.png');
 
             expect(result.textContent).toBe('Texto editado');
+            expect(result.imageContent).toBe('https://example.com/edit.png');
             expect(result.edited).toBe(true);
         });
 

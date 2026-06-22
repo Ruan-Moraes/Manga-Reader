@@ -62,7 +62,7 @@ export const EventSpecialCard = ({ event, onOpen }: { event: CommunityEvent; onO
                         {fmtRange(event.start, event.end)}
                     </div>
                     {!!event.chapters && event.chapters > 0 && <div style={{ fontSize: 12, color: '#999' }}>{t('ui.chaptersCount', { count: event.chapters })}</div>}
-                    {!!event.participants && event.participants > 0 && <div style={{ fontSize: 12, color: '#999' }}>{t('ui.participantsCount', { count: event.participants.toLocaleString('pt-BR') })}</div>}
+                    {!!event.participants && event.participants > 0 && <div style={{ fontSize: 12, color: '#999' }}>{t('ui.participantsCount', { count: event.participants })}</div>}
                 </div>
 
                 {(isActive || isUpcoming) && (

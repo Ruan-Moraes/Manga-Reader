@@ -4,7 +4,24 @@
         "openMenu": "Abrir menu",
         "closeMenu": "Fechar menu",
         "authors": "Autores",
-        "publishers": "Editoras"
+        "publishers": "Editoras",
+        "sectionGeneral": "Geral",
+        "overview": "Visão geral",
+        "sectionContent": "Conteúdo",
+        "titles": "Títulos",
+        "tags": "Tags",
+        "news": "Notícias",
+        "events": "Eventos",
+        "sectionCommunity": "Comunidade",
+        "users": "Usuários",
+        "groups": "Grupos",
+        "sectionMonetization": "Monetização",
+        "financial": "Financeiro",
+        "subscriptions": "Assinaturas"
+    },
+    "quickActions": {
+        "home": "Voltar ao início",
+        "settings": "Idioma e interface"
     },
     "common": {
         "cancel": "Cancelar",

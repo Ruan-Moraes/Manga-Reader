@@ -26,6 +26,7 @@ import com.mangareader.domain.comment.valueobject.CommentTarget;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -121,7 +122,11 @@ class CreateCommentUseCaseTest {
             CreateCommentInput input = new CreateCommentInput(
                     CommentTarget.TITLE, TITLE_ID, "Concordo!", null, parentId, USER_ID
             );
-            Comment parentComment = Comment.builder().id(parentId).build();
+            Comment parentComment = Comment.builder()
+                    .id(parentId)
+                    .targetType(CommentTarget.TITLE)
+                    .targetId(TITLE_ID)
+                    .build();
 
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(commentRepository.findById(parentId)).thenReturn(Optional.of(parentComment));
@@ -133,6 +138,31 @@ class CreateCommentUseCaseTest {
             // Assert
             assertThat(result.getParentCommentId()).isEqualTo(parentId);
             verify(commentRepository).findById(parentId);
+        }
+
+        @Test
+        @DisplayName("Deve rejeitar resposta quando comentário pai pertence a outro alvo")
+        void deveRejeitarRespostaComPaiDeOutroAlvo() {
+            // Arrange
+            String parentId = "parent-comment-id";
+            CreateCommentInput input = new CreateCommentInput(
+                    CommentTarget.TITLE, TITLE_ID, "Resposta cruzada", null, parentId, USER_ID
+            );
+            Comment parentComment = Comment.builder()
+                    .id(parentId)
+                    .targetType(CommentTarget.NEWS)
+                    .targetId("news-1")
+                    .build();
+
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
+            when(commentRepository.findById(parentId)).thenReturn(Optional.of(parentComment));
+
+            // Act & Assert
+            assertThatThrownBy(() -> createCommentUseCase.execute(input))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .hasMessageContaining("outro alvo");
+
+            verify(commentRepository, never()).save(any());
         }
 
         @Test
@@ -176,6 +206,23 @@ class CreateCommentUseCaseTest {
 
             verify(commentRepository, never()).save(any());
         }
+
+        @Test
+        @DisplayName("Deve rejeitar comentário sem texto e sem imagem")
+        void deveRejeitarComentarioSemTextoESemImagem() {
+            // Arrange
+            CreateCommentInput input = new CreateCommentInput(
+                    CommentTarget.TITLE, TITLE_ID, " ", null, null, USER_ID
+            );
+
+            // Act & Assert
+            assertThatThrownBy(() -> createCommentUseCase.execute(input))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .hasMessageContaining("texto ou imagem");
+
+            verify(userRepository, never()).findById(any());
+            verify(commentRepository, never()).save(any());
+        }
     }
 
     @Nested
@@ -198,6 +245,25 @@ class CreateCommentUseCaseTest {
 
             // Assert
             assertThat(result.getTextContent()).isEqualTo("Veja esta cena!");
+            assertThat(result.getImageContent()).isEqualTo("https://example.com/img.png");
+        }
+
+        @Test
+        @DisplayName("Deve criar comentário apenas com imagem")
+        void deveCriarComentarioApenasComImagem() {
+            // Arrange
+            CreateCommentInput input = new CreateCommentInput(
+                    CommentTarget.TITLE, TITLE_ID, null, "https://example.com/img.png", null, USER_ID
+            );
+
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
+            when(commentRepository.save(any(Comment.class))).thenAnswer(i -> i.getArgument(0));
+
+            // Act
+            Comment result = createCommentUseCase.execute(input);
+
+            // Assert
+            assertThat(result.getTextContent()).isNull();
             assertThat(result.getImageContent()).isEqualTo("https://example.com/img.png");
         }
     }

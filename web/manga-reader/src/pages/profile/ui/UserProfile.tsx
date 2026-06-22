@@ -190,7 +190,10 @@ const UserProfile = () => {
                         reviewTitle: editing.reviewTitle,
                         spoiler: editing.spoiler,
                     }}
-                    onSubmitRating={data => updateReviewMutation.mutate({ id: editing.id, ...data }, { onSuccess: () => setEditing(null) })}
+                    onSubmitRating={async data => {
+                        await updateReviewMutation.mutateAsync({ id: editing.id, ...data });
+                        setEditing(null);
+                    }}
                 />
             )}
         </PageContainer>

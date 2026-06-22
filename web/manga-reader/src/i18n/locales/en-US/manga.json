@@ -146,13 +146,6 @@
         "dirLtr": "LTR",
         "dirRtl": "RTL (manga)",
         "gapSection": "Space between pages",
-        "behaviorSection": "Behavior",
-        "inlineCommentsTitle": "Per-page comments",
-        "inlineCommentsSub": "Show discussions between panels",
-        "markerLabel": "{{count}} comments on pg. {{n}}",
-        "threadCount": "{{count}} comments",
-        "threadMarking": "· marking page {{n}}",
-        "seeOthers": "See the other {{count}} comments",
         "discussionEyebrow": "Discussion",
         "commentsTitle": "Comments · ch. {{chapter}}",
         "commentsInChapter": "comments on this chapter",
@@ -177,7 +170,8 @@
         "navBackLabel": "Back to",
         "navBackTitle": "Title details",
         "navForumLabel": "Discussion",
-        "navForumTitle": "{{count}} posts in the forum"
+        "navForumTitle": "{{count}} posts in the forum",
+        "commentsLoading": "Loading comments…"
     },
     "releases": {
         "eyebrow": "New chapters",

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  * DTO de comentário unificado retornado ao frontend.
  * <p>
- * {@code targetType}/{@code targetId} identificam o alvo (obra, resenha ou
- * tópico de fórum). Contadores de voto seguem o modelo único
+ * {@code targetType}/{@code targetId} identificam o alvo (obra, capítulo,
+ * notícia, resenha ou tópico de fórum). Contadores de voto seguem o modelo único
  * ({@code upvotes}/{@code downvotes}). O voto do usuário ({@code myVote}) é
  * obtido em lote pelo endpoint {@code /user-votes}.
  */

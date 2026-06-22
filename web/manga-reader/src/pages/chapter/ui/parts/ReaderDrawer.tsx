@@ -10,13 +10,11 @@ interface ReaderDrawerProps {
     fit: Fit;
     gap: number;
     bg: Bg;
-    inlineCmts: boolean;
     onMode: (v: ReadMode) => void;
     onDirection: (v: Direction) => void;
     onFit: (v: Fit) => void;
     onGap: (v: number) => void;
     onBg: (v: Bg) => void;
-    onInlineCmts: (v: boolean) => void;
     onClose: () => void;
 }
 
@@ -34,7 +32,7 @@ const Pill = ({ icon: Icon, label, active, onClick }: { icon?: LucideIcon; label
     </button>
 );
 
-export const ReaderDrawer = ({ mode, direction, fit, gap, bg, inlineCmts, onMode, onDirection, onFit, onGap, onBg, onInlineCmts, onClose }: ReaderDrawerProps) => {
+export const ReaderDrawer = ({ mode, direction, fit, gap, bg, onMode, onDirection, onFit, onGap, onBg, onClose }: ReaderDrawerProps) => {
     const { t } = useTranslation('manga');
 
     return (
@@ -90,16 +88,6 @@ export const ReaderDrawer = ({ mode, direction, fit, gap, bg, inlineCmts, onMode
                             <Pill label={t('reader.bgDark')} active={bg === 'dark'} onClick={() => onBg('dark')} />
                             <Pill label={t('reader.bgPaper')} active={bg === 'paper'} onClick={() => onBg('paper')} />
                         </div>
-                    </OptGroup>
-
-                    <OptGroup label={t('reader.behaviorSection')}>
-                        <button type="button" className="reader-opt-toggle" data-on={inlineCmts ? 'true' : 'false'} onClick={() => onInlineCmts(!inlineCmts)} aria-pressed={inlineCmts}>
-                            <span className="reader-opt-toggle-body">
-                                <span className="reader-opt-toggle-title">{t('reader.inlineCommentsTitle')}</span>
-                                <span className="reader-opt-toggle-sub">{t('reader.inlineCommentsSub')}</span>
-                            </span>
-                            <span className="reader-switch" />
-                        </button>
                     </OptGroup>
 
                     <OptGroup label={t('reader.shortcutsSection')}>

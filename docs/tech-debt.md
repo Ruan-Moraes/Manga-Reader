@@ -579,6 +579,27 @@ adicionado ao `setup.ts` (destrava testar `Modal` nativo).
 
 ---
 
+## Auditoria de marcadores `// TODO` (2026-06-21)
+
+Nova varredura completa de `TODO/FIXME/HACK/XXX` (todos no front; backend sem marcadores
+acionáveis). Resolvidos em 4 fases:
+
+- **Fase 1 (limpeza)**: `Markdown.tsx` (spoiler já 100% implementado — TODO obsoleto
+  removido); `NavSearch.tsx` (TODO de estilo removido; botão de limpar passou a usar o
+  `IconButton` compartilhado + chave i18n `search.clearAria`); `RatingModal.tsx` (já bem
+  decomposto — TODO removido; helper `averageScore` deduplicado).
+- **Fase 2 (`GroupProfile`)**: container manual `max-w-[1240px]` → `PageContainer`
+  (size default); skeleton inline → `shared/ui/Skeleton`.
+- **Fase 3 (reuso)**: `NavSearch` consolidado no `IconButton`; `ReviewsTab` quebrado —
+  `RatingSummary` e `ReviewSortDropdown` movidos para `entities/review/ui` (reusáveis),
+  lista extraída em `pages/title/ui/parts/ReviewsList`.
+- **Fase 4a (chapter id)**: a entidade `Chapter` (Mongo) já tinha `id`; exposto em
+  `ChapterResponse` (sem migração). `CommentTarget` ganhou **`CHAPTER`** (modelo unificado
+  polimórfico). Front: `Chapter` type ganhou `id`, hook `useChapter`, e
+  `ReaderCommentsPanel` agora renderiza os comentários reais (`CommentsSection`
+  `targetType="CHAPTER"`) em vez do placeholder.
+- **Fase 4b (gêneros favoritos)**: ver DT-48.
+
 ## Auditoria de marcadores `// TODO` (2026-06-01)
 
 Sweep de `// TODO/Todo/FIXME` no projeto (4 acionáveis; resto = "todo o histórico"
@@ -806,19 +827,30 @@ testes de hook/serviço (sem jest-dom) rodam verdes.
 recentes e listas **lendo/concluído** (`GET /api/library/user/{userId}` — novo), tudo
 de **qualquer** usuário via `useEnrichedProfile`/`useUserReviews`/`useUserLibrary`.
 
+**Resolvido nesta leva (2026-06-21)** — **Gêneros favoritos** agora têm backend:
+seleção manual persistida em `users.favorite_genres` (jsonb, Flyway `V37`), validada
+contra o vocabulário de `tags` (`GenreValidator`). Endpoints `GET/PATCH
+/api/users/me/favorite-genres` + exposição em `EnrichedProfileResponse.favoriteGenres`.
+Front: seletor de chips em `InformacoesTab` (cross-import `@entities/catalog-filter/@x/user`)
+e leitura real em `useProfileData`. TODO no código para futuramente *sugerir*
+automaticamente a partir das obras mais lidas/avaliadas (mini-algoritmo) e mesclar com a
+seleção manual.
+
 **Ainda simulado** (mock em `src/mock/userProfile.ts`, marcado com `// TODO(tech-debt)`):
 
 - **Seguidores/seguindo** — não existe domínio social (follow/unfollow, contagens, listas).
-- **Gêneros favoritos** do usuário — sem fonte no backend.
-- **Grupos seguidos** — `GroupController` não expõe "grupos de um usuário".
+- **Grupos seguidos** — `GroupController` não expõe "grupos seguidos por um usuário"
+  (a infra de apoio `GroupUser{SUPPORTER}` existe; falta query/endpoint
+  `findGroupsBySupporterUserId` + read use case).
 - **Feed de atividade** — sem agregação (há `recentViewHistory`, mas não o feed completo).
 - **Handle/username e selo "verificado"** — não existem no perfil do backend (handle hoje
   é derivado do nome no front).
 
 **Impacto**: parte do perfil mistura dado real + fake. Não bloqueante.
 
-**Recomendação**: criar os domínios/endpoints (grafo social, grupos por usuário, gêneros
-favoritos, activity feed, username) quando a feature de rede social entrar no roadmap.
+**Recomendação**: criar os domínios/endpoints restantes (grafo social, grupos seguidos por
+usuário, activity feed, username) quando a feature de rede social entrar no roadmap — cada
+um é um épico próprio (passar pela skill `database-design`).
 
 ### DT-49: Biblioteca pública sem checagem de visibilidade — **Em aberto (Baixa)**
 

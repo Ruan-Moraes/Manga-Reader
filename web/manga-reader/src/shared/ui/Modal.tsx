@@ -65,7 +65,7 @@ export const Modal = ({ open, onClose, title, description, eyebrow, size = 'md',
                 </div>
                 {!hideClose && <IconButton icon={X} aria-label="Fechar" onClick={onClose} />}
             </header>
-            <div className={`max-h-[75vh] overflow-y-auto p-2 ${bodyClassName ?? ''}`}>{children}</div>
+            <div className={`max-h-[75vh] overflow-y-auto p-2 sm:p-4 ${bodyClassName ?? ''}`}>{children}</div>
             {footer && <footer className="flex items-center justify-end gap-2 border-t border-mr-border-subtle p-4">{footer}</footer>}
         </dialog>
     );

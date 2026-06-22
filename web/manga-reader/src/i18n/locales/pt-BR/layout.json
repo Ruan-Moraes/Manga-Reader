@@ -87,7 +87,8 @@
         "ariaLabel": "Buscar",
         "suggestionsTitle": "Sugestões para você",
         "recentTitle": "Buscas recentes",
-        "kbdHint": "Atalho ⌘K para focar a busca"
+        "kbdHint": "Atalho ⌘K para focar a busca",
+        "clearAria": "Limpar busca"
     },
     "navigation": {
         "openMenu": "Abrir menu"

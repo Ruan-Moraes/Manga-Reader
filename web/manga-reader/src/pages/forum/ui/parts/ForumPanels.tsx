@@ -86,7 +86,7 @@ export const ForumPanelRanking = () => {
                             <SquareAvatar initials={u.initials} color={u.color} size={28} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div className="forum-rank-name">{u.name}</div>
-                                <div className="forum-rank-meta">{t('ui.rankMeta', { level: u.level, posts: u.posts })}</div>
+                                <div className="forum-rank-meta">{t('ui.rankMeta', { level: u.level, posts: r.posts })}</div>
                             </div>
                             <div className="forum-rank-points">{r.points}</div>
                         </li>

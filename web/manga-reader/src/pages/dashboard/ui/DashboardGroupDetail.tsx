@@ -10,6 +10,7 @@ const DashboardGroupDetail = () => {
     const { groupId } = useParams<{ groupId: string }>();
     const navigate = useNavigate();
     const { group, isLoading, isError, refetch } = useAdminGroupDetail(groupId ?? '');
+    const editPath = groupId ? ROUTES.DASHBOARD_GROUP_EDIT(groupId) : ROUTES.DASHBOARD_GROUPS;
 
     if (isLoading) {
         return (
@@ -46,7 +47,7 @@ const DashboardGroupDetail = () => {
                     {t('common.back')}
                 </button>
                 <button
-                    onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUP_EDIT(groupId)}`)}
+                    onClick={() => navigate(`${WEB_BASE_URL}${editPath}`)}
                     className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                 >
                     {t('common.edit', 'Editar')}

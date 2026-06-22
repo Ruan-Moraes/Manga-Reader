@@ -34,7 +34,10 @@ describe('useCommentCRUD', () => {
 
         await waitFor(() => expect(result.current.isDeletingComment).toBe(false));
 
-        expect(showSuccessToast).toHaveBeenCalledWith('Comentário deletado com sucesso.', expect.objectContaining({ toastId: 'delete-comment-success' }));
+        expect(showSuccessToast).toHaveBeenCalledWith(
+            'Comentário deletado com sucesso.',
+            expect.objectContaining({ toastId: 'delete-comment-success' }),
+        );
     });
 
     it('deve mostrar toast de erro ao falhar ao deletar', async () => {
@@ -51,20 +54,57 @@ describe('useCommentCRUD', () => {
         });
 
         await waitFor(() =>
-            expect(showErrorToast).toHaveBeenCalledWith('Erro ao deletar comentário.', expect.objectContaining({ toastId: 'delete-comment-error' })),
+            expect(showErrorToast).toHaveBeenCalledWith(
+                'Erro ao deletar comentário.',
+                expect.objectContaining({ toastId: 'delete-comment-error' }),
+            ),
         );
     });
 
     it('deve editar comentário e mostrar toast de sucesso', async () => {
+        let payload: Record<string, unknown> | null = null;
+        server.use(
+            http.put('*/api/comments/:id', async ({ request }) => {
+                payload = (await request.json()) as Record<string, unknown>;
+                return HttpResponse.json({
+                    success: true,
+                    data: {
+                        id: 'comment-1',
+                        targetType: 'TITLE',
+                        targetId: 'title-1',
+                        parentCommentId: null,
+                        userId: 'user-1',
+                        userName: 'User',
+                        userPhoto: '',
+                        isHighlighted: false,
+                        edited: true,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        textContent: 'Updated text',
+                        imageContent: 'https://example.com/edit.png',
+                        upvotes: 0,
+                        downvotes: 0,
+                    },
+                });
+            }),
+        );
+
         const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
-            result.current.editComment('comment-1', 'Updated text', null);
+            result.current.editComment('comment-1', 'Updated text', 'https://example.com/edit.png');
         });
 
         await waitFor(() => expect(result.current.isEditingComment).toBe(false));
 
-        expect(showSuccessToast).toHaveBeenCalledWith('Comentário editado com sucesso.', expect.objectContaining({ toastId: 'edit-comment-success' }));
+        expect(payload).toMatchObject({
+            textContent: 'Updated text',
+            imageContent: 'https://example.com/edit.png',
+        });
+        expect(showSuccessToast).toHaveBeenCalledWith(
+            'Comentário editado com sucesso.',
+            expect.objectContaining({ toastId: 'edit-comment-success' }),
+        );
     });
 
     it('deve mostrar toast de erro ao falhar ao editar', async () => {
@@ -81,20 +121,59 @@ describe('useCommentCRUD', () => {
         });
 
         await waitFor(() =>
-            expect(showErrorToast).toHaveBeenCalledWith('Erro ao editar comentário.', expect.objectContaining({ toastId: 'edit-comment-error' })),
+            expect(showErrorToast).toHaveBeenCalledWith(
+                'Erro ao editar comentário.',
+                expect.objectContaining({ toastId: 'edit-comment-error' }),
+            ),
         );
     });
 
     it('deve responder comentário e mostrar toast de sucesso', async () => {
+        let payload: Record<string, unknown> | null = null;
+        server.use(
+            http.post('*/api/comments', async ({ request }) => {
+                payload = (await request.json()) as Record<string, unknown>;
+                return HttpResponse.json({
+                    success: true,
+                    data: {
+                        id: 'reply-1',
+                        targetType: 'TITLE',
+                        targetId: 'title-1',
+                        parentCommentId: 'comment-1',
+                        userId: 'user-1',
+                        userName: 'User',
+                        userPhoto: '',
+                        isHighlighted: false,
+                        edited: false,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        textContent: 'Nice reply!',
+                        imageContent: 'https://example.com/reply.png',
+                        upvotes: 0,
+                        downvotes: 0,
+                    },
+                });
+            }),
+        );
+
         const { result } = renderHookWithProviders(() => useCommentCRUD('TITLE'));
 
         act(() => {
-            result.current.replyComment('comment-1', 'title-1', 'Nice reply!', null);
+            result.current.replyComment('comment-1', 'title-1', 'Nice reply!', 'https://example.com/reply.png');
         });
 
         await waitFor(() => expect(result.current.isReplyingComment).toBe(false));
 
-        expect(showSuccessToast).toHaveBeenCalledWith('Resposta adicionada com sucesso.', expect.objectContaining({ toastId: 'reply-comment-success' }));
+        expect(payload).toMatchObject({
+            targetType: 'TITLE',
+            targetId: 'title-1',
+            parentCommentId: 'comment-1',
+            imageContent: 'https://example.com/reply.png',
+        });
+        expect(showSuccessToast).toHaveBeenCalledWith(
+            'Resposta adicionada com sucesso.',
+            expect.objectContaining({ toastId: 'reply-comment-success' }),
+        );
     });
 
     it('deve mostrar toast de erro ao falhar ao responder', async () => {
@@ -111,7 +190,10 @@ describe('useCommentCRUD', () => {
         });
 
         await waitFor(() =>
-            expect(showErrorToast).toHaveBeenCalledWith('Erro ao responder comentário.', expect.objectContaining({ toastId: 'reply-comment-error' })),
+            expect(showErrorToast).toHaveBeenCalledWith(
+                'Erro ao responder comentário.',
+                expect.objectContaining({ toastId: 'reply-comment-error' }),
+            ),
         );
     });
 

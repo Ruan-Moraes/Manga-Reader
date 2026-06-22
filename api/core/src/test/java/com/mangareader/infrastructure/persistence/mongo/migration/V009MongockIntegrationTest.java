@@ -1,6 +1,10 @@
 package com.mangareader.infrastructure.persistence.mongo.migration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +20,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -62,6 +68,13 @@ class V009MongockIntegrationTest {
     @EnableAutoConfiguration
     @EnableMongock
     static class ItApp {
+        @Bean
+        JdbcTemplate jdbcTemplate() {
+            JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+            when(jdbcTemplate.queryForObject(anyString(), eq(Boolean.class)))
+                    .thenReturn(false);
+            return jdbcTemplate;
+        }
     }
 
     @Autowired

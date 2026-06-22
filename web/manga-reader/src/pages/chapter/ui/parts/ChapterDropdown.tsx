@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowDownAZ, ArrowDownZA, ChevronDown, Search, X } from 'lucide-react';
+import { ArrowDownAZ, ArrowDownZA, Search, X } from 'lucide-react';
 
 import { Badge } from '@ui/Badge';
 

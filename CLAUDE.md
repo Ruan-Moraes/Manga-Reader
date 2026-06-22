@@ -84,6 +84,15 @@ Aplicação concreta de i18n (receitas de nova entidade traduzível) →
 
 ---
 
+## Mobile (`/mobile/`)
+
+React Native + Expo. Segue a mesma arquitetura FSD do web.
+**Ler obrigatoriamente antes de qualquer trabalho no mobile:** [`mobile/README.md`](mobile/README.md)
+
+Regras principais: fundação (tema, i18n, estado global) antes de qualquer tela; componentes em `shared/ui`; boundaries FSD; nenhum texto ou cor hardcoded.
+
+---
+
 ## Verification Checklist
 
 Antes de considerar qualquer tarefa concluída:

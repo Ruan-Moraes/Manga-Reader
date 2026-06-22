@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class GetEnrichedProfileUseCase {
     private final UserRepositoryPort userRepository;
     private final CommentRepositoryPort commentRepository;
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
     private final LibraryRepositoryPort libraryRepository;
     private final RecommendationRepositoryPort recommendationRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
@@ -82,7 +82,7 @@ public class GetEnrichedProfileUseCase {
         String userIdStr = targetUserId.toString();
 
         long commentsCount = commentRepository.countByUserIdAndTargetType(userIdStr, CommentTarget.TITLE);
-        long ratingsCount = ratingRepository.countByUserId(userIdStr);
+        long ratingsCount = reviewRepository.countByUserId(userIdStr);
         long lendo = libraryRepository.countByUserIdAndList(targetUserId, ReadingListType.LENDO);
         long queroLer = libraryRepository.countByUserIdAndList(targetUserId, ReadingListType.QUERO_LER);
         long concluido = libraryRepository.countByUserIdAndList(targetUserId, ReadingListType.CONCLUIDO);

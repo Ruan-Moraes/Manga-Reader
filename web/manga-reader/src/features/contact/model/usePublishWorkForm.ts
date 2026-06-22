@@ -5,7 +5,7 @@ import { showErrorToast, showSuccessToast } from '@shared/service/util/toastServ
 
 import { getStoredSession } from '@shared/service/session';
 
-import { submitPublishWorkContact, type PublishWorkRequest } from '@features/contact';
+import { submitPublishWorkContact, type PublishWorkRequest } from '../api/contactService';
 
 type PublishWorkDraft = {
     name: string;

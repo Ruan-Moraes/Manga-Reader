@@ -30,7 +30,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 class DeleteRatingUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Mock
     private EventPublisherPort eventPublisher;
@@ -60,20 +60,20 @@ class DeleteRatingUseCaseTest {
         @DisplayName("Deve excluir avaliação quando usuário é o autor")
         void deveExcluirAvaliacaoDoAutor() {
             // Arrange
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(buildRating()));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(buildRating()));
 
             // Act
             deleteRatingUseCase.execute(RATING_ID, USER_ID);
 
             // Assert
-            verify(ratingRepository).deleteById(RATING_ID);
+            verify(reviewRepository).deleteById(RATING_ID);
         }
 
         @Test
         @DisplayName("Deve publicar evento 'rating.deleted' após exclusão")
         void devePublicarEventoAposExclusao() {
             // Arrange
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(buildRating()));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(buildRating()));
 
             // Act
             deleteRatingUseCase.execute(RATING_ID, USER_ID);
@@ -94,19 +94,19 @@ class DeleteRatingUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando avaliação não existe")
         void deveLancarExcecaoQuandoAvaliacaoNaoExiste() {
             // Arrange
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.empty());
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> deleteRatingUseCase.execute(RATING_ID, USER_ID))
                     .isInstanceOf(ResourceNotFoundException.class)
-                    .hasMessageContaining("Rating");
+                    .hasMessageContaining("Review");
         }
 
         @Test
         @DisplayName("Deve lançar BusinessRuleException 403 quando usuário não é o autor")
         void deveLancarExcecaoQuandoNaoEAutor() {
             // Arrange
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(buildRating()));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(buildRating()));
             UUID outroUsuario = UUID.randomUUID();
 
             // Act & Assert

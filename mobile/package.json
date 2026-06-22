@@ -3,11 +3,17 @@
     "main": "expo-router/entry",
     "version": "1.0.0",
     "scripts": {
-        "dev": "expo start",
+        "dev": "expo start --clear",
         "android": "expo start --android",
         "ios": "expo start --ios",
         "web": "expo start --web",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "lint:fsd": "steiger ./src",
+        "check": "pnpm typecheck && pnpm lint && pnpm lint:fsd && pnpm format:check"
     },
     "dependencies": {
         "@expo-google-fonts/nunito-sans": "^0.4.2",
@@ -35,6 +41,7 @@
         "react-hook-form": "^7.77.0",
         "react-i18next": "^17.0.8",
         "react-native": "^0.81.5",
+        "react-native-css-interop": "0.2.5",
         "react-native-reanimated": "~4.1.1",
         "react-native-safe-area-context": "~5.6.0",
         "react-native-screens": "~4.16.0",
@@ -46,9 +53,17 @@
         "zustand": "^5.0.14"
     },
     "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@feature-sliced/steiger-plugin": "^0.6.0",
         "@types/react": "~19.1.10",
+        "eslint": "^10.5.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint-plugin-simple-import-sort": "^13.0.0",
         "prettier": "^3.8.4",
-        "typescript": "~5.9.2"
+        "steiger": "^0.5.13",
+        "typescript": "~5.9.2",
+        "typescript-eslint": "^8.61.1"
     },
     "private": true
 }

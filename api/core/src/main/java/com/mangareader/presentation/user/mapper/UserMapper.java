@@ -97,6 +97,7 @@ public final class UserMapper {
                 user.getBannerUrl(),
                 mapRole(user.getRole()),
                 socialLinks,
+                user.getFavoriteGenres(),
                 user.getCreatedAt() != null ? user.getCreatedAt().toString() : null,
                 stats,
                 recommendations,

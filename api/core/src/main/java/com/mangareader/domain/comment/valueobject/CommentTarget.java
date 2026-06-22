@@ -11,6 +11,10 @@ package com.mangareader.domain.comment.valueobject;
 public enum CommentTarget {
     /** Comentário em um título/obra (targetId = titleId, ObjectId do Mongo). */
     TITLE,
+    /** Comentário em um capítulo (targetId = chapterId, ObjectId do Mongo). */
+    CHAPTER,
+    /** Comentário em uma notícia/artigo (targetId = newsId, ObjectId do Mongo). */
+    NEWS,
     /** Comentário/resposta em uma resenha (targetId = reviewId). */
     REVIEW,
     /** Resposta em um tópico de fórum (targetId = forumTopicId). */

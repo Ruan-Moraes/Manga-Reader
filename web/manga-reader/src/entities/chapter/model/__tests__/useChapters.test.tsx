@@ -21,6 +21,7 @@ const page = (content: unknown[], overrides = {}) => ({
 });
 
 const chapter = (number: string) => ({
+    id: `chapter-${number}`,
     number,
     title: `Cap ${number}`,
     releaseDate: '2025-01-01',

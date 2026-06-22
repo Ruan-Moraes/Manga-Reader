@@ -33,7 +33,7 @@ import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig
 class RatingRepositoryAdapterTest {
 
     @Autowired
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -105,7 +105,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar página de ratings do título")
         void deveRetornarPaginaDeRatings() {
-            var page = ratingRepository.findByTitleId("title-1", null, PageRequest.of(0, 1));
+            var page = reviewRepository.findByTitleId("title-1", null, PageRequest.of(0, 1));
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getTotalElements()).isEqualTo(2);
         }
@@ -118,7 +118,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar rating de um usuário para um título")
         void deveRetornarRatingDeUsuarioParaTitulo() {
-            var result = ratingRepository.findByTitleIdAndUserId("title-1", "user-1");
+            var result = reviewRepository.findByTitleIdAndUserId("title-1", "user-1");
             assertThat(result).isPresent();
             assertThat(result.get().getOverallRating()).isEqualTo(4.3);
         }
@@ -126,7 +126,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar empty para combinação inexistente")
         void deveRetornarEmptyParaCombinacaoInexistente() {
-            var result = ratingRepository.findByTitleIdAndUserId("title-2", "user-2");
+            var result = reviewRepository.findByTitleIdAndUserId("title-2", "user-2");
             assertThat(result).isEmpty();
         }
     }
@@ -138,7 +138,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar rating quando ID existe")
         void deveRetornarRatingQuandoIdExiste() {
-            var result = ratingRepository.findById(rating1.getId());
+            var result = reviewRepository.findById(rating1.getId());
             assertThat(result).isPresent();
             assertThat(result.get().getUserName()).isEqualTo("Ruan");
         }
@@ -146,7 +146,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar empty quando ID não existe")
         void deveRetornarEmptyQuandoIdNaoExiste() {
-            var result = ratingRepository.findById("id-inexistente");
+            var result = reviewRepository.findById("id-inexistente");
             assertThat(result).isEmpty();
         }
     }
@@ -158,7 +158,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar página de ratings do usuário")
         void deveRetornarPaginaDeRatingsDoUsuario() {
-            var page = ratingRepository.findByUserId("user-1", PageRequest.of(0, 1));
+            var page = reviewRepository.findByUserId("user-1", PageRequest.of(0, 1));
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getTotalElements()).isEqualTo(2);
         }
@@ -171,9 +171,9 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar contagem correta")
         void deveRetornarContagemCorreta() {
-            assertThat(ratingRepository.countByTitleId("title-1")).isEqualTo(2);
-            assertThat(ratingRepository.countByTitleId("title-2")).isEqualTo(1);
-            assertThat(ratingRepository.countByTitleId("title-inexistente")).isZero();
+            assertThat(reviewRepository.countByTitleId("title-1")).isEqualTo(2);
+            assertThat(reviewRepository.countByTitleId("title-2")).isEqualTo(1);
+            assertThat(reviewRepository.countByTitleId("title-inexistente")).isZero();
         }
     }
 
@@ -185,7 +185,7 @@ class RatingRepositoryAdapterTest {
         @DisplayName("Deve contar avaliações por faixa de estrela (overallRating arredondado)")
         void deveContarPorEstrela() {
             // title-1: overall 4.3 (→4★) e 3.0 (→3★)
-            var dist = ratingRepository.distributionByTitleId("title-1");
+            var dist = reviewRepository.distributionByTitleId("title-1");
 
             assertThat(dist.star4()).isEqualTo(1);
             assertThat(dist.star3()).isEqualTo(1);
@@ -198,7 +198,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve agrupar avaliação 5.0 na faixa 5 estrelas")
         void deveAgruparCincoEstrelas() {
-            var dist = ratingRepository.distributionByTitleId("title-2");
+            var dist = reviewRepository.distributionByTitleId("title-2");
 
             assertThat(dist.star5()).isEqualTo(1);
             assertThat(dist.total()).isEqualTo(1);
@@ -207,7 +207,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar distribuição vazia para título sem avaliações")
         void deveRetornarVazioParaTituloSemAvaliacoes() {
-            var dist = ratingRepository.distributionByTitleId("title-inexistente");
+            var dist = reviewRepository.distributionByTitleId("title-inexistente");
 
             assertThat(dist.total()).isZero();
         }
@@ -234,7 +234,7 @@ class RatingRepositoryAdapterTest {
                     .createdAt(LocalDateTime.now())
                     .build();
 
-            var saved = ratingRepository.save(newRating);
+            var saved = reviewRepository.save(newRating);
 
             assertThat(saved.getId()).isNotNull();
             assertThat(saved.getOverallRating()).isEqualTo(4.0);
@@ -245,9 +245,9 @@ class RatingRepositoryAdapterTest {
         void deveAtualizarRatingExistente() {
             rating1.setFunRating(5.0);
             rating1.setOverallRating(rating1.calculateOverallRating());
-            ratingRepository.save(rating1);
+            reviewRepository.save(rating1);
 
-            var updated = ratingRepository.findById(rating1.getId());
+            var updated = reviewRepository.findById(rating1.getId());
             assertThat(updated).isPresent();
             assertThat(updated.get().getFunRating()).isEqualTo(5.0);
         }
@@ -263,7 +263,7 @@ class RatingRepositoryAdapterTest {
                     .createdAt(LocalDateTime.now())
                     .build();
 
-            assertThatThrownBy(() -> ratingRepository.save(duplicate))
+            assertThatThrownBy(() -> reviewRepository.save(duplicate))
                     .isInstanceOf(DuplicateKeyException.class);
         }
     }
@@ -275,7 +275,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve calcular média e contagem no banco")
         void deveAgregarMediaEContagem() {
-            var agg = ratingRepository.aggregateByTitleId("title-1");
+            var agg = reviewRepository.aggregateByTitleId("title-1");
             assertThat(agg.count()).isEqualTo(2);
             assertThat(agg.average()).isEqualTo((4.3 + 3.0) / 2.0);
         }
@@ -283,7 +283,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve agregar título com uma avaliação")
         void deveAgregarUmaAvaliacao() {
-            var agg = ratingRepository.aggregateByTitleId("title-2");
+            var agg = reviewRepository.aggregateByTitleId("title-2");
             assertThat(agg.count()).isEqualTo(1);
             assertThat(agg.average()).isEqualTo(5.0);
         }
@@ -291,7 +291,7 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve retornar 0/0 para título sem avaliações")
         void deveRetornarZeroSemAvaliacoes() {
-            var agg = ratingRepository.aggregateByTitleId("inexistente");
+            var agg = reviewRepository.aggregateByTitleId("inexistente");
             assertThat(agg.count()).isZero();
             assertThat(agg.average()).isZero();
         }
@@ -304,9 +304,9 @@ class RatingRepositoryAdapterTest {
         @Test
         @DisplayName("Deve remover o rating")
         void deveRemoverRating() {
-            ratingRepository.deleteById(rating3.getId());
-            assertThat(ratingRepository.findById(rating3.getId())).isEmpty();
-            assertThat(ratingRepository.countByTitleId("title-2")).isZero();
+            reviewRepository.deleteById(rating3.getId());
+            assertThat(reviewRepository.findById(rating3.getId())).isEmpty();
+            assertThat(reviewRepository.countByTitleId("title-2")).isZero();
         }
     }
 }

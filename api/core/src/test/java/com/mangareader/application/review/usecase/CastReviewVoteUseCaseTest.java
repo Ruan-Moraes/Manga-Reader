@@ -32,7 +32,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 class CastReviewVoteUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Mock
     private ReviewVoteRepositoryPort reviewVoteRepository;
@@ -58,7 +58,7 @@ class CastReviewVoteUseCaseTest {
     @DisplayName("Sem voto anterior: cria voto e incrementa upvotes")
     void deveCriarVotoNovo() {
         Review r = rating(3, 0);
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.empty());
 
         VoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.UP);
@@ -69,7 +69,7 @@ class CastReviewVoteUseCaseTest {
         ArgumentCaptor<ReviewVote> captor = ArgumentCaptor.forClass(ReviewVote.class);
         verify(reviewVoteRepository).save(captor.capture());
         assertThat(captor.getValue().getValue()).isEqualTo(VoteValue.UP);
-        verify(ratingRepository).save(r);
+        verify(reviewRepository).save(r);
     }
 
     @Test
@@ -77,7 +77,7 @@ class CastReviewVoteUseCaseTest {
     void deveRemoverNoToggle() {
         Review r = rating(4, 0);
         var existing = ReviewVote.builder().ratingId(RATING_ID).userId(VOTER.toString()).value(VoteValue.UP).build();
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.of(existing));
 
         VoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.UP);
@@ -92,7 +92,7 @@ class CastReviewVoteUseCaseTest {
     void deveTrocarLado() {
         Review r = rating(4, 2);
         var existing = ReviewVote.builder().ratingId(RATING_ID).userId(VOTER.toString()).value(VoteValue.UP).build();
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(r));
         when(reviewVoteRepository.findByRatingIdAndUserId(RATING_ID, VOTER.toString())).thenReturn(Optional.of(existing));
 
         VoteResult result = useCase.execute(RATING_ID, VOTER, VoteValue.DOWN);
@@ -107,7 +107,7 @@ class CastReviewVoteUseCaseTest {
     @Test
     @DisplayName("Deve lançar BusinessRuleException 409 ao votar na própria resenha")
     void deveProibirVotoProprio() {
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(rating(0, 0)));
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(rating(0, 0)));
 
         assertThatThrownBy(() -> useCase.execute(RATING_ID, AUTHOR, VoteValue.UP))
                 .isInstanceOf(BusinessRuleException.class)
@@ -119,10 +119,10 @@ class CastReviewVoteUseCaseTest {
     @Test
     @DisplayName("Deve lançar ResourceNotFoundException quando a resenha não existe")
     void deveLancarQuandoResenhaNaoExiste() {
-        when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.empty());
+        when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.execute(RATING_ID, VOTER, VoteValue.UP))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Rating");
+                .hasMessageContaining("Review");
     }
 }

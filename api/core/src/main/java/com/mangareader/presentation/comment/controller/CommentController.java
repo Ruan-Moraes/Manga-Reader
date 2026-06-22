@@ -35,6 +35,7 @@ import com.mangareader.shared.dto.PageResponse;
 import com.mangareader.shared.dto.VoteRequest;
 import com.mangareader.shared.dto.VoteResponse;
 import com.mangareader.shared.domain.vote.VoteValue;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.web.CurrentUserId;
 import com.mangareader.shared.web.PageParams;
 
@@ -44,15 +45,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Controller de comentários unificados (obra, resenha, tópico de fórum).
+ * Controller de comentários unificados (obra, capítulo, notícia, resenha, tópico de fórum).
  * <p>
  * GET é público; POST/PUT/DELETE/voto requerem autenticação.
  */
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
-@Tag(name = "Comments", description = "Comentários unificados (obra, resenha, fórum)")
+@Tag(name = "Comments", description = "Comentários unificados (obra, capítulo, notícia, resenha, fórum)")
 public class CommentController {
+
+    /** Teto de IDs por consulta em {@code /user-votes} — limita o tamanho do {@code $in}. */
+    private static final int MAX_USER_VOTES_LOOKUP = 100;
 
     private final GetCommentsByTargetUseCase getCommentsByTargetUseCase;
     private final CreateCommentUseCase createCommentUseCase;
@@ -64,7 +68,7 @@ public class CommentController {
 
     @GetMapping("/target/{targetType}/{targetId}")
     @Operation(summary = "Listar comentários por alvo",
-            description = "Comentários de um alvo (TITLE/REVIEW/FORUM_TOPIC) com paginação. language=all lista todos idiomas.")
+            description = "Comentários de um alvo (TITLE/CHAPTER/NEWS/REVIEW/FORUM_TOPIC) com paginação. language=all lista todos idiomas.")
     public ResponseEntity<ApiResponse<PageResponse<CommentResponse>>> getByTarget(
             @PathVariable String targetType,
             @PathVariable String targetId,
@@ -115,13 +119,13 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Editar comentário", description = "Atualiza o texto de um comentário existente")
+    @Operation(summary = "Editar comentário", description = "Atualiza o conteúdo de um comentário existente")
     public ResponseEntity<ApiResponse<CommentResponse>> update(
             @PathVariable String id,
             @Valid @RequestBody UpdateCommentRequest request,
             @CurrentUserId UUID userId
     ) {
-        var input = new UpdateCommentUseCase.UpdateCommentInput(id, request.textContent(), userId);
+        var input = new UpdateCommentUseCase.UpdateCommentInput(id, request.textContent(), request.imageContent(), userId);
         var comment = updateCommentUseCase.execute(input);
         return ResponseEntity.ok(ApiResponse.success(CommentMapper.toResponse(comment)));
     }
@@ -158,11 +162,16 @@ public class CommentController {
     }
 
     @GetMapping("/user-votes")
-    @Operation(summary = "Votos do usuário", description = "Retorna os votos do usuário para uma lista de comentários")
+    @Operation(summary = "Votos do usuário", description = "Retorna os votos do usuário para uma lista de comentários (máx. 100 por consulta)")
     public ResponseEntity<ApiResponse<Map<String, String>>> getUserVotes(
             @RequestParam List<String> commentIds,
             @CurrentUserId UUID userId
     ) {
+        if (commentIds.size() > MAX_USER_VOTES_LOOKUP) {
+            throw new BusinessRuleException(
+                    "Máximo de " + MAX_USER_VOTES_LOOKUP + " comentários por consulta", 400);
+        }
+
         var votes = getUserCommentVotesUseCase.execute(commentIds, userId.toString());
         var mapped = votes.entrySet().stream()
                 .collect(Collectors.toMap(

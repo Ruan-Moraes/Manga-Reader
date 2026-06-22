@@ -11,6 +11,7 @@ import { showErrorToast, showSuccessToast } from '@shared/service/util/toastServ
 import { updateProfile, type UpdateProfilePayload } from '@entities/user';
 import { type EnrichedProfile } from '@entities/user';
 
+import { FavoriteGenresField } from './FavoriteGenresField';
 import { PEField, peInput, peSmallBtn } from './peShared';
 
 const BIO_MAX = 280;
@@ -130,6 +131,8 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
                     className="box-border min-h-24 w-full resize-y rounded-mr-xs border border-mr-gray-700 bg-mr-secondary p-2.5 font-mr-sans text-[13px] leading-normal tracking-mr text-mr-fg outline-none"
                 />
             </PEField>
+
+            <FavoriteGenresField initialGenres={profile.favoriteGenres ?? []} onSaved={onSaved} />
         </div>
     );
 };

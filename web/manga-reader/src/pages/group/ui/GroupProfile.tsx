@@ -1,5 +1,3 @@
-// TODO: Usar o container oficial do projeto (PagContainer), ele esta ruim de largura no geral, eu quero que ele tenha a largura default.
-
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +8,8 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 import { cn } from '@shared/lib/cn';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
+import { PageContainer } from '@ui/PageContainer';
+import { Skeleton } from '@ui/Skeleton';
 import { useGroupDetails, type Group } from '@entities/group';
 
 import { SquareAvatar } from '@ui/SquareAvatar';
@@ -44,21 +44,18 @@ const GroupProfile = () => {
         [group, t],
     );
 
-    // TODO: USAR O LOADING PADRAO DA APLICACAO
     if (isLoading) {
         return (
-            <div className="mx-auto max-w-[1240px]">
-                <div className="h-[180px] animate-mr-pulse bg-mr-gray-900" />
-                <div className="px-4">
-                    <div className="-mt-11 size-[88px] animate-mr-pulse rounded-mr-xs border-[3px] border-mr-primary bg-mr-gray-800" />
-                </div>
-            </div>
+            <PageContainer asMain size="default" paddingY="none">
+                <Skeleton className="h-[180px] w-full" />
+                <Skeleton variant="rect" width={88} height={88} className="-mt-11 border-[3px] border-mr-primary" />
+            </PageContainer>
         );
     }
 
     if (!group) {
         return (
-            <div className="mx-auto max-w-[1240px] px-4 py-10">
+            <PageContainer asMain size="default" paddingY="lg">
                 <EmptyState
                     illustration="404"
                     title={t('profile.notFoundTitle')}
@@ -69,7 +66,7 @@ const GroupProfile = () => {
                         </Button>
                     }
                 />
-            </div>
+            </PageContainer>
         );
     }
 
@@ -81,7 +78,7 @@ const GroupProfile = () => {
     ];
 
     return (
-        <main className="mx-auto max-w-[1240px]">
+        <PageContainer asMain size="default" paddingY="none">
             <div
                 className="relative h-[180px]"
                 style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'linear-gradient(135deg,#2a1f0f,#161616)' }}
@@ -96,7 +93,7 @@ const GroupProfile = () => {
                 </button>
             </div>
 
-            <div className="relative -mt-11 px-4">
+            <div className="relative -mt-11">
                 <div className="flex flex-wrap items-end gap-3.5">
                     <SquareAvatar name={group.name} logo={group.logo || undefined} size={88} fontSize={28} className="tracking-mr border-[3px] border-mr-primary" />
                     <div className="min-w-0 flex-[1_1_240px] pb-1.5">
@@ -150,7 +147,7 @@ const GroupProfile = () => {
                     {tab === 'discussion' && <GroupDiscussion onViewForum={() => navigate(ROUTES.FORUM)} />}
                 </div>
             </div>
-        </main>
+        </PageContainer>
     );
 };
 

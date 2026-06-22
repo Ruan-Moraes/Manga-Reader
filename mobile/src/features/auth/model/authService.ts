@@ -1,6 +1,5 @@
-import { api } from '@/src/services/api';
-import { ApiResponse } from '@/src/types/api';
-import { AuthResponse, AuthTokens, LoginRequest, RegisterRequest, User, UserRole } from '@/src/types/auth';
+import { api } from '@/src/shared/api';
+import type { ApiResponse, AuthResponse, AuthTokens, LoginRequest, RegisterRequest, User, UserRole } from '@/src/shared/model';
 
 interface AuthResult {
     user: User;

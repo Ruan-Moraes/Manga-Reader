@@ -72,6 +72,19 @@ public class User {
     @Builder.Default
     private List<String> contentLocales = new ArrayList<>(List.of("pt-BR"));
 
+    /**
+     * Gêneros favoritos escolhidos manualmente pelo usuário (slugs do
+     * vocabulário de {@code tags}). Exibidos no perfil.
+     * <p>
+     * TODO(tech-debt): futuramente derivar uma sugestão automática a partir das
+     * obras mais lidas/avaliadas (mini-algoritmo) e mesclar com a seleção
+     * manual; por ora é 100% manual.
+     */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "favorite_genres", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private List<String> favoriteGenres = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserSocialLink> socialLinks = new ArrayList<>();
@@ -126,6 +139,45 @@ public class User {
         this.contentLocales = normalized;
     }
 
+    /** Limite de gêneros favoritos exibidos no perfil. */
+    public static final int MAX_FAVORITE_GENRES = 10;
+
+    /**
+     * Define os gêneros favoritos (seleção manual). Lista vazia limpa a
+     * seleção. Remove duplicatas preservando a ordem e rejeita entradas em
+     * branco ou acima do limite. A existência dos slugs no vocabulário é
+     * validada na camada de aplicação (não há FK cross-DB).
+     */
+    public static List<String> normalizeFavoriteGenres(List<String> favoriteGenres) {
+        if (favoriteGenres == null) {
+            throw new IllegalArgumentException("favoriteGenres must not be null");
+        }
+
+        if (favoriteGenres.size() > MAX_FAVORITE_GENRES) {
+            throw new IllegalArgumentException("favoriteGenres must not exceed " + MAX_FAVORITE_GENRES + " entries");
+        }
+
+        List<String> normalized = new ArrayList<>(favoriteGenres.size());
+
+        for (String genre : favoriteGenres) {
+            if (genre == null || genre.isBlank()) {
+                throw new IllegalArgumentException("favoriteGenres entries must not be blank");
+            }
+
+            String slug = genre.trim();
+
+            if (!normalized.contains(slug)) {
+                normalized.add(slug);
+            }
+        }
+
+        return normalized;
+    }
+
+    public void updateFavoriteGenres(List<String> favoriteGenres) {
+        this.favoriteGenres = normalizeFavoriteGenres(favoriteGenres);
+    }
+
     /**
      * Desativa a conta e anonimiza os dados pessoais (soft-delete). Operação
      * irreversível: limpa identidade, redes e recomendações, e libera o e-mail
@@ -146,6 +198,7 @@ public class User {
         this.bannerUrl = null;
         this.socialLinks.clear();
         this.recommendations.clear();
+        this.favoriteGenres.clear();
     }
 
     private static String normalizeTag(String tag) {

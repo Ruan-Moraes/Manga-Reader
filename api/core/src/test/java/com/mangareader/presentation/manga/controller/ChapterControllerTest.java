@@ -63,6 +63,7 @@ class ChapterControllerTest {
 
     private Chapter buildChapter(String number) {
         return Chapter.builder()
+                .id("chapter-" + number)
                 .titleId("title-1")
                 .number(number)
                 .title(LocalizedString.ofDefault("Capítulo " + number))
@@ -88,6 +89,7 @@ class ChapterControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.content.length()").value(3))
+                    .andExpect(jsonPath("$.data.content[0].id").value("chapter-1"))
                     .andExpect(jsonPath("$.data.content[0].number").value("1"))
                     .andExpect(jsonPath("$.data.content[0].title").value("Capítulo 1"))
                     .andExpect(jsonPath("$.data.totalElements").value(3));
@@ -156,6 +158,7 @@ class ChapterControllerTest {
             mockMvc.perform(get("/api/titles/title-1/chapters/5"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.id").value("chapter-5"))
                     .andExpect(jsonPath("$.data.number").value("5"))
                     .andExpect(jsonPath("$.data.pages").value("25"));
         }

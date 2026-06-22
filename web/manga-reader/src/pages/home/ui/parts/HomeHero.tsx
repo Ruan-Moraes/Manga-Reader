@@ -65,6 +65,7 @@ const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
                                         {g}
                                     </Badge>
                                 ))}
+                                {/* TODO: status nao esta vindo do backend. Corrigir. */}
                                 <Badge variant="accent">{hero.status}</Badge>
                             </>
                         }

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -167,15 +168,21 @@ class CommentControllerTest {
         }
 
         @Test
-        @DisplayName("Deve retornar 400 quando textContent está em branco")
-        void deveRetornar400TextContentEmBranco() throws Exception {
+        @DisplayName("Deve retornar 201 quando comentário tem apenas imagem")
+        void deveRetornar201ComApenasImagem() throws Exception {
+            var comment = buildComment("new-id");
+            comment.setTextContent(null);
+            comment.setImageContent("https://example.com/img.png");
+            when(createCommentUseCase.execute(any())).thenReturn(comment);
+
             mockMvc.perform(post("/api/comments")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"targetType": "TITLE", "targetId": "title-1", "textContent": ""}
+                                    {"targetType": "TITLE", "targetId": "title-1", "imageContent": "https://example.com/img.png"}
                                     """)
                             .principal(mockAuth()))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.data.imageContent").value("https://example.com/img.png"));
         }
     }
 
@@ -200,15 +207,21 @@ class CommentControllerTest {
         }
 
         @Test
-        @DisplayName("Deve retornar 400 quando textContent está em branco")
-        void deveRetornar400TextContentEmBranco() throws Exception {
+        @DisplayName("Deve retornar 200 ao atualizar apenas imagem")
+        void deveRetornar200AoAtualizarApenasImagem() throws Exception {
+            var updated = buildComment("c1");
+            updated.setTextContent(null);
+            updated.setImageContent("https://example.com/img.png");
+            when(updateCommentUseCase.execute(any())).thenReturn(updated);
+
             mockMvc.perform(put("/api/comments/c1")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"textContent": ""}
+                                    {"imageContent": "https://example.com/img.png"}
                                     """)
                             .principal(mockAuth()))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.imageContent").value("https://example.com/img.png"));
         }
     }
 
@@ -304,6 +317,23 @@ class CommentControllerTest {
                             .principal(mockAuth()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 400 quando excede o teto de 100 IDs")
+        void deveRetornar400AcimaDoTeto() throws Exception {
+            String[] ids = new String[101];
+            for (int i = 0; i < ids.length; i++) {
+                ids[i] = "c" + i;
+            }
+
+            mockMvc.perform(get("/api/comments/user-votes")
+                            .param("commentIds", ids)
+                            .principal(mockAuth()))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success").value(false));
+
+            verifyNoInteractions(getUserCommentVotesUseCase);
         }
     }
 }

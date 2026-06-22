@@ -32,7 +32,7 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 class UpdateRatingUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Mock
     private EventPublisherPort eventPublisher;
@@ -71,8 +71,8 @@ class UpdateRatingUseCaseTest {
             // Arrange
             Review existing = buildExistingRating();
             var input = new UpdateReviewInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null, null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = updateRatingUseCase.execute(input);
@@ -91,8 +91,8 @@ class UpdateRatingUseCaseTest {
             // Arrange
             Review existing = buildExistingRating();
             var input = new UpdateReviewInput(RATING_ID, USER_ID, null, null, null, null, null, null, "Novo comentário", null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = updateRatingUseCase.execute(input);
@@ -109,8 +109,8 @@ class UpdateRatingUseCaseTest {
             // Arrange
             Review existing = buildExistingRating();
             var input = new UpdateReviewInput(RATING_ID, USER_ID, null, 5.0, null, null, 4.5, null, null, null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = updateRatingUseCase.execute(input);
@@ -129,8 +129,8 @@ class UpdateRatingUseCaseTest {
             // Arrange
             Review existing = buildExistingRating();
             var input = new UpdateReviewInput(RATING_ID, USER_ID, 5.0, 5.0, 4.0, 4.5, 4.0, 4.5, "Atualizado!", null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             Review result = updateRatingUseCase.execute(input);
@@ -158,8 +158,8 @@ class UpdateRatingUseCaseTest {
             // Arrange
             Review existing = buildExistingRating();
             var input = new UpdateReviewInput(RATING_ID, USER_ID, 5.0, null, null, null, null, null, null, null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
-            when(ratingRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
+            when(reviewRepository.save(any(Review.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
             updateRatingUseCase.execute(input);
@@ -181,12 +181,12 @@ class UpdateRatingUseCaseTest {
         void deveLancarExcecaoQuandoAvaliacaoNaoExiste() {
             // Arrange
             var input = new UpdateReviewInput(RATING_ID, USER_ID, 4.0, null, null, null, null, null, null, null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.empty());
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> updateRatingUseCase.execute(input))
                     .isInstanceOf(ResourceNotFoundException.class)
-                    .hasMessageContaining("Rating");
+                    .hasMessageContaining("Review");
         }
 
         @Test
@@ -196,7 +196,7 @@ class UpdateRatingUseCaseTest {
             Review existing = buildExistingRating();
             UUID outroUsuario = UUID.randomUUID();
             var input = new UpdateReviewInput(RATING_ID, outroUsuario, 5.0, null, null, null, null, null, null, null, null);
-            when(ratingRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
+            when(reviewRepository.findById(RATING_ID)).thenReturn(Optional.of(existing));
 
             // Act & Assert
             assertThatThrownBy(() -> updateRatingUseCase.execute(input))

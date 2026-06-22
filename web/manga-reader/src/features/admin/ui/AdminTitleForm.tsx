@@ -103,31 +103,6 @@ const AdminTitleForm = () => {
                     <TagSelectInput options={allTags} onChange={setSelectedTags} placeholder={t('dashboard.titles.form.genresPlaceholder')} />
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.titles.form.author')}</span>
-                        <Input type="text" placeholder="" value={form.author ?? ''} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.titles.form.artist')}</span>
-                        <Input type="text" placeholder="" value={form.artist ?? ''} onChange={e => setForm(f => ({ ...f, artist: e.target.value }))} />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-bold">{t('dashboard.titles.form.publisher')}</span>
-                        <Input
-                            type="text"
-                            placeholder=""
-                            value={form.publisher ?? ''}
-                            onChange={e =>
-                                setForm(f => ({
-                                    ...f,
-                                    publisher: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
-                </div>
-
                 <Checkbox label={t('dashboard.titles.form.adult')} checked={form.adult} onChange={e => setForm(f => ({ ...f, adult: e.target.checked }))} />
 
                 <div className="flex gap-2 pt-2">

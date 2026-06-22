@@ -27,7 +27,7 @@ export { useUserModalContext } from './model/useUserModalContext';
 export { ProfileSettingsModalProvider, useProfileSettingsModal, type ProfileSettingsTab } from './model/ProfileSettingsModalContext';
 
 // Services
-export { recordView, updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings } from './api/userService';
+export { recordView, updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings, getFavoriteGenres, updateFavoriteGenres } from './api/userService';
 
 // Settings
 export {

@@ -7,6 +7,7 @@ import { API_URLS } from '@shared/constant/API_URLS';
 import { getChaptersByTitleId, getChapterByNumber } from '../chapterService';
 
 const buildChapter = (overrides = {}) => ({
+    id: 'chapter-1',
     number: '1',
     title: 'Capitulo 1',
     releaseDate: '2025-01-01',

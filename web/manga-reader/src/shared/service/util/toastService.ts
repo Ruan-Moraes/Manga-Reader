@@ -1,60 +1,43 @@
-import { toast, ToastOptions, Id } from 'react-toastify';
+import { AlertTriangle } from 'lucide-react';
 
-const activeToasts = new Set<string>();
+import { pushToast } from '@ui/toast/toastStore';
+import type { ToastTone } from '@ui/toast/types';
 
-const showToast = (type: 'info' | 'success' | 'error' | 'warning', message: string, options?: ToastOptions) => {
-    const toastKey = `${type}:${message}`;
+/**
+ * Notificações transacionais (serviços/mutations) — fachada imperativa sobre o toast unificado da
+ * design system (`@ui/Toast`). Mantém a API `showXToast` histórica, agora renderizada pelo mesmo
+ * viewport do `useToast`. Não depende mais de bibliotecas externas de toast.
+ */
+export interface AppToastOptions {
+    /** Id estável para deduplicar/atualizar um toast (ex.: 'reply-comment-success'). */
+    toastId?: string;
+    /** Duração em ms (0 = não fecha sozinho). Padrão do toast: 4000ms. */
+    duration?: number;
+}
 
-    if (activeToasts.has(toastKey)) {
-        return;
-    }
+type ToastType = 'info' | 'success' | 'error' | 'warning';
 
-    activeToasts.add(toastKey);
-
-    const toastOptions: ToastOptions = {
-        toastId: options?.toastId || toastKey,
-
-        ...options,
-
-        onClose: () => {
-            activeToasts.delete(toastKey);
-
-            if (options?.onClose) {
-                options.onClose();
-            }
-        },
-    };
-
-    let toastId: Id;
-
-    switch (type) {
-        case 'info':
-            toastId = toast.info(message, toastOptions);
-
-            break;
-        case 'success':
-            toastId = toast.success(message, toastOptions);
-
-            break;
-        case 'error':
-            toastId = toast.error(message, toastOptions);
-
-            break;
-        case 'warning':
-            toastId = toast.warning(message, toastOptions);
-
-            break;
-    }
-
-    return toastId;
+const TONE_BY_TYPE: Record<ToastType, ToastTone> = {
+    info: 'neutral',
+    success: 'success',
+    error: 'danger',
+    warning: 'accent',
 };
 
-export const showInfoToast = (message: string, options?: ToastOptions) => showToast('info', message, options);
+const showToast = (type: ToastType, message: string, options?: AppToastOptions) =>
+    pushToast({
+        id: options?.toastId ?? `${type}:${message}`,
+        tone: TONE_BY_TYPE[type],
+        title: message,
+        duration: options?.duration,
+        // O amarelo accent representa "aviso"; diferencia do sucesso pelo ícone.
+        icon: type === 'warning' ? AlertTriangle : undefined,
+    });
 
-export const showSuccessToast = (message: string, options?: ToastOptions) => showToast('success', message, options);
+export const showInfoToast = (message: string, options?: AppToastOptions) => showToast('info', message, options);
 
-export const showErrorToast = (message: string, options?: ToastOptions) => showToast('error', message, options);
+export const showSuccessToast = (message: string, options?: AppToastOptions) => showToast('success', message, options);
 
-export const showWarningToast = (message: string, options?: ToastOptions) => showToast('warning', message, options);
+export const showErrorToast = (message: string, options?: AppToastOptions) => showToast('error', message, options);
 
-export { toast };
+export const showWarningToast = (message: string, options?: AppToastOptions) => showToast('warning', message, options);

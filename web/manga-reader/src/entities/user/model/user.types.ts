@@ -88,6 +88,7 @@ export type EnrichedProfile = {
     bannerUrl?: string;
     role: string;
     socialLinks: SocialLinkResponse[];
+    favoriteGenres: string[];
     createdAt?: string;
     stats: ProfileStats;
     recommendations: RecommendedTitle[];

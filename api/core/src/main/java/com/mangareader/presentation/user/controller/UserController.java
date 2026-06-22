@@ -30,6 +30,7 @@ import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
 import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
+import com.mangareader.application.user.usecase.UpdateFavoriteGenresUseCase;
 import com.mangareader.application.user.usecase.UpdateLanguagePreferencesUseCase;
 import com.mangareader.application.user.usecase.UpdateUserSettingsUseCase;
 import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase;
@@ -42,7 +43,9 @@ import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.presentation.user.dto.AddRecommendationRequest;
 import com.mangareader.presentation.user.dto.EnrichedProfileResponse;
+import com.mangareader.presentation.user.dto.FavoriteGenresResponse;
 import com.mangareader.presentation.user.dto.LanguagePreferencesResponse;
+import com.mangareader.presentation.user.dto.UpdateFavoriteGenresRequest;
 import com.mangareader.presentation.user.dto.UpdateLanguagePreferencesRequest;
 import com.mangareader.presentation.user.dto.UpdateUserSettingsRequest;
 import com.mangareader.presentation.user.dto.UserSettingsResponse;
@@ -76,6 +79,7 @@ public class UserController {
     private final ReorderRecommendationsUseCase reorderRecommendationsUseCase;
     private final UpdatePrivacySettingsUseCase updatePrivacySettingsUseCase;
     private final UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
+    private final UpdateFavoriteGenresUseCase updateFavoriteGenresUseCase;
     private final GetUserSettingsUseCase getUserSettingsUseCase;
     private final UpdateUserSettingsUseCase updateUserSettingsUseCase;
     private final GetUserCommentsUseCase getUserCommentsUseCase;
@@ -272,6 +276,31 @@ public class UserController {
 
         return ResponseEntity.ok(ApiResponse.success(
                 new LanguagePreferencesResponse(user.getContentLocales())));
+    }
+
+    @GetMapping("/me/favorite-genres")
+    @Operation(summary = "Gêneros favoritos", description = "Retorna os gêneros favoritos (seleção manual) do usuário autenticado")
+    public ResponseEntity<ApiResponse<FavoriteGenresResponse>> getMyFavoriteGenres(Authentication auth) {
+        UUID userId = (UUID) auth.getPrincipal();
+
+        User user = getUserProfileUseCase.execute(userId);
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new FavoriteGenresResponse(user.getFavoriteGenres())));
+    }
+
+    @PatchMapping("/me/favorite-genres")
+    @Operation(summary = "Atualizar gêneros favoritos", description = "Define a seleção manual de gêneros favoritos (lista vazia limpa)")
+    public ResponseEntity<ApiResponse<FavoriteGenresResponse>> updateMyFavoriteGenres(
+            @Valid @RequestBody UpdateFavoriteGenresRequest request,
+            Authentication auth
+    ) {
+        UUID userId = (UUID) auth.getPrincipal();
+
+        User user = updateFavoriteGenresUseCase.execute(userId, request.favoriteGenres());
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new FavoriteGenresResponse(user.getFavoriteGenres())));
     }
 
     @GetMapping("/me/settings")

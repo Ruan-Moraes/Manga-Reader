@@ -36,6 +36,7 @@ const CommentInput = ({ placeholder, targetId, targetType, onCommentCreated }: C
                 targetType,
                 targetId,
                 textContent: textContent ?? '',
+                imageContent,
                 parentCommentId: null,
             });
 

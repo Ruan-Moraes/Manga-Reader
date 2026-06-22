@@ -24,7 +24,32 @@
       "Bash(cat *)",
       "Bash(make build-app-fresh *)",
       "Bash(make package *)",
-      "Bash(pnpm --filter manga-reader lint:fsd)"
+      "Bash(pnpm --filter manga-reader lint:fsd)",
+      "Bash(sed -n '344,350p' pages/chapter/ui/reader.css)",
+      "Bash(sed -n '414,420p' pages/chapter/ui/reader.css)",
+      "Bash(git stash *)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('i18n/locales/pt-BR/layout.json'\\)\\); print\\(json.dumps\\(d.get\\('search',{}\\), ensure_ascii=False, indent=2\\)\\)\")",
+      "Bash(ls node_modules/@feature-sliced)",
+      "Bash(ls node_modules/.bin/steiger)",
+      "Bash(echo \"exit: $?\")",
+      "Read(//home/ruan/.sdkman/candidates/**)",
+      "Bash(find / -name \"mvn\" -type f)",
+      "Bash(./mvnw -q test -Dtest=ChapterControllerTest)",
+      "Bash(command -v java)",
+      "Bash(find / -name \"java\" -type f)",
+      "Bash(JAVA_HOME=/home/ruan/.jdks/corretto-21.0.11 ./mvnw -q test -Dtest=ChapterControllerTest)",
+      "Read(//home/ruan/.jdks/**)",
+      "Bash(find / -maxdepth 6 -name \"release\" -path \"*jdk*\")",
+      "Bash(JAVA_HOME=/home/ruan/.jdks/corretto-23.0.2 ./mvnw test -Dtest=ChapterControllerTest)",
+      "Bash(node -e \"import\\('@testing-library/jest-dom/vitest'\\).then\\(\\(\\)=>console.log\\('import ok'\\)\\).catch\\(e=>console.log\\('ERR',e.message\\)\\)\")",
+      "Bash(JAVA_HOME=/home/ruan/.jdks/corretto-23.0.2 ./mvnw test)",
+      "Bash(JAVA_HOME=/home/ruan/.jdks/corretto-23.0.2 ./mvnw test -Dtest='RecordViewHistoryUseCaseTest')",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(pnpm install *)",
+      "Bash(which mvn *)",
+      "Bash(./mvnw test *)",
+      "Bash(git check-ignore *)",
+      "Bash(JAVA_HOME=/home/ruan/.jdks/corretto-23.0.2 ./mvnw test -q -Dtest='RecordViewHistoryUseCaseTest,TitleRatingAggregateReadAdapterTest,V009MongockIntegrationTest')"
     ]
   }
 }

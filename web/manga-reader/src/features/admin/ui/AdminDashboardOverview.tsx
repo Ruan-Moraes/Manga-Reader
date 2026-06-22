@@ -2,11 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, Book, Calendar, FileText, Layers, Users } from 'lucide-react';
 
-import type { DashboardMetrics } from '@features/admin';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { getLocale } from '@shared/lib/formatters';
 import { cn } from '@shared/lib/cn';
+
+import type { DashboardMetrics } from '../model/admin.types';
 
 type AdminDashboardOverviewProps = {
     metrics: DashboardMetrics;

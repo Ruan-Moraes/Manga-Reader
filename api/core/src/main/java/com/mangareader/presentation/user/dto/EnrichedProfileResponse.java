@@ -17,6 +17,7 @@ public record EnrichedProfileResponse(
         String bannerUrl,
         String role,
         List<SocialLinkResponse> socialLinks,
+        List<String> favoriteGenres,
         String createdAt,
         ProfileStatsResponse stats,
         List<RecommendationResponse> recommendations,

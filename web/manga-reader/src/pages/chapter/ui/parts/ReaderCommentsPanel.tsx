@@ -1,19 +1,36 @@
 import { useTranslation } from 'react-i18next';
-import { MessageSquare, X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 
-// TODO(backend): O painel de comentários do leitor aguarda integração com o
-// endpoint de capítulos. A URL /chapters/:chapterNumber identifica o capítulo
-// pelo número na URL, mas o sistema de comentários unificado precisa do ID
-// interno do capítulo (ObjectId/UUID do banco). Quando o hook useChapterData
-// expor o id do capítulo, passar como targetId aqui e remover o estado vazio.
+import { useComments } from '@entities/comment';
+import { CommentsSection } from '@features/comment';
 
 interface ReaderCommentsPanelProps {
     chapter: number;
+    /** ObjectId interno do capítulo (targetId dos comentários). */
+    chapterId?: string;
     onClose: () => void;
 }
 
-export const ReaderCommentsPanel = ({ chapter, onClose }: ReaderCommentsPanelProps) => {
+/**
+ * Painel de comentários do leitor.
+ *
+ * Decisão arquitetural (resolução do alvo do comentário): a URL do leitor é
+ * `/titles/:titleId/chapters/:chapter`, onde `:chapter` é o NÚMERO do capítulo,
+ * não o id do banco. O sistema de comentários é unificado e polimórfico por
+ * `(targetType, targetId)`, onde `targetId` é SEMPRE o id interno (ObjectId) —
+ * idêntico para TITLE/REVIEW/FORUM_TOPIC. Para manter essa superfície única
+ * (sem endpoints de comentário específicos de capítulo), resolvemos o número →
+ * id interno via `useChapter` (`GET /api/titles/:titleId/chapters/:number`,
+ * cacheado) e passamos o id resolvido como `targetId` para a feature genérica de
+ * comentários. Assim toda a feature (`CommentsSection`/`CommentInput`/votos/
+ * edição) funciona sem fork. Enquanto o id não resolve, o painel mostra um
+ * estado de carregamento e não renderiza a caixa de envio (evita POST com
+ * `targetId` vazio).
+ */
+export const ReaderCommentsPanel = ({ chapter, chapterId, onClose }: ReaderCommentsPanelProps) => {
     const { t } = useTranslation('manga');
+
+    const { comments, totalElements, isLoading, isError, error, refetchComments } = useComments(chapterId ?? '', 0, 20, { targetType: 'CHAPTER' });
 
     return (
         <>
@@ -29,9 +46,28 @@ export const ReaderCommentsPanel = ({ chapter, onClose }: ReaderCommentsPanelPro
                     </button>
                 </header>
 
-                <div className="reader-comments-list" style={{ alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: 13, textAlign: 'center', gap: 12 }}>
-                    <MessageSquare size={32} strokeWidth={1.5} style={{ opacity: 0.4 }} />
-                    <p>{t('reader.commentsUnavailable', { defaultValue: 'Comentários do capítulo estarão disponíveis em breve.' })}</p>
+                <div className="reader-comments-list">
+                    {chapterId ? (
+                        <CommentsSection
+                            targetType="CHAPTER"
+                            targetId={chapterId}
+                            comments={comments}
+                            totalElements={totalElements}
+                            isLoading={isLoading}
+                            isError={isError}
+                            error={error}
+                            onCommentCreated={refetchComments}
+                        />
+                    ) : (
+                        <div
+                            className="flex flex-1 items-center justify-center gap-2 text-[13px] text-mr-fg-subtle"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <Loader2 size={16} className="animate-spin" aria-hidden="true" />
+                            <span>{t('reader.commentsLoading', { defaultValue: 'Carregando comentários…' })}</span>
+                        </div>
+                    )}
                 </div>
             </aside>
         </>

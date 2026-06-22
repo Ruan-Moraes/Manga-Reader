@@ -29,6 +29,7 @@ const FILTER_BASE = {
 
 const Home = () => {
     const { t } = useTranslation('home');
+
     const { isLoggedIn } = useAuth();
 
     const { data: trendingData } = useFilterResults({
@@ -65,9 +66,11 @@ const Home = () => {
         queryFn: () => getGroups(0, 5),
         staleTime: THIRTY_MIN,
     });
+
     const groups = (groupsPage?.content ?? []).slice(0, 3);
 
     const { items: continueItems, loading: continueLoading } = useSavedMangas('Lendo');
+
     const continueReading = continueItems.slice(0, 5);
 
     return (

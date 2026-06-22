@@ -48,7 +48,7 @@ describe('system preferences storage', () => {
             reader: { ...current.reader, gap: 24 },
         }));
 
-        await new Promise(resolve => window.queueMicrotask(resolve));
+        await new Promise<void>(resolve => window.queueMicrotask(resolve));
 
         expect(listener).toHaveBeenCalledWith(expect.objectContaining({ reader: expect.objectContaining({ gap: 24 }) }));
 

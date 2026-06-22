@@ -5,7 +5,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import '@fontsource-variable/nunito-sans/wght.css';
 import '@fontsource-variable/nunito-sans/wght-italic.css';
 import './styles/index.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 import i18n from './i18n/config';
 
@@ -19,7 +18,6 @@ import { AuthProvider } from '@features/auth';
 
 import { queryClient } from '@shared/service/util/queryCache';
 
-import ToastContainer from '@ui/ToastContainer';
 import { ToastProvider as DSToastProvider } from '@ui/Toast';
 import ErrorBoundary from '@ui/ErrorBoundary';
 import RouteErrorFallback from '@ui/RouteErrorFallback';
@@ -96,7 +94,6 @@ createRoot(document.getElementById('root')!).render(
                             <ProfileSettingsModalProvider>
                                 <CommentSortProvider>
                                     <RouterProvider router={routes} />
-                                    <ToastContainer />
                                     {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
                                 </CommentSortProvider>
                             </ProfileSettingsModalProvider>

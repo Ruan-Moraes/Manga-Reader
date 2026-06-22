@@ -25,11 +25,11 @@ import lombok.RequiredArgsConstructor;
 @Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class UpdateReviewUseCase {
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
     private final EventPublisherPort eventPublisher;
 
     public record UpdateReviewInput(
-            String ratingId,
+            String reviewId,
             UUID userId,
             Double funRating,
             Double artRating,
@@ -44,57 +44,57 @@ public class UpdateReviewUseCase {
 
     @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
     public Review execute(UpdateReviewInput input) {
-        Review rating = ratingRepository.findById(input.ratingId())
-                .orElseThrow(() -> new ResourceNotFoundException("Rating", "id", input.ratingId()));
+        Review review = reviewRepository.findById(input.reviewId())
+                .orElseThrow(() -> new ResourceNotFoundException("Review", "id", input.reviewId()));
 
-        if (!rating.getUserId().equals(input.userId().toString())) {
+        if (!review.getUserId().equals(input.userId().toString())) {
             throw new BusinessRuleException("Você só pode editar suas próprias avaliações", 403);
         }
 
         if (input.funRating() != null) {
-            rating.setFunRating(input.funRating());
+            review.setFunRating(input.funRating());
         }
 
         if (input.artRating() != null) {
-            rating.setArtRating(input.artRating());
+            review.setArtRating(input.artRating());
         }
 
         if (input.storylineRating() != null) {
-            rating.setStorylineRating(input.storylineRating());
+            review.setStorylineRating(input.storylineRating());
         }
 
         if (input.charactersRating() != null) {
-            rating.setCharactersRating(input.charactersRating());
+            review.setCharactersRating(input.charactersRating());
         }
 
         if (input.originalityRating() != null) {
-            rating.setOriginalityRating(input.originalityRating());
+            review.setOriginalityRating(input.originalityRating());
         }
 
         if (input.pacingRating() != null) {
-            rating.setPacingRating(input.pacingRating());
+            review.setPacingRating(input.pacingRating());
         }
 
         if (input.textContent() != null) {
-            rating.setTextContent(input.textContent());
+            review.setTextContent(input.textContent());
         }
 
         if (input.reviewTitle() != null) {
-            rating.setReviewTitle(input.reviewTitle());
+            review.setReviewTitle(input.reviewTitle());
         }
 
         if (input.spoiler() != null) {
-            rating.setSpoiler(input.spoiler());
+            review.setSpoiler(input.spoiler());
         }
 
-        rating.setOverallRating(rating.calculateOverallRating());
+        review.setOverallRating(review.calculateOverallRating());
 
-        rating.setEdited(true);
-        rating.setUpdatedAt(java.time.LocalDateTime.now());
+        review.setEdited(true);
+        review.setUpdatedAt(java.time.LocalDateTime.now());
 
-        Review saved = ratingRepository.save(rating);
+        Review saved = reviewRepository.save(review);
 
-        eventPublisher.publish("rating.updated", new RatingEvent(rating.getTitleId(), input.userId().toString()));
+        eventPublisher.publish("rating.updated", new RatingEvent(review.getTitleId(), input.userId().toString()));
 
         return saved;
     }

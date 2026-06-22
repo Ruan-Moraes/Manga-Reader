@@ -72,6 +72,9 @@ class UserControllerTest {
     private com.mangareader.application.user.usecase.UpdateLanguagePreferencesUseCase updateLanguagePreferencesUseCase;
 
     @MockitoBean
+    private com.mangareader.application.user.usecase.UpdateFavoriteGenresUseCase updateFavoriteGenresUseCase;
+
+    @MockitoBean
     private GetUserSettingsUseCase getUserSettingsUseCase;
 
     @MockitoBean
@@ -280,6 +283,79 @@ class UserControllerTest {
             mockMvc.perform(patch("/api/users/me/content-locales")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"contentLocales\":[]}")
+                            .principal(mockAuth()))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/users/me/favorite-genres")
+    class GetMyFavoriteGenres {
+        @Test
+        @DisplayName("Deve retornar 200 com gêneros favoritos do usuário")
+        void deveRetornar200() throws Exception {
+            User user = buildUser(USER_ID);
+
+            user.setFavoriteGenres(List.of("acao", "aventura"));
+
+            when(getUserProfileUseCase.execute(USER_ID)).thenReturn(user);
+
+            mockMvc.perform(get("/api/users/me/favorite-genres").principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.favoriteGenres[0]").value("acao"))
+                    .andExpect(jsonPath("$.data.favoriteGenres[1]").value("aventura"));
+        }
+    }
+
+    @Nested
+    @DisplayName("PATCH /api/users/me/favorite-genres")
+    class UpdateMyFavoriteGenres {
+        @Test
+        @DisplayName("Deve retornar 200 com gêneros favoritos atualizados")
+        void deveRetornar200() throws Exception {
+            User updated = buildUser(USER_ID);
+
+            updated.setFavoriteGenres(List.of("acao", "comedia"));
+
+            when(updateFavoriteGenresUseCase.execute(
+                    org.mockito.ArgumentMatchers.eq(USER_ID),
+                    org.mockito.ArgumentMatchers.eq(List.of("acao", "comedia"))
+            )).thenReturn(updated);
+
+            mockMvc.perform(patch("/api/users/me/favorite-genres")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"favoriteGenres\":[\"acao\",\"comedia\"]}")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.favoriteGenres[0]").value("acao"))
+                    .andExpect(jsonPath("$.data.favoriteGenres[1]").value("comedia"));
+        }
+
+        @Test
+        @DisplayName("Deve aceitar lista vazia (limpa a seleção)")
+        void deveAceitarVazio() throws Exception {
+            User updated = buildUser(USER_ID);
+
+            updated.setFavoriteGenres(List.of());
+
+            when(updateFavoriteGenresUseCase.execute(
+                    org.mockito.ArgumentMatchers.eq(USER_ID),
+                    org.mockito.ArgumentMatchers.eq(List.of())
+            )).thenReturn(updated);
+
+            mockMvc.perform(patch("/api/users/me/favorite-genres")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"favoriteGenres\":[]}")
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 400 quando favoriteGenres ausente (null)")
+        void deveRetornar400QuandoNull() throws Exception {
+            mockMvc.perform(patch("/api/users/me/favorite-genres")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{}")
                             .principal(mockAuth()))
                     .andExpect(status().isBadRequest());
         }

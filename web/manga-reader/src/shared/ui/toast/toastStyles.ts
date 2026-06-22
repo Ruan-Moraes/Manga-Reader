@@ -23,3 +23,11 @@ export const toneIconColor: Record<ToastTone, string> = {
     danger: 'text-mr-danger',
     neutral: 'text-mr-fg-muted',
 };
+
+/** Fundo tonal do "chip" do ícone, para dar peso visual ao toast. */
+export const toneIconBg: Record<ToastTone, string> = {
+    accent: 'bg-mr-accent-25',
+    success: 'bg-mr-accent-25',
+    danger: 'bg-mr-danger-15',
+    neutral: 'bg-mr-surface-muted',
+};

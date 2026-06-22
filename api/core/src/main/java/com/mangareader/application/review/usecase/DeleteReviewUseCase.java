@@ -23,19 +23,19 @@ import lombok.RequiredArgsConstructor;
 @Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class DeleteReviewUseCase {
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
     private final EventPublisherPort eventPublisher;
 
     @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
-    public void execute(String ratingId, UUID userId) {
-        Review rating = ratingRepository.findById(ratingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Rating", "id", ratingId));
+    public void execute(String reviewId, UUID userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
 
-        if (!rating.getUserId().equals(userId.toString())) {
+        if (!review.getUserId().equals(userId.toString())) {
             throw new BusinessRuleException("Você só pode excluir suas próprias avaliações.", 403);
         }
 
-        ratingRepository.deleteById(ratingId);
-        eventPublisher.publish("rating.deleted", new RatingEvent(rating.getTitleId(), userId.toString()));
+        reviewRepository.deleteById(reviewId);
+        eventPublisher.publish("rating.deleted", new RatingEvent(review.getTitleId(), userId.toString()));
     }
 }

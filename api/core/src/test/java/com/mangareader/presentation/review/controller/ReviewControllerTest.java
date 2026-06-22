@@ -342,7 +342,7 @@ class ReviewControllerTest {
         @DisplayName("Deve retornar 404 quando avaliação não existe")
         void deveRetornar404() throws Exception {
             when(updateRatingUseCase.execute(any()))
-                    .thenThrow(new ResourceNotFoundException("Rating", "id", "r-inexistente"));
+                    .thenThrow(new ResourceNotFoundException("Review", "id", "r-inexistente"));
 
             mockMvc.perform(put("/api/reviews/r-inexistente")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -369,7 +369,7 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Deve retornar 404 quando avaliação não existe")
         void deveRetornar404() throws Exception {
-            org.mockito.Mockito.doThrow(new ResourceNotFoundException("Rating", "id", "r-x"))
+            org.mockito.Mockito.doThrow(new ResourceNotFoundException("Review", "id", "r-x"))
                     .when(deleteRatingUseCase).execute(any(), any());
 
             mockMvc.perform(delete("/api/reviews/r-x").principal(mockAuth()))

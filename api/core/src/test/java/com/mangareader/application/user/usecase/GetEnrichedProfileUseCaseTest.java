@@ -50,7 +50,7 @@ class GetEnrichedProfileUseCaseTest {
     private CommentRepositoryPort commentRepository;
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @Mock
     private LibraryRepositoryPort libraryRepository;
@@ -89,7 +89,7 @@ class GetEnrichedProfileUseCaseTest {
 
     private void stubStats() {
         when(commentRepository.countByUserIdAndTargetType(USER_ID.toString(), CommentTarget.TITLE)).thenReturn(5L);
-        when(ratingRepository.countByUserId(USER_ID.toString())).thenReturn(3L);
+        when(reviewRepository.countByUserId(USER_ID.toString())).thenReturn(3L);
         when(libraryRepository.countByUserIdAndList(eq(USER_ID), any(ReadingListType.class))).thenReturn(2L);
         when(recommendationRepository.findByUserIdOrderByPosition(USER_ID)).thenReturn(List.of());
     }
@@ -217,7 +217,7 @@ class GetEnrichedProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
             when(commentRepository.countByUserIdAndTargetType(USER_ID.toString(), CommentTarget.TITLE)).thenReturn(10L);
-            when(ratingRepository.countByUserId(USER_ID.toString())).thenReturn(5L);
+            when(reviewRepository.countByUserId(USER_ID.toString())).thenReturn(5L);
             when(libraryRepository.countByUserIdAndList(USER_ID, ReadingListType.LENDO)).thenReturn(3L);
             when(libraryRepository.countByUserIdAndList(USER_ID, ReadingListType.QUERO_LER)).thenReturn(7L);
             when(libraryRepository.countByUserIdAndList(USER_ID, ReadingListType.CONCLUIDO)).thenReturn(2L);

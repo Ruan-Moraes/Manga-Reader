@@ -31,7 +31,10 @@
                 {
                     "image": "./assets/images/splash-icon.png",
                     "resizeMode": "contain",
-                    "backgroundColor": "#ffffff"
+                    "backgroundColor": "#161616",
+                    "dark": {
+                        "backgroundColor": "#161616"
+                    }
                 }
             ],
             "expo-font",

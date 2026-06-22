@@ -26,7 +26,7 @@ import com.mangareader.domain.review.entity.Review;
 class GetUserRatingsUseCaseTest {
 
     @Mock
-    private ReviewRepositoryPort ratingRepository;
+    private ReviewRepositoryPort reviewRepository;
 
     @InjectMocks
     private GetUserReviewsUseCase getUserRatingsUseCase;
@@ -47,7 +47,7 @@ class GetUserRatingsUseCaseTest {
                     Review.builder().id("r2").titleId("t2").userId(USER_ID.toString()).overallRating(5.0).build()
             );
             Page<Review> page = new PageImpl<>(ratings, pageable, 2);
-            when(ratingRepository.findByUserId(USER_ID.toString(), pageable)).thenReturn(page);
+            when(reviewRepository.findByUserId(USER_ID.toString(), pageable)).thenReturn(page);
 
             // Act
             Page<Review> result = getUserRatingsUseCase.execute(USER_ID, pageable);
@@ -63,7 +63,7 @@ class GetUserRatingsUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(0, 10);
             Page<Review> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-            when(ratingRepository.findByUserId(USER_ID.toString(), pageable)).thenReturn(emptyPage);
+            when(reviewRepository.findByUserId(USER_ID.toString(), pageable)).thenReturn(emptyPage);
 
             // Act
             Page<Review> result = getUserRatingsUseCase.execute(USER_ID, pageable);

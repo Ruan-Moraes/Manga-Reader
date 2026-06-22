@@ -23,20 +23,20 @@ import lombok.RequiredArgsConstructor;
 @Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class RemoveReviewVoteUseCase {
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
     private final ReviewVoteRepositoryPort reviewVoteRepository;
 
-    public VoteResult execute(String ratingId, UUID userId) {
-        Review rating = ratingRepository.findById(ratingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Rating", "id", ratingId));
+    public VoteResult execute(String reviewId, UUID userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
 
-        reviewVoteRepository.findByRatingIdAndUserId(ratingId, userId.toString())
+        reviewVoteRepository.findByRatingIdAndUserId(reviewId, userId.toString())
                 .ifPresent(vote -> {
-                    VoteToggle.undo(rating, vote.getValue());
+                    VoteToggle.undo(review, vote.getValue());
                     reviewVoteRepository.delete(vote);
-                    ratingRepository.save(rating);
+                    reviewRepository.save(review);
                 });
 
-        return new VoteResult(rating.getUpvotes(), rating.getDownvotes(), null);
+        return new VoteResult(review.getUpvotes(), review.getDownvotes(), null);
     }
 }

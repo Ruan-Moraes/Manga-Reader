@@ -67,7 +67,7 @@ const Groups = () => {
                     ))}
                 </div>
             ) : (
-                <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+                <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))' }}>
                     {visible.map(g => (
                         <GroupCard
                             key={g.id}

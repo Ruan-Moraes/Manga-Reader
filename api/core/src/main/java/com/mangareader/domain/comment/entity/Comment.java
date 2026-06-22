@@ -42,10 +42,10 @@ public class Comment implements HasVoteCounters {
     @Id
     private String id;
 
-    /** Tipo da entidade-alvo comentada (TITLE, REVIEW, FORUM_TOPIC). */
+    /** Tipo da entidade-alvo comentada (TITLE, CHAPTER, NEWS, REVIEW, FORUM_TOPIC). */
     private CommentTarget targetType;
 
-    /** Id da entidade-alvo (titleId, reviewId ou forumTopicId). */
+    /** Id da entidade-alvo (titleId, chapterId, newsId, reviewId ou forumTopicId). */
     @Indexed
     private String targetId;
 

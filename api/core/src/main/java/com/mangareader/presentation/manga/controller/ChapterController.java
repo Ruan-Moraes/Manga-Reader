@@ -50,6 +50,7 @@ public class ChapterController {
 
         var result = getChaptersByTitleUseCase.execute(titleId, pageable)
                 .map(ch -> new ChapterResponse(
+                        ch.getId(),
                         ch.getNumber(),
                         i18n.toResolvedString(ch.getTitle()),
                         ch.getReleaseDate(),
@@ -66,7 +67,7 @@ public class ChapterController {
     ) {
         var ch = getChapterByNumberUseCase.execute(titleId, number);
 
-        var response = new ChapterResponse(ch.getNumber(), i18n.toResolvedString(ch.getTitle()), ch.getReleaseDate(), ch.getPages());
+        var response = new ChapterResponse(ch.getId(), ch.getNumber(), i18n.toResolvedString(ch.getTitle()), ch.getReleaseDate(), ch.getPages());
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }

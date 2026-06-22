@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional("mongoTransactionManager")
 @RequiredArgsConstructor
 public class SubmitReviewUseCase {
-    private final ReviewRepositoryPort ratingRepository;
+    private final ReviewRepositoryPort reviewRepository;
     private final UserRepositoryPort userRepository;
     private final TitleRepositoryPort titleRepository;
     private final EventPublisherPort eventPublisher;
@@ -54,7 +54,7 @@ public class SubmitReviewUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", input.userId()));
 
         // Upsert: atualiza se já existe, cria se não
-        var existing = ratingRepository.findByTitleIdAndUserId(input.titleId(), input.userId().toString());
+        var existing = reviewRepository.findByTitleIdAndUserId(input.titleId(), input.userId().toString());
         boolean isEdit = existing.isPresent();
 
         Review rating = existing
@@ -78,11 +78,10 @@ public class SubmitReviewUseCase {
         rating.setSpoiler(input.spoiler());
         rating.setUserName(user.getName());
 
-        String titleName = titleRepository.findById(input.titleId())
-                .map(t -> localeResolver.resolve(t.getName()))
-                .orElse(input.titleId());
+        var title = titleRepository.findById(input.titleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Title", "id", input.titleId()));
 
-        rating.setTitleName(titleName);
+        rating.setTitleName(localeResolver.resolve(title.getName()));
 
         // Edição de resenha existente marca edited + updatedAt; criação inicializa updatedAt = agora.
         rating.setUpdatedAt(java.time.LocalDateTime.now());
@@ -91,7 +90,7 @@ public class SubmitReviewUseCase {
             rating.setEdited(true);
         }
 
-        Review saved = ratingRepository.save(rating);
+        Review saved = reviewRepository.save(rating);
 
         eventPublisher.publish("rating.submitted", new RatingEvent(input.titleId(), input.userId().toString()));
 

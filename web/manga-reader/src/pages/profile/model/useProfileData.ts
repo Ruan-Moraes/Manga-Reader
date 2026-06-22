@@ -3,7 +3,7 @@ import { useUserReviews, type Review } from '@entities/review';
 import { useUserLibrary, type SavedMangaItem } from '@features/library';
 import { type Manga } from '@entities/manga';
 
-import { PROFILES, GROUPS_FOLLOWED, ACTIVITY } from '@mock/userProfile';
+import { GROUPS_FOLLOWED, ACTIVITY } from '@mock/userProfile';
 
 const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
     id: item.titleId,
@@ -16,8 +16,9 @@ const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
  * Carrega o perfil público (header + abas) a partir do banco.
  *
  * Real (banco): header/bio, stats, recomendações, comentários recentes, resenhas,
- * listas "lendo"/"concluído". Ainda **mock** (sem backend — ver docs/tech-debt.md):
- * gêneros favoritos, seguidores/seguindo, grupos seguidos, feed de atividade.
+ * listas "lendo"/"concluído", gêneros favoritos (seleção manual). Ainda **mock**
+ * (sem backend — ver docs/tech-debt.md): seguidores/seguindo, grupos seguidos,
+ * feed de atividade.
  *
  * @param userId perfil-alvo; ausente = perfil do usuário logado.
  */
@@ -39,8 +40,10 @@ export default function useProfileData(userId?: string) {
         reviews: stats?.ratings ?? 0,
         followers: stats?.comments ?? 0,
         following: stats?.libraryTotal ?? 0,
-        // TODO(tech-debt): gêneros favoritos não têm backend — mock por ora.
-        genres: PROFILES['me'].genres,
+        // Gêneros favoritos: seleção manual do usuário (persistida no backend).
+        // TODO(tech-debt): futuramente sugerir automaticamente a partir das obras
+        // mais lidas/avaliadas (mini-algoritmo) e mesclar com a seleção manual.
+        genres: enriched?.favoriteGenres ?? [],
         isOwn,
     };
 

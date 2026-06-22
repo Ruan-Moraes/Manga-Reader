@@ -65,6 +65,15 @@ class RecordViewHistoryUseCaseTest {
         UserProfileSettings settings = UserProfileSettings.defaults(user);
         settings.setViewHistoryVisibility(historyVis);
 
+        return user;
+    }
+
+    private User stubUser(VisibilitySetting historyVis) {
+        User user = buildUser(historyVis);
+        UserProfileSettings settings = UserProfileSettings.defaults(user);
+        settings.setViewHistoryVisibility(historyVis);
+
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
         when(profileSettingsResolver.getOrDefault(user)).thenReturn(settings);
 
         return user;
@@ -77,7 +86,7 @@ class RecordViewHistoryUseCaseTest {
         @Test
         @DisplayName("Deve criar nova entrada de histórico quando não existe")
         void deveCriarNovaEntrada() {
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
+            stubUser(VisibilitySetting.PUBLIC);
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
                     Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).cover("cover.jpg").build()));
             when(localeResolutionService.resolve(any(com.mangareader.shared.domain.i18n.LocalizedString.class))).thenReturn("Solo Leveling");
@@ -102,7 +111,7 @@ class RecordViewHistoryUseCaseTest {
         @Test
         @DisplayName("Deve atualizar viewedAt quando entrada já existe")
         void deveAtualizarViewedAtQuandoExiste() {
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.PUBLIC)));
+            stubUser(VisibilitySetting.PUBLIC);
             when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
                     Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).build()));
 
@@ -130,7 +139,7 @@ class RecordViewHistoryUseCaseTest {
         @Test
         @DisplayName("Deve ignorar registro quando visibilidade é DO_NOT_TRACK")
         void deveIgnorarQuandoDoNotTrack() {
-            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser(VisibilitySetting.DO_NOT_TRACK)));
+            stubUser(VisibilitySetting.DO_NOT_TRACK);
 
             recordViewHistoryUseCase.execute(USER_ID, TITLE_ID);
 

@@ -213,7 +213,9 @@
                 "userLabel": "Usuario",
                 "userHint": "Aparece como @{{handle}} en los comentarios y en el enlace de tu perfil.",
                 "changePhoto": "Cambiar",
-                "removePhoto": "Quitar"
+                "removePhoto": "Quitar",
+                "genresLabel": "Géneros favoritos",
+                "genresHint": "{{count}}/{{max}} seleccionados. Elegidos manualmente; aparecen en tu perfil."
             },
             "social": {
                 "intro": "Agrega tus redes para que otros lectores puedan encontrarte. Todo es opcional."

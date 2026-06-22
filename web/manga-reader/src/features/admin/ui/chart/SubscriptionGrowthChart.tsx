@@ -1,4 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import type { TooltipContentProps } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 
@@ -18,9 +19,9 @@ const formatMonth = (yearMonth: string) => {
 
 const CustomTooltip =
     (t: TFunction) =>
-    ({ active, payload }: { active?: boolean; payload?: Array<{ payload: MonthlyGrowthEntry }> }) => {
+    ({ active, payload }: TooltipContentProps) => {
         if (!active || !payload?.length) return null;
-        const data = payload[0].payload;
+        const data = payload[0].payload as MonthlyGrowthEntry;
 
         return (
             <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-mr-small shadow-mr-black">

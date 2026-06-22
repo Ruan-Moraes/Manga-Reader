@@ -31,7 +31,7 @@ public class ReviewSeed implements EntitySeeder {
             "Cenários maravilhosos e painéis detalhados."
     };
 
-    private final ReviewMongoRepository ratingRepository;
+    private final ReviewMongoRepository reviewRepository;
 
     @Override
     public int getOrder() {
@@ -40,7 +40,7 @@ public class ReviewSeed implements EntitySeeder {
 
     @Override
     public void seed() {
-        if (ratingRepository.count() > 0) {
+        if (reviewRepository.count() > 0) {
             log.info("Avaliações já existem — seed de ratings ignorado.");
 
             return;
@@ -84,7 +84,7 @@ public class ReviewSeed implements EntitySeeder {
                         .updatedAt(updatedAt)
                         .build();
 
-                ratingRepository.save(rating);
+                reviewRepository.save(rating);
             }
         }
 

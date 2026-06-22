@@ -4,7 +4,24 @@
         "openMenu": "Open menu",
         "closeMenu": "Close menu",
         "authors": "Authors",
-        "publishers": "Publishers"
+        "publishers": "Publishers",
+        "sectionGeneral": "General",
+        "overview": "Overview",
+        "sectionContent": "Content",
+        "titles": "Titles",
+        "tags": "Tags",
+        "news": "News",
+        "events": "Events",
+        "sectionCommunity": "Community",
+        "users": "Users",
+        "groups": "Groups",
+        "sectionMonetization": "Monetization",
+        "financial": "Financial",
+        "subscriptions": "Subscriptions"
+    },
+    "quickActions": {
+        "home": "Back to home",
+        "settings": "Language & interface"
     },
     "common": {
         "cancel": "Cancel",

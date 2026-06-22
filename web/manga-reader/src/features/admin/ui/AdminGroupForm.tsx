@@ -9,9 +9,8 @@ import { ArrowLeft } from 'lucide-react';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
 
-import { getAdminGroupDetail } from '@features/admin';
-
 import useAdminGroupActions from '../model/useAdminGroupActions';
+import { getAdminGroupDetail } from '../api/adminGroupService';
 
 import LocalizedTextInput from '@ui/LocalizedTextInput';
 
@@ -75,10 +74,7 @@ const AdminGroupForm = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <button
-                onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUP_DETAIL(groupId)}`)}
-                className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
-            >
+            <button onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUPS}`)} className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default">
                 <ArrowLeft size={14} />
                 {t('common.back', 'Voltar')}
             </button>

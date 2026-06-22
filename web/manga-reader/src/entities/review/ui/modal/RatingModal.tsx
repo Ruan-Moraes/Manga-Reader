@@ -1,5 +1,3 @@
-// TODO: Verificar se esse componente esta com responsabilidades extras
-
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,7 +24,7 @@ type RatingSubmitData = {
 type RatingModalProps = {
     isModalOpen: boolean;
     closeModal: () => void;
-    onSubmitRating: (data: RatingSubmitData) => void;
+    onSubmitRating: (data: RatingSubmitData) => void | Promise<void>;
     isSubmitting?: boolean;
     /** Título da obra, exibido no cabeçalho do formulário */
     titleName?: string;
@@ -35,6 +33,12 @@ type RatingModalProps = {
 };
 
 type Scores = Partial<Record<ReviewCriterionKey, number>>;
+
+/** Média (1 casa decimal) das notas não-nulas; 0 quando nenhuma nota foi dada. */
+const averageScore = (values: number[]): number => {
+    const rated = values.filter(Boolean);
+    return rated.length ? Math.round((rated.reduce((a, b) => a + b, 0) / rated.length) * 10) / 10 : 0;
+};
 
 function ReviewFormBody({
     titleName,
@@ -45,7 +49,7 @@ function ReviewFormBody({
 }: {
     titleName?: string;
     onCancel: () => void;
-    onSubmit: (data: RatingSubmitData) => void;
+    onSubmit: (data: RatingSubmitData) => void | Promise<void>;
     isSubmitting?: boolean;
     initial?: Partial<RatingSubmitData>;
 }) {
@@ -66,23 +70,26 @@ function ReviewFormBody({
 
     const rated = REVIEW_CRITERIA.filter(c => (scores[c.key] ?? 0) > 0).length;
     const pct = Math.round((rated / REVIEW_CRITERIA.length) * 100);
-    const vals = REVIEW_CRITERIA.map(c => scores[c.key] ?? 0).filter(Boolean);
-    const overall = vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : 0;
+    const overall = averageScore(REVIEW_CRITERIA.map(c => scores[c.key] ?? 0));
     const canSubmit = rated >= 1;
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!canSubmit) return;
-        onSubmit({
-            funRating: scores.funRating ?? 0,
-            artRating: scores.artRating ?? 0,
-            storylineRating: scores.storylineRating ?? 0,
-            charactersRating: scores.charactersRating ?? 0,
-            originalityRating: scores.originalityRating ?? 0,
-            pacingRating: scores.pacingRating ?? 0,
-            comment: comment.trim() || undefined,
-            reviewTitle: reviewTitle.trim() || undefined,
-            spoiler,
-        });
+        try {
+            await onSubmit({
+                funRating: scores.funRating ?? 0,
+                artRating: scores.artRating ?? 0,
+                storylineRating: scores.storylineRating ?? 0,
+                charactersRating: scores.charactersRating ?? 0,
+                originalityRating: scores.originalityRating ?? 0,
+                pacingRating: scores.pacingRating ?? 0,
+                comment: comment.trim() || undefined,
+                reviewTitle: reviewTitle.trim() || undefined,
+                spoiler,
+            });
+        } catch {
+            // Erros de API/auth são tratados pelos interceptors e toasts globais.
+        }
     };
 
     return (
@@ -214,10 +221,10 @@ const RatingModal = ({ isModalOpen, closeModal, onSubmitRating, isSubmitting = f
 
     const [done, setDone] = useState<number | null>(null);
 
-    const handleSubmit = (data: RatingSubmitData) => {
-        const vals = [data.funRating, data.artRating, data.storylineRating, data.charactersRating, data.originalityRating, data.pacingRating].filter(Boolean);
-        const overall = vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : 0;
-        onSubmitRating(data);
+    const handleSubmit = async (data: RatingSubmitData) => {
+        const overall = averageScore([data.funRating, data.artRating, data.storylineRating, data.charactersRating, data.originalityRating, data.pacingRating]);
+
+        await onSubmitRating(data);
         setDone(overall);
     };
 

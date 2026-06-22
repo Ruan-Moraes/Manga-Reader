@@ -57,7 +57,7 @@ class UpdateCommentUseCaseTest {
         @DisplayName("Deve atualizar texto do comentário e marcar como editado")
         void deveAtualizarTextoEMarcarComoEditado() {
             // Arrange
-            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Texto atualizado", USER_ID);
+            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Texto atualizado", null, USER_ID);
             Comment comment = buildComment();
 
             when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
@@ -76,7 +76,7 @@ class UpdateCommentUseCaseTest {
         @DisplayName("Deve persistir alterações no repositório")
         void devePersistirAlteracoesNoRepositorio() {
             // Arrange
-            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Novo texto", USER_ID);
+            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Novo texto", null, USER_ID);
 
             when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(buildComment()));
             when(commentRepository.save(any(Comment.class))).thenAnswer(i -> i.getArgument(0));
@@ -90,6 +90,22 @@ class UpdateCommentUseCaseTest {
             assertThat(captor.getValue().getTextContent()).isEqualTo("Novo texto");
             assertThat(captor.getValue().isEdited()).isTrue();
         }
+
+        @Test
+        @DisplayName("Deve atualizar imagem do comentário")
+        void deveAtualizarImagem() {
+            // Arrange
+            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Texto", "https://example.com/img.png", USER_ID);
+
+            when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(buildComment()));
+            when(commentRepository.save(any(Comment.class))).thenAnswer(i -> i.getArgument(0));
+
+            // Act
+            Comment result = updateCommentUseCase.execute(input);
+
+            // Assert
+            assertThat(result.getImageContent()).isEqualTo("https://example.com/img.png");
+        }
     }
 
     @Nested
@@ -100,7 +116,7 @@ class UpdateCommentUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando comentário não existe")
         void deveLancarExcecaoQuandoComentarioNaoExiste() {
             // Arrange
-            UpdateCommentInput input = new UpdateCommentInput("inexistente", "Texto", USER_ID);
+            UpdateCommentInput input = new UpdateCommentInput("inexistente", "Texto", null, USER_ID);
 
             when(commentRepository.findById("inexistente")).thenReturn(Optional.empty());
 
@@ -117,7 +133,7 @@ class UpdateCommentUseCaseTest {
         void deveLancarExcecaoQuandoUsuarioNaoEAutor() {
             // Arrange
             UUID outroUsuario = UUID.randomUUID();
-            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Tentativa", outroUsuario);
+            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, "Tentativa", null, outroUsuario);
             Comment comment = buildComment(); // userId = USER_ID, diferente de outroUsuario
 
             when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
@@ -128,6 +144,24 @@ class UpdateCommentUseCaseTest {
                     .hasMessageContaining("próprios comentários")
                     .extracting("statusCode")
                     .isEqualTo(403);
+
+            verify(commentRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("Deve rejeitar edição sem texto e sem imagem")
+        void deveRejeitarEdicaoSemTextoESemImagem() {
+            // Arrange
+            UpdateCommentInput input = new UpdateCommentInput(COMMENT_ID, " ", null, USER_ID);
+
+            when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(buildComment()));
+
+            // Act & Assert
+            assertThatThrownBy(() -> updateCommentUseCase.execute(input))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .hasMessageContaining("texto ou imagem")
+                    .extracting("statusCode")
+                    .isEqualTo(400);
 
             verify(commentRepository, never()).save(any());
         }

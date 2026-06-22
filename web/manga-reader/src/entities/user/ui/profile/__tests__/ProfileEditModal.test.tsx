@@ -8,6 +8,10 @@ import ProfileEditModal from '../ProfileEditModal';
 
 vi.mock('@shared/service/util/toastService');
 
+vi.mock('@entities/catalog-filter/@x/user', () => ({
+    useTagsFetch: vi.fn().mockReturnValue({ data: [] }),
+}));
+
 vi.mock('../../../api/userService', () => ({
     getMyEnrichedProfile: vi.fn().mockResolvedValue({
         id: 'u1',
@@ -20,6 +24,7 @@ vi.mock('../../../api/userService', () => ({
         recommendations: [],
         recentComments: null,
         recentViewHistory: null,
+        favoriteGenres: [],
         privacySettings: {
             commentVisibility: 'PUBLIC',
             viewHistoryVisibility: 'PRIVATE',

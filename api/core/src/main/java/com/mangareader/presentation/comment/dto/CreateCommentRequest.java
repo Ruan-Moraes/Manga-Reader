@@ -6,8 +6,9 @@ import jakarta.validation.constraints.Size;
 /**
  * Request para criar um comentário unificado.
  * <p>
- * {@code targetType} aceita {@code TITLE}, {@code REVIEW} ou
- * {@code FORUM_TOPIC} (resolvido por {@code CommentTarget.fromValue}).
+ * {@code targetType} aceita {@code TITLE}, {@code CHAPTER}, {@code NEWS},
+ * {@code REVIEW} ou {@code FORUM_TOPIC} (resolvido por
+ * {@code CommentTarget.fromValue}).
  */
 public record CreateCommentRequest(
         @NotBlank(message = "{validation.comment.targetType.required}")
@@ -17,11 +18,10 @@ public record CreateCommentRequest(
         @Size(max = 100, message = "{validation.rating.titleId.size}")
         String targetId,
 
-        @NotBlank(message = "{validation.comment.content.required}")
         @Size(max = 5000, message = "{validation.comment.content.size}")
         String textContent,
 
-        @Size(max = 2000, message = "{validation.rating.comment.size}")
+        @Size(max = 2000, message = "{validation.comment.imageContent.size}")
         String imageContent,
 
         @Size(max = 100, message = "{validation.rating.titleId.size}")
