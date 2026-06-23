@@ -10,9 +10,9 @@ describe('AboutUs', () => {
         expect(await axeComponent(container)).toHaveNoViolations();
     });
 
-    it('renders page title', () => {
+    it('renders hero highlight', () => {
         renderWithProviders(<AboutUs />);
-        expect(screen.getByText('Quem somos?')).toBeInTheDocument();
+        expect(screen.getByText('lê')).toBeInTheDocument();
     });
 
     it('renders eyebrow', () => {
@@ -25,9 +25,14 @@ describe('AboutUs', () => {
         expect(screen.getByText('Nossa missão')).toBeInTheDocument();
     });
 
+    it('renders offer section', () => {
+        renderWithProviders(<AboutUs />);
+        expect(screen.getByText('O que oferecemos')).toBeInTheDocument();
+    });
+
     it('renders community section', () => {
         renderWithProviders(<AboutUs />);
-        expect(screen.getByText('Comunidade')).toBeInTheDocument();
+        expect(screen.getByText('Comunidade no centro')).toBeInTheDocument();
     });
 
     it('renders as main landmark', () => {

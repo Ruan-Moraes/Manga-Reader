@@ -59,7 +59,7 @@ const NavMegaMenu = ({ openSection, onSectionChange, onNavigate }: Props) => {
             items: [
                 { key: 'settings', label: t('nav.item.settings'), hint: t('nav.hint.settings'), icon: Sliders, path: '/settings' },
                 { key: 'helpCenter', label: t('nav.item.helpCenter'), hint: t('nav.hint.helpCenter'), icon: HelpCircle, path: '/help' },
-                { key: 'about', label: t('nav.item.about'), hint: t('nav.hint.about'), icon: Info, path: '/about' },
+                { key: 'about', label: t('nav.item.about'), hint: t('nav.hint.about'), icon: Info, path: '/about-us' },
             ],
         },
     ];

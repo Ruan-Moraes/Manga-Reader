@@ -14,14 +14,81 @@
         "searchWorks": "Explorar obras"
     },
     "aboutUs": {
-        "eyebrow": "La plataforma",
-        "title": "¿Quiénes somos?",
-        "missionTitle": "Nuestra misión",
-        "missionContent": "Somos una plataforma dedicada a la lectura y catalogación de manga, manhwa y manhua. Nuestra misión es reunir a lectores apasionados y crear una comunidad vibrante en torno a los cómics asiáticos.",
-        "offerTitle": "Lo que ofrecemos",
-        "offerContent": "Un catálogo extenso de obras, sistema de biblioteca personal, foros de discusión, grupos de lectura y mucho más. Todo en un solo lugar, gratuito y sin anuncios.",
-        "communityTitle": "Comunidad",
-        "communityContent": "Creemos que la mejor experiencia de lectura es compartida. Por eso invertimos en herramientas que conectan lectores, traductores y fans de todo el mundo."
+        "hero": {
+            "eyebrow": "La plataforma",
+            "titleBefore": "Hecho por quien ",
+            "titleHighlight": "lee",
+            "titleAfter": ", para quien ama leer",
+            "lead": "Manga Reader es una plataforma dedicada a leer y catalogar manga, manhwa y manhua. Reunimos a lectores apasionados en un solo lugar — gratis, sin anuncios y movido por la comunidad.",
+            "chips": {
+                "free": "100% gratis",
+                "noAds": "Sin anuncios",
+                "study": "Proyecto de estudio"
+            }
+        },
+        "mission": {
+            "eyebrow": "Nuestra misión",
+            "statementBefore": "Reunir a lectores apasionados y construir una ",
+            "statementHighlight": "comunidad vibrante",
+            "statementAfter": " en torno a los cómics asiáticos.",
+            "body": "Creemos que la mejor experiencia de lectura es compartida. Por eso invertimos en herramientas que conectan a lectores, traductores y fans — del primer capítulo a la última discusión de teorías."
+        },
+        "offer": {
+            "title": "Lo que ofrecemos",
+            "subtitle": "Un catálogo extenso, biblioteca personal, foros y grupos de lectura — todo reunido, libre y sin anuncios."
+        },
+        "features": {
+            "catalog": {
+                "title": "Catálogo extenso",
+                "desc": "Manga, manhwa y manhua organizados por género, estado e idioma — siempre creciendo con la comunidad."
+            },
+            "library": {
+                "title": "Biblioteca personal",
+                "desc": "Sigue lo que estás leyendo, crea listas, marca favoritos y nunca pierdas dónde lo dejaste."
+            },
+            "reviews": {
+                "title": "Reseñas y notas",
+                "desc": "Valora obras por criterios — arte, historia, ritmo — y descubre lo que otros lectores opinaron."
+            },
+            "forum": {
+                "title": "Foros de discusión",
+                "desc": "Debate arcos, teorías y lanzamientos con spoilers marcados y respeto a opiniones distintas."
+            },
+            "groups": {
+                "title": "Grupos de lectura",
+                "desc": "Lee en conjunto, sigue grupos de scan y mantente al día con las traducciones que te gustan."
+            },
+            "free": {
+                "title": "Libre y sin anuncios",
+                "desc": "Todo en un solo lugar, gratis. Sin banners, sin pop-ups — el foco es la lectura, no la publicidad."
+            }
+        },
+        "community": {
+            "title": "La comunidad en el centro",
+            "body": "Leer es mejor acompañado. Cada reseña, tema del foro y grupo de lectura existe para acercar a quien crea, traduce y consume — y para dar voz a quien hace posible esta escena.",
+            "forumCta": "Entrar al foro",
+            "groupsCta": "Ver grupos"
+        },
+        "roles": {
+            "readers": {
+                "label": "Lectores",
+                "desc": "Catalogan, reseñan y debaten lo que aman."
+            },
+            "translators": {
+                "label": "Traductores",
+                "desc": "Grupos de scan que acercan obras al público."
+            },
+            "fans": {
+                "label": "Fans de todo el mundo",
+                "desc": "Conectados por una misma pasión por los cómics asiáticos."
+            }
+        },
+        "cta": {
+            "title": "¿Listo para empezar a leer?",
+            "body": "Crea tu cuenta gratuita, arma tu biblioteca y únete a las conversaciones. Sin coste, sin anuncios.",
+            "signUpCta": "Crear cuenta",
+            "exploreCta": "Explorar catálogo"
+        }
     },
     "publishWork": {
         "eyebrow": "Para creadores",
