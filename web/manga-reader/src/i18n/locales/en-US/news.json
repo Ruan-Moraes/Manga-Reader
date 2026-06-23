@@ -1,0 +1,84 @@
+{
+    "card": {
+        "readMinutes": "{{count}} min",
+        "new": "New",
+        "trending": "Trending"
+    },
+    "hero": {
+        "exclusive": "Exclusive",
+        "highlight": "Featured",
+        "views": "{{count}} views"
+    },
+    "filter": {
+        "period": {
+            "all": "All time",
+            "today": "Today",
+            "week": "Last week",
+            "month": "Last month"
+        },
+        "source": {
+            "all": "All sources"
+        },
+        "sort": {
+            "recent": "Most recent",
+            "mostRead": "Most read",
+            "trending": "Trending"
+        }
+    },
+    "tabs": {
+        "featured": "Top",
+        "releases": "Releases",
+        "adaptations": "Adaptations",
+        "industry": "Industry",
+        "events": "Events",
+        "curiosities": "Curiosities",
+        "interviews": "Interviews",
+        "market": "Market",
+        "international": "International"
+    },
+    "page": {
+        "title": "News",
+        "eyebrow": "Latest",
+        "weekTitle": "What happened this week",
+        "readMore": "Read more",
+        "readMoreInline": "Read more →",
+        "pinnedLabel": "Pinned",
+        "emptyTitle": "Nothing here in this category",
+        "emptyDescription": "Try another category or check back soon.",
+        "searchPlaceholder": "Search by title, content, work or author",
+        "loadMore": "Load more news",
+        "tabs": {
+            "featured": "Top",
+            "releases": "Releases",
+            "adaptations": "Adaptations",
+            "industry": "Industry",
+            "events": "Events",
+            "curiosities": "Curiosities"
+        }
+    },
+    "details": {
+        "notFound": "News not found",
+        "notFoundDesc": "This content may have been removed or the link is incorrect.",
+        "backButton": "Back to news",
+        "readingProgress": "Reading progress",
+        "scrollToTop": "Back to top",
+        "updated": "Updated {{date}}",
+        "galleryAlt": "Additional image",
+        "galleryCaption": "Behind the scenes and promotional materials.",
+        "videoTitle": "Embedded video",
+        "galleryImageAlt": "Gallery",
+        "technicalSheet": "Technical sheet",
+        "reactions": "Reactions and engagement",
+        "commentsCount": "{{count}} comments",
+        "share": "Share",
+        "save": "Save news",
+        "comments": "Comments",
+        "sortRecent": "Most recent",
+        "sortRelevant": "Most relevant",
+        "showSpoilers": "Show spoilers",
+        "hideSpoilers": "Hide spoilers",
+        "reply": "reply",
+        "relatedTitle": "Related news",
+        "readAlso": "Read also"
+    }
+}

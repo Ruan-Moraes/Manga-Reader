@@ -1,0 +1,91 @@
+{
+    "section": {
+        "title": "Comments",
+        "loginPrompt": "Sign in to leave a comment.",
+        "placeholder": "Leave your comment",
+        "sortLabel": "Sort comments by:",
+        "count_one": "{{count}} comment",
+        "count_other": "{{count}} comments",
+        "markdownHint": "Markdown supported — **bold**, *italic*, ||spoiler||",
+        "crossLanguage": "All languages (admin)"
+    },
+    "reply": {
+        "placeholder": "Write your reply...",
+        "modalTitle": "Reply to comment",
+        "action": "Reply",
+        "cancel": "Cancel",
+        "replyingTo": "↳ In reply to",
+        "authAction": "reply to comments"
+    },
+    "actions": {
+        "send": "Send",
+        "reply": "Reply",
+        "like": "Like",
+        "dislike": "Dislike",
+        "edit": "Edit",
+        "delete": "Delete",
+        "voteGroup": "Vote on comment",
+        "uploadImage": "Upload image",
+        "imageAlt": "Image {{index}}",
+        "removeImage": "Remove image"
+    },
+    "validation": {
+        "empty": "Write something before sending.",
+        "loginRequired": "comment",
+        "authDelete": "delete comments",
+        "authEdit": "edit comments",
+        "authReply": "reply to comments"
+    },
+    "toast": {
+        "created": "Comment sent successfully.",
+        "createError": "Error sending comment.",
+        "deleted": "Comment deleted successfully.",
+        "deleteError": "Error deleting comment.",
+        "edited": "Comment edited successfully.",
+        "editError": "Error editing comment.",
+        "replied": "Reply added successfully.",
+        "replyError": "Error adding reply."
+    },
+    "delete": {
+        "title": "Delete comment",
+        "message": "Are you sure you want to delete this comment? This action will also delete related replies.",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+    },
+    "edit": {
+        "title": "Edit comment",
+        "placeholder": "Edit your comment",
+        "cancel": "Cancel",
+        "save": "Save",
+        "imageAlt": "Image {{index}}",
+        "removeImage": "X"
+    },
+    "metadata": {
+        "edited": "Edited"
+    },
+    "user": {
+        "viewProfileAria": "View {{name}}'s profile",
+        "memberBadge": "Member",
+        "moderatorBadge": "Moderator",
+        "imageAlt": "Image from {{name}}'s comment"
+    },
+    "editor": {
+        "imageLimitError": "You can only add up to 3 images.",
+        "noFileError": "No file selected.",
+        "fileSizeError": "The file must be at most 2MB."
+    },
+    "list": {
+        "loading": "Loading comments...",
+        "unknownError": "Unknown error",
+        "hideDeep": "− Hide deep replies",
+        "loadMore": "Load more comments",
+        "empty": "No comments found."
+    },
+    "thread": {
+        "show_one": "Show {{count}} reply",
+        "show_other": "Show {{count}} replies",
+        "hide_one": "Hide {{count}} reply",
+        "hide_other": "Hide {{count}} replies",
+        "continue": "Continue this conversation ({{count}})"
+    }
+}

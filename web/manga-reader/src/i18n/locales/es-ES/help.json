@@ -1,0 +1,184 @@
+{
+    "search": {
+        "eyebrow": "Centro de ayuda",
+        "title": "¿Cómo podemos ayudarte?",
+        "description": "Encuentra respuestas, guías y soporte para cualquier duda sobre Manga Reader.",
+        "inputLabel": "Buscar en la ayuda",
+        "placeholder": "Cómo cambiar la dirección de lectura, olvidé mi contraseña...",
+        "systemStatus": "Todo operando normalmente",
+        "viewDetails": "Ver detalles →",
+        "chips": {
+            "changeLanguage": "Cambiar idioma",
+            "spoiler": "Spoiler",
+            "importMal": "Importar MAL",
+            "cancelSupport": "Cancelar apoyo"
+        }
+    },
+    "faq": {
+        "eyebrow": "Respuestas rápidas",
+        "title": "Preguntas frecuentes",
+        "helpful": "¿Fue útil esta respuesta?",
+        "yesAria": "Sí, fue útil",
+        "yes": "Sí",
+        "noAria": "No fue útil",
+        "no": "No"
+    },
+    "articles": {
+        "categoriesEyebrow": "Navega por tema",
+        "categoriesTitle": "Categorías",
+        "resultsEyebrow": "Resultados para \"{{query}}\"",
+        "popularEyebrow": "Más buscados",
+        "popularTitle": "Artículos populares",
+        "emptyTitle": "Nada encontrado para \"{{query}}\"",
+        "emptyDesc": "Prueba términos diferentes o abre un ticket con nuestro equipo.",
+        "openTicket": "Abrir ticket",
+        "helpful": "{{percent}}% útil"
+    },
+    "article": {
+        "back": "Volver al Centro de Ayuda",
+        "views": "{{value}} visualizaciones",
+        "helpfulTitle": "¿Te resultó útil este artículo?",
+        "yes": "Sí, ayudó",
+        "no": "No lo resolvió",
+        "relatedTitle": "Artículos relacionados",
+        "notFoundTitle": "Artículo no encontrado",
+        "notFoundDesc": "El artículo que buscas no existe o fue movido. Vuelve al Centro de Ayuda y busca otro tema."
+    },
+    "articleBody": {
+        "1": [
+            "Para cambiar tu correo o contraseña, ve a Configuración → Cuenta. Allí encontrarás los campos de correo y contraseña con opción de edición.",
+            "Al cambiar el correo, enviamos un enlace de confirmación a la nueva dirección — el cambio solo se aplica después de que confirmes mediante ese enlace.",
+            "Para la contraseña, debes introducir la contraseña actual antes de definir la nueva. Usa al menos 8 caracteres, combinando letras y números, para mayor seguridad.",
+            "Si ya no tienes acceso al correo actual, abre un ticket con nuestro equipo para validar tu identidad manualmente."
+        ],
+        "2": [
+            "La dirección de lectura se puede ajustar tanto de forma global como por obra. Para el valor global, ve a Configuración → Lectura → Dirección.",
+            "Las opciones disponibles son: vertical continua (ideal para webtoons/manhwa), horizontal de izquierda a derecha y horizontal de derecha a izquierda (estándar del manga japonés).",
+            "Dentro del lector, el icono de engranaje permite sobrescribir la dirección solo para el capítulo actual, sin cambiar tu preferencia global."
+        ],
+        "3": [
+            "En la pantalla de inicio de sesión, haz clic en \"Olvidé mi contraseña\" e introduce el correo registrado. Enviaremos un enlace de restablecimiento válido por 30 minutos.",
+            "Revisa también la carpeta de spam si el correo no llega en unos minutos. El enlace solo puede usarse una vez.",
+            "Tras definir la nueva contraseña, todas las sesiones activas en otros dispositivos se cierran por seguridad."
+        ],
+        "4": [
+            "El idioma de la interfaz se cambia en Configuración → Idioma, o mediante el selector de idioma del menú. El cambio se aplica de inmediato.",
+            "El idioma de la interfaz es independiente del idioma del contenido (catálogo y comentarios), que configuras por separado en Idiomas de contenido.",
+            "Tu preferencia de idioma de la interfaz se guarda en el navegador; al iniciar sesión, acompaña a tu perfil."
+        ],
+        "5": [
+            "Para cancelar tu suscripción, ve a Configuración → Suscripción → Cancelar. La cancelación es inmediata, sin penalización.",
+            "Mantienes acceso a las funciones del plan colaborador hasta el final del periodo ya pagado — no hay reembolso proporcional del periodo en curso.",
+            "Tras finalizar el periodo, tu cuenta vuelve automáticamente al plan gratuito, sin perder el historial ni la biblioteca."
+        ],
+        "6": [
+            "Si la aplicación está lenta, empieza limpiando la caché en Configuración → Limpiar caché. Esto resuelve la mayoría de los bloqueos de imágenes.",
+            "Comprueba también tu conexión y si la app/navegador está actualizada. Las extensiones de bloqueo pueden interferir en la carga de las páginas.",
+            "Si la lentitud persiste, abre un ticket indicando tu dispositivo, navegador y el capítulo donde ocurre el problema — esto agiliza el diagnóstico."
+        ]
+    },
+    "status": {
+        "eyebrow": "Salud de la plataforma",
+        "title": "Estado del sistema",
+        "meta": "Última comprobación hace 2 min"
+    },
+    "contact": {
+        "eyebrow": "¿No encontraste lo que buscabas?",
+        "title": "Hablar con el equipo",
+        "responseTime": "Tiempo medio de respuesta:",
+        "responseTimeValue": "4h12min",
+        "openTicket": "Abrir ticket",
+        "askForum": "Preguntar en el foro",
+        "priority": "Canal prioritario"
+    },
+    "categories": {
+        "account": {
+            "label": "Cuenta",
+            "desc": "Inicio de sesión, contraseña, perfil"
+        },
+        "reading": {
+            "label": "Lectura",
+            "desc": "Modos, controles, descargas"
+        },
+        "library": {
+            "label": "Biblioteca",
+            "desc": "Listas, historial, progreso"
+        },
+        "community": {
+            "label": "Comunidad",
+            "desc": "Foro, grupos, comentarios"
+        },
+        "settings": {
+            "label": "Configuración",
+            "desc": "Idioma, notificaciones, tema"
+        },
+        "privacy": {
+            "label": "Privacidad",
+            "desc": "Datos, GDPR, exportación"
+        },
+        "billing": {
+            "label": "Suscripción",
+            "desc": "Pago, planes, reembolsos"
+        },
+        "technical": {
+            "label": "Problemas",
+            "desc": "Errores, lentitud, bugs"
+        }
+    },
+    "items": {
+        "1": "¿Cómo cambio mi correo o contraseña?",
+        "2": "¿Cómo cambio la dirección de lectura (horizontal/vertical)?",
+        "3": "Olvidé mi contraseña — ¿cómo la recupero?",
+        "4": "¿Cómo cambio el idioma de la interfaz?",
+        "5": "¿Cómo cancelo mi suscripción?",
+        "6": "La aplicación está lenta — ¿qué hago?"
+    },
+    "faqItems": {
+        "1": {
+            "q": "¿Manga Reader es gratuito?",
+            "a": "Sí, la lectura básica es totalmente gratuita. Existe un plan colaborador opcional que elimina anuncios y desbloquea funciones adicionales."
+        },
+        "2": {
+            "q": "¿Cómo importar mi lista de MyAnimeList / AniList?",
+            "a": "Ve a Configuración → Biblioteca → Importar lista. Soportamos importación de XML de MAL y JSON de AniList."
+        },
+        "3": {
+            "q": "¿Puedo leer sin conexión?",
+            "a": "Sí, los usuarios del plan colaborador pueden descargar capítulos para lectura sin conexión en las apps iOS y Android."
+        },
+        "4": {
+            "q": "¿Cómo denuncio un capítulo con error de traducción?",
+            "a": "Abre el capítulo, haz clic en el menú ⋮ y selecciona \"Reportar problema\". Nuestro equipo de moderación responde en hasta 48h."
+        },
+        "5": {
+            "q": "¿El sitio tiene app móvil?",
+            "a": "Tenemos apps nativas para iOS y Android en desarrollo. Mientras tanto, el sitio es totalmente responsive y funciona bien en móvil."
+        },
+        "6": {
+            "q": "¿Cómo cancelo el apoyo y mantengo el acceso hasta el final del periodo?",
+            "a": "Cancela en Configuración → Suscripción → Cancelar. El acceso permanece activo hasta el final del periodo ya pagado."
+        },
+        "7": {
+            "q": "¿Puedo solicitar que se añada una obra?",
+            "a": "¡Sí! Ve al Foro → Solicitudes de obra y abre un tema con el título, autor y enlace a una fuente oficial."
+        },
+        "8": {
+            "q": "¿Durante cuánto tiempo se guardan los datos de lectura?",
+            "a": "Tu historial y progreso se mantienen mientras tu cuenta esté activa, más 90 días tras el cierre."
+        }
+    },
+    "statusTiles": {
+        "reader": "Lector de manga",
+        "search": "Búsqueda",
+        "auth": "Cuenta y autenticación",
+        "notifications": "Notificaciones",
+        "payments": "Pagos",
+        "api": "API de contenido"
+    },
+    "statusLabel": {
+        "operating": "Operando",
+        "degraded": "Degradado",
+        "idle": "No disponible",
+        "maintenance": "Mantenimiento"
+    }
+}

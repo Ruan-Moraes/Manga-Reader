@@ -1,0 +1,120 @@
+{
+    "status": {
+        "active": "Ativo"
+    },
+    "container": {
+        "defaultTitle": "Grupos de Tradução",
+        "empty": "Nenhum grupo de tradução encontrado para esta obra."
+    },
+    "card": {
+        "avatarAlt": "Avatar do grupo {{name}}",
+        "openSite": "Abrir site oficial",
+        "viewDetails": "Ver detalhes",
+        "viewDetailsLong": "Ver detalhes do grupo",
+        "followers": "seguidores",
+        "works": "obras",
+        "follow": "Seguir",
+        "following": "Seguindo"
+    },
+    "summary": {
+        "statusLabel": "Status",
+        "focusTags": "Tags de foco",
+        "noTags": "Sem tags definidas",
+        "rating": "Nota"
+    },
+    "header": {
+        "bannerAlt": "Banner do grupo {{name}}",
+        "avatarAlt": "Avatar de {{name}}",
+        "officialSite": "Site oficial",
+        "verifiedAria": "Verificado",
+        "statusActive": "Ativo",
+        "statusHiatus": "Em hiato",
+        "statusInactive": "Inativo",
+        "follow": "Seguir",
+        "following": "Seguindo",
+        "share": "Compartilhar",
+        "tabs": {
+            "works": "Obras",
+            "activity": "Atividade",
+            "members": "Membros",
+            "about": "Sobre"
+        },
+        "stats": {
+            "followers": "Seguidores",
+            "works": "Obras",
+            "chapters": "Capítulos",
+            "avgDays": "Dias entre caps"
+        }
+    },
+    "modal": {
+        "title": "Grupos de Tradução",
+        "empty": "Nenhum grupo de tradução encontrado para esta obra."
+    },
+    "member": {
+        "profileTitle": "Perfil de membro",
+        "joinedAt": "Entrou na plataforma em {{date}}",
+        "participatesIn": "Grupos que participa",
+        "recentActivity": "Últimos posts/comentários",
+        "noTitle": "Sem obra vinculada",
+        "searchPlaceholder": "Buscar membro",
+        "membersHeader": "{{name}} • {{count}} membros"
+    },
+    "page": {
+        "eyebrow": "Comunidade",
+        "title": "Grupos de scan",
+        "meta": "{{count}} grupos",
+        "claimGroup": "Reivindicar grupo",
+        "sub": "Conheça os grupos que traduzem as obras que você lê. Siga, acompanhe lançamentos e descubra novos coletivos."
+    },
+    "filters": {
+        "searchPlaceholder": "Buscar grupo ou gênero...",
+        "sortMostActive": "Mais ativos",
+        "sortMostFollowers": "Mais seguidores",
+        "sortMostWorks": "Mais obras",
+        "sortBestRated": "Melhor avaliados",
+        "statusAll": "Todos",
+        "statusActive": "Ativos",
+        "statusHiatus": "Em hiato",
+        "statusInactive": "Inativos",
+        "sortMostChapters": "Mais capítulos",
+        "sortAlpha": "A → Z"
+    },
+    "list": {
+        "empty": "Nenhum grupo encontrado",
+        "emptyDesc": "Tente outros termos ou remova os filtros.",
+        "featured": "Em destaque",
+        "allGroups": "Todos os grupos"
+    },
+    "profile": {
+        "notFoundTitle": "Grupo não encontrado",
+        "notFoundDesc": "Ele pode ter sido removido ou o link está errado.",
+        "backToGroupsShort": "Voltar aos grupos",
+        "aboutTitle": "Sobre o grupo",
+        "chapterPublished": "Capítulo {{chapter}} publicado",
+        "languagesTitle": "Idiomas",
+        "findUs": "Onde nos encontrar",
+        "back": "Voltar",
+        "followGroup": "Seguir grupo",
+        "following": "Seguindo",
+        "tabAbout": "Sobre",
+        "tabWorks": "Obras",
+        "tabTeam": "Equipe",
+        "tabDiscussion": "Discussão",
+        "statFollowers": "Seguidores",
+        "statWorks": "Obras",
+        "statChapters": "Capítulos",
+        "statMembers": "Membros",
+        "since": "desde {{year}}",
+        "aboutHeading": "Sobre o grupo",
+        "genresHeading": "Gêneros traduzidos",
+        "whereToFind": "Onde encontrar",
+        "socialSite": "Site",
+        "noSocials": "Sem links cadastrados.",
+        "worksCount": "Obras traduzidas — {{count}}",
+        "worksEmpty": "Esse grupo ainda não tem obras catalogadas.",
+        "teamCount": "Equipe — {{count}} integrantes",
+        "discussionHeading": "Discussão recente",
+        "discussionText": "O fórum interno do grupo aparece aqui.",
+        "viewInForum": "Ver no fórum"
+    }
+}

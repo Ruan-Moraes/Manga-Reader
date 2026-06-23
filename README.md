@@ -10,16 +10,20 @@
 |---|---|
 | **Etapa atual** | **Fase 9 — Qualidade e polish** |
 | **Próxima etapa** | Fase 10 — Produção |
-| **Build** | ✅ 1397 testes (1057 backend + 340 frontend) — **0 falhas** |
+| **Build** | ✅ 2000 testes (1122 backend + 878 frontend) — **0 falhas** |
 
 ```
 [✅] Fase 1-5: Backend (domínios, use cases, endpoints, security, infra)
 [✅] Fase 6:   Frontend UI (páginas, features, layout, guards)
-[✅] Fase 7:   Testes do backend (1057 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
+[✅] Fase 7:   Testes do backend (1122 testes — domain, app, presentation, infra JPA+MongoDB, Security E2E)
 [✅] Fase 8:   Integração frontend ↔ backend (features com API real)
 [🔄] Fase 9:   Qualidade e polish ← ETAPA ATUAL
        ├─ ✅ 9a: Biblioteca unificada + perfil (Library tabs, MyReviews, Profile stats)
        ├─ ✅ 9b: Redesign perfil unificado (recommendations, view history, privacy)
+       │      └─ ✅ Modal de configurações do usuário (Informações/Redes/Recomendações/Grupos/Privacidade),
+       │             aberto de "Editar perfil" e do avatar; distinto da página de config. de SISTEMA (/settings).
+       │             Endpoints novos: `GET /api/users/me/groups`, `DELETE /api/users/me` (exclusão/anonimização).
+       │             Recomendações limitadas a 6 (vitrine). i18n pt/en/es.
        ├─ ✅ 9c-testes: Testes frontend (50 arquivos, 340 testes — services, hooks, utils, componentes)
        ├─ ✅ 9d-i18n: Internacionalização (pt-BR, en-US, es-ES)
        │      ├─ ✅ Infra frontend (i18next + LanguageSwitcher + namespaces)
@@ -30,8 +34,7 @@
 [🔲] Fase 10:  Produção (CI/CD, infra cloud, deploy, monitoramento)
 ```
 
-> Estado de fase i18n é vivo — fonte de verdade em [`docs/i18n.md`](docs/i18n.md) e [`docs/pending-tasks.md`](docs/pending-tasks.md).
-> Documentação técnica detalhada em [`/docs`](docs/overview.md).
+> Convenções i18n consolidadas em [`docs/i18n-guide.md`](docs/i18n-guide.md). Pendências e dívidas técnicas em [`docs/tech-debt.md`](docs/tech-debt.md).
 
 ---
 
@@ -67,8 +70,8 @@ O **Manga Reader** é uma plataforma web completa para leitura, catalogação e 
 | Pacotes compartilhados frontend | **4** (assets, design-tokens, tsconfig, types) |
 | Features frontend (manga-reader) | **17** módulos |
 | Idiomas suportados | **3** (pt-BR padrão/fallback, en-US, es-ES) |
-| Testes backend | **1057** (0 falhas) |
-| Testes frontend | **340** (50 arquivos, 0 falhas) |
+| Testes backend | **1122** (0 falhas) |
+| Testes frontend | **878** (126 arquivos, 0 falhas) |
 
 ---
 
@@ -113,7 +116,7 @@ frontend-apps/
 
 | Banco | Tech | Responsável por |
 |-------|------|----------------|
-| **PostgreSQL** | JPA/Hibernate + Flyway (19 migrations, 14 repos) | users, groups, events, forum, library, stores, tags, subscriptions, payments, domain labels |
+| **PostgreSQL** | JPA/Hibernate + Flyway (22 migrations, 14 repos) | users, groups, events, forum, library, stores, tags, subscriptions, payments, domain labels |
 | **MongoDB** | Spring Data Mongo + Mongock (9 migrations, 8 repos) | titles, **chapters** (coleção própria — DT-17, `GET /api/titles/{id}/chapters` paginado + `direction` asc/desc numérico — DT-19), comments, ratings, news, view history |
 
 ---
@@ -153,6 +156,14 @@ frontend-apps/
 | react-i18next | — | Internacionalização |
 | Vitest + @testing-library/react + MSW v2 | — | Testes |
 
+### Serviços de aplicação
+
+| Serviço | Porta | Responsabilidade |
+|---------|-------|------------------|
+| `api/core` | 8080 | API principal (Clean Architecture, 12 domínios) |
+| [`api/jobs/rating-aggregator`](api/jobs/rating-aggregator) | 8081 | Agregação de avaliações (`title_rating_aggregate`) |
+| [`api/jobs/orphan-cleaner`](api/jobs/orphan-cleaner) | 8082 | Reconciliação dos contadores desnormalizados (drift) + limpeza de refs órfãs cross-DB |
+
 ### Infraestrutura (Docker Compose)
 
 | Serviço | Versão | Porta |
@@ -178,7 +189,7 @@ frontend-apps/
 ### Backend
 
 ```bash
-cd backend
+cd api
 
 # Contêineres Docker sobem automaticamente via spring-boot-docker-compose
 mvn spring-boot:run
@@ -194,7 +205,7 @@ docker compose up -d && mvn spring-boot:run
 ### Frontend
 
 ```bash
-cd frontend-apps
+cd web
 pnpm install                      # instala todo o workspace
 
 pnpm --filter manga-reader dev    # app principal (dev server, proxy /api → :8080)
@@ -204,8 +215,8 @@ pnpm --filter landing-page dev    # landing page
 ### Testes
 
 ```bash
-# Backend (1057 testes)
-cd backend
+# Backend (1122 testes)
+cd api
 mvn test                                    # Todos
 mvn test -Dtest=**/domain/**/*Test          # Apenas domain
 mvn test -Dtest=**/application/**/*Test     # Apenas use cases
@@ -214,7 +225,7 @@ mvn test -Dtest=**/infrastructure/**/*Test  # JPA + MongoDB + Security
 mvn test -Dtest.excludedGroups=testcontainers  # Suíte leve, SEM Docker (pula testes de container)
 
 # Frontend (340 testes)
-cd frontend-apps
+cd web
 pnpm --filter manga-reader test             # Vitest
 pnpm --filter manga-reader test:watch       # Watch mode
 ```
@@ -226,14 +237,9 @@ pnpm --filter manga-reader test:watch       # Watch mode
 ```
 Manga-Reader/
 ├── docs/                        # Documentação técnica
-│   ├── overview.md              # Visão geral e estado atual
-│   ├── frontend-analysis.md     # Análise técnica do frontend
-│   ├── backend-analysis.md      # Análise técnica do backend
-│   ├── tech-debt.md             # Dívidas técnicas (prioridade + impacto)
-│   ├── pending-tasks.md         # Tarefas pendentes por área
+│   ├── tech-debt.md             # Dívidas técnicas + backlog (fonte única)
 │   ├── deployment-plan.md       # Plano de deploy em produção
-│   ├── i18n.md                  # Plano vivo / log de execução i18n
-│   └── i18n-guide.md            # Receita de convenções i18n consolidadas
+│   └── i18n-guide.md            # Convenções i18n consolidadas
 │
 ├── backend/
 │   ├── docker-compose.yml       # Infra de desenvolvimento
@@ -261,7 +267,7 @@ Manga-Reader/
 
 **170+ arquivos · 1397 testes · 0 falhas**
 
-### Backend — 1057 testes
+### Backend — 1122 testes
 
 | Camada | Anotação | Abordagem |
 |--------|----------|-----------|
@@ -319,8 +325,7 @@ Para evitar duplicação e drift, dívidas técnicas e roadmap são mantidos com
 
 | Documento | Conteúdo |
 |-----------|----------|
-| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas com prioridade e impacto |
-| [`docs/pending-tasks.md`](docs/pending-tasks.md) | Tarefas pendentes por área |
+| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas + backlog de produto (prioridade e impacto) |
 | [`docs/deployment-plan.md`](docs/deployment-plan.md) | Plano de produção (infra, CI/CD, segurança) |
 
 Resumo das pendências de alto nível: `@Transactional` em use cases multi-repository, code splitting / Error Boundaries no frontend, acessibilidade (ARIA), CI/CD pipeline, infra cloud + deploy.
@@ -351,6 +356,26 @@ Cada review possui notas por categoria:
 | `ratingCount` | Quantidade total de reviews |
 | `rankingScore` | Score ponderado para ranking |
 
+### Endpoints
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/ratings/title/{id}` | Lista avaliações (paginado) |
+| `GET` | `/api/ratings/title/{id}/average` | Média de estrelas + contagem |
+| `GET` | `/api/ratings/title/{id}/distribution` | Contagem por faixa de estrela (1–5) + total — agregação Mongo (`$round` do `overallRating`) |
+| `GET` | `/api/ratings/user` | Avaliações do usuário logado |
+| `POST` | `/api/ratings` | Submete/atualiza avaliação (6 categorias + comentário + título/spoiler) |
+| `PUT` | `/api/ratings/{id}` | Atualiza avaliação |
+| `DELETE` | `/api/ratings/{id}` | Remove avaliação |
+| `POST` | `/api/ratings/{id}/vote` | Vota Útil/Contrário (`{value: "up"｜"down"}`, toggle; 1 voto/usuário; não vota a própria) |
+| `DELETE` | `/api/ratings/{id}/vote` | Remove o voto do usuário |
+
+> **Frontend:** a aba de avaliações da obra implementa o wizard de 6 categorias
+> (`RatingWizard`), o gráfico de distribuição consome `/distribution` (dados
+> reais — substituiu percentuais hardcoded) e os votos Útil/Contrário no `ReviewCard`
+> chamam `/vote` (DT-45). Campos avançados (`reviewTitle`, `spoiler`, `top`, `upvotes`,
+> `downvotes`, `myVote`) vêm do backend.
+
 ### Job Periódico
 
 > **Status:** `ratingAverage` e `rankingScore` na entidade Title **ainda não são calculados por job periódico**. Hoje são preenchidos pelo `DataSeeder` com valores de demonstração.
@@ -361,15 +386,12 @@ Cada review possui notas por categoria:
 
 | Documento | Descrição |
 |-----------|-----------|
-| [`docs/overview.md`](docs/overview.md) | Visão geral, stack, arquitetura, fase atual |
-| [`docs/frontend-analysis.md`](docs/frontend-analysis.md) | Análise técnica do frontend |
-| [`docs/backend-analysis.md`](docs/backend-analysis.md) | Análise técnica do backend |
-| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas (impacto + prioridade) |
-| [`docs/pending-tasks.md`](docs/pending-tasks.md) | Tarefas pendentes por área |
+| [`CLAUDE.md`](CLAUDE.md) | Arquitetura, patterns e convenções do projeto |
+| [`docs/tech-debt.md`](docs/tech-debt.md) | Dívidas técnicas + backlog de produto (impacto + prioridade) |
 | [`docs/deployment-plan.md`](docs/deployment-plan.md) | Variáveis, infra, build, Nginx, CI/CD, segurança |
-| [`docs/i18n.md`](docs/i18n.md) | Plano vivo / log de execução de i18n de conteúdo |
-| [`docs/i18n-guide.md`](docs/i18n-guide.md) | Receita de convenções i18n consolidadas |
-| [`frontend-apps/manga-reader/src/i18n/locales/README.md`](frontend-apps/manga-reader/src/i18n/locales/README.md) | Guia dos arquivos de tradução (react-i18next) |
+| [`docs/i18n-guide.md`](docs/i18n-guide.md) | Convenções i18n consolidadas (catálogo + UGC) |
+| [`frontend-apps/manga-reader/src/i18n/locales/README.md`](web/manga-reader/src/i18n/locales/README.md) | Guia dos arquivos de tradução (react-i18next) |
+| Swagger UI (`/swagger-ui.html`) | Referência viva da API REST |
 
 ---
 

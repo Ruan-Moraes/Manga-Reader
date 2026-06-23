@@ -1,0 +1,12 @@
+{
+    "tagSelect": {
+        "loading": "Loading..."
+    },
+    "filters": {
+        "title": "Filter Titles",
+        "sort": {
+            "random": "Random",
+            "alphabetical": "Alphabetical"
+        }
+    }
+}

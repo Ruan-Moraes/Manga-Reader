@@ -1,0 +1,12 @@
+{
+    "tagSelect": {
+        "loading": "Carregando..."
+    },
+    "filters": {
+        "title": "Filtrar Obras",
+        "sort": {
+            "random": "Aleatório",
+            "alphabetical": "Alfabética"
+        }
+    }
+}

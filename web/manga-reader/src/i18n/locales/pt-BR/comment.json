@@ -1,0 +1,91 @@
+{
+    "section": {
+        "title": "Comentários",
+        "loginPrompt": "Faça login para deixar um comentário.",
+        "placeholder": "Deixe seu comentário",
+        "sortLabel": "Ordernar comentários por:",
+        "count_one": "{{count}} comentário",
+        "count_other": "{{count}} comentários",
+        "markdownHint": "Suporta Markdown — **negrito**, *itálico*, ||spoiler||",
+        "crossLanguage": "Todos idiomas (admin)"
+    },
+    "reply": {
+        "placeholder": "Escreva sua resposta...",
+        "modalTitle": "Responder comentário",
+        "action": "Responder",
+        "cancel": "Cancelar",
+        "replyingTo": "↳ Em resposta a",
+        "authAction": "responder comentários"
+    },
+    "actions": {
+        "send": "Enviar",
+        "reply": "Responder",
+        "like": "Curtir",
+        "dislike": "Não curtir",
+        "edit": "Editar",
+        "delete": "Excluir",
+        "voteGroup": "Votar no comentário",
+        "uploadImage": "Enviar imagem",
+        "imageAlt": "Imagem {{index}}",
+        "removeImage": "Remover imagem"
+    },
+    "validation": {
+        "empty": "Escreva algo antes de enviar.",
+        "loginRequired": "comentar",
+        "authDelete": "deletar comentários",
+        "authEdit": "editar comentários",
+        "authReply": "responder comentários"
+    },
+    "toast": {
+        "created": "Comentário enviado com sucesso.",
+        "createError": "Erro ao enviar comentário.",
+        "deleted": "Comentário deletado com sucesso.",
+        "deleteError": "Erro ao deletar comentário.",
+        "edited": "Comentário editado com sucesso.",
+        "editError": "Erro ao editar comentário.",
+        "replied": "Resposta adicionada com sucesso.",
+        "replyError": "Erro ao responder comentário."
+    },
+    "delete": {
+        "title": "Deletar comentário",
+        "message": "Você tem certeza que deseja deletar este comentário? Essa ação deletará os comentários relacionados a ele.",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+    },
+    "edit": {
+        "title": "Editar comentário",
+        "placeholder": "Edite seu comentário",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "imageAlt": "Imagem {{index}}",
+        "removeImage": "X"
+    },
+    "metadata": {
+        "edited": "Editado"
+    },
+    "user": {
+        "viewProfileAria": "Ver perfil de {{name}}",
+        "memberBadge": "Membro",
+        "moderatorBadge": "Moderador",
+        "imageAlt": "Imagem do comentário de {{name}}"
+    },
+    "editor": {
+        "imageLimitError": "Você só pode adicionar até 3 imagens.",
+        "noFileError": "Nenhum arquivo selecionado.",
+        "fileSizeError": "O arquivo deve ter no máximo 2MB."
+    },
+    "list": {
+        "loading": "Carregando comentários...",
+        "unknownError": "Erro desconhecido",
+        "hideDeep": "− Ocultar respostas profundas",
+        "loadMore": "Ver mais comentários",
+        "empty": "Nenhum comentário encontrado."
+    },
+    "thread": {
+        "show_one": "Ver {{count}} resposta",
+        "show_other": "Ver {{count}} respostas",
+        "hide_one": "Ocultar {{count}} resposta",
+        "hide_other": "Ocultar {{count}} respostas",
+        "continue": "Continuar esta conversa ({{count}})"
+    }
+}

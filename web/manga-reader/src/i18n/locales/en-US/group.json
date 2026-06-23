@@ -1,0 +1,120 @@
+{
+    "status": {
+        "active": "Active"
+    },
+    "container": {
+        "defaultTitle": "Translation Groups",
+        "empty": "No translation group found for this title."
+    },
+    "card": {
+        "avatarAlt": "Avatar of group {{name}}",
+        "openSite": "Open official site",
+        "viewDetails": "View details",
+        "viewDetailsLong": "View group details",
+        "followers": "followers",
+        "works": "works",
+        "follow": "Follow",
+        "following": "Following"
+    },
+    "summary": {
+        "statusLabel": "Status",
+        "focusTags": "Focus tags",
+        "noTags": "No tags set",
+        "rating": "Rating"
+    },
+    "header": {
+        "bannerAlt": "Banner of group {{name}}",
+        "avatarAlt": "Avatar of {{name}}",
+        "officialSite": "Official site",
+        "verifiedAria": "Verified",
+        "statusActive": "Active",
+        "statusHiatus": "On hiatus",
+        "statusInactive": "Inactive",
+        "follow": "Follow",
+        "following": "Following",
+        "share": "Share",
+        "tabs": {
+            "works": "Works",
+            "activity": "Activity",
+            "members": "Members",
+            "about": "About"
+        },
+        "stats": {
+            "followers": "Followers",
+            "works": "Works",
+            "chapters": "Chapters",
+            "avgDays": "Days between chapters"
+        }
+    },
+    "modal": {
+        "title": "Translation Groups",
+        "empty": "No translation group found for this title."
+    },
+    "member": {
+        "profileTitle": "Member profile",
+        "joinedAt": "Joined the platform on {{date}}",
+        "participatesIn": "Groups joined",
+        "recentActivity": "Recent posts/comments",
+        "noTitle": "No linked work",
+        "searchPlaceholder": "Search member",
+        "membersHeader": "{{name}} • {{count}} members"
+    },
+    "page": {
+        "eyebrow": "Community",
+        "title": "Scan groups",
+        "meta": "{{count}} groups",
+        "claimGroup": "Claim group",
+        "sub": "Meet the groups that translate the works you read. Follow them, track releases, and discover new collectives."
+    },
+    "filters": {
+        "searchPlaceholder": "Search group or genre...",
+        "sortMostActive": "Most active",
+        "sortMostFollowers": "Most followers",
+        "sortMostWorks": "Most works",
+        "sortBestRated": "Best rated",
+        "statusAll": "All",
+        "statusActive": "Active",
+        "statusHiatus": "On hiatus",
+        "statusInactive": "Inactive",
+        "sortMostChapters": "Most chapters",
+        "sortAlpha": "A → Z"
+    },
+    "list": {
+        "empty": "No groups found",
+        "emptyDesc": "Try other terms or remove the filters.",
+        "featured": "Featured",
+        "allGroups": "All groups"
+    },
+    "profile": {
+        "notFoundTitle": "Group not found",
+        "notFoundDesc": "It may have been removed or the link is wrong.",
+        "backToGroupsShort": "Back to groups",
+        "aboutTitle": "About the group",
+        "chapterPublished": "Chapter {{chapter}} published",
+        "languagesTitle": "Languages",
+        "findUs": "Where to find us",
+        "back": "Back",
+        "followGroup": "Follow group",
+        "following": "Following",
+        "tabAbout": "About",
+        "tabWorks": "Works",
+        "tabTeam": "Team",
+        "tabDiscussion": "Discussion",
+        "statFollowers": "Followers",
+        "statWorks": "Works",
+        "statChapters": "Chapters",
+        "statMembers": "Members",
+        "since": "since {{year}}",
+        "aboutHeading": "About the group",
+        "genresHeading": "Translated genres",
+        "whereToFind": "Where to find",
+        "socialSite": "Site",
+        "noSocials": "No links registered.",
+        "worksCount": "Translated works — {{count}}",
+        "worksEmpty": "This group has no catalogued works yet.",
+        "teamCount": "Team — {{count}} members",
+        "discussionHeading": "Recent discussion",
+        "discussionText": "The group's internal forum shows up here.",
+        "viewInForum": "View in forum"
+    }
+}

@@ -1,0 +1,48 @@
+# ==============================================================================
+# Orphan Cleaner — Configuração Principal
+# ==============================================================================
+# Serviço dedicado a duas redes de segurança Postgres↔Mongo: reconcilia os
+# contadores desnormalizados (SET = COUNT idempotente, de hora em hora) e limpa as
+# referências órfãs cross-DB (title_id sem título no Mongo, diariamente).
+#
+# A infra (Postgres/Mongo) é subida pelo api/core (spring-boot-docker-compose);
+# este serviço apenas se conecta — por isso docker.compose fica desligado.
+# ==============================================================================
+
+server:
+  port: 8082
+spring:
+  application:
+    name: orphan-cleaner
+  # Carrega o .env (formato chave=valor) como properties, se existir.
+  # Permite que RECONCILER_ADMIN_TOKEN venha do .env também no `mvn spring-boot:run`.
+  config:
+    import: optional:file:./.env[.properties]
+  docker:
+    compose:
+      enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mangareader
+    username: manga
+    password: manga_secret
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mangareader
+      auto-index-creation: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+reconciler:
+  reconciliation:
+    # De hora em hora (no minuto 0). Rede de segurança contra drift dos contadores.
+    cron: "0 0 * * * *"
+  orphan:
+    # Diária às 03:30. Limpeza de refs órfãs cross-DB (title_id sem título no Mongo).
+    # Mais pesada (full-scan por title_id) e sem urgência — daí separada e noturna.
+    cron: "0 30 3 * * *"
+  admin:
+    # Senha do gatilho manual POST /admin/reconcile (header X-Admin-Token).
+    # Vazio = endpoint desativado. Em produção, sobrescrever via env.
+    token: ${RECONCILER_ADMIN_TOKEN:}

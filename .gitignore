@@ -92,6 +92,9 @@ out/
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 
+# AI
+/.junie/
+
 # Plugins
 .idea/**/sonarlint/
 .idea/**/sonarIssues.xml
@@ -126,3 +129,10 @@ sketch
 cmake-build-*/
 node-compile-cache/
 coverage/
+*.tsbuildinfo
+
+/frontend-apps/design_handoff_header_redesign/
+/frontend-apps/Manga Reader Design System/
+/frontend-apps/design_handoff_footer_redesign/
+/frontend-apps/design_handoff_header_redesign/
+/web/manga-reader/Manga Reader Design System/

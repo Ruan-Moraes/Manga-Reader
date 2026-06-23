@@ -1,0 +1,23 @@
+{
+    "card": {
+        "access": "Acessar",
+        "official": "Oficial",
+        "goToStore": "Ir à loja"
+    },
+    "container": {
+        "empty": "Nenhum parceiro disponível.",
+        "title": "Onde comprar",
+        "count_one": "{{count}} loja",
+        "count_other": "{{count}} lojas"
+    },
+    "modal": {
+        "title": "Onde Comprar",
+        "subtitle": "Escolha uma loja parceira e siga para o site oficial."
+    },
+    "empty": {
+        "title": "Nenhuma loja disponível",
+        "desc": "Ainda não encontramos lojas com esta obra à venda. Podemos te avisar assim que aparecer em alguma loja parceira.",
+        "notify": "Avise-me quando chegar",
+        "notified": "Você será avisado por e-mail"
+    }
+}

@@ -1,0 +1,94 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { BaseCard as BaseCardProps } from '../../../model/title-card.types';
+
+import ImageLightbox from '@ui/ImageLightbox';
+import TitleInfoCard from '../../information/TitleInfoCard';
+import TitleDescription from '../../information/TitleDescription';
+import { Image } from 'lucide-react';
+
+const BaseCard = ({
+    showType,
+    shouldLoadCardData,
+    isLoading,
+
+    id,
+    type,
+    cover,
+    name,
+    synopsis,
+    genres,
+    latestChapterNumber,
+    popularity,
+    ratingAverage,
+    author,
+    artist,
+    publisher,
+}: BaseCardProps) => {
+    const { t } = useTranslation('manga');
+    const [imageError, setImageError] = useState<boolean>(false);
+    const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+
+    const handleImageError = () => {
+        setImageError(true);
+    };
+
+    return (
+        <div className="flex gap-2">
+            <div className="flex flex-col w-2/4 overflow-hidden border border-b-0 rounded-t-xs border-tertiary">
+                <div className="w-full h-44 mobile-md:h-56">
+                    {!imageError ? (
+                        <button
+                            type="button"
+                            onClick={() => setIsLightboxOpen(true)}
+                            className="w-full h-full cursor-zoom-in"
+                            aria-label={t('zoomCoverAria', { name })}
+                        >
+                            <img
+                                src={cover}
+                                alt={t('coverAlt', { name })}
+                                onError={handleImageError}
+                                className="object-cover w-full h-full aspect-square text-center leading-8"
+                            />
+                        </button>
+                    ) : (
+                        <div className="flex items-center justify-center w-full h-full bg-secondary">
+                            <div className="flex flex-col items-center justify-center">
+                                <Image size={48} className="text-tertiary" />
+                                <span className="mt-2 text-xs text-center text-tertiary">{t('imageUnavailable')}</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <TitleInfoCard
+                    showType={showType}
+                    shouldLoadCardData={shouldLoadCardData}
+                    isLoading={isLoading}
+                    {...{
+                        id,
+                        type,
+                        name,
+                        popularity,
+                        ratingAverage,
+                        latestChapterNumber,
+                        author,
+                        artist,
+                        publisher,
+                    }}
+                />
+            </div>
+            <div className="flex flex-col justify-between w-2/4 gap-4 pb-2">
+                <TitleDescription
+                    {...{
+                        name,
+                        genres,
+                        synopsis,
+                    }}
+                />
+            </div>
+            <ImageLightbox isOpen={isLightboxOpen} onClose={() => setIsLightboxOpen(false)} src={cover} alt={t('coverAlt', { name })} />
+        </div>
+    );
+};
+
+export default BaseCard;

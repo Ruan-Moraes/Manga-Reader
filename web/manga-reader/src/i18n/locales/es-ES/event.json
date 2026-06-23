@@ -1,0 +1,142 @@
+{
+    "loading": "Cargando evento...",
+    "notFound": "Evento no encontrado.",
+    "notFoundDesc": "Puede que haya finalizado o el enlace sea incorrecto.",
+    "backToEventsShort": "Volver a eventos",
+    "details": {
+        "schedule": "Fecha y programación",
+        "startAt": "Inicio: {{date}}",
+        "endAt": "Fin: {{date}}",
+        "timezone": "Zona horaria: {{timezone}}",
+        "location": "Ubicación",
+        "mapMock": "Mapa integrado (mock)",
+        "openMaps": "Abrir en Google Maps",
+        "openWaze": "Abrir en Waze",
+        "description": "Descripción",
+        "galleryAlt": "Galería del evento",
+        "guests": "Invitados:",
+        "comments": "Comentarios y novedades",
+        "tickets": "Entradas e inscripción",
+        "ticketSlots": "Plazas: {{count}}",
+        "free": "Gratis",
+        "register": "Inscribirme",
+        "organizer": "Organizador",
+        "contact": "Contacto: {{value}}",
+        "otherEvents": "Otros eventos del organizador",
+        "related": "Eventos relacionados"
+    },
+    "page": {
+        "title": "Eventos",
+        "searchPlaceholder": "Buscar por nombre o lugar",
+        "eyebrow": "Comunidad",
+        "typeOptions": {
+            "all": "Todos los tipos"
+        },
+        "featuredLabel": "Destacado",
+        "allEventsLabel": "Todos los eventos",
+        "emptyState": "No se encontraron eventos con los filtros actuales.",
+        "emptyTitle": "No hay eventos en este período",
+        "emptyDescription": "Prueba otro filtro o vuelve más tarde.",
+        "tabs": {
+            "upcoming": "Próximos",
+            "ongoing": "En curso",
+            "past": "Pasados",
+            "myEvents": "Mis eventos"
+        }
+    },
+    "types": {
+        "convention": "Convención",
+        "launch": "Lanzamiento",
+        "live": "Live",
+        "workshop": "Workshop",
+        "meetup": "Meetup"
+    },
+    "card": {
+        "organizer": "Organizador:",
+        "participantsCount": "{{count}} participantes",
+        "save": "Guardar",
+        "confirmed": "Confirmado",
+        "interested": "Me Interesa"
+    },
+    "form": {
+        "sectionTitle": "Crear / Editar Evento",
+        "privacy": {
+            "public": "Público",
+            "members": "Solo miembros"
+        },
+        "labels": {
+            "title": "Título",
+            "type": "Tipo",
+            "startDate": "Fecha de inicio",
+            "endDate": "Fecha de finalización",
+            "location": "Ubicación",
+            "cover": "Imagen de portada",
+            "description": "Descripción",
+            "ticketPrice": "Precio/entrada",
+            "website": "Sitio oficial",
+            "socials": "Instagram / Twitter",
+            "contact": "Contacto",
+            "maxParticipants": "Máximo de participantes",
+            "privacy": "Privacidad",
+            "approval": "Requerir aprobación para participar"
+        },
+        "placeholders": {
+            "title": "Título del evento",
+            "location": "Lugar físico o enlace en línea",
+            "cover": "URL de la imagen de portada",
+            "description": "Descripción del evento",
+            "ticketPrice": "Precio/entrada",
+            "website": "Sitio oficial",
+            "socials": "Instagram / Twitter",
+            "contact": "Contacto del organizador",
+            "maxParticipants": "Máximo de participantes"
+        },
+        "actions": {
+            "submit": "Publicar evento",
+            "draftSaved": "Borrador guardado",
+            "saveDraft": "Guardar como borrador",
+            "cancel": "Cancelar"
+        },
+        "preview": {
+            "title": "Vista previa en vivo",
+            "placeholderTitle": "Título del evento",
+            "placeholderDescription": "La descripción aparecerá aquí.",
+            "startAt": "Inicio: {{date}}",
+            "pickDateTime": "Define fecha y hora"
+        }
+    },
+    "ui": {
+        "sub": "Concursos, lecturas colectivas, especiales de temporada y todo lo que ocurre por tiempo limitado en la plataforma.",
+        "searchPlaceholder": "Buscar evento por nombre…",
+        "filterAll": "Todos",
+        "filterSpecial": "Especiales",
+        "filterNormal": "Normales",
+        "filterActive": "Activos",
+        "filterEnded": "Finalizados",
+        "specialEvents": "Eventos Especiales",
+        "normalEvents": "Eventos Normales",
+        "empty": "Ningún evento coincide con estos filtros.",
+        "viewDetails": "Ver detalles",
+        "endsIn": "Termina en",
+        "startsIn": "Empieza en",
+        "chaptersCount": "{{count}} capítulos",
+        "participantsCount": "{{count}} participantes",
+        "capsShort": "{{count}} caps",
+        "statusActive": "Activo",
+        "statusUpcoming": "Próximamente",
+        "statusEnded": "Finalizado",
+        "cdDays": "Días",
+        "cdHours": "Hrs",
+        "cdMin": "Min",
+        "cdSec": "Seg",
+        "special": "Especial",
+        "statPeriod": "Período",
+        "statChapters": "Capítulos",
+        "statParticipants": "Participantes",
+        "statStatus": "Estado",
+        "rewards": "Recompensas",
+        "ctaActive": "Participar ahora",
+        "ctaUpcoming": "Avisarme cuando empiece",
+        "ctaEnded": "Evento finalizado"
+    }
+}

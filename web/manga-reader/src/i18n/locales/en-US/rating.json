@@ -1,0 +1,183 @@
+{
+    "recent": {
+        "title": "Recent reviews",
+        "empty": "No reviews yet. Be the first!",
+        "loadMore": "Load more reviews",
+        "overallAverage": "Overall average:"
+    },
+    "categories": {
+        "fun": "Fun:",
+        "art": "Art:",
+        "storyline": "Storyline:",
+        "characters": "Characters:",
+        "originality": "Originality:",
+        "pacing": "Pacing:"
+    },
+    "modal": {
+        "instructions": "Rate the title in each category below. The final score will be calculated based on your ratings.",
+        "finalScore": "Final Score:",
+        "selectPlaceholder": "Select a score",
+        "notRated": "Not rated",
+        "scoreOption": "Score: {{value}}",
+        "categories": {
+            "fun": "Fun",
+            "art": "Art",
+            "storyline": "Storyline",
+            "characters": "Characters",
+            "originality": "Originality",
+            "pacing": "Pacing"
+        },
+        "evaluateLabel": "Rate this title",
+        "overallLabel": "overall",
+        "reviewTitlePlaceholder": "Review title (optional)",
+        "commentPlaceholder": "Tell us what you thought... (optional)",
+        "spoilerToggle": "Mark as spoiler",
+        "cancel": "Cancel",
+        "publish": "Publish review",
+        "publishDisabled": "Rate at least 1 criteria",
+        "successTitle": "Review published!",
+        "successBody": "Your overall score was {{overall}}. Thank you for contributing to the community.",
+        "successCta": "View my review",
+        "progress": "{{rated}} of {{total}} criteria",
+        "rateCriterion": "Rate {{name}}",
+        "editLabel": "Edit review",
+        "save": "Save"
+    },
+    "myReviews": {
+        "title": "My reviews",
+        "subtitle": "Every title you've rated, with your scores, titles and comments. Edit or remove them whenever you want.",
+        "eyebrow": "Your account",
+        "stats": {
+            "reviews": "Reviews",
+            "reviewsSub": "titles rated",
+            "avg": "Average score",
+            "withComment": "With comment",
+            "ofLoaded": "of {{count}} loaded",
+            "chapters": "Chapters read",
+            "chaptersSub": "in these titles"
+        },
+        "filter": {
+            "all": "All"
+        },
+        "emptyDesc": "Rate a title and it will appear here.",
+        "discoverWorks": "Discover titles",
+        "workPlaceholder": "Title #{{id}}",
+        "saving": "Saving...",
+        "save": "Save",
+        "confirmPrompt": "Are you sure?",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "emptyState": "No reviews yet. Rate your favorite titles!",
+        "loadMore": "Load more",
+        "commentUpdated": "Comment updated.",
+        "commentUpdateError": "Error saving comment.",
+        "reviewRemoved": "Review removed.",
+        "reviewRemoveError": "Error removing review."
+    },
+    "wizard": {
+        "title": "Rate title",
+        "close": "Close",
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "finalStepLabel": "Score",
+        "rateLabel": "Rate: {{label}}",
+        "commentPlaceholder": "Optional comment...",
+        "submitting": "Submitting...",
+        "confirm": "Confirm rating",
+        "categoryLabels": {
+            "funRating": "Fun",
+            "artRating": "Art",
+            "storylineRating": "Storyline",
+            "charactersRating": "Characters",
+            "originalityRating": "Originality",
+            "pacingRating": "Pacing"
+        },
+        "categoryDescriptions": {
+            "funRating": "Consider the lightness, humor and entertainment the work provides.",
+            "artRating": "Rate the quality of the line work, panels, backgrounds and visual style.",
+            "storylineRating": "Consider the narrative structure, pacing of the story and originality.",
+            "charactersRating": "Rate the development, charisma and depth of the characters.",
+            "originalityRating": "Consider how innovative and unique the premise of the work is.",
+            "pacingRating": "Rate how chapters flow — whether they are well distributed and engaging."
+        }
+    },
+    "criteria": {
+        "fun": {
+            "name": "Fun",
+            "desc": "Lightness, humor and entertainment."
+        },
+        "art": {
+            "name": "Art",
+            "desc": "Linework, panels and visual direction."
+        },
+        "plot": {
+            "name": "Plot",
+            "desc": "Story construction and payoff."
+        },
+        "chars": {
+            "name": "Characters",
+            "desc": "Depth and character arcs."
+        },
+        "orig": {
+            "name": "Originality",
+            "desc": "How fresh the premise is."
+        },
+        "pace": {
+            "name": "Pacing",
+            "desc": "Flow between chapters."
+        }
+    },
+    "reviews": {
+        "sort": {
+            "top": "Most helpful",
+            "recent": "Most recent",
+            "high": "Highest rating",
+            "low": "Lowest rating"
+        },
+        "write": "Write review",
+        "loadMore": "Load more",
+        "voteError": "Could not register your vote. Please try again.",
+        "reviewsCount_one": "{{count}} review",
+        "reviewsCount_other": "{{count}} reviews",
+        "ratingsCount_one": "{{count}} rating",
+        "ratingsCount_other": "{{count}} ratings",
+        "summary": {
+            "aria": "Overall rating",
+            "filterBy_one": "Filter by {{count}} star",
+            "filterBy_other": "Filter by {{count}} stars",
+            "removeFilter": "Remove filter",
+            "clearFilterStar": "Clear filter · {{star}}★"
+        },
+        "login": {
+            "title": "Sign in to review",
+            "desc": "You need to be logged in to write a review and vote on community ratings.",
+            "signIn": "Sign in",
+            "signUp": "Create account"
+        },
+        "empty": {
+            "title": "No reviews yet",
+            "desc": "Be the first to rate this title.",
+            "noMatch": "No reviews with {{star}}★",
+            "clearFilter": "Clear filter"
+        }
+    },
+    "card": {
+        "topReview": "Top review",
+        "spoilerTag": "Contains spoiler",
+        "showSpoiler": "Show spoiler",
+        "readMore": "Read more",
+        "readLess": "Read less",
+        "breakdown": "Score breakdown",
+        "helpful": "Helpful",
+        "unhelpful": "Not helpful",
+        "voteGroup": "Vote on review",
+        "edited": "edited",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteConfirm": "Delete this review?",
+        "deleteYes": "Yes",
+        "deleteNo": "No"
+    }
+}

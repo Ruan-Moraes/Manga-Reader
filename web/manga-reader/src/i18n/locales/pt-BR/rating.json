@@ -1,0 +1,183 @@
+{
+    "recent": {
+        "title": "Avaliações recentes",
+        "empty": "Nenhuma avaliação ainda. Seja o primeiro!",
+        "loadMore": "Carregar mais avaliações",
+        "overallAverage": "Média geral:"
+    },
+    "categories": {
+        "fun": "Diversão:",
+        "art": "Arte:",
+        "storyline": "Enredo:",
+        "characters": "Personagens:",
+        "originality": "Originalidade:",
+        "pacing": "Ritmo:"
+    },
+    "modal": {
+        "instructions": "Classifique o título em cada categoria abaixo. A nota final será calculada com base nas suas avaliações.",
+        "finalScore": "Nota Final:",
+        "selectPlaceholder": "Selecione uma nota",
+        "notRated": "Não avaliado",
+        "scoreOption": "Nota: {{value}}",
+        "categories": {
+            "fun": "Diversão",
+            "art": "Arte",
+            "storyline": "Enredo",
+            "characters": "Personagens",
+            "originality": "Originalidade",
+            "pacing": "Ritmo"
+        },
+        "evaluateLabel": "Avaliar obra",
+        "overallLabel": "nota geral",
+        "reviewTitlePlaceholder": "Título da resenha (opcional)",
+        "commentPlaceholder": "Conte o que achou da obra... (opcional)",
+        "spoilerToggle": "Marcar como spoiler",
+        "cancel": "Cancelar",
+        "publish": "Publicar resenha",
+        "publishDisabled": "Avalie ao menos 1 critério",
+        "successTitle": "Resenha publicada!",
+        "successBody": "Sua nota geral foi {{overall}}. Obrigado por contribuir com a comunidade.",
+        "successCta": "Ver minha resenha",
+        "progress": "{{rated}} de {{total}} critérios",
+        "rateCriterion": "Avalie {{name}}",
+        "editLabel": "Editar avaliação",
+        "save": "Salvar"
+    },
+    "myReviews": {
+        "title": "Minhas resenhas",
+        "subtitle": "Todas as obras que você avaliou, com suas notas, títulos e comentários. Edite ou remova quando quiser.",
+        "eyebrow": "Sua conta",
+        "stats": {
+            "reviews": "Resenhas",
+            "reviewsSub": "obras avaliadas",
+            "avg": "Nota média",
+            "withComment": "Com comentário",
+            "ofLoaded": "de {{count}} carregadas",
+            "chapters": "Capítulos lidos",
+            "chaptersSub": "nestas obras"
+        },
+        "filter": {
+            "all": "Todas"
+        },
+        "emptyDesc": "Avalie uma obra e ela aparecerá aqui.",
+        "discoverWorks": "Descobrir obras",
+        "workPlaceholder": "Obra #{{id}}",
+        "saving": "Salvando...",
+        "save": "Salvar",
+        "confirmPrompt": "Tem certeza?",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "delete": "Excluir",
+        "emptyState": "Nenhuma avaliação ainda. Avalie seus títulos favoritos!",
+        "loadMore": "Carregar mais",
+        "commentUpdated": "Comentário atualizado.",
+        "commentUpdateError": "Erro ao salvar comentário.",
+        "reviewRemoved": "Avaliação removida.",
+        "reviewRemoveError": "Erro ao remover avaliação."
+    },
+    "wizard": {
+        "title": "Avaliar obra",
+        "close": "Fechar",
+        "cancel": "Cancelar",
+        "back": "Voltar",
+        "next": "Próximo",
+        "finalStepLabel": "Nota",
+        "rateLabel": "Avalie: {{label}}",
+        "commentPlaceholder": "Comentário opcional...",
+        "submitting": "Enviando...",
+        "confirm": "Confirmar avaliação",
+        "categoryLabels": {
+            "funRating": "Diversão",
+            "artRating": "Arte",
+            "storylineRating": "Enredo",
+            "charactersRating": "Personagens",
+            "originalityRating": "Originalidade",
+            "pacingRating": "Ritmo"
+        },
+        "categoryDescriptions": {
+            "funRating": "Considere a leveza, humor e entretenimento proporcionados pela obra.",
+            "artRating": "Avalie a qualidade dos traços, painéis, cenários e estilo visual.",
+            "storylineRating": "Considere a estrutura narrativa, ritmo da história e originalidade.",
+            "charactersRating": "Avalie o desenvolvimento, carisma e profundidade dos personagens.",
+            "originalityRating": "Considere o quão inovadora e única é a proposta da obra.",
+            "pacingRating": "Avalie o andamento dos capítulos, se é bem distribuído e envolvente."
+        }
+    },
+    "criteria": {
+        "fun": {
+            "name": "Diversão",
+            "desc": "Leveza, humor e entretenimento."
+        },
+        "art": {
+            "name": "Arte",
+            "desc": "Traço, painéis e direção visual."
+        },
+        "plot": {
+            "name": "Enredo",
+            "desc": "Construção e payoff da história."
+        },
+        "chars": {
+            "name": "Personagens",
+            "desc": "Profundidade e arcos dos personagens."
+        },
+        "orig": {
+            "name": "Originalidade",
+            "desc": "Quão fresca é a premissa."
+        },
+        "pace": {
+            "name": "Ritmo",
+            "desc": "Andamento entre os capítulos."
+        }
+    },
+    "reviews": {
+        "sort": {
+            "top": "Mais úteis",
+            "recent": "Mais recentes",
+            "high": "Nota mais alta",
+            "low": "Nota mais baixa"
+        },
+        "write": "Escrever resenha",
+        "loadMore": "Carregar mais",
+        "voteError": "Não foi possível registrar seu voto. Tente novamente.",
+        "reviewsCount_one": "{{count}} resenha",
+        "reviewsCount_other": "{{count}} resenhas",
+        "ratingsCount_one": "{{count}} avaliação",
+        "ratingsCount_other": "{{count}} avaliações",
+        "summary": {
+            "aria": "Avaliação geral",
+            "filterBy_one": "Filtrar por {{count}} estrela",
+            "filterBy_other": "Filtrar por {{count}} estrelas",
+            "removeFilter": "Remover filtro",
+            "clearFilterStar": "Limpar filtro · {{star}}★"
+        },
+        "login": {
+            "title": "Entre para avaliar",
+            "desc": "Você precisa estar logado para escrever uma resenha e votar nas avaliações da comunidade.",
+            "signIn": "Entrar",
+            "signUp": "Criar conta"
+        },
+        "empty": {
+            "title": "Ainda sem resenhas",
+            "desc": "Seja o primeiro a avaliar esta obra.",
+            "noMatch": "Nenhuma resenha com {{star}}★",
+            "clearFilter": "Limpar filtro"
+        }
+    },
+    "card": {
+        "topReview": "Top review",
+        "spoilerTag": "Contém spoiler",
+        "showSpoiler": "Mostrar spoiler",
+        "readMore": "Ler mais",
+        "readLess": "Ler menos",
+        "breakdown": "Notas por critério",
+        "helpful": "Útil",
+        "unhelpful": "Contrário",
+        "voteGroup": "Votar na resenha",
+        "edited": "editado",
+        "edit": "Editar",
+        "delete": "Excluir",
+        "deleteConfirm": "Excluir esta resenha?",
+        "deleteYes": "Sim",
+        "deleteNo": "Não"
+    }
+}

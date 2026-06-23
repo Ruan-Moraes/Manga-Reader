@@ -1,0 +1,28 @@
+{
+  "name": "manga-reader-frontend-workspace",
+  "private": true,
+  "scripts": {
+    "dev:app": "pnpm --filter manga-reader dev",
+    "dev:landing": "pnpm --filter landing-page dev",
+    "build": "pnpm --filter './packages/**' build && pnpm -r --filter !./packages/** build",
+    "build:app": "pnpm --filter manga-reader build",
+    "build:landing": "pnpm --filter landing-page build",
+    "test": "pnpm -r test",
+    "test:app": "pnpm --filter manga-reader test",
+    "test:landing": "pnpm --filter landing-page test",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format",
+    "i18n:clean": "pnpm run i18n:clean:app && pnpm run i18n:clean:landing",
+    "i18n:clean:app": "node scripts/i18n-cleaner.ts --src manga-reader/src --i18n manga-reader/src/i18n/locales --dry-run",
+    "i18n:clean:landing": "node scripts/i18n-cleaner.ts --src landing-page/src --i18n landing-page/src/i18n/locales --dry-run",
+    "i18n:clean:app:write": "node scripts/i18n-cleaner.ts --src manga-reader/src --i18n manga-reader/src/i18n/locales --backup",
+    "i18n:clean:landing:write": "node scripts/i18n-cleaner.ts --src landing-page/src --i18n landing-page/src/i18n/locales --backup"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

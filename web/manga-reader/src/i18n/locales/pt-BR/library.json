@@ -1,0 +1,57 @@
+{
+    "tabs": {
+        "all": "Todos",
+        "reading": "Lendo",
+        "wantToRead": "Quero Ler",
+        "completed": "Concluído"
+    },
+    "empty": {
+        "all": "Sua biblioteca está vazia. Explore títulos e salve seus favoritos!",
+        "reading": "Nenhum título em andamento. Comece a ler algo novo!",
+        "wantToRead": "Nenhum título na lista de desejos. Descubra novas obras!",
+        "completed": "Nenhum título concluído ainda. Continue lendo!"
+    },
+    "bookmark": {
+        "saved": "Na biblioteca",
+        "save": "Salvar na biblioteca"
+    },
+    "card": {
+        "remove": "Remover",
+        "confirmPrompt": "Tem certeza?",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+    },
+    "page": {
+        "title": "Minha Biblioteca",
+        "eyebrow": "Sua coleção",
+        "worksCount": "{{count}} obras",
+        "addButton": "Adicionar",
+        "searchPlaceholder": "Buscar na biblioteca",
+        "sort": {
+            "recent": "Recentes",
+            "az": "A–Z",
+            "za": "Z–A"
+        },
+        "layout": {
+            "grid": "Grade",
+            "list": "Lista"
+        },
+        "remove": "Remover",
+        "loadMore": "Carregar mais"
+    },
+    "tabLabel": {
+        "all": "Todas ({{count}})",
+        "reading": "Lendo ({{count}})",
+        "wantToRead": "Quero Ler ({{count}})",
+        "completed": "Concluídas ({{count}})"
+    },
+    "emptySearch": {
+        "title": "Nenhuma obra encontrada",
+        "description": "Tente outro termo de busca."
+    },
+    "emptyCollection": {
+        "title": "Nada por aqui ainda",
+        "description": "Que tal começar a sua coleção?",
+        "discoverButton": "Descobrir obras"
+    }
+}

@@ -1,0 +1,82 @@
+{
+    "label": {
+        "loading": "Cargando...",
+        "loadingMessage": "Por favor, espera un momento."
+    },
+    "guard": {
+        "authRequired": "Acceso denegado. Debes iniciar sesión para acceder a esta página.",
+        "dashboardForbidden": "No tienes permiso para acceder al panel."
+    },
+    "notFound": {
+        "pageTitle": "Página no encontrada",
+        "pageDesc": "La dirección a la que accediste no existe o ha sido eliminada. Verifica el enlace o vuelve al inicio.",
+        "goHome": "Ir al inicio",
+        "searchWorks": "Explorar obras"
+    },
+    "aboutUs": {
+        "eyebrow": "La plataforma",
+        "title": "¿Quiénes somos?",
+        "missionTitle": "Nuestra misión",
+        "missionContent": "Somos una plataforma dedicada a la lectura y catalogación de manga, manhwa y manhua. Nuestra misión es reunir a lectores apasionados y crear una comunidad vibrante en torno a los cómics asiáticos.",
+        "offerTitle": "Lo que ofrecemos",
+        "offerContent": "Un catálogo extenso de obras, sistema de biblioteca personal, foros de discusión, grupos de lectura y mucho más. Todo en un solo lugar, gratuito y sin anuncios.",
+        "communityTitle": "Comunidad",
+        "communityContent": "Creemos que la mejor experiencia de lectura es compartida. Por eso invertimos en herramientas que conectan lectores, traductores y fans de todo el mundo."
+    },
+    "publishWork": {
+        "eyebrow": "Para creadores",
+        "title": "Publicar trabajo",
+        "description1": "Si eres autor y deseas publicar tu trabajo en nuestra plataforma, contáctanos. Aceptamos manga, webtoons, fanfics, fanarts y otros trabajos creativos.",
+        "description2": "Completa el formulario a continuación con información sobre tu trabajo y nos pondremos en contacto pronto."
+    },
+    "language": {
+        "pt-BR": "Portugués (Brasil)",
+        "en-US": "Inglés",
+        "es-ES": "Español"
+    },
+    "image": {
+        "close": "Cerrar vista previa",
+        "unavailable": "Imagen no disponible"
+    },
+    "composer": {
+        "write": "Escribir",
+        "preview": "Vista previa",
+        "previewEmpty": "Nada para previsualizar todavía.",
+        "submit": "Comentar",
+        "cancel": "Cancelar",
+        "hint": "Soporta Markdown — **negrita**, *cursiva*, ||spoiler||",
+        "uploadImage": "Subir imagen",
+        "removeImage": "Eliminar imagen",
+        "imageAlt": "Imagen {{index}}",
+        "tools": {
+            "bold": "Negrita",
+            "italic": "Cursiva",
+            "code": "Código",
+            "quote": "Cita",
+            "list": "Lista",
+            "link": "Enlace",
+            "spoiler": "Spoiler"
+        }
+    },
+    "nav": {
+        "home": "Inicio",
+        "library": "Biblioteca",
+        "forum": "Foro",
+        "profile": "Perfil"
+    },
+    "home": {
+        "comingSoon": "Próximamente: descubrimiento de manga"
+    },
+    "library": {
+        "comingSoon": "Próximamente: tus mangas guardados"
+    },
+    "forum": {
+        "comingSoon": "Próximamente: temas de la comunidad"
+    },
+    "modal": {
+        "title": "Modal"
+    },
+    "user": {
+        "logout": "Cerrar sesión"
+    }
+}

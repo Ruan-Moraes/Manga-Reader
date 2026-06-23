@@ -1,0 +1,128 @@
+{
+    "label": {
+        "loading": "Loading...",
+        "loadingMessage": "Please wait a moment."
+    },
+    "guard": {
+        "authRequired": "Access denied. You must be signed in to view this page.",
+        "dashboardForbidden": "You do not have permission to access the dashboard."
+    },
+    "notFound": {
+        "pageTitle": "Page not found",
+        "pageDesc": "The address you accessed does not exist or has been removed. Check the link or return to the home page.",
+        "goHome": "Go to home",
+        "searchWorks": "Browse titles"
+    },
+    "aboutUs": {
+        "hero": {
+            "eyebrow": "The platform",
+            "titleBefore": "Made by people who ",
+            "titleHighlight": "read",
+            "titleAfter": ", for people who love reading",
+            "lead": "Manga Reader is a platform dedicated to reading and cataloguing manga, manhwa, and manhua. We bring passionate readers together in one place — free, ad-free, and community-driven.",
+            "chips": {
+                "free": "100% free",
+                "noAds": "Ad-free",
+                "study": "Study project"
+            }
+        },
+        "mission": {
+            "eyebrow": "Our mission",
+            "statementBefore": "Bring passionate readers together and build a ",
+            "statementHighlight": "vibrant community",
+            "statementAfter": " around Asian comics.",
+            "body": "We believe the best reading experience is a shared one. That's why we invest in tools that connect readers, translators, and fans — from the first chapter to the last theory discussion."
+        },
+        "offer": {
+            "title": "What we offer",
+            "subtitle": "An extensive catalogue, a personal library, forums and reading groups — all in one place, free and ad-free."
+        },
+        "features": {
+            "catalog": {
+                "title": "Extensive catalogue",
+                "desc": "Manga, manhwa, and manhua organised by genre, status, and language — always growing with the community."
+            },
+            "library": {
+                "title": "Personal library",
+                "desc": "Track what you're reading, build lists, mark favourites, and never lose your place again."
+            },
+            "reviews": {
+                "title": "Reviews and scores",
+                "desc": "Rate titles by criteria — art, story, pacing — and discover what other readers thought."
+            },
+            "forum": {
+                "title": "Discussion forums",
+                "desc": "Debate arcs, theories, and releases with marked spoilers and respect for differing opinions."
+            },
+            "groups": {
+                "title": "Reading groups",
+                "desc": "Read together, follow scan groups, and keep up with the translations you love."
+            },
+            "free": {
+                "title": "Free and ad-free",
+                "desc": "Everything in one place, for free. No banners, no pop-ups — the focus is reading, not advertising."
+            }
+        },
+        "community": {
+            "title": "Community at the centre",
+            "body": "Reading is better together. Every review, forum thread, and reading group exists to bring creators, translators, and readers closer — and to give a voice to those who make this scene happen.",
+            "forumCta": "Join the forum",
+            "groupsCta": "Browse groups"
+        },
+        "roles": {
+            "readers": {
+                "label": "Readers",
+                "desc": "They catalogue, review, and debate what they love."
+            },
+            "translators": {
+                "label": "Translators",
+                "desc": "Scan groups that bring titles closer to the public."
+            },
+            "fans": {
+                "label": "Fans worldwide",
+                "desc": "Connected by a shared passion for Asian comics."
+            }
+        },
+        "cta": {
+            "title": "Ready to start reading?",
+            "body": "Create your free account, build your library, and join the conversation. No cost, no ads.",
+            "signUpCta": "Create account",
+            "exploreCta": "Explore catalogue"
+        }
+    },
+    "publishWork": {
+        "eyebrow": "For creators",
+        "title": "Publish work",
+        "description1": "If you are an author and wish to publish your work on our platform, get in touch with us. We accept manga, webtoons, fanfics, fanarts, and other creative works.",
+        "description2": "Fill in the form below with information about your work and we will get in touch shortly."
+    },
+    "language": {
+        "pt-BR": "Portuguese (Brazil)",
+        "en-US": "English",
+        "es-ES": "Spanish"
+    },
+    "image": {
+        "close": "Close preview",
+        "unavailable": "Image unavailable"
+    },
+    "composer": {
+        "write": "Write",
+        "preview": "Preview",
+        "previewEmpty": "Nothing to preview yet.",
+        "submit": "Comment",
+        "cancel": "Cancel",
+        "hint": "Markdown supported — **bold**, *italic*, ||spoiler||",
+        "uploadImage": "Upload image",
+        "removeImage": "Remove image",
+        "imageAlt": "Image {{index}}",
+        "tools": {
+            "bold": "Bold",
+            "italic": "Italic",
+            "code": "Code",
+            "quote": "Quote",
+            "list": "List",
+            "link": "Link",
+            "spoiler": "Spoiler"
+        }
+    }
+}

@@ -1,0 +1,142 @@
+{
+    "loading": "Loading event...",
+    "notFound": "Event not found.",
+    "notFoundDesc": "It may have been closed or the link is wrong.",
+    "backToEventsShort": "Back to events",
+    "details": {
+        "schedule": "Date and schedule",
+        "startAt": "Starts: {{date}}",
+        "endAt": "Ends: {{date}}",
+        "timezone": "Timezone: {{timezone}}",
+        "location": "Location",
+        "mapMock": "Embedded map (mock)",
+        "openMaps": "Open in Google Maps",
+        "openWaze": "Open in Waze",
+        "description": "Description",
+        "galleryAlt": "Event gallery",
+        "guests": "Guests:",
+        "comments": "Comments and feed",
+        "tickets": "Tickets and registration",
+        "ticketSlots": "Slots: {{count}}",
+        "free": "Free",
+        "register": "Register",
+        "organizer": "Organizer",
+        "contact": "Contact: {{value}}",
+        "otherEvents": "Other events from this organizer",
+        "related": "Related events"
+    },
+    "page": {
+        "title": "Events",
+        "eyebrow": "Community",
+        "searchPlaceholder": "Search by name or venue",
+        "typeOptions": {
+            "all": "All types"
+        },
+        "featuredLabel": "Featured",
+        "allEventsLabel": "All events",
+        "emptyState": "No events found with the current filters.",
+        "emptyTitle": "No events in this period",
+        "emptyDescription": "Try another filter or check back later.",
+        "tabs": {
+            "upcoming": "Upcoming",
+            "ongoing": "Ongoing",
+            "past": "Past",
+            "myEvents": "My events"
+        }
+    },
+    "types": {
+        "convention": "Convention",
+        "launch": "Release",
+        "live": "Live",
+        "workshop": "Workshop",
+        "meetup": "Meetup"
+    },
+    "card": {
+        "organizer": "Organizer:",
+        "participantsCount": "{{count}} participants",
+        "save": "Save",
+        "confirmed": "Confirmed",
+        "interested": "I'm Interested"
+    },
+    "form": {
+        "sectionTitle": "Create / Edit Event",
+        "privacy": {
+            "public": "Public",
+            "members": "Members only"
+        },
+        "labels": {
+            "title": "Title",
+            "type": "Type",
+            "startDate": "Start date",
+            "endDate": "End date",
+            "location": "Location",
+            "cover": "Cover image",
+            "description": "Description",
+            "ticketPrice": "Price/ticket",
+            "website": "Official website",
+            "socials": "Instagram / Twitter",
+            "contact": "Contact",
+            "maxParticipants": "Maximum participants",
+            "privacy": "Privacy",
+            "approval": "Require approval to join"
+        },
+        "placeholders": {
+            "title": "Event title",
+            "location": "Venue or online link",
+            "cover": "Cover image URL",
+            "description": "Event description",
+            "ticketPrice": "Price/ticket",
+            "website": "Official website",
+            "socials": "Instagram / Twitter",
+            "contact": "Organizer contact",
+            "maxParticipants": "Maximum participants"
+        },
+        "actions": {
+            "submit": "Publish event",
+            "draftSaved": "Draft saved",
+            "saveDraft": "Save as draft",
+            "cancel": "Cancel"
+        },
+        "preview": {
+            "title": "Live preview",
+            "placeholderTitle": "Event title",
+            "placeholderDescription": "Description will appear here.",
+            "startAt": "Starts: {{date}}",
+            "pickDateTime": "Set date and time"
+        }
+    },
+    "ui": {
+        "sub": "Contests, group reads, seasonal specials, and everything time-limited happening on the platform.",
+        "searchPlaceholder": "Search event by name…",
+        "filterAll": "All",
+        "filterSpecial": "Special",
+        "filterNormal": "Regular",
+        "filterActive": "Active",
+        "filterEnded": "Ended",
+        "specialEvents": "Special Events",
+        "normalEvents": "Regular Events",
+        "empty": "No events match these filters.",
+        "viewDetails": "View details",
+        "endsIn": "Ends in",
+        "startsIn": "Starts in",
+        "chaptersCount": "{{count}} chapters",
+        "participantsCount": "{{count}} participants",
+        "capsShort": "{{count}} ch",
+        "statusActive": "Active",
+        "statusUpcoming": "Soon",
+        "statusEnded": "Ended",
+        "cdDays": "Days",
+        "cdHours": "Hrs",
+        "cdMin": "Min",
+        "cdSec": "Sec",
+        "special": "Special",
+        "statPeriod": "Period",
+        "statChapters": "Chapters",
+        "statParticipants": "Participants",
+        "statStatus": "Status",
+        "rewards": "Rewards",
+        "ctaActive": "Join now",
+        "ctaUpcoming": "Remind me when it starts",
+        "ctaEnded": "Event ended"
+    }
+}

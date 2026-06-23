@@ -1,0 +1,84 @@
+{
+    "card": {
+        "readMinutes": "{{count}} min",
+        "new": "Nova",
+        "trending": "Trending"
+    },
+    "hero": {
+        "exclusive": "Exclusivo",
+        "highlight": "Destaque",
+        "views": "{{count}} visualizações"
+    },
+    "filter": {
+        "period": {
+            "all": "Todo período",
+            "today": "Hoje",
+            "week": "Última semana",
+            "month": "Último mês"
+        },
+        "source": {
+            "all": "Todas as fontes"
+        },
+        "sort": {
+            "recent": "Mais recentes",
+            "mostRead": "Mais lidas",
+            "trending": "Trending"
+        }
+    },
+    "tabs": {
+        "featured": "Principais",
+        "releases": "Lançamentos",
+        "adaptations": "Adaptações",
+        "industry": "Indústria",
+        "events": "Eventos",
+        "curiosities": "Curiosidades",
+        "interviews": "Entrevistas",
+        "market": "Mercado",
+        "international": "Internacional"
+    },
+    "page": {
+        "title": "Notícias",
+        "eyebrow": "Novidades",
+        "weekTitle": "O que rolou essa semana",
+        "readMore": "Ler mais",
+        "readMoreInline": "Ler mais →",
+        "pinnedLabel": "Fixado",
+        "emptyTitle": "Nada por aqui nessa categoria",
+        "emptyDescription": "Tente outra categoria ou volte em breve.",
+        "searchPlaceholder": "Buscar por título, conteúdo, obra ou autor",
+        "loadMore": "Carregar mais notícias",
+        "tabs": {
+            "featured": "Principais",
+            "releases": "Lançamentos",
+            "adaptations": "Adaptações",
+            "industry": "Indústria",
+            "events": "Eventos",
+            "curiosities": "Curiosidades"
+        }
+    },
+    "details": {
+        "notFound": "Notícia não encontrada",
+        "notFoundDesc": "Esse conteúdo pode ter sido removido ou o link está incorreto.",
+        "backButton": "Voltar às notícias",
+        "readingProgress": "Progresso de leitura",
+        "scrollToTop": "Voltar ao topo",
+        "updated": "Atualizada {{date}}",
+        "galleryAlt": "Imagem complementar",
+        "galleryCaption": "Bastidores e materiais de divulgação da produção.",
+        "videoTitle": "Vídeo incorporado",
+        "galleryImageAlt": "Galeria",
+        "technicalSheet": "Ficha técnica",
+        "reactions": "Reações e engajamento",
+        "commentsCount": "{{count}} comentários",
+        "share": "Compartilhar",
+        "save": "Salvar notícia",
+        "comments": "Comentários",
+        "sortRecent": "Mais recentes",
+        "sortRelevant": "Mais relevantes",
+        "showSpoilers": "Mostrar spoilers",
+        "hideSpoilers": "Ocultar spoilers",
+        "reply": "responder",
+        "relatedTitle": "Notícias relacionadas",
+        "readAlso": "Leia também"
+    }
+}

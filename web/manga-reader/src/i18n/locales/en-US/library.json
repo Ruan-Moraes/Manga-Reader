@@ -1,0 +1,57 @@
+{
+    "tabs": {
+        "all": "All",
+        "reading": "Reading",
+        "wantToRead": "Want to Read",
+        "completed": "Completed"
+    },
+    "empty": {
+        "all": "Your library is empty. Explore titles and save your favorites!",
+        "reading": "No titles in progress. Start reading something new!",
+        "wantToRead": "No titles on your wishlist. Discover new works!",
+        "completed": "No completed titles yet. Keep reading!"
+    },
+    "bookmark": {
+        "saved": "In library",
+        "save": "Save to library"
+    },
+    "card": {
+        "remove": "Remove",
+        "confirmPrompt": "Are you sure?",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+    },
+    "page": {
+        "title": "My Library",
+        "eyebrow": "Your collection",
+        "worksCount": "{{count}} works",
+        "addButton": "Add",
+        "searchPlaceholder": "Search library",
+        "sort": {
+            "recent": "Recent",
+            "az": "A–Z",
+            "za": "Z–A"
+        },
+        "layout": {
+            "grid": "Grid",
+            "list": "List"
+        },
+        "remove": "Remove",
+        "loadMore": "Load more"
+    },
+    "tabLabel": {
+        "all": "All ({{count}})",
+        "reading": "Reading ({{count}})",
+        "wantToRead": "Want to Read ({{count}})",
+        "completed": "Completed ({{count}})"
+    },
+    "emptySearch": {
+        "title": "No titles found",
+        "description": "Try a different search term."
+    },
+    "emptyCollection": {
+        "title": "Nothing here yet",
+        "description": "How about starting your collection?",
+        "discoverButton": "Discover titles"
+    }
+}
