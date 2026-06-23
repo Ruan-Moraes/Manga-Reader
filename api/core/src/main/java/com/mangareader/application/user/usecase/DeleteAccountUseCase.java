@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class DeleteAccountUseCase {
     private final UserRepositoryPort userRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
+    private final UserChapterReadRepositoryPort userChapterReadRepository;
     private final GroupRepositoryPort groupRepository;
 
     @Transactional
@@ -38,6 +40,7 @@ public class DeleteAccountUseCase {
         }
 
         viewHistoryRepository.deleteAllByUserId(userId.toString());
+        userChapterReadRepository.deleteAllByUserId(userId.toString());
 
         user.deactivate();
         userRepository.save(user);

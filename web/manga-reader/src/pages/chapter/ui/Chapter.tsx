@@ -1,11 +1,13 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
+import { useAuth } from '@features/auth';
 import { useTitle } from '@entities/manga';
 import { useChapter } from '@entities/chapter';
+import { recordChapterRead } from '@entities/user';
 
 import { useChapterReader } from '../model/useChapterReader';
 import type { ChapterListItem } from './parts/ChapterDropdown';
@@ -24,9 +26,18 @@ const Chapter = () => {
     const { t } = useTranslation('manga');
     const navigate = useAppNavigate();
 
+    const { isLoggedIn } = useAuth();
+
     const r = useChapterReader(titleId, chapterParam);
     const { title } = useTitle(titleId ?? '');
     const { chapter: chapterData } = useChapter(titleId, chapterParam);
+
+    // Marca o capítulo como lido (fire-and-forget; idempotente no backend). Só
+    // para usuário autenticado e quando o capítulo realmente carregou.
+    useEffect(() => {
+        if (!isLoggedIn || !titleId || !chapterParam || !chapterData) return;
+        void recordChapterRead(titleId, chapterParam).catch(() => {});
+    }, [isLoggedIn, titleId, chapterParam, chapterData]);
 
     const displayTitle = title?.name ?? t('reader.untitled');
     const status = title?.status ?? '';

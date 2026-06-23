@@ -38,11 +38,14 @@ import com.mangareader.application.review.usecase.DeleteReviewUseCase;
 import com.mangareader.application.review.usecase.GetReviewAverageUseCase;
 import com.mangareader.application.review.usecase.GetReviewDistributionUseCase;
 import com.mangareader.application.review.usecase.GetReviewsByTitleUseCase;
+import com.mangareader.application.review.usecase.GetUserReviewsEnrichedUseCase;
+import com.mangareader.application.review.usecase.GetUserReviewsEnrichedUseCase.EnrichedReview;
 import com.mangareader.application.review.usecase.GetUserReviewsUseCase;
 import com.mangareader.application.review.usecase.RemoveReviewVoteUseCase;
 import com.mangareader.application.review.usecase.SubmitReviewUseCase;
 import com.mangareader.application.review.usecase.UpdateReviewUseCase;
 import com.mangareader.domain.review.entity.Review;
+import com.mangareader.presentation.manga.mapper.TitleMapper;
 import com.mangareader.shared.application.vote.VoteResult;
 import com.mangareader.shared.domain.vote.VoteValue;
 import com.mangareader.shared.exception.BusinessRuleException;
@@ -77,6 +80,12 @@ class ReviewControllerTest {
 
     @MockitoBean
     private GetUserReviewsUseCase getUserRatingsUseCase;
+
+    @MockitoBean
+    private GetUserReviewsEnrichedUseCase getUserReviewsEnrichedUseCase;
+
+    @MockitoBean
+    private TitleMapper titleMapper;
 
     @MockitoBean
     private CastReviewVoteUseCase castReviewVoteUseCase;
@@ -212,9 +221,10 @@ class ReviewControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com avaliações do usuário autenticado")
         void deveRetornar200ComAvaliacoesDoUsuario() throws Exception {
-            var ratings = List.of(buildRating("r1"));
-            when(getUserRatingsUseCase.execute(any(), any(Pageable.class)))
-                    .thenReturn(new PageImpl<>(ratings));
+            var enriched = List.of(new EnrichedReview(
+                    buildRating("r1"), "cover.jpg", List.of("action"), 12L, null));
+            when(getUserReviewsEnrichedUseCase.execute(any(), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(enriched));
 
             mockMvc.perform(get("/api/reviews/user").principal(mockAuth()))
                     .andExpect(status().isOk())

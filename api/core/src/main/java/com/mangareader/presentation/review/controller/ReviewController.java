@@ -25,11 +25,13 @@ import com.mangareader.application.review.usecase.DeleteReviewUseCase;
 import com.mangareader.application.review.usecase.GetReviewAverageUseCase;
 import com.mangareader.application.review.usecase.GetReviewDistributionUseCase;
 import com.mangareader.application.review.usecase.GetReviewsByTitleUseCase;
+import com.mangareader.application.review.usecase.GetUserReviewsEnrichedUseCase;
 import com.mangareader.application.review.usecase.GetUserReviewsUseCase;
 import com.mangareader.application.review.usecase.RemoveReviewVoteUseCase;
 import com.mangareader.application.review.usecase.SubmitReviewUseCase;
 import com.mangareader.application.review.usecase.UpdateReviewUseCase;
 import com.mangareader.domain.review.entity.Review;
+import com.mangareader.presentation.manga.mapper.TitleMapper;
 import com.mangareader.presentation.review.dto.ReviewAverageResponse;
 import com.mangareader.presentation.review.dto.ReviewDistributionResponse;
 import com.mangareader.presentation.review.dto.ReviewResponse;
@@ -65,9 +67,11 @@ public class ReviewController {
     private final UpdateReviewUseCase updateRatingUseCase;
     private final DeleteReviewUseCase deleteRatingUseCase;
     private final GetUserReviewsUseCase getUserRatingsUseCase;
+    private final GetUserReviewsEnrichedUseCase getUserReviewsEnrichedUseCase;
     private final CastReviewVoteUseCase castReviewVoteUseCase;
     private final RemoveReviewVoteUseCase removeReviewVoteUseCase;
     private final ReviewVoteRepositoryPort reviewVoteRepository;
+    private final TitleMapper titleMapper;
 
     @GetMapping("/title/{titleId}")
     @Operation(summary = "Listar avaliações", description = "Retorna avaliações de um título com paginação")
@@ -108,9 +112,16 @@ public class ReviewController {
                     ignoreRequestSort = true)
             Pageable pageable
     ) {
-        var result = getUserRatingsUseCase.execute(userId, pageable);
+        var result = getUserReviewsEnrichedUseCase.execute(userId, pageable);
 
-        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(toResponseWithMyVote(result, userId))));
+        var page = result.map(enriched -> ReviewMapper.toResponse(
+                enriched.review(),
+                enriched.myVote(),
+                enriched.cover(),
+                titleMapper.resolveGenreLabels(enriched.genreSlugs()),
+                enriched.chaptersRead()));
+
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(page)));
     }
 
     @GetMapping("/user/{userId}")

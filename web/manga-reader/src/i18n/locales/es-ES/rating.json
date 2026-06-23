@@ -44,9 +44,21 @@
         "save": "Guardar"
     },
     "myReviews": {
-        "title": "Mis Reseñas",
-        "subtitle": "Edita o elimina tus reseñas en cualquier momento.",
+        "title": "Mis reseñas",
+        "subtitle": "Todas las obras que has valorado, con tus notas, títulos y comentarios. Edita o elimina cuando quieras.",
         "eyebrow": "Tu cuenta",
+        "stats": {
+            "reviews": "Reseñas",
+            "reviewsSub": "obras valoradas",
+            "avg": "Nota media",
+            "withComment": "Con comentario",
+            "ofLoaded": "de {{count}} cargadas",
+            "chapters": "Capítulos leídos",
+            "chaptersSub": "en estas obras"
+        },
+        "filter": {
+            "all": "Todas"
+        },
         "emptyDesc": "Valora una obra y aparecerá aquí.",
         "discoverWorks": "Descubrir obras",
         "workPlaceholder": "Obra #{{id}}",

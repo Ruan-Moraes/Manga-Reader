@@ -29,4 +29,10 @@ export type Review = {
     downvotes?: number;
     /** Voto do usuário autenticado nesta resenha */
     myVote?: 'up' | 'down' | null;
+    /** Capa da obra — presente só em "minhas avaliações" (endpoint enriquecido) */
+    cover?: string;
+    /** Gêneros da obra (já resolvidos no locale) — presente só em "minhas avaliações" */
+    genres?: string[];
+    /** Capítulos lidos pelo usuário neste título — presente só em "minhas avaliações" */
+    chaptersRead?: number;
 };

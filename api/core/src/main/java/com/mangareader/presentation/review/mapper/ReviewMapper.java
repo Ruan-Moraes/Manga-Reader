@@ -27,6 +27,19 @@ public final class ReviewMapper {
      *               quando anônimo ou sem voto).
      */
     public static ReviewResponse toResponse(Review rating, VoteValue myVote) {
+        return toResponse(rating, myVote, null, null, null);
+    }
+
+    /**
+     * Variante enriquecida ("minhas avaliações"): inclui capa e gêneros da obra
+     * e o número de capítulos lidos pelo usuário naquele título.
+     *
+     * @param myVote       voto do usuário ({@code null} quando sem voto)
+     * @param cover        capa da obra ({@code null} quando não enriquecido)
+     * @param genres       gêneros já resolvidos para o locale ({@code null} quando não enriquecido)
+     * @param chaptersRead capítulos lidos pelo usuário no título ({@code null} quando não enriquecido)
+     */
+    public static ReviewResponse toResponse(Review rating, VoteValue myVote, String cover, List<String> genres, Long chaptersRead) {
         if (rating == null) return null;
 
         return new ReviewResponse(
@@ -51,7 +64,10 @@ public final class ReviewMapper {
                 myVote != null ? myVote.name().toLowerCase() : null,
                 rating.isEdited(),
                 formatDate(rating.getCreatedAt()),
-                formatDate(rating.getUpdatedAt())
+                formatDate(rating.getUpdatedAt()),
+                cover,
+                genres,
+                chaptersRead
         );
     }
 

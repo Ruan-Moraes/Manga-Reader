@@ -31,6 +31,9 @@ type RatingResponse = {
     edited?: boolean;
     createdAt: string;
     updatedAt?: string;
+    cover?: string;
+    genres?: string[];
+    chaptersRead?: number;
 };
 
 type RatingAverageResponse = {
@@ -65,6 +68,9 @@ const toMangaRating = (r: RatingResponse): Review => ({
     edited: r.edited,
     createdAt: r.createdAt,
     updatedAt: r.updatedAt,
+    cover: r.cover,
+    genres: r.genres,
+    chaptersRead: r.chaptersRead,
 });
 
 // ---------------------------------------------------------------------------

@@ -127,6 +127,11 @@ export const recordView = async (titleId: string): Promise<void> => {
     await api.post(`${API_URLS.USERS}/me/history`, { titleId });
 };
 
+/** Registra a leitura de um capítulo (idempotente no backend). Requer autenticação. */
+export const recordChapterRead = async (titleId: string, chapterNumber: string): Promise<void> => {
+    await api.post(`${API_URLS.USERS}/me/chapter-reads`, { titleId, chapterNumber });
+};
+
 export const getMyContentLocales = async (): Promise<ContentLocales> => {
     const response = await api.get<ApiResponse<ContentLocales>>(`${API_URLS.USERS}/me/content-locales`);
 

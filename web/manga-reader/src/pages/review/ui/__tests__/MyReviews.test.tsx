@@ -54,7 +54,7 @@ describe('MyReviews', () => {
 
     it('renders page title', async () => {
         renderWithProviders(<MyReviews />);
-        await waitFor(() => expect(screen.getByText('Minhas Avaliações')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Minhas resenhas')).toBeInTheDocument());
     });
 
     it('shows empty state when no reviews', async () => {

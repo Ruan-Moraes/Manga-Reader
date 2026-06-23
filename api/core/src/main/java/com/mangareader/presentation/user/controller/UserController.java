@@ -27,6 +27,7 @@ import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
 import com.mangareader.application.user.usecase.GetUserSettingsUseCase;
 import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
+import com.mangareader.application.user.usecase.RecordChapterReadUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
 import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
@@ -84,6 +85,7 @@ public class UserController {
     private final UpdateUserSettingsUseCase updateUserSettingsUseCase;
     private final GetUserCommentsUseCase getUserCommentsUseCase;
     private final RecordViewHistoryUseCase recordViewHistoryUseCase;
+    private final RecordChapterReadUseCase recordChapterReadUseCase;
     private final GetUserViewHistoryUseCase getUserViewHistoryUseCase;
     private final GetUserGroupsUseCase getUserGroupsUseCase;
     private final UserGroupMapper userGroupMapper;
@@ -379,6 +381,24 @@ public class UserController {
 
         if (titleId != null && !titleId.isBlank()) {
             recordViewHistoryUseCase.execute(userId, titleId);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/me/chapter-reads")
+    @Operation(summary = "Registrar leitura de capítulo")
+    public ResponseEntity<Void> recordChapterRead(
+            @RequestBody java.util.Map<String, String> body,
+            Authentication auth
+    ) {
+        UUID userId = (UUID) auth.getPrincipal();
+
+        String titleId = body.get("titleId");
+        String chapterNumber = body.get("chapterNumber");
+
+        if (titleId != null && !titleId.isBlank() && chapterNumber != null && !chapterNumber.isBlank()) {
+            recordChapterReadUseCase.execute(userId, titleId, chapterNumber);
         }
 
         return ResponseEntity.noContent().build();

@@ -44,9 +44,21 @@
         "save": "Save"
     },
     "myReviews": {
-        "title": "My Reviews",
-        "subtitle": "Edit or remove your reviews at any time.",
+        "title": "My reviews",
+        "subtitle": "Every title you've rated, with your scores, titles and comments. Edit or remove them whenever you want.",
         "eyebrow": "Your account",
+        "stats": {
+            "reviews": "Reviews",
+            "reviewsSub": "titles rated",
+            "avg": "Average score",
+            "withComment": "With comment",
+            "ofLoaded": "of {{count}} loaded",
+            "chapters": "Chapters read",
+            "chaptersSub": "in these titles"
+        },
+        "filter": {
+            "all": "All"
+        },
         "emptyDesc": "Rate a title and it will appear here.",
         "discoverWorks": "Discover titles",
         "workPlaceholder": "Title #{{id}}",

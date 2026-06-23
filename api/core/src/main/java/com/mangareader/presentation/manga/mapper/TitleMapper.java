@@ -87,7 +87,7 @@ public class TitleMapper {
                 title.getCover(),
                 i18n.toResolvedString(title.getName()),
                 i18n.toResolvedString(title.getSynopsis()),
-                resolveGenres(title.getGenres()),
+                resolveGenreLabels(title.getGenres()),
                 title.getPopularity(),
                 ratingAverage,
                 ratingCount,
@@ -112,7 +112,7 @@ public class TitleMapper {
     }
 
     /** Resolve slugs de gênero para o label do locale do request. */
-    private List<String> resolveGenres(List<String> slugs) {
+    public List<String> resolveGenreLabels(List<String> slugs) {
         if (slugs == null || slugs.isEmpty()) {
             return Collections.emptyList();
         }

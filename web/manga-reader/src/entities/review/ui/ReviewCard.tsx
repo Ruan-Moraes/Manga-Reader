@@ -46,6 +46,14 @@ export interface ReviewCardProps {
     title?: string;
     children: ReactNode;
     manga?: { id: string; title: string; cover?: string; gradient?: string };
+    /**
+     * Modo "centrado na obra" (ex.: Minhas Resenhas): quando presente, exibe o
+     * título da obra como cabeçalho linkado no topo do card — visível em todas as
+     * larguras (diferente do pôster lateral `manga`, oculto no mobile).
+     */
+    subjectTitle?: { label: string; onClick?: () => void };
+    /** Gêneros da obra, exibidos como chips abaixo de `subjectTitle`. */
+    genres?: string[];
     upvotes: number;
     /** Votos "Contrário" recebidos */
     downvotes?: number;
@@ -89,6 +97,8 @@ export const ReviewCard = ({
     onDelete,
     onClickAuthor,
     authorProfileLabel,
+    subjectTitle,
+    genres,
 }: ReviewCardProps) => {
     const { t } = useTranslation('rating');
 
@@ -125,6 +135,34 @@ export const ReviewCard = ({
                 op={badge === 'top'}
                 onClickAvatar={onClickAuthor}
             >
+                {subjectTitle && (
+                    <div className="flex flex-col gap-1.5">
+                        {subjectTitle.onClick ? (
+                            <button
+                                type="button"
+                                onClick={subjectTitle.onClick}
+                                className="self-start text-left text-[15px] font-mr-extrabold text-mr-fg transition-colors hover:text-mr-accent"
+                            >
+                                {subjectTitle.label}
+                            </button>
+                        ) : (
+                            <h3 className="text-[15px] font-mr-extrabold text-mr-fg">{subjectTitle.label}</h3>
+                        )}
+                        {genres && genres.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5">
+                                {genres.map(genre => (
+                                    <span
+                                        key={genre}
+                                        className="rounded-mr-full border border-mr-chip-border bg-mr-chip px-2 py-0.5 text-mr-tiny font-mr-bold text-mr-fg-subtle"
+                                    >
+                                        {genre}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <PostHeader
                     name={author.name}
                     time={whenDate.label}
