@@ -2,6 +2,7 @@ package com.mangareader.application.library.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
+import com.mangareader.application.library.service.LibraryVisibilityService;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 
@@ -29,13 +31,17 @@ class GetUserLibraryUseCaseTest {
     @Mock
     private LibraryRepositoryPort libraryRepository;
 
+    @Mock
+    private LibraryVisibilityService libraryVisibilityService;
+
     @InjectMocks
     private GetUserLibraryUseCase getUserLibraryUseCase;
 
     private final UUID USER_ID = UUID.randomUUID();
+    private final UUID VIEWER_ID = UUID.randomUUID();
 
     @Test
-    @DisplayName("Deve retornar página de mangás salvos do usuário")
+    @DisplayName("Deve retornar página de mangás salvos quando viewer pode ver")
     void deveRetornarPaginaDeMangasSalvos() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -45,10 +51,11 @@ class GetUserLibraryUseCaseTest {
         );
         Page<SavedManga> page = new PageImpl<>(items, pageable, 2);
 
+        when(libraryVisibilityService.canView(USER_ID, VIEWER_ID)).thenReturn(true);
         when(libraryRepository.findByUserId(USER_ID, pageable)).thenReturn(page);
 
         // Act
-        Page<SavedManga> result = getUserLibraryUseCase.execute(USER_ID, pageable);
+        Page<SavedManga> result = getUserLibraryUseCase.execute(USER_ID, VIEWER_ID, pageable);
 
         // Assert
         assertThat(result.getContent()).hasSize(2);
@@ -63,13 +70,44 @@ class GetUserLibraryUseCaseTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<SavedManga> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
+        when(libraryVisibilityService.canView(USER_ID, USER_ID)).thenReturn(true);
         when(libraryRepository.findByUserId(USER_ID, pageable)).thenReturn(emptyPage);
 
         // Act
-        Page<SavedManga> result = getUserLibraryUseCase.execute(USER_ID, pageable);
+        Page<SavedManga> result = getUserLibraryUseCase.execute(USER_ID, USER_ID, pageable);
 
         // Assert
         assertThat(result.getContent()).isEmpty();
         assertThat(result.getTotalElements()).isZero();
+    }
+
+    @Test
+    @DisplayName("DT-49: deve retornar página vazia sem consultar o repositório quando biblioteca é privada para o viewer")
+    void deveRetornarPaginaVaziaQuandoBibliotecaPrivada() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        when(libraryVisibilityService.canView(USER_ID, VIEWER_ID)).thenReturn(false);
+
+        // Act
+        Page<SavedManga> result = getUserLibraryUseCase.execute(USER_ID, VIEWER_ID, pageable);
+
+        // Assert
+        assertThat(result.getContent()).isEmpty();
+        verifyNoInteractions(libraryRepository);
+    }
+
+    @Test
+    @DisplayName("DT-49: viewer anônimo (null) segue a mesma checagem de visibilidade")
+    void deveChecarVisibilidadeParaViewerAnonimo() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        when(libraryVisibilityService.canView(USER_ID, null)).thenReturn(false);
+
+        // Act
+        Page<SavedManga> result = getUserLibraryUseCase.execute(USER_ID, null, pageable);
+
+        // Assert
+        assertThat(result.getContent()).isEmpty();
+        verifyNoInteractions(libraryRepository);
     }
 }

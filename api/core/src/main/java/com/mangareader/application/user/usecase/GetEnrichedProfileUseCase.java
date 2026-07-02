@@ -53,6 +53,7 @@ public class GetEnrichedProfileUseCase {
             List<ViewHistory> recentHistory,
             VisibilitySetting commentVisibility,
             VisibilitySetting viewHistoryVisibility,
+            VisibilitySetting libraryVisibility,
             AdultContentPreference adultContentPreference,
             boolean isOwner
     ) {}
@@ -113,7 +114,7 @@ public class GetEnrichedProfileUseCase {
         return new EnrichedProfile(
                 user, stats, recommendations, recentComments, recentHistory,
                 settings.getCommentVisibility(), settings.getViewHistoryVisibility(),
-                settings.getAdultContentPreference(), isOwner
+                settings.getLibraryVisibility(), settings.getAdultContentPreference(), isOwner
         );
     }
 }

@@ -58,13 +58,9 @@ URL H2 fixa compartilhada + `create-drop` derrubava o schema sob contextos cache
 - **Descrição**: fórum migrou para Mongo; as tabelas PG ficam como rollback até confirmar o Mongo em produção. Criar o drop **somente** num deploy posterior.
 - **Gravidade**: Baixa | **Prioridade**: pós-produção. Planejado de propósito — não antecipar.
 
-### DT-49 — Biblioteca pública sem checagem de visibilidade 🟠
+### ~~DT-49 — Biblioteca pública sem checagem de visibilidade~~ — **Resolvido (2026-07-02)**
 
-- **Local**: `GET /api/library/user/{userId}`
-- **Descrição**: expõe a biblioteca de qualquer usuário sem respeitar `VisibilitySetting` (o enriched profile já filtra comentários/histórico).
-- **Impacto**: vazamento de dado de preferência do usuário — vira problema de **privacidade** em produção.
-- **Gravidade**: Média (Alta em produção) | **Prioridade**: Média
-- **Correção**: aplicar o mesmo padrão de visibilidade do enriched profile no use case da biblioteca. **Pode ser corrigido agora** (escopo pequeno e conhecido).
+Coluna `library_visibility` (Flyway V38) + `LibraryVisibilityService` no padrão do enriched profile (privado ⇒ página vazia); toggle "Biblioteca" na aba de privacidade (i18n pt/en/es). Detalhes em `docs/tech-debt.md`.
 
 ### ~~DT-51 — Páginas/rotas de formulário legadas do admin~~ — **Resolvido (2026-07-02)**
 
@@ -112,9 +108,9 @@ Promovido a `@manga-reader/assets` (`package.json` privado); apps seguem consumi
 | Prioridade | Itens |
 |-----------|-------|
 | **Alta** | — |
-| **Média** | DT-49 (visibilidade da biblioteca), DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
+| **Média** | DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
 | **Baixa** | DT-48 |
-| **Resolvidos 2026-07-02** | DT-51, DT-53, DT-54, DT-55, DT-56 |
+| **Resolvidos 2026-07-02** | DT-49, DT-51, DT-53, DT-54, DT-55, DT-56 |
 | **Adiados (não-prod)** | DT-02 (E2E), DT-03 (CI/CD), DT-08 (a11y residual), DT-09 (legais), DT-44 (backlog), DT-21 (staging dump), DT-50 fase 2 (drop fórum PG) |
 
 **Corrigíveis agora, sem refatoração maior**: DT-53, DT-49, DT-55, DT-56 (e DT-54 com investigação curta).

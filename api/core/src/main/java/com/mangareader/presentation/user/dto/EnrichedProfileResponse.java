@@ -59,6 +59,7 @@ public record EnrichedProfileResponse(
     public record PrivacySettingsResponse(
             String commentVisibility,
             String viewHistoryVisibility,
+            String libraryVisibility,
             String adultContentPreference
     ) {}
 

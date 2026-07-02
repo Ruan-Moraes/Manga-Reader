@@ -1,6 +1,6 @@
 import { useState, type Dispatch } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Library, MessageSquare, ShieldAlert, type LucideIcon } from 'lucide-react';
+import { BookMarked, Library, MessageSquare, ShieldAlert, type LucideIcon } from 'lucide-react';
 
 import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
 
@@ -105,6 +105,7 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
 
     const [historyVisibility, setHistoryVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.viewHistoryVisibility));
     const [commentVisibility, setCommentVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.commentVisibility));
+    const [libraryVisibility, setLibraryVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.libraryVisibility));
     const [adultContentPreference, setAdultContentPreference] = useState<AdultContentPreference>(
         defaultAdultContent(profile.privacySettings?.adultContentPreference),
     );
@@ -120,6 +121,7 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
 
             setCommentVisibility(next.commentVisibility);
             setHistoryVisibility(next.viewHistoryVisibility);
+            setLibraryVisibility(defaultVisibility(next.libraryVisibility));
             setAdultContentPreference(defaultAdultContent(next.adultContentPreference));
             onSaveStatusChange?.('saved');
             showSuccessToast(t('profile.edit.saved'));
@@ -150,6 +152,15 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
 
         setCommentVisibility(next);
         void persist({ commentVisibility: next }, () => setCommentVisibility(previous));
+    };
+
+    const changeLibrary = (next: VisibilitySetting) => {
+        if (next === libraryVisibility) return;
+
+        const previous = libraryVisibility;
+
+        setLibraryVisibility(next);
+        void persist({ libraryVisibility: next }, () => setLibraryVisibility(previous));
     };
 
     const changeAdultContent = (next: AdultContentPreference) => {
@@ -195,6 +206,14 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
             icon: MessageSquare,
             value: commentVisibility,
             onChange: changeComments,
+        },
+        {
+            key: 'library',
+            title: t('profile.edit.privacy.libraryLabel'),
+            desc: t('profile.edit.privacy.libraryDesc'),
+            icon: BookMarked,
+            value: libraryVisibility,
+            onChange: changeLibrary,
         },
     ];
 

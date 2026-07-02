@@ -34,6 +34,7 @@ public class UpdatePrivacySettingsUseCase {
             UUID userId,
             VisibilitySetting commentVisibility,
             VisibilitySetting viewHistoryVisibility,
+            VisibilitySetting libraryVisibility,
             AdultContentPreference adultContentPreference
     ) {}
 
@@ -53,6 +54,10 @@ public class UpdatePrivacySettingsUseCase {
             if (input.viewHistoryVisibility() == VisibilitySetting.DO_NOT_TRACK) {
                 viewHistoryRepository.deleteAllByUserId(input.userId().toString());
             }
+        }
+
+        if (input.libraryVisibility() != null) {
+            settings.setLibraryVisibility(input.libraryVisibility());
         }
 
         if (input.adultContentPreference() != null) {

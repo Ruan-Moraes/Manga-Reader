@@ -73,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/profile").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/history").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/library/user/{userId}").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/error-logs").permitAll()
 

@@ -230,6 +230,7 @@ public class UserController {
                 userId,
                 request.commentVisibility() != null ? VisibilitySetting.valueOf(request.commentVisibility()) : null,
                 request.viewHistoryVisibility() != null ? VisibilitySetting.valueOf(request.viewHistoryVisibility()) : null,
+                request.libraryVisibility() != null ? VisibilitySetting.valueOf(request.libraryVisibility()) : null,
                 request.adultContentPreference() != null ? AdultContentPreference.valueOf(request.adultContentPreference()) : null
         );
 
@@ -238,6 +239,7 @@ public class UserController {
         var response = new EnrichedProfileResponse.PrivacySettingsResponse(
                 settings.getCommentVisibility().name(),
                 settings.getViewHistoryVisibility().name(),
+                settings.getLibraryVisibility().name(),
                 settings.getAdultContentPreference().name()
         );
 

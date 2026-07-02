@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import com.mangareader.shared.web.CurrentUserId;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,8 +65,8 @@ public class LibraryController {
             @RequestParam(required = false) String list
     ) {
         var result = (list != null)
-                ? getUserLibraryByListUseCase.execute(userId, ReadingListType.fromValue(list), pageable)
-                : getUserLibraryUseCase.execute(userId, pageable);
+                ? getUserLibraryByListUseCase.execute(userId, userId, ReadingListType.fromValue(list), pageable)
+                : getUserLibraryUseCase.execute(userId, userId, pageable);
 
         var mapped = result.map(libraryMapper::toResponse);
 
@@ -73,16 +74,19 @@ public class LibraryController {
     }
 
     @GetMapping("/user/{userId}")
-    @Operation(summary = "Biblioteca de um usuário", description = "Retorna mangás salvos de um usuário (perfil público), com paginação. Filtrável por lista.")
+    @Operation(summary = "Biblioteca de um usuário", description = "Retorna mangás salvos de um usuário (perfil público), com paginação. Filtrável por lista. Biblioteca privada retorna página vazia para quem não é o dono (DT-49).")
     public ResponseEntity<ApiResponse<PageResponse<SavedMangaResponse>>> getUserLibrary(
             @PathVariable UUID userId,
             @PageParams(defaultSort = "savedAt", defaultDirection = "desc")
             Pageable pageable,
-            @RequestParam(required = false) String list
+            @RequestParam(required = false) String list,
+            Authentication auth
     ) {
+        UUID viewerUserId = auth != null ? (UUID) auth.getPrincipal() : null;
+
         var result = (list != null)
-                ? getUserLibraryByListUseCase.execute(userId, ReadingListType.fromValue(list), pageable)
-                : getUserLibraryUseCase.execute(userId, pageable);
+                ? getUserLibraryByListUseCase.execute(userId, viewerUserId, ReadingListType.fromValue(list), pageable)
+                : getUserLibraryUseCase.execute(userId, viewerUserId, pageable);
 
         var mapped = result.map(libraryMapper::toResponse);
 

@@ -56,6 +56,11 @@ public class UserProfileSettings {
     private VisibilitySetting viewHistoryVisibility = VisibilitySetting.PUBLIC;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "library_visibility", nullable = false, length = 20)
+    @Builder.Default
+    private VisibilitySetting libraryVisibility = VisibilitySetting.PUBLIC;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "adult_content_preference", nullable = false, length = 20)
     @Builder.Default
     private AdultContentPreference adultContentPreference = AdultContentPreference.BLUR;
@@ -73,6 +78,7 @@ public class UserProfileSettings {
                 .user(user)
                 .commentVisibility(VisibilitySetting.PUBLIC)
                 .viewHistoryVisibility(VisibilitySetting.PUBLIC)
+                .libraryVisibility(VisibilitySetting.PUBLIC)
                 .adultContentPreference(AdultContentPreference.BLUR)
                 .build();
     }

@@ -3,6 +3,7 @@ package com.mangareader.presentation.library.controller;
 import com.mangareader.shared.web.PageableWebConfig;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -102,10 +104,10 @@ class LibraryControllerTest {
     class GetUserLibraryPublic {
 
         @Test
-        @DisplayName("Deve retornar 200 com a biblioteca de um usuário")
+        @DisplayName("Deve retornar 200 com a biblioteca de um usuário (viewer anônimo repassado como null — DT-49)")
         void deveRetornar200ComBibliotecaDeUsuario() throws Exception {
             var items = List.of(buildSavedManga("t1"));
-            when(getUserLibraryUseCase.execute(any(UUID.class), any(Pageable.class)))
+            when(getUserLibraryUseCase.execute(any(UUID.class), isNull(), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(items));
 
             mockMvc.perform(get("/api/library/user/{userId}", UUID.randomUUID()))
@@ -118,12 +120,24 @@ class LibraryControllerTest {
         @DisplayName("Deve filtrar por lista quando informada")
         void deveFiltrarPorLista() throws Exception {
             var items = List.of(buildSavedManga("t1"));
-            when(getUserLibraryByListUseCase.execute(any(UUID.class), any(ReadingListType.class), any(Pageable.class)))
+            when(getUserLibraryByListUseCase.execute(any(UUID.class), isNull(), any(ReadingListType.class), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(items));
 
             mockMvc.perform(get("/api/library/user/{userId}", UUID.randomUUID()).param("list", "LENDO"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content.length()").value(1));
+        }
+
+        @Test
+        @DisplayName("DT-49: biblioteca privada retorna página vazia (mesmo contrato)")
+        void deveRetornarPaginaVaziaQuandoPrivada() throws Exception {
+            when(getUserLibraryUseCase.execute(any(UUID.class), isNull(), any(Pageable.class)))
+                    .thenReturn(Page.empty());
+
+            mockMvc.perform(get("/api/library/user/{userId}", UUID.randomUUID()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.content").isEmpty());
         }
     }
 
@@ -135,7 +149,7 @@ class LibraryControllerTest {
         @DisplayName("Deve retornar 200 com biblioteca paginada")
         void deveRetornar200ComBiblioteca() throws Exception {
             var items = List.of(buildSavedManga("t1"), buildSavedManga("t2"));
-            when(getUserLibraryUseCase.execute(any(UUID.class), any(Pageable.class)))
+            when(getUserLibraryUseCase.execute(any(UUID.class), any(UUID.class), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(items));
 
             mockMvc.perform(get("/api/library")
@@ -149,7 +163,7 @@ class LibraryControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getUserLibraryUseCase.execute(any(UUID.class), any(Pageable.class)))
+            when(getUserLibraryUseCase.execute(any(UUID.class), any(UUID.class), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/library")
@@ -162,7 +176,7 @@ class LibraryControllerTest {
         @DisplayName("Deve filtrar por lista quando parâmetro list é informado")
         void deveFiltrarPorLista() throws Exception {
             var items = List.of(buildSavedManga("t1"));
-            when(getUserLibraryByListUseCase.execute(any(UUID.class), any(ReadingListType.class), any(Pageable.class)))
+            when(getUserLibraryByListUseCase.execute(any(UUID.class), any(UUID.class), any(ReadingListType.class), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(items));
 
             mockMvc.perform(get("/api/library")

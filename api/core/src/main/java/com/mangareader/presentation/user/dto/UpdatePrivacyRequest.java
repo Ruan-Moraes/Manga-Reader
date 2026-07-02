@@ -6,5 +6,6 @@ package com.mangareader.presentation.user.dto;
 public record UpdatePrivacyRequest(
         String commentVisibility,
         String viewHistoryVisibility,
+        String libraryVisibility,
         String adultContentPreference
 ) {}

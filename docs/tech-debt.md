@@ -856,11 +856,21 @@ seleção manual.
 usuário, activity feed, username) quando a feature de rede social entrar no roadmap — cada
 um é um épico próprio (passar pela skill `database-design`).
 
-### DT-49: Biblioteca pública sem checagem de visibilidade — **Em aberto (Baixa)**
+### DT-49: Biblioteca pública sem checagem de visibilidade — **Resolvido (2026-07-02)**
 
-`GET /api/library/user/{userId}` (novo) expõe a biblioteca de qualquer usuário sem
-respeitar privacidade. O enriched profile já filtra comentários/histórico por
-`VisibilitySetting`; a biblioteca pública deveria seguir o mesmo padrão.
+`GET /api/library/user/{userId}` expunha a biblioteca de qualquer usuário sem respeitar
+privacidade. **Resolução** (mesmo padrão do enriched profile):
+- Flyway `V38`: coluna `user_profile_settings.library_visibility` (default PUBLIC, CHECK).
+- `LibraryVisibilityService` (application/library/service): dono sempre vê; terceiros/
+  anônimos só com `libraryVisibility == PUBLIC`. `GetUserLibraryUseCase`/`ByList` recebem
+  `viewerUserId` e retornam **página vazia** quando privado (mesmo contrato).
+- Endpoint agora é `permitAll` (coerente com `/users/{id}/profile` público); viewer
+  resolvido via `Authentication` nullable. Rota própria (`/api/library`) passa o dono.
+- `UpdatePrivacySettingsUseCase`/`PATCH /me/privacy`/`PrivacySettingsResponse` ganharam
+  o campo; UI: card "Biblioteca" na `PrivacidadeTab` (i18n pt/en/es).
+- Testes: `LibraryVisibilityServiceTest` (5), use cases (privado/anônimo/sem repo),
+  controller (viewer null repassado, página vazia). Cadeia Flyway V1..V38 validada em
+  Postgres 17 real. Suítes: backend alvo 58 verdes; front 923 verdes.
 
 ---
 

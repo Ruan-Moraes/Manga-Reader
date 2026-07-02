@@ -254,6 +254,8 @@
                 "deleteAccount": "Delete account",
                 "historyDesc": "Defines whether other readers can see read titles, dates and pace.",
                 "commentsDesc": "Defines whether reviews and replies appear on your public profile.",
+                "libraryLabel": "Library",
+                "libraryDesc": "Defines whether your reading lists (reading, want to read, completed) appear on your public profile.",
                 "deleteImpact": {
                     "profile": "Name, email, bio, photo, banner, social links and recommendations will be removed or anonymized.",
                     "activity": "The profile will no longer identify you in public platform areas.",

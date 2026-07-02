@@ -70,6 +70,7 @@ export type CommentSummary = {
 export type PrivacySettings = {
     commentVisibility: VisibilitySetting;
     viewHistoryVisibility: VisibilitySetting;
+    libraryVisibility: VisibilitySetting;
     adultContentPreference: AdultContentPreference;
 };
 

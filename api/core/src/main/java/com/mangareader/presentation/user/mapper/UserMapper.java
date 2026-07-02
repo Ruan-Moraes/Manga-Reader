@@ -85,6 +85,7 @@ public final class UserMapper {
                 ? new PrivacySettingsResponse(
                         profile.commentVisibility().name(),
                         profile.viewHistoryVisibility().name(),
+                        profile.libraryVisibility().name(),
                         profile.adultContentPreference().name())
                 : null;
 
