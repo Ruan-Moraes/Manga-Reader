@@ -42,6 +42,13 @@ spring:
     redis:
       host: localhost
       port: 6379
+  # Fallback quando o compose está desligado; em dev o spring-boot-docker-compose
+  # resolve os connection details do serviço neo4j automaticamente (DT-48).
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: manga_secret
   rabbitmq:
     host: localhost
     port: 5672
