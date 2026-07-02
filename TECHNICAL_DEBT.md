@@ -19,14 +19,9 @@ estão **adiados como não-bloqueantes** e permanecem listados.
 
 Causa: duas majors de vitest no workspace faziam a entry `/vitest` do jest-dom estender o expect errado. Fix: `expect.extend` explícito no `setup.ts` + triagem dos testes desatualizados enquanto a suíte esteve quebrada (providers no helper, rotas `/api/reviews`, contrato `textContent`, redesigns de Groups/GroupProfile/UserProfile/Chapter). Suíte: **923 testes, 0 falhas**. Detalhes em `docs/tech-debt.md`.
 
-### DT-54 — Flake de isolamento na suíte leve do backend (H2) 🟠
+### ~~DT-54 — Flake de isolamento na suíte leve do backend (H2)~~ — **Resolvido (2026-07-02)**
 
-- **Local**: `api/core` — `GroupRepositoryAdapterTest` (`@DataJpaTest` + H2)
-- **Descrição**: `./mvnw test -Dtest.excludedGroups=testcontainers` falha com **18 erros** `Table "USERS" not found (this database is empty)`; a mesma classe passa **verde isolada** (medição 2026-07-02: 1080 testes, 18 erros). Interação entre cache de contexto Spring e ciclo de vida do banco H2 in-memory.
-- **Impacto**: a "suíte leve sem Docker" (DT-22) não é confiável como gate; desenvolvedores sem Docker não conseguem validar o backend.
-- **Gravidade**: **Média** | **Prioridade**: **Média**
-- **Correção sugerida**: investigar a URL H2 do profile `test` (nome de banco compartilhado + `DB_CLOSE_DELAY`) e a ordem/caching de contextos; alternativa: `@AutoConfigureTestDatabase` com banco único por classe.
-- **Pode ser corrigido agora?** Exige investigação curta (horas), não refatoração.
+URL H2 fixa compartilhada + `create-drop` derrubava o schema sob contextos cacheados. Fix: banco único por contexto via `${random.uuid}` na URL (`application-test.yml`). 2× `./mvnw test -Dtest.excludedGroups=testcontainers` → 1080 testes, 0 erros.
 
 ### DT-02 (residual) — Sem E2E de frontend
 
@@ -119,9 +114,9 @@ Promovido a `@manga-reader/assets` (`package.json` privado); apps seguem consumi
 | Prioridade | Itens |
 |-----------|-------|
 | **Alta** | — |
-| **Média** | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca), DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
+| **Média** | DT-49 (visibilidade da biblioteca), DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
 | **Baixa** | DT-48, DT-51 |
-| **Resolvidos 2026-07-02** | DT-53, DT-55, DT-56 |
+| **Resolvidos 2026-07-02** | DT-53, DT-54, DT-55, DT-56 |
 | **Adiados (não-prod)** | DT-02 (E2E), DT-03 (CI/CD), DT-08 (a11y residual), DT-09 (legais), DT-44 (backlog), DT-21 (staging dump), DT-50 fase 2 (drop fórum PG) |
 
 **Corrigíveis agora, sem refatoração maior**: DT-53, DT-49, DT-55, DT-56 (e DT-54 com investigação curta).

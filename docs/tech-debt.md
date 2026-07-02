@@ -1055,14 +1055,16 @@ quebrada — corrigidos):
 **Resultado**: `npx vitest run --pool=forks` → **137 arquivos / 923 testes, 0 falhas**;
 tsc 0; lint:fsd verde.
 
-### DT-54: Flake de isolamento na suíte leve do backend (H2) — **Em aberto (Média)**
+### DT-54: Flake de isolamento na suíte leve do backend (H2) — **Resolvido (2026-07-02)**
 
-`./mvnw test -Dtest.excludedGroups=testcontainers` → 1080 testes, **18 erros**, todos
-em `GroupRepositoryAdapterTest` com `Table "USERS" not found (this database is empty)`;
-a classe passa **verde isolada** (`-Dtest=GroupRepositoryAdapterTest`). Interação entre
-cache de contextos Spring e ciclo de vida do H2 in-memory. A suíte leve (DT-22) não é
-confiável como gate enquanto isso persistir. Investigar URL H2 do profile `test`
-(`DB_CLOSE_DELAY`/nome compartilhado) e caching de contexto.
+Era: 18 erros em `GroupRepositoryAdapterTest` (`Table "USERS" not found`) só na suíte
+completa leve; verde isolada. **Causa**: todos os contextos compartilhavam a URL H2
+nomeada fixa (`jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1`) com `ddl-auto: create-drop` — o
+fechamento de um contexto (eviction do cache) derrubava o schema do banco compartilhado
+sob os contextos ainda cacheados. **Fix**: `application-test.yml` usa
+`jdbc:h2:mem:testdb-${random.uuid};...` (banco único por contexto; `INIT` do domain
+JSONB preservado). Verificação: 2 execuções consecutivas de
+`./mvnw test -Dtest.excludedGroups=testcontainers` → 1080 testes, 0 erros.
 
 ### DT-55: Diretório morto `backend/` na raiz — **Resolvido (2026-07-02)**
 
