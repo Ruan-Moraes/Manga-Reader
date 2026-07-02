@@ -15,23 +15,23 @@ presentation → application → domain ← infrastructure
 - **domain**: entities, value objects, enums — zero dependência de framework
 - **infrastructure**: persistence adapters, security, email, messaging
 
-### 12 Domínios
+### Domínios (17 pacotes)
 
-Auth, User, Manga, Comment, Rating, Library, Group, News, Event, Forum, Category/Tag, Store — cada um com package próprio em todas as camadas.
+`author`, `category`, `comment`, `errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`, `news`, `payment`, `publisher`, `review`, `store`, `subscription`, `user` — Auth vive em Security (infrastructure). Cada domínio tem package próprio em todas as camadas.
 
 ### Dual Database
 
 | DB | Tech | Responsável por |
 |----|------|----------------|
-| PostgreSQL | JPA/Hibernate + Flyway | users, groups, events, forum, library, stores, tags |
-| MongoDB | Spring Data Mongo + Mongock | titles, chapters, comments, ratings, news, **title_rating_aggregate** |
+| PostgreSQL | JPA/Hibernate + Flyway | users, groups, events, library, stores, tags, subscriptions, payments, authors/publishers, domain labels (tabelas do fórum permanecem só como rollback da migração p/ Mongo — DT-50) |
+| MongoDB | Spring Data Mongo + Mongock | titles, chapters, comments (coleção unificada polimórfica), reviews, forum_topics, votos (`<pai>_votes`), news, view history, **reviews_aggregate** |
 
 ### Serviço de Agregação de Avaliações (`api/jobs/rating-aggregator`)
 
-Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **dono** da coleção `title_rating_aggregate` (= `obra_avaliacao`), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
+Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **dono** da coleção `reviews_aggregate` (ex-`title_rating_aggregate`, renomeada no rename `ratings`→`reviews` — DT-50), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
 
 - **Por quê**: nota/contagem eram divergentes — listagens liam `Title.ratingAverage/ratingCount` (nunca atualizados; o "job periódico" do javadoc não existia) e o detalhe lia agregação `AVG/COUNT` ao vivo. Agora há fonte única denormalizada, sem agregação pesada por request.
-- **Recompute (2 gatilhos)**: (1) consome `RatingEvent` (`rating.*`: submit/update/delete) do RabbitMQ (exchange `manga.events`, fila própria `manga.rating.aggregate`, routing `rating.#`) e recalcula o título; (2) job `@Scheduled` de reconciliação (rede de segurança). Mongock `V001` faz backfill a partir de `ratings`.
+- **Recompute (2 gatilhos)**: (1) consome `RatingEvent` (`rating.*`: submit/update/delete) do RabbitMQ (exchange `manga.events`, fila própria `manga.rating.aggregate`, routing `rating.#`) e recalcula o título; (2) job `@Scheduled` de reconciliação (rede de segurança). Mongock `V001` faz backfill a partir das avaliações (`V002` renomeou as coleções p/ `reviews`/`reviews_aggregate`).
 - **Contrato de evento**: `RatingEvent` replicado no **mesmo FQN** `com.mangareader.application.shared.event.RatingEvent`; consumer usa `TypePrecedence.INFERRED` (robusto a divergência de FQN). Sem jar compartilhado entre os apps.
 - **Monolito**: apenas **publica** os eventos (já fazia) e **lê** o agregado via `TitleRatingAggregateReadPort` (`findByTitleIdIn` em lote, sem N+1). `GetRatingAverageUseCase`/`GetRatingDistributionUseCase` e `TitleMapper`/`AdminTitleMapper` consomem o agregado — **nenhuma** agregação `AVG/COUNT` durante a renderização. O `RatingEventConsumer` e a fila de recalc do monolito foram removidos (recompute migrou para o serviço).
 

@@ -1,6 +1,10 @@
 # Manga Reader — Dívidas Técnicas
 
-> Última atualização: 8 de junho de 2026
+> Última atualização: 2 de julho de 2026
+>
+> Visão consolidada por categoria (para leitura rápida): [`TECHNICAL_DEBT.md`](../TECHNICAL_DEBT.md)
+> na raiz. Este arquivo continua sendo o **log canônico por item** — ao resolver
+> uma dívida, atualizar os dois.
 
 ---
 
@@ -1012,15 +1016,62 @@ outbox/saga ou mover o título para Postgres.
 
 ---
 
+## Auditoria técnica do repositório (2026-07-02)
+
+Auditoria completa de estrutura/documentação (ver [`PROJECT_AUDIT.md`](../PROJECT_AUDIT.md)).
+Docs desatualizados foram corrigidos na própria auditoria (README raiz, architecture.md,
+mobile/README.md; removidos `docs/services/jobs/*` duplicados e `mobile/mobile.md` legado).
+Dívidas novas encontradas:
+
+### DT-53: Suíte de componentes do frontend quebrada no baseline (jest-dom × Vitest 4) — **Em aberto (Alta)**
+
+`@testing-library/jest-dom` 6.9.1 não registra matchers com Vitest 4.1.4 — todo teste
+de componente falha com `Invalid Chai property: toBeInTheDocument` (e variantes).
+Medição 2026-07-02: `npx vitest run --pool=forks` → **924 testes, 425 falhas** em 81
+arquivos; reproduzível isolado (`Button.test.tsx`). É a mesma causa observada como
+"jest-dom quebrado no sandbox" na nota de DT-47 — ou seja, o baseline está vermelho
+também no ambiente local, não só no sandbox.
+
+**Impacto**: o gate de testes do CLAUDE.md está inutilizado para componentes; a
+contagem "878 testes, 0 falhas" publicada anteriormente não é mais reproduzível.
+
+**Correção**: atualizar jest-dom para versão compatível com Vitest 4 (ou fixar Vitest
+3.x), revalidar `src/test/setup.ts` e rodar a suíte completa — atenção a falhas reais
+mascaradas (ex.: `Button > size sm aplica classe correta` falha por asserção de classe,
+não por matcher).
+
+### DT-54: Flake de isolamento na suíte leve do backend (H2) — **Em aberto (Média)**
+
+`./mvnw test -Dtest.excludedGroups=testcontainers` → 1080 testes, **18 erros**, todos
+em `GroupRepositoryAdapterTest` com `Table "USERS" not found (this database is empty)`;
+a classe passa **verde isolada** (`-Dtest=GroupRepositoryAdapterTest`). Interação entre
+cache de contextos Spring e ciclo de vida do H2 in-memory. A suíte leve (DT-22) não é
+confiável como gate enquanto isso persistir. Investigar URL H2 do profile `test`
+(`DB_CLOSE_DELAY`/nome compartilhado) e caching de contexto.
+
+### DT-55: Diretório morto `backend/` na raiz — **Em aberto (Baixa)**
+
+`/backend/` contém apenas `.idea/` (não versionado) — resto do layout antigo
+pré-`api/`. Apagar localmente (`rm -rf backend/`). Não foi apagado na auditoria por
+ser artefato local de IDE.
+
+### DT-56: `web/packages/assets` sem `package.json` — **Em aberto (Baixa)**
+
+O glob `packages/*` do workspace não o resolve como package (não tem `package.json`);
+docs contavam "4 pacotes compartilhados", mas só design-tokens/tsconfig/types são
+pacotes. Ou promover a `@manga-reader/assets`, ou mover para fora de `packages/`.
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
-| **Alta** | 1 | DT-02 (componente/E2E) |
-| **Média** | 3 | DT-08 (axe por rota — parcial), DT-50 (persistência de comentários), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
+| **Alta** | 2 | DT-53 (jest-dom × Vitest 4 — baseline vermelho), DT-02 (componente/E2E) |
+| **Média** | 6 | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca pública), DT-08 (axe por rota — parcial), DT-50 (residuais: testes fórum + threads profundas + fase 2 drop PG), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 4 | DT-03, DT-09, DT-44 (backlog de produto), DT-51 (rotas/forms legados do admin) |
+| **Baixa** | 7 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin), DT-55 (dir `backend/` morto), DT-56 (`packages/assets`) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |

@@ -4,6 +4,8 @@ React Native + Expo. Segue a **mesma arquitetura FSD** do frontend web (`/web/ma
 
 > **Leia este documento antes de qualquer implementação.** Ele é a fonte de verdade para decisões arquiteturais do app mobile.
 
+**Estado atual:** Fase 0 (fundação — tema, i18n, stores, providers) implementada; Fase 1 (Auth) em andamento — rotas `(auth)/login`, `(auth)/register`, `(auth)/forgot` e tabs base (`index`, `library`, `forum`, `profile`) existem; telas das tabs ainda são placeholders.
+
 ---
 
 ## Stack
@@ -79,20 +81,25 @@ Estas estruturas **devem ser implementadas no primeiro commit**, antes de qualqu
 **Mesma arquitetura do web** (`/web/manga-reader/src/`). Qualquer divergência deve ser documentada aqui com justificativa antes de ser implementada.
 
 ```
-mobile/src/
-├── app/                  # Expo Router — rotas file-based (equivale ao app/ do Expo)
-├── pages/                # Telas completas (composição de widgets/features)
-├── widgets/              # Blocos compostos de UI (header, tab bar, drawer)
-├── features/             # Interações do usuário (auth, comment CRUD, rating)
-├── entities/             # Modelos de domínio + UI de exibição (manga, chapter, user)
-└── shared/               # Utilitários, UI atoms, constantes, serviços HTTP
-    ├── ui/               # Componentes reutilizáveis (Button, Input, Card, etc.)
-    ├── api/              # Axios instance + interceptors
-    ├── theme/            # Tokens de tema + ThemeProvider
-    ├── i18n/             # Setup i18n + locales
-    ├── store/            # Zustand stores globais
-    ├── hook/             # Hooks cross-feature
-    └── constant/         # ROUTES, API_URLS, QUERY_KEYS
+mobile/
+├── app/                  # Expo Router — rotas file-based ((auth)/, (tabs)/, modal, +not-found)
+│                         #   arquivos aqui são CASCA fina: importam a tela de src/pages
+└── src/
+    ├── application/      # Camada app do FSD: providers (tema, query, i18n), navigation, gates
+    │                     #   (ignorada no steiger — ver steiger.config.ts)
+    ├── pages/            # Telas completas (composição de widgets/features)
+    ├── widgets/          # Blocos compostos de UI — criar quando necessário
+    ├── features/         # Interações do usuário (auth, comment CRUD, rating)
+    ├── entities/         # Modelos de domínio + UI de exibição — criar quando necessário
+    └── shared/           # Utilitários, UI atoms, constantes, serviços HTTP
+        ├── ui/           # Componentes reutilizáveis (Button, Input, Card, etc.)
+        ├── api/          # Axios instance + interceptors
+        ├── theme/        # Tokens de tema + ThemeProvider + fontes
+        ├── i18n/         # Setup i18n + locales
+        ├── store/        # Zustand stores globais (settingsStore, sessionStore)
+        ├── hook/         # Hooks cross-feature
+        ├── model/        # Tipos compartilhados
+        └── constant/     # ROUTES, API_URLS, QUERY_KEYS
 ```
 
 ### Regras de boundary (igual ao web)
@@ -164,10 +171,15 @@ Tudo que existe no web **deve existir no mobile**, adaptado para a plataforma. E
 ```bash
 cd mobile/
 pnpm install
-pnpm start              # Metro bundler
+pnpm dev                # Metro bundler (expo start --clear)
 pnpm android            # Android (emulador ou device)
 pnpm ios                # iOS (apenas macOS)
-npx tsc --noEmit        # Type-check
+
+# Gates de qualidade
+pnpm typecheck          # tsc --noEmit
+pnpm lint               # eslint
+pnpm lint:fsd           # steiger (boundaries FSD)
+pnpm check              # typecheck + lint + lint:fsd + format:check
 ```
 
 ---
@@ -223,7 +235,7 @@ npx tsc --noEmit        # Type-check
 
 ## Verificação antes de considerar tarefa concluída
 
-1. `npx tsc --noEmit` — 0 erros
+1. `pnpm check` verde (typecheck + eslint + `lint:fsd` + format:check)
 2. Nenhum texto hardcoded visível ao usuário (sempre via `t()`)
 3. Nenhuma cor hardcoded (sempre via token de tema)
 4. Componente reutilizável em `shared/ui` se aparece em mais de um lugar

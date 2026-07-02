@@ -60,7 +60,7 @@ inline para manter este arquivo curto — **ler o doc relevante antes de mexer n
 
 - **Arquitetura & padrões** → [`docs/architecture.md`](docs/architecture.md) — antes
   de criar controller/use case/mapper, mexer em domínio, dual-DB, rating-aggregator,
-  i18n ou contrato de resposta da API. Clean Architecture (4 camadas), 12 domínios,
+  i18n ou contrato de resposta da API. Clean Architecture (4 camadas), 17 domínios,
   Postgres+Mongo, `api/jobs/rating-aggregator`, key patterns, i18n (DB-labels + UI×conteúdo).
 - **ORM & Persistência** → [`docs/orm-persistence.md`](docs/orm-persistence.md) —
   qualquer mudança que toque repository/JPA/Mongo: `@Transactional`, N+1, projeções,
