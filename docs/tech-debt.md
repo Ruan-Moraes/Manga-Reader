@@ -1049,17 +1049,17 @@ cache de contextos Spring e ciclo de vida do H2 in-memory. A suíte leve (DT-22)
 confiável como gate enquanto isso persistir. Investigar URL H2 do profile `test`
 (`DB_CLOSE_DELAY`/nome compartilhado) e caching de contexto.
 
-### DT-55: Diretório morto `backend/` na raiz — **Em aberto (Baixa)**
+### DT-55: Diretório morto `backend/` na raiz — **Resolvido (2026-07-02)**
 
-`/backend/` contém apenas `.idea/` (não versionado) — resto do layout antigo
-pré-`api/`. Apagar localmente (`rm -rf backend/`). Não foi apagado na auditoria por
-ser artefato local de IDE.
+`/backend/` continha apenas `.idea/` (não versionado) — resto do layout antigo
+pré-`api/`. Removido localmente (`rm -rf backend/`); sem efeito no git.
 
-### DT-56: `web/packages/assets` sem `package.json` — **Em aberto (Baixa)**
+### DT-56: `web/packages/assets` sem `package.json` — **Resolvido (2026-07-02)**
 
-O glob `packages/*` do workspace não o resolve como package (não tem `package.json`);
-docs contavam "4 pacotes compartilhados", mas só design-tokens/tsconfig/types são
-pacotes. Ou promover a `@manga-reader/assets`, ou mover para fora de `packages/`.
+Promovido a `@manga-reader/assets` (`package.json` privado, sem scripts) — o glob
+`packages/*` do workspace agora o resolve. Os apps continuam consumindo via
+`publicDir` relativo nos `vite.config.ts` (sem mudança de código); lockfile
+atualizado com o novo importer.
 
 ---
 

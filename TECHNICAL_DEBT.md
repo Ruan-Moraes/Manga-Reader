@@ -105,19 +105,13 @@ Estrutura/UI/i18n prontas; falta texto legal vinculante (revisão jurídica — 
 
 ## 5. Higiene de repositório e documentação
 
-### DT-55 — Diretório morto `backend/` na raiz
+### ~~DT-55 — Diretório morto `backend/` na raiz~~ — **Resolvido (2026-07-02)**
 
-- **Local**: `/backend/.idea/*` (não versionado; `.idea/` está no gitignore)
-- **Descrição**: resto do layout antigo (pré-rename para `api/`); contém apenas arquivos de IDE.
-- **Impacto**: confunde navegação e auditoria (parece um módulo). **Gravidade**: Baixa.
-- **Correção**: apagar localmente (`rm -rf backend/`). **Pode ser feito agora** — não foi feito nesta auditoria por ser artefato local do IDE do dono do repo.
+Removido localmente (`rm -rf backend/`; continha só `.idea/` não versionado).
 
-### DT-56 — `web/packages/assets` fora do workspace
+### ~~DT-56 — `web/packages/assets` fora do workspace~~ — **Resolvido (2026-07-02)**
 
-- **Local**: `web/packages/assets` (sem `package.json`)
-- **Descrição**: o glob `packages/*` do `pnpm-workspace.yaml` não o resolve como package; é só uma pasta de estáticos com nome de package.
-- **Impacto**: docs antigas contavam "4 pacotes compartilhados" — só 3 são pacotes de fato. **Gravidade**: Baixa.
-- **Correção**: ou adicionar `package.json` (`@manga-reader/assets`) e importar como dependência, ou mover para fora de `packages/`. **Pode ser feito agora.**
+Promovido a `@manga-reader/assets` (`package.json` privado); apps seguem consumindo via `publicDir` relativo nos `vite.config.ts`.
 
 ### Trabalho não commitado (risco, não dívida)
 
@@ -131,7 +125,8 @@ Estrutura/UI/i18n prontas; falta texto legal vinculante (revisão jurídica — 
 |-----------|-------|
 | **Alta** | DT-53 (jest-dom × Vitest 4) |
 | **Média** | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca), DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
-| **Baixa** | DT-48, DT-51, DT-55, DT-56 |
+| **Baixa** | DT-48, DT-51 |
+| **Resolvidos 2026-07-02** | DT-55, DT-56 |
 | **Adiados (não-prod)** | DT-02 (E2E), DT-03 (CI/CD), DT-08 (a11y residual), DT-09 (legais), DT-44 (backlog), DT-21 (staging dump), DT-50 fase 2 (drop fórum PG) |
 
 **Corrigíveis agora, sem refatoração maior**: DT-53, DT-49, DT-55, DT-56 (e DT-54 com investigação curta).

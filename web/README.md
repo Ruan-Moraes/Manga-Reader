@@ -10,7 +10,7 @@ web/
 │   ├── design-tokens/  # @manga-reader/design-tokens
 │   ├── tsconfig/       # @manga-reader/tsconfig — configs TS base
 │   ├── types/          # @manga-reader/types — tipos compartilhados
-│   └── assets/         # SVGs/ícones estáticos (sem package.json — não é workspace package)
+│   └── assets/         # @manga-reader/assets — favicons/ícones servidos como publicDir do Vite
 ├── scripts/            # i18n-cleaner — auditoria/limpeza de chaves de tradução órfãs
 ├── package.json        # scripts do workspace
 └── pnpm-workspace.yaml
@@ -66,6 +66,6 @@ App menor e independente do FSD do app principal — estrutura própria
 
 - **Pasta `Manga Reader Design System/`** (aqui e dentro de `manga-reader/`):
   artefato **local** de design/handoff, ignorado pelo git — não referenciar em código.
-- **`packages/assets`** não tem `package.json`, então não participa do workspace
-  (`packages/*` do `pnpm-workspace.yaml` não o resolve) — é só pasta de arquivos estáticos.
+- **`packages/assets`** não tem código importável: os apps o consomem via
+  `publicDir` nos `vite.config.ts` (caminho relativo) — favicons/manifest servidos na raiz.
 - Dívidas do frontend: [`TECHNICAL_DEBT.md`](../TECHNICAL_DEBT.md) + [`docs/tech-debt.md`](../docs/tech-debt.md).
