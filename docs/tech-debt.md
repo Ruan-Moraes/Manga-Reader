@@ -1023,22 +1023,37 @@ Docs desatualizados foram corrigidos na própria auditoria (README raiz, archite
 mobile/README.md; removidos `docs/services/jobs/*` duplicados e `mobile/mobile.md` legado).
 Dívidas novas encontradas:
 
-### DT-53: Suíte de componentes do frontend quebrada no baseline (jest-dom × Vitest 4) — **Em aberto (Alta)**
+### DT-53: Suíte de componentes do frontend quebrada no baseline (jest-dom × Vitest 4) — **Resolvido (2026-07-02)**
 
-`@testing-library/jest-dom` 6.9.1 não registra matchers com Vitest 4.1.4 — todo teste
-de componente falha com `Invalid Chai property: toBeInTheDocument` (e variantes).
-Medição 2026-07-02: `npx vitest run --pool=forks` → **924 testes, 425 falhas** em 81
-arquivos; reproduzível isolado (`Button.test.tsx`). É a mesma causa observada como
-"jest-dom quebrado no sandbox" na nota de DT-47 — ou seja, o baseline está vermelho
-também no ambiente local, não só no sandbox.
+**Causa-raiz**: o workspace resolvia **duas majors de vitest** (landing 3.2.4 /
+manga-reader 4.1.4) e a entry `@testing-library/jest-dom/vitest` faz `import 'vitest'`
+sem declará-lo como dependência — no layout do pnpm o `expect.extend` caía no expect
+do vitest 3 enquanto os testes usavam o do vitest 4 → `Invalid Chai property` em 425
+testes (medição 2026-07-02).
 
-**Impacto**: o gate de testes do CLAUDE.md está inutilizado para componentes; a
-contagem "878 testes, 0 falhas" publicada anteriormente não é mais reproduzível.
+**Fix**: `setup.ts` registra os matchers explicitamente
+(`expect.extend(jestDomMatchers)` com o `expect` importado de 'vitest'); a entry
+`/vitest` permanece só pelos types globais.
 
-**Correção**: atualizar jest-dom para versão compatível com Vitest 4 (ou fixar Vitest
-3.x), revalidar `src/test/setup.ts` e rodar a suíte completa — atenção a falhas reais
-mascaradas (ex.: `Button > size sm aplica classe correta` falha por asserção de classe,
-não por matcher).
+**Triagem das falhas reais mascaradas** (testes desatualizados enquanto a suíte esteve
+quebrada — corrigidos):
+- `renderWithProviders` ganhou a árvore completa de providers do `main.tsx`
+  (`TestProviders` exportado p/ renders custom com MemoryRouter): UserModal +
+  ProfileSettingsModal + CommentSort — páginas com `CommentsSection` renderizavam erro.
+- `TitleDetails.test`: handlers MSW nas rotas antigas `/api/ratings/*` → `/api/reviews/*`.
+- `ReviewsTab.test`: handler devolvia `comment` (modelo do front) em vez de
+  `textContent` (contrato da API pós-DT-50).
+- `Chapter.test`: título vem da API (`useTitle`) → handler + `findByText`; "cap. N"
+  agora aparece 2× (topbar + painel de comentários do leitor).
+- `Groups.test`: chips de status removidos no redesign (substituído por teste do sort
+  select); busca é `textbox` com aria-label (não `searchbox`).
+- `GroupProfile.test`/`UserProfile.test`: páginas migraram de mock p/ dados via hook —
+  testes reescritos mockando `useGroupDetails`/`useProfileData` com fixtures; tabs do
+  grupo viraram botões (Sobre/Obras/Equipe/Discussão).
+- `Button.test`: size `sm` agora usa `min-h-9` (não `py-1`).
+
+**Resultado**: `npx vitest run --pool=forks` → **137 arquivos / 923 testes, 0 falhas**;
+tsc 0; lint:fsd verde.
 
 ### DT-54: Flake de isolamento na suíte leve do backend (H2) — **Em aberto (Média)**
 
@@ -1068,10 +1083,11 @@ atualizado com o novo importer.
 | Prioridade | Em aberto | IDs |
 |-----------|-----------|-----|
 | **Crítica** | 0 | — |
-| **Alta** | 2 | DT-53 (jest-dom × Vitest 4 — baseline vermelho), DT-02 (componente/E2E) |
+| **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 6 | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca pública), DT-08 (axe por rota — parcial), DT-50 (residuais: testes fórum + threads profundas + fase 2 drop PG), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 7 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin), DT-55 (dir `backend/` morto), DT-56 (`packages/assets`) |
+| **Baixa** | 5 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin) |
+| **Resolvidos 2026-07-02** | 3 | DT-53 (jest-dom × Vitest 4), DT-55 (dir `backend/`), DT-56 (`packages/assets`) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
 | **Resolvidos 2026-05-31** | 6 | DT-26 (shared), DT-28, DT-29, DT-30, DT-34, DT-35 |

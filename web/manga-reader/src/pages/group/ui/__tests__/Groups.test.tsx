@@ -116,34 +116,24 @@ describe('Groups', () => {
 
     it('renders search field', () => {
         setup();
-        expect(screen.getByRole('searchbox')).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /buscar grupo/i })).toBeInTheDocument();
     });
 
     it('filters groups by search', async () => {
         const user = userEvent.setup();
         setup();
 
-        const search = screen.getByRole('searchbox');
+        const search = screen.getByRole('textbox', { name: /buscar grupo/i });
         await user.type(search, 'Wonder');
 
         expect(screen.getByText('Wonder Scans')).toBeInTheDocument();
         expect(screen.queryByText('Scan Brasileiro')).not.toBeInTheDocument();
     });
 
-    it('renders status filter chips (Todos, Ativos)', () => {
+    // Os chips de status (Todos/Ativos/Hiato) foram removidos no redesign da
+    // página — a listagem agora ordena via CatSortSelect.
+    it('renders sort select with options', () => {
         setup();
-        expect(screen.getByRole('button', { name: /^todos$/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /^ativos$/i })).toBeInTheDocument();
-    });
-
-    it('filters by status chip', async () => {
-        const user = userEvent.setup();
-        setup();
-
-        const hiatus = screen.getByRole('button', { name: /hiato/i });
-        await user.click(hiatus);
-
-        expect(screen.getByText('Fansub Clássicos')).toBeInTheDocument();
-        expect(screen.queryByText('Scan Brasileiro')).not.toBeInTheDocument();
+        expect(screen.getByText(/mais seguidores/i)).toBeInTheDocument();
     });
 });

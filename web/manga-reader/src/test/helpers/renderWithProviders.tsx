@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { type ReactElement, type ReactNode } from 'react';
 
+import { CommentSortProvider } from '@entities/comment';
+import { UserModalProvider, ProfileSettingsModalProvider } from '@entities/user';
 import { AuthProvider } from '@features/auth';
 
 export const createTestQueryClient = () =>
@@ -18,20 +20,29 @@ export const createTestQueryClient = () =>
         },
     });
 
-interface ProvidersProps {
+interface TestProvidersProps {
     children: ReactNode;
+    client?: QueryClient;
 }
 
-const AllProviders = ({ children }: ProvidersProps) => {
-    const queryClient = createTestQueryClient();
+// Espelha a árvore de providers do main.tsx (sem router) — para testes que
+// precisam do próprio MemoryRouter, envolva-o com <TestProviders>.
+export const TestProviders = ({ children, client }: TestProvidersProps) => (
+    <QueryClientProvider client={client ?? createTestQueryClient()}>
+        <AuthProvider>
+            <UserModalProvider>
+                <ProfileSettingsModalProvider>
+                    <CommentSortProvider>{children}</CommentSortProvider>
+                </ProfileSettingsModalProvider>
+            </UserModalProvider>
+        </AuthProvider>
+    </QueryClientProvider>
+);
 
-    return (
-        <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <BrowserRouter>{children}</BrowserRouter>
-            </AuthProvider>
-        </QueryClientProvider>
-    );
-};
+const AllProviders = ({ children }: { children: ReactNode }) => (
+    <TestProviders>
+        <BrowserRouter>{children}</BrowserRouter>
+    </TestProviders>
+);
 
 export const renderWithProviders = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) => render(ui, { wrapper: AllProviders, ...options });

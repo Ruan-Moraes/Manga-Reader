@@ -3,9 +3,10 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { http, HttpResponse } from 'msw';
 
-import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
+import { createTestQueryClient, TestProviders } from '@/test/helpers/renderWithProviders';
+import { server } from '@/test/mocks/server';
 import { DEFAULT_USER_SETTINGS, SETTINGS_STORAGE_KEY } from '@entities/user';
 
 import Chapter from '../Chapter';
@@ -14,13 +15,13 @@ const renderChapter = (titleId = '1', chapter = '1') => {
     const client = createTestQueryClient();
 
     return render(
-        <QueryClientProvider client={client}>
+        <TestProviders client={client}>
             <MemoryRouter initialEntries={[`/titles/${titleId}/chapters/${chapter}`]}>
                 <Routes>
                     <Route path="/titles/:titleId/chapters/:chapter" element={<Chapter />} />
                 </Routes>
             </MemoryRouter>
-        </QueryClientProvider>,
+        </TestProviders>,
     );
 };
 
@@ -50,14 +51,23 @@ describe('Chapter (Reader)', () => {
         expect(screen.getByRole('button', { name: /configurações/i })).toBeInTheDocument();
     });
 
-    it('renders title name when titleId=1', () => {
+    it('renders title name when titleId=1', async () => {
+        server.use(
+            http.get('*/api/titles/:id', ({ params }) =>
+                HttpResponse.json({
+                    data: { id: params.id as string, name: 'Berserk' },
+                    success: true,
+                }),
+            ),
+        );
         renderChapter('1', '1');
-        expect(screen.getByText('Berserk')).toBeInTheDocument();
+        expect(await screen.findByText('Berserk')).toBeInTheDocument();
     });
 
     it('renders chapter and page info', () => {
         renderChapter('1', '5');
-        expect(screen.getByText(/cap\. 5/i)).toBeInTheDocument();
+        // "cap. 5" aparece no topbar e no painel de comentários do leitor
+        expect(screen.getAllByText(/cap\. 5/i).length).toBeGreaterThan(0);
     });
 
     it('renders page slider', () => {

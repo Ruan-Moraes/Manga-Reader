@@ -1,8 +1,16 @@
 import '@testing-library/jest-dom/vitest';
+import * as jestDomMatchers from '@testing-library/jest-dom/matchers';
 import i18n from '@/i18n/config';
 import { cleanup } from '@testing-library/react';
 import { afterEach, beforeAll, afterAll, expect, vi } from 'vitest';
 import { toHaveNoViolations } from 'jest-axe';
+
+// A entry '/vitest' do jest-dom faz `import 'vitest'` sem declará-lo como
+// dependência; com duas majors de vitest no workspace (landing 3.x / este app
+// 4.x) o pnpm resolve a cópia errada e os matchers caem no expect do vitest 3
+// (DT-53: "Invalid Chai property"). O extend explícito abaixo registra no
+// expect DESTE runtime; o import da entry acima fica só pelos types globais.
+expect.extend(jestDomMatchers);
 
 // Accessibility assertions (axe-core) — enables `expect(...).toHaveNoViolations()`
 expect.extend(toHaveNoViolations);

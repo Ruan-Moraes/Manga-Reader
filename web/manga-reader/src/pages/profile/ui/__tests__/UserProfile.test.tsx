@@ -1,28 +1,46 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
 
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
-import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
 import UserProfile from '../UserProfile';
 
-const renderWithHandle = (handle: string) => {
-    const client = createTestQueryClient();
-    return render(
-        <QueryClientProvider client={client}>
-            <MemoryRouter initialEntries={[`/u/${handle}`]}>
-                <Routes>
-                    <Route path="/u/:handle" element={<UserProfile />} />
-                </Routes>
-            </MemoryRouter>
-        </QueryClientProvider>,
-    );
-};
+const buildProfileData = (isOwn: boolean) => ({
+    loading: false,
+    error: null,
+    isOwn,
+    profile: {
+        handle: isOwn ? '@leitor_br' : '@darkfan92',
+        name: isOwn ? 'Leitor BR' : 'darkfan92',
+        bio: 'Leitor voraz de seinen.',
+        verified: false,
+        worksRead: 12,
+        reviews: 4,
+        followers: 10,
+        following: 8,
+        genres: ['Seinen'],
+        isOwn,
+    },
+    readingNow: [],
+    completed: [],
+    reviews: [],
+    recommendations: [],
+    recentComments: [],
+    groupsFollowed: [],
+    activity: [],
+});
+
+const mockUseProfileData = vi.fn((_userId?: string) => buildProfileData(true));
+
+vi.mock('../../model/useProfileData', () => ({
+    default: (userId?: string) => mockUseProfileData(userId),
+}));
 
 describe('UserProfile', () => {
+    beforeEach(() => {
+        mockUseProfileData.mockReturnValue(buildProfileData(true));
+    });
+
     it('shows own profile by default (no param)', () => {
         renderWithProviders(<UserProfile />);
         expect(screen.getByText('Leitor BR')).toBeInTheDocument();
@@ -35,7 +53,8 @@ describe('UserProfile', () => {
     });
 
     it('shows follow button on other profile', () => {
-        renderWithHandle('darkfan92');
+        mockUseProfileData.mockReturnValue(buildProfileData(false));
+        renderWithProviders(<UserProfile />);
         expect(screen.getByText('darkfan92')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /seguir/i })).toBeInTheDocument();
     });

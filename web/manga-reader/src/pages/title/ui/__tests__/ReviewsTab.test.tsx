@@ -43,9 +43,20 @@ const page = (content: Review[]) => ({
     last: true,
 });
 
-/** Registra o handler de listagem de resenhas (server-side, DT-47). */
+/**
+ * Registra o handler de listagem de resenhas (server-side, DT-47).
+ * O contrato da API usa `textContent` (comentário unificado — DT-50); o
+ * service traduz para `comment` na borda, então serializamos aqui.
+ */
 const mockReviews = (content: Review[]) =>
-    server.use(http.get(`*${API_URLS.REVIEWS}/title/t1`, () => HttpResponse.json({ data: page(content), success: true })));
+    server.use(
+        http.get(`*${API_URLS.REVIEWS}/title/t1`, () =>
+            HttpResponse.json({
+                data: page(content.map(({ comment, ...r }) => ({ ...r, textContent: comment })) as unknown as Review[]),
+                success: true,
+            }),
+        ),
+    );
 
 const renderTab = (props: Partial<Parameters<typeof ReviewsTab>[0]> = {}) =>
     renderWithProviders(<ReviewsTab titleId="t1" average={average} distribution={distribution} onWriteReview={() => {}} {...props} />);

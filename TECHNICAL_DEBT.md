@@ -15,14 +15,9 @@ estão **adiados como não-bloqueantes** e permanecem listados.
 
 ## 1. Testes e Qualidade
 
-### DT-53 — Suíte de componentes do frontend quebrada no baseline (jest-dom × Vitest 4) 🔴
+### ~~DT-53 — Suíte de componentes do frontend quebrada (jest-dom × Vitest 4)~~ — **Resolvido (2026-07-02)**
 
-- **Local**: `web/manga-reader` (`@testing-library/jest-dom` 6.9.1 + `vitest` 4.1.4)
-- **Descrição**: os matchers do jest-dom (`toBeInTheDocument`, `toBeDisabled`, `toHaveAttribute`, …) não são registrados — todo teste de componente falha com `Invalid Chai property`. Medição 2026-07-02: **425 falhas / 499 passam** (924 testes, 137 arquivos). Reproduzível em arquivo isolado (`Button.test.tsx`). Já havia sido observado como "jest-dom quebrado no sandbox" (nota em DT-47) — está quebrado no ambiente local também.
-- **Impacto**: o gate de testes documentado no `CLAUDE.md` está inutilizado; regressões de UI passam despercebidas; qualquer contagem de testes publicada fica sem lastro.
-- **Gravidade**: **Alta** | **Prioridade**: **Alta**
-- **Correção sugerida**: atualizar `@testing-library/jest-dom` para versão com suporte a Vitest 4 (ou fixar Vitest 3.x até lá) e revalidar `src/test/setup.ts` (`import '@testing-library/jest-dom/vitest'`). Depois, rodar a suíte completa e re-registrar o número real de testes verdes.
-- **Pode ser corrigido agora?** Sim — mudança pequena de dependência, mas exige rodar a suíte inteira para validar (pode expor falhas reais mascaradas, ex.: asserção de classe em `Button > size sm`).
+Causa: duas majors de vitest no workspace faziam a entry `/vitest` do jest-dom estender o expect errado. Fix: `expect.extend` explícito no `setup.ts` + triagem dos testes desatualizados enquanto a suíte esteve quebrada (providers no helper, rotas `/api/reviews`, contrato `textContent`, redesigns de Groups/GroupProfile/UserProfile/Chapter). Suíte: **923 testes, 0 falhas**. Detalhes em `docs/tech-debt.md`.
 
 ### DT-54 — Flake de isolamento na suíte leve do backend (H2) 🟠
 
@@ -123,10 +118,10 @@ Promovido a `@manga-reader/assets` (`package.json` privado); apps seguem consumi
 
 | Prioridade | Itens |
 |-----------|-------|
-| **Alta** | DT-53 (jest-dom × Vitest 4) |
+| **Alta** | — |
 | **Média** | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca), DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
 | **Baixa** | DT-48, DT-51 |
-| **Resolvidos 2026-07-02** | DT-55, DT-56 |
+| **Resolvidos 2026-07-02** | DT-53, DT-55, DT-56 |
 | **Adiados (não-prod)** | DT-02 (E2E), DT-03 (CI/CD), DT-08 (a11y residual), DT-09 (legais), DT-44 (backlog), DT-21 (staging dump), DT-50 fase 2 (drop fórum PG) |
 
 **Corrigíveis agora, sem refatoração maior**: DT-53, DT-49, DT-55, DT-56 (e DT-54 com investigação curta).

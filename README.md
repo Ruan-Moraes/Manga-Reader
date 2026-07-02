@@ -29,7 +29,7 @@ Monorepo com backend Spring Boot (Clean Architecture, dual-DB PostgreSQL + Mongo
 | Backend `mvn test` | ✅ última suíte completa registrada verde (1198 testes, 2026-06-23) · ⚠️ suíte leve (`-Dtest.excludedGroups=testcontainers`) com 18 erros de isolamento em `GroupRepositoryAdapterTest` — passa isolada (DT-54) |
 | Web `tsc --noEmit` (manga-reader) | ✅ 0 erros |
 | Web `lint:fsd` (steiger) | ✅ verde |
-| Web testes (manga-reader) | ⚠️ **quebrado no baseline** — incompatibilidade jest-dom 6.9 × Vitest 4 invalida os matchers em testes de componente (ver [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md), DT-53) |
+| Web testes (manga-reader) | ✅ verde — 923 testes / 137 arquivos (DT-53 resolvido em 2026-07-02) |
 | Web testes (landing-page) | ✅ verde |
 
 > Estado geral, riscos e plano de correção: [`PROJECT_AUDIT.md`](PROJECT_AUDIT.md).

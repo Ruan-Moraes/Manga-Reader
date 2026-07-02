@@ -3,11 +3,9 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { QueryClientProvider } from '@tanstack/react-query';
 import { http, HttpResponse } from 'msw';
-import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
+import { createTestQueryClient, TestProviders } from '@/test/helpers/renderWithProviders';
 import { server } from '@/test/mocks/server';
-import { AuthProvider } from '@features/auth';
 import TitleDetails from '../TitleDetails';
 
 const mockTitle = {
@@ -55,14 +53,14 @@ beforeEach(() => {
             });
         }),
         http.get('*/api/titles/:id/chapters', () => HttpResponse.json(wrapPage([]))),
-        http.get('*/api/ratings/title/:id', () => HttpResponse.json(wrapPage([]))),
-        http.get('*/api/ratings/title/:id/average', () =>
+        http.get('*/api/reviews/title/:id', () => HttpResponse.json(wrapPage([]))),
+        http.get('*/api/reviews/title/:id/average', () =>
             HttpResponse.json({
                 data: { average: 4.9, count: 14820 },
                 success: true,
             }),
         ),
-        http.get('*/api/ratings/title/:id/distribution', () =>
+        http.get('*/api/reviews/title/:id/distribution', () =>
             HttpResponse.json({
                 data: { star1: 200, star2: 300, star3: 900, star4: 2700, star5: 10720, total: 14820 },
                 success: true,
@@ -77,15 +75,13 @@ beforeEach(() => {
 const renderWithId = (titleId: string) => {
     const client = createTestQueryClient();
     return render(
-        <QueryClientProvider client={client}>
-            <AuthProvider>
-                <MemoryRouter initialEntries={[`/titles/${titleId}`]}>
-                    <Routes>
-                        <Route path="/titles/:titleId" element={<TitleDetails />} />
-                    </Routes>
-                </MemoryRouter>
-            </AuthProvider>
-        </QueryClientProvider>,
+        <TestProviders client={client}>
+            <MemoryRouter initialEntries={[`/titles/${titleId}`]}>
+                <Routes>
+                    <Route path="/titles/:titleId" element={<TitleDetails />} />
+                </Routes>
+            </MemoryRouter>
+        </TestProviders>,
     );
 };
 

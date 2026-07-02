@@ -4,6 +4,8 @@ import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 
+import { CommentSortProvider } from '@entities/comment';
+import { UserModalProvider } from '@entities/user';
 import { createTestQueryClient } from '@/test/helpers/renderWithProviders';
 import NewsDetails from '../NewsDetails';
 
@@ -50,11 +52,15 @@ const renderNews = (newsId = '1') => {
     const client = createTestQueryClient();
     return render(
         <QueryClientProvider client={client}>
-            <MemoryRouter initialEntries={[`/news/${newsId}`]}>
-                <Routes>
-                    <Route path="/news/:newsId" element={<NewsDetails />} />
-                </Routes>
-            </MemoryRouter>
+            <UserModalProvider>
+                <CommentSortProvider>
+                    <MemoryRouter initialEntries={[`/news/${newsId}`]}>
+                        <Routes>
+                            <Route path="/news/:newsId" element={<NewsDetails />} />
+                        </Routes>
+                    </MemoryRouter>
+                </CommentSortProvider>
+            </UserModalProvider>
         </QueryClientProvider>,
     );
 };
