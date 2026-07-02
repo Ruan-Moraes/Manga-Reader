@@ -5,17 +5,17 @@ import Benefits from '../Benefits';
 import { TestProviders } from '@/test/testUtils';
 
 describe('Benefits', () => {
-    it('renders all 4 benefit cards', () => {
+    it('renders benefit cards', () => {
         render(
             <TestProviders>
                 <Benefits />
             </TestProviders>,
         );
 
-        expect(screen.getByText(/Biblioteca Vasta/i)).toBeInTheDocument();
-        expect(screen.getByText(/Atualizações Diárias/i)).toBeInTheDocument();
-        expect(screen.getByText(/Multi-plataforma/i)).toBeInTheDocument();
-        expect(screen.getByText(/Leitura Offline/i)).toBeInTheDocument();
+        expect(screen.getByText(/Biblioteca vasta/i)).toBeInTheDocument();
+        expect(screen.getByText(/Atualizações diárias/i)).toBeInTheDocument();
+        expect(screen.getByText(/Modo offline/i)).toBeInTheDocument();
+        expect(screen.getByText(/Sem anúncios/i)).toBeInTheDocument();
     });
 
     it('renders section with benefits id', () => {

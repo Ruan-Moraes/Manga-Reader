@@ -1,134 +1,206 @@
 {
     "nav": {
-        "cta": "Subscribe Now",
-        "menu_toggle": "Toggle menu"
+        "benefits": "Benefits",
+        "demo": "Demo",
+        "plans": "Plans",
+        "app": "App",
+        "faq": "FAQ",
+        "menu": "Menu",
+        "language": "Language"
+    },
+    "cta": {
+        "subscribe": "Subscribe now",
+        "start": "Get started",
+        "demo": "Watch demo"
     },
     "hero": {
-        "headline": "Read. Explore. No limits.",
-        "subheadline": "The largest manga, manhwa, and manhua library in your language. Read on any device, anywhere, anytime.",
-        "cta_primary": "Subscribe Now",
-        "cta_secondary": "View Plans",
-        "badge_works": "titles",
-        "badge_chapters": "chapters"
+        "eyebrow": "Manga · Manhwa · Manhua",
+        "title1": "Read manga",
+        "title2": "without limits.",
+        "titleTail": "On the app, the web and offline.",
+        "sub": "A complete library, chapters updated every day, HD reading, offline mode and sync across all your devices.",
+        "badges": ["iOS", "Android", "Web", "Offline", "Ad-free"],
+        "floatNew": "New chapter",
+        "floatSync": "Synced",
+        "floatContinue": "Continue reading"
+    },
+    "demo": {
+        "eyebrow": "See how it works",
+        "title": "The whole platform, in the palm of your hand",
+        "sub": "Browse, read and track your progress — all synced between the web and the app.",
+        "tabs": {
+            "library": "Library",
+            "title": "Series",
+            "reader": "Reader",
+            "profile": "Profile"
+        },
+        "tablistLabel": "Demo",
+        "tip": "Tap the tabs to explore each part of the product."
+    },
+    "ui": {
+        "searchPlaceholder": "Search manga, authors, groups…",
+        "continueReading": "Continue reading",
+        "forYou": "For you",
+        "trending": "Trending",
+        "chapters": "chapters",
+        "chapter": "Chapter",
+        "readNow": "Read now",
+        "addLibrary": "Add to library",
+        "reading": "Reading",
+        "synced": "Synced",
+        "myLibrary": "My library",
+        "tabsLib": ["Reading", "Completed", "On hold", "Planned"],
+        "page": "Page",
+        "of": "of",
+        "completed": "done",
+        "online": "online now"
     },
     "benefits": {
-        "title": "Why Manga Reader?",
-        "items": {
-            "library": {
-                "title": "Vast Library",
-                "description": "Over {count} titles from the biggest names in Asian comics."
-            },
-            "updates": {
-                "title": "Daily Updates",
-                "description": "New chapters every day so you always have something fresh to read."
-            },
-            "multiplatform": {
-                "title": "Multi-platform",
-                "description": "Read on the web, iOS, or Android. Synced across all your devices."
-            },
-            "offline": {
-                "title": "Offline Reading",
-                "description": "Download your favorite chapters and read without an internet connection."
-            }
-        }
+        "eyebrow": "Why subscribe",
+        "title": "Everything you need to read",
+        "items": [
+            { "t": "Vast library", "d": "Thousands of titles from the biggest names in Asian comics." },
+            { "t": "Daily updates", "d": "New chapters every day — always something fresh to read." },
+            { "t": "HD reading", "d": "High-resolution images with crisp zoom on every panel." },
+            { "t": "Offline mode", "d": "Download your favorite chapters and read with no connection." },
+            { "t": "Full sync", "d": "Start on your phone, continue in the browser right where you left off." },
+            { "t": "iOS and Android", "d": "Native apps on both stores, tuned for each platform." },
+            { "t": "Ad-free", "d": "No ads ever interrupting your reading. None." },
+            { "t": "Favorites & history", "d": "Organize your collection and resume any series in seconds." },
+            { "t": "Chapter downloads", "d": "Save whole volumes for the trip, the train, wherever you go." },
+            { "t": "Mobile-first", "d": "An interface designed for the phone first — fluid and light." }
+        ]
     },
-    "catalog": {
-        "title": "A library that grows every day",
-        "works_label": "Available titles",
-        "chapters_label": "Chapters to read",
-        "error": "Could not load statistics. Please try again later."
+    "mobile": {
+        "eyebrow": "In your pocket",
+        "title": "Read anywhere. On iPhone, Android or the web.",
+        "sub": "Your library travels with you. Resume reading automatically, even with no internet.",
+        "features": ["Offline reading", "Account sync", "Auto resume", "Saved library", "Phone-optimized interface"],
+        "appStore": "Download on the",
+        "appStoreName": "App Store",
+        "googlePlay": "Get it on",
+        "googlePlayName": "Google Play"
     },
-    "features": {
-        "title": "Everything you need",
-        "badges": {
-            "web": "Web",
-            "ios": "iOS",
-            "android": "Android",
-            "offline": "Offline",
-            "no_ads": "No Ads",
-            "hd": "HD Reading"
-        }
+    "stats": {
+        "eyebrow": "A library that grows every day",
+        "title": "Numbers that speak for themselves",
+        "loading": "Loading statistics…",
+        "items": [
+            { "value": "+10,000", "label": "Titles available" },
+            { "value": "+500,000", "label": "Chapters published" },
+            { "value": "+120k", "label": "Active readers" },
+            { "value": "+800", "label": "Chapters per week" },
+            { "value": "3", "label": "Platforms: iOS, Android & Web" }
+        ]
     },
     "plans": {
-        "title": "Choose your plan",
-        "subtitle": "Cancel anytime. No hidden fees.",
-        "period": {
-            "daily": "Daily",
-            "monthly": "Monthly",
-            "annual": "Annual"
-        },
-        "cta": "Subscribe",
-        "feature_list_title": "Included:",
-        "most_popular": "Most Popular",
-        "error": "Could not load plans. Please try again later."
+        "eyebrow": "Plans",
+        "title": "Choose how you read",
+        "sub": "Cancel anytime. No hidden fees.",
+        "perDay": "/day",
+        "perMonth": "/mo",
+        "perYear": "/yr",
+        "popular": "Most popular",
+        "bestValue": "Best value",
+        "monthlyEquiv": "equals",
+        "save": "save",
+        "choose": "Subscribe",
+        "loading": "Loading plans…",
+        "error": "Could not load plans. Please try again later.",
+        "trust": ["Cancel anytime", "No hidden fees", "1st-month guarantee"],
+        "items": [
+            { "name": "Daily", "price": "$0.49", "period": "/day", "features": ["Full access for 24h", "HD reading", "Ad-free", "Great for binging"] },
+            { "name": "Monthly", "price": "$6.90", "period": "/mo", "features": ["Everything in Daily", "Offline mode & downloads", "Sync across devices", "Priority support"] },
+            { "name": "Yearly", "price": "$54.90", "period": "/yr", "features": ["Everything in Monthly", "2 months free", "Early access to features", "Best value"], "equiv": "$4.57/mo", "save": "33%" }
+        ]
+    },
+    "compare": {
+        "eyebrow": "Free vs Premium",
+        "title": "Why subscribing is worth it",
+        "colFeature": "Feature",
+        "colFree": "Free",
+        "colPremium": "Premium",
+        "yes": "Yes",
+        "no": "No",
+        "limited": "Limited",
+        "features": ["Online reading", "Ads", "Offline reading", "HD quality", "Sync", "iOS / Android app", "Chapter downloads"]
     },
     "gift": {
-        "title": "Gift a loved one",
-        "subtitle": "Give the gift of unlimited reading.",
-        "tab_give": "Give Gift",
-        "tab_redeem": "Redeem",
-        "give": {
-            "description": "Choose a plan and gift someone special with unlimited access to the platform. The gift code will be generated in your account.",
-            "cta": "Gift in the App"
-        },
-        "redeem": {
-            "code_label": "Gift code",
-            "code_placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-            "cta": "Redeem in the App"
-        }
+        "eyebrow": "Gift",
+        "title": "Gift someone unlimited reading",
+        "sub": "Give the gift of full access — or redeem a code you received.",
+        "tablistLabel": "Gift",
+        "tabGive": "Give a gift",
+        "tabRedeem": "Redeem code",
+        "steps": [
+            { "t": "Pick a plan", "d": "Choose the period you want to gift." },
+            { "t": "Generate a code", "d": "A unique code is created in your account." },
+            { "t": "Send it to anyone", "d": "Share it by message, email or printed." },
+            { "t": "They redeem it", "d": "They activate the code in the app and start reading." }
+        ],
+        "giveCta": "Create gift code",
+        "redeemLabel": "Enter the gift code",
+        "redeemPlaceholder": "EX: MR-XXXX-XXXX",
+        "redeemCta": "Redeem code",
+        "redeemHint": "The code has 12 characters and was sent by whoever gifted you."
     },
     "testimonials": {
+        "eyebrow": "Subscribers recommend it",
         "title": "What our readers say",
         "items": [
-            {
-                "name": "Ana Lima",
-                "text": "Finally a platform that has everything I love and works offline. Perfect for trips!"
-            },
-            {
-                "name": "Carlos Matos",
-                "text": "The image quality is impressive. I carry my entire collection in my pocket."
-            },
-            {
-                "name": "Julia Santos",
-                "text": "I gifted my brother and he loved it. The gift code system is super simple."
-            }
+            { "name": "Ana Lima", "role": "Reader for 2 years", "text": "Finally a platform with everything I love that works offline. I carry my whole collection on trips." },
+            { "name": "Carlos Matos", "role": "Yearly subscriber", "text": "The image quality is stunning and the app is absurdly fast. I would not trade it for anything." },
+            { "name": "Júlia Santos", "role": "Gifted a friend", "text": "I gifted my brother and he loved it. The gift code system is dead simple — done in a minute." },
+            { "name": "Rafael Tavares", "role": "Multi-device reader", "text": "I start on my phone on the bus and continue on my PC at home, right where I left off. Perfect sync." }
         ]
     },
     "faq": {
-        "title": "Frequently Asked Questions",
+        "eyebrow": "Questions",
+        "title": "Frequently asked questions",
         "items": [
-            {
-                "question": "Can I cancel my subscription at any time?",
-                "answer": "Yes. You can cancel anytime from your user dashboard, no hassle."
-            },
-            {
-                "question": "Does the daily plan really cost cents?",
-                "answer": "Yes! The daily plan is perfect for testing the platform before committing to a longer plan."
-            },
-            {
-                "question": "How does the gift code work?",
-                "answer": "You buy a gift code and send it by email to whoever you want. They use the code to activate the subscription on their account."
-            },
-            {
-                "question": "Does it work on mobile?",
-                "answer": "Yes! We have native apps for iOS and Android, plus a responsive web version."
-            },
-            {
-                "question": "Can I read offline?",
-                "answer": "Yes. With the app, you can download chapters and read without internet on Monthly and Annual plans."
-            },
-            {
-                "question": "How often are new chapters released?",
-                "answer": "Our team updates the library daily with new chapters for ongoing series."
-            }
+            { "q": "Can I cancel anytime?", "a": "Yes. Cancel anytime in the app or on the site, with no hassle and no fees. Access continues until the end of the period you already paid for." },
+            { "q": "Does it work on iOS and Android?", "a": "Yes. We have native apps on the App Store and Google Play, plus the full web version. Everything syncs through your account." },
+            { "q": "Can I read offline?", "a": "You can. Download chapters or whole volumes in the app and read with no internet — on a plane, the subway, anywhere. Downloads stay on your device." },
+            { "q": "What happens if I switch phones?", "a": "Nothing is lost. Your library, history and reading progress live in your account. Just log in on the new device and it all comes back." },
+            { "q": "Are there ads?", "a": "On Premium, none. Your reading is never interrupted by ads. The free plan has light ads between chapters." },
+            { "q": "How do gift codes work?", "a": "You pick a plan, generate a unique code in your account and send it to anyone. They redeem the code in the app and get access instantly." },
+            { "q": "How often are new chapters released?", "a": "Every day. We add hundreds of chapters per week, with popular series updated shortly after the official release." },
+            { "q": "Can I use it in the browser?", "a": "Yes, the web experience is complete: same library, same reader, same sync — with nothing to install." },
+            { "q": "Does the yearly plan have a discount?", "a": "It does. The yearly plan comes with 2 months free versus monthly, working out to about $4.57 per month." }
         ]
     },
-    "footer_cta": {
-        "headline": "Start reading now",
-        "subheadline": "Join thousands of readers. First month with satisfaction guarantee.",
-        "cta": "Subscribe Now"
+    "finalCta": {
+        "title": "Start your library today.",
+        "sub": "Read in the browser, on iOS or Android. Pick up where you left off, even offline.",
+        "badges": ["iOS", "Android", "Web", "Offline", "Ad-free"],
+        "note": "First month with a satisfaction guarantee."
+    },
+    "mock": {
+        "synopsis": "An elf mage who outlived the hero sets out on a new journey to understand what knowing them really meant.",
+        "ago": ["today", "yesterday", "2 days ago", "3 days ago", "4 days ago"],
+        "profileName": "Ruan Moraes",
+        "statReading": "Reading",
+        "statCompleted": "Completed",
+        "statAvg": "Average"
     },
     "footer": {
-        "rights_reserved": "All rights reserved."
+        "tagline": "Made by people who love manga.",
+        "colProduct": "Product",
+        "colSupport": "Support",
+        "colLegal": "Legal",
+        "backToTop": "Back to top",
+        "links": {
+            "benefits": "Benefits",
+            "plans": "Plans",
+            "app": "App",
+            "faq": "FAQ",
+            "help": "Help center",
+            "contact": "Contact",
+            "status": "Status",
+            "terms": "Terms",
+            "privacy": "Privacy",
+            "cookies": "Cookies"
+        },
+        "rights": "All rights reserved."
     }
 }

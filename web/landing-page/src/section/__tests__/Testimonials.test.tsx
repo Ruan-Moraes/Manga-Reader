@@ -13,19 +13,18 @@ describe('Testimonials', () => {
         );
 
         expect(
-            screen.getByText('O que dizem nossos leitores'),
+            screen.getByText('O que nossos leitores dizem'),
         ).toBeInTheDocument();
     });
 
-    it('renders blockquote elements', () => {
-        const { container } = render(
+    it('renders testimonial authors', () => {
+        render(
             <TestProviders>
                 <Testimonials />
             </TestProviders>,
         );
 
-        const quotes = container.querySelectorAll('blockquote');
-
-        expect(quotes.length).toBeGreaterThan(0);
+        expect(screen.getByText('Ana Lima')).toBeInTheDocument();
+        expect(screen.getByText('Carlos Matos')).toBeInTheDocument();
     });
 });

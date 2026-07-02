@@ -21,9 +21,9 @@ describe('LanguageSwitcher', () => {
     it('renders all language buttons', () => {
         renderSwitcher();
 
-        expect(screen.getByText(/PT/)).toBeInTheDocument();
-        expect(screen.getByText(/EN/)).toBeInTheDocument();
-        expect(screen.getByText(/ES/)).toBeInTheDocument();
+        expect(screen.getByText('PT')).toBeInTheDocument();
+        expect(screen.getByText('EN')).toBeInTheDocument();
+        expect(screen.getByText('ES')).toBeInTheDocument();
     });
 
     it('changes language on click', async () => {
@@ -31,8 +31,7 @@ describe('LanguageSwitcher', () => {
 
         renderSwitcher();
 
-        const enButton = screen.getByLabelText('Switch language to EN');
-        await user.click(enButton);
+        await user.click(screen.getByText('EN'));
 
         expect(i18n.language).toBe('en-US');
 
@@ -40,17 +39,10 @@ describe('LanguageSwitcher', () => {
         await i18n.changeLanguage('pt-BR');
     });
 
-    it('has aria-label on each button', () => {
+    it('marks the current language as pressed', () => {
         renderSwitcher();
 
-        expect(
-            screen.getByLabelText('Switch language to PT'),
-        ).toBeInTheDocument();
-        expect(
-            screen.getByLabelText('Switch language to EN'),
-        ).toBeInTheDocument();
-        expect(
-            screen.getByLabelText('Switch language to ES'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('PT')).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByText('EN')).toHaveAttribute('aria-pressed', 'false');
     });
 });

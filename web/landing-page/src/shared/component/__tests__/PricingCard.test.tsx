@@ -6,13 +6,24 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/config';
 
 import PricingCard from '../PricingCard';
-import { buildPlan } from '@/test/factories/planFactory';
+
+import type { PlanView } from '@/shared/data/landing';
 
 i18n.changeLanguage('pt-BR');
 
+const BASE_PLAN: PlanView = {
+    name: 'Mensal',
+    price: 'R$ 14,90',
+    period: '/mês',
+    features: ['Feature X'],
+};
+
 function renderCard(props: Partial<Parameters<typeof PricingCard>[0]> = {}) {
     const defaultProps = {
-        plan: buildPlan(),
+        plan: BASE_PLAN,
+        equivLabel: 'equivale a',
+        saveLabel: 'economize',
+        ctaLabel: 'Assinar Mensal',
         onSelect: vi.fn(),
         ...props,
     };
@@ -29,42 +40,36 @@ function renderCard(props: Partial<Parameters<typeof PricingCard>[0]> = {}) {
 
 describe('PricingCard', () => {
     it('renders plan price', () => {
-        renderCard({ plan: buildPlan({ priceInCents: 1990 }) });
+        renderCard({ plan: { ...BASE_PLAN, price: 'R$ 19,90' } });
 
         expect(screen.getByText(/19,90/)).toBeInTheDocument();
     });
 
     it('renders features list', () => {
-        renderCard({
-            plan: buildPlan({
-                features: [{ key: 'x', label: 'Feature X' }],
-            }),
-        });
+        renderCard({ plan: { ...BASE_PLAN, features: ['Feature X'] } });
 
         expect(screen.getByText('Feature X')).toBeInTheDocument();
     });
 
-    it('shows "Mais Popular" badge when highlighted', () => {
-        renderCard({ isHighlighted: true });
+    it('shows the ribbon label when provided', () => {
+        renderCard({ accent: true, ribbonLabel: 'Mais popular' });
 
-        expect(screen.getByText('Mais Popular')).toBeInTheDocument();
+        expect(screen.getByText('Mais popular')).toBeInTheDocument();
     });
 
-    it('does not show badge when not highlighted', () => {
-        renderCard({ isHighlighted: false });
+    it('does not show ribbon when no label given', () => {
+        renderCard();
 
-        expect(screen.queryByText('Mais Popular')).not.toBeInTheDocument();
+        expect(screen.queryByText('Mais popular')).not.toBeInTheDocument();
     });
 
-    it('calls onSelect with plan when button clicked', async () => {
+    it('calls onSelect when button clicked', async () => {
         const user = userEvent.setup();
 
-        const plan = buildPlan();
-
-        const { onSelect } = renderCard({ plan });
+        const { onSelect } = renderCard();
 
         await user.click(screen.getByRole('button'));
 
-        expect(onSelect).toHaveBeenCalledWith(plan);
+        expect(onSelect).toHaveBeenCalled();
     });
 });

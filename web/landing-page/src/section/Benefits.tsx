@@ -1,104 +1,76 @@
-import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import useInView from '@/shared/hook/useInView';
+import Icon, { type IconName } from '@/shared/component/Icon';
+import { Section, SectionTitle } from '@/shared/component/Primitives';
+import Reveal from '@/shared/component/Reveal';
 
-const BENEFIT_ICONS: Record<string, ReactNode> = {
-    library: (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            className="w-8 h-8 text-accent"
+import { BENEFITS_META, type BenefitText } from '@/shared/data/landing';
+
+function BenefitCard({ icon, title, desc }: { icon: IconName; title: string; desc: string }) {
+    const [hover, setHover] = useState(false);
+
+    return (
+        <div
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+                height: '100%',
+                padding: 22,
+                borderRadius: 8,
+                background: 'var(--color-secondary)',
+                border: `1px solid ${hover ? 'rgba(221,218,42,0.55)' : '#444'}`,
+                boxShadow: hover ? '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25)' : 'none',
+                transform: hover ? 'translateY(-3px)' : 'none',
+                transition: 'all .3s ease',
+            }}
         >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-            />
-        </svg>
-    ),
-    updates: (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            className="w-8 h-8 text-accent"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"
-            />
-        </svg>
-    ),
-    multiplatform: (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            className="w-8 h-8 text-accent"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z"
-            />
-        </svg>
-    ),
-    offline: (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            className="w-8 h-8 text-accent"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-            />
-        </svg>
-    ),
-};
+            <div
+                style={{
+                    width: 46,
+                    height: 46,
+                    borderRadius: 8,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(221,218,42,0.10)',
+                    border: '1px solid rgba(221,218,42,0.3)',
+                    color: '#ddda2a',
+                    marginBottom: 16,
+                }}
+            >
+                <Icon name={icon} size={22} stroke={2} />
+            </div>
+            <h3 style={{ margin: '0 0 7px', fontSize: 16, fontWeight: 800, color: '#fff', letterSpacing: '.0625rem' }}>
+                {title}
+            </h3>
+            <p style={{ margin: 0, fontSize: 13, color: '#999', lineHeight: 1.55 }}>{desc}</p>
+        </div>
+    );
+}
 
 export default function Benefits() {
     const { t } = useTranslation();
-    const { ref, inView } = useInView();
 
-    const keys = ['library', 'updates', 'multiplatform', 'offline'] as const;
+    const items = t('benefits.items', { returnObjects: true }) as BenefitText[];
 
     return (
-        <section id="benefits" className="py-24 px-4" ref={ref}>
-            <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl font-bold text-center text-white mb-16">
-                    {t('benefits.title')}
-                </h2>
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {keys.map((key, i) => (
-                        <div
-                            key={key}
-                            className={`rounded-2xl bg-secondary border border-tertiary p-6 flex flex-col gap-3 hover:border-accent-muted transition-colors ${inView ? `animate-fade-up animate-fade-up-delay-${i + 1}` : 'animate-hidden'}`}
-                        >
-                            <span aria-hidden="true">{BENEFIT_ICONS[key]}</span>
-                            <h3 className="text-base font-bold text-white">
-                                {t(`benefits.items.${key}.title`)}
-                            </h3>
-                            <p className="text-sm text-tertiary leading-relaxed">
-                                {t(`benefits.items.${key}.description`)}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+        <Section id="benefits">
+            <SectionTitle eyebrow={t('benefits.eyebrow')} title={t('benefits.title')} />
+            <div
+                style={{
+                    marginTop: 48,
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 240px), 1fr))',
+                    gap: 16,
+                }}
+            >
+                {items.map((it, i) => (
+                    <Reveal key={i} delay={(i % 3) * 70}>
+                        <BenefitCard icon={BENEFITS_META[i]} title={it.t} desc={it.d} />
+                    </Reveal>
+                ))}
             </div>
-        </section>
+        </Section>
     );
 }

@@ -1,15 +1,17 @@
-import Header from '@/shared/component/Header';
 import Footer from '@/shared/component/Footer';
+import Header from '@/shared/component/Header';
 
-import Hero from '@/section/Hero';
 import Benefits from '@/section/Benefits';
-import Catalog from '@/section/Catalog';
-import Features from '@/section/Features';
-import Plans from '@/section/Plans';
-import Gift from '@/section/Gift';
-import Testimonials from '@/section/Testimonials';
+import Compare from '@/section/Compare';
+import Demo from '@/section/Demo';
 import FAQ from '@/section/FAQ';
-import FooterCTA from '@/section/FooterCTA';
+import Final from '@/section/Final';
+import Gift from '@/section/Gift';
+import Hero from '@/section/Hero';
+import MobileApp from '@/section/MobileApp';
+import Plans from '@/section/Plans';
+import Stats from '@/section/Stats';
+import Testimonials from '@/section/Testimonials';
 
 export default function App() {
     return (
@@ -17,14 +19,16 @@ export default function App() {
             <Header />
             <main>
                 <Hero />
+                <Demo />
                 <Benefits />
-                <Catalog />
-                <Features />
+                <MobileApp />
+                <Stats />
                 <Plans />
+                <Compare />
                 <Gift />
                 <Testimonials />
                 <FAQ />
-                <FooterCTA />
+                <Final />
             </main>
             <Footer />
         </>

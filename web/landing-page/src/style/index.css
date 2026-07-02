@@ -10,6 +10,11 @@
     --color-accent-muted: #ddda2a40;
     --color-accent-subtle: #ddda2a20;
     --color-accent-5: rgb(221 218 42 / 0.05);
+    --color-quinary: #ff784f;
+    --color-surface: #1c1c1c;
+    --color-surface-deep: #0e0e0e;
+    --color-line: #444444;
+    --color-line-soft: #2d2d2d;
 }
 
 :root {
@@ -88,5 +93,184 @@ html {
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
+    }
+}
+
+/* ===== Landing redesign — animações, mockups e grades responsivas ===== */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+@keyframes lpFloatA {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+@keyframes lpFloatB {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+}
+@keyframes lpPulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(221, 218, 42, 0);
+    }
+    50% {
+        box-shadow: 0 0 28px 2px rgba(221, 218, 42, 0.35);
+    }
+}
+@keyframes lpFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@keyframes lpShimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+.lp-float-a {
+    animation: lpFloatA 6s ease-in-out infinite;
+}
+.lp-float-b {
+    animation: lpFloatB 7s ease-in-out infinite;
+}
+.lp-cta-pulse {
+    animation: lpPulse 2.8s ease-in-out infinite;
+}
+.lp-fade-in {
+    animation: lpFade 0.4s ease both;
+}
+.lp-skeleton {
+    background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 37%, #2d2d2d 63%);
+    background-size: 300% 100%;
+    animation: lpShimmer 1.4s ease infinite;
+}
+
+/* área de leitura do mockup: rolagem própria, sem barra visível */
+.lp-reader-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.lp-reader-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* input do resgate de gift */
+.mr-input {
+    width: 100%;
+    padding: 0 14px;
+    color: #fff;
+    background: var(--color-primary);
+    border: 1px solid var(--color-line);
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+.mr-input::placeholder {
+    color: var(--color-tertiary);
+}
+.mr-input:focus {
+    border-color: var(--color-accent);
+}
+
+/* grades de pôster responsivas (container query) */
+.lp-screen {
+    container-type: inline-size;
+}
+.lp-poster-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+@container (max-width: 380px) {
+    .lp-poster-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}
+
+/* responsivo (mobile-first) */
+.lp-hero-phone {
+    display: none;
+}
+.lp-chip {
+    display: none;
+}
+.lp-mobile-phone2 {
+    display: none;
+}
+
+@media (min-width: 560px) {
+    .lp-hero-phone {
+        display: block;
+    }
+    .lp-chip {
+        display: inline-flex;
+    }
+}
+@media (min-width: 480px) {
+    .lp-mobile-phone2 {
+        display: block;
+    }
+}
+@media (min-width: 768px) {
+    .lp-mobile-grid {
+        grid-template-columns: 0.95fr 1.05fr;
+    }
+    .lp-footer-grid {
+        grid-template-columns: 1.15fr 2fr;
+    }
+}
+@media (min-width: 940px) {
+    .lp-nav-desktop,
+    .lp-actions-desktop {
+        display: flex !important;
+    }
+    .lp-burger {
+        display: none !important;
+    }
+}
+@media (min-width: 1024px) {
+    .lp-demo-phone {
+        display: flex !important;
+    }
+}
+@media (max-width: 559px) {
+    .lp-test-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lp-float-a,
+    .lp-float-b,
+    .lp-cta-pulse {
+        animation: none !important;
     }
 }

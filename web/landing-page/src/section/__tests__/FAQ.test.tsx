@@ -12,7 +12,7 @@ describe('FAQ', () => {
             </TestProviders>,
         );
 
-        expect(screen.getByText('Perguntas Frequentes')).toBeInTheDocument();
+        expect(screen.getByText('Perguntas frequentes')).toBeInTheDocument();
     });
 
     it('renders accordion items as buttons', () => {

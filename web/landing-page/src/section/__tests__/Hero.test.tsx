@@ -12,9 +12,7 @@ describe('Hero', () => {
             </TestProviders>,
         );
 
-        expect(
-            screen.getByText('Leia. Explore. Sem limites.'),
-        ).toBeInTheDocument();
+        expect(screen.getByText(/Leia mangás/)).toBeInTheDocument();
     });
 
     it('renders CTA buttons', () => {
@@ -24,17 +22,18 @@ describe('Hero', () => {
             </TestProviders>,
         );
 
-        expect(screen.getByText('Assinar Agora')).toBeInTheDocument();
+        expect(screen.getByText('Começar agora')).toBeInTheDocument();
+        expect(screen.getByText('Ver demonstração')).toBeInTheDocument();
     });
 
-    it('renders stats badges after loading', async () => {
+    it('renders platform badges', () => {
         render(
             <TestProviders>
                 <Hero />
             </TestProviders>,
         );
 
-        expect(await screen.findByText(/250/)).toBeInTheDocument();
-        expect(await screen.findByText(/4\.820/)).toBeInTheDocument();
+        expect(screen.getByText('Offline')).toBeInTheDocument();
+        expect(screen.getByText('Sem anúncios')).toBeInTheDocument();
     });
 });

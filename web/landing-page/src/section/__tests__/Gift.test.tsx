@@ -13,9 +13,7 @@ describe('Gift', () => {
             </TestProviders>,
         );
 
-        const tabs = screen.getAllByText(/Presentear/i);
-
-        expect(tabs.length).toBeGreaterThanOrEqual(1);
+        expect(screen.getByText(/Dar presente/i)).toBeInTheDocument();
     });
 
     it('switches to redeem tab on click', async () => {
@@ -27,11 +25,9 @@ describe('Gift', () => {
             </TestProviders>,
         );
 
-        const redeemTab = screen.getAllByText(/Resgatar/i)[0];
+        await user.click(screen.getByText(/Resgatar código/i));
 
-        await user.click(redeemTab);
-
-        expect(screen.getByPlaceholderText(/xxxx/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/MR-/i)).toBeInTheDocument();
     });
 
     it('renders code input on redeem tab', async () => {
@@ -43,11 +39,9 @@ describe('Gift', () => {
             </TestProviders>,
         );
 
-        const redeemTab = screen.getAllByText(/Resgatar/i)[0];
+        await user.click(screen.getByText(/Resgatar código/i));
 
-        await user.click(redeemTab);
-
-        const input = screen.getByPlaceholderText(/xxxx/i);
+        const input = screen.getByPlaceholderText(/MR-/i);
 
         expect(input).toHaveAttribute('type', 'text');
     });

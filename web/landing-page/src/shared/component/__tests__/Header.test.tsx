@@ -6,17 +6,17 @@ import Header from '../Header';
 import { TestProviders } from '@/test/testUtils';
 
 describe('Header', () => {
-    it('renders logo text', () => {
+    it('renders the brand wordmark', () => {
         render(
             <TestProviders>
                 <Header />
             </TestProviders>,
         );
 
-        expect(screen.getByText('Manga Reader')).toBeInTheDocument();
+        expect(screen.getByText('Reader')).toBeInTheDocument();
     });
 
-    it('renders navigation links (desktop)', () => {
+    it('renders navigation links', () => {
         render(
             <TestProviders>
                 <Header />
@@ -35,7 +35,7 @@ describe('Header', () => {
             </TestProviders>,
         );
 
-        expect(screen.getByLabelText('Abrir menu')).toBeInTheDocument();
+        expect(screen.getByLabelText('Menu')).toBeInTheDocument();
     });
 
     it('opens mobile menu on hamburger click', async () => {
@@ -47,7 +47,7 @@ describe('Header', () => {
             </TestProviders>,
         );
 
-        const button = screen.getByLabelText('Abrir menu');
+        const button = screen.getByLabelText('Menu');
 
         await user.click(button);
 

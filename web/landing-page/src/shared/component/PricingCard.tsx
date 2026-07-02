@@ -1,98 +1,151 @@
-import type { SubscriptionPlan } from '@manga-reader/types';
+import { useState, type CSSProperties } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import Icon from '@/shared/component/Icon';
+
+import type { PlanView } from '@/shared/data/landing';
 
 interface PricingCardProps {
-    plan: SubscriptionPlan;
-    isHighlighted?: boolean;
-    onSelect: (plan: SubscriptionPlan) => void;
-    className?: string;
+    plan: PlanView;
+    accent?: boolean;
+    /** Texto da faixa (ex.: "Mais popular" / "Melhor valor"); ausente = sem faixa. */
+    ribbonLabel?: string;
+    equivLabel: string;
+    saveLabel: string;
+    ctaLabel: string;
+    onSelect?: () => void;
 }
 
-function formatPrice(cents: number, locale = 'pt-BR'): string {
-    return (cents / 100).toLocaleString(locale, {
-        style: 'currency',
-        currency: 'BRL',
-    });
+function accentButton(): CSSProperties {
+    return {
+        height: 48,
+        borderRadius: 2,
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        width: '100%',
+        background: '#ddda2a',
+        color: '#161616',
+        fontWeight: 800,
+        fontSize: 15,
+        letterSpacing: '.0625rem',
+    };
 }
 
-const PERIOD_SUFFIX_KEY: Record<string, string> = {
-    DAILY: 'plans.per_day',
-    MONTHLY: 'plans.per_month',
-    ANNUAL: 'plans.per_year',
-};
+function ghostButton(hover: boolean): CSSProperties {
+    return {
+        height: 48,
+        borderRadius: 2,
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        width: '100%',
+        background: hover ? 'rgba(221,218,42,0.12)' : 'transparent',
+        color: '#fff',
+        border: '1px solid #727273',
+        fontWeight: 700,
+        fontSize: 15,
+        letterSpacing: '.0625rem',
+        transition: 'all .3s ease',
+    };
+}
 
 export default function PricingCard({
     plan,
-    isHighlighted = false,
+    accent = false,
+    ribbonLabel,
+    equivLabel,
+    saveLabel,
+    ctaLabel,
     onSelect,
-    className = '',
 }: PricingCardProps) {
-    const { t } = useTranslation();
-
-    const suffixKey = PERIOD_SUFFIX_KEY[plan.period] ?? 'plans.per_month';
+    const [hover, setHover] = useState(false);
 
     return (
-        <article
-            className={`relative flex flex-col rounded-2xl p-6 border transition-all ${
-                isHighlighted
-                    ? 'bg-secondary border-accent shadow-[0.25rem_0.25rem_0_0_var(--color-accent-muted)]'
-                    : 'bg-secondary border-tertiary'
-            } ${className}`}
+        <div
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+                position: 'relative',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '28px 24px',
+                borderRadius: 12,
+                background: accent
+                    ? 'linear-gradient(180deg, rgba(221,218,42,0.07), var(--color-secondary) 55%)'
+                    : 'var(--color-secondary)',
+                border: `1px solid ${accent ? 'rgba(221,218,42,0.6)' : hover ? 'rgba(221,218,42,0.4)' : '#444'}`,
+                boxShadow: accent
+                    ? '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25)'
+                    : hover
+                      ? '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.2)'
+                      : 'none',
+                transform: hover && !accent ? 'translateY(-3px)' : 'none',
+                transition: 'all .3s ease',
+            }}
         >
-            {isHighlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-0.5 text-xs font-bold text-primary">
-                    {t('plans.most_popular')}
+            {ribbonLabel && (
+                <span
+                    style={{
+                        position: 'absolute',
+                        top: -11,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        whiteSpace: 'nowrap',
+                        fontSize: 10,
+                        fontWeight: 800,
+                        letterSpacing: '.1em',
+                        textTransform: 'uppercase',
+                        padding: '4px 12px',
+                        borderRadius: 999,
+                        background: '#ddda2a',
+                        color: '#161616',
+                    }}
+                >
+                    {ribbonLabel}
                 </span>
             )}
-            <h3 className="mb-1 text-lg font-bold text-white capitalize">
-                {t(`plans.period.${plan.period.toLowerCase()}`)}
-            </h3>
-            <div className="mt-2 mb-4">
-                <span className="text-4xl font-extrabold text-accent">
-                    {formatPrice(plan.priceInCents)}
-                </span>
-                <span className="ml-1 text-sm text-tertiary">
-                    {t(suffixKey)}
-                </span>
+
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#ddda2a', textTransform: 'uppercase', letterSpacing: '.1em' }}>
+                {plan.name}
             </div>
-            <p className="mb-4 text-sm text-tertiary">{plan.description}</p>
-            <ul className="flex-1 mb-6 space-y-2" role="list">
-                <li className="text-xs font-semibold tracking-wider uppercase text-tertiary">
-                    {t('plans.feature_list_title')}
-                </li>
-                {plan.features.map(feature => (
-                    <li
-                        key={feature.key}
-                        className="flex items-center gap-2 text-sm text-white"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            className="flex-shrink-0 w-4 h-4 text-accent"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                        {feature as unknown as string}
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, margin: '12px 0 4px' }}>
+                <span style={{ fontSize: 38, fontWeight: 800, color: '#fff', letterSpacing: '.0625rem', lineHeight: 1 }}>
+                    {plan.price}
+                </span>
+                <span style={{ fontSize: 15, color: '#999', fontWeight: 600 }}>{plan.period}</span>
+            </div>
+            {plan.equiv ? (
+                <div style={{ fontSize: 12, color: '#727273', minHeight: 18 }}>
+                    {equivLabel} <strong style={{ color: '#cccccc' }}>{plan.equiv}</strong> · {saveLabel} {plan.save}
+                </div>
+            ) : (
+                <div style={{ minHeight: 18 }} />
+            )}
+
+            <ul
+                style={{
+                    listStyle: 'none',
+                    margin: '22px 0',
+                    padding: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 11,
+                    flex: 1,
+                }}
+            >
+                {plan.features.map(f => (
+                    <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, color: '#fff', fontSize: 14 }}>
+                        <Icon name="check" size={16} stroke={3} style={{ color: '#ddda2a', flexShrink: 0, marginTop: 2 }} />
+                        {f}
                     </li>
                 ))}
             </ul>
-            <button
-                onClick={() => onSelect(plan)}
-                className={`w-full rounded-lg py-3 font-bold text-sm transition-colors cursor-pointer ${
-                    isHighlighted
-                        ? 'bg-accent text-primary hover:bg-accent-hover'
-                        : 'bg-transparent border border-accent text-accent hover:bg-accent-subtle'
-                }`}
-            >
-                {t('plans.cta')}
+
+            <button onClick={onSelect} style={accent ? accentButton() : ghostButton(hover)}>
+                {ctaLabel}
             </button>
-        </article>
+        </div>
     );
 }
+
+export { accentButton, ghostButton };

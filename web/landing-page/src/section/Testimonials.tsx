@@ -1,42 +1,76 @@
 import { useTranslation } from 'react-i18next';
 
-import useInView from '@/shared/hook/useInView';
+import { RatingStars } from '@/shared/component/Icon';
+import { Section, SectionTitle } from '@/shared/component/Primitives';
+import Reveal from '@/shared/component/Reveal';
+
+import { TESTIMONIALS_META, type TestimonialText } from '@/shared/data/landing';
 
 export default function Testimonials() {
     const { t } = useTranslation();
-    const { ref, inView } = useInView();
 
-    const items = t('testimonials.items', { returnObjects: true }) as Array<{
-        name: string;
-        text: string;
-    }>;
+    const items = t('testimonials.items', { returnObjects: true }) as TestimonialText[];
 
     return (
-        <section
-            id="testimonials"
-            className="py-24 px-4 bg-secondary"
-            ref={ref}
-        >
-            <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl font-bold text-center text-white mb-16">
-                    {t('testimonials.title')}
-                </h2>
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-                    {items.map((item, i) => (
-                        <blockquote
-                            key={item.name}
-                            className={`rounded-2xl bg-primary border border-tertiary p-6 flex flex-col gap-4 ${inView ? `animate-fade-up animate-fade-up-delay-${i + 1}` : 'animate-hidden'}`}
-                        >
-                            <p className="text-tertiary text-sm leading-relaxed italic">
-                                &ldquo;{item.text}&rdquo;
-                            </p>
-                            <footer className="text-sm font-bold text-white">
-                                — {item.name}
-                            </footer>
-                        </blockquote>
-                    ))}
-                </div>
+        <Section id="testimonials">
+            <SectionTitle eyebrow={t('testimonials.eyebrow')} title={t('testimonials.title')} />
+            <div
+                className="lp-test-grid"
+                style={{
+                    marginTop: 48,
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
+                    gap: 18,
+                }}
+            >
+                {items.map((it, i) => {
+                    const meta = TESTIMONIALS_META[i];
+
+                    return (
+                        <Reveal key={i} delay={(i % 4) * 70}>
+                            <div
+                                style={{
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    padding: 22,
+                                    borderRadius: 8,
+                                    background: 'var(--color-secondary)',
+                                    border: '1px solid #444',
+                                }}
+                            >
+                                <RatingStars value={meta.rating} size={15} />
+                                <p style={{ margin: '14px 0 18px', flex: 1, fontSize: 14, color: '#fff', lineHeight: 1.6, fontStyle: 'italic' }}>
+                                    “{it.text}”
+                                </p>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                    <div
+                                        style={{
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: 2,
+                                            background: meta.color,
+                                            color: '#161616',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontWeight: 800,
+                                            fontSize: 14,
+                                            flexShrink: 0,
+                                        }}
+                                    >
+                                        {meta.initials}
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', letterSpacing: '.0625rem' }}>{it.name}</div>
+                                        <div style={{ fontSize: 12, color: '#727273' }}>{it.role}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Reveal>
+                    );
+                })}
             </div>
-        </section>
+        </Section>
     );
 }

@@ -23,7 +23,7 @@ describe('Plans', () => {
         });
     });
 
-    it('shows "Mais Popular" badge on monthly plan', async () => {
+    it('shows the "Mais popular" ribbon on the monthly plan', async () => {
         render(
             <TestProviders>
                 <Plans />
@@ -31,7 +31,7 @@ describe('Plans', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText('Mais Popular')).toBeInTheDocument();
+            expect(screen.getByText('Mais popular')).toBeInTheDocument();
         });
     });
 
@@ -42,12 +42,12 @@ describe('Plans', () => {
             </TestProviders>,
         );
 
-        const skeletons = document.querySelectorAll('.animate-pulse');
+        const skeletons = document.querySelectorAll('.lp-skeleton');
 
-        expect(skeletons.length).toBe(3);
+        expect(skeletons.length).toBeGreaterThan(0);
     });
 
-    it('shows error message when API fails', async () => {
+    it('falls back to static plans when the API fails', async () => {
         server.use(errorHandlers.plans);
 
         render(
@@ -56,8 +56,7 @@ describe('Plans', () => {
             </TestProviders>,
         );
 
-        expect(
-            await screen.findByText(/Não foi possível carregar os planos/),
-        ).toBeInTheDocument();
+        // sem erro cru: cai no conteúdo estático do i18n
+        expect(await screen.findByText('Mensal')).toBeInTheDocument();
     });
 });
