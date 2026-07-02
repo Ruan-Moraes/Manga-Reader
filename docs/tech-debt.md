@@ -947,7 +947,23 @@ fórum com backfill idempotente e verificação de contagem antes de qualquer dr
 
 ---
 
-### DT-51: Páginas/rotas de formulário legadas do admin (pós-redesign para modais) — **Em aberto (Baixa)**
+### DT-51: Páginas/rotas de formulário legadas do admin (pós-redesign para modais) — **Resolvido (2026-07-02)**
+
+**Resolução** (decisão de produto confirmada: criar/editar por URL direta deixa de existir):
+1. `PlanFormModal` migrado de `FormModal` → shared `Modal` (template TitleFormModal;
+   footer com `Button` ghost/primary + `loading`).
+2. `DashboardGroupDetail` religado: botão "Editar" abre `GroupFormModal` in-page
+   (via `useAdminGroupActions.handleUpdate` + `refetch`) em vez de navegar p/ deep-link.
+3. Removidos: `Admin{Title,News,Event,Group}Form.tsx` (+ exports do barrel),
+   `use{Title,News,Event}FormState.ts`, `parts/EventFormField.tsx` (órfão),
+   `FormModal.tsx`, 7 rotas + 4 lazy imports do `ProtectedRoutes.tsx` e 7 constantes
+   `ROUTES.DASHBOARD_*_FORM/EDIT`.
+4. Mantidos: `AdminModal` (usado por `ConfirmDeleteModal`), `DashboardUserDetail`,
+   `DashboardGroupDetail`.
+
+Verificação: tsc 0, lint:fsd verde, 923 testes verdes.
+
+**Registro original:**
 
 O redesign da área admin (`/dashboard/*`) moveu **toda criação/edição para modais via shared
 `Modal`** (TitleFormModal, NewsFormModal, EventFormModal, GroupFormModal, AdminGroupDetailModal,

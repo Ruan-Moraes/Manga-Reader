@@ -66,11 +66,9 @@ URL H2 fixa compartilhada + `create-drop` derrubava o schema sob contextos cache
 - **Gravidade**: Média (Alta em produção) | **Prioridade**: Média
 - **Correção**: aplicar o mesmo padrão de visibilidade do enriched profile no use case da biblioteca. **Pode ser corrigido agora** (escopo pequeno e conhecido).
 
-### DT-51 — Páginas/rotas de formulário legadas do admin
+### ~~DT-51 — Páginas/rotas de formulário legadas do admin~~ — **Resolvido (2026-07-02)**
 
-- **Local**: `features/admin/ui/Admin*Form`, rotas `dashboard/*` de deep-link, `FormModal`/`AdminModal`
-- **Descrição**: o redesign moveu criação/edição para modais; as páginas-form antigas seguem montadas no router (só alcançáveis por URL), com tokens fora do DS.
-- **Impacto**: duplicação de UI e superfície de rota órfã. **Gravidade**: Baixa | **Prioridade**: Baixa. Exige decisão de produto + migração de `PlanFormModal` antes (pré-condições em `docs/tech-debt.md`).
+Decisão de produto confirmada: criar/editar por URL direta eliminado. `PlanFormModal` migrado p/ shared `Modal`; `DashboardGroupDetail` abre `GroupFormModal` in-page; removidos 4 páginas-form, 3 hooks de rota, `FormModal`, `EventFormField`, 7 rotas e 7 constantes. `AdminModal` mantido (ConfirmDeleteModal). Gates verdes.
 
 ## 3. Produto / Funcionalidades incompletas
 
@@ -115,8 +113,8 @@ Promovido a `@manga-reader/assets` (`package.json` privado); apps seguem consumi
 |-----------|-------|
 | **Alta** | — |
 | **Média** | DT-49 (visibilidade da biblioteca), DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
-| **Baixa** | DT-48, DT-51 |
-| **Resolvidos 2026-07-02** | DT-53, DT-54, DT-55, DT-56 |
+| **Baixa** | DT-48 |
+| **Resolvidos 2026-07-02** | DT-51, DT-53, DT-54, DT-55, DT-56 |
 | **Adiados (não-prod)** | DT-02 (E2E), DT-03 (CI/CD), DT-08 (a11y residual), DT-09 (legais), DT-44 (backlog), DT-21 (staging dump), DT-50 fase 2 (drop fórum PG) |
 
 **Corrigíveis agora, sem refatoração maior**: DT-53, DT-49, DT-55, DT-56 (e DT-54 com investigação curta).

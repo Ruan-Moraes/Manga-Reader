@@ -10,14 +10,10 @@ const DashboardOverview = lazy(() => import('@pages/dashboard/ui/DashboardOvervi
 const DashboardUsers = lazy(() => import('@pages/dashboard/ui/DashboardUsers'));
 const DashboardUserDetail = lazy(() => import('@pages/dashboard/ui/DashboardUserDetail'));
 const DashboardTitles = lazy(() => import('@pages/dashboard/ui/DashboardTitles'));
-const DashboardTitleForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminTitleForm })));
 const DashboardNews = lazy(() => import('@pages/dashboard/ui/DashboardNews'));
-const DashboardNewsForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminNewsForm })));
 const DashboardEvents = lazy(() => import('@pages/dashboard/ui/DashboardEvents'));
-const DashboardEventForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminEventForm })));
 const DashboardGroups = lazy(() => import('@pages/dashboard/ui/DashboardGroups'));
 const DashboardGroupDetail = lazy(() => import('@pages/dashboard/ui/DashboardGroupDetail'));
-const DashboardGroupForm = lazy(() => import('@features/admin').then(m => ({ default: m.AdminGroupForm })));
 const DashboardFinancial = lazy(() => import('@pages/dashboard/ui/DashboardFinancial'));
 const DashboardSubscriptions = lazy(() => import('@pages/dashboard/ui/DashboardSubscriptions'));
 const DashboardTags = lazy(() => import('@pages/dashboard/ui/DashboardTags'));
@@ -66,17 +62,10 @@ export const adminRoute = [
             { path: 'users', element: <DashboardUsers /> },
             { path: 'users/:userId', element: <DashboardUserDetail /> },
             { path: 'titles', element: <DashboardTitles /> },
-            { path: 'titles/new', element: <DashboardTitleForm /> },
-            { path: 'titles/:titleId/edit', element: <DashboardTitleForm /> },
             { path: 'news', element: <DashboardNews /> },
-            { path: 'news/new', element: <DashboardNewsForm /> },
-            { path: 'news/:newsId/edit', element: <DashboardNewsForm /> },
             { path: 'events', element: <DashboardEvents /> },
-            { path: 'events/new', element: <DashboardEventForm /> },
-            { path: 'events/:eventId/edit', element: <DashboardEventForm /> },
             { path: 'groups', element: <DashboardGroups /> },
             { path: 'groups/:groupId', element: <DashboardGroupDetail /> },
-            { path: 'groups/:groupId/edit', element: <DashboardGroupForm /> },
             { path: 'tags', element: <DashboardTags /> },
             { path: 'authors', element: <DashboardAuthors /> },
             { path: 'publishers', element: <DashboardPublishers /> },

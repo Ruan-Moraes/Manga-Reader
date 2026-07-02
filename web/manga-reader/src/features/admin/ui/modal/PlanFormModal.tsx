@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Modal } from '@ui/Modal';
+import { Button } from '@ui/Button';
 import { Switch } from '@ui/Switch';
 import { Select } from '@ui/Select';
 import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
 import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 
-import FormModal from './FormModal';
 import PlanFormPriceRows, { type PriceRow } from './PlanFormPriceRows';
 import PlanFormFeaturesInput from './PlanFormFeaturesInput';
 
@@ -78,9 +79,7 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
         }
     }, [plan, isOpen]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const handleSave = () => {
         const prices: Record<string, number> = {};
         for (const row of priceRows) {
             const cents = Math.round(parseFloat(row.amount) * 100);
@@ -108,17 +107,23 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
     const hasValidPrices = priceRows.length > 0 && priceRows.every(r => r.amount !== '');
 
     return (
-        <FormModal
-            isOpen={isOpen}
+        <Modal
+            open={isOpen}
             onClose={onClose}
             title={plan ? t('planForm.editTitle') : t('planForm.newTitle')}
-            onSubmit={handleSubmit}
-            submitLabel={t('planForm.save')}
-            submittingLabel={t('planForm.saving')}
-            cancelLabel={t('planForm.cancel')}
-            isSubmitting={isSubmitting}
-            submitDisabled={!hasValidPrices || !ptDescription}
+            size="lg"
+            footer={
+                <div className="flex w-full justify-end gap-2.5">
+                    <Button variant="ghost" size="sm" onClick={onClose}>
+                        {t('planForm.cancel')}
+                    </Button>
+                    <Button variant="primary" size="sm" disabled={!hasValidPrices || !ptDescription} loading={isSubmitting} onClick={handleSave}>
+                        {isSubmitting ? t('planForm.saving') : t('planForm.save')}
+                    </Button>
+                </div>
+            }
         >
+            <div className="flex flex-col gap-4 p-2">
             {!plan && (
                 <div className="flex flex-col gap-1.5">
                     <span className="text-xs font-bold">{t('planForm.periodLabel')}</span>
@@ -146,7 +151,8 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
             <PlanFormFeaturesInput value={features} onChange={setFeatures} />
 
             {plan && <Switch label={t('planForm.activeLabel')} checked={active} onChange={setActive} />}
-        </FormModal>
+            </div>
+        </Modal>
     );
 };
 

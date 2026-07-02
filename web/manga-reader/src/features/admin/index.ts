@@ -96,12 +96,6 @@ export { default as useAdminPlanActions } from './model/useAdminPlanActions';
 export { default as useRevenueSeries } from './model/useRevenueSeries';
 export { default as useSubscriptionGrowth } from './model/useSubscriptionGrowth';
 
-// Components — Forms
-export { default as AdminEventForm } from './ui/AdminEventForm';
-export { default as AdminNewsForm } from './ui/AdminNewsForm';
-export { default as AdminTitleForm } from './ui/AdminTitleForm';
-export { default as AdminGroupForm } from './ui/AdminGroupForm';
-
 // Components
 export { default as AdminDashboardOverview } from './ui/AdminDashboardOverview';
 export { default as AdminUserList } from './ui/AdminUserList';

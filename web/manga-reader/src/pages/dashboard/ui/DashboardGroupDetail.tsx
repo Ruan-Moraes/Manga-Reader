@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
-import { AdminGroupDetail, useAdminGroupDetail } from '@features/admin';
+import { AdminGroupDetail, GroupFormModal, useAdminGroupDetail, useAdminGroupActions, type GroupFormSubmitPayload } from '@features/admin';
 import { ArrowLeft } from 'lucide-react';
 
 const DashboardGroupDetail = () => {
@@ -10,7 +11,17 @@ const DashboardGroupDetail = () => {
     const { groupId } = useParams<{ groupId: string }>();
     const navigate = useNavigate();
     const { group, isLoading, isError, refetch } = useAdminGroupDetail(groupId ?? '');
-    const editPath = groupId ? ROUTES.DASHBOARD_GROUP_EDIT(groupId) : ROUTES.DASHBOARD_GROUPS;
+    const { isSubmitting, handleUpdate } = useAdminGroupActions();
+    const [editOpen, setEditOpen] = useState(false);
+
+    const handleFormSubmit = async (data: GroupFormSubmitPayload) => {
+        if (!groupId) return;
+        const result = await handleUpdate(groupId, data);
+        if (result) {
+            setEditOpen(false);
+            refetch();
+        }
+    };
 
     if (isLoading) {
         return (
@@ -47,13 +58,15 @@ const DashboardGroupDetail = () => {
                     {t('common.back')}
                 </button>
                 <button
-                    onClick={() => navigate(`${WEB_BASE_URL}${editPath}`)}
+                    onClick={() => setEditOpen(true)}
                     className="px-3 py-1.5 text-sm font-semibold rounded-xs bg-quaternary-default hover:bg-quaternary-default/80"
                 >
                     {t('common.edit', 'Editar')}
                 </button>
             </div>
             <AdminGroupDetail group={group} />
+
+            <GroupFormModal isOpen={editOpen} onClose={() => setEditOpen(false)} onSubmit={handleFormSubmit} group={group} isSubmitting={isSubmitting} />
         </div>
     );
 };
