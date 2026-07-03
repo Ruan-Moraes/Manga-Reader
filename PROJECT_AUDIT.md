@@ -168,3 +168,18 @@ migrations `ls api/core/src/main/resources/db/migration | wc -l` e
    (2026-06-23); a suíte completa com Docker não foi re-executada nesta auditoria.
 3. DT-49 permanece explorável em ambiente exposto.
 4. Redesign da landing page segue sem commit.
+
+---
+
+## Adendo (2026-07-02, mesmo dia — execução do plano de correção)
+
+As fases 1–2 do plano (§6) e o lote aprovado pelo dono foram **executados**:
+landing commitada; DT-53, DT-54, DT-49, DT-51, DT-55, DT-56 resolvidos; DT-48
+(grafo social em Neo4j + username/verified + grupos seguidos) entregue — feed de
+atividade segue mock (residual). Descoberta adicional: o gate `npx tsc --noEmit`
+era **vácuo** (tsconfig raiz `files: []`) — gate real é `npx tsc -b`; docs
+corrigidos e 1 erro real de produção destapado e corrigido (`Stars size={13}`).
+Estado final dos gates: backend 1232 testes verdes (suíte completa com
+Postgres/Mongo/Neo4j TestContainers); web 932 verdes + `tsc -b` 0 + steiger
+verde; landing 54 verdes (vitest 4). Smoke E2E de follow/username/privacidade da
+biblioteca executado contra a API real. Detalhes por item: `docs/tech-debt.md`.
