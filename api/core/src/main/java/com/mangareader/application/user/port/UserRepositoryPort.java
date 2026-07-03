@@ -24,6 +24,9 @@ public interface UserRepositoryPort {
 
     boolean existsByEmail(String email);
 
+    /** DT-48: checagem de disponibilidade do handle (case-insensitive). */
+    boolean existsByUsernameIgnoreCase(String username);
+
     User save(User user);
 
     void deleteById(UUID id);

@@ -13,6 +13,9 @@ public record UpdateProfileRequest(
         @Size(min = 2, max = 100, message = "{validation.name.size}")
         String name,
 
+        @Size(min = 3, max = 30, message = "{validation.user.username.size}")
+        String username,
+
         @Size(max = 500, message = "{validation.user.bio.size}")
         String bio,
 

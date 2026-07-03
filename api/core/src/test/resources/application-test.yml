@@ -43,6 +43,14 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/mangareader-test
 
+  # Driver Neo4j é lazy — contexto de teste sobe sem servidor (DT-48);
+  # o Neo4jSchemaInitializer tem @Profile("!test").
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: test
+
 logging:
   level:
     root: WARN

@@ -47,6 +47,19 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
+    /**
+     * Handle público único (DT-48). NULL até o usuário fazer o "claim";
+     * unicidade case-insensitive garantida pelo índice funcional
+     * {@code uk_users_username_lower} (V39).
+     */
+    @Column(length = 30)
+    private String username;
+
+    /** Selo verificado (DT-48). Mutação só administrativa nesta fase. */
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean verified = false;
+
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 

@@ -45,6 +45,11 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public boolean existsByUsernameIgnoreCase(String username) {
+        return jpaRepository.existsByUsernameIgnoreCase(username);
+    }
+
+    @Override
     public User save(User user) {
         return jpaRepository.save(user);
     }

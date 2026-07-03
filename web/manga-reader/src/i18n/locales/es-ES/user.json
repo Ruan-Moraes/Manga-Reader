@@ -59,7 +59,8 @@
                 "reader": "Lector"
             },
             "follow": "Seguir",
-            "following": "Siguiendo"
+            "following": "Siguiendo",
+            "verified": "Verificado"
         },
         "stats": {
             "reading": "Leyendo",
@@ -67,7 +68,9 @@
             "completed": "Completado",
             "total": "Total",
             "comments": "Comentarios",
-            "ratings": "Valoraciones"
+            "ratings": "Valoraciones",
+            "followers": "Seguidores",
+            "following": "Siguiendo"
         },
         "tabs": {
             "about": "Acerca de",
@@ -215,7 +218,8 @@
                 "changePhoto": "Cambiar",
                 "removePhoto": "Quitar",
                 "genresLabel": "Géneros favoritos",
-                "genresHint": "{{count}}/{{max}} seleccionados. Elegidos manualmente; aparecen en tu perfil."
+                "genresHint": "{{count}}/{{max}} seleccionados. Elegidos manualmente; aparecen en tu perfil.",
+                "userTaken": "Este username ya está en uso."
             },
             "social": {
                 "intro": "Agrega tus redes para que otros lectores puedan encontrarte. Todo es opcional."
@@ -265,7 +269,13 @@
                 "deleteCancel": "Cancelar"
             },
             "cancel": "Cancelar"
-        }
+        },
+        "follow": {
+            "followersTitle": "Seguidores",
+            "followingTitle": "Siguiendo",
+            "empty": "Nadie por aquí todavía."
+        },
+        "followError": "No se pudo actualizar el follow."
     },
     "settings": {
         "descriptionGuest": "Las opciones se guardan localmente hasta que inicies sesión.",

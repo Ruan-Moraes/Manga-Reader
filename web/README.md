@@ -43,7 +43,7 @@ regras de boundary e public API por barrel: [`docs/source-layout.md`](../docs/so
 Gates de qualidade (rodar dentro de `manga-reader/`):
 
 ```bash
-npx tsc --noEmit        # type-check — 0 erros exigido
+npx tsc -b              # type-check — 0 erros exigido (--noEmit puro é vácuo: tsconfig raiz tem files:[])
 npm run lint:fsd        # steiger — boundaries FSD, verde exigido
 npx vitest run          # suíte (no sandbox do Claude: --pool=forks)
 ```

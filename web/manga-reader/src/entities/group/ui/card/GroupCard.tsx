@@ -16,9 +16,11 @@ export interface GroupCardProps {
         avatar?: string;
         banner?: string;
         status: 'active' | 'hiatus' | 'inactive';
-        members: number;
-        projects: number;
-        chaptersPublished: number;
+        // Stats opcionais: fontes como GroupSummary (grupos seguidos — DT-48)
+        // não trazem todos os contadores; o card omite os ausentes.
+        members?: number;
+        projects?: number;
+        chaptersPublished?: number;
         tags?: string[];
         verified?: boolean;
     };
@@ -72,15 +74,21 @@ const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardP
             </div>
 
             <div className="flex flex-wrap gap-4 text-mr-tiny text-mr-fg-muted">
-                <span>
-                    <strong className="font-mr-extrabold text-mr-fg">{fmt(group.members)}</strong> seguidores
-                </span>
-                <span>
-                    <strong className="font-mr-extrabold text-mr-fg">{group.projects}</strong> obras
-                </span>
-                <span>
-                    <strong className="font-mr-extrabold text-mr-fg">{fmt(group.chaptersPublished)}</strong> capítulos
-                </span>
+                {group.members != null && (
+                    <span>
+                        <strong className="font-mr-extrabold text-mr-fg">{fmt(group.members)}</strong> seguidores
+                    </span>
+                )}
+                {group.projects != null && (
+                    <span>
+                        <strong className="font-mr-extrabold text-mr-fg">{group.projects}</strong> obras
+                    </span>
+                )}
+                {group.chaptersPublished != null && (
+                    <span>
+                        <strong className="font-mr-extrabold text-mr-fg">{fmt(group.chaptersPublished)}</strong> capítulos
+                    </span>
+                )}
             </div>
 
             {group.tags && group.tags.length > 0 && (

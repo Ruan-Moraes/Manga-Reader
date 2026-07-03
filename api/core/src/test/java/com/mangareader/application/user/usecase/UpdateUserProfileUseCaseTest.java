@@ -25,10 +25,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.shared.event.UserProfileUpdatedEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.service.UsernameValidator;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase.SocialLinkInput;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase.UpdateProfileInput;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserSocialLink;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +39,10 @@ class UpdateUserProfileUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
+
+    // Validador real (sem dependências) — exercita formato/reservados de verdade.
+    @org.mockito.Spy
+    private UsernameValidator usernameValidator = new UsernameValidator();
 
     @Mock
     private EventPublisherPort eventPublisher;
@@ -65,6 +71,79 @@ class UpdateUserProfileUseCaseTest {
     }
 
     @Nested
+    @DisplayName("Username (DT-48)")
+    class Username {
+
+        @Test
+        @DisplayName("Deve normalizar (trim + lowercase), validar e salvar username disponível")
+        void deveClaimarUsernameDisponivel() {
+            User user = buildUser();
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(userRepository.existsByUsernameIgnoreCase("leitor_br")).thenReturn(false);
+            when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            var input = new UpdateProfileInput(USER_ID, null, "  Leitor_BR ", null, null, null, null);
+            User result = updateUserProfileUseCase.execute(input);
+
+            assertThat(result.getUsername()).isEqualTo("leitor_br");
+        }
+
+        @Test
+        @DisplayName("Deve lançar 409 quando username já está em uso por outro usuário")
+        void deveLancar409QuandoDuplicado() {
+            User user = buildUser();
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(userRepository.existsByUsernameIgnoreCase("ocupado")).thenReturn(true);
+
+            var input = new UpdateProfileInput(USER_ID, null, "ocupado", null, null, null, null);
+
+            assertThatThrownBy(() -> updateUserProfileUseCase.execute(input))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .hasMessageContaining("em uso");
+        }
+
+        @Test
+        @DisplayName("Re-enviar o próprio username não checa unicidade nem falha")
+        void reenvioDoProprioUsernameEIdempotente() {
+            User user = buildUser();
+            user.setUsername("leitor_br");
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            var input = new UpdateProfileInput(USER_ID, null, "LEITOR_BR", null, null, null, null);
+            User result = updateUserProfileUseCase.execute(input);
+
+            assertThat(result.getUsername()).isEqualTo("leitor_br");
+            verify(userRepository, org.mockito.Mockito.never()).existsByUsernameIgnoreCase(any());
+        }
+
+        @Test
+        @DisplayName("Deve rejeitar formato inválido (400)")
+        void deveRejeitarFormatoInvalido() {
+            User user = buildUser();
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+            var input = new UpdateProfileInput(USER_ID, null, "ab", null, null, null, null);
+
+            assertThatThrownBy(() -> updateUserProfileUseCase.execute(input))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("Deve rejeitar username reservado (400)")
+        void deveRejeitarReservado() {
+            User user = buildUser();
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+            var input = new UpdateProfileInput(USER_ID, null, "admin", null, null, null, null);
+
+            assertThatThrownBy(() -> updateUserProfileUseCase.execute(input))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("reservado");
+        }
+    }
+
+    @Nested
     @DisplayName("Atualização parcial (PATCH)")
     class AtualizacaoParcial {
 
@@ -76,7 +155,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null, null, null);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -95,7 +174,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, "Nova bio", null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, null, "Nova bio", null, null, null);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -118,7 +197,7 @@ class UpdateUserProfileUseCaseTest {
                     new SocialLinkInput("github", "https://github.com/user")
             );
             UpdateProfileInput input = new UpdateProfileInput(
-                    USER_ID, "Novo Nome", "Nova bio", "https://example.com/new.jpg", null, links);
+                    USER_ID, "Novo Nome", null, "Nova bio", "https://example.com/new.jpg", null, links);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -155,7 +234,7 @@ class UpdateUserProfileUseCaseTest {
             List<SocialLinkInput> newLinks = List.of(
                     new SocialLinkInput("instagram", "https://instagram.com/user")
             );
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, null, null, null, newLinks);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, null, null, null, null, null, newLinks);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -181,7 +260,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo Nome", null, null, null, null, null);
 
             // Act
             User result = updateUserProfileUseCase.execute(input);
@@ -205,7 +284,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
             UpdateProfileInput input = new UpdateProfileInput(
-                    USER_ID, "Nome Atualizado", null, "https://example.com/new.jpg", null, null);
+                    USER_ID, "Nome Atualizado", null, null, "https://example.com/new.jpg", null, null);
 
             // Act
             updateUserProfileUseCase.execute(input);
@@ -226,7 +305,7 @@ class UpdateUserProfileUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo", null, null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Novo", null, null, null, null, null);
 
             // Act
             updateUserProfileUseCase.execute(input);
@@ -248,7 +327,7 @@ class UpdateUserProfileUseCaseTest {
             // Arrange
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Nome", null, null, null, null);
+            UpdateProfileInput input = new UpdateProfileInput(USER_ID, "Nome", null, null, null, null, null);
 
             // Act & Assert
             assertThatThrownBy(() -> updateUserProfileUseCase.execute(input))

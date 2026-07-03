@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.shared.event.UserProfileUpdatedEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.service.UsernameValidator;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserSocialLink;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * Atualiza o perfil do usuário autenticado.
  * <p>
- * Permite alterar: name, bio, photoUrl, socialLinks.
+ * Permite alterar: name, username (DT-48), bio, photoUrl, socialLinks.
  * Não permite alterar: email, role, passwordHash.
  */
 @Service
@@ -26,11 +28,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class UpdateUserProfileUseCase {
     private final UserRepositoryPort userRepository;
+    private final UsernameValidator usernameValidator;
     private final EventPublisherPort eventPublisher;
 
     public record UpdateProfileInput(
             UUID userId,
             String name,
+            String username,
             String bio,
             String photoUrl,
             String bannerUrl,
@@ -45,6 +49,18 @@ public class UpdateUserProfileUseCase {
 
         if (input.name() != null) {
             user.setName(input.name());
+        }
+
+        if (input.username() != null) {
+            String normalized = input.username().trim().toLowerCase();
+            usernameValidator.validate(normalized);
+
+            boolean changed = !normalized.equalsIgnoreCase(user.getUsername());
+            if (changed && userRepository.existsByUsernameIgnoreCase(normalized)) {
+                throw new BusinessRuleException("Username já está em uso: " + normalized, 409);
+            }
+
+            user.setUsername(normalized);
         }
 
         if (input.bio() != null) {

@@ -17,6 +17,7 @@ export const getUserProfile = async (userId: string): Promise<User> => {
 
 export type UpdateProfilePayload = Partial<{
     name: string;
+    username: string;
     bio: string;
     photoUrl: string;
     bannerUrl: string;

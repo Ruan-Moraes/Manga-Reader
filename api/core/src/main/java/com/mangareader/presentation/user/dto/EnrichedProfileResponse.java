@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public record EnrichedProfileResponse(
         String id,
         String name,
+        String username,
+        boolean verified,
         String email,
         String bio,
         String photoUrl,
@@ -20,6 +22,9 @@ public record EnrichedProfileResponse(
         List<String> favoriteGenres,
         String createdAt,
         ProfileStatsResponse stats,
+        long followersCount,
+        long followingCount,
+        boolean isFollowedByMe,
         List<RecommendationResponse> recommendations,
         List<CommentSummaryResponse> recentComments,
         List<ViewHistoryItemResponse> recentViewHistory,

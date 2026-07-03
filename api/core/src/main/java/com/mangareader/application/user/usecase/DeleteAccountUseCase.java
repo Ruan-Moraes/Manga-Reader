@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -18,8 +19,9 @@ import lombok.RequiredArgsConstructor;
 /**
  * Exclui (desativa + anonimiza) a conta do usuário autenticado.
  * <p>
- * Remove vínculos com grupos, apaga o histórico de leitura (MongoDB) e
- * anonimiza os dados pessoais no PostgreSQL. Irreversível.
+ * Remove vínculos com grupos, apaga o histórico de leitura (MongoDB), remove o
+ * nó do grafo social (Neo4j — DT-48) e anonimiza os dados pessoais no
+ * PostgreSQL. Irreversível.
  */
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class DeleteAccountUseCase {
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final UserChapterReadRepositoryPort userChapterReadRepository;
     private final GroupRepositoryPort groupRepository;
+    private final SocialGraphPort socialGraph;
 
     @Transactional
     public void execute(UUID userId) {
@@ -41,6 +44,11 @@ public class DeleteAccountUseCase {
 
         viewHistoryRepository.deleteAllByUserId(userId.toString());
         userChapterReadRepository.deleteAllByUserId(userId.toString());
+
+        // Grafo ANTES do save JPA: se o Cypher falhar, a tx JPA aborta.
+        // Não-atômico cross-DB — nó órfão residual é inerte (só userId) e as
+        // listas filtram desativados na hidratação (ver docs/tech-debt.md DT-48).
+        socialGraph.removeUser(userId);
 
         user.deactivate();
         userRepository.save(user);

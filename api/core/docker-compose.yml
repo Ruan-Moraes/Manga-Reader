@@ -75,6 +75,31 @@ services:
         limits:
           memory: 256M
           cpus: "0.5"
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: mangareader-neo4j
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    environment:
+      NEO4J_AUTH: neo4j/manga_secret
+      NEO4J_server_memory_heap_initial__size: 128M
+      NEO4J_server_memory_heap_max__size: 256M
+      NEO4J_server_memory_pagecache_size: 128M
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p manga_secret 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 640M
+          cpus: "1.0"
   redis:
     image: redis:7-alpine
     container_name: mangareader-redis
@@ -98,4 +123,6 @@ volumes:
   mongo_data:
     driver: local
   rabbitmq_data:
+    driver: local
+  neo4j_data:
     driver: local

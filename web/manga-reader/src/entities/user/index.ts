@@ -20,6 +20,9 @@ export { default as useUserDetails } from './model/useUserDetails';
 export { default as useEnrichedProfile } from './model/useEnrichedProfile';
 export { default as useContentLocales } from './model/useContentLocales';
 export { default as useUserSettings } from './model/useUserSettings';
+export { default as useFollow } from './model/useFollow';
+export { default as useFollowList, type FollowListKind } from './model/useFollowList';
+export { default as useFollowedGroups } from './model/useFollowedGroups';
 
 // Context
 export { UserModalProvider } from './model/UserModalContext';
@@ -28,6 +31,7 @@ export { ProfileSettingsModalProvider, useProfileSettingsModal, type ProfileSett
 
 // Services
 export { recordView, recordChapterRead, updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings, getFavoriteGenres, updateFavoriteGenres } from './api/userService';
+export { followUser, unfollowUser, getFollowers, getFollowing, getFollowedGroups, type FollowStatus, type UserSummary } from './api/followService';
 
 // Settings
 export {

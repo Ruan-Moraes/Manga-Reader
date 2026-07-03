@@ -118,6 +118,7 @@ public class UserController {
         var input = new UpdateUserProfileUseCase.UpdateProfileInput(
                 userId,
                 request.name(),
+                request.username(),
                 request.bio(),
                 request.photoUrl(),
                 request.bannerUrl(),

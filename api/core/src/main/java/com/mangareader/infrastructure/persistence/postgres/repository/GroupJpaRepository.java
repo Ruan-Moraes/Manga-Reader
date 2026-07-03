@@ -54,6 +54,17 @@ public interface GroupJpaRepository extends JpaRepository<Group, UUID> {
             SELECT DISTINCT g FROM Group g
             LEFT JOIN FETCH g.groupUsers gu
             LEFT JOIN FETCH gu.user
+            WHERE EXISTS (
+                SELECT 1 FROM GroupUser s
+                WHERE s.group = g AND s.user.id = :userId
+                  AND s.type = com.mangareader.domain.group.valueobject.GroupUserType.SUPPORTER
+            )""")
+    List<Group> findGroupsBySupporterUserId(@Param("userId") UUID userId);
+
+    @Query("""
+            SELECT DISTINCT g FROM Group g
+            LEFT JOIN FETCH g.groupUsers gu
+            LEFT JOIN FETCH gu.user
             WHERE NOT EXISTS (
                 SELECT 1 FROM GroupUser m
                 WHERE m.group = g AND m.user.id = :userId

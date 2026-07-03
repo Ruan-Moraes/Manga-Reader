@@ -26,13 +26,13 @@ ou `cd web/manga-reader` + `npx`:
 pnpm --filter manga-reader dev          # Dev server :5173 (proxy API → :8080)
 pnpm --filter manga-reader build        # TypeScript check + production build
 pnpm --filter manga-reader lint:fsd     # Boundary lint (steiger) — gate que importa, verde
-npx tsc --noEmit                        # Type-check gate (rodar dentro do app)
+npx tsc -b                              # Type-check gate (rodar dentro do app; --noEmit puro é vácuo: tsconfig raiz tem files:[])
 npx vitest run --pool=forks             # Suíte completa (--pool=forks obrigatório neste sandbox)
 ```
 
 > `npm run lint` (eslint+prettier) é **vermelho no baseline** repo-wide — não usar
 > `format`/`--fix` para "corrigir" arquivos (colapsa o JSX expandido do projeto).
-> Combinar o estilo dos vizinhos. `lint:fsd` (steiger) e `tsc --noEmit` são os gates.
+> Combinar o estilo dos vizinhos. `lint:fsd` (steiger) e `tsc -b` são os gates.
 
 ### Infra
 
@@ -98,7 +98,7 @@ Regras principais: fundação (tema, i18n, estado global) antes de qualquer tela
 Antes de considerar qualquer tarefa concluída:
 
 1. `mvn test` passa com **0 failures, 0 errors**
-2. `cd web/manga-reader && npx tsc --noEmit` compila com **0 errors**
+2. `cd web/manga-reader && npx tsc -b` compila com **0 errors**
 3. Todo requisito novo/alterado tem teste correspondente
 4. Nenhum teste existente foi quebrado ou deletado sem justificativa
 5. Commits pequenos e focados com mensagens claras

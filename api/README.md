@@ -31,6 +31,11 @@ cd core
 ./mvnw spring-boot:run        # docker compose sobe sozinho (spring-boot-docker-compose)
 ```
 
+> **Serviço novo no compose?** O spring-boot-docker-compose **pula** o startup se
+> já houver serviços do compose no ar — containers antigos não ganham os novos
+> (ex.: `neo4j`, DT-48) e o boot falha na conexão. Rodar uma vez
+> `docker compose up -d <serviço>` (ou `docker compose up -d` para todos).
+
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 - Infra dev: `core/docker-compose.yml` (Postgres 17, Mongo 8 replica-set de nó único, RabbitMQ 4, Redis 7)
 - `DataSeeder` popula dados de demonstração (profile != prod)

@@ -68,11 +68,9 @@ Decisão de produto confirmada: criar/editar por URL direta eliminado. `PlanForm
 
 ## 3. Produto / Funcionalidades incompletas
 
-### DT-48 — Perfil com seções simuladas
+### DT-48 — Perfil com seções simuladas — **Resolvido em sua maior parte (2026-07-02)**
 
-- **Local**: `pages/profile` + `src/mock/userProfile.ts`
-- **Descrição**: seguidores/seguindo, grupos seguidos, feed de atividade e handle/verificado ainda são mock (não existe domínio social no backend). Gêneros favoritos já são reais (V37).
-- **Impacto**: perfil mistura dado real e fake. **Gravidade**: Baixa | **Prioridade**: Baixa — cada item é um épico próprio (passar pela skill `database-design`).
+Grafo social entregue em **Neo4j** (follow/unfollow, listas, contagens), handle/verificado (V39) e grupos seguidos (SUPPORTER) reais no perfil. **Residual (Baixa)**: feed de atividade (segue mock), endpoint admin de `verified`, varredura Postgres×Neo4j, cache de contadores. Detalhes em `docs/tech-debt.md`.
 
 ### DT-44 — Backlog de produto não implementado (adiado, não-prod)
 
@@ -109,8 +107,8 @@ Promovido a `@manga-reader/assets` (`package.json` privado); apps seguem consumi
 |-----------|-------|
 | **Alta** | — |
 | **Média** | DT-52 (cross-DB não-atômico), DT-50 residuais (testes fórum, threads profundas) |
-| **Baixa** | DT-48 |
-| **Resolvidos 2026-07-02** | DT-49, DT-51, DT-53, DT-54, DT-55, DT-56 |
+| **Baixa** | DT-48 residuais (feed de atividade, endpoint admin de verified, varredura Postgres×Neo4j) |
+| **Resolvidos 2026-07-02** | DT-48 (núcleo: grafo social Neo4j + handle/verified + grupos seguidos), DT-49, DT-51, DT-53, DT-54, DT-55, DT-56 |
 | **Adiados (não-prod)** | DT-02 (E2E), DT-03 (CI/CD), DT-08 (a11y residual), DT-09 (legais), DT-44 (backlog), DT-21 (staging dump), DT-50 fase 2 (drop fórum PG) |
 
 **Corrigíveis agora, sem refatoração maior**: DT-53, DT-49, DT-55, DT-56 (e DT-54 com investigação curta).

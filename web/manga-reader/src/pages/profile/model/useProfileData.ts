@@ -1,9 +1,9 @@
-import { useEnrichedProfile, type ProfileData } from '@entities/user';
+import { useEnrichedProfile, useFollowedGroups, type ProfileData } from '@entities/user';
 import { useUserReviews, type Review } from '@entities/review';
 import { useUserLibrary, type SavedMangaItem } from '@features/library';
 import { type Manga } from '@entities/manga';
 
-import { GROUPS_FOLLOWED, ACTIVITY } from '@mock/userProfile';
+import { ACTIVITY } from '@mock/userProfile';
 
 const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
     id: item.titleId,
@@ -15,10 +15,10 @@ const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
 /**
  * Carrega o perfil público (header + abas) a partir do banco.
  *
- * Real (banco): header/bio, stats, recomendações, comentários recentes, resenhas,
- * listas "lendo"/"concluído", gêneros favoritos (seleção manual). Ainda **mock**
- * (sem backend — ver docs/tech-debt.md): seguidores/seguindo, grupos seguidos,
- * feed de atividade.
+ * Real (banco): header/bio, stats, seguidores/seguindo (grafo Neo4j — DT-48),
+ * username/verificado, grupos seguidos (SUPPORTER), recomendações, comentários
+ * recentes, resenhas, listas "lendo"/"concluído", gêneros favoritos. Ainda
+ * **mock** (sem backend — ver docs/tech-debt.md DT-48): feed de atividade.
  *
  * @param userId perfil-alvo; ausente = perfil do usuário logado.
  */
@@ -27,19 +27,21 @@ export default function useProfileData(userId?: string) {
     const { reviews } = useUserReviews(userId);
     const { items: lendo } = useUserLibrary(userId, 'Lendo');
     const { items: concluido } = useUserLibrary(userId, 'Concluído');
+    const { groups: followedGroups } = useFollowedGroups(enriched?.id);
 
     const stats = enriched?.stats;
     const isOwn = enriched?.isOwner ?? false;
 
     const profile: ProfileData = {
-        handle: enriched ? `@${enriched.name.toLowerCase().replace(/\s+/g, '_')}` : '',
+        // Handle real (claim do usuário); fallback derivado do nome só para exibição.
+        handle: enriched?.username ? `@${enriched.username}` : enriched ? `@${enriched.name.toLowerCase().replace(/\s+/g, '_')}` : '',
         name: enriched?.name ?? '',
         bio: enriched?.bio ?? '',
-        verified: false,
+        verified: enriched?.verified ?? false,
         worksRead: stats?.lendo ?? 0,
         reviews: stats?.ratings ?? 0,
-        followers: stats?.comments ?? 0,
-        following: stats?.libraryTotal ?? 0,
+        followers: enriched?.followersCount ?? 0,
+        following: enriched?.followingCount ?? 0,
         // Gêneros favoritos: seleção manual do usuário (persistida no backend).
         // TODO(tech-debt): futuramente sugerir automaticamente a partir das obras
         // mais lidas/avaliadas (mini-algoritmo) e mesclar com a seleção manual.
@@ -51,6 +53,8 @@ export default function useProfileData(userId?: string) {
         loading,
         error,
         isOwn,
+        profileUserId: enriched?.id,
+        isFollowedByMe: enriched?.isFollowedByMe ?? false,
         profile,
         readingNow: lendo.map(toMangaFromLibrary),
         completed: concluido.map(toMangaFromLibrary),
@@ -61,8 +65,17 @@ export default function useProfileData(userId?: string) {
             cover: r.titleCover,
         })),
         recentComments: enriched?.recentComments ?? [],
-        // TODO(tech-debt): sem backend (grafo social / grupos seguidos / feed) — mock.
-        groupsFollowed: GROUPS_FOLLOWED,
+        // Grupos seguidos reais (SUPPORTER); shape adaptado ao GroupCard da entity.
+        groupsFollowed: followedGroups.map(g => ({
+            id: g.id,
+            name: g.name,
+            handle: g.username,
+            banner: g.banner || undefined,
+            status: g.status,
+            projects: g.totalTitles,
+            tags: g.focusTags?.length ? g.focusTags : undefined,
+        })),
+        // TODO(tech-debt): feed de atividade sem backend — mock (DT-48 residual).
         activity: ACTIVITY,
     };
 }

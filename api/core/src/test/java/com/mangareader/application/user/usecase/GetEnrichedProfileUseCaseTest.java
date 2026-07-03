@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
+import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -63,6 +64,9 @@ class GetEnrichedProfileUseCaseTest {
 
     @Mock
     private UserProfileSettingsResolver profileSettingsResolver;
+
+    @Mock
+    private SocialGraphPort socialGraph;
 
     @InjectMocks
     private GetEnrichedProfileUseCase getEnrichedProfileUseCase;

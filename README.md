@@ -26,10 +26,10 @@ Monorepo com backend Spring Boot (Clean Architecture, dual-DB PostgreSQL + Mongo
 
 | Gate | Estado |
 |------|--------|
-| Backend `mvn test` | ✅ última suíte completa registrada verde (1198 testes, 2026-06-23) · suíte leve (`-Dtest.excludedGroups=testcontainers`) verde — 1080 testes (DT-54 resolvido em 2026-07-02) |
-| Web `tsc --noEmit` (manga-reader) | ✅ 0 erros |
+| Backend `mvn test` | ✅ verde — 1232 testes (suíte completa com TestContainers Postgres/Mongo/Neo4j, 2026-07-02) · suíte leve sem Docker verde — 1109 testes (DT-54 resolvido) |
+| Web `tsc -b` (manga-reader) | ✅ 0 erros (gate corrigido em 2026-07-02: `tsc --noEmit` puro era vácuo — tsconfig raiz com `files: []`) |
 | Web `lint:fsd` (steiger) | ✅ verde |
-| Web testes (manga-reader) | ✅ verde — 923 testes / 137 arquivos (DT-53 resolvido em 2026-07-02) |
+| Web testes (manga-reader) | ✅ verde — 932 testes / 139 arquivos (DT-53 resolvido em 2026-07-02) |
 | Web testes (landing-page) | ✅ verde |
 
 > Estado geral, riscos e plano de correção: [`PROJECT_AUDIT.md`](PROJECT_AUDIT.md).

@@ -43,6 +43,9 @@ public interface GroupRepositoryPort {
 
     List<Group> findGroupsByMemberUserId(UUID userId);
 
+    /** DT-48: grupos que o usuário segue/apoia (GroupUserType.SUPPORTER). */
+    List<Group> findGroupsBySupporterUserId(UUID userId);
+
     List<Group> findAvailableGroupsForUser(UUID userId);
 
     Page<Group> findAll(Pageable pageable);

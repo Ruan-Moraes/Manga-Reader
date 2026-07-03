@@ -92,6 +92,8 @@ public final class UserMapper {
         return new EnrichedProfileResponse(
                 user.getId().toString(),
                 user.getName(),
+                user.getUsername(),
+                user.isVerified(),
                 isOwner ? user.getEmail() : null,
                 user.getBio(),
                 user.getPhotoUrl(),
@@ -101,6 +103,9 @@ public final class UserMapper {
                 user.getFavoriteGenres(),
                 user.getCreatedAt() != null ? user.getCreatedAt().toString() : null,
                 stats,
+                profile.social().followers(),
+                profile.social().following(),
+                profile.social().followedByViewer(),
                 recommendations,
                 recentComments,
                 recentHistory,

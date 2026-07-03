@@ -823,7 +823,45 @@ testes de hook/serviço (sem jest-dom) rodam verdes.
 
 ---
 
-### DT-48: Perfil — seções ainda simuladas (sem backend) — **Em aberto (Baixa)**
+### DT-48: Perfil — seções ainda simuladas (sem backend) — **Resolvido em sua maior parte (2026-07-02); resta o feed de atividade**
+
+**Entregue (2026-07-02, branch `feat/dt48-social-graph`)** — grafo social em **Neo4j**:
+- **Infra**: Neo4j 5.26-community nos composes dev/prod (spring-boot-docker-compose
+  resolve connection details; `spring.neo4j.*` fallback). Sem `Neo4jTransactionManager`
+  (statements únicos auto-commit; JPA `@Primary` intacto — racional em
+  `Neo4jConfiguration`). Constraint de unicidade `UserNode.userId` criada no boot
+  (`Neo4jSchemaInitializer`, `@Profile("!test")`).
+- **Grafo**: `SocialGraphPort` (application/social) + `SocialGraphNeo4jAdapter`
+  (`Neo4jClient` + Cypher explícito, sem OGM): nó mínimo `(:UserNode {userId})` lazy
+  via MERGE, aresta `[:FOLLOWS {since}]`, contagens+`isFollowing` em 1 round-trip,
+  listas paginadas `r.since DESC`, `DETACH DELETE` no delete de conta (chamado antes
+  do save JPA no `DeleteAccountUseCase`).
+- **Seguidores/seguindo**: `Follow/Unfollow/GetFollowers/GetFollowingUseCase`
+  (self-follow 409, alvo ativo, hidratação batch do Postgres preservando ordem,
+  desativados filtrados) + `FollowController` (`POST/DELETE /api/users/{id}/follow`,
+  `GET .../followers|following` permitAll). `EnrichedProfileResponse` ganhou
+  `followersCount/followingCount/isFollowedByMe`.
+- **Handle/verificado**: Flyway **V39** — `users.username` (único case-insensitive,
+  CHECK `^[a-z0-9_]{3,30}$`, claim sem backfill) e `users.verified` (default false,
+  mutação administrativa). `UpdateUserProfileUseCase` + `UsernameValidator`
+  (reservados; duplicado → 409); campo ligado na `InformacoesTab`.
+- **Grupos seguidos**: `findGroupsBySupporterUserId` (JPQL SUPPORTER) + use case +
+  `GET /api/users/{id}/followed-groups` (reuso de `GroupPreviewResponse`).
+- **Frontend**: `followService` + `useFollow` (otimista com reconciliação/rollback) +
+  `useFollowList`/`useFollowedGroups`; header do perfil com selo verificado,
+  contadores reais clicáveis → `FollowListModal`; aba de grupos real; mock
+  `userProfile.ts` reduzido a `ACTIVITY`. i18n pt/en/es. Testes: Neo4j-TC (5), use
+  cases (7), @WebMvcTest (6), JPA SUPPORTER, front service/hook (9). Suítes: backend
+  leve 1109; front 932; `tsc -b` 0; steiger verde.
+
+**Residual em aberto (Baixa)**:
+- **Feed de atividade** — segue mock (`ACTIVITY`); requer agregação de eventos.
+- **Endpoint admin p/ `verified`** (hoje mutação manual/SQL).
+- **Varredura de consistência Postgres×Neo4j** (estilo orphan-cleaner) — nós órfãos
+  são inertes (só userId) e as listas filtram na hidratação; sem urgência.
+- **Cache dos contadores** (Redis) se as contagens por Cypher virarem hot-path.
+
+**Registro original (contexto):**
 
 **Contexto**: a página de perfil (`pages/profile/ui/UserProfile.tsx`) foi migrada de
 100% mock para **dados reais** no que já tem backend: header/bio, stats (contagens),
@@ -1080,6 +1118,19 @@ quebrada — corrigidos):
 
 **Resultado**: `npx vitest run --pool=forks` → **137 arquivos / 923 testes, 0 falhas**;
 tsc 0; lint:fsd verde.
+
+**Adendo (2026-07-02, leva DT-48) — lado de TYPES + gate vácuo:**
+- O gate documentado `npx tsc --noEmit` era **vácuo**: o `tsconfig.json` raiz tem
+  `files: []` + references, e sem `-b` o tsc não checa nada (sempre verde). O gate
+  real é **`npx tsc -b`** — docs corrigidos (CLAUDE.md, READMEs, deployment-plan).
+- Sob `tsc -b`, a mesma causa-raiz do runtime aparecia nos **types**: o d.ts de
+  `jest-dom/vitest` aumenta o módulo 'vitest' resolvido a partir do pacote jest-dom
+  (instância errada com múltiplas cópias/peer-hash do pnpm) → 20 erros
+  `toBeInTheDocument does not exist`. Fix robusto: augmentation local
+  `src/test/jest-dom.d.ts` aplicando `TestingLibraryMatchers` à instância que o app
+  resolve; workspace também alinhado em vitest ^4.1.9 (landing saiu do 3.x).
+- Erro REAL de produção que o gate vácuo escondia: `MyReviews.tsx` passava
+  `size={13}` ao `Stars` (`StarSize` só permite 12|14|16|18|20|24) → corrigido p/ 12.
 
 ### DT-54: Flake de isolamento na suíte leve do backend (H2) — **Resolvido (2026-07-02)**
 
