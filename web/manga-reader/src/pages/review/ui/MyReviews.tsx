@@ -186,7 +186,7 @@ const MyReviews = () => {
                         <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3">
                             <p className="text-mr-tiny font-mr-extrabold uppercase tracking-wide text-mr-fg-subtle">{t('myReviews.stats.avg')}</p>
                             <p className="mt-1 text-[22px] font-mr-extrabold text-mr-accent">{stats.avg.toFixed(1)}</p>
-                            <Stars value={stats.avg} size={13} />
+                            <Stars value={stats.avg} size={12} />
                         </div>
                         <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3">
                             <p className="text-mr-tiny font-mr-extrabold uppercase tracking-wide text-mr-fg-subtle">{t('myReviews.stats.withComment')}</p>

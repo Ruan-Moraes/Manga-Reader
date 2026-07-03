@@ -48,6 +48,11 @@ export enum QUERY_KEYS {
     // Users
     USER_PROFILE = 'userProfile',
     USER_CONTENT_LOCALES = 'userContentLocales',
+
+    // Social (DT-48)
+    FOLLOWERS = 'followers',
+    FOLLOWING = 'following',
+    FOLLOWED_GROUPS = 'followedGroups',
     USER_SETTINGS = 'userSettings',
 
     // Admin

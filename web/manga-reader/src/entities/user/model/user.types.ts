@@ -83,6 +83,8 @@ export type SocialLinkResponse = {
 export type EnrichedProfile = {
     id: string;
     name: string;
+    username?: string | null;
+    verified: boolean;
     email?: string;
     bio?: string;
     photoUrl?: string;
@@ -92,6 +94,9 @@ export type EnrichedProfile = {
     favoriteGenres: string[];
     createdAt?: string;
     stats: ProfileStats;
+    followersCount: number;
+    followingCount: number;
+    isFollowedByMe: boolean;
     recommendations: RecommendedTitle[];
     recentComments: CommentSummary[] | null;
     recentViewHistory: ViewHistoryItem[] | null;

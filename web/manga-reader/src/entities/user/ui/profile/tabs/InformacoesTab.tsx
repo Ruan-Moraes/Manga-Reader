@@ -23,7 +23,7 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
     const { t } = useTranslation('user');
 
     const [name, setName] = useState(profile.name ?? '');
-    const [handle, setHandle] = useState((profile.name ?? '').toLowerCase().replace(/\s+/g, ''));
+    const [handle, setHandle] = useState(profile.username ?? (profile.name ?? '').toLowerCase().replace(/\s+/g, '_'));
     const [bio, setBio] = useState(profile.bio ?? '');
     const [photoUrl, setPhotoUrl] = useState(profile.photoUrl ?? '');
 
@@ -36,6 +36,21 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
             onSaved();
         } catch {
             showErrorToast(t('profile.edit.saveError'));
+        }
+    }, AUTOSAVE_MS);
+
+    // Username (DT-48): 409 = handle já em uso — mensagem específica.
+    const saveUsername = useDebouncedCallback(async (value: string) => {
+        try {
+            await updateProfile({ username: value });
+
+            showSuccessToast(t('profile.edit.saved'));
+
+            onSaved();
+        } catch (error) {
+            const status = (error as { response?: { status?: number } }).response?.status;
+
+            showErrorToast(status === 409 ? t('profile.edit.info.userTaken') : t('profile.edit.saveError'));
         }
     }, AUTOSAVE_MS);
 
@@ -105,13 +120,20 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
                 />
             </PEField>
 
-            {/* TODO: Implementar a buscar por nome do usuario e criar a rota no frontend profile/{nome_do_usuario} */}
             <PEField label={t('profile.edit.info.userLabel')} hint={t('profile.edit.info.userHint', { handle })}>
                 <div className="flex h-10 items-center rounded-mr-xs border border-mr-gray-700 bg-mr-secondary">
                     <span className="pl-2.5 text-[13px] tracking-mr text-mr-tertiary whitespace-nowrap">mr.app/u/</span>
                     <input
                         value={handle}
-                        onChange={e => setHandle(e.target.value)}
+                        maxLength={30}
+                        onChange={e => {
+                            // Espelha a validação do backend: [a-z0-9_], 3–30.
+                            const next = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 30);
+
+                            setHandle(next);
+
+                            if (next.length >= 3) saveUsername(next);
+                        }}
                         className="h-full w-full border-0 bg-transparent pl-0 pr-2.5 font-mr-sans text-[13px] tracking-mr text-mr-fg outline-none"
                     />
                 </div>

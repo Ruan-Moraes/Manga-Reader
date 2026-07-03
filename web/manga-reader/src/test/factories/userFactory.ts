@@ -176,6 +176,8 @@ export const buildEnrichedProfile = (overrides: Partial<EnrichedProfile> = {}): 
     return {
         id: `profile-${enrichedProfileCounter}`,
         name: `Perfil Teste ${enrichedProfileCounter}`,
+        username: null,
+        verified: false,
         email: `profile${enrichedProfileCounter}@teste.com`,
         bio: 'Bio padrao.',
         photoUrl: '/avatars/default.png',
@@ -185,6 +187,9 @@ export const buildEnrichedProfile = (overrides: Partial<EnrichedProfile> = {}): 
         favoriteGenres: [],
         createdAt: '2025-06-01T12:00:00Z',
         stats: buildProfileStats(),
+        followersCount: 0,
+        followingCount: 0,
+        isFollowedByMe: false,
         recommendations: [],
         recentComments: [],
         recentViewHistory: [],

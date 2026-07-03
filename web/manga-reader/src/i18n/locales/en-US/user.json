@@ -59,7 +59,8 @@
                 "reader": "Reader"
             },
             "follow": "Follow",
-            "following": "Following"
+            "following": "Following",
+            "verified": "Verified"
         },
         "stats": {
             "reading": "Reading",
@@ -67,7 +68,9 @@
             "completed": "Completed",
             "total": "Total",
             "comments": "Comments",
-            "ratings": "Ratings"
+            "ratings": "Ratings",
+            "followers": "Followers",
+            "following": "Following"
         },
         "tabs": {
             "about": "About",
@@ -215,7 +218,8 @@
                 "changePhoto": "Change",
                 "removePhoto": "Remove",
                 "genresLabel": "Favorite genres",
-                "genresHint": "{{count}}/{{max}} selected. Picked manually; shown on your profile."
+                "genresHint": "{{count}}/{{max}} selected. Picked manually; shown on your profile.",
+                "userTaken": "This username is already taken."
             },
             "social": {
                 "intro": "Add your social networks so other readers can find you. Everything is optional."
@@ -265,7 +269,13 @@
                 "deleteCancel": "Cancel"
             },
             "cancel": "Cancel"
-        }
+        },
+        "follow": {
+            "followersTitle": "Followers",
+            "followingTitle": "Following",
+            "empty": "No one here yet."
+        },
+        "followError": "Could not update follow."
     },
     "settings": {
         "descriptionGuest": "Options are saved locally until you log in.",

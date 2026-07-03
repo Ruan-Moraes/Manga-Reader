@@ -253,7 +253,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: cd web && pnpm install --frozen-lockfile
       - run: cd web && pnpm --filter manga-reader lint:fsd
-      - run: cd web/manga-reader && npx tsc --noEmit
+      - run: cd web/manga-reader && npx tsc -b
       - run: cd web/manga-reader && npx vitest run --pool=forks
 
   frontend-build:

@@ -15,9 +15,12 @@ import { Tabs } from '@ui/Tabs';
 import { Skeleton } from '@ui/Skeleton';
 import { EmptyState } from '@ui/EmptyState';
 
+import { useFollow } from '@entities/user';
+
 import useProfileData from '../model/useProfileData';
 
 import UserProfileHeader from './parts/UserProfileHeader';
+import FollowListModal from './parts/FollowListModal';
 import ActivityTab from './parts/ActivityTab';
 
 const ProfileReviewCard = ({ review, onEdit, onDelete }: { review: Review; onEdit?: () => void; onDelete?: () => void }) => (
@@ -55,9 +58,12 @@ const UserProfile = () => {
     const navigate = useAppNavigate();
 
     const [tab, setTab] = useState('overview');
-    const [following, setFollowing] = useState(false);
+    const [followList, setFollowList] = useState<'followers' | 'following' | null>(null);
 
-    const { loading, error, profile, isOwn, readingNow, completed, reviews, recommendations, groupsFollowed, activity } = useProfileData(userId);
+    const { loading, error, profile, isOwn, profileUserId, isFollowedByMe, readingNow, completed, reviews, recommendations, groupsFollowed, activity } =
+        useProfileData(userId);
+
+    const follow = useFollow(profileUserId, { following: isFollowedByMe, followersCount: profile.followers });
 
     const [editing, setEditing] = useState<Review | null>(null);
     const updateReviewMutation = useUpdateReview(editing?.titleId);
@@ -96,7 +102,16 @@ const UserProfile = () => {
 
     return (
         <PageContainer asMain size="default" paddingY="md">
-            <UserProfileHeader profile={profile} isOwn={isOwn} following={following} onFollowToggle={() => setFollowing(f => !f)} />
+            <UserProfileHeader
+                profile={{ ...profile, followers: follow.followersCount }}
+                isOwn={isOwn}
+                following={follow.following}
+                onFollowToggle={() => void follow.toggle()}
+                onShowFollowers={() => setFollowList('followers')}
+                onShowFollowing={() => setFollowList('following')}
+            />
+
+            <FollowListModal userId={profileUserId} kind={followList} onClose={() => setFollowList(null)} />
 
             <div className="mb-6">
                 <Tabs items={tabItems} value={tab} onChange={setTab} variant="underline" />
