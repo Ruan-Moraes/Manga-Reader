@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
+import com.mangareader.application.social.port.SocialGraphPort;
+import com.mangareader.application.social.port.SocialGraphPort.ProfileSocial;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -44,6 +46,7 @@ public class GetEnrichedProfileUseCase {
     private final RecommendationRepositoryPort recommendationRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final UserProfileSettingsResolver profileSettingsResolver;
+    private final SocialGraphPort socialGraph;
 
     public record EnrichedProfile(
             User user,
@@ -55,6 +58,7 @@ public class GetEnrichedProfileUseCase {
             VisibilitySetting viewHistoryVisibility,
             VisibilitySetting libraryVisibility,
             AdultContentPreference adultContentPreference,
+            ProfileSocial social,
             boolean isOwner
     ) {}
 
@@ -111,10 +115,14 @@ public class GetEnrichedProfileUseCase {
             recentHistory = page.getContent();
         }
 
+        // DT-48: contagens + isFollowedByMe em 1 round-trip no grafo
+        ProfileSocial social = socialGraph.getProfileSocial(targetUserId, viewerUserId);
+
         return new EnrichedProfile(
                 user, stats, recommendations, recentComments, recentHistory,
                 settings.getCommentVisibility(), settings.getViewHistoryVisibility(),
-                settings.getLibraryVisibility(), settings.getAdultContentPreference(), isOwner
+                settings.getLibraryVisibility(), settings.getAdultContentPreference(),
+                social, isOwner
         );
     }
 }

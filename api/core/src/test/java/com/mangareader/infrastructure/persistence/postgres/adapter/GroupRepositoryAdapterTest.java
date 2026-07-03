@@ -205,6 +205,31 @@ class GroupRepositoryAdapterTest {
         }
 
         @Test
+        @DisplayName("DT-48: findGroupsBySupporterUserId retorna só grupos seguidos (SUPPORTER), não os de MEMBER")
+        void deveRetornarGruposSeguidos() {
+            var supporter = entityManager.persistAndFlush(
+                    User.builder()
+                            .name("Seguidor")
+                            .email("seguidor@email.com")
+                            .passwordHash("hash")
+                            .build()
+            );
+            groupB.getGroupUsers().add(GroupUser.builder()
+                    .group(groupB)
+                    .user(supporter)
+                    .type(GroupUserType.SUPPORTER)
+                    .build());
+            entityManager.persistAndFlush(groupB);
+
+            var followed = groupRepository.findGroupsBySupporterUserId(supporter.getId());
+
+            assertThat(followed).hasSize(1);
+            assertThat(followed.get(0).getUsername()).isEqualTo("scan-naruto");
+            // MEMBER não conta como seguido
+            assertThat(groupRepository.findGroupsBySupporterUserId(leader.getId())).isEmpty();
+        }
+
+        @Test
         @DisplayName("Deve retornar grupos em que o usuário não é membro")
         void deveRetornarGruposDisponiveis() {
             var available = groupRepository.findAvailableGroupsForUser(leader.getId());

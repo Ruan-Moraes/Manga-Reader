@@ -101,6 +101,11 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public List<Group> findGroupsBySupporterUserId(UUID userId) {
+        return repository.findGroupsBySupporterUserId(userId);
+    }
+
+    @Override
     public List<Group> findAvailableGroupsForUser(UUID userId) {
         return repository.findAvailableGroupsForUser(userId);
     }

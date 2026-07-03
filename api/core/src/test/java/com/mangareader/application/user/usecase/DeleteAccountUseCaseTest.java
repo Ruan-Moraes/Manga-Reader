@@ -27,6 +27,7 @@ import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupUserType;
+import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -45,6 +46,9 @@ class DeleteAccountUseCaseTest {
 
     @Mock
     private GroupRepositoryPort groupRepository;
+
+    @Mock
+    private SocialGraphPort socialGraph;
 
     @InjectMocks
     private DeleteAccountUseCase useCase;
