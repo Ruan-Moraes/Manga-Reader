@@ -48,7 +48,11 @@ const Groups = () => {
 
             <div className="mb-[18px] flex flex-wrap gap-2">
                 <div className="relative min-w-[220px] flex-1">
-                    <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-mr-tertiary" strokeWidth={2} aria-hidden="true" />
+                    <Search
+                        className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-mr-tertiary"
+                        strokeWidth={2}
+                        aria-hidden="true"
+                    />
                     <input
                         value={query}
                         onChange={e => setQuery(e.target.value)}
@@ -61,13 +65,13 @@ const Groups = () => {
             </div>
 
             {isLoading ? (
-                <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+                <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(366px, 1fr))' }}>
                     {Array.from({ length: 6 }, (_, i) => (
                         <div key={i} className="h-[230px] animate-mr-pulse rounded-mr-sm border border-[#333] bg-mr-gray-900" />
                     ))}
                 </div>
             ) : (
-                <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))' }}>
+                <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(366px, 100%), 1fr))' }}>
                     {visible.map(g => (
                         <GroupCard
                             key={g.id}

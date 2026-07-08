@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Modal } from '@ui/Modal';
-import { Button } from '@ui/Button';
+import { ModalActions } from '@ui/ModalActions';
 import { Input } from '@ui/Input';
 import { Select } from '@ui/Select';
 import { Textarea } from '@ui/Textarea';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 
 type BanUserModalProps = {
     isOpen: boolean;
@@ -21,13 +22,16 @@ const BanUserModal = ({ isOpen, onClose, onConfirm, userName, isSubmitting }: Ba
     const [duration, setDuration] = useState('permanent');
     const [customDays, setCustomDays] = useState('7');
 
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { reason, duration, customDays });
+
     useEffect(() => {
         if (isOpen) {
             setReason('');
             setDuration('permanent');
             setCustomDays('7');
+            resetDirty();
         }
-    }, [isOpen]);
+    }, [isOpen, resetDirty]);
 
     const handleConfirm = () => {
         if (!reason.trim()) return;
@@ -50,15 +54,18 @@ const BanUserModal = ({ isOpen, onClose, onConfirm, userName, isSubmitting }: Ba
             title={t('banUser.title', { name: userName })}
             size="sm"
             danger
+            loading={isSubmitting}
+            confirmClose={dirty && !isSubmitting}
             footer={
-                <>
-                    <Button variant="ghost" size="sm" onClick={onClose}>
-                        {t('banUser.cancel')}
-                    </Button>
-                    <Button variant="ghost" size="sm" danger disabled={!reason.trim()} loading={isSubmitting} onClick={handleConfirm}>
-                        {t('banUser.confirm')}
-                    </Button>
-                </>
+                <ModalActions
+                    cancelLabel={t('banUser.cancel')}
+                    onCancel={onClose}
+                    submitLabel={t('banUser.confirm')}
+                    onSubmit={handleConfirm}
+                    submitDisabled={!reason.trim()}
+                    submitting={isSubmitting}
+                    danger
+                />
             }
         >
             <div className="flex flex-col gap-4">

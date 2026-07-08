@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Users, Book, FileText, Calendar, Tag, Layers, DollarSign, CreditCard, PenTool, Building2, X } from 'lucide-react';
+import { Home, Users, Book, BookOpen, FileText, Calendar, Tag, Layers, DollarSign, CreditCard, PenTool, Building2, X } from 'lucide-react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
@@ -44,6 +44,11 @@ const SECTIONS: NavSection[] = [
                 to: `${BASE}/titles`,
                 labelKey: 'sidebar.titles',
                 icon: <Book size={18} />,
+            },
+            {
+                to: `${BASE}/chapters`,
+                labelKey: 'sidebar.chapters',
+                icon: <BookOpen size={18} />,
             },
             {
                 to: `${BASE}/tags`,
@@ -140,12 +145,12 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
     return (
         <>
             {isOpen && (
-                <div className="fixed inset-0 z-40 bg-[rgba(22,22,22,0.75)] backdrop-blur-mr lg:hidden" onClick={onClose} aria-hidden="true" />
+                <div className="fixed inset-0 z-mr-mobile-tab bg-[rgba(22,22,22,0.75)] backdrop-blur-mr lg:hidden" onClick={onClose} aria-hidden="true" />
             )}
             <aside
                 aria-label={t('sidebar.brand')}
                 className={`
-                    fixed top-0 left-0 z-50 flex flex-col w-[248px] h-full px-2.5 py-3 border-r bg-mr-primary border-mr-border
+                    fixed top-0 left-0 z-mr-header flex flex-col w-[248px] h-full px-2.5 py-3 border-r bg-mr-primary border-mr-border
                     transition-transform duration-200 ease-in-out overflow-y-auto
                     lg:static lg:translate-x-0 lg:h-full lg:shrink-0
                     ${isOpen ? 'translate-x-0' : '-translate-x-full'}

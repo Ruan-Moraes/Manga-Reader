@@ -80,7 +80,7 @@ const AdminGroupDetailModal = ({ isOpen, onClose, groupId, onEdit, onDelete }: A
                         <div className="h-32 animate-mr-pulse rounded-mr-sm bg-mr-gray-800" />
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-4 p-2">
+                    <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-4 border-b border-mr-gray-900 pb-4">
                             <Avatar name={name} size={56} />
                             <div className="min-w-0">

@@ -39,7 +39,8 @@ public class AddWorkToGroupUseCase {
 
     @Transactional
     public Group execute(AddWorkInput input) {
-        Group group = groupRepository.findById(input.groupId())
+        // Fetch join de groupUsers/user: o mapper roda fora da sessão (open-in-view off).
+        Group group = groupRepository.findByIdWithUsers(input.groupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", input.groupId()));
 
         verifyMembership(group, input.userId());

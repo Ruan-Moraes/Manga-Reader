@@ -70,7 +70,7 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Novo Nome"), null, null, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -88,7 +88,7 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Novo Nome"), java.util.Map.of("pt-BR", "Nova desc"), "new-logo.png", "new-banner.png", "https://new.com");
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -108,7 +108,7 @@ class UpdateGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Atualizado"), null, null, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -128,7 +128,7 @@ class UpdateGroupUseCaseTest {
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
             var input = new UpdateGroupInput(GROUP_ID, LEADER_ID, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> updateGroupUseCase.execute(input))
@@ -143,7 +143,7 @@ class UpdateGroupUseCaseTest {
             Group group = buildGroupWithLeader();
             UUID outroUsuario = UUID.randomUUID();
             var input = new UpdateGroupInput(GROUP_ID, outroUsuario, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> updateGroupUseCase.execute(input))
@@ -161,7 +161,7 @@ class UpdateGroupUseCaseTest {
             group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
             var input = new UpdateGroupInput(GROUP_ID, membroId, java.util.Map.of("pt-BR", "Novo"), null, null, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> updateGroupUseCase.execute(input))

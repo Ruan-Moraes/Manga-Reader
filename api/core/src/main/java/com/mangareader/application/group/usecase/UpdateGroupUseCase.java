@@ -35,7 +35,8 @@ public class UpdateGroupUseCase {
 
     @Transactional
     public Group execute(UpdateGroupInput input) {
-        Group group = groupRepository.findById(input.groupId())
+        // Fetch join de groupUsers/user: o mapper roda fora da sessão (open-in-view off).
+        Group group = groupRepository.findByIdWithUsers(input.groupId())
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", input.groupId()));
 
         verifyLeader(group, input.userId());
@@ -43,7 +44,10 @@ public class UpdateGroupUseCase {
         GroupPatcher.apply(group, input.name(), input.description(),
                 input.logo(), input.banner(), input.website());
 
-        return groupRepository.save(group);
+        Group saved = groupRepository.save(group);
+        saved.getTranslatedWorks().size();
+
+        return saved;
     }
 
     private void verifyLeader(Group group, UUID userId) {

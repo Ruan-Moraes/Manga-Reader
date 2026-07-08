@@ -43,8 +43,7 @@ export const Drawer = ({ open, onClose, side = 'right', width = 380, top = 0, ti
     return (
         <>
             <div
-                className="fixed inset-0 animate-mr-overlay bg-[rgba(22,22,22,0.75)] backdrop-blur-mr"
-                style={{ zIndex: 60 }}
+                className="fixed inset-0 z-mr-drawer animate-mr-overlay bg-[rgba(22,22,22,0.75)] backdrop-blur-mr"
                 onClick={onClose}
                 aria-hidden="true"
             />
@@ -54,12 +53,11 @@ export const Drawer = ({ open, onClose, side = 'right', width = 380, top = 0, ti
                 role="dialog"
                 aria-modal="true"
                 aria-label={title}
-                className={`fixed flex flex-col overflow-hidden border-mr-border bg-mr-gray-900 outline-none ${borderSide} ${slideAnim}`}
+                className={`fixed z-mr-drawer flex flex-col overflow-hidden border-mr-border bg-mr-gray-900 outline-none ${borderSide} ${slideAnim}`}
                 style={{
                     top,
                     height: `calc(100dvh - ${top}px)`,
                     width: `min(${width}px, 90vw)`,
-                    zIndex: 61,
                 }}
             >
                 {title && (

@@ -27,7 +27,8 @@ public class SupportGroupUseCase {
 
     @Transactional
     public Group execute(UUID groupId, UUID userId) {
-        Group group = groupRepository.findById(groupId)
+        // Fetch join de groupUsers/user: o mapper roda fora da sessão (open-in-view off).
+        Group group = groupRepository.findByIdWithUsers(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
 
         User user = userRepository.findById(userId)
@@ -48,6 +49,9 @@ public class SupportGroupUseCase {
 
         group.getGroupUsers().add(supporter);
 
-        return groupRepository.save(group);
+        Group saved = groupRepository.save(group);
+        saved.getTranslatedWorks().size();
+
+        return saved;
     }
 }

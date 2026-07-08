@@ -2,7 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { Trash2 } from 'lucide-react';
 
 import { Modal } from '@ui/Modal';
+import { ModalActions } from '@ui/ModalActions';
 import { Button } from '@ui/Button';
+import { FormRow } from '@ui/FormRow';
 import { Switch } from '@ui/Switch';
 import { Input } from '@ui/Input';
 import { Select } from '@ui/Select';
@@ -56,6 +58,7 @@ const NewsFormModal =({ isOpen, onClose, onSubmit, news, isSubmitting, onDelete 
         contentTab,
         setContentTab,
         ptTitle,
+        dirty,
         handleSubmit,
         handleContentChange,
     } = useNewsFormModalState(news, isOpen, onSubmit);
@@ -70,28 +73,29 @@ const NewsFormModal =({ isOpen, onClose, onSubmit, news, isSubmitting, onDelete 
             onClose={onClose}
             title={news ? t('newsForm.editTitle', 'Editar Notícia') : t('newsForm.newTitle', 'Nova Notícia')}
             description={t('dashboard.news.form.modalSubtitle')}
-            size="lg"
+            size="xl"
+            loading={isSubmitting}
+            confirmClose={dirty && !isSubmitting}
             footer={
-                <div className="flex w-full flex-wrap items-center justify-between gap-2.5">
-                    <div>
-                        {isEditing && onDelete && (
+                <ModalActions
+                    cancelLabel={t('common.cancel', 'Cancelar')}
+                    onCancel={onClose}
+                    submitLabel={t('common.save', 'Salvar')}
+                    onSubmit={save}
+                    submitDisabled={!ptTitle}
+                    submitting={isSubmitting}
+                    leftAction={
+                        isEditing &&
+                        onDelete && (
                             <Button variant="ghost" size="sm" danger icon={Trash2} onClick={onDelete}>
                                 {t('common.delete')}
                             </Button>
-                        )}
-                    </div>
-                    <div className="flex gap-2.5">
-                        <Button variant="ghost" size="sm" onClick={onClose}>
-                            {t('common.cancel', 'Cancelar')}
-                        </Button>
-                        <Button variant="primary" size="sm" disabled={!ptTitle} loading={isSubmitting} onClick={save}>
-                            {t('common.save', 'Salvar')}
-                        </Button>
-                    </div>
-                </div>
+                        )
+                    }
+                />
             }
         >
-            <div className="flex flex-col gap-4 p-2">
+            <div className="flex flex-col gap-4">
                 <LocalizedTextInput label={t('newsForm.title', 'Título')} value={title} onChange={setTitle} maxLength={300} />
 
                 <Field label={t('newsForm.category', 'Categoria')}>
@@ -127,23 +131,23 @@ const NewsFormModal =({ isOpen, onClose, onSubmit, news, isSubmitting, onDelete 
                     <Textarea rows={6} value={(content[contentTab] ?? []).join('\n\n')} onChange={e => handleContentChange(e.target.value)} />
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <FormRow columns={2}>
                     <Field label={t('newsForm.coverImage', 'Imagem de capa (URL)')}>
                         <Input type="text" placeholder="https://..." value={coverImage} onChange={e => setCoverImage(e.target.value)} />
                     </Field>
                     <Field label={t('newsForm.source', 'Fonte')}>
                         <Input type="text" value={source} onChange={e => setSource(e.target.value)} />
                     </Field>
-                </div>
+                </FormRow>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <FormRow columns={2}>
                     <Field label={t('newsForm.author', 'Autor')}>
                         <Input type="text" value={authorName} onChange={e => setAuthorName(e.target.value)} />
                     </Field>
                     <Field label={t('newsForm.readTime', 'Tempo de leitura (min)')}>
                         <Input type="number" min="1" value={String(readTime)} onChange={e => setReadTime(parseInt(e.target.value, 10) || 1)} />
                     </Field>
-                </div>
+                </FormRow>
 
                 <Field label={t('newsForm.tags', 'Tags (separadas por vírgula)')}>
                     <Input type="text" value={tags} onChange={e => setTags(e.target.value)} />

@@ -123,7 +123,7 @@ public class GroupMapper {
 
         return works.stream()
                 .map(w -> new GroupWorkResponse(
-                        w.getId().toString(),
+                        w.getTitleId(),
                         w.getTitle(),
                         w.getCover(),
                         w.getChapters(),

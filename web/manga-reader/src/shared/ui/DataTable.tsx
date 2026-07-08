@@ -1,3 +1,5 @@
+// TODO: Dividir responsabilidades
+
 import { ReactNode } from 'react';
 import { ChevronDown, ChevronUp, RotateCw, Search } from 'lucide-react';
 
@@ -52,11 +54,21 @@ type DataTableProps<T> = {
     searchButtonLabel?: string;
     /** Conteúdo à direita da toolbar (ex.: botão "Novo", filtro). */
     toolbarRight?: ReactNode;
+    /** Seleção múltipla (opt-in): renderiza coluna de checkbox à esquerda. */
+    selectable?: boolean;
+    selectedKeys?: Set<string>;
+    onToggleRow?: (key: string) => void;
+    /** Marca/desmarca todas as linhas da página atual. */
+    onToggleAll?: (keys: string[]) => void;
+    selectAllLabel?: string;
+    selectRowLabel?: (item: T) => string;
 };
 
 const hideClass = (col: { hideBelow?: HideBelow; hiddenOnMobile?: boolean }): string => {
     if (col.hideBelow === 'md') return 'hidden md:table-cell';
+
     if (col.hideBelow === 'sm' || col.hiddenOnMobile) return 'hidden sm:table-cell';
+
     return '';
 };
 
@@ -107,7 +119,16 @@ function DataTable<T>({
     searchPlaceholder,
     searchButtonLabel,
     toolbarRight,
+    selectable = false,
+    selectedKeys,
+    onToggleRow,
+    onToggleAll,
+    selectAllLabel,
+    selectRowLabel,
 }: DataTableProps<T>) {
+    const pageKeys = data.map(keyExtractor);
+    const allSelected = selectable && pageKeys.length > 0 && pageKeys.every(key => selectedKeys?.has(key));
+
     const handleSort = (col: Column<T>) => {
         if (!col.sortable || !onSort) return;
 
@@ -156,9 +177,25 @@ function DataTable<T>({
         </div>
     );
 
+    // Mesmo token de accent do shared/ui/Checkbox — sem fallback hardcoded.
+    const checkboxClass = 'size-4 cursor-pointer';
+    const checkboxStyle = { accentColor: 'var(--mr-accent)' } as const;
+
     const tableHead = (
         <thead>
             <tr className="bg-mr-surface-muted">
+                {selectable && (
+                    <th className="w-10 border-b border-mr-border px-4 py-3">
+                        <input
+                            type="checkbox"
+                            aria-label={selectAllLabel}
+                            checked={allSelected}
+                            onChange={() => onToggleAll?.(pageKeys)}
+                            className={checkboxClass}
+                            style={checkboxStyle}
+                        />
+                    </th>
+                )}
                 {columns.map(col => (
                     <th
                         key={col.key}
@@ -207,6 +244,7 @@ function DataTable<T>({
                         <tbody>
                             {Array.from({ length: 6 }).map((_, r) => (
                                 <tr key={r} className="border-b border-mr-gray-900 last:border-b-0">
+                                    {selectable && <td className="px-4 py-3" />}
                                     {columns.map(col => (
                                         <td key={col.key} className={cn('px-4 py-3', hideClass(col))}>
                                             <span className="block h-3.5 animate-mr-pulse rounded-mr-xs bg-mr-gray-800" style={{ width: col.key === 'actions' ? 56 : `${55 + ((r * 7 + col.key.length * 11) % 35)}%` }} />
@@ -231,7 +269,7 @@ function DataTable<T>({
                     <tbody>
                         {data.map(item => {
                             const itemKey = keyExtractor(item);
-                            const isSelected = selectedKey !== undefined && itemKey === selectedKey;
+                            const isSelected = (selectedKey !== undefined && itemKey === selectedKey) || Boolean(selectable && selectedKeys?.has(itemKey));
 
                             return (
                                 <tr
@@ -243,6 +281,18 @@ function DataTable<T>({
                                         isSelected && 'bg-mr-accent-10',
                                     )}
                                 >
+                                    {selectable && (
+                                        <td className="w-10 px-4 py-3 align-middle" onClick={e => e.stopPropagation()}>
+                                            <input
+                                                type="checkbox"
+                                                aria-label={selectRowLabel?.(item)}
+                                                checked={selectedKeys?.has(itemKey) ?? false}
+                                                onChange={() => onToggleRow?.(itemKey)}
+                                                className={checkboxClass}
+                            style={checkboxStyle}
+                                            />
+                                        </td>
+                                    )}
                                     {columns.map(col => (
                                         <td
                                             key={col.key}
@@ -261,7 +311,7 @@ function DataTable<T>({
     };
 
     return (
-        <div>
+        <div className="flex flex-col gap-4">
             {toolbar}
             <div className="overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface">{renderBody()}</div>
             {!isError && !isLoading && data.length > 0 && totalPages > 1 && (

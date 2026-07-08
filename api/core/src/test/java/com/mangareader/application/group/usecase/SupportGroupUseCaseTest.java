@@ -71,7 +71,7 @@ class SupportGroupUseCaseTest {
         @DisplayName("Deve adicionar usuário como apoiador do grupo")
         void deveAdicionarApoiador() {
             Group group = buildGroup();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -92,7 +92,7 @@ class SupportGroupUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))
                     .isInstanceOf(ResourceNotFoundException.class)
@@ -103,7 +103,7 @@ class SupportGroupUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando usuário não existe")
         void deveLancarExcecaoQuandoUsuarioNaoExiste() {
             Group group = buildGroup();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))
@@ -119,7 +119,7 @@ class SupportGroupUseCaseTest {
             group.getGroupUsers().add(
                     GroupUser.builder().group(group).user(user).type(GroupUserType.SUPPORTER).build()
             );
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
             assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))

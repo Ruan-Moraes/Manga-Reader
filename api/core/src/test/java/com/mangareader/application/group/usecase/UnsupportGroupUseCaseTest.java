@@ -69,7 +69,7 @@ class UnsupportGroupUseCaseTest {
         @DisplayName("Deve remover apoiador do grupo")
         void deveRemoverApoiador() {
             Group group = buildGroupWithSupporter();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             Group result = unsupportGroupUseCase.execute(GROUP_ID, SUPPORTER_ID);
@@ -86,7 +86,7 @@ class UnsupportGroupUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> unsupportGroupUseCase.execute(GROUP_ID, SUPPORTER_ID))
                     .isInstanceOf(ResourceNotFoundException.class)
@@ -98,7 +98,7 @@ class UnsupportGroupUseCaseTest {
         void deveLancarExcecaoQuandoNaoEApoiador() {
             Group group = buildGroupWithSupporter();
             UUID estranho = UUID.randomUUID();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             assertThatThrownBy(() -> unsupportGroupUseCase.execute(GROUP_ID, estranho))
                     .isInstanceOf(BusinessRuleException.class)
@@ -109,7 +109,7 @@ class UnsupportGroupUseCaseTest {
         @DisplayName("Deve lançar BusinessRuleException 400 quando membro tenta usar unsupport")
         void deveLancarExcecaoQuandoMembroTentaUnsupport() {
             Group group = buildGroupWithSupporter();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             assertThatThrownBy(() -> unsupportGroupUseCase.execute(GROUP_ID, LEADER_ID))
                     .isInstanceOf(BusinessRuleException.class)

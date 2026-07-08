@@ -51,6 +51,8 @@ export const API_URLS = {
 
     ADMIN_USERS: `${BASE}/api/admin/users`,
     ADMIN_TITLES: `${BASE}/api/admin/titles`,
+    /** Reservado: usado apenas pelo futuro service axios de capítulos (hoje o gateway é fake — DT-44). */
+    ADMIN_CHAPTERS: `${BASE}/api/admin/chapters`,
     ADMIN_NEWS: `${BASE}/api/admin/news`,
     ADMIN_EVENTS: `${BASE}/api/admin/events`,
     ADMIN_GROUPS: `${BASE}/api/admin/groups`,

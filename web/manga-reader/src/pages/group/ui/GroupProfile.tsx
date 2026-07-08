@@ -102,6 +102,7 @@ const GroupProfile = () => {
                             @{group.username} · {t('profile.since', { year: group.foundedYear })}
                         </div>
                     </div>
+                    {/* TODO: Verificar se o usuario estiver logado, se nao, nem chamar a rota e usar o botao padrao da aplicacao.*/}
                     <button
                         type="button"
                         onClick={() => setFollowing(f => !f)}

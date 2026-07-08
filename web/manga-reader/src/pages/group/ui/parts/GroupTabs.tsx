@@ -1,3 +1,5 @@
+// TODO: Refotara isso e dividir as responsabilidades em arquivos.
+
 import { useTranslation } from 'react-i18next';
 import { Compass, MessagesSquare, Newspaper, type LucideIcon } from 'lucide-react';
 
@@ -44,7 +46,9 @@ export const GroupAbout = ({ group }: { group: Group }) => {
 
             <aside className="self-start rounded-mr-sm border border-[#333] bg-mr-gray-900 p-3.5">
                 <Heading>{t('profile.whereToFind')}</Heading>
+                {/* TODO: Transforma em link, porem quando o usuario clicar vai abrir um modal falando que esta saindo do dominio do manga reader*/}
                 {group.website && <SocialRow icon={Newspaper} label={t('profile.socialSite')} value={group.website} />}
+                {/* TODO: Transforma em link, porem quando o usuario clicar vai abrir um modal falando que esta saindo do dominio do manga reader*/}
                 {group.username && <SocialRow icon={Compass} label="Twitter" value={`@${group.username}`} />}
                 {!group.website && !group.username && <div className="py-2 text-mr-small text-mr-fg-muted">{t('profile.noSocials')}</div>}
                 <span className="hidden">
@@ -57,6 +61,7 @@ export const GroupAbout = ({ group }: { group: Group }) => {
 
 export const GroupWorks = ({ group, onOpenTitle }: { group: Group; onOpenTitle: (id: string) => void }) => {
     const { t } = useTranslation('group');
+
     const works = group.translatedWorks ?? [];
 
     if (!works.length) return <div className="px-5 py-10 text-center text-mr-small text-mr-fg-muted">{t('profile.worksEmpty')}</div>;
@@ -85,6 +90,7 @@ export const GroupTeam = ({ group }: { group: Group }) => {
         <div>
             <Heading>{t('profile.teamCount', { count: group.members.length })}</Heading>
             <div className="grid gap-2.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+                {/* TODO: Ser um link que vai levar na pagina do usuario */}
                 {group.members.map(m => (
                     <div key={m.id} className="flex items-center gap-3 rounded-mr-sm border border-[#333] bg-mr-gray-900 p-3">
                         <Avatar src={m.avatar || undefined} name={m.name} size={40} />

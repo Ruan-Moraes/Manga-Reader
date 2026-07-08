@@ -69,7 +69,7 @@ class RemoveWorkFromGroupUseCaseTest {
         void deveRemoverObraEDecrementarTotal() {
             // Arrange
             Group group = buildGroupWithLeaderAndWork();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -86,7 +86,7 @@ class RemoveWorkFromGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeaderAndWork();
             group.setTotalTitles(0); // Simula inconsistência
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -101,7 +101,7 @@ class RemoveWorkFromGroupUseCaseTest {
         void devePersistirAposRemocao() {
             // Arrange
             Group group = buildGroupWithLeaderAndWork();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -120,7 +120,7 @@ class RemoveWorkFromGroupUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> removeWorkFromGroupUseCase.execute(GROUP_ID, LEADER_ID, TITLE_ID))
@@ -137,7 +137,7 @@ class RemoveWorkFromGroupUseCaseTest {
             User membro = UserMock.withId(membroId);
             group.getGroupUsers().add(GroupUser.builder().group(group).user(membro).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> removeWorkFromGroupUseCase.execute(GROUP_ID, membroId, TITLE_ID))
@@ -150,7 +150,7 @@ class RemoveWorkFromGroupUseCaseTest {
         void deveLancarExcecaoQuandoObraNaoExiste() {
             // Arrange
             Group group = buildGroupWithLeaderAndWork();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> removeWorkFromGroupUseCase.execute(GROUP_ID, LEADER_ID, "title-inexistente"))

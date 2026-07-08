@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { http, HttpResponse } from 'msw';
 
 import { createTestQueryClient, TestProviders } from '@/test/helpers/renderWithProviders';
 import { server } from '@/test/mocks/server';
+import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 import { DEFAULT_USER_SETTINGS, SETTINGS_STORAGE_KEY } from '@entities/user';
 
 import Chapter from '../Chapter';
@@ -19,6 +20,8 @@ const renderChapter = (titleId = '1', chapter = '1') => {
             <MemoryRouter initialEntries={[`/titles/${titleId}/chapters/${chapter}`]}>
                 <Routes>
                     <Route path="/titles/:titleId/chapters/:chapter" element={<Chapter />} />
+                    {/* useAppNavigate prefixa WEB_BASE_URL — rota extra para navegações internas */}
+                    <Route path={`${WEB_BASE_URL}/titles/:titleId/chapters/:chapter`} element={<Chapter />} />
                 </Routes>
             </MemoryRouter>
         </TestProviders>,
@@ -110,6 +113,47 @@ describe('Chapter (Reader)', () => {
         expect(screen.getByRole('button', { name: /^ltr$/i }).getAttribute('aria-pressed')).toBe('true');
         expect(screen.getByRole('button', { name: /original/i }).getAttribute('aria-pressed')).toBe('true');
         expect(screen.getByRole('button', { name: /papel/i }).getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('does not navigate past the latest chapter', async () => {
+        const user = userEvent.setup();
+
+        server.use(
+            http.get('*/api/titles/:id', ({ params }) =>
+                HttpResponse.json({
+                    data: { id: params.id as string, name: 'Berserk', latestChapterNumber: '6', chaptersCount: 6 },
+                    success: true,
+                }),
+            ),
+        );
+
+        renderChapter('2', '6');
+        await screen.findByText('Berserk');
+
+        await user.click(screen.getByRole('button', { name: /próximo capítulo/i }));
+
+        expect(screen.getAllByText(/cap\. 6/i).length).toBeGreaterThan(0);
+        expect(screen.queryByText(/cap\. 7/i)).not.toBeInTheDocument();
+    });
+
+    it('navigates to the next chapter when below the latest', async () => {
+        const user = userEvent.setup();
+
+        server.use(
+            http.get('*/api/titles/:id', ({ params }) =>
+                HttpResponse.json({
+                    data: { id: params.id as string, name: 'Berserk', latestChapterNumber: '6', chaptersCount: 6 },
+                    success: true,
+                }),
+            ),
+        );
+
+        renderChapter('2', '5');
+        await screen.findByText('Berserk');
+
+        await user.click(within(screen.getByRole('toolbar')).getByRole('button', { name: /próximo capítulo/i }));
+
+        expect(await screen.findAllByText(/cap\. 6/i)).not.toHaveLength(0);
     });
 
     it('writes reader drawer changes back to global system settings', async () => {

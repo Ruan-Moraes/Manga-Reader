@@ -3,6 +3,13 @@
         "loading": "Cargando...",
         "loadingMessage": "Por favor, espera un momento."
     },
+    "modal": {
+        "close": "Cerrar",
+        "unsavedTitle": "¿Descartar cambios?",
+        "unsavedBody": "Hay cambios sin guardar. Si cierras ahora, se perderán.",
+        "unsavedDiscard": "Descartar",
+        "unsavedKeepEditing": "Seguir editando"
+    },
     "guard": {
         "authRequired": "Acceso denegado. Debes iniciar sesión para acceder a esta página.",
         "dashboardForbidden": "No tienes permiso para acceder al panel."

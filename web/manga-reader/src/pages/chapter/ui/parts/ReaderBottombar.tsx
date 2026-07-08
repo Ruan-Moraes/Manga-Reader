@@ -8,6 +8,8 @@ interface ReaderBottombarProps {
     page: number;
     fillPct: number;
     hidden: boolean;
+    /** Total de páginas do capítulo (real ou fallback). Default: placeholder legado. */
+    total?: number;
     onPrevPage: () => void;
     onNextPage: () => void;
     onPrevChapter: () => void;
@@ -15,7 +17,7 @@ interface ReaderBottombarProps {
     onScrub: (page: number) => void;
 }
 
-export const ReaderBottombar = ({ page, fillPct, hidden, onPrevPage, onNextPage, onPrevChapter, onNextChapter, onScrub }: ReaderBottombarProps) => {
+export const ReaderBottombar = ({ page, fillPct, hidden, total = TOTAL, onPrevPage, onNextPage, onPrevChapter, onNextChapter, onScrub }: ReaderBottombarProps) => {
     const { t } = useTranslation('manga');
     const trackRef = useRef<HTMLDivElement>(null);
     const [dragging, setDragging] = useState(false);
@@ -24,7 +26,7 @@ export const ReaderBottombar = ({ page, fillPct, hidden, onPrevPage, onNextPage,
         const rect = trackRef.current?.getBoundingClientRect();
         if (!rect) return page;
         const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-        return Math.round(ratio * (TOTAL - 1)) + 1;
+        return Math.round(ratio * (total - 1)) + 1;
     };
 
     const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -62,16 +64,16 @@ export const ReaderBottombar = ({ page, fillPct, hidden, onPrevPage, onNextPage,
                     className={`reader-scrubber-track ${dragging ? 'dragging' : ''}`}
                     role="slider"
                     tabIndex={0}
-                    aria-label={t('reader.pageSliderAria', { current: page, total: TOTAL })}
+                    aria-label={t('reader.pageSliderAria', { current: page, total })}
                     aria-valuemin={1}
-                    aria-valuemax={TOTAL}
+                    aria-valuemax={total}
                     aria-valuenow={page}
                     onPointerDown={handlePointerDown}
                     onPointerMove={handlePointerMove}
                     onPointerUp={endDrag}
                     onPointerCancel={endDrag}
                     onKeyDown={e => {
-                        if (e.key === 'ArrowRight') onScrub(Math.min(TOTAL, page + 1));
+                        if (e.key === 'ArrowRight') onScrub(Math.min(total, page + 1));
                         if (e.key === 'ArrowLeft') onScrub(Math.max(1, page - 1));
                     }}
                 >
@@ -79,7 +81,7 @@ export const ReaderBottombar = ({ page, fillPct, hidden, onPrevPage, onNextPage,
                     <div className="reader-scrubber-thumb" style={{ left: `${fillPct}%` }} />
                 </div>
                 <div className="reader-scrubber-stamp">
-                    <strong>{String(page).padStart(2, '0')}</strong> / {TOTAL}
+                    <strong>{String(page).padStart(2, '0')}</strong> / {total}
                 </div>
             </div>
 

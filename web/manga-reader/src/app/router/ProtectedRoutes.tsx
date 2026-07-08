@@ -10,6 +10,9 @@ const DashboardOverview = lazy(() => import('@pages/dashboard/ui/DashboardOvervi
 const DashboardUsers = lazy(() => import('@pages/dashboard/ui/DashboardUsers'));
 const DashboardUserDetail = lazy(() => import('@pages/dashboard/ui/DashboardUserDetail'));
 const DashboardTitles = lazy(() => import('@pages/dashboard/ui/DashboardTitles'));
+const DashboardChapters = lazy(() => import('@pages/dashboard/ui/DashboardChapters'));
+const DashboardChapterDetail = lazy(() => import('@pages/dashboard/ui/DashboardChapterDetail'));
+const DashboardChapterAnalytics = lazy(() => import('@pages/dashboard/ui/DashboardChapterAnalytics'));
 const DashboardNews = lazy(() => import('@pages/dashboard/ui/DashboardNews'));
 const DashboardEvents = lazy(() => import('@pages/dashboard/ui/DashboardEvents'));
 const DashboardGroups = lazy(() => import('@pages/dashboard/ui/DashboardGroups'));
@@ -62,6 +65,10 @@ export const adminRoute = [
             { path: 'users', element: <DashboardUsers /> },
             { path: 'users/:userId', element: <DashboardUserDetail /> },
             { path: 'titles', element: <DashboardTitles /> },
+            { path: 'chapters', element: <DashboardChapters /> },
+            // 'chapters/analytics' precisa vir antes de 'chapters/:chapterId'.
+            { path: 'chapters/analytics', element: <DashboardChapterAnalytics /> },
+            { path: 'chapters/:chapterId', element: <DashboardChapterDetail /> },
             { path: 'news', element: <DashboardNews /> },
             { path: 'events', element: <DashboardEvents /> },
             { path: 'groups', element: <DashboardGroups /> },

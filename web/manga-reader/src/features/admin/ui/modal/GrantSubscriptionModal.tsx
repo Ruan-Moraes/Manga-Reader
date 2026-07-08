@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Modal } from '@ui/Modal';
-import { Button } from '@ui/Button';
+import { ModalActions } from '@ui/ModalActions';
 import { Input } from '@ui/Input';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 
 type GrantSubscriptionModalProps = {
     isOpen: boolean;
@@ -17,12 +18,15 @@ const GrantSubscriptionModal = ({ isOpen, onClose, onSubmit, isSubmitting }: Gra
     const [userId, setUserId] = useState('');
     const [planId, setPlanId] = useState('');
 
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { userId, planId });
+
     useEffect(() => {
         if (isOpen) {
             setUserId('');
             setPlanId('');
+            resetDirty();
         }
-    }, [isOpen]);
+    }, [isOpen, resetDirty]);
 
     const valid = userId.trim().length > 0 && planId.trim().length > 0;
 
@@ -36,18 +40,20 @@ const GrantSubscriptionModal = ({ isOpen, onClose, onSubmit, isSubmitting }: Gra
             onClose={onClose}
             title={t('grantSubscription.title')}
             size="sm"
+            loading={isSubmitting}
+            confirmClose={dirty && !isSubmitting}
             footer={
-                <>
-                    <Button variant="ghost" size="sm" onClick={onClose}>
-                        {t('common.cancel')}
-                    </Button>
-                    <Button variant="primary" size="sm" disabled={!valid} loading={isSubmitting} onClick={save}>
-                        {t('grantSubscription.confirm')}
-                    </Button>
-                </>
+                <ModalActions
+                    cancelLabel={t('common.cancel')}
+                    onCancel={onClose}
+                    submitLabel={t('grantSubscription.confirm')}
+                    onSubmit={save}
+                    submitDisabled={!valid}
+                    submitting={isSubmitting}
+                />
             }
         >
-            <div className="flex flex-col gap-4 p-2">
+            <div className="flex flex-col gap-4">
                 <label className="flex flex-col gap-1.5">
                     <span className="text-mr-small font-mr-bold text-mr-fg-muted">{t('grantSubscription.userIdLabel')}</span>
                     <Input type="text" value={userId} onChange={e => setUserId(e.target.value)} placeholder={t('grantSubscription.userIdPlaceholder')} />

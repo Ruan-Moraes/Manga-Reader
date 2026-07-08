@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { readStoredUserSettings, subscribeStoredUserSettings, updateStoredUserSettings, SETTINGS_STORAGE_KEY, type UserSettings } from '@entities/user';
+import { readerProgressGateway } from '@entities/chapter';
 
 import { TOTAL_PAGES } from './readerData';
 
@@ -22,7 +23,6 @@ interface ReaderPrefs {
 }
 
 const PREFS_KEY = 'reader:prefs';
-const posKey = (titleId: string | undefined) => `reader:pos:${titleId ?? 'unknown'}`;
 
 const DEFAULT_PREFS: ReaderPrefs = {
     mode: 'vertical',
@@ -87,20 +87,21 @@ const readPrefs = (): ReaderPrefs => {
     }
 };
 
-const readSavedPage = (titleId: string | undefined, chapter: number): number => {
-    try {
-        const raw = localStorage.getItem(posKey(titleId));
-        if (!raw) return 1;
-        const pos = JSON.parse(raw) as { chapter?: number; page?: number };
-        return pos.chapter === chapter && pos.page ? Math.min(TOTAL, Math.max(1, pos.page)) : 1;
-    } catch {
-        return 1;
-    }
+/** Continuação da última página lida (mesmas chaves legadas, via gateway). */
+const readSavedPage = (titleId: string | undefined, chapter: number, total: number): number => {
+    if (!titleId) return 1;
+    const pos = readerProgressGateway.getProgress(titleId);
+    return pos && pos.chapter === chapter && pos.page ? Math.min(total, Math.max(1, pos.page)) : 1;
 };
 
-export function useChapterReader(titleId: string | undefined, chapterParam: string | undefined) {
+export function useChapterReader(titleId: string | undefined, chapterParam: string | undefined, maxChapter?: number, totalPages?: number) {
     const navigate = useAppNavigate();
     const chapter = Number(chapterParam) || 1;
+    const lastChapter = maxChapter && maxChapter > 0 ? maxChapter : undefined;
+    // Total de páginas real (gateway) com fallback no placeholder legado.
+    // `totalPages` chega assíncrono: undefined enquanto carrega/fallback.
+    const hasRealTotal = totalPages !== undefined && totalPages > 0;
+    const total = hasRealTotal ? totalPages : TOTAL_PAGES;
 
     const initialPrefs = useMemo(readPrefs, []);
 
@@ -110,7 +111,9 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
 
-    const [page, setPage] = useState(() => readSavedPage(titleId, chapter));
+    // Sem clamp na restauração: o total real ainda não chegou no mount — o
+    // efeito abaixo re-clampa quando ele resolve (evita perder o bookmark).
+    const [page, setPage] = useState(() => readSavedPage(titleId, chapter, Number.MAX_SAFE_INTEGER));
     const [saved, setSaved] = useState(false);
 
     const [topbarHidden, setTopbarHidden] = useState(false);
@@ -126,7 +129,7 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const applyingExternalPrefs = useRef(false);
 
     const step = mode === 'double' ? 2 : 1;
-    const lastPage = mode === 'vertical' ? TOTAL : TOTAL + 1;
+    const lastPage = mode === 'vertical' ? total : total + 1;
 
     const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg }), [mode, direction, fit, gap, bg]);
 
@@ -183,14 +186,19 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         [applyPrefs, currentPrefs],
     );
 
-    // ---------- persist reading position ----------
+    // Re-clampa a página restaurada quando o total real chega (assíncrono).
     useEffect(() => {
-        try {
-            localStorage.setItem(posKey(titleId), JSON.stringify({ chapter, page }));
-        } catch {
-            /* ignore */
-        }
-    }, [titleId, chapter, page]);
+        if (hasRealTotal) setPage(p => Math.min(p, total));
+    }, [hasRealTotal, total]);
+
+    // ---------- persist reading position (contrato ReaderProgressGateway) ----------
+    useEffect(() => {
+        if (!titleId) return;
+        readerProgressGateway.saveProgress(titleId, String(chapter), page);
+        // Última página alcançada ⇒ capítulo concluído. Só com o total REAL
+        // conhecido — o fallback (18) marcaria conclusão falsa.
+        if (hasRealTotal && page >= total) readerProgressGateway.markCompleted(titleId, String(chapter));
+    }, [titleId, chapter, page, total, hasRealTotal]);
 
     // ---------- navigation ----------
     const goNext = useCallback(() => {
@@ -213,25 +221,25 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
 
     const goToPage = useCallback(
         (n: number) => {
-            const target = Math.max(1, Math.min(TOTAL, n));
+            const target = Math.max(1, Math.min(total, n));
             if (mode === 'vertical') {
                 const el = listRef.current?.querySelector(`[data-rd-page="${target}"]`);
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
             setPage(target);
         },
-        [mode],
+        [mode, total],
     );
 
     const switchChapter = useCallback(
         (delta: number) => {
-            const next = Math.max(1, chapter + delta);
+            const next = Math.min(lastChapter ?? Infinity, Math.max(1, chapter + delta));
             if (next === chapter) return;
             setChaptersOpen(false);
             navigate(ROUTES.CHAPTER(titleId ?? '', next));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         },
-        [chapter, navigate, titleId],
+        [chapter, lastChapter, navigate, titleId],
     );
 
     const pickChapter = useCallback(
@@ -296,12 +304,15 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         return () => window.removeEventListener('keydown', onKey);
     }, [goNext, goPrev, settingsOpen, chaptersOpen, commentsOpen]);
 
-    const fillPct = ((page - 1) / Math.max(1, TOTAL - 1)) * 100;
-    const isEnd = mode !== 'vertical' && page > TOTAL;
+    const fillPct = ((page - 1) / Math.max(1, total - 1)) * 100;
+    const isEnd = mode !== 'vertical' && page > total;
+    const hasNextChapter = lastChapter === undefined || chapter < lastChapter;
 
     return {
         // route-derived
         chapter,
+        hasNextChapter,
+        total,
         // prefs
         mode,
         direction,

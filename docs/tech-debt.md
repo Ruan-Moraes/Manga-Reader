@@ -1155,6 +1155,58 @@ Promovido a `@manga-reader/assets` (`package.json` privado, sem scripts) — o g
 `publicDir` relativo nos `vite.config.ts` (sem mudança de código); lockfile
 atualizado com o novo importer.
 
+### DT-57: Capítulos admin — armazenamento provisório (localStorage) a substituir pela API real
+
+**Contexto (2026-07-04).** A feature de gerenciamento de capítulos (painel admin
++ preparação do leitor) foi implementada **frontend-only**: o domínio vive em
+`web/manga-reader/src/entities/chapter/model/admin/` (types, validações puras,
+máquina de status e 3 ports — `ChapterAdminGateway`, `ChapterPublicGateway`,
+`ChapterAnalyticsGateway`) e a implementação atual é um repositório fake em
+localStorage (`entities/chapter/api/admin/`), com seed determinístico, latência
+simulada e pipeline fake de processamento de páginas. Depende de DT-44 (upload
+de arquivos) para o armazenamento real de imagens.
+
+**Dívida.** Quando o backend expor o CRUD admin de capítulos:
+1. Backend: `AdminChapterController` sob `/api/admin/**` (herda guard ADMIN),
+   status no `Chapter` Mongo (enum MAIÚSCULO + `fromValue`, DomainLabel),
+   coleção/endpoint de páginas, job de publicação agendada, soft delete.
+2. Frontend: reescrever **apenas** `entities/chapter/api/admin/chapterGateways.ts`
+   com services axios que implementem os mesmos ports (conversão de status via
+   `CHAPTER_STATUS_TO_API`); nenhum componente/hook/validação muda.
+3. Remover o fake (`localStorageChapter*.ts`) e a chave `mr:chapters:admin:v1`.
+
+**Comportamentos provisórios do fake** (não reimplementar no service real):
+- "Lazy promotion": agendado vence ⇒ publicado na leitura (no backend será job);
+- Métricas determinísticas por PRNG (no backend virão do analytics real);
+- `NewPageInput { originalFilename }` sem bytes — o upload real (DT-44) troca
+  por `File` + presigned URL e o pipeline real substitui os timers.
+
+**Prioridade:** Baixa (acompanha DT-44; sem agendamento até produção).
+
+---
+
+### DT-58: Flutuantes fora do admin ainda sem tokens de camada / portal
+
+**Contexto (2026-07-06).** A padronização dos modais admin centralizou as
+camadas visuais na escala única `--z-mr-*` (`@theme` em `styles/index.css`;
+a escala legada `:root --mr-z-*` foi removida) e resolveu o problema de
+dropdowns atrás do `<dialog>` portalando conteúdo flutuante para dentro do
+próprio dialog via `FloatingPortalContext` (`shared/ui/FloatingPortalContext.tsx`).
+`Select`, `DropdownMenu`, `TagSelectInput` (react-select, `menuPortalTarget`)
+e `EntitySearchSelect` (reescrito sobre `@radix-ui/react-popover`) já consomem
+o contexto.
+
+**Dívida (fora do escopo do admin, intencionalmente não tocada para reduzir
+blast radius):**
+- `shared/ui/Tooltip.tsx` posiciona inline (`absolute`) — dentro de um
+  contêiner com `overflow` pode cortar; migrar para o mesmo padrão de portal
+  quando for usado dentro de modais.
+- z-index numéricos hardcoded fora do admin: NavBar/NavSearch/NavMegaMenu,
+  `ChapterDropdown` (inline `zIndex: 20`), páginas de evento — rotear para
+  utilitários `z-mr-*`.
+
+**Prioridade:** Baixa (nenhum bug visível hoje; é consistência de tokens).
+
 ---
 
 ## Resumo por Prioridade
@@ -1165,7 +1217,7 @@ atualizado com o novo importer.
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 6 | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca pública), DT-08 (axe por rota — parcial), DT-50 (residuais: testes fórum + threads profundas + fase 2 drop PG), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 5 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin) |
+| **Baixa** | 7 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin), DT-57 (capítulos admin: fake localStorage → API real), DT-58 (flutuantes fora do admin sem tokens/portal) |
 | **Resolvidos 2026-07-02** | 3 | DT-53 (jest-dom × Vitest 4), DT-55 (dir `backend/`), DT-56 (`packages/assets`) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |

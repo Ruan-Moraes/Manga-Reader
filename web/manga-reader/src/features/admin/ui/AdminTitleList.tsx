@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
+import { BookOpen } from 'lucide-react';
 
 import DataTable, { type Column } from '@ui/DataTable';
 import { Badge } from '@ui/Badge';
@@ -10,7 +11,7 @@ import { getLocale } from '@shared/lib/formatters';
 
 import type { AdminTitle } from '../model/admin.types';
 import { TITLE_STATUS_TONE, statusLabelKey, toneFor } from '../model/statusTone';
-import RowActions from './parts/RowActions';
+import RowActions, { rowActionBtnClass } from './parts/RowActions';
 
 type AdminTitleListProps = {
     titles: AdminTitle[];
@@ -21,6 +22,8 @@ type AdminTitleListProps = {
     onEdit: (title: AdminTitle) => void;
     onDelete: (title: AdminTitle) => void;
     onRowClick?: (title: AdminTitle) => void;
+    /** Abre a gestão de capítulos filtrada pela obra. */
+    onManageChapters?: (title: AdminTitle) => void;
 };
 
 const formatDate = (date: string | null) => {
@@ -28,7 +31,13 @@ const formatDate = (date: string | null) => {
     return new Date(date).toLocaleDateString(getLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
-const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (title: AdminTitle) => void, onDelete: (title: AdminTitle) => void): Column<AdminTitle>[] => [
+const buildColumns = (
+    t: TFunction,
+    lang: LanguageTag,
+    onEdit: (title: AdminTitle) => void,
+    onDelete: (title: AdminTitle) => void,
+    onManageChapters?: (title: AdminTitle) => void,
+): Column<AdminTitle>[] => [
     {
         key: 'id',
         header: t('dashboard.titles.columnId'),
@@ -87,19 +96,35 @@ const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (title: AdminTitl
                 onDelete={() => onDelete(title)}
                 editLabel={t('dashboard.titles.editAriaLabel')}
                 deleteLabel={t('dashboard.titles.deleteAriaLabel')}
+                extra={
+                    onManageChapters && (
+                        <button
+                            type="button"
+                            aria-label={t('dashboard.titles.manageChaptersAriaLabel')}
+                            title={t('dashboard.titles.manageChaptersAriaLabel')}
+                            onClick={e => {
+                                e.stopPropagation();
+                                onManageChapters(title);
+                            }}
+                            className={rowActionBtnClass}
+                        >
+                            <BookOpen size={15} />
+                        </button>
+                    )
+                }
             />
         ),
     },
 ];
 
-const AdminTitleList = ({ titles, page, totalPages, isLoading, onPageChange, onEdit, onDelete, onRowClick }: AdminTitleListProps) => {
+const AdminTitleList = ({ titles, page, totalPages, isLoading, onPageChange, onEdit, onDelete, onRowClick, onManageChapters }: AdminTitleListProps) => {
     const { t, i18n } = useTranslation('admin');
     const lang = i18n.language as LanguageTag;
     const { sortedData, sortBy, sortDirection, handleSort } = useSortableData(titles);
 
     return (
         <DataTable
-            columns={buildColumns(t, lang, onEdit, onDelete)}
+            columns={buildColumns(t, lang, onEdit, onDelete, onManageChapters)}
             data={sortedData}
             keyExtractor={title => title.id}
             page={page}

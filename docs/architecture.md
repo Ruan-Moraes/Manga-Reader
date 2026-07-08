@@ -108,3 +108,29 @@ Frontend acessa: `response.data.data`
 Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `data.data` no service)
 
 **Regra**: Endpoints de listagem **devem** retornar `ApiResponse<PageResponse<T>>` com paginação. Endpoints de item único retornam `ApiResponse<T>` direto.
+
+### Capítulos admin — ports & armazenamento provisório (frontend-only, DT-57)
+
+O gerenciamento de capítulos (painel admin, páginas, métricas e leitor) foi
+implementado antes do backend correspondente existir. O contrato é isolado por
+**ports** no frontend, em `web/manga-reader/src/entities/chapter/`:
+
+- `model/admin/` — domínio puro: types (`AdminChapter`, `ChapterPage`,
+  `ChapterMetrics`), máquina de status (`draft/processing/scheduled/published/
+  hidden/unavailable/archived`), validações como funções puras que retornam
+  **codes** (i18n só na UI), e 3 ports: `ChapterAdminGateway` (CRUD, bulk,
+  reorder atômico, páginas), `ChapterPublicGateway` (leitor: só `published`,
+  `'blocked'` para o resto) e `ChapterAnalyticsGateway` (métricas).
+- `api/admin/` — implementação provisória em localStorage: seed demo
+  determinístico (PRNG mulberry32 por titleId), latência simulada, pipeline
+  fake de processamento de páginas (`uploading→processing→ready|error`) e
+  "lazy promotion" de agendados. **Ponto único de troca**:
+  `api/admin/chapterGateways.ts` — quando `/api/admin/.../chapters` existir,
+  reescrever só este arquivo com services axios (status convertido via
+  `CHAPTER_STATUS_TO_API`, minúsculo no front ⇄ MAIÚSCULO na API).
+
+Consumo: `features/admin` (hooks React Query + UI, padrão Titles) e
+`pages/chapter` (leitor: `useReaderPages`, fallback para placeholders quando o
+armazenamento provisório está vazio). Regras de negócio nunca em componentes —
+o fake valida com as mesmas funções do domínio que o form usa inline.
+Detalhes e plano de substituição: `docs/tech-debt.md` DT-57 (dep.: DT-44).

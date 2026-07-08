@@ -60,7 +60,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
             disabled={disabled}
             onClick={() => onChange(!checked)}
             className={cn(
-                'flex w-full items-center justify-between gap-3 rounded-mr-xs border border-mr-border-subtle bg-mr-surface p-3 text-left transition-colors duration-mr-default',
+                'flex w-full items-center justify-between gap-3 rounded-mr-sm border border-mr-border-subtle bg-mr-surface-muted p-3 text-left transition-colors duration-mr-default hover:border-mr-border',
                 'mr-focus-ring',
                 disabled && 'cursor-not-allowed opacity-mr-disabled',
                 className,

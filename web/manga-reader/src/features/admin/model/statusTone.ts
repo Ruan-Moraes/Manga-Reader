@@ -38,9 +38,24 @@ export const GROUP_STATUS_TONE: Record<string, StatusTone> = {
     INACTIVE: 'soon',
 };
 
+/**
+ * Chaves minúsculas de propósito: o domínio de capítulos vive no frontend
+ * (union `ChapterStatus` minúscula, como as demais unions do front) e converte
+ * para o enum MAIÚSCULO só na borda do futuro service (CHAPTER_STATUS_TO_API).
+ */
+export const CHAPTER_STATUS_TONE: Record<string, StatusTone> = {
+    published: 'live',
+    scheduled: 'open',
+    draft: 'soon',
+    processing: 'soon',
+    hidden: 'soon',
+    unavailable: 'ended',
+    archived: 'ended',
+};
+
 export const toneFor = (map: Record<string, StatusTone>, status: string | null | undefined): StatusTone => (status && map[status]) || 'soon';
 
-export type StatusDomain = 'title' | 'event' | 'payment' | 'subscription' | 'group';
+export type StatusDomain = 'title' | 'event' | 'payment' | 'subscription' | 'group' | 'chapter';
 
 /** Chave i18n compartilhada do rótulo de status (mesma fonte para listas e overview). */
 export const statusLabelKey = (domain: StatusDomain, status: string | null | undefined): string => `dashboard.status.${domain}.${status ?? 'UNKNOWN'}`;

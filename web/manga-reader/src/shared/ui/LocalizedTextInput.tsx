@@ -43,7 +43,7 @@ const LocalizedTextInput = ({
     const hasContent = (lang: LanguageTag) => Boolean(value[lang] && value[lang]!.trim().length > 0);
 
     const inputClasses =
-        'w-full rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 py-2 text-mr-body text-mr-fg placeholder:text-mr-tertiary transition-colors hover:border-mr-accent-50 focus:border-mr-accent focus:outline-none';
+        'w-full rounded-mr-sm border border-mr-border bg-mr-primary px-3 py-2 text-mr-body text-mr-fg placeholder:text-mr-tertiary transition-[border-color,box-shadow] duration-mr-fast outline-none hover:border-mr-gray-500 focus:border-mr-accent focus:ring-2 focus:ring-mr-accent-25';
 
     return (
         <div className="flex flex-col gap-2">

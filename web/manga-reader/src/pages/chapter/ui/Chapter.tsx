@@ -1,15 +1,17 @@
 import { useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
+import { EmptyState } from '@ui/EmptyState';
 import { useAuth } from '@features/auth';
 import { useTitle } from '@entities/manga';
 import { useChapter } from '@entities/chapter';
 import { recordChapterRead } from '@entities/user';
 
 import { useChapterReader } from '../model/useChapterReader';
+import useReaderPages from '../model/useReaderPages';
 import type { ChapterListItem } from './parts/ChapterDropdown';
 import { ReaderBottombar } from './parts/ReaderBottombar';
 import { ReaderCommentsPanel } from './parts/ReaderCommentsPanel';
@@ -26,10 +28,16 @@ const Chapter = () => {
     const { t } = useTranslation('manga');
     const navigate = useAppNavigate();
 
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, user } = useAuth();
+    const [searchParams] = useSearchParams();
 
-    const r = useChapterReader(titleId, chapterParam);
+    // Prévia de capítulo não publicado: somente admin/poster com ?preview=1.
+    const isPreview = searchParams.get('preview') === '1' && (user?.role === 'admin' || user?.role === 'poster');
+
     const { title } = useTitle(titleId ?? '');
+    const { readerChapter, isBlocked } = useReaderPages(titleId, chapterParam, isPreview);
+    const maxChapter = Number(title?.latestChapterNumber) || title?.chaptersCount || undefined;
+    const r = useChapterReader(titleId, chapterParam, maxChapter, readerChapter?.pages.length);
     const { chapter: chapterData } = useChapter(titleId, chapterParam);
 
     // Marca o capítulo como lido (fire-and-forget; idempotente no backend). Só
@@ -45,7 +53,7 @@ const Chapter = () => {
     const ratingCount = title?.ratingCount ?? 0;
 
     const chaptersList = useMemo<ChapterListItem[]>(() => {
-        const latest = Number(title?.latestChapterNumber) || title?.chaptersCount || Math.max(r.chapter, 10);
+        const latest = Number(title?.latestChapterNumber) || title?.chaptersCount || r.chapter;
         const count = Math.min(latest, CHAPTER_WINDOW);
         return Array.from({ length: count }, (_, i) => {
             const num = latest - i;
@@ -56,12 +64,28 @@ const Chapter = () => {
 
     const goForum = () => navigate(ROUTES.FORUM);
 
+    // Capítulo existente porém não-público (oculto/indisponível/arquivado):
+    // fora do preview admin, o leitor não expõe o conteúdo.
+    if (isBlocked) {
+        return (
+            <div className="reader-shell flex min-h-[60vh] items-center justify-center" data-bg={r.bg}>
+                <EmptyState
+                    illustration="duvida"
+                    title={t('reader.chapterUnavailableTitle')}
+                    description={t('reader.chapterUnavailableBody')}
+                    action={undefined}
+                />
+            </div>
+        );
+    }
+
     const endProps = {
         chapter: r.chapter,
         rating: r.rating,
         onRate: r.setRating,
         ratingAverage,
         ratingCount,
+        hasNext: r.hasNextChapter,
         onNext: () => r.switchChapter(1),
         onBack: r.goBack,
         onForum: goForum,
@@ -74,6 +98,7 @@ const Chapter = () => {
                     title={displayTitle}
                     chapter={r.chapter}
                     page={r.page}
+                    total={r.total}
                     status={status}
                     hidden={r.topbarHidden}
                     saved={r.saved}
@@ -89,6 +114,12 @@ const Chapter = () => {
                     onToggleSettings={() => r.setSettingsOpen(o => !o)}
                 />
 
+                {isPreview && (
+                    <div className="pointer-events-none fixed left-1/2 top-16 z-20 -translate-x-1/2 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 px-4 py-1.5 text-mr-tiny font-mr-bold uppercase tracking-mr text-mr-accent">
+                        {t('reader.previewBadge')}
+                    </div>
+                )}
+
                 <ReadingArea
                     mode={r.mode}
                     direction={r.direction}
@@ -98,12 +129,14 @@ const Chapter = () => {
                     page={r.page}
                     listRef={r.listRef}
                     end={endProps}
+                    pages={readerChapter?.pages}
                 />
 
                 <ReaderRails direction={r.direction} onNext={r.goNext} onPrev={r.goPrev} />
 
                 <ReaderBottombar
                     page={r.page}
+                    total={r.total}
                     fillPct={r.fillPct}
                     hidden={r.topbarHidden}
                     onPrevPage={r.goPrev}

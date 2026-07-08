@@ -54,6 +54,18 @@ export { default as useDashboardMetrics } from './model/useDashboardMetrics';
 export { default as useAdminTitles } from './model/useAdminTitles';
 export { default as useAdminTitleActions } from './model/useAdminTitleActions';
 
+// Status helpers (tones/labels compartilhados com as páginas do dashboard)
+export { CHAPTER_STATUS_TONE, TITLE_STATUS_TONE, statusLabelKey, toneFor } from './model/statusTone';
+
+// Hooks — Chapters
+export { default as useAdminChapters, type ChapterListFilters } from './model/useAdminChapters';
+export { default as useAdminChapterActions } from './model/useAdminChapterActions';
+export { default as useAdminChapterDetail } from './model/useAdminChapterDetail';
+export { default as useAdminChapterPagesActions } from './model/useAdminChapterPagesActions';
+export { default as useChapterFormModalState } from './model/useChapterFormModalState';
+export { default as useChapterSelection } from './model/useChapterSelection';
+export { default as useChapterAnalytics } from './model/useChapterAnalytics';
+
 // Hooks — News
 export { default as useAdminNews } from './model/useAdminNews';
 export { default as useAdminNewsActions } from './model/useAdminNewsActions';
@@ -101,6 +113,10 @@ export { default as AdminDashboardOverview } from './ui/AdminDashboardOverview';
 export { default as AdminUserList } from './ui/AdminUserList';
 export { default as AdminUserDetail } from './ui/AdminUserDetail';
 export { default as AdminTitleList } from './ui/AdminTitleList';
+export { default as AdminChapterList } from './ui/AdminChapterList';
+export { default as ChapterPageGrid } from './ui/parts/ChapterPageGrid';
+export { default as ChapterMetricsPanel } from './ui/parts/ChapterMetricsPanel';
+export { default as ChapterMetricsFilters } from './ui/parts/ChapterMetricsFilters';
 export { default as AdminNewsList } from './ui/AdminNewsList';
 export { default as AdminEventList } from './ui/AdminEventList';
 export { default as AdminGroupList } from './ui/AdminGroupList';
@@ -119,6 +135,9 @@ export { default as ConfirmDeleteWithIdModal } from './ui/modal/ConfirmDeleteWit
 export { default as ConfirmModal } from './ui/modal/ConfirmModal';
 export { default as AdminUserDetailModal } from './ui/modal/AdminUserDetailModal';
 export { default as TitleFormModal } from './ui/modal/TitleFormModal';
+export { default as ChapterFormModal } from './ui/modal/ChapterFormModal';
+export { default as ReorderChaptersModal } from './ui/modal/ReorderChaptersModal';
+export { default as BulkChapterStatusModal } from './ui/modal/BulkChapterStatusModal';
 export { default as NewsFormModal } from './ui/modal/NewsFormModal';
 export { default as EventFormModal } from './ui/modal/EventFormModal';
 

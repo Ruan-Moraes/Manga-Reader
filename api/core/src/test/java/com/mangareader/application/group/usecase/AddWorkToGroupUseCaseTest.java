@@ -69,7 +69,7 @@ class AddWorkToGroupUseCaseTest {
             Group group = buildGroupWithMember();
             var input = new AddWorkInput(GROUP_ID, MEMBER_ID, "title-mongo-1",
                     "One Piece", "cover.png", 1100, "ONGOING", List.of("Ação", "Aventura"));
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -93,7 +93,7 @@ class AddWorkToGroupUseCaseTest {
             Group group = buildGroupWithMember();
             var input = new AddWorkInput(GROUP_ID, MEMBER_ID, "title-2",
                     "Naruto", "cover2.png", 700, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -111,7 +111,7 @@ class AddWorkToGroupUseCaseTest {
             Group group = buildGroupWithMember();
             var input = new AddWorkInput(GROUP_ID, MEMBER_ID, "title-3",
                     "Death Note", "cover3.png", 108, "COMPLETED", List.of("Suspense"));
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -131,7 +131,7 @@ class AddWorkToGroupUseCaseTest {
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
             var input = new AddWorkInput(GROUP_ID, MEMBER_ID, "t1", "Obra", null, 10, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> addWorkToGroupUseCase.execute(input))
@@ -146,7 +146,7 @@ class AddWorkToGroupUseCaseTest {
             Group group = buildGroupWithMember();
             UUID estranho = UUID.randomUUID();
             var input = new AddWorkInput(GROUP_ID, estranho, "t1", "Obra", null, 10, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> addWorkToGroupUseCase.execute(input))
@@ -163,7 +163,7 @@ class AddWorkToGroupUseCaseTest {
                     GroupWork.builder().group(group).titleId("title-dup").title("Existente").build()
             );
             var input = new AddWorkInput(GROUP_ID, MEMBER_ID, "title-dup", "Existente", null, 10, null, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> addWorkToGroupUseCase.execute(input))

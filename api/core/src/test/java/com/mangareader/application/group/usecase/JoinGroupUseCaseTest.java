@@ -72,7 +72,7 @@ class JoinGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new JoinGroupInput(GROUP_ID, USER_ID, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildNewUser()));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -92,7 +92,7 @@ class JoinGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new JoinGroupInput(GROUP_ID, USER_ID, GroupRole.REVISOR);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildNewUser()));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -114,7 +114,7 @@ class JoinGroupUseCaseTest {
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
             var input = new JoinGroupInput(GROUP_ID, USER_ID, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> joinGroupUseCase.execute(input))
@@ -128,7 +128,7 @@ class JoinGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeader();
             var input = new JoinGroupInput(GROUP_ID, USER_ID, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
@@ -147,7 +147,7 @@ class JoinGroupUseCaseTest {
             group.getGroupUsers().add(GroupUser.builder().group(group).user(existingUser).type(GroupUserType.MEMBER).role(GroupRole.TRADUTOR).build());
 
             var input = new JoinGroupInput(GROUP_ID, USER_ID, null);
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(existingUser));
 
             // Act & Assert

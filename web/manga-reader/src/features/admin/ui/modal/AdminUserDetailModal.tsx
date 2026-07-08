@@ -66,7 +66,7 @@ const AdminUserDetailModal = ({ isOpen, onClose, user, onChangeRole, onBan, onUn
             }
         >
             {user && (
-                <div className="flex flex-col gap-4 p-2">
+                <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-4 border-b border-mr-gray-900 pb-4">
                         <Avatar src={user.photoUrl ?? undefined} name={user.name} size={56} />
                         <div className="min-w-0">

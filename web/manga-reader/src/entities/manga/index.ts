@@ -21,7 +21,7 @@ export { default as TitleDescription } from './ui/information/TitleDescription';
 export { default as TitleActions } from './ui/action/TitleActions';
 
 // Services
-export { filterTitles } from './api/titleService';
+export { filterTitles, searchTitles } from './api/titleService';
 
 // Types
 export type { Title } from './model/title.types';

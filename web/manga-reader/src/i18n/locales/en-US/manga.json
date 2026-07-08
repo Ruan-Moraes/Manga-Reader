@@ -171,7 +171,12 @@
         "navBackTitle": "Title details",
         "navForumLabel": "Discussion",
         "navForumTitle": "{{count}} posts in the forum",
-        "commentsLoading": "Loading comments…"
+        "commentsLoading": "Loading comments…",
+        "pageError": "Could not load page {{page}}.",
+        "retryPage": "Reload page",
+        "chapterUnavailableTitle": "Chapter unavailable",
+        "chapterUnavailableBody": "This chapter is not publicly available right now.",
+        "previewBadge": "Admin preview"
     },
     "releases": {
         "eyebrow": "New chapters",

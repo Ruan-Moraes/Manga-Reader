@@ -3,6 +3,13 @@
         "loading": "Loading...",
         "loadingMessage": "Please wait a moment."
     },
+    "modal": {
+        "close": "Close",
+        "unsavedTitle": "Discard changes?",
+        "unsavedBody": "You have unsaved changes. If you close now, they will be lost.",
+        "unsavedDiscard": "Discard",
+        "unsavedKeepEditing": "Keep editing"
+    },
     "guard": {
         "authRequired": "Access denied. You must be signed in to view this page.",
         "dashboardForbidden": "You do not have permission to access the dashboard."

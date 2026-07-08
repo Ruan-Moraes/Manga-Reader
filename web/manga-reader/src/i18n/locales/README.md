@@ -54,6 +54,11 @@ Fonte da verdade da lista: `SUPPORTED_LANGUAGES`, `DEFAULT_LANGUAGE` e
 - Mensagens de validação sob `validation.*`: `validation.passwordRequired`
 - Ações genéricas (submit, cancel) sob `common.json` → `actions.*`
 - Labels que aparecem em mais de uma feature → promover para `common.json`
+- Capítulos (admin): `admin.json` → `dashboard.chapters.*` (lista, form, páginas,
+  métricas, bulk, toasts), `dashboard.status.chapter.*` (7 status minúsculos) e
+  erros de validação por code do domínio em `dashboard.chapters.errors.*`;
+  leitor: `manga.json` → `reader.pageError`, `reader.retryPage`,
+  `reader.chapterUnavailableTitle/Body`, `reader.previewBadge`.
 
 ## Uso
 

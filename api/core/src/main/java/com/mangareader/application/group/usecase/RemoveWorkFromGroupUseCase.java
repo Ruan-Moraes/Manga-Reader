@@ -27,7 +27,8 @@ public class RemoveWorkFromGroupUseCase {
     private final GroupRepositoryPort groupRepository;
 
     public Group execute(UUID groupId, UUID userId, String titleId) {
-        Group group = groupRepository.findById(groupId)
+        // Fetch join de groupUsers/user: o mapper roda fora da sessão (open-in-view off).
+        Group group = groupRepository.findByIdWithUsers(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
 
         verifyLeader(group, userId);

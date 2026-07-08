@@ -104,12 +104,7 @@
 
     /* --- Layout --- */
     --mr-container-max: 1240px;
-    --mr-z-header: 10;
-    --mr-z-dropdown: 20;
-    --mr-z-drawer: 40;
-    --mr-z-modal: 50;
-    --mr-z-toast: 60;
-    --mr-z-tooltip: 70;
+    /* Z-index: escala única em @theme (--z-mr-*) — utilitários z-mr-*. */
 }
 
 @theme {

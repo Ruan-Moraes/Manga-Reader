@@ -43,7 +43,9 @@ import com.mangareader.application.group.usecase.SupportGroupUseCase;
 import com.mangareader.application.group.usecase.UnsupportGroupUseCase;
 import com.mangareader.application.group.usecase.UpdateGroupUseCase;
 import com.mangareader.domain.group.entity.Group;
+import com.mangareader.domain.group.entity.GroupWork;
 import com.mangareader.domain.group.valueobject.GroupStatus;
+import com.mangareader.domain.group.valueobject.GroupWorkStatus;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
 
@@ -190,6 +192,29 @@ class GroupControllerTest {
 
             mockMvc.perform(get("/api/groups/{id}", id))
                     .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Deve expor o titleId (Mongo) como id da obra traduzida, não a PK da associação")
+        void deveExporTitleIdComoIdDaObra() throws Exception {
+            var id = UUID.randomUUID();
+            var group = buildGroup(id);
+            group.getTranslatedWorks().add(GroupWork.builder()
+                    .id(UUID.randomUUID())
+                    .group(group)
+                    .titleId("7")
+                    .title("Reino de Aço")
+                    .cover("cover.png")
+                    .chapters(12)
+                    .status(GroupWorkStatus.ONGOING)
+                    .genres(List.of("Ação"))
+                    .build());
+            when(getGroupByIdUseCase.execute(id)).thenReturn(group);
+
+            mockMvc.perform(get("/api/groups/{id}", id))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.translatedWorks[0].id").value("7"))
+                    .andExpect(jsonPath("$.data.translatedWorks[0].title").value("Reino de Aço"));
         }
     }
 

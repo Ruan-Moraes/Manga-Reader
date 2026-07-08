@@ -15,7 +15,7 @@ const AdminFloatingActions = () => {
     const navigate = useAppNavigate();
 
     return (
-        <div className="absolute bottom-5 right-5 z-40 flex flex-col gap-3 md:bottom-6 md:right-6">
+        <div className="absolute bottom-5 right-5 z-mr-mobile-tab flex flex-col gap-3 md:bottom-6 md:right-6">
             <Tooltip content={t('quickActions.settings')} side="left">
                 <button
                     type="button"

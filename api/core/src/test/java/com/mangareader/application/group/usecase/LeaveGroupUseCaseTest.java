@@ -67,7 +67,7 @@ class LeaveGroupUseCaseTest {
         void deveRemoverMembroNaoLider() {
             // Arrange
             Group group = buildGroupWithLeaderAndMember();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -83,7 +83,7 @@ class LeaveGroupUseCaseTest {
         void devePersistirAposRemocao() {
             // Arrange
             Group group = buildGroupWithLeaderAndMember();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
 
             // Act
@@ -102,7 +102,7 @@ class LeaveGroupUseCaseTest {
         @DisplayName("Deve lançar ResourceNotFoundException quando grupo não existe")
         void deveLancarExcecaoQuandoGrupoNaoExiste() {
             // Arrange
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.empty());
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.empty());
 
             // Act & Assert
             assertThatThrownBy(() -> leaveGroupUseCase.execute(GROUP_ID, MEMBER_ID))
@@ -116,7 +116,7 @@ class LeaveGroupUseCaseTest {
             // Arrange
             Group group = buildGroupWithLeaderAndMember();
             UUID estranho = UUID.randomUUID();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> leaveGroupUseCase.execute(GROUP_ID, estranho))
@@ -129,7 +129,7 @@ class LeaveGroupUseCaseTest {
         void deveLancarExcecaoQuandoLiderTentaSair() {
             // Arrange
             Group group = buildGroupWithLeaderAndMember();
-            when(groupRepository.findById(GROUP_ID)).thenReturn(Optional.of(group));
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
 
             // Act & Assert
             assertThatThrownBy(() -> leaveGroupUseCase.execute(GROUP_ID, LEADER_ID))

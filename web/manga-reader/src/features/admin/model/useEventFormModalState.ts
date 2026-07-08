@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 
 import type { AdminEvent, CreateEventRequest, UpdateEventRequest } from '../model/admin.types';
 
@@ -21,6 +22,24 @@ const useEventFormModalState = (event: AdminEvent | null | undefined, isOpen: bo
     const [title, setTitle] = useState<LocalizedString>({});
     const [subtitle, setSubtitle] = useState<LocalizedString>({});
     const [description, setDescription] = useState<LocalizedString>({});
+
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, {
+        startDate,
+        endDate,
+        timeline,
+        status,
+        type,
+        image,
+        locationLabel,
+        locationCity,
+        locationIsOnline,
+        organizerName,
+        priceLabel,
+        isFeatured,
+        title,
+        subtitle,
+        description,
+    });
 
     useEffect(() => {
         if (event) {
@@ -56,7 +75,8 @@ const useEventFormModalState = (event: AdminEvent | null | undefined, isOpen: bo
             setSubtitle({});
             setDescription({});
         }
-    }, [event, isOpen]);
+        resetDirty();
+    }, [event, isOpen, resetDirty]);
 
     const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
 
@@ -117,6 +137,7 @@ const useEventFormModalState = (event: AdminEvent | null | undefined, isOpen: bo
         description,
         setDescription,
         ptTitle,
+        dirty,
         handleSubmit,
     };
 };

@@ -33,4 +33,31 @@ describe('TagFormModal', () => {
         render(<TagFormModal isOpen onClose={() => {}} onSubmit={() => {}} isSubmitting={false} tag={{ value: 1, slug: 'DRAMA', label: { 'pt-BR': 'Drama' } }} />);
         expect(screen.getByRole('textbox')).toHaveValue('Drama');
     });
+
+    it('guarda alterações não salvas: fechar pede confirmação e "continuar editando" preserva o valor', () => {
+        const onClose = vi.fn();
+        render(<TagFormModal isOpen onClose={onClose} onSubmit={() => {}} isSubmitting={false} />);
+
+        fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Aventura' } });
+        fireEvent.click(screen.getByLabelText('Fechar'));
+
+        expect(onClose).not.toHaveBeenCalled();
+        expect(screen.getByText('Descartar alterações?')).toBeInTheDocument();
+
+        fireEvent.click(screen.getByText('Continuar editando'));
+        expect(onClose).not.toHaveBeenCalled();
+        expect(screen.getByRole('textbox')).toHaveValue('Aventura');
+
+        fireEvent.click(screen.getByLabelText('Fechar'));
+        fireEvent.click(screen.getByText('Descartar'));
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('fecha direto sem confirmação quando o formulário está intocado', () => {
+        const onClose = vi.fn();
+        render(<TagFormModal isOpen onClose={onClose} onSubmit={() => {}} isSubmitting={false} />);
+
+        fireEvent.click(screen.getByLabelText('Fechar'));
+        expect(onClose).toHaveBeenCalledTimes(1);
+    });
 });

@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Modal } from '@ui/Modal';
-import { Button } from '@ui/Button';
+import { ModalActions } from '@ui/ModalActions';
 import { Input } from '@ui/Input';
 import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 
 import type { AdminGroup } from '../../model/admin.types';
 import Field from '../parts/Field';
@@ -36,6 +37,8 @@ const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: Grou
     const [name, setName] = useState<LocalizedString>({});
     const [description, setDescription] = useState<LocalizedString>({});
 
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { logo, banner, website, name, description });
+
     useEffect(() => {
         if (group) {
             setLogo(group.logo ?? '');
@@ -50,7 +53,8 @@ const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: Grou
             setName({});
             setDescription({});
         }
-    }, [group, isOpen]);
+        resetDirty();
+    }, [group, isOpen, resetDirty]);
 
     const ptName = (name[DEFAULT_LANGUAGE] ?? '').trim();
 
@@ -71,18 +75,20 @@ const GroupFormModal = ({ isOpen, onClose, onSubmit, group, isSubmitting }: Grou
             onClose={onClose}
             title={group ? t('groupForm.editTitle', 'Editar Grupo') : t('groupForm.newTitle', 'Novo Grupo')}
             size="md"
+            loading={isSubmitting}
+            confirmClose={dirty && !isSubmitting}
             footer={
-                <>
-                    <Button variant="ghost" size="sm" onClick={onClose}>
-                        {t('common.cancel', 'Cancelar')}
-                    </Button>
-                    <Button variant="primary" size="sm" disabled={!ptName} loading={isSubmitting} onClick={save}>
-                        {t('common.save', 'Salvar')}
-                    </Button>
-                </>
+                <ModalActions
+                    cancelLabel={t('common.cancel', 'Cancelar')}
+                    onCancel={onClose}
+                    submitLabel={t('common.save', 'Salvar')}
+                    onSubmit={save}
+                    submitDisabled={!ptName}
+                    submitting={isSubmitting}
+                />
             }
         >
-            <div className="flex flex-col gap-4 p-2">
+            <div className="flex flex-col gap-4">
                 <LocalizedTextInput label={t('groupForm.name', 'Nome')} value={name} onChange={setName} maxLength={100} />
                 <LocalizedTextInput
                     label={t('groupForm.description', 'Descrição')}

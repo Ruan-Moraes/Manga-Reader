@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Modal } from '@ui/Modal';
-import { Button } from '@ui/Button';
+import { ModalActions } from '@ui/ModalActions';
 import { Select } from '@ui/Select';
 import type { SelectOption } from '@ui/Select';
 
@@ -56,15 +56,16 @@ const SelectStatusModal = ({
             title={title}
             description={description}
             size="sm"
+            loading={isSubmitting}
             footer={
-                <>
-                    <Button variant="ghost" size="sm" onClick={onClose}>
-                        {cancelLabel}
-                    </Button>
-                    <Button variant="primary" size="sm" disabled={disabled} loading={isSubmitting} onClick={() => onConfirm(selected)}>
-                        {confirmLabel}
-                    </Button>
-                </>
+                <ModalActions
+                    cancelLabel={cancelLabel}
+                    onCancel={onClose}
+                    submitLabel={confirmLabel}
+                    onSubmit={() => onConfirm(selected)}
+                    submitDisabled={disabled}
+                    submitting={isSubmitting}
+                />
             }
         >
             <Field label={fieldLabel}>

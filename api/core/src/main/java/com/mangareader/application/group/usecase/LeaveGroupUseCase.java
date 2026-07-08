@@ -27,7 +27,8 @@ public class LeaveGroupUseCase {
 
     @Transactional
     public Group execute(UUID groupId, UUID userId) {
-        Group group = groupRepository.findById(groupId)
+        // Fetch join de groupUsers/user: o mapper roda fora da sessão (open-in-view off).
+        Group group = groupRepository.findByIdWithUsers(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
 
         GroupUser member = group.getGroupUsers().stream()
@@ -41,6 +42,10 @@ public class LeaveGroupUseCase {
         }
 
         group.getGroupUsers().remove(member);
-        return groupRepository.save(group);
+
+        Group saved = groupRepository.save(group);
+        saved.getTranslatedWorks().size();
+
+        return saved;
     }
 }

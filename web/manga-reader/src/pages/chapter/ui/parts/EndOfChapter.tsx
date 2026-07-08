@@ -9,12 +9,13 @@ interface EndOfChapterProps {
     onRate: (n: number) => void;
     ratingAverage: number;
     ratingCount: number;
+    hasNext: boolean;
     onNext: () => void;
     onBack: () => void;
     onForum: () => void;
 }
 
-export const EndOfChapter = ({ chapter, rating, onRate, ratingAverage, ratingCount, onNext, onBack, onForum }: EndOfChapterProps) => {
+export const EndOfChapter = ({ chapter, rating, onRate, ratingAverage, ratingCount, hasNext, onNext, onBack, onForum }: EndOfChapterProps) => {
     const { t } = useTranslation('manga');
     const feliz = illustrationUrl('feliz');
 
@@ -53,15 +54,17 @@ export const EndOfChapter = ({ chapter, rating, onRate, ratingAverage, ratingCou
             </div>
 
             <div className="reader-end-nav">
-                <button type="button" className="reader-end-nav-card primary" onClick={onNext}>
-                    <div className="reader-end-nav-icon">
-                        <ArrowRight size={20} strokeWidth={2} />
-                    </div>
-                    <div>
-                        <div className="reader-end-nav-label">{t('reader.navNextLabel')}</div>
-                        <div className="reader-end-nav-title">{t('reader.navNextTitle', { chapter: chapter + 1 })}</div>
-                    </div>
-                </button>
+                {hasNext && (
+                    <button type="button" className="reader-end-nav-card primary" onClick={onNext}>
+                        <div className="reader-end-nav-icon">
+                            <ArrowRight size={20} strokeWidth={2} />
+                        </div>
+                        <div>
+                            <div className="reader-end-nav-label">{t('reader.navNextLabel')}</div>
+                            <div className="reader-end-nav-title">{t('reader.navNextTitle', { chapter: chapter + 1 })}</div>
+                        </div>
+                    </button>
+                )}
                 <button type="button" className="reader-end-nav-card" onClick={onBack}>
                     <div className="reader-end-nav-icon">
                         <Library size={18} strokeWidth={2} />

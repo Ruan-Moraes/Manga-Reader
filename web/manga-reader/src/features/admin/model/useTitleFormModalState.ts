@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { DEFAULT_LANGUAGE, type LocalizedString } from '@shared/type/i18n';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 import { useTagsFetch, type Tag } from '@entities/catalog-filter';
 
@@ -47,6 +48,8 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
     const [authors, setAuthors] = useState<TitleAuthorRef[]>([]);
     const [publishers, setPublishers] = useState<TitlePublisherRef[]>([]);
 
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { form, selectedTags, name, synopsis, authors, publishers });
+
     // Reset ao abrir para criação; preenche ao carregar detalhe na edição.
     useEffect(() => {
         if (!isOpen) return;
@@ -57,8 +60,9 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             setSynopsis({});
             setAuthors([]);
             setPublishers([]);
+            resetDirty();
         }
-    }, [isOpen, isEditing]);
+    }, [isOpen, isEditing, resetDirty]);
 
     useEffect(() => {
         if (existing) {
@@ -75,8 +79,9 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             setSynopsis(existing.synopsis ?? {});
             setAuthors(existing.authors ?? []);
             setPublishers(existing.publishers ?? []);
+            resetDirty();
         }
-    }, [existing, allTags]);
+    }, [existing, allTags, resetDirty]);
 
     const valid = (name[DEFAULT_LANGUAGE] ?? '').trim().length > 0;
 
@@ -115,6 +120,7 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
         allTags,
         statusOptions,
         valid,
+        dirty,
         submit,
     };
 };

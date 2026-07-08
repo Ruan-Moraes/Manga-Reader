@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Modal } from '@ui/Modal';
-import { Button } from '@ui/Button';
+import { ModalActions } from '@ui/ModalActions';
 import { Input } from '@ui/Input';
 
 type ConfirmDeleteWithIdModalProps = {
@@ -32,15 +32,17 @@ const ConfirmDeleteWithIdModal = ({ isOpen, onClose, onConfirm, entityId, title,
             title={title}
             size="sm"
             danger
+            loading={isSubmitting}
             footer={
-                <>
-                    <Button variant="ghost" size="sm" onClick={onClose}>
-                        {t('common.cancel')}
-                    </Button>
-                    <Button variant="ghost" size="sm" danger disabled={locked} loading={isSubmitting} onClick={() => !locked && onConfirm()}>
-                        {t('common.delete')}
-                    </Button>
-                </>
+                <ModalActions
+                    cancelLabel={t('common.cancel')}
+                    onCancel={onClose}
+                    submitLabel={t('common.delete')}
+                    onSubmit={() => !locked && onConfirm()}
+                    submitDisabled={locked}
+                    submitting={isSubmitting}
+                    danger
+                />
             }
         >
             <div className="flex flex-col gap-3">

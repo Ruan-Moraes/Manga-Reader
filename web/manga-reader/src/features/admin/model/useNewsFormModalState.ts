@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { DEFAULT_LANGUAGE, type LanguageTag, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 
 import type { AdminNews, CreateNewsRequest, UpdateNewsRequest } from '../model/admin.types';
 
@@ -25,6 +26,21 @@ const useNewsFormModalState = (news: AdminNews | null | undefined, isOpen: boole
     const [excerpt, setExcerpt] = useState<LocalizedString>({});
     const [content, setContent] = useState<LocalizedStringList>({});
     const [contentTab, setContentTab] = useState<LanguageTag>(DEFAULT_LANGUAGE);
+
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, {
+        category,
+        coverImage,
+        tags,
+        authorName,
+        source,
+        readTime,
+        isExclusive,
+        isFeatured,
+        title,
+        subtitle,
+        excerpt,
+        content,
+    });
 
     useEffect(() => {
         if (news) {
@@ -55,7 +71,8 @@ const useNewsFormModalState = (news: AdminNews | null | undefined, isOpen: boole
             setContent({});
         }
         setContentTab(DEFAULT_LANGUAGE);
-    }, [news, isOpen]);
+        resetDirty();
+    }, [news, isOpen, resetDirty]);
 
     const ptTitle = (title[DEFAULT_LANGUAGE] ?? '').trim();
 
@@ -117,6 +134,7 @@ const useNewsFormModalState = (news: AdminNews | null | undefined, isOpen: boole
         contentTab,
         setContentTab,
         ptTitle,
+        dirty,
         handleSubmit,
         handleContentChange,
     };

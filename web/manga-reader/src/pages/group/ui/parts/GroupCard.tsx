@@ -25,8 +25,17 @@ export const GroupCard = ({ group, onOpen, following, onToggleFollow }: GroupCar
             onClick={onOpen}
             className="group flex cursor-pointer flex-col overflow-hidden rounded-mr-sm border border-[#333] bg-mr-gray-900 transition-[border-color,box-shadow] duration-mr-default hover:border-mr-accent hover:shadow-mr-elevated"
         >
-            <div className="relative h-16" style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'linear-gradient(135deg,#2a1f0f,#161616)' }}>
-                <SquareAvatar name={group.name} logo={group.logo || undefined} size={48} fontSize={16} className="tracking-mr absolute -bottom-[22px] left-[14px] border-2 border-mr-gray-900" />
+            <div
+                className="relative h-16"
+                style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'linear-gradient(135deg,#2a1f0f,#161616)' }}
+            >
+                <SquareAvatar
+                    name={group.name}
+                    logo={group.logo || undefined}
+                    size={48}
+                    fontSize={16}
+                    className="tracking-mr absolute -bottom-[22px] left-[14px] border-2 border-mr-gray-900"
+                />
             </div>
 
             <div className="px-[14px] pb-[14px] pt-[30px]">
@@ -51,6 +60,7 @@ export const GroupCard = ({ group, onOpen, following, onToggleFollow }: GroupCar
                             <strong className="font-mr-extrabold text-mr-fg">{group.totalTitles}</strong> {t('card.works')}
                         </span>
                     </div>
+                    {/*TODO: Usar o botao padrao da aplicao*/}
                     <button
                         type="button"
                         onClick={e => {

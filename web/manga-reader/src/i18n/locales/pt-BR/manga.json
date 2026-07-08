@@ -171,7 +171,12 @@
         "navBackTitle": "Detalhes da obra",
         "navForumLabel": "Discussão",
         "navForumTitle": "{{count}} posts no fórum",
-        "commentsLoading": "Carregando comentários…"
+        "commentsLoading": "Carregando comentários…",
+        "pageError": "Não foi possível carregar a página {{page}}.",
+        "retryPage": "Recarregar página",
+        "chapterUnavailableTitle": "Capítulo indisponível",
+        "chapterUnavailableBody": "Este capítulo não está disponível publicamente no momento.",
+        "previewBadge": "Prévia administrativa"
     },
     "releases": {
         "eyebrow": "Capítulos novos",

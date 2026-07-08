@@ -2,11 +2,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Modal } from '@ui/Modal';
-import { Button } from '@ui/Button';
+import { ModalActions } from '@ui/ModalActions';
 import { Switch } from '@ui/Switch';
 import { Select } from '@ui/Select';
 import LocalizedTextInput from '@ui/LocalizedTextInput';
 import { DEFAULT_LANGUAGE, type LocalizedString, type LocalizedStringList } from '@shared/type/i18n';
+import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 
 import PlanFormPriceRows, { type PriceRow } from './PlanFormPriceRows';
@@ -54,6 +55,8 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
 
     const { data: currencyOptions = [] } = useDomainLabels(LABEL_TYPES.CURRENCY);
 
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { period, priceRows, description, features, active });
+
     const periodLabels = useMemo<Record<string, string>>(
         () => ({
             DAILY: t('planForm.periodDaily'),
@@ -77,7 +80,8 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
             setFeatures({});
             setActive(true);
         }
-    }, [plan, isOpen]);
+        resetDirty();
+    }, [plan, isOpen, resetDirty]);
 
     const handleSave = () => {
         const prices: Record<string, number> = {};
@@ -112,18 +116,20 @@ const PlanFormModal = ({ isOpen, onClose, onSubmit, plan, isSubmitting }: PlanFo
             onClose={onClose}
             title={plan ? t('planForm.editTitle') : t('planForm.newTitle')}
             size="lg"
+            loading={isSubmitting}
+            confirmClose={dirty && !isSubmitting}
             footer={
-                <div className="flex w-full justify-end gap-2.5">
-                    <Button variant="ghost" size="sm" onClick={onClose}>
-                        {t('planForm.cancel')}
-                    </Button>
-                    <Button variant="primary" size="sm" disabled={!hasValidPrices || !ptDescription} loading={isSubmitting} onClick={handleSave}>
-                        {isSubmitting ? t('planForm.saving') : t('planForm.save')}
-                    </Button>
-                </div>
+                <ModalActions
+                    cancelLabel={t('planForm.cancel')}
+                    onCancel={onClose}
+                    submitLabel={isSubmitting ? t('planForm.saving') : t('planForm.save')}
+                    onSubmit={handleSave}
+                    submitDisabled={!hasValidPrices || !ptDescription}
+                    submitting={isSubmitting}
+                />
             }
         >
-            <div className="flex flex-col gap-4 p-2">
+            <div className="flex flex-col gap-4">
             {!plan && (
                 <div className="flex flex-col gap-1.5">
                     <span className="text-xs font-bold">{t('planForm.periodLabel')}</span>

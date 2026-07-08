@@ -3,6 +3,13 @@
         "loading": "Carregando...",
         "loadingMessage": "Por favor, aguarde um momento."
     },
+    "modal": {
+        "close": "Fechar",
+        "unsavedTitle": "Descartar alterações?",
+        "unsavedBody": "Há alterações não salvas. Se você fechar agora, elas serão perdidas.",
+        "unsavedDiscard": "Descartar",
+        "unsavedKeepEditing": "Continuar editando"
+    },
     "guard": {
         "authRequired": "Acesso negado. Você precisa estar autenticado para acessar esta página.",
         "dashboardForbidden": "Você não possui permissão para acessar o dashboard."

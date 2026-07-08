@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ROUTES } from '@shared/constant/ROUTES';
+import useAppNavigate from '@shared/hook/useAppNavigate';
 import { AdminTitleList, TitleFormModal, ConfirmDeleteWithIdModal, useAdminTitles, useAdminTitleActions, type AdminTitle } from '@features/admin';
 import ListPageHeader from './parts/ListPageHeader';
 
 const DashboardTitles = () => {
     const { t } = useTranslation('admin');
+    const appNavigate = useAppNavigate();
     const { titles, page, totalPages, totalElements, isLoading, search, setSearch, setPage } = useAdminTitles();
     const { isSubmitting, handleDelete } = useAdminTitleActions();
 
@@ -58,6 +61,7 @@ const DashboardTitles = () => {
                 onEdit={openEdit}
                 onRowClick={openEdit}
                 onDelete={setDeletingTitle}
+                onManageChapters={title => appNavigate(ROUTES.DASHBOARD_CHAPTERS_BY_TITLE(title.id))}
             />
 
             <TitleFormModal
