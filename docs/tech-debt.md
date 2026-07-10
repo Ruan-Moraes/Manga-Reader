@@ -1209,6 +1209,31 @@ blast radius):**
 
 ---
 
+### DT-59: Notas operacionais do refresh token endurecido (2026-07-10)
+
+Contexto: sessão expirando silenciosamente no web → implementado refresh
+rotation server-side (tabela `refresh_tokens` V40, reuso ⇒ revoga família),
+`POST /api/auth/logout`, cookie httpOnly p/ web (body preservado p/ mobile),
+interceptor web com fila + `authExpired`. Ver `docs/architecture.md` (Key
+Patterns → Refresh token rotation). Notas a acompanhar:
+
+- **Deploy invalida sessões antigas (one-shot)**: refresh tokens emitidos
+  antes do deploy não existem na tabela ⇒ primeiro refresh retorna 401 ⇒
+  um re-login por usuário (web e mobile). Comunicar no release.
+- **SameSite=Strict pressupõe API same-site**: se produção servir a API em
+  outro *registrable domain* que o front, o cookie precisa virar
+  `SameSite=None; Secure` (ver `RefreshTokenCookieFactory`). Registrar no
+  plano de deploy.
+- **Suíte `testcontainers` local**: `mongo:8.0` não sobe em Docker com
+  kernel Linux ≥ 6.19 (SERVER-121912) — falha ambiental pré-existente em
+  macs recentes; rodar `mvn test -Dtest.excludedGroups=testcontainers`
+  localmente e deixar o E2E (`AuthSecurityIntegrationTest`, incl. rotação/
+  reuso/logout/cookie) para o CI.
+
+**Prioridade:** Baixa (notas operacionais; nenhuma ação de código pendente).
+
+---
+
 ## Resumo por Prioridade
 
 | Prioridade | Em aberto | IDs |
@@ -1217,7 +1242,7 @@ blast radius):**
 | **Alta** | 1 | DT-02 (componente/E2E) |
 | **Média** | 6 | DT-54 (flake suíte leve H2), DT-49 (visibilidade da biblioteca pública), DT-08 (axe por rota — parcial), DT-50 (residuais: testes fórum + threads profundas + fase 2 drop PG), DT-52 (escrita cross-DB não-atômica; N+1 resolvido) |
 | **Resíduo só-infra (não-código)** | 1 | DT-21 (lado-código fechado; falta dump prod em staging — runbook documentado) |
-| **Baixa** | 7 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin), DT-57 (capítulos admin: fake localStorage → API real), DT-58 (flutuantes fora do admin sem tokens/portal) |
+| **Baixa** | 8 | DT-03, DT-09, DT-44 (backlog de produto), DT-48 (perfil simulado), DT-51 (rotas/forms legados do admin), DT-57 (capítulos admin: fake localStorage → API real), DT-58 (flutuantes fora do admin sem tokens/portal), DT-59 (notas operacionais do refresh rotation) |
 | **Resolvidos 2026-07-02** | 3 | DT-53 (jest-dom × Vitest 4), DT-55 (dir `backend/`), DT-56 (`packages/assets`) |
 | **Fechados: aceitos (não-fix)** | 2 | DT-24, DT-33 (idiomáticos; steiger off de propósito) |
 | **Resolvidos 2026-05-16/17/18** | 18 | DT-01, DT-04, DT-05, DT-06, DT-07, DT-11, DT-12, DT-13, DT-14, DT-15, DT-16, DT-17, DT-18, DT-19, DT-20, DT-21 (código), DT-22, DT-23 |
