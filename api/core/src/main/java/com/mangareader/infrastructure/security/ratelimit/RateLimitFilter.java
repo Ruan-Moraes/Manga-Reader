@@ -26,8 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Filtro de rate limiting baseado em IP usando Bucket4j.
  * <p>
- * Configuração: 100 requisições por minuto por IP.
- * IPs que excedem o limite recebem HTTP 429 Too Many Requests.
+ * Configuração: 100 requisições por minuto por IP; endpoints de credencial
+ * ({@code POST /api/auth/*}) têm bucket próprio mais estrito (10/min) —
+ * brute force de senha e farming de refresh merecem limite menor que
+ * navegação. IPs que excedem o limite recebem HTTP 429 Too Many Requests.
  */
 @Slf4j
 @Component
@@ -35,6 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 public class RateLimitFilter extends OncePerRequestFilter {
     private static final int REQUESTS_PER_MINUTE = 100;
     private static final int BURST_CAPACITY = 120;
+    private static final int AUTH_REQUESTS_PER_MINUTE = 10;
+    private static final int AUTH_BURST_CAPACITY = 15;
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper;
@@ -45,7 +49,9 @@ public class RateLimitFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String clientIp = resolveClientIp(request);
 
-        Bucket bucket = buckets.computeIfAbsent(clientIp, this::createBucket);
+        Bucket bucket = isAuthSensitive(request)
+                ? buckets.computeIfAbsent(clientIp + "|auth", this::createAuthBucket)
+                : buckets.computeIfAbsent(clientIp, this::createBucket);
 
         var probe = bucket.tryConsumeAndReturnRemaining(1);
 
@@ -83,11 +89,26 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 || path.startsWith("/v3/api-docs");
     }
 
+    /** POSTs de credencial (sign-in, sign-up, refresh, logout, forgot/reset). */
+    private boolean isAuthSensitive(HttpServletRequest request) {
+        return "POST".equalsIgnoreCase(request.getMethod())
+                && request.getRequestURI().startsWith("/api/auth/");
+    }
+
     private Bucket createBucket(String key) {
         return Bucket.builder()
                 .addLimit(Bandwidth.builder()
                         .capacity(BURST_CAPACITY)
                         .refillGreedy(REQUESTS_PER_MINUTE, Duration.ofMinutes(1))
+                        .build())
+                .build();
+    }
+
+    private Bucket createAuthBucket(String key) {
+        return Bucket.builder()
+                .addLimit(Bandwidth.builder()
+                        .capacity(AUTH_BURST_CAPACITY)
+                        .refillGreedy(AUTH_REQUESTS_PER_MINUTE, Duration.ofMinutes(1))
                         .build())
                 .build();
     }
