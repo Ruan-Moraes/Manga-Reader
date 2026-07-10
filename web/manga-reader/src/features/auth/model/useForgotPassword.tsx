@@ -62,7 +62,7 @@ const useForgotPassword = () => {
 
                 showSuccessToast(message ?? t('forgotPassword.success'));
             } catch {
-                showErrorToast(t('validation.unexpectedError'));
+                // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
             } finally {
                 setIsLoading(false);
             }

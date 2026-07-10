@@ -82,7 +82,7 @@ const useResetPassword = () => {
 
                 navigate(`${WEB_BASE_URL}${ROUTES.LOGIN}`);
             } catch {
-                showErrorToast(t('validation.unexpectedError'));
+                // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
             } finally {
                 setIsLoading(false);
             }

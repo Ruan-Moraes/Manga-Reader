@@ -1,6 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('@shared/service/session', () => ({
+vi.mock('@shared/service/session', async importOriginal => ({
+    ...(await importOriginal<typeof import('@shared/service/session')>()),
     getStoredSession: vi.fn(),
 }));
 
@@ -19,8 +20,6 @@ describe('requireAuth', () => {
 
     it('deve retornar true quando o usuário está autenticado', () => {
         vi.mocked(getStoredSession).mockReturnValue({
-            accessToken: 'token',
-            refreshToken: 'refresh',
             userId: '1',
             name: 'Test',
             email: 'test@test.com',

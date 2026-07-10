@@ -25,8 +25,6 @@ const renderReader = (titleId: string, chapter: string, query = '') =>
 /** Sessão + /auth/me com role ADMIN (o AuthProvider revalida via API). */
 const adminSession = () => {
     persistSession({
-        accessToken: 'token',
-        refreshToken: 'refresh',
         userId: 'u1',
         name: 'Admin',
         email: 'admin@test.dev',

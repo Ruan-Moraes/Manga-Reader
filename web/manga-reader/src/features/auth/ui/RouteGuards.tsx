@@ -6,30 +6,39 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import { showErrorToast } from '@shared/service/util/toastService';
 import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL.ts';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
-import { getStoredSession } from '@shared/service/session';
 
 import { type UserRole } from '@entities/user';
 
-import { mapAuthResponseToUser } from '../api/authService';
+import { useAuthContext } from '../model/AuthProvider';
 
-/** Redirects to login when there is no stored session, remembering the target path. */
+/**
+ * Guards baseados no estado global de auth (context), não em leitura direta
+ * do localStorage: quando o interceptor derruba a sessão (authExpired), o
+ * user vira null e o redirect acontece na hora. Enquanto `isInitializing`,
+ * nada é renderizado — evita flash de conteúdo protegido seguido de erro.
+ */
+
+/** Redirects to login when unauthenticated, remembering the target path. */
 export const AuthGuard = ({ children }: { children: ReactNode }) => {
     const { t } = useTranslation('common');
 
-    const session = getStoredSession();
-    const isAuthenticated = Boolean(session);
+    const { isLoggedIn, isInitializing } = useAuthContext();
 
     const location = useLocation();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isInitializing && !isLoggedIn) {
             localStorage.setItem(REDIRECT_AFTER_LOGIN_KEY, location.pathname);
 
             showErrorToast(t('guard.authRequired'), { toastId: 'auth-error' });
         }
-    }, [isAuthenticated, location, t]);
+    }, [isInitializing, isLoggedIn, location, t]);
 
-    if (!isAuthenticated) {
+    if (isInitializing) {
+        return null;
+    }
+
+    if (!isLoggedIn) {
         return <Navigate to={`${WEB_BASE_URL}${ROUTES.LOGIN}`} replace />;
     }
 
@@ -40,15 +49,17 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
 export const RoleGuard = ({ children, allowedRoles }: { children: ReactNode; allowedRoles: UserRole[] }) => {
     const { t } = useTranslation('common');
 
-    const session = getStoredSession();
+    const { user, isInitializing } = useAuthContext();
 
-    const role = session ? (mapAuthResponseToUser(session).role ?? 'user') : 'user';
+    if (isInitializing) {
+        return null;
+    }
 
-    if (!session) {
+    if (!user) {
         return <Navigate to={`${WEB_BASE_URL}${ROUTES.LOGIN}`} replace />;
     }
 
-    if (!allowedRoles.includes(role)) {
+    if (!allowedRoles.includes(user.role ?? 'user')) {
         showErrorToast(t('guard.dashboardForbidden'), {
             toastId: 'dashboard-role-error',
         });

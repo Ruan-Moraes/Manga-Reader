@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 import { server } from '@/test/mocks/server';
 import { mockAuthResponse } from '@/test/mocks/handlers';
 import { seedAuthSession } from '@/test/testUtils';
+import { notifyAuthExpired } from '@shared/service/session';
 
 import { AuthProvider } from '../AuthProvider';
 import useAuth from '../useAuth';
@@ -43,16 +44,58 @@ describe('useAuth', () => {
             http.get('*/api/auth/me', () => {
                 return HttpResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
             }),
+            // O interceptor tenta refresh no 401 do /me — falhar rápido aqui
+            // mantém o teste determinístico (sem cadeia pendente vazando
+            // para o teste seguinte).
+            http.post('*/api/auth/refresh', () => {
+                return HttpResponse.json({ success: false }, { status: 401 });
+            }),
         );
 
         const { result } = renderAuth();
 
-        // Aguarda o efeito mount processar e setar null
-        await waitFor(() => {
-            // O estado final após o catch deve ser null
-            expect(result.current.user).toBeNull();
+        // isInitializing false garante que toda a cadeia /me → refresh terminou
+        await waitFor(() => expect(result.current.isInitializing).toBe(false));
+
+        expect(result.current.user).toBeNull();
+        expect(result.current.isLoggedIn).toBe(false);
+    });
+
+    // ── Gate de inicialização ─────────────────────────────────────────────
+
+    it('não deve estar inicializando quando não há sessão armazenada', () => {
+        const { result } = renderAuth();
+
+        expect(result.current.isInitializing).toBe(false);
+    });
+
+    it('deve iniciar como isInitializing e resolver após validar a sessão', async () => {
+        seedAuthSession();
+
+        const { result } = renderAuth();
+
+        // Antes do /me resolver, guards devem segurar o conteúdo protegido
+        expect(result.current.isInitializing).toBe(true);
+
+        await waitFor(() => expect(result.current.isInitializing).toBe(false));
+
+        expect(result.current.isLoggedIn).toBe(true);
+    });
+
+    // ── Sessão expirada (pub/sub do interceptor) ──────────────────────────
+
+    it('deve zerar o user quando o interceptor emite authExpired', async () => {
+        seedAuthSession();
+
+        const { result } = renderAuth();
+
+        await waitFor(() => expect(result.current.isLoggedIn).toBe(true));
+
+        act(() => {
+            notifyAuthExpired();
         });
 
+        expect(result.current.user).toBeNull();
         expect(result.current.isLoggedIn).toBe(false);
     });
 
@@ -75,7 +118,7 @@ describe('useAuth', () => {
         expect(result.current.isLoggedIn).toBe(true);
     });
 
-    it('deve persistir sessão no localStorage após login', async () => {
+    it('deve persistir sessão no localStorage após login — sem tokens', async () => {
         const { result } = renderAuth();
 
         await act(async () => {
@@ -88,8 +131,12 @@ describe('useAuth', () => {
         const stored = localStorage.getItem('manga-reader:auth-user');
         expect(stored).not.toBeNull();
 
+        // Tokens nunca vão para o storage: access fica em memória e o
+        // refresh no cookie httpOnly.
         const parsed = JSON.parse(stored!);
-        expect(parsed.accessToken).toBe(mockAuthResponse.accessToken);
+        expect(parsed.userId).toBe(mockAuthResponse.userId);
+        expect(parsed.accessToken).toBeUndefined();
+        expect(parsed.refreshToken).toBeUndefined();
     });
 
     it('deve lançar erro quando credenciais estão incorretas', async () => {

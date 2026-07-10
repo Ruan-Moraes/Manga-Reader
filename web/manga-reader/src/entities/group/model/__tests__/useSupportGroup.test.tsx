@@ -39,8 +39,10 @@ const buildGroup = (supporters: GroupSupporter[]): Group => ({
     translatedTitleIds: [],
 });
 
-vi.mock('@shared/service/session', () => ({
-    getStoredSession: () => ({ accessToken: 'token' }),
+vi.mock('@shared/service/session', async importOriginal => ({
+    ...(await importOriginal<typeof import('@shared/service/session')>()),
+    getStoredSession: () => ({ userId: 'u1' }),
+    getAccessToken: () => 'token',
 }));
 
 describe('useSupportGroup', () => {

@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
@@ -6,6 +6,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { http, HttpResponse } from 'msw';
 import { createTestQueryClient, TestProviders } from '@/test/helpers/renderWithProviders';
 import { server } from '@/test/mocks/server';
+import { persistSession, clearSession } from '@shared/service/session';
 import TitleDetails from '../TitleDetails';
 
 const mockTitle = {
@@ -24,6 +25,11 @@ const mockTitle = {
     author: 'Kentaro Miura',
     artist: 'Kentaro Miura',
     publisher: 'White Fox',
+    authors: [
+        { authorId: 1, name: 'Kentaro Miura', slug: 'kentaro-miura', role: 'AUTHOR' },
+        { authorId: 1, name: 'Kentaro Miura', slug: 'kentaro-miura', role: 'ARTIST' },
+    ],
+    publishers: [{ publisherId: 1, name: 'White Fox', slug: 'white-fox' }],
     chaptersCount: 370,
     createdAt: '1989-08-25T00:00:00Z',
     updatedAt: '2025-01-01T00:00:00Z',
@@ -208,9 +214,55 @@ describe('TitleDetails', () => {
         });
     });
 
+    it('shows author, artist and publisher credits on the Sobre tab', async () => {
+        const user = userEvent.setup();
+        renderWithId('1');
+        await user.click(await screen.findByRole('tab', { name: /sobre/i }));
+        await waitFor(() => {
+            expect(screen.getByText(/ficha técnica/i)).toBeInTheDocument();
+        });
+        expect(screen.getByText('Autor:')).toBeInTheDocument();
+        expect(screen.getByText('Artista:')).toBeInTheDocument();
+        expect(screen.getByText('Editora:')).toBeInTheDocument();
+        expect(screen.getAllByText('Kentaro Miura').length).toBeGreaterThan(0);
+        expect(screen.getByText('White Fox')).toBeInTheDocument();
+    });
+
     it('renders empty chapter state when no chapters returned', async () => {
         renderWithId('1');
         await screen.findByRole('heading', { name: /berserk/i });
         expect(await screen.findByText(/nenhum capítulo encontrado/i)).toBeInTheDocument();
+    });
+
+    describe('recordView (histórico de visualização)', () => {
+        afterEach(() => clearSession());
+
+        it('registra a visualização quando logado', async () => {
+            persistSession({ userId: 'u1', name: 'User', email: 'user@test.dev', role: 'MEMBER' });
+            let called = false;
+            server.use(http.post('*/api/users/me/history', () => {
+                called = true;
+                return new HttpResponse(null, { status: 204 });
+            }));
+
+            renderWithId('1');
+            await screen.findByRole('heading', { name: /berserk/i });
+
+            await waitFor(() => expect(called).toBe(true));
+        });
+
+        it('não registra a visualização quando deslogado', async () => {
+            let called = false;
+            server.use(http.post('*/api/users/me/history', () => {
+                called = true;
+                return new HttpResponse(null, { status: 204 });
+            }));
+
+            renderWithId('1');
+            await screen.findByRole('heading', { name: /berserk/i });
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+            expect(called).toBe(false);
+        });
     });
 });

@@ -13,6 +13,7 @@ export const API_URLS = {
     AUTH_ME: `${BASE}/api/auth/me`,
     AUTH_FORGOT_PASSWORD: `${BASE}/api/auth/forgot-password`,
     AUTH_RESET_PASSWORD: `${BASE}/api/auth/reset-password`,
+    AUTH_LOGOUT: `${BASE}/api/auth/logout`,
 
     TITLES: `${BASE}/api/titles`,
     TITLES_SEARCH: `${BASE}/api/titles/search`,
