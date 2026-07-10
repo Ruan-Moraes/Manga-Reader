@@ -235,6 +235,122 @@ class AuthSecurityIntegrationTest {
     }
 
     @Nested
+    @DisplayName("Rotacao, Reuso e Logout")
+    class RotationAndLogoutTests {
+        private static final String LOGOUT_URL = "/api/auth/logout";
+
+        private String signUpAndGetRefresh(String email) throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Rotation User", email, "senhaRot")))
+                    .andReturn();
+
+            return extractData(result).get("refreshToken").asText();
+        }
+
+        @Test
+        @DisplayName("Refresh deve rotacionar: o token usado deixa de valer")
+        void refreshShouldRotateAndInvalidateOldToken() throws Exception {
+            String refreshToken = signUpAndGetRefresh("rotate@test.com");
+
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isOk());
+
+            // O token já rotacionado não pode ser reutilizado
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(jsonPath("$.code").value("AUTH_REFRESH_TOKEN_EXPIRED"));
+        }
+
+        @Test
+        @DisplayName("Reuso de token rotacionado deve derrubar a familia inteira")
+        void reuseShouldRevokeWholeFamily() throws Exception {
+            String original = signUpAndGetRefresh("family@test.com");
+
+            MvcResult rotated = mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(original)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String newRefresh = extractData(rotated).get("refreshToken").asText();
+
+            // Reuso do original (revogado) → 401 e revoga a família
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(original)))
+                    .andExpect(status().isUnauthorized());
+
+            // O token novo, da mesma família, também morreu
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(newRefresh)))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Access token nao deve servir como refresh")
+        void accessTokenShouldNotWorkAsRefresh() throws Exception {
+            MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Access As Refresh", "accessrefresh@test.com", "senhaAR")))
+                    .andReturn();
+
+            String accessToken = extractData(result).get("accessToken").asText();
+
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(accessToken)))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Sign-in deve setar cookie httpOnly e o refresh deve funcionar so com o cookie")
+        void cookieFlowShouldWork() throws Exception {
+            mockMvc.perform(post(SIGN_UP_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(signUpJson("Cookie User", "cookie@test.com", "senhaCookie")));
+
+            MvcResult signIn = mockMvc.perform(post(SIGN_IN_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signInJson("cookie@test.com", "senhaCookie")))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            // MockMvc não propaga Set-Cookie entre requests — repassar manualmente
+            jakarta.servlet.http.Cookie cookie = signIn.getResponse().getCookie("refresh_token");
+
+            assertThat(cookie).isNotNull();
+            assertThat(cookie.isHttpOnly()).isTrue();
+            assertThat(cookie.getPath()).isEqualTo("/api/auth");
+
+            mockMvc.perform(post(REFRESH_URL).cookie(cookie))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.accessToken", notNullValue()));
+        }
+
+        @Test
+        @DisplayName("Logout deve revogar a sessao: refresh subsequente retorna 401")
+        void logoutShouldRevokeSession() throws Exception {
+            String refreshToken = signUpAndGetRefresh("logout@test.com");
+
+            mockMvc.perform(post(LOGOUT_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isOk());
+
+            mockMvc.perform(post(REFRESH_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(refreshJson(refreshToken)))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
     @DisplayName("Erros de Autenticacao")
     class AuthErrorTests {
         @Test

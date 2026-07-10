@@ -99,6 +99,10 @@ app:
     secret: manga-reader-dev-secret-key-that-is-at-least-256-bits-long-for-hs256
     access-token-expiration: 900000      # 15 minutos
     refresh-token-expiration: 604800000  # 7 dias
+  auth:
+    # Secure do cookie do refresh token — false em dev http (o browser
+    # descartaria o cookie); produção sobrescreve para true.
+    cookie-secure: false
   mail:
     from: noreply@mangareader.dev
     base-url: http://localhost:5173
