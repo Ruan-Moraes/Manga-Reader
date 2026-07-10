@@ -1,8 +1,13 @@
-const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
+export const AUTH_STORAGE_KEY = 'manga-reader:auth-user';
 
+/**
+ * Dados não sensíveis do usuário persistidos no localStorage.
+ *
+ * Tokens NUNCA entram aqui: o access token vive só em memória
+ * (`accessTokenMemory`) e o refresh token em cookie httpOnly — nenhum dos
+ * dois fica exposto a XSS via storage.
+ */
 export type StoredSession = {
-    accessToken: string;
-    refreshToken: string;
     userId: string;
     name: string;
     email: string;
