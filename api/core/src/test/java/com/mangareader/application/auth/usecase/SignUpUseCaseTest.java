@@ -3,10 +3,13 @@ package com.mangareader.application.auth.usecase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.auth.usecase.SignUpUseCase.SignUpInput;
 import com.mangareader.application.auth.usecase.SignUpUseCase.SignUpOutput;
@@ -50,6 +54,9 @@ class SignUpUseCaseTest {
     @Mock
     private TokenPort tokenPort;
 
+    @Mock
+    private RefreshTokenRepositoryPort refreshTokenRepository;
+
     @InjectMocks
     private SignUpUseCase signUpUseCase;
 
@@ -60,6 +67,7 @@ class SignUpUseCaseTest {
     private final UUID USER_ID = UUID.randomUUID();
     private final String ACCESS_TOKEN = "access.jwt.token";
     private final String REFRESH_TOKEN = "refresh.jwt.token";
+    private final LocalDateTime EXPIRES_AT = LocalDateTime.now().plusDays(7);
 
     @Nested
     @DisplayName("Cenário de sucesso")
@@ -80,6 +88,7 @@ class SignUpUseCaseTest {
             });
             when(tokenPort.generateAccessToken(USER_ID, EMAIL, "MEMBER")).thenReturn(ACCESS_TOKEN);
             when(tokenPort.generateRefreshToken(USER_ID)).thenReturn(REFRESH_TOKEN);
+            when(tokenPort.extractExpiration(REFRESH_TOKEN)).thenReturn(EXPIRES_AT);
 
             // Act
             SignUpOutput output = signUpUseCase.execute(input);
@@ -91,6 +100,9 @@ class SignUpUseCaseTest {
             assertThat(output.name()).isEqualTo(NAME);
             assertThat(output.email()).isEqualTo(EMAIL);
             assertThat(output.role()).isEqualTo("MEMBER");
+            verify(refreshTokenRepository).store(
+                    eq(REFRESH_TOKEN), eq(USER_ID), notNull(), eq(EXPIRES_AT)
+            );
         }
 
         @Test
@@ -108,6 +120,7 @@ class SignUpUseCaseTest {
             });
             when(tokenPort.generateAccessToken(any(), any(), any())).thenReturn(ACCESS_TOKEN);
             when(tokenPort.generateRefreshToken(any())).thenReturn(REFRESH_TOKEN);
+            when(tokenPort.extractExpiration(REFRESH_TOKEN)).thenReturn(EXPIRES_AT);
 
             // Act
             signUpUseCase.execute(input);

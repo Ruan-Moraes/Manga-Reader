@@ -1,8 +1,12 @@
 package com.mangareader.application.auth.usecase;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
@@ -13,14 +17,18 @@ import lombok.RequiredArgsConstructor;
 /**
  * Caso de uso: Autenticação (Sign In).
  * <p>
- * Valida credenciais e retorna tokens JWT (access + refresh).
+ * Valida credenciais e retorna tokens JWT (access + refresh). O refresh é
+ * persistido (hash) em uma família nova — cada login abre uma sessão/cadeia
+ * de rotação própria.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SignInUseCase {
     private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenPort tokenPort;
+    private final RefreshTokenRepositoryPort refreshTokenRepository;
 
     public record SignInInput(String email, String password) {}
 
@@ -49,6 +57,11 @@ public class SignInUseCase {
         );
 
         String refreshToken = tokenPort.generateRefreshToken(user.getId());
+
+        refreshTokenRepository.store(
+                refreshToken, user.getId(), UUID.randomUUID(),
+                tokenPort.extractExpiration(refreshToken)
+        );
 
         return new SignInOutput(
                 accessToken,

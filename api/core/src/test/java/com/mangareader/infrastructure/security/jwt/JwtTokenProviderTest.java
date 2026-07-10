@@ -1,7 +1,10 @@
 package com.mangareader.infrastructure.security.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +45,23 @@ class JwtTokenProviderTest {
             String token = provider.generateAccessToken(USER_ID, "ruan@email.com", "MEMBER");
 
             assertThat(token.split("\\.")).hasSize(3);
+        }
+    }
+
+    @Nested
+    @DisplayName("extractExpiration")
+    class ExtractExpiration {
+
+        @Test
+        @DisplayName("Deve extrair a expiração do refresh token (~24h à frente)")
+        void deveExtrairExpiracaoDoRefreshToken() {
+            String token = provider.generateRefreshToken(USER_ID);
+
+            LocalDateTime expiration = provider.extractExpiration(token);
+
+            // JWT trunca exp para segundos — tolerância de 5s cobre o arredondamento
+            LocalDateTime expected = LocalDateTime.now().plusHours(24);
+            assertThat(expiration).isCloseTo(expected, within(5, ChronoUnit.SECONDS));
         }
     }
 

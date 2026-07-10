@@ -1,5 +1,7 @@
 package com.mangareader.infrastructure.security.jwt;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -109,6 +111,13 @@ public class JwtTokenProvider implements TokenPort {
     @Override
     public String extractType(String token) {
         return extractClaims(token).get("type", String.class);
+    }
+
+    @Override
+    public LocalDateTime extractExpiration(String token) {
+        return LocalDateTime.ofInstant(
+                extractClaims(token).getExpiration().toInstant(), ZoneId.systemDefault()
+        );
     }
 
     private Claims extractClaims(String token) {

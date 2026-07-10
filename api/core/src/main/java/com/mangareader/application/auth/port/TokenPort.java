@@ -1,5 +1,6 @@
 package com.mangareader.application.auth.port;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -21,4 +22,6 @@ public interface TokenPort {
     String extractRole(String token);
 
     String extractType(String token);
+
+    LocalDateTime extractExpiration(String token);
 }
