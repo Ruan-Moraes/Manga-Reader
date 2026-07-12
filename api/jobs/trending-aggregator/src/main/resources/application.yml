@@ -1,0 +1,31 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: trending-aggregator
+  docker.compose.enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mangareader
+    username: manga
+    password: manga_secret
+  data.mongodb:
+    uri: mongodb://localhost:27017/mangareader
+    auto-index-creation: false
+mongock:
+  migration-scan-package: com.mangareader.trending.infrastructure.migration
+  transactional: false
+management.endpoints.web.exposure.include: health,info,metrics
+trending:
+  seed:
+    # Demo local: cria o primeiro ranking somente se title_trend_daily estiver vazia.
+    enabled: true
+  schedule.cron: "0 15 3 * * *"
+  zone: America/Sao_Paulo
+  retention-days: 90
+  weights:
+    reads: 0.45
+    library-adds: 0.25
+    reviews: 0.15
+    comments: 0.10
+    releases: 0.05
+  admin.token: ${TRENDING_ADMIN_TOKEN:}
