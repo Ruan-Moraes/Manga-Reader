@@ -24,7 +24,7 @@ export { default as TitleActions } from './ui/action/TitleActions';
 export { filterTitles, searchTitles } from './api/titleService';
 
 // Types
-export type { Title } from './model/title.types';
+export type { Title, AuthorRole, TitleAuthor, TitlePublisher } from './model/title.types';
 export type {
     BaseCard as BaseCardProps,
     CarouselCard,

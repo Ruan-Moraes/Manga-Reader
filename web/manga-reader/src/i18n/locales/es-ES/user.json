@@ -88,6 +88,18 @@
             "meta": "Los cambios se guardan conforme editas"
         },
         "noActivity": "Sin actividad pública",
+        "activity": {
+            "chapterRead": "Leyó el capítulo {{chapter}} de {{title}}",
+            "reviewPosted": "Publicó una reseña de {{title}}",
+            "titleCompleted": "Marcó {{title}} como completado",
+            "userFollowed": "Empezó a seguir a {{name}}",
+            "groupFollowed": "Empezó a seguir el grupo {{name}}",
+            "loadMore": "Cargar más",
+            "hide": "Ocultar",
+            "hideConfirm": "¿Ocultar de tu historial?",
+            "hideYes": "Sí",
+            "hideNo": "No"
+        },
         "editTabs": {
             "account": "Cuenta",
             "identity": "Identidad",

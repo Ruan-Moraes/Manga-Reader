@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { createEvent, updateEvent, deleteEvent } from '../api/adminEventService';
@@ -32,7 +32,6 @@ const useAdminEventActions = () => {
                 invalidateEvents();
                 return result;
             } catch {
-                showErrorToast('Erro ao criar evento.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -50,7 +49,6 @@ const useAdminEventActions = () => {
                 invalidateEvents();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar evento.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -67,7 +65,7 @@ const useAdminEventActions = () => {
                 showSuccessToast('Evento excluído com sucesso.');
                 invalidateEvents();
             } catch {
-                showErrorToast('Erro ao excluir evento.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

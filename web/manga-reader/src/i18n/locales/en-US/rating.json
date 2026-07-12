@@ -141,6 +141,8 @@
         "voteError": "Could not register your vote. Please try again.",
         "reviewsCount_one": "{{count}} review",
         "reviewsCount_other": "{{count}} reviews",
+        "reviewsCountBold_one": "<0>{{count}}</0> review",
+        "reviewsCountBold_other": "<0>{{count}}</0> reviews",
         "ratingsCount_one": "{{count}} rating",
         "ratingsCount_other": "{{count}} ratings",
         "summary": {

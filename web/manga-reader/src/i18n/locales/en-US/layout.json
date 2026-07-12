@@ -200,7 +200,15 @@
             "events": "Events",
             "groups": "Groups",
             "forum": "Forum",
-            "profile": "My Profile"
+            "profile": "My Profile",
+            "notifications": "Notifications",
+            "dashboard": "Dashboard"
         }
+    },
+    "notifications": {
+        "title": "Notifications",
+        "subtitle": "Keep track of your updates here",
+        "emptyState": "Nothing here yet",
+        "emptyDesc": "We're getting notifications ready. You'll be able to keep track of everything here soon."
     }
 }

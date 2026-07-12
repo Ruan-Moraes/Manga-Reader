@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { updateSubscriptionStatus } from '../api/adminSubscriptionService';
@@ -27,7 +27,7 @@ const useAdminSubscriptionActions = () => {
                 showSuccessToast('Status da assinatura atualizado com sucesso.');
                 invalidateSubscriptions();
             } catch {
-                showErrorToast('Erro ao atualizar status da assinatura.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

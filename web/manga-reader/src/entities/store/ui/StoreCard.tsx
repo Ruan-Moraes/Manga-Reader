@@ -70,7 +70,7 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
                 variant="primary"
                 size="sm"
                 icon={ExternalLink}
-                onClick={() => window.open(store.website, '_blank', 'noopener,noreferrer')}
+                onClick={() => window.open(store.purchaseUrl ?? store.website, '_blank', 'noopener,noreferrer')}
                 className="shrink-0"
             >
                 {t('card.goToStore')}

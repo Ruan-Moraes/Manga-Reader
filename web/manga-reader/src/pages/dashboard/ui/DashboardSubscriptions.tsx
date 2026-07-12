@@ -16,7 +16,7 @@ import {
     type AdminPlan,
 } from '@features/admin';
 import { Tabs } from '@ui/Tabs';
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import type { LocalizedString, LocalizedStringList } from '@shared/type/i18n';
 
 import SubscriptionsTab from './parts/SubscriptionsTab';
@@ -78,7 +78,7 @@ const DashboardSubscriptions = () => {
             setIsGrantOpen(false);
             refetchSubscriptions();
         } catch {
-            showErrorToast(t('dashboard.subscriptions.grantError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         } finally {
             setIsGrantSubmitting(false);
         }
@@ -92,7 +92,7 @@ const DashboardSubscriptions = () => {
             setDeletingSubscription(null);
             refetchSubscriptions();
         } catch {
-            showErrorToast(t('dashboard.subscriptions.revokeError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     };
 

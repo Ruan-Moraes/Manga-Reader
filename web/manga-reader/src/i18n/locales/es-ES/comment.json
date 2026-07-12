@@ -2,6 +2,7 @@
     "section": {
         "title": "Comentarios",
         "loginPrompt": "Inicia sesión para dejar un comentario.",
+        "signIn": "Iniciar sesión",
         "placeholder": "Deja tu comentario",
         "sortLabel": "Ordenar comentarios por:",
         "count_one": "{{count}} comentario",

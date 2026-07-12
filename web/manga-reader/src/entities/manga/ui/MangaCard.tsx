@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Bookmark } from 'lucide-react';
 
 import { cn } from '@shared/lib/cn';
@@ -38,6 +39,7 @@ const sizeTitle = {
 };
 
 const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, onToggleLibrary, inLibrary }: MangaCardProps) => {
+    const { t } = useTranslation('library');
     const [hover, setHover] = useState(false);
     const lifted = hover || featured;
 
@@ -50,7 +52,7 @@ const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, o
             }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            className={cn('block no-underline transition-transform duration-mr-default mr-focus-ring', lifted && '-translate-y-0.5')}
+            className={cn('block min-w-0 no-underline transition-transform duration-mr-default mr-focus-ring', lifted && '-translate-y-0.5')}
         >
             <div
                 className={cn(
@@ -76,7 +78,7 @@ const MangaCardBase = ({ manga, featured, tag, progress, size = 'md', onClick, o
                             icon={Bookmark}
                             size="sm"
                             variant="ghost"
-                            aria-label={inLibrary ? 'Remover da biblioteca' : 'Adicionar à biblioteca'}
+                            aria-label={inLibrary ? t('bookmark.saved') : t('bookmark.save')}
                             aria-pressed={inLibrary}
                             onClick={e => {
                                 e.preventDefault();

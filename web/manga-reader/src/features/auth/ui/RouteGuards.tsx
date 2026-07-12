@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import { showErrorToast } from '@shared/service/util/toastService';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL.ts';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL.ts';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
 
 import { type UserRole } from '@entities/user';
@@ -39,7 +39,7 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
     }
 
     if (!isLoggedIn) {
-        return <Navigate to={`${WEB_BASE_URL}${ROUTES.LOGIN}`} replace />;
+        return <Navigate to={withWebBasePath(ROUTES.LOGIN)} replace />;
     }
 
     return <>{children}</>;
@@ -56,7 +56,7 @@ export const RoleGuard = ({ children, allowedRoles }: { children: ReactNode; all
     }
 
     if (!user) {
-        return <Navigate to={`${WEB_BASE_URL}${ROUTES.LOGIN}`} replace />;
+        return <Navigate to={withWebBasePath(ROUTES.LOGIN)} replace />;
     }
 
     if (!allowedRoles.includes(user.role ?? 'user')) {
@@ -64,7 +64,7 @@ export const RoleGuard = ({ children, allowedRoles }: { children: ReactNode; all
             toastId: 'dashboard-role-error',
         });
 
-        return <Navigate to={`${WEB_BASE_URL}/`} replace />;
+        return <Navigate to={withWebBasePath('/')} replace />;
     }
 
     return <>{children}</>;

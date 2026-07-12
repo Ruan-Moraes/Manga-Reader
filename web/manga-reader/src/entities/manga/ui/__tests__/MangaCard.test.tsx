@@ -38,19 +38,19 @@ describe('MangaCard', () => {
 
     it('shows bookmark button when onToggleLibrary provided', () => {
         render(<MangaCard manga={manga} onToggleLibrary={vi.fn()} />);
-        expect(screen.getByRole('button', { name: /adicionar à biblioteca/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /salvar na biblioteca/i })).toBeInTheDocument();
     });
 
     it('shows remove label when inLibrary=true', () => {
         render(<MangaCard manga={manga} onToggleLibrary={vi.fn()} inLibrary />);
-        expect(screen.getByRole('button', { name: /remover da biblioteca/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /na biblioteca/i })).toBeInTheDocument();
     });
 
     it('calls onToggleLibrary when bookmark clicked', async () => {
         const user = userEvent.setup();
         const onToggle = vi.fn();
         render(<MangaCard manga={manga} onToggleLibrary={onToggle} />);
-        await user.click(screen.getByRole('button', { name: /adicionar à biblioteca/i }));
+        await user.click(screen.getByRole('button', { name: /salvar na biblioteca/i }));
         expect(onToggle).toHaveBeenCalled();
     });
 

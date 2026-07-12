@@ -28,4 +28,6 @@ export interface Store {
     mono?: string;
     /** Cor de fundo do logo monograma */
     color?: string;
+    /** Link direto para comprar o título na loja. */
+    purchaseUrl?: string;
 }

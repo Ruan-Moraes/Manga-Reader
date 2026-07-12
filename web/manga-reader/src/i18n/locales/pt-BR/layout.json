@@ -200,7 +200,15 @@
             "events": "Eventos",
             "groups": "Grupos",
             "forum": "Fórum",
-            "profile": "Meu Perfil"
+            "profile": "Meu Perfil",
+            "notifications": "Notificações",
+            "dashboard": "Dashboard"
         }
+    },
+    "notifications": {
+        "title": "Notificações",
+        "subtitle": "Acompanhe suas atualizações por aqui",
+        "emptyState": "Nada por aqui ainda",
+        "emptyDesc": "Estamos preparando as notificações. Em breve você vai acompanhar tudo por aqui."
     }
 }

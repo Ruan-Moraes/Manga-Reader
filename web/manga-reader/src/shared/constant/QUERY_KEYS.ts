@@ -7,6 +7,10 @@ export enum QUERY_KEYS {
     UPDATED_TITLES = 'updatedTitles',
     TITLES_SEARCH = 'titlesSearch',
 
+    // Trending
+    TRENDING = 'trending',
+    TRENDING_DASHBOARD = 'trendingDashboard',
+
     // Chapters
     CHAPTERS = 'chapters',
 
@@ -18,6 +22,9 @@ export enum QUERY_KEYS {
     RATING_AVERAGE = 'ratingAverage',
     RATING_DISTRIBUTION = 'ratingDistribution',
     USER_REVIEWS = 'userReviews',
+
+    // Activity feed
+    ACTIVITY_FEED = 'activityFeed',
 
     // Stores
     STORES_BY_TITLE = 'storesByTitle',
@@ -36,6 +43,8 @@ export enum QUERY_KEYS {
 
     // News
     NEWS = 'news',
+    NEWS_DETAIL = 'newsDetail',
+    NEWS_RELATED = 'newsRelated',
 
     // Events
     EVENTS = 'events',
@@ -59,6 +68,7 @@ export enum QUERY_KEYS {
     ADMIN_USERS = 'adminUsers',
     ADMIN_USER_DETAIL = 'adminUserDetail',
     ADMIN_TITLES = 'adminTitles',
+    ADMIN_STORES = 'adminStores',
     ADMIN_TITLE_DETAIL = 'adminTitleDetail',
     ADMIN_CHAPTERS = 'adminChapters',
     ADMIN_CHAPTER_DETAIL = 'adminChapterDetail',

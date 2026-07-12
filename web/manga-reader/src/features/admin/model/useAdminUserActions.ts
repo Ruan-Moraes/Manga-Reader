@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { banUser, changeUserRole, deleteUser, unbanUser } from '../api/adminUserService';
@@ -31,7 +31,7 @@ const useAdminUserActions = () => {
                 showSuccessToast('Role alterado com sucesso.');
                 invalidateUsers();
             } catch {
-                showErrorToast('Erro ao alterar role.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -47,7 +47,7 @@ const useAdminUserActions = () => {
                 showSuccessToast('Usuário banido com sucesso.');
                 invalidateUsers();
             } catch {
-                showErrorToast('Erro ao banir usuário.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -63,7 +63,7 @@ const useAdminUserActions = () => {
                 showSuccessToast('Ban removido com sucesso.');
                 invalidateUsers();
             } catch {
-                showErrorToast('Erro ao remover ban.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -79,7 +79,7 @@ const useAdminUserActions = () => {
                 showSuccessToast('Usuário removido com sucesso.');
                 invalidateUsers();
             } catch {
-                showErrorToast('Erro ao remover usuário.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

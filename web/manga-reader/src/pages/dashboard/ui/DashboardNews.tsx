@@ -12,11 +12,15 @@ import {
     type UpdateNewsRequest,
 } from '@features/admin';
 import ListPageHeader from './parts/ListPageHeader';
+import { Select } from '@ui/Select';
+import { LABEL_TYPES, useDomainLabels } from '@entities/label';
+import type { NewsStatus } from '@entities/news';
 
 const DashboardNews = () => {
     const { t } = useTranslation('admin');
-    const { news, page, totalPages, totalElements, isLoading, search, setSearch, setPage } = useAdminNews();
-    const { isSubmitting, handleCreate, handleUpdate, handleDelete } = useAdminNewsActions();
+    const { news, page, totalPages, totalElements, isLoading, search, setSearch, setPage, status, setStatus, category, setCategory } = useAdminNews();
+    const { data: categories = [] } = useDomainLabels(LABEL_TYPES.NEWS_CATEGORY);
+    const { isSubmitting, handleCreate, handleUpdate, handleDelete, handlePublish, handleUnpublish, handleDraft, handleSchedule } = useAdminNewsActions();
 
     const [searchInput, setSearchInput] = useState(search);
     const [formOpen, setFormOpen] = useState(false);
@@ -63,6 +67,11 @@ const DashboardNews = () => {
                 searchButtonLabel={t('common.search')}
             />
 
+            <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+                <Select aria-label={t('dashboard.news.statusFilter')} value={status} onChange={event => { setStatus(event.target.value as NewsStatus | ''); setPage(0); }} options={[{ value: '', label: t('dashboard.news.allStatuses') }, ...(['DRAFT','SCHEDULED','PUBLISHED','UNPUBLISHED'] as const).map(value => ({ value, label: t(`newsForm.status.${value}`) }))]} />
+                <Select aria-label={t('dashboard.news.categoryFilter')} value={category} onChange={event => { setCategory(event.target.value); setPage(0); }} options={[{ value: '', label: t('dashboard.news.allCategories') }, ...categories]} />
+            </div>
+
             <AdminNewsList
                 news={news}
                 page={page}
@@ -84,6 +93,10 @@ const DashboardNews = () => {
                     setDeletingNews(editing);
                     setFormOpen(false);
                 }}
+                onPublish={() => editing && handlePublish(editing.id)}
+                onUnpublish={() => editing && handleUnpublish(editing.id)}
+                onDraft={() => editing && handleDraft(editing.id)}
+                onSchedule={scheduledAt => editing && handleSchedule(editing.id, scheduledAt)}
             />
 
             <ConfirmDeleteWithIdModal

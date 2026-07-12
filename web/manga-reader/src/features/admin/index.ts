@@ -34,6 +34,8 @@ export type {
     CreatePublisherRequest,
     UpdatePublisherRequest,
     AdminPlan,
+    AdminStore,
+    StoreRequest,
     CreatePlanRequest,
     UpdatePlanRequest,
     GrantSubscriptionRequest,
@@ -53,6 +55,8 @@ export { default as useDashboardMetrics } from './model/useDashboardMetrics';
 // Hooks — Titles
 export { default as useAdminTitles } from './model/useAdminTitles';
 export { default as useAdminTitleActions } from './model/useAdminTitleActions';
+export { default as useAdminStores } from './model/useAdminStores';
+export { default as useAdminStoreActions } from './model/useAdminStoreActions';
 
 // Status helpers (tones/labels compartilhados com as páginas do dashboard)
 export { CHAPTER_STATUS_TONE, TITLE_STATUS_TONE, statusLabelKey, toneFor } from './model/statusTone';
@@ -113,6 +117,7 @@ export { default as AdminDashboardOverview } from './ui/AdminDashboardOverview';
 export { default as AdminUserList } from './ui/AdminUserList';
 export { default as AdminUserDetail } from './ui/AdminUserDetail';
 export { default as AdminTitleList } from './ui/AdminTitleList';
+export { default as AdminStoreList } from './ui/AdminStoreList';
 export { default as AdminChapterList } from './ui/AdminChapterList';
 export { default as ChapterPageGrid } from './ui/parts/ChapterPageGrid';
 export { default as ChapterMetricsPanel } from './ui/parts/ChapterMetricsPanel';
@@ -135,6 +140,7 @@ export { default as ConfirmDeleteWithIdModal } from './ui/modal/ConfirmDeleteWit
 export { default as ConfirmModal } from './ui/modal/ConfirmModal';
 export { default as AdminUserDetailModal } from './ui/modal/AdminUserDetailModal';
 export { default as TitleFormModal } from './ui/modal/TitleFormModal';
+export { default as StoreFormModal } from './ui/modal/StoreFormModal';
 export { default as ChapterFormModal } from './ui/modal/ChapterFormModal';
 export { default as ReorderChaptersModal } from './ui/modal/ReorderChaptersModal';
 export { default as BulkChapterStatusModal } from './ui/modal/BulkChapterStatusModal';

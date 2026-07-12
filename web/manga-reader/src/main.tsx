@@ -94,7 +94,7 @@ createRoot(document.getElementById('root')!).render(
                             <ProfileSettingsModalProvider>
                                 <CommentSortProvider>
                                     <RouterProvider router={routes} />
-                                    {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+                                    {false && <ReactQueryDevtools initialIsOpen={false} />}
                                 </CommentSortProvider>
                             </ProfileSettingsModalProvider>
                         </UserModalProvider>

@@ -1,6 +1,6 @@
 import { ROUTES } from '@shared/constant/ROUTES';
 import { useState, useCallback } from 'react';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -80,7 +80,7 @@ const useResetPassword = () => {
 
                 showSuccessToast(message ?? t('resetPassword.success'));
 
-                navigate(`${WEB_BASE_URL}${ROUTES.LOGIN}`);
+                navigate(withWebBasePath(ROUTES.LOGIN));
             } catch {
                 // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
             } finally {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { AdminGroupDetail, GroupFormModal, useAdminGroupDetail, useAdminGroupActions, type GroupFormSubmitPayload } from '@features/admin';
@@ -51,7 +51,7 @@ const DashboardGroupDetail = () => {
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
                 <button
-                    onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUPS}`)}
+                    onClick={() => navigate(withWebBasePath(ROUTES.DASHBOARD_GROUPS))}
                     className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
                 >
                     <ArrowLeft size={14} />

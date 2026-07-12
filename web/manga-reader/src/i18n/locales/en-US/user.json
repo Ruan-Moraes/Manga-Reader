@@ -88,6 +88,18 @@
             "meta": "Changes are saved as you edit"
         },
         "noActivity": "No public activity",
+        "activity": {
+            "chapterRead": "Read chapter {{chapter}} of {{title}}",
+            "reviewPosted": "Posted a review of {{title}}",
+            "titleCompleted": "Marked {{title}} as completed",
+            "userFollowed": "Started following {{name}}",
+            "groupFollowed": "Started following the group {{name}}",
+            "loadMore": "Load more",
+            "hide": "Hide",
+            "hideConfirm": "Hide from your history?",
+            "hideYes": "Yes",
+            "hideNo": "No"
+        },
         "editTabs": {
             "account": "Account",
             "identity": "Identity",

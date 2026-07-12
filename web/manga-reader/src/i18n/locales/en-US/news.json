@@ -11,6 +11,7 @@
     },
     "filter": {
         "period": {
+            "label": "Period",
             "all": "All time",
             "today": "Today",
             "week": "Last week",
@@ -20,6 +21,7 @@
             "all": "All sources"
         },
         "sort": {
+            "label": "Sort",
             "recent": "Most recent",
             "mostRead": "Most read",
             "trending": "Trending"
@@ -38,6 +40,15 @@
     },
     "page": {
         "title": "News",
+        "description": "Stories, releases and industry movements to keep you current with the manga universe.",
+        "results": "{{count}} news stories found",
+        "searchAction": "Search",
+        "filters": "Filters",
+        "allCategories": "All",
+        "errorTitle": "We couldn't load the news",
+        "errorDescription": "Check your connection and try again.",
+        "retry": "Try again",
+        "clearFilters": "Clear filters",
         "eyebrow": "Latest",
         "weekTitle": "What happened this week",
         "readMore": "Read more",
@@ -71,6 +82,10 @@
         "reactions": "Reactions and engagement",
         "commentsCount": "{{count}} comments",
         "share": "Share",
+        "linkCopied": "Link copied.",
+        "breadcrumb": "Breadcrumb",
+        "home": "Home",
+        "relatedError": "Related news is currently unavailable.",
         "save": "Save news",
         "comments": "Comments",
         "sortRecent": "Most recent",

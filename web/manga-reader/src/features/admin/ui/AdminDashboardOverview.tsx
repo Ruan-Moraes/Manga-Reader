@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AlertCircle, Book, Calendar, FileText, Layers, Users } from 'lucide-react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { getLocale } from '@shared/lib/formatters';
 import { cn } from '@shared/lib/cn';
 
@@ -65,12 +65,12 @@ const AdminDashboardOverview = ({ metrics }: AdminDashboardOverviewProps) => {
     const { t } = useTranslation('admin');
 
     const kpis: Kpi[] = [
-        { label: t('dashboard.overview.metrics.users'), value: metrics.totalUsers, icon: <Users size={22} />, to: `${WEB_BASE_URL}${ROUTES.DASHBOARD_USERS}` },
-        { label: t('dashboard.overview.metrics.titles'), value: metrics.totalTitles, icon: <Book size={22} />, to: `${WEB_BASE_URL}${ROUTES.DASHBOARD_TITLES}` },
-        { label: t('dashboard.overview.metrics.groups'), value: metrics.totalGroups, icon: <Layers size={22} />, to: `${WEB_BASE_URL}${ROUTES.DASHBOARD_GROUPS}` },
-        { label: t('dashboard.overview.metrics.news'), value: metrics.totalNews, icon: <FileText size={22} />, to: `${WEB_BASE_URL}${ROUTES.DASHBOARD_NEWS}` },
-        { label: t('dashboard.overview.metrics.events'), value: metrics.totalEvents, icon: <Calendar size={22} />, to: `${WEB_BASE_URL}${ROUTES.DASHBOARD_EVENTS}` },
-        { label: t('dashboard.overview.metrics.banned'), value: metrics.bannedUsers, icon: <AlertCircle size={22} />, to: `${WEB_BASE_URL}${ROUTES.DASHBOARD_USERS}`, danger: true },
+        { label: t('dashboard.overview.metrics.users'), value: metrics.totalUsers, icon: <Users size={22} />, to: withWebBasePath(ROUTES.DASHBOARD_USERS) },
+        { label: t('dashboard.overview.metrics.titles'), value: metrics.totalTitles, icon: <Book size={22} />, to: withWebBasePath(ROUTES.DASHBOARD_TITLES) },
+        { label: t('dashboard.overview.metrics.groups'), value: metrics.totalGroups, icon: <Layers size={22} />, to: withWebBasePath(ROUTES.DASHBOARD_GROUPS) },
+        { label: t('dashboard.overview.metrics.news'), value: metrics.totalNews, icon: <FileText size={22} />, to: withWebBasePath(ROUTES.DASHBOARD_NEWS) },
+        { label: t('dashboard.overview.metrics.events'), value: metrics.totalEvents, icon: <Calendar size={22} />, to: withWebBasePath(ROUTES.DASHBOARD_EVENTS) },
+        { label: t('dashboard.overview.metrics.banned'), value: metrics.bannedUsers, icon: <AlertCircle size={22} />, to: withWebBasePath(ROUTES.DASHBOARD_USERS), danger: true },
     ];
 
     const roleEntries = Object.entries(metrics.usersByRole);

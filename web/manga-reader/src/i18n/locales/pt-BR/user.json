@@ -88,6 +88,18 @@
             "meta": "Mudanças são salvas conforme você edita"
         },
         "noActivity": "Nenhuma atividade pública",
+        "activity": {
+            "chapterRead": "Leu o capítulo {{chapter}} de {{title}}",
+            "reviewPosted": "Publicou uma resenha de {{title}}",
+            "titleCompleted": "Marcou {{title}} como concluído",
+            "userFollowed": "Passou a seguir {{name}}",
+            "groupFollowed": "Passou a seguir o grupo {{name}}",
+            "loadMore": "Carregar mais",
+            "hide": "Ocultar",
+            "hideConfirm": "Ocultar do seu histórico?",
+            "hideYes": "Sim",
+            "hideNo": "Não"
+        },
         "editTabs": {
             "account": "Conta",
             "identity": "Identidade",

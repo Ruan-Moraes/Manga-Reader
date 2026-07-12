@@ -16,6 +16,7 @@ import useTitleFormModalState from '../../model/useTitleFormModalState';
 import Field from '../parts/Field';
 import AuthorRolesInput from '../parts/AuthorRolesInput';
 import PublishersInput from '../parts/PublishersInput';
+import TitleStoresInput from '../parts/TitleStoresInput';
 
 type TitleFormModalProps = {
     isOpen: boolean;
@@ -42,6 +43,9 @@ const TitleFormModal = ({ isOpen, onClose, titleId, onSaved, onDelete }: TitleFo
         setAuthors,
         publishers,
         setPublishers,
+        stores,
+        setStores,
+        availableStores,
         allTags,
         statusOptions,
         valid,
@@ -127,6 +131,10 @@ const TitleFormModal = ({ isOpen, onClose, titleId, onSaved, onDelete }: TitleFo
                             <PublishersInput value={publishers} onChange={setPublishers} />
                         </Field>
                     </FormRow>
+                </ModalSection>
+
+                <ModalSection title={t('stores.title')}>
+                    <TitleStoresInput value={stores} stores={availableStores} onChange={setStores} />
                 </ModalSection>
             </div>
         </Modal>

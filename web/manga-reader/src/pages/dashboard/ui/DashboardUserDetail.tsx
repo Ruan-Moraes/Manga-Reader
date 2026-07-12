@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { useTranslation } from 'react-i18next';
 import { AdminUserDetail, useAdminUserDetail } from '@features/admin';
@@ -38,7 +38,7 @@ const DashboardUserDetail = () => {
     return (
         <div className="flex flex-col gap-4">
             <button
-                onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.DASHBOARD_USERS}`)}
+                onClick={() => navigate(withWebBasePath(ROUTES.DASHBOARD_USERS))}
                 className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
             >
                 <ArrowLeft size={14} />

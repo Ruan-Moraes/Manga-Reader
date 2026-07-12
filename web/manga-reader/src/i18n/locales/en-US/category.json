@@ -1,6 +1,8 @@
 {
     "tagSelect": {
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "searchPlaceholder": "Search...",
+        "noResults": "No options found"
     },
     "filters": {
         "title": "Filter Titles",

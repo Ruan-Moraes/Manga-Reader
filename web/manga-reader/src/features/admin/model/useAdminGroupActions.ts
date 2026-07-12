@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { changeGroupMemberRole, deleteGroup, removeGroupMember, updateAdminGroup, type UpdateGroupRequest } from '../api/adminGroupService';
@@ -27,7 +27,7 @@ const useAdminGroupActions = () => {
                 showSuccessToast('Role do membro alterado com sucesso.');
                 invalidateGroups();
             } catch {
-                showErrorToast('Erro ao alterar role do membro.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -43,7 +43,7 @@ const useAdminGroupActions = () => {
                 showSuccessToast('Membro removido com sucesso.');
                 invalidateGroups();
             } catch {
-                showErrorToast('Erro ao remover membro.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -60,7 +60,6 @@ const useAdminGroupActions = () => {
                 invalidateGroups();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar grupo.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -77,7 +76,7 @@ const useAdminGroupActions = () => {
                 showSuccessToast('Grupo removido com sucesso.');
                 invalidateGroups();
             } catch {
-                showErrorToast('Erro ao remover grupo.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

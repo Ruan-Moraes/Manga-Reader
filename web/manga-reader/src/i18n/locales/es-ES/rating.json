@@ -141,6 +141,8 @@
         "voteError": "No se pudo registrar tu voto. Inténtalo de nuevo.",
         "reviewsCount_one": "{{count}} reseña",
         "reviewsCount_other": "{{count}} reseñas",
+        "reviewsCountBold_one": "<0>{{count}}</0> reseña",
+        "reviewsCountBold_other": "<0>{{count}}</0> reseñas",
         "ratingsCount_one": "{{count}} valoración",
         "ratingsCount_other": "{{count}} valoraciones",
         "summary": {
