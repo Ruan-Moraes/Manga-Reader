@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All Services" type="CompoundRunConfigurationType">
+    <toRun name="API Core (8080)" type="MavenRunConfiguration" />
+    <toRun name="Job Rating Aggregator (8081)" type="MavenRunConfiguration" />
+    <toRun name="Job Orphan Cleaner (8082)" type="MavenRunConfiguration" />
+    <toRun name="Job Trending Aggregator" type="MavenRunConfiguration" />
+    <toRun name="Web Dev (5173)" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>
