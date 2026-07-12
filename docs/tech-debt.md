@@ -692,10 +692,10 @@ Itens de produto que ainda não existem no código, preservados aqui após a rem
 do antigo `pending-tasks.md` (cuja maior parte já estava resolvida/stale). Todos
 **não-bloqueantes** enquanto o projeto não vai a produção:
 
-- **Upload de arquivos**: capas de título, avatares de usuário, páginas de
-  capítulo. Hoje todas as imagens são URLs externas/seed; não há pipeline de
-  upload/storage.
-- **Endpoints ausentes**: `news/{id}/related`, `events/{id}/related`,
+- **Upload de arquivos**: capas de título/notícia, avatares de usuário e páginas de
+  capítulo ainda são URLs externas; notícias usam Picsum determinístico como provisório e
+  já expõem `NewsCoverStoragePort`, mas não há adapter S3/Cloudinary/R2 nem upload binário.
+- **Endpoints ausentes**: `events/{id}/related`,
   `groups/{id}/members/{memberId}` (detalhe de membro). Seções de UI
   correspondentes ficam sem dados quando aplicável.
 - **Busca global cross-domain** e **filtros avançados** em listagens (além dos

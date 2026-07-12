@@ -35,6 +35,12 @@ Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **do
 - **Contrato de evento**: `RatingEvent` replicado no **mesmo FQN** `com.mangareader.application.shared.event.RatingEvent`; consumer usa `TypePrecedence.INFERRED` (robusto a divergência de FQN). Sem jar compartilhado entre os apps.
 - **Monolito**: apenas **publica** os eventos (já fazia) e **lê** o agregado via `TitleRatingAggregateReadPort` (`findByTitleIdIn` em lote, sem N+1). `GetRatingAverageUseCase`/`GetRatingDistributionUseCase` e `TitleMapper`/`AdminTitleMapper` consomem o agregado — **nenhuma** agregação `AVG/COUNT` durante a renderização. O `RatingEventConsumer` e a fila de recalc do monolito foram removidos (recompute migrou para o serviço).
 
+### Job de Tendências (`api/jobs/trending-aggregator`)
+
+Job Spring Boot separado, porta 8083, que lê sinais temporais em lote do PostgreSQL e MongoDB uma vez por dia. O score combina leituras, biblioteca, avaliações, comentários e lançamentos, comparando dias UTC completos em janelas adjacentes de 1/7/30 dias com suavização de amostras pequenas. Persiste snapshots idempotentes em `title_trend_daily`, incluindo crescimento geral e por sinal; a API principal só consulta o snapshot mais recente via `TrendingReadPort`, ordenando por score, leituras, avaliações ou salvamentos sem agregações no request.
+
+`title_trend_daily` é uma projeção derivada e reconstruível: `(titleId, snapshotDate)` determina `calculatedAt` e os scores, materializado no `_id` como `titleId:data`. Os mapas por janela são uma desnormalização deliberada para leitura ordenada. Não há FK cross-DB; títulos removidos são filtrados pela API. Índices compostos cobrem data+ranking e cada fonte temporal; snapshots expiram após 90 dias por TTL, pois não são fonte para o próximo cálculo.
+
 ### Key Patterns
 
 - **Ports & Adapters**: use cases dependem de port interfaces; infrastructure implementa
@@ -109,6 +115,19 @@ Frontend acessa: `response.data.data`
 Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `data.data` no service)
 
 **Regra**: Endpoints de listagem **devem** retornar `ApiResponse<PageResponse<T>>` com paginação. Endpoints de item único retornam `ApiResponse<T>` direto.
+
+### Notícias — workflow editorial e mídia provisória
+
+`NewsItem` é um agregado de domínio puro; `NewsDocument` concentra o mapeamento Spring Data
+e o adapter converte entre ambos. O workflow `DRAFT → SCHEDULED/PUBLISHED → UNPUBLISHED`
+é validado no domínio e usa `Instant`/`Clock`; um job UTC promove agendamentos vencidos de
+forma idempotente. Leituras públicas filtram exclusivamente `PUBLISHED`, enquanto a listagem
+admin aceita status/categoria e ordenação allow-listed.
+
+`slug` é chave candidata única além de `_id`. SEO e textos localizados são subdocumentos do
+mesmo agregado. A URL da capa é temporariamente uma referência externa: o admin pode informar
+uma URL ou gerar `https://picsum.photos/seed/{slug}/1600/900`. `NewsCoverStoragePort` registra
+o seam para S3/Cloudinary/R2, mas nenhum upload binário é simulado antes desse adapter existir.
 
 ### Capítulos admin — ports & armazenamento provisório (frontend-only, DT-57)
 

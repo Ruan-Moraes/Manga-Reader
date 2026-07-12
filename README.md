@@ -102,6 +102,7 @@ Detalhes e key patterns: [`docs/architecture.md`](docs/architecture.md).
 | [`api/core`](api/README.md) | 8080 | API principal (Clean Architecture) |
 | [`api/jobs/rating-aggregator`](api/jobs/rating-aggregator/README.md) | 8081 | Agregação de avaliações (`reviews_aggregate`) — eventos RabbitMQ + reconciliação diária |
 | [`api/jobs/orphan-cleaner`](api/jobs/orphan-cleaner/README.md) | 8082 | Reconciliação de contadores desnormalizados (horária) + limpeza de refs órfãs cross-DB (diária) |
+| [`api/jobs/trending-aggregator`](api/jobs/trending-aggregator/README.md) | 8083 | Ranking ponderado de crescimento em janelas de 1, 7 e 30 dias (diário) |
 
 ### Dual Database
 
@@ -244,8 +245,9 @@ Manga-Reader/
 │   │       └── shared/           # ApiResponse, PageResponse, i18n, exceptions, configs
 │   ├── jobs/
 │   │   ├── rating-aggregator/    # Serviço de agregação de avaliações :8081
-│   │   └── orphan-cleaner/       # Reconciliação de contadores + órfãos cross-DB :8082
-│   └── docker-compose.prod.yml   # Stack de produção (3 serviços)
+│   │   ├── orphan-cleaner/       # Reconciliação de contadores + órfãos cross-DB :8082
+│   │   └── trending-aggregator/  # Ranking diário reconstruível :8083
+│   └── docker-compose.prod.yml   # Stack de produção (API + 3 jobs)
 │
 ├── web/                          # Frontend — pnpm workspace (ver web/README.md)
 │   ├── manga-reader/             # App principal (FSD)
@@ -310,6 +312,15 @@ São **30 controllers REST**. A referência completa e sempre atualizada está n
 > `http://localhost:8080/swagger-ui.html`
 
 Grupos principais: `auth`, `titles`, `chapters`, `comments`, `reviews`, `library`, `groups`, `news`, `events`, `forum`, `stores`, `tags`, `labels`, `authors`, `publishers`, `subscriptions`, `users`, `stats`, `contact`, `admin/*`.
+
+### Notícias
+
+`GET /api/news` oferece paginação, busca e filtros por categoria/período, com ordenação
+`recent`, `most-read` ou `trending`. Detalhes aceitam slug ou ID e
+`GET /api/news/{slugOrId}/related` retorna conteúdo relacionado publicado. O painel
+`/api/admin/news` mantém rascunhos, agendamento, publicação e despublicação; `ADMIN` e
+`MODERATOR` possuem acesso editorial. Capas ainda são URLs externas (Picsum determinístico
+no seed/admin); object storage é uma integração futura.
 
 ### Padrões de resposta
 
