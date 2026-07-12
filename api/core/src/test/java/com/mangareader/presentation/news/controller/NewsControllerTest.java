@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mangareader.application.news.usecase.GetNewsByCategoryUseCase;
 import com.mangareader.application.news.usecase.GetNewsByIdUseCase;
 import com.mangareader.application.news.usecase.GetNewsUseCase;
+import com.mangareader.application.news.usecase.GetRelatedNewsUseCase;
 import com.mangareader.application.news.usecase.SearchNewsUseCase;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsCategory;
@@ -51,6 +52,9 @@ class NewsControllerTest {
 
     @MockitoBean
     private SearchNewsUseCase searchNewsUseCase;
+
+    @MockitoBean
+    private GetRelatedNewsUseCase getRelatedNewsUseCase;
 
     @MockitoBean
     private TokenPort tokenPort;

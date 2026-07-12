@@ -1,6 +1,7 @@
 package com.mangareader.application.news.usecase;
 
 import java.time.Clock;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,29 +11,27 @@ import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsStatus;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
-/**
- * Busca uma notícia pelo ID.
- */
 @Service
-public class GetNewsByIdUseCase {
-    private final NewsRepositoryPort newsRepository;
+public class GetRelatedNewsUseCase {
+    private final NewsRepositoryPort repository;
     private final Clock clock;
 
     @Autowired
-    public GetNewsByIdUseCase(NewsRepositoryPort newsRepository, Clock clock) {
-        this.newsRepository = newsRepository;
+    public GetRelatedNewsUseCase(NewsRepositoryPort repository, Clock clock) {
+        this.repository = repository;
         this.clock = clock;
     }
 
-    public GetNewsByIdUseCase(NewsRepositoryPort newsRepository) {
-        this(newsRepository, Clock.systemUTC());
+    public GetRelatedNewsUseCase(NewsRepositoryPort repository) {
+        this(repository, Clock.systemUTC());
     }
 
-    public NewsItem execute(String id) {
-        return newsRepository.findByIdOrSlug(id)
+    public List<NewsItem> execute(String idOrSlug, int limit) {
+        NewsItem source = repository.findByIdOrSlug(idOrSlug)
                 .filter(news -> news.getStatus() == NewsStatus.PUBLISHED
                         && news.getPublishedAt() != null
                         && !news.getPublishedAt().isAfter(clock.instant()))
-                .orElseThrow(() -> new ResourceNotFoundException("NewsItem", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("News", "id", idOrSlug));
+        return repository.findRelated(source, limit);
     }
 }

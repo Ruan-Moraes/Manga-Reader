@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.time.Clock;
+import java.time.Instant;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ class GetNewsUseCaseTest {
 
     @Mock
     private NewsRepositoryPort newsRepository;
+    @Mock private Clock clock;
 
     @InjectMocks
     private GetNewsUseCase getNewsUseCase;
@@ -40,7 +43,9 @@ class GetNewsUseCaseTest {
                 NewsItem.builder().title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Evento de anime 2026")).category(NewsCategory.EVENTOS).build()
         );
         Page<NewsItem> page = new PageImpl<>(items, pageable, 2);
-        when(newsRepository.findAll(pageable)).thenReturn(page);
+        Instant now = Instant.parse("2026-07-11T12:00:00Z");
+        when(clock.instant()).thenReturn(now);
+        when(newsRepository.findPublished(null, null, null, now, pageable)).thenReturn(page);
 
         // Act
         Page<NewsItem> result = getNewsUseCase.execute(pageable);
@@ -56,7 +61,9 @@ class GetNewsUseCaseTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 20);
         Page<NewsItem> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(newsRepository.findAll(pageable)).thenReturn(emptyPage);
+        Instant now = Instant.parse("2026-07-11T12:00:00Z");
+        when(clock.instant()).thenReturn(now);
+        when(newsRepository.findPublished(null, null, null, now, pageable)).thenReturn(emptyPage);
 
         // Act
         Page<NewsItem> result = getNewsUseCase.execute(pageable);

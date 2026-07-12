@@ -13,15 +13,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record NewsResponse(
         String id,
+        String slug,
         String title,
         String subtitle,
         String excerpt,
         List<String> content,
         String coverImage,
+        String coverAlt,
         List<String> gallery,
         String source,
         String sourceLogo,
-        String category,
+        NewsCategoryResponse category,
         List<String> tags,
         NewsAuthorResponse author,
         String publishedAt,
@@ -34,5 +36,6 @@ public record NewsResponse(
         boolean isFeatured,
         String videoUrl,
         Map<String, String> technicalSheet,
-        NewsReactionResponse reactions
+        NewsReactionResponse reactions,
+        NewsSeoResponse seo
 ) {}

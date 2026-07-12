@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ import com.mangareader.application.news.usecase.admin.DeleteNewsUseCase;
 import com.mangareader.application.news.usecase.admin.GetAdminNewsUseCase;
 import com.mangareader.application.news.usecase.admin.ListAdminNewsUseCase;
 import com.mangareader.application.news.usecase.admin.UpdateNewsUseCase;
+import com.mangareader.application.news.usecase.admin.ChangeNewsStatusUseCase;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
@@ -63,6 +65,9 @@ class AdminNewsControllerTest {
     @MockitoBean
     private DeleteNewsUseCase deleteNewsUseCase;
 
+    @MockitoBean
+    private ChangeNewsStatusUseCase changeNewsStatusUseCase;
+
     private NewsItem buildNews() {
         return NewsItem.builder()
                 .id("news-1")
@@ -78,8 +83,8 @@ class AdminNewsControllerTest {
                 .views(100)
                 .isExclusive(false)
                 .isFeatured(true)
-                .publishedAt(LocalDateTime.of(2026, 1, 1, 0, 0))
-                .updatedAt(LocalDateTime.of(2026, 1, 1, 0, 0))
+                .publishedAt(LocalDateTime.of(2026, 1, 1, 0, 0).toInstant(ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.of(2026, 1, 1, 0, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 

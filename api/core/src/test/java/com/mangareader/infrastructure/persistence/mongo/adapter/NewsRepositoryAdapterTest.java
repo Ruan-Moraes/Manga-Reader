@@ -3,6 +3,7 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,9 @@ import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.domain.news.valueobject.NewsReaction;
+import com.mangareader.domain.news.valueobject.NewsStatus;
 import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig;
+import com.mangareader.infrastructure.persistence.mongo.document.NewsDocument;
 
 @DataMongoTest
 @ActiveProfiles("test")
@@ -43,9 +46,9 @@ class NewsRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        mongoTemplate.dropCollection(NewsItem.class);
+        mongoTemplate.dropCollection(NewsDocument.class);
 
-        news1 = mongoTemplate.save(NewsItem.builder()
+        news1 = newsRepository.save(NewsItem.builder()
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capitulo de Naruto"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Lancamento surpresa"))
                 .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O mangaka anunciou..."))
@@ -60,30 +63,33 @@ class NewsRepositoryAdapterTest {
                         .like(10)
                         .excited(5)
                         .build())
-                .publishedAt(LocalDateTime.of(2024, 1, 1, 10, 0))
-                .updatedAt(LocalDateTime.of(2024, 1, 1, 10, 0))
+                .publishedAt(LocalDateTime.of(2024, 1, 1, 10, 0).toInstant(ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.of(2024, 1, 1, 10, 0).toInstant(ZoneOffset.UTC))
                 .readTime(3)
                 .views(100)
+                .status(NewsStatus.PUBLISHED)
                 .build());
 
-        news2 = mongoTemplate.save(NewsItem.builder()
+        news2 = newsRepository.save(NewsItem.builder()
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Adaptacao anime de One Piece"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Netflix confirma"))
                 .category(NewsCategory.ADAPTACOES)
                 .tags(List.of("one-piece", "anime"))
-                .publishedAt(LocalDateTime.of(2024, 2, 1, 10, 0))
-                .updatedAt(LocalDateTime.of(2024, 2, 1, 10, 0))
+                .publishedAt(LocalDateTime.of(2024, 2, 1, 10, 0).toInstant(ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.of(2024, 2, 1, 10, 0).toInstant(ZoneOffset.UTC))
                 .readTime(5)
+                .status(NewsStatus.PUBLISHED)
                 .build());
 
-        news3 = mongoTemplate.save(NewsItem.builder()
+        news3 = newsRepository.save(NewsItem.builder()
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Evento manga expo 2024"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tudo sobre o evento"))
                 .category(NewsCategory.EVENTOS)
                 .tags(List.of("evento", "expo"))
-                .publishedAt(LocalDateTime.of(2024, 3, 1, 10, 0))
-                .updatedAt(LocalDateTime.of(2024, 3, 1, 10, 0))
+                .publishedAt(LocalDateTime.of(2024, 3, 1, 10, 0).toInstant(ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.of(2024, 3, 1, 10, 0).toInstant(ZoneOffset.UTC))
                 .readTime(7)
+                .status(NewsStatus.PUBLISHED)
                 .build());
     }
 
@@ -182,7 +188,7 @@ class NewsRepositoryAdapterTest {
                             .sad(0)
                             .surprised(0)
                             .build())
-                    .publishedAt(LocalDateTime.now())
+                    .publishedAt(LocalDateTime.now().toInstant(ZoneOffset.UTC))
                     .build();
 
             var saved = newsRepository.save(newNews);
