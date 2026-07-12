@@ -3,6 +3,7 @@ package com.mangareader.application.user.usecase;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +24,22 @@ import lombok.RequiredArgsConstructor;
 /**
  * Registra visualização de um título no histórico do usuário.
  * <p>
- * Upsert: se (userId, titleId) já existe, atualiza viewedAt.
- * Não registra se viewHistoryVisibility == DO_NOT_TRACK.
+ * Upsert: se (userId, titleId) já existe, atualiza viewedAt. Não registra se
+ * viewHistoryVisibility == DO_NOT_TRACK.
+ * <p>
+ * Trata corrida entre requisições concorrentes (ex.: front disparando a mesma
+ * chamada duas vezes, como o double-invoke do React StrictMode em dev): dentro
+ * de {@code @Transactional("mongoTransactionManager")}, duas inserções
+ * concorrentes do mesmo documento não colidem como {@link DataIntegrityViolationException}
+ * simples (E11000) — o MongoDB detecta o conflito antes disso, na camada de
+ * transação/storage engine, e retorna {@code WriteConflict} (código 112,
+ * {@code TransientTransactionError}), que o Spring também traduz para
+ * {@code DataIntegrityViolationException}. Por isso o catch cobre essa
+ * superclasse (que também cobre {@code DuplicateKeyException}), e a
+ * recuperação NÃO tenta um segundo {@code save()} na mesma transação — a
+ * transação perdedora já está em estado de conflito, então só recarrega o
+ * documento vencedor sem escrever de novo (whichever ganhou já registrou um
+ * {@code viewedAt} praticamente no mesmo instante).
  */
 @Service
 @Transactional("mongoTransactionManager")
@@ -58,16 +73,27 @@ public class RecordViewHistoryUseCase {
             vh.setViewedAt(LocalDateTime.now());
 
             viewHistoryRepository.save(vh);
-        } else {
-            ViewHistory vh = ViewHistory.builder()
-                    .userId(userIdStr)
-                    .titleId(titleId)
-                    .titleName(localeResolutionService.resolve(title.getName()))
-                    .titleCover(title.getCover())
-                    .viewedAt(LocalDateTime.now())
-                    .build();
 
+            return;
+        }
+
+        ViewHistory vh = ViewHistory.builder()
+                .userId(userIdStr)
+                .titleId(titleId)
+                .titleName(localeResolutionService.resolve(title.getName()))
+                .titleCover(title.getCover())
+                .viewedAt(LocalDateTime.now())
+                .build();
+
+        try {
             viewHistoryRepository.save(vh);
+        } catch (DataIntegrityViolationException e) {
+            // Corrida: outra requisição criou o mesmo documento entre o check
+            // e o save (DuplicateKeyException) ou colidiu na própria transação
+            // (WriteConflict). Em ambos os casos, não tenta escrever de novo
+            // nesta transação — a requisição concorrente já registrou o
+            // viewedAt, praticamente no mesmo instante.
+            viewHistoryRepository.findByUserIdAndTitleId(userIdStr, titleId).orElseThrow(() -> e);
         }
     }
 }

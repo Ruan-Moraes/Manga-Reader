@@ -18,12 +18,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupRole;
 import com.mangareader.domain.group.valueobject.GroupUserType;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.mock.user.UserMock;
@@ -37,6 +39,12 @@ class SupportGroupUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
+
+    @Mock
+    private EventPublisherPort eventPublisher;
+
+    @Mock
+    private LocaleResolutionService localeResolver;
 
     @InjectMocks
     private SupportGroupUseCase supportGroupUseCase;
@@ -68,12 +76,13 @@ class SupportGroupUseCaseTest {
     class Sucesso {
 
         @Test
-        @DisplayName("Deve adicionar usuário como apoiador do grupo")
+        @DisplayName("Deve adicionar usuário como apoiador do grupo e emitir evento de atividade")
         void deveAdicionarApoiador() {
             Group group = buildGroup();
             when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
             when(groupRepository.save(any(Group.class))).thenAnswer(inv -> inv.getArgument(0));
+            when(localeResolver.resolve(group.getName())).thenReturn("Scan Test");
 
             Group result = supportGroupUseCase.execute(GROUP_ID, USER_ID);
 
@@ -82,6 +91,9 @@ class SupportGroupUseCaseTest {
             assertThat(supporter.getType()).isEqualTo(GroupUserType.SUPPORTER);
             assertThat(supporter.getRole()).isNull();
             assertThat(supporter.getUser().getId()).isEqualTo(USER_ID);
+
+            org.mockito.Mockito.verify(eventPublisher).publish(
+                    org.mockito.ArgumentMatchers.eq("activity.user-followed"), any());
         }
     }
 
@@ -123,6 +135,18 @@ class SupportGroupUseCaseTest {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 
             assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, USER_ID))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .satisfies(ex -> assertThat(((BusinessRuleException) ex).getStatusCode()).isEqualTo(409));
+        }
+
+        @Test
+        @DisplayName("Deve lançar BusinessRuleException 409 quando usuário já é membro do grupo")
+        void deveLancarExcecaoQuandoJaEMembro() {
+            Group group = buildGroup();
+            when(groupRepository.findByIdWithUsers(GROUP_ID)).thenReturn(Optional.of(group));
+            when(userRepository.findById(LEADER_ID)).thenReturn(Optional.of(UserMock.withId(LEADER_ID)));
+
+            assertThatThrownBy(() -> supportGroupUseCase.execute(GROUP_ID, LEADER_ID))
                     .isInstanceOf(BusinessRuleException.class)
                     .satisfies(ex -> assertThat(((BusinessRuleException) ex).getStatusCode()).isEqualTo(409));
         }

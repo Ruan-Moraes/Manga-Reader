@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { requireAuth } from '@shared/service/util/requireAuth';
-import { showErrorToast } from '@shared/service/util/toastService';
 
 import { followUser, unfollowUser } from '../api/followService';
 
@@ -47,7 +46,6 @@ export default function useFollow(userId: string | undefined, initial: FollowSta
             setState({ following: next.following, followersCount: next.followersCount });
         } catch {
             setState(previous);
-            showErrorToast(t('profile.followError', { defaultValue: 'Não foi possível atualizar o follow.' }));
         } finally {
             setPending(false);
         }

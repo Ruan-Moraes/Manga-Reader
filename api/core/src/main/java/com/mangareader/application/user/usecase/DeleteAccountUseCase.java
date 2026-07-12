@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.social.port.SocialGraphPort;
+import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
 import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -29,6 +30,7 @@ public class DeleteAccountUseCase {
     private final UserRepositoryPort userRepository;
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final UserChapterReadRepositoryPort userChapterReadRepository;
+    private final ReadingProgressRepositoryPort readingProgressRepository;
     private final GroupRepositoryPort groupRepository;
     private final SocialGraphPort socialGraph;
 
@@ -44,6 +46,7 @@ public class DeleteAccountUseCase {
 
         viewHistoryRepository.deleteAllByUserId(userId.toString());
         userChapterReadRepository.deleteAllByUserId(userId.toString());
+        readingProgressRepository.deleteAllByUserId(userId.toString());
 
         // Grafo ANTES do save JPA: se o Cypher falhar, a tx JPA aborta.
         // Não-atômico cross-DB — nó órfão residual é inerte (só userId) e as

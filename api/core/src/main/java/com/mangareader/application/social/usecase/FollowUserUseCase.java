@@ -4,10 +4,13 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.mangareader.application.shared.event.UserFollowedEvent;
+import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.social.port.SocialGraphPort.ProfileSocial;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.domain.user.entity.activity.FollowTargetType;
 import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class FollowUserUseCase {
     private final SocialGraphPort socialGraph;
     private final UserRepositoryPort userRepository;
+    private final EventPublisherPort eventPublisher;
 
     public ProfileSocial execute(UUID followerId, UUID followeeId) {
         if (followerId.equals(followeeId)) {
@@ -35,7 +39,15 @@ public class FollowUserUseCase {
             throw new ResourceNotFoundException("User", "id", followeeId);
         }
 
+        boolean wasAlreadyFollowing = socialGraph.isFollowing(followerId, followeeId);
+
         socialGraph.follow(followerId, followeeId);
+
+        if (!wasAlreadyFollowing) {
+            eventPublisher.publish("activity.user-followed", new UserFollowedEvent(
+                    followerId.toString(), FollowTargetType.USER, followeeId.toString(),
+                    target.getName(), target.getPhotoUrl()));
+        }
 
         return socialGraph.getProfileSocial(followeeId, followerId);
     }

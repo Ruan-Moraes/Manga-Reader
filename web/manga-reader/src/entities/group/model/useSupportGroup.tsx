@@ -4,7 +4,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { requireAuth } from '@shared/service/util/requireAuth';
-import { showErrorToast } from '@shared/service/util/toastService';
 
 import { supportGroup, unsupportGroup } from '../api/groupService';
 
@@ -56,7 +55,6 @@ export default function useSupportGroup(groupId: string | undefined, currentUser
             }
         } catch {
             setState(previous);
-            showErrorToast(t('profile.followError', { defaultValue: 'Não foi possível atualizar o follow no grupo.' }));
         } finally {
             setPending(false);
         }

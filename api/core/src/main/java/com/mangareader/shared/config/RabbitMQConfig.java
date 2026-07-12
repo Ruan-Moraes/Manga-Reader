@@ -17,9 +17,12 @@ import org.springframework.context.annotation.Profile;
  * <p>
  * Exchange {@code manga.events} (topic, durable). O monolito apenas <b>publica</b>
  * eventos {@code rating.*} (consumidos pelo serviço {@code rating-aggregator},
- * que declara a própria fila) e mantém a fila de denormalização de usuário:
+ * que declara a própria fila) e mantém as filas locais:
  * <ul>
  *   <li>{@code manga.user.denormalize} — routing key {@code user.profile.updated}</li>
+ *   <li>{@code manga.activity.feed} — routing keys {@code activity.*} (curinga:
+ *       um tipo de evento de atividade novo só precisa de uma routing key nova
+ *       nesse padrão, sem alterar esta configuração)</li>
  * </ul>
  * Desabilitado no profile "test".
  */
@@ -29,8 +32,10 @@ public class RabbitMQConfig {
     public static final String EXCHANGE = "manga.events";
 
     public static final String QUEUE_USER_DENORMALIZE   = "manga.user.denormalize";
+    public static final String QUEUE_ACTIVITY_FEED       = "manga.activity.feed";
 
-    public static final String ROUTING_KEY_USER_PROFILE = "user.profile.updated";
+    public static final String ROUTING_KEY_USER_PROFILE  = "user.profile.updated";
+    public static final String ROUTING_KEY_ACTIVITY_WILDCARD = "activity.*";
 
     @Bean
     public TopicExchange mangaEventsExchange() {
@@ -47,6 +52,18 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(userDenormalizeQueue)
                 .to(mangaEventsExchange)
                 .with(ROUTING_KEY_USER_PROFILE);
+    }
+
+    @Bean
+    public Queue activityFeedQueue() {
+        return QueueBuilder.durable(QUEUE_ACTIVITY_FEED).build();
+    }
+
+    @Bean
+    public Binding activityFeedBinding(Queue activityFeedQueue, TopicExchange mangaEventsExchange) {
+        return BindingBuilder.bind(activityFeedQueue)
+                .to(mangaEventsExchange)
+                .with(ROUTING_KEY_ACTIVITY_WILDCARD);
     }
 
     @Bean

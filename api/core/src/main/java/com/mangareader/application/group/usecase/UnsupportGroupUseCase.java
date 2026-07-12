@@ -28,10 +28,16 @@ public class UnsupportGroupUseCase {
         Group group = groupRepository.findByIdWithUsers(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
 
-        GroupUser supporter = group.getGroupUsers().stream()
-                .filter(gu -> gu.getType() == GroupUserType.SUPPORTER
-                        && gu.getUser().getId().equals(userId))
-                .findFirst()
+        var existingLink = group.getGroupUsers().stream()
+                .filter(gu -> gu.getUser().getId().equals(userId))
+                .findFirst();
+
+        if (existingLink.isPresent() && existingLink.get().getType() == GroupUserType.MEMBER) {
+            throw new BusinessRuleException("Você é membro deste grupo — saia do grupo para deixar de segui-lo.", 400);
+        }
+
+        GroupUser supporter = existingLink
+                .filter(gu -> gu.getType() == GroupUserType.SUPPORTER)
                 .orElseThrow(() -> new BusinessRuleException("Você não é apoiador deste grupo", 400));
 
         group.getGroupUsers().remove(supporter);

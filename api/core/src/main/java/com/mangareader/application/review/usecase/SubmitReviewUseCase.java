@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.shared.event.RatingEvent;
+import com.mangareader.application.shared.event.ReviewPostedEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.review.entity.Review;
@@ -93,6 +94,12 @@ public class SubmitReviewUseCase {
         Review saved = reviewRepository.save(rating);
 
         eventPublisher.publish("rating.submitted", new RatingEvent(input.titleId(), input.userId().toString()));
+
+        if (!isEdit) {
+            eventPublisher.publish("activity.review-posted", new ReviewPostedEvent(
+                    input.userId().toString(), input.titleId(), rating.getTitleName(), title.getCover(),
+                    saved.getId(), saved.getOverallRating()));
+        }
 
         return saved;
     }

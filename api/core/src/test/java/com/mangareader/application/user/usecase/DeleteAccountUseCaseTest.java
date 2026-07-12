@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
@@ -43,6 +44,9 @@ class DeleteAccountUseCaseTest {
 
     @Mock
     private UserChapterReadRepositoryPort userChapterReadRepository;
+
+    @Mock
+    private ReadingProgressRepositoryPort readingProgressRepository;
 
     @Mock
     private GroupRepositoryPort groupRepository;
@@ -82,6 +86,7 @@ class DeleteAccountUseCaseTest {
         verify(groupRepository).save(group);
         verify(viewHistoryRepository).deleteAllByUserId(USER_ID.toString());
         verify(userChapterReadRepository).deleteAllByUserId(USER_ID.toString());
+        verify(readingProgressRepository).deleteAllByUserId(USER_ID.toString());
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());

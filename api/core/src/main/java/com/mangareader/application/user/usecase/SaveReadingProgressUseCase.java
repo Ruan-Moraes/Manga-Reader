@@ -3,7 +3,7 @@ package com.mangareader.application.user.usecase;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,10 +67,12 @@ public class SaveReadingProgressUseCase {
         ReadingProgress saved;
         try {
             saved = readingProgressRepository.save(toSave);
-        } catch (DuplicateKeyException e) {
+        } catch (DataIntegrityViolationException e) {
             // Corrida: outra requisição criou o mesmo documento entre o check
-            // e o save. O índice único garante idempotência — recarrega e
-            // considera o estado atual como resultado.
+            // e o save (DuplicateKeyException) ou colidiu na própria transação
+            // Mongo (WriteConflict, também traduzido para
+            // DataIntegrityViolationException). O índice único garante
+            // idempotência — recarrega e considera o estado atual como resultado.
             saved = readingProgressRepository
                     .findByUserIdAndTitleIdAndChapterNumber(userIdStr, input.titleId(), input.chapterNumber())
                     .orElseThrow();

@@ -2,18 +2,22 @@ package com.mangareader.application.user.usecase;
 
 import java.util.UUID;
 
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.shared.event.ChapterReadEvent;
+import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.service.UserProfileSettingsResolver;
+import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserChapterRead;
 import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,8 @@ public class RecordChapterReadUseCase {
     private final UserChapterReadRepositoryPort userChapterReadRepository;
     private final TitleRepositoryPort titleRepository;
     private final UserProfileSettingsResolver profileSettingsResolver;
+    private final EventPublisherPort eventPublisher;
+    private final LocaleResolutionService localeResolver;
 
     public void execute(UUID userId, String titleId, String chapterNumber) {
         User user = userRepository.findById(userId)
@@ -43,9 +49,8 @@ public class RecordChapterReadUseCase {
             return;
         }
 
-        if (titleRepository.findById(titleId).isEmpty()) {
-            throw new ResourceNotFoundException("Title", "id", titleId);
-        }
+        Title title = titleRepository.findById(titleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Title", "id", titleId));
 
         String userIdStr = userId.toString();
 
@@ -63,9 +68,16 @@ public class RecordChapterReadUseCase {
                     .titleId(titleId)
                     .chapterNumber(chapterNumber)
                     .build());
-        } catch (DuplicateKeyException ignored) {
+        } catch (DataIntegrityViolationException ignored) {
             // Corrida: outra requisição registrou a mesma leitura entre o check e
-            // o save. O índice único garante idempotência — nada a fazer.
+            // o save (DuplicateKeyException) ou colidiu na própria transação
+            // Mongo (WriteConflict, também traduzido para
+            // DataIntegrityViolationException). O índice único garante
+            // idempotência — nada a fazer.
+            return;
         }
+
+        eventPublisher.publish("activity.chapter-read", new ChapterReadEvent(
+                userIdStr, titleId, localeResolver.resolve(title.getName()), title.getCover(), chapterNumber));
     }
 }

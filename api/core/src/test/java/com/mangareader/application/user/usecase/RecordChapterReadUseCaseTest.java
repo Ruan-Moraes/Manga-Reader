@@ -21,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.shared.event.ChapterReadEvent;
+import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.service.UserProfileSettingsResolver;
@@ -29,6 +31,7 @@ import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserChapterRead;
 import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -47,6 +50,12 @@ class RecordChapterReadUseCaseTest {
 
     @Mock
     private UserProfileSettingsResolver profileSettingsResolver;
+
+    @Mock
+    private EventPublisherPort eventPublisher;
+
+    @Mock
+    private LocaleResolutionService localeResolver;
 
     @InjectMocks
     private RecordChapterReadUseCase useCase;
@@ -77,12 +86,13 @@ class RecordChapterReadUseCaseTest {
     }
 
     @Test
-    @DisplayName("Deve registrar leitura quando ainda não existe")
+    @DisplayName("Deve registrar leitura quando ainda não existe e emitir evento de atividade")
     void deveRegistrarLeitura() {
         stubUser(VisibilitySetting.PUBLIC);
         stubTitleExists();
         when(userChapterReadRepository.findByUserIdAndTitleIdAndChapterNumber(USER_ID.toString(), TITLE_ID, CHAPTER))
                 .thenReturn(Optional.empty());
+        when(localeResolver.resolve(any(LocalizedString.class))).thenReturn("Solo Leveling");
 
         useCase.execute(USER_ID, TITLE_ID, CHAPTER);
 
@@ -91,6 +101,12 @@ class RecordChapterReadUseCaseTest {
         assertThat(captor.getValue().getUserId()).isEqualTo(USER_ID.toString());
         assertThat(captor.getValue().getTitleId()).isEqualTo(TITLE_ID);
         assertThat(captor.getValue().getChapterNumber()).isEqualTo(CHAPTER);
+
+        ArgumentCaptor<ChapterReadEvent> eventCaptor = ArgumentCaptor.forClass(ChapterReadEvent.class);
+        verify(eventPublisher).publish(org.mockito.ArgumentMatchers.eq("activity.chapter-read"), eventCaptor.capture());
+        assertThat(eventCaptor.getValue().titleId()).isEqualTo(TITLE_ID);
+        assertThat(eventCaptor.getValue().chapterNumber()).isEqualTo(CHAPTER);
+        assertThat(eventCaptor.getValue().titleName()).isEqualTo("Solo Leveling");
     }
 
     @Test
@@ -118,6 +134,7 @@ class RecordChapterReadUseCaseTest {
         useCase.execute(USER_ID, TITLE_ID, CHAPTER);
 
         verify(userChapterReadRepository).save(any());
+        verify(eventPublisher, never()).publish(any(), any());
     }
 
     @Nested
