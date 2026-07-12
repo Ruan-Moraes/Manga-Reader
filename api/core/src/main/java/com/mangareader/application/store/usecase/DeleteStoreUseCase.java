@@ -1,25 +1,23 @@
 package com.mangareader.application.store.usecase;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.store.port.StoreRepositoryPort;
-import com.mangareader.domain.store.entity.Store;
+import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Retorna todas as lojas parceiras.
- */
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class GetStoresUseCase {
+public class DeleteStoreUseCase {
     private final StoreRepositoryPort storeRepository;
 
-    public Page<Store> execute(Pageable pageable) {
-        return storeRepository.findActive(pageable);
+    @Transactional
+    public void execute(UUID id) {
+        if (storeRepository.findById(id).isEmpty()) throw new ResourceNotFoundException("Store", "id", id);
+        storeRepository.deleteById(id);
     }
 }

@@ -21,6 +21,11 @@ public class StoreMapper {
     private final LocalizedMappingHelper i18n;
 
     public StoreResponse toResponse(Store store) {
+        return toResponse(store, null);
+    }
+
+    /** Ao consultar por título, expõe o link direto de compra do vínculo. */
+    public StoreResponse toResponse(Store store, String titleId) {
         return new StoreResponse(
                 store.getId().toString(),
                 i18n.toResolvedString(store.getName()),
@@ -44,7 +49,11 @@ public class StoreMapper {
                 store.getShipping(),
                 store.getNote(),
                 store.getMono(),
-                store.getColor()
+                store.getColor(),
+                titleId == null ? null : store.getTitles().stream()
+                        .filter(link -> titleId.equals(link.getTitleId()))
+                        .map(com.mangareader.domain.store.entity.StoreTitle::getUrl)
+                        .findFirst().orElse(store.getWebsite())
         );
     }
 

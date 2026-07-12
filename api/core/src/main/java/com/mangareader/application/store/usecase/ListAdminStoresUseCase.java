@@ -7,19 +7,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.store.port.StoreRepositoryPort;
 import com.mangareader.domain.store.entity.Store;
+import com.mangareader.domain.store.valueobject.StoreStatus;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Retorna todas as lojas parceiras.
- */
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class GetStoresUseCase {
+@Transactional(readOnly = true)
+public class ListAdminStoresUseCase {
     private final StoreRepositoryPort storeRepository;
 
-    public Page<Store> execute(Pageable pageable) {
-        return storeRepository.findActive(pageable);
+    public Page<Store> execute(String search, StoreStatus status, Pageable pageable) {
+        return storeRepository.search(search == null || search.isBlank() ? null : search.trim(), status, pageable);
     }
 }

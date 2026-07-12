@@ -9,6 +9,7 @@ import org.hibernate.type.SqlTypes;
 
 import com.mangareader.domain.store.valueobject.StoreAvailability;
 import com.mangareader.domain.store.valueobject.StoreCategory;
+import com.mangareader.domain.store.valueobject.StoreStatus;
 import com.mangareader.infrastructure.persistence.postgres.converter.LocalizedStringJsonConverter;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -63,6 +64,15 @@ public class Store {
 
     @Column(nullable = false)
     private String website;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private StoreStatus status = StoreStatus.ACTIVE;
+
+    @Column(name = "display_order", nullable = false)
+    @Builder.Default
+    private int displayOrder = 0;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
