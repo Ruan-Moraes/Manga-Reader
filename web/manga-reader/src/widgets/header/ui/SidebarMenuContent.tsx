@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LogOut, Settings, Trash2 } from 'lucide-react';
 
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { clearCache } from '@shared/service/util/queryCache';
 import { useProfileSettingsModal } from '@entities/user';
 
@@ -39,7 +39,7 @@ const menuItemClass =
     'flex items-center justify-between px-3 py-2 rounded-xs text-sm font-medium transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default';
 
 const MenuNavLink = ({ label, link, badge, onNavigate }: MenuItem & { onNavigate: () => void }) => (
-    <Link to={`${WEB_BASE_URL}${link}`} className={menuItemClass} onClick={onNavigate}>
+    <Link to={withWebBasePath(link)} className={menuItemClass} onClick={onNavigate}>
         <span>{label}</span>
         {badge && <span className="px-2 py-0.5 text-[0.68rem] font-semibold rounded-xs bg-secondary border border-tertiary text-tertiary">{badge}</span>}
     </Link>

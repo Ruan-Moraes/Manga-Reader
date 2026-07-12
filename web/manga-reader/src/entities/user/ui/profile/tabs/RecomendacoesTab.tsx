@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import { removeRecommendation } from '../../../api/userService';
 import { type EnrichedProfile, type RecommendedTitle } from '../../../model/user.types';
@@ -22,7 +22,6 @@ const RecomendacoesTab = ({ profile, onSaved }: Props) => {
             onSaved();
         } catch {
             setItems(rollback);
-            showErrorToast(t('profile.edit.saveError'));
         }
     };
 

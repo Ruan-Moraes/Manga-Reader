@@ -22,13 +22,13 @@ export const SectionHeader = ({ eyebrow, title, meta, action, size = 'md', as = 
     const TitleTag = as;
 
     return (
-        <header className={cn('mb-4 flex flex-wrap items-end justify-between gap-3', className)}>
+        <header className={cn('mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between', className)}>
             <div className="min-w-0">
                 {eyebrow && <div className="mr-label mb-1 text-mr-fg-subtle">{eyebrow}</div>}
                 <TitleTag className={cn('m-0 font-mr-extrabold leading-tight tracking-mr text-mr-fg', sizeMap[size])}>{title}</TitleTag>
             </div>
             {(meta ?? action) && (
-                <div className="flex shrink-0 items-center gap-3 text-mr-tiny text-mr-fg-subtle">
+                <div className="flex w-full min-w-0 flex-wrap items-center gap-3 text-mr-tiny text-mr-fg-subtle sm:w-auto sm:justify-end">
                     {meta}
                     {action}
                 </div>

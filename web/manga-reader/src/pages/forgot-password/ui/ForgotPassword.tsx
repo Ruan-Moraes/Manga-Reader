@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { requestPasswordReset, AuthShell, AuthField, AuthSubmit } from '@features/auth';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,8 +61,8 @@ const ForgotPassword = () => {
                         </a>
                         {' · '}
                         <a
-                            href={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
-                            onClick={go(`${WEB_BASE_URL}${ROUTES.LOGIN}`)}
+                            href={withWebBasePath(ROUTES.LOGIN)}
+                            onClick={go(withWebBasePath(ROUTES.LOGIN))}
                             className="font-mr-bold text-mr-accent tracking-mr no-underline"
                         >
                             {t('forgotPassword.backToLoginLink')}
@@ -118,8 +118,8 @@ const ForgotPassword = () => {
                 <>
                     {t('forgotPassword.remembered')}{' '}
                     <a
-                        href={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
-                        onClick={go(`${WEB_BASE_URL}${ROUTES.LOGIN}`)}
+                        href={withWebBasePath(ROUTES.LOGIN)}
+                        onClick={go(withWebBasePath(ROUTES.LOGIN))}
                         className="font-mr-bold text-mr-accent tracking-mr no-underline"
                     >
                         {t('forgotPassword.backToLoginLink')}

@@ -37,4 +37,12 @@ describe('toastService → toast unificado', () => {
         expect(mockedPush.mock.calls[0][0].id).toBe('save-success');
         expect(mockedPush.mock.calls[1][0].id).toBe('error:Erro X');
     });
+
+    it('repassa position quando fornecido; senão fica undefined (padrão do store é bottom)', () => {
+        showWarningToast('cuidado', { position: 'top' });
+        showSuccessToast('ok');
+
+        expect(mockedPush.mock.calls[0][0].position).toBe('top');
+        expect(mockedPush.mock.calls[1][0].position).toBeUndefined();
+    });
 });

@@ -40,6 +40,7 @@ export const pushToast = (cfg: ToastConfig): string => {
         duration: cfg.duration ?? DEFAULT_DURATION,
         action: cfg.action,
         icon: cfg.icon,
+        position: cfg.position ?? 'bottom',
     };
 
     // Substitui um toast de mesmo id (dedupe) e mantém os mais recentes no topo da pilha.

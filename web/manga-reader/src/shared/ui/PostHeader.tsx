@@ -12,6 +12,8 @@ export interface PostHeaderProps {
     meta?: ReactNode;
     badges?: ReactNode;
     right?: ReactNode;
+    /** Selo inline "Em resposta a X", exibido ao lado do nome. */
+    replyingTo?: ReactNode;
     highlighted?: boolean;
 }
 
@@ -25,6 +27,7 @@ export const PostHeader = ({
                                meta,
                                badges,
                                right,
+                               replyingTo,
                                highlighted,
                            }: PostHeaderProps) => {
     const interactive = !!onClickName;
@@ -44,17 +47,21 @@ export const PostHeader = ({
     return (
         <div className="flex flex-wrap gap-x-2 gap-y-1">
             <div className="flex flex-col flex-wrap items-start justify-center gap-x-2 gap-y-1">
-                <NameTag
-                    onClick={interactive ? onClickName : undefined}
-                    aria-label={interactive ? nameProfileLabel : undefined}
-                    className={cn(
-                        'min-w-0 max-w-full truncate text-mr-body font-mr-extrabold leading-tight text-mr-fg',
-                        interactive && 'cursor-pointer bg-transparent p-0 hover:text-mr-accent mr-focus-ring',
-                        highlighted && 'text-mr-accent',
-                    )}
-                >
-                    {name}
-                </NameTag>
+                <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1">
+                    <NameTag
+                        onClick={interactive ? onClickName : undefined}
+                        aria-label={interactive ? nameProfileLabel : undefined}
+                        className={cn(
+                            'min-w-0 max-w-full truncate text-mr-body font-mr-extrabold leading-tight text-mr-fg',
+                            interactive && 'cursor-pointer bg-transparent p-0 hover:text-mr-accent mr-focus-ring',
+                            highlighted && 'text-mr-accent',
+                        )}
+                    >
+                        {name}
+                    </NameTag>
+
+                    {replyingTo}
+                </div>
 
                 {metaParts.length > 0 && (
                     <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-mr-small text-mr-fg-subtle">

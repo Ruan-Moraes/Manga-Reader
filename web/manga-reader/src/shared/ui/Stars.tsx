@@ -54,7 +54,7 @@ export const StarsInput = ({ value, onChange, size = 18, label = 'Avalie de 1 a 
     const shown = hover || value;
 
     return (
-        <fieldset className="inline-flex gap-1 border-none p-0">
+        <fieldset className="inline-flex min-w-0 shrink-0 gap-1 border-none p-0">
             <legend className="sr-only">{label}</legend>
             {[1, 2, 3, 4, 5].map(i => (
                 <button

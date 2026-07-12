@@ -13,13 +13,11 @@ export interface ChapterPublicGateway {
 }
 
 /**
- * Contrato de progresso de leitura (persistência local hoje; sincronização
- * com o backend no futuro). Formaliza as chaves `reader:pos:*` já usadas
- * pelo leitor — a implementação localStorage é compatível com o legado.
+ * Contrato de progresso de leitura — persistido no backend (posição de
+ * página / conclusão de capítulo). `completed=true` deriva, no backend, o
+ * registro do evento "capítulo lido" (idempotente lá).
  */
 export interface ReaderProgressGateway {
-    saveProgress(titleId: string, chapterNumber: string, page: number): void;
-    getProgress(titleId: string): ReaderProgress | null;
-    markCompleted(titleId: string, chapterNumber: string): void;
-    isCompleted(titleId: string, chapterNumber: string): boolean;
+    saveProgress(titleId: string, chapterNumber: string, page: number, totalPages: number, completed: boolean): Promise<void>;
+    getProgress(titleId: string): Promise<ReaderProgress | null>;
 }

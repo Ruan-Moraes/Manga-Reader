@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 
-import type { Group } from '@entities/group';
+import { getGroupFollowersCount, type Group } from '@entities/group';
 
 export type GroupSortBy = 'followers' | 'chapters' | 'alpha';
 
-const followersOf = (g: Group) => g.supporters?.length ?? 0;
+const followersOf = (g: Group) => getGroupFollowersCount(g);
 const chaptersOf = (g: Group) => (g.translatedWorks ?? []).reduce((sum, w) => sum + (w.chapters ?? 0), 0);
 
 /**

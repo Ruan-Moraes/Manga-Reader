@@ -1,7 +1,7 @@
 import { ROUTES } from '@shared/constant/ROUTES';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Filter, X } from 'lucide-react';
+import { Filter, X, LayoutGrid, LayoutList } from 'lucide-react';
 
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
@@ -38,9 +38,10 @@ const CategoryFilters = () => {
         { value: 'alphabetical', label: t('filters.sort.alphabetical') },
         { value: 'random', label: t('filters.sort.random') },
     ];
+
     const layoutItems = [
-        { value: 'grid', label: t('filters.layout.grid') },
-        { value: 'list', label: t('filters.layout.list') },
+        { value: 'grid', label: t('filters.layout.grid'), icon: LayoutGrid },
+        { value: 'list', label: t('filters.layout.list'), icon: LayoutList },
     ];
 
     const { selectedTags, selectedSort, selectedStatus, page, handleSelectedTags, handleSortChange, handleStatusChange, handlePageChange } =
@@ -124,7 +125,7 @@ const CategoryFilters = () => {
                     <div className="mb-4 flex flex-wrap gap-3">
                         <SearchField value={query} onChange={setQuery} placeholder={t('filters.searchPlaceholder')} className="flex-1 min-w-[200px]" />
                         <Select value={selectedSort} onChange={e => handleSortChange(e.target.value as Sort)} options={sortOptions} className="w-44" />
-                        <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="md" unified={true} />
+                        <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="md" unified={true} iconOnly />
                     </div>
 
                     {selectedTags.length > 0 && (

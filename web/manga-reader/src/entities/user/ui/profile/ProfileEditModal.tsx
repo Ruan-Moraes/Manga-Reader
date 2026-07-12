@@ -51,7 +51,7 @@ const ProfileEditModal = ({ onAccountDeleted }: Props) => {
     return (
         <div
             onClick={closeProfileSettings}
-            className="fixed inset-0 z-50 flex items-stretch justify-center overflow-y-auto bg-[rgba(10,10,10,0.78)] p-0 backdrop-blur-[6px] sm:items-start sm:px-3 sm:py-[min(40px,4vh)]"
+            className="fixed inset-0 z-mr-modal flex items-stretch justify-center overflow-y-auto bg-[rgba(10,10,10,0.78)] p-0 backdrop-blur-[6px] sm:items-start sm:px-3 sm:py-[min(40px,4vh)]"
         >
             <div
                 role="dialog"

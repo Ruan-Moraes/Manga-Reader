@@ -6,6 +6,7 @@ import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, Foo
 
 import { useAuth } from '@features/auth';
 
+import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { showInfoToast } from '@shared/service/util/toastService';
 
@@ -50,7 +51,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
         ? [
               mkLink(t('footer.links.profile'), '/profile', navigate),
               mkLink(t('footer.links.settings'), '/settings', navigate),
-              mkLink(t('footer.links.notifications'), '/notifications', navigate),
+              mkLink(t('footer.links.notifications'), ROUTES.NOTIFICATIONS, navigate),
           ]
         : [
               mkLink(t('footer.links.login'), '/login', navigate),

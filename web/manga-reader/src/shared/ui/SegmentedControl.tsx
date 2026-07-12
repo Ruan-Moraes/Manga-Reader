@@ -18,14 +18,23 @@ export interface SegmentedControlProps {
     unified?: boolean;
     /** 'solid' (padrão) = ativo preenchido accent · 'soft' = track + ativo translúcido. */
     tone?: 'solid' | 'soft';
+    /** Exibe apenas o ícone (label vira texto acessível via sr-only). Requer `icon` em todos os items. */
+    iconOnly?: boolean;
+    className?: string;
 }
 
-export const SegmentedControl = ({ items, value, onChange, size = 'md', block, unified, tone = 'solid' }: SegmentedControlProps) => {
-    const baseSize = size === 'sm' ? 'h-8 px-2 text-mr-tiny' : 'h-11 px-3 text-mr-small';
+export const SegmentedControl = ({ items, value, onChange, size = 'md', block, unified, tone = 'solid', iconOnly, className }: SegmentedControlProps) => {
+    const baseSize = iconOnly
+        ? size === 'sm'
+            ? 'h-8 w-8'
+            : 'h-11 w-11'
+        : size === 'sm'
+          ? 'h-8 px-2 text-mr-tiny'
+          : 'h-11 px-3 text-mr-small';
 
     if (unified) {
         return (
-            <div role="radiogroup" className={cn('inline-flex', block && 'w-full')}>
+            <div role="radiogroup" className={cn('inline-flex', block && 'w-full', className)}>
                 {items.map((it, index, items) => {
                     const active = it.value === value;
 
@@ -42,6 +51,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                             aria-checked={active}
                             disabled={it.disabled}
                             onClick={() => onChange(it.value)}
+                            title={iconOnly ? it.label : undefined}
                             className={cn(
                                 'inline-flex items-center justify-center gap-1.5 border font-mr-bold transition-all duration-mr-default cursor-pointer',
                                 isFirst && 'rounded-l-mr-xs',
@@ -55,7 +65,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                             )}
                         >
                             {Icon && <Icon className="size-3.5" />}
-                            <span>{it.label}</span>
+                            <span className={iconOnly ? 'sr-only' : undefined}>{it.label}</span>
                         </button>
                     );
                 })}
@@ -65,7 +75,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
 
     if (tone === 'soft') {
         return (
-            <div role="radiogroup" className={cn('inline-flex gap-[3px] rounded-mr-xs border border-mr-gray-700 bg-mr-primary p-[3px]', block && 'w-full')}>
+            <div role="radiogroup" className={cn('inline-flex gap-[3px] rounded-mr-xs border border-mr-gray-700 bg-mr-primary p-[3px]', block && 'w-full', className)}>
                 {items.map(it => {
                     const active = it.value === value;
                     const Icon = it.icon;
@@ -78,6 +88,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                             aria-checked={active}
                             disabled={it.disabled}
                             onClick={() => onChange(it.value)}
+                            title={iconOnly ? it.label : undefined}
                             className={cn(
                                 'inline-flex items-center justify-center gap-1.5 rounded-mr-xs font-mr-bold transition-all duration-mr-default cursor-pointer',
                                 baseSize,
@@ -89,7 +100,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                             )}
                         >
                             {Icon && <Icon className="size-3.5" />}
-                            <span>{it.label}</span>
+                            <span className={iconOnly ? 'sr-only' : undefined}>{it.label}</span>
                         </button>
                     );
                 })}
@@ -98,7 +109,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
     }
 
     return (
-        <div role="radiogroup" className={cn('inline-flex gap-1', block && 'w-full')}>
+        <div role="radiogroup" className={cn('inline-flex gap-1', block && 'w-full', className)}>
             {items.map((it, index, items) => {
                 const active = it.value === value;
 
@@ -115,6 +126,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                         aria-checked={active}
                         disabled={it.disabled}
                         onClick={() => onChange(it.value)}
+                        title={iconOnly ? it.label : undefined}
                         className={cn(
                             'inline-flex items-center justify-center gap-1.5 border font-mr-bold transition-all duration-mr-default cursor-pointer',
                             isFirst && 'rounded-l-mr-xs',
@@ -128,7 +140,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                         )}
                     >
                         {Icon && <Icon className="size-3.5" />}
-                        <span>{it.label}</span>
+                        <span className={iconOnly ? 'sr-only' : undefined}>{it.label}</span>
                     </button>
                 );
             })}

@@ -104,7 +104,7 @@
 
     /* --- Layout --- */
     --mr-container-max: 1240px;
-    /* Z-index: escala única em @theme (--z-mr-*) — utilitários z-mr-*. */
+    /* Z-index: escala única em @theme (--z-index-mr-*) — utilitários z-mr-*. */
 }
 
 @theme {
@@ -208,14 +208,14 @@
     --shadow-mr-black: 0 0 2rem 0.25rem rgba(22, 22, 22, 0.75);
 
     /* Z-indexes */
-    --z-mr-header: 50;
-    --z-mr-footer: 10;
-    --z-mr-mobile-tab: 40;
-    --z-mr-dropdown: 60;
-    --z-mr-drawer: 70;
-    --z-mr-modal: 80;
-    --z-mr-toast: 90;
-    --z-mr-tooltip: 100;
+    --z-index-mr-footer: 10;
+    --z-index-mr-mobile-tab: 40;
+    --z-index-mr-header: 50;
+    --z-index-mr-dropdown: 60;
+    --z-index-mr-drawer: 70;
+    --z-index-mr-modal: 80;
+    --z-index-mr-toast: 90;
+    --z-index-mr-tooltip: 100;
 
     /* Animações */
     --duration-mr-fast: 150ms;
@@ -878,6 +878,11 @@ html.mr-no-animations *::after {
         padding-left: 16px;
     }
 
+    /* Respostas profundas mantêm o recuo do primeiro filho, sem acumular indentação. */
+    .cs-thread .cs-thread {
+        padding-left: 0;
+    }
+
     .cs-thread::before {
         left: 5px;
     }
@@ -896,6 +901,8 @@ html.mr-no-animations *::after {
         border: 1px solid var(--mr-border);
         border-radius: 8px;
         padding: 11px 12px;
+        min-width: 0;
+        overflow-wrap: anywhere;
     }
 }
 

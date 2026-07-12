@@ -38,7 +38,8 @@ const RootLayout = () => {
         <>
             <ScrollRestoration />
             <Suspense fallback={<RouteSuspenseFallback />}>
-                <div className="flex min-h-screen flex-col">
+                {/* pb precisa ficar em sincronia com h-[52px] do MobileTabBar em shared/ui/MobileTabBar.tsx */}
+                <div className="flex min-h-screen flex-col pb-[calc(52px+env(safe-area-inset-bottom))] md:pb-0">
                     <Header />
                     <div className="flex flex-1 flex-col">
                         <Outlet />

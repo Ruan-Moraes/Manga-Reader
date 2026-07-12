@@ -30,7 +30,7 @@ export { useUserModalContext } from './model/useUserModalContext';
 export { ProfileSettingsModalProvider, useProfileSettingsModal, type ProfileSettingsTab } from './model/ProfileSettingsModalContext';
 
 // Services
-export { recordView, recordChapterRead, updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings, getFavoriteGenres, updateFavoriteGenres } from './api/userService';
+export { recordView, updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings, getFavoriteGenres, updateFavoriteGenres } from './api/userService';
 export { followUser, unfollowUser, getFollowers, getFollowing, getFollowedGroups, type FollowStatus, type UserSummary } from './api/followService';
 
 // Settings
@@ -50,6 +50,7 @@ export {
 
 // Utils
 export { buildUserModalPayload } from './lib/buildUserModalPayload';
+export { useDebouncedCallback } from './lib/useDebouncedCallback';
 export {
     applyReduceMotion,
     applySystemPreferences,

@@ -81,7 +81,7 @@ const Home = () => {
             >
                 {t('skipToContent')}
             </a>
-            <div id="main-content" className="flex flex-col gap-12">
+            <div id="main-content" className="flex flex-col gap-8 md:gap-12">
                 <HomeHero featuredTitles={featuredTitles} />
 
                 {isLoggedIn && (continueLoading || continueReading.length > 0) && (

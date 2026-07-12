@@ -7,6 +7,7 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { FORUM_CATEGORIES, FORUM_TAGS, FORUM_TOPICS, FORUM_USERS, formatViews } from './forumData';
+import { Select } from '@ui/Select';
 import { SquareAvatar } from '@ui/SquareAvatar';
 import { ForumComment } from './parts/ForumComment';
 import { ForumPagination } from './parts/ForumPagination';
@@ -27,6 +28,7 @@ const ForumTopic = () => {
     const [replyOpen, setReplyOpen] = useState(false);
     const [followed, setFollowed] = useState(false);
     const [bookmarked, setBookmarked] = useState(false);
+    const [commentSort, setCommentSort] = useState('best');
 
     const related = FORUM_TOPICS.filter(x => x.id !== topic.id && x.category === topic.category).slice(0, 3);
     const content = `${topic.excerpt}\n\n${t('ui.topicBodyExtra')}`;
@@ -152,11 +154,17 @@ const ForumTopic = () => {
                             <span className="mr-label" style={{ color: '#727273' }}>
                                 {t('ui.sortBy')}
                             </span>
-                            <select className="forum-comments-sort-select" aria-label={t('ui.sortBy')}>
-                                <option>{t('ui.sortBest')}</option>
-                                <option>{t('ui.sortRecent')}</option>
-                                <option>{t('ui.sortOldest')}</option>
-                            </select>
+                            <Select
+                                className="w-44"
+                                aria-label={t('ui.sortBy')}
+                                value={commentSort}
+                                onChange={e => setCommentSort(e.target.value)}
+                                options={[
+                                    { value: 'best', label: t('ui.sortBest') },
+                                    { value: 'recent', label: t('ui.sortRecent') },
+                                    { value: 'oldest', label: t('ui.sortOldest') },
+                                ]}
+                            />
                         </div>
                     </div>
 

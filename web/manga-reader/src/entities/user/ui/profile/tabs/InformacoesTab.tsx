@@ -6,7 +6,7 @@ import useDebouncedCallback from '../../../lib/useDebouncedCallback';
 
 import { Avatar } from '@ui/Avatar';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import { updateProfile, type UpdateProfilePayload } from '@entities/user';
 import { type EnrichedProfile } from '@entities/user';
@@ -35,11 +35,12 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
 
             onSaved();
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     }, AUTOSAVE_MS);
 
-    // Username (DT-48): 409 = handle já em uso — mensagem específica.
+    // Username (DT-48): 409 (handle já em uso) chega com a mensagem real do backend
+    // via interceptor Axios — não precisa de tratamento local específico.
     const saveUsername = useDebouncedCallback(async (value: string) => {
         try {
             await updateProfile({ username: value });
@@ -47,10 +48,8 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
             showSuccessToast(t('profile.edit.saved'));
 
             onSaved();
-        } catch (error) {
-            const status = (error as { response?: { status?: number } }).response?.status;
-
-            showErrorToast(status === 409 ? t('profile.edit.info.userTaken') : t('profile.edit.saveError'));
+        } catch {
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     }, AUTOSAVE_MS);
 
@@ -63,7 +62,7 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
             showSuccessToast(t('profile.edit.saved'));
             onSaved();
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     };
 

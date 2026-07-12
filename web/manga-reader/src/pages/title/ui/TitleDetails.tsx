@@ -1,5 +1,5 @@
 import { ROUTES } from '@shared/constant/ROUTES';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
@@ -15,6 +15,7 @@ import { useTitle, useTitleModals } from '@entities/manga';
 import { useChapters } from '@entities/chapter';
 import { useRatingSummary, useSubmitReview, RatingModal } from '@entities/review';
 import { getGroupsByTitleId } from '@entities/group';
+import { recordView } from '@entities/user';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { useAuth } from '@features/auth';
 
@@ -45,6 +46,13 @@ const TitleDetails = () => {
     const submitReview = useSubmitReview(titleId ?? '');
     const { isRatingModalOpen, openRatingModal, closeRatingModal } = useTitleModals();
     const { isLoggedIn } = useAuth();
+
+    // Registra a visualização do título (fire-and-forget; idempotente no
+    // backend via upsert). Só para usuário autenticado.
+    useEffect(() => {
+        if (!isLoggedIn || !titleId) return;
+        void recordView(titleId).catch(() => {});
+    }, [isLoggedIn, titleId]);
 
     const { data: groupsPage } = useQuery({
         queryKey: [QUERY_KEYS.GROUPS_BY_TITLE, titleId],

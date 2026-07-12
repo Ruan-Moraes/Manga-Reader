@@ -10,7 +10,7 @@ const shimmer = 'animate-pulse rounded bg-mr-tertiary/20';
 const TitleDetailsSkeleton = () => (
     <PageContainer asMain size="default" paddingY="md">
         {/* Hero: capa + coluna de metadados (espelha TitleHero) */}
-        <div className="mb-8 flex flex-col gap-6 md:flex-row md:gap-8">
+        <div className="mb-6 flex flex-col gap-6 md:flex-row md:gap-8">
             <div className={`h-[220px] w-[156px] shrink-0 self-start rounded-mr-xs ${shimmer}`} />
 
             <div className="flex-1 min-w-0 space-y-3 py-1">

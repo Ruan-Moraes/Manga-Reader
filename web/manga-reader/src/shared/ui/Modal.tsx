@@ -148,7 +148,10 @@ export const Modal = ({
                 if (e.target === e.currentTarget && closeOnOverlay) requestClose();
             }}
             className={cn(
-                'm-auto p-0 open:flex flex-col max-h-[85vh] overflow-hidden',
+                // Grid (não flex) no eixo principal: no Safari, um <dialog> com altura auto
+                // não dá ao filho `flex-1 overflow-y-auto` uma base definida para crescer,
+                // e o corpo colapsa para ~0px. Grid com linha `1fr` não sofre desse bug.
+                'm-auto p-0 open:grid grid-rows-[auto_1fr_auto] max-h-[85vh] overflow-hidden',
                 sizeMap[size],
                 'rounded-mr-lg border border-mr-border bg-mr-surface text-mr-fg shadow-mr-black animate-mr-fade-in',
                 '[&::backdrop]:bg-[rgba(22,22,22,0.75)] [&::backdrop]:backdrop-blur-mr',
@@ -186,10 +189,10 @@ export const Modal = ({
 
             <FloatingPortalContext.Provider value={dialogEl}>
                 <ModalRequestCloseContext.Provider value={requestClose}>
-                    <div className={`min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 ${bodyClassName ?? ''}`}>{children}</div>
+                    <div className={`min-h-0 overflow-y-auto p-4 sm:p-6 ${bodyClassName ?? ''}`}>{children}</div>
 
                     {footer && (
-                        <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-mr-border-subtle bg-mr-surface-muted p-4 sm:px-6">{footer}</footer>
+                        <footer className="flex items-center justify-end gap-2 border-t border-mr-border-subtle bg-mr-surface-muted p-4 sm:px-6">{footer}</footer>
                     )}
                 </ModalRequestCloseContext.Provider>
             </FloatingPortalContext.Provider>

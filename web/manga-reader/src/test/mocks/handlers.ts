@@ -128,4 +128,17 @@ export const handlers = [
     http.post('*/api/contact/publish-work', () => {
         return HttpResponse.json(wrap('Sua solicitação foi enviada com sucesso! Entraremos em contato em breve.'));
     }),
+
+    http.post('*/api/users/me/history', () => {
+        return new HttpResponse(null, { status: 204 });
+    }),
+
+    http.put('*/api/users/me/reading-progress', async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json(wrap({ ...body, updatedAt: '2024-01-01T00:00:00Z' }));
+    }),
+
+    http.get('*/api/users/me/reading-progress/:titleId', () => {
+        return HttpResponse.json(wrap(null));
+    }),
 ];

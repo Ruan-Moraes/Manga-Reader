@@ -1,9 +1,10 @@
-import { Bell, BookOpen } from 'lucide-react';
+import { Bell, BookOpen, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@ui/Avatar';
 import { Button } from '@ui/Button';
 import { DropdownMenu } from '@ui/DropdownMenu';
+import { IconButton } from '@ui/IconButton';
 import { cn } from '@shared/lib/cn';
 import type { LayoutNavBarUser } from './navBar.types';
 
@@ -46,7 +47,7 @@ const NavActions = ({
         : [];
 
     const iconBtnBase =
-        'group relative inline-flex items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2';
+        'group relative items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2';
 
     const dim = { width: iconSize, height: iconSize } as const;
 
@@ -62,7 +63,13 @@ const NavActions = ({
         <div className="flex items-center gap-[6px]">
             {user && (
                 <>
-                    <button type="button" aria-label={t('nav.aria.notifications')} onClick={onNotificationsClick} className={iconBtnBase} style={dim}>
+                    <button
+                        type="button"
+                        aria-label={t('nav.aria.notifications')}
+                        onClick={onNotificationsClick}
+                        className={cn(iconBtnBase, 'hidden lg:inline-flex')}
+                        style={dim}
+                    >
                         <Bell className="size-[20px]" strokeWidth={2} aria-hidden="true" />
                         {!!user.unreadNews && (
                             <span className={cn(badgeBase, 'bg-mr-danger text-mr-fg')} style={badgeStyle}>
@@ -71,7 +78,13 @@ const NavActions = ({
                         )}
                     </button>
                     {!compact && (
-                        <button type="button" aria-label={t('nav.aria.library')} onClick={onLibraryClick} className={iconBtnBase} style={dim}>
+                        <button
+                            type="button"
+                            aria-label={t('nav.aria.library')}
+                            onClick={onLibraryClick}
+                            className={cn(iconBtnBase, 'inline-flex')}
+                            style={dim}
+                        >
                             <BookOpen className="size-[20px]" strokeWidth={2} aria-hidden="true" />
                             {!!user.libraryCount && (
                                 <span className={cn(badgeBase, 'bg-mr-accent text-mr-primary')} style={badgeStyle}>
@@ -97,7 +110,16 @@ const NavActions = ({
                     />
                 </>
             )}
-            {!user && (
+            {!user && compact && (
+                <IconButton
+                    icon={LogIn}
+                    variant="primary"
+                    aria-label={t('nav.action.login')}
+                    onClick={onAccountClick}
+                    style={{ width: iconSize, height: iconSize }}
+                />
+            )}
+            {!user && !compact && (
                 <Button
                     variant="primary"
                     size="md"

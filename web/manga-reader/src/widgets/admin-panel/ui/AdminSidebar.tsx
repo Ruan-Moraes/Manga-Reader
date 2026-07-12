@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Users, Book, BookOpen, FileText, Calendar, Tag, Layers, DollarSign, CreditCard, PenTool, Building2, X } from 'lucide-react';
+import { Home, Users, Book, BookOpen, FileText, Calendar, Tag, Layers, DollarSign, CreditCard, PenTool, Building2, Store, X } from 'lucide-react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 
 type AdminSidebarProps = {
     isOpen: boolean;
@@ -23,7 +23,7 @@ type NavSection = {
     items: NavItem[];
 };
 
-const BASE = `${WEB_BASE_URL}${ROUTES.DASHBOARD}`;
+const BASE = withWebBasePath(ROUTES.DASHBOARD);
 
 const SECTIONS: NavSection[] = [
     {
@@ -65,6 +65,7 @@ const SECTIONS: NavSection[] = [
                 labelKey: 'sidebar.publishers',
                 icon: <Building2 size={18} />,
             },
+            { to: `${BASE}/stores`, labelKey: 'sidebar.stores', icon: <Store size={18} /> },
             {
                 to: `${BASE}/news`,
                 labelKey: 'sidebar.news',

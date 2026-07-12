@@ -68,8 +68,11 @@ const ERROR_CODE_MESSAGES: Record<string, string> = {
     [API_ERROR_CODES.VALIDATION_BAD_REQUEST]: 'Requisição inválida. Verifique os dados enviados.',
     [API_ERROR_CODES.VALIDATION_TYPE_MISMATCH]: 'Requisição inválida. Verifique os dados enviados.',
 
-    // Business
-    [API_ERROR_CODES.BUSINESS_RULE_VIOLATION]: 'Não foi possível completar a ação. Verifique as condições necessárias.',
+    // Business — intencionalmente sem mapeamento fixo: BUSINESS_RULE_VIOLATION é o
+    // código genérico usado por toda BusinessRuleException do backend (dezenas de
+    // use cases), cada uma com mensagem pt-BR específica já pensada para o usuário
+    // (ex.: "O líder não pode sair do grupo. Transfira a liderança antes."). Deixar
+    // cair na prioridade 2 (serverMessage) preserva essa mensagem real.
 
     // Rate limit
     [API_ERROR_CODES.RATE_LIMIT_EXCEEDED]: 'Muitas requisições. Aguarde um momento e tente novamente.',

@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuth, AuthShell, AuthField, AuthSubmit, buildLoginSchema, type LoginFormValues } from '@features/auth';
 import { REDIRECT_AFTER_LOGIN_KEY } from '@shared/constant/REDIRECT_AFTER_LOGIN_KEY';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { WEB_BASE_URL, withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 
 const DEMO_USER = {
@@ -73,8 +73,8 @@ const Login = () => {
                 <>
                     {t('login.noAccount')}{' '}
                     <a
-                        href={`${WEB_BASE_URL}${ROUTES.SIGN_UP}`}
-                        onClick={go(`${WEB_BASE_URL}${ROUTES.SIGN_UP}`)}
+                        href={withWebBasePath(ROUTES.SIGN_UP)}
+                        onClick={go(withWebBasePath(ROUTES.SIGN_UP))}
                         className="font-mr-bold text-mr-accent tracking-mr no-underline"
                     >
                         {t('login.signUpLink')}
@@ -113,8 +113,8 @@ const Login = () => {
                             error={errors.password?.message}
                             rightSlot={
                                 <a
-                                    href={`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`}
-                                    onClick={go(`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`)}
+                                    href={withWebBasePath(ROUTES.FORGOT_PASSWORD)}
+                                    onClick={go(withWebBasePath(ROUTES.FORGOT_PASSWORD))}
                                     className="text-mr-tiny tracking-mr text-mr-fg-subtle no-underline hover:text-mr-fg"
                                 >
                                     {t('login.forgotPassword')}

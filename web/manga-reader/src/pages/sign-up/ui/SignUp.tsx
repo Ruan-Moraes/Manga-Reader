@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuth, AuthShell, AuthField, AuthSubmit, buildSignUpSchema, type SignUpFormValues } from '@features/auth';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { WEB_BASE_URL, withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { showSuccessToast } from '@shared/service/util/toastService';
 
@@ -73,8 +73,8 @@ const SignUp = () => {
                 <>
                     {t('signUp.noAccount')}{' '}
                     <a
-                        href={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
-                        onClick={go(`${WEB_BASE_URL}${ROUTES.LOGIN}`)}
+                        href={withWebBasePath(ROUTES.LOGIN)}
+                        onClick={go(withWebBasePath(ROUTES.LOGIN))}
                         className="font-mr-bold text-mr-accent tracking-mr no-underline"
                     >
                         {t('signUp.loginLink')}

@@ -1,6 +1,8 @@
 export { default as useGroups } from './model/useGroups';
 export { getGroups, getGroupsByTitleId } from './api/groupService';
 export { default as useGroupDetails } from './model/useGroupDetails';
+export { default as useSupportGroup } from './model/useSupportGroup';
+export { getGroupFollowersCount } from './model/groupFollowers';
 export { default as useGroupWorks } from './model/useGroupWorks';
 export type { WorkSortOption } from './model/useGroupWorks';
 

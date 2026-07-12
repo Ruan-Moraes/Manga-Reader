@@ -29,9 +29,9 @@ const GroupsTab = ({ groups }: GroupsTabProps) => {
                         avatar: g.logo,
                         banner: g.banner,
                         status: g.status,
-                        members: 0,
+                        members: undefined,
                         projects: g.totalTitles,
-                        chaptersPublished: 0,
+                        chaptersPublished: undefined,
                         tags: g.focusTags,
                     }}
                     onClick={() => navigate(ROUTES.GROUP_DETAIL(g.id))}

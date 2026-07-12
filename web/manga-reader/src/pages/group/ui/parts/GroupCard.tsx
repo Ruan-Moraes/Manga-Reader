@@ -1,28 +1,54 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@shared/lib/cn';
+import { getStoredSession } from '@shared/service/session';
+import { showInfoToast } from '@shared/service/util/toastService';
 import { Badge } from '@ui/Badge';
-import type { Group } from '@entities/group';
+import { useSupportGroup, type Group } from '@entities/group';
 
 import { SquareAvatar } from '@ui/SquareAvatar';
 
 interface GroupCardProps {
     group: Group;
     onOpen: () => void;
-    following: boolean;
-    onToggleFollow: () => void;
 }
 
 const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 
-export const GroupCard = ({ group, onOpen, following, onToggleFollow }: GroupCardProps) => {
+export const GroupCard = ({ group, onOpen }: GroupCardProps) => {
     const { t } = useTranslation('group');
 
-    const followers = group.supporters?.length ?? 0;
+    const currentUserId = getStoredSession()?.userId;
+    // Membro (equipe) já conta como seguidor automaticamente — ver GroupProfile.
+    const isMember = group.members.some(m => m.id === currentUserId);
+
+    const initialSupportState = useMemo(
+        () => ({
+            following: group.supporters.some(s => s.id === currentUserId),
+            supportersCount: group.supporters.length,
+        }),
+        [group, currentUserId],
+    );
+    const { following, supportersCount, pending, toggle } = useSupportGroup(group.id, currentUserId, initialSupportState);
+
+    const followers = group.members.length + supportersCount;
+
+    const handleFollowClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        if (isMember) {
+            showInfoToast(t('profile.memberAlreadyFollows'));
+            return;
+        }
+
+        toggle();
+    };
 
     return (
         <div
             onClick={onOpen}
+            data-testid="group-card"
             className="group flex cursor-pointer flex-col overflow-hidden rounded-mr-sm border border-[#333] bg-mr-gray-900 transition-[border-color,box-shadow] duration-mr-default hover:border-mr-accent hover:shadow-mr-elevated"
         >
             <div
@@ -63,16 +89,14 @@ export const GroupCard = ({ group, onOpen, following, onToggleFollow }: GroupCar
                     {/*TODO: Usar o botao padrao da aplicao*/}
                     <button
                         type="button"
-                        onClick={e => {
-                            e.stopPropagation();
-                            onToggleFollow();
-                        }}
+                        onClick={handleFollowClick}
+                        disabled={pending}
                         className={cn(
-                            'min-h-11 rounded-mr-xs border border-mr-accent px-2.5 py-1.5 text-mr-tiny font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring',
-                            following ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
+                            'min-h-11 rounded-mr-xs border border-mr-accent px-2.5 py-1.5 text-mr-tiny font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring disabled:cursor-not-allowed disabled:opacity-60',
+                            following || isMember ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
                         )}
                     >
-                        {following ? t('card.following') : t('card.follow')}
+                        {isMember ? t('profile.member') : following ? t('card.following') : t('card.follow')}
                     </button>
                 </div>
             </div>

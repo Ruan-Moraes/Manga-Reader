@@ -8,12 +8,15 @@ import { MangaCard, type Title } from '@entities/manga';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
 
+import { useBookmark } from '@features/library';
+
 type HomeNewReleasesProps = {
     releases: Title[];
 };
 
 const HomeNewReleases = ({ releases }: HomeNewReleasesProps) => {
     const navigate = useAppNavigate();
+    const { isSaved, toggleBookmark } = useBookmark();
 
     const { t } = useTranslation('home');
 
@@ -49,6 +52,8 @@ const HomeNewReleases = ({ releases }: HomeNewReleasesProps) => {
                                 chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                             }}
                             onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
+                            inLibrary={isSaved(m.id)}
+                            onToggleLibrary={() => toggleBookmark(m.id)}
                         />
                     ))}
                 </div>

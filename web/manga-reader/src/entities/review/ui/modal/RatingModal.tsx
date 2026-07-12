@@ -136,12 +136,14 @@ function ReviewFormBody({
                                 <p className="text-[14px] font-mr-bold text-mr-fg">{name}</p>
                                 <p className="text-[12px] text-mr-fg-subtle">{t(c.descKey)}</p>
                             </div>
-                            <StarsInput
-                                value={val}
-                                onChange={v => setScores(s => ({ ...s, [c.key]: v }))}
-                                size={24}
-                                label={t('modal.rateCriterion', { name })}
-                            />
+                            <div className="shrink-0">
+                                <StarsInput
+                                    value={val}
+                                    onChange={v => setScores(s => ({ ...s, [c.key]: v }))}
+                                    size={24}
+                                    label={t('modal.rateCriterion', { name })}
+                                />
+                            </div>
                         </div>
                     );
                 })}

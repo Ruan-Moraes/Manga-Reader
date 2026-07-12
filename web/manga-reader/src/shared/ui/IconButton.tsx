@@ -25,6 +25,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
     { icon: Icon, size = 'md', variant = 'ghost', className, ...rest },
     ref,
 ) {
+
     return (
         <Button ref={ref} variant={variant} size={size} className={cn('aspect-square !p-0', className)} {...rest}>
             <Icon className={iconSizeClass[size]} aria-hidden="true" />

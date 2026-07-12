@@ -35,7 +35,8 @@ export interface ReviewScores {
 }
 
 export interface ReviewCardProps {
-    author: ReviewAuthor;
+    /** Ausente no modo "centrado na obra" (ex.: Minhas Resenhas) — autor é sempre a própria pessoa logada, redundante exibir. */
+    author?: ReviewAuthor;
     /** ISO de criação (createdAt) — formatado internamente: relativo + tooltip absoluto. */
     when: string;
     /** Resenha foi editada após a criação — exibe o selo "(editado)". */
@@ -69,9 +70,9 @@ export interface ReviewCardProps {
     onEdit?: () => void;
     /** Ação de excluir (só dono) — quando presente, exibe botão Excluir com confirmação. */
     onDelete?: () => void;
-    /** Abre o modal do autor ao clicar no avatar/nome. */
+    /** Abre o modal do autor ao clicar no avatar/nome. Só se aplica quando `author` está presente. */
     onClickAuthor?: () => void;
-    /** Rótulo acessível do botão de perfil (avatar/nome). */
+    /** Rótulo acessível do botão de perfil (avatar/nome). Só se aplica quando `author` está presente. */
     authorProfileLabel?: string;
 }
 
@@ -130,202 +131,247 @@ export const ReviewCard = ({
     return (
         <article onClick={onClick} className={cn(onClick && 'cursor-pointer')}>
             <PostShell
-                avatar={{ src: author.avatar, name: author.name }}
+                avatar={author ? { src: author.avatar, name: author.name } : undefined}
                 avatarSize={compact ? 32 : 44}
                 op={badge === 'top'}
-                onClickAvatar={onClickAuthor}
+                onClickAvatar={author ? onClickAuthor : undefined}
             >
                 {subjectTitle && (
-                    <div className="flex flex-col gap-1.5">
-                        {subjectTitle.onClick ? (
-                            <button
-                                type="button"
-                                onClick={subjectTitle.onClick}
-                                className="self-start text-left text-[15px] font-mr-extrabold text-mr-fg transition-colors hover:text-mr-accent"
-                            >
-                                {subjectTitle.label}
-                            </button>
-                        ) : (
-                            <h3 className="text-[15px] font-mr-extrabold text-mr-fg">{subjectTitle.label}</h3>
+                    <div className="flex gap-3">
+                        {manga && (
+                            <div className="hidden shrink-0 sm:block">
+                                <MangaPoster cover={manga.cover} fallbackGradient={manga.gradient} alt="" size={80} radius="sm" />
+                            </div>
                         )}
-                        {genres && genres.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5">
-                                {genres.map(genre => (
-                                    <span
-                                        key={genre}
-                                        className="rounded-mr-full border border-mr-chip-border bg-mr-chip px-2 py-0.5 text-mr-tiny font-mr-bold text-mr-fg-subtle"
-                                    >
-                                        {genre}
-                                    </span>
-                                ))}
+                        <div className="flex min-w-0 flex-1 flex-col">
+                            <div className="flex items-start justify-between gap-2">
+                                {subjectTitle.onClick ? (
+                                    <div className="flex gap-1.5 flex-col">
+                                        <button
+                                            type="button"
+                                            onClick={subjectTitle.onClick}
+                                            className="min-w-0 truncate text-left text-[15px] font-mr-extrabold text-mr-fg transition-colors hover:text-mr-accent"
+                                        >
+                                            {subjectTitle.label}
+                                        </button>
+                                        {genres && genres.length > 0 && (
+                                            <div className="flex flex-wrap gap-2">
+                                                {genres.map(genre => (
+                                                    <span
+                                                        key={genre}
+                                                        className="rounded-mr-full border border-mr-chip-border bg-mr-chip px-2 py-0.5 text-mr-tiny font-mr-bold text-mr-fg-subtle"
+                                                    >
+                                                {genre}
+                                            </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <h3 className="min-w-0 truncate text-[15px] font-mr-extrabold text-mr-fg">{subjectTitle.label}</h3>
+                                )}
+                                {!author && (
+                                    <div className="flex shrink-0 flex-col items-end gap-1">
+                                        <div className="flex items-center gap-1.5 text-mr-small text-mr-fg-subtle">
+                                            {edited && <EditedFlag label={t('card.edited')} title={editedDate.title} />}
+                                            <time title={whenDate.title}>{whenDate.label}</time>
+                                        </div>
+                                        {/* No mobile a nota desce para linha própria (abaixo dos gêneros) — aqui só do sm: pra cima. */}
+                                        <span className="hidden items-center gap-1.5 sm:flex">
+                                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                                            <Stars value={rating} size={16} />
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                            {!author && (
+                                <span className="mt-1.5 flex items-center justify-end gap-1.5 sm:hidden">
+                                    <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                                    <Stars value={rating} size={16} />
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {author && (
+                    <PostHeader
+                        name={author.name}
+                        time={whenDate.label}
+                        timeTitle={whenDate.title}
+                        onClickName={onClickAuthor}
+                        nameProfileLabel={authorProfileLabel}
+                        meta={edited ? <EditedFlag label={t('card.edited')} title={editedDate.title} /> : undefined}
+                        right={
+                            <span className="flex items-center gap-1.5">
+                                <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                                <Stars value={rating} size={16} />
+                            </span>
+                        }
+                    />
+                )}
+
+                {!author && !subjectTitle && (
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 text-mr-small text-mr-fg-subtle">
+                            <time title={whenDate.title}>{whenDate.label}</time>
+                            {edited && <EditedFlag label={t('card.edited')} title={editedDate.title} />}
+                        </div>
+                        <span className="flex items-center gap-1.5">
+                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                            <Stars value={rating} size={16} />
+                        </span>
+                    </div>
+                )}
+
+                {title && <h3 className="text-[15px] font-mr-extrabold text-mr-fg">{title}</h3>}
+
+                {/* Corpo — véu pontilhado quando spoiler, senão o texto */}
+                {veiled ? (
+                    <button
+                        type="button"
+                        onClick={event => {
+                            event.stopPropagation();
+                            setSpoilerShown(true);
+                        }}
+                        className="flex w-full items-center justify-center gap-2 rounded-mr-xs border border-dashed border-mr-border-subtle bg-mr-surface-muted p-[18px] text-mr-small font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-accent cursor-pointer"
+                    >
+                        <Eye className="size-4" aria-hidden="true" />
+                        {t('card.showSpoiler')}
+                    </button>
+                ) : (
+                    <div className={cn('text-mr-body leading-relaxed text-mr-fg-muted', collapsed && 'line-clamp-5')}>
+                        {typeof children === 'string' ? children.split('\n\n').map((paragraph, index) => <p key={index}>{paragraph}</p>) : children}
+                    </div>
+                )}
+
+                {isLong && !veiled && (
+                    <button
+                        type="button"
+                        onClick={event => {
+                            event.stopPropagation();
+
+                            setExpanded(v => !v);
+                        }}
+                        className="flex items-center gap-1 text-mr-small font-mr-bold text-mr-accent hover:underline"
+                    >
+                        {expanded ? t('card.readLess') : t('card.readMore')}
+                        <ChevronDown className={cn('size-3.5 transition-transform duration-200', expanded && 'rotate-180')} aria-hidden="true" />
+                    </button>
+                )}
+
+                {/* Breakdown por critério — linhas (igual ao protótipo `.cs-crit`) */}
+                {reviewScores && (
+                    <div>
+                        <button
+                            type="button"
+                            onClick={event => {
+                                event.stopPropagation();
+
+                                setBreakOpen(o => !o);
+                            }}
+                            aria-expanded={breakOpen}
+                            className="flex items-center gap-1.5 self-start text-mr-small font-mr-bold text-mr-fg-subtle transition-colors hover:text-mr-accent"
+                        >
+                            <ChevronDown className={cn('size-3.5 transition-transform duration-200', breakOpen && 'rotate-180')} aria-hidden="true" />
+                            {t('card.breakdown')}
+                        </button>
+                        {breakOpen && (
+                            <div className="mt-1 flex flex-col gap-2.5 rounded-mr-xs border border-mr-border bg-mr-surface-muted p-3">
+                                {REVIEW_CRITERIA.map(criterion => {
+                                    const value = reviewScores[criterion.key] ?? 0;
+                                    const label = t(criterion.labelKey);
+
+                                    return (
+                                        <div
+                                            key={criterion.key}
+                                            className="grid grid-cols-[92px_1fr_30px] items-center gap-2.5 max-md:grid-cols-[76px_1fr_28px]"
+                                        >
+                                            <span className="text-mr-small text-mr-fg-subtle">
+                                                {isMobile && label.length > 8 ? `${label.slice(0, 8)}...` : label}
+                                            </span>
+                                            <Meter value={(value / 5) * 100} />
+                                            <span className="text-right text-mr-small font-mr-bold text-mr-fg">{value.toFixed(1)}</span>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
                 )}
 
-                <PostHeader
-                    name={author.name}
-                    time={whenDate.label}
-                    timeTitle={whenDate.title}
-                    onClickName={onClickAuthor}
-                    nameProfileLabel={authorProfileLabel}
-                    meta={edited ? <EditedFlag label={t('card.edited')} title={editedDate.title} /> : undefined}
-                    right={
-                        <span className="flex items-center gap-1.5">
-                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
-                            <Stars value={rating} size={16} />
-                        </span>
-                    }
-                />
-
-                {title && <h3 className="text-[15px] font-mr-extrabold text-mr-fg">{title}</h3>}
-
-                    {/* Corpo — véu pontilhado quando spoiler, senão o texto */}
-                    {veiled ? (
-                        <button
-                            type="button"
-                            onClick={event => {
-                                event.stopPropagation();
-                                setSpoilerShown(true);
-                            }}
-                            className="flex w-full items-center justify-center gap-2 rounded-mr-xs border border-dashed border-mr-border-subtle bg-mr-surface-muted p-[18px] text-mr-small font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-accent cursor-pointer"
-                        >
-                            <Eye className="size-4" aria-hidden="true" />
-                            {t('card.showSpoiler')}
-                        </button>
-                    ) : (
-                        <div className={cn('text-mr-body leading-relaxed text-mr-fg-muted', collapsed && 'line-clamp-5')}>
-                            {typeof children === 'string' ? children.split('\n\n').map((paragraph, index) => <p key={index}>{paragraph}</p>) : children}
-                        </div>
-                    )}
-
-                    {isLong && !veiled && (
-                        <button
-                            type="button"
-                            onClick={event => {
-                                event.stopPropagation();
-
-                                setExpanded(v => !v);
-                            }}
-                            className="flex items-center gap-1 text-mr-small font-mr-bold text-mr-accent hover:underline"
-                        >
-                            {expanded ? t('card.readLess') : t('card.readMore')}
-                            <ChevronDown className={cn('size-3.5 transition-transform duration-200', expanded && 'rotate-180')} aria-hidden="true" />
-                        </button>
-                    )}
-
-                    {/* Breakdown por critério — linhas (igual ao protótipo `.cs-crit`) */}
-                    {reviewScores && (
-                        <div>
-                            <button
-                                type="button"
-                                onClick={event => {
-                                    event.stopPropagation();
-
-                                    setBreakOpen(o => !o);
-                                }}
-                                aria-expanded={breakOpen}
-                                className="flex items-center gap-1.5 self-start text-mr-small font-mr-bold text-mr-fg-subtle transition-colors hover:text-mr-accent"
-                            >
-                                <ChevronDown className={cn('size-3.5 transition-transform duration-200', breakOpen && 'rotate-180')} aria-hidden="true" />
-                                {t('card.breakdown')}
-                            </button>
-                            {breakOpen && (
-                                <div className="mt-1 flex flex-col gap-2.5 rounded-mr-xs border border-mr-border bg-mr-surface-muted p-3">
-                                    {REVIEW_CRITERIA.map(criterion => {
-                                        const value = reviewScores[criterion.key] ?? 0;
-                                        const label = t(criterion.labelKey);
-
-                                        return (
-                                            <div
-                                                key={criterion.key}
-                                                className="grid grid-cols-[92px_1fr_30px] items-center gap-2.5 max-md:grid-cols-[76px_1fr_28px]"
-                                            >
-                                                <span className="text-mr-small text-mr-fg-subtle">
-                                                    {isMobile && label.length > 8 ? `${label.slice(0, 8)}...` : label}
-                                                </span>
-                                                <Meter value={(value / 5) * 100} />
-                                                <span className="text-right text-mr-small font-mr-bold text-mr-fg">{value.toFixed(1)}</span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Footer — voto unificado (VotePill). stopPropagation evita disparar onClick do card. */}
-                    <div onClick={event => event.stopPropagation()}>
-                        <ActionBar
-                            vote={
-                                <VotePill
-                                    value={(upvotes ?? 0) - (downvotes ?? 0)}
-                                    active={myVote ?? null}
-                                    onUp={() => handleVote('up')}
-                                    onDown={() => handleVote('down')}
-                                    label={t('card.voteGroup')}
-                                    upLabel={t('card.helpful')}
-                                    downLabel={t('card.unhelpful')}
-                                />
-                            }
-                            extra={
-                                (onEdit || onDelete) &&
-                                (confirmingDelete ? (
-                                    <>
-                                        <span className="text-mr-tiny text-mr-danger">{t('card.deleteConfirm')}</span>
+                {/* Footer — voto unificado (VotePill). stopPropagation evita disparar onClick do card. */}
+                <div onClick={event => event.stopPropagation()}>
+                    <ActionBar
+                        vote={
+                            <VotePill
+                                value={(upvotes ?? 0) - (downvotes ?? 0)}
+                                active={myVote ?? null}
+                                onUp={() => handleVote('up')}
+                                onDown={() => handleVote('down')}
+                                label={t('card.voteGroup')}
+                                upLabel={t('card.helpful')}
+                                downLabel={t('card.unhelpful')}
+                            />
+                        }
+                        extra={
+                            (onEdit || onDelete) &&
+                            (confirmingDelete ? (
+                                <>
+                                    <span className="text-mr-tiny text-mr-danger">{t('card.deleteConfirm')}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            onDelete?.();
+                                            setConfirmingDelete(false);
+                                        }}
+                                        className="rounded-mr-xs px-2 py-1 text-mr-small font-mr-bold text-mr-danger hover:bg-mr-danger-15 cursor-pointer"
+                                    >
+                                        {t('card.deleteYes')}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setConfirmingDelete(false)}
+                                        className="rounded-mr-xs px-2 py-1 text-mr-small font-mr-bold text-mr-fg-subtle hover:bg-mr-secondary cursor-pointer"
+                                    >
+                                        {t('card.deleteNo')}
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    {onEdit && (
                                         <button
                                             type="button"
-                                            onClick={() => {
-                                                onDelete?.();
-                                                setConfirmingDelete(false);
-                                            }}
-                                            className="rounded-mr-xs px-2 py-1 text-mr-small font-mr-bold text-mr-danger hover:bg-mr-danger-15 cursor-pointer"
+                                            onClick={onEdit}
+                                            aria-label={t('card.edit')}
+                                            className="inline-flex items-center gap-1.5 rounded-mr-full border border-mr-chip-border bg-mr-chip px-[13px] py-1.5 text-[12.5px] font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-fg mr-focus-ring max-md:w-8 max-md:justify-center max-md:gap-0 max-md:px-0"
                                         >
-                                            {t('card.deleteYes')}
+                                            <Pencil className="size-[15px]" aria-hidden="true" />
+                                            <span className="hidden md:inline">{t('card.edit')}</span>
                                         </button>
+                                    )}
+                                    {onDelete && (
                                         <button
                                             type="button"
-                                            onClick={() => setConfirmingDelete(false)}
-                                            className="rounded-mr-xs px-2 py-1 text-mr-small font-mr-bold text-mr-fg-subtle hover:bg-mr-secondary cursor-pointer"
+                                            onClick={() => setConfirmingDelete(true)}
+                                            aria-label={t('card.delete')}
+                                            className="inline-flex items-center gap-1.5 rounded-mr-full border border-mr-chip-border bg-mr-chip px-[13px] py-1.5 text-[12.5px] font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-danger hover:text-mr-danger mr-focus-ring max-md:w-8 max-md:justify-center max-md:gap-0 max-md:px-0"
                                         >
-                                            {t('card.deleteNo')}
+                                            <Trash2 className="size-[15px]" aria-hidden="true" />
+                                            <span className="hidden md:inline">{t('card.delete')}</span>
                                         </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        {onEdit && (
-                                            <button
-                                                type="button"
-                                                onClick={onEdit}
-                                                aria-label={t('card.edit')}
-                                                className="inline-flex items-center gap-1.5 rounded-mr-full border border-mr-chip-border bg-mr-chip px-[13px] py-1.5 text-[12.5px] font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-fg mr-focus-ring max-md:w-8 max-md:justify-center max-md:gap-0 max-md:px-0"
-                                            >
-                                                <Pencil className="size-[15px]" aria-hidden="true" />
-                                                <span className="hidden md:inline">{t('card.edit')}</span>
-                                            </button>
-                                        )}
-                                        {onDelete && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setConfirmingDelete(true)}
-                                                aria-label={t('card.delete')}
-                                                className="inline-flex items-center gap-1.5 rounded-mr-full border border-mr-chip-border bg-mr-chip px-[13px] py-1.5 text-[12.5px] font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-danger hover:text-mr-danger mr-focus-ring max-md:w-8 max-md:justify-center max-md:gap-0 max-md:px-0"
-                                            >
-                                                <Trash2 className="size-[15px]" aria-hidden="true" />
-                                                <span className="hidden md:inline">{t('card.delete')}</span>
-                                            </button>
-                                        )}
-                                    </>
-                                ))
-                            }
-                        />
+                                    )}
+                                </>
+                            ))
+                        }
+                    />
+                </div>
+
+                {manga && !subjectTitle && (
+                    <div className="hidden shrink-0 sm:block">
+                        <MangaPoster cover={manga.cover} fallbackGradient={manga.gradient} alt="" size={88} radius="sm" />
                     </div>
-
-                    {manga && (
-                        <div className="hidden shrink-0 sm:block">
-                            <MangaPoster cover={manga.cover} fallbackGradient={manga.gradient} alt="" size={88} radius="sm" />
-                        </div>
-                    )}
+                )}
             </PostShell>
         </article>
     );

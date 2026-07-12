@@ -26,7 +26,8 @@ export const clearCache = (): void => {
             localStorage.setItem(USER_SETTINGS_STORAGE_KEY, userSettings);
         }
 
-        showWarningToast('Limpando cache!', { toastId: 'clear-cache' });
+        // Disparado a partir do menu lateral (drawer aberto) — toast no topo evita ficar embaixo do overlay do menu.
+        showWarningToast('Limpando cache!', { toastId: 'clear-cache', position: 'top' });
 
         setTimeout(() => {
             location.reload();

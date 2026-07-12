@@ -4,7 +4,7 @@ import { createMemoryStorage } from '@/test/helpers/memoryStorage';
 
 import { CHAPTER_STORE_KEY, createChapterStore } from '../localStorageChapterStore';
 import { createLocalStorageChapterAdminGateway } from '../localStorageChapterAdminGateway';
-import { createLocalStorageChapterPublicGateway, createLocalStorageReaderProgressGateway } from '../localStorageChapterPublicGateway';
+import { createLocalStorageChapterPublicGateway } from '../localStorageChapterPublicGateway';
 
 const setup = () => {
     const storage = createMemoryStorage();
@@ -67,27 +67,5 @@ describe('localStorageChapterPublicGateway', () => {
         const c2 = await publicGateway.getReaderChapter('1', '2.0');
         const direct = await publicGateway.getReaderChapter('1', '2');
         expect(c2).toEqual(direct);
-    });
-});
-
-describe('localStorageReaderProgressGateway', () => {
-    it('grava e lê progresso no formato legado reader:pos:*', () => {
-        const storage = createMemoryStorage();
-        const gateway = createLocalStorageReaderProgressGateway(storage);
-
-        gateway.saveProgress('42', '3', 7);
-
-        expect(JSON.parse(storage.getItem('reader:pos:42')!)).toEqual({ chapter: 3, page: 7 });
-        expect(gateway.getProgress('42')).toEqual({ chapter: 3, page: 7 });
-    });
-
-    it('marca e consulta capítulos concluídos', () => {
-        const gateway = createLocalStorageReaderProgressGateway(createMemoryStorage());
-
-        expect(gateway.isCompleted('42', '3')).toBe(false);
-        gateway.markCompleted('42', '3');
-        gateway.markCompleted('42', '3'); // idempotente
-        expect(gateway.isCompleted('42', '3')).toBe(true);
-        expect(gateway.isCompleted('42', '4')).toBe(false);
     });
 });

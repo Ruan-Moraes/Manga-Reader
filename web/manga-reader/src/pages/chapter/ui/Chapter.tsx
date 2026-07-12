@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -6,9 +6,9 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { EmptyState } from '@ui/EmptyState';
 import { useAuth } from '@features/auth';
+import { useBookmark } from '@features/library';
 import { useTitle } from '@entities/manga';
 import { useChapter } from '@entities/chapter';
-import { recordChapterRead } from '@entities/user';
 
 import { useChapterReader } from '../model/useChapterReader';
 import useReaderPages from '../model/useReaderPages';
@@ -35,17 +35,11 @@ const Chapter = () => {
     const isPreview = searchParams.get('preview') === '1' && (user?.role === 'admin' || user?.role === 'poster');
 
     const { title } = useTitle(titleId ?? '');
+    const { isSaved, toggleBookmark } = useBookmark();
     const { readerChapter, isBlocked } = useReaderPages(titleId, chapterParam, isPreview);
     const maxChapter = Number(title?.latestChapterNumber) || title?.chaptersCount || undefined;
-    const r = useChapterReader(titleId, chapterParam, maxChapter, readerChapter?.pages.length);
+    const r = useChapterReader(titleId, chapterParam, maxChapter, readerChapter?.pages.length, isLoggedIn);
     const { chapter: chapterData } = useChapter(titleId, chapterParam);
-
-    // Marca o capítulo como lido (fire-and-forget; idempotente no backend). Só
-    // para usuário autenticado e quando o capítulo realmente carregou.
-    useEffect(() => {
-        if (!isLoggedIn || !titleId || !chapterParam || !chapterData) return;
-        void recordChapterRead(titleId, chapterParam).catch(() => {});
-    }, [isLoggedIn, titleId, chapterParam, chapterData]);
 
     const displayTitle = title?.name ?? t('reader.untitled');
     const status = title?.status ?? '';
@@ -101,7 +95,7 @@ const Chapter = () => {
                     total={r.total}
                     status={status}
                     hidden={r.topbarHidden}
-                    saved={r.saved}
+                    saved={titleId ? isSaved(titleId) : false}
                     chaptersOpen={r.chaptersOpen}
                     commentsOpen={r.commentsOpen}
                     settingsOpen={r.settingsOpen}
@@ -109,7 +103,7 @@ const Chapter = () => {
                     onBack={r.goBack}
                     onToggleChapters={() => r.setChaptersOpen(o => !o)}
                     onPickChapter={r.pickChapter}
-                    onToggleSaved={() => r.setSaved(s => !s)}
+                    onToggleSaved={() => titleId && toggleBookmark(titleId)}
                     onToggleComments={() => r.setCommentsOpen(o => !o)}
                     onToggleSettings={() => r.setSettingsOpen(o => !o)}
                 />

@@ -2,7 +2,7 @@ import { useState, type Dispatch } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BookMarked, Library, MessageSquare, ShieldAlert, type LucideIcon } from 'lucide-react';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import { deleteMyAccount, updatePrivacySettings } from '../../../api/userService';
 import { type AdultContentPreference, type EnrichedProfile, type VisibilitySetting } from '../../../model/user.types';
@@ -128,7 +128,6 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
         } catch {
             rollback();
             onSaveStatusChange?.('error');
-            showErrorToast(t('profile.edit.saveError'));
         }
     };
 
@@ -178,7 +177,6 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
             await deleteMyAccount();
             onAccountDeleted();
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
             setDeleting(false);
         }
     };

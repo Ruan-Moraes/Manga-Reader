@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { cn } from '@shared/lib/cn';
 import { useTagsFetch, type Tag } from '@entities/catalog-filter/@x/user';
 import { updateFavoriteGenres } from '@entities/user';
@@ -33,7 +33,6 @@ export const FavoriteGenresField = ({ initialGenres, onSaved }: FavoriteGenresFi
             onSaved();
         } catch {
             setGenres(previous);
-            showErrorToast(t('profile.edit.saveError'));
         }
     };
 

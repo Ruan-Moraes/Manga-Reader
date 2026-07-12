@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { readStoredUserSettings, subscribeStoredUserSettings, updateStoredUserSettings, SETTINGS_STORAGE_KEY, type UserSettings } from '@entities/user';
+import { readStoredUserSettings, subscribeStoredUserSettings, updateStoredUserSettings, SETTINGS_STORAGE_KEY, useDebouncedCallback, type UserSettings } from '@entities/user';
 import { readerProgressGateway } from '@entities/chapter';
 
 import { TOTAL_PAGES } from './readerData';
@@ -87,14 +87,13 @@ const readPrefs = (): ReaderPrefs => {
     }
 };
 
-/** Continuação da última página lida (mesmas chaves legadas, via gateway). */
-const readSavedPage = (titleId: string | undefined, chapter: number, total: number): number => {
-    if (!titleId) return 1;
-    const pos = readerProgressGateway.getProgress(titleId);
-    return pos && pos.chapter === chapter && pos.page ? Math.min(total, Math.max(1, pos.page)) : 1;
-};
-
-export function useChapterReader(titleId: string | undefined, chapterParam: string | undefined, maxChapter?: number, totalPages?: number) {
+export function useChapterReader(
+    titleId: string | undefined,
+    chapterParam: string | undefined,
+    maxChapter?: number,
+    totalPages?: number,
+    isLoggedIn = false,
+) {
     const navigate = useAppNavigate();
     const chapter = Number(chapterParam) || 1;
     const lastChapter = maxChapter && maxChapter > 0 ? maxChapter : undefined;
@@ -111,10 +110,9 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
 
-    // Sem clamp na restauração: o total real ainda não chegou no mount — o
-    // efeito abaixo re-clampa quando ele resolve (evita perder o bookmark).
-    const [page, setPage] = useState(() => readSavedPage(titleId, chapter, Number.MAX_SAFE_INTEGER));
-    const [saved, setSaved] = useState(false);
+    // Restauração da posição salva é assíncrona (backend) — parte de 1 e
+    // corrige quando a resposta chega (efeito abaixo, roda só no mount).
+    const [page, setPage] = useState(1);
 
     const [topbarHidden, setTopbarHidden] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
@@ -127,6 +125,10 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const lastY = useRef(0);
     const didInitPrefs = useRef(false);
     const applyingExternalPrefs = useRef(false);
+    // Bloqueia o efeito de salvar até a restauração inicial resolver — evita
+    // sobrescrever o progresso salvo com page=1 enquanto o GET está em voo.
+    const progressInitialized = useRef(false);
+    const latestProgressRef = useRef({ page, total, hasRealTotal });
 
     const step = mode === 'double' ? 2 : 1;
     const lastPage = mode === 'vertical' ? total : total + 1;
@@ -191,14 +193,80 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         if (hasRealTotal) setPage(p => Math.min(p, total));
     }, [hasRealTotal, total]);
 
-    // ---------- persist reading position (contrato ReaderProgressGateway) ----------
+    // Mantém os valores mais recentes acessíveis ao flush síncrono do cleanup
+    // (evita reler estado React dentro de uma closure potencialmente stale).
     useEffect(() => {
-        if (!titleId) return;
-        readerProgressGateway.saveProgress(titleId, String(chapter), page);
+        latestProgressRef.current = { page, total, hasRealTotal };
+    }, [page, total, hasRealTotal]);
+
+    // ---------- restore reading position (roda só uma vez, no mount) ----------
+    useEffect(() => {
+        if (!titleId || !isLoggedIn) {
+            progressInitialized.current = true;
+            return;
+        }
+
+        let cancelled = false;
+        readerProgressGateway
+            .getProgress(titleId)
+            .then(pos => {
+                if (cancelled) return;
+                if (pos && pos.chapter === chapter && pos.page) {
+                    setPage(Math.max(1, pos.page));
+                }
+            })
+            .catch(() => {
+                /* ignore — mantém page=1 */
+            })
+            .finally(() => {
+                if (!cancelled) progressInitialized.current = true;
+            });
+
+        return () => {
+            cancelled = true;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- restaura só uma vez no mount (mesmo comportamento do initializer síncrono anterior)
+    }, []);
+
+    // ---------- persist reading position (contrato ReaderProgressGateway) ----------
+    const saveProgressNow = useCallback(
+        (p: number, tot: number, completed: boolean) => {
+            if (!isLoggedIn || !titleId) return;
+            void readerProgressGateway.saveProgress(titleId, String(chapter), p, tot, completed).catch(() => {});
+        },
+        [isLoggedIn, titleId, chapter],
+    );
+
+    const saveProgressDebounced = useDebouncedCallback((p: number, tot: number) => {
+        saveProgressNow(p, tot, false);
+    }, 800);
+
+    useEffect(() => {
+        if (!titleId || !progressInitialized.current) return;
+
         // Última página alcançada ⇒ capítulo concluído. Só com o total REAL
-        // conhecido — o fallback (18) marcaria conclusão falsa.
-        if (hasRealTotal && page >= total) readerProgressGateway.markCompleted(titleId, String(chapter));
-    }, [titleId, chapter, page, total, hasRealTotal]);
+        // conhecido — o fallback (18) marcaria conclusão falsa. Conclusão
+        // dispara imediatamente (sem debounce): é um marco, não pode se perder.
+        if (hasRealTotal && page >= total) {
+            saveProgressNow(page, total, true);
+            return;
+        }
+
+        saveProgressDebounced(page, total);
+    }, [titleId, page, total, hasRealTotal, saveProgressNow, saveProgressDebounced]);
+
+    // Flush imediato ao trocar de capítulo/desmontar: evita perder a última
+    // posição por causa de um debounce pendente (usa os valores mais
+    // recentes via ref, já que o cleanup roda com a closure do capítulo que
+    // está terminando).
+    useEffect(
+        () => () => {
+            if (!progressInitialized.current) return;
+            const { page: p, total: tot, hasRealTotal: real } = latestProgressRef.current;
+            saveProgressNow(p, tot, real && p >= tot);
+        },
+        [titleId, chapter, saveProgressNow],
+    );
 
     // ---------- navigation ----------
     const goNext = useCallback(() => {
@@ -327,8 +395,6 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         // reading state
         page,
         setPage,
-        saved,
-        setSaved,
         step,
         fillPct,
         isEnd,

@@ -33,7 +33,7 @@ export type CommentReactions = Record<string, string | null | undefined>;
 export type CommentCallbacks = {
     targetId: string;
     targetType: string;
-    /** Profundidade visual máxima antes do link "continuar conversa" (mobile 2 / desktop 3). */
+    /** Profundidade real máxima antes do link "continuar conversa" no desktop. */
     maxDepth: number;
     reactionsMap: CommentReactions;
     onClickProfile: (user: User) => void;

@@ -11,6 +11,8 @@ import { Button } from '@ui/Button';
 import { IconButton } from '@ui/IconButton';
 import ImageLightbox from '@ui/ImageLightbox';
 
+import { useBookmark } from '@features/library';
+
 import type { Title } from '@entities/manga';
 
 type Average = { average: number; count: number };
@@ -24,12 +26,15 @@ type TitleHeroProps = {
 const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
     const navigate = useAppNavigate();
     const { t } = useTranslation('manga');
-    const [inLibrary, setInLibrary] = useState(false);
+    const { isSaved, toggleBookmark } = useBookmark();
+    const inLibrary = isSaved(title.id);
     const [expanded, setExpanded] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
 
+    const primaryAuthorName = title.authors.find(a => a.role === 'AUTHOR')?.name ?? title.authors[0]?.name;
+
     return (
-        <div className="mb-8 flex flex-col gap-6 md:flex-row md:gap-8">
+        <div className="mb-6 flex flex-col gap-6 md:flex-row md:gap-8">
             <button
                 type="button"
                 onClick={() => setLightboxOpen(true)}
@@ -51,7 +56,7 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
                 </div>
                 <h1 className="mb-1 text-mr-h1 font-mr-extrabold tracking-mr text-mr-fg leading-tight">{title.name}</h1>
                 <p className="mb-3 text-mr-small text-mr-fg-muted">
-                    {title.author} · {title.status}
+                    {primaryAuthorName ? `${primaryAuthorName} · ${title.status}` : title.status}
                 </p>
                 <div
                     className="mb-4 flex items-center gap-2"
@@ -78,7 +83,7 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
                     <Button variant="primary" icon={Play} onClick={() => navigate(ROUTES.CHAPTER(title.id, 1))}>
                         {t('titleDetails.startReading')}
                     </Button>
-                    <Button variant="raised" icon={Bookmark} onClick={() => setInLibrary(l => !l)}>
+                    <Button variant="raised" icon={Bookmark} onClick={() => toggleBookmark(title.id)}>
                         {inLibrary ? t('titleDetails.inLibrary') : t('titleDetails.addButton')}
                     </Button>
                     <IconButton icon={Share2} aria-label={t('titleDetails.shareAria')} variant="ghost" />

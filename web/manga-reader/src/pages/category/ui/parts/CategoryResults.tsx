@@ -6,6 +6,8 @@ import { EmptyState } from '@ui/EmptyState';
 import { MangaCard } from '@entities/manga';
 import { Skeleton } from '@ui/Skeleton';
 
+import { useBookmark } from '@features/library';
+
 type Layout = 'grid' | 'list';
 
 export interface CategoryResultItem {
@@ -27,6 +29,7 @@ interface CategoryResultsProps {
 
 const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: CategoryResultsProps) => {
     const { t } = useTranslation('manga');
+    const { isSaved, toggleBookmark } = useBookmark();
 
     if (isLoading) {
         return (
@@ -68,6 +71,8 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
                             chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                         }}
                         onClick={() => onNavigate(m.id)}
+                        inLibrary={isSaved(m.id)}
+                        onToggleLibrary={() => toggleBookmark(m.id)}
                     />
                 ))}
             </div>

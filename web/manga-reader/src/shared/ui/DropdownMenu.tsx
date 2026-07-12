@@ -22,22 +22,25 @@ export interface DropdownMenuProps {
     items: DropdownMenuItem[];
     side?: 'top' | 'bottom' | 'left' | 'right';
     align?: 'start' | 'center' | 'end';
+    avoidCollisions?: boolean;
+    modal?: boolean;
 }
 
-export const DropdownMenu = ({ trigger, items, side = 'bottom', align = 'start' }: DropdownMenuProps) => {
+export const DropdownMenu = ({ trigger, items, side = 'bottom', align = 'start', avoidCollisions = true, modal = true }: DropdownMenuProps) => {
     // Dentro de um Modal (<dialog> na top layer), o menu precisa portalar para o próprio dialog.
     const portalContainer = useFloatingPortalContainer();
 
     return (
-        <RD.Root>
+        <RD.Root modal={modal}>
             <RD.Trigger asChild>{trigger}</RD.Trigger>
             <RD.Portal container={portalContainer ?? undefined}>
                 <RD.Content
                     side={side}
                     align={align}
+                    avoidCollisions={avoidCollisions}
                     sideOffset={8}
                     style={{
-                        zIndex: 'var(--z-mr-dropdown)',
+                        zIndex: 'var(--z-index-mr-dropdown)',
                         borderRadius: 8,
                         boxShadow: '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25), 0 12px 40px -12px rgba(0,0,0,0.7)',
                     }}

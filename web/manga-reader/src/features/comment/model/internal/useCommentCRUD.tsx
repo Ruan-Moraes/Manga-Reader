@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import { showSuccessToast, showErrorToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { requireAuth } from '@shared/service/util/requireAuth';
 
 import { deleteComment as deleteCommentService, updateComment, createComment } from '@entities/comment';
@@ -20,9 +20,6 @@ const useCommentCRUD = (targetType: string) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
             showSuccessToast(t('toast.deleted'), { toastId: 'delete-comment-success' });
-        },
-        onError: () => {
-            showErrorToast(t('toast.deleteError'), { toastId: 'delete-comment-error' });
         },
     });
 
@@ -41,9 +38,6 @@ const useCommentCRUD = (targetType: string) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
             showSuccessToast(t('toast.edited'), { toastId: 'edit-comment-success' });
-        },
-        onError: () => {
-            showErrorToast(t('toast.editError'), { toastId: 'edit-comment-error' });
         },
     });
 
@@ -71,9 +65,6 @@ const useCommentCRUD = (targetType: string) => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
             showSuccessToast(t('toast.replied'), { toastId: 'reply-comment-success' });
         },
-        onError: () => {
-            showErrorToast(t('toast.replyError'), { toastId: 'reply-comment-error' });
-        },
     });
 
     const deleteComment = useCallback(
@@ -95,6 +86,7 @@ const useCommentCRUD = (targetType: string) => {
     const replyComment = useCallback(
         (id: string, targetId: string, textContent: string | null, imageContent: string | null) => {
             if (!requireAuth(t('validation.authReply'))) return;
+
             replyCommentMutation.mutate({
                 id,
                 targetId,

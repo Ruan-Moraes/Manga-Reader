@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { NavBar } from './navbar/NavBar';
 import { SideMenu } from './SideMenu';
+import AdminPortalShortcut from './AdminPortalShortcut';
 
 import { useProfileSettingsModal } from '@entities/user';
-import { useAuth } from '@features/auth';
+import { canAccessAdminPortal, useAuth } from '@features/auth';
 import useMenuData from '../model/useMenuData';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { showInfoToast } from '@shared/service/util/toastService';
@@ -25,6 +26,7 @@ const Header = () => {
     const navUser = isLoggedIn && user ? { name: user.name, avatar: user.photo, libraryCount: savedCount } : null;
 
     const sideUser = isLoggedIn && user ? { name: user.name, avatar: user.photo } : null;
+    const hasAdminPortalAccess = canAccessAdminPortal(user?.role);
 
     const handleLogout = () => {
         logout();
@@ -51,12 +53,14 @@ const Header = () => {
                 onClose={() => setSideOpen(false)}
                 user={sideUser}
                 isLoggedIn={isLoggedIn}
+                canAccessAdminPortal={hasAdminPortalAccess}
                 libraryCount={savedCount}
                 onNavigate={navigate}
                 onSettingsClick={() => openProfileSettings()}
                 onLogoutClick={handleLogout}
                 onClearCache={clearCache}
             />
+            <AdminPortalShortcut visible={hasAdminPortalAccess} onNavigate={navigate} />
         </>
     );
 };

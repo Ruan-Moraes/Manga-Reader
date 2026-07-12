@@ -1,9 +1,10 @@
-import { Home, TrendingUp, Newspaper, BookOpen, Star, Download, Calendar, Users, MessageCircle, User, Settings, LogOut, Trash2 } from 'lucide-react';
+import { Home, TrendingUp, Newspaper, BookOpen, Star, Download, Calendar, Users, MessageCircle, User, Bell, Settings, LogOut, Trash2, LayoutDashboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { SideMenu as DSSideMenu } from '@ui/SideMenu';
 import type { SideMenuSection } from '@ui/SideMenu';
 import { Button } from '@ui/Button';
+import { ROUTES } from '@shared/constant/ROUTES';
 
 export interface LayoutSideMenuUser {
     name: string;
@@ -15,6 +16,7 @@ export interface LayoutSideMenuProps {
     onClose: () => void;
     user: LayoutSideMenuUser | null;
     isLoggedIn: boolean;
+    canAccessAdminPortal?: boolean;
     libraryCount?: number | null;
     activeKey?: string;
     onNavigate: (path: string) => void;
@@ -28,6 +30,7 @@ export const SideMenu = ({
     onClose,
     user,
     isLoggedIn,
+    canAccessAdminPortal = false,
     libraryCount,
     activeKey,
     onNavigate,
@@ -133,6 +136,27 @@ export const SideMenu = ({
                               label: t('sidebar.menu.profile'),
                               icon: User,
                               onClick: () => go('/profile'),
+                          },
+                          {
+                              key: 'notifications',
+                              label: t('sidebar.menu.notifications'),
+                              icon: Bell,
+                              onClick: () => go(ROUTES.NOTIFICATIONS),
+                          },
+                      ],
+                  },
+              ]
+            : []),
+        ...(canAccessAdminPortal
+            ? [
+                  {
+                      title: t('sidebar.section.panel'),
+                      items: [
+                          {
+                              key: 'dashboard',
+                              label: t('sidebar.menu.dashboard'),
+                              icon: LayoutDashboard,
+                              onClick: () => go(ROUTES.DASHBOARD),
                           },
                       ],
                   },

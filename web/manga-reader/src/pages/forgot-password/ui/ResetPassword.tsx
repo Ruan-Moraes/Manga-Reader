@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff } from 'lucide-react';
 
 import { useResetPassword, AuthShell, AuthField, AuthSubmit } from '@features/auth';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { EmptyState } from '@ui/EmptyState';
 import { Button } from '@ui/Button';
@@ -51,8 +51,8 @@ const ResetPassword = () => {
                     <>
                         {t('resetPassword.invalidLinkFooter')}{' '}
                         <a
-                            href={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
-                            onClick={go(`${WEB_BASE_URL}${ROUTES.LOGIN}`)}
+                            href={withWebBasePath(ROUTES.LOGIN)}
+                            onClick={go(withWebBasePath(ROUTES.LOGIN))}
                             className="font-mr-bold text-mr-accent tracking-mr no-underline"
                         >
                             {t('resetPassword.invalidLinkBack')}
@@ -65,7 +65,7 @@ const ResetPassword = () => {
                     title=""
                     description=""
                     action={
-                        <Button variant="primary" onClick={() => navigate(`${WEB_BASE_URL}${ROUTES.FORGOT_PASSWORD}`)} className="w-full">
+                        <Button variant="primary" onClick={() => navigate(withWebBasePath(ROUTES.FORGOT_PASSWORD))} className="w-full">
                             {t('resetPassword.requestNewLink')}
                         </Button>
                     }
@@ -83,8 +83,8 @@ const ResetPassword = () => {
                 <>
                     {t('resetPassword.footer')}{' '}
                     <a
-                        href={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
-                        onClick={go(`${WEB_BASE_URL}${ROUTES.LOGIN}`)}
+                        href={withWebBasePath(ROUTES.LOGIN)}
+                        onClick={go(withWebBasePath(ROUTES.LOGIN))}
                         className="font-mr-bold text-mr-accent tracking-mr no-underline"
                     >
                         {t('resetPassword.backToLoginLink')}

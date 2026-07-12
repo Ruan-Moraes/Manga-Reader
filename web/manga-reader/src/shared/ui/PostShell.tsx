@@ -5,7 +5,8 @@ import { cn } from '@shared/lib/cn';
 import { Avatar } from '@ui/Avatar';
 
 export interface PostShellProps {
-    avatar: { src?: string; name: string };
+    /** Quando ausente, nenhuma coluna de avatar é reservada — conteúdo ocupa a largura toda. */
+    avatar?: { src?: string; name: string };
     avatarSize?: number;
     onClickAvatar?: () => void;
     flat?: boolean;
@@ -26,7 +27,7 @@ export const PostShell = ({ avatar, avatarSize = 40, onClickAvatar, flat, op, hi
             className,
         )}
     >
-        <Avatar src={avatar.src} name={avatar.name} size={avatarSize} onClick={onClickAvatar} />
+        {avatar && <Avatar src={avatar.src} name={avatar.name} size={avatarSize} onClick={onClickAvatar} />}
         <div className="flex min-w-0 flex-1 flex-col gap-2.5">
             {replyingTo}
             {children}

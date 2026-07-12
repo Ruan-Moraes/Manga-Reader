@@ -9,6 +9,8 @@ import { Button } from '@ui/Button';
 import { MangaCard } from '@entities/manga';
 import type { Group } from '@entities/group';
 
+import { useBookmark } from '@features/library';
+
 const Heading = ({ children }: { children: React.ReactNode }) => (
     <div className="mb-3 text-mr-tiny font-mr-extrabold uppercase tracking-[0.08em] text-mr-accent">{children}</div>
 );
@@ -61,6 +63,7 @@ export const GroupAbout = ({ group }: { group: Group }) => {
 
 export const GroupWorks = ({ group, onOpenTitle }: { group: Group; onOpenTitle: (id: string) => void }) => {
     const { t } = useTranslation('group');
+    const { isSaved, toggleBookmark } = useBookmark();
 
     const works = group.translatedWorks ?? [];
 
@@ -76,6 +79,8 @@ export const GroupWorks = ({ group, onOpenTitle }: { group: Group; onOpenTitle: 
                         size="sm"
                         manga={{ id: w.id, title: w.title, cover: w.cover, chapter: w.chapters, genre: w.genres }}
                         onClick={() => onOpenTitle(w.id)}
+                        inLibrary={isSaved(w.id)}
+                        onToggleLibrary={() => toggleBookmark(w.id)}
                     />
                 ))}
             </div>

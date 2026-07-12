@@ -33,7 +33,6 @@ export const NavBar = ({
     const { isScrolled } = useNavBarChrome({ focusSearch, setSearchFocused, setOpenSection });
 
     const desktopBandHeight = isScrolled ? 54 : 68;
-    const desktopFieldHeight = isScrolled ? 38 : 42;
     const desktopActionSize = isScrolled ? 38 : 42;
     const logoSize: 'sm' | 'md' = isScrolled ? 'sm' : 'md';
 
@@ -75,7 +74,7 @@ export const NavBar = ({
                     <Menu className="size-[20px]" strokeWidth={2} aria-hidden="true" />
                 </button>
 
-                <div className="shrink-0">
+                <div className="hidden shrink-0 lg:block">
                     <Logo size={logoSize} onNavigate={onNavigate} />
                 </div>
 
@@ -93,7 +92,6 @@ export const NavBar = ({
                             onSelectRecent={onSelectRecent}
                             onSelectSuggestion={onSelectSuggestion}
                             inputRef={inputRef}
-                            height={desktopFieldHeight}
                         />
                     </div>
                 </div>
@@ -112,37 +110,17 @@ export const NavBar = ({
                 </div>
             </div>
 
-            <div className="flex flex-col md:hidden">
-                <div className="flex items-center gap-[10px] px-[14px]" style={{ height: 56 }}>
-                    <button
-                        type="button"
-                        aria-label={t('navigation.openMenu')}
-                        onClick={onOpenSideMenu}
-                        className="inline-flex shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-accent"
-                        style={{ width: 44, height: 44 }}
-                    >
-                        <Menu className="size-[22px]" strokeWidth={2} aria-hidden="true" />
-                    </button>
+            <div data-testid="mobile-header" className="flex min-h-16 items-center gap-2 border-b border-mr-gray-800 px-3 py-2 md:hidden">
+                <button
+                    type="button"
+                    aria-label={t('navigation.openMenu')}
+                    onClick={onOpenSideMenu}
+                    className="inline-flex size-10 shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:border-mr-gray-700 hover:bg-mr-secondary focus-visible:outline-2 focus-visible:outline-mr-accent"
+                >
+                    <Menu className="size-5" strokeWidth={2} aria-hidden="true" />
+                </button>
 
-                    <div className="shrink-0">
-                        <Logo size="sm" onNavigate={onNavigate} />
-                    </div>
-
-                    <div className="ml-auto">
-                        <NavActions
-                            user={user}
-                            compact
-                            iconSize={44}
-                            onNotificationsClick={onNotificationsClick}
-                            onProfileClick={onProfileClick}
-                            onSettingsClick={onSettingsClick}
-                            onLogoutClick={onLogoutClick}
-                            onAccountClick={onAccountClick}
-                        />
-                    </div>
-                </div>
-
-                <div className="px-[14px] pb-3">
+                <div className="min-w-0 flex-1">
                     <NavSearch
                         value={searchValue}
                         onChange={setSearchValue}
@@ -153,8 +131,20 @@ export const NavBar = ({
                         onSelectRecent={onSelectRecent}
                         onSelectSuggestion={onSelectSuggestion}
                         inputRef={inputRef}
-                        height={44}
                         showShortcut={false}
+                    />
+                </div>
+
+                <div className="shrink-0">
+                    <NavActions
+                        user={user}
+                        compact
+                        iconSize={40}
+                        onNotificationsClick={onNotificationsClick}
+                        onProfileClick={onProfileClick}
+                        onSettingsClick={onSettingsClick}
+                        onLogoutClick={onLogoutClick}
+                        onAccountClick={onAccountClick}
                     />
                 </div>
             </div>

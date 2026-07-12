@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import type { MenuProfile } from './SidebarMenuContent';
 
@@ -31,14 +31,14 @@ const SidebarProfileCard = ({ profile, isLoggedIn, onNavigate }: Props) => {
                     <p className="text-sm font-semibold">{t('sidebar.welcomeMessage')}</p>
                     <div className="flex gap-2 pt-1">
                         <Link
-                            to={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
+                            to={withWebBasePath(ROUTES.LOGIN)}
                             onClick={onNavigate}
                             className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
                         >
                             {t('sidebar.loginCta')}
                         </Link>
                         <Link
-                            to={`${WEB_BASE_URL}${ROUTES.SIGN_UP}`}
+                            to={withWebBasePath(ROUTES.SIGN_UP)}
                             onClick={onNavigate}
                             className="px-3 py-2 text-xs font-semibold border rounded-xs border-tertiary hover:bg-secondary"
                         >

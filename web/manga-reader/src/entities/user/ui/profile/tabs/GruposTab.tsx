@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@ui/Avatar';
 import { Badge } from '@ui/Badge';
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import useUserGroups from '../../../model/useUserGroups';
 import { type UserGroupItem } from '../../../api/userService';
@@ -30,7 +30,8 @@ const GruposTab = () => {
             await action(groupId);
             showSuccessToast(t('profile.edit.saved'));
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts),
+            // com a mensagem real vinda do backend.
         } finally {
             setPendingId(null);
         }

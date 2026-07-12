@@ -12,11 +12,14 @@ import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
+import { useBookmark } from '@features/library';
+
 const CARDS_PER_PAGE = 20;
 
 const SearchResults = () => {
     const { t } = useTranslation('manga');
     const navigate = useAppNavigate();
+    const { isSaved, toggleBookmark } = useBookmark();
     const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get('q') ?? '';
     const [page, setPage] = useState(0);
@@ -86,6 +89,8 @@ const SearchResults = () => {
                                     chapter: title.latestChapterNumber ? Number(title.latestChapterNumber) : undefined,
                                 }}
                                 onClick={() => navigate(ROUTES.TITLE_DETAIL(title.id))}
+                                inLibrary={isSaved(title.id)}
+                                onToggleLibrary={() => toggleBookmark(title.id)}
                             />
                         ))}
                     </div>

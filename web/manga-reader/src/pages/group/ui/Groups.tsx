@@ -1,4 +1,3 @@
-import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowDownAZ, Layers, Search, Users } from 'lucide-react';
 
@@ -18,19 +17,6 @@ const Groups = () => {
 
     const { groups, isLoading } = useGroups({ status: 'all', genre: 'all', sortBy: 'popularity' });
     const { query, setQuery, sortBy, setSortBy, visible } = useGroupFilters(groups);
-
-    const [followed, setFollowed] = useState<Set<string>>(new Set());
-
-    const toggleFollow = useCallback((id: string) => {
-        setFollowed(prev => {
-            const next = new Set(prev);
-
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-
-            return next;
-        });
-    }, []);
 
     const sortOptions: SortOption<GroupSortBy>[] = [
         { key: 'followers', label: t('filters.sortMostFollowers'), icon: Users },
@@ -73,13 +59,7 @@ const Groups = () => {
             ) : (
                 <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(366px, 100%), 1fr))' }}>
                     {visible.map(g => (
-                        <GroupCard
-                            key={g.id}
-                            group={g}
-                            onOpen={() => navigate(ROUTES.GROUP_DETAIL(g.id))}
-                            following={followed.has(g.id)}
-                            onToggleFollow={() => toggleFollow(g.id)}
-                        />
+                        <GroupCard key={g.id} group={g} onOpen={() => navigate(ROUTES.GROUP_DETAIL(g.id))} />
                     ))}
                 </div>
             )}

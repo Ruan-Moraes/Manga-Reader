@@ -6,11 +6,13 @@ import { Check, ChevronLeft } from 'lucide-react';
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { cn } from '@shared/lib/cn';
+import { getStoredSession } from '@shared/service/session';
+import { showInfoToast } from '@shared/service/util/toastService';
 import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { PageContainer } from '@ui/PageContainer';
 import { Skeleton } from '@ui/Skeleton';
-import { useGroupDetails, type Group } from '@entities/group';
+import { useGroupDetails, useSupportGroup, type Group } from '@entities/group';
 
 import { SquareAvatar } from '@ui/SquareAvatar';
 import { GroupAbout, GroupDiscussion, GroupTeam, GroupWorks } from './parts/GroupTabs';
@@ -28,21 +30,44 @@ const GroupProfile = () => {
     const { t } = useTranslation('group');
 
     const { group, isLoading } = useGroupDetails(groupId);
-    const [following, setFollowing] = useState(false);
+    const currentUserId = getStoredSession()?.userId;
+    // Membro (equipe) já conta como seguidor automaticamente — só quem não é
+    // membro tem o toggle normal de seguir/deixar de seguir (ver useSupportGroup).
+    const isMember = group ? group.members.some(m => m.id === currentUserId) : false;
+
+    const initialSupportState = useMemo(
+        () => ({
+            following: group ? group.supporters.some(s => s.id === currentUserId) : false,
+            supportersCount: group?.supporters.length ?? 0,
+        }),
+        [group, currentUserId],
+    );
+    const { following, supportersCount, pending, toggle } = useSupportGroup(groupId, currentUserId, initialSupportState);
+
     const [tab, setTab] = useState<Tab>('about');
+
+    const followersCount = group ? group.members.length + supportersCount : 0;
 
     const stats = useMemo(
         () =>
             group
                 ? [
-                      { label: t('profile.statFollowers'), value: compact(group.supporters?.length ?? 0) },
+                      { label: t('profile.statFollowers'), value: compact(followersCount) },
                       { label: t('profile.statWorks'), value: String(group.totalTitles) },
                       { label: t('profile.statChapters'), value: String(totalChapters(group)) },
                       { label: t('profile.statMembers'), value: String(group.members.length) },
                   ]
                 : [],
-        [group, t],
+        [group, followersCount, t],
     );
+
+    const handleFollowClick = () => {
+        if (isMember) {
+            showInfoToast(t('profile.memberAlreadyFollows'));
+            return;
+        }
+        toggle();
+    };
 
     if (isLoading) {
         return (
@@ -102,17 +127,17 @@ const GroupProfile = () => {
                             @{group.username} · {t('profile.since', { year: group.foundedYear })}
                         </div>
                     </div>
-                    {/* TODO: Verificar se o usuario estiver logado, se nao, nem chamar a rota e usar o botao padrao da aplicacao.*/}
                     <button
                         type="button"
-                        onClick={() => setFollowing(f => !f)}
+                        onClick={handleFollowClick}
+                        disabled={pending}
                         className={cn(
-                            'inline-flex h-10 items-center gap-1.5 rounded-mr-xs border border-mr-accent px-[18px] text-mr-small font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring',
-                            following ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
+                            'inline-flex h-10 items-center gap-1.5 rounded-mr-xs border border-mr-accent px-[18px] text-mr-small font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring disabled:cursor-not-allowed disabled:opacity-60',
+                            following || isMember ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
                         )}
                     >
-                        {following && <Check className="size-3.5" strokeWidth={2} aria-hidden="true" />}
-                        {following ? t('profile.following') : t('profile.followGroup')}
+                        {(following || isMember) && <Check className="size-3.5" strokeWidth={2} aria-hidden="true" />}
+                        {isMember ? t('profile.member') : following ? t('profile.following') : t('profile.followGroup')}
                     </button>
                 </div>
 

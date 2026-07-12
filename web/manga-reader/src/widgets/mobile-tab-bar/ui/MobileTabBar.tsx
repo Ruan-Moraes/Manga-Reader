@@ -2,6 +2,7 @@ import { Home, Search, BookOpen, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { MobileTabBar as DSMobileTabBar } from '@ui/MobileTabBar';
+import useTabBarVisibility from '../model/useTabBarVisibility';
 
 export interface LayoutMobileTabBarProps {
     activeKey: string;
@@ -11,9 +12,12 @@ export interface LayoutMobileTabBarProps {
 export const MobileTabBar = ({ activeKey, onNavigate }: LayoutMobileTabBarProps) => {
     const { t } = useTranslation('layout');
 
+    const visible = useTabBarVisibility();
+
     return (
         <DSMobileTabBar
             activeKey={activeKey}
+            visible={visible}
             items={[
                 {
                     key: 'home',

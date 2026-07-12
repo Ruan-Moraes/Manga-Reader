@@ -25,6 +25,8 @@ const makeTitle = (overrides: Partial<Title> = {}): Title => ({
     author: 'Author',
     artist: 'Artist',
     publisher: 'Pub',
+    authors: [],
+    publishers: [],
     createdAt: '2024-01-01',
     updatedAt: '2024-01-01',
     ...overrides,

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NavBar } from '../NavBar';
 
@@ -18,6 +18,13 @@ describe('layout/NavBar', () => {
     it('renders logo wordmark', () => {
         render(<NavBar {...defaultProps} />);
         expect(screen.getAllByRole('button', { name: /manga reader, ir para home/i }).length).toBeGreaterThan(0);
+    });
+
+    it('keeps the mobile header free of the site logo', () => {
+        render(<NavBar {...defaultProps} />);
+        const mobileHeader = screen.getByTestId('mobile-header');
+        expect(within(mobileHeader).queryByRole('button', { name: /manga reader, ir para home/i })).not.toBeInTheDocument();
+        expect(within(mobileHeader).getByRole('searchbox', { name: /buscar/i })).toBeInTheDocument();
     });
 
     it('renders hamburger button(s) for mobile + tablet', () => {

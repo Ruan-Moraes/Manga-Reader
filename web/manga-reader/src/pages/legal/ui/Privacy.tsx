@@ -176,11 +176,11 @@ export default function Privacy() {
 
             {/* Footer card */}
             <Card variant="flat" className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="min-w-0">
                     <p className="text-mr-body font-mr-extrabold text-mr-fg">{t('privacy.footerCard.title')}</p>
                     <p className="text-mr-small text-mr-fg-muted">{t('privacy.footerCard.desc')}</p>
                 </div>
-                <Button variant="primary" icon={Settings} onClick={() => navigate(ROUTES.SETTINGS)}>
+                <Button variant="primary" icon={Settings} onClick={() => navigate(ROUTES.SETTINGS)} className="w-full sm:w-auto">
                     {t('privacy.footerCard.cta')}
                 </Button>
             </Card>

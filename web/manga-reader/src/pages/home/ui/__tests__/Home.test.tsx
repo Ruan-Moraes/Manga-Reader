@@ -80,7 +80,7 @@ describe('Home', () => {
 
     it('renders trending section heading', () => {
         renderWithProviders(<Home />);
-        expect(screen.getByRole('heading', { name: /em alta na comunidade/i })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /as histórias que estão ganhando força/i })).toBeInTheDocument();
     });
 
     it('renders releases section heading', () => {

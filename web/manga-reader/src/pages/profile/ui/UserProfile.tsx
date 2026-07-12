@@ -16,6 +16,7 @@ import { Skeleton } from '@ui/Skeleton';
 import { EmptyState } from '@ui/EmptyState';
 
 import { useFollow } from '@entities/user';
+import { useBookmark } from '@features/library';
 
 import useProfileData from '../model/useProfileData';
 
@@ -60,10 +61,11 @@ const UserProfile = () => {
     const [tab, setTab] = useState('overview');
     const [followList, setFollowList] = useState<'followers' | 'following' | null>(null);
 
-    const { loading, error, profile, isOwn, profileUserId, isFollowedByMe, readingNow, completed, reviews, recommendations, groupsFollowed, activity } =
+    const { loading, error, profile, isOwn, profileUserId, isFollowedByMe, readingNow, completed, reviews, recommendations, groupsFollowed } =
         useProfileData(userId);
 
     const follow = useFollow(profileUserId, { following: isFollowedByMe, followersCount: profile.followers });
+    const { isSaved, toggleBookmark } = useBookmark();
 
     const [editing, setEditing] = useState<Review | null>(null);
     const updateReviewMutation = useUpdateReview(editing?.titleId);
@@ -123,7 +125,13 @@ const UserProfile = () => {
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.stats.reading')}</p>
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                             {readingNow.map(m => (
-                                <MangaCard key={m.id} manga={m} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
+                                <MangaCard
+                                    key={m.id}
+                                    manga={m}
+                                    onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
+                                    inLibrary={isSaved(m.id)}
+                                    onToggleLibrary={() => toggleBookmark(m.id)}
+                                />
                             ))}
                         </div>
                     </section>
@@ -132,7 +140,13 @@ const UserProfile = () => {
                             <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.tabs.recommendations')}</p>
                             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                                 {recommendations.map(m => (
-                                    <MangaCard key={m.id} manga={m} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
+                                    <MangaCard
+                                        key={m.id}
+                                        manga={m}
+                                        onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
+                                        inLibrary={isSaved(m.id)}
+                                        onToggleLibrary={() => toggleBookmark(m.id)}
+                                    />
                                 ))}
                             </div>
                         </section>
@@ -162,7 +176,13 @@ const UserProfile = () => {
             {tab === 'reading' && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {readingNow.map(m => (
-                        <MangaCard key={m.id} manga={m} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
+                        <MangaCard
+                            key={m.id}
+                            manga={m}
+                            onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
+                            inLibrary={isSaved(m.id)}
+                            onToggleLibrary={() => toggleBookmark(m.id)}
+                        />
                     ))}
                 </div>
             )}
@@ -170,7 +190,13 @@ const UserProfile = () => {
             {tab === 'completed' && (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {completed.map(m => (
-                        <MangaCard key={m.id} manga={m} onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))} />
+                        <MangaCard
+                            key={m.id}
+                            manga={m}
+                            onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
+                            inLibrary={isSaved(m.id)}
+                            onToggleLibrary={() => toggleBookmark(m.id)}
+                        />
                     ))}
                 </div>
             )}
@@ -186,7 +212,7 @@ const UserProfile = () => {
                     </div>
                 ))}
 
-            {tab === 'activity' && <ActivityTab activity={activity} profileName={profile.name} />}
+            {tab === 'activity' && <ActivityTab profileUserId={profileUserId} />}
 
             {editing && (
                 <RatingModal

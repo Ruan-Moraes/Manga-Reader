@@ -51,7 +51,7 @@ const ForumTopicCardBase = ({ title, category, author, postedAt, lastReplyAt, re
                     </span>
                 )}
             </div>
-            <h3 className="text-mr-h4 font-mr-extrabold leading-tight tracking-mr text-mr-fg group-hover:text-mr-accent">{title}</h3>
+            <h3 className="break-words text-mr-h4 font-mr-extrabold leading-tight tracking-mr text-mr-fg group-hover:text-mr-accent">{title}</h3>
             <div className="flex flex-wrap gap-2 text-mr-tiny text-mr-fg-subtle">
                 <span>
                     <strong className="font-mr-bold text-mr-fg-muted">{author.name}</strong>

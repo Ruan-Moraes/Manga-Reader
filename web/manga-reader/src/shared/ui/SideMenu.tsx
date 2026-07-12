@@ -42,13 +42,14 @@ export const SideMenu = ({ open, onClose, sections, user, activeKey, footer }: S
                 </div>
             )}
 
-            <nav aria-label="Navegação principal" className="flex flex-1 flex-col gap-4 overflow-y-auto">
+            <nav aria-label="Navegação principal" className="flex flex-1 flex-col gap-4 overflow-y-auto scrollbar-hidden">
                 {sections.map((s, si) => (
                     <div key={si} className="flex flex-col gap-1">
-                        {s.title && <div className="mr-label px-3 text-mr-fg-subtle">{s.title}</div>}
+                        {s.title && <div className="mr-label pl-1 px-3 text-mr-fg-subtle mb-2">{s.title}</div>}
                         {s.items.map(it => {
                             const Icon = it.icon;
                             const active = activeKey === it.key;
+
                             return (
                                 <button
                                     key={it.key}
