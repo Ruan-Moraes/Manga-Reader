@@ -28,6 +28,10 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: mangareader
+      # Workaround para SERVER-121912: TCMalloc do Mongo 8.x colide com o
+      # suporte a RSEQ do kernel Linux 6.19+, causando crash no boot. Sem
+      # patch oficial ainda; desabilita o RSEQ do TCMalloc (custo: perf).
+      GLIBC_TUNABLES: glibc.pthread.rseq=1
     command: mongod --replSet rs0 --bind_ip_all --wiredTigerCacheSizeGB 0.25
     volumes:
       - mongo_data:/data/db

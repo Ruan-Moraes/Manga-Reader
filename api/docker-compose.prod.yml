@@ -140,6 +140,39 @@ services:
         limits:
           memory: 384M
           cpus: "0.5"
+  trending-aggregator:
+    build:
+      context: ./jobs/trending-aggregator
+      dockerfile: Dockerfile
+    container_name: mangareader-trending-aggregator
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mangareader
+      SPRING_DATASOURCE_USERNAME: manga
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/mangareader
+      TRENDING_ADMIN_TOKEN: ${TRENDING_ADMIN_TOKEN}
+      TRENDING_SEED_ENABLED: "false"
+      TRENDING_RETENTION_DAYS: ${TRENDING_RETENTION_DAYS:-90}
+      JAVA_TOOL_OPTIONS: -Duser.timezone=UTC -Xms96m -Xmx192m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.35"
   postgres:
     image: postgres:17-alpine
     container_name: mangareader-postgres
@@ -169,6 +202,10 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: mangareader
+      # Workaround para SERVER-121912: TCMalloc do Mongo 8.x colide com o
+      # suporte a RSEQ do kernel Linux 6.19+, causando crash no boot. Sem
+      # patch oficial ainda; desabilita o RSEQ do TCMalloc (custo: perf).
+      GLIBC_TUNABLES: glibc.pthread.rseq=1
     command: mongod --wiredTigerCacheSizeGB 0.25
     volumes:
       - mongo_data:/data/db

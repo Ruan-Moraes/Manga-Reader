@@ -29,7 +29,6 @@ import com.mangareader.application.user.usecase.GetUserCommentsUseCase;
 import com.mangareader.application.user.usecase.GetUserProfileUseCase;
 import com.mangareader.application.user.usecase.GetUserSettingsUseCase;
 import com.mangareader.application.user.usecase.GetUserViewHistoryUseCase;
-import com.mangareader.application.user.usecase.RecordChapterReadUseCase;
 import com.mangareader.application.user.usecase.RecordViewHistoryUseCase;
 import com.mangareader.application.user.usecase.RemoveRecommendationUseCase;
 import com.mangareader.application.user.usecase.ReorderRecommendationsUseCase;
@@ -86,9 +85,6 @@ class UserControllerTest {
 
     @MockitoBean
     private RecordViewHistoryUseCase recordViewHistoryUseCase;
-
-    @MockitoBean
-    private RecordChapterReadUseCase recordChapterReadUseCase;
 
     @MockitoBean
     private GetUserViewHistoryUseCase getUserViewHistoryUseCase;

@@ -2,6 +2,7 @@
 #   - (default): Desenvolvimento local com Docker Compose
 #   - prod:      Produção (connection strings via variáveis de ambiente)
 #   - test:      Testes automatizados
+#   - jwt-test:  Teste local apenas de expiração de tokens
 
 server:
   port: 8080
@@ -107,3 +108,12 @@ app:
     from: noreply@mangareader.dev
     base-url: http://localhost:5173
     admin-email: admin@mangareader.dev
+---
+spring:
+  config:
+    activate:
+      on-profile: jwt-test
+app:
+  jwt:
+    access-token-expiration: 15000    # 15 segundos
+    refresh-token-expiration: 30000   # 30 segundos
