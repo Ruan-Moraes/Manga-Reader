@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.manga.service.GenreValidator;
 import com.mangareader.application.manga.service.TitleAssociationWriter;
+import com.mangareader.application.manga.service.TitleStoreAssociationWriter;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -28,20 +29,30 @@ public class CreateTitleUseCase {
     private final TitleRepositoryPort titleRepository;
     private final GenreValidator genreValidator;
     private final TitleAssociationWriter associationWriter;
+    private final TitleStoreAssociationWriter storeAssociationWriter;
 
     public Title execute(Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
                          List<String> genres, String status, String author,
                          String artist, String publisher, boolean adult) {
         return execute(name, type, cover, synopsis, genres, status, author, artist,
-                publisher, adult, null, null);
+                publisher, adult, null, null, null);
+    }
+
+    /** Compatibilidade com consumidores que ainda não enviam vínculos de loja. */
+    public Title execute(Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis, List<String> genres, String status, String author,
+                         String artist, String publisher, boolean adult, List<TitleAuthorAssignment> authors,
+                         List<Long> publisherIds) {
+        return execute(name, type, cover, synopsis, genres, status, author, artist, publisher, adult,
+                authors, publisherIds, null);
     }
 
     public Title execute(Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
                          List<String> genres, String status, String author,
                          String artist, String publisher, boolean adult,
-                         List<TitleAuthorAssignment> authors, List<Long> publisherIds) {
+                         List<TitleAuthorAssignment> authors, List<Long> publisherIds, List<TitleStoreAssignment> stores) {
         genreValidator.validate(genres);
 
         Title title = Title.builder()
@@ -61,6 +72,7 @@ public class CreateTitleUseCase {
 
         if (authors != null) associationWriter.replaceAuthors(saved.getId(), authors);
         if (publisherIds != null) associationWriter.replacePublishers(saved.getId(), publisherIds);
+        if (stores != null) storeAssociationWriter.replace(saved.getId(), stores);
 
         return saved;
     }

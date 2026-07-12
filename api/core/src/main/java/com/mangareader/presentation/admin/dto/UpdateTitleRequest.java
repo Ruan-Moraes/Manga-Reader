@@ -23,6 +23,7 @@ public record UpdateTitleRequest(
         String publisher,
         Boolean adult,
         @Valid List<AuthorAssignmentRequest> authors,
-        List<Long> publishers
+        List<Long> publishers,
+        @Valid List<StoreAssignmentRequest> stores
 ) {
 }

@@ -12,6 +12,7 @@ import com.mangareader.domain.author.entity.TitleAuthor;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.publisher.entity.TitlePublisher;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
+import com.mangareader.presentation.admin.dto.TitleStoreResponse;
 import com.mangareader.presentation.manga.mapper.TitleAssociationMapper;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -31,6 +32,7 @@ public class AdminTitleMapper {
 
     private final TitleAuthorRepositoryPort titleAuthorRepository;
     private final TitlePublisherRepositoryPort titlePublisherRepository;
+    private final com.mangareader.application.manga.service.TitleStoreAssociationReader storeAssociationReader;
 
     public AdminTitleResponse toResponse(Title title, long chaptersCount) {
         return toResponse(title, chaptersCount, null);
@@ -69,6 +71,7 @@ public class AdminTitleMapper {
                 title.getPublisher(),
                 TitleAssociationMapper.toAuthorResponses(authorLinks),
                 TitleAssociationMapper.toPublisherResponses(publisherLinks),
+                storeAssociationReader.byTitle(title.getId()),
                 title.isAdult(),
                 rating != null ? rating.ratingAverage() : 0.0,
                 rating != null ? rating.totalRatings() : 0L,

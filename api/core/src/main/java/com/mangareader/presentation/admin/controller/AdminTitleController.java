@@ -26,6 +26,7 @@ import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.ListAdminTitlesUseCase;
 import com.mangareader.application.manga.usecase.admin.TitleAuthorAssignment;
 import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
+import com.mangareader.application.manga.usecase.admin.TitleStoreAssignment;
 import com.mangareader.domain.author.valueobject.AuthorRole;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
@@ -101,7 +102,7 @@ public class AdminTitleController {
                 request.name(), request.type(), request.cover(), request.synopsis(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult(),
-                toAssignments(request.authors()), request.publishers()
+                toAssignments(request.authors()), request.publishers(), toStoreAssignments(request.stores())
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -117,7 +118,7 @@ public class AdminTitleController {
                 id, request.name(), request.type(), request.cover(), request.synopsis(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult(),
-                toAssignments(request.authors()), request.publishers()
+                toAssignments(request.authors()), request.publishers(), toStoreAssignments(request.stores())
         );
 
         return ResponseEntity.ok(ApiResponse.success(
@@ -149,5 +150,10 @@ public class AdminTitleController {
         } catch (IllegalArgumentException ex) {
             throw new BusinessRuleException("Papel de autor inválido: " + role, 400);
         }
+    }
+
+    private static List<TitleStoreAssignment> toStoreAssignments(List<com.mangareader.presentation.admin.dto.StoreAssignmentRequest> stores) {
+        if (stores == null) return null;
+        return stores.stream().map(store -> new TitleStoreAssignment(store.storeId(), store.url())).toList();
     }
 }
