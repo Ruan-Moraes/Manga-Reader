@@ -88,7 +88,7 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
             {/* Hero */}
             <div className="border-b border-mr-border-subtle bg-mr-secondary py-8 sm:py-10">
                 <PageContainer>
-                    <p className="mr-label mb-2 text-mr-accent">{resolvedEyebrow}</p>
+                    <p className="mr-label mb-2 text-mr-accent-fg">{resolvedEyebrow}</p>
                     <h1 className="text-mr-h1 font-mr-extrabold tracking-mr text-mr-fg">{title}</h1>
                     {sub && <p className="mt-2 max-w-2xl text-mr-body text-mr-fg-muted">{sub}</p>}
 
@@ -113,7 +113,7 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                                     onClick={() => navigate(tab.path)}
                                     className={cn(
                                         'inline-flex max-w-full items-center gap-1.5 rounded-mr-xs px-3 py-2 text-mr-small font-mr-bold transition-colors',
-                                        active ? 'bg-mr-accent text-mr-primary' : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
+                                        active ? 'bg-mr-accent text-mr-on-accent' : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
                                     )}
                                 >
                                     <Icon className="size-3.5" />
@@ -139,8 +139,8 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                                     className={cn(
                                         'shrink-0 rounded-mr-full border px-3 py-1 text-mr-tiny font-mr-bold transition-colors',
                                         activeId === item.id
-                                            ? 'border-mr-accent bg-mr-accent text-mr-primary'
-                                            : 'border-mr-border text-mr-fg-muted hover:border-mr-accent hover:text-mr-accent',
+                                            ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
+                                            : 'border-mr-border text-mr-fg-muted hover:border-mr-accent-border hover:text-mr-accent-fg',
                                     )}
                                 >
                                     {item.label}
@@ -159,7 +159,7 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                                         onClick={() => scrollTo(item.id)}
                                         className={cn(
                                             'rounded-mr-xs px-3 py-2 text-left text-mr-small transition-colors',
-                                            activeId === item.id ? 'bg-mr-accent-25 font-mr-bold text-mr-accent' : 'text-mr-fg-muted hover:text-mr-fg',
+                                            activeId === item.id ? 'bg-mr-accent-25 font-mr-bold text-mr-accent-fg' : 'text-mr-fg-muted hover:text-mr-fg',
                                         )}
                                     >
                                         {item.label}

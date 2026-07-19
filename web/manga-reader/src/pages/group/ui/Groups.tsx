@@ -27,7 +27,7 @@ const Groups = () => {
     return (
         <PageContainer asMain size="default" paddingY="md">
             <header className="mb-[18px]">
-                <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent">{t('page.eyebrow')}</div>
+                <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent-fg">{t('page.eyebrow')}</div>
                 <h1 className="m-0 text-[clamp(22px,4vw,28px)] font-mr-bold tracking-mr text-mr-fg">{t('page.title')}</h1>
                 <p className="mt-1.5 max-w-[560px] text-mr-small leading-normal text-mr-gray-200">{t('page.sub')}</p>
             </header>
@@ -44,7 +44,7 @@ const Groups = () => {
                         onChange={e => setQuery(e.target.value)}
                         placeholder={t('filters.searchPlaceholder')}
                         aria-label={t('filters.searchPlaceholder')}
-                        className="h-10 w-full rounded-mr-xs border border-mr-gray-700 bg-mr-secondary pl-8 pr-3 text-mr-small tracking-mr text-mr-fg outline-none focus:border-mr-accent"
+                        className="h-10 w-full rounded-mr-xs border border-mr-gray-700 bg-mr-secondary pl-8 pr-3 text-mr-small tracking-mr text-mr-fg outline-none focus:border-mr-accent-border"
                     />
                 </div>
                 <CatSortSelect value={sortBy} options={sortOptions} onChange={setSortBy} />
@@ -53,7 +53,7 @@ const Groups = () => {
             {isLoading ? (
                 <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(366px, 1fr))' }}>
                     {Array.from({ length: 6 }, (_, i) => (
-                        <div key={i} className="h-[230px] animate-mr-pulse rounded-mr-sm border border-[#333] bg-mr-gray-900" />
+                        <div key={i} className="h-[230px] animate-mr-pulse rounded-mr-sm border border-mr-border bg-mr-gray-900" />
                     ))}
                 </div>
             ) : (

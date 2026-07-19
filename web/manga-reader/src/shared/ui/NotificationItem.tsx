@@ -44,12 +44,12 @@ export const NotificationItem = ({ kind, actor, text, preview, when, unread, onC
             {actor ? (
                 <div className="relative shrink-0">
                     <Avatar src={actor.avatar} name={actor.name} size={40} />
-                    <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-mr-full border border-mr-primary bg-mr-accent text-mr-primary">
+                    <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-mr-full border border-mr-primary bg-mr-accent text-mr-on-accent">
                         <Icon className="size-2.5" />
                     </span>
                 </div>
             ) : (
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-25 text-mr-accent">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-25 text-mr-accent-fg">
                     <Icon className="size-5" />
                 </div>
             )}

@@ -1,7 +1,5 @@
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 
-import { USER_SETTINGS_STORAGE_KEY } from '@shared/constant/USER_SETTINGS_STORAGE_KEY';
-
 import { showWarningToast } from './toastService';
 
 export const queryClient = new QueryClient({
@@ -14,27 +12,28 @@ const logCacheError = (label: string, error: unknown): void => {
     }
 };
 
-export const clearCache = (): void => {
-    try {
-        queryClient.resetQueries();
+export type ClientCacheUsage = { usedBytes: number; quotaBytes: number };
 
-        const userSettings = localStorage.getItem(USER_SETTINGS_STORAGE_KEY);
+export const measureClientCache = async (): Promise<ClientCacheUsage> => {
+    if (!navigator.storage?.estimate) return { usedBytes: 0, quotaBytes: 0 };
+    const estimate = await navigator.storage.estimate();
+    return { usedBytes: estimate.usage ?? 0, quotaBytes: estimate.quota ?? 0 };
+};
 
-        localStorage.clear();
-
-        if (userSettings) {
-            localStorage.setItem(USER_SETTINGS_STORAGE_KEY, userSettings);
-        }
-
-        // Disparado a partir do menu lateral (drawer aberto) — toast no topo evita ficar embaixo do overlay do menu.
-        showWarningToast('Limpando cache!', { toastId: 'clear-cache', position: 'top' });
-
-        setTimeout(() => {
-            location.reload();
-        }, 2250);
-    } catch (error) {
-        logCacheError('Erro ao limpar cache:', error);
+/** Limpa caches reais da aplicação, sem apagar sessão nem preferências. */
+export const clearClientCache = async (): Promise<void> => {
+    queryClient.clear();
+    if ('caches' in window) {
+        const keys = await window.caches.keys();
+        const results = await Promise.all(keys.map(key => window.caches.delete(key)));
+        if (results.some(deleted => !deleted)) throw new Error('One or more CacheStorage entries could not be deleted');
     }
+};
+
+export const clearCache = (): void => {
+    void clearClientCache()
+        .then(() => showWarningToast('Cache limpo', { toastId: 'clear-cache', position: 'top' }))
+        .catch(error => logCacheError('Erro ao limpar cache:', error));
 };
 
 export const getCache = (key: string[]) => {

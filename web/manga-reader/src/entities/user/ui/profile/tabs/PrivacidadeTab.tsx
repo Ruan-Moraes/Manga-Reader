@@ -6,7 +6,10 @@ import { showSuccessToast } from '@shared/service/util/toastService';
 
 import { deleteMyAccount, updatePrivacySettings } from '../../../api/userService';
 import { type AdultContentPreference, type EnrichedProfile, type VisibilitySetting } from '../../../model/user.types';
+import { setAdultContentPreference as applyAdultContentPreference } from '../../../lib/adultContentPolicy';
 import { cn } from '@shared/lib/cn';
+import { useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { peIntro } from './peShared';
 
@@ -52,8 +55,8 @@ const VisibilitySegment = ({ id, value, onChange }: { id: string; value: Visibil
                         className={cn(
                             'mr-focus-ring min-h-[70px] cursor-pointer rounded-mr-xs border p-2.5 text-left transition-colors',
                             selected
-                                ? 'border-mr-accent bg-mr-accent-10 text-mr-fg'
-                                : 'border-[#3a3a3a] bg-mr-secondary text-mr-gray-300 hover:border-mr-tertiary',
+                                ? 'border-mr-accent-border bg-mr-accent-10 text-mr-fg'
+                                : 'border-mr-border bg-mr-secondary text-mr-gray-300 hover:border-mr-tertiary',
                         )}
                         data-testid={`${id}-${option}`}
                     >
@@ -88,8 +91,8 @@ const AdultContentSegment = ({ value, onChange }: { value: AdultContentPreferenc
                         className={cn(
                             'mr-focus-ring min-h-[58px] cursor-pointer rounded-mr-xs border p-2.5 text-left transition-colors',
                             selected
-                                ? 'border-mr-accent bg-mr-accent-10 text-mr-fg'
-                                : 'border-[#3a3a3a] bg-mr-secondary text-mr-gray-300 hover:border-mr-tertiary',
+                                ? 'border-mr-accent-border bg-mr-accent-10 text-mr-fg'
+                                : 'border-mr-border bg-mr-secondary text-mr-gray-300 hover:border-mr-tertiary',
                         )}
                     >
                         <span className="block text-mr-tiny font-mr-extrabold uppercase tracking-mr-label">{label}</span>
@@ -102,6 +105,7 @@ const AdultContentSegment = ({ value, onChange }: { value: AdultContentPreferenc
 
 const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props) => {
     const { t } = useTranslation('user');
+    const queryClient = useQueryClient();
 
     const [historyVisibility, setHistoryVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.viewHistoryVisibility));
     const [commentVisibility, setCommentVisibility] = useState<VisibilitySetting>(defaultVisibility(profile.privacySettings?.commentVisibility));
@@ -109,6 +113,7 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
     const [adultContentPreference, setAdultContentPreference] = useState<AdultContentPreference>(
         defaultAdultContent(profile.privacySettings?.adultContentPreference),
     );
+    const [behaviorAnalyticsEnabled, setBehaviorAnalyticsEnabled] = useState(profile.privacySettings?.behaviorAnalyticsEnabled ?? true);
     const [confirming, setConfirming] = useState(false);
     const [confirmText, setConfirmText] = useState('');
     const [deleting, setDeleting] = useState(false);
@@ -123,6 +128,13 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
             setHistoryVisibility(next.viewHistoryVisibility);
             setLibraryVisibility(defaultVisibility(next.libraryVisibility));
             setAdultContentPreference(defaultAdultContent(next.adultContentPreference));
+            applyAdultContentPreference(next.adultContentPreference);
+            if (patch.adultContentPreference) {
+                queryClient.removeQueries({ queryKey: [QUERY_KEYS.TITLES] });
+                queryClient.removeQueries({ queryKey: [QUERY_KEYS.TITLES_SEARCH] });
+                queryClient.removeQueries({ queryKey: [QUERY_KEYS.CHAPTERS] });
+            }
+            setBehaviorAnalyticsEnabled(next.behaviorAnalyticsEnabled);
             onSaveStatusChange?.('saved');
             showSuccessToast(t('profile.edit.saved'));
         } catch {
@@ -160,6 +172,13 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
 
         setLibraryVisibility(next);
         void persist({ libraryVisibility: next }, () => setLibraryVisibility(previous));
+    };
+
+    const changeBehaviorAnalytics = () => {
+        const previous = behaviorAnalyticsEnabled;
+        const next = !previous;
+        setBehaviorAnalyticsEnabled(next);
+        void persist({ behaviorAnalyticsEnabled: next }, () => setBehaviorAnalyticsEnabled(previous));
     };
 
     const changeAdultContent = (next: AdultContentPreference) => {
@@ -224,8 +243,8 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
             {items.map(it => {
                 const Icon = it.icon;
                 return (
-                    <div key={it.key} className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-[#333333] bg-[#1f1f20] p-3.5">
-                        <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent">
+                    <div key={it.key} className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-mr-border bg-mr-surface-interactive p-3.5">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent-fg">
                             <Icon size={18} />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -237,8 +256,28 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
                 );
             })}
 
-            <div className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-[#333333] bg-[#1f1f20] p-3.5">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent">
+            <div className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-mr-border bg-mr-surface-interactive p-3.5">
+                <div className="min-w-0 flex-1">
+                    <div className="mb-1 text-[13px] font-mr-bold tracking-mr text-mr-fg">{t('profile.edit.privacy.analyticsLabel')}</div>
+                    <div className="text-mr-small leading-normal text-mr-gray-300">{t('profile.edit.privacy.analyticsDesc')}</div>
+                </div>
+                <button
+                    type="button"
+                    role="switch"
+                    aria-checked={behaviorAnalyticsEnabled}
+                    disabled={historyVisibility === 'DO_NOT_TRACK'}
+                    onClick={changeBehaviorAnalytics}
+                    className={cn(
+                        'mr-focus-ring cursor-pointer rounded-mr-full px-3 py-2 text-mr-tiny font-mr-bold disabled:cursor-not-allowed disabled:opacity-mr-disabled',
+                        behaviorAnalyticsEnabled ? 'bg-mr-accent text-mr-on-accent' : 'bg-mr-secondary text-mr-gray-300',
+                    )}
+                >
+                    {t(behaviorAnalyticsEnabled ? 'profile.edit.privacy.analyticsOn' : 'profile.edit.privacy.analyticsOff')}
+                </button>
+            </div>
+
+            <div className="mb-2.5 flex items-start gap-3.5 rounded-mr-sm border border-mr-border bg-mr-surface-interactive p-3.5">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent-fg">
                     <ShieldAlert size={18} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -248,7 +287,7 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
                 </div>
             </div>
 
-            <div className="mt-3.5 rounded-mr-sm border border-[rgba(255,120,79,0.4)] bg-[rgba(255,120,79,0.08)] p-3.5">
+            <div className="mt-3.5 rounded-mr-sm border border-mr-danger-border bg-mr-danger-15 p-3.5">
                 <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label text-mr-danger">{t('profile.edit.privacy.dangerZone')}</div>
                 <p className="mb-2.5 text-mr-small leading-relaxed text-mr-gray-200">{t('profile.edit.privacy.deleteDesc')}</p>
                 <ul className="mb-3 list-disc space-y-1 pl-4 text-mr-tiny leading-relaxed text-mr-gray-300">
@@ -281,7 +320,7 @@ const PrivacidadeTab = ({ profile, onAccountDeleted, onSaveStatusChange }: Props
                                 className={cn(
                                     'rounded-mr-xs border px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr',
                                     canDelete
-                                        ? 'mr-focus-ring cursor-pointer border-mr-danger bg-mr-danger text-mr-primary'
+                                        ? 'mr-focus-ring cursor-pointer border-mr-danger bg-mr-danger text-mr-on-accent'
                                         : 'cursor-default border-mr-tertiary bg-transparent text-mr-tertiary',
                                 )}
                             >

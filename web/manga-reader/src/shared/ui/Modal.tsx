@@ -6,6 +6,7 @@ import { X, type LucideIcon } from 'lucide-react';
 import { IconButton } from './IconButton';
 import { Button } from './Button';
 import { FloatingPortalContext } from './FloatingPortalContext';
+import { registerTopLayerPortalHost } from './topLayerPortalStore';
 import { cn } from '@shared/lib/cn';
 
 export interface ModalProps {
@@ -76,8 +77,10 @@ export const Modal = ({
 
     // State (não ref) para os consumidores do contexto re-renderizarem quando o elemento existir.
     const [dialogEl, setDialogEl] = useState<HTMLDialogElement | null>(null);
+    const [toastPortalHost, setToastPortalHost] = useState<HTMLDivElement | null>(null);
     const confirmRef = useRef<HTMLDialogElement>(null);
     const [confirmVisible, setConfirmVisible] = useState(false);
+    const [confirmToastPortalHost, setConfirmToastPortalHost] = useState<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (!dialogEl) {
@@ -114,6 +117,18 @@ export const Modal = ({
             el.close();
         }
     }, [confirmVisible]);
+
+    useEffect(() => {
+        if (!open || !toastPortalHost) return;
+
+        return registerTopLayerPortalHost(toastPortalHost);
+    }, [open, toastPortalHost]);
+
+    useEffect(() => {
+        if (!confirmVisible || !confirmToastPortalHost) return;
+
+        return registerTopLayerPortalHost(confirmToastPortalHost);
+    }, [confirmVisible, confirmToastPortalHost]);
 
     /** Caminho único de fechamento — X, overlay e Escape passam por aqui. */
     const requestClose = useCallback(() => {
@@ -154,18 +169,19 @@ export const Modal = ({
                 'm-auto p-0 open:grid grid-rows-[auto_1fr_auto] max-h-[85vh] overflow-hidden',
                 sizeMap[size],
                 'rounded-mr-lg border border-mr-border bg-mr-surface text-mr-fg shadow-mr-black animate-mr-fade-in',
-                '[&::backdrop]:bg-[rgba(22,22,22,0.75)] [&::backdrop]:backdrop-blur-mr',
+                '[&::backdrop]:bg-mr-overlay [&::backdrop]:backdrop-blur-mr',
             )}
             aria-labelledby={titleId}
             aria-describedby={description ? descriptionId : undefined}
         >
+            <div ref={setToastPortalHost} className="pointer-events-none fixed inset-0 z-mr-toast" />
             <header className="flex shrink-0 items-start justify-between gap-4 border-b border-mr-border-subtle p-4 sm:px-6 sm:py-5">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
                     {Icon && (
                         <span
                             className={cn(
                                 'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-mr-sm',
-                                danger ? 'bg-mr-danger-15 text-mr-danger' : 'bg-mr-accent-10 text-mr-accent',
+                                danger ? 'bg-mr-danger-15 text-mr-danger' : 'bg-mr-accent-10 text-mr-accent-fg',
                             )}
                             aria-hidden="true"
                         >
@@ -173,7 +189,7 @@ export const Modal = ({
                         </span>
                     )}
                     <div className="min-w-0 flex-1">
-                        {eyebrow && <div className="mr-label text-mr-accent mb-1">{eyebrow}</div>}
+                        {eyebrow && <div className="mr-label text-mr-accent-fg mb-1">{eyebrow}</div>}
                         <h2 id={titleId} className={`text-mr-body! sm:text-mr-h3! font-mr-extrabold! ${danger ? 'text-mr-danger' : 'text-mr-fg'}`}>
                             {title}
                         </h2>
@@ -201,9 +217,10 @@ export const Modal = ({
                 <dialog
                     ref={confirmRef}
                     onClose={() => setConfirmVisible(false)}
-                    className="m-auto max-w-[420px] w-[90vw] overflow-hidden rounded-mr-lg border border-mr-border bg-mr-surface p-0 text-mr-fg shadow-mr-black animate-mr-fade-in [&::backdrop]:bg-[rgba(22,22,22,0.6)] [&::backdrop]:backdrop-blur-mr"
+                    className="m-auto max-w-[420px] w-[90vw] overflow-hidden rounded-mr-lg border border-mr-border bg-mr-surface p-0 text-mr-fg shadow-mr-black animate-mr-fade-in [&::backdrop]:bg-mr-overlay [&::backdrop]:backdrop-blur-mr"
                     aria-labelledby={confirmTitleId}
                 >
+                    <div ref={setConfirmToastPortalHost} className="pointer-events-none fixed inset-0 z-mr-toast" />
                     <div className="p-5">
                         <h3 id={confirmTitleId} className="text-mr-h4! font-mr-extrabold! text-mr-fg">
                             {t('modal.unsavedTitle', 'Descartar alterações?')}

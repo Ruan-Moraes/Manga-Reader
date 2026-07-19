@@ -57,7 +57,7 @@ const FollowListModal = ({ userId, kind, onClose }: FollowListModalProps) => {
                         <span className="min-w-0">
                             <span className="flex items-center gap-1.5 truncate text-mr-small font-mr-bold text-mr-fg">
                                 {user.name}
-                                {user.verified && <BadgeCheck className="size-3.5 shrink-0 text-mr-accent" aria-label={t('profile.header.verified')} />}
+                                {user.verified && <BadgeCheck className="size-3.5 shrink-0 text-mr-accent-fg" aria-label={t('profile.header.verified')} />}
                             </span>
                             {user.username && <span className="block truncate text-mr-tiny text-mr-fg-subtle">@{user.username}</span>}
                         </span>

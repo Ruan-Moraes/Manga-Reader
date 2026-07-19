@@ -55,6 +55,17 @@ describe('Select multiple', () => {
     it('renderiza placeholder quando nada selecionado', () => {
         render(<Select multiple options={OPTIONS} value={[]} onChange={() => {}} placeholder="Selecione" />);
         expect(screen.getByRole('combobox')).toHaveTextContent('Selecione');
+        expect(screen.getByRole('combobox')).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    it('expõe o estado aberto para tecnologias assistivas', async () => {
+        const user = userEvent.setup();
+        render(<Select multiple options={OPTIONS} value={[]} onChange={() => {}} placeholder="Selecione" />);
+
+        const trigger = screen.getByRole('combobox');
+        await user.click(trigger);
+
+        expect(trigger).toHaveAttribute('aria-expanded', 'true');
     });
 
     it('exibe as opções já selecionadas como chips', () => {

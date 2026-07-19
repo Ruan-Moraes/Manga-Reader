@@ -98,7 +98,10 @@
             "hide": "Hide",
             "hideConfirm": "Hide from your history?",
             "hideYes": "Yes",
-            "hideNo": "No"
+            "hideNo": "No",
+            "hideError": "Could not hide this activity. Try again.",
+            "loadError": "Could not load the activity history.",
+            "retry": "Try again"
         },
         "editTabs": {
             "account": "Account",
@@ -134,7 +137,7 @@
             "save": "Save settings",
             "saving": "Saving...",
             "savedMessage": "Privacy settings updated.",
-            "doNotTrackConfirm": "By selecting \"Do not track\", all your view history will be permanently deleted. Do you want to continue?"
+            "doNotTrackConfirm": "By selecting \"Do not track\", your view history, read chapters, and profile activities will be permanently deleted. Reading progress will be preserved. Do you want to continue?"
         },
         "recommendations": {
             "empty": "No recommendations yet.",
@@ -255,7 +258,11 @@
             },
             "privacy": {
                 "intro": "Control what appears publicly on your profile.",
-                "historyLabel": "Reading history",
+                "historyLabel": "History and activities",
+                "analyticsLabel": "Private behavior analytics",
+                "analyticsDesc": "Allows meaningful actions to improve analytics and recommendations. Disabling it deletes existing events.",
+                "analyticsOn": "Enabled",
+                "analyticsOff": "Disabled",
                 "commentsLabel": "Comments on titles",
                 "adultContentLabel": "Adult content",
                 "adultContentDesc": "Choose how 18+ titles appear in the catalog and recommendations.",
@@ -268,7 +275,7 @@
                 "deleteDesc": "Deleting your account disables access and anonymizes personal data. This action cannot be undone.",
                 "deleteConfirmPlaceholder": "Type \"{{name}}\" to confirm",
                 "deleteAccount": "Delete account",
-                "historyDesc": "Defines whether other readers can see read titles, dates and pace.",
+                "historyDesc": "Controls views, read chapters, and activities shown on your profile. Reading progress stays private and is preserved.",
                 "commentsDesc": "Defines whether reviews and replies appear on your public profile.",
                 "libraryLabel": "Library",
                 "libraryDesc": "Defines whether your reading lists (reading, want to read, completed) appear on your public profile.",
@@ -554,6 +561,8 @@
                 "importTitle": "Import list",
                 "importDesc": "Bring your list from another service.",
                 "importAction": "Import",
+                "importUnavailable": "Unavailable",
+                "actionFailed": "The action could not be completed",
                 "importModalTitle": "Import list",
                 "importModalDesc": "Choose the import source.",
                 "importStarted": "Import started",

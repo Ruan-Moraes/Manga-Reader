@@ -32,7 +32,7 @@ export const CatSortSelect = <T extends string>({ value, options, onChange }: Ca
                     type="button"
                     className={cn(
                         'inline-flex h-10 shrink-0 items-center gap-1.5 rounded-mr-xs border bg-mr-secondary px-3 text-mr-small font-mr-bold text-mr-fg tracking-mr cursor-pointer mr-focus-ring',
-                        open ? 'border-mr-accent' : 'border-mr-gray-700',
+                        open ? 'border-mr-accent-border' : 'border-mr-gray-700',
                     )}
                 >
                     <CurIcon className="size-3.5" strokeWidth={2} aria-hidden="true" />
@@ -58,7 +58,7 @@ export const CatSortSelect = <T extends string>({ value, options, onChange }: Ca
                                 onSelect={() => onChange(o.key)}
                                 className={cn(
                                     'flex w-full items-center gap-2 border-l-2 px-3 py-2.5 text-left text-mr-small font-mr-semibold tracking-mr cursor-pointer outline-none',
-                                    active ? 'border-mr-accent bg-mr-accent-10 text-mr-accent' : 'border-transparent text-mr-fg hover:bg-mr-accent-10',
+                                    active ? 'border-mr-accent-border bg-mr-accent-10 text-mr-accent-fg' : 'border-transparent text-mr-fg hover:bg-mr-accent-10',
                                 )}
                             >
                                 <Icon className="size-3.5" strokeWidth={2} aria-hidden="true" />

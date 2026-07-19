@@ -7,7 +7,7 @@ export const MOCK_PLANS: SubscriptionPlan[] = [
         period: 'DAILY',
         priceInCents: 39,
         description: 'Acesso por 1 dia.',
-        features: [{ key: 'catalog', label: 'Acesso a todo o catálogo' }],
+        features: ['Acesso a todo o catálogo'],
         active: true,
     },
     {
@@ -15,10 +15,7 @@ export const MOCK_PLANS: SubscriptionPlan[] = [
         period: 'MONTHLY',
         priceInCents: 1990,
         description: 'Acesso por 30 dias.',
-        features: [
-            { key: 'catalog', label: 'Acesso a todo o catálogo' },
-            { key: 'offline', label: 'Leitura offline' },
-        ],
+        features: ['Acesso a todo o catálogo', 'Leitura offline'],
         active: true,
     },
     {
@@ -27,9 +24,9 @@ export const MOCK_PLANS: SubscriptionPlan[] = [
         priceInCents: 15990,
         description: 'Acesso por 1 ano.',
         features: [
-            { key: 'catalog', label: 'Acesso a todo o catálogo' },
-            { key: 'offline', label: 'Leitura offline' },
-            { key: 'support', label: 'Suporte prioritário' },
+            'Acesso a todo o catálogo',
+            'Leitura offline',
+            'Suporte prioritário',
         ],
         active: true,
     },

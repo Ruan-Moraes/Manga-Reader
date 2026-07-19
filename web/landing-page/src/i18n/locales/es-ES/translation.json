@@ -5,12 +5,26 @@
         "plans": "Planes",
         "app": "App",
         "faq": "FAQ",
-        "menu": "Menú",
-        "language": "Idioma"
+        "menu": "Abrir menú",
+        "closeMenu": "Cerrar menú",
+        "mobile": "Navegación móvil",
+        "primary": "Navegación principal",
+        "skipToContent": "Saltar al contenido",
+        "language": "Idioma",
+        "selectLanguage": "Seleccionar {{language}}",
+        "changeLanguage": "Cambiar idioma. Actual: {{language}}",
+        "preferences": "Preferencias rápidas",
+        "theme": "Tema",
+        "changeTheme": "Cambiar tema. Actual: {{theme}}",
+        "selectTheme": "Seleccionar tema {{theme}}",
+        "themeSystem": "Sistema",
+        "themeDark": "Oscuro",
+        "themeLight": "Claro"
     },
     "cta": {
         "subscribe": "Suscríbete ya",
         "start": "Empezar ahora",
+        "access": "Acceder a la plataforma",
         "demo": "Ver demo"
     },
     "hero": {
@@ -22,7 +36,9 @@
         "badges": ["iOS", "Android", "Web", "Offline", "Sin anuncios"],
         "floatNew": "Capítulo nuevo",
         "floatSync": "Sincronizado",
-        "floatContinue": "Seguir leyendo"
+        "floatContinue": "Seguir leyendo",
+        "previewLabel": "Vista previa de la biblioteca de Manga Reader en el navegador",
+        "phonePreviewLabel": "Vista previa del lector de Manga Reader en el móvil"
     },
     "demo": {
         "eyebrow": "Mira cómo funciona",
@@ -59,23 +75,63 @@
         "eyebrow": "Por qué suscribirte",
         "title": "Todo lo que necesitas para leer",
         "items": [
-            { "t": "Biblioteca enorme", "d": "Miles de títulos de los grandes nombres del cómic asiático." },
-            { "t": "Actualizaciones diarias", "d": "Capítulos nuevos cada día — siempre hay algo fresco para leer." },
-            { "t": "Lectura en HD", "d": "Imágenes en alta resolución con zoom nítido en cada panel." },
-            { "t": "Modo sin conexión", "d": "Descarga tus capítulos favoritos y lee sin conexión." },
-            { "t": "Sincronización total", "d": "Empieza en el móvil y sigue en el navegador justo donde lo dejaste." },
-            { "t": "iOS y Android", "d": "App nativa en ambas tiendas, optimizada para cada plataforma." },
-            { "t": "Sin anuncios", "d": "Ningún anuncio interrumpe tu lectura. Nunca." },
-            { "t": "Favoritos e historial", "d": "Organiza tu colección y retoma cualquier obra en segundos." },
-            { "t": "Descarga de capítulos", "d": "Guarda volúmenes enteros para el viaje, el metro, donde sea." },
-            { "t": "Mobile-first", "d": "Una interfaz pensada primero para el móvil — fluida y ligera." }
+            {
+                "t": "Biblioteca enorme",
+                "d": "Miles de títulos de los grandes nombres del cómic asiático."
+            },
+            {
+                "t": "Actualizaciones diarias",
+                "d": "Capítulos nuevos cada día — siempre hay algo fresco para leer."
+            },
+            {
+                "t": "Lectura en HD",
+                "d": "Imágenes en alta resolución con zoom nítido en cada panel."
+            },
+            {
+                "t": "Modo sin conexión",
+                "d": "Descarga tus capítulos favoritos y lee sin conexión."
+            },
+            {
+                "t": "Sincronización total",
+                "d": "Empieza en el móvil y sigue en el navegador justo donde lo dejaste."
+            },
+            {
+                "t": "iOS y Android",
+                "d": "App nativa en ambas tiendas, optimizada para cada plataforma."
+            },
+            {
+                "t": "Sin anuncios",
+                "d": "Ningún anuncio interrumpe tu lectura. Nunca."
+            },
+            {
+                "t": "Favoritos e historial",
+                "d": "Organiza tu colección y retoma cualquier obra en segundos."
+            },
+            {
+                "t": "Descarga de capítulos",
+                "d": "Guarda volúmenes enteros para el viaje, el metro, donde sea."
+            },
+            {
+                "t": "Mobile-first",
+                "d": "Una interfaz pensada primero para el móvil — fluida y ligera."
+            },
+            {
+                "t": "Lectura en tu idioma",
+                "d": "La interfaz y la preferencia de idioma se sincronizan entre dispositivos. Las obras y capítulos siguen el idioma elegido, indican claramente traducciones no disponibles y están preparados para incorporar más idiomas."
+            }
         ]
     },
     "mobile": {
         "eyebrow": "En tu bolsillo",
         "title": "Lee donde estés. En iPhone, Android o el navegador.",
         "sub": "Tu biblioteca viaja contigo. Retoma la lectura automáticamente, incluso sin internet.",
-        "features": ["Lectura sin conexión", "Sincronización con la cuenta", "Continuación automática", "Biblioteca guardada", "Interfaz optimizada para el móvil"],
+        "features": [
+            "Lectura sin conexión",
+            "Sincronización con la cuenta",
+            "Continuación automática",
+            "Biblioteca guardada",
+            "Interfaz optimizada para el móvil"
+        ],
         "appStore": "Descárgalo en",
         "appStoreName": "App Store",
         "googlePlay": "Disponible en",
@@ -100,18 +156,22 @@
         "perDay": "/día",
         "perMonth": "/mes",
         "perYear": "/año",
+        "periodName": {
+            "daily": "Diario",
+            "monthly": "Mensual",
+            "annual": "Anual"
+        },
         "popular": "Más popular",
         "bestValue": "Mejor valor",
-        "monthlyEquiv": "equivale a",
-        "save": "ahorra",
         "choose": "Suscribirse",
         "loading": "Cargando planes…",
-        "error": "No se pudieron cargar los planes. Inténtalo de nuevo más tarde.",
-        "trust": ["Cancela cuando quieras", "Sin cargos ocultos", "Garantía el 1er mes"],
-        "items": [
-            { "name": "Diario", "price": "$0,49", "period": "/día", "features": ["Acceso completo 24h", "Lectura en HD", "Sin anuncios", "Ideal para maratones"] },
-            { "name": "Mensual", "price": "$6,90", "period": "/mes", "features": ["Todo lo del diario", "Modo offline y descargas", "Sincronización entre dispositivos", "Soporte prioritario"] },
-            { "name": "Anual", "price": "$54,90", "period": "/año", "features": ["Todo lo del mensual", "2 meses gratis", "Acceso anticipado a novedades", "Mejor relación precio-valor"], "equiv": "$4,57/mes", "save": "33%" }
+        "unavailableTitle": "Los planes no están disponibles temporalmente",
+        "unavailableDescription": "Estamos trabajando para resolverlo lo antes posible. Inténtalo de nuevo en unos momentos.",
+        "retry": "Intentar de nuevo",
+        "trust": [
+            "Cancela cuando quieras",
+            "Sin cargos ocultos",
+            "Garantía el 1er mes"
         ]
     },
     "compare": {
@@ -123,7 +183,15 @@
         "yes": "Sí",
         "no": "No",
         "limited": "Limitado",
-        "features": ["Lectura online", "Anuncios", "Lectura sin conexión", "Calidad HD", "Sincronización", "App iOS / Android", "Descarga de capítulos"]
+        "features": [
+            "Lectura online",
+            "Anuncios",
+            "Lectura sin conexión",
+            "Calidad HD",
+            "Sincronización",
+            "App iOS / Android",
+            "Descarga de capítulos"
+        ]
     },
     "gift": {
         "eyebrow": "Regalo",
@@ -133,10 +201,22 @@
         "tabGive": "Regalar",
         "tabRedeem": "Canjear código",
         "steps": [
-            { "t": "Elige el plan", "d": "Selecciona el período que quieres regalar." },
-            { "t": "Genera el código", "d": "Se crea un código único en tu cuenta." },
-            { "t": "Envíalo a alguien", "d": "Compártelo por mensaje, email o impreso." },
-            { "t": "La persona canjea", "d": "Activa el código en la app y empieza a leer." }
+            {
+                "t": "Elige el plan",
+                "d": "Selecciona el período que quieres regalar."
+            },
+            {
+                "t": "Genera el código",
+                "d": "Se crea un código único en tu cuenta."
+            },
+            {
+                "t": "Envíalo a alguien",
+                "d": "Compártelo por mensaje, email o impreso."
+            },
+            {
+                "t": "La persona canjea",
+                "d": "Activa el código en la app y empieza a leer."
+            }
         ],
         "giveCta": "Crear gift code",
         "redeemLabel": "Escribe el código del regalo",
@@ -148,25 +228,68 @@
         "eyebrow": "Quien se suscribe, recomienda",
         "title": "Lo que dicen nuestros lectores",
         "items": [
-            { "name": "Ana Lima", "role": "Lectora hace 2 años", "text": "Por fin una plataforma con todo lo que amo y que funciona sin conexión. Llevo mi colección entera de viaje." },
-            { "name": "Carlos Matos", "role": "Suscriptor anual", "text": "La calidad de las imágenes es impresionante y la app es absurdamente rápida. No la cambio por nada." },
-            { "name": "Júlia Santos", "role": "Regaló a un amigo", "text": "Le regalé a mi hermano y le encantó. El sistema de gift code es muy simple — listo en un minuto." },
-            { "name": "Rafael Tavares", "role": "Lector multidispositivo", "text": "Empiezo en el móvil en el bus y sigo en el PC en casa, justo donde lo dejé. Sincronización perfecta." }
+            {
+                "name": "Ana Lima",
+                "role": "Lectora hace 2 años",
+                "text": "Por fin una plataforma con todo lo que amo y que funciona sin conexión. Llevo mi colección entera de viaje."
+            },
+            {
+                "name": "Carlos Matos",
+                "role": "Suscriptor anual",
+                "text": "La calidad de las imágenes es impresionante y la app es absurdamente rápida. No la cambio por nada."
+            },
+            {
+                "name": "Júlia Santos",
+                "role": "Regaló a un amigo",
+                "text": "Le regalé a mi hermano y le encantó. El sistema de gift code es muy simple — listo en un minuto."
+            },
+            {
+                "name": "Rafael Tavares",
+                "role": "Lector multidispositivo",
+                "text": "Empiezo en el móvil en el bus y sigo en el PC en casa, justo donde lo dejé. Sincronización perfecta."
+            }
         ]
     },
     "faq": {
         "eyebrow": "Dudas",
         "title": "Preguntas frecuentes",
         "items": [
-            { "q": "¿Puedo cancelar cuando quiera?", "a": "Sí. Cancela cuando quieras desde la app o el sitio, sin trámites ni cargos. El acceso sigue hasta el final del período ya pagado." },
-            { "q": "¿Funciona en iOS y Android?", "a": "Sí. Tenemos app nativa en la App Store y Google Play, además de la versión web completa. Todo se sincroniza por tu cuenta." },
-            { "q": "¿Puedo leer sin conexión?", "a": "Puedes. Descarga capítulos o volúmenes enteros en la app y lee sin internet — en el avión, el metro, donde sea. Las descargas quedan en tu dispositivo." },
-            { "q": "¿Qué pasa si cambio de móvil?", "a": "No se pierde nada. Tu biblioteca, historial y progreso están en tu cuenta. Solo inicia sesión en el equipo nuevo y todo vuelve." },
-            { "q": "¿Hay anuncios?", "a": "En Premium, ninguno. Tu lectura nunca se interrumpe con anuncios. El plan gratis tiene anuncios ligeros entre capítulos." },
-            { "q": "¿Cómo funcionan los gift codes?", "a": "Eliges un plan, generas un código único en tu cuenta y lo envías a quien quieras. La persona lo canjea en la app y obtiene acceso al instante." },
-            { "q": "¿Cada cuánto salen capítulos nuevos?", "a": "Todos los días. Agregamos cientos de capítulos por semana, con obras populares actualizadas poco después del lanzamiento oficial." },
-            { "q": "¿Puedo usarlo en el navegador?", "a": "Sí, la experiencia web es completa: misma biblioteca, mismo lector, misma sincronización — sin instalar nada." },
-            { "q": "¿El plan anual tiene descuento?", "a": "Sí. El plan anual incluye 2 meses gratis frente al mensual, equivaliendo a unos $4,57 al mes." }
+            {
+                "q": "¿Puedo cancelar cuando quiera?",
+                "a": "Sí. Cancela cuando quieras desde la app o el sitio, sin trámites ni cargos. El acceso sigue hasta el final del período ya pagado."
+            },
+            {
+                "q": "¿Funciona en iOS y Android?",
+                "a": "Sí. Tenemos app nativa en la App Store y Google Play, además de la versión web completa. Todo se sincroniza por tu cuenta."
+            },
+            {
+                "q": "¿Puedo leer sin conexión?",
+                "a": "Puedes. Descarga capítulos o volúmenes enteros en la app y lee sin internet — en el avión, el metro, donde sea. Las descargas quedan en tu dispositivo."
+            },
+            {
+                "q": "¿Qué pasa si cambio de móvil?",
+                "a": "No se pierde nada. Tu biblioteca, historial y progreso están en tu cuenta. Solo inicia sesión en el equipo nuevo y todo vuelve."
+            },
+            {
+                "q": "¿Hay anuncios?",
+                "a": "En Premium, ninguno. Tu lectura nunca se interrumpe con anuncios. El plan gratis tiene anuncios ligeros entre capítulos."
+            },
+            {
+                "q": "¿Cómo funcionan los gift codes?",
+                "a": "Eliges un plan, generas un código único en tu cuenta y lo envías a quien quieras. La persona lo canjea en la app y obtiene acceso al instante."
+            },
+            {
+                "q": "¿Cada cuánto salen capítulos nuevos?",
+                "a": "Todos los días. Agregamos cientos de capítulos por semana, con obras populares actualizadas poco después del lanzamiento oficial."
+            },
+            {
+                "q": "¿Puedo usarlo en el navegador?",
+                "a": "Sí, la experiencia web es completa: misma biblioteca, mismo lector, misma sincronización — sin instalar nada."
+            },
+            {
+                "q": "¿El plan anual tiene descuento?",
+                "a": "Sí. El plan anual incluye 2 meses gratis frente al mensual, equivaliendo a unos $4,57 al mes."
+            }
         ]
     },
     "finalCta": {
@@ -190,6 +313,7 @@
         "colLegal": "Legal",
         "backToTop": "Volver arriba",
         "links": {
+            "access": "Acceder a la plataforma",
             "benefits": "Beneficios",
             "plans": "Planes",
             "app": "App",

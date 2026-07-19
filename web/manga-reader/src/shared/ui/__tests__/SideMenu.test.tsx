@@ -40,7 +40,7 @@ describe('SideMenu', () => {
     it('highlights active item', () => {
         render(<SideMenu open onClose={vi.fn()} sections={sections} activeKey="home" />);
         const homeBtn = screen.getByRole('button', { name: /início/i });
-        expect(homeBtn.className).toMatch(/border-mr-accent/);
+        expect(homeBtn.className).toMatch(/border-mr-accent-border/);
     });
 
     it('calls item onClick and onClose when item clicked', async () => {

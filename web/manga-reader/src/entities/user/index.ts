@@ -30,7 +30,7 @@ export { useUserModalContext } from './model/useUserModalContext';
 export { ProfileSettingsModalProvider, useProfileSettingsModal, type ProfileSettingsTab } from './model/ProfileSettingsModalContext';
 
 // Services
-export { recordView, updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings, getFavoriteGenres, updateFavoriteGenres } from './api/userService';
+export { updateProfile, type UpdateProfilePayload, getMySettings, updateMySettings, getFavoriteGenres, updateFavoriteGenres, clearMyTrackedHistory, exportMyData } from './api/userService';
 export { followUser, unfollowUser, getFollowers, getFollowing, getFollowedGroups, type FollowStatus, type UserSummary } from './api/followService';
 
 // Settings
@@ -51,17 +51,21 @@ export {
 // Utils
 export { buildUserModalPayload } from './lib/buildUserModalPayload';
 export { useDebouncedCallback } from './lib/useDebouncedCallback';
+export { getAdultContentPreference, setAdultContentPreference, useAdultContentPreference } from './lib/adultContentPolicy';
 export {
     applyReduceMotion,
     applySystemPreferences,
     initAccessibilityFromStorage,
     mergeUserSettings,
+    migrateLegacyReaderSettings,
     readStoredUserSettings,
     subscribeStoredUserSettings,
     updateStoredUserSettings,
     writeStoredUserSettings,
     SETTINGS_STORAGE_KEY,
     SETTINGS_STORAGE_EVENT,
+    LEGACY_READER_SETTINGS_KEY,
+    SETTINGS_MIGRATION_KEY,
 } from './lib/accessibility';
 
 // Components

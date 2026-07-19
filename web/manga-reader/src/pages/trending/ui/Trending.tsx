@@ -23,7 +23,7 @@ const Trending = () => {
             <section className="relative mb-8 overflow-hidden rounded-mr-sm border border-mr-border bg-mr-surface p-6 md:p-9">
                 <div className="absolute -right-16 -top-20 size-64 rounded-full bg-mr-accent/10 blur-3xl" />
                 <div className="relative max-w-3xl">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-mr-accent/30 bg-mr-accent/10 px-3 py-1 text-mr-tiny font-mr-bold uppercase tracking-widest text-mr-accent"><Activity className="size-3.5" />{t('trending.eyebrow')}</div>
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-mr-accent-border/30 bg-mr-accent/10 px-3 py-1 text-mr-tiny font-mr-bold uppercase tracking-widest text-mr-accent-fg"><Activity className="size-3.5" />{t('trending.eyebrow')}</div>
                     <h1 className="text-mr-h2 font-mr-bold text-mr-fg md:text-mr-h1">{t('trending.title')}</h1>
                     <p className="mt-3 max-w-2xl text-mr-body text-mr-fg-muted">{t('trending.description')}</p>
                     <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -32,7 +32,7 @@ const Trending = () => {
                     </div>
                 </div>
             </section>
-            {isLoading ? <div className="flex min-h-64 items-center justify-center"><RefreshCw className="size-7 animate-spin text-mr-accent" aria-label={t('trending.loading')} /></div>
+            {isLoading ? <div className="flex min-h-64 items-center justify-center"><RefreshCw className="size-7 animate-spin text-mr-accent-fg" aria-label={t('trending.loading')} /></div>
                 : isError ? <div className="rounded-mr-sm border border-mr-danger/30 bg-mr-danger/10 p-8 text-center text-mr-fg">{t('trending.error')}</div>
                 : data ? <><TrendingSection items={data.momentum} /><MetricLeaderboards dashboard={data} /></> : null}
         </PageContainer>

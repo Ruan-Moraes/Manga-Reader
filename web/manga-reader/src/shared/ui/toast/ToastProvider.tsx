@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 
 import { ToastItem } from './ToastItem';
 import { dismissToast, getToastsSnapshot, pushToast, subscribeToasts } from './toastStore';
+import { getTopLayerPortalHost, subscribeTopLayerPortalHost } from '../topLayerPortalStore';
 import type { ToastApi } from './types';
 
 /**
@@ -19,6 +20,7 @@ import type { ToastApi } from './types';
  */
 export function ToastProvider({ children }: { children: ReactNode }) {
     const toasts = useSyncExternalStore(subscribeToasts, getToastsSnapshot);
+    const topLayerPortalHost = useSyncExternalStore(subscribeTopLayerPortalHost, getTopLayerPortalHost, () => null);
 
     const bottomToasts = toasts.filter(t => t.position === 'bottom');
     const topToasts = toasts.filter(t => t.position === 'top');
@@ -53,7 +55,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         </div>
                     )}
                 </>,
-                document.body,
+                topLayerPortalHost ?? document.body,
             )}
         </>
     );

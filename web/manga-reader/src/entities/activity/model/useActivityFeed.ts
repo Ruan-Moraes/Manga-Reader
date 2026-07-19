@@ -24,6 +24,7 @@ const useActivityFeed = (userId?: string) => {
         isFetchingNextPage: query.isFetchingNextPage,
         isLoading: query.isLoading,
         isError: query.isError,
+        refetch: query.refetch,
     };
 };
 

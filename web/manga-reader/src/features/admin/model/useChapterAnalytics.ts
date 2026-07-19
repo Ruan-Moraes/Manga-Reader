@@ -31,6 +31,7 @@ const useChapterAnalytics = (initialFilter: ChapterMetricsFilter = {}, options: 
     const seriesQuery = useQuery({
         queryKey: [QUERY_KEYS.ADMIN_CHAPTER_READS_SERIES, filter, granularity],
         queryFn: () => chapterAnalyticsGateway.getReadsSeries(filter, granularity),
+        enabled: !!filter.chapterId,
     });
 
     const setFilter = (next: ChapterMetricsFilter) => {

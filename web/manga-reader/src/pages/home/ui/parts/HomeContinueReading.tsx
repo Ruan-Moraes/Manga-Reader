@@ -54,6 +54,7 @@ const HomeContinueReading = ({ continueLoading, continueReading }: HomeContinueR
                                     id: m.titleId,
                                     title: m.name,
                                     cover: m.cover,
+                                    adult: m.adult,
                                 }}
                                 onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}
                                 inLibrary

@@ -44,7 +44,7 @@ const Wordmark = ({ onClick }: { onClick?: () => void }) => (
         aria-label="Manga Reader, ir para home"
         className="font-mr-sans font-mr-extrabold italic tracking-mr-logo text-mr-fg shrink-0"
     >
-        Manga <span className="text-mr-accent">Reader</span>
+        Manga <span className="text-mr-accent-fg">Reader</span>
     </button>
 );
 
@@ -90,7 +90,7 @@ export const NavBar = ({
                                 type="button"
                                 onClick={l.onClick}
                                 className={`px-3 py-2 text-mr-small font-mr-bold rounded-mr-xs transition-colors duration-mr-default ${
-                                    activeKey === l.key ? 'text-mr-accent' : 'text-mr-fg-muted hover:text-mr-fg'
+                                    activeKey === l.key ? 'text-mr-accent-fg' : 'text-mr-fg-muted hover:text-mr-fg'
                                 }`}
                             >
                                 {l.label}
@@ -129,7 +129,7 @@ export const NavBar = ({
                             <div className="relative">
                                 <IconButton icon={BookOpen} aria-label="Biblioteca" onClick={onLibraryClick} />
                                 {!!user.libraryCount && (
-                                    <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-mr-full bg-mr-accent px-1 text-[10px] font-mr-extrabold text-mr-primary">
+                                    <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-mr-full bg-mr-accent px-1 text-[10px] font-mr-extrabold text-mr-on-accent">
                                         {user.libraryCount > 99 ? '99+' : user.libraryCount}
                                     </span>
                                 )}

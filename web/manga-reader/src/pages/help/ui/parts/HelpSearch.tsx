@@ -20,11 +20,11 @@ const HelpSearch = ({ query, onQueryChange }: HelpSearchProps) => {
             <PageContainer>
                 <div className="mx-auto max-w-2xl text-center">
                     <div className="mb-3 flex justify-center">
-                        <div className="flex size-12 items-center justify-center rounded-mr-xs bg-mr-accent-25 text-mr-accent">
+                        <div className="flex size-12 items-center justify-center rounded-mr-xs bg-mr-accent-25 text-mr-accent-fg">
                             <HelpCircle className="size-6" />
                         </div>
                     </div>
-                    <p className="mr-label mb-2 text-mr-accent">{t('search.eyebrow')}</p>
+                    <p className="mr-label mb-2 text-mr-accent-fg">{t('search.eyebrow')}</p>
                     <h1 className="text-mr-h1 font-mr-extrabold tracking-mr text-mr-fg">{t('search.title')}</h1>
                     <p className="mt-2 text-mr-body text-mr-fg-muted">{t('search.description')}</p>
                     <div className="mt-6">
@@ -39,7 +39,7 @@ const HelpSearch = ({ query, onQueryChange }: HelpSearchProps) => {
                                 key={chip}
                                 type="button"
                                 onClick={() => onQueryChange(chip)}
-                                className="rounded-mr-full border border-mr-border px-3 py-1 text-mr-tiny text-mr-fg-muted transition-colors hover:border-mr-accent hover:text-mr-accent"
+                                className="rounded-mr-full border border-mr-border px-3 py-1 text-mr-tiny text-mr-fg-muted transition-colors hover:border-mr-accent-border hover:text-mr-accent-fg"
                             >
                                 {chip}
                             </button>
@@ -48,7 +48,7 @@ const HelpSearch = ({ query, onQueryChange }: HelpSearchProps) => {
                     <div className="mt-4 inline-flex items-center gap-2 text-mr-tiny text-mr-fg-muted">
                         <StatusDot status="operating" size={8} />
                         {t('search.systemStatus')}
-                        <button type="button" onClick={() => {}} className="text-mr-accent underline-offset-2 hover:underline">
+                        <button type="button" onClick={() => {}} className="text-mr-accent-fg underline-offset-2 hover:underline">
                             {t('search.viewDetails')}
                         </button>
                     </div>

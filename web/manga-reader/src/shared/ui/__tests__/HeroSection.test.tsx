@@ -17,7 +17,7 @@ describe('HeroSection', () => {
 
     it('renders eyebrow when provided', () => {
         render(<HeroSection title="Título" eyebrow="Em alta" />);
-        expect(screen.getByText('Em alta')).toBeInTheDocument();
+        expect(screen.getByText('Em alta')).toHaveClass('text-mr-accent');
     });
 
     it('renders eyebrow icon when provided', () => {
@@ -45,10 +45,11 @@ describe('HeroSection', () => {
         expect(screen.getByAltText('capa')).toBeInTheDocument();
     });
 
-    it('uses default gradient background', () => {
+    it('uses the shared poster background token', () => {
         const { container } = render(<HeroSection title="Título" />);
         const section = container.querySelector('section') as HTMLElement;
-        expect(section.style.background).toContain('135deg');
+        expect(section.style.background).toBe('var(--mr-poster-gradient)');
+        expect(screen.getByRole('heading', { name: 'Título' }).parentElement).toHaveClass('text-mr-on-overlay');
     });
 
     it('uses custom background when provided', () => {

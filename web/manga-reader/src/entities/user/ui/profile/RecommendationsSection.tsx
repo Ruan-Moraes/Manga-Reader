@@ -82,7 +82,7 @@ const RecommendationsSection = ({ recommendations, isOwner, onUpdate }: Props) =
                         {isOwner && (
                             <button
                                 onClick={() => handleRemove(rec.titleId)}
-                                className="absolute top-1 right-1 px-1.5 py-0.5 text-xs bg-quinary-default/80 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-1 right-1 px-1.5 py-0.5 text-xs bg-quinary-default/80 text-mr-on-overlay rounded-xs opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 X
                             </button>

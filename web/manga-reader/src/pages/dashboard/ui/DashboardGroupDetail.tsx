@@ -52,7 +52,7 @@ const DashboardGroupDetail = () => {
             <div className="flex items-center justify-between">
                 <button
                     onClick={() => navigate(withWebBasePath(ROUTES.DASHBOARD_GROUPS))}
-                    className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
+                    className="flex items-center gap-1 text-sm w-fit hover:text-mr-accent-fg"
                 >
                     <ArrowLeft size={14} />
                     {t('common.back')}

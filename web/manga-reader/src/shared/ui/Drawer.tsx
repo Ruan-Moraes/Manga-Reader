@@ -51,7 +51,7 @@ export const Drawer = ({ open, onClose, side = 'right', width = 380, top = 0, ti
     return (
         <>
             <div
-                className="fixed inset-0 z-mr-drawer animate-mr-overlay bg-[rgba(22,22,22,0.75)] backdrop-blur-mr"
+                className="fixed inset-0 z-mr-drawer animate-mr-overlay bg-mr-overlay backdrop-blur-mr"
                 onClick={onClose}
                 aria-hidden="true"
             />

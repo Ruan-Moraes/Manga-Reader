@@ -30,6 +30,7 @@ import { RootLayout, ChapterLayout } from '@widgets/layouts';
 
 import { contentRoutes, authRoutes, chapterRoutes } from '@app/router/PublicRoutes';
 import { protectedContentRoutes, adminRoute } from '@app/router/ProtectedRoutes';
+import UserSettingsHydrator from '@app/providers/UserSettingsHydrator';
 
 initGlobalErrorHandler();
 
@@ -90,6 +91,7 @@ createRoot(document.getElementById('root')!).render(
             <QueryClientProvider client={queryClient}>
                 <DSToastProvider>
                     <AuthProvider>
+                        <UserSettingsHydrator />
                         <UserModalProvider>
                             <ProfileSettingsModalProvider>
                                 <CommentSortProvider>

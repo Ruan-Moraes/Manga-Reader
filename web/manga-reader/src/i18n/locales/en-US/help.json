@@ -57,7 +57,7 @@
             "Inside the reader, the gear icon lets you override the direction for the current chapter only, without changing your global preference."
         ],
         "3": [
-            "On the login screen, click \"Forgot my password\" and enter your registered email. We'll send a reset link valid for 30 minutes.",
+            "On the login screen, click \"Forgot my password\" and enter your registered email. We'll send a temporary reset link; its validity will be shown after the request.",
             "Also check your spam folder if the email doesn't arrive within a few minutes. The link can only be used once.",
             "After setting the new password, all active sessions on other devices are ended for security."
         ],

@@ -163,7 +163,7 @@ describe('authService', () => {
             server.use(
                 http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
                     HttpResponse.json({
-                        data: 'Email enviado',
+                        data: { message: 'Email enviado', expiresInSeconds: 1800 },
                         success: true,
                     }),
                 ),
@@ -171,13 +171,26 @@ describe('authService', () => {
 
             const result = await requestPasswordReset('test@example.com');
 
-            expect(result).toBe('Email enviado');
+            expect(result).toEqual({ message: 'Email enviado', expiresInSeconds: 1800 });
         });
 
         it('deve lançar erro quando API retorna 500 no requestPasswordReset', async () => {
             server.use(http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(requestPasswordReset('test@example.com')).rejects.toThrow();
+        });
+
+        it('deve tolerar resposta string da API antiga sem inventar validade', async () => {
+            server.use(
+                http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
+                    HttpResponse.json({ data: 'Email enviado', success: true }),
+                ),
+            );
+
+            await expect(requestPasswordReset('test@example.com')).resolves.toEqual({
+                message: 'Email enviado',
+                expiresInSeconds: null,
+            });
         });
     });
 

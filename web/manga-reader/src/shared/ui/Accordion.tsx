@@ -32,7 +32,7 @@ export const AccordionItem = ({ title, children, defaultOpen = false, open, onOp
         <article
             className={cn(
                 'overflow-hidden rounded-mr-xs border bg-mr-surface transition-colors duration-mr-default',
-                isOpen ? 'border-mr-accent' : 'border-mr-border',
+                isOpen ? 'border-mr-accent-border' : 'border-mr-border',
             )}
         >
             <button
@@ -46,7 +46,7 @@ export const AccordionItem = ({ title, children, defaultOpen = false, open, onOp
                 <span
                     className={cn(
                         'flex size-7 shrink-0 items-center justify-center rounded-mr-xs transition-colors',
-                        isOpen ? 'bg-mr-accent text-mr-primary' : 'bg-mr-accent-25 text-mr-accent',
+                        isOpen ? 'bg-mr-accent text-mr-on-accent' : 'bg-mr-accent-25 text-mr-accent-fg',
                     )}
                 >
                     {isOpen ? <X className="size-3.5" /> : <Plus className="size-3.5" />}

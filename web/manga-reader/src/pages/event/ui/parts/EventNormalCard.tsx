@@ -12,15 +12,15 @@ export const EventNormalCard = ({ event, onOpen }: { event: CommunityEvent; onOp
         <div
             onClick={() => onOpen(event.id)}
             style={{
-                cursor: 'pointer', display: 'flex', gap: 14, background: '#1a1a1a', border: '1px solid #2a2a2a',
+                cursor: 'pointer', display: 'flex', gap: 14, background: 'var(--mr-surface-muted)', border: '1px solid var(--mr-border)',
                 borderRadius: 8, padding: 14, opacity: isEnded ? 0.65 : 1, transition: 'all .2s',
             }}
             onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#3a3a3a';
+                e.currentTarget.style.borderColor = 'var(--mr-border-subtle)';
                 e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#2a2a2a';
+                e.currentTarget.style.borderColor = 'var(--mr-border)';
                 e.currentTarget.style.transform = 'translateY(0)';
             }}
         >
@@ -32,10 +32,10 @@ export const EventNormalCard = ({ event, onOpen }: { event: CommunityEvent; onOp
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
                         <StatusPill status={status} />
                     </div>
-                    <h4 style={{ fontSize: 14, fontWeight: 700, color: '#fff', margin: '0 0 4px', letterSpacing: '.0625rem', lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event.name}</h4>
-                    <p style={{ fontSize: 12, color: '#999', margin: 0, lineHeight: 1.45, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{event.description}</p>
+                    <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--mr-fg)', margin: '0 0 4px', letterSpacing: '.0625rem', lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event.name}</h4>
+                    <p style={{ fontSize: 12, color: 'var(--mr-fg-subtle)', margin: 0, lineHeight: 1.45, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{event.description}</p>
                 </div>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 8, fontSize: 11, color: '#777' }}>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 8, fontSize: 11, color: 'var(--mr-fg-subtle)' }}>
                     <span>▸ {fmtRange(event.start, event.end)}</span>
                     {!!event.chapters && event.chapters > 0 && <span>· {t('ui.capsShort', { count: event.chapters })}</span>}
                 </div>

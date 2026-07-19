@@ -11,7 +11,7 @@ const RichText = ({ text }: { text: string }) => {
                 <p key={i} style={{ margin: '0 0 12px', lineHeight: 1.7 }}>
                     {p.split(/(\*\*[^*]+\*\*)/g).map((seg, j) =>
                         /^\*\*[^*]+\*\*$/.test(seg) ? (
-                            <strong key={j} style={{ color: '#fff', fontWeight: 800 }}>
+                            <strong key={j} style={{ color: 'var(--mr-fg)', fontWeight: 800 }}>
                                 {seg.slice(2, -2)}
                             </strong>
                         ) : (

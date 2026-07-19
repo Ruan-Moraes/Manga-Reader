@@ -46,10 +46,10 @@ const CommentActions = ({
                         size="sm"
                         variant="ghost"
                         onClick={onDislike}
-                        className={userReaction === 'DISLIKE' ? 'text-red-400' : undefined}
+                        className={userReaction === 'DISLIKE' ? 'text-mr-danger' : undefined}
                     />
                     {Number(dislikeCount) > 0 && (
-                        <span className="absolute -top-1 -right-1 flex items-center justify-center text-[0.5rem] font-bold text-white bg-red-500 rounded-full border border-tertiary p-0.5 min-w-[1rem]">
+                        <span className="absolute -right-1 -top-1 flex min-w-[1rem] items-center justify-center rounded-full border border-mr-danger-border bg-mr-danger p-0.5 text-[0.5rem] font-bold text-mr-on-overlay">
                             {Number(dislikeCount) < 10 ? dislikeCount.padStart(2, '0') : dislikeCount}
                         </span>
                     )}
@@ -61,10 +61,10 @@ const CommentActions = ({
                         size="sm"
                         variant="ghost"
                         onClick={onLike}
-                        className={userReaction === 'LIKE' ? 'text-green-400' : undefined}
+                        className={userReaction === 'LIKE' ? 'text-mr-success' : undefined}
                     />
                     {Number(likeCount) > 0 && (
-                        <span className="absolute -top-1 -right-1 flex items-center justify-center text-[0.5rem] font-bold text-white bg-green-500 rounded-full border border-tertiary p-0.5 min-w-[1rem]">
+                        <span className="absolute -right-1 -top-1 flex min-w-[1rem] items-center justify-center rounded-full border border-mr-success-border bg-mr-success p-0.5 text-[0.5rem] font-bold text-mr-on-overlay">
                             {Number(likeCount) < 10 ? likeCount.padStart(2, '0') : likeCount}
                         </span>
                     )}

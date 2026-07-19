@@ -28,7 +28,7 @@ export const ChapterListItem = ({ number, title, publishedAt, read, current, gro
         )}
         onClick={onClick}
     >
-        <span className="w-14 shrink-0 font-mr-mono text-mr-h4 font-mr-bold tabular-nums text-mr-accent">#{number}</span>
+        <span className="w-14 shrink-0 font-mr-mono text-mr-h4 font-mr-bold tabular-nums text-mr-accent-fg">#{number}</span>
         <div className="min-w-0 flex-1">
             <div className="truncate text-mr-body font-mr-bold text-mr-fg">{title ?? `Capítulo ${number}`}</div>
             {current && <ProgressBar value={42} thickness="thin" className="mt-1" />}
@@ -41,7 +41,7 @@ export const ChapterListItem = ({ number, title, publishedAt, read, current, gro
                 </span>
             )}
             <span className="font-mr-bold">{publishedAt}</span>
-            {downloaded && <Download className="size-3.5 text-mr-accent" />}
+            {downloaded && <Download className="size-3.5 text-mr-accent-fg" />}
             {read && <CheckCircle2 className="size-3.5 text-mr-fg-subtle" />}
             {onMore && (
                 <IconButton

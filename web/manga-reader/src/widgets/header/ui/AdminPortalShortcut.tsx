@@ -22,7 +22,7 @@ const AdminPortalShortcut = ({ visible, onNavigate }: AdminPortalShortcutProps) 
                     type="button"
                     aria-label={label}
                     onClick={() => onNavigate(ROUTES.DASHBOARD)}
-                    className="mr-focus-ring flex size-12 items-center justify-center rounded-full border border-mr-accent bg-mr-accent text-mr-primary shadow-mr-black transition-[opacity,transform] hover:opacity-90 active:scale-95"
+                    className="mr-focus-ring flex size-12 items-center justify-center rounded-full border border-mr-accent-border bg-mr-accent text-mr-on-accent shadow-mr-black transition-[opacity,transform] hover:opacity-90 active:scale-95"
                 >
                     <LayoutDashboard size={21} aria-hidden="true" />
                 </button>

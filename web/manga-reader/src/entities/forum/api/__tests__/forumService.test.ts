@@ -162,10 +162,10 @@ describe('forumService', () => {
     });
 
     describe('getCategoryColor', () => {
-        it('deve retornar classes CSS para cada categoria', () => {
-            expect(getCategoryColor('Geral')).toContain('blue');
-            expect(getCategoryColor('Spoilers')).toContain('red');
-            expect(getCategoryColor('Fanart')).toContain('pink');
+        it('deve retornar tokens semânticos para cada categoria', () => {
+            expect(getCategoryColor('Geral')).toContain('mr-info');
+            expect(getCategoryColor('Spoilers')).toContain('mr-danger');
+            expect(getCategoryColor('Fanart')).toContain('mr-danger');
         });
     });
 

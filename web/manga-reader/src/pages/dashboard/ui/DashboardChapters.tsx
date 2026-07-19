@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BarChart3, ListOrdered } from 'lucide-react';
 
 import { Button } from '@ui/Button';
@@ -10,7 +10,8 @@ import Input from '@ui/Input';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { CHAPTER_STATUSES, chapterAdminGateway, type AdminChapter, type ChapterStatus } from '@entities/chapter';
+import { CHAPTER_STATUSES, CHAPTER_STORE_KEY, chapterAdminGateway, readLegacyChapterImport,
+    type AdminChapter, type ChapterStatus, type LegacyChapterReadResult } from '@entities/chapter';
 import {
     AdminChapterList,
     BulkChapterStatusModal,
@@ -32,6 +33,7 @@ import ListPageHeader from './parts/ListPageHeader';
 const DashboardChapters = () => {
     const { t } = useTranslation('admin');
     const appNavigate = useAppNavigate();
+    const queryClient = useQueryClient();
     const [searchParams, setSearchParams] = useSearchParams();
     const titleId = searchParams.get('titleId') ?? undefined;
 
@@ -47,12 +49,16 @@ const DashboardChapters = () => {
     const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
     const [bulkStatusOpen, setBulkStatusOpen] = useState(false);
     const [reorderOpen, setReorderOpen] = useState(false);
+    const [legacy, setLegacy] = useState<LegacyChapterReadResult>(() => readLegacyChapterImport());
+    const [legacyConfirmOpen, setLegacyConfirmOpen] = useState(false);
+    const [legacyImporting, setLegacyImporting] = useState(false);
+    const [legacyError, setLegacyError] = useState<string | null>(null);
 
     // Conjunto COMPLETO de capítulos da obra — a reordenação é atômica e não
     // pode operar sobre uma página parcial da listagem.
     const { data: reorderSet } = useQuery({
         queryKey: [QUERY_KEYS.ADMIN_CHAPTERS, 'reorder-set', titleId],
-        queryFn: () => chapterAdminGateway.list({ page: 0, size: 500, titleId }),
+        queryFn: () => chapterAdminGateway.list({ page: 0, size: 1000, titleId }),
         enabled: reorderOpen && !!titleId,
     });
 
@@ -119,6 +125,27 @@ const DashboardChapters = () => {
         setReorderOpen(false);
     };
 
+    const confirmLegacyImport = async () => {
+        if (legacy.kind !== 'ready') return;
+        setLegacyImporting(true);
+        setLegacyError(null);
+        try {
+            const result = await chapterAdminGateway.importLegacy(legacy.preview.payload);
+            if (result.rejected.length) {
+                setLegacyError(t('dashboard.chapters.legacy.partial', { count: result.rejected.length }));
+                return;
+            }
+            window.localStorage.removeItem(CHAPTER_STORE_KEY);
+            setLegacy({ kind: 'none' });
+            setLegacyConfirmOpen(false);
+            await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ADMIN_CHAPTERS] });
+        } catch {
+            setLegacyError(t('dashboard.chapters.legacy.error'));
+        } finally {
+            setLegacyImporting(false);
+        }
+    };
+
     const statusFilterOptions = [
         { value: '', label: t('dashboard.chapters.filters.allStatuses') },
         ...CHAPTER_STATUSES.map(status => ({ value: status, label: t(`dashboard.status.chapter.${status}`) })),
@@ -138,6 +165,31 @@ const DashboardChapters = () => {
                 searchPlaceholder={t('dashboard.chapters.search')}
                 searchButtonLabel={t('common.search')}
             />
+
+            {legacy.kind !== 'none' && (
+                <div className="rounded-mr-sm border border-mr-border bg-mr-surface-muted p-3.5" role="status">
+                    {legacy.kind === 'ready' ? (
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="min-w-0 flex-1">
+                                <p className="text-mr-small font-mr-bold text-mr-fg">{t('dashboard.chapters.legacy.title')}</p>
+                                <p className="mt-1 text-mr-tiny text-mr-fg-subtle">
+                                    {t('dashboard.chapters.legacy.preview', { chapters: legacy.preview.chaptersCount,
+                                        pages: legacy.preview.pagesCount, ignored: legacy.preview.ignoredDeletedCount })}
+                                </p>
+                                {legacyError && <p className="mt-1 text-mr-tiny text-mr-danger">{legacyError}</p>}
+                            </div>
+                            <Button size="sm" variant="primary" onClick={() => setLegacyConfirmOpen(true)}>
+                                {t('dashboard.chapters.legacy.import')}
+                            </Button>
+                        </div>
+                    ) : (
+                        <div>
+                            <p className="text-mr-small font-mr-bold text-mr-danger">{t('dashboard.chapters.legacy.invalidTitle')}</p>
+                            <p className="mt-1 text-mr-tiny text-mr-fg-subtle">{legacy.reason}</p>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="flex flex-wrap items-end gap-3">
                 <label className="flex flex-col gap-1.5">
@@ -255,6 +307,17 @@ const DashboardChapters = () => {
                 confirmLabel={t('dashboard.chapters.bulk.delete')}
                 danger
                 isSubmitting={actions.isSubmitting}
+            />
+
+            <ConfirmModal
+                isOpen={legacyConfirmOpen}
+                onClose={() => setLegacyConfirmOpen(false)}
+                onConfirm={() => void confirmLegacyImport()}
+                title={t('dashboard.chapters.legacy.confirmTitle')}
+                message={legacy.kind === 'ready' ? t('dashboard.chapters.legacy.confirmMessage', {
+                    chapters: legacy.preview.chaptersCount, pages: legacy.preview.pagesCount }) : ''}
+                confirmLabel={t('dashboard.chapters.legacy.import')}
+                isSubmitting={legacyImporting}
             />
         </div>
     );

@@ -100,7 +100,7 @@ const useCommentEditorImages = ({ textareaRef, removePlaceholder }: UseCommentEd
 
                 const imgHTML = `<div contenteditable="false" style="position: relative; display: inline-block; max-width: max-content;">
                                     <img src="${imageUrl}" style="max-height: 30rem; border-radius: 0.125rem; display: block; object-fit: cover;" />
-                                    <button type="button" class="remove-img-btn" style="position: absolute; top: 0; right: 0; background: #f56565; color: white; font-size: 0.75rem; padding: 0.125rem 0.375rem; border: none; border-radius: 0 0.125rem 0 0.125rem; opacity: 0.75;">
+                                    <button type="button" class="remove-img-btn" style="position: absolute; top: 0; right: 0; background: var(--mr-danger); color: var(--mr-on-overlay); font-size: 0.75rem; padding: 0.125rem 0.375rem; border: none; border-radius: 0 0.125rem 0 0.125rem; opacity: 0.75;">
                                         X
                                     </button>
                                  </div>

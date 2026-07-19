@@ -14,6 +14,7 @@ const ForgotPassword = () => {
 
     const [email, setEmail] = useState('');
     const [sent, setSent] = useState(false);
+    const [expirationMinutes, setExpirationMinutes] = useState<number | null>(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -26,9 +27,13 @@ const ForgotPassword = () => {
         }
         setLoading(true);
         try {
-            await requestPasswordReset(email.trim());
+            const result = await requestPasswordReset(email.trim());
+            setExpirationMinutes(
+                result.expiresInSeconds === null ? null : Math.max(1, Math.ceil(result.expiresInSeconds / 60)),
+            );
         } catch {
             // Always show success — never reveal if email is registered
+            setExpirationMinutes(null);
         } finally {
             setSent(true);
             setLoading(false);
@@ -55,7 +60,7 @@ const ForgotPassword = () => {
                                 e.preventDefault();
                                 setSent(false);
                             }}
-                            className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                            className="font-mr-bold text-mr-accent-fg tracking-mr no-underline"
                         >
                             {t('forgotPassword.sentTryAgain')}
                         </a>
@@ -63,7 +68,7 @@ const ForgotPassword = () => {
                         <a
                             href={withWebBasePath(ROUTES.LOGIN)}
                             onClick={go(withWebBasePath(ROUTES.LOGIN))}
-                            className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                            className="font-mr-bold text-mr-accent-fg tracking-mr no-underline"
                         >
                             {t('forgotPassword.backToLoginLink')}
                         </a>
@@ -71,34 +76,29 @@ const ForgotPassword = () => {
                 }
             >
                 {/* Success card */}
-                <div
-                    className="flex items-start gap-3.5 rounded-mr-sm p-5"
-                    style={{
-                        background: 'rgba(16,185,129,0.08)',
-                        border: '1px solid rgba(16,185,129,0.35)',
-                    }}
-                >
+                <div className="flex items-start gap-3.5 rounded-mr-sm border border-mr-success bg-mr-success-surface p-5">
                     <div
                         className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs text-[18px]"
-                        style={{
-                            background: 'rgba(16,185,129,0.18)',
-                            color: '#10b981',
-                        }}
+                        style={{ color: 'var(--mr-success)' }}
                         aria-hidden
                     >
                         ✓
                     </div>
                     <div className="min-w-0 flex-1">
                         <div className="mb-1 text-[13px] font-mr-bold tracking-mr text-mr-fg">
-                            {t('forgotPassword.sentLinkSentTo')} <span className="text-mr-accent">{email}</span>
+                            {t('forgotPassword.sentLinkSentTo')} <span className="text-mr-accent-fg">{email}</span>
                         </div>
-                        <div className="text-mr-small leading-relaxed text-mr-gray-200">{t('forgotPassword.sentExpiry')}</div>
+                        <div className="text-mr-small leading-relaxed text-mr-gray-200">
+                            {expirationMinutes === null
+                                ? t('forgotPassword.sentExpiryUnknown')
+                                : t('forgotPassword.sentExpiry', { minutes: expirationMinutes })}
+                        </div>
                     </div>
                 </div>
 
                 {/* Next steps */}
                 <div className="mt-4">
-                    <div className="mb-2 text-mr-tiny font-mr-extrabold uppercase tracking-[0.12em] text-mr-accent">{t('forgotPassword.sentNextSteps')}</div>
+                    <div className="mb-2 text-mr-tiny font-mr-extrabold uppercase tracking-[0.12em] text-mr-accent-fg">{t('forgotPassword.sentNextSteps')}</div>
                     <ol className="m-0 list-decimal pl-5 text-[13px] leading-[1.7] text-mr-gray-200">
                         <li>{t('forgotPassword.sentStep1')}</li>
                         <li>{t('forgotPassword.sentStep2')}</li>
@@ -120,7 +120,7 @@ const ForgotPassword = () => {
                     <a
                         href={withWebBasePath(ROUTES.LOGIN)}
                         onClick={go(withWebBasePath(ROUTES.LOGIN))}
-                        className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                        className="font-mr-bold text-mr-accent-fg tracking-mr no-underline"
                     >
                         {t('forgotPassword.backToLoginLink')}
                     </a>

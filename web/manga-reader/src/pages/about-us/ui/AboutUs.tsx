@@ -20,9 +20,9 @@ const FEATURES: { key: string; icon: LucideIcon }[] = [
 
 // Avatares decorativos (iniciais/cores) dos "papéis" da comunidade.
 const ROLES: { key: string; avatars: { initials: string; color: string }[] }[] = [
-    { key: 'readers', avatars: [{ initials: 'AK', color: '#ddda2a' }, { initials: 'JS', color: '#FF784F' }, { initials: 'LM', color: '#7aa2ff' }] },
-    { key: 'translators', avatars: [{ initials: 'TR', color: '#7ad1a8' }, { initials: 'PV', color: '#ddda2a' }] },
-    { key: 'fans', avatars: [{ initials: 'FN', color: '#FF784F' }, { initials: 'DG', color: '#c98cff' }, { initials: 'BK', color: '#ddda2a' }] },
+    { key: 'readers', avatars: [{ initials: 'AK', color: 'var(--mr-accent)' }, { initials: 'JS', color: 'var(--mr-danger)' }, { initials: 'LM', color: '#7aa2ff' }] },
+    { key: 'translators', avatars: [{ initials: 'TR', color: '#7ad1a8' }, { initials: 'PV', color: 'var(--mr-accent)' }] },
+    { key: 'fans', avatars: [{ initials: 'FN', color: 'var(--mr-danger)' }, { initials: 'DG', color: '#c98cff' }, { initials: 'BK', color: 'var(--mr-accent)' }] },
 ];
 
 const AboutUs = () => {
@@ -34,9 +34,9 @@ const AboutUs = () => {
             {/* Hero */}
             <section className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
                 <div>
-                    <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.16em] text-mr-accent">{t('aboutUs.hero.eyebrow')}</p>
+                    <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.16em] text-mr-accent-fg">{t('aboutUs.hero.eyebrow')}</p>
                     <h1 className="mt-3 text-[clamp(2rem,6vw,3.25rem)] font-mr-extrabold leading-tight text-mr-fg text-balance">
-                        {t('aboutUs.hero.titleBefore')} <em className="not-italic text-mr-accent">{t('aboutUs.hero.titleHighlight')}</em>
+                        {t('aboutUs.hero.titleBefore')} <em className="not-italic text-mr-accent-fg">{t('aboutUs.hero.titleHighlight')}</em>
                         {t('aboutUs.hero.titleAfter')}
                     </h1>
                     <p className="mt-4 max-w-[52ch] text-mr-body leading-relaxed text-mr-fg-muted">{t('aboutUs.hero.lead')}</p>
@@ -50,7 +50,7 @@ const AboutUs = () => {
                                 key={label}
                                 className="inline-flex items-center gap-2 rounded-mr-full border border-mr-border bg-mr-surface px-3.5 py-2 text-mr-small font-mr-bold text-mr-fg-muted"
                             >
-                                <Icon className="size-3.5 text-mr-accent" aria-hidden="true" />
+                                <Icon className="size-3.5 text-mr-accent-fg" aria-hidden="true" />
                                 {label}
                             </span>
                         ))}
@@ -63,9 +63,9 @@ const AboutUs = () => {
 
             {/* Missão */}
             <section className="mt-12 rounded-mr-md border border-mr-border border-l-[3px] border-l-mr-accent bg-mr-surface p-6 sm:p-8" aria-label={t('aboutUs.mission.eyebrow')}>
-                <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.16em] text-mr-accent">{t('aboutUs.mission.eyebrow')}</p>
+                <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.16em] text-mr-accent-fg">{t('aboutUs.mission.eyebrow')}</p>
                 <p className="mt-3 text-[clamp(1.375rem,3vw,1.875rem)] font-mr-extrabold leading-snug text-mr-fg text-balance">
-                    {t('aboutUs.mission.statementBefore')} <em className="not-italic text-mr-accent">{t('aboutUs.mission.statementHighlight')}</em>
+                    {t('aboutUs.mission.statementBefore')} <em className="not-italic text-mr-accent-fg">{t('aboutUs.mission.statementHighlight')}</em>
                     {t('aboutUs.mission.statementAfter')}
                 </p>
                 <p className="mt-4 max-w-[60ch] text-mr-body leading-relaxed text-mr-fg-muted">{t('aboutUs.mission.body')}</p>
@@ -81,7 +81,7 @@ const AboutUs = () => {
                             key={key}
                             className="rounded-mr-md border border-mr-border bg-mr-surface p-5 transition-all hover:-translate-y-0.5 hover:border-mr-accent-50 hover:shadow-mr-default"
                         >
-                            <span className="inline-flex size-11 items-center justify-center rounded-mr-sm bg-mr-accent-25 text-mr-accent">
+                            <span className="inline-flex size-11 items-center justify-center rounded-mr-sm bg-mr-accent-25 text-mr-accent-fg">
                                 <Icon className="size-[22px]" aria-hidden="true" />
                             </span>
                             <h3 className="mt-3 text-[17px] font-mr-extrabold text-mr-fg">{t(`aboutUs.features.${key}.title`)}</h3>

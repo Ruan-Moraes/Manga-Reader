@@ -25,7 +25,7 @@ const TruncatedCell = ({ content, maxLength = 80, title = 'Detalhes' }: Truncate
                         e.stopPropagation();
                         setIsOpen(true);
                     }}
-                    className="inline-flex text-xs font-semibold transition-colors text-quaternary-default hover:text-quaternary-opacity-75"
+                    className="inline-flex text-xs font-semibold transition-colors text-mr-accent-fg hover:text-mr-accent-fg"
                 >
                     Ver mais
                 </button>

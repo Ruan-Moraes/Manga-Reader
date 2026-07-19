@@ -40,7 +40,7 @@ export const Tabs = ({ items, value, onChange, variant = 'underline', size = 'md
                             onClick={() => onChange(it.value)}
                             className={cn(
                                 'inline-flex h-[46px] items-center gap-2 rounded-mr-xs border-l-2 px-3 text-left font-mr-bold transition-colors duration-mr-default',
-                                active ? 'border-mr-accent bg-mr-accent-10 text-mr-accent' : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
+                                active ? 'border-mr-accent-border bg-mr-accent-10 text-mr-accent-fg' : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
                                 it.disabled && 'cursor-not-allowed opacity-mr-disabled',
                             )}
                         >
@@ -72,11 +72,11 @@ export const Tabs = ({ items, value, onChange, variant = 'underline', size = 'md
                             baseSize,
                             variant === 'underline'
                                 ? active
-                                    ? 'border-b-2 border-mr-accent text-mr-fg'
+                                    ? 'border-b-2 border-mr-accent-border text-mr-fg'
                                     : 'border-b-2 border-transparent text-mr-fg-muted hover:text-mr-fg'
                                 : active
-                                  ? 'rounded-mr-xs bg-mr-accent text-mr-primary'
-                                  : 'rounded-mr-xs border border-mr-tertiary text-mr-fg hover:border-mr-accent hover:text-mr-accent',
+                                  ? 'rounded-mr-xs bg-mr-accent text-mr-on-accent'
+                                  : 'rounded-mr-xs border border-mr-tertiary text-mr-fg hover:border-mr-accent-border hover:text-mr-accent-fg',
                             it.disabled && 'cursor-not-allowed opacity-mr-disabled',
                         )}
                     >

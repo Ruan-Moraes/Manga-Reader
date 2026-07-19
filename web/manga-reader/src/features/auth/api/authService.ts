@@ -12,9 +12,9 @@ export type { StoredSession };
 // ---------------------------------------------------------------------------
 
 /**
- * Resposta dos endpoints de auth. Os tokens vêm no body (contrato
- * compartilhado com o mobile), mas no web o access token vai só para a
- * memória e o refresh fica no cookie httpOnly — nada de token em storage.
+ * Resposta dos endpoints de auth. No transporte web, apenas o access token
+ * vem no body; o refresh fica exclusivamente no cookie httpOnly. Os campos
+ * continuam opcionais porque `/me` não devolve tokens e o mobile usa body.
  */
 export type AuthResponse = StoredSession & {
     accessToken?: string | null;
@@ -31,6 +31,15 @@ export type SignUpRequest = {
     email: string;
     password: string;
 };
+
+export type PasswordResetRequestResponse = {
+    message: string;
+    expiresInSeconds: number | null;
+};
+
+const COOKIE_REFRESH_CONFIG = {
+    headers: { 'X-Refresh-Token-Transport': 'cookie' },
+} as const;
 
 // ---------------------------------------------------------------------------
 // Mapper — AuthResponse → User
@@ -63,7 +72,7 @@ const storeAuth = (auth: AuthResponse): void => {
 // ---------------------------------------------------------------------------
 
 export const signIn = async (data: SignInRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>(API_URLS.AUTH_SIGN_IN, data);
+    const response = await api.post<ApiResponse<AuthResponse>>(API_URLS.AUTH_SIGN_IN, data, COOKIE_REFRESH_CONFIG);
 
     const auth = response.data.data;
     storeAuth(auth);
@@ -71,7 +80,7 @@ export const signIn = async (data: SignInRequest): Promise<AuthResponse> => {
 };
 
 export const signUp = async (data: SignUpRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>(API_URLS.AUTH_SIGN_UP, data);
+    const response = await api.post<ApiResponse<AuthResponse>>(API_URLS.AUTH_SIGN_UP, data, COOKIE_REFRESH_CONFIG);
 
     const auth = response.data.data;
     storeAuth(auth);
@@ -106,8 +115,12 @@ export const signOut = async (): Promise<void> => {
     }
 };
 
-export const requestPasswordReset = async (email: string): Promise<string> => {
-    const response = await api.post<ApiResponse<string>>(API_URLS.AUTH_FORGOT_PASSWORD, { email });
+export const requestPasswordReset = async (email: string): Promise<PasswordResetRequestResponse> => {
+    const response = await api.post<ApiResponse<PasswordResetRequestResponse | string>>(API_URLS.AUTH_FORGOT_PASSWORD, { email });
+
+    if (typeof response.data.data === 'string') {
+        return { message: response.data.data, expiresInSeconds: null };
+    }
 
     return response.data.data;
 };

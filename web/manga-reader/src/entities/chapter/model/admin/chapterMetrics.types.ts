@@ -1,7 +1,6 @@
 /**
  * Contratos de métricas de leitura de capítulos (analytics).
- * Hoje alimentados por gerador determinístico fake; futuramente pelo
- * serviço real de analytics.
+ * Alimentados pelos eventos e registros de leitura persistidos no backend.
  */
 
 export type MetricsDevice = 'all' | 'mobile' | 'desktop' | 'tablet';

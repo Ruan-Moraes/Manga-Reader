@@ -68,11 +68,9 @@
             "languageValue": "Português (BR)",
             "languageAria": "Alterar idioma",
             "theme": "Tema",
-            "themeValue": "Escuro",
             "themeAria": "Alterar tema",
             "help": "Ajuda",
             "helpAria": "Abrir central de ajuda",
-            "themeWip": "Tema em desenvolvimento.",
             "uiGroup": "Interface",
             "contentGroup": "Conteúdo",
             "contentLoginHint": "Faça login para escolher"

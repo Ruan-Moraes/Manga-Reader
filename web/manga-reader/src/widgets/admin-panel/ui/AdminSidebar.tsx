@@ -146,7 +146,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
     return (
         <>
             {isOpen && (
-                <div className="fixed inset-0 z-mr-mobile-tab bg-[rgba(22,22,22,0.75)] backdrop-blur-mr lg:hidden" onClick={onClose} aria-hidden="true" />
+                <div className="fixed inset-0 z-mr-mobile-tab bg-mr-overlay backdrop-blur-mr lg:hidden" onClick={onClose} aria-hidden="true" />
             )}
             <aside
                 aria-label={t('sidebar.brand')}
@@ -159,13 +159,13 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
             >
                 <div className="flex items-center justify-between mb-3 px-1 lg:hidden">
                     <span className="text-mr-h4 font-mr-extrabold italic text-mr-fg">
-                        Manga <b className="font-mr-extrabold text-mr-accent">Reader</b>
+                        Manga <b className="font-mr-extrabold text-mr-accent-fg">Reader</b>
                     </span>
                     <button
                         type="button"
                         onClick={onClose}
                         aria-label={t('sidebar.closeMenu')}
-                        className="flex size-9 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg-muted transition-colors hover:border-mr-border hover:bg-mr-accent-25 hover:text-mr-accent"
+                        className="flex size-9 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg-muted transition-colors hover:border-mr-border hover:bg-mr-accent-25 hover:text-mr-accent-fg"
                     >
                         <X size={20} />
                     </button>
@@ -184,7 +184,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
                                     className={({ isActive }) =>
                                         `relative flex min-h-10 items-center gap-3 rounded-mr-xs border px-2.5 py-2.5 text-mr-body transition-colors ${
                                             isActive
-                                                ? 'border-mr-accent-50 bg-mr-accent-25 font-mr-bold text-mr-accent'
+                                                ? 'border-mr-accent-50 bg-mr-accent-25 font-mr-bold text-mr-accent-fg'
                                                 : 'border-transparent font-mr-semibold text-mr-fg-muted hover:bg-mr-surface hover:text-mr-fg'
                                         }`
                                     }
@@ -194,7 +194,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
                                             {isActive && (
                                                 <span aria-hidden="true" className="absolute left-[-10px] top-2 bottom-2 w-[3px] rounded-r-mr-xs bg-mr-accent" />
                                             )}
-                                            <span className={isActive ? 'text-mr-accent' : 'text-mr-tertiary'}>{item.icon}</span>
+                                            <span className={isActive ? 'text-mr-accent-fg' : 'text-mr-tertiary'}>{item.icon}</span>
                                             <span>{t(item.labelKey)}</span>
                                         </>
                                     )}

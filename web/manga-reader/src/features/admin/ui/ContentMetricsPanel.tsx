@@ -104,13 +104,13 @@ const ContentMetricsPanel = ({ metrics }: ContentMetricsPanelProps) => {
                                 {metrics.topTitles.map((title, idx) => (
                                     <tr key={title.id} className="border-b border-mr-gray-900 transition-colors last:border-b-0 hover:bg-mr-surface-muted">
                                         <td className="px-4 py-3">
-                                            <span className={cn('font-mr-extrabold tabular-nums', idx === 0 ? 'text-mr-accent' : 'text-mr-tertiary')}>{idx + 1}</span>
+                                            <span className={cn('font-mr-extrabold tabular-nums', idx === 0 ? 'text-mr-accent-fg' : 'text-mr-tertiary')}>{idx + 1}</span>
                                         </td>
                                         <td className="px-4 py-3 font-mr-bold text-mr-fg">{title.name}</td>
                                         <td className="px-4 py-3 text-mr-fg-subtle">{title.type ?? '—'}</td>
                                         <td className="px-4 py-3 text-right">
                                             <span className="inline-flex items-center justify-end gap-2">
-                                                <Star size={13} className="fill-mr-accent text-mr-accent" />
+                                                <Star size={13} className="fill-mr-accent text-mr-accent-fg" />
                                                 <span className="font-mr-bold tabular-nums text-mr-fg">{title.ratingAverage?.toFixed(1) ?? '—'}</span>
                                                 {title.ratingCount ? <span className="text-mr-tiny text-mr-fg-subtle">({title.ratingCount.toLocaleString(getLocale())})</span> : null}
                                             </span>

@@ -98,7 +98,10 @@
             "hide": "Ocultar",
             "hideConfirm": "Ocultar do seu histórico?",
             "hideYes": "Sim",
-            "hideNo": "Não"
+            "hideNo": "Não",
+            "hideError": "Não foi possível ocultar. Tente novamente.",
+            "loadError": "Não foi possível carregar o histórico de atividades.",
+            "retry": "Tentar novamente"
         },
         "editTabs": {
             "account": "Conta",
@@ -134,7 +137,7 @@
             "save": "Salvar configurações",
             "saving": "Salvando...",
             "savedMessage": "Configurações de privacidade atualizadas.",
-            "doNotTrackConfirm": "Ao selecionar \"Não rastrear\", todo o seu histórico de visualização será permanentemente deletado. Deseja continuar?"
+            "doNotTrackConfirm": "Ao selecionar \"Não rastrear\", seu histórico de visualização, capítulos lidos e atividades do perfil serão permanentemente apagados. Seu progresso de leitura será preservado. Deseja continuar?"
         },
         "recommendations": {
             "empty": "Nenhuma recomendação ainda.",
@@ -255,7 +258,11 @@
             },
             "privacy": {
                 "intro": "Controle o que aparece publicamente no seu perfil.",
-                "historyLabel": "Histórico de leitura",
+                "historyLabel": "Histórico e atividades",
+                "analyticsLabel": "Analytics comportamental privado",
+                "analyticsDesc": "Permite usar ações significativas para melhorar análises e recomendações. Ao desativar, os eventos existentes são apagados.",
+                "analyticsOn": "Ativado",
+                "analyticsOff": "Desativado",
                 "commentsLabel": "Comentários nas obras",
                 "adultContentLabel": "Conteúdo adulto",
                 "adultContentDesc": "Escolha como títulos +18 aparecem no catálogo e recomendações.",
@@ -268,7 +275,7 @@
                 "deleteDesc": "Apagar sua conta desativa seu acesso e anonimiza dados pessoais. Essa ação não pode ser desfeita.",
                 "deleteConfirmPlaceholder": "Digite \"{{name}}\" para confirmar",
                 "deleteAccount": "Apagar conta",
-                "historyDesc": "Define se outros leitores podem ver títulos lidos, datas e ritmo.",
+                "historyDesc": "Controla visualizações, capítulos lidos e atividades exibidas no perfil. O progresso de leitura permanece privado e preservado.",
                 "commentsDesc": "Define se a lista de reviews e respostas aparece no perfil público.",
                 "libraryLabel": "Biblioteca",
                 "libraryDesc": "Define se suas listas de leitura (lendo, quero ler, concluídos) aparecem no perfil público.",
@@ -554,6 +561,8 @@
                 "importTitle": "Importar lista",
                 "importDesc": "Traga sua lista de outro serviço.",
                 "importAction": "Importar",
+                "importUnavailable": "Indisponível",
+                "actionFailed": "Não foi possível concluir a ação",
                 "importModalTitle": "Importar lista",
                 "importModalDesc": "Escolha a origem da importação.",
                 "importStarted": "Importação iniciada",

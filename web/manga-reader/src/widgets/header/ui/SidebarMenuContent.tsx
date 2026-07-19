@@ -33,7 +33,7 @@ type Props = {
 
 type MenuItem = { label: string; link: string; badge?: string };
 
-const sectionTitleClass = 'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-quaternary-default';
+const sectionTitleClass = 'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-mr-accent-fg';
 
 const menuItemClass =
     'flex items-center justify-between px-3 py-2 rounded-xs text-sm font-medium transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary-default';
@@ -98,7 +98,7 @@ const SidebarMenuContent = ({ profile, isLoggedIn, onLogout, onNavigate }: Props
                     <button
                         type="button"
                         onClick={onLogout}
-                        className="w-full h-10 px-4 text-xs font-semibold border rounded-xs border-quinary-default text-quinary-default bg-primary-default hover:bg-quinary-default hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"
+                        className="w-full h-10 px-4 text-xs font-semibold border rounded-xs border-quinary-default text-quinary-default bg-primary-default hover:bg-quinary-default hover:text-mr-on-overlay transition-colors duration-300 flex items-center justify-center gap-2"
                     >
                         <LogOut /> {t('sidebar.action.logout')}
                     </button>

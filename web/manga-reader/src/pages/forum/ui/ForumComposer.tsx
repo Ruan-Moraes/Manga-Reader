@@ -74,7 +74,7 @@ const ForumComposer = () => {
                             <div className="composer-row">
                                 <label className="composer-label">
                                     <span className="mr-label">{t('ui.categoryLabel')}</span>
-                                    <span style={{ fontSize: 11, color: '#999', marginLeft: 8, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>{t('ui.categoryHint')}</span>
+                                    <span style={{ fontSize: 11, color: 'var(--mr-fg-subtle)', marginLeft: 8, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>{t('ui.categoryHint')}</span>
                                 </label>
                                 <div className="composer-cats">
                                     {composerCats.map(c => {
@@ -92,7 +92,7 @@ const ForumComposer = () => {
                             <div className="composer-row">
                                 <label className="composer-label">
                                     <span className="mr-label">{t('ui.titleLabel')}</span>
-                                    <span style={{ fontSize: 11, color: title.length > 120 ? '#FF784F' : '#999', marginLeft: 'auto', fontWeight: 700 }}>{title.length}/120</span>
+                                    <span style={{ fontSize: 11, color: title.length > 120 ? 'var(--mr-danger)' : 'var(--mr-fg-subtle)', marginLeft: 'auto', fontWeight: 700 }}>{title.length}/120</span>
                                 </label>
                                 <input className="composer-title-input" placeholder={t('ui.titlePlaceholder')} value={title} onChange={e => setTitle(e.target.value.slice(0, 120))} />
                             </div>
@@ -100,7 +100,7 @@ const ForumComposer = () => {
                             <div className="composer-row">
                                 <label className="composer-label">
                                     <span className="mr-label">{t('ui.tagsLabel')}</span>
-                                    <span style={{ fontSize: 11, color: '#999', marginLeft: 8, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>{t('ui.tagsHint')}</span>
+                                    <span style={{ fontSize: 11, color: 'var(--mr-fg-subtle)', marginLeft: 8, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>{t('ui.tagsHint')}</span>
                                 </label>
                                 <div className="composer-tags">
                                     {Object.entries(FORUM_TAGS).map(([k, tg]) => {
@@ -118,7 +118,7 @@ const ForumComposer = () => {
                             <div className="composer-row">
                                 <label className="composer-label">
                                     <span className="mr-label">{t('ui.contentLabel')}</span>
-                                    <span style={{ fontSize: 11, color: '#999', marginLeft: 8, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
+                                    <span style={{ fontSize: 11, color: 'var(--mr-fg-subtle)', marginLeft: 8, fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
                                         {t('ui.contentHintBefore')} <span style={{ color: 'var(--mr-accent)' }}>[spoiler]</span> {t('ui.contentHintAfter')}
                                     </span>
                                 </label>
@@ -141,21 +141,21 @@ const ForumComposer = () => {
                                     <button type="button" title={t('ui.mdLink')}>
                                         ⊕
                                     </button>
-                                    <span style={{ width: 1, height: 18, background: '#444', margin: '0 4px' }} />
+                                    <span style={{ width: 1, height: 18, background: 'var(--mr-border)', margin: '0 4px' }} />
                                     <button type="button" title={t('ui.spoiler')} className="forum-md-spoiler">
                                         <Eye size={12} strokeWidth={2} />
                                         {t('ui.spoiler')}
                                     </button>
                                     <span style={{ flex: 1 }} />
-                                    <span style={{ fontSize: 10, color: '#727273', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>{t('ui.charCount', { count: body.length })}</span>
+                                    <span style={{ fontSize: 10, color: 'var(--mr-tertiary)', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>{t('ui.charCount', { count: body.length })}</span>
                                 </div>
                                 <textarea className="composer-editor" placeholder={t('ui.contentPlaceholder')} value={body} onChange={e => setBody(e.target.value)} rows={9} />
 
                                 <div className={`composer-drop ${drag ? 'dragging' : ''}`} onDragOver={e => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}>
                                     <Plus size={18} strokeWidth={2} />
                                     <div>
-                                        <div style={{ color: '#fff', fontSize: 13, fontWeight: 700, letterSpacing: '.0625rem' }}>{t('ui.dropTitle')}</div>
-                                        <div style={{ color: '#999', fontSize: 11, marginTop: 2 }}>{t('ui.dropHint')}</div>
+                                        <div style={{ color: 'var(--mr-fg)', fontSize: 13, fontWeight: 700, letterSpacing: '.0625rem' }}>{t('ui.dropTitle')}</div>
+                                        <div style={{ color: 'var(--mr-fg-subtle)', fontSize: 11, marginTop: 2 }}>{t('ui.dropHint')}</div>
                                     </div>
                                     <Button variant="ghost">{t('ui.selectFiles')}</Button>
                                 </div>
@@ -207,7 +207,7 @@ const ForumComposer = () => {
                                 <span style={{ flex: 1 }} />
                                 <span className="forum-topic-when">{t('ui.fewSecondsAgo')}</span>
                             </div>
-                            <h1 className="forum-topic-title">{title || <span style={{ color: '#727273' }}>{t('ui.previewTitlePlaceholder')}</span>}</h1>
+                            <h1 className="forum-topic-title">{title || <span style={{ color: 'var(--mr-tertiary)' }}>{t('ui.previewTitlePlaceholder')}</span>}</h1>
                             <div className="forum-topic-tags">
                                 {tags.map(tg => {
                                     const tag = FORUM_TAGS[tg];
@@ -223,13 +223,13 @@ const ForumComposer = () => {
                                 <div className="forum-topic-author-block">
                                     <SquareAvatar initials="RM" color="var(--mr-accent)" size={42} />
                                     <div>
-                                        <span style={{ color: '#fff', fontWeight: 800, fontSize: 14, letterSpacing: '.0625rem' }}>Ruan Moraes</span>
-                                        <div style={{ color: '#999', fontSize: 11, marginTop: 2 }}>@ruanmoraes · {t('ui.levelShort', { level: 18 })}</div>
+                                        <span style={{ color: 'var(--mr-fg)', fontWeight: 800, fontSize: 14, letterSpacing: '.0625rem' }}>Ruan Moraes</span>
+                                        <div style={{ color: 'var(--mr-fg-subtle)', fontSize: 11, marginTop: 2 }}>@ruanmoraes · {t('ui.levelShort', { level: 18 })}</div>
                                     </div>
                                 </div>
                             </div>
                             <div className="forum-topic-content" style={{ marginTop: 18 }}>
-                                {body ? <RichBody text={body} /> : <p style={{ color: '#727273', fontStyle: 'italic' }}>{t('ui.previewBodyPlaceholder')}</p>}
+                                {body ? <RichBody text={body} /> : <p style={{ color: 'var(--mr-tertiary)', fontStyle: 'italic' }}>{t('ui.previewBodyPlaceholder')}</p>}
                             </div>
                         </div>
                     )}

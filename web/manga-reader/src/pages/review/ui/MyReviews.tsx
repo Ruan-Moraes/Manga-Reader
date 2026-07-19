@@ -183,7 +183,7 @@ const MyReviews = () => {
                         </div>
                         <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3">
                             <p className="text-mr-tiny font-mr-extrabold uppercase tracking-wide text-mr-fg-subtle">{t('myReviews.stats.avg')}</p>
-                            <p className="mt-1 text-[22px] font-mr-extrabold text-mr-accent">{stats.avg.toFixed(1)}</p>
+                            <p className="mt-1 text-[22px] font-mr-extrabold text-mr-accent-fg">{stats.avg.toFixed(1)}</p>
                             <Stars value={stats.avg} size={12} />
                         </div>
                         <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3">
@@ -211,7 +211,7 @@ const MyReviews = () => {
                                 className={cn(
                                     'rounded-mr-full border px-2.5 py-1 text-mr-tiny font-mr-bold transition-colors',
                                     !filterStar
-                                        ? 'border-mr-accent bg-mr-accent text-mr-primary'
+                                        ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
                                         : 'border-mr-chip-border bg-mr-chip text-mr-fg-subtle hover:border-mr-accent-50',
                                 )}
                             >
@@ -225,7 +225,7 @@ const MyReviews = () => {
                                     className={cn(
                                         'inline-flex items-center gap-1 rounded-mr-full border px-2.5 py-1 text-mr-tiny font-mr-bold transition-colors',
                                         filterStar === star
-                                            ? 'border-mr-accent bg-mr-accent text-mr-primary'
+                                            ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
                                             : 'border-mr-chip-border bg-mr-chip text-mr-fg-subtle hover:border-mr-accent-50',
                                     )}
                                 >
@@ -245,7 +245,7 @@ const MyReviews = () => {
                     {visible.length === 0 ? (
                         <div className="flex flex-col items-center gap-3 py-8 text-center">
                             <p className="text-mr-body font-mr-bold text-mr-fg">{t('reviews.empty.noMatch', { star: filterStar })}</p>
-                            <button type="button" onClick={() => setFilterStar(null)} className="text-mr-small font-mr-bold text-mr-accent hover:underline">
+                            <button type="button" onClick={() => setFilterStar(null)} className="text-mr-small font-mr-bold text-mr-accent-fg hover:underline">
                                 {t('reviews.empty.clearFilter')}
                             </button>
                         </div>

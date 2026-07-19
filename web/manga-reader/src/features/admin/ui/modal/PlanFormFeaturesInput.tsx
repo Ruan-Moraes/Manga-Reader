@@ -37,11 +37,11 @@ const PlanFormFeaturesInput = ({ value, onChange }: PlanFormFeaturesInputProps) 
                             type="button"
                             onClick={() => setTab(lang)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
-                                isActive ? 'border-b-2 border-quaternary-default text-quaternary-default' : 'text-tertiary hover:text-primary'
+                                isActive ? 'border-b-2 border-mr-accent-border text-mr-accent-fg' : 'text-tertiary hover:text-mr-fg'
                             }`}
                         >
                             {lang}
-                            {filled && <span className="text-quaternary-default">●</span>}
+                            {filled && <span className="text-mr-accent-fg">●</span>}
                         </button>
                     );
                 })}

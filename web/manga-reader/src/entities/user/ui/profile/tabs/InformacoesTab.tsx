@@ -68,7 +68,7 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
 
     return (
         <div>
-            <div className="mb-[18px] flex items-center gap-3.5 rounded-mr-sm border border-[#333333] bg-[#1f1f20] p-3.5">
+            <div className="mb-[18px] flex items-center gap-3.5 rounded-mr-sm border border-mr-border bg-mr-surface-interactive p-3.5">
                 <div className="relative">
                     <Avatar src={photoUrl || undefined} name={name} size={64} />
                     <button
@@ -79,7 +79,7 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
 
                             if (url !== null) savePhoto(url);
                         }}
-                        className="mr-focus-ring absolute -bottom-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-mr-xs border-2 border-mr-primary bg-mr-accent p-0 text-mr-primary"
+                        className="mr-focus-ring absolute -bottom-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-mr-xs border-2 border-mr-primary bg-mr-accent p-0 text-mr-on-accent"
                     >
                         <Plus size={12} />
                     </button>

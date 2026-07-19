@@ -80,7 +80,7 @@ const LanguageTab = ({ state }: { state: SettingsState }) => {
                                     <span className="w-5 shrink-0 text-center text-mr-small font-mr-bold text-mr-fg-subtle">{index + 1}</span>
                                     <span className="min-w-0 flex-1 truncate text-mr-body font-mr-bold text-mr-fg">{t(labelKeyFor(lang))}</span>
                                     {isFallback && (
-                                        <span className="shrink-0 rounded-mr-xs bg-mr-accent-10 px-1.5 py-0.5 text-mr-tiny font-mr-bold uppercase tracking-mr-label text-mr-accent">
+                                        <span className="shrink-0 rounded-mr-xs bg-mr-accent-10 px-1.5 py-0.5 text-mr-tiny font-mr-bold uppercase tracking-mr-label text-mr-accent-fg">
                                             {t('settings.system.language.fallbackBadge')}
                                         </span>
                                     )}
@@ -127,7 +127,7 @@ const LanguageTab = ({ state }: { state: SettingsState }) => {
                                         key={opt.value}
                                         type="button"
                                         onClick={() => addLang(opt.value)}
-                                        className="mr-focus-ring inline-flex items-center gap-1.5 rounded-mr-xs border border-mr-separator px-2.5 py-1.5 text-mr-small font-mr-bold text-mr-fg hover:border-mr-accent hover:text-mr-accent"
+                                        className="mr-focus-ring inline-flex items-center gap-1.5 rounded-mr-xs border border-mr-separator px-2.5 py-1.5 text-mr-small font-mr-bold text-mr-fg hover:border-mr-accent-border hover:text-mr-accent-fg"
                                     >
                                         <Plus className="size-4" aria-hidden="true" />
                                         {t(opt.labelKey)}

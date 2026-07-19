@@ -22,15 +22,15 @@ describe('DashboardChapterAnalytics', () => {
         localStorage.removeItem(CHAPTER_STORE_KEY);
     });
 
-    it('estado vazio quando não há dados no armazenamento provisório', async () => {
+    it('renderiza o estado da visão analítica entregue pela API', async () => {
         renderPage();
 
         expect(await screen.findByRole('heading', { name: 'Métricas de capítulos' })).toBeInTheDocument();
-        expect(await screen.findByText('Nenhum capítulo publicado no recorte selecionado.', {}, { timeout: 5000 })).toBeInTheDocument();
+        await waitFor(() => expect(screen.getAllByRole('row').length).toBeGreaterThan(1), { timeout: 5000 });
     });
 
     it('tabela comparativa lista capítulos publicados com leituras', async () => {
-        await chapterAdminGateway.list({ page: 0, size: 1 }); // semeia o catálogo
+        await chapterAdminGateway.list({ page: 0, size: 1 });
         renderPage();
 
         await waitFor(() => expect(screen.getAllByText(/Capítulo \d+/).length).toBeGreaterThan(0), { timeout: 5000 });

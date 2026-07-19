@@ -41,6 +41,7 @@ const HomeForYou = ({ forYou }: HomeForYouProps) => {
                             author: m.author,
                             cover: m.cover,
                             rating: m.ratingAverage,
+                            adult: m.adult,
                             chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                         }}
                         onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}

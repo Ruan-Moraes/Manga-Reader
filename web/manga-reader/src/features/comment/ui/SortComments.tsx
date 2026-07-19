@@ -19,7 +19,7 @@ const SortComments = ({ title }: SortCommentsProps) => {
     const segmentClass = (on: boolean) =>
         cn(
             '!min-h-0 !rounded-mr-full !border-0 !p-2 !shadow-none transition-colors duration-mr-default',
-            on ? '!bg-mr-accent !text-mr-primary' : '!bg-transparent text-mr-fg-subtle hover:!bg-mr-accent-25 hover:text-mr-fg',
+            on ? '!bg-mr-accent !text-mr-on-accent' : '!bg-transparent text-mr-fg-subtle hover:!bg-mr-accent-25 hover:text-mr-fg',
         );
 
     return (

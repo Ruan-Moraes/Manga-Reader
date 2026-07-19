@@ -22,8 +22,8 @@ export const VotePill = ({ value, active = null, onUp, onDown, label, upLabel = 
             aria-pressed={active === 'up'}
             aria-label={upLabel}
             className={cn(
-                'grid size-[1.625rem] place-items-center rounded-mr-full transition-colors hover:bg-white/5 hover:text-mr-fg mr-focus-ring cursor-pointer',
-                active === 'up' ? 'text-mr-accent' : 'text-mr-fg-subtle',
+                'grid size-[1.625rem] place-items-center rounded-mr-full transition-colors hover:bg-mr-surface-elevated hover:text-mr-fg mr-focus-ring cursor-pointer',
+                active === 'up' ? 'text-mr-accent-fg' : 'text-mr-fg-subtle',
             )}
         >
             <ChevronUp className="size-4" aria-hidden="true" />
@@ -31,7 +31,7 @@ export const VotePill = ({ value, active = null, onUp, onDown, label, upLabel = 
         <span
             className={cn(
                 'min-w-[1.625rem] text-center text-[13px] font-mr-extrabold tabular-nums',
-                active === 'up' && 'text-mr-accent',
+                active === 'up' && 'text-mr-accent-fg',
                 active === 'down' && 'text-mr-danger',
                 !active && 'text-mr-fg',
             )}
@@ -44,7 +44,7 @@ export const VotePill = ({ value, active = null, onUp, onDown, label, upLabel = 
             aria-pressed={active === 'down'}
             aria-label={downLabel}
             className={cn(
-                'grid size-[1.625rem] place-items-center rounded-mr-full transition-colors hover:bg-white/5 hover:text-mr-danger mr-focus-ring cursor-pointer',
+                'grid size-[1.625rem] place-items-center rounded-mr-full transition-colors hover:bg-mr-surface-elevated hover:text-mr-danger mr-focus-ring cursor-pointer',
                 active === 'down' ? 'text-mr-danger' : 'text-mr-fg-subtle',
             )}
         >

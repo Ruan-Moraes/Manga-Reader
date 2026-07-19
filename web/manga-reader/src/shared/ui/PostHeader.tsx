@@ -53,8 +53,8 @@ export const PostHeader = ({
                         aria-label={interactive ? nameProfileLabel : undefined}
                         className={cn(
                             'min-w-0 max-w-full truncate text-mr-body font-mr-extrabold leading-tight text-mr-fg',
-                            interactive && 'cursor-pointer bg-transparent p-0 hover:text-mr-accent mr-focus-ring',
-                            highlighted && 'text-mr-accent',
+                            interactive && 'cursor-pointer bg-transparent p-0 hover:text-mr-accent-fg mr-focus-ring',
+                            highlighted && 'text-mr-accent-fg',
                         )}
                     >
                         {name}

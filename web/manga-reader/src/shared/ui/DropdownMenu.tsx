@@ -42,7 +42,7 @@ export const DropdownMenu = ({ trigger, items, side = 'bottom', align = 'start',
                     style={{
                         zIndex: 'var(--z-index-mr-dropdown)',
                         borderRadius: 8,
-                        boxShadow: '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25), 0 12px 40px -12px rgba(0,0,0,0.7)',
+                        boxShadow: '-0.25rem 0.25rem 0 0 var(--mr-accent-25), var(--mr-elevated-shadow)',
                     }}
                     className="flex min-w-[220px] flex-col gap-px bg-mr-secondary p-1.5 animate-mr-fade-in"
                 >
@@ -70,12 +70,12 @@ export const DropdownMenu = ({ trigger, items, side = 'bottom', align = 'start',
                                 onSelect={it.onSelect}
                                 className={cn(
                                     'flex h-9 cursor-pointer items-center gap-2.5 rounded-mr-xs px-2.5 text-mr-body outline-none data-[highlighted]:bg-mr-accent-25 data-[disabled]:cursor-default data-[disabled]:opacity-mr-disabled',
-                                    it.destructive ? 'text-mr-danger data-[highlighted]:bg-[rgba(255,120,79,0.1)]' : 'text-mr-fg',
+                                    it.destructive ? 'text-mr-danger data-[highlighted]:bg-mr-danger-15' : 'text-mr-fg',
                                 )}
                             >
                                 {Icon && <Icon className="size-4 shrink-0 text-mr-fg-muted" aria-hidden="true" />}
                                 <span className="flex-1 truncate">{it.label}</span>
-                                {it.selected && <Check className="size-4 shrink-0 text-mr-accent" aria-hidden="true" />}
+                                {it.selected && <Check className="size-4 shrink-0 text-mr-accent-fg" aria-hidden="true" />}
                                 {it.shortcut && <Kbd size="sm">{it.shortcut}</Kbd>}
                             </RD.Item>
                         );

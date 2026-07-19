@@ -47,7 +47,7 @@ const NavActions = ({
         : [];
 
     const iconBtnBase =
-        'group relative items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2';
+        'group relative items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-focus-ring focus-visible:outline-offset-2';
 
     const dim = { width: iconSize, height: iconSize } as const;
 
@@ -87,7 +87,7 @@ const NavActions = ({
                         >
                             <BookOpen className="size-[20px]" strokeWidth={2} aria-hidden="true" />
                             {!!user.libraryCount && (
-                                <span className={cn(badgeBase, 'bg-mr-accent text-mr-primary')} style={badgeStyle}>
+                                <span className={cn(badgeBase, 'bg-mr-accent text-mr-on-accent')} style={badgeStyle}>
                                     {user.libraryCount > 99 ? '99+' : user.libraryCount}
                                 </span>
                             )}
@@ -98,7 +98,7 @@ const NavActions = ({
                             <button
                                 type="button"
                                 aria-label={t('nav.action.accountOf', { name: user.name })}
-                                className="inline-flex items-center justify-center rounded-mr-xs transition-colors duration-mr-default hover:border-mr-accent focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2"
+                                className="inline-flex items-center justify-center rounded-mr-xs transition-colors duration-mr-default hover:border-mr-accent-border focus-visible:outline-2 focus-visible:outline-mr-focus-ring focus-visible:outline-offset-2"
                                 style={dim}
                             >
                                 <Avatar src={user.avatar} name={user.name} size={40} />

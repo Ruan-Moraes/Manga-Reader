@@ -18,8 +18,8 @@ export const toneLeftBorder: Record<ToastTone, string> = {
 };
 
 export const toneIconColor: Record<ToastTone, string> = {
-    accent: 'text-mr-accent',
-    success: 'text-mr-accent',
+    accent: 'text-mr-accent-fg',
+    success: 'text-mr-accent-fg',
     danger: 'text-mr-danger',
     neutral: 'text-mr-fg-muted',
 };

@@ -484,6 +484,16 @@
             "search": "Buscar por título o número...",
             "filteredByTitle": "Mostrando capítulos de una obra específica",
             "analyticsLink": "Métricas",
+            "legacy": {
+                "title": "Se encontraron datos locales de capítulos",
+                "preview": "Vista previa: {{chapters}} capítulos y {{pages}} páginas; se ignorarán {{ignored}} eliminados.",
+                "import": "Importar al servidor",
+                "confirmTitle": "Confirmar migración de capítulos",
+                "confirmMessage": "¿Importar {{chapters}} capítulos y {{pages}} páginas? La copia local solo se elimina tras el éxito completo.",
+                "partial": "Se rechazaron {{count}} elementos. Los datos locales se conservaron para corregirlos y reintentar.",
+                "error": "La migración falló. No se eliminó ningún dato local.",
+                "invalidTitle": "No se pudieron validar los datos locales"
+            },
             "columnNumber": "N.º",
             "columnTitle": "Título",
             "columnStatus": "Estado",
@@ -560,11 +570,12 @@
                 "tabMetrics": "Métricas"
             },
             "pages": {
+                "mediaUnavailable": "La gestión de archivos no está disponible hasta configurar el servicio multimedia. Las páginas existentes permanecen en modo de solo lectura.",
                 "add": "Añadir páginas",
                 "removeSelected": "Eliminar {{count}}",
                 "count": "{{count}} páginas",
                 "emptyTitle": "Sin páginas",
-                "empty": "Añade páginas simuladas para preparar el capítulo.",
+                "empty": "No hay archivos de página asociados a este capítulo.",
                 "retry": "Reintentar",
                 "selectAriaLabel": "Seleccionar página {{order}}",
                 "dragAriaLabel": "Arrastrar página {{order}}",

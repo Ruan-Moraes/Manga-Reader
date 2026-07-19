@@ -49,11 +49,11 @@ export const GroupCard = ({ group, onOpen }: GroupCardProps) => {
         <div
             onClick={onOpen}
             data-testid="group-card"
-            className="group flex cursor-pointer flex-col overflow-hidden rounded-mr-sm border border-[#333] bg-mr-gray-900 transition-[border-color,box-shadow] duration-mr-default hover:border-mr-accent hover:shadow-mr-elevated"
+            className="group flex cursor-pointer flex-col overflow-hidden rounded-mr-sm border border-mr-border bg-mr-gray-900 transition-[border-color,box-shadow] duration-mr-default hover:border-mr-accent-border hover:shadow-mr-elevated"
         >
             <div
                 className="relative h-16"
-                style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'linear-gradient(135deg,#2a1f0f,#161616)' }}
+                style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'var(--mr-poster-gradient)' }}
             >
                 <SquareAvatar
                     name={group.name}
@@ -77,10 +77,10 @@ export const GroupCard = ({ group, onOpen }: GroupCardProps) => {
                     ))}
                 </div>
 
-                <div className="flex items-center justify-between border-t border-[#333] pt-2.5">
+                <div className="flex items-center justify-between border-t border-mr-border pt-2.5">
                     <div className="flex gap-3.5 text-mr-tiny text-mr-fg-muted">
                         <span>
-                            <strong className="font-mr-extrabold text-mr-accent">{compact(followers)}</strong> {t('card.followers')}
+                            <strong className="font-mr-extrabold text-mr-accent-fg">{compact(followers)}</strong> {t('card.followers')}
                         </span>
                         <span>
                             <strong className="font-mr-extrabold text-mr-fg">{group.totalTitles}</strong> {t('card.works')}
@@ -92,8 +92,8 @@ export const GroupCard = ({ group, onOpen }: GroupCardProps) => {
                         onClick={handleFollowClick}
                         disabled={pending}
                         className={cn(
-                            'min-h-11 rounded-mr-xs border border-mr-accent px-2.5 py-1.5 text-mr-tiny font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring disabled:cursor-not-allowed disabled:opacity-60',
-                            following || isMember ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
+                            'min-h-11 rounded-mr-xs border border-mr-accent-border px-2.5 py-1.5 text-mr-tiny font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring disabled:cursor-not-allowed disabled:opacity-60',
+                            following || isMember ? 'bg-transparent text-mr-accent-fg' : 'bg-mr-accent text-mr-on-accent',
                         )}
                     >
                         {isMember ? t('profile.member') : following ? t('card.following') : t('card.follow')}

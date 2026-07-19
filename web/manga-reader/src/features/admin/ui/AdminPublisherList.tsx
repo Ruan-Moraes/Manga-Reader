@@ -54,7 +54,7 @@ const buildColumns = (t: TFunction, onEdit: (p: AdminPublisher) => void, onDelet
                     target="_blank"
                     rel="noreferrer"
                     onClick={e => e.stopPropagation()}
-                    className="font-mr-mono text-mr-tiny text-mr-accent hover:underline"
+                    className="font-mr-mono text-mr-tiny text-mr-accent-fg hover:underline"
                 >
                     {publisher.website}
                 </a>

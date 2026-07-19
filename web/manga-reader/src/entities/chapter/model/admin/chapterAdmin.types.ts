@@ -94,6 +94,29 @@ export type BulkResult = {
     failed: { id: string; error: ChapterValidationError }[];
 };
 
+export type LegacyChapterImportPayload = {
+    chapters: Array<{
+        legacyId: string;
+        titleId: string;
+        title: string;
+        number: string;
+        displayOrder?: number;
+        description?: string | null;
+        status: string;
+        scheduledAt?: string | null;
+        publishedAt?: string | null;
+        createdAt?: string | null;
+        updatedAt?: string | null;
+        pages: Array<Omit<ChapterPage, 'chapterId'>>;
+    }>;
+};
+
+export type LegacyChapterImportResult = {
+    accepted: string[];
+    skipped: string[];
+    rejected: Array<{ legacyId: string; reason: string }>;
+};
+
 /**
  * Consulta de listagem "server-side ready": paginação, busca, filtros e
  * ordenação são SEMPRE resolvidos pelo gateway (nunca no componente).

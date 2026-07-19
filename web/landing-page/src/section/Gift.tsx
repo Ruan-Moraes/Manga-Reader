@@ -1,182 +1,129 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Icon, { type IconName } from '@/shared/component/Icon';
-import { accentButton } from '@/shared/component/PricingCard';
-import { Section, SectionTitle } from '@/shared/component/Primitives';
+import Button from '@/shared/component/Button';
+import Icon from '@/shared/component/Icon';
+import MarketingSection, {
+    SectionHeading,
+} from '@/shared/component/MarketingSection';
 import Reveal from '@/shared/component/Reveal';
-
+import SegmentedTabs from '@/shared/component/SegmentedTabs';
+import { appHref } from '@/shared/config/appLinks';
 import type { GiftStep } from '@/shared/data/landing';
 
 type Tab = 'give' | 'redeem';
 
-const APP_URL = import.meta.env.VITE_APP_URL ?? '';
-
 export default function Gift() {
-    const { t } = useTranslation();
-
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
     const [tab, setTab] = useState<Tab>('give');
     const [code, setCode] = useState('');
-
     const steps = t('gift.steps', { returnObjects: true }) as GiftStep[];
-
-    function handleGive() {
-        window.location.href = `${APP_URL}/subscription?action=gift`;
-    }
 
     function handleRedeem() {
         const trimmed = code.trim();
-
         window.location.href = trimmed
-            ? `${APP_URL}/subscription/redeem?code=${encodeURIComponent(trimmed)}`
-            : `${APP_URL}/subscription/redeem`;
+            ? `${appHref('/subscription/redeem')}?code=${encodeURIComponent(trimmed)}`
+            : appHref('/subscription/redeem');
     }
 
-    const tabButtons: [Tab, string, IconName][] = [
-        ['give', t('gift.tabGive'), 'gift'],
-        ['redeem', t('gift.tabRedeem'), 'ticket'],
-    ];
-
     return (
-        <Section id="gift" alt>
-            <SectionTitle eyebrow={t('gift.eyebrow')} title={t('gift.title')} sub={t('gift.sub')} />
-
-            <Reveal delay={80} style={{ display: 'flex', justifyContent: 'center', marginTop: 34 }}>
-                <div
-                    role="tablist"
-                    aria-label={t('gift.tablistLabel')}
-                    style={{
-                        display: 'inline-flex',
-                        gap: 4,
-                        padding: 5,
-                        borderRadius: 999,
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid #444',
-                    }}
-                >
-                    {tabButtons.map(([id, label, ic]) => {
-                        const on = tab === id;
-
-                        return (
-                            <button
-                                key={id}
-                                role="tab"
-                                aria-selected={on}
-                                onClick={() => setTab(id)}
-                                style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 8,
-                                    height: 42,
-                                    padding: '0 22px',
-                                    borderRadius: 999,
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontFamily: 'inherit',
-                                    fontSize: 14,
-                                    fontWeight: 700,
-                                    letterSpacing: '.0625rem',
-                                    background: on ? '#ddda2a' : 'transparent',
-                                    color: on ? '#161616' : '#cccccc',
-                                    transition: 'all .3s ease',
-                                }}
-                            >
-                                <Icon name={ic} size={16} />
-                                {label}
-                            </button>
-                        );
-                    })}
-                </div>
+        <MarketingSection key={locale} id="gift" tone="raised">
+            <SectionHeading
+                eyebrow={t('gift.eyebrow')}
+                title={t('gift.title')}
+                description={t('gift.sub')}
+            />
+            <Reveal delay={80} className="mt-[34px] flex justify-center">
+                <SegmentedTabs
+                    ariaLabel={t('gift.tablistLabel')}
+                    tabs={[
+                        {
+                            id: 'give',
+                            label: t('gift.tabGive'),
+                            icon: <Icon name="gift" size={16} />,
+                        },
+                        {
+                            id: 'redeem',
+                            label: t('gift.tabRedeem'),
+                            icon: <Icon name="ticket" size={16} />,
+                        },
+                    ]}
+                    value={tab}
+                    onValueChange={setTab}
+                    panelId="gift"
+                />
             </Reveal>
-
-            <Reveal delay={130} style={{ maxWidth: 860, margin: '34px auto 0' }}>
-                {tab === 'give' ? (
-                    <div key="give" className="lp-fade-in">
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,190px),1fr))',
-                                gap: 16,
-                            }}
-                        >
-                            {steps.map((st, i) => (
-                                <div key={i} style={{ padding: 20, borderRadius: 8, background: 'var(--color-primary)', border: '1px solid #444' }}>
-                                    <div
-                                        style={{
-                                            width: 34,
-                                            height: 34,
-                                            borderRadius: 999,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            background: '#ddda2a',
-                                            color: '#161616',
-                                            fontWeight: 800,
-                                            fontSize: 15,
-                                            marginBottom: 14,
-                                        }}
+            <Reveal delay={130} className="mx-auto mt-[34px] max-w-[920px]">
+                <div
+                    id="gift-panel"
+                    role="tabpanel"
+                    aria-labelledby={`gift-tab-${tab}`}
+                    tabIndex={0}
+                >
+                    {tab === 'give' ? (
+                        <div className="animate-fade">
+                            <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,190px),1fr))] gap-4">
+                                {steps.map((step, index) => (
+                                    <article
+                                        className="rounded-[14px] border border-border bg-card p-[22px] text-left"
+                                        key={step.t}
                                     >
-                                        {i + 1}
-                                    </div>
-                                    <h4 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '.0625rem' }}>
-                                        {st.t}
-                                    </h4>
-                                    <p style={{ margin: 0, fontSize: 13, color: '#999', lineHeight: 1.5 }}>{st.d}</p>
-                                </div>
-                            ))}
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 28 }}>
-                            <button
-                                onClick={handleGive}
-                                style={{ ...accentButton(), width: 'auto', padding: '0 30px', display: 'inline-flex', alignItems: 'center', gap: 8 }}
-                            >
-                                <Icon name="gift" size={17} />
-                                {t('gift.giveCta')}
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div key="redeem" className="lp-fade-in" style={{ maxWidth: 440, margin: '0 auto', textAlign: 'center' }}>
-                        <div style={{ padding: 28, borderRadius: 12, background: 'var(--color-primary)', border: '1px solid #444' }}>
-                            <div
-                                style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: 52,
-                                    height: 52,
-                                    borderRadius: 999,
-                                    background: 'rgba(221,218,42,0.12)',
-                                    border: '1px solid rgba(221,218,42,0.4)',
-                                    color: '#ddda2a',
-                                    margin: '0 auto 16px',
-                                }}
-                            >
-                                <Icon name="ticket" size={24} />
+                                        <span className="inline-flex size-[38px] items-center justify-center rounded-full bg-accent font-black text-on-accent">
+                                            {index + 1}
+                                        </span>
+                                        <h3 className="m-[14px_0_6px] text-base text-fg">
+                                            {step.t}
+                                        </h3>
+                                        <p className="m-0 text-[0.875rem] leading-[1.6] text-copy-muted">
+                                            {step.d}
+                                        </p>
+                                    </article>
+                                ))}
                             </div>
+                            <div className="mt-7 flex justify-center">
+                                <Button
+                                    href={`${appHref('/subscription')}?action=gift`}
+                                    size="lg"
+                                    icon={<Icon name="gift" size={17} />}
+                                >
+                                    {t('gift.giveCta')}
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="mx-auto max-w-[460px] animate-fade rounded-[14px] border border-border bg-card p-7 text-center">
+                            <span className="mb-4 inline-flex size-[52px] items-center justify-center rounded-full border border-accent-muted bg-accent-subtle text-accent-fg">
+                                <Icon name="ticket" size={24} />
+                            </span>
                             <label
+                                className="mb-2.5 block text-[0.875rem] font-extrabold text-copy"
                                 htmlFor="gift-code"
-                                style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#cccccc', marginBottom: 10, letterSpacing: '.0625rem' }}
                             >
                                 {t('gift.redeemLabel')}
                             </label>
                             <input
                                 id="gift-code"
                                 type="text"
-                                className="mr-input"
+                                className="mb-3.5 h-[50px] w-full rounded-[10px] border border-line bg-primary px-3.5 text-center font-extrabold tracking-[0.12em] text-fg uppercase outline-none transition-[border-color,box-shadow] duration-[180ms] placeholder:text-tertiary focus:border-accent-border focus:shadow-[0_0_0_3px_rgb(221_218_42_/_10%)]"
                                 value={code}
-                                onChange={e => setCode(e.target.value)}
+                                onChange={event => setCode(event.target.value)}
                                 placeholder={t('gift.redeemPlaceholder')}
-                                style={{ textAlign: 'center', fontWeight: 700, letterSpacing: '.15em', height: 48, textTransform: 'uppercase' }}
                             />
-                            <button onClick={handleRedeem} style={{ ...accentButton(), marginTop: 16 }}>
+                            <Button
+                                size="lg"
+                                className="w-full"
+                                onClick={handleRedeem}
+                            >
                                 {t('gift.redeemCta')}
-                            </button>
-                            <p style={{ margin: '14px 0 0', fontSize: 12, color: '#727273', lineHeight: 1.5 }}>{t('gift.redeemHint')}</p>
+                            </Button>
+                            <p className="mt-3.5 text-[0.875rem] leading-[1.6] text-copy-muted">
+                                {t('gift.redeemHint')}
+                            </p>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </Reveal>
-        </Section>
+        </MarketingSection>
     );
 }

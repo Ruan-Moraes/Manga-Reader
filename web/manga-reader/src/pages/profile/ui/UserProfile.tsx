@@ -212,7 +212,7 @@ const UserProfile = () => {
                     </div>
                 ))}
 
-            {tab === 'activity' && <ActivityTab profileUserId={profileUserId} />}
+            {tab === 'activity' && <ActivityTab profileUserId={profileUserId} isOwn={isOwn} />}
 
             {editing && (
                 <RatingModal

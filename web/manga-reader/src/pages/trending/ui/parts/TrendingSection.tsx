@@ -21,7 +21,7 @@ const TrendCard = ({ item, rank, featured = false }: { item: TrendingTitle; rank
         <button
             type="button"
             onClick={() => navigate(ROUTES.TITLE_DETAIL(item.id))}
-            className={`group relative overflow-hidden rounded-mr-sm border text-left transition-all hover:-translate-y-1 hover:border-mr-accent ${featured ? 'border-mr-accent bg-mr-surface p-5 shadow-mr-lg' : 'border-mr-border bg-mr-surface p-4'}`}
+            className={`group relative overflow-hidden rounded-mr-sm border text-left transition-all hover:-translate-y-1 hover:border-mr-accent-border ${featured ? 'border-mr-accent-border bg-mr-surface p-5 shadow-mr-lg' : 'border-mr-border bg-mr-surface p-4'}`}
         >
             <div className="flex gap-4">
                 <div className={`${featured ? 'h-48 w-32' : 'h-32 w-24'} shrink-0 overflow-hidden rounded-mr-xs bg-mr-tertiary/20`}>
@@ -29,7 +29,7 @@ const TrendCard = ({ item, rank, featured = false }: { item: TrendingTitle; rank
                 </div>
                 <div className="min-w-0 flex-1">
                     <div className="mb-3 flex items-center justify-between gap-2">
-                        <span className="font-mono text-3xl font-black text-mr-accent">#{rank}</span>
+                        <span className="font-mono text-3xl font-black text-mr-accent-fg">#{rank}</span>
                         <TrendGrowthBadge value={item.growthPercent} />
                     </div>
                     <h2 className={`${featured ? 'text-mr-h3' : 'text-mr-body'} truncate font-mr-bold text-mr-fg`}>{item.name}</h2>
@@ -52,7 +52,7 @@ const TrendingSection = ({ items }: { items: TrendingTitle[] }) => {
     if (!items.length) {
         return (
             <div className="rounded-mr-sm border border-dashed border-mr-border bg-mr-surface px-6 py-16 text-center">
-                <BarChart3 className="mx-auto mb-4 size-10 text-mr-accent" />
+                <BarChart3 className="mx-auto mb-4 size-10 text-mr-accent-fg" />
                 <h2 className="text-mr-h4 font-mr-bold text-mr-fg">{t('trending.emptyTitle')}</h2>
                 <p className="mx-auto mt-2 max-w-lg text-mr-small text-mr-fg-muted">{t('trending.emptyBody')}</p>
             </div>
@@ -66,7 +66,7 @@ const TrendingSection = ({ items }: { items: TrendingTitle[] }) => {
                 ))}
             </div>
             <div className="mb-4 flex items-center gap-2">
-                <Sparkles className="size-4 text-mr-accent" />
+                <Sparkles className="size-4 text-mr-accent-fg" />
                 <h2 className="mr-label text-mr-fg">{t('trending.movers')}</h2>
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">

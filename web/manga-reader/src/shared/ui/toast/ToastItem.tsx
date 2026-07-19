@@ -63,7 +63,7 @@ export function ToastItem({ item, onDismiss }: ToastItemProps) {
                             item.action!.onClick();
                             onDismiss(item.id);
                         }}
-                        className="mt-1.5 text-mr-tiny font-mr-bold text-mr-accent underline underline-offset-2 hover:opacity-80"
+                        className="mt-1.5 text-mr-tiny font-mr-bold text-mr-accent-fg underline underline-offset-2 hover:opacity-80"
                     >
                         {item.action.label}
                     </button>

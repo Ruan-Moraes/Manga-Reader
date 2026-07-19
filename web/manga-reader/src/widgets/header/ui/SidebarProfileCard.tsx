@@ -5,7 +5,7 @@ import { withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import type { MenuProfile } from './SidebarMenuContent';
 
-const sectionTitleClass = 'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-quaternary-default';
+const sectionTitleClass = 'text-[0.7rem] font-semibold tracking-[0.14em] uppercase text-mr-accent-fg';
 
 type Props = {
     profile: MenuProfile;
@@ -23,7 +23,7 @@ const SidebarProfileCard = ({ profile, isLoggedIn, onNavigate }: Props) => {
                     <p className={sectionTitleClass}>{t('sidebar.section.account')}</p>
                     <p className="text-sm font-semibold">{profile.fullName}</p>
                     <p className="text-xs text-tertiary">{profile.email?.replace(/(.{4}).*(@.*)/, '$1••••$2')}</p>
-                    {profile.planBadge && <p className="text-xs font-semibold text-quaternary-default">{profile.planBadge}</p>}
+                    {profile.planBadge && <p className="text-xs font-semibold text-mr-accent-fg">{profile.planBadge}</p>}
                 </>
             ) : (
                 <>

@@ -13,35 +13,35 @@ export default {
             },
             colors: {
                 primary: {
-                    default: '#161616 !important',
+                    default: 'var(--mr-primary) !important',
                     opacity: {
-                        80: '#161616cc !important',
-                        75: '#161616bf !important',
+                        80: 'var(--mr-primary-80) !important',
+                        75: 'var(--mr-primary-75) !important',
                     },
                 },
-                secondary: '#252526 !important',
-                tertiary: '#727273 !important',
+                secondary: 'var(--mr-secondary) !important',
+                tertiary: 'var(--mr-tertiary) !important',
                 quaternary: {
-                    default: '#ddda2a !important',
+                    default: 'var(--mr-accent) !important',
                     opacity: {
-                        25: '#ddda2a40 !important',
-                        50: '#ddda2a80 !important',
-                        75: '#ddda2abf !important',
+                        25: 'var(--mr-accent-25) !important',
+                        50: 'var(--mr-accent-50) !important',
+                        75: 'var(--mr-accent-75) !important',
                     },
                 },
                 quinary: {
-                    default: '#FF784F !important',
+                    default: 'var(--mr-danger) !important',
                 },
             },
             boxShadow: {
-                black: '0 0 2rem 0.25rem #161616bf !important',
-                default: '0.25rem 0.25rem 0 0 #ddda2a40 !important',
-                inside: '0 0 0.075rem 0.25rem #ddda2a40 !important',
-                elevated: '-0.25rem 0.25rem 0 0 #ddda2a40 !important',
+                black: 'var(--mr-shadow-black) !important',
+                default: 'var(--mr-shadow-default) !important',
+                inside: 'var(--mr-shadow-inside) !important',
+                elevated: 'var(--mr-shadow-elevated) !important',
             },
             textShadow: {
-                default: '0.125rem 0.0625rem 0 #161616bf !important',
-                highlight: '0.125rem 0.0625rem 0 #ddda2a40 !important',
+                default: 'var(--mr-text-shadow-default) !important',
+                highlight: 'var(--mr-text-shadow-highlight) !important',
             },
             transitionProperty: {
                 'text-shadow': 'text-shadow !important',

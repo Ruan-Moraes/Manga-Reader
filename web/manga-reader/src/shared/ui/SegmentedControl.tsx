@@ -59,8 +59,8 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                                 baseSize,
                                 block && 'flex-1',
                                 active
-                                    ? 'border-mr-accent bg-mr-accent text-mr-primary'
-                                    : 'border-mr-tertiary bg-transparent text-mr-fg-muted hover:border-mr-accent hover:text-mr-accent',
+                                    ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
+                                    : 'border-mr-tertiary bg-transparent text-mr-fg-muted hover:border-mr-accent-border hover:text-mr-accent-fg',
                                 it.disabled && 'cursor-not-allowed opacity-mr-disabled',
                             )}
                         >
@@ -94,7 +94,7 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                                 baseSize,
                                 block && 'flex-1',
                                 active
-                                    ? 'bg-mr-accent-25 text-mr-accent shadow-[inset_0_0_0_1px_var(--mr-accent-50)]'
+                                    ? 'bg-mr-accent-25 text-mr-accent-fg shadow-[inset_0_0_0_1px_var(--mr-accent-50)]'
                                     : 'bg-transparent text-mr-fg-muted hover:bg-mr-secondary',
                                 it.disabled && 'cursor-not-allowed opacity-mr-disabled',
                             )}
@@ -134,8 +134,8 @@ export const SegmentedControl = ({ items, value, onChange, size = 'md', block, u
                             baseSize,
                             block && 'flex-1',
                             active
-                                ? 'border-mr-accent bg-mr-accent text-mr-primary'
-                                : 'border-mr-tertiary bg-transparent text-mr-fg-muted hover:border-mr-accent hover:text-mr-accent',
+                                ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
+                                : 'border-mr-tertiary bg-transparent text-mr-fg-muted hover:border-mr-accent-border hover:text-mr-accent-fg',
                             it.disabled && 'cursor-not-allowed opacity-mr-disabled',
                         )}
                     >

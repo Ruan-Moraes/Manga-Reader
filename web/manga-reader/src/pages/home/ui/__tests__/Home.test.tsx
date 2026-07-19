@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterAll, beforeAll, describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import { axeComponent } from '@/test/helpers/axe';
@@ -23,12 +23,19 @@ const mockTitle = {
     updatedAt: '2024-01-01',
 };
 
+const mockTrendingTitle = {
+    ...mockTitle,
+    id: '2',
+    name: 'Vagabond',
+    author: 'T. Inoue',
+};
+
 vi.mock('@entities/catalog-filter', async importOriginal => {
     const actual = await importOriginal<typeof import('@entities/catalog-filter')>();
     return {
         ...actual,
         useFilterResults: () => ({
-            data: { content: [mockTitle], totalElements: 1, totalPages: 1 },
+            data: { content: [mockTitle, mockTrendingTitle], totalElements: 2, totalPages: 1 },
             isLoading: false,
         }),
     };
@@ -67,6 +74,19 @@ vi.mock('@entities/group', async importOriginal => {
     };
 });
 
+beforeAll(() => {
+    vi.stubGlobal(
+        'matchMedia',
+        vi.fn().mockReturnValue({
+            matches: true,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        }),
+    );
+});
+
+afterAll(() => vi.unstubAllGlobals());
+
 describe('Home', () => {
     it('axe', async () => {
         const { container } = renderWithProviders(<Home />);
@@ -81,6 +101,11 @@ describe('Home', () => {
     it('renders trending section heading', () => {
         renderWithProviders(<Home />);
         expect(screen.getByRole('heading', { name: /as histórias que estão ganhando força/i })).toBeInTheDocument();
+    });
+
+    it('renders the trending rank with high-contrast theme tokens', () => {
+        renderWithProviders(<Home />);
+        expect(screen.getByText('#1')).toHaveClass('bg-mr-accent', 'text-mr-on-accent');
     });
 
     it('renders releases section heading', () => {

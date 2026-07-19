@@ -17,6 +17,7 @@ export interface CategoryResultItem {
     cover?: string;
     ratingAverage?: number;
     latestChapterNumber?: string | number;
+    adult?: boolean;
 }
 
 interface CategoryResultsProps {
@@ -29,6 +30,7 @@ interface CategoryResultsProps {
 
 const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: CategoryResultsProps) => {
     const { t } = useTranslation('manga');
+
     const { isSaved, toggleBookmark } = useBookmark();
 
     if (isLoading) {
@@ -68,6 +70,7 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
                             author: m.author,
                             cover: m.cover,
                             rating: m.ratingAverage,
+                            adult: m.adult,
                             chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                         }}
                         onClick={() => onNavigate(m.id)}
@@ -86,7 +89,7 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
                     key={m.id}
                     type="button"
                     onClick={() => onNavigate(m.id)}
-                    className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 text-left transition-colors hover:border-mr-accent"
+                    className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 text-left transition-colors hover:border-mr-accent-border"
                 >
                     <div
                         className="size-12 shrink-0 rounded-mr-xs bg-cover bg-center bg-mr-tertiary/20"

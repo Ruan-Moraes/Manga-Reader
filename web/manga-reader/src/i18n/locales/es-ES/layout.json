@@ -68,11 +68,9 @@
             "languageValue": "Español (ES)",
             "languageAria": "Cambiar idioma",
             "theme": "Tema",
-            "themeValue": "Oscuro",
             "themeAria": "Cambiar tema",
             "help": "Ayuda",
             "helpAria": "Abrir centro de ayuda",
-            "themeWip": "Tema en desarrollo.",
             "uiGroup": "Interfaz",
             "contentGroup": "Contenido",
             "contentLoginHint": "Inicia sesión para elegir"

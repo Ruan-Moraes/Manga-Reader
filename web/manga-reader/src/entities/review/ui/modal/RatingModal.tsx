@@ -97,11 +97,11 @@ function ReviewFormBody({
             {/* Cabeçalho: obra + nota geral ao vivo */}
             <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                    <p className="text-[11px] font-mr-bold uppercase tracking-mr-label text-mr-accent">{t('modal.evaluateLabel')}</p>
+                    <p className="text-[11px] font-mr-bold uppercase tracking-mr-label text-mr-accent-fg">{t('modal.evaluateLabel')}</p>
                     {titleName && <p className="truncate text-[15px] font-mr-extrabold text-mr-fg">{titleName}</p>}
                 </div>
                 <div className="shrink-0 text-right">
-                    <p className={cn('text-[28px] font-mr-extrabold leading-none tabular-nums', overall ? 'text-mr-accent' : 'text-mr-fg-subtle')}>
+                    <p className={cn('text-[28px] font-mr-extrabold leading-none tabular-nums', overall ? 'text-mr-accent-fg' : 'text-mr-fg-subtle')}>
                         {overall ? overall.toFixed(1) : '—'}
                     </p>
                     <p className="text-[11px] text-mr-fg-subtle">{t('modal.overallLabel')}</p>
@@ -129,7 +129,7 @@ function ReviewFormBody({
                             key={c.key}
                             className={cn(
                                 'flex items-center justify-between gap-3 rounded-mr-xs border p-3 transition-colors duration-200',
-                                val > 0 ? 'border-mr-accent bg-mr-accent-25' : 'border-[#333] bg-[#1c1c1d]',
+                                val > 0 ? 'border-mr-accent-border bg-mr-accent-25' : 'border-mr-border bg-mr-surface-interactive',
                             )}
                         >
                             <div className="min-w-0">
@@ -152,14 +152,14 @@ function ReviewFormBody({
             {/* Título + comentário opcionais */}
             <div className="flex flex-col gap-2">
                 <input
-                    className="h-10 w-full rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 text-[14px] text-mr-fg outline-none transition-colors focus:border-mr-accent placeholder:text-mr-fg-subtle"
+                    className="h-10 w-full rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 text-[14px] text-mr-fg outline-none transition-colors focus:border-mr-accent-border placeholder:text-mr-fg-subtle"
                     placeholder={t('modal.reviewTitlePlaceholder')}
                     value={reviewTitle}
                     maxLength={80}
                     onChange={e => setReviewTitle(e.target.value)}
                 />
                 <textarea
-                    className="min-h-[80px] w-full resize-none rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 py-2 text-[14px] text-mr-fg outline-none transition-colors focus:border-mr-accent placeholder:text-mr-fg-subtle"
+                    className="min-h-[80px] w-full resize-none rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 py-2 text-[14px] text-mr-fg outline-none transition-colors focus:border-mr-accent-border placeholder:text-mr-fg-subtle"
                     rows={3}
                     placeholder={t('modal.commentPlaceholder')}
                     value={comment}
@@ -174,7 +174,7 @@ function ReviewFormBody({
                         className={cn(
                             'flex items-center gap-1.5 rounded-mr-xs px-3 py-1 text-[12px] font-mr-bold transition-colors',
                             spoiler
-                                ? 'border border-[var(--mr-danger)] bg-[rgba(255,120,79,.18)] text-[var(--mr-danger)]'
+                                ? 'border border-[var(--mr-danger)] bg-mr-danger-15 text-[var(--mr-danger)]'
                                 : 'border border-mr-tertiary bg-mr-secondary text-mr-fg-subtle hover:border-[var(--mr-danger)] hover:text-[var(--mr-danger)]',
                         )}
                     >

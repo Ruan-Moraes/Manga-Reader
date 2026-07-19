@@ -39,7 +39,7 @@ const DashboardUserDetail = () => {
         <div className="flex flex-col gap-4">
             <button
                 onClick={() => navigate(withWebBasePath(ROUTES.DASHBOARD_USERS))}
-                className="flex items-center gap-1 text-sm w-fit hover:text-quaternary-default"
+                className="flex items-center gap-1 text-sm w-fit hover:text-mr-accent-fg"
             >
                 <ArrowLeft size={14} />
                 {t('common.back')}

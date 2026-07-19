@@ -240,13 +240,32 @@ describe('TitleDetails', () => {
         it('registra a visualização quando logado', async () => {
             persistSession({ userId: 'u1', name: 'User', email: 'user@test.dev', role: 'MEMBER' });
             let called = false;
-            server.use(http.post('*/api/users/me/history', () => {
-                called = true;
-                return new HttpResponse(null, { status: 204 });
-            }));
+            let configLoaded = false;
+            server.use(
+                http.get('*/api/behavior-events/config', () => {
+                    configLoaded = true;
+                    return HttpResponse.json({
+                        data: {
+                            enabled: true,
+                            titleViewSeconds: 0,
+                            bounceMinSeconds: 0,
+                            chapterStartSeconds: 10,
+                            chapterCompletionPercent: 90,
+                            maxBatchSize: 100,
+                        },
+                        success: true,
+                    });
+                }),
+                http.post('*/api/users/me/history', () => {
+                    called = true;
+                    return new HttpResponse(null, { status: 204 });
+                }),
+            );
 
-            renderWithId('1');
+            const view = renderWithId('1');
             await screen.findByRole('heading', { name: /berserk/i });
+            await waitFor(() => expect(configLoaded).toBe(true));
+            view.unmount();
 
             await waitFor(() => expect(called).toBe(true));
         });

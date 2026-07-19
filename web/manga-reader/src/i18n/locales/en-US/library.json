@@ -53,5 +53,8 @@
         "title": "Nothing here yet",
         "description": "How about starting your collection?",
         "discoverButton": "Discover titles"
+    },
+    "adultContent": {
+        "reveal": "Adult content — reveal"
     }
 }

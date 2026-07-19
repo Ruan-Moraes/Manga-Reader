@@ -7,6 +7,7 @@ const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
     id: item.titleId,
     title: item.name,
     cover: item.cover,
+    adult: item.adult,
     status: item.list === 'Lendo' ? 'reading' : item.list === 'Concluído' ? 'completed' : 'planned',
 });
 
@@ -61,6 +62,7 @@ export default function useProfileData(userId?: string) {
             id: r.titleId,
             title: r.titleName,
             cover: r.titleCover,
+            adult: r.adult,
         })),
         recentComments: enriched?.recentComments ?? [],
         // Grupos seguidos reais (SUPPORTER); shape adaptado ao GroupCard da entity.

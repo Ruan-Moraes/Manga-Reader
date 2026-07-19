@@ -67,7 +67,7 @@ export const FavoriteGenresField = ({ initialGenres, onSaved }: FavoriteGenresFi
                             className={cn(
                                 'mr-focus-ring rounded-mr-xs border px-2.5 py-1 text-[12px] font-mr-bold tracking-mr transition-colors',
                                 selected
-                                    ? 'border-mr-accent bg-mr-accent text-mr-primary'
+                                    ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
                                     : 'border-mr-gray-700 bg-mr-secondary text-mr-fg-muted hover:border-mr-accent-50',
                                 atLimit && 'cursor-not-allowed opacity-mr-disabled',
                             )}

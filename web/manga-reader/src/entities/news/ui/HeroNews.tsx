@@ -19,11 +19,11 @@ const HeroNews = ({ news }: { news: NewsSummary }) => {
                 </div>
                 <div className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10">
                     <div className="flex flex-wrap items-center gap-2">{news.isFeatured && <Badge>{t('page.pinnedLabel')}</Badge>}{categoryLabel && <Badge variant="neutral">{categoryLabel}</Badge>}</div>
-                    <p className="text-mr-tiny font-mr-bold uppercase tracking-[0.1em] text-mr-accent">{formatRelativeDate(news.publishedAt)}</p>
+                    <p className="text-mr-tiny font-mr-bold uppercase tracking-[0.1em] text-mr-accent-fg">{formatRelativeDate(news.publishedAt)}</p>
                     <h1 className="text-mr-h2 font-mr-extrabold leading-[1.05] tracking-mr text-mr-fg lg:text-[2.75rem]">{news.title}</h1>
                     <p className="text-mr-body leading-relaxed text-mr-fg-muted">{news.excerpt}</p>
                     <div className="flex flex-wrap items-center gap-4 text-mr-small text-mr-fg-subtle"><span className="inline-flex items-center gap-1.5"><Clock className="size-4" />{t('card.readMinutes', { count: news.readTime })}</span><span className="inline-flex items-center gap-1.5"><Eye className="size-4" />{news.views.toLocaleString(i18n.language)}</span></div>
-                    <span className="inline-flex items-center gap-2 font-mr-bold text-mr-accent">{t('page.readMore')}<ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
+                    <span className="inline-flex items-center gap-2 font-mr-bold text-mr-accent-fg">{t('page.readMore')}<ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
                 </div>
             </Link>
         </article>

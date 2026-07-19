@@ -25,7 +25,7 @@ const roleBadgeColor = (role: string) => {
         case 'admin':
             return 'bg-quinary-default/20 text-quinary-default';
         case 'poster':
-            return 'bg-quaternary/20 text-quaternary';
+            return 'bg-quaternary/20 text-mr-accent-fg';
         default:
             return 'bg-tertiary/20 text-tertiary';
     }

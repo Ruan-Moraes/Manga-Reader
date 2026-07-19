@@ -88,7 +88,7 @@ const AdminUserDetailModal = ({ isOpen, onClose, user, onChangeRole, onBan, onUn
                     </div>
 
                     {user.banned && (
-                        <div className="rounded-mr-sm border border-[rgba(255,120,79,0.4)] bg-mr-danger-15 p-3">
+                        <div className="rounded-mr-sm border border-mr-danger-border bg-mr-danger-15 p-3">
                             <h4 className="mb-2 text-mr-small font-mr-bold text-mr-danger">{t('userDetail.banDetails')}</h4>
                             <InfoRow label={t('userDetail.banReason')}>{user.bannedReason ?? '—'}</InfoRow>
                             <InfoRow label={t('userDetail.bannedAt')}>{formatDateTime(user.bannedAt)}</InfoRow>

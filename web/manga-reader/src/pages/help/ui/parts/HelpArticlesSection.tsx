@@ -42,11 +42,11 @@ const HelpArticlesSection = ({ query, activeCategory, onCategoryToggle }: HelpAr
                                 interactive
                                 variant="default"
                                 onClick={() => onCategoryToggle(cat.slug)}
-                                className={active ? 'border-mr-accent bg-mr-accent-25/30' : ''}
+                                className={active ? 'border-mr-accent-border bg-mr-accent-25/30' : ''}
                             >
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className={`flex size-10 shrink-0 items-center justify-center rounded-mr-xs transition-colors ${active ? 'bg-mr-accent text-mr-primary' : 'bg-mr-accent-25 text-mr-accent'}`}
+                                        className={`flex size-10 shrink-0 items-center justify-center rounded-mr-xs transition-colors ${active ? 'bg-mr-accent text-mr-on-accent' : 'bg-mr-accent-25 text-mr-accent-fg'}`}
                                     >
                                         <Icon className="size-5" />
                                     </div>
@@ -99,7 +99,7 @@ const HelpArticlesSection = ({ query, activeCategory, onCategoryToggle }: HelpAr
                                 className="flex cursor-pointer items-center gap-4 bg-mr-surface px-4 py-4 transition-colors hover:bg-mr-accent-25"
                                 onClick={() => navigate(ROUTES.HELP_ARTICLE(article.id))}
                             >
-                                <span className="shrink-0 font-mr-mono text-mr-small font-mr-extrabold tabular-nums text-mr-accent">
+                                <span className="shrink-0 font-mr-mono text-mr-small font-mr-extrabold tabular-nums text-mr-accent-fg">
                                     {String(idx + 1).padStart(2, '0')}
                                 </span>
                                 <div className="min-w-0 flex-1">

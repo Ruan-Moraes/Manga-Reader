@@ -20,7 +20,7 @@ function DeleteModalFooter({ onConfirm, onCancel }: DeleteModalFooterProps) {
             <button
                 type="button"
                 onClick={onConfirm}
-                className="flex-1 px-4 py-2 text-sm border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default hover:text-white transition-colors"
+                className="flex-1 px-4 py-2 text-sm border rounded-xs border-quinary-default text-quinary-default hover:bg-quinary-default hover:text-mr-on-overlay transition-colors"
             >
                 {t('delete.confirm')}
             </button>

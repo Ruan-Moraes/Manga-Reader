@@ -117,8 +117,8 @@ const Forum = () => {
                     {topics.length === 0 ? (
                         <div className="forum-empty">
                             {pensando && <img src={pensando} width={120} height={120} alt="" />}
-                            <h3 style={{ color: '#fff', margin: '10px 0 4px', letterSpacing: '.0625rem' }}>{t('ui.emptyTitle')}</h3>
-                            <p style={{ color: '#999', fontSize: 13, marginBottom: 14 }}>{t('ui.emptySub')}</p>
+                            <h3 style={{ color: 'var(--mr-fg)', margin: '10px 0 4px', letterSpacing: '.0625rem' }}>{t('ui.emptyTitle')}</h3>
+                            <p style={{ color: 'var(--mr-fg-subtle)', fontSize: 13, marginBottom: 14 }}>{t('ui.emptySub')}</p>
                             <Button variant="primary" icon={Plus} onClick={openCompose}>
                                 {t('ui.createTopic')}
                             </Button>

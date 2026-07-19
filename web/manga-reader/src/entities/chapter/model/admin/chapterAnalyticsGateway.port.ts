@@ -5,9 +5,8 @@ import type { ChapterMetrics, ChapterMetricsFilter, ChapterMetricsSummaryRow, Me
 /**
  * Port de métricas de leitura (analytics).
  *
- * Implementação atual: gerador determinístico fake (mesmos filtros ⇒ mesmos
- * números, estável entre reloads). Filtros são aplicados dentro do gateway,
- * nunca no componente.
+ * A implementação HTTP envia os filtros ao backend; componentes não calculam
+ * métricas localmente.
  */
 export interface ChapterAnalyticsGateway {
     getChapterMetrics(chapterId: string, filter: ChapterMetricsFilter): Promise<ChapterMetrics>;

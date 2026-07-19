@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 
 export interface AuthFieldProps {
@@ -16,13 +15,10 @@ export interface AuthFieldProps {
 }
 
 export const AuthField = ({ label, type = 'text', value, onChange, placeholder, hint, error, autoComplete, rightSlot, id, name }: AuthFieldProps) => {
-    const [focused, setFocused] = useState(false);
-    const borderColor = error ? '#ff784f' : focused ? '#ddda2a' : '#2a2a2a';
-
     return (
         <label className="mb-3.5 block">
             <div className="mb-1.5 flex items-baseline justify-between">
-                <span className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em]" style={{ color: error ? '#ff784f' : '#ddda2a' }}>
+                <span className={error ? 'text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-danger' : 'text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent-fg'}>
                     {label}
                 </span>
                 {rightSlot}
@@ -35,17 +31,12 @@ export const AuthField = ({ label, type = 'text', value, onChange, placeholder, 
                 onChange={onChange}
                 placeholder={placeholder}
                 autoComplete={autoComplete}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-                className="w-full rounded-mr-xs px-3.5 py-3 text-[14px] tracking-mr text-mr-fg outline-none transition-colors duration-150 placeholder:text-mr-tertiary"
-                style={{
-                    background: '#0f0f0f',
-                    border: `1px solid ${borderColor}`,
-                    boxSizing: 'border-box',
-                }}
+                className={error
+                    ? 'w-full box-border rounded-mr-xs border border-mr-danger bg-mr-input px-3.5 py-3 text-[14px] tracking-mr text-mr-fg outline-none transition-colors duration-150 placeholder:text-mr-placeholder'
+                    : 'w-full box-border rounded-mr-xs border border-mr-border bg-mr-input px-3.5 py-3 text-[14px] tracking-mr text-mr-fg outline-none transition-colors duration-150 placeholder:text-mr-placeholder focus:border-mr-accent-border'}
             />
             {(error?.trim() || hint) && (
-                <div className="mt-1.5 text-mr-tiny tracking-mr" style={{ color: error?.trim() ? '#ff784f' : '#666' }}>
+                <div className={error?.trim() ? 'mt-1.5 text-mr-tiny tracking-mr text-mr-danger' : 'mt-1.5 text-mr-tiny tracking-mr text-mr-fg-subtle'}>
                     {error?.trim() || hint}
                 </div>
             )}

@@ -20,7 +20,3 @@ export const getUserActivityFeed = async (
 
     return response.data.data;
 };
-
-export const hideActivityEvent = async (eventId: string): Promise<void> => {
-    await api.delete(`${API_URLS.USERS}/me/activity-feed/${eventId}`);
-};

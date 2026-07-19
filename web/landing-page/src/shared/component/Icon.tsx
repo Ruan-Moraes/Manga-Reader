@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 const PATHS = {
     library: (
@@ -85,7 +85,9 @@ const PATHS = {
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
         </>
     ),
-    star: <polygon points="12 2 15 9 22 9 17 14 19 22 12 17 5 22 7 14 2 9 9 9" />,
+    star: (
+        <polygon points="12 2 15 9 22 9 17 14 19 22 12 17 5 22 7 14 2 9 9 9" />
+    ),
     check: <path d="m5 13 4 4L19 7" />,
     x: <path d="M18 6 6 18M6 6l12 12" />,
     chevronD: <path d="m6 9 6 6 6-6" />,
@@ -104,6 +106,13 @@ const PATHS = {
             <path d="M8 21h8M12 17v4" />
         </>
     ),
+    sun: (
+        <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" />
+        </>
+    ),
+    moon: <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />,
     gift: (
         <>
             <polyline points="20 12 20 22 4 22 4 12" />
@@ -158,7 +167,6 @@ interface IconProps {
     name: IconName;
     size?: number;
     stroke?: number;
-    style?: CSSProperties;
     className?: string;
 }
 
@@ -166,7 +174,6 @@ export default function Icon({
     name,
     size = 24,
     stroke = 2,
-    style,
     className,
 }: IconProps) {
     return (
@@ -179,7 +186,6 @@ export default function Icon({
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={style}
             className={className}
             aria-hidden="true"
         >
@@ -205,18 +211,30 @@ export function AppleGlyph({ size = 22 }: { size?: number }) {
 export function PlayGlyph({ size = 22 }: { size?: number }) {
     return (
         <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3.6 2.1c-.3.2-.5.6-.5 1.1v17.6c0 .5.2.9.5 1.1l9.5-9.9z" fill="#00d4ff" />
-            <path d="M16.9 8.2 13.1 12l3.8 3.8 4.3-2.4c.9-.5.9-1.8 0-2.3z" fill="#ffce00" />
+            <path
+                d="M3.6 2.1c-.3.2-.5.6-.5 1.1v17.6c0 .5.2.9.5 1.1l9.5-9.9z"
+                fill="#00d4ff"
+            />
+            <path
+                d="M16.9 8.2 13.1 12l3.8 3.8 4.3-2.4c.9-.5.9-1.8 0-2.3z"
+                fill="#ffce00"
+            />
             <path d="M3.6 2.1 13.1 12l3.8-3.8z" fill="#00f076" />
             <path d="M3.6 21.9 13.1 12l3.8 3.8z" fill="#ff3d44" />
         </svg>
     );
 }
 
-export function RatingStars({ value = 5, size = 14 }: { value?: number; size?: number }) {
+export function RatingStars({
+    value = 5,
+    size = 14,
+}: {
+    value?: number;
+    size?: number;
+}) {
     return (
         <span
-            style={{ display: 'inline-flex', gap: 2, color: '#ddda2a' }}
+            className="inline-flex gap-0.5 text-accent-fg"
             aria-label={`${value} / 5`}
         >
             {[1, 2, 3, 4, 5].map(i => (

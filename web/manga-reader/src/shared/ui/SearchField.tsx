@@ -34,7 +34,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
         <div
             className={cn(
                 'flex items-center gap-2 rounded-mr-xs border border-mr-tertiary bg-mr-primary px-3 transition-colors duration-mr-default',
-                'has-[:hover:not(:disabled)]:border-mr-accent-50 has-[:focus]:border-mr-accent w-full',
+                'has-[:hover:not(:disabled)]:border-mr-accent-50 has-[:focus]:border-mr-accent-border w-full',
                 sizeMap[size],
                 disabled && 'opacity-mr-disabled',
                 className,

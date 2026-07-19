@@ -14,9 +14,6 @@ importers:
 
   landing-page:
     dependencies:
-      '@manga-reader/design-tokens':
-        specifier: workspace:*
-        version: link:../packages/design-tokens
       '@manga-reader/types':
         specifier: workspace:*
         version: link:../packages/types

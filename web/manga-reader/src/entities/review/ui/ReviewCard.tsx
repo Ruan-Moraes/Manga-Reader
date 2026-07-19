@@ -150,7 +150,7 @@ export const ReviewCard = ({
                                         <button
                                             type="button"
                                             onClick={subjectTitle.onClick}
-                                            className="min-w-0 truncate text-left text-[15px] font-mr-extrabold text-mr-fg transition-colors hover:text-mr-accent"
+                                            className="min-w-0 truncate text-left text-[15px] font-mr-extrabold text-mr-fg transition-colors hover:text-mr-accent-fg"
                                         >
                                             {subjectTitle.label}
                                         </button>
@@ -178,7 +178,7 @@ export const ReviewCard = ({
                                         </div>
                                         {/* No mobile a nota desce para linha própria (abaixo dos gêneros) — aqui só do sm: pra cima. */}
                                         <span className="hidden items-center gap-1.5 sm:flex">
-                                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent-fg">{rating.toFixed(1)}</span>
                                             <Stars value={rating} size={16} />
                                         </span>
                                     </div>
@@ -186,7 +186,7 @@ export const ReviewCard = ({
                             </div>
                             {!author && (
                                 <span className="mt-1.5 flex items-center justify-end gap-1.5 sm:hidden">
-                                    <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                                    <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent-fg">{rating.toFixed(1)}</span>
                                     <Stars value={rating} size={16} />
                                 </span>
                             )}
@@ -204,7 +204,7 @@ export const ReviewCard = ({
                         meta={edited ? <EditedFlag label={t('card.edited')} title={editedDate.title} /> : undefined}
                         right={
                             <span className="flex items-center gap-1.5">
-                                <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                                <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent-fg">{rating.toFixed(1)}</span>
                                 <Stars value={rating} size={16} />
                             </span>
                         }
@@ -218,7 +218,7 @@ export const ReviewCard = ({
                             {edited && <EditedFlag label={t('card.edited')} title={editedDate.title} />}
                         </div>
                         <span className="flex items-center gap-1.5">
-                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent">{rating.toFixed(1)}</span>
+                            <span className="text-[15px] font-mr-extrabold tabular-nums text-mr-accent-fg">{rating.toFixed(1)}</span>
                             <Stars value={rating} size={16} />
                         </span>
                     </div>
@@ -234,7 +234,7 @@ export const ReviewCard = ({
                             event.stopPropagation();
                             setSpoilerShown(true);
                         }}
-                        className="flex w-full items-center justify-center gap-2 rounded-mr-xs border border-dashed border-mr-border-subtle bg-mr-surface-muted p-[18px] text-mr-small font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-accent cursor-pointer"
+                        className="flex w-full items-center justify-center gap-2 rounded-mr-xs border border-dashed border-mr-border-subtle bg-mr-surface-muted p-[18px] text-mr-small font-mr-bold text-mr-fg-subtle transition-all hover:border-mr-accent-50 hover:text-mr-accent-fg cursor-pointer"
                     >
                         <Eye className="size-4" aria-hidden="true" />
                         {t('card.showSpoiler')}
@@ -253,7 +253,7 @@ export const ReviewCard = ({
 
                             setExpanded(v => !v);
                         }}
-                        className="flex items-center gap-1 text-mr-small font-mr-bold text-mr-accent hover:underline"
+                        className="flex items-center gap-1 text-mr-small font-mr-bold text-mr-accent-fg hover:underline"
                     >
                         {expanded ? t('card.readLess') : t('card.readMore')}
                         <ChevronDown className={cn('size-3.5 transition-transform duration-200', expanded && 'rotate-180')} aria-hidden="true" />
@@ -271,7 +271,7 @@ export const ReviewCard = ({
                                 setBreakOpen(o => !o);
                             }}
                             aria-expanded={breakOpen}
-                            className="flex items-center gap-1.5 self-start text-mr-small font-mr-bold text-mr-fg-subtle transition-colors hover:text-mr-accent"
+                            className="flex items-center gap-1.5 self-start text-mr-small font-mr-bold text-mr-fg-subtle transition-colors hover:text-mr-accent-fg"
                         >
                             <ChevronDown className={cn('size-3.5 transition-transform duration-200', breakOpen && 'rotate-180')} aria-hidden="true" />
                             {t('card.breakdown')}

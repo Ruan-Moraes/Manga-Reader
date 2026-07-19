@@ -57,7 +57,7 @@ const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardP
         tabIndex={onClick && !onToggleFollow ? 0 : undefined}
         className={cn(
             'group flex cursor-pointer flex-col overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface transition-all duration-mr-default',
-            'hover:-translate-y-0.5 hover:border-mr-accent-50 hover:shadow-mr-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mr-accent',
+            'hover:-translate-y-0.5 hover:border-mr-accent-50 hover:shadow-mr-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mr-focus-ring',
         )}
     >
         <div
@@ -76,7 +76,7 @@ const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardP
                 <div className="min-w-0">
                     <h3 className="flex min-w-0 items-start gap-1.5 text-mr-h4 font-mr-extrabold leading-tight tracking-mr text-mr-fg">
                         <span className="line-clamp-2 break-words">{group.name}</span>
-                        {group.verified && <BadgeCheck className="mt-0.5 size-4 shrink-0 text-mr-accent" aria-label="Grupo verificado" />}
+                        {group.verified && <BadgeCheck className="mt-0.5 size-4 shrink-0 text-mr-accent-fg" aria-label="Grupo verificado" />}
                     </h3>
                     {group.handle && <div className="mt-1 truncate text-mr-tiny text-mr-fg-subtle">@{group.handle}</div>}
                 </div>

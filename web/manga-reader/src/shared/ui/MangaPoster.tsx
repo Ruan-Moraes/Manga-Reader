@@ -46,7 +46,7 @@ const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape 
             style={{
                 width: size,
                 aspectRatio: ratio,
-                background: !cover ? (fallbackGradient ?? 'linear-gradient(135deg, #2a1f0f, #161616)') : undefined,
+                background: !cover ? (fallbackGradient ?? 'var(--mr-poster-gradient)') : undefined,
             }}
         >
             {cover && <img src={cover} alt={alt} loading="lazy" className="size-full object-cover" />}

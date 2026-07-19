@@ -3,10 +3,8 @@ import type { ReaderChapter, ReaderProgress } from './chapterReader.types';
 /**
  * Port público do leitor — consumo de capítulos pelo site.
  *
- * A implementação fake NUNCA semeia dados: com storage vazio o leitor cai no
- * fallback de placeholders atual. `'blocked'` sinaliza capítulo existente mas
- * não visível publicamente (hidden/unavailable/archived/draft/scheduled);
- * `null` sinaliza capítulo inexistente no armazenamento provisório.
+ * `'blocked'` sinaliza resposta pública 404 para conteúdo ausente ou não
+ * visível; o leitor nunca inventa páginas quando a API não entrega capítulo.
  */
 export interface ChapterPublicGateway {
     getReaderChapter(titleId: string, number: string, opts?: { includeUnpublished?: boolean }): Promise<ReaderChapter | 'blocked' | null>;

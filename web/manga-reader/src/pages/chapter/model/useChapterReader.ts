@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { readStoredUserSettings, subscribeStoredUserSettings, updateStoredUserSettings, SETTINGS_STORAGE_KEY, useDebouncedCallback, type UserSettings } from '@entities/user';
+import { readStoredUserSettings, subscribeStoredUserSettings, updateMySettings, updateStoredUserSettings, useDebouncedCallback, type UserSettings } from '@entities/user';
 import { readerProgressGateway } from '@entities/chapter';
 
 import { TOTAL_PAGES } from './readerData';
@@ -20,17 +20,10 @@ interface ReaderPrefs {
     fit: Fit;
     gap: number;
     bg: Bg;
+    quality: UserSettings['reader']['quality'];
+    preload: number;
+    autoMarkRead: boolean;
 }
-
-const PREFS_KEY = 'reader:prefs';
-
-const DEFAULT_PREFS: ReaderPrefs = {
-    mode: 'vertical',
-    direction: 'rtl',
-    fit: 'width',
-    gap: 8,
-    bg: 'dark',
-};
 
 const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     mode: settings.reader.direction === 'WEBTOON' ? 'vertical' : (settings.reader.mode.toLowerCase() as ReadMode),
@@ -38,6 +31,9 @@ const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     fit: settings.reader.fit.toLowerCase() as Fit,
     gap: settings.reader.gap,
     bg: settings.reader.background.toLowerCase() as Bg,
+    quality: settings.reader.quality,
+    preload: settings.reader.preload,
+    autoMarkRead: settings.reader.autoMarkRead,
 });
 
 const toSettingsMode = (mode: ReadMode): UserSettings['reader']['mode'] => mode.toUpperCase() as UserSettings['reader']['mode'];
@@ -50,42 +46,12 @@ const samePrefs = (left: ReaderPrefs, right: ReaderPrefs) =>
     left.direction === right.direction &&
     left.fit === right.fit &&
     left.gap === right.gap &&
-    left.bg === right.bg;
+    left.bg === right.bg &&
+    left.quality === right.quality &&
+    left.preload === right.preload &&
+    left.autoMarkRead === right.autoMarkRead;
 
-const readPrefs = (): ReaderPrefs => {
-    try {
-        const systemPrefs = toReaderPrefs(readStoredUserSettings());
-        const raw = localStorage.getItem(PREFS_KEY);
-
-        if (!raw) {
-            return systemPrefs;
-        }
-
-        const stored = JSON.parse(raw) as Partial<ReaderPrefs> & { inlineCmts?: unknown };
-
-        // Migração: o campo `inlineCmts` foi removido do leitor — limpa resíduos persistidos.
-        if ('inlineCmts' in stored) {
-            const { inlineCmts: _removed, ...cleaned } = stored;
-            try {
-                localStorage.setItem(PREFS_KEY, JSON.stringify(cleaned));
-            } catch {
-                /* ignore */
-            }
-            if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
-                return { ...DEFAULT_PREFS, ...cleaned };
-            }
-            return systemPrefs;
-        }
-
-        if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
-            return { ...DEFAULT_PREFS, ...stored };
-        }
-
-        return systemPrefs;
-    } catch {
-        return DEFAULT_PREFS;
-    }
-};
+const readPrefs = (): ReaderPrefs => toReaderPrefs(readStoredUserSettings());
 
 export function useChapterReader(
     titleId: string | undefined,
@@ -109,6 +75,9 @@ export function useChapterReader(
     const [fit, setFit] = useState<Fit>(initialPrefs.fit);
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
+    const [quality, setQuality] = useState(initialPrefs.quality);
+    const [preload, setPreload] = useState(initialPrefs.preload);
+    const [autoMarkRead, setAutoMarkRead] = useState(initialPrefs.autoMarkRead);
 
     // Restauração da posição salva é assíncrona (backend) — parte de 1 e
     // corrige quando a resposta chega (efeito abaixo, roda só no mount).
@@ -129,11 +98,20 @@ export function useChapterReader(
     // sobrescrever o progresso salvo com page=1 enquanto o GET está em voo.
     const progressInitialized = useRef(false);
     const latestProgressRef = useRef({ page, total, hasRealTotal });
+    const persistSettings = useDebouncedCallback((next: UserSettings) => {
+        void updateMySettings(next)
+            .then(updateStoredUserSettingsFromServer => {
+                updateStoredUserSettings(() => updateStoredUserSettingsFromServer);
+            })
+            .catch(() => {
+                // A cópia local permanece como estado efêmero e será reconciliada no próximo GET.
+            });
+    }, 400);
 
     const step = mode === 'double' ? 2 : 1;
     const lastPage = mode === 'vertical' ? total : total + 1;
 
-    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg }), [mode, direction, fit, gap, bg]);
+    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg, quality, preload, autoMarkRead }), [mode, direction, fit, gap, bg, quality, preload, autoMarkRead]);
 
     const applyPrefs = useCallback(
         (next: ReaderPrefs) => {
@@ -145,6 +123,9 @@ export function useChapterReader(
             setFit(next.fit);
             setGap(next.gap);
             setBg(next.bg);
+            setQuality(next.quality);
+            setPreload(next.preload);
+            setAutoMarkRead(next.autoMarkRead);
         },
         [currentPrefs],
     );
@@ -161,13 +142,7 @@ export function useChapterReader(
             return;
         }
 
-        try {
-            localStorage.setItem(PREFS_KEY, JSON.stringify(currentPrefs));
-        } catch {
-            /* ignore */
-        }
-
-        updateStoredUserSettings(current => ({
+        const next = updateStoredUserSettings(current => ({
             ...current,
             reader: {
                 ...current.reader,
@@ -176,9 +151,14 @@ export function useChapterReader(
                 fit: toSettingsFit(fit),
                 gap,
                 background: toSettingsBackground(bg),
+                quality,
+                preload,
+                autoMarkRead,
             },
         }));
-    }, [currentPrefs, mode, direction, fit, gap, bg]);
+
+        if (isLoggedIn) persistSettings(next);
+    }, [currentPrefs, mode, direction, fit, gap, bg, quality, preload, autoMarkRead, isLoggedIn, persistSettings]);
 
     useEffect(
         () =>
@@ -247,13 +227,13 @@ export function useChapterReader(
         // Última página alcançada ⇒ capítulo concluído. Só com o total REAL
         // conhecido — o fallback (18) marcaria conclusão falsa. Conclusão
         // dispara imediatamente (sem debounce): é um marco, não pode se perder.
-        if (hasRealTotal && page >= total) {
+        if (autoMarkRead && hasRealTotal && page >= total) {
             saveProgressNow(page, total, true);
             return;
         }
 
         saveProgressDebounced(page, total);
-    }, [titleId, page, total, hasRealTotal, saveProgressNow, saveProgressDebounced]);
+    }, [titleId, page, total, hasRealTotal, autoMarkRead, saveProgressNow, saveProgressDebounced]);
 
     // Flush imediato ao trocar de capítulo/desmontar: evita perder a última
     // posição por causa de um debounce pendente (usa os valores mais
@@ -263,9 +243,9 @@ export function useChapterReader(
         () => () => {
             if (!progressInitialized.current) return;
             const { page: p, total: tot, hasRealTotal: real } = latestProgressRef.current;
-            saveProgressNow(p, tot, real && p >= tot);
+            saveProgressNow(p, tot, autoMarkRead && real && p >= tot);
         },
-        [titleId, chapter, saveProgressNow],
+        [titleId, chapter, autoMarkRead, saveProgressNow],
     );
 
     // ---------- navigation ----------
@@ -387,6 +367,9 @@ export function useChapterReader(
         fit,
         gap,
         bg,
+        quality,
+        preload,
+        autoMarkRead,
         setMode,
         setDirection,
         setFit,

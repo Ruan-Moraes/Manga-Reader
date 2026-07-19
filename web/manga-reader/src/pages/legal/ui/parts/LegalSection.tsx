@@ -17,13 +17,13 @@ export const LegalSection = ({ id, num, title, tldr, children, className }: Lega
     return (
         <section id={id} className={cn('scroll-mt-24 first:pt-0 py-8', className)}>
             <h2 className="flex min-w-0 items-baseline gap-3 break-words text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">
-                <span className="shrink-0 font-mr-mono text-mr-small text-mr-accent tabular-nums">{String(num).padStart(2, '0')}</span>
+                <span className="shrink-0 font-mr-mono text-mr-small text-mr-accent-fg tabular-nums">{String(num).padStart(2, '0')}</span>
                 {title}
             </h2>
 
             {tldr && (
-                <div className="mt-4 min-w-0 rounded-mr-sm border border-mr-accent/30 border-l-[3px] border-l-mr-accent bg-mr-accent-25/30 p-4">
-                    <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent">{t('section.tldrLabel')}</p>
+                <div className="mt-4 min-w-0 rounded-mr-sm border border-mr-accent-border/30 border-l-[3px] border-l-mr-accent bg-mr-accent-25/30 p-4">
+                    <p className="text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent-fg">{t('section.tldrLabel')}</p>
                     <p className="mt-1 text-mr-small text-mr-fg-muted leading-relaxed">{tldr}</p>
                 </div>
             )}

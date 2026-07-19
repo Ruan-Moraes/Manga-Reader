@@ -51,14 +51,14 @@ const ProfileEditModal = ({ onAccountDeleted }: Props) => {
     return (
         <div
             onClick={closeProfileSettings}
-            className="fixed inset-0 z-mr-modal flex items-stretch justify-center overflow-y-auto bg-[rgba(10,10,10,0.78)] p-0 backdrop-blur-[6px] sm:items-start sm:px-3 sm:py-[min(40px,4vh)]"
+            className="fixed inset-0 z-mr-modal flex items-stretch justify-center overflow-y-auto bg-mr-overlay p-0 backdrop-blur-[6px] sm:items-start sm:px-3 sm:py-[min(40px,4vh)]"
         >
             <div
                 role="dialog"
                 aria-modal="true"
                 aria-label="Editar perfil"
                 onClick={e => e.stopPropagation()}
-                className="flex max-h-full w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-mr-primary sm:max-h-[92vh] sm:max-w-[760px] sm:rounded-mr-xs sm:border sm:border-mr-gray-700 sm:shadow-[-0.5rem_0.5rem_0_0_rgba(221,218,42,0.25)]"
+                className="flex max-h-full w-full max-w-full flex-col overflow-hidden rounded-none border-0 bg-mr-primary sm:max-h-[92vh] sm:max-w-[760px] sm:rounded-mr-xs sm:border sm:border-mr-gray-700 sm:shadow-[-0.5rem_0.5rem_0_0_var(--mr-accent-25)]"
             >
                 <ProfileEditModalContent onAccountDeleted={onAccountDeleted} />
             </div>
@@ -84,9 +84,9 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
 
     return (
         <>
-            <div className="flex items-center justify-between border-b border-[#333333] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-mr-border px-5 py-4">
                 <div className="min-w-0">
-                    <div className="mb-0.5 text-mr-tiny font-mr-extrabold uppercase tracking-[.1em] text-mr-accent">{t('profile.edit.eyebrow')}</div>
+                    <div className="mb-0.5 text-mr-tiny font-mr-extrabold uppercase tracking-[.1em] text-mr-accent-fg">{t('profile.edit.eyebrow')}</div>
                     <h2 className="whitespace-nowrap text-[18px] font-mr-bold tracking-mr text-mr-fg">{t('profile.edit.title')}</h2>
                 </div>
                 <button
@@ -99,7 +99,7 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                 </button>
             </div>
 
-            <div role="tablist" className="flex shrink-0 overflow-x-auto whitespace-nowrap border-b border-[#333333]">
+            <div role="tablist" className="flex shrink-0 overflow-x-auto whitespace-nowrap border-b border-mr-border">
                 {TABS.map(tab => {
                     const Icon = tab.icon;
 
@@ -112,7 +112,7 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                             role="tab"
                             aria-selected={active}
                             onClick={() => setActiveTab(tab.key)}
-                            className={`mr-focus-ring inline-flex min-h-11 cursor-pointer items-center gap-1.5 whitespace-nowrap border-0 border-b-2 bg-transparent px-3.5 py-3 font-mr-sans text-mr-small font-mr-bold tracking-mr ${active ? 'border-mr-accent text-mr-accent' : 'border-transparent text-mr-gray-300'}`}
+                            className={`mr-focus-ring inline-flex min-h-11 cursor-pointer items-center gap-1.5 whitespace-nowrap border-0 border-b-2 bg-transparent px-3.5 py-3 font-mr-sans text-mr-small font-mr-bold tracking-mr ${active ? 'border-mr-accent-border text-mr-accent-fg' : 'border-transparent text-mr-gray-300'}`}
                         >
                             <Icon size={14} />
                             {t(tab.labelKey)}
@@ -145,7 +145,7 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                 )}
             </div>
 
-            <div className="flex shrink-0 items-center justify-between gap-2.5 border-t border-[#333333] bg-mr-gray-900 px-5 py-3.5">
+            <div className="flex shrink-0 items-center justify-between gap-2.5 border-t border-mr-border bg-mr-gray-900 px-5 py-3.5">
                 <span className="text-mr-tiny text-mr-gray-300" role="status">
                     {statusLabel}
                 </span>
@@ -160,7 +160,7 @@ const ProfileEditModalContent = ({ onAccountDeleted }: Props) => {
                     <button
                         type="button"
                         onClick={closeProfileSettings}
-                        className="mr-focus-ring inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-mr-xs border border-mr-accent bg-mr-accent px-4 font-mr-sans text-mr-body font-mr-bold tracking-mr text-mr-primary"
+                        className="mr-focus-ring inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-mr-xs border border-mr-accent-border bg-mr-accent px-4 font-mr-sans text-mr-body font-mr-bold tracking-mr text-mr-on-accent"
                     >
                         {t('profile.edit.save')}
                     </button>

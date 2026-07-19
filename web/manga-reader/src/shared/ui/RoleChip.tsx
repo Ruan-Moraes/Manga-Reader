@@ -5,9 +5,9 @@ export type Role = 'OP' | 'MOD' | 'AUTOR' | 'FIXADO';
 
 const ROLE_STYLES: Record<Role, string> = {
     OP: 'bg-mr-gray-800 text-mr-fg-muted border-mr-gray-700',
-    FIXADO: 'bg-mr-accent-25 text-mr-accent border-mr-accent-50',
-    AUTOR: 'bg-mr-accent-25 text-mr-accent border-mr-accent-50',
-    MOD: 'bg-mr-danger-15 text-mr-danger border-[rgba(255,120,79,0.4)]',
+    FIXADO: 'bg-mr-accent-25 text-mr-accent-fg border-mr-accent-50',
+    AUTOR: 'bg-mr-accent-25 text-mr-accent-fg border-mr-accent-50',
+    MOD: 'bg-mr-danger-15 text-mr-danger border-mr-danger-border',
 };
 
 export interface RoleChipProps {

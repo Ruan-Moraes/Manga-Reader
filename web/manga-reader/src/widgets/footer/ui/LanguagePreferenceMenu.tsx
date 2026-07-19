@@ -42,7 +42,7 @@ const LanguagePreferenceMenu = () => {
                 <button
                     type="button"
                     aria-label={t('footer.preferences.languageAria')}
-                    className="mr-focus-ring inline-flex min-h-[36px] items-center gap-2 rounded-[2px] border border-mr-gray-700 bg-transparent px-3 py-1.5 text-[12px] font-mr-semibold text-mr-fg-muted transition-colors duration-200 hover:border-mr-accent hover:text-mr-accent"
+                    className="mr-focus-ring inline-flex min-h-[36px] items-center gap-2 rounded-[2px] border border-mr-gray-700 bg-transparent px-3 py-1.5 text-[12px] font-mr-semibold text-mr-fg-muted transition-colors duration-200 hover:border-mr-accent-border hover:text-mr-accent-fg"
                 >
                     <Languages className="size-[14px]" aria-hidden="true" />
                     <span>{t('footer.preferences.language')}</span>

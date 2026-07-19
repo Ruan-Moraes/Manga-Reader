@@ -23,7 +23,7 @@ const HelpFaqSection = () => {
                                 type="button"
                                 aria-label={t('faq.yesAria')}
                                 onClick={() => setHelpfulVotes(v => ({ ...v, [key]: true }))}
-                                className={`inline-flex items-center gap-1 hover:text-mr-accent ${helpfulVotes[key] === true ? 'text-mr-accent' : ''}`}
+                                className={`inline-flex items-center gap-1 hover:text-mr-accent-fg ${helpfulVotes[key] === true ? 'text-mr-accent-fg' : ''}`}
                             >
                                 <ThumbsUp className="size-3.5" /> {t('faq.yes')}
                             </button>

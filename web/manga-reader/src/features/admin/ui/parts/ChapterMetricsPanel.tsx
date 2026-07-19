@@ -33,7 +33,7 @@ const SeriesTooltip = ({ active, payload, label }: { active?: boolean; payload?:
 
 /**
  * Painel de métricas de um capítulo: cards, comparações, distribuição por
- * dispositivo/plataforma e evolução de leituras. Dados simulados via
+ * dispositivo/plataforma e evolução de leituras. Dados recuperados via
  * ChapterAnalyticsGateway (determinísticos por capítulo+filtro).
  */
 const ChapterMetricsPanel = ({ chapterId, titleId }: ChapterMetricsPanelProps) => {
@@ -82,11 +82,11 @@ const ChapterMetricsPanel = ({ chapterId, titleId }: ChapterMetricsPanelProps) =
             <div className="h-44 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data} barCategoryGap="28%">
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" vertical={false} />
-                        <XAxis dataKey="label" tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} />
-                        <YAxis tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} />
-                        <Tooltip content={<SeriesTooltip />} cursor={{ fill: 'rgba(114,114,115,0.12)' }} />
-                        <Bar dataKey="reads" fill="#ddda2a" radius={[4, 4, 0, 0]} maxBarSize={42} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--mr-border)" vertical={false} />
+                        <XAxis dataKey="label" tick={{ fill: 'var(--mr-fg-subtle)', fontSize: 12 }} tickLine={false} />
+                        <YAxis tick={{ fill: 'var(--mr-fg-subtle)', fontSize: 12 }} tickLine={false} />
+                        <Tooltip content={<SeriesTooltip />} cursor={{ fill: 'var(--mr-surface-elevated)' }} />
+                        <Bar dataKey="reads" fill="var(--mr-accent)" radius={[4, 4, 0, 0]} maxBarSize={42} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -111,15 +111,15 @@ const ChapterMetricsPanel = ({ chapterId, titleId }: ChapterMetricsPanelProps) =
                         <AreaChart data={analytics.series.map((point: SeriesPoint) => ({ ...point, label: formatDay(point.date) }))}>
                             <defs>
                                 <linearGradient id="chapterReadsGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#ddda2a" stopOpacity={0.12} />
-                                    <stop offset="95%" stopColor="#ddda2a" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="var(--mr-accent)" stopOpacity={0.12} />
+                                    <stop offset="95%" stopColor="var(--mr-accent)" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                            <XAxis dataKey="label" tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} minTickGap={24} />
-                            <YAxis tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} />
-                            <Tooltip content={<SeriesTooltip />} cursor={{ stroke: '#727273' }} />
-                            <Area type="monotone" dataKey="value" stroke="#ddda2a" strokeWidth={2} fill="url(#chapterReadsGradient)" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--mr-border)" />
+                            <XAxis dataKey="label" tick={{ fill: 'var(--mr-fg-subtle)', fontSize: 12 }} tickLine={false} minTickGap={24} />
+                            <YAxis tick={{ fill: 'var(--mr-fg-subtle)', fontSize: 12 }} tickLine={false} />
+                            <Tooltip content={<SeriesTooltip />} cursor={{ stroke: 'var(--mr-tertiary)' }} />
+                            <Area type="monotone" dataKey="value" stroke="var(--mr-accent-border)" strokeWidth={2} fill="url(#chapterReadsGradient)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>

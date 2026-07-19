@@ -48,7 +48,7 @@ const EventCardBase = ({ event, onClick, onToggleGoing }: EventCardProps) => {
                 <div
                     className="relative h-44"
                     style={{
-                        background: event.coverGradient ?? 'linear-gradient(135deg, #2a1f3a, #161616)',
+                        background: event.coverGradient ?? 'var(--mr-banner-gradient)',
                     }}
                 >
                     {event.coverImage && <img src={event.coverImage} alt="" className="size-full object-cover" />}
@@ -100,7 +100,7 @@ const EventCardBase = ({ event, onClick, onToggleGoing }: EventCardProps) => {
             <div
                 className="size-20 shrink-0 overflow-hidden rounded-mr-sm"
                 style={{
-                    background: event.coverGradient ?? 'linear-gradient(135deg, #2a1f3a, #161616)',
+                    background: event.coverGradient ?? 'var(--mr-banner-gradient)',
                 }}
             >
                 {event.coverImage && <img src={event.coverImage} alt="" className="size-full object-cover" />}

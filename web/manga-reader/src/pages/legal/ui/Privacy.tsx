@@ -69,7 +69,7 @@ export default function Privacy() {
                 <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {coletaRows.map(row => (
                         <div key={row.term} className="rounded-mr-sm border border-mr-border bg-mr-surface p-3">
-                            <dt className="mr-label text-mr-accent uppercase tracking-[0.08em]">{row.term}</dt>
+                            <dt className="mr-label text-mr-accent-fg uppercase tracking-[0.08em]">{row.term}</dt>
                             <dd className="mt-1 text-mr-small text-mr-fg-muted">{row.value}</dd>
                         </div>
                     ))}
@@ -126,7 +126,7 @@ export default function Privacy() {
                         i18nKey="privacy.sections.direitos.outro"
                         ns="legal"
                         components={{
-                            mail: <a href="mailto:dpo@manga-reader.example.com" className="text-mr-accent underline hover:no-underline" />,
+                            mail: <a href="mailto:dpo@manga-reader.example.com" className="text-mr-accent-fg underline hover:no-underline" />,
                         }}
                     />
                 </p>
@@ -158,10 +158,10 @@ export default function Privacy() {
 
                         return (
                             <div key={row.term} className="rounded-mr-sm border border-mr-border bg-mr-surface p-3">
-                                <dt className="mr-label text-mr-accent uppercase tracking-[0.08em]">{row.term}</dt>
+                                <dt className="mr-label text-mr-accent-fg uppercase tracking-[0.08em]">{row.term}</dt>
                                 <dd className="mt-1 text-mr-small text-mr-fg-muted">
                                     {isEmail ? (
-                                        <a href={`mailto:${row.value}`} className="text-mr-accent underline hover:no-underline">
+                                        <a href={`mailto:${row.value}`} className="text-mr-accent-fg underline hover:no-underline">
                                             {row.value}
                                         </a>
                                     ) : (

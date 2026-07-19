@@ -116,9 +116,9 @@ const Comment = ({
                         <button
                             type="button"
                             onClick={scrollToParent}
-                            className="inline-flex items-center gap-1 rounded-mr-full border border-mr-chip-border bg-mr-chip px-2 py-0.5 text-mr-tiny font-mr-semibold text-mr-fg-subtle transition-colors hover:border-mr-accent-50 hover:text-mr-accent"
+                            className="inline-flex items-center gap-1 rounded-mr-full border border-mr-chip-border bg-mr-chip px-2 py-0.5 text-mr-tiny font-mr-semibold text-mr-fg-subtle transition-colors hover:border-mr-accent-50 hover:text-mr-accent-fg"
                         >
-                            {t('reply.replyingTo')} <span className="font-mr-bold text-mr-accent">{parentUserName}</span>
+                            {t('reply.replyingTo')} <span className="font-mr-bold text-mr-accent-fg">{parentUserName}</span>
                         </button>
                     ) : null
                 }

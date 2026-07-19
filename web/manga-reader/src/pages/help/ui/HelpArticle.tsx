@@ -51,7 +51,7 @@ export default function HelpArticle() {
                     <button
                         type="button"
                         onClick={() => navigate(ROUTES.HELP)}
-                        className="mb-4 inline-flex items-center gap-1.5 rounded-mr-xs text-mr-small font-mr-bold text-mr-fg-muted transition-colors hover:text-mr-accent"
+                        className="mb-4 inline-flex items-center gap-1.5 rounded-mr-xs text-mr-small font-mr-bold text-mr-fg-muted transition-colors hover:text-mr-accent-fg"
                     >
                         <ArrowLeft className="size-4" aria-hidden="true" />
                         {t('article.back')}

@@ -300,6 +300,10 @@ export const createLocalStorageChapterAdminGateway = (store: ChapterStore): Chap
             });
         },
 
+        async importLegacy() {
+            throw new Error('Legacy import is available only through the HTTP API');
+        },
+
         async listPages(chapterId) {
             await store.delay();
             const state = store.read();

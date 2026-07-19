@@ -61,7 +61,7 @@ export const SideMenu = ({ open, onClose, sections, user, activeKey, footer }: S
                                     className={cn(
                                         'flex py-2.5 items-center gap-3 rounded-mr-xs px-3 text-mr-body transition-colors duration-mr-default',
                                         active
-                                            ? 'border-l-[3px] border-mr-accent bg-mr-accent-25 font-mr-extrabold text-mr-accent'
+                                            ? 'border-l-[3px] border-mr-accent-border bg-mr-accent-25 font-mr-extrabold text-mr-accent-fg'
                                             : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
                                     )}
                                 >

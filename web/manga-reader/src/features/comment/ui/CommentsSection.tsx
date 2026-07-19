@@ -63,7 +63,7 @@ const CommentsSection = ({
                     ) : (
                         <div className="flex min-w-0 flex-col items-stretch gap-4 rounded-mr-md border border-mr-chip-border bg-mr-chip p-4 md:flex-row md:items-center md:justify-between md:gap-3">
                             <div className="flex min-w-0 items-center gap-3">
-                                <span className="flex size-9 shrink-0 items-center justify-center rounded-mr-full bg-mr-accent-25 text-mr-accent">
+                                <span className="flex size-9 shrink-0 items-center justify-center rounded-mr-full bg-mr-accent-25 text-mr-accent-fg">
                                     <LogIn className="size-4" aria-hidden="true" />
                                 </span>
                                 <p className="min-w-0 text-mr-small leading-relaxed text-mr-fg-subtle">{t('section.loginPrompt')}</p>

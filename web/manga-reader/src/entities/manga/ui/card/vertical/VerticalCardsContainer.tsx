@@ -65,7 +65,7 @@ const VerticalCardsContainer = ({ title, subTitle }: SectionHeader) => {
                 <h2 className="font-bold text-2xl">{title}</h2>
                 {subTitle && (
                     <p className="leading-none">
-                        <AppLink link={ROUTES.CATALOG_SORT('most_recent')} text={subTitle} className="text-xs text-quaternary-default" />
+                        <AppLink link={ROUTES.CATALOG_SORT('most_recent')} text={subTitle} className="text-xs text-mr-accent-fg" />
                     </p>
                 )}
             </div>

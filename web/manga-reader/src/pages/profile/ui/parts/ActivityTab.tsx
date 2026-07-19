@@ -4,17 +4,18 @@ import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
-import { ActivityEventRow, useActivityFeed, useHideActivityEvent } from '@entities/activity';
+import { ActivityEventRow, useActivityFeed } from '@entities/activity';
+import { HideActivityEventAction } from '@features/hide-activity-event';
 
 type ActivityTabProps = {
     profileUserId?: string;
+    isOwn: boolean;
 };
 
-const ActivityTab = ({ profileUserId }: ActivityTabProps) => {
+const ActivityTab = ({ profileUserId, isOwn }: ActivityTabProps) => {
     const { t } = useTranslation('user');
 
-    const { events, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useActivityFeed(profileUserId);
-    const hideEventMutation = useHideActivityEvent();
+    const { events, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } = useActivityFeed(profileUserId);
 
     if (isLoading) {
         return (
@@ -23,6 +24,20 @@ const ActivityTab = ({ profileUserId }: ActivityTabProps) => {
                     <Skeleton key={i} className="h-[52px] w-full rounded-mr-xs" />
                 ))}
             </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <EmptyState
+                illustration="pensando"
+                title={t('profile.activity.loadError')}
+                action={
+                    <Button variant="ghost" onClick={() => void refetch()}>
+                        {t('profile.activity.retry')}
+                    </Button>
+                }
+            />
         );
     }
 
@@ -36,8 +51,7 @@ const ActivityTab = ({ profileUserId }: ActivityTabProps) => {
                 <ActivityEventRow
                     key={event.id}
                     event={event}
-                    onHide={() => hideEventMutation.mutate(event.id)}
-                    hiding={hideEventMutation.isPending}
+                    actions={isOwn ? <HideActivityEventAction eventId={event.id} /> : undefined}
                 />
             ))}
 

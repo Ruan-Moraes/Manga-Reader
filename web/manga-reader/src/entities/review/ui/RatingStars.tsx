@@ -40,7 +40,7 @@ const RatingStars = ({ value, onChange, size = 16, halfPrecision = false, showVa
         const isFull = value >= starValue;
         const isHalf = !isFull && value >= starValue - 0.5;
 
-        const iconClass = isFull || isHalf ? 'text-yellow-400 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]' : 'text-white/80 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]';
+        const iconClass = isFull || isHalf ? 'text-mr-accent-fg drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]' : 'text-mr-on-overlay/80 drop-shadow-[0_0_2px_rgba(0,0,0,0.95)]';
 
         if (isFull) return <Star size={size} className={iconClass} />;
         if (isHalf) return <StarHalf size={size} className={iconClass} />;

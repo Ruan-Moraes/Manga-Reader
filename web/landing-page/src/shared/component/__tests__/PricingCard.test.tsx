@@ -15,14 +15,13 @@ const BASE_PLAN: PlanView = {
     name: 'Mensal',
     price: 'R$ 14,90',
     period: '/mês',
+    description: 'Assinatura mensal com acesso completo.',
     features: ['Feature X'],
 };
 
 function renderCard(props: Partial<Parameters<typeof PricingCard>[0]> = {}) {
     const defaultProps = {
         plan: BASE_PLAN,
-        equivLabel: 'equivale a',
-        saveLabel: 'economize',
         ctaLabel: 'Assinar Mensal',
         onSelect: vi.fn(),
         ...props,
@@ -40,15 +39,29 @@ function renderCard(props: Partial<Parameters<typeof PricingCard>[0]> = {}) {
 
 describe('PricingCard', () => {
     it('renders plan price', () => {
-        renderCard({ plan: { ...BASE_PLAN, price: 'R$ 19,90' } });
+        const { container } = renderCard({
+            plan: { ...BASE_PLAN, price: 'R$ 19,90' },
+        });
 
         expect(screen.getByText(/19,90/)).toBeInTheDocument();
+        expect(container.querySelector('strong')?.parentElement).toHaveClass(
+            'grid-cols-[minmax(0,1fr)_4.5rem]',
+            '@max-[300px]:grid-cols-[minmax(0,1fr)_3.25rem]',
+        );
     });
 
     it('renders features list', () => {
         renderCard({ plan: { ...BASE_PLAN, features: ['Feature X'] } });
 
         expect(screen.getByText('Feature X')).toBeInTheDocument();
+    });
+
+    it('renders the description returned by the API', () => {
+        renderCard();
+
+        expect(
+            screen.getByText('Assinatura mensal com acesso completo.'),
+        ).toBeInTheDocument();
     });
 
     it('shows the ribbon label when provided', () => {

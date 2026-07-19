@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { StoresContainer, getStoresByTitleId } from '@entities/store';
+import { trackBehavior } from '@features/track-user-behavior';
 
 type StoresTabProps = {
     titleId: string;
@@ -18,7 +19,16 @@ const StoresTab = ({ titleId }: StoresTabProps) => {
         enabled: Boolean(titleId),
     });
 
-    return <StoresContainer stores={data?.content ?? []} isLoading={isLoading} />;
+    return (
+        <StoresContainer
+            stores={data?.content ?? []}
+            isLoading={isLoading}
+            onVisit={store => {
+                void trackBehavior({ type: 'STORE_OUTBOUND_CLICK', titleId, source: store.id });
+                window.open(store.purchaseUrl ?? store.website, '_blank', 'noopener,noreferrer');
+            }}
+        />
+    );
 };
 
 export default StoresTab;

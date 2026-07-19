@@ -40,7 +40,7 @@ const KpiCard = ({ kpi }: { kpi: Kpi }) => {
             <span
                 className={cn(
                     'flex size-11 shrink-0 items-center justify-center rounded-mr-sm',
-                    kpi.danger ? 'bg-mr-danger-15 text-mr-danger' : 'bg-mr-accent-25 text-mr-accent',
+                    kpi.danger ? 'bg-mr-danger-15 text-mr-danger' : 'bg-mr-accent-25 text-mr-accent-fg',
                 )}
             >
                 {kpi.icon}

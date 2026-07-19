@@ -5,6 +5,7 @@ export type SavedMangaItem = {
     name: string;
     cover: string;
     type: string;
+    adult?: boolean;
     list: ReadingListType;
     savedAt: string;
 };

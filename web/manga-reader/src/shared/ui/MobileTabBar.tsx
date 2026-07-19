@@ -38,7 +38,7 @@ export const MobileTabBar = ({ items, activeKey, visible = true }: MobileTabBarP
                     // h-[52px] precisa ficar em sincronia com o pb-[calc(52px+...)] do RootLayout.tsx
                     className={cn(
                         'relative flex h-[52px] flex-1 items-center justify-center transition-colors',
-                        active ? 'text-mr-accent' : 'text-mr-fg-subtle hover:text-mr-fg',
+                        active ? 'text-mr-accent-fg' : 'text-mr-fg-subtle hover:text-mr-fg',
                     )}
                 >
                     <span className={cn('flex items-center justify-center rounded-mr-full p-2 transition-colors', active && 'bg-mr-accent-25')}>

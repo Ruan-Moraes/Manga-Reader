@@ -1,106 +1,87 @@
 import { useTranslation } from 'react-i18next';
-
 import { PhoneFrame } from '@/shared/component/DeviceFrames';
 import Icon from '@/shared/component/Icon';
-import { LibraryScreen, ReaderScreen } from '@/shared/component/MockScreens';
-import { Eyebrow, Section, StoreButton } from '@/shared/component/Primitives';
+import MarketingSection, {
+    SectionEyebrow,
+} from '@/shared/component/MarketingSection';
+import { LibraryScreen, ReaderScreen } from '@/shared/component/mock-screen';
 import Reveal from '@/shared/component/Reveal';
+import StoreBadge from '@/shared/component/StoreBadge';
 
 export default function MobileApp() {
-    const { t } = useTranslation();
-
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
     const features = t('mobile.features', { returnObjects: true }) as string[];
-
     return (
-        <Section id="app" alt>
-            <div
-                className="lp-mobile-grid"
-                style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'clamp(40px,6vw,64px)', alignItems: 'center' }}
-            >
-                {/* mockups */}
-                <Reveal y={26} style={{ position: 'relative', display: 'flex', justifyContent: 'center', minHeight: 380 }}>
-                    <div
-                        aria-hidden="true"
-                        style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: 'radial-gradient(circle at 50% 45%, rgba(221,218,42,0.08), transparent 60%)',
-                        }}
-                    />
-                    <div className="lp-float-b" style={{ position: 'relative', zIndex: 2 }}>
-                        <PhoneFrame w={224} label="Biblioteca no app">
+        <MarketingSection key={locale} id="app" tone="raised">
+            <div className="grid grid-cols-1 items-center gap-[clamp(42px,7vw,72px)] md:grid-cols-[0.95fr_1.05fr]">
+                <Reveal
+                    y={26}
+                    className="relative flex min-h-[430px] items-center justify-center before:absolute before:inset-0 before:bg-[radial-gradient(circle,rgb(221_218_42_/_9%),transparent_62%)]"
+                >
+                    <div className="relative z-[2] motion-safe:animate-float-b">
+                        <PhoneFrame w={224} label={t('hero.phonePreviewLabel')}>
                             <LibraryScreen />
                         </PhoneFrame>
                     </div>
-                    <div
-                        className="lp-mobile-phone2 lp-float-a"
-                        style={{ position: 'absolute', right: '18%', bottom: '-4%', zIndex: 1, opacity: 0.92 }}
+                    <PhoneFrame
+                        w={176}
+                        className="absolute! right-[8%] bottom-0 z-[1]! hidden opacity-[0.88] min-[480px]:block motion-safe:animate-float-a"
+                        label={t('hero.phonePreviewLabel')}
                     >
-                        <PhoneFrame w={176} glow={false} label="Leitor no app">
-                            <ReaderScreen />
-                        </PhoneFrame>
-                    </div>
+                        <ReaderScreen />
+                    </PhoneFrame>
                 </Reveal>
-
-                {/* texto */}
                 <div>
                     <Reveal>
-                        <Eyebrow>{t('mobile.eyebrow')}</Eyebrow>
+                        <SectionEyebrow>{t('mobile.eyebrow')}</SectionEyebrow>
                     </Reveal>
                     <Reveal
                         delay={60}
                         as="h2"
-                        style={{
-                            margin: 0,
-                            fontWeight: 800,
-                            color: '#fff',
-                            letterSpacing: '.0625rem',
-                            fontSize: 'clamp(26px,4.6vw,38px)',
-                            lineHeight: 1.14,
-                            textWrap: 'balance',
-                        }}
+                        className="m-0 max-w-[650px] text-balance text-[clamp(1.9rem,4.5vw,2.6rem)] font-black leading-[1.12] tracking-[-0.03em] text-fg"
                     >
                         {t('mobile.title')}
                     </Reveal>
-                    <Reveal delay={120} as="p" style={{ margin: '16px 0 0', maxWidth: 480, color: '#999', fontSize: 16, lineHeight: 1.6 }}>
+                    <Reveal
+                        delay={110}
+                        as="p"
+                        className="m-[16px_0_0] max-w-[520px] text-base leading-[1.7] text-copy-muted"
+                    >
                         {t('mobile.sub')}
                     </Reveal>
-
-                    <ul style={{ listStyle: 'none', margin: '26px 0 0', padding: 0, display: 'flex', flexDirection: 'column', gap: 13 }}>
-                        {features.map((f, i) => (
+                    <ul className="m-[26px_0_0] grid list-none gap-3 p-0">
+                        {features.map((feature, index) => (
                             <Reveal
-                                key={i}
-                                delay={150 + i * 60}
+                                key={feature}
+                                delay={140 + index * 45}
                                 as="li"
-                                style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#fff', fontSize: 15, fontWeight: 600 }}
+                                className="flex items-center gap-3 text-[0.9375rem] font-bold text-fg"
                             >
-                                <span
-                                    style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        width: 24,
-                                        height: 24,
-                                        borderRadius: 999,
-                                        background: 'rgba(221,218,42,0.15)',
-                                        border: '1px solid rgba(221,218,42,0.45)',
-                                        color: '#ddda2a',
-                                        flexShrink: 0,
-                                    }}
-                                >
+                                <span className="inline-flex size-[26px] shrink-0 items-center justify-center rounded-full border border-accent-muted bg-accent-subtle text-accent-fg">
                                     <Icon name="check" size={14} stroke={3} />
                                 </span>
-                                {f}
+                                {feature}
                             </Reveal>
                         ))}
                     </ul>
-
-                    <Reveal delay={260} style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 32 }}>
-                        <StoreButton kind="apple" line1={t('mobile.appStore')} line2={t('mobile.appStoreName')} />
-                        <StoreButton kind="play" line1={t('mobile.googlePlay')} line2={t('mobile.googlePlayName')} />
+                    <Reveal
+                        delay={240}
+                        className="mt-[30px] flex flex-wrap gap-3"
+                    >
+                        <StoreBadge
+                            kind="apple"
+                            line1={t('mobile.appStore')}
+                            line2={t('mobile.appStoreName')}
+                        />
+                        <StoreBadge
+                            kind="play"
+                            line1={t('mobile.googlePlay')}
+                            line2={t('mobile.googlePlayName')}
+                        />
                     </Reveal>
                 </div>
             </div>
-        </Section>
+        </MarketingSection>
     );
 }

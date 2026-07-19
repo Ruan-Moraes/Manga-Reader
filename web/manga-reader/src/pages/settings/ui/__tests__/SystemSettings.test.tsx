@@ -46,18 +46,28 @@ describe('SystemSettings', () => {
         expect(screen.getByRole('tab', { name: /leitor/i })).toHaveAttribute('aria-selected', 'true');
     });
 
+    it('opens the requested settings tab from the URL', () => {
+        const previousUrl = window.location.href;
+        window.history.pushState({}, '', '/settings?tab=appearance');
+
+        renderPage();
+
+        expect(screen.getByRole('tab', { name: /aparência/i })).toHaveAttribute('aria-selected', 'true');
+        window.history.replaceState({}, '', previousUrl);
+    });
+
     it('reading direction defaults to right-to-left', () => {
         renderPage();
         expect(screen.getByRole('radio', { name: /dir\. → esq\./i })).toHaveAttribute('aria-checked', 'true');
     });
 
-    it('switches to Aparência tab and shows theme cards with EM BREVE on light', async () => {
+    it('switches to Aparência tab and exposes the functional light theme', async () => {
         const user = userEvent.setup();
         renderPage();
         await user.click(screen.getByRole('tab', { name: /aparência/i }));
         expect(screen.getByRole('radio', { name: /escuro/i })).toBeInTheDocument();
         expect(screen.getByRole('radio', { name: /sistema/i })).toBeInTheDocument();
-        expect(screen.getByText(/em breve/i)).toBeInTheDocument();
+        expect(screen.getByRole('radio', { name: /claro/i })).toBeEnabled();
     });
 
     it('switches to Idioma tab and shows interface language select', async () => {
@@ -79,7 +89,7 @@ describe('SystemSettings', () => {
         renderPage();
         await user.click(screen.getByRole('tab', { name: /dados/i }));
         expect(screen.getByRole('button', { name: /exportar/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /importar/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /indisponível/i })).toBeDisabled();
         expect(screen.getAllByRole('button', { name: /limpar/i }).length).toBeGreaterThan(0);
     });
 

@@ -45,13 +45,13 @@ const ForumTopicCardBase = ({ title, category, author, postedAt, lastReplyAt, re
                 )}
                 {spoiler && <Badge variant="danger">Spoiler</Badge>}
                 {!!live && (
-                    <span className="ml-auto inline-flex items-center gap-1.5 text-mr-accent">
+                    <span className="ml-auto inline-flex items-center gap-1.5 text-mr-accent-fg">
                         <StatusDot status="operating" size={8} />
                         <span className="font-mr-bold tabular-nums">{fmt(live)} discutindo agora</span>
                     </span>
                 )}
             </div>
-            <h3 className="break-words text-mr-h4 font-mr-extrabold leading-tight tracking-mr text-mr-fg group-hover:text-mr-accent">{title}</h3>
+            <h3 className="break-words text-mr-h4 font-mr-extrabold leading-tight tracking-mr text-mr-fg group-hover:text-mr-accent-fg">{title}</h3>
             <div className="flex flex-wrap gap-2 text-mr-tiny text-mr-fg-subtle">
                 <span>
                     <strong className="font-mr-bold text-mr-fg-muted">{author.name}</strong>

@@ -65,7 +65,7 @@ export const StarsInput = ({ value, onChange, size = 18, label = 'Avalie de 1 a 
                     onClick={() => onChange?.(value === i ? 0 : i)}
                     aria-pressed={value >= i}
                     aria-label={`${i} estrela${i > 1 ? 's' : ''}`}
-                    className="text-mr-gray-700 hover:text-mr-accent mr-focus-ring"
+                    className="text-mr-gray-700 hover:text-mr-accent-fg mr-focus-ring"
                 >
                     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
                         <polygon points={STAR_POINTS} fill={i <= shown ? 'var(--mr-accent)' : 'currentColor'} />

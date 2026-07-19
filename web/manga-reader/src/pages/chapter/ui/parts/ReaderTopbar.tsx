@@ -55,7 +55,7 @@ export const ReaderTopbar = ({
             <button type="button" className="reader-title-btn" onClick={onToggleChapters} aria-expanded={chaptersOpen}>
                 <span className="reader-title-line">
                     <strong>{title}</strong>
-                    <span style={{ color: '#666' }}>·</span>
+                    <span style={{ color: 'var(--mr-fg-disabled)' }}>·</span>
                     <span>
                         {t('reader.chapterAbbr')} {chapter}
                     </span>

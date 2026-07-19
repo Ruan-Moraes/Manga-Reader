@@ -21,7 +21,7 @@ export const ForumPagination = ({ pages = [1, 2, 3], last = 12, current = 1, sty
                     {p}
                 </button>
             ))}
-            <span style={{ color: '#727273', padding: '0 8px' }}>…</span>
+            <span style={{ color: 'var(--mr-tertiary)', padding: '0 8px' }}>…</span>
             <button type="button" className="forum-page-btn">
                 {last}
             </button>

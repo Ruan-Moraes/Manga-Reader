@@ -73,7 +73,7 @@ export default function Contact() {
                             >
                                 <header className="flex items-center gap-3">
                                     <div
-                                        className={`flex size-10 shrink-0 items-center justify-center rounded-mr-xs ${ch.priority ? 'bg-[rgba(255,120,79,0.12)] text-mr-danger' : 'bg-mr-accent-25 text-mr-accent'}`}
+                                        className={`flex size-10 shrink-0 items-center justify-center rounded-mr-xs ${ch.priority ? 'bg-mr-danger-15 text-mr-danger' : 'bg-mr-accent-25 text-mr-accent-fg'}`}
                                     >
                                         <Icon className="size-5" />
                                     </div>
@@ -85,7 +85,7 @@ export default function Contact() {
                                 <p className="text-mr-tiny text-mr-fg-muted">{desc}</p>
                                 <a
                                     href={`mailto:${email}`}
-                                    className="inline-flex items-center gap-1.5 self-start rounded-mr-full border border-mr-border px-3 py-1 text-mr-tiny text-mr-accent hover:border-mr-accent transition-colors"
+                                    className="inline-flex items-center gap-1.5 self-start rounded-mr-full border border-mr-border px-3 py-1 text-mr-tiny text-mr-accent-fg hover:border-mr-accent-border transition-colors"
                                 >
                                     <Mail className="size-3" />
                                     {email}
@@ -187,7 +187,7 @@ export default function Contact() {
                 <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {postalRows.map(row => (
                         <div key={row.term} className="rounded-mr-sm border border-mr-border bg-mr-surface p-4">
-                            <dt className="mr-label text-mr-accent uppercase tracking-[0.08em]">{row.term}</dt>
+                            <dt className="mr-label text-mr-accent-fg uppercase tracking-[0.08em]">{row.term}</dt>
                             <dd className="mt-2 whitespace-pre-line text-mr-small text-mr-fg-muted">{row.value}</dd>
                         </div>
                     ))}

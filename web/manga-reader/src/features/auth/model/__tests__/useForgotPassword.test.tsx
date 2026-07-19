@@ -60,7 +60,11 @@ describe('useForgotPassword', () => {
     });
 
     it('mostra toast de sucesso e marca como enviado quando a API responde ok', async () => {
-        server.use(http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () => HttpResponse.json({ success: true, data: 'Email enviado.' })));
+        server.use(
+            http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
+                HttpResponse.json({ success: true, data: { message: 'Email enviado.', expiresInSeconds: 1800 } }),
+            ),
+        );
 
         const { result } = renderHook(() => useForgotPassword());
 

@@ -133,7 +133,7 @@ const NewsFormModal =({ isOpen, onClose, onSubmit, news, isSubmitting, onDelete,
                             />
                         )}
                         <div className="mx-auto max-w-3xl space-y-4 p-5 sm:p-8">
-                            <p className="text-mr-tiny font-mr-bold uppercase tracking-wider text-mr-accent">
+                            <p className="text-mr-tiny font-mr-bold uppercase tracking-wider text-mr-accent-fg">
                                 {categoryOptions.find(option => option.value === category)?.label || category}
                             </p>
                             <h2 className="text-mr-h2 font-mr-extrabold leading-tight text-mr-fg">
@@ -175,11 +175,11 @@ const NewsFormModal =({ isOpen, onClose, onSubmit, news, isSubmitting, onDelete,
                                     aria-selected={isActive}
                                     onClick={() => setContentTab(lang)}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 text-mr-tiny font-mr-bold transition-colors ${
-                                        isActive ? 'border-b-2 border-mr-accent text-mr-accent' : 'text-mr-fg-subtle hover:text-mr-fg'
+                                        isActive ? 'border-b-2 border-mr-accent-border text-mr-accent-fg' : 'text-mr-fg-subtle hover:text-mr-fg'
                                     }`}
                                 >
                                     {lang}
-                                    {filled && <span className="text-mr-accent">●</span>}
+                                    {filled && <span className="text-mr-accent-fg">●</span>}
                                 </button>
                             );
                         })}
@@ -229,7 +229,7 @@ const NewsFormModal =({ isOpen, onClose, onSubmit, news, isSubmitting, onDelete,
                             <Input value={(seoKeywords[contentTab] ?? []).join(', ')} onChange={event => setSeoKeywords({ ...seoKeywords, [contentTab]: event.target.value.split(',').map(value => value.trim()).filter(Boolean) })} />
                         </Field>
                         <div className="rounded-mr-xs border border-mr-border bg-mr-secondary p-4">
-                            <p className="text-mr-tiny text-mr-accent">{window.location.origin}/news/{slug || 'slug-da-noticia'}</p>
+                            <p className="text-mr-tiny text-mr-accent-fg">{window.location.origin}/news/{slug || 'slug-da-noticia'}</p>
                             <p className="mt-1 text-mr-body font-mr-bold text-mr-fg">{seoTitle[contentTab] || title[contentTab] || ptTitle}</p>
                             <p className="mt-1 text-mr-small text-mr-fg-muted">{seoDescription[contentTab] || excerpt[contentTab]}</p>
                         </div>

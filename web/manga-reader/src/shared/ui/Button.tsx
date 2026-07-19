@@ -4,7 +4,7 @@ import { Loader2, LucideIcon } from 'lucide-react';
 
 import { cn } from '@shared/lib/cn';
 
-export type ButtonVariant = 'primary' | 'raised' | 'ghost';
+export type ButtonVariant = 'primary' | 'raised' | 'ghost' | 'inverse';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -18,13 +18,16 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children?: ReactNode;
 }
 const variantClass: Record<NonNullable<ButtonProps['variant']>, string> = {
-    primary: 'bg-mr-accent text-mr-primary border border-mr-accent ' + 'hover:opacity-[0.85] active:scale-[0.98]',
+    primary: 'bg-mr-accent text-mr-on-accent border border-mr-accent-border ' + 'hover:opacity-[0.85] active:scale-[0.98]',
     raised:
         'bg-transparent text-mr-fg border border-mr-tertiary ' +
         'shadow-mr-elevated ' +
         'hover:shadow-none hover:outline hover:outline-1 hover:outline-mr-tertiary hover:font-mr-extrabold ' +
         'active:scale-[0.98]',
     ghost: 'bg-mr-surface text-mr-fg border border-mr-tertiary ' + 'hover:bg-mr-accent-25 active:bg-mr-accent-50 active:scale-[0.98]',
+    inverse:
+        'bg-transparent text-mr-on-overlay border border-mr-on-overlay/60 ' +
+        'hover:bg-mr-overlay-control hover:border-mr-on-overlay active:scale-[0.98]',
 };
 
 const sizeClass: Record<NonNullable<ButtonProps['size']>, string> = {

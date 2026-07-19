@@ -35,7 +35,7 @@ export const SquareAvatar = ({ initials, name, color, logo, size, fontSize, clas
 
     return (
         <div
-            className={cn('flex shrink-0 items-center justify-center overflow-hidden rounded-mr-xs font-mr-extrabold text-mr-primary', className)}
+            className={cn('flex shrink-0 items-center justify-center overflow-hidden rounded-mr-xs font-mr-extrabold text-mr-on-accent', className)}
             style={{ width: size, height: size, background, fontSize: fontSize ?? Math.round(size * 0.36) }}
         >
             {logo ? <img src={logo} alt="" loading="lazy" className="size-full object-cover" /> : inits}

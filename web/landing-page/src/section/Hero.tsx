@@ -1,86 +1,18 @@
-import { useEffect, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BrowserFrame, PhoneFrame } from '@/shared/component/DeviceFrames';
+import Button from '@/shared/component/Button';
 import Icon, { type IconName } from '@/shared/component/Icon';
-import { LibraryScreen, ReaderScreen } from '@/shared/component/MockScreens';
-import { PlatformBadge } from '@/shared/component/Primitives';
+import PlatformBadge from '@/shared/component/PlatformBadge';
 import Reveal from '@/shared/component/Reveal';
-
+import HeroProductPreview from '@/section/hero/HeroProductPreview';
+import { appHref } from '@/shared/config/appLinks';
 import { goToSection } from '@/shared/util/smoothScroll';
 
-function FloatChip({
-    icon,
-    label,
-    style,
-    accent,
-    className,
-}: {
-    icon: IconName;
-    label: string;
-    style?: CSSProperties;
-    accent?: boolean;
-    className?: string;
-}) {
-    return (
-        <div
-            className={className}
-            style={{
-                position: 'absolute',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '9px 14px',
-                borderRadius: 999,
-                background: 'rgba(22,22,22,0.85)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
-                border: `1px solid ${accent ? 'rgba(221,218,42,0.5)' : '#444'}`,
-                color: accent ? '#ddda2a' : '#fff',
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: '.0625rem',
-                whiteSpace: 'nowrap',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                ...style,
-            }}
-        >
-            <Icon name={icon} size={15} stroke={2.2} />
-            {label}
-        </div>
-    );
-}
-
 export default function Hero() {
-    const { t } = useTranslation();
-
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
     const badges = t('hero.badges', { returnObjects: true }) as string[];
-
-    const [py, setPy] = useState(0);
-
-    useEffect(() => {
-        const reduce =
-            window.matchMedia &&
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        if (reduce) return;
-
-        let raf = 0;
-
-        const onScroll = () => {
-            cancelAnimationFrame(raf);
-            raf = requestAnimationFrame(() => setPy(window.scrollY));
-        };
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-            cancelAnimationFrame(raf);
-        };
-    }, []);
-
-    const platBadges: { icon: IconName; label: string; accent?: boolean }[] = [
+    const platforms: { icon: IconName; label: string; accent?: boolean }[] = [
         { icon: 'smartphone', label: badges[0], accent: true },
         { icon: 'smartphone', label: badges[1] },
         { icon: 'globe', label: badges[2] },
@@ -90,256 +22,92 @@ export default function Hero() {
 
     return (
         <section
+            key={locale}
             id="top"
-            style={{
-                height: '100vh',
-                position: 'relative',
-                overflow: 'hidden',
-            }}
+            className="relative grid min-h-[max(720px,100svh)] items-center overflow-clip pt-[104px] pb-16"
         >
             <div
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_65%_45%,rgb(221_218_42_/_11%),transparent_42%)]"
                 aria-hidden="true"
-                style={{
-                    position: 'absolute',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: 'min(1100px, 120vw)',
-                    height: 680,
-                    background:
-                        'radial-gradient(ellipse at center, rgba(221,218,42,0.10), transparent 32%)',
-                    pointerEvents: 'none',
-                }}
             />
-            <div
-                aria-hidden="true"
-                style={{
-                    position: 'absolute',
-                    inset: 0,
-                    pointerEvents: 'none',
-                    background:
-                        'radial-gradient(circle at 80% 18%, rgba(221,218,42,0.06), transparent 45%)',
-                }}
-            />
-
-            <div
-                className="lp-hero-grid"
-                style={{
-                    margin: 'auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    gap: '8rem',
-                    height: '100%',
-                }}
-            >
-                {/* coluna texto */}
-                <div style={{ textAlign: 'center' }}>
-                    <Reveal
-                        style={{ display: 'flex', justifyContent: 'center' }}
-                    >
-                        <span
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 8,
-                                padding: '6px 14px',
-                                borderRadius: 999,
-                                background: 'rgba(221,218,42,0.10)',
-                                border: '1px solid rgba(221,218,42,0.35)',
-                                color: '#ddda2a',
-                                fontSize: 11,
-                                fontWeight: 800,
-                                letterSpacing: '.14em',
-                                textTransform: 'uppercase',
-                            }}
-                        >
+            <div className="relative mx-auto grid w-full max-w-[1240px] items-center gap-[clamp(42px,7vw,96px)] px-[clamp(20px,4vw,32px)] md:grid-cols-[minmax(300px,0.85fr)_minmax(0,1.15fr)] md:pt-3">
+                <div className="min-w-0 text-center md:text-left">
+                    <Reveal>
+                        <span className="inline-flex items-center gap-2 rounded-full border border-accent-muted bg-accent-subtle px-3.5 py-[7px] text-[0.6875rem] font-black uppercase tracking-[0.13em] text-accent-fg">
                             <Icon name="zap" size={13} />
                             {t('hero.eyebrow')}
                         </span>
                     </Reveal>
-
                     <Reveal
-                        delay={80}
+                        delay={70}
                         as="h1"
-                        style={{
-                            margin: '22px 0 0',
-                            fontWeight: 800,
-                            color: '#fff',
-                            letterSpacing: '.0625rem',
-                            fontSize: 'clamp(36px, 7.5vw, 72px)',
-                            lineHeight: 1.04,
-                            textWrap: 'balance',
-                        }}
+                        className="mx-auto mt-[22px] max-w-[760px] text-balance text-[clamp(2.35rem,8.5vw,5rem)] font-black leading-[0.98] tracking-[-0.045em] text-fg md:mx-0 md:text-[clamp(3rem,5.1vw,4.75rem)] [&>span]:text-accent-fg [&>small]:mt-4 [&>small]:block [&>small]:text-[clamp(1rem,2.8vw,1.5rem)] [&>small]:font-bold [&>small]:leading-[1.25] [&>small]:tracking-[-0.015em] [&>small]:text-copy-muted"
                     >
-                        {t('hero.title1')}{' '}
-                        <span style={{ color: '#ddda2a' }}>
-                            {t('hero.title2')}
-                        </span>
-                        <span
-                            style={{
-                                display: 'block',
-                                fontSize: '0.42em',
-                                fontWeight: 700,
-                                color: '#cccccc',
-                                marginTop: 14,
-                                letterSpacing: '.0625rem',
-                            }}
-                        >
-                            {t('hero.titleTail')}
-                        </span>
+                        {t('hero.title1')} <span>{t('hero.title2')}</span>
+                        <small>{t('hero.titleTail')}</small>
                     </Reveal>
-
                     <Reveal
-                        delay={150}
+                        delay={130}
                         as="p"
-                        style={{
-                            margin: '20px auto 0',
-                            maxWidth: 560,
-                            color: '#999',
-                            fontSize: 'clamp(15px,2.6vw,18px)',
-                            lineHeight: 1.6,
-                        }}
+                        className="mx-auto mt-5 max-w-[610px] text-[clamp(1rem,2vw,1.125rem)] leading-[1.7] text-copy-muted md:mx-0"
                     >
                         {t('hero.sub')}
                     </Reveal>
-
                     <Reveal
-                        delay={220}
-                        style={{
-                            display: 'flex',
-                            gap: 14,
-                            justifyContent: 'center',
-                            flexWrap: 'wrap',
-                            marginTop: 32,
-                        }}
+                        delay={190}
+                        className="mt-[30px] grid justify-items-center gap-2 md:justify-items-start"
                     >
-                        {/* TODO: Fazer animacao de hover desse botao */}
-                        <button
-                            onClick={() => goToSection('plans')}
-                            className="lp-cta-pulse"
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 9,
-                                height: 54,
-                                padding: '0 28px',
-                                borderRadius: 2,
-                                background: '#ddda2a',
-                                color: '#161616',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontFamily: 'inherit',
-                                fontWeight: 800,
-                                fontSize: 16,
-                                letterSpacing: '.0625rem',
-                            }}
-                        >
-                            {t('cta.start')} <Icon name="arrowR" size={18} />
-                        </button>
-                        {/* TODO: Fazer animacao de hover desse botao */}
-                        <button
+                        <div className="flex w-[min(100%,300px)] flex-col gap-3 min-[480px]:w-auto min-[480px]:flex-row min-[480px]:flex-wrap lg:grid lg:w-full lg:max-w-[480px] lg:grid-cols-2">
+                            <Button
+                                size="lg"
+                                className="motion-safe:after:pointer-events-none motion-safe:after:absolute motion-safe:after:inset-0 motion-safe:after:rounded-[inherit] motion-safe:after:animate-cta-pulse lg:w-full lg:px-3! lg:text-[0.875rem]! xl:px-5! xl:text-[0.9375rem]!"
+                                iconAfter={<Icon name="arrowR" size={18} />}
+                                onClick={() => goToSection('plans')}
+                            >
+                                {t('cta.start')}
+                            </Button>
+                            <Button
+                                href={appHref('/')}
+                                size="lg"
+                                variant="secondary"
+                                className="lg:w-full lg:px-3! lg:text-[0.875rem]! xl:px-5! xl:text-[0.9375rem]!"
+                                icon={<Icon name="user" size={18} />}
+                            >
+                                {t('cta.access')}
+                            </Button>
+                        </div>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="mt-2 w-[min(100%,300px)] px-[18px] min-[480px]:w-auto"
+                            icon={
+                                <span
+                                    className="inline-flex size-7 shrink-0 items-center justify-center rounded-full border border-accent-muted bg-accent-subtle text-accent-fg"
+                                    aria-hidden="true"
+                                >
+                                    <Icon name="play" size={14} />
+                                </span>
+                            }
                             onClick={() => goToSection('demo')}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 9,
-                                height: 54,
-                                padding: '0 24px',
-                                borderRadius: 2,
-                                background: 'transparent',
-                                color: '#fff',
-                                border: '1px solid #727273',
-                                cursor: 'pointer',
-                                fontFamily: 'inherit',
-                                fontWeight: 700,
-                                fontSize: 16,
-                                letterSpacing: '.0625rem',
-                                boxShadow:
-                                    '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25)',
-                                transition: 'all .3s ease',
-                            }}
                         >
-                            <Icon name="play" size={16} /> {t('cta.demo')}
-                        </button>
+                            {t('cta.demo')}
+                        </Button>
                     </Reveal>
-
                     <Reveal
-                        delay={300}
-                        style={{
-                            display: 'flex',
-                            gap: 10,
-                            justifyContent: 'center',
-                            flexWrap: 'wrap',
-                            marginTop: 30,
-                        }}
+                        delay={230}
+                        className="mt-6 flex flex-wrap justify-center gap-2 md:justify-start"
                     >
-                        {platBadges.map((b, i) => (
-                            <PlatformBadge key={i} {...b} />
+                        {platforms.map(item => (
+                            <PlatformBadge key={item.label} {...item} />
                         ))}
                     </Reveal>
                 </div>
-
-                {/* composição visual */}
                 <Reveal
-                    delay={260}
+                    delay={120}
                     y={28}
-                    style={{
-                        position: 'relative',
-                        margin: '0 auto',
-                        width: '100%',
-                        maxWidth: 760,
-                    }}
+                    className="mx-auto w-[min(100%,980px)] min-w-0 min-[940px]:max-[1327px]:mx-0 min-[940px]:max-[1327px]:w-[calc(100%_-_88px)]"
                 >
-                    <div
-                        style={{
-                            position: 'relative',
-                            transform: `translateY(${py * -0.04}px)`,
-                            transition: 'transform .1s linear',
-                        }}
-                    >
-                        <div className="lp-float-a">
-                            <BrowserFrame url="app.mangareader.com/biblioteca">
-                                <div style={{ height: 430 }}>
-                                    <LibraryScreen />
-                                </div>
-                            </BrowserFrame>
-                        </div>
-
-                        <div
-                            className="lp-hero-phone lp-float-b"
-                            style={{
-                                position: 'absolute',
-                                right: '-2%',
-                                bottom: '-12%',
-                                transform: `translateY(${py * 0.05}px)`,
-                            }}
-                        >
-                            <PhoneFrame w={200} label="App Manga Reader">
-                                <ReaderScreen />
-                            </PhoneFrame>
-                        </div>
-
-                        <FloatChip
-                            icon="zap"
-                            label={t('hero.floatNew')}
-                            accent
-                            style={{ top: '6%', left: '-4%' }}
-                            className="lp-chip lp-float-b"
-                        />
-                        <FloatChip
-                            icon="sync"
-                            label={t('hero.floatSync')}
-                            style={{ top: '-5%', right: '14%' }}
-                            className="lp-chip"
-                        />
-                        <FloatChip
-                            icon="bookmark"
-                            label={t('hero.floatContinue')}
-                            accent
-                            style={{ bottom: '24%', left: '-7%' }}
-                            className="lp-chip"
-                        />
-                    </div>
+                    <HeroProductPreview />
                 </Reveal>
             </div>
         </section>

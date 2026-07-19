@@ -10,9 +10,9 @@ export interface BadgeProps {
 }
 
 const styleMap: Record<BadgeVariant, string> = {
-    accent: 'bg-mr-accent-25 text-mr-accent border-mr-accent-50',
+    accent: 'bg-mr-accent-25 text-mr-accent-fg border-mr-accent-50',
     neutral: 'bg-mr-gray-800 text-mr-fg-muted border-mr-gray-700',
-    danger: 'bg-mr-danger-15 text-mr-danger border-[rgba(255,120,79,0.4)]',
+    danger: 'bg-mr-danger-15 text-mr-danger border-mr-danger-border',
 };
 
 export const Badge = ({ variant = 'accent', icon: Icon, children }: BadgeProps) => (

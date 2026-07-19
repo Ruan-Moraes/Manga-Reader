@@ -74,7 +74,7 @@ const TitleHero = ({ title, average, groupCount }: TitleHeroProps) => {
 
                 <section aria-label={t('titleDetails.synopsisAria')} className="mb-5">
                     <p className={`text-mr-small leading-relaxed text-mr-fg-muted ${!expanded ? 'line-clamp-4 md:line-clamp-none' : ''}`}>{title.synopsis}</p>
-                    <button type="button" onClick={() => setExpanded(e => !e)} className="mt-1 text-mr-tiny text-mr-accent hover:underline md:hidden">
+                    <button type="button" onClick={() => setExpanded(e => !e)} className="mt-1 text-mr-tiny text-mr-accent-fg hover:underline md:hidden">
                         {expanded ? t('titleDetails.collapse') : t('readMore')}
                     </button>
                 </section>

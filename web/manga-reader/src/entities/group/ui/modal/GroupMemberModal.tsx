@@ -52,7 +52,7 @@ const GroupMemberModal = ({ isOpen, user, closeModal }: GroupMemberModalProps) =
                     <h5 className="text-sm font-bold">{t('member.recentActivity')}</h5>
                     <div className="flex flex-col gap-2 mt-2 max-h-56 overflow-y-auto pr-1">
                         {user.recentPosts.slice(0, 5).map(post => (
-                            <a key={post.id} href={post.link} className="p-2 border rounded-xs border-tertiary hover:border-quaternary transition-colors">
+                            <a key={post.id} href={post.link} className="p-2 border rounded-xs border-tertiary hover:border-mr-accent-border transition-colors">
                                 <p className="text-xs">{post.summary}</p>
                                 <p className="text-[0.7rem] text-tertiary mt-1">
                                     {new Date(post.createdAt).toLocaleDateString(i18n.language)} • {post.titleName ?? t('member.noTitle')}

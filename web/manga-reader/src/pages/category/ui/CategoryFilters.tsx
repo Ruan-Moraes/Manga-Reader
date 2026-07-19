@@ -136,7 +136,7 @@ const CategoryFilters = () => {
                                     type="button"
                                     onClick={() => handleSelectedTags(selectedTags.filter(t => t.value !== tag.value))}
                                     aria-label={t('filters.filterChipRemoveAria', { label: tag.label })}
-                                    className="inline-flex items-center gap-1 rounded-mr-full border border-mr-accent bg-mr-accent/10 px-3 py-1 text-mr-tiny text-mr-accent transition-colors hover:bg-mr-accent/20"
+                                    className="inline-flex items-center gap-1 rounded-mr-full border border-mr-accent-border bg-mr-accent/10 px-3 py-1 text-mr-tiny text-mr-accent-fg transition-colors hover:bg-mr-accent/20"
                                 >
                                     {tag.label}
                                     <X className="size-3" />

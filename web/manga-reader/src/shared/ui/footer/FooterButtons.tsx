@@ -10,7 +10,7 @@ export const AppButton = ({ app }: { app: FooterAppLink }) => (
         target="_blank"
         rel="noopener noreferrer"
         aria-label={app.ariaLabel}
-        className="flex-1 inline-flex items-center gap-2 rounded-[2px] border border-mr-gray-700 bg-mr-secondary px-3 py-2 no-underline transition-colors duration-200 hover:border-mr-accent"
+        className="flex-1 inline-flex items-center gap-2 rounded-[2px] border border-mr-gray-700 bg-mr-secondary px-3 py-2 no-underline transition-colors duration-200 hover:border-mr-accent-border"
     >
         <Download className="size-4 text-mr-fg-subtle" aria-hidden="true" />
         <span className="flex flex-col text-left leading-tight ">
@@ -29,7 +29,7 @@ export const SocialButton = ({ social }: { social: FooterSocialLink }) => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={social.ariaLabel}
-            className="inline-flex size-10 items-center justify-center rounded-[2px] border border-mr-gray-700 bg-mr-secondary text-mr-fg-muted no-underline transition-colors duration-200 hover:border-mr-accent hover:text-mr-accent focus-visible:border-mr-accent mr-focus-ring"
+            className="inline-flex size-10 items-center justify-center rounded-[2px] border border-mr-gray-700 bg-mr-secondary text-mr-fg-muted no-underline transition-colors duration-200 hover:border-mr-accent-border hover:text-mr-accent-fg focus-visible:border-mr-accent-border mr-focus-ring"
         >
             <Icon className="size-[18px]" aria-hidden="true" />
         </a>
@@ -49,8 +49,8 @@ export const PreferenceButton = ({ item }: { item: FooterPreferenceItem }) => {
                 'inline-flex min-h-[36px] items-center gap-2 rounded-[2px] border px-3 py-1.5 text-[12px] font-mr-semibold transition-colors duration-200',
                 'mr-focus-ring',
                 accent
-                    ? 'border-transparent bg-transparent text-mr-accent'
-                    : 'border-mr-gray-700 bg-transparent text-mr-fg-muted hover:border-mr-accent hover:text-mr-accent',
+                    ? 'border-transparent bg-transparent text-mr-accent-fg'
+                    : 'border-mr-gray-700 bg-transparent text-mr-fg-muted hover:border-mr-accent-border hover:text-mr-accent-fg',
             )}
         >
             {Icon && <Icon className="size-[14px]" aria-hidden="true" />}

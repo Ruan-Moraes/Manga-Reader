@@ -11,6 +11,7 @@ import { getAccessToken, setAccessToken, clearAccessToken, clearSession, notifyA
 import type { ApiErrorResponse, HttpClientConfig } from './httpTypes';
 
 type RetriableConfig = InternalAxiosRequestConfig & { _retry?: boolean };
+const REFRESH_TIMEOUT_MS = 30_000;
 
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     // Access token vive só em memória — nunca lido de storage.
@@ -85,7 +86,10 @@ const isAuthEndpointWithoutRetry = (url: string): boolean =>
  * o refresh token vai no cookie httpOnly — o JS nunca o toca.
  */
 const performRefresh = async (): Promise<string> => {
-    const response = await axios.post(API_URLS.AUTH_REFRESH, undefined, { withCredentials: true });
+    const response = await axios.post(API_URLS.AUTH_REFRESH, undefined, {
+        withCredentials: true,
+        timeout: REFRESH_TIMEOUT_MS,
+    });
 
     const accessToken: string | undefined = response.data?.data?.accessToken;
 

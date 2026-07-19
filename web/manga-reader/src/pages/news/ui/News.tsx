@@ -22,7 +22,7 @@ const News = () => {
     return (
         <main className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
             <header className="mb-8 grid gap-6 border-b border-mr-border pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
-                <div className="max-w-3xl"><p className="mb-3 flex items-center gap-2 text-mr-tiny font-mr-bold uppercase tracking-[0.14em] text-mr-accent"><Newspaper className="size-4" />{t('page.eyebrow')}</p><h1 className="text-mr-h1 font-mr-extrabold leading-none tracking-mr text-mr-fg">{t('page.title')}</h1><p className="mt-4 max-w-2xl text-mr-body leading-relaxed text-mr-fg-muted">{t('page.description')}</p></div>
+                <div className="max-w-3xl"><p className="mb-3 flex items-center gap-2 text-mr-tiny font-mr-bold uppercase tracking-[0.14em] text-mr-accent-fg"><Newspaper className="size-4" />{t('page.eyebrow')}</p><h1 className="text-mr-h1 font-mr-extrabold leading-none tracking-mr text-mr-fg">{t('page.title')}</h1><p className="mt-4 max-w-2xl text-mr-body leading-relaxed text-mr-fg-muted">{t('page.description')}</p></div>
                 <p className="text-mr-small text-mr-fg-subtle" aria-live="polite">{t('page.results', { count: state.totalElements })}</p>
             </header>
 

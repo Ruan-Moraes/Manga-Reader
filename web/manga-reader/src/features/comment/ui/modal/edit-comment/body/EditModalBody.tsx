@@ -44,7 +44,7 @@ const EditModalBody = ({ onEdit, onCancel, initialText, initialImages }: EditMod
                                 <button
                                     type="button"
                                     onClick={() => removeImage(i)}
-                                    className="absolute top-0 right-0 px-1.5 py-0.5 text-xs text-white bg-red-500 rounded-bl-xs rounded-tr-xs opacity-75 hover:opacity-100 cursor-pointer"
+                                    className="absolute right-0 top-0 cursor-pointer rounded-bl-xs rounded-tr-xs bg-mr-danger px-1.5 py-0.5 text-xs text-mr-on-overlay opacity-75 hover:opacity-100"
                                 >
                                     {t('edit.removeImage')}
                                 </button>
@@ -67,7 +67,7 @@ const EditModalBody = ({ onEdit, onCancel, initialText, initialImages }: EditMod
                         <button
                             type="button"
                             onClick={handleSave}
-                            className="px-4 py-2 text-sm text-white border rounded-xs bg-primary border-primary hover:bg-primary/80 transition-colors cursor-pointer"
+                            className="px-4 py-2 text-sm text-mr-on-overlay border rounded-xs bg-primary border-primary hover:bg-primary/80 transition-colors cursor-pointer"
                         >
                             {t('edit.save')}
                         </button>

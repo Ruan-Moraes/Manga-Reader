@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { EyeOff } from 'lucide-react';
 
 import { formatPostDate } from '@shared/service/util/formatPostDate';
 
@@ -12,8 +10,7 @@ import { ACTIVITY_ROW_RENDERERS } from './renderers/registry';
 
 type ActivityEventRowProps = {
     event: ActivityEvent;
-    onHide: () => void;
-    hiding?: boolean;
+    actions?: ReactNode;
 };
 
 /** Capa/avatar + link de destino — a única parte que precisa saber de todos os tipos (metadado de layout, não regra de negócio). */
@@ -38,10 +35,7 @@ const getCoverAndHref = (event: ActivityEvent): { cover?: string; name: string; 
     }
 };
 
-const ActivityEventRow = ({ event, onHide, hiding }: ActivityEventRowProps) => {
-    const { t } = useTranslation('user');
-    const [confirmingHide, setConfirmingHide] = useState(false);
-
+const ActivityEventRow = ({ event, actions }: ActivityEventRowProps) => {
     const Renderer = ACTIVITY_ROW_RENDERERS[event.type];
     const { cover, name, href } = getCoverAndHref(event);
     const { label: when, title: whenTitle } = formatPostDate(event.occurredAt);
@@ -62,38 +56,7 @@ const ActivityEventRow = ({ event, onHide, hiding }: ActivityEventRowProps) => {
                 {when}
             </span>
 
-            {confirmingHide ? (
-                <div className="flex shrink-0 items-center gap-1">
-                    <span className="text-mr-tiny text-mr-danger">{t('profile.activity.hideConfirm')}</span>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            onHide();
-                            setConfirmingHide(false);
-                        }}
-                        disabled={hiding}
-                        className="rounded-mr-xs px-2 py-1 text-mr-small font-mr-bold text-mr-danger hover:bg-mr-danger-15 cursor-pointer"
-                    >
-                        {t('profile.activity.hideYes')}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setConfirmingHide(false)}
-                        className="rounded-mr-xs px-2 py-1 text-mr-small font-mr-bold text-mr-fg-subtle hover:bg-mr-secondary cursor-pointer"
-                    >
-                        {t('profile.activity.hideNo')}
-                    </button>
-                </div>
-            ) : (
-                <button
-                    type="button"
-                    onClick={() => setConfirmingHide(true)}
-                    aria-label={t('profile.activity.hide')}
-                    className="shrink-0 rounded-mr-xs p-1.5 text-mr-fg-subtle hover:bg-mr-secondary hover:text-mr-fg cursor-pointer"
-                >
-                    <EyeOff className="size-[15px]" aria-hidden="true" />
-                </button>
-            )}
+            {actions}
         </div>
     );
 };

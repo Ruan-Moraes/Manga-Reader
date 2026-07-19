@@ -123,6 +123,7 @@ const Library = () => {
                                 id: m.titleId,
                                 title: m.name,
                                 cover: m.cover,
+                                adult: m.adult,
                             }}
                             size="md"
                             onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}
@@ -136,7 +137,7 @@ const Library = () => {
                     {sorted.map(m => (
                         <div
                             key={m.titleId}
-                            className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent"
+                            className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent-border"
                         >
                             <button type="button" className="flex flex-1 items-center gap-3 text-left" onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}>
                                 <div

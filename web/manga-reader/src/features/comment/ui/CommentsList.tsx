@@ -79,12 +79,12 @@ const CommentsList = ({ targetId, targetType, comments, isLoading, isError, erro
                 <button
                     type="button"
                     onClick={loadMore}
-                    className="mt-4 self-center text-sm font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
+                    className="mt-4 self-center text-sm font-semibold text-mr-accent-fg hover:text-mr-accent-fg transition-colors cursor-pointer"
                 >
                     {t('list.loadMore')}
                 </button>
             )}
-            {roots.length === 0 && !isLoading && !isError && <div className="text-gray-400 text-center mt-12 font-bold">{t('list.empty')}</div>}
+            {roots.length === 0 && !isLoading && !isError && <div className="mt-12 text-center font-bold text-mr-fg-muted">{t('list.empty')}</div>}
         </div>
     );
 };

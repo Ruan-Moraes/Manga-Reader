@@ -1,151 +1,60 @@
-import { useState, type CSSProperties } from 'react';
-
+import Button from '@/shared/component/Button';
 import Icon from '@/shared/component/Icon';
-
 import type { PlanView } from '@/shared/data/landing';
 
 interface PricingCardProps {
     plan: PlanView;
     accent?: boolean;
-    /** Texto da faixa (ex.: "Mais popular" / "Melhor valor"); ausente = sem faixa. */
     ribbonLabel?: string;
-    equivLabel: string;
-    saveLabel: string;
     ctaLabel: string;
     onSelect?: () => void;
-}
-
-function accentButton(): CSSProperties {
-    return {
-        height: 48,
-        borderRadius: 2,
-        border: 'none',
-        cursor: 'pointer',
-        fontFamily: 'inherit',
-        width: '100%',
-        background: '#ddda2a',
-        color: '#161616',
-        fontWeight: 800,
-        fontSize: 15,
-        letterSpacing: '.0625rem',
-    };
-}
-
-function ghostButton(hover: boolean): CSSProperties {
-    return {
-        height: 48,
-        borderRadius: 2,
-        cursor: 'pointer',
-        fontFamily: 'inherit',
-        width: '100%',
-        background: hover ? 'rgba(221,218,42,0.12)' : 'transparent',
-        color: '#fff',
-        border: '1px solid #727273',
-        fontWeight: 700,
-        fontSize: 15,
-        letterSpacing: '.0625rem',
-        transition: 'all .3s ease',
-    };
 }
 
 export default function PricingCard({
     plan,
     accent = false,
     ribbonLabel,
-    equivLabel,
-    saveLabel,
     ctaLabel,
     onSelect,
 }: PricingCardProps) {
-    const [hover, setHover] = useState(false);
-
     return (
-        <div
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            style={{
-                position: 'relative',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                padding: '28px 24px',
-                borderRadius: 12,
-                background: accent
-                    ? 'linear-gradient(180deg, rgba(221,218,42,0.07), var(--color-secondary) 55%)'
-                    : 'var(--color-secondary)',
-                border: `1px solid ${accent ? 'rgba(221,218,42,0.6)' : hover ? 'rgba(221,218,42,0.4)' : '#444'}`,
-                boxShadow: accent
-                    ? '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25)'
-                    : hover
-                      ? '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.2)'
-                      : 'none',
-                transform: hover && !accent ? 'translateY(-3px)' : 'none',
-                transition: 'all .3s ease',
-            }}
+        <article
+            className={`@container relative flex h-full flex-col rounded-[14px] border border-border-strong bg-secondary px-6 pt-[30px] pb-6 transition-[border-color,translate,box-shadow] duration-[180ms] hover:-translate-y-[3px] hover:border-accent-border/50 hover:shadow-[-4px_5px_0_rgb(221_218_42_/_16%)] ${accent ? 'border-accent-border/70 bg-[linear-gradient(180deg,var(--color-accent-5),var(--color-secondary)_50%)] shadow-[-4px_5px_0_rgb(221_218_42_/_20%)]' : ''}`}
         >
-            {ribbonLabel && (
-                <span
-                    style={{
-                        position: 'absolute',
-                        top: -11,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        whiteSpace: 'nowrap',
-                        fontSize: 10,
-                        fontWeight: 800,
-                        letterSpacing: '.1em',
-                        textTransform: 'uppercase',
-                        padding: '4px 12px',
-                        borderRadius: 999,
-                        background: '#ddda2a',
-                        color: '#161616',
-                    }}
-                >
+            {ribbonLabel ? (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-[13px] py-[5px] text-[0.65rem] font-black uppercase tracking-[0.1em] text-on-accent">
                     {ribbonLabel}
                 </span>
-            )}
-
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#ddda2a', textTransform: 'uppercase', letterSpacing: '.1em' }}>
+            ) : null}
+            <p className="m-0 text-[0.8125rem] font-black uppercase tracking-[0.1em] text-accent-fg">
                 {plan.name}
+            </p>
+            <div className="mt-3 grid w-full grid-cols-[minmax(0,1fr)_4.5rem] items-baseline gap-2 @max-[300px]:grid-cols-[minmax(0,1fr)_3.25rem] @max-[300px]:[&>strong]:text-[1.65rem] @max-[300px]:[&>strong]:tracking-[-0.02em] @max-[300px]:[&>span]:text-xs [&>strong]:whitespace-nowrap [&>strong]:text-[clamp(2rem,4vw,2.5rem)] [&>strong]:leading-none [&>strong]:text-fg [&>strong]:tabular-nums [&>span]:whitespace-nowrap [&>span]:text-copy-muted">
+                <strong>{plan.price}</strong>
+                <span>{plan.period}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, margin: '12px 0 4px' }}>
-                <span style={{ fontSize: 38, fontWeight: 800, color: '#fff', letterSpacing: '.0625rem', lineHeight: 1 }}>
-                    {plan.price}
-                </span>
-                <span style={{ fontSize: 15, color: '#999', fontWeight: 600 }}>{plan.period}</span>
-            </div>
-            {plan.equiv ? (
-                <div style={{ fontSize: 12, color: '#727273', minHeight: 18 }}>
-                    {equivLabel} <strong style={{ color: '#cccccc' }}>{plan.equiv}</strong> · {saveLabel} {plan.save}
-                </div>
-            ) : (
-                <div style={{ minHeight: 18 }} />
-            )}
-
-            <ul
-                style={{
-                    listStyle: 'none',
-                    margin: '22px 0',
-                    padding: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 11,
-                    flex: 1,
-                }}
-            >
-                {plan.features.map(f => (
-                    <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, color: '#fff', fontSize: 14 }}>
-                        <Icon name="check" size={16} stroke={3} style={{ color: '#ddda2a', flexShrink: 0, marginTop: 2 }} />
-                        {f}
+            <p className="mt-3 min-h-12 text-sm leading-6 text-copy-muted">
+                {plan.description}
+            </p>
+            <ul className="my-6 grid flex-1 content-start gap-3 p-0 list-none">
+                {plan.features.map((feature, index) => (
+                    <li
+                        className="flex items-start gap-2.5 text-[0.875rem] leading-[1.5] text-copy [&>svg]:mt-0.5 [&>svg]:shrink-0 [&>svg]:text-accent-fg"
+                        key={`${feature}-${index}`}
+                    >
+                        <Icon name="check" size={16} stroke={3} />
+                        {feature}
                     </li>
                 ))}
             </ul>
-
-            <button onClick={onSelect} style={accent ? accentButton() : ghostButton(hover)}>
+            <Button
+                className="w-full"
+                size="lg"
+                variant={accent ? 'primary' : 'secondary'}
+                onClick={onSelect}
+            >
                 {ctaLabel}
-            </button>
-        </div>
+            </Button>
+        </article>
     );
 }
-
-export { accentButton, ghostButton };

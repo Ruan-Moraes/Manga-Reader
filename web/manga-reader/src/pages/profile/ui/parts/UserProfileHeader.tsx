@@ -23,12 +23,7 @@ const UserProfileHeader = ({ profile, isOwn, following, onFollowToggle, onShowFo
 
     return (
         <Card variant="default" className="mb-6 overflow-hidden">
-            <div
-                className="h-[160px] w-full"
-                style={{
-                    background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a)',
-                }}
-            />
+            <div className="h-[160px] w-full bg-mr-banner-gradient" />
 
             <div className="relative px-4 pb-5 md:px-6">
                 <div className="-mt-10 mb-3">
@@ -40,7 +35,7 @@ const UserProfileHeader = ({ profile, isOwn, following, onFollowToggle, onShowFo
                         <h1 className="inline-flex items-center gap-2 text-mr-h2 font-mr-extrabold tracking-mr text-mr-fg">
                             {profile.name}
                             {profile.verified && (
-                                <BadgeCheck className="size-5 text-mr-accent" aria-label={t('profile.header.verified', { defaultValue: 'Verificado' })} />
+                                <BadgeCheck className="size-5 text-mr-accent-fg" aria-label={t('profile.header.verified', { defaultValue: 'Verificado' })} />
                             )}
                         </h1>
                         <p className="mb-2 text-mr-small text-mr-fg-muted">{profile.handle}</p>

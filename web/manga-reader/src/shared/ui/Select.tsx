@@ -81,8 +81,8 @@ const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function S
                         disabled={disabled}
                         className={cn(
                             'relative flex h-11 w-full items-center rounded-mr-sm border bg-mr-primary px-3 pr-9 text-left text-mr-body text-mr-fg transition-[border-color,box-shadow] duration-mr-fast outline-none',
-                            'hover:not(:disabled):border-mr-gray-500 focus-visible:border-mr-accent focus-visible:ring-2 focus-visible:ring-mr-accent-25',
-                            'data-[state=open]:border-mr-accent data-[state=open]:ring-2 data-[state=open]:ring-mr-accent-25',
+                            'hover:not(:disabled):border-mr-gray-500 focus-visible:border-mr-accent-border focus-visible:ring-2 focus-visible:ring-mr-accent-25',
+                            'data-[state=open]:border-mr-accent-border data-[state=open]:ring-2 data-[state=open]:ring-mr-accent-25',
                             error ? 'border-mr-danger' : 'border-mr-border',
                             disabled && 'opacity-mr-disabled cursor-not-allowed',
                             className,
@@ -100,7 +100,7 @@ const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function S
                     <RD.Content
                         align="start"
                         sideOffset={4}
-                        className="z-mr-dropdown flex flex-col gap-y-0.5 min-w-[var(--radix-dropdown-menu-trigger-width)] max-h-72 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-gray-900 p-1.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.7)] animate-mr-fade-in"
+                        className="z-mr-dropdown flex max-h-72 min-w-[var(--radix-dropdown-menu-trigger-width)] flex-col gap-y-0.5 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-surface-elevated p-1.5 shadow-mr-elevated animate-mr-fade-in"
                     >
                         {options.map(o => (
                             <RD.Item
@@ -110,7 +110,7 @@ const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function S
                                 className={cn(
                                     'flex h-10 cursor-pointer items-center gap-2 rounded-mr-sm px-3 text-mr-body outline-none transition-colors',
                                     'data-[highlighted]:bg-mr-accent-25 data-[highlighted]:text-mr-fg',
-                                    String(o.value) === String(value) ? 'bg-mr-accent text-mr-primary font-mr-bold' : 'text-mr-fg',
+                                    String(o.value) === String(value) ? 'bg-mr-accent text-mr-on-accent font-mr-bold' : 'text-mr-fg',
                                     o.disabled && 'opacity-mr-disabled cursor-not-allowed',
                                 )}
                             >
@@ -191,7 +191,6 @@ function MultiSelect({
                 <RD.Trigger asChild>
                     <div
                         role="combobox"
-                        aria-expanded={undefined}
                         aria-invalid={!!error || undefined}
                         aria-describedby={describedBy}
                         aria-label={ariaLabel}
@@ -199,8 +198,8 @@ function MultiSelect({
                         tabIndex={disabled ? -1 : 0}
                         className={cn(
                             'relative flex min-h-11 w-full flex-wrap items-center gap-1 rounded-mr-sm border bg-mr-primary px-3 py-1.5 pr-9 text-left text-mr-body text-mr-fg transition-[border-color,box-shadow] duration-mr-fast outline-none',
-                            'hover:not(:disabled):border-mr-gray-500 focus-visible:border-mr-accent focus-visible:ring-2 focus-visible:ring-mr-accent-25',
-                            'data-[state=open]:border-mr-accent data-[state=open]:ring-2 data-[state=open]:ring-mr-accent-25',
+                            'hover:not(:disabled):border-mr-gray-500 focus-visible:border-mr-accent-border focus-visible:ring-2 focus-visible:ring-mr-accent-25',
+                            'data-[state=open]:border-mr-accent-border data-[state=open]:ring-2 data-[state=open]:ring-mr-accent-25',
                             error ? 'border-mr-danger' : 'border-mr-border',
                             disabled && 'pointer-events-none opacity-mr-disabled cursor-not-allowed',
                             className,
@@ -240,7 +239,7 @@ function MultiSelect({
                         align="start"
                         sideOffset={4}
                         onCloseAutoFocus={e => e.preventDefault()}
-                        className="z-mr-dropdown flex flex-col gap-y-0.5 min-w-[var(--radix-dropdown-menu-trigger-width)] max-h-72 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-gray-900 p-1.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.7)] animate-mr-fade-in"
+                        className="z-mr-dropdown flex max-h-72 min-w-[var(--radix-dropdown-menu-trigger-width)] flex-col gap-y-0.5 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-surface-elevated p-1.5 shadow-mr-elevated animate-mr-fade-in"
                     >
                         {searchable && (
                             <input
@@ -250,7 +249,7 @@ function MultiSelect({
                                 onChange={e => setQuery(e.target.value)}
                                 onKeyDown={e => e.stopPropagation()}
                                 placeholder={searchPlaceholder}
-                                className="mb-1 h-9 shrink-0 rounded-mr-sm border border-mr-border bg-mr-primary px-2 text-mr-body text-mr-fg outline-none focus-visible:border-mr-accent"
+                                className="mb-1 h-9 shrink-0 rounded-mr-sm border border-mr-border bg-mr-primary px-2 text-mr-body text-mr-fg outline-none focus-visible:border-mr-accent-border"
                             />
                         )}
 
@@ -271,7 +270,7 @@ function MultiSelect({
                                     className={cn(
                                         'flex h-10 cursor-pointer items-center gap-2 rounded-mr-sm px-3 text-mr-body outline-none transition-colors',
                                         'data-[highlighted]:bg-mr-accent-25 data-[highlighted]:text-mr-fg',
-                                        checked ? 'bg-mr-accent text-mr-primary font-mr-bold' : 'text-mr-fg',
+                                        checked ? 'bg-mr-accent text-mr-on-accent font-mr-bold' : 'text-mr-fg',
                                         o.disabled && 'opacity-mr-disabled cursor-not-allowed',
                                     )}
                                 >

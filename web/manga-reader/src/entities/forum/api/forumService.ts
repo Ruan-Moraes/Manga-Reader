@@ -128,13 +128,13 @@ export { default as formatRelativeDate } from '@shared/service/util/formatRelati
 
 export const getCategoryColor = (category: ForumCategory): string => {
     const colors: Record<ForumCategory, string> = {
-        Geral: 'bg-blue-500/20 text-blue-400',
-        Recomendações: 'bg-green-500/20 text-green-400',
-        Spoilers: 'bg-red-500/20 text-red-400',
-        Suporte: 'bg-yellow-500/20 text-yellow-400',
-        'Off-topic': 'bg-gray-500/20 text-gray-400',
-        Teorias: 'bg-purple-500/20 text-purple-400',
-        Fanart: 'bg-pink-500/20 text-pink-400',
+        Geral: 'bg-mr-info/15 text-mr-info',
+        Recomendações: 'bg-mr-success/15 text-mr-success',
+        Spoilers: 'bg-mr-danger/15 text-mr-danger',
+        Suporte: 'bg-mr-warning/15 text-mr-warning',
+        'Off-topic': 'bg-mr-surface-muted text-mr-fg-muted',
+        Teorias: 'bg-mr-accent/15 text-mr-accent-fg',
+        Fanart: 'bg-mr-danger/15 text-mr-danger',
         Notícias: 'bg-cyan-500/20 text-cyan-400',
     };
     return colors[category];
@@ -156,7 +156,7 @@ export const roleLabelKey: Record<string, string> = {
 };
 
 export const roleBadgeColor: Record<string, string> = {
-    admin: 'bg-red-500/20 text-red-400',
-    moderator: 'bg-blue-500/20 text-blue-400',
-    member: 'bg-gray-500/20 text-gray-400',
+    admin: 'bg-mr-danger/15 text-mr-danger',
+    moderator: 'bg-mr-info/15 text-mr-info',
+    member: 'bg-mr-surface-muted text-mr-fg-muted',
 };

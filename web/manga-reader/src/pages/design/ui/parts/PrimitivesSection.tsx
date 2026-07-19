@@ -91,7 +91,7 @@ export default function PrimitivesSection() {
                     <Icon icon={Star} size={28} />
                 </SubSection>
                 <SubSection label="Colorido (className)">
-                    <Icon icon={Heart} size={24} className="text-mr-accent" />
+                    <Icon icon={Heart} size={24} className="text-mr-accent-fg" />
                     <Icon icon={Eye} size={24} className="text-mr-fg-muted" />
                     <Icon icon={Bell} size={24} className="text-mr-danger" />
                     <Icon icon={Bookmark} size={24} className="text-mr-fg" />

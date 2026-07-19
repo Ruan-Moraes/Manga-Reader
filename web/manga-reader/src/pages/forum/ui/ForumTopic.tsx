@@ -48,7 +48,7 @@ const ForumTopic = () => {
                             {t('ui.breadcrumbForum')}
                         </a>
                         <ChevronRight size={11} strokeWidth={2} />
-                        <span style={{ color: '#999' }}>{cat?.label}</span>
+                        <span style={{ color: 'var(--mr-fg-subtle)' }}>{cat?.label}</span>
                         <ChevronRight size={11} strokeWidth={2} />
                         <span style={{ color: 'var(--mr-accent)' }}>{t('ui.topicNumber', { n: topic.id.replace('t', '') })}</span>
                     </div>
@@ -88,10 +88,10 @@ const ForumTopic = () => {
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                                        <span style={{ color: '#fff', fontWeight: 800, fontSize: 14, letterSpacing: '.0625rem' }}>{author.name}</span>
+                                        <span style={{ color: 'var(--mr-fg)', fontWeight: 800, fontSize: 14, letterSpacing: '.0625rem' }}>{author.name}</span>
                                         {author.badge && <span className="forum-user-badge">{author.badge}</span>}
                                     </div>
-                                    <div style={{ color: '#999', fontSize: 11, marginTop: 2 }}>
+                                    <div style={{ color: 'var(--mr-fg-subtle)', fontSize: 11, marginTop: 2 }}>
                                         {t('ui.authorMeta', { handle: author.handle, level: author.level, views: topic.views.toLocaleString('pt-BR') })}
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@ const ForumTopic = () => {
                     <div className="forum-comments-head">
                         <h2 className="forum-comments-title">{t('ui.commentsCount', { count: topic.replies })}</h2>
                         <div className="forum-comments-sort">
-                            <span className="mr-label" style={{ color: '#727273' }}>
+                            <span className="mr-label" style={{ color: 'var(--mr-tertiary)' }}>
                                 {t('ui.sortBy')}
                             </span>
                             <Select

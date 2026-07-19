@@ -10,12 +10,50 @@ import type {
 
 import httpClient from '@/shared/service/httpClient';
 
-export async function fetchSubscriptionPlans(): Promise<SubscriptionPlan[]> {
-    const res = await httpClient.get<ApiResponse<SubscriptionPlan[]>>(
+const SUBSCRIPTION_PERIODS = new Set(['DAILY', 'MONTHLY', 'ANNUAL']);
+
+function isSubscriptionPlan(value: unknown): value is SubscriptionPlan {
+    if (!value || typeof value !== 'object') return false;
+
+    const plan = value as Record<string, unknown>;
+
+    return (
+        typeof plan.id === 'string' &&
+        typeof plan.period === 'string' &&
+        SUBSCRIPTION_PERIODS.has(plan.period) &&
+        typeof plan.priceInCents === 'number' &&
+        Number.isSafeInteger(plan.priceInCents) &&
+        plan.priceInCents >= 0 &&
+        typeof plan.description === 'string' &&
+        Array.isArray(plan.features) &&
+        plan.features.every(feature => typeof feature === 'string') &&
+        typeof plan.active === 'boolean'
+    );
+}
+
+export async function fetchSubscriptionPlans(
+    locale?: string,
+): Promise<SubscriptionPlan[]> {
+    const res = await httpClient.get<ApiResponse<unknown>>(
         '/subscription-plans',
+        locale
+            ? {
+                  headers: { 'Accept-Language': locale },
+              }
+            : undefined,
     );
 
-    return res.data.data;
+    const plans = res.data.data;
+
+    if (
+        !res.data.success ||
+        !Array.isArray(plans) ||
+        !plans.every(isSubscriptionPlan)
+    ) {
+        throw new Error('Invalid subscription plans response');
+    }
+
+    return plans;
 }
 
 export async function createSubscription(

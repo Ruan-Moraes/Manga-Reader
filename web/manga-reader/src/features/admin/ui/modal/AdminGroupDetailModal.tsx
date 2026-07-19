@@ -85,7 +85,7 @@ const AdminGroupDetailModal = ({ isOpen, onClose, groupId, onEdit, onDelete }: A
                             <Avatar name={name} size={56} />
                             <div className="min-w-0">
                                 <div className="text-mr-h4 font-mr-extrabold text-mr-fg">{name}</div>
-                                <div className="font-mr-mono text-mr-small text-mr-accent">@{group.username}</div>
+                                <div className="font-mr-mono text-mr-small text-mr-accent-fg">@{group.username}</div>
                                 <div className="mt-2">
                                     <StatusPill tone={toneFor(GROUP_STATUS_TONE, group.status)}>
                                         {t(statusLabelKey('group', group.status), { defaultValue: group.status })}
@@ -138,7 +138,7 @@ const AdminGroupDetailModal = ({ isOpen, onClose, groupId, onEdit, onDelete }: A
                                                 onClick={() => setEditingMember(member)}
                                                 className={cn(
                                                     'flex size-8 items-center justify-center rounded-mr-xs border border-mr-border text-mr-fg-muted transition-colors',
-                                                    'hover:border-mr-accent-50 hover:bg-mr-accent-25 hover:text-mr-accent',
+                                                    'hover:border-mr-accent-50 hover:bg-mr-accent-25 hover:text-mr-accent-fg',
                                                 )}
                                             >
                                                 <Award size={15} />

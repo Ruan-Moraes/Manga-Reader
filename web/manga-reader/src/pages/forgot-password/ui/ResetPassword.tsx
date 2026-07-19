@@ -10,14 +10,14 @@ import { EmptyState } from '@ui/EmptyState';
 import { Button } from '@ui/Button';
 
 const STRENGTHS = [
-    { level: 1, labelKey: 'passwordStrength.weak', color: '#ff784f' },
-    { level: 2, labelKey: 'passwordStrength.medium', color: '#ddda2a' },
-    { level: 3, labelKey: 'passwordStrength.strong', color: '#10b981' },
-    { level: 4, labelKey: 'passwordStrength.great', color: '#10b981' },
+    { level: 1, labelKey: 'passwordStrength.weak', color: 'var(--mr-danger)' },
+    { level: 2, labelKey: 'passwordStrength.medium', color: 'var(--mr-accent)' },
+    { level: 3, labelKey: 'passwordStrength.strong', color: 'var(--mr-success)' },
+    { level: 4, labelKey: 'passwordStrength.great', color: 'var(--mr-success)' },
 ] as const;
 
 function calcStrength(pw: string) {
-    if (!pw) return { level: 0 as const, labelKey: null, color: '#444' };
+    if (!pw) return { level: 0 as const, labelKey: null, color: 'var(--mr-border)' };
     let s = 0;
     if (pw.length >= 8) s++;
     if (/[A-Z]/.test(pw)) s++;
@@ -53,7 +53,7 @@ const ResetPassword = () => {
                         <a
                             href={withWebBasePath(ROUTES.LOGIN)}
                             onClick={go(withWebBasePath(ROUTES.LOGIN))}
-                            className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                            className="font-mr-bold text-mr-accent-fg tracking-mr no-underline"
                         >
                             {t('resetPassword.invalidLinkBack')}
                         </a>
@@ -85,7 +85,7 @@ const ResetPassword = () => {
                     <a
                         href={withWebBasePath(ROUTES.LOGIN)}
                         onClick={go(withWebBasePath(ROUTES.LOGIN))}
-                        className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                        className="font-mr-bold text-mr-accent-fg tracking-mr no-underline"
                     >
                         {t('resetPassword.backToLoginLink')}
                     </a>
@@ -121,7 +121,7 @@ const ResetPassword = () => {
                                     key={i}
                                     className="h-[3px] flex-1 rounded-[1px] transition-colors duration-150"
                                     style={{
-                                        background: i <= strength.level ? strength.color : '#2a2a2a',
+                                        background: i <= strength.level ? strength.color : 'var(--mr-surface-elevated)',
                                     }}
                                 />
                             ))}

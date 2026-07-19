@@ -38,8 +38,8 @@ export const NavBar = ({
 
     const headerStyle = {
         background: 'var(--mr-primary)',
-        borderBottom: isScrolled ? '1px solid var(--mr-tertiary)' : '1px solid #242424',
-        boxShadow: isScrolled ? '0 2px 0 0 rgba(221,218,42,0.25)' : 'none',
+        borderBottom: isScrolled ? '1px solid var(--mr-tertiary)' : '1px solid var(--mr-separator)',
+        boxShadow: isScrolled ? '0 2px 0 0 var(--mr-accent-25)' : 'none',
         transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
         zIndex: 40,
         isolation: 'isolate' as const,
@@ -68,7 +68,7 @@ export const NavBar = ({
                     type="button"
                     aria-label={t('navigation.openMenu')}
                     onClick={onOpenSideMenu}
-                    className="hidden shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-accent md:inline-flex lg:!hidden"
+                    className="hidden shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:bg-mr-secondary hover:border-mr-gray-700 focus-visible:outline-2 focus-visible:outline-mr-focus-ring md:inline-flex lg:!hidden"
                     style={{ width: 42, height: 42 }}
                 >
                     <Menu className="size-[20px]" strokeWidth={2} aria-hidden="true" />
@@ -115,7 +115,7 @@ export const NavBar = ({
                     type="button"
                     aria-label={t('navigation.openMenu')}
                     onClick={onOpenSideMenu}
-                    className="inline-flex size-10 shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:border-mr-gray-700 hover:bg-mr-secondary focus-visible:outline-2 focus-visible:outline-mr-accent"
+                    className="inline-flex size-10 shrink-0 items-center justify-center rounded-mr-xs border border-transparent text-mr-fg transition-colors duration-mr-default hover:border-mr-gray-700 hover:bg-mr-secondary focus-visible:outline-2 focus-visible:outline-mr-focus-ring"
                 >
                     <Menu className="size-5" strokeWidth={2} aria-hidden="true" />
                 </button>

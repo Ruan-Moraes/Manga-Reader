@@ -11,9 +11,9 @@ export interface StatusDotProps {
 }
 
 const colorMap: Record<StatusKind, string> = {
-    operating: 'bg-mr-accent  shadow-[0_0_0_3px_rgba(221,218,42,.22)]',
-    degraded: 'bg-mr-danger  shadow-[0_0_0_3px_rgba(255,120,79,.22)]',
-    down: 'bg-[#FF4444]  shadow-[0_0_0_3px_rgba(255,68,68,.22)]',
+    operating: 'bg-mr-accent [box-shadow:0_0_0_3px_var(--mr-accent-25)]',
+    degraded: 'bg-mr-danger [box-shadow:0_0_0_3px_var(--mr-danger-surface)]',
+    down: 'bg-mr-status-down [box-shadow:0_0_0_3px_var(--mr-danger-surface)]',
     idle: 'bg-mr-tertiary',
 };
 

@@ -25,8 +25,8 @@ describe('Icon', () => {
     });
 
     it('aplica className extra', () => {
-        const { container } = render(<Icon icon={Star} className="text-mr-accent" />);
+        const { container } = render(<Icon icon={Star} className="text-mr-accent-fg" />);
         const svg = container.querySelector('svg');
-        expect(svg?.getAttribute('class')).toContain('text-mr-accent');
+        expect(svg?.getAttribute('class')).toContain('text-mr-accent-fg');
     });
 });

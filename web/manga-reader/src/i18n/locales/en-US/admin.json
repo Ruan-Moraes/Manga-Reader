@@ -484,6 +484,16 @@
             "search": "Search by title or number...",
             "filteredByTitle": "Showing chapters of a specific title",
             "analyticsLink": "Metrics",
+            "legacy": {
+                "title": "Local chapter data found",
+                "preview": "Preview: {{chapters}} chapters and {{pages}} pages; {{ignored}} deleted items will be ignored.",
+                "import": "Import to server",
+                "confirmTitle": "Confirm chapter migration",
+                "confirmMessage": "Import {{chapters}} chapters and {{pages}} pages? The local copy is removed only after complete success.",
+                "partial": "{{count}} items were rejected. Local data was preserved for correction and retry.",
+                "error": "Migration failed. No local data was removed.",
+                "invalidTitle": "Local data could not be validated"
+            },
             "columnNumber": "No.",
             "columnTitle": "Title",
             "columnStatus": "Status",
@@ -560,11 +570,12 @@
                 "tabMetrics": "Metrics"
             },
             "pages": {
+                "mediaUnavailable": "File management is unavailable until the media service is configured. Existing pages remain read-only.",
                 "add": "Add pages",
                 "removeSelected": "Remove {{count}}",
                 "count": "{{count}} pages",
                 "emptyTitle": "No pages",
-                "empty": "Add mock pages to prepare the chapter.",
+                "empty": "No page files are associated with this chapter.",
                 "retry": "Retry",
                 "selectAriaLabel": "Select page {{order}}",
                 "dragAriaLabel": "Drag page {{order}}",

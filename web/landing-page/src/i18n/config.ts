@@ -25,4 +25,11 @@ i18n.use(LanguageDetector)
         },
     });
 
+function syncDocumentLanguage(language: string) {
+    document.documentElement.lang = language;
+}
+
+syncDocumentLanguage(i18n.resolvedLanguage ?? i18n.language ?? 'pt-BR');
+i18n.on('languageChanged', syncDocumentLanguage);
+
 export default i18n;

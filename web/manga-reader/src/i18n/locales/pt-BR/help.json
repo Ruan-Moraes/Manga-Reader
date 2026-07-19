@@ -57,7 +57,7 @@
             "Dentro do leitor, o ícone de engrenagem permite sobrescrever a direção apenas para o capítulo atual, sem alterar sua preferência global."
         ],
         "3": [
-            "Na tela de login, clique em \"Esqueci minha senha\" e informe o e-mail cadastrado. Enviaremos um link de redefinição válido por 30 minutos.",
+            "Na tela de login, clique em \"Esqueci minha senha\" e informe o e-mail cadastrado. Enviaremos um link temporário de redefinição; a validade será informada após a solicitação.",
             "Verifique também a caixa de spam caso o e-mail não chegue em alguns minutos. O link só pode ser usado uma vez.",
             "Após definir a nova senha, todas as sessões ativas em outros dispositivos são encerradas por segurança."
         ],

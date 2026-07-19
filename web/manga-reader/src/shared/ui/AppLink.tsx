@@ -38,7 +38,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, CustomLinkBaseTypes>(
             <Link
                 ref={ref}
                 className={clsx(`font-bold transition-text-shadow duration-300 hover:text-shadow-highlight ${className}`, {
-                    'text-quaternary-default': enabledColorWhenActive && isActive,
+                    'text-mr-accent-fg': enabledColorWhenActive && isActive,
                 })}
                 style={inlineStyle}
                 to={isExternalLink ? link : `${WEB_BASE_URL}${ROUTES.HOME}` + link}

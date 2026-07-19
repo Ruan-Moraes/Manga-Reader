@@ -5,7 +5,6 @@ import { ArrowRight } from 'lucide-react';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { SectionHeader } from '@ui/SectionHeader';
 import { MangaCard, type Title } from '@entities/manga';
-import { Badge } from '@ui/Badge';
 import { Skeleton } from '@ui/Skeleton';
 import { Button } from '@ui/Button';
 
@@ -50,9 +49,14 @@ const HomeTrending = ({ trendingList }: HomeTrendingProps) => {
                                 author: m.author,
                                 cover: m.cover,
                                 rating: m.ratingAverage,
+                                adult: m.adult,
                                 chapter: m.latestChapterNumber ? Number(m.latestChapterNumber) : undefined,
                             }}
-                            tag={<Badge variant="accent">#{i + 1}</Badge>}
+                            tag={
+                                <span className="inline-flex min-w-7 items-center justify-center rounded-mr-full border border-mr-accent-border bg-mr-accent px-2 py-0.5 text-mr-tiny font-mr-extrabold tracking-mr-label text-mr-on-accent shadow-mr-black">
+                                    #{i + 1}
+                                </span>
+                            }
                             onClick={() => navigate(ROUTES.TITLE_DETAIL(m.id))}
                             inLibrary={isSaved(m.id)}
                             onToggleLibrary={() => toggleBookmark(m.id)}

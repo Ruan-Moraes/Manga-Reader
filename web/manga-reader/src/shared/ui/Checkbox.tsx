@@ -28,7 +28,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
                 <input ref={ref} id={fieldId} type="checkbox" disabled={disabled} aria-invalid={!!error || undefined} className="peer sr-only" {...rest} />
                 <span
                     aria-hidden="true"
-                    className="mt-0.5 grid size-[18px] shrink-0 place-items-center rounded-mr-xs border border-mr-tertiary bg-transparent text-mr-primary transition-colors duration-mr-default peer-checked:border-mr-accent peer-checked:bg-mr-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-mr-accent"
+                    className="mt-0.5 grid size-[18px] shrink-0 place-items-center rounded-mr-xs border border-mr-tertiary bg-transparent text-mr-on-accent transition-colors duration-mr-default peer-checked:border-mr-accent-border peer-checked:bg-mr-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-mr-focus-ring"
                 >
                     <Check className="size-3 opacity-0 transition-opacity duration-mr-default group-has-[:checked]:opacity-100" strokeWidth={3} />
                 </span>

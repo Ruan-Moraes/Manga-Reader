@@ -106,12 +106,12 @@ const GroupProfile = () => {
         <PageContainer asMain size="default" paddingY="none">
             <div
                 className="relative h-[180px]"
-                style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'linear-gradient(135deg,#2a1f0f,#161616)' }}
+                style={{ background: group.banner ? `center/cover no-repeat url(${group.banner})` : 'var(--mr-poster-gradient)' }}
             >
                 <button
                     type="button"
                     onClick={() => navigate(ROUTES.GROUPS)}
-                    className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-mr-xs border border-mr-gray-700 bg-[rgba(22,22,22,0.7)] px-2.5 py-2 text-mr-small font-mr-bold tracking-mr text-mr-fg backdrop-blur-sm cursor-pointer mr-focus-ring"
+                    className="absolute left-3 top-3 inline-flex cursor-pointer items-center gap-1 rounded-mr-xs border border-mr-on-overlay/30 bg-mr-overlay px-2.5 py-2 text-mr-small font-mr-bold tracking-mr text-mr-on-overlay backdrop-blur-sm mr-focus-ring"
                 >
                     <ChevronLeft className="size-3.5" strokeWidth={2} aria-hidden="true" />
                     {t('profile.back')}
@@ -132,8 +132,8 @@ const GroupProfile = () => {
                         onClick={handleFollowClick}
                         disabled={pending}
                         className={cn(
-                            'inline-flex h-10 items-center gap-1.5 rounded-mr-xs border border-mr-accent px-[18px] text-mr-small font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring disabled:cursor-not-allowed disabled:opacity-60',
-                            following || isMember ? 'bg-transparent text-mr-accent' : 'bg-mr-accent text-mr-primary',
+                            'inline-flex h-10 items-center gap-1.5 rounded-mr-xs border border-mr-accent-border px-[18px] text-mr-small font-mr-extrabold tracking-mr cursor-pointer mr-focus-ring disabled:cursor-not-allowed disabled:opacity-60',
+                            following || isMember ? 'bg-transparent text-mr-accent-fg' : 'bg-mr-accent text-mr-on-accent',
                         )}
                     >
                         {(following || isMember) && <Check className="size-3.5" strokeWidth={2} aria-hidden="true" />}
@@ -141,16 +141,16 @@ const GroupProfile = () => {
                     </button>
                 </div>
 
-                <div className="mt-[18px] flex flex-wrap gap-6 border-b border-[#333] pb-3.5">
+                <div className="mt-[18px] flex flex-wrap gap-6 border-b border-mr-border pb-3.5">
                     {stats.map(s => (
                         <div key={s.label}>
-                            <div className="text-mr-h3 font-mr-extrabold text-mr-accent">{s.value}</div>
+                            <div className="text-mr-h3 font-mr-extrabold text-mr-accent-fg">{s.value}</div>
                             <div className="text-mr-tiny font-mr-bold uppercase tracking-[0.08em] text-mr-fg-muted">{s.label}</div>
                         </div>
                     ))}
                 </div>
 
-                <div className="flex overflow-x-auto whitespace-nowrap border-b border-[#333]">
+                <div className="flex overflow-x-auto whitespace-nowrap border-b border-mr-border">
                     {tabs.map(([k, label]) => (
                         <button
                             key={k}
@@ -158,7 +158,7 @@ const GroupProfile = () => {
                             onClick={() => setTab(k)}
                             className={cn(
                                 'border-b-2 px-4 py-3 text-mr-small font-mr-bold tracking-mr cursor-pointer',
-                                tab === k ? 'border-mr-accent text-mr-accent' : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
+                                tab === k ? 'border-mr-accent-border text-mr-accent-fg' : 'border-transparent text-mr-fg-muted hover:text-mr-fg',
                             )}
                         >
                             {label}

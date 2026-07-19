@@ -25,7 +25,7 @@ export const useSettingsSync = () => {
     const { isLoggedIn, user } = useAuth();
     const fireToast = useSettingsToast();
 
-    const { query: settingsQuery, mutation: settingsMutation } = useUserSettings(isLoggedIn);
+    const { query: settingsQuery, mutation: settingsMutation } = useUserSettings(isLoggedIn, user?.id);
 
     const [settings, setSettings] = useState<UserSettings>(() => readStoredUserSettings());
     const [syncStatus, setSyncStatus] = useState<SettingsSyncStatus>(() => (isLoggedIn ? 'syncing' : 'local'));
