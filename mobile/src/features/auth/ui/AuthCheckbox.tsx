@@ -14,7 +14,7 @@ interface Props {
 
 export function AuthCheckbox({ checked, onChange, children, error }: Props) {
     const { tokens } = useTheme();
-    const borderColor = checked ? tokens.accent : error ? tokens.danger : tokens.tertiary;
+    const borderColor = checked ? tokens.accentBorder : error ? tokens.danger : tokens.tertiary;
 
     return (
         <TouchableOpacity
@@ -35,7 +35,7 @@ export function AuthCheckbox({ checked, onChange, children, error }: Props) {
                     justifyContent: 'center',
                 }}
             >
-                {checked && <MRIcon name="check" size={13} color={tokens.bg} strokeWidth={3} />}
+                {checked && <MRIcon name="check" size={13} color={tokens.onAccent} strokeWidth={3} />}
             </View>
             <Text
                 style={{

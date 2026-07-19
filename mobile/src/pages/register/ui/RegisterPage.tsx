@@ -146,8 +146,8 @@ export function RegisterPage() {
                             lineHeight: 19,
                         }}
                     >
-                        {t('signUp.termsPrefix')} <Text style={{ color: tokens.accent, fontFamily: FONTS.bold }}>{t('signUp.termsLinkLabel')}</Text>{' '}
-                        {t('signUp.termsAnd')} <Text style={{ color: tokens.accent, fontFamily: FONTS.bold }}>{t('signUp.privacyLinkLabel')}</Text>.
+                        {t('signUp.termsPrefix')} <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('signUp.termsLinkLabel')}</Text>{' '}
+                        {t('signUp.termsAnd')} <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('signUp.privacyLinkLabel')}</Text>.
                     </Text>
                 </AuthCheckbox>
 

@@ -31,7 +31,7 @@ export function Input({
 }: Props) {
     const { tokens } = useTheme();
     const [focused, setFocused] = useState(false);
-    const borderColor = error ? tokens.danger : focused ? tokens.accent : tokens.inputBorder;
+    const borderColor = error ? tokens.danger : focused ? tokens.accentBorder : tokens.inputBorder;
 
     return (
         <View style={{ marginBottom: 16 }}>
@@ -42,7 +42,7 @@ export function Input({
                         fontFamily: FONTS.extrabold,
                         letterSpacing: 1.1,
                         textTransform: 'uppercase',
-                        color: error ? tokens.danger : tokens.accent,
+                        color: error ? tokens.danger : tokens.accentText,
                         marginBottom: 7,
                     }}
                 >
@@ -53,7 +53,7 @@ export function Input({
                 value={value}
                 onChangeText={onChange}
                 placeholder={placeholder}
-                placeholderTextColor={tokens.tertiary}
+                placeholderTextColor={tokens.placeholder}
                 secureTextEntry={secureTextEntry}
                 multiline={multiline}
                 autoCapitalize={autoCapitalize}

@@ -40,7 +40,9 @@ export function PrimaryButton({ children, onPress, loading, disabled }: Props) {
                     </Text>
                 </>
             ) : (
-                <Text style={{ fontFamily: FONTS.extrabold, fontSize: 14, color: tokens.bg, letterSpacing: 1.7, textTransform: 'uppercase' }}>{children}</Text>
+                <Text style={{ fontFamily: FONTS.extrabold, fontSize: 14, color: tokens.onAccent, letterSpacing: 1.7, textTransform: 'uppercase' }}>
+                    {children}
+                </Text>
             )}
         </TouchableOpacity>
     );

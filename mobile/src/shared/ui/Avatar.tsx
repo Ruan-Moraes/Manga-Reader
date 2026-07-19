@@ -31,7 +31,7 @@ export function Avatar({ src, name, size = 40 }: Props) {
                 justifyContent: 'center',
             }}
         >
-            <Text style={{ fontFamily: FONTS.bold, fontSize: size * 0.35, color: tokens.bg }}>{initials}</Text>
+            <Text style={{ fontFamily: FONTS.bold, fontSize: size * 0.35, color: tokens.onAccent }}>{initials}</Text>
         </View>
     );
 }

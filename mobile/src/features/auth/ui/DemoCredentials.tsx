@@ -22,9 +22,9 @@ export function DemoCredentials({ onFill }: Props) {
                 marginTop: 22,
                 padding: 14,
                 borderRadius: 6,
-                backgroundColor: 'rgba(221,218,42,0.06)',
+                backgroundColor: tokens.accentSoft,
                 borderWidth: 1,
-                borderColor: 'rgba(221,218,42,0.35)',
+                borderColor: tokens.accentBorder,
                 borderStyle: 'dashed',
                 flexDirection: 'row',
                 alignItems: 'flex-start',
@@ -39,7 +39,7 @@ export function DemoCredentials({ onFill }: Props) {
                         fontFamily: FONTS.extrabold,
                         letterSpacing: 1.4,
                         textTransform: 'uppercase',
-                        color: tokens.accent,
+                        color: tokens.accentText,
                         marginBottom: 7,
                     }}
                 >
@@ -51,9 +51,9 @@ export function DemoCredentials({ onFill }: Props) {
 
             <TouchableOpacity
                 onPress={() => onFill(DEMO_CREDS.email, DEMO_CREDS.password)}
-                style={{ paddingHorizontal: 11, paddingVertical: 7, borderWidth: 1, borderColor: tokens.accent, borderRadius: tokens.radius }}
+                style={{ paddingHorizontal: 11, paddingVertical: 7, borderWidth: 1, borderColor: tokens.accentBorder, borderRadius: tokens.radius }}
             >
-                <Text style={{ fontSize: 10, fontFamily: FONTS.extrabold, letterSpacing: 1.2, textTransform: 'uppercase', color: tokens.accent }}>
+                <Text style={{ fontSize: 10, fontFamily: FONTS.extrabold, letterSpacing: 1.2, textTransform: 'uppercase', color: tokens.accentText }}>
                     {t('login.demoFill')}
                 </Text>
             </TouchableOpacity>

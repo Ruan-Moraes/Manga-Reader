@@ -23,7 +23,7 @@ export function AuthFooter({ prompt, action, onAction }: Props) {
         >
             <Text style={{ fontFamily: FONTS.regular, fontSize: 13, color: tokens.subtle, letterSpacing: tokens.ls }}>
                 {prompt}{' '}
-                <Text onPress={onAction} style={{ fontFamily: FONTS.bold, color: tokens.accent }}>
+                <Text onPress={onAction} style={{ fontFamily: FONTS.bold, color: tokens.accentText }}>
                     {action}
                 </Text>
             </Text>

@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AuthFooter, AuthHeader, Field, GhostButton, MRIcon, PrimaryButton } from '@/src/features/auth';
+import { AuthFooter, AuthHeader, authService, Field, GhostButton, MRIcon, PrimaryButton } from '@/src/features/auth';
 import { useTheme } from '@/src/shared/theme';
 import { FONTS } from '@/src/shared/theme';
 
@@ -18,13 +18,12 @@ export function ForgotPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [sent, setSent] = useState(false);
+    const [expirationMinutes, setExpirationMinutes] = useState<number | null>(null);
     const [cooldown, setCooldown] = useState(0);
-    const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const tick = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(
         () => () => {
-            if (timer.current) clearTimeout(timer.current);
             if (tick.current) clearInterval(tick.current);
         },
         [],
@@ -44,7 +43,7 @@ export function ForgotPage() {
         }, 1000);
     };
 
-    const submit = () => {
+    const submit = async () => {
         if (loading) return;
         if (!email.trim() || !/.+@.+\..+/.test(email.trim())) {
             setError(t('forgotPassword.emailValidation'));
@@ -52,11 +51,17 @@ export function ForgotPage() {
         }
         setError('');
         setLoading(true);
-        timer.current = setTimeout(() => {
+        try {
+            const result = await authService.forgotPassword(email.trim());
+            setExpirationMinutes(result.expiresInSeconds === null ? null : Math.max(1, Math.ceil(result.expiresInSeconds / 60)));
+        } catch {
+            // Always show success — never reveal if the account exists.
+            setExpirationMinutes(null);
+        } finally {
             setLoading(false);
             setSent(true);
             startCooldown();
-        }, 700);
+        }
     };
 
     const retry = () => {
@@ -91,13 +96,13 @@ export function ForgotPage() {
                         paddingHorizontal: 12,
                         paddingVertical: 5,
                         borderRadius: 999,
-                        backgroundColor: `${tokens.accent}28`,
+                        backgroundColor: tokens.accentSoft,
                         borderWidth: 1,
-                        borderColor: `${tokens.accent}80`,
+                        borderColor: tokens.accentBorder,
                     }}
                 >
-                    <MRIcon name="send" size={13} color={tokens.accent} />
-                    <Text style={{ fontFamily: FONTS.extrabold, fontSize: 11, color: tokens.accent, letterSpacing: 1.6, textTransform: 'uppercase' }}>
+                    <MRIcon name="send" size={13} color={tokens.accentText} />
+                    <Text style={{ fontFamily: FONTS.extrabold, fontSize: 11, color: tokens.accentText, letterSpacing: 1.6, textTransform: 'uppercase' }}>
                         {t('forgotPassword.sentEyebrow')}
                     </Text>
                 </View>
@@ -130,7 +135,7 @@ export function ForgotPage() {
                 >
                     {t('forgotPassword.sentLinkSentTo')} <Text style={{ color: tokens.text, fontFamily: FONTS.bold }}>{email.trim()}</Text>
                     {'. '}
-                    {t('forgotPassword.sentExpiry')}
+                    {expirationMinutes === null ? t('forgotPassword.sentExpiryUnknown') : t('forgotPassword.sentExpiry', { minutes: expirationMinutes })}
                 </Text>
 
                 <View style={{ width: '100%', maxWidth: 340 }}>
@@ -142,7 +147,7 @@ export function ForgotPage() {
                 <TouchableOpacity onPress={retry} style={{ marginTop: 18 }}>
                     <Text style={{ fontFamily: FONTS.regular, fontSize: 13, color: tokens.subtle, letterSpacing: tokens.ls }}>
                         {t('forgotPassword.remembered')}{' '}
-                        <Text style={{ color: tokens.accent, fontFamily: FONTS.bold }}>{t('forgotPassword.backToLoginLink')}</Text>
+                        <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('forgotPassword.backToLoginLink')}</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -185,7 +190,7 @@ export function ForgotPage() {
                 />
 
                 <View style={{ height: 6 }} />
-                <PrimaryButton onPress={submit} loading={loading}>
+                <PrimaryButton onPress={() => void submit()} loading={loading}>
                     {t('forgotPassword.submitAction')}
                 </PrimaryButton>
 

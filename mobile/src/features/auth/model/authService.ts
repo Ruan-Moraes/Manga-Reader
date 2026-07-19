@@ -1,10 +1,15 @@
-import { api } from '@/src/shared/api';
+import { api, tokenStorage } from '@/src/shared/api';
 import type { ApiResponse, AuthResponse, AuthTokens, LoginRequest, RegisterRequest, User, UserRole } from '@/src/shared/model';
 
 interface AuthResult {
     user: User;
     accessToken: string;
     refreshToken: string;
+}
+
+interface PasswordResetRequestResponse {
+    message: string;
+    expiresInSeconds: number | null;
 }
 
 /** Mapeia AuthResponse flat do backend para { user, tokens }. */
@@ -39,8 +44,18 @@ export const authService = {
         return toAuthResult(res.data.data).user;
     },
 
-    forgotPassword: async (email: string): Promise<void> => {
-        await api.post('/auth/forgot-password', { email });
+    forgotPassword: async (email: string): Promise<PasswordResetRequestResponse> => {
+        const res = await api.post<ApiResponse<PasswordResetRequestResponse | string>>('/auth/forgot-password', { email });
+        return typeof res.data.data === 'string' ? { message: res.data.data, expiresInSeconds: null } : res.data.data;
+    },
+
+    logout: async (): Promise<void> => {
+        try {
+            const refreshToken = await tokenStorage.getRefresh();
+            await api.post('/auth/logout', refreshToken ? { refreshToken } : undefined);
+        } catch {
+            // A saída local continua mesmo sem rede; o token expira no servidor.
+        }
     },
 };
 

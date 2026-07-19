@@ -16,7 +16,7 @@ function passwordStrength(pw: string, tokens: { danger: string; warn: string; su
     const map: Record<number, { label: string; tone: string }> = {
         1: { label: 'weak', tone: tokens.danger },
         2: { label: 'medium', tone: tokens.warn },
-        3: { label: 'strong', tone: '#8bc34a' },
+        3: { label: 'strong', tone: tokens.success },
         4: { label: 'great', tone: tokens.success },
     };
     return { score, ...(map[score] ?? { label: 'weak', tone: tokens.danger }) };
