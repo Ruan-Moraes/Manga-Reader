@@ -5,6 +5,7 @@
     <toRun name="Job Orphan Cleaner (8082)" type="MavenRunConfiguration" />
     <toRun name="Job Trending Aggregator" type="MavenRunConfiguration" />
     <toRun name="Web Dev (5173)" type="js.build_tools.npm" />
+    <toRun name="Landing Dev (5174)" type="js.build_tools.npm" />
     <method v="2" />
   </configuration>
 </component>

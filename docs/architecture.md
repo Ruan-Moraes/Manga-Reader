@@ -1,8 +1,8 @@
 # Architecture
 
-Padrões arquiteturais do Manga-Reader. Ler antes de criar controller/use
-case/mapper, mexer em domínio, dual-DB, rating-aggregator, i18n ou contrato de
-resposta da API. Referenciado por `CLAUDE.md`.
+Padrões arquiteturais do Manga-Reader. Ler antes de criar controller, use case
+ou mapper, alterar domínios, persistência poliglota, jobs, i18n ou contratos de
+resposta da API. Referenciado por `AGENTS.md` e `CLAUDE.md`.
 
 **Clean Architecture — 4 camadas, dependência flui para dentro:**
 
@@ -15,16 +15,26 @@ presentation → application → domain ← infrastructure
 - **domain**: entities, value objects, enums — zero dependência de framework
 - **infrastructure**: persistence adapters, security, email, messaging
 
-### Domínios (17 pacotes)
+### Domínios
 
-`author`, `category`, `comment`, `errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`, `news`, `payment`, `publisher`, `review`, `store`, `subscription`, `user` — Auth vive em Security (infrastructure). Cada domínio tem package próprio em todas as camadas.
+Os 19 pacotes de domínio atuais são `auth`, `author`, `category`, `comment`,
+`errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`, `news`,
+`payment`, `publisher`, `review`, `store`, `subscription`, `trending` e `user`.
+Nem todo pacote precisa possuir artefatos em todas as camadas; os limites seguem
+as responsabilidades implementadas.
 
-### Dual Database
+### Persistência poliglota
 
-| DB | Tech | Responsável por |
-|----|------|----------------|
-| PostgreSQL | JPA/Hibernate + Flyway | users, groups, events, library, stores, tags, subscriptions, payments, authors/publishers, domain labels (tabelas do fórum permanecem só como rollback da migração p/ Mongo — DT-50) |
-| MongoDB | Spring Data Mongo + Mongock | titles, chapters, comments (coleção unificada polimórfica), reviews, forum_topics, votos (`<pai>_votes`), news, view history, **reviews_aggregate** |
+| Tecnologia | Papel principal |
+|---|---|
+| PostgreSQL + JPA/Hibernate + Flyway | Usuários, grupos, eventos, biblioteca, lojas, tags, assinaturas, pagamentos, autores, editoras e labels de domínio. As tabelas antigas do fórum permanecem apenas para rollback da migração (DT-50). |
+| MongoDB + Spring Data + Mongock | Títulos, capítulos, comentários polimórficos, avaliações, tópicos do fórum, votos, notícias, histórico de leitura e projeções `reviews_aggregate`/`title_trend_daily`. |
+| Neo4j + `Neo4jClient` | Grafo social de seguidores, seguindo e remoção dos nós relacionados à conta. |
+| Redis | Cache de aplicação; não é fonte canônica de dados de negócio. |
+
+PostgreSQL, MongoDB e Neo4j possuem transações independentes. Operações entre
+tecnologias não são atomicamente distribuídas; use cases, eventos e jobs de
+reconciliação tratam as janelas de divergência conhecidas.
 
 ### Serviço de Agregação de Avaliações (`api/jobs/rating-aggregator`)
 
@@ -40,6 +50,17 @@ Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **do
 Job Spring Boot separado, porta 8083, que lê sinais temporais em lote do PostgreSQL e MongoDB uma vez por dia. O score combina leituras, biblioteca, avaliações, comentários e lançamentos, comparando dias UTC completos em janelas adjacentes de 1/7/30 dias com suavização de amostras pequenas. Persiste snapshots idempotentes em `title_trend_daily`, incluindo crescimento geral e por sinal; a API principal só consulta o snapshot mais recente via `TrendingReadPort`, ordenando por score, leituras, avaliações ou salvamentos sem agregações no request.
 
 `title_trend_daily` é uma projeção derivada e reconstruível: `(titleId, snapshotDate)` determina `calculatedAt` e os scores, materializado no `_id` como `titleId:data`. Os mapas por janela são uma desnormalização deliberada para leitura ordenada. Não há FK cross-DB; títulos removidos são filtrados pela API. Índices compostos cobrem data+ranking e cada fonte temporal; snapshots expiram após 90 dias por TTL, pois não são fonte para o próximo cálculo.
+
+### Job de Reconciliação (`api/jobs/orphan-cleaner`)
+
+Serviço separado, porta 8082, responsável pelo caminho frio de consistência
+entre PostgreSQL e MongoDB. Reconcilia contadores desnormalizados a partir das
+fontes canônicas e remove referências PostgreSQL cujo `title_id` não existe mais
+no MongoDB. As operações são idempotentes e incluem proteção contra remoção em
+massa quando a verificação de títulos não retorna resultados confiáveis.
+
+Detalhes operacionais ficam no
+[`README` do serviço](../api/jobs/orphan-cleaner/README.md).
 
 ### Key Patterns
 
@@ -88,8 +109,9 @@ Dois eixos separados, com modelos de armazenamento distintos:
 - `PATCH /api/users/me/content-locales` (body: `{ contentLocales }`; valida via `User.updateContentLocales`)
 
 **Frontend**:
-- Hook `useContentLocales(isLoggedIn)` (TanStack Query) — sync com backend somente para users autenticados.
-- `LanguageSettings.tsx`: troca de UI lang só dispara `i18n.changeLanguage`; troca de content lang dispara mutation quando logado.
+- `useInterfaceLang.ts` altera somente a UI via `i18n.changeLanguage()`.
+- `useContentLocales(isLoggedIn)` e `useReadingLangs.ts` sincronizam idiomas de
+  conteúdo com o backend somente para usuários autenticados.
 
 ### API Response Patterns
 

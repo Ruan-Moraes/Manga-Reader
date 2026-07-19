@@ -1,5 +1,9 @@
 # Auditoria Técnica — Manga Reader
 
+> **Documento histórico.** Este relatório preserva a fotografia do repositório em
+> 2 de julho de 2026. Para o estado atual, consulte os READMEs dos módulos e
+> [`../tech-debt.md`](../tech-debt.md).
+>
 > Data: **2026-07-02** · Escopo: repositório completo (backend, frontend web, mobile,
 > scripts, banco, integrações, infraestrutura e documentação). Auditoria **sem mudança
 > de comportamento**: apenas documentação foi alterada (lista completa no §7).
@@ -148,8 +152,9 @@ migrations `ls api/core/src/main/resources/db/migration | wc -l` e
 
 **Criados**:
 - `api/README.md`, `web/README.md` (visões de módulo)
-- `TECHNICAL_DEBT.md` (visão consolidada por categoria)
-- `PROJECT_AUDIT.md` (este documento)
+- `TECHNICAL_DEBT.md` (visão consolidada por categoria, posteriormente
+  incorporada a `docs/tech-debt.md`)
+- `PROJECT_AUDIT.md` (este documento, posteriormente arquivado neste diretório)
 
 ## 8. O que NÃO foi alterado
 
@@ -158,8 +163,8 @@ migrations `ls api/core/src/main/resources/db/migration | wc -l` e
 - `backend/.idea/` local não foi apagado (artefato de IDE do dono — DT-55).
 - `mobile/.expo/README.md` (gerado pelo Expo) e os READMEs dentro das pastas de
   design/handoff gitignoradas foram mantidos como estão.
-- Nenhuma dívida foi "resolvida silenciosamente": correções que exigem código estão
-  registradas em `TECHNICAL_DEBT.md`/`docs/tech-debt.md`.
+- Nenhuma dívida foi "resolvida silenciosamente": correções que exigem código foram
+  registradas no documento que hoje corresponde a `docs/tech-debt.md`.
 
 ## 9. Riscos pendentes (pós-auditoria)
 
