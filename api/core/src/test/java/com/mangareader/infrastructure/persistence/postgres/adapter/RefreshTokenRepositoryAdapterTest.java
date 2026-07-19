@@ -1,6 +1,7 @@
 package com.mangareader.infrastructure.persistence.postgres.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.dto.ApiErrorCode;
+import com.mangareader.shared.exception.BusinessRuleException;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -38,7 +41,7 @@ class RefreshTokenRepositoryAdapterTest {
     void setUp() {
         User user = entityManager.persistAndFlush(User.builder()
                 .name("Leitor")
-                .email("leitor@mangareader.com")
+                .email("leitor-" + UUID.randomUUID() + "@mangareader.com")
                 .passwordHash("$2a$10$hash")
                 .build());
 
@@ -79,12 +82,29 @@ class RefreshTokenRepositoryAdapterTest {
     }
 
     @Test
-    @DisplayName("Deve revogar um token individualmente")
-    void deveRevogarToken() {
+    @DisplayName("Deve traduzir conflito do hash único sem expor a constraint")
+    void deveTraduzirConflitoDoHashUnico() {
+        String rawToken = "refresh-token-duplicado";
+
+        refreshTokenRepository.store(rawToken, userId, UUID.randomUUID(), expiresAt);
+
+        assertThatThrownBy(() -> refreshTokenRepository.store(
+                rawToken, userId, UUID.randomUUID(), expiresAt
+        ))
+                .isInstanceOf(BusinessRuleException.class)
+                .hasMessage("Não foi possível emitir uma sessão única. Tente novamente.")
+                .extracting("statusCode", "errorCode")
+                .containsExactly(409, ApiErrorCode.AUTH_REFRESH_TOKEN_CONFLICT);
+    }
+
+    @Test
+    @DisplayName("Deve revogar atomicamente apenas um token ainda ativo")
+    void deveRevogarTokenAtivoUmaUnicaVez() {
         var stored = refreshTokenRepository.store("token-1", userId, UUID.randomUUID(), expiresAt);
         entityManager.flush();
 
-        refreshTokenRepository.revoke(stored);
+        boolean firstAttempt = refreshTokenRepository.revokeIfActive(stored);
+        boolean secondAttempt = refreshTokenRepository.revokeIfActive(stored);
         entityManager.flush();
         entityManager.clear();
 
@@ -92,6 +112,8 @@ class RefreshTokenRepositoryAdapterTest {
 
         assertThat(found).isPresent();
         assertThat(found.get().isRevoked()).isTrue();
+        assertThat(firstAttempt).isTrue();
+        assertThat(secondAttempt).isFalse();
     }
 
     @Test
@@ -106,11 +128,32 @@ class RefreshTokenRepositoryAdapterTest {
         entityManager.flush();
 
         refreshTokenRepository.revokeFamily(familia);
+        entityManager.flush();
         entityManager.clear();
 
         assertThat(refreshTokenRepository.findByToken("token-a").orElseThrow().isRevoked()).isTrue();
         assertThat(refreshTokenRepository.findByToken("token-b").orElseThrow().isRevoked()).isTrue();
         assertThat(refreshTokenRepository.findByToken("token-c").orElseThrow().isRevoked()).isFalse();
+    }
+
+    @Test
+    void revokesEveryFamilyForOneUserWithoutAffectingAnotherUser() {
+        User other = entityManager.persistAndFlush(User.builder()
+                .name("Outro")
+                .email("outro-" + UUID.randomUUID() + "@mangareader.com")
+                .passwordHash("$2a$10$hash")
+                .build());
+        refreshTokenRepository.store("user-a-1", userId, UUID.randomUUID(), expiresAt);
+        refreshTokenRepository.store("user-a-2", userId, UUID.randomUUID(), expiresAt);
+        refreshTokenRepository.store("user-b-1", other.getId(), UUID.randomUUID(), expiresAt);
+
+        refreshTokenRepository.revokeAllForUser(userId);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(refreshTokenRepository.findByToken("user-a-1").orElseThrow().isRevoked()).isTrue();
+        assertThat(refreshTokenRepository.findByToken("user-a-2").orElseThrow().isRevoked()).isTrue();
+        assertThat(refreshTokenRepository.findByToken("user-b-1").orElseThrow().isRevoked()).isFalse();
     }
 
     @Test

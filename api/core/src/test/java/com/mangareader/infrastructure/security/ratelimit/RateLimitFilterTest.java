@@ -11,15 +11,25 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @DisplayName("RateLimitFilter — bucket estrito para endpoints de auth")
 class RateLimitFilterTest {
 
     private RateLimitFilter filter;
+    private TestStore store;
 
     @BeforeEach
     void setUp() {
-        filter = new RateLimitFilter(new ObjectMapper());
+        store = new TestStore();
+        filter = new RateLimitFilter(new ObjectMapper(), store, properties());
+    }
+
+    private static RateLimitProperties properties() {
+        return new RateLimitProperties(new RateLimitProperties.Policy(120, Duration.ofMinutes(1)),
+                new RateLimitProperties.Policy(15, Duration.ofMinutes(1)), List.of("127.0.0.1", "::1"));
     }
 
     private MockHttpServletResponse perform(String method, String uri, String ip) throws Exception {
@@ -64,5 +74,60 @@ class RateLimitFilterTest {
             assertThat(perform("GET", "/api/auth/me", "10.0.0.3").getStatus())
                     .isEqualTo(HttpStatus.OK.value());
         }
+    }
+
+    @Test
+    void ignoresForwardedHeadersFromUntrustedPeers() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/titles");
+        request.setRemoteAddr("10.0.0.4");
+        request.addHeader("X-Forwarded-For", "203.0.113.7");
+        filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
+
+        assertThat(store.keys()).containsExactly("10.0.0.4|general");
+    }
+
+    @Test
+    void rejectsMalformedForwardedChainFromTrustedProxy() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/titles");
+        request.setRemoteAddr("127.0.0.1");
+        request.addHeader("X-Forwarded-For", "203.0.113.7, attacker.example");
+        filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
+
+        assertThat(store.keys()).containsExactly("127.0.0.1|general");
+    }
+
+    @Test
+    void resolvesFirstUntrustedClientWalkingForwardedChainFromRightToLeft() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/titles");
+        request.setRemoteAddr("127.0.0.1");
+        request.addHeader("X-Forwarded-For", "198.51.100.23, 203.0.113.8, 127.0.0.1");
+        filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
+
+        assertThat(store.keys()).containsExactly("203.0.113.8|general");
+    }
+
+    @Test
+    void twoFilterInstancesShareTheDistributedCounter() throws Exception {
+        RateLimitFilter secondInstance = new RateLimitFilter(new ObjectMapper(), store, properties());
+        for (int i = 0; i < 15; i++) perform("POST", "/api/auth/sign-in", "10.0.0.5");
+
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/auth/sign-in");
+        request.setRemoteAddr("10.0.0.5");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        secondInstance.doFilter(request, response, new MockFilterChain());
+
+        assertThat(response.getStatus()).isEqualTo(429);
+    }
+
+    private static final class TestStore implements RateLimitStore {
+        private final ConcurrentHashMap<String, Long> counters = new ConcurrentHashMap<>();
+
+        @Override
+        public Decision consume(String key, long capacity, Duration window) {
+            long current = counters.merge(key, 1L, Long::sum);
+            return new Decision(current <= capacity, Math.max(0, capacity - current), window.toSeconds());
+        }
+
+        java.util.Set<String> keys() { return counters.keySet(); }
     }
 }

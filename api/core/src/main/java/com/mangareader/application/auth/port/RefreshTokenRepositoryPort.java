@@ -18,10 +18,19 @@ public interface RefreshTokenRepositoryPort {
 
     Optional<RefreshToken> findByToken(String rawToken);
 
-    void revoke(RefreshToken token);
+    /**
+     * Revoga o token somente se ele ainda estiver ativo.
+     *
+     * @return {@code true} quando esta chamada consumiu o token; {@code false}
+     *         quando outra rotação já o consumiu
+     */
+    boolean revokeIfActive(RefreshToken token);
 
     /** Revoga todos os tokens ativos da família (sessão inteira). */
     void revokeFamily(UUID familyId);
+
+    /** Revoga todas as sessões ativas do usuário (reset de senha/encerramento da conta). */
+    void revokeAllForUser(UUID userId);
 
     /** Remove tokens expirados antes do instante dado (higiene). */
     long deleteExpiredBefore(LocalDateTime threshold);

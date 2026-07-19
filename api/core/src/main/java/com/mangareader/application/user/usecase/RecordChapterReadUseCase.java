@@ -19,6 +19,8 @@ import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +41,7 @@ public class RecordChapterReadUseCase {
     private final UserProfileSettingsResolver profileSettingsResolver;
     private final EventPublisherPort eventPublisher;
     private final LocaleResolutionService localeResolver;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     public void execute(UUID userId, String titleId, String chapterNumber) {
         User user = userRepository.findById(userId)
@@ -79,5 +82,7 @@ public class RecordChapterReadUseCase {
 
         eventPublisher.publish("activity.chapter-read", new ChapterReadEvent(
                 userIdStr, titleId, localeResolver.resolve(title.getName()), title.getCover(), chapterNumber));
+        behaviorEventRecorder.record(userId, BehaviorEventType.CHAPTER_COMPLETED,
+                titleId, chapterNumber, "READING_PROGRESS");
     }
 }

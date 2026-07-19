@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.manga.usecase.GetChapterByNumberUseCase;
@@ -44,6 +47,9 @@ class ChapterControllerTest {
 
     @MockitoBean
     private GetChapterByNumberUseCase getChapterByNumberUseCase;
+
+    @MockitoBean
+    private com.mangareader.application.manga.usecase.GetReaderChapterUseCase getReaderChapterUseCase;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -82,7 +88,7 @@ class ChapterControllerTest {
                     List.of(buildChapter("1"), buildChapter("2"), buildChapter("3")),
                     PageRequest.of(0, 20), 3);
 
-            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(page);
 
             mockMvc.perform(get("/api/titles/title-1/chapters"))
@@ -98,7 +104,7 @@ class ChapterControllerTest {
         @Test
         @DisplayName("direction=desc gera Pageable ordenado desc por number")
         void direcaoDescOrdenaNumber() throws Exception {
-            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
 
             mockMvc.perform(get("/api/titles/title-1/chapters")
@@ -107,7 +113,7 @@ class ChapterControllerTest {
 
             var captor = ArgumentCaptor.forClass(Pageable.class);
 
-            verify(getChaptersByTitleUseCase).execute(eq("title-1"), captor.capture());
+            verify(getChaptersByTitleUseCase).execute(eq("title-1"), captor.capture(), org.mockito.ArgumentMatchers.isNull());
 
             var order = captor.getValue().getSort().getOrderFor("number");
 
@@ -118,7 +124,7 @@ class ChapterControllerTest {
         @Test
         @DisplayName("default (sem direction) ordena asc por number")
         void defaultOrdenaAsc() throws Exception {
-            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class)))
+            when(getChaptersByTitleUseCase.execute(eq("title-1"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
 
             mockMvc.perform(get("/api/titles/title-1/chapters"))
@@ -126,7 +132,7 @@ class ChapterControllerTest {
 
             var captor = ArgumentCaptor.forClass(Pageable.class);
 
-            verify(getChaptersByTitleUseCase).execute(eq("title-1"), captor.capture());
+            verify(getChaptersByTitleUseCase).execute(eq("title-1"), captor.capture(), org.mockito.ArgumentMatchers.isNull());
 
             var order = captor.getValue().getSort().getOrderFor("number");
 
@@ -137,7 +143,7 @@ class ChapterControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com página vazia")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getChaptersByTitleUseCase.execute(eq("title-x"), any(Pageable.class)))
+            when(getChaptersByTitleUseCase.execute(eq("title-x"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
 
             mockMvc.perform(get("/api/titles/title-x/chapters"))
@@ -152,7 +158,7 @@ class ChapterControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com capítulo encontrado")
         void deveRetornar200() throws Exception {
-            when(getChapterByNumberUseCase.execute("title-1", "5"))
+            when(getChapterByNumberUseCase.execute(eq("title-1"), eq("5"), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(buildChapter("5"));
 
             mockMvc.perform(get("/api/titles/title-1/chapters/5"))
@@ -166,11 +172,29 @@ class ChapterControllerTest {
         @Test
         @DisplayName("Deve retornar 404 quando capítulo não encontrado")
         void deveRetornar404() throws Exception {
-            when(getChapterByNumberUseCase.execute("title-1", "999"))
+            when(getChapterByNumberUseCase.execute(eq("title-1"), eq("999"), org.mockito.ArgumentMatchers.isNull()))
                     .thenThrow(new ResourceNotFoundException("Chapter", "number", "999"));
 
             mockMvc.perform(get("/api/titles/title-1/chapters/999"))
                     .andExpect(status().isNotFound());
         }
+    }
+
+    @Test
+    @DisplayName("Moderador pode solicitar preview de capítulo não publicado")
+    void moderatorCanPreviewChapter() throws Exception {
+        UUID moderatorId = UUID.randomUUID();
+        Chapter chapter = buildChapter("7");
+        when(getReaderChapterUseCase.execute("title-1", "7", true, moderatorId)).thenReturn(chapter);
+        var auth = new UsernamePasswordAuthenticationToken(
+                moderatorId, null, List.of(new SimpleGrantedAuthority("ROLE_MODERATOR")));
+
+        mockMvc.perform(get("/api/titles/title-1/chapters/7/reader")
+                        .param("preview", "true")
+                        .principal(auth))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value("chapter-7"));
+
+        verify(getReaderChapterUseCase).execute("title-1", "7", true, moderatorId);
     }
 }

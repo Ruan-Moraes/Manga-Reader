@@ -13,6 +13,8 @@ import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserRecommendation;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,7 @@ public class AddRecommendationUseCase {
     private final RecommendationRepositoryPort recommendationRepository;
     private final TitleRepositoryPort titleRepository;
     private final LocaleResolutionService localeResolutionService;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     public UserRecommendation execute(UUID userId, String titleId) {
         User user = userRepository.findById(userId)
@@ -56,6 +59,9 @@ public class AddRecommendationUseCase {
                 .position((int) count)
                 .build();
 
-        return recommendationRepository.save(recommendation);
+        UserRecommendation result = recommendationRepository.save(recommendation);
+        behaviorEventRecorder.record(userId, BehaviorEventType.PROFILE_RECOMMENDATION_ADDED,
+                titleId, null, "PROFILE");
+        return result;
     }
 }

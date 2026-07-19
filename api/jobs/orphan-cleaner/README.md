@@ -1,4 +1,4 @@
-# Orphan Cleaner
+# Orphan Cleaner — `api/jobs/orphan-cleaner`
 
 Serviço dedicado às **redes de segurança entre Postgres e Mongo** da plataforma Manga
 Reader. Roda fora da API principal e cobre duas formas de divergência no *dual-DB*:
@@ -39,7 +39,7 @@ Por que um serviço separado (e não dentro da API):
 - **Isolamento de carga** — varreduras não competem por CPU/heap com o tráfego de request.
 - **Responsabilidade única** — a API mantém contadores/refs no caminho quente; este serviço
   só concilia/limpa no caminho frio.
-- Espelha o serviço irmão [`rating-aggregator`](../rating-aggregator) (mesmo padrão).
+- Espelha o serviço irmão [`rating-aggregator`](../rating-aggregator/README.md) (mesmo padrão).
 
 ---
 
@@ -126,8 +126,9 @@ Testes: JUnit 5, Mockito, Testcontainers (Postgres + Mongo).
 
 ## Configuração
 
-Definida em [`src/main/resources/application.yml`]; sobrescrita por env (relaxed binding) em
-produção.
+Definida em [`src/main/resources/application.yml`](src/main/resources/application.yml)
+e sobrescrita por variáveis de ambiente via relaxed binding. Um arquivo `.env`
+opcional no diretório de execução também é carregado como properties.
 
 | Propriedade                       | Env                          | Default                                         |
 |-----------------------------------|------------------------------|-------------------------------------------------|
@@ -136,8 +137,8 @@ produção.
 | `spring.datasource.username`      | `SPRING_DATASOURCE_USERNAME` | `manga`                                         |
 | `spring.datasource.password`      | `SPRING_DATASOURCE_PASSWORD` | `manga_secret`                                  |
 | `spring.data.mongodb.uri`         | `SPRING_DATA_MONGODB_URI`    | `mongodb://localhost:27017/mangareader`         |
-| `reconciler.reconciliation.cron`  | —                            | `0 0 * * * *` (contadores, de hora em hora)     |
-| `reconciler.orphan.cron`          | —                            | `0 30 3 * * *` (órfãos, diária às 03:30)        |
+| `reconciler.reconciliation.cron`  | `RECONCILER_RECONCILIATION_CRON` | `0 0 * * * *` (contadores, de hora em hora) |
+| `reconciler.orphan.cron`          | `RECONCILER_ORPHAN_CRON`     | `0 30 3 * * *` (órfãos, diária às 03:30)        |
 | `reconciler.admin.token`          | `RECONCILER_ADMIN_TOKEN`     | *(vazio → endpoint manual desativado)*          |
 
 > O namespace de propriedades (`reconciler.*`) e o env `RECONCILER_ADMIN_TOKEN` foram mantidos
@@ -147,11 +148,19 @@ produção.
 
 ## Execução
 
-Pré-requisito: Postgres + Mongo no ar (suba a infra pelo `api/core`:
-`cd ../../core && mvn spring-boot:run`, ou só os containers do compose).
+Pré-requisitos: Java 23, Maven 3.9.x, PostgreSQL e MongoDB. Para subir a
+infraestrutura pelo core, execute em outro terminal:
+
+```bash
+cd api/core
+./mvnw spring-boot:run
+```
+
+A partir da raiz do repositório:
 
 ```bash
 # Local (dev)
+cd api/jobs/orphan-cleaner
 mvn spring-boot:run
 
 # Build do JAR
@@ -159,7 +168,8 @@ mvn package -DskipTests
 java -jar target/orphan-cleaner-0.0.1-SNAPSHOT.jar
 
 # Docker (produção) — sobe junto da stack
-cd ../../core && docker compose -f docker-compose.prod.yml up -d orphan-cleaner
+cd ../..
+docker compose -f docker-compose.prod.yml up -d orphan-cleaner
 ```
 
 ### Testes
@@ -177,7 +187,8 @@ mvn test                                         # + integração Postgres/Mongo
 |--------|-----------------------|---------------------------------------------------------------------|
 | `POST` | `/admin/reconcile`    | Gatilho **manual** de reconciliação **+ limpeza de órfãos**. Exige header `X-Admin-Token` = `reconciler.admin.token`. Sem token configurado → `503`; token inválido → `401`. Responde `200` com o resumo (`groups`, `events`, `forumReplies`, `votes`, `orphanRefs`). |
 | `GET`  | `/actuator/health`    | Health check.                                                       |
-| `GET`  | `/actuator/info\|metrics` | Info e métricas.                                                 |
+| `GET`  | `/actuator/info`         | Informações do serviço.                                          |
+| `GET`  | `/actuator/metrics`      | Métricas do Actuator.                                            |
 
 A comparação do token é feita em **tempo constante** (`MessageDigest.isEqual`) para evitar
 *timing attack*.
@@ -199,3 +210,11 @@ curl -X POST http://localhost:8082/admin/reconcile -H "X-Admin-Token: $RECONCILE
 
 Sendo idempotentes, ambas as frequências são seguras de ajustar conforme a tolerância a
 *drift*/órfãos e o custo das varreduras.
+
+## Links relacionados
+
+- [Visão do backend](../../README.md)
+- [API principal](../../core/README.md)
+- [Rating Aggregator](../rating-aggregator/README.md)
+- [Trending Aggregator](../trending-aggregator/README.md)
+- [Arquitetura](../../../docs/architecture.md)

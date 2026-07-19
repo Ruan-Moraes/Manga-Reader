@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.author.port.AuthorRepositoryPort;
 import com.mangareader.application.author.port.TitleAuthorRepositoryPort;
@@ -41,7 +42,22 @@ public class TitleAssociationWriter {
     private final TitleAuthorRepositoryPort titleAuthorRepository;
     private final TitlePublisherRepositoryPort titlePublisherRepository;
 
+    /**
+     * Substitui todas as associações relacionais presentes no comando em uma
+     * única transação PostgreSQL. Valores nulos preservam a associação atual.
+     */
+    @Transactional("transactionManager")
+    public void replace(String titleId, List<TitleAuthorAssignment> authors, List<Long> publisherIds) {
+        if (authors != null) replaceAuthorsInternal(titleId, authors);
+        if (publisherIds != null) replacePublishersInternal(titleId, publisherIds);
+    }
+
+    @Transactional("transactionManager")
     public void replaceAuthors(String titleId, List<TitleAuthorAssignment> assignments) {
+        replaceAuthorsInternal(titleId, assignments);
+    }
+
+    private void replaceAuthorsInternal(String titleId, List<TitleAuthorAssignment> assignments) {
         titleAuthorRepository.deleteByTitleId(titleId);
 
         if (assignments == null) return;
@@ -61,7 +77,12 @@ public class TitleAssociationWriter {
         }
     }
 
+    @Transactional("transactionManager")
     public void replacePublishers(String titleId, List<Long> publisherIds) {
+        replacePublishersInternal(titleId, publisherIds);
+    }
+
+    private void replacePublishersInternal(String titleId, List<Long> publisherIds) {
         titlePublisherRepository.deleteByTitleId(titleId);
 
         if (publisherIds == null) return;
@@ -78,6 +99,7 @@ public class TitleAssociationWriter {
         }
     }
 
+    @Transactional("transactionManager")
     public void clear(String titleId) {
         titleAuthorRepository.deleteByTitleId(titleId);
         titlePublisherRepository.deleteByTitleId(titleId);

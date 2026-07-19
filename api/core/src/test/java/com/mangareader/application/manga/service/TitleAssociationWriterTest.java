@@ -117,4 +117,17 @@ class TitleAssociationWriterTest {
         verify(titleAuthorRepository).deleteByTitleId("t1");
         verify(titlePublisherRepository).deleteByTitleId("t1");
     }
+
+    @Test
+    @DisplayName("replace preserva associações ausentes e substitui as presentes")
+    void replacePreservaAssociacaoNula() {
+        var oda = Author.builder().id(1L).name("Oda").slug("oda").build();
+        when(authorRepository.findById(1L)).thenReturn(Optional.of(oda));
+
+        writer.replace("t1", List.of(new TitleAuthorAssignment(1L, AuthorRole.AUTHOR)), null);
+
+        verify(titleAuthorRepository).deleteByTitleId("t1");
+        verify(titleAuthorRepository).save(any());
+        verify(titlePublisherRepository, never()).deleteByTitleId("t1");
+    }
 }

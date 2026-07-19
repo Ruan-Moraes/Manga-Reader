@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.library.service.LibraryVisibilityService;
+import com.mangareader.application.library.service.LibraryAdultContentService;
 import com.mangareader.domain.library.entity.SavedManga;
 
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,16 @@ import lombok.RequiredArgsConstructor;
 public class GetUserLibraryUseCase {
     private final LibraryRepositoryPort libraryRepository;
     private final LibraryVisibilityService libraryVisibilityService;
+    private final LibraryAdultContentService adultContentService;
 
     public Page<SavedManga> execute(UUID userId, UUID viewerUserId, Pageable pageable) {
         if (!libraryVisibilityService.canView(userId, viewerUserId)) {
             return Page.empty(pageable);
         }
 
-        return libraryRepository.findByUserId(userId, pageable);
+        if (adultContentService.mustFilter(viewerUserId)) {
+            return adultContentService.filterAndPageForViewer(libraryRepository.findByUserId(userId), viewerUserId, pageable);
+        }
+        return adultContentService.enrichPage(libraryRepository.findByUserId(userId, pageable));
     }
 }

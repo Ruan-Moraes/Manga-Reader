@@ -23,6 +23,9 @@ class RefreshTokenCleanupJobTest {
     @Mock
     private RefreshTokenRepositoryPort refreshTokenRepository;
 
+    @Mock
+    private JwtProperties properties;
+
     @InjectMocks
     private RefreshTokenCleanupJob job;
 
@@ -30,6 +33,7 @@ class RefreshTokenCleanupJobTest {
     @DisplayName("Deve remover tokens expirados há mais de 1 dia")
     void deveRemoverExpiradosComFolgaDeUmDia() {
         when(refreshTokenRepository.deleteExpiredBefore(any())).thenReturn(3L);
+        when(properties.revokedRetentionDays()).thenReturn(1L);
 
         job.purgeExpiredTokens();
 

@@ -23,13 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 @Profile("!test")
 @RequiredArgsConstructor
 public class RefreshTokenCleanupJob {
-    private static final String DAILY_AT_4AM = "0 0 4 * * *";
-
     private final RefreshTokenRepositoryPort refreshTokenRepository;
+    private final JwtProperties properties;
 
-    @Scheduled(cron = DAILY_AT_4AM)
+    @Scheduled(cron = "${app.jwt.cleanup-cron:0 0 4 * * *}")
     public void purgeExpiredTokens() {
-        long removed = refreshTokenRepository.deleteExpiredBefore(LocalDateTime.now().minusDays(1));
+        long removed = refreshTokenRepository.deleteExpiredBefore(
+                LocalDateTime.now().minusDays(properties.revokedRetentionDays()));
 
         if (removed > 0) {
             log.info("RefreshTokenCleanupJob: {} refresh tokens expirados removidos", removed);

@@ -3,6 +3,7 @@ package com.mangareader.infrastructure.persistence.postgres.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,5 +25,12 @@ public interface TitleAuthorJpaRepository extends JpaRepository<TitleAuthor, Lon
 
     boolean existsByTitleIdAndAuthorIdAndRole(String titleId, Long authorId, AuthorRole role);
 
-    void deleteByTitleId(String titleId);
+    /**
+     * Delete em lote para que a remoção seja executada antes das novas inserções
+     * da mesma substituição. O delete derivado agenda remoções no persistence
+     * context, e o Hibernate pode tentar os INSERTs antes delas no flush.
+     */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE FROM TitleAuthor ta WHERE ta.titleId = :titleId")
+    void deleteByTitleId(@Param("titleId") String titleId);
 }

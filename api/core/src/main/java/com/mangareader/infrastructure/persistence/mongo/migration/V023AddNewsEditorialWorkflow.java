@@ -47,6 +47,14 @@ public class V023AddNewsEditorialWorkflow {
                 "idx_news_status_trending", "idx_news_status_scheduled", "idx_news_status_tags"}) {
             dropIfExists(index);
         }
+        dropIfExists("idx_news_text");
+        var ops = mongoTemplate.indexOps(COLLECTION);
+        ops.ensureIndex(new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("title", 10F).onField("excerpt", 3F)
+                .named("idx_news_text").build());
+        ops.ensureIndex(new Index().on("category", Sort.Direction.ASC).named("idx_news_category"));
+        ops.ensureIndex(new Index().on("tags", Sort.Direction.ASC).named("idx_news_tags"));
+        ops.ensureIndex(new Index().on("publishedAt", Sort.Direction.DESC).named("idx_news_publishedAt"));
     }
 
     private void backfillSlugs() {

@@ -7,6 +7,7 @@ import java.time.Clock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.domain.news.entity.NewsItem;
@@ -16,6 +17,7 @@ import com.mangareader.domain.news.valueobject.NewsSeo;
 import com.mangareader.domain.news.valueobject.NewsSlug;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 
@@ -70,7 +72,11 @@ public class UpdateNewsUseCase {
                     command.seoKeywords() == null ? oldSeo.keywords() : LocalizedStringList.of(command.seoKeywords())));
         }
         news.setUpdatedAt(clock.instant());
-        return newsRepository.save(news);
+        try {
+            return newsRepository.save(news);
+        } catch (DuplicateKeyException exception) {
+            throw new BusinessRuleException("Slug de notícia já está em uso", 409);
+        }
     }
 
     public NewsItem execute(String newsId,

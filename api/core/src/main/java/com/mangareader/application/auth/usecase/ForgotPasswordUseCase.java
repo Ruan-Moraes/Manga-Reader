@@ -1,5 +1,7 @@
 package com.mangareader.application.auth.usecase;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -33,9 +35,12 @@ public class ForgotPasswordUseCase {
     @Value("${app.mail.base-url:http://localhost:5173}")
     private String baseUrl;
 
-    public void execute(String email) {
+    public Duration execute(String email) {
+        Duration expiration = tokenPort.passwordResetExpiration();
+
         userRepository.findByEmail(email).ifPresent(user -> {
-            String resetToken = tokenPort.generatePasswordResetToken(user.getId(), user.getEmail());
+            String resetToken = tokenPort.generatePasswordResetToken(
+                    user.getId(), user.getEmail(), user.getPasswordHash());
             String resetUrl = baseUrl + "/reset-password?token=" + resetToken;
 
             log.debug("Password reset solicitado para: {}", email);
@@ -43,13 +48,17 @@ public class ForgotPasswordUseCase {
             emailPort.sendHtml(
                     email,
                     "Manga Reader — Recuperação de Senha",
-                    buildResetEmailHtml(user.getName(), resetUrl)
+                    buildResetEmailHtml(user.getName(), resetUrl, expiration)
             );
         });
+
+        return expiration;
     }
 
-    private String buildResetEmailHtml(String username, String resetUrl) {
+    private String buildResetEmailHtml(String username, String resetUrl, Duration expiration) {
         String footer = messageSource.getMessage("email.footer.tagline", null, localeResolutionService.currentLocale());
+        long expirationMinutes = Math.max(1, (expiration.toSeconds() + 59) / 60);
+        String expirationUnit = expirationMinutes == 1 ? "minuto" : "minutos";
 
         return EmailTemplateBuilder.create()
                 .title("\uD83D\uDD12 Recuperação de Senha")
@@ -57,7 +66,8 @@ public class ForgotPasswordUseCase {
                 .paragraph("Recebemos uma solicitação para redefinir sua senha no <strong>Manga Reader</strong>.")
                 .paragraph("Clique no botão abaixo para criar uma nova senha:")
                 .button("Redefinir Senha", resetUrl)
-                .paragraph("<span style=\"color: #666; font-size: 14px;\">Se você não solicitou esta ação, ignore este email. O link expira em 15 minutos.</span>")
+                .paragraph("<span style=\"color: #666; font-size: 14px;\">Se você não solicitou esta ação, ignore este email. O link expira em "
+                        + expirationMinutes + " " + expirationUnit + ".</span>")
                 .footer(footer)
                 .build();
     }

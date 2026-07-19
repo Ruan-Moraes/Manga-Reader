@@ -25,6 +25,9 @@ class DeleteTagUseCaseTest {
     @Mock
     private TagRepositoryPort tagRepository;
 
+    @Mock
+    private com.mangareader.application.shared.port.CacheInvalidationPort cacheInvalidation;
+
     @InjectMocks
     private DeleteTagUseCase useCase;
 

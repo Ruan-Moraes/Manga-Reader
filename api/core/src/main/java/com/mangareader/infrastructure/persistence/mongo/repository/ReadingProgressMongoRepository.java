@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.persistence.mongo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -13,6 +14,8 @@ public interface ReadingProgressMongoRepository extends MongoRepository<ReadingP
     Optional<ReadingProgress> findByUserIdAndTitleIdAndChapterNumber(String userId, String titleId, String chapterNumber);
 
     Optional<ReadingProgress> findTopByUserIdAndTitleIdOrderByUpdatedAtDesc(String userId, String titleId);
+
+    List<ReadingProgress> findAllByUserIdOrderByUpdatedAtDesc(String userId);
 
     void deleteAllByUserId(String userId);
 

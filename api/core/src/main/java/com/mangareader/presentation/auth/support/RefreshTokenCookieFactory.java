@@ -2,9 +2,11 @@ package com.mangareader.presentation.auth.support;
 
 import java.time.Duration;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+
+import com.mangareader.infrastructure.security.jwt.JwtProperties;
+import com.mangareader.shared.config.AuthProperties;
 
 /**
  * Fabrica o cookie httpOnly do refresh token para clientes web.
@@ -22,12 +24,9 @@ public class RefreshTokenCookieFactory {
     private final boolean secure;
     private final Duration maxAge;
 
-    public RefreshTokenCookieFactory(
-            @Value("${app.auth.cookie-secure}") boolean secure,
-            @Value("${app.jwt.refresh-token-expiration}") long refreshTokenExpirationMs
-    ) {
-        this.secure = secure;
-        this.maxAge = Duration.ofMillis(refreshTokenExpirationMs);
+    public RefreshTokenCookieFactory(AuthProperties authProperties, JwtProperties jwtProperties) {
+        this.secure = authProperties.cookieSecure();
+        this.maxAge = Duration.ofMillis(jwtProperties.refreshTokenExpiration());
     }
 
     public ResponseCookie create(String refreshToken) {

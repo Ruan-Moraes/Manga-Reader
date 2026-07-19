@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.manga.service.TitleAssociationWriter;
 import com.mangareader.application.manga.service.TitleReferenceCleaner;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class DeleteTitleUseCase {
     private final TitleAssociationWriter associationWriter;
     private final TitleReferenceCleaner referenceCleaner;
     private final ReadingProgressRepositoryPort readingProgressRepository;
+    private final CacheInvalidationPort cacheInvalidation;
 
     public void execute(String titleId) {
         titleRepository.findById(titleId)
@@ -35,5 +38,7 @@ public class DeleteTitleUseCase {
         readingProgressRepository.deleteByTitleId(titleId);
 
         titleRepository.deleteById(titleId);
+        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, titleId);
+        cacheInvalidation.clearAfterCommit(CacheNames.PUBLIC_STATS);
     }
 }

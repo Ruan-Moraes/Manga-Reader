@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
@@ -27,6 +28,7 @@ public class ResetPasswordUseCase {
     private final TokenPort tokenPort;
     private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRepositoryPort refreshTokens;
 
     public void execute(String token, String newPassword) {
         if (!tokenPort.isTokenValid(token)) {
@@ -44,8 +46,13 @@ public class ResetPasswordUseCase {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        if (!tokenPort.matchesPasswordState(token, user.getPasswordHash())) {
+            throw new BusinessRuleException("Token de redefinição já utilizado ou obsoleto", 400);
+        }
+
         user.setPasswordHash(passwordEncoder.encode(newPassword));
 
         userRepository.save(user);
+        refreshTokens.revokeAllForUser(userId);
     }
 }

@@ -33,7 +33,7 @@ public class RecalculateTrendingUseCase {
         this.clock = clock;
     }
 
-    public int execute() {
+    public synchronized int execute() {
         LocalDate date = LocalDate.now(clock);
         LocalDateTime currentTo = date.atStartOfDay();
         var scoresByTitle = new java.util.HashMap<String, EnumMap<TrendWindow, TrendScore>>();

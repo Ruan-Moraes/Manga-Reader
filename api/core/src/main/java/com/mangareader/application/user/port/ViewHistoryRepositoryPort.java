@@ -1,5 +1,6 @@
 package com.mangareader.application.user.port;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +15,8 @@ public interface ViewHistoryRepositoryPort {
     Page<ViewHistory> findByUserIdOrderByViewedAtDesc(String userId, Pageable pageable);
 
     Optional<ViewHistory> findByUserIdAndTitleId(String userId, String titleId);
+
+    List<ViewHistory> findAllByUserId(String userId);
 
     ViewHistory save(ViewHistory viewHistory);
 

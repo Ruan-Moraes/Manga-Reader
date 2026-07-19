@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.persistence.mongo.adapter;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -28,6 +29,11 @@ public class ViewHistoryRepositoryAdapter implements ViewHistoryRepositoryPort {
     @Override
     public Optional<ViewHistory> findByUserIdAndTitleId(String userId, String titleId) {
         return repository.findByUserIdAndTitleId(userId, titleId);
+    }
+
+    @Override
+    public List<ViewHistory> findAllByUserId(String userId) {
+        return repository.findAllByUserIdOrderByViewedAtDesc(userId);
     }
 
     @Override

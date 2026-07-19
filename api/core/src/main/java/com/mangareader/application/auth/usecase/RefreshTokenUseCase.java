@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  * a família inteira é revogada, encerrando a sessão em todos os portadores.
  */
 @Service
-@Transactional
+@Transactional(noRollbackFor = RefreshTokenUseCase.SessionRevokedException.class)
 @RequiredArgsConstructor
 public class RefreshTokenUseCase {
     private final TokenPort tokenPort;
@@ -41,7 +41,9 @@ public class RefreshTokenUseCase {
 
         // Assinatura/expiração do JWT e claim type — um access token válido
         // não pode ser usado como refresh.
-        if (!tokenPort.isTokenValid(token) || !"refresh".equals(tokenPort.extractType(token))) {
+        if (!tokenPort.isTokenValid(token)
+                || !"refresh".equals(tokenPort.extractType(token))
+                || !hasUuidTokenId(token)) {
             throw unauthorized();
         }
 
@@ -52,7 +54,7 @@ public class RefreshTokenUseCase {
             // Reuso de token rotacionado: derruba a sessão inteira.
             refreshTokenRepository.revokeFamily(stored.getFamilyId());
 
-            throw unauthorized();
+            throw sessionRevoked();
         }
 
         if (stored.isExpired(LocalDateTime.now())) {
@@ -64,7 +66,17 @@ public class RefreshTokenUseCase {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        refreshTokenRepository.revoke(stored);
+        if (user.isBanned() || user.isDeactivated()) {
+            refreshTokenRepository.revokeFamily(stored.getFamilyId());
+
+            throw sessionRevoked();
+        }
+
+        if (!refreshTokenRepository.revokeIfActive(stored)) {
+            refreshTokenRepository.revokeFamily(stored.getFamilyId());
+
+            throw sessionRevoked();
+        }
 
         String newAccessToken = tokenPort.generateAccessToken(
                 user.getId(), user.getEmail(), user.getRole().name()
@@ -84,5 +96,30 @@ public class RefreshTokenUseCase {
         return new BusinessRuleException(
                 "Refresh token inválido ou expirado.", 401, ApiErrorCode.AUTH_REFRESH_TOKEN_EXPIRED
         );
+    }
+
+    private static SessionRevokedException sessionRevoked() {
+        return new SessionRevokedException();
+    }
+
+    private boolean hasUuidTokenId(String token) {
+        try {
+            UUID.fromString(tokenPort.extractTokenId(token));
+
+            return true;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    /** Mantém a revogação da família commitada mesmo com a resposta 401. */
+    static final class SessionRevokedException extends BusinessRuleException {
+        private SessionRevokedException() {
+            super(
+                    "Refresh token inválido ou expirado.",
+                    401,
+                    ApiErrorCode.AUTH_REFRESH_TOKEN_EXPIRED
+            );
+        }
     }
 }

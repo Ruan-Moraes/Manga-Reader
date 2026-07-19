@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.application.manga.service.AdultContentAccessPolicy;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,8 +18,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GetTitlesUseCase {
     private final TitleRepositoryPort titleRepository;
+    private final AdultContentAccessPolicy adultContentAccessPolicy;
 
     public Page<Title> execute(Pageable pageable) {
-        return titleRepository.findAll(pageable);
+        return execute(pageable, null);
+    }
+
+    public Page<Title> execute(Pageable pageable, UUID userId) {
+        return adultContentAccessPolicy.mustExcludeAdult(userId)
+                ? titleRepository.findAllExcludingAdult(pageable)
+                : titleRepository.findAll(pageable);
     }
 }

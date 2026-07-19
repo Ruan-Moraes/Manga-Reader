@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("RemoveFromLibraryUseCase")
@@ -19,6 +20,9 @@ class RemoveFromLibraryUseCaseTest {
 
     @Mock
     private LibraryRepositoryPort libraryRepository;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private RemoveFromLibraryUseCase removeFromLibraryUseCase;

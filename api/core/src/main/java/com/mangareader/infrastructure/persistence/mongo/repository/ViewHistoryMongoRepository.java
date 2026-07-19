@@ -1,5 +1,6 @@
 package com.mangareader.infrastructure.persistence.mongo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ public interface ViewHistoryMongoRepository extends MongoRepository<ViewHistory,
     Page<ViewHistory> findByUserIdOrderByViewedAtDesc(String userId, Pageable pageable);
 
     Optional<ViewHistory> findByUserIdAndTitleId(String userId, String titleId);
+
+    List<ViewHistory> findAllByUserIdOrderByViewedAtDesc(String userId);
 
     void deleteAllByUserId(String userId);
 }

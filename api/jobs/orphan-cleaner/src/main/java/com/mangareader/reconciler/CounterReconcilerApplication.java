@@ -2,6 +2,7 @@ package com.mangareader.reconciler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * </ul>
  */
 @SpringBootApplication
+@ConfigurationPropertiesScan
 @EnableScheduling
 public class CounterReconcilerApplication {
     public static void main(String[] args) {

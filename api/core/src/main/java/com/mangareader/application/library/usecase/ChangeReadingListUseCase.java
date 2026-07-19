@@ -11,6 +11,8 @@ import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class ChangeReadingListUseCase {
     private final LibraryRepositoryPort libraryRepository;
     private final EventPublisherPort eventPublisher;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     public record ChangeListInput(UUID userId, String titleId, ReadingListType newList) {}
 
@@ -35,6 +38,8 @@ public class ChangeReadingListUseCase {
         saved.setList(input.newList());
 
         SavedManga updated = libraryRepository.save(saved);
+        behaviorEventRecorder.record(input.userId(), BehaviorEventType.LIBRARY_LIST_CHANGED,
+                input.titleId(), null, previousList.name() + "_TO_" + input.newList().name());
 
         if (input.newList() == ReadingListType.CONCLUIDO && previousList != ReadingListType.CONCLUIDO) {
             eventPublisher.publish("activity.title-completed", new TitleCompletedEvent(

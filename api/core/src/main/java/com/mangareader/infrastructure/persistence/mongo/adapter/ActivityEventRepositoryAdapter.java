@@ -1,5 +1,7 @@
 package com.mangareader.infrastructure.persistence.mongo.adapter;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -34,6 +36,11 @@ public class ActivityEventRepositoryAdapter implements ActivityEventRepositoryPo
     }
 
     @Override
+    public List<ActivityEvent> findAllByUserId(String userId) {
+        return repository.findAllByUserIdOrderByOccurredAtDesc(userId);
+    }
+
+    @Override
     public boolean hide(String eventId, String userId) {
         Query query = new Query(Criteria.where("id").is(eventId).and("userId").is(userId));
         Update update = new Update().set("hidden", true);
@@ -41,5 +48,10 @@ public class ActivityEventRepositoryAdapter implements ActivityEventRepositoryPo
         var result = mongoTemplate.updateFirst(query, update, ActivityEvent.class);
 
         return result.getModifiedCount() > 0;
+    }
+
+    @Override
+    public void deleteAllByUserId(String userId) {
+        repository.deleteAllByUserId(userId);
     }
 }

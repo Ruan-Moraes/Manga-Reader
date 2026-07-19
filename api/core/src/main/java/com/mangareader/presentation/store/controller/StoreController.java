@@ -61,7 +61,7 @@ public class StoreController {
     ) {
         var result = getStoresByTitleIdUseCase.execute(titleId, pageable);
 
-        var mapped = result.map(store -> storeMapper.toResponse(store, titleId));
+        var mapped = result.map(storeMapper::toResponse);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }

@@ -18,6 +18,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.mongodb.client.MongoClients;
+import com.mangareader.testing.mongo.Mongo8TestContainerFactory;
 
 /**
  * Integração (Postgres + Mongo via TestContainers) da limpeza de órfãos cross-DB:
@@ -35,7 +36,7 @@ class OrphanTitleRefReconcilerTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17-alpine");
 
     @Container
-    static MongoDBContainer mongo = new MongoDBContainer("mongo:8.0");
+    static MongoDBContainer mongo = Mongo8TestContainerFactory.create();
 
     static JdbcTemplate jdbc;
     static MongoTemplate mongoTemplate;

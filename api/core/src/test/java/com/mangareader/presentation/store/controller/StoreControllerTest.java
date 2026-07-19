@@ -26,6 +26,7 @@ import com.mangareader.application.store.usecase.GetStoreByIdUseCase;
 import com.mangareader.application.store.usecase.GetStoresByTitleIdUseCase;
 import com.mangareader.application.store.usecase.GetStoresUseCase;
 import com.mangareader.domain.store.entity.Store;
+import com.mangareader.domain.store.entity.StoreTitle;
 import com.mangareader.domain.store.valueobject.StoreAvailability;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 import com.mangareader.application.auth.port.TokenPort;
@@ -70,6 +71,14 @@ class StoreControllerTest {
                 .website("https://example.com")
                 .availability(StoreAvailability.IN_STOCK)
                 .rating(4.5)
+                .build();
+    }
+
+    private StoreTitle buildStoreTitle(String titleId, String name) {
+        return StoreTitle.builder()
+                .store(buildStore(UUID.randomUUID(), name))
+                .titleId(titleId)
+                .url("https://example.com/" + name.toLowerCase().replace(" ", "-"))
                 .build();
     }
 
@@ -142,17 +151,18 @@ class StoreControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com stores paginadas para o título")
         void deveRetornar200ComStores() throws Exception {
-            var stores = List.of(
-                    buildStore(UUID.randomUUID(), "Amazon"),
-                    buildStore(UUID.randomUUID(), "Comixology")
+            var storeTitles = List.of(
+                    buildStoreTitle("507f1f77bcf86cd799439011", "Amazon"),
+                    buildStoreTitle("507f1f77bcf86cd799439011", "Comixology")
             );
             when(getStoresByTitleIdUseCase.execute(any(String.class), any(Pageable.class)))
-                    .thenReturn(new PageImpl<>(stores));
+                    .thenReturn(new PageImpl<>(storeTitles));
 
             mockMvc.perform(get("/api/stores/title/507f1f77bcf86cd799439011"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.content.length()").value(2));
+                    .andExpect(jsonPath("$.data.content.length()").value(2))
+                    .andExpect(jsonPath("$.data.content[0].purchaseUrl").value("https://example.com/amazon"));
         }
 
         @Test

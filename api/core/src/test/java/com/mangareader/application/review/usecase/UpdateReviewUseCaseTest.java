@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.review.usecase.UpdateReviewUseCase.UpdateReviewInput;
 import com.mangareader.application.shared.event.RatingEvent;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.domain.review.entity.Review;
 import com.mangareader.shared.exception.BusinessRuleException;
@@ -36,6 +37,9 @@ class UpdateRatingUseCaseTest {
 
     @Mock
     private EventPublisherPort eventPublisher;
+
+    @Mock
+    private CacheInvalidationPort cacheInvalidation;
 
     @InjectMocks
     private UpdateReviewUseCase updateRatingUseCase;

@@ -2,13 +2,13 @@ package com.mangareader.application.review.usecase;
 
 import java.util.UUID;
 
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.shared.event.RatingEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.review.entity.Review;
 import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.exception.BusinessRuleException;
@@ -25,8 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class DeleteReviewUseCase {
     private final ReviewRepositoryPort reviewRepository;
     private final EventPublisherPort eventPublisher;
+    private final CacheInvalidationPort cacheInvalidation;
 
-    @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
     public void execute(String reviewId, UUID userId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Review", "id", reviewId));
@@ -37,5 +37,6 @@ public class DeleteReviewUseCase {
 
         reviewRepository.deleteById(reviewId);
         eventPublisher.publish("rating.deleted", new RatingEvent(review.getTitleId(), userId.toString()));
+        cacheInvalidation.evictAfterCommit(CacheNames.RATING_AVERAGE, review.getTitleId());
     }
 }

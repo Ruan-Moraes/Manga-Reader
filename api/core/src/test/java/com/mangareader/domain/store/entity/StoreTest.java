@@ -93,14 +93,15 @@ class StoreTest {
         }
 
         @Test
-        @DisplayName("StoreTitle deve suportar URL opcional")
-        void storeTitleShouldSupportOptionalUrl() {
+        @DisplayName("StoreTitle deve manter a URL de compra obrigatória")
+        void storeTitleShouldKeepPurchaseUrl() {
             StoreTitle st = StoreTitle.builder()
                     .titleId("title-1")
+                    .url("https://store.example/title-1")
                     .build();
 
             assertThat(st.getTitleId()).isNotNull();
-            assertThat(st.getUrl()).isNull();
+            assertThat(st.getUrl()).isEqualTo("https://store.example/title-1");
         }
     }
 

@@ -1,4 +1,4 @@
-# Rating Aggregator
+# Rating Aggregator — `api/jobs/rating-aggregator`
 
 Serviço dedicado de **agregação de avaliações** da plataforma Manga Reader. Roda fora
 da API principal: mantém a coleção `reviews_aggregate` sempre atualizada por dois
@@ -28,7 +28,7 @@ Por que um serviço separado (e não dentro da API):
   request da API.
 - **Responsabilidade única** — a API persiste as avaliações individuais; este serviço
   consolida a visão agregada.
-- Espelha o serviço irmão [`orphan-cleaner`](../orphan-cleaner) (mesmo padrão
+- Espelha o serviço irmão [`orphan-cleaner`](../orphan-cleaner/README.md) (mesmo padrão
   de agendamento + endpoint manual).
 
 ---
@@ -105,8 +105,9 @@ Lombok. Testes: JUnit 5, Mockito, Testcontainers (Mongo).
 
 ## Configuração
 
-Definida em `src/main/resources/application.yml`; sobrescrita por env (relaxed binding)
-ou por `.env` local em produção.
+Definida em [`src/main/resources/application.yml`](src/main/resources/application.yml)
+e sobrescrita por variáveis de ambiente via relaxed binding. Um arquivo `.env`
+opcional no diretório de execução também é carregado como properties.
 
 | Propriedade                      | Env                          | Default                                 |
 |----------------------------------|------------------------------|-----------------------------------------|
@@ -116,18 +117,26 @@ ou por `.env` local em produção.
 | `spring.rabbitmq.port`           | `SPRING_RABBITMQ_PORT`       | `5672`                                  |
 | `spring.rabbitmq.username`       | `SPRING_RABBITMQ_USERNAME`   | `manga`                                 |
 | `spring.rabbitmq.password`       | `SPRING_RABBITMQ_PASSWORD`   | `manga_secret`                          |
-| `aggregator.reconciliation.cron` | —                            | `0 0 3 * * *` (diário às 03:00)        |
+| `aggregator.reconciliation.cron` | `AGGREGATOR_RECONCILIATION_CRON` | `0 0 3 * * *` (diário às 03:00)     |
 | `aggregator.admin.token`         | `AGGREGATOR_ADMIN_TOKEN`     | *(vazio → endpoint manual desativado)*  |
 
 ---
 
 ## Execução
 
-Pré-requisito: MongoDB + RabbitMQ no ar (suba a infra pelo `api/core`:
-`cd ../../core && mvn spring-boot:run`, ou só os containers do compose).
+Pré-requisitos: Java 23, Maven 3.9.x, MongoDB e RabbitMQ. Para subir a
+infraestrutura pelo core, execute em outro terminal:
+
+```bash
+cd api/core
+./mvnw spring-boot:run
+```
+
+A partir da raiz do repositório:
 
 ```bash
 # Local (dev)
+cd api/jobs/rating-aggregator
 mvn spring-boot:run
 
 # Build do JAR
@@ -135,7 +144,8 @@ mvn package -DskipTests
 java -jar target/rating-aggregator-0.0.1-SNAPSHOT.jar
 
 # Docker (produção) — sobe junto da stack
-cd ../../core && docker compose -f docker-compose.prod.yml up -d rating-aggregator
+cd ../..
+docker compose -f docker-compose.prod.yml up -d rating-aggregator
 ```
 
 ### Testes
@@ -153,7 +163,8 @@ mvn test                                                                        
 |--------|--------------------|------------------------------------------------------------------------------|
 | `POST` | `/admin/reconcile` | Gatilho **manual** de reconciliação total. Exige header `X-Admin-Token` = `aggregator.admin.token`. Sem token configurado → `503`; token inválido → `401`. Responde `200` com `{"reconciled": N}`. |
 | `GET`  | `/actuator/health` | Health check.                                                                |
-| `GET`  | `/actuator/info\|metrics` | Info e métricas.                                                        |
+| `GET`  | `/actuator/info` | Informações do serviço.                                                        |
+| `GET`  | `/actuator/metrics` | Métricas do Actuator.                                                       |
 
 A comparação do token é feita em **tempo constante** (`MessageDigest.isEqual`) para
 evitar *timing attack*.
@@ -170,3 +181,11 @@ curl -X POST http://localhost:8081/admin/reconcile -H "X-Admin-Token: $AGGREGATO
 `aggregator.reconciliation.cron` (padrão **diário às 03:00**) e loga quantos títulos
 foram recalculados. Sendo idempotente, a frequência é segura de ajustar conforme a
 tolerância a divergências e o tamanho da coleção `reviews`.
+
+## Links relacionados
+
+- [Visão do backend](../../README.md)
+- [API principal](../../core/README.md)
+- [Orphan Cleaner](../orphan-cleaner/README.md)
+- [Trending Aggregator](../trending-aggregator/README.md)
+- [Arquitetura](../../../docs/architecture.md)

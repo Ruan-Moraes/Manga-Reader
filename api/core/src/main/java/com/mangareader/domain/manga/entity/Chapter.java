@@ -1,11 +1,16 @@
 package com.mangareader.domain.manga.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mangareader.shared.domain.i18n.LocalizedString;
+import com.mangareader.domain.manga.valueobject.ChapterStatus;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +28,8 @@ import lombok.Setter;
  * resolvido pelo locale do request na API.
  */
 @Document(collection = "chapters")
-@CompoundIndex(name = "idx_chapter_title_number", def = "{'titleId': 1, 'number': 1}", unique = true)
+@CompoundIndex(name = "idx_chapter_title_number_active", def = "{'titleId': 1, 'number': 1}",
+        unique = true, partialFilter = "{'deleted': false}")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -40,4 +46,31 @@ public class Chapter {
     private LocalizedString title;
     private String releaseDate;
     private String pages;
+
+    @Builder.Default
+    private int displayOrder = 0;
+    private String description;
+    @Builder.Default
+    private ChapterStatus status = ChapterStatus.PUBLISHED;
+    @Builder.Default
+    private List<ChapterPage> pageItems = new ArrayList<>();
+    private Instant scheduledAt;
+    private Instant publishedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
+    private Instant deletedAt;
+    @Builder.Default
+    private boolean deleted = false;
+    @Version
+    private Long version;
+
+    public int readyPagesCount() {
+        return (int) pageItems.stream().filter(page -> "ready".equalsIgnoreCase(page.getProcessingStatus())).count();
+    }
+
+    public boolean hasReadyPages() {
+        return readyPagesCount() > 0 || (pages != null && !pages.isBlank() && !"0".equals(pages));
+    }
 }

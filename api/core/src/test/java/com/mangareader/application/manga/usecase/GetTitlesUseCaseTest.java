@@ -26,6 +26,9 @@ class GetTitlesUseCaseTest {
     @Mock
     private TitleRepositoryPort titleRepository;
 
+    @Mock
+    private com.mangareader.application.manga.service.AdultContentAccessPolicy adultContentAccessPolicy;
+
     @InjectMocks
     private GetTitlesUseCase getTitlesUseCase;
 

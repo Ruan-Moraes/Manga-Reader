@@ -86,7 +86,8 @@ public final class UserMapper {
                         profile.commentVisibility().name(),
                         profile.viewHistoryVisibility().name(),
                         profile.libraryVisibility().name(),
-                        profile.adultContentPreference().name())
+                        profile.adultContentPreference().name(),
+                        profile.behaviorAnalyticsEnabled())
                 : null;
 
         return new EnrichedProfileResponse(
@@ -127,6 +128,7 @@ public final class UserMapper {
                 rec.getTitleId(),
                 rec.getTitleName(),
                 rec.getTitleCover(),
+                rec.isAdult(),
                 rec.getPosition()
         );
     }
@@ -145,6 +147,7 @@ public final class UserMapper {
                 vh.getTitleId(),
                 vh.getTitleName(),
                 vh.getTitleCover(),
+                vh.isAdult(),
                 vh.getViewedAt() != null ? vh.getViewedAt().toString() : null
         );
     }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,7 @@ import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.presentation.auth.dto.AuthResponse;
 import com.mangareader.presentation.auth.dto.ForgotPasswordRequest;
+import com.mangareader.presentation.auth.dto.ForgotPasswordResponse;
 import com.mangareader.presentation.auth.dto.RefreshTokenRequest;
 import com.mangareader.presentation.auth.dto.ResetPasswordRequest;
 import com.mangareader.presentation.auth.dto.SignInRequest;
@@ -51,6 +53,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Autenticação e gerenciamento de sessão")
 public class AuthController {
+    public static final String REFRESH_TRANSPORT_HEADER = "X-Refresh-Token-Transport";
+    private static final String BODY_TRANSPORT = "body";
+
     private final SignInUseCase signInUseCase;
     private final SignUpUseCase signUpUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
@@ -64,7 +69,9 @@ public class AuthController {
     @PostMapping("/sign-in")
     @Operation(summary = "Login", description = "Autentica o usuário e retorna tokens JWT")
     public ResponseEntity<ApiResponse<AuthResponse>> signIn(
-            @Valid @RequestBody SignInRequest request
+            @Valid @RequestBody SignInRequest request,
+            @RequestHeader(value = REFRESH_TRANSPORT_HEADER, defaultValue = "cookie")
+            String refreshTransport
     ) {
         var input = new SignInUseCase.SignInInput(request.email(), request.password());
 
@@ -72,7 +79,7 @@ public class AuthController {
 
         var response = new AuthResponse(
                 output.accessToken(),
-                output.refreshToken(),
+                bodyTransport(refreshTransport) ? output.refreshToken() : null,
                 output.userId(),
                 output.name(),
                 output.email(),
@@ -89,7 +96,9 @@ public class AuthController {
     @PostMapping("/sign-up")
     @Operation(summary = "Cadastro", description = "Cria um novo usuário e retorna tokens JWT")
     public ResponseEntity<ApiResponse<AuthResponse>> signUp(
-            @Valid @RequestBody SignUpRequest request
+            @Valid @RequestBody SignUpRequest request,
+            @RequestHeader(value = REFRESH_TRANSPORT_HEADER, defaultValue = "cookie")
+            String refreshTransport
     ) {
         var input = new SignUpUseCase.SignUpInput(
                 request.name(), request.email(), request.password()
@@ -99,7 +108,7 @@ public class AuthController {
 
         var response = new AuthResponse(
                 output.accessToken(),
-                output.refreshToken(),
+                bodyTransport(refreshTransport) ? output.refreshToken() : null,
                 output.userId(),
                 output.name(),
                 output.email(),
@@ -125,7 +134,7 @@ public class AuthController {
 
         var response = new AuthResponse(
                 output.accessToken(),
-                output.refreshToken(),
+                cookieToken == null || cookieToken.isBlank() ? output.refreshToken() : null,
                 null, null, null, null, null, null
         );
 
@@ -166,6 +175,10 @@ public class AuthController {
         );
     }
 
+    private static boolean bodyTransport(String refreshTransport) {
+        return BODY_TRANSPORT.equalsIgnoreCase(refreshTransport);
+    }
+
     @GetMapping("/me")
     @Operation(summary = "Usuário atual", description = "Retorna os dados do usuário autenticado")
     public ResponseEntity<ApiResponse<AuthResponse>> getCurrentUser(Authentication auth) {
@@ -192,14 +205,15 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     @Operation(summary = "Esqueci a senha", description = "Envia token de redefinição de senha (logado no console em dev)")
-    public ResponseEntity<ApiResponse<String>> forgotPassword(
+    public ResponseEntity<ApiResponse<ForgotPasswordResponse>> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest request
     ) {
-        forgotPasswordUseCase.execute(request.email());
+        var expiration = forgotPasswordUseCase.execute(request.email());
 
-        return ResponseEntity.ok(ApiResponse.success(
-                "Se o email estiver cadastrado, um link de redefinição será enviado."
-        ));
+        return ResponseEntity.ok(ApiResponse.success(new ForgotPasswordResponse(
+                "Se o email estiver cadastrado, um link de redefinição será enviado.",
+                expiration.toSeconds()
+        )));
     }
 
     @PostMapping("/reset-password")

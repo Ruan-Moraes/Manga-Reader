@@ -10,6 +10,7 @@ import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
+import com.mangareader.shared.dto.ApiErrorCode;
 import com.mangareader.shared.exception.BusinessRuleException;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,12 @@ public class SignInUseCase {
 
         if (!passwordEncoder.matches(input.password(), user.getPasswordHash())) {
             throw new BusinessRuleException("E-mail ou senha incorretos.", 401);
+        }
+
+        if (user.isBanned() || user.isDeactivated()) {
+            throw new BusinessRuleException(
+                    "Conta indisponível.", 403, ApiErrorCode.AUTH_ACCESS_DENIED
+            );
         }
 
         String accessToken = tokenPort.generateAccessToken(

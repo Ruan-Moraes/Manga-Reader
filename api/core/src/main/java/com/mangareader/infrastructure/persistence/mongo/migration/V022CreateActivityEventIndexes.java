@@ -15,6 +15,7 @@ import io.mongock.api.annotations.RollbackExecution;
  */
 @ChangeUnit(id = "V022-create-activity-event-indexes", order = "022", author = "mangareader")
 public class V022CreateActivityEventIndexes {
+    private static final String INDEX_NAME = "idx_activity_events_user_hidden_occurred";
     private final MongoTemplate mongoTemplate;
 
     public V022CreateActivityEventIndexes(MongoTemplate mongoTemplate) {
@@ -31,7 +32,7 @@ public class V022CreateActivityEventIndexes {
         compound.put("occurredAt", -1);
 
         ops.ensureIndex(new CompoundIndexDefinition(compound)
-                .named("idx_activity_events_user_hidden_occurred"));
+                .named(INDEX_NAME));
     }
 
     @RollbackExecution
@@ -39,7 +40,8 @@ public class V022CreateActivityEventIndexes {
         var ops = mongoTemplate.indexOps("activity_events");
 
         ops.getIndexInfo().stream()
-                .filter(idx -> !idx.getName().equals("_id_"))
-                .forEach(idx -> ops.dropIndex(idx.getName()));
+                .filter(idx -> INDEX_NAME.equals(idx.getName()))
+                .findFirst()
+                .ifPresent(idx -> ops.dropIndex(INDEX_NAME));
     }
 }

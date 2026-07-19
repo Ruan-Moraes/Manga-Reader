@@ -1,9 +1,11 @@
 package com.mangareader.infrastructure.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,6 +91,32 @@ class AuthSecurityIntegrationTest {
     }
 
     @Nested
+    @DisplayName("Acesso ao feed de atividades")
+    class ActivityFeedAccessTests {
+
+        @Test
+        @DisplayName("GET público deve aceitar visitante anônimo")
+        void publicActivityFeedShouldAllowAnonymousVisitor() throws Exception {
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Activity User", "activity-public@test.com", "senha123")))
+                    .andReturn();
+            String userId = extractData(signUpResult).get("userId").asText();
+
+            mockMvc.perform(get("/api/users/{id}/activity-feed", userId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
+        }
+
+        @Test
+        @DisplayName("DELETE deve exigir autenticação")
+        void hideActivityShouldRequireAuthentication() throws Exception {
+            mockMvc.perform(delete("/api/users/me/activity-feed/{eventId}", "event-1"))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
     @DisplayName("Fluxo Completo (Happy Path)")
     @TestMethodOrder(OrderAnnotation.class)
     class HappyPathTests {
@@ -97,6 +125,7 @@ class AuthSecurityIntegrationTest {
         @DisplayName("Sign-up deve retornar 201 com tokens e dados do usuario")
         void signUpShouldReturn201WithTokens() throws Exception {
             MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Ruan Test", "ruan@happypath.com", "senha123")))
                     .andExpect(status().isCreated())
@@ -144,6 +173,7 @@ class AuthSecurityIntegrationTest {
                     .content(signUpJson("Login User", "login@test.com", "senha789")));
 
             MvcResult result = mockMvc.perform(post(SIGN_IN_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signInJson("login@test.com", "senha789")))
                     .andExpect(status().isOk())
@@ -166,6 +196,7 @@ class AuthSecurityIntegrationTest {
         void meShouldReturnUserDataWithValidToken() throws Exception {
             // Cadastra e pega o token
             MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Me User", "me@test.com", "senha000")))
                     .andReturn();
@@ -187,6 +218,7 @@ class AuthSecurityIntegrationTest {
         void refreshShouldReturnNewTokens() throws Exception {
             // Cadastra e pega o refresh token
             MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Refresh User", "refresh@test.com", "senhaRefresh")))
                     .andReturn();
@@ -213,6 +245,7 @@ class AuthSecurityIntegrationTest {
         @DisplayName("Novo access token do refresh deve funcionar no /me")
         void newAccessTokenFromRefreshShouldWorkOnMe() throws Exception {
             MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Refresh Me User", "refreshme@test.com", "senhaRM")))
                     .andReturn();
@@ -241,6 +274,7 @@ class AuthSecurityIntegrationTest {
 
         private String signUpAndGetRefresh(String email) throws Exception {
             MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Rotation User", email, "senhaRot")))
                     .andReturn();
@@ -296,6 +330,7 @@ class AuthSecurityIntegrationTest {
         @DisplayName("Access token nao deve servir como refresh")
         void accessTokenShouldNotWorkAsRefresh() throws Exception {
             MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Access As Refresh", "accessrefresh@test.com", "senhaAR")))
                     .andReturn();
@@ -421,7 +456,7 @@ class AuthSecurityIntegrationTest {
     @DisplayName("Validacao de Claims JWT")
     class JwtClaimsTests {
         @Test
-        @DisplayName("Access token deve conter userId, email, role e type null")
+        @DisplayName("Access token deve conter userId, email, role e type=access")
         void accessTokenShouldHaveCorrectClaims() throws Exception {
             MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -436,13 +471,14 @@ class AuthSecurityIntegrationTest {
             assertThat(tokenPort.extractUserId(accessToken)).isEqualTo(java.util.UUID.fromString(userId));
             assertThat(tokenPort.extractEmail(accessToken)).isEqualTo("claims@test.com");
             assertThat(tokenPort.extractRole(accessToken)).isEqualTo("MEMBER");
-            assertThat(tokenPort.extractType(accessToken)).isNull();
+            assertThat(tokenPort.extractType(accessToken)).isEqualTo("access");
         }
 
         @Test
         @DisplayName("Refresh token deve conter userId e type=refresh")
         void refreshTokenShouldHaveCorrectClaims() throws Exception {
             MvcResult result = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(signUpJson("Refresh Claims", "refreshclaims@test.com", "senhaRC")))
                     .andReturn();
@@ -454,6 +490,8 @@ class AuthSecurityIntegrationTest {
 
             assertThat(tokenPort.extractUserId(refreshToken)).isEqualTo(java.util.UUID.fromString(userId));
             assertThat(tokenPort.extractType(refreshToken)).isEqualTo("refresh");
+            assertThatCode(() -> java.util.UUID.fromString(tokenPort.extractTokenId(refreshToken)))
+                    .doesNotThrowAnyException();
         }
     }
 

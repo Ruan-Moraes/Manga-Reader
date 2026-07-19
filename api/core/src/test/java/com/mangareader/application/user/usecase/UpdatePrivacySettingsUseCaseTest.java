@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.user.port.UserProfileSettingsRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
-import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.application.user.service.UserProfileSettingsResolver;
 import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase.PrivacyInput;
 import com.mangareader.domain.user.entity.User;
@@ -28,6 +27,7 @@ import com.mangareader.domain.user.entity.UserProfileSettings;
 import com.mangareader.domain.user.valueobject.AdultContentPreference;
 import com.mangareader.domain.user.valueobject.VisibilitySetting;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.usecase.ClearBehaviorHistoryUseCase;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UpdatePrivacySettingsUseCase")
@@ -43,7 +43,10 @@ class UpdatePrivacySettingsUseCaseTest {
     private UserProfileSettingsResolver profileSettingsResolver;
 
     @Mock
-    private ViewHistoryRepositoryPort viewHistoryRepository;
+    private ClearTrackedHistoryUseCase clearTrackedHistoryUseCase;
+
+    @Mock
+    private ClearBehaviorHistoryUseCase clearBehaviorHistoryUseCase;
 
     @InjectMocks
     private UpdatePrivacySettingsUseCase updatePrivacySettingsUseCase;
@@ -137,6 +140,21 @@ class UpdatePrivacySettingsUseCaseTest {
     class DoNotTrackDeletaHistorico {
 
         @Test
+        @DisplayName("Deve apagar analytics ao desativar a preferência")
+        void deveApagarAnalyticsAoDesativar() {
+            User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            updatePrivacySettingsUseCase.execute(new PrivacyInput(USER_ID, null, null, null, null, false));
+
+            verify(clearBehaviorHistoryUseCase).execute(USER_ID.toString());
+            assertThat(settings.isBehaviorAnalyticsEnabled()).isFalse();
+        }
+
+        @Test
         @DisplayName("Deve deletar todo o histórico quando viewHistoryVisibility muda para DO_NOT_TRACK")
         void deveDeletarHistoricoQuandoDoNotTrack() {
             User user = buildUser();
@@ -148,7 +166,7 @@ class UpdatePrivacySettingsUseCaseTest {
             var input = new PrivacyInput(USER_ID, null, VisibilitySetting.DO_NOT_TRACK, null, null);
             updatePrivacySettingsUseCase.execute(input);
 
-            verify(viewHistoryRepository).deleteAllByUserId(USER_ID.toString());
+            verify(clearTrackedHistoryUseCase).execute(USER_ID.toString());
         }
 
         @Test
@@ -163,13 +181,43 @@ class UpdatePrivacySettingsUseCaseTest {
             var input = new PrivacyInput(USER_ID, null, VisibilitySetting.PRIVATE, null, null);
             updatePrivacySettingsUseCase.execute(input);
 
-            verify(viewHistoryRepository, never()).deleteAllByUserId(any());
+            verify(clearTrackedHistoryUseCase, never()).execute(any());
+        }
+
+        @Test
+        @DisplayName("Deve limpar resíduos antes de sair de DO_NOT_TRACK")
+        void deveLimparAoSairDeDoNotTrack() {
+            User user = buildUser();
+            UserProfileSettings settings = buildSettings(user);
+            settings.setViewHistoryVisibility(VisibilitySetting.DO_NOT_TRACK);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(profileSettingsResolver.getOrCreate(user)).thenReturn(settings);
+            when(profileSettingsRepository.save(any(UserProfileSettings.class))).thenAnswer(inv -> inv.getArgument(0));
+
+            var input = new PrivacyInput(USER_ID, null, VisibilitySetting.PUBLIC, null, null);
+            updatePrivacySettingsUseCase.execute(input);
+
+            verify(clearTrackedHistoryUseCase).execute(USER_ID.toString());
+            assertThat(settings.getViewHistoryVisibility()).isEqualTo(VisibilitySetting.PUBLIC);
         }
     }
 
     @Nested
     @DisplayName("Cenários de erro")
     class Erro {
+
+        @Test
+        void rejectsContradictoryTrackingSettingsBeforeDeletingHistory() {
+            var input = new PrivacyInput(USER_ID, null, VisibilitySetting.DO_NOT_TRACK,
+                    null, null, true);
+
+            assertThatThrownBy(() -> updatePrivacySettingsUseCase.execute(input))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+            verify(clearTrackedHistoryUseCase, never()).execute(any());
+            verify(clearBehaviorHistoryUseCase, never()).execute(any());
+            verify(userRepository, never()).findById(any());
+        }
 
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando usuário não existe")

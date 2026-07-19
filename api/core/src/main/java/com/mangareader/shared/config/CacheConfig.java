@@ -1,6 +1,5 @@
 package com.mangareader.shared.config;
 
-import java.time.Duration;
 import java.util.Map;
 
 import org.springframework.cache.annotation.EnableCaching;
@@ -30,7 +29,7 @@ import com.mangareader.shared.constant.CacheNames;
 @Profile("!test")
 public class CacheConfig {
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory, CacheProperties properties) {
         var jsonSerializer = RedisSerializationContext.SerializationPair
                 .fromSerializer(redisJsonSerializer());
 
@@ -39,14 +38,14 @@ public class CacheConfig {
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(jsonSerializer)
                 .disableCachingNullValues()
-                .entryTtl(Duration.ofMinutes(5));
+                .entryTtl(properties.defaultTtl());
 
         Map<String, RedisCacheConfiguration> perCacheTtl = Map.of(
-                CacheNames.TITLE,               defaultConfig.entryTtl(Duration.ofMinutes(10)),
-                CacheNames.TAG,                 defaultConfig.entryTtl(Duration.ofMinutes(30)),
-                CacheNames.RATING_AVERAGE,      defaultConfig.entryTtl(Duration.ofMinutes(2)),
-                CacheNames.PUBLIC_STATS,        defaultConfig.entryTtl(Duration.ofMinutes(30)),
-                CacheNames.SUBSCRIPTION_PLANS,  defaultConfig.entryTtl(Duration.ofHours(1))
+                CacheNames.TITLE,               defaultConfig.entryTtl(properties.titleTtl()),
+                CacheNames.TAG,                 defaultConfig.entryTtl(properties.tagTtl()),
+                CacheNames.RATING_AVERAGE,      defaultConfig.entryTtl(properties.ratingAverageTtl()),
+                CacheNames.PUBLIC_STATS,        defaultConfig.entryTtl(properties.publicStatsTtl()),
+                CacheNames.SUBSCRIPTION_PLANS,  defaultConfig.entryTtl(properties.subscriptionPlansTtl())
         );
 
         return RedisCacheManager.builder(connectionFactory)

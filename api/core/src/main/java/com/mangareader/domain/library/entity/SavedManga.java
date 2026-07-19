@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,4 +73,8 @@ public class SavedManga {
     @Column(name = "saved_at")
     @CreationTimestamp
     private LocalDateTime savedAt;
+
+    /** Metadado resolvido em lote do Mongo; não é uma segunda fonte persistida. */
+    @Transient
+    private boolean adult;
 }

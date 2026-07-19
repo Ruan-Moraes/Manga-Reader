@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.subscription.port.SubscriptionPlanRepositoryPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.subscription.entity.SubscriptionPlan;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UpdateSubscriptionPlanUseCase {
     private final SubscriptionPlanRepositoryPort planRepository;
+    private final CacheInvalidationPort cacheInvalidation;
 
     @Transactional
     public SubscriptionPlan execute(UUID planId, Long priceInCents,
@@ -43,6 +46,8 @@ public class UpdateSubscriptionPlanUseCase {
             if (brl != null) plan.setPriceInCents(brl);
         }
 
-        return planRepository.save(plan);
+        SubscriptionPlan saved = planRepository.save(plan);
+        cacheInvalidation.clearAfterCommit(CacheNames.SUBSCRIPTION_PLANS);
+        return saved;
     }
 }

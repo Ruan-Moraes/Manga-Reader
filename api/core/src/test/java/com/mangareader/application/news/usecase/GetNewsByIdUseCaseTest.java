@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.time.Instant;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,8 +28,12 @@ class GetNewsByIdUseCaseTest {
     @Mock
     private NewsRepositoryPort newsRepository;
 
-    @InjectMocks
     private GetNewsByIdUseCase getNewsByIdUseCase;
+
+    @BeforeEach
+    void setUp() {
+        getNewsByIdUseCase = new GetNewsByIdUseCase(newsRepository);
+    }
 
     @Test
     @DisplayName("Deve retornar notícia quando encontrada")
@@ -39,6 +45,7 @@ class GetNewsByIdUseCaseTest {
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capítulo de One Piece"))
                 .category(NewsCategory.LANCAMENTOS)
                 .status(NewsStatus.PUBLISHED)
+                .publishedAt(Instant.parse("2026-01-01T00:00:00Z"))
                 .build();
         when(newsRepository.findByIdOrSlug(newsId)).thenReturn(Optional.of(newsItem));
 

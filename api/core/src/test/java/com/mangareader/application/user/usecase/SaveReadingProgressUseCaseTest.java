@@ -3,7 +3,6 @@ package com.mangareader.application.user.usecase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,13 +19,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.ReadingProgress;
 import com.mangareader.shared.domain.i18n.LocalizedString;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -129,27 +128,27 @@ class SaveReadingProgressUseCaseTest {
         verify(recordChapterReadUseCase, never()).execute(any(), any(), any());
     }
 
-    @Test
-    @DisplayName("Deve recarregar em corrida concorrente (DuplicateKeyException) sem propagar")
-    void deveRecarregarEmCorrida() {
-        stubTitleExists();
-        when(readingProgressRepository.findByUserIdAndTitleIdAndChapterNumber(USER_ID.toString(), TITLE_ID, CHAPTER))
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(ReadingProgress.builder()
-                        .id("rp-1").userId(USER_ID.toString()).titleId(TITLE_ID).chapterNumber(CHAPTER)
-                        .currentPage(5).totalPages(20).completed(false).build()));
-        when(readingProgressRepository.save(any())).thenThrow(new DuplicateKeyException("dup"));
-
-        ReadingProgress result = useCase.execute(input(5, 20, false));
-
-        assertThat(result.getId()).isEqualTo("rp-1");
-        verify(readingProgressRepository, times(2))
-                .findByUserIdAndTitleIdAndChapterNumber(eq(USER_ID.toString()), eq(TITLE_ID), eq(CHAPTER));
-    }
-
     @Nested
     @DisplayName("Validações")
     class Validacoes {
+
+        @Test
+        void rejectsCurrentPageBeyondTheChapterLength() {
+            assertThatThrownBy(() -> useCase.execute(input(21, 20, false)))
+                    .isInstanceOf(BusinessRuleException.class);
+
+            verify(titleRepository, never()).findById(any());
+            verify(readingProgressRepository, never()).save(any());
+        }
+
+        @Test
+        void rejectsCompletionBeforeTheLastPage() {
+            assertThatThrownBy(() -> useCase.execute(input(5, 20, true)))
+                    .isInstanceOf(BusinessRuleException.class);
+
+            verify(titleRepository, never()).findById(any());
+            verify(readingProgressRepository, never()).save(any());
+        }
 
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando título não existe")

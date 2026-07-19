@@ -31,9 +31,17 @@ public class GetUserActivityFeedUseCase {
     public Page<ActivityEvent> execute(UUID targetUserId, UUID viewerUserId, Pageable pageable) {
         User user = getUserProfileUseCase.execute(targetUserId);
 
-        boolean isOwner = viewerUserId != null && viewerUserId.equals(targetUserId);
+        if (user.isDeactivated()) {
+            return Page.empty(pageable);
+        }
+
         UserProfileSettings settings = profileSettingsResolver.getOrDefault(user);
 
+        if (settings.getViewHistoryVisibility() == VisibilitySetting.DO_NOT_TRACK) {
+            return Page.empty(pageable);
+        }
+
+        boolean isOwner = viewerUserId != null && viewerUserId.equals(targetUserId);
         if (!isOwner && settings.getViewHistoryVisibility() != VisibilitySetting.PUBLIC) {
             return Page.empty(pageable);
         }

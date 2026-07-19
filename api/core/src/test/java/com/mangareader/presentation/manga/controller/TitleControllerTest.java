@@ -129,7 +129,7 @@ class TitleControllerTest {
         void deveRetornar200ComTitulos() throws Exception {
             var titles = List.of(buildTitle("t1"), buildTitle("t2"));
 
-            when(getTitlesUseCase.execute(any(Pageable.class)))
+            when(getTitlesUseCase.execute(any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles"))
@@ -144,7 +144,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getTitlesUseCase.execute(any(Pageable.class)))
+            when(getTitlesUseCase.execute(any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/titles"))
@@ -159,7 +159,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com título encontrado")
         void deveRetornar200() throws Exception {
-            when(getTitleByIdUseCase.execute("t1")).thenReturn(buildTitle("t1"));
+            when(getTitleByIdUseCase.execute(eq("t1"), org.mockito.ArgumentMatchers.isNull())).thenReturn(buildTitle("t1"));
 
             mockMvc.perform(get("/api/titles/t1"))
                     .andExpect(status().isOk())
@@ -173,7 +173,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve retornar 404 quando título não encontrado")
         void deveRetornar404() throws Exception {
-            when(getTitleByIdUseCase.execute("inexistente"))
+            when(getTitleByIdUseCase.execute(eq("inexistente"), org.mockito.ArgumentMatchers.isNull()))
                     .thenThrow(new ResourceNotFoundException("Title", "id", "inexistente"));
 
             mockMvc.perform(get("/api/titles/inexistente"))
@@ -188,7 +188,7 @@ class TitleControllerTest {
         @DisplayName("Deve retornar 200 com resultados da busca")
         void deveRetornar200() throws Exception {
             var titles = List.of(buildTitle("t1"));
-            when(searchTitlesUseCase.execute(eq("Solo"), any(Pageable.class)))
+            when(searchTitlesUseCase.execute(eq("Solo"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/search").param("q", "Solo"))
@@ -200,7 +200,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com página vazia para busca sem resultados")
         void deveRetornarPaginaVazia() throws Exception {
-            when(searchTitlesUseCase.execute(eq("xyz"), any(Pageable.class)))
+            when(searchTitlesUseCase.execute(eq("xyz"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/titles/search").param("q", "xyz"))
@@ -217,7 +217,7 @@ class TitleControllerTest {
         void deveRetornar200() throws Exception {
             var titles = List.of(buildTitle("t1"));
 
-            when(getTitlesByGenreUseCase.execute(eq("Ação"), any(Pageable.class)))
+            when(getTitlesByGenreUseCase.execute(eq("Ação"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/genre/Ação"))
@@ -229,7 +229,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com página vazia para gênero sem títulos")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getTitlesByGenreUseCase.execute(eq("Terror"), any(Pageable.class)))
+            when(getTitlesByGenreUseCase.execute(eq("Terror"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/titles/genre/Terror"))
@@ -246,7 +246,7 @@ class TitleControllerTest {
         void deveRetornar200ComFiltro() throws Exception {
             var titles = List.of(buildTitle("t1"));
 
-            when(filterTitlesUseCase.execute(any(), any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/filter")
@@ -260,7 +260,7 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve usar MOST_READ como fallback para sort inválido")
         void deveUsarFallbackParaSortInvalido() throws Exception {
-            when(filterTitlesUseCase.execute(any(), any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), any(), any(), any(), eq(SortCriteria.MOST_READ), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/titles/filter").param("sort", "INVALIDO"))
@@ -273,7 +273,7 @@ class TitleControllerTest {
         void deveFiltrarPorStatusEAdult() throws Exception {
             var titles = List.of(buildTitle("t1"));
 
-            when(filterTitlesUseCase.execute(any(), eq("ONGOING"), eq(false), any(), eq(SortCriteria.MOST_READ), any(Pageable.class)))
+            when(filterTitlesUseCase.execute(any(), eq("ONGOING"), eq(false), any(), eq(SortCriteria.MOST_READ), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/filter")

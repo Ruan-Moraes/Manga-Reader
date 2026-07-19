@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mangareader.application.auth.port.TokenPort;
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
@@ -40,6 +41,9 @@ class ResetPasswordUseCaseTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private RefreshTokenRepositoryPort refreshTokens;
 
     @InjectMocks
     private ResetPasswordUseCase resetPasswordUseCase;
@@ -73,6 +77,7 @@ class ResetPasswordUseCaseTest {
             when(tokenPort.extractType(VALID_TOKEN)).thenReturn("password_reset");
             when(tokenPort.extractUserId(VALID_TOKEN)).thenReturn(USER_ID);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(tokenPort.matchesPasswordState(VALID_TOKEN, "old_hash")).thenReturn(true);
             when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn(ENCODED_NEW_PASSWORD);
 
             // Act
@@ -83,6 +88,7 @@ class ResetPasswordUseCaseTest {
             verify(userRepository).save(userCaptor.capture());
 
             assertThat(userCaptor.getValue().getPasswordHash()).isEqualTo(ENCODED_NEW_PASSWORD);
+            verify(refreshTokens).revokeAllForUser(USER_ID);
         }
     }
 
@@ -143,6 +149,23 @@ class ResetPasswordUseCaseTest {
 
             verify(passwordEncoder, never()).encode(any());
             verify(userRepository, never()).save(any());
+        }
+
+        @Test
+        void rejectsAResetTokenIssuedForAnOlderPasswordState() {
+            User user = buildUser();
+            when(tokenPort.isTokenValid(VALID_TOKEN)).thenReturn(true);
+            when(tokenPort.extractType(VALID_TOKEN)).thenReturn("password_reset");
+            when(tokenPort.extractUserId(VALID_TOKEN)).thenReturn(USER_ID);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+            when(tokenPort.matchesPasswordState(VALID_TOKEN, "old_hash")).thenReturn(false);
+
+            assertThatThrownBy(() -> resetPasswordUseCase.execute(VALID_TOKEN, NEW_PASSWORD))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .hasMessageContaining("obsoleto");
+
+            verify(passwordEncoder, never()).encode(any());
+            verify(refreshTokens, never()).revokeAllForUser(any());
         }
     }
 }

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Duration;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Import;
@@ -79,6 +80,12 @@ class AuthControllerTest {
     @MockitoBean
     private TokenPort tokenPort;
 
+    @MockitoBean
+    private com.mangareader.shared.config.AuthProperties authProperties;
+
+    @MockitoBean
+    private com.mangareader.infrastructure.security.jwt.JwtProperties jwtProperties;
+
     @Nested
     @DisplayName("POST /api/auth/sign-in")
     class SignIn {
@@ -92,6 +99,7 @@ class AuthControllerTest {
             when(signInUseCase.execute(any())).thenReturn(output);
 
             mockMvc.perform(post("/api/auth/sign-in")
+                            .header(AuthController.REFRESH_TRANSPORT_HEADER, "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
                                     {"email": "ruan@email.com", "password": "senha123"}
@@ -127,6 +135,24 @@ class AuthControllerTest {
 
             assertThat(result.getResponse().getHeader(HttpHeaders.SET_COOKIE))
                     .contains("SameSite=Strict");
+        }
+
+        @Test
+        void cookieTransportDoesNotExposeRefreshTokenInTheResponseBody() throws Exception {
+            when(signInUseCase.execute(any())).thenReturn(new SignInUseCase.SignInOutput(
+                    "access-token", "refresh-token", UUID.randomUUID().toString(),
+                    "Ruan", "ruan@email.com", "MEMBER", null));
+
+            mockMvc.perform(post("/api/auth/sign-in")
+                            .header(AuthController.REFRESH_TRANSPORT_HEADER, "cookie")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {"email": "ruan@email.com", "password": "senha123"}
+                                    """))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.accessToken").value("access-token"))
+                    .andExpect(jsonPath("$.data.refreshToken").doesNotExist())
+                    .andExpect(cookie().value("refresh_token", "refresh-token"));
         }
 
         @Test
@@ -188,6 +214,7 @@ class AuthControllerTest {
             when(signUpUseCase.execute(any())).thenReturn(output);
 
             mockMvc.perform(post("/api/auth/sign-up")
+                            .header(AuthController.REFRESH_TRANSPORT_HEADER, "body")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
                                     {"name": "Novo User", "email": "novo@email.com", "password": "senha123"}
@@ -282,6 +309,7 @@ class AuthControllerTest {
                             .cookie(new Cookie("refresh_token", "cookie-refresh-token")))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.accessToken").value("new-access"))
+                    .andExpect(jsonPath("$.data.refreshToken").doesNotExist())
                     .andExpect(cookie().value("refresh_token", "new-refresh"));
 
             var captor = ArgumentCaptor.forClass(RefreshTokenUseCase.RefreshInput.class);
@@ -408,13 +436,17 @@ class AuthControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com mensagem genérica")
         void deveRetornar200ComMensagemGenerica() throws Exception {
+            when(forgotPasswordUseCase.execute("ruan@email.com")).thenReturn(Duration.ofMinutes(30));
+
             mockMvc.perform(post("/api/auth/forgot-password")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
                                     {"email": "ruan@email.com"}
                                     """))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.success").value(true));
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.message").value("Se o email estiver cadastrado, um link de redefinição será enviado."))
+                    .andExpect(jsonPath("$.data.expiresInSeconds").value(1800));
 
             verify(forgotPasswordUseCase).execute("ruan@email.com");
         }

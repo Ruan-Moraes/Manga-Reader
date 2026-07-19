@@ -99,6 +99,9 @@ class UserControllerTest {
     private com.mangareader.application.user.usecase.DeleteAccountUseCase deleteAccountUseCase;
 
     @MockitoBean
+    private com.mangareader.application.user.usecase.ClearTrackedHistoryUseCase clearTrackedHistoryUseCase;
+
+    @MockitoBean
     private TokenPort tokenPort;
 
     private final UUID USER_ID = UUID.randomUUID();

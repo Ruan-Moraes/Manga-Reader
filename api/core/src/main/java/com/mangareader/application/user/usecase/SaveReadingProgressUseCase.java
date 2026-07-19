@@ -3,13 +3,13 @@ package com.mangareader.application.user.usecase;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
 import com.mangareader.domain.user.entity.ReadingProgress;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -45,6 +45,12 @@ public class SaveReadingProgressUseCase {
             boolean completed) {}
 
     public ReadingProgress execute(SaveProgressInput input) {
+        if (input.currentPage() < 1 || input.totalPages() < 1 || input.currentPage() > input.totalPages()) {
+            throw new BusinessRuleException("Reading pages must form a valid positive range", 422);
+        }
+        if (input.completed() && input.currentPage() != input.totalPages()) {
+            throw new BusinessRuleException("Completed progress must point to the last page", 422);
+        }
         if (titleRepository.findById(input.titleId()).isEmpty()) {
             throw new ResourceNotFoundException("Title", "id", input.titleId());
         }
@@ -64,19 +70,7 @@ public class SaveReadingProgressUseCase {
         toSave.setTotalPages(input.totalPages());
         toSave.setCompleted(input.completed());
 
-        ReadingProgress saved;
-        try {
-            saved = readingProgressRepository.save(toSave);
-        } catch (DataIntegrityViolationException e) {
-            // Corrida: outra requisição criou o mesmo documento entre o check
-            // e o save (DuplicateKeyException) ou colidiu na própria transação
-            // Mongo (WriteConflict, também traduzido para
-            // DataIntegrityViolationException). O índice único garante
-            // idempotência — recarrega e considera o estado atual como resultado.
-            saved = readingProgressRepository
-                    .findByUserIdAndTitleIdAndChapterNumber(userIdStr, input.titleId(), input.chapterNumber())
-                    .orElseThrow();
-        }
+        ReadingProgress saved = readingProgressRepository.save(toSave);
 
         if (!wasCompleted && input.completed()) {
             recordChapterReadUseCase.execute(input.userId(), input.titleId(), input.chapterNumber());

@@ -44,6 +44,7 @@ public record EnrichedProfileResponse(
             String titleId,
             String titleName,
             String titleCover,
+            boolean adult,
             int position
     ) {}
 
@@ -58,6 +59,7 @@ public record EnrichedProfileResponse(
             String titleId,
             String titleName,
             String titleCover,
+            boolean adult,
             String viewedAt
     ) {}
 
@@ -65,7 +67,8 @@ public record EnrichedProfileResponse(
             String commentVisibility,
             String viewHistoryVisibility,
             String libraryVisibility,
-            String adultContentPreference
+            String adultContentPreference,
+            boolean behaviorAnalyticsEnabled
     ) {}
 
     public record SocialLinkResponse(

@@ -28,6 +28,7 @@ import com.mangareader.application.subscription.usecase.CreateGiftCodeUseCase;
 import com.mangareader.application.subscription.usecase.CreateSubscriptionUseCase;
 import com.mangareader.application.subscription.usecase.GetSubscriptionPlansUseCase;
 import com.mangareader.application.subscription.usecase.RedeemGiftCodeUseCase;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 import com.mangareader.domain.subscription.entity.GiftCode;
 import com.mangareader.domain.subscription.entity.Subscription;
 import com.mangareader.domain.subscription.entity.SubscriptionPlan;
@@ -97,6 +98,8 @@ class SubscriptionUseCasesTest {
         private SubscriptionRepositoryPort subscriptionRepository;
         @Mock
         private PaymentGatewayPort paymentGateway;
+        @Mock
+        private BehaviorEventRecorder behaviorEventRecorder;
 
         @InjectMocks
         private CreateSubscriptionUseCase useCase;

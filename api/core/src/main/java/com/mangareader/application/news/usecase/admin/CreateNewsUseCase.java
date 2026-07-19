@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import com.mangareader.domain.news.valueobject.NewsSeo;
 import com.mangareader.domain.news.valueobject.NewsSlug;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
+import com.mangareader.shared.exception.BusinessRuleException;
 
 @Service
 @Transactional("mongoTransactionManager")
@@ -49,7 +51,11 @@ public class CreateNewsUseCase {
                 .seo(new NewsSeo(toLocalized(command.seoTitle()), toLocalized(command.seoDescription()),
                         toLocalizedList(command.seoKeywords())))
                 .createdAt(now).updatedAt(now).build();
-        return newsRepository.save(news);
+        try {
+            return newsRepository.save(news);
+        } catch (DuplicateKeyException exception) {
+            throw new BusinessRuleException("Slug de notícia já está em uso", 409);
+        }
     }
 
     public NewsItem execute(Map<String, String> title, Map<String, String> subtitle,

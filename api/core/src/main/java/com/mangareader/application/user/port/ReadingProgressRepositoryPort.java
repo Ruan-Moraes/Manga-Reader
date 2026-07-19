@@ -1,5 +1,6 @@
 package com.mangareader.application.user.port;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.mangareader.domain.user.entity.ReadingProgress;
@@ -17,6 +18,8 @@ public interface ReadingProgressRepositoryPort {
      * restaurar "de onde o usuário parou".
      */
     Optional<ReadingProgress> findLatestByUserIdAndTitleId(String userId, String titleId);
+
+    List<ReadingProgress> findAllByUserId(String userId);
 
     void deleteAllByUserId(String userId);
 

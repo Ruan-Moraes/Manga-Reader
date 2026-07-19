@@ -54,7 +54,7 @@ class GetStoresUseCaseTest {
                     buildStore("Crunchyroll Store")
             );
             Page<Store> page = new PageImpl<>(stores, pageable, stores.size());
-            when(storeRepository.findAll(pageable)).thenReturn(page);
+            when(storeRepository.findActive(pageable)).thenReturn(page);
 
             // Act
             Page<Store> result = getStoresUseCase.execute(pageable);
@@ -71,7 +71,7 @@ class GetStoresUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(0, 10);
             Page<Store> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-            when(storeRepository.findAll(pageable)).thenReturn(emptyPage);
+            when(storeRepository.findActive(pageable)).thenReturn(emptyPage);
 
             // Act
             Page<Store> result = getStoresUseCase.execute(pageable);
@@ -87,13 +87,13 @@ class GetStoresUseCaseTest {
             // Arrange
             Pageable pageable = PageRequest.of(2, 5);
             Page<Store> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-            when(storeRepository.findAll(pageable)).thenReturn(emptyPage);
+            when(storeRepository.findActive(pageable)).thenReturn(emptyPage);
 
             // Act
             getStoresUseCase.execute(pageable);
 
             // Assert
-            verify(storeRepository).findAll(pageable);
+            verify(storeRepository).findActive(pageable);
         }
     }
 }

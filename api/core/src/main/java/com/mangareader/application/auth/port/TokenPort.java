@@ -1,5 +1,6 @@
 package com.mangareader.application.auth.port;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,11 +18,17 @@ public interface TokenPort {
 
     boolean isTokenValid(String token);
 
-    String generatePasswordResetToken(UUID userId, String email);
+    String generatePasswordResetToken(UUID userId, String email, String passwordHash);
+
+    boolean matchesPasswordState(String token, String passwordHash);
+
+    Duration passwordResetExpiration();
 
     String extractRole(String token);
 
     String extractType(String token);
+
+    String extractTokenId(String token);
 
     LocalDateTime extractExpiration(String token);
 }

@@ -36,6 +36,7 @@ import com.mangareader.application.user.usecase.UpdateUserSettingsUseCase;
 import com.mangareader.application.user.usecase.UpdatePrivacySettingsUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase;
 import com.mangareader.application.user.usecase.UpdateUserProfileUseCase.SocialLinkInput;
+import com.mangareader.application.user.usecase.ClearTrackedHistoryUseCase;
 import com.mangareader.domain.comment.entity.Comment;
 import com.mangareader.domain.user.entity.ViewHistory;
 import com.mangareader.domain.user.entity.User;
@@ -88,6 +89,7 @@ public class UserController {
     private final GetUserGroupsUseCase getUserGroupsUseCase;
     private final UserGroupMapper userGroupMapper;
     private final DeleteAccountUseCase deleteAccountUseCase;
+    private final ClearTrackedHistoryUseCase clearTrackedHistoryUseCase;
 
     @GetMapping("/me")
     @Operation(summary = "Meu perfil", description = "Retorna o perfil completo do usuário autenticado")
@@ -180,7 +182,7 @@ public class UserController {
         var rec = addRecommendationUseCase.execute(userId, request.titleId());
 
         var response = new EnrichedProfileResponse.RecommendationResponse(
-                rec.getTitleId(), rec.getTitleName(), rec.getTitleCover(), rec.getPosition()
+                rec.getTitleId(), rec.getTitleName(), rec.getTitleCover(), rec.isAdult(), rec.getPosition()
         );
 
         return ResponseEntity.status(201).body(ApiResponse.created(response));
@@ -211,7 +213,7 @@ public class UserController {
 
         var response = recs.stream()
                 .map(r -> new EnrichedProfileResponse.RecommendationResponse(
-                        r.getTitleId(), r.getTitleName(), r.getTitleCover(), r.getPosition()))
+                        r.getTitleId(), r.getTitleName(), r.getTitleCover(), r.isAdult(), r.getPosition()))
                 .toList();
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -230,7 +232,8 @@ public class UserController {
                 request.commentVisibility() != null ? VisibilitySetting.valueOf(request.commentVisibility()) : null,
                 request.viewHistoryVisibility() != null ? VisibilitySetting.valueOf(request.viewHistoryVisibility()) : null,
                 request.libraryVisibility() != null ? VisibilitySetting.valueOf(request.libraryVisibility()) : null,
-                request.adultContentPreference() != null ? AdultContentPreference.valueOf(request.adultContentPreference()) : null
+                request.adultContentPreference() != null ? AdultContentPreference.valueOf(request.adultContentPreference()) : null,
+                request.behaviorAnalyticsEnabled()
         );
 
         var settings = updatePrivacySettingsUseCase.execute(input);
@@ -239,7 +242,8 @@ public class UserController {
                 settings.getCommentVisibility().name(),
                 settings.getViewHistoryVisibility().name(),
                 settings.getLibraryVisibility().name(),
-                settings.getAdultContentPreference().name()
+                settings.getAdultContentPreference().name(),
+                settings.isBehaviorAnalyticsEnabled()
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -365,6 +369,7 @@ public class UserController {
         Page<EnrichedProfileResponse.ViewHistoryItemResponse> response = history.map(vh ->
                 new EnrichedProfileResponse.ViewHistoryItemResponse(
                         vh.getTitleId(), vh.getTitleName(), vh.getTitleCover(),
+                        vh.isAdult(),
                         vh.getViewedAt() != null ? vh.getViewedAt().toString() : null));
 
         return ResponseEntity.ok(ApiResponse.success(response));
@@ -384,6 +389,13 @@ public class UserController {
             recordViewHistoryUseCase.execute(userId, titleId);
         }
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me/tracked-history")
+    @Operation(summary = "Limpar histórico rastreado", description = "Remove histórico, leituras e atividades; preserva a posição funcional de leitura")
+    public ResponseEntity<Void> clearTrackedHistory(Authentication auth) {
+        clearTrackedHistoryUseCase.execute(auth.getPrincipal().toString());
         return ResponseEntity.noContent().build();
     }
 }

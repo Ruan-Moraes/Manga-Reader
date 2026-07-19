@@ -26,6 +26,7 @@ import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.application.user.service.UserProfileSettingsResolver;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserChapterRead;
@@ -56,6 +57,9 @@ class RecordChapterReadUseCaseTest {
 
     @Mock
     private LocaleResolutionService localeResolver;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private RecordChapterReadUseCase useCase;

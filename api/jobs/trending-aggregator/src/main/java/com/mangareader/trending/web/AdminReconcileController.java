@@ -6,14 +6,15 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mangareader.trending.application.RecalculateTrendingUseCase;
+import com.mangareader.trending.config.TrendingProperties;
 
 @RestController
 @RequestMapping("/admin")
@@ -23,8 +24,12 @@ public class AdminReconcileController {
     private final RecalculateTrendingUseCase useCase;
     private final String adminToken;
 
-    public AdminReconcileController(RecalculateTrendingUseCase useCase,
-            @Value("${trending.admin.token:}") String adminToken) {
+    @Autowired
+    public AdminReconcileController(RecalculateTrendingUseCase useCase, TrendingProperties properties) {
+        this(useCase, properties.admin().token());
+    }
+
+    AdminReconcileController(RecalculateTrendingUseCase useCase, String adminToken) {
         this.useCase = useCase;
         this.adminToken = adminToken;
     }

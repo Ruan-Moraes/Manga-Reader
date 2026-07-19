@@ -21,10 +21,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
-import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
-import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupUserType;
@@ -40,10 +39,7 @@ class DeleteAccountUseCaseTest {
     private UserRepositoryPort userRepository;
 
     @Mock
-    private ViewHistoryRepositoryPort viewHistoryRepository;
-
-    @Mock
-    private UserChapterReadRepositoryPort userChapterReadRepository;
+    private ClearTrackedHistoryUseCase clearTrackedHistoryUseCase;
 
     @Mock
     private ReadingProgressRepositoryPort readingProgressRepository;
@@ -53,6 +49,9 @@ class DeleteAccountUseCaseTest {
 
     @Mock
     private SocialGraphPort socialGraph;
+
+    @Mock
+    private RefreshTokenRepositoryPort refreshTokens;
 
     @InjectMocks
     private DeleteAccountUseCase useCase;
@@ -84,13 +83,13 @@ class DeleteAccountUseCaseTest {
 
         assertThat(group.getGroupUsers()).isEmpty();
         verify(groupRepository).save(group);
-        verify(viewHistoryRepository).deleteAllByUserId(USER_ID.toString());
-        verify(userChapterReadRepository).deleteAllByUserId(USER_ID.toString());
+        verify(clearTrackedHistoryUseCase).execute(USER_ID.toString());
         verify(readingProgressRepository).deleteAllByUserId(USER_ID.toString());
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
         assertThat(captor.getValue().isDeactivated()).isTrue();
+        verify(refreshTokens).revokeAllForUser(USER_ID);
     }
 
     @Test
@@ -102,6 +101,6 @@ class DeleteAccountUseCaseTest {
                 .isInstanceOf(ResourceNotFoundException.class);
 
         verify(userRepository, never()).save(any());
-        verify(viewHistoryRepository, never()).deleteAllByUserId(any());
+        verify(clearTrackedHistoryUseCase, never()).execute(any());
     }
 }

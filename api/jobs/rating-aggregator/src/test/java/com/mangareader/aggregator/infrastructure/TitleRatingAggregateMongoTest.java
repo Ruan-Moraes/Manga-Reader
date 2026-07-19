@@ -23,19 +23,20 @@ import com.mangareader.aggregator.infrastructure.migration.V001CreateTitleRating
 import com.mangareader.aggregator.infrastructure.repository.RatingAggregationDao;
 import com.mangareader.aggregator.infrastructure.repository.RatingAggregationDao.RatingStats;
 import com.mangareader.aggregator.infrastructure.repository.TitleRatingAggregateRepository;
+import com.mangareader.testing.mongo.Mongo8TestContainerFactory;
 
 /**
  * Integração Mongo (TestContainers) do agregado: DAO de leitura sobre
  * {@code reviews}, backfill do Mongock e recompute end-to-end.
  */
-@DataMongoTest
+@DataMongoTest(properties = "mongock.enabled=false")
 @Import({RatingAggregationDao.class})
 @Testcontainers
 @Tag("testcontainers")
 @DisplayName("TitleRatingAggregate — Mongo IT")
 class TitleRatingAggregateMongoTest {
     @Container
-    static MongoDBContainer mongo = new MongoDBContainer("mongo:8.0");
+    static MongoDBContainer mongo = Mongo8TestContainerFactory.create();
 
     @DynamicPropertySource
     static void mongoProps(DynamicPropertyRegistry registry) {

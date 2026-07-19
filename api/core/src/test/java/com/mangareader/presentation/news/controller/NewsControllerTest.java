@@ -98,7 +98,8 @@ class NewsControllerTest {
                     buildNews("1", "Novo mangá anunciado"),
                     buildNews("2", "Anime confirmado para 2026")
             );
-            when(getNewsUseCase.execute(any(Pageable.class)))
+            when(getNewsUseCase.execute(org.mockito.ArgumentMatchers.isNull(), org.mockito.ArgumentMatchers.isNull(),
+                    eq(com.mangareader.domain.news.valueobject.NewsPeriod.ALL), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(news));
 
             mockMvc.perform(get("/api/news"))
@@ -111,7 +112,8 @@ class NewsControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia quando não há notícias")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getNewsUseCase.execute(any(Pageable.class)))
+            when(getNewsUseCase.execute(org.mockito.ArgumentMatchers.isNull(), org.mockito.ArgumentMatchers.isNull(),
+                    eq(com.mangareader.domain.news.valueobject.NewsPeriod.ALL), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/news"))

@@ -10,7 +10,9 @@ import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.manga.service.GenreValidator;
 import com.mangareader.application.manga.service.TitleAssociationWriter;
 import com.mangareader.application.manga.service.TitleStoreAssociationWriter;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class CreateTitleUseCase {
     private final GenreValidator genreValidator;
     private final TitleAssociationWriter associationWriter;
     private final TitleStoreAssociationWriter storeAssociationWriter;
+    private final CacheInvalidationPort cacheInvalidation;
 
     public Title execute(Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
@@ -70,9 +73,11 @@ public class CreateTitleUseCase {
 
         Title saved = titleRepository.save(title);
 
-        if (authors != null) associationWriter.replaceAuthors(saved.getId(), authors);
-        if (publisherIds != null) associationWriter.replacePublishers(saved.getId(), publisherIds);
+        if (authors != null || publisherIds != null) associationWriter.replace(saved.getId(), authors, publisherIds);
         if (stores != null) storeAssociationWriter.replace(saved.getId(), stores);
+
+        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, saved.getId());
+        cacheInvalidation.clearAfterCommit(CacheNames.PUBLIC_STATS);
 
         return saved;
     }

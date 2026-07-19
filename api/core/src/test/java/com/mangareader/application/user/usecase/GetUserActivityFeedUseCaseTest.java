@@ -95,6 +95,18 @@ class GetUserActivityFeedUseCaseTest {
     }
 
     @Test
+    @DisplayName("Dono recebe página vazia quando DO_NOT_TRACK")
+    void donoRecebeVazioQuandoDoNotTrack() {
+        UUID userId = UUID.randomUUID();
+        stubUser(userId, VisibilitySetting.DO_NOT_TRACK);
+
+        Page<ActivityEvent> result = useCase.execute(userId, userId, pageable);
+
+        assertThat(result.getContent()).isEmpty();
+        verify(activityEventRepository, never()).findVisibleByUserId(any(), any());
+    }
+
+    @Test
     @DisplayName("Não-dono vê feed quando visibilidade é PUBLIC")
     void naoDonoVeQuandoPublic() {
         UUID targetId = UUID.randomUUID();

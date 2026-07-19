@@ -16,6 +16,7 @@ import io.mongock.api.annotations.RollbackExecution;
  */
 @ChangeUnit(id = "V021-create-reading-progress-indexes", order = "021", author = "mangareader")
 public class V021CreateReadingProgressIndexes {
+    private static final String INDEX_NAME = "idx_reading_progress_user_title_chapter";
     private final MongoTemplate mongoTemplate;
 
     public V021CreateReadingProgressIndexes(MongoTemplate mongoTemplate) {
@@ -33,7 +34,7 @@ public class V021CreateReadingProgressIndexes {
 
         ops.ensureIndex(new CompoundIndexDefinition(uniqueCompound)
                 .unique()
-                .named("idx_reading_progress_user_title_chapter"));
+                .named(INDEX_NAME));
     }
 
     @RollbackExecution
@@ -41,7 +42,8 @@ public class V021CreateReadingProgressIndexes {
         var ops = mongoTemplate.indexOps("reading_progress");
 
         ops.getIndexInfo().stream()
-                .filter(idx -> !idx.getName().equals("_id_"))
-                .forEach(idx -> ops.dropIndex(idx.getName()));
+                .filter(idx -> INDEX_NAME.equals(idx.getName()))
+                .findFirst()
+                .ifPresent(idx -> ops.dropIndex(INDEX_NAME));
     }
 }

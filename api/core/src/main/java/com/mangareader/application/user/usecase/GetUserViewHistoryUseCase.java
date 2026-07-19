@@ -33,7 +33,8 @@ public class GetUserViewHistoryUseCase {
         boolean isOwner = viewerUserId != null && viewerUserId.equals(targetUserId);
         UserProfileSettings settings = profileSettingsResolver.getOrDefault(user);
 
-        if (!isOwner && settings.getViewHistoryVisibility() != VisibilitySetting.PUBLIC) {
+        if (settings.getViewHistoryVisibility() == VisibilitySetting.DO_NOT_TRACK
+                || (!isOwner && settings.getViewHistoryVisibility() != VisibilitySetting.PUBLIC)) {
             return Page.empty(pageable);
         }
 

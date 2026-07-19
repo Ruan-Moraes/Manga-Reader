@@ -23,6 +23,7 @@ import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.library.usecase.ChangeReadingListUseCase.ChangeListInput;
 import com.mangareader.application.shared.event.TitleCompletedEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -36,6 +37,9 @@ class ChangeReadingListUseCaseTest {
 
     @Mock
     private EventPublisherPort eventPublisher;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private ChangeReadingListUseCase changeReadingListUseCase;

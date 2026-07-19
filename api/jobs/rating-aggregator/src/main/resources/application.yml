@@ -41,7 +41,7 @@ management:
 aggregator:
   reconciliation:
     # Diário às 03:00. Rede de segurança contra eventos perdidos.
-    cron: "0 0 3 * * *"
+    cron: ${AGGREGATOR_RECONCILIATION_CRON:0 0 3 * * *}
   admin:
     # Senha do gatilho manual POST /admin/reconcile (header X-Admin-Token).
     # Vazio = endpoint desativado. Em produção, sobrescrever via env.

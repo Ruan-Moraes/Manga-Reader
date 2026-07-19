@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.manga.usecase.GetChapterByNumberUseCase;
 import com.mangareader.application.manga.usecase.GetChaptersByTitleUseCase;
+import com.mangareader.application.manga.usecase.GetReaderChapterUseCase;
 import com.mangareader.presentation.manga.dto.ChapterResponse;
+import com.mangareader.presentation.manga.dto.ReaderChapterResponse;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
@@ -20,6 +22,8 @@ import com.mangareader.shared.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import java.util.UUID;
 
 /**
  * Controller de capítulos — sub-recurso de Titles.
@@ -35,6 +39,7 @@ public class ChapterController {
     private final GetChaptersByTitleUseCase getChaptersByTitleUseCase;
     private final GetChapterByNumberUseCase getChapterByNumberUseCase;
     private final LocalizedMappingHelper i18n;
+    private final GetReaderChapterUseCase getReaderChapterUseCase;
 
     @GetMapping
     @Operation(summary = "Listar capítulos", description = "Retorna os capítulos de um título com paginação")
@@ -42,13 +47,15 @@ public class ChapterController {
             @PathVariable String titleId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "asc") String direction
+            @RequestParam(defaultValue = "asc") String direction,
+            Authentication authentication
     ) {
         var dir = "desc".equalsIgnoreCase(direction)
                 ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(dir, "number"));
 
-        var result = getChaptersByTitleUseCase.execute(titleId, pageable)
+        UUID userId = currentUserId(authentication);
+        var result = getChaptersByTitleUseCase.execute(titleId, pageable, userId)
                 .map(ch -> new ChapterResponse(
                         ch.getId(),
                         ch.getNumber(),
@@ -63,12 +70,32 @@ public class ChapterController {
     @Operation(summary = "Buscar capítulo", description = "Retorna um capítulo específico pelo número")
     public ResponseEntity<ApiResponse<ChapterResponse>> getByNumber(
             @PathVariable String titleId,
-            @PathVariable String number
+            @PathVariable String number,
+            Authentication authentication
     ) {
-        var ch = getChapterByNumberUseCase.execute(titleId, number);
+        var ch = getChapterByNumberUseCase.execute(titleId, number, currentUserId(authentication));
 
         var response = new ChapterResponse(ch.getId(), ch.getNumber(), i18n.toResolvedString(ch.getTitle()), ch.getReleaseDate(), ch.getPages());
 
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/{number}/reader")
+    public ResponseEntity<ApiResponse<ReaderChapterResponse>> reader(@PathVariable String titleId,
+            @PathVariable String number, @RequestParam(defaultValue = "false") boolean preview,
+            Authentication authentication) {
+        boolean privileged = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN") || authority.getAuthority().equals("ROLE_MODERATOR"));
+        UUID userId = currentUserId(authentication);
+        var chapter = getReaderChapterUseCase.execute(titleId, number, preview && privileged, userId);
+        var pages = chapter.getPageItems().stream().filter(page -> "ready".equalsIgnoreCase(page.getProcessingStatus()))
+                .sorted(java.util.Comparator.comparingInt(com.mangareader.domain.manga.entity.ChapterPage::getOrder))
+                .map(page -> new ReaderChapterResponse.Page(page.getId(), page.getOrder(), page.getImageUrl(), page.getThumbnailUrl(), page.getWidth(), page.getHeight())).toList();
+        return ResponseEntity.ok(ApiResponse.success(new ReaderChapterResponse(chapter.getId(), chapter.getTitleId(), chapter.getNumber(),
+                i18n.toResolvedString(chapter.getTitle()), chapter.getStatus().name(), pages)));
+    }
+
+    private UUID currentUserId(Authentication authentication) {
+        return authentication != null && authentication.getPrincipal() instanceof UUID id ? id : null;
     }
 }

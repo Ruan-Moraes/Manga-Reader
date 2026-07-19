@@ -77,6 +77,9 @@ class AdminTitleControllerTest {
     @MockitoBean
     private com.mangareader.application.manga.service.TitleAssociationReader titleAssociationReader;
 
+    @MockitoBean
+    private com.mangareader.application.manga.service.TitleStoreAssociationReader titleStoreAssociationReader;
+
     @org.junit.jupiter.api.BeforeEach
     void stubChapterCounts() {
         org.mockito.Mockito.lenient()
@@ -92,6 +95,12 @@ class AdminTitleControllerTest {
                 .thenReturn(java.util.Map.of());
         org.mockito.Mockito.lenient()
                 .when(titleAssociationReader.publishersByTitle(org.mockito.ArgumentMatchers.any()))
+                .thenReturn(java.util.Map.of());
+        org.mockito.Mockito.lenient()
+                .when(titleStoreAssociationReader.byTitles(org.mockito.ArgumentMatchers.any()))
+                .thenReturn(java.util.Map.of());
+        org.mockito.Mockito.lenient()
+                .when(ratingAggregateReadPort.findByTitleIdIn(org.mockito.ArgumentMatchers.any()))
                 .thenReturn(java.util.Map.of());
     }
 
@@ -154,7 +163,7 @@ class AdminTitleControllerTest {
         Title created = buildTitle();
         when(createTitleUseCase.execute(
                 any(), anyString(), any(), any(), any(), any(), any(), any(), any(), any(boolean.class),
-                any(), any()
+                any(), any(), any()
         )).thenReturn(created);
 
         mockMvc.perform(post("/api/admin/titles")
@@ -172,13 +181,33 @@ class AdminTitleControllerTest {
     }
 
     @Test
+    @DisplayName("POST /api/admin/titles — deve rejeitar URL de loja vazia antes da persistência")
+    void deveRejeitarUrlDeLojaVazia() throws Exception {
+        mockMvc.perform(post("/api/admin/titles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "name": {"pt-BR": "Naruto"},
+                                    "type": "manga",
+                                    "genres": ["Action"],
+                                    "adult": false,
+                                    "stores": [{
+                                        "storeId": "00000000-0000-0000-0000-000000000001",
+                                        "url": "  "
+                                    }]
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("PATCH /api/admin/titles/{id} — deve retornar 200 ao atualizar")
     void deveRetornar200AoAtualizar() throws Exception {
         Title updated = buildTitle();
         updated.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto Shippuden"));
         when(updateTitleUseCase.execute(
                 eq("title-1"), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/titles/title-1")

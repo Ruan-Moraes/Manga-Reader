@@ -77,6 +77,7 @@ class RefreshTokenUseCaseTest {
     private void stubValidRefreshJwt() {
         when(tokenPort.isTokenValid(OLD_REFRESH)).thenReturn(true);
         when(tokenPort.extractType(OLD_REFRESH)).thenReturn("refresh");
+        when(tokenPort.extractTokenId(OLD_REFRESH)).thenReturn(UUID.randomUUID().toString());
     }
 
     @Nested
@@ -93,6 +94,7 @@ class RefreshTokenUseCaseTest {
 
             stubValidRefreshJwt();
             when(refreshTokenRepository.findByToken(OLD_REFRESH)).thenReturn(Optional.of(stored));
+            when(refreshTokenRepository.revokeIfActive(stored)).thenReturn(true);
             when(tokenPort.extractUserId(OLD_REFRESH)).thenReturn(USER_ID);
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(tokenPort.generateAccessToken(USER_ID, "ruan@email.com", "MEMBER")).thenReturn(NEW_ACCESS);
@@ -105,7 +107,7 @@ class RefreshTokenUseCaseTest {
             // Assert
             assertThat(output.accessToken()).isEqualTo(NEW_ACCESS);
             assertThat(output.refreshToken()).isEqualTo(NEW_REFRESH);
-            verify(refreshTokenRepository).revoke(stored);
+            verify(refreshTokenRepository).revokeIfActive(stored);
             verify(refreshTokenRepository).store(
                     eq(NEW_REFRESH), eq(USER_ID), eq(FAMILY_ID), eq(EXPIRES_AT)
             );
@@ -149,6 +151,36 @@ class RefreshTokenUseCaseTest {
         }
 
         @Test
+        @DisplayName("Deve rejeitar refresh token sem jti")
+        void deveRejeitarRefreshSemJti() {
+            when(tokenPort.isTokenValid(OLD_REFRESH)).thenReturn(true);
+            when(tokenPort.extractType(OLD_REFRESH)).thenReturn("refresh");
+            when(tokenPort.extractTokenId(OLD_REFRESH)).thenReturn(null);
+
+            assertThatThrownBy(() -> refreshTokenUseCase.execute(new RefreshInput(OLD_REFRESH)))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .extracting("statusCode")
+                    .isEqualTo(401);
+
+            verify(refreshTokenRepository, never()).findByToken(any());
+        }
+
+        @Test
+        @DisplayName("Deve rejeitar refresh token com jti adulterado")
+        void deveRejeitarRefreshComJtiInvalido() {
+            when(tokenPort.isTokenValid(OLD_REFRESH)).thenReturn(true);
+            when(tokenPort.extractType(OLD_REFRESH)).thenReturn("refresh");
+            when(tokenPort.extractTokenId(OLD_REFRESH)).thenReturn("jti-nao-uuid");
+
+            assertThatThrownBy(() -> refreshTokenUseCase.execute(new RefreshInput(OLD_REFRESH)))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .extracting("statusCode")
+                    .isEqualTo(401);
+
+            verify(refreshTokenRepository, never()).findByToken(any());
+        }
+
+        @Test
         @DisplayName("Deve rejeitar token válido mas desconhecido da tabela")
         void deveRejeitarTokenDesconhecido() {
             RefreshInput input = new RefreshInput(OLD_REFRESH);
@@ -180,6 +212,71 @@ class RefreshTokenUseCaseTest {
                     .isEqualTo(401);
 
             verify(refreshTokenRepository).revokeFamily(FAMILY_ID);
+            verify(tokenPort, never()).generateAccessToken(any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("Rotação concorrente deve tratar a atualização perdida como reuso e revogar a família")
+        void rotacaoConcorrenteDeveRevogarFamilia() {
+            RefreshToken stored = buildStored(EXPIRES_AT);
+
+            stubValidRefreshJwt();
+            when(refreshTokenRepository.findByToken(OLD_REFRESH)).thenReturn(Optional.of(stored));
+            when(tokenPort.extractUserId(OLD_REFRESH)).thenReturn(USER_ID);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(buildUser()));
+            when(refreshTokenRepository.revokeIfActive(stored)).thenReturn(false);
+
+            assertThatThrownBy(() -> refreshTokenUseCase.execute(new RefreshInput(OLD_REFRESH)))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .extracting("statusCode", "errorCode")
+                    .containsExactly(401, ApiErrorCode.AUTH_REFRESH_TOKEN_EXPIRED);
+
+            verify(refreshTokenRepository).revokeFamily(FAMILY_ID);
+            verify(tokenPort, never()).generateAccessToken(any(), any(), any());
+            verify(refreshTokenRepository, never()).store(any(), any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("Conta desativada não deve renovar sessão e deve revogar a família")
+        void contaDesativadaDeveRevogarFamilia() {
+            RefreshToken stored = buildStored(EXPIRES_AT);
+            User user = buildUser();
+            user.setDeactivated(true);
+
+            stubValidRefreshJwt();
+            when(refreshTokenRepository.findByToken(OLD_REFRESH)).thenReturn(Optional.of(stored));
+            when(tokenPort.extractUserId(OLD_REFRESH)).thenReturn(USER_ID);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+            assertThatThrownBy(() -> refreshTokenUseCase.execute(new RefreshInput(OLD_REFRESH)))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .extracting("statusCode", "errorCode")
+                    .containsExactly(401, ApiErrorCode.AUTH_REFRESH_TOKEN_EXPIRED);
+
+            verify(refreshTokenRepository).revokeFamily(FAMILY_ID);
+            verify(refreshTokenRepository, never()).revokeIfActive(any());
+            verify(tokenPort, never()).generateAccessToken(any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("Conta banida não deve renovar sessão e deve revogar a família")
+        void contaBanidaDeveRevogarFamilia() {
+            RefreshToken stored = buildStored(EXPIRES_AT);
+            User user = buildUser();
+            user.setBanned(true);
+
+            stubValidRefreshJwt();
+            when(refreshTokenRepository.findByToken(OLD_REFRESH)).thenReturn(Optional.of(stored));
+            when(tokenPort.extractUserId(OLD_REFRESH)).thenReturn(USER_ID);
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+
+            assertThatThrownBy(() -> refreshTokenUseCase.execute(new RefreshInput(OLD_REFRESH)))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .extracting("statusCode", "errorCode")
+                    .containsExactly(401, ApiErrorCode.AUTH_REFRESH_TOKEN_EXPIRED);
+
+            verify(refreshTokenRepository).revokeFamily(FAMILY_ID);
+            verify(refreshTokenRepository, never()).revokeIfActive(any());
             verify(tokenPort, never()).generateAccessToken(any(), any(), any());
         }
 

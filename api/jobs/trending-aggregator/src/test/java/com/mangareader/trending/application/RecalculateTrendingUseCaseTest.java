@@ -10,6 +10,10 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
@@ -56,6 +60,26 @@ class RecalculateTrendingUseCaseTest {
         assertThat(snapshots.saved.getFirst().id()).isEqualTo(firstId).isEqualTo("title-1:2026-07-11");
     }
 
+    @Test
+    void serializesConcurrentRecalculationsToAvoidInterleavedReplacement() throws Exception {
+        var signals = new BlockingSignals();
+        var useCase = useCase(signals, new RecordingSnapshots());
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var first = executor.submit(useCase::execute);
+            assertThat(signals.firstEntry.await(2, TimeUnit.SECONDS)).isTrue();
+
+            var second = executor.submit(useCase::execute);
+            assertThat(signals.unexpectedConcurrentEntry.await(200, TimeUnit.MILLISECONDS)).isFalse();
+
+            signals.releaseFirst.countDown();
+            assertThat(first.get(2, TimeUnit.SECONDS)).isEqualTo(1);
+            assertThat(second.get(2, TimeUnit.SECONDS)).isEqualTo(1);
+        } finally {
+            signals.releaseFirst.countDown();
+        }
+    }
+
     private static RecalculateTrendingUseCase useCase(TrendSignalPort signals, TrendSnapshotPort snapshots) {
         return new RecalculateTrendingUseCase(signals, snapshots,
                 new TrendScoreCalculator(.45, .25, .15, .10, .05),
@@ -70,6 +94,31 @@ class RecalculateTrendingUseCaseTest {
         @Override
         public Map<String, TrendMetrics> read(LocalDateTime from, LocalDateTime to) {
             ranges.add(new Range(from, to));
+            return Map.of("title-1", new TrendMetrics(30, 4, 2, 3, 1));
+        }
+    }
+
+    private static final class BlockingSignals implements TrendSignalPort {
+        private final AtomicInteger entries = new AtomicInteger();
+        private final CountDownLatch firstEntry = new CountDownLatch(1);
+        private final CountDownLatch unexpectedConcurrentEntry = new CountDownLatch(1);
+        private final CountDownLatch releaseFirst = new CountDownLatch(1);
+
+        @Override
+        public Map<String, TrendMetrics> read(LocalDateTime from, LocalDateTime to) {
+            if (entries.incrementAndGet() == 1) {
+                firstEntry.countDown();
+                try {
+                    if (!releaseFirst.await(2, TimeUnit.SECONDS)) {
+                        throw new IllegalStateException("Timed out waiting to release the first calculation");
+                    }
+                } catch (InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException(exception);
+                }
+            } else {
+                unexpectedConcurrentEntry.countDown();
+            }
             return Map.of("title-1", new TrendMetrics(30, 4, 2, 3, 1));
         }
     }

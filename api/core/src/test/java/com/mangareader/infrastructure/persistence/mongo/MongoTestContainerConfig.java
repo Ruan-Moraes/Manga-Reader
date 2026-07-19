@@ -1,6 +1,5 @@
 package com.mangareader.infrastructure.persistence.mongo;
 
-import java.time.Duration;
 import java.util.List;
 
 import org.springframework.boot.test.context.TestConfiguration;
@@ -10,6 +9,7 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.testcontainers.containers.MongoDBContainer;
 
 import com.mangareader.infrastructure.persistence.mongo.converter.LocalizedStringMongoConverters;
+import com.mangareader.testing.mongo.Mongo8TestContainerFactory;
 
 /**
  * DT-20: container Mongo <strong>singleton por JVM</strong>. Antes, cada
@@ -29,14 +29,7 @@ public class MongoTestContainerConfig {
     private static final MongoDBContainer MONGO_CONTAINER;
 
     static {
-        MONGO_CONTAINER = new MongoDBContainer("mongo:8.0") {
-            @Override
-            public void stop() {
-                // Singleton: ignorar stop por fechamento de contexto Spring.
-                // Container vive toda a suíte; Ryuk remove ao fim da JVM.
-            }
-        };
-        MONGO_CONTAINER.withStartupTimeout(Duration.ofSeconds(120));
+        MONGO_CONTAINER = Mongo8TestContainerFactory.createJvmSingleton();
         MONGO_CONTAINER.start();
     }
 

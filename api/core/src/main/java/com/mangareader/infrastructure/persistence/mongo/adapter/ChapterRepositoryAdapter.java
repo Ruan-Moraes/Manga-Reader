@@ -15,11 +15,14 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.domain.manga.entity.Chapter;
 import com.mangareader.infrastructure.persistence.mongo.repository.ChapterMongoRepository;
+import com.mangareader.domain.manga.valueobject.ChapterStatus;
+import java.time.Instant;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +48,7 @@ public class ChapterRepositoryAdapter implements ChapterRepositoryPort {
                 .onNullReturn(-1d);
 
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("titleId").is(titleId)),
+                Aggregation.match(publicCriteria(titleId)),
                 Aggregation.addFields().addField("numericValue").withValue(numericValue).build(),
                 Aggregation.sort(Sort.by(direction, "numericValue").and(Sort.by(direction, "number"))),
                 Aggregation.skip(pageable.getOffset()),
@@ -55,19 +58,25 @@ public class ChapterRepositoryAdapter implements ChapterRepositoryPort {
         AggregationResults<Chapter> results = mongoTemplate.aggregate(
                 aggregation, "chapters", Chapter.class);
 
-        long total = repository.countByTitleId(titleId);
+        long total = mongoTemplate.count(new Query(publicCriteria(titleId)), Chapter.class);
 
         return new PageImpl<>(results.getMappedResults(), pageable, total);
     }
 
     @Override
     public Optional<Chapter> findByTitleIdAndNumber(String titleId, String number) {
+        return Optional.ofNullable(mongoTemplate.findOne(new Query(new Criteria().andOperator(
+                publicCriteria(titleId), Criteria.where("number").is(number))), Chapter.class));
+    }
+
+    @Override
+    public Optional<Chapter> findAnyByTitleIdAndNumber(String titleId, String number) {
         return repository.findByTitleIdAndNumber(titleId, number);
     }
 
     @Override
     public long countByTitleId(String titleId) {
-        return repository.countByTitleId(titleId);
+        return mongoTemplate.count(new Query(publicCriteria(titleId)), Chapter.class);
     }
 
     @Override
@@ -77,7 +86,7 @@ public class ChapterRepositoryAdapter implements ChapterRepositoryPort {
         }
 
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("titleId").in(titleIds)),
+                Aggregation.match(publicCriteria().and("titleId").in(titleIds)),
                 Aggregation.group("titleId").count().as("total"),
                 Aggregation.project("total").and("_id").as("titleId"));
 
@@ -104,7 +113,7 @@ public class ChapterRepositoryAdapter implements ChapterRepositoryPort {
                 .onNullReturn(-1d);
 
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("titleId").in(titleIds)),
+                Aggregation.match(publicCriteria().and("titleId").in(titleIds)),
                 Aggregation.addFields().addField("numericValue").withValue(numericValue).build(),
                 Aggregation.sort(Sort.Direction.ASC, "numericValue"),
                 Aggregation.group("titleId").last("number").as("latest"),
@@ -133,8 +142,68 @@ public class ChapterRepositoryAdapter implements ChapterRepositoryPort {
     }
 
     @Override
+    public List<Chapter> findScheduledBefore(Instant instant) {
+        Query query = new Query(Criteria.where("status").is(ChapterStatus.SCHEDULED)
+                .and("scheduledAt").lte(instant)
+                .and("deletedAt").is(null));
+        return mongoTemplate.find(query, Chapter.class);
+    }
+
+    @Override
+    public List<Chapter> findActiveByTitleId(String titleId) {
+        Query query = new Query(Criteria.where("titleId").is(titleId)
+                .and("deletedAt").is(null))
+                .with(Sort.by(Sort.Direction.ASC, "displayOrder", "number"));
+        return mongoTemplate.find(query, Chapter.class);
+    }
+
+    @Override
     public void deleteByTitleId(String titleId) {
         repository.deleteByTitleId(titleId);
+    }
+
+    @Override
+    public Optional<Chapter> findById(String id) { return repository.findById(id); }
+
+    @Override
+    public Chapter save(Chapter chapter) { return repository.save(chapter); }
+
+    @Override
+    public boolean existsActiveByTitleIdAndNumber(String titleId, String number, String excludeId) {
+        Criteria criteria = new Criteria().andOperator(Criteria.where("titleId").is(titleId),
+                Criteria.where("number").is(number), Criteria.where("deleted").is(false));
+        if (excludeId != null) criteria = new Criteria().andOperator(criteria, Criteria.where("_id").ne(excludeId));
+        return mongoTemplate.exists(new Query(criteria), Chapter.class);
+    }
+
+    @Override
+    public Page<Chapter> findAdmin(String titleId, List<ChapterStatus> statuses, String search,
+            Instant publishedFrom, Instant publishedTo, boolean includeDeleted, Pageable pageable) {
+        java.util.ArrayList<Criteria> conditions = new java.util.ArrayList<>();
+        if (titleId != null && !titleId.isBlank()) conditions.add(Criteria.where("titleId").is(titleId));
+        if (statuses != null && !statuses.isEmpty()) conditions.add(Criteria.where("status").in(statuses));
+        if (publishedFrom != null) conditions.add(Criteria.where("publishedAt").gte(publishedFrom));
+        if (publishedTo != null) conditions.add(Criteria.where("publishedAt").lte(publishedTo));
+        if (!includeDeleted) conditions.add(Criteria.where("deletedAt").is(null));
+        if (search != null && !search.isBlank()) {
+            String escaped = java.util.regex.Pattern.quote(search.trim());
+            conditions.add(new Criteria().orOperator(Criteria.where("number").regex(escaped, "i"), Criteria.where("title.pt-BR").regex(escaped, "i")));
+        }
+        Query query = new Query();
+        if (!conditions.isEmpty()) query.addCriteria(new Criteria().andOperator(conditions.toArray(Criteria[]::new)));
+        long total = mongoTemplate.count(query, Chapter.class);
+        return new PageImpl<>(mongoTemplate.find(query.with(pageable), Chapter.class), pageable, total);
+    }
+
+    private static Criteria publicCriteria(String titleId) {
+        return publicCriteria().and("titleId").is(titleId);
+    }
+
+    private static Criteria publicCriteria() {
+        return new Criteria().andOperator(
+                Criteria.where("status").is(ChapterStatus.PUBLISHED),
+                Criteria.where("deletedAt").is(null),
+                new Criteria().orOperator(Criteria.where("publishedAt").is(null), Criteria.where("publishedAt").lte(Instant.now())));
     }
 
     private record CountByTitle(String titleId, long total) {}

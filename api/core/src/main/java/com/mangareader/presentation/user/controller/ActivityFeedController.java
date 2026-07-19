@@ -35,7 +35,7 @@ public class ActivityFeedController {
     private final HideActivityEventUseCase hideActivityEventUseCase;
 
     @GetMapping("/api/users/{userId}/activity-feed")
-    @Operation(summary = "Feed de atividades de um usuário", description = "Paginado, mais recentes primeiro. Respeita viewHistoryVisibility para visitantes.")
+    @Operation(summary = "Feed de atividades de um usuário", description = "Paginado, mais recentes primeiro. Respeita viewHistoryVisibility, inclusive para o proprietário sob DO_NOT_TRACK.")
     public ResponseEntity<ApiResponse<PageResponse<ActivityEventResponse>>> getActivityFeed(
             @PathVariable UUID userId,
             @PageParams(defaultSort = "occurredAt", defaultDirection = "desc")

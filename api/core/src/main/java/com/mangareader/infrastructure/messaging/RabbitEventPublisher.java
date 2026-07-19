@@ -1,5 +1,7 @@
 package com.mangareader.infrastructure.messaging;
 
+import java.util.UUID;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class RabbitEventPublisher implements EventPublisherPort {
     public void publish(String routingKey, Object event) {
         log.debug("Publishing event [{}]: {}", routingKey, event);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, routingKey, event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, routingKey, event, message -> {
+            message.getMessageProperties().setMessageId(UUID.randomUUID().toString());
+            return message;
+        });
     }
 }

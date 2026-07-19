@@ -37,11 +37,11 @@ management:
 reconciler:
   reconciliation:
     # De hora em hora (no minuto 0). Rede de segurança contra drift dos contadores.
-    cron: "0 0 * * * *"
+    cron: ${RECONCILER_RECONCILIATION_CRON:0 0 * * * *}
   orphan:
     # Diária às 03:30. Limpeza de refs órfãs cross-DB (title_id sem título no Mongo).
     # Mais pesada (full-scan por title_id) e sem urgência — daí separada e noturna.
-    cron: "0 30 3 * * *"
+    cron: ${RECONCILER_ORPHAN_CRON:0 30 3 * * *}
   admin:
     # Senha do gatilho manual POST /admin/reconcile (header X-Admin-Token).
     # Vazio = endpoint desativado. Em produção, sobrescrever via env.

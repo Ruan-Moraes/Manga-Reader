@@ -8,11 +8,14 @@ import java.util.HexFormat;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.domain.auth.entity.RefreshToken;
 import com.mangareader.infrastructure.persistence.postgres.repository.RefreshTokenJpaRepository;
+import com.mangareader.shared.dto.ApiErrorCode;
+import com.mangareader.shared.exception.BusinessRuleException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,12 +32,20 @@ public class RefreshTokenRepositoryAdapter implements RefreshTokenRepositoryPort
 
     @Override
     public RefreshToken store(String rawToken, UUID userId, UUID familyId, LocalDateTime expiresAt) {
-        return repository.save(RefreshToken.builder()
-                .userId(userId)
-                .tokenHash(sha256Hex(rawToken))
-                .familyId(familyId)
-                .expiresAt(expiresAt)
-                .build());
+        try {
+            return repository.saveAndFlush(RefreshToken.builder()
+                    .userId(userId)
+                    .tokenHash(sha256Hex(rawToken))
+                    .familyId(familyId)
+                    .expiresAt(expiresAt)
+                    .build());
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessRuleException(
+                    "Não foi possível emitir uma sessão única. Tente novamente.",
+                    409,
+                    ApiErrorCode.AUTH_REFRESH_TOKEN_CONFLICT
+            );
+        }
     }
 
     @Override
@@ -43,14 +54,18 @@ public class RefreshTokenRepositoryAdapter implements RefreshTokenRepositoryPort
     }
 
     @Override
-    public void revoke(RefreshToken token) {
-        token.revoke(LocalDateTime.now());
-        repository.save(token);
+    public boolean revokeIfActive(RefreshToken token) {
+        return repository.revokeIfActive(token.getId(), LocalDateTime.now()) == 1;
     }
 
     @Override
     public void revokeFamily(UUID familyId) {
         repository.revokeFamily(familyId, LocalDateTime.now());
+    }
+
+    @Override
+    public void revokeAllForUser(UUID userId) {
+        repository.revokeAllForUser(userId, LocalDateTime.now());
     }
 
     @Override

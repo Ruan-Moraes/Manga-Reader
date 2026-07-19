@@ -3,6 +3,7 @@ package com.mangareader.infrastructure.persistence.postgres.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,5 +21,8 @@ public interface TitlePublisherJpaRepository extends JpaRepository<TitlePublishe
 
     boolean existsByTitleIdAndPublisherId(String titleId, Long publisherId);
 
-    void deleteByTitleId(String titleId);
+    /** Ver TitleAuthorJpaRepository#deleteByTitleId(String). */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE FROM TitlePublisher tp WHERE tp.titleId = :titleId")
+    void deleteByTitleId(@Param("titleId") String titleId);
 }

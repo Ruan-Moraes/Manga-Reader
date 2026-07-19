@@ -5,12 +5,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
-import com.mangareader.application.user.port.UserChapterReadRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
-import com.mangareader.application.user.port.ViewHistoryRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -28,11 +27,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeleteAccountUseCase {
     private final UserRepositoryPort userRepository;
-    private final ViewHistoryRepositoryPort viewHistoryRepository;
-    private final UserChapterReadRepositoryPort userChapterReadRepository;
+    private final ClearTrackedHistoryUseCase clearTrackedHistoryUseCase;
     private final ReadingProgressRepositoryPort readingProgressRepository;
     private final GroupRepositoryPort groupRepository;
     private final SocialGraphPort socialGraph;
+    private final RefreshTokenRepositoryPort refreshTokens;
 
     @Transactional
     public void execute(UUID userId) {
@@ -44,8 +43,7 @@ public class DeleteAccountUseCase {
             groupRepository.save(group);
         }
 
-        viewHistoryRepository.deleteAllByUserId(userId.toString());
-        userChapterReadRepository.deleteAllByUserId(userId.toString());
+        clearTrackedHistoryUseCase.execute(userId.toString());
         readingProgressRepository.deleteAllByUserId(userId.toString());
 
         // Grafo ANTES do save JPA: se o Cypher falhar, a tx JPA aborta.
@@ -55,5 +53,6 @@ public class DeleteAccountUseCase {
 
         user.deactivate();
         userRepository.save(user);
+        refreshTokens.revokeAllForUser(userId);
     }
 }

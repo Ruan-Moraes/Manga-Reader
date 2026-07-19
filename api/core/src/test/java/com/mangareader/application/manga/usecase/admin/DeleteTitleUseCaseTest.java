@@ -28,6 +28,9 @@ class DeleteTitleUseCaseTest {
     private TitleRepositoryPort titleRepository;
 
     @Mock
+    private com.mangareader.application.shared.port.CacheInvalidationPort cacheInvalidation;
+
+    @Mock
     private TitleAssociationWriter associationWriter;
 
     @Mock

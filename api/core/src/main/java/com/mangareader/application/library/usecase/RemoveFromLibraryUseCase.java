@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,9 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RemoveFromLibraryUseCase {
     private final LibraryRepositoryPort libraryRepository;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     @Transactional
     public void execute(UUID userId, String titleId) {
         libraryRepository.deleteByUserIdAndTitleId(userId, titleId);
+        behaviorEventRecorder.record(userId, BehaviorEventType.LIBRARY_ITEM_REMOVED, titleId, null, "LIBRARY");
     }
 }

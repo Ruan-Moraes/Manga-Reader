@@ -7,5 +7,6 @@ public record UpdatePrivacyRequest(
         String commentVisibility,
         String viewHistoryVisibility,
         String libraryVisibility,
-        String adultContentPreference
+        String adultContentPreference,
+        Boolean behaviorAnalyticsEnabled
 ) {}
