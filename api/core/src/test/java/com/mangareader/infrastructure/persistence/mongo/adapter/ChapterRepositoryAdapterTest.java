@@ -2,6 +2,7 @@ package com.mangareader.infrastructure.persistence.mongo.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.domain.manga.entity.Chapter;
+import com.mangareader.domain.manga.valueobject.ChapterStatus;
 import com.mangareader.infrastructure.persistence.mongo.MongoTestContainerConfig;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -181,5 +183,38 @@ class ChapterRepositoryAdapterTest {
             assertThat(chapterRepository.countByTitleId("t1")).isZero();
             assertThat(chapterRepository.count()).isEqualTo(1);
         }
+    }
+
+    @Test
+    @DisplayName("Busca somente capítulos agendados vencidos e não excluídos")
+    void findScheduledBefore() {
+        Instant now = Instant.parse("2026-07-19T18:00:00Z");
+        Chapter due = chapter("t3", "1", "Vencido");
+        due.setStatus(ChapterStatus.SCHEDULED);
+        due.setScheduledAt(now.minusSeconds(1));
+        Chapter future = chapter("t3", "2", "Futuro");
+        future.setStatus(ChapterStatus.SCHEDULED);
+        future.setScheduledAt(now.plusSeconds(1));
+        Chapter deleted = chapter("t3", "3", "Excluído");
+        deleted.setStatus(ChapterStatus.SCHEDULED);
+        deleted.setScheduledAt(now.minusSeconds(1));
+        deleted.setDeletedAt(now.minusSeconds(10));
+        chapterRepository.saveAll(List.of(due, future, deleted));
+
+        assertThat(chapterRepository.findScheduledBefore(now))
+                .extracting(Chapter::getNumber)
+                .containsExactly("1");
+    }
+
+    @Test
+    @DisplayName("Busca conjunto ativo completo para reordenação")
+    void findActiveByTitleId() {
+        Chapter deleted = chapter("t1", "4", "Excluído");
+        deleted.setDeletedAt(Instant.parse("2026-07-19T18:00:00Z"));
+        chapterRepository.save(deleted);
+
+        assertThat(chapterRepository.findActiveByTitleId("t1"))
+                .extracting(Chapter::getNumber)
+                .containsExactly("1", "2", "3");
     }
 }

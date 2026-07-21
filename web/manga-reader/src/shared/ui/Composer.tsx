@@ -152,7 +152,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
                                 onClick={() => setTab(key)}
                                 className={cn(
                                     '-mb-px whitespace-nowrap border-b-2 px-3 py-[7px] text-[12.5px] font-mr-bold transition-colors max-mobile-md:px-2',
-                                    tab === key ? 'border-mr-accent text-mr-accent' : 'border-transparent text-mr-fg-subtle hover:text-mr-fg',
+                                    tab === key ? 'border-mr-accent-border text-mr-accent-fg' : 'border-transparent text-mr-fg-subtle hover:text-mr-fg',
                                 )}
                             >
                                 {key === 'write' ? t('composer.write') : t('composer.preview')}
@@ -203,7 +203,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
                                 onFocus={() => setFocused(true)}
                                 onBlur={() => setFocused(false)}
                                 className={cn(
-                                    'min-h-24 w-full resize-y rounded-xs border border-mr-border bg-mr-surface-muted px-3 py-3 text-mr-body leading-relaxed text-mr-fg placeholder:text-mr-tertiary focus:border-mr-accent focus:outline-none',
+                                    'min-h-24 w-full resize-y rounded-xs border border-mr-border bg-mr-surface-muted px-3 py-3 text-mr-body leading-relaxed text-mr-fg placeholder:text-mr-tertiary focus:border-mr-accent-border focus:outline-none',
                                     fill && 'flex-1 resize-none',
                                 )}
                             />
@@ -228,7 +228,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
                                         type="button"
                                         onClick={() => onRemoveImage?.(index)}
                                         aria-label={t('composer.removeImage')}
-                                        className="absolute right-0 top-0 rounded-bl-xs rounded-tr-xs bg-mr-danger px-1.5 py-0.5 text-xs text-white opacity-75 hover:opacity-100"
+                                        className="absolute right-0 top-0 rounded-bl-xs rounded-tr-xs bg-mr-danger px-1.5 py-0.5 text-xs text-mr-on-overlay opacity-75 hover:opacity-100"
                                     >
                                         <X className="size-3" aria-hidden="true" />
                                     </button>
@@ -264,7 +264,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(
                                 onClick={handleSubmit}
                                 disabled={!canSubmit}
                                 aria-label={submitLabel ?? t('composer.submit')}
-                                className="inline-flex py-2.5 items-center gap-1.5 rounded-mr-xs border border-mr-accent bg-mr-accent px-[18px] text-[13px] font-mr-extrabold text-mr-primary transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 max-md:justify-center max-md:px-3"
+                                className="inline-flex py-2.5 items-center gap-1.5 rounded-mr-xs border border-mr-accent-border bg-mr-accent px-[18px] text-[13px] font-mr-extrabold text-mr-on-accent transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 max-md:justify-center max-md:px-3"
                             >
                                 <MessageSquare className="size-[15px]" aria-hidden="true" />
                                 <span className="hidden md:inline">{submitLabel ?? t('composer.submit')}</span>

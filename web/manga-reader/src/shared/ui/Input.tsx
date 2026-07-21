@@ -44,7 +44,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
             <div
                 className={cn(
                     'relative flex h-11 items-center gap-2 rounded-mr-sm border bg-mr-primary px-3 transition-[border-color,box-shadow] duration-mr-fast',
-                    'has-[:hover:not(:disabled)]:border-mr-gray-500 has-[:focus]:border-mr-accent has-[:focus]:ring-2 has-[:focus]:ring-mr-accent-25',
+                    'has-[:hover:not(:disabled)]:border-mr-gray-500 has-[:focus]:border-mr-accent-border has-[:focus]:ring-2 has-[:focus]:ring-mr-accent-25',
                     readOnly && 'bg-mr-gray-900',
                     error ? 'border-mr-danger has-[:focus]:border-mr-danger has-[:focus]:ring-mr-danger-15' : 'border-mr-border',
                     disabled && 'opacity-mr-disabled',

@@ -11,7 +11,7 @@ import { ChapterMetricsFilters, useChapterAnalytics } from '@features/admin';
 
 /**
  * Analytics global de capítulos: visão comparativa (tabela paginada) com
- * filtros de período/dispositivo/plataforma aplicados no gateway fake.
+ * filtros de período/dispositivo/plataforma aplicados pelo backend.
  */
 const DashboardChapterAnalytics = () => {
     const { t } = useTranslation('admin');

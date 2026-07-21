@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mangareader.application.news.usecase.GetNewsByCategoryUseCase;
 import com.mangareader.application.news.usecase.GetNewsByIdUseCase;
 import com.mangareader.application.news.usecase.GetNewsUseCase;
+import com.mangareader.application.news.usecase.GetRelatedNewsUseCase;
 import com.mangareader.application.news.usecase.SearchNewsUseCase;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsCategory;
@@ -51,6 +52,9 @@ class NewsControllerTest {
 
     @MockitoBean
     private SearchNewsUseCase searchNewsUseCase;
+
+    @MockitoBean
+    private GetRelatedNewsUseCase getRelatedNewsUseCase;
 
     @MockitoBean
     private TokenPort tokenPort;
@@ -94,7 +98,8 @@ class NewsControllerTest {
                     buildNews("1", "Novo mangá anunciado"),
                     buildNews("2", "Anime confirmado para 2026")
             );
-            when(getNewsUseCase.execute(any(Pageable.class)))
+            when(getNewsUseCase.execute(org.mockito.ArgumentMatchers.isNull(), org.mockito.ArgumentMatchers.isNull(),
+                    eq(com.mangareader.domain.news.valueobject.NewsPeriod.ALL), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(news));
 
             mockMvc.perform(get("/api/news"))
@@ -107,7 +112,8 @@ class NewsControllerTest {
         @Test
         @DisplayName("Deve retornar página vazia quando não há notícias")
         void deveRetornarPaginaVazia() throws Exception {
-            when(getNewsUseCase.execute(any(Pageable.class)))
+            when(getNewsUseCase.execute(org.mockito.ArgumentMatchers.isNull(), org.mockito.ArgumentMatchers.isNull(),
+                    eq(com.mangareader.domain.news.valueobject.NewsPeriod.ALL), any(Pageable.class)))
                     .thenReturn(new PageImpl<>(List.of()));
 
             mockMvc.perform(get("/api/news"))

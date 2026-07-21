@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -23,6 +25,8 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.library.port.LibraryRepositoryPort;
+import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.AdultContentAccessPolicy;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
@@ -68,11 +72,23 @@ class GetEnrichedProfileUseCaseTest {
     @Mock
     private SocialGraphPort socialGraph;
 
+    @Mock
+    private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private AdultContentAccessPolicy adultContentPolicy;
+
     @InjectMocks
     private GetEnrichedProfileUseCase getEnrichedProfileUseCase;
 
     private final UUID USER_ID = UUID.randomUUID();
     private final UUID VIEWER_ID = UUID.randomUUID();
+
+    @org.junit.jupiter.api.BeforeEach
+    void defaultAdultContentResolution() {
+        org.mockito.Mockito.lenient().when(titleRepository.findByIds(org.mockito.ArgumentMatchers.any()))
+                .thenReturn(List.of());
+    }
 
     private User buildUser(VisibilitySetting commentVis, VisibilitySetting historyVis) {
         User user = User.builder()
@@ -176,6 +192,8 @@ class GetEnrichedProfileUseCaseTest {
             EnrichedProfile result = getEnrichedProfileUseCase.execute(USER_ID, VIEWER_ID);
 
             assertThat(result.recentHistory()).isNull();
+            verify(viewHistoryRepository, never())
+                    .findByUserIdOrderByViewedAtDesc(any(), any(Pageable.class));
         }
 
         @Test

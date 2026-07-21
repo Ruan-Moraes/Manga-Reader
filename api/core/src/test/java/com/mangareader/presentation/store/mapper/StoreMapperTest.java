@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.domain.store.entity.Store;
+import com.mangareader.domain.store.entity.StoreTitle;
 import com.mangareader.domain.store.valueobject.StoreAvailability;
 import com.mangareader.domain.store.valueobject.StoreCategory;
 import com.mangareader.presentation.shared.mapper.LocalizedMappingHelper;
@@ -85,5 +86,43 @@ class StoreMapperTest {
 
         assertThat(response.category()).isNull();
         assertThat(response.official()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve usar o URL do vínculo ao mapear uma loja por título")
+    void deveUsarUrlDoVinculo() {
+        when(i18n.toResolvedString(any(LocalizedString.class))).thenReturn("Loja");
+        Store store = Store.builder()
+                .id(UUID.randomUUID())
+                .name(LocalizedString.ofDefault("Loja"))
+                .website("https://store.example")
+                .build();
+        StoreTitle storeTitle = StoreTitle.builder()
+                .store(store)
+                .titleId("507f1f77bcf86cd799439011")
+                .url("https://store.example/titulo")
+                .build();
+
+        StoreResponse response = mapper.toResponse(storeTitle);
+
+        assertThat(response.purchaseUrl()).isEqualTo("https://store.example/titulo");
+    }
+
+    @Test
+    @DisplayName("Deve usar o site da loja quando o vínculo não tiver URL")
+    void deveUsarSiteDaLojaQuandoVinculoNaoTiverUrl() {
+        when(i18n.toResolvedString(any(LocalizedString.class))).thenReturn("Loja");
+        Store store = Store.builder()
+                .id(UUID.randomUUID())
+                .name(LocalizedString.ofDefault("Loja"))
+                .website("https://store.example")
+                .build();
+
+        StoreResponse response = mapper.toResponse(StoreTitle.builder()
+                .store(store)
+                .titleId("507f1f77bcf86cd799439011")
+                .build());
+
+        assertThat(response.purchaseUrl()).isEqualTo("https://store.example");
     }
 }

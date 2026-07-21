@@ -2,6 +2,7 @@
     "section": {
         "title": "Comments",
         "loginPrompt": "Sign in to leave a comment.",
+        "signIn": "Sign in",
         "placeholder": "Leave your comment",
         "sortLabel": "Sort comments by:",
         "count_one": "{{count}} comment",

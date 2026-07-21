@@ -1,6 +1,7 @@
 package com.mangareader.application.news.usecase.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,16 +9,19 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
+import com.mangareader.shared.exception.BusinessRuleException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CreateNewsUseCase")
@@ -26,8 +30,12 @@ class CreateNewsUseCaseTest {
     @Mock
     private NewsRepositoryPort newsRepository;
 
-    @InjectMocks
     private CreateNewsUseCase createNewsUseCase;
+
+    @BeforeEach
+    void setUp() {
+        createNewsUseCase = new CreateNewsUseCase(newsRepository);
+    }
 
     @Test
     @DisplayName("Deve criar notícia com todos os campos")
@@ -66,5 +74,18 @@ class CreateNewsUseCaseTest {
 
         assertThat(result.getContent().resolve(java.util.Locale.forLanguageTag("pt-BR"))).isEmpty();
         assertThat(result.getTags()).isEmpty();
+    }
+
+    @Test
+    void translatesConcurrentSlugCollisionToConflict() {
+        when(newsRepository.save(any(NewsItem.class)))
+                .thenThrow(new DuplicateKeyException("uk_news_slug"));
+
+        assertThatThrownBy(() -> createNewsUseCase.execute(
+                java.util.Map.of("pt-BR", "Test"), null, null, null, null,
+                NewsCategory.LANCAMENTOS, null, null, null, 0, false, false))
+                .isInstanceOf(BusinessRuleException.class)
+                .extracting("statusCode")
+                .isEqualTo(409);
     }
 }

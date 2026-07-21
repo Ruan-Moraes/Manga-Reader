@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import { updateProfile } from '../../../api/userService';
 import useDebouncedCallback from '../../../lib/useDebouncedCallback';
@@ -40,7 +40,7 @@ const RedesTab = ({ profile, onSaved }: Props) => {
             showSuccessToast(t('profile.edit.saved'));
             onSaved();
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     }, AUTOSAVE_MS);
 

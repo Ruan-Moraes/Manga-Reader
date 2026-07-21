@@ -32,22 +32,22 @@ class ListAdminNewsUseCaseTest {
     private final Page<NewsItem> page = new PageImpl<>(java.util.List.of());
 
     @Test
-    @DisplayName("Sem busca usa findAll")
+    @DisplayName("Sem filtros usa consulta administrativa")
     void semBuscaUsaFindAll() {
-        when(newsRepository.findAll(pageable)).thenReturn(page);
+        when(newsRepository.findAdmin(" ", null, null, pageable)).thenReturn(page);
 
         assertThat(useCase.execute(" ", pageable)).isSameAs(page);
 
-        verify(newsRepository).findAll(pageable);
+        verify(newsRepository).findAdmin(" ", null, null, pageable);
     }
 
     @Test
-    @DisplayName("Com busca usa searchByTitle")
+    @DisplayName("Com busca usa consulta administrativa")
     void comBuscaUsaSearch() {
-        when(newsRepository.searchByTitle("anime", pageable)).thenReturn(page);
+        when(newsRepository.findAdmin("anime", null, null, pageable)).thenReturn(page);
 
         assertThat(useCase.execute("anime", pageable)).isSameAs(page);
 
-        verify(newsRepository).searchByTitle("anime", pageable);
+        verify(newsRepository).findAdmin("anime", null, null, pageable);
     }
 }

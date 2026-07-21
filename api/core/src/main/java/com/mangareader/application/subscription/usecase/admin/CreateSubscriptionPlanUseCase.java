@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.subscription.port.SubscriptionPlanRepositoryPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.subscription.entity.SubscriptionPlan;
 import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
+import com.mangareader.shared.constant.CacheNames;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateSubscriptionPlanUseCase {
     private final SubscriptionPlanRepositoryPort planRepository;
+    private final CacheInvalidationPort cacheInvalidation;
 
     @Transactional
     public SubscriptionPlan execute(SubscriptionPeriod period, long priceInCents,
@@ -44,6 +47,8 @@ public class CreateSubscriptionPlanUseCase {
                 .active(true)
                 .build();
 
-        return planRepository.save(plan);
+        SubscriptionPlan saved = planRepository.save(plan);
+        cacheInvalidation.clearAfterCommit(CacheNames.SUBSCRIPTION_PLANS);
+        return saved;
     }
 }

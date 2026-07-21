@@ -26,11 +26,11 @@ export const toneFillClass: Record<StatusTone, string> = {
 
 const toneMap: Record<StatusTone, { wrap: string; dot: string }> = {
     live: {
-        wrap: 'bg-[rgba(221,218,42,0.15)] text-mr-accent border-[rgba(221,218,42,0.45)]',
+        wrap: 'bg-mr-accent-10 text-mr-accent-fg border-mr-accent-border',
         dot: 'bg-mr-accent',
     },
     open: {
-        wrap: 'bg-mr-accent-10 text-mr-accent-75 border-[rgba(221,218,42,0.30)]',
+        wrap: 'bg-mr-accent-10 text-mr-accent-fg border-mr-accent-border',
         dot: 'bg-mr-accent-75',
     },
     soon: {
@@ -38,7 +38,7 @@ const toneMap: Record<StatusTone, { wrap: string; dot: string }> = {
         dot: 'bg-mr-tertiary',
     },
     ended: {
-        wrap: 'bg-mr-danger-15 text-mr-danger border-[rgba(255,120,79,0.38)]',
+        wrap: 'bg-mr-danger-15 text-mr-danger border-mr-danger-border',
         dot: 'bg-mr-danger',
     },
 };

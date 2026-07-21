@@ -49,7 +49,7 @@ const UserModalHeader = ({ user }: { user: UserModalHeaderUser | null }) => {
                 {(isModerator || isMember) && (
                     <ul className="flex flex-wrap gap-1.5">
                         {isModerator && (
-                            <li className="inline-flex items-center gap-1 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 px-2 py-0.5 text-mr-tiny font-mr-extrabold uppercase tracking-wide text-mr-accent">
+                            <li className="inline-flex items-center gap-1 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 px-2 py-0.5 text-mr-tiny font-mr-extrabold uppercase tracking-wide text-mr-accent-fg">
                                 <ShieldCheck className="size-3" aria-hidden="true" />
                                 {t('modal.badges.moderator')}
                             </li>
@@ -73,7 +73,7 @@ const UserModalHeader = ({ user }: { user: UserModalHeaderUser | null }) => {
                 <button
                     type="button"
                     onClick={handleGoToProfile}
-                    className="inline-flex items-center gap-1.5 self-start text-mr-small font-mr-bold text-mr-accent hover:underline mr-focus-ring"
+                    className="inline-flex items-center gap-1.5 self-start text-mr-small font-mr-bold text-mr-accent-fg hover:underline mr-focus-ring"
                 >
                     {t('modal.viewProfile')}
                     <ExternalLink className="size-3.5" aria-hidden="true" />

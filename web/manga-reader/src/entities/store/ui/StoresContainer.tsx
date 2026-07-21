@@ -12,6 +12,7 @@ interface StoresContainerProps {
     stores: Store[];
     isLoading?: boolean;
     title?: string;
+    onVisit?: (store: Store) => void;
 }
 
 function StoresEmpty() {
@@ -25,7 +26,7 @@ function StoresEmpty() {
                 <p className="mt-1 max-w-[360px] text-[14px] text-mr-fg-muted">{t('empty.desc')}</p>
             </div>
             {notified ? (
-                <span className="flex items-center gap-2 text-[14px] font-mr-bold text-mr-accent">
+                <span className="flex items-center gap-2 text-[14px] font-mr-bold text-mr-accent-fg">
                     <Check className="size-4" aria-hidden="true" />
                     {t('empty.notified')}
                 </span>
@@ -38,7 +39,7 @@ function StoresEmpty() {
     );
 }
 
-const StoresContainer = ({ stores, isLoading = false }: StoresContainerProps) => {
+const StoresContainer = ({ stores, isLoading = false, onVisit }: StoresContainerProps) => {
     const { t } = useTranslation('store');
 
     if (isLoading) {
@@ -61,7 +62,7 @@ const StoresContainer = ({ stores, isLoading = false }: StoresContainerProps) =>
             </div>
             <div className="flex flex-col gap-3">
                 {stores.map(s => (
-                    <StoreCard key={s.id} store={s} />
+                    <StoreCard key={s.id} store={s} onVisit={onVisit} />
                 ))}
             </div>
         </div>

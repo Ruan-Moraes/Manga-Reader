@@ -40,7 +40,7 @@ describe('useCommentCRUD', () => {
         );
     });
 
-    it('deve mostrar toast de erro ao falhar ao deletar', async () => {
+    it('nao deve mostrar toast de erro local (delegado ao interceptor Axios)', async () => {
         server.use(
             http.delete('*/api/comments/:id', () => {
                 return HttpResponse.json({ success: false, message: 'Not found' }, { status: 404 });
@@ -53,12 +53,11 @@ describe('useCommentCRUD', () => {
             result.current.deleteComment('comment-nonexistent');
         });
 
-        await waitFor(() =>
-            expect(showErrorToast).toHaveBeenCalledWith(
-                'Erro ao deletar comentário.',
-                expect.objectContaining({ toastId: 'delete-comment-error' }),
-            ),
-        );
+        await waitFor(() => expect(result.current.deleteCommentError).not.toBeNull());
+
+        // O toast de erro é disparado pelo interceptor Axios global (httpInterceptors.ts),
+        // com a mensagem real do backend — não mais por um handler local com texto fixo.
+        expect(showErrorToast).not.toHaveBeenCalledWith('Erro ao deletar comentário.', expect.anything());
     });
 
     it('deve editar comentário e mostrar toast de sucesso', async () => {
@@ -107,7 +106,7 @@ describe('useCommentCRUD', () => {
         );
     });
 
-    it('deve mostrar toast de erro ao falhar ao editar', async () => {
+    it('nao deve mostrar toast de erro local ao falhar ao editar (delegado ao interceptor Axios)', async () => {
         server.use(
             http.put('*/api/comments/:id', () => {
                 return HttpResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
@@ -120,12 +119,9 @@ describe('useCommentCRUD', () => {
             result.current.editComment('comment-1', 'Will fail', null);
         });
 
-        await waitFor(() =>
-            expect(showErrorToast).toHaveBeenCalledWith(
-                'Erro ao editar comentário.',
-                expect.objectContaining({ toastId: 'edit-comment-error' }),
-            ),
-        );
+        await waitFor(() => expect(result.current.editCommentError).not.toBeNull());
+
+        expect(showErrorToast).not.toHaveBeenCalledWith('Erro ao editar comentário.', expect.anything());
     });
 
     it('deve responder comentário e mostrar toast de sucesso', async () => {
@@ -176,7 +172,7 @@ describe('useCommentCRUD', () => {
         );
     });
 
-    it('deve mostrar toast de erro ao falhar ao responder', async () => {
+    it('nao deve mostrar toast de erro local ao falhar ao responder (delegado ao interceptor Axios)', async () => {
         server.use(
             http.post('*/api/comments', () => {
                 return HttpResponse.json({ success: false, message: 'Server error' }, { status: 500 });
@@ -189,12 +185,9 @@ describe('useCommentCRUD', () => {
             result.current.replyComment('comment-1', 'title-1', 'Will fail', null);
         });
 
-        await waitFor(() =>
-            expect(showErrorToast).toHaveBeenCalledWith(
-                'Erro ao responder comentário.',
-                expect.objectContaining({ toastId: 'reply-comment-error' }),
-            ),
-        );
+        await waitFor(() => expect(result.current.replyCommentError).not.toBeNull());
+
+        expect(showErrorToast).not.toHaveBeenCalledWith('Erro ao responder comentário.', expect.anything());
     });
 
     it('deve indicar isDeletingComment como true durante mutation', async () => {

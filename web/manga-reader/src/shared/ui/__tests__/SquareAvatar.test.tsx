@@ -19,12 +19,12 @@ describe('SquareAvatar', () => {
     });
 
     it('fonte proporcional (0.36 * size) quando fontSize omitido', () => {
-        render(<SquareAvatar initials="RM" color="#fff" size={50} />);
+        render(<SquareAvatar initials="RM" color="var(--mr-fg)" size={50} />);
         expect(screen.getByText('RM')).toHaveStyle({ fontSize: '18px' });
     });
 
     it('fontSize explícito sobrescreve o proporcional', () => {
-        render(<SquareAvatar initials="RM" color="#fff" size={50} fontSize={28} />);
+        render(<SquareAvatar initials="RM" color="var(--mr-fg)" size={50} fontSize={28} />);
         expect(screen.getByText('RM')).toHaveStyle({ fontSize: '28px' });
     });
 });

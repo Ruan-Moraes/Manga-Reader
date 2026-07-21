@@ -44,12 +44,12 @@ export const NewsletterCard = ({ onSubscribe, texts }: { onSubscribe?: (email: s
                         placeholder={texts.newsletterPlaceholder}
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        className="py-2.5 min-w-0 flex-1 rounded-[2px] border border-mr-tertiary bg-transparent px-3 text-[13px] text-mr-fg outline-none transition-colors duration-200 placeholder:text-mr-fg-subtle focus:border-mr-accent mr-focus-ring"
+                        className="py-2.5 min-w-0 flex-1 rounded-[2px] border border-mr-tertiary bg-transparent px-3 text-[13px] text-mr-fg outline-none transition-colors duration-200 placeholder:text-mr-fg-subtle focus:border-mr-accent-border mr-focus-ring"
                     />
                     <button
                         type="submit"
                         aria-label={texts.newsletterSubmitAria}
-                        className="inline-flex size-11 shrink-0 items-center justify-center rounded-[2px] bg-mr-accent text-mr-primary transition-opacity duration-200 hover:opacity-[0.85] mr-focus-ring"
+                        className="inline-flex size-11 shrink-0 items-center justify-center rounded-[2px] bg-mr-accent text-mr-on-accent transition-opacity duration-200 hover:opacity-[0.85] mr-focus-ring"
                     >
                         <ArrowRight className="size-4" aria-hidden="true" />
                     </button>

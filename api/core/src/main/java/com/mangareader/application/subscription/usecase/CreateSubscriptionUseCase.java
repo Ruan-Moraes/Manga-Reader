@@ -14,6 +14,8 @@ import com.mangareader.domain.subscription.entity.SubscriptionPlan;
 import com.mangareader.domain.subscription.valueobject.SubscriptionPeriod;
 import com.mangareader.domain.subscription.valueobject.SubscriptionStatus;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +34,7 @@ public class CreateSubscriptionUseCase {
     private final SubscriptionPlanRepositoryPort planRepository;
     private final SubscriptionRepositoryPort subscriptionRepository;
     private final PaymentGatewayPort paymentGateway;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     @Transactional
     public Subscription execute(UUID userId, UUID planId) {
@@ -56,7 +59,10 @@ public class CreateSubscriptionUseCase {
                 .externalPaymentId(externalPaymentId)
                 .build();
 
-        return subscriptionRepository.save(subscription);
+        Subscription result = subscriptionRepository.save(subscription);
+        behaviorEventRecorder.record(userId, BehaviorEventType.SUBSCRIPTION_CREATED, null, null,
+                plan.getPeriod().name());
+        return result;
     }
 
     private LocalDateTime calculateEndDate(LocalDateTime start, SubscriptionPeriod period) {

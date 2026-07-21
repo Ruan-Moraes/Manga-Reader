@@ -17,7 +17,15 @@
         "artist": "Artist:",
         "publisher": "Publisher:",
         "type": "Type:",
-        "notAvailable": "N/A"
+        "notAvailable": "N/A",
+        "role": {
+            "AUTHOR": "Author",
+            "ARTIST": "Artist",
+            "STORY": "Writer",
+            "LETTERER": "Letterer",
+            "COLORIST": "Colorist",
+            "EDITOR": "Editor"
+        }
     },
     "card": {
         "chaptersCount": "({{count}} Chapters)",
@@ -73,6 +81,7 @@
         "noReviews": "No reviews yet",
         "noGroups": "No groups found",
         "fullSynopsis": "Full synopsis",
+        "credits": "Credits",
         "expandCover": "Expand cover"
     },
     "chapterEnd": {

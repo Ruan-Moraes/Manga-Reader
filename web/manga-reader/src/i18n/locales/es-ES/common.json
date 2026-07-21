@@ -20,6 +20,21 @@
         "goHome": "Ir al inicio",
         "searchWorks": "Explorar obras"
     },
+    "errorPage": {
+        "eyebrow": "Error inesperado",
+        "title": "Algo se salió del guion.",
+        "description": "No pudimos terminar de cargar esta página. Intenta recargarla o vuelve al inicio mientras lo solucionamos.",
+        "reload": "Recargar página",
+        "goHome": "Volver al inicio",
+        "technicalDetails": "Detalles técnicos",
+        "message": "Mensaje",
+        "file": "Archivo",
+        "position": "Ubicación",
+        "lineColumn": "Línea {{line}}, columna {{column}}",
+        "unavailable": "No disponible",
+        "copyDiagnostic": "Copiar diagnóstico",
+        "copied": "Diagnóstico copiado"
+    },
     "aboutUs": {
         "hero": {
             "eyebrow": "La plataforma",

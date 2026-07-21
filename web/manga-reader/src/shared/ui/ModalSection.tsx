@@ -15,7 +15,7 @@ export const ModalSection = ({ title, description, children, className }: ModalS
         {(title ?? description) && (
             <div className="flex flex-col gap-0.5">
                 {title && (
-                    <h3 className="mr-label flex items-center gap-3 text-mr-accent after:h-px after:flex-1 after:bg-mr-border-subtle">{title}</h3>
+                    <h3 className="mr-label flex items-center gap-3 text-mr-accent-fg after:h-px after:flex-1 after:bg-mr-border-subtle">{title}</h3>
                 )}
                 {description && <p className="text-mr-tiny text-mr-fg-subtle">{description}</p>}
             </div>

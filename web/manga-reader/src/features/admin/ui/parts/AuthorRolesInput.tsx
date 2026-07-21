@@ -45,7 +45,7 @@ const AuthorRolesInput = ({ value, onChange }: AuthorRolesInputProps) => {
                         aria-label={t('dashboard.titles.form.removeAuthor')}
                         onClick={() => remove(index)}
                         className={cn(
-                            'flex size-8 shrink-0 items-center justify-center rounded-mr-xs border border-[rgba(255,120,79,0.4)] text-mr-danger transition-colors hover:bg-mr-danger-15',
+                            'flex size-8 shrink-0 items-center justify-center rounded-mr-xs border border-mr-danger-border text-mr-danger transition-colors hover:bg-mr-danger-15',
                         )}
                     >
                         <X size={15} />

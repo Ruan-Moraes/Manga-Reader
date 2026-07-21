@@ -10,7 +10,7 @@ import useAppNavigate from '@shared/hook/useAppNavigate';
 
 import { MangaCard } from '@entities/manga';
 
-import type { SavedMangaItem } from '@features/library';
+import { useBookmark, type SavedMangaItem } from '@features/library';
 
 const MangaCardSkeleton = () => <Skeleton variant="rect" height={260} className="rounded-mr-xs shrink-0 w-[140px] sm:w-auto" />;
 
@@ -21,6 +21,7 @@ type HomeContinueReadingProps = {
 
 const HomeContinueReading = ({ continueLoading, continueReading }: HomeContinueReadingProps) => {
     const navigate = useAppNavigate();
+    const { toggleBookmark } = useBookmark();
 
     const { t } = useTranslation('home');
 
@@ -53,8 +54,11 @@ const HomeContinueReading = ({ continueLoading, continueReading }: HomeContinueR
                                     id: m.titleId,
                                     title: m.name,
                                     cover: m.cover,
+                                    adult: m.adult,
                                 }}
                                 onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}
+                                inLibrary
+                                onToggleLibrary={() => toggleBookmark(m.titleId)}
                             />
                         </div>
                     ))}

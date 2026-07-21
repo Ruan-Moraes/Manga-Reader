@@ -45,6 +45,9 @@ class FilterTitlesUseCaseTest {
     @Mock
     private TitleAuthorRepositoryPort titleAuthorRepository;
 
+    @Mock
+    private com.mangareader.application.manga.service.AdultContentAccessPolicy adultContentAccessPolicy;
+
     @InjectMocks
     private FilterTitlesUseCase filterTitlesUseCase;
 

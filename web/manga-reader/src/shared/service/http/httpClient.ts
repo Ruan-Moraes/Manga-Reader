@@ -35,6 +35,8 @@ export const createHttpClient = (config: HttpClientConfig = {}): AxiosInstance =
         baseURL,
         timeout,
         headers: { ...DEFAULT_HEADERS, ...headers },
+        // Cookies httpOnly (refresh token) precisam fluir em toda request
+        withCredentials: true,
     });
 
     registerInterceptors(instance, config);

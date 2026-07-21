@@ -62,7 +62,7 @@ export const ReviewsList = ({
             <div className="flex flex-col gap-3">
                 <div className="flex flex-col items-center gap-3 py-8 text-center">
                     <p className="text-[15px] font-mr-bold text-mr-fg">{t('reviews.empty.noMatch', { star: filterStar })}</p>
-                    <button type="button" onClick={onClearFilter} className="text-[13px] font-mr-bold text-mr-accent hover:underline">
+                    <button type="button" onClick={onClearFilter} className="text-[13px] font-mr-bold text-mr-accent-fg hover:underline">
                         {t('reviews.empty.clearFilter')}
                     </button>
                 </div>

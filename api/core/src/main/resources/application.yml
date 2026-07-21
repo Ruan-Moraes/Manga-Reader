@@ -2,6 +2,7 @@
 #   - (default): Desenvolvimento local com Docker Compose
 #   - prod:      Produção (connection strings via variáveis de ambiente)
 #   - test:      Testes automatizados
+#   - jwt-test:  Teste local apenas de expiração de tokens
 
 server:
   port: 8080
@@ -82,6 +83,17 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+      # Slices MVC e perfis que desabilitam integrações opcionais não registram
+      # todos os contributors. Em runtime, cada contributor existente abaixo
+      # continua compondo readiness; a ausência de um bean não impede o boot.
+      validate-group-membership: false
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,db,mongo,redis,rabbit,neo4j
 springdoc:
   api-docs:
     path: /api-docs
@@ -96,10 +108,50 @@ app:
   cors:
     allowed-origins: http://localhost:5173
   jwt:
-    secret: manga-reader-dev-secret-key-that-is-at-least-256-bits-long-for-hs256
-    access-token-expiration: 900000      # 15 minutos
-    refresh-token-expiration: 604800000  # 7 dias
+    secret: ${JWT_SECRET:manga-reader-dev-secret-key-that-is-at-least-256-bits-long-for-hs256}
+    access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:900000}      # 15 minutos
+    refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}  # 7 dias
+    password-reset-expiration: ${JWT_PASSWORD_RESET_EXPIRATION:1800000} # 30 minutos
+    cleanup-cron: ${REFRESH_TOKEN_CLEANUP_CRON:0 0 4 * * *}
+    revoked-retention-days: ${REFRESH_TOKEN_REVOKED_RETENTION_DAYS:1}
+  auth:
+    # Secure do cookie do refresh token — false em dev http (o browser
+    # descartaria o cookie); produção sobrescreve para true.
+    cookie-secure: false
+  rate-limit:
+    general:
+      capacity: ${RATE_LIMIT_GENERAL_CAPACITY:120}
+      window: ${RATE_LIMIT_GENERAL_WINDOW:1m}
+    auth:
+      capacity: ${RATE_LIMIT_AUTH_CAPACITY:15}
+      window: ${RATE_LIMIT_AUTH_WINDOW:1m}
+    trusted-proxies:
+      - ${RATE_LIMIT_TRUSTED_PROXY_IPV4:127.0.0.1}
+      - ${RATE_LIMIT_TRUSTED_PROXY_IPV6:::1}
   mail:
     from: noreply@mangareader.dev
     base-url: http://localhost:5173
     admin-email: admin@mangareader.dev
+  behavior-analytics:
+    retention-days: ${BEHAVIOR_ANALYTICS_RETENTION_DAYS:180}
+    title-view-seconds: ${BEHAVIOR_ANALYTICS_TITLE_VIEW_SECONDS:15}
+    bounce-min-seconds: ${BEHAVIOR_ANALYTICS_BOUNCE_MIN_SECONDS:2}
+    chapter-start-seconds: ${BEHAVIOR_ANALYTICS_CHAPTER_START_SECONDS:10}
+    chapter-completion-percent: ${BEHAVIOR_ANALYTICS_CHAPTER_COMPLETION_PERCENT:90}
+    max-batch-size: ${BEHAVIOR_ANALYTICS_MAX_BATCH_SIZE:100}
+  cache:
+    default-ttl: ${CACHE_DEFAULT_TTL:5m}
+    title-ttl: ${CACHE_TITLE_TTL:10m}
+    tag-ttl: ${CACHE_TAG_TTL:30m}
+    rating-average-ttl: ${CACHE_RATING_AVERAGE_TTL:2m}
+    public-stats-ttl: ${CACHE_PUBLIC_STATS_TTL:30m}
+    subscription-plans-ttl: ${CACHE_SUBSCRIPTION_PLANS_TTL:1h}
+---
+spring:
+  config:
+    activate:
+      on-profile: jwt-test
+app:
+  jwt:
+    access-token-expiration: 15000    # 15 segundos
+    refresh-token-expiration: 30000   # 30 segundos

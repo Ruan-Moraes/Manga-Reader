@@ -26,6 +26,9 @@ describe('Header', () => {
         expect(screen.getAllByText('Benefícios').length).toBeGreaterThan(0);
         expect(screen.getAllByText('Planos').length).toBeGreaterThan(0);
         expect(screen.getAllByText('FAQ').length).toBeGreaterThan(0);
+        expect(
+            screen.queryByRole('group', { name: 'Idioma' }),
+        ).not.toBeInTheDocument();
     });
 
     it('renders hamburger menu button', () => {
@@ -35,7 +38,7 @@ describe('Header', () => {
             </TestProviders>,
         );
 
-        expect(screen.getByLabelText('Menu')).toBeInTheDocument();
+        expect(screen.getByLabelText('Abrir menu')).toBeInTheDocument();
     });
 
     it('opens mobile menu on hamburger click', async () => {
@@ -47,10 +50,39 @@ describe('Header', () => {
             </TestProviders>,
         );
 
-        const button = screen.getByLabelText('Menu');
+        const button = screen.getByLabelText('Abrir menu');
 
         await user.click(button);
 
         expect(button).toHaveAttribute('aria-expanded', 'true');
+        expect(
+            screen.getByRole('dialog', { name: 'Navegação móvel' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('group', { name: 'Idioma' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Selecionar Português' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('group', { name: 'Tema' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Selecionar tema Sistema' }),
+        ).toBeInTheDocument();
+    });
+
+    it('closes the mobile menu with Escape and restores focus', async () => {
+        const user = userEvent.setup();
+        render(
+            <TestProviders>
+                <Header />
+            </TestProviders>,
+        );
+        const button = screen.getByLabelText('Abrir menu');
+        await user.click(button);
+        await user.keyboard('{Escape}');
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(button).toHaveFocus();
     });
 });

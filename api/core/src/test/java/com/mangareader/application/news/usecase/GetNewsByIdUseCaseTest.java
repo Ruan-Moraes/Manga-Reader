@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.time.Instant;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsCategory;
+import com.mangareader.domain.news.valueobject.NewsStatus;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,8 +28,12 @@ class GetNewsByIdUseCaseTest {
     @Mock
     private NewsRepositoryPort newsRepository;
 
-    @InjectMocks
     private GetNewsByIdUseCase getNewsByIdUseCase;
+
+    @BeforeEach
+    void setUp() {
+        getNewsByIdUseCase = new GetNewsByIdUseCase(newsRepository);
+    }
 
     @Test
     @DisplayName("Deve retornar notícia quando encontrada")
@@ -37,8 +44,10 @@ class GetNewsByIdUseCaseTest {
                 .id(newsId)
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capítulo de One Piece"))
                 .category(NewsCategory.LANCAMENTOS)
+                .status(NewsStatus.PUBLISHED)
+                .publishedAt(Instant.parse("2026-01-01T00:00:00Z"))
                 .build();
-        when(newsRepository.findById(newsId)).thenReturn(Optional.of(newsItem));
+        when(newsRepository.findByIdOrSlug(newsId)).thenReturn(Optional.of(newsItem));
 
         // Act
         NewsItem result = getNewsByIdUseCase.execute(newsId);
@@ -55,7 +64,7 @@ class GetNewsByIdUseCaseTest {
     void deveLancarExcecaoQuandoNoticiaNaoExiste() {
         // Arrange
         String newsId = "64a1b2c3d4e5f6a7b8c9d0e1";
-        when(newsRepository.findById(newsId)).thenReturn(Optional.empty());
+        when(newsRepository.findByIdOrSlug(newsId)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThatThrownBy(() -> getNewsByIdUseCase.execute(newsId))

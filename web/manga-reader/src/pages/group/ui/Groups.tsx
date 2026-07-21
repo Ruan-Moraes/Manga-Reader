@@ -1,4 +1,3 @@
-import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowDownAZ, Layers, Search, Users } from 'lucide-react';
 
@@ -19,19 +18,6 @@ const Groups = () => {
     const { groups, isLoading } = useGroups({ status: 'all', genre: 'all', sortBy: 'popularity' });
     const { query, setQuery, sortBy, setSortBy, visible } = useGroupFilters(groups);
 
-    const [followed, setFollowed] = useState<Set<string>>(new Set());
-
-    const toggleFollow = useCallback((id: string) => {
-        setFollowed(prev => {
-            const next = new Set(prev);
-
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-
-            return next;
-        });
-    }, []);
-
     const sortOptions: SortOption<GroupSortBy>[] = [
         { key: 'followers', label: t('filters.sortMostFollowers'), icon: Users },
         { key: 'chapters', label: t('filters.sortMostChapters'), icon: Layers },
@@ -41,7 +27,7 @@ const Groups = () => {
     return (
         <PageContainer asMain size="default" paddingY="md">
             <header className="mb-[18px]">
-                <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent">{t('page.eyebrow')}</div>
+                <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-[0.1em] text-mr-accent-fg">{t('page.eyebrow')}</div>
                 <h1 className="m-0 text-[clamp(22px,4vw,28px)] font-mr-bold tracking-mr text-mr-fg">{t('page.title')}</h1>
                 <p className="mt-1.5 max-w-[560px] text-mr-small leading-normal text-mr-gray-200">{t('page.sub')}</p>
             </header>
@@ -58,7 +44,7 @@ const Groups = () => {
                         onChange={e => setQuery(e.target.value)}
                         placeholder={t('filters.searchPlaceholder')}
                         aria-label={t('filters.searchPlaceholder')}
-                        className="h-10 w-full rounded-mr-xs border border-mr-gray-700 bg-mr-secondary pl-8 pr-3 text-mr-small tracking-mr text-mr-fg outline-none focus:border-mr-accent"
+                        className="h-10 w-full rounded-mr-xs border border-mr-gray-700 bg-mr-secondary pl-8 pr-3 text-mr-small tracking-mr text-mr-fg outline-none focus:border-mr-accent-border"
                     />
                 </div>
                 <CatSortSelect value={sortBy} options={sortOptions} onChange={setSortBy} />
@@ -67,19 +53,13 @@ const Groups = () => {
             {isLoading ? (
                 <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(366px, 1fr))' }}>
                     {Array.from({ length: 6 }, (_, i) => (
-                        <div key={i} className="h-[230px] animate-mr-pulse rounded-mr-sm border border-[#333] bg-mr-gray-900" />
+                        <div key={i} className="h-[230px] animate-mr-pulse rounded-mr-sm border border-mr-border bg-mr-gray-900" />
                     ))}
                 </div>
             ) : (
                 <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(366px, 100%), 1fr))' }}>
                     {visible.map(g => (
-                        <GroupCard
-                            key={g.id}
-                            group={g}
-                            onOpen={() => navigate(ROUTES.GROUP_DETAIL(g.id))}
-                            following={followed.has(g.id)}
-                            onToggleFollow={() => toggleFollow(g.id)}
-                        />
+                        <GroupCard key={g.id} group={g} onOpen={() => navigate(ROUTES.GROUP_DETAIL(g.id))} />
                     ))}
                 </div>
             )}

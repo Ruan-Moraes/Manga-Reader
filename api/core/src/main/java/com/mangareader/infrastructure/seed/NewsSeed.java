@@ -2,6 +2,7 @@ package com.mangareader.infrastructure.seed;
 
 import java.util.List;
 import java.util.Map;
+import java.time.Instant;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,9 @@ import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.domain.news.valueobject.NewsReaction;
+import com.mangareader.domain.news.valueobject.NewsSlug;
+import com.mangareader.domain.news.valueobject.NewsStatus;
+import com.mangareader.infrastructure.persistence.mongo.mapper.NewsPersistenceMapper;
 import com.mangareader.infrastructure.persistence.mongo.repository.NewsMongoRepository;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.domain.i18n.LocalizedStringList;
@@ -419,7 +423,18 @@ public class NewsSeed implements EntitySeeder {
 
         var allNews = new java.util.ArrayList<>(news);
         allNews.addAll(moreNews);
-        newsRepository.saveAll(allNews);
+        Instant now = Instant.now();
+        for (int i = 0; i < allNews.size(); i++) {
+            NewsItem item = allNews.get(i);
+            String slug = NewsSlug.from(item.getTitle().values().get("pt-BR"));
+            item.setSlug(slug);
+            item.setCoverImage("https://picsum.photos/seed/" + slug + "/1600/900");
+            item.setStatus(NewsStatus.PUBLISHED);
+            item.setCreatedAt(now.minusSeconds((long) (allNews.size() - i) * 86_400));
+            item.setUpdatedAt(item.getCreatedAt());
+            item.setPublishedAt(item.getCreatedAt());
+        }
+        newsRepository.saveAll(allNews.stream().map(NewsPersistenceMapper::toDocument).toList());
 
         log.info("✓ {} notícias de demonstração criadas.", allNews.size());
     }

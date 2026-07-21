@@ -1,5 +1,5 @@
 import { ROUTES } from '@shared/constant/ROUTES';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import useAppNavigate from '@shared/hook/useAppNavigate';
@@ -12,16 +12,30 @@ import { Pagination } from '@ui/Pagination';
 import { EmptyState } from '@ui/EmptyState';
 import { Skeleton } from '@ui/Skeleton';
 
+import { useBookmark } from '@features/library';
+import { trackBehavior } from '@features/track-user-behavior';
+
 const CARDS_PER_PAGE = 20;
 
 const SearchResults = () => {
     const { t } = useTranslation('manga');
     const navigate = useAppNavigate();
+    const { isSaved, toggleBookmark } = useBookmark();
     const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get('q') ?? '';
     const [page, setPage] = useState(0);
 
     const { data, isLoading, isError } = useSearchTitles(query, page, CARDS_PER_PAGE);
+    const trackedQuery = useRef('');
+
+    useEffect(() => {
+        if (!query || !data || isLoading || isError || trackedQuery.current === query) return;
+        trackedQuery.current = query;
+        void trackBehavior({ type: 'SEARCH_PERFORMED', searchTerm: query, resultCount: data.totalElements, source: 'SEARCH' });
+        if (data.totalElements === 0) {
+            void trackBehavior({ type: 'SEARCH_NO_RESULTS', searchTerm: query, resultCount: 0, source: 'SEARCH' });
+        }
+    }, [data, isError, isLoading, query]);
 
     const handleQueryChange = (value: string) => {
         setPage(0);
@@ -83,9 +97,15 @@ const SearchResults = () => {
                                     author: title.author,
                                     cover: title.cover,
                                     rating: title.ratingAverage,
+                                    adult: title.adult,
                                     chapter: title.latestChapterNumber ? Number(title.latestChapterNumber) : undefined,
                                 }}
-                                onClick={() => navigate(ROUTES.TITLE_DETAIL(title.id))}
+                                onClick={() => {
+                                    void trackBehavior({ type: 'SEARCH_RESULT_CLICKED', searchTerm: query, titleId: title.id, source: 'SEARCH' });
+                                    navigate(ROUTES.TITLE_DETAIL(title.id));
+                                }}
+                                inLibrary={isSaved(title.id)}
+                                onToggleLibrary={() => toggleBookmark(title.id)}
                             />
                         ))}
                     </div>

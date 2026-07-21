@@ -64,4 +64,15 @@ class TitleAuthorJpaRepositoryTest {
 
         assertThat(titleAuthorRepository.findByTitleId("title-mongo-1")).hasSize(2);
     }
+
+    @Test
+    @DisplayName("substitui vínculo existente antes de inserir o mesmo autor e papel")
+    void substituiVinculoExistenteAntesDoInsert() {
+        titleAuthorRepository.deleteByTitleId("title-mongo-1");
+
+        entityManager.persistAndFlush(TitleAuthor.builder()
+                .titleId("title-mongo-1").author(oda).role(AuthorRole.AUTHOR).build());
+
+        assertThat(titleAuthorRepository.findByTitleId("title-mongo-1")).hasSize(1);
+    }
 }

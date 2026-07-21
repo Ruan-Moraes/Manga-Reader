@@ -6,7 +6,7 @@ import useDebouncedCallback from '../../../lib/useDebouncedCallback';
 
 import { Avatar } from '@ui/Avatar';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import { updateProfile, type UpdateProfilePayload } from '@entities/user';
 import { type EnrichedProfile } from '@entities/user';
@@ -35,11 +35,12 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
 
             onSaved();
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     }, AUTOSAVE_MS);
 
-    // Username (DT-48): 409 = handle já em uso — mensagem específica.
+    // Username (DT-48): 409 (handle já em uso) chega com a mensagem real do backend
+    // via interceptor Axios — não precisa de tratamento local específico.
     const saveUsername = useDebouncedCallback(async (value: string) => {
         try {
             await updateProfile({ username: value });
@@ -47,10 +48,8 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
             showSuccessToast(t('profile.edit.saved'));
 
             onSaved();
-        } catch (error) {
-            const status = (error as { response?: { status?: number } }).response?.status;
-
-            showErrorToast(status === 409 ? t('profile.edit.info.userTaken') : t('profile.edit.saveError'));
+        } catch {
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     }, AUTOSAVE_MS);
 
@@ -63,13 +62,13 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
             showSuccessToast(t('profile.edit.saved'));
             onSaved();
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
         }
     };
 
     return (
         <div>
-            <div className="mb-[18px] flex items-center gap-3.5 rounded-mr-sm border border-[#333333] bg-[#1f1f20] p-3.5">
+            <div className="mb-[18px] flex items-center gap-3.5 rounded-mr-sm border border-mr-border bg-mr-surface-interactive p-3.5">
                 <div className="relative">
                     <Avatar src={photoUrl || undefined} name={name} size={64} />
                     <button
@@ -80,7 +79,7 @@ const InformacoesTab = ({ profile, onSaved }: Props) => {
 
                             if (url !== null) savePhoto(url);
                         }}
-                        className="mr-focus-ring absolute -bottom-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-mr-xs border-2 border-mr-primary bg-mr-accent p-0 text-mr-primary"
+                        className="mr-focus-ring absolute -bottom-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-mr-xs border-2 border-mr-primary bg-mr-accent p-0 text-mr-on-accent"
                     >
                         <Plus size={12} />
                     </button>

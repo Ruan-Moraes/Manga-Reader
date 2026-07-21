@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ import com.mangareader.application.news.usecase.admin.DeleteNewsUseCase;
 import com.mangareader.application.news.usecase.admin.GetAdminNewsUseCase;
 import com.mangareader.application.news.usecase.admin.ListAdminNewsUseCase;
 import com.mangareader.application.news.usecase.admin.UpdateNewsUseCase;
+import com.mangareader.application.news.usecase.admin.ChangeNewsStatusUseCase;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
@@ -63,6 +65,9 @@ class AdminNewsControllerTest {
     @MockitoBean
     private DeleteNewsUseCase deleteNewsUseCase;
 
+    @MockitoBean
+    private ChangeNewsStatusUseCase changeNewsStatusUseCase;
+
     private NewsItem buildNews() {
         return NewsItem.builder()
                 .id("news-1")
@@ -78,8 +83,8 @@ class AdminNewsControllerTest {
                 .views(100)
                 .isExclusive(false)
                 .isFeatured(true)
-                .publishedAt(LocalDateTime.of(2026, 1, 1, 0, 0))
-                .updatedAt(LocalDateTime.of(2026, 1, 1, 0, 0))
+                .publishedAt(LocalDateTime.of(2026, 1, 1, 0, 0).toInstant(ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.of(2026, 1, 1, 0, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 
@@ -87,7 +92,8 @@ class AdminNewsControllerTest {
     @DisplayName("GET /api/admin/news — deve retornar 200 com lista paginada")
     void deveRetornar200ComListaPaginada() throws Exception {
         var page = new PageImpl<>(List.of(buildNews()));
-        when(listAdminNewsUseCase.execute(any(), any(Pageable.class))).thenReturn(page);
+        when(listAdminNewsUseCase.execute(org.mockito.ArgumentMatchers.isNull(), org.mockito.ArgumentMatchers.isNull(),
+                org.mockito.ArgumentMatchers.isNull(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/admin/news"))
                 .andExpect(status().isOk())
@@ -109,10 +115,8 @@ class AdminNewsControllerTest {
     @Test
     @DisplayName("POST /api/admin/news — deve retornar 201 ao criar notícia")
     void deveRetornar201AoCriarNoticia() throws Exception {
-        when(createNewsUseCase.execute(
-                any(), any(), any(), any(), any(), any(NewsCategory.class),
-                any(), any(NewsAuthor.class), any(), anyInt(), anyBoolean(), anyBoolean()
-        )).thenReturn(buildNews());
+        when(createNewsUseCase.execute(any(com.mangareader.application.news.usecase.admin.CreateNewsUseCase.CreateNewsCommand.class)))
+                .thenReturn(buildNews());
 
         mockMvc.perform(post("/api/admin/news")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -134,10 +138,8 @@ class AdminNewsControllerTest {
     void deveRetornar200AoAtualizar() throws Exception {
         NewsItem updated = buildNews();
         updated.setTitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Updated News"));
-        when(updateNewsUseCase.execute(
-                eq("news-1"), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any()
-        )).thenReturn(updated);
+        when(updateNewsUseCase.execute(any(com.mangareader.application.news.usecase.admin.UpdateNewsUseCase.UpdateNewsCommand.class)))
+                .thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/news/news-1")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { beforeEach, describe, it, expect } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
@@ -29,6 +29,33 @@ const renderChapter = (titleId = '1', chapter = '1') => {
 };
 
 describe('Chapter (Reader)', () => {
+    beforeEach(() => {
+        server.use(
+            http.get('*/api/titles/:titleId/chapters/:number/reader', ({ params }) =>
+                HttpResponse.json({
+                    data: {
+                        id: `chapter-${String(params.number)}`,
+                        titleId: String(params.titleId),
+                        number: String(params.number),
+                        title: `Capítulo ${String(params.number)}`,
+                        status: 'PUBLISHED',
+                        pages: [
+                            {
+                                id: 'page-1',
+                                order: 1,
+                                imageUrl: 'https://example.com/page-1.jpg',
+                                thumbnailUrl: 'https://example.com/page-1-thumb.jpg',
+                                width: 800,
+                                height: 1200,
+                            },
+                        ],
+                    },
+                    success: true,
+                }),
+            ),
+        );
+    });
+
     it('renders main landmark', () => {
         renderChapter();
         expect(screen.getByRole('main', { name: /leitor de mangá/i })).toBeInTheDocument();

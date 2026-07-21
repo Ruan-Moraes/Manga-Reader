@@ -12,5 +12,5 @@
 export const TOTAL_PAGES = 18;
 
 /** Gradiente do placeholder de página (substituível por `<img>` real). */
-export const PAGE_GRADIENT = 'linear-gradient(135deg,#2a1f0f,#161616)';
+export const PAGE_GRADIENT = 'var(--mr-poster-gradient)';
 

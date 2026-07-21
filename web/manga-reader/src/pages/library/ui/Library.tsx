@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus } from 'lucide-react';
+import { Plus, LayoutGrid, LayoutList } from 'lucide-react';
 
 import { PageContainer } from '@ui/PageContainer';
 import { SectionHeader } from '@ui/SectionHeader';
@@ -49,8 +49,8 @@ const Library = () => {
     ];
 
     const layoutItems = [
-        { value: 'grid', label: t('page.layout.grid') },
-        { value: 'list', label: t('page.layout.list') },
+        { value: 'grid', label: t('page.layout.grid'), icon: LayoutGrid },
+        { value: 'list', label: t('page.layout.list'), icon: LayoutList },
     ];
 
     const tabItems: Array<{ value: string; label: string }> = [
@@ -90,7 +90,7 @@ const Library = () => {
             <div className="mb-6 flex flex-wrap gap-3">
                 <SearchField value={query} onChange={setQuery} placeholder={t('page.searchPlaceholder')} className="flex-1 min-w-[180px]" />
                 <Select value={sort} onChange={e => setSort(e.target.value)} options={sortOptions} className="w-40" />
-                <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="md" unified={true} />
+                <SegmentedControl items={layoutItems} value={layout} onChange={v => setLayout(v as Layout)} size="md" unified={true} iconOnly />
             </div>
 
             {loading ? (
@@ -123,9 +123,12 @@ const Library = () => {
                                 id: m.titleId,
                                 title: m.name,
                                 cover: m.cover,
+                                adult: m.adult,
                             }}
                             size="md"
                             onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}
+                            inLibrary
+                            onToggleLibrary={() => removeFromSaved(m.titleId)}
                         />
                     ))}
                 </div>
@@ -134,7 +137,7 @@ const Library = () => {
                     {sorted.map(m => (
                         <div
                             key={m.titleId}
-                            className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent"
+                            className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 transition-colors hover:border-mr-accent-border"
                         >
                             <button type="button" className="flex flex-1 items-center gap-3 text-left" onClick={() => navigate(ROUTES.TITLE_DETAIL(m.titleId))}>
                                 <div

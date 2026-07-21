@@ -28,11 +28,11 @@ export const ForumSidebarNav = ({ active, onSelect }: ForumSidebarNavProps) => {
                 );
             })}
             <div className="forum-cats-foot">
-                <div className="mr-label" style={{ color: '#727273', marginBottom: 6 }}>
+                <div className="mr-label" style={{ color: 'var(--mr-tertiary)', marginBottom: 6 }}>
                     {t('ui.rules')}
                 </div>
-                <p style={{ fontSize: 11, color: '#999', lineHeight: 1.5, margin: 0 }}>
-                    {t('ui.rulesBefore')} <span style={{ color: '#FF784F', fontWeight: 700 }}>[spoiler]</span> {t('ui.rulesAfter')}
+                <p style={{ fontSize: 11, color: 'var(--mr-fg-subtle)', lineHeight: 1.5, margin: 0 }}>
+                    {t('ui.rulesBefore')} <span style={{ color: 'var(--mr-danger)', fontWeight: 700 }}>[spoiler]</span> {t('ui.rulesAfter')}
                 </p>
             </div>
         </nav>

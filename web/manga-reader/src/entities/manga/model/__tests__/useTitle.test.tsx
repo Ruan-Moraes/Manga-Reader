@@ -33,6 +33,7 @@ describe('useTitle', () => {
     });
 
     it('deve expor isError quando busca falha', async () => {
+        server.use(http.get(`*${API_URLS.TITLES}/abc`, () => HttpResponse.json({ success: false }, { status: 404 })));
         const { result } = renderHook(() => useTitle('abc'), { wrapper });
 
         await waitFor(() => {

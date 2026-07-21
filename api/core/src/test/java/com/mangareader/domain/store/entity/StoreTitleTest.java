@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import jakarta.persistence.Column;
+
 @DisplayName("StoreTitle")
 class StoreTitleTest {
 
@@ -35,13 +37,12 @@ class StoreTitleTest {
         }
 
         @Test
-        @DisplayName("Deve permitir url null")
-        void shouldAllowNullUrl() {
-            StoreTitle storeTitle = StoreTitle.builder()
-                    .titleId("mongo-456")
-                    .build();
+        @DisplayName("Deve mapear URL como obrigatória e limitada a 500 caracteres")
+        void shouldMapUrlAsRequired() throws NoSuchFieldException {
+            Column mapping = StoreTitle.class.getDeclaredField("url").getAnnotation(Column.class);
 
-            assertThat(storeTitle.getUrl()).isNull();
+            assertThat(mapping.nullable()).isFalse();
+            assertThat(mapping.length()).isEqualTo(500);
         }
     }
 

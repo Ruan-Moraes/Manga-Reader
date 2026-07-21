@@ -22,6 +22,7 @@ type ChapterPageGridProps = {
     onReorder: (orderedIds: string[]) => void;
     onMovePage: (pageId: string, toPosition: number) => void;
     onRetryPage: (pageId: string) => void;
+    readOnly?: boolean;
 };
 
 /**
@@ -30,7 +31,7 @@ type ChapterPageGridProps = {
  * `multiple` — quando o upload real chegar (DT-44), os `File`s selecionados
  * passam a alimentar `NewPageInput` sem mudança de estrutura.
  */
-const ChapterPageGrid = ({ pages, isSubmitting, onAddPages, onRemovePage, onRemovePages, onReplacePage, onReorder, onMovePage, onRetryPage }: ChapterPageGridProps) => {
+const ChapterPageGrid = ({ pages, isSubmitting, onAddPages, onRemovePage, onRemovePages, onReplacePage, onReorder, onMovePage, onRetryPage, readOnly = false }: ChapterPageGridProps) => {
     const { t } = useTranslation('admin');
     const selection = useChapterSelection();
     const [zoomPage, setZoomPage] = useState<ChapterPage | null>(null);
@@ -55,7 +56,7 @@ const ChapterPageGrid = ({ pages, isSubmitting, onAddPages, onRemovePage, onRemo
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2.5">
-                <Button variant="primary" size="sm" icon={Plus} loading={isSubmitting} onClick={() => addInputRef.current?.click()}>
+                <Button variant="primary" size="sm" icon={Plus} loading={isSubmitting} disabled={readOnly} onClick={() => addInputRef.current?.click()}>
                     {t('dashboard.chapters.pages.add')}
                 </Button>
                 {selection.count > 0 && (
@@ -79,7 +80,12 @@ const ChapterPageGrid = ({ pages, isSubmitting, onAddPages, onRemovePage, onRemo
                 <span className="ml-auto text-mr-tiny text-mr-fg-subtle">{t('dashboard.chapters.pages.count', { count: pages.length })}</span>
             </div>
 
-            {/* Upload múltiplo mock: só o nome do arquivo é usado (DT-44). */}
+            {readOnly && (
+                <p role="status" className="rounded-mr-sm border border-mr-border bg-mr-surface-muted px-3 py-2 text-mr-small text-mr-fg-subtle">
+                    {t('dashboard.chapters.pages.mediaUnavailable')}
+                </p>
+            )}
+
             <input
                 ref={addInputRef}
                 type="file"
@@ -110,18 +116,20 @@ const ChapterPageGrid = ({ pages, isSubmitting, onAddPages, onRemovePage, onRemo
             {sorted.length === 0 ? (
                 <EmptyState illustration="pensando" title={t('dashboard.chapters.pages.emptyTitle')} description={t('dashboard.chapters.pages.empty')} />
             ) : (
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={readOnly ? undefined : handleDragEnd}>
                     <SortableContext items={sorted.map(p => p.id)} strategy={rectSortingStrategy}>
                         <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
                             {sorted.map(page => (
                                 <ChapterPageCard
                                     key={page.id}
                                     page={page}
+                                    readOnly={readOnly}
                                     totalPages={sorted.length}
                                     selected={selection.isSelected(page.id)}
                                     onToggleSelect={() => selection.toggle(page.id)}
                                     onRemove={() => onRemovePage(page.id)}
                                     onReplace={() => {
+                                        if (readOnly) return;
                                         replaceTargetRef.current = page.id;
                                         replaceInputRef.current?.click();
                                     }}

@@ -2,22 +2,13 @@ import type { ChapterAdminGateway } from '../../model/admin/chapterAdminGateway.
 import type { ChapterAnalyticsGateway } from '../../model/admin/chapterAnalyticsGateway.port';
 import type { ChapterPublicGateway, ReaderProgressGateway } from '../../model/admin/chapterPublicGateway.port';
 
-import { createChapterStore } from './localStorageChapterStore';
-import { createLocalStorageChapterAdminGateway } from './localStorageChapterAdminGateway';
-import { createLocalStorageChapterAnalyticsGateway } from './localStorageChapterAnalyticsGateway';
-import { createLocalStorageChapterPublicGateway, createLocalStorageReaderProgressGateway } from './localStorageChapterPublicGateway';
+import { createHttpChapterAdminGateway } from './httpChapterAdminGateway';
+import { createHttpChapterAnalyticsGateway } from './httpChapterAnalyticsGateway';
+import { createHttpChapterPublicGateway } from './httpChapterPublicGateway';
+import { createHttpReaderProgressGateway } from './httpReaderProgressGateway';
 
-/**
- * PONTO DE INJEÇÃO do armazenamento de capítulos.
- *
- * Hoje: implementações fake sobre localStorage (armazenamento definitivo
- * adiado — DT-44). Quando o backend expor `/api/admin/titles/{id}/chapters`,
- * troque as factories abaixo por services axios que implementem os mesmos
- * ports — nenhum componente, hook ou validação muda.
- */
-const store = createChapterStore();
-
-export const chapterAdminGateway: ChapterAdminGateway = createLocalStorageChapterAdminGateway(store);
-export const chapterPublicGateway: ChapterPublicGateway = createLocalStorageChapterPublicGateway(store);
-export const chapterAnalyticsGateway: ChapterAnalyticsGateway = createLocalStorageChapterAnalyticsGateway(store);
-export const readerProgressGateway: ReaderProgressGateway = createLocalStorageReaderProgressGateway();
+/** Ponto único de injeção dos gateways HTTP de capítulos e progresso. */
+export const chapterAdminGateway: ChapterAdminGateway = createHttpChapterAdminGateway();
+export const chapterPublicGateway: ChapterPublicGateway = createHttpChapterPublicGateway();
+export const chapterAnalyticsGateway: ChapterAnalyticsGateway = createHttpChapterAnalyticsGateway(chapterAdminGateway);
+export const readerProgressGateway: ReaderProgressGateway = createHttpReaderProgressGateway();

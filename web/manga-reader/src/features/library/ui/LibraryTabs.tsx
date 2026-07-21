@@ -32,7 +32,7 @@ const LibraryTabs = ({ activeTab, counts, onChange }: Props) => {
                     onClick={() => onChange(id)}
                     className={`px-3 py-1.5 text-sm border rounded-xs transition-colors flex items-center gap-1.5 ${
                         activeTab === id
-                            ? 'bg-quaternary text-shadow-default border-quaternary font-semibold'
+                            ? 'bg-quaternary text-shadow-default border-mr-accent-border font-semibold'
                             : 'bg-secondary border-tertiary hover:bg-tertiary/30'
                     }`}
                 >

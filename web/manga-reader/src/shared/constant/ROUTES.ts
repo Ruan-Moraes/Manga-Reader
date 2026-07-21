@@ -59,12 +59,14 @@ export const ROUTES = {
     LIBRARY: '/library',
     REVIEWS: '/reviews',
     PUBLISH_WORK: '/i-want-to-publish-work',
+    NOTIFICATIONS: '/notifications',
 
     // Dashboard (admin)
     DASHBOARD: '/dashboard',
     DASHBOARD_USERS: '/dashboard/users',
     DASHBOARD_USER_DETAIL: (userId: string) => `/dashboard/users/${userId}`,
     DASHBOARD_TITLES: '/dashboard/titles',
+    DASHBOARD_STORES: '/dashboard/stores',
     DASHBOARD_CHAPTERS: '/dashboard/chapters',
     DASHBOARD_CHAPTERS_BY_TITLE: (titleId: string) => `/dashboard/chapters?titleId=${titleId}`,
     DASHBOARD_CHAPTERS_ANALYTICS: '/dashboard/chapters/analytics',

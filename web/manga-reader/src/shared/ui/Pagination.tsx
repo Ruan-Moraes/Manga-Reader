@@ -17,7 +17,7 @@ export const Pagination = ({ page, total, onChange, siblings = 1 }: PaginationPr
     return (
         <nav role="navigation" aria-label="Paginação" className="flex flex-wrap items-center justify-center gap-1">
             <Button variant="ghost" size="sm" icon={ChevronLeft} disabled={page === 1} onClick={() => onChange(page - 1)} aria-label="Página anterior">
-                Anterior
+                <span className="hidden sm:inline">Anterior</span>
             </Button>
             {items.map((it, i) =>
                 it === 'gap' ? (
@@ -38,7 +38,7 @@ export const Pagination = ({ page, total, onChange, siblings = 1 }: PaginationPr
                 ),
             )}
             <Button variant="ghost" size="sm" iconRight={ChevronRight} disabled={page === total} onClick={() => onChange(page + 1)} aria-label="Próxima página">
-                Próxima
+                <span className="hidden sm:inline">Próxima</span>
             </Button>
         </nav>
     );

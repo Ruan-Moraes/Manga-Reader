@@ -65,6 +65,10 @@ public class UserProfileSettings {
     @Builder.Default
     private AdultContentPreference adultContentPreference = AdultContentPreference.BLUR;
 
+    @Column(name = "behavior_analytics_enabled", nullable = false)
+    @Builder.Default
+    private boolean behaviorAnalyticsEnabled = true;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -80,6 +84,7 @@ public class UserProfileSettings {
                 .viewHistoryVisibility(VisibilitySetting.PUBLIC)
                 .libraryVisibility(VisibilitySetting.PUBLIC)
                 .adultContentPreference(AdultContentPreference.BLUR)
+                .behaviorAnalyticsEnabled(true)
                 .build();
     }
 }

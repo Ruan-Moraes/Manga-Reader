@@ -20,12 +20,14 @@ import java.util.List;
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
 import com.mangareader.application.manga.service.TitleAssociationReader;
+import com.mangareader.application.manga.service.TitleStoreAssociationReader;
 import com.mangareader.application.manga.usecase.admin.CreateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.DeleteTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.GetAdminTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.ListAdminTitlesUseCase;
 import com.mangareader.application.manga.usecase.admin.TitleAuthorAssignment;
 import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
+import com.mangareader.application.manga.usecase.admin.TitleStoreAssignment;
 import com.mangareader.domain.author.valueobject.AuthorRole;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
@@ -55,6 +57,7 @@ public class AdminTitleController {
     private final ChapterRepositoryPort chapterRepository;
     private final TitleRatingAggregateReadPort ratingAggregateReadPort;
     private final TitleAssociationReader titleAssociationReader;
+    private final TitleStoreAssociationReader titleStoreAssociationReader;
     private final AdminTitleMapper adminTitleMapper;
 
     @GetMapping
@@ -76,10 +79,11 @@ public class AdminTitleController {
         var ratings = ratingAggregateReadPort.findByTitleIdIn(ids);
         var authorsByTitle = titleAssociationReader.authorsByTitle(ids);
         var publishersByTitle = titleAssociationReader.publishersByTitle(ids);
+        var storesByTitle = titleStoreAssociationReader.byTitles(ids);
 
         var mapped = result.map(t -> adminTitleMapper.toResponse(
                 t, counts.getOrDefault(t.getId(), 0L), ratings.get(t.getId()),
-                authorsByTitle, publishersByTitle));
+                authorsByTitle, publishersByTitle, storesByTitle));
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapped)));
     }
@@ -88,9 +92,9 @@ public class AdminTitleController {
     public ResponseEntity<ApiResponse<AdminTitleResponse>> getTitleDetail(@PathVariable String id) {
         var title = getAdminTitleUseCase.execute(id);
 
-        return ResponseEntity.ok(ApiResponse.success(
-                adminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id),
-                        ratingAggregateReadPort.findByTitleId(id).orElse(null))));
+        return ResponseEntity.ok(ApiResponse.success(toResponse(
+                title, chapterRepository.countByTitleId(id),
+                ratingAggregateReadPort.findByTitleId(id).orElse(null))));
     }
 
     @PostMapping
@@ -101,11 +105,11 @@ public class AdminTitleController {
                 request.name(), request.type(), request.cover(), request.synopsis(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult(),
-                toAssignments(request.authors()), request.publishers()
+                toAssignments(request.authors()), request.publishers(), toStoreAssignments(request.stores())
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(adminTitleMapper.toResponse(title, 0L)));
+                .body(ApiResponse.created(toResponse(title, 0L, null)));
     }
 
     @PatchMapping("/{id}")
@@ -117,12 +121,12 @@ public class AdminTitleController {
                 id, request.name(), request.type(), request.cover(), request.synopsis(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult(),
-                toAssignments(request.authors()), request.publishers()
+                toAssignments(request.authors()), request.publishers(), toStoreAssignments(request.stores())
         );
 
-        return ResponseEntity.ok(ApiResponse.success(
-                adminTitleMapper.toResponse(title, chapterRepository.countByTitleId(id),
-                        ratingAggregateReadPort.findByTitleId(id).orElse(null))));
+        return ResponseEntity.ok(ApiResponse.success(toResponse(
+                title, chapterRepository.countByTitleId(id),
+                ratingAggregateReadPort.findByTitleId(id).orElse(null))));
     }
 
     @DeleteMapping("/{id}")
@@ -149,5 +153,19 @@ public class AdminTitleController {
         } catch (IllegalArgumentException ex) {
             throw new BusinessRuleException("Papel de autor inválido: " + role, 400);
         }
+    }
+
+    private static List<TitleStoreAssignment> toStoreAssignments(List<com.mangareader.presentation.admin.dto.StoreAssignmentRequest> stores) {
+        if (stores == null) return null;
+        return stores.stream().map(store -> new TitleStoreAssignment(store.storeId(), store.url())).toList();
+    }
+
+    private AdminTitleResponse toResponse(Title title, long chaptersCount,
+            com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView rating) {
+        var ids = List.of(title.getId());
+        return adminTitleMapper.toResponse(title, chaptersCount, rating,
+                titleAssociationReader.authorsByTitle(ids),
+                titleAssociationReader.publishersByTitle(ids),
+                titleStoreAssociationReader.byTitles(ids));
     }
 }

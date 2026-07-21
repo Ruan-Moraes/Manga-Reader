@@ -16,6 +16,8 @@ type BulkChapterStatusModalProps = {
     onConfirm: (status: ChapterStatus) => Promise<BulkResult | null>;
 };
 
+const BULK_CHAPTER_STATUSES = CHAPTER_STATUSES.filter(status => status !== 'scheduled');
+
 /** Mudança de status em lote com relatório de resultado parcial por item. */
 const BulkChapterStatusModal = ({ isOpen, onClose, count, isSubmitting, onConfirm }: BulkChapterStatusModalProps) => {
     const { t } = useTranslation('admin');
@@ -64,7 +66,7 @@ const BulkChapterStatusModal = ({ isOpen, onClose, count, isSubmitting, onConfir
                         <p className="text-mr-small text-mr-fg">{t('dashboard.chapters.bulk.partialSummary', { ok: result.succeeded.length, failed: result.failed.length })}</p>
                         <ul className="flex max-h-[40vh] flex-col gap-1.5 overflow-y-auto">
                             {result.failed.map(failure => (
-                                <li key={failure.id} className="rounded-mr-xs border border-[rgba(255,120,79,0.4)] bg-mr-danger-15 px-3 py-2 text-mr-tiny text-mr-fg">
+                                <li key={failure.id} className="rounded-mr-xs border border-mr-danger-border bg-mr-danger-15 px-3 py-2 text-mr-tiny text-mr-fg">
                                     <span className="font-mr-mono text-mr-fg-subtle">{failure.id.slice(0, 10)}</span>{' '}
                                     <span className="text-mr-danger">{t(`dashboard.chapters.errors.${failure.error.code}`, { ...failure.error })}</span>
                                 </li>
@@ -76,7 +78,7 @@ const BulkChapterStatusModal = ({ isOpen, onClose, count, isSubmitting, onConfir
                         <Select
                             value={status}
                             onChange={e => setStatus(e.target.value as ChapterStatus)}
-                            options={CHAPTER_STATUSES.map(s => ({ value: s, label: t(`dashboard.status.chapter.${s}`) }))}
+                            options={BULK_CHAPTER_STATUSES.map(s => ({ value: s, label: t(`dashboard.status.chapter.${s}`) }))}
                             aria-label={t('dashboard.chapters.bulk.statusLabel')}
                         />
                     </Field>

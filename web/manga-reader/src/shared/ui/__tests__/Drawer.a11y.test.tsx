@@ -38,4 +38,40 @@ describe('Drawer a11y', () => {
         fireEvent.keyDown(document, { key: 'Escape' });
         expect(closed).toBe(true);
     });
+
+    it('locks page scroll while open and restores it on close', () => {
+        document.body.style.overflow = '';
+
+        const { rerender } = render(
+            <Drawer open onClose={() => {}} title="Filtros">
+                <button type="button">Aplicar</button>
+            </Drawer>,
+        );
+
+        expect(document.body.style.overflow).toBe('hidden');
+
+        rerender(
+            <Drawer open={false} onClose={() => {}} title="Filtros">
+                <button type="button">Aplicar</button>
+            </Drawer>,
+        );
+
+        expect(document.body.style.overflow).toBe('');
+    });
+
+    it('restores page scroll when the drawer unmounts while open', () => {
+        document.body.style.overflow = '';
+
+        const { unmount } = render(
+            <Drawer open onClose={() => {}} title="Filtros">
+                <button type="button">Aplicar</button>
+            </Drawer>,
+        );
+
+        expect(document.body.style.overflow).toBe('hidden');
+
+        unmount();
+
+        expect(document.body.style.overflow).toBe('');
+    });
 });

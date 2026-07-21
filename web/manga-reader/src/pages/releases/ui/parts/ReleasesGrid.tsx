@@ -180,7 +180,7 @@ const ReleasesGrid = ({ groups, libraryOnly }: ReleasesGridProps) => {
                                 count: group.items.length,
                             })}
                         </h2>
-                        <button type="button" className="text-mr-tiny text-mr-fg-muted hover:text-mr-accent transition-colors">
+                        <button type="button" className="text-mr-tiny text-mr-fg-muted hover:text-mr-accent-fg transition-colors">
                             {t('releases.markAllSeen')}
                         </button>
                     </div>
@@ -190,7 +190,7 @@ const ReleasesGrid = ({ groups, libraryOnly }: ReleasesGridProps) => {
                                 key={item.id}
                                 type="button"
                                 onClick={() => navigate(ROUTES.CHAPTER(item.mangaId, item.chapter))}
-                                className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent"
+                                className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-left transition-colors hover:border-mr-accent-border"
                             >
                                 <MangaPoster size={48} radius="sm" />
                                 <div className="flex-1 min-w-0">

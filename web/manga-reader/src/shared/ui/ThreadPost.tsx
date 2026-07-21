@@ -15,11 +15,12 @@ export interface ThreadPostProps {
     flat?: boolean;
     op?: boolean;
     highlighted?: boolean;
-    replyingTo?: ReactNode;
     shellClassName?: string;
 
     // --- Header (nome · @handle · tempo · badges … right) ---
     name: string;
+    /** Selo inline "Em resposta a X", exibido ao lado do nome. */
+    replyingTo?: ReactNode;
     handle?: string;
     time?: string;
     timeTitle?: string;
@@ -60,9 +61,9 @@ export const ThreadPost = ({
     flat,
     op,
     highlighted,
-    replyingTo,
     shellClassName,
     name,
+    replyingTo,
     handle,
     time,
     timeTitle,
@@ -86,11 +87,11 @@ export const ThreadPost = ({
             flat={flat}
             op={op}
             highlighted={highlighted}
-            replyingTo={replyingTo}
             className={shellClassName}
         >
             <PostHeader
                 name={name}
+                replyingTo={replyingTo}
                 handle={handle}
                 time={time}
                 timeTitle={timeTitle}

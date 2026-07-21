@@ -1,74 +1,115 @@
 # Backend — `api/`
 
-Três serviços Spring Boot independentes que compartilham a mesma infraestrutura
-(PostgreSQL, MongoDB, RabbitMQ, Redis):
+O backend é composto por quatro aplicações Spring Boot independentes. Elas não
+compartilham JARs: contratos mínimos necessários aos jobs são replicados ou
+estabelecidos por banco e mensageria.
 
-| Serviço | Porta | Papel |
-|---------|-------|-------|
-| [`core/`](core) | 8080 | API principal — Clean Architecture, dual-DB, dona de toda escrita de negócio |
-| [`jobs/rating-aggregator/`](jobs/rating-aggregator/README.md) | 8081 | Dono da coleção `reviews_aggregate` — recompute por eventos RabbitMQ + reconciliação diária |
-| [`jobs/orphan-cleaner/`](jobs/orphan-cleaner/README.md) | 8082 | Reconciliação de contadores desnormalizados (horária) + limpeza de refs órfãs cross-DB (diária) |
+## Serviços
 
-Não há jar compartilhado entre os serviços: os jobs replicam o mínimo necessário
-(ex.: `RatingEvent` no mesmo FQN) e conversam com a API só via banco/fila.
+| Serviço | Porta | Responsabilidade |
+|---|---:|---|
+| [`core/`](core/README.md) | 8080 | API REST principal e escrita dos dados de negócio |
+| [`jobs/rating-aggregator/`](jobs/rating-aggregator/README.md) | 8081 | Projeção `reviews_aggregate` por eventos e reconciliação |
+| [`jobs/orphan-cleaner/`](jobs/orphan-cleaner/README.md) | 8082 | Reconciliação de contadores e limpeza de referências órfãs |
+| [`jobs/trending-aggregator/`](jobs/trending-aggregator/README.md) | 8083 | Projeção diária `title_trend_daily` |
 
-## `core/` — API principal
+## Infraestrutura compartilhada
 
-Clean Architecture em 4 camadas (`presentation → application → domain ← infrastructure`),
-17 domínios, dual-DB PostgreSQL (Flyway) + MongoDB (Mongock). Padrões normativos em
-[`docs/architecture.md`](../docs/architecture.md); persistência em
-[`docs/orm-persistence.md`](../docs/orm-persistence.md); modelagem em
-[`docs/database-modeling.md`](../docs/database-modeling.md).
+O arquivo [`core/docker-compose.yml`](core/docker-compose.yml) define o ambiente
+local:
 
-**O que o core NÃO faz:** agregação de avaliações (rating-aggregator) e
-reconciliação/limpeza no caminho frio (orphan-cleaner) — o core mantém contadores e
-refs apenas no caminho quente dos use cases.
+| Serviço | Porta local | Uso |
+|---|---:|---|
+| PostgreSQL 17 | 5432 | Dados relacionais |
+| MongoDB 8.0 | 27017 | Catálogo, conteúdo e projeções |
+| Neo4j 5.26 | 7474 / 7687 | Grafo social |
+| RabbitMQ 4 | 5672 / 15672 | Eventos assíncronos |
+| Redis 7 | 6379 | Cache |
 
-### Executar
+O `spring-boot-docker-compose` do core inicia e encerra essa infraestrutura no
+desenvolvimento. Os jobs mantêm `spring.docker.compose.enabled=false` e apenas se
+conectam aos serviços já disponíveis.
 
-```bash
-cd core
-./mvnw spring-boot:run        # docker compose sobe sozinho (spring-boot-docker-compose)
-```
+## Execução local
 
-> **Serviço novo no compose?** O spring-boot-docker-compose **pula** o startup se
-> já houver serviços do compose no ar — containers antigos não ganham os novos
-> (ex.: `neo4j`, DT-48) e o boot falha na conexão. Rodar uma vez
-> `docker compose up -d <serviço>` (ou `docker compose up -d` para todos).
-
-- Swagger UI: `http://localhost:8080/swagger-ui.html`
-- Infra dev: `core/docker-compose.yml` (Postgres 17, Mongo 8 replica-set de nó único, RabbitMQ 4, Redis 7)
-- `DataSeeder` popula dados de demonstração (profile != prod)
-
-### Testar
+### API principal
 
 ```bash
-cd core
-./mvnw test                                       # completa (Docker p/ TestContainers)
-./mvnw test -Dtest.excludedGroups=testcontainers  # leve, sem Docker
-./mvnw test -Dtest=UserTest                       # classe específica
-./mvnw test -Dtest=**/domain/**/*Test             # por camada
+cd api/core
+./mvnw spring-boot:run
 ```
 
-Anotações por camada e limitações conhecidas: [`docs/testing.md`](../docs/testing.md).
+Use `-Dspring-boot.run.profiles=dev` quando quiser executar os seeds de
+demonstração. Mais detalhes em [`core/README.md`](core/README.md).
 
-## `jobs/` — serviços auxiliares
+### Jobs
 
-Mesmo padrão nos dois: `@Scheduled` + gatilho manual `POST /admin/reconcile`
-protegido por token (comparação em tempo constante), operações idempotentes,
-infra subida pelo `core` (`spring.docker.compose.enabled=false` nos jobs).
-Cada um tem README próprio com configuração, endpoints e agendamento.
+Os jobs não possuem Maven Wrapper próprio. Com Maven 3.9.x instalado, execute o
+comando na pasta do serviço:
+
+```bash
+cd api/jobs/rating-aggregator
+mvn spring-boot:run
+```
+
+Substitua a pasta pelo job desejado. PostgreSQL, MongoDB e/ou RabbitMQ devem
+estar acessíveis antes da inicialização; consulte o README de cada serviço.
+
+## Testes e build
+
+```bash
+# Core
+cd api/core
+./mvnw test
+./mvnw package -DskipTests
+
+# Um job
+cd ../jobs/trending-aggregator
+mvn test
+mvn package -DskipTests
+```
+
+A suíte completa do core usa Testcontainers. As convenções por camada ficam em
+[`../docs/testing.md`](../docs/testing.md).
 
 ## Produção
 
-`docker-compose.prod.yml` nesta pasta sobe os 3 serviços (`app` em `./core`,
-`rating-aggregator` e `orphan-cleaner` em `./jobs/*`). Plano completo de deploy:
-[`docs/deployment-plan.md`](../docs/deployment-plan.md).
+[`docker-compose.prod.yml`](docker-compose.prod.yml) constrói e executa o core,
+os três jobs e a infraestrutura:
 
-## Convenções
+```bash
+cd api
+docker compose -f docker-compose.prod.yml up -d
+```
 
-- Java 23 (`java.version=23`), Spring Boot 3.4.3, Maven wrapper (`./mvnw`).
-- Nunca criar `buildPageable`/`extractUserId` em controller — usar `@PageParams`/`@CurrentUserId` (DT-23).
-- Enums de request usam `fromValue(String)` no domínio (DT-39).
-- Toda mudança de persistência passa pelo checklist de [`docs/orm-persistence.md`](../docs/orm-persistence.md).
-- Dívidas técnicas do backend: [`TECHNICAL_DEBT.md`](../TECHNICAL_DEBT.md) + [`docs/tech-debt.md`](../docs/tech-debt.md).
+Variáveis exigidas ou aceitas pelo Compose:
+
+- bancos e mensageria: `DATABASE_PASSWORD`, `RABBITMQ_PASSWORD`,
+  `REDIS_PASSWORD`, `NEO4J_PASSWORD`;
+- autenticação: `JWT_SECRET`;
+- CORS e URLs: `CORS_ALLOWED_ORIGINS`, `APP_BASE_URL`;
+- e-mail: `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`,
+  `MAIL_FROM`;
+- endpoints administrativos: `AGGREGATOR_ADMIN_TOKEN`,
+  `RECONCILER_ADMIN_TOKEN`, `TRENDING_ADMIN_TOKEN`;
+- tendências: `TRENDING_RETENTION_DAYS`.
+
+O `.env.example` em `core/` cobre apenas parte da configuração do core e não é
+um template completo da stack. O Compose de produção é uma base: antes de
+exposição real, devem ser tratados secrets, TLS, restrição de portas,
+autenticação dos bancos, replica set do MongoDB, backups e observabilidade.
+
+Plano de implantação: [`../docs/deployment-plan.md`](../docs/deployment-plan.md).
+
+## Regras arquiteturais
+
+- A API principal é dona das escritas de negócio.
+- `rating-aggregator` é dono da projeção `reviews_aggregate`.
+- `trending-aggregator` é dono da projeção `title_trend_daily`.
+- `orphan-cleaner` corrige deriva; não substitui a consistência no caminho
+  principal dos use cases.
+- Mudanças de persistência devem seguir
+  [`../docs/orm-persistence.md`](../docs/orm-persistence.md) e
+  [`../docs/database-modeling.md`](../docs/database-modeling.md).
+
+[Voltar ao README principal](../README.md)

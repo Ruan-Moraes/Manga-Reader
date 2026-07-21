@@ -8,7 +8,10 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
     return {
-        base: env.VITE_BASE_URL ?? '/Manga-Reader',
+        // Local development is served from the domain root so URLs such as
+        // `/legal/terms` work directly. Production keeps the GitHub Pages
+        // sub-path unless an explicit VITE_BASE_URL is provided.
+        base: env.VITE_BASE_URL ?? (mode === 'development' ? '/' : '/Manga-Reader'),
         publicDir: path.resolve(__dirname, '../packages/assets/icons'),
         plugins: [react(), tailwindcss()],
         resolve: {

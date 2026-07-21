@@ -11,10 +11,7 @@ export function buildPlan(
         period: 'MONTHLY',
         priceInCents: 1990,
         description: 'Test plan description',
-        features: [
-            { key: 'feature-a', label: 'Feature A' },
-            { key: 'feature-b', label: 'Feature B' },
-        ],
+        features: ['Feature A', 'Feature B'],
         active: true,
         ...overrides,
     };

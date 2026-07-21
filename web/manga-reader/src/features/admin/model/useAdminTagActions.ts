@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { createTag, updateTag, deleteTag } from '../api/adminTagService';
@@ -26,7 +26,6 @@ const useAdminTagActions = () => {
                 invalidateTags();
                 return result;
             } catch {
-                showErrorToast('Erro ao criar tag.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -44,7 +43,6 @@ const useAdminTagActions = () => {
                 invalidateTags();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar tag.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -61,7 +59,7 @@ const useAdminTagActions = () => {
                 showSuccessToast('Tag excluída com sucesso.');
                 invalidateTags();
             } catch {
-                showErrorToast('Erro ao excluir tag.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

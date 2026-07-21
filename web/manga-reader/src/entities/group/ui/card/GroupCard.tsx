@@ -47,33 +47,47 @@ const statusKind = {
 const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardProps) => (
     <article
         onClick={onClick}
+        onKeyDown={event => {
+            if (onClick && !onToggleFollow && (event.key === 'Enter' || event.key === ' ')) {
+                event.preventDefault();
+                onClick();
+            }
+        }}
+        role={onClick && !onToggleFollow ? 'button' : undefined}
+        tabIndex={onClick && !onToggleFollow ? 0 : undefined}
         className={cn(
-            'group flex cursor-pointer flex-col overflow-hidden rounded-mr-xs border border-mr-border bg-mr-surface transition-all duration-mr-default',
-            'hover:-translate-y-0.5 hover:border-mr-accent-50',
+            'group flex cursor-pointer flex-col overflow-hidden rounded-mr-md border border-mr-border bg-mr-surface transition-all duration-mr-default',
+            'hover:-translate-y-0.5 hover:border-mr-accent-50 hover:shadow-mr-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mr-focus-ring',
         )}
     >
         <div
-            className="h-[72px] w-full"
+            className="relative h-24 w-full bg-cover bg-center"
             style={{
-                background: group.banner ?? 'linear-gradient(135deg, #2a1f3a, #161616)',
+                backgroundImage: group.banner ? `url(${group.banner})` : 'linear-gradient(135deg, var(--mr-accent-25), var(--mr-surface))',
             }}
-        />
-        <div className="-mt-6 flex flex-col gap-3 p-4">
-            <Avatar src={group.avatar} name={group.name} size={64} />
-            <div>
-                <h3 className="inline-flex items-center gap-1.5 text-mr-h4 font-mr-extrabold tracking-mr text-mr-fg">
-                    {group.name}
-                    {group.verified && <BadgeCheck className="size-4 text-mr-accent" aria-label="Grupo verificado" />}
-                </h3>
-                {group.handle && <div className="text-mr-tiny text-mr-fg-subtle">@{group.handle}</div>}
+        >
+        </div>
+        <div className="-mt-9 flex min-w-0 flex-col gap-3 p-4 pt-0">
+            <div className="relative z-10 w-fit rounded-mr-md border-4 border-mr-surface bg-mr-surface">
+                <Avatar src={group.avatar} name={group.name} size={64} />
             </div>
 
-            <div className="flex items-center gap-2 text-mr-tiny">
+            <div className="flex min-w-0 items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <h3 className="flex min-w-0 items-start gap-1.5 text-mr-h4 font-mr-extrabold leading-tight tracking-mr text-mr-fg">
+                        <span className="line-clamp-2 break-words">{group.name}</span>
+                        {group.verified && <BadgeCheck className="mt-0.5 size-4 shrink-0 text-mr-accent-fg" aria-label="Grupo verificado" />}
+                    </h3>
+                    {group.handle && <div className="mt-1 truncate text-mr-tiny text-mr-fg-subtle">@{group.handle}</div>}
+                </div>
+            </div>
+
+            <div className="inline-flex w-fit items-center gap-2 rounded-mr-full border border-mr-border-subtle bg-mr-surface-muted px-2.5 py-1 text-mr-tiny">
                 <StatusDot status={statusKind[group.status]} />
                 <span className="font-mr-bold uppercase tracking-[0.08em] text-mr-fg-muted">{statusLabel[group.status]}</span>
             </div>
 
-            <div className="flex flex-wrap gap-4 text-mr-tiny text-mr-fg-muted">
+            <div className="flex flex-wrap gap-x-4 gap-y-2 border-t border-mr-border-subtle pt-3 text-mr-tiny text-mr-fg-muted">
                 {group.members != null && (
                     <span>
                         <strong className="font-mr-extrabold text-mr-fg">{fmt(group.members)}</strong> seguidores
@@ -92,7 +106,7 @@ const GroupCardBase = ({ group, onClick, following, onToggleFollow }: GroupCardP
             </div>
 
             {group.tags && group.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex min-h-6 flex-wrap gap-1">
                     {group.tags.map(t => (
                         <Badge key={t} variant="neutral">
                             {t}

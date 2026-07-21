@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/tags/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/tags/**").hasRole("ADMIN")
 
+                        .requestMatchers("/api/admin/news/**").hasAnyRole("ADMIN", "MODERATOR")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/stores/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
@@ -73,6 +74,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/profile").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/history").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}/activity-feed").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/followers").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/following").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/{id}/followed-groups").permitAll()

@@ -58,7 +58,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
                 className={cn(
                     'min-h-24 w-full rounded-mr-sm border bg-mr-primary px-3 py-3 text-mr-body leading-relaxed resize-y transition-[border-color,box-shadow] duration-mr-fast',
                     'placeholder:text-mr-tertiary outline-none',
-                    'hover:not(:disabled):border-mr-gray-500 focus:border-mr-accent focus:ring-2 focus:ring-mr-accent-25',
+                    'hover:not(:disabled):border-mr-gray-500 focus:border-mr-accent-border focus:ring-2 focus:ring-mr-accent-25',
                     error ? 'border-mr-danger focus:border-mr-danger focus:ring-mr-danger-15' : 'border-mr-border',
                     disabled && 'opacity-mr-disabled',
                     className,

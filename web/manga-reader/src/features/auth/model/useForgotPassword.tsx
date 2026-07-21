@@ -56,13 +56,13 @@ const useForgotPassword = () => {
             setIsLoading(true);
 
             try {
-                const message = await requestPasswordReset(email.trim());
+                const result = await requestPasswordReset(email.trim());
 
                 setIsSubmitted(true);
 
-                showSuccessToast(message ?? t('forgotPassword.success'));
+                showSuccessToast(result.message ?? t('forgotPassword.success'));
             } catch {
-                showErrorToast(t('validation.unexpectedError'));
+                // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
             } finally {
                 setIsLoading(false);
             }

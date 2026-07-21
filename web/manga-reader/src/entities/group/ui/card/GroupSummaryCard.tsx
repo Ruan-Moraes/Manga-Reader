@@ -10,15 +10,15 @@ import { RatingStars } from '@entities/review/@x/group';
 import { Image } from 'lucide-react';
 
 const statusColorMap: Record<string, string> = {
-    active: 'bg-green-400',
-    hiatus: 'bg-yellow-400',
-    inactive: 'bg-red-400',
+    active: 'bg-mr-success',
+    hiatus: 'bg-mr-warning',
+    inactive: 'bg-mr-danger',
 };
 
 const statusTextMap: Record<string, string> = {
-    active: 'text-green-400',
-    hiatus: 'text-yellow-400',
-    inactive: 'text-red-400',
+    active: 'text-mr-success',
+    hiatus: 'text-mr-warning',
+    inactive: 'text-mr-danger',
 };
 
 type GroupSummaryCardProps = {
@@ -36,7 +36,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
     return (
         <article className="flex flex-col gap-4 p-4 border rounded-xs border-tertiary bg-secondary/40 hover:border-quaternary-opacity-50 transition-colors">
             <div className="flex gap-3 items-center">
-                <div className="shrink-0 w-14 h-14 rounded-full border border-quaternary-default overflow-hidden">
+                <div className="shrink-0 w-14 h-14 rounded-full border border-mr-accent-border overflow-hidden">
                     {!avatarError ? (
                         <img
                             src={group.logo}
@@ -85,7 +85,7 @@ const GroupSummaryCard = ({ group }: GroupSummaryCardProps) => {
             <AppLink
                 link={`groups/${group.id}`}
                 text={t('card.viewDetailsLong')}
-                className="w-full px-3 py-2 text-xs text-center border rounded-xs border-tertiary hover:border-quaternary-default transition-colors"
+                className="w-full px-3 py-2 text-xs text-center border rounded-xs border-tertiary hover:border-mr-accent-border transition-colors"
             />
         </article>
     );

@@ -8,8 +8,10 @@ import { useDomainLabels, LABEL_TYPES } from '@entities/label';
 import { useTagsFetch, type Tag } from '@entities/catalog-filter';
 
 import { getAdminTitleDetail } from '../api/adminTitleService';
+import { getAdminStores } from '../api/adminStoreService';
 import useAdminTitleActions from './useAdminTitleActions';
 import type { CreateTitleRequest, TitleAuthorRef, TitlePublisherRef } from './admin.types';
+import type { TitleStoreRef } from './admin.types';
 
 type FormState = {
     type: string;
@@ -40,6 +42,8 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
 
     const { data: statusOptions = [] } = useDomainLabels(LABEL_TYPES.PUBLICATION_STATUS);
     const { data: allTags = [] } = useTagsFetch();
+    const { data: availableStoresPage } = useQuery({ queryKey: [QUERY_KEYS.ADMIN_STORES, 'title-form'], queryFn: () => getAdminStores(0, 100) });
+    const availableStores = availableStoresPage?.content ?? [];
 
     const [form, setForm] = useState<FormState>(DEFAULT_FORM);
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
@@ -47,8 +51,9 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
     const [synopsis, setSynopsis] = useState<LocalizedString>({});
     const [authors, setAuthors] = useState<TitleAuthorRef[]>([]);
     const [publishers, setPublishers] = useState<TitlePublisherRef[]>([]);
+    const [stores, setStores] = useState<TitleStoreRef[]>([]);
 
-    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { form, selectedTags, name, synopsis, authors, publishers });
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { form, selectedTags, name, synopsis, authors, publishers, stores });
 
     // Reset ao abrir para criação; preenche ao carregar detalhe na edição.
     useEffect(() => {
@@ -60,6 +65,7 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             setSynopsis({});
             setAuthors([]);
             setPublishers([]);
+            setStores([]);
             resetDirty();
         }
     }, [isOpen, isEditing, resetDirty]);
@@ -79,6 +85,7 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             setSynopsis(existing.synopsis ?? {});
             setAuthors(existing.authors ?? []);
             setPublishers(existing.publishers ?? []);
+            setStores(existing.stores ?? []);
             resetDirty();
         }
     }, [existing, allTags, resetDirty]);
@@ -95,6 +102,7 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             genres: selectedTags.map(tag => tag.slug),
             authors: authors.map(a => ({ authorId: a.authorId, role: a.role })),
             publishers: publishers.map(p => p.id),
+            stores: stores.map(store => ({ storeId: store.storeId, url: store.url })),
         };
 
         const result = isEditing && titleId ? await handleUpdate(titleId, data) : await handleCreate(data);
@@ -117,6 +125,9 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
         setAuthors,
         publishers,
         setPublishers,
+        stores,
+        setStores,
+        availableStores,
         allTags,
         statusOptions,
         valid,

@@ -20,6 +20,21 @@
         "goHome": "Go to home",
         "searchWorks": "Browse titles"
     },
+    "errorPage": {
+        "eyebrow": "Unexpected error",
+        "title": "Something went off script.",
+        "description": "We couldn't finish loading this page. Try reloading it or return home while we take care of this.",
+        "reload": "Reload page",
+        "goHome": "Back to home",
+        "technicalDetails": "Technical details",
+        "message": "Message",
+        "file": "File",
+        "position": "Location",
+        "lineColumn": "Line {{line}}, column {{column}}",
+        "unavailable": "Unavailable",
+        "copyDiagnostic": "Copy diagnostic",
+        "copied": "Diagnostic copied"
+    },
     "aboutUs": {
         "hero": {
             "eyebrow": "The platform",

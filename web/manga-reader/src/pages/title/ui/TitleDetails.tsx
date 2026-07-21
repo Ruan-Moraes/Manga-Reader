@@ -17,6 +17,7 @@ import { useRatingSummary, useSubmitReview, RatingModal } from '@entities/review
 import { getGroupsByTitleId } from '@entities/group';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import { useAuth } from '@features/auth';
+import { useTrackTitleView } from '@features/track-user-behavior';
 
 import TitleHero from './parts/TitleHero';
 import ChaptersTab from './parts/ChaptersTab';
@@ -45,6 +46,7 @@ const TitleDetails = () => {
     const submitReview = useSubmitReview(titleId ?? '');
     const { isRatingModalOpen, openRatingModal, closeRatingModal } = useTitleModals();
     const { isLoggedIn } = useAuth();
+    useTrackTitleView(isLoggedIn ? titleId : undefined);
 
     const { data: groupsPage } = useQuery({
         queryKey: [QUERY_KEYS.GROUPS_BY_TITLE, titleId],

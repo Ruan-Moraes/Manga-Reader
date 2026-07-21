@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu } from 'lucide-react';
 
 import { Avatar } from '@ui/Avatar';
-import AdminLogo from '@ui/AdminLogo.tsx';
+import Logo from '@ui/Logo.tsx';
 
 import { useAuth } from '@features/auth';
 
@@ -26,7 +26,7 @@ const AdminHeader = ({ onToggleSidebar }: AdminHeaderProps) => {
             >
                 <Menu size={22} />
             </button>
-            <AdminLogo />
+            <Logo />
             <div className="flex-1" />
             {user && (
                 <div className="flex items-center gap-2.5">

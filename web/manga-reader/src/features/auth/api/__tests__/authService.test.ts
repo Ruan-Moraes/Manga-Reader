@@ -3,11 +3,11 @@ import { http, HttpResponse } from 'msw';
 
 import { server } from '@/test/mocks/server';
 import { API_URLS } from '@shared/constant/API_URLS';
+import { getAccessToken, clearAccessToken, setAccessToken } from '@shared/service/session';
 
 import {
     signIn,
     signUp,
-    refreshToken,
     getCurrentUser,
     signOut,
     requestPasswordReset,
@@ -31,10 +31,11 @@ const buildAuthResponse = (overrides: Partial<AuthResponse> = {}): AuthResponse 
 describe('authService', () => {
     beforeEach(() => {
         localStorage.clear();
+        clearAccessToken();
     });
 
     describe('signIn', () => {
-        it('deve retornar auth response e persistir sessao', async () => {
+        it('deve persistir sessao sem tokens e guardar access token em memoria', async () => {
             const authData = buildAuthResponse();
 
             server.use(http.post(`*${API_URLS.AUTH_SIGN_IN}`, () => HttpResponse.json({ data: authData, success: true })));
@@ -47,8 +48,13 @@ describe('authService', () => {
             expect(result.accessToken).toBe('access-token-123');
             expect(result.userId).toBe('user-1');
 
-            const stored = getStoredSession();
-            expect(stored?.accessToken).toBe('access-token-123');
+            // Tokens nunca vão para o localStorage — access fica em memória
+            expect(getAccessToken()).toBe('access-token-123');
+
+            const raw = localStorage.getItem('manga-reader:auth-user') ?? '';
+            expect(raw).not.toContain('access-token-123');
+            expect(raw).not.toContain('refresh-token-456');
+            expect(getStoredSession()?.userId).toBe('user-1');
         });
 
         it('deve propagar erro quando API falha', async () => {
@@ -87,27 +93,6 @@ describe('authService', () => {
         });
     });
 
-    describe('refreshToken', () => {
-        it('deve retornar novo auth response e atualizar sessao', async () => {
-            const authData = buildAuthResponse({
-                accessToken: 'new-access-token',
-            });
-
-            server.use(http.post(`*${API_URLS.AUTH_REFRESH}`, () => HttpResponse.json({ data: authData, success: true })));
-
-            const result = await refreshToken('refresh-token-456');
-
-            expect(result.accessToken).toBe('new-access-token');
-            expect(getStoredSession()?.accessToken).toBe('new-access-token');
-        });
-
-        it('deve lançar erro quando API retorna 500 no refreshToken', async () => {
-            server.use(http.post(`*${API_URLS.AUTH_REFRESH}`, () => HttpResponse.json(null, { status: 500 })));
-
-            await expect(refreshToken('refresh-token-456')).rejects.toThrow();
-        });
-    });
-
     describe('getCurrentUser', () => {
         it('deve retornar null quando nao ha sessao armazenada', async () => {
             const result = await getCurrentUser();
@@ -118,6 +103,7 @@ describe('authService', () => {
         it('deve retornar dados do usuario quando sessao existe', async () => {
             const authData = buildAuthResponse();
             localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
+            setAccessToken('access-token-123');
 
             server.use(http.get(`*${API_URLS.AUTH_ME}`, () => HttpResponse.json({ data: authData, success: true })));
 
@@ -139,12 +125,36 @@ describe('authService', () => {
     });
 
     describe('signOut', () => {
-        it('deve limpar sessao do localStorage', async () => {
+        it('deve chamar o logout no backend e limpar sessao + memoria', async () => {
             localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildAuthResponse()));
+            setAccessToken('access-token-123');
+
+            let logoutCalled = false;
+            server.use(
+                http.post(`*${API_URLS.AUTH_LOGOUT}`, () => {
+                    logoutCalled = true;
+
+                    return HttpResponse.json({ data: 'Sessão encerrada.', success: true });
+                }),
+            );
+
+            await signOut();
+
+            expect(logoutCalled).toBe(true);
+            expect(getStoredSession()).toBeNull();
+            expect(getAccessToken()).toBeNull();
+        });
+
+        it('deve limpar estado local mesmo se a chamada de logout falhar', async () => {
+            localStorage.setItem('manga-reader:auth-user', JSON.stringify(buildAuthResponse()));
+            setAccessToken('access-token-123');
+
+            server.use(http.post(`*${API_URLS.AUTH_LOGOUT}`, () => HttpResponse.json(null, { status: 500 })));
 
             await signOut();
 
             expect(getStoredSession()).toBeNull();
+            expect(getAccessToken()).toBeNull();
         });
     });
 
@@ -153,7 +163,7 @@ describe('authService', () => {
             server.use(
                 http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
                     HttpResponse.json({
-                        data: 'Email enviado',
+                        data: { message: 'Email enviado', expiresInSeconds: 1800 },
                         success: true,
                     }),
                 ),
@@ -161,13 +171,26 @@ describe('authService', () => {
 
             const result = await requestPasswordReset('test@example.com');
 
-            expect(result).toBe('Email enviado');
+            expect(result).toEqual({ message: 'Email enviado', expiresInSeconds: 1800 });
         });
 
         it('deve lançar erro quando API retorna 500 no requestPasswordReset', async () => {
             server.use(http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () => HttpResponse.json(null, { status: 500 })));
 
             await expect(requestPasswordReset('test@example.com')).rejects.toThrow();
+        });
+
+        it('deve tolerar resposta string da API antiga sem inventar validade', async () => {
+            server.use(
+                http.post(`*${API_URLS.AUTH_FORGOT_PASSWORD}`, () =>
+                    HttpResponse.json({ data: 'Email enviado', success: true }),
+                ),
+            );
+
+            await expect(requestPasswordReset('test@example.com')).resolves.toEqual({
+                message: 'Email enviado',
+                expiresInSeconds: null,
+            });
         });
     });
 
@@ -203,7 +226,7 @@ describe('authService', () => {
             const authData = buildAuthResponse();
             localStorage.setItem('manga-reader:auth-user', JSON.stringify(authData));
 
-            expect(getStoredSession()?.accessToken).toBe('access-token-123');
+            expect(getStoredSession()?.userId).toBe('user-1');
         });
 
         it('deve retornar null quando JSON e invalido', () => {

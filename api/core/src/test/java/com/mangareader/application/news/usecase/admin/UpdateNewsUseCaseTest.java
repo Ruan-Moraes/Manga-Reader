@@ -9,15 +9,18 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import com.mangareader.application.news.port.NewsRepositoryPort;
 import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsCategory;
+import com.mangareader.shared.exception.BusinessRuleException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,8 +30,12 @@ class UpdateNewsUseCaseTest {
     @Mock
     private NewsRepositoryPort newsRepository;
 
-    @InjectMocks
     private UpdateNewsUseCase updateNewsUseCase;
+
+    @BeforeEach
+    void setUp() {
+        updateNewsUseCase = new UpdateNewsUseCase(newsRepository);
+    }
 
     private NewsItem buildNews() {
         return NewsItem.builder()
@@ -68,5 +75,19 @@ class UpdateNewsUseCaseTest {
         ))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("News");
+    }
+
+    @Test
+    void translatesConcurrentSlugCollisionToConflict() {
+        when(newsRepository.findById("news-1")).thenReturn(Optional.of(buildNews()));
+        when(newsRepository.save(any(NewsItem.class)))
+                .thenThrow(new DuplicateKeyException("uk_news_slug"));
+
+        assertThatThrownBy(() -> updateNewsUseCase.execute(
+                "news-1", java.util.Map.of("pt-BR", "Updated"), null, null, null,
+                null, null, null, null, null, null, null, null))
+                .isInstanceOf(BusinessRuleException.class)
+                .extracting("statusCode")
+                .isEqualTo(409);
     }
 }

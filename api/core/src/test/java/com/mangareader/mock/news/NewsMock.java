@@ -4,8 +4,10 @@ import com.mangareader.domain.news.entity.NewsItem;
 import com.mangareader.domain.news.valueobject.NewsAuthor;
 import com.mangareader.domain.news.valueobject.NewsCategory;
 import com.mangareader.domain.news.valueobject.NewsReaction;
+import com.mangareader.domain.news.valueobject.NewsStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +74,7 @@ public final class NewsMock {
     // ── News items ─────────────────────────────────────────────────────────
 
     public static NewsItem featuredRelease() {
-        return NewsItem.builder()
+        return NewsItem.builder().status(NewsStatus.PUBLISHED)
                 .id(NEWS_1_ID)
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Novo capitulo de Reino de Aco bate recorde de visualizacoes"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Capitulo 8 teve mais de 50 mil leituras em 24 horas"))
@@ -102,12 +104,12 @@ public final class NewsMock {
                 .isExclusive(false)
                 .isFeatured(true)
                 .reactions(popularReactions())
-                .publishedAt(LocalDateTime.of(2025, 3, 10, 8, 0))
+                .publishedAt(LocalDateTime.of(2025, 3, 10, 8, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 
     public static NewsItem exclusiveInterview() {
-        return NewsItem.builder()
+        return NewsItem.builder().status(NewsStatus.PUBLISHED)
                 .id(NEWS_2_ID)
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Entrevista exclusiva com Park Min-jun, criador de Lamina do Amanha"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O artista fala sobre inspiracoes e planos futuros"))
@@ -131,12 +133,12 @@ public final class NewsMock {
                 .isExclusive(true)
                 .isFeatured(false)
                 .reactions(popularReactions())
-                .publishedAt(LocalDateTime.of(2025, 3, 8, 14, 0))
+                .publishedAt(LocalDateTime.of(2025, 3, 8, 14, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 
     public static NewsItem industryAnalysis() {
-        return NewsItem.builder()
+        return NewsItem.builder().status(NewsStatus.PUBLISHED)
                 .id(NEWS_3_ID)
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Mercado de manga no Brasil cresce 30% em 2025"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Dados da ABDR mostram expansao historica"))
@@ -160,12 +162,12 @@ public final class NewsMock {
                 .isExclusive(false)
                 .isFeatured(false)
                 .reactions(lowReactions())
-                .publishedAt(LocalDateTime.of(2025, 2, 20, 10, 0))
+                .publishedAt(LocalDateTime.of(2025, 2, 20, 10, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 
     public static NewsItem eventCoverage() {
-        return NewsItem.builder()
+        return NewsItem.builder().status(NewsStatus.PUBLISHED)
                 .id(NEWS_4_ID)
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Cobertura completa do Manga Fest 2025"))
                 .subtitle(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Tudo o que aconteceu no maior evento de manga do ano"))
@@ -200,12 +202,12 @@ public final class NewsMock {
                         "Data", "15-17 Nov 2025",
                         "Publico", "15.000 pessoas"
                 )))
-                .publishedAt(LocalDateTime.of(2025, 11, 18, 9, 0))
+                .publishedAt(LocalDateTime.of(2025, 11, 18, 9, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 
     public static NewsItem minimalNews() {
-        return NewsItem.builder()
+        return NewsItem.builder().status(NewsStatus.PUBLISHED)
                 .id(NEWS_5_ID)
                 .title(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Nota rapida: Manutencao programada"))
                 .excerpt(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("O site ficara fora do ar por 2 horas."))
@@ -215,7 +217,7 @@ public final class NewsMock {
                 .tags(new ArrayList<>())
                 .author(editorAuthor())
                 .reactions(zeroReactions())
-                .publishedAt(LocalDateTime.of(2025, 3, 12, 20, 0))
+                .publishedAt(LocalDateTime.of(2025, 3, 12, 20, 0).toInstant(ZoneOffset.UTC))
                 .build();
     }
 

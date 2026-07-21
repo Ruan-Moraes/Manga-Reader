@@ -6,7 +6,7 @@ import { getGroupStatusLabelKey } from '../../api/groupService';
 import { Group } from '../../model/group.types';
 import { ExternalLink, Users } from 'lucide-react';
 
-const BANNER_FALLBACK = 'linear-gradient(135deg, #2a1f3a, #161616)';
+const BANNER_FALLBACK = 'var(--mr-banner-gradient)';
 
 type GroupDetailHeaderProps = {
     group: Group;
@@ -14,9 +14,9 @@ type GroupDetailHeaderProps = {
 };
 
 const statusClassMap = {
-    active: 'text-green-300 border-green-300/40',
-    hiatus: 'text-yellow-300 border-yellow-300/40',
-    inactive: 'text-red-300 border-red-300/40',
+    active: 'text-mr-success border-mr-success/40',
+    hiatus: 'text-mr-warning border-mr-warning/40',
+    inactive: 'text-mr-danger border-mr-danger/40',
 };
 
 const GroupDetailHeader = ({ group, onOpenMembers }: GroupDetailHeaderProps) => {
@@ -36,7 +36,7 @@ const GroupDetailHeader = ({ group, onOpenMembers }: GroupDetailHeaderProps) => 
             <div className="relative p-4 -mt-12">
                 <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div className="flex gap-4 items-end">
-                        <div className="overflow-hidden border-2 rounded-mr-xs border-quaternary" aria-label={t('header.avatarAlt', { name: group.name })}>
+                        <div className="overflow-hidden border-2 rounded-mr-xs border-mr-accent-border" aria-label={t('header.avatarAlt', { name: group.name })}>
                             <Avatar src={group.logo || undefined} name={group.name} size={96} />
                         </div>
 
@@ -52,7 +52,7 @@ const GroupDetailHeader = ({ group, onOpenMembers }: GroupDetailHeaderProps) => 
                         href={group.website}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex gap-2 items-center text-sm text-tertiary transition-colors hover:text-quaternary"
+                        className="flex gap-2 items-center text-sm text-tertiary transition-colors hover:text-mr-accent-fg"
                     >
                         {t('header.officialSite')} <ExternalLink />
                     </a>
@@ -61,7 +61,7 @@ const GroupDetailHeader = ({ group, onOpenMembers }: GroupDetailHeaderProps) => 
                 <div className="grid grid-cols-2 gap-2 mt-4 text-sm mobile-lg:grid-cols-5">
                     <button
                         onClick={onOpenMembers}
-                        className="flex gap-2 justify-center items-center p-2 border rounded-xs border-tertiary hover:border-quaternary transition-colors"
+                        className="flex gap-2 justify-center items-center p-2 border rounded-xs border-tertiary hover:border-mr-accent-border transition-colors"
                     >
                         <Users />
                         {t('card.membersCount', {

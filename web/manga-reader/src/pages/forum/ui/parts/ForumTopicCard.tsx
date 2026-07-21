@@ -90,13 +90,13 @@ export const ForumTopicCard = ({ topic, onOpen, onUserHover, onUserLeave }: Foru
                             </span>
                         </div>
                         <div className="forum-last-reply" onClick={e => e.stopPropagation()}>
-                            <span className="mr-label" style={{ color: '#727273' }}>
+                            <span className="mr-label" style={{ color: 'var(--mr-tertiary)' }}>
                                 {t('ui.lastReply')}
                             </span>
                             <div className="forum-last-reply-line">
                                 <SquareAvatar initials={last.initials} color={last.color} size={22} />
-                                <span style={{ color: '#fff', fontWeight: 700, fontSize: 12, letterSpacing: '.0625rem' }}>{last.name}</span>
-                                <span style={{ color: '#999', fontSize: 11 }}>· {topic.lastReplyAt}</span>
+                                <span style={{ color: 'var(--mr-fg)', fontWeight: 700, fontSize: 12, letterSpacing: '.0625rem' }}>{last.name}</span>
+                                <span style={{ color: 'var(--mr-fg-subtle)', fontSize: 11 }}>· {topic.lastReplyAt}</span>
                             </div>
                         </div>
                     </div>

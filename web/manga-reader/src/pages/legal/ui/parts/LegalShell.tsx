@@ -36,16 +36,19 @@ function useScrollSpy(ids: string[]) {
     const [active, setActive] = useState(ids[0] ?? '');
 
     const idKey = ids.join(',');
+
     const update = useCallback(() => {
         const observer = new IntersectionObserver(
             entries => {
                 const visible = entries.find(e => e.isIntersecting);
+
                 if (visible) setActive(visible.target.id);
             },
             { rootMargin: '-30% 0px -60% 0px' },
         );
         ids.forEach(id => {
             const el = document.getElementById(id);
+
             if (el) observer.observe(el);
         });
         return () => observer.disconnect();
@@ -61,15 +64,21 @@ function useScrollSpy(ids: string[]) {
 
 function scrollTo(id: string) {
     const el = document.getElementById(id);
+
     if (!el) return;
+
     const y = el.getBoundingClientRect().top + window.scrollY - 88;
+
     window.scrollTo({ top: y, behavior: 'smooth' });
 }
 
 export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, children }: LegalShellProps) => {
     const navigate = useAppNavigate();
+
     const { t } = useTranslation('legal');
+
     const tocIds = toc?.map(it => it.id) ?? [];
+
     const activeId = useScrollSpy(tocIds);
 
     const resolvedEyebrow = eyebrow ?? t('shell.eyebrow');
@@ -79,7 +88,7 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
             {/* Hero */}
             <div className="border-b border-mr-border-subtle bg-mr-secondary py-8 sm:py-10">
                 <PageContainer>
-                    <p className="mr-label mb-2 text-mr-accent">{resolvedEyebrow}</p>
+                    <p className="mr-label mb-2 text-mr-accent-fg">{resolvedEyebrow}</p>
                     <h1 className="text-mr-h1 font-mr-extrabold tracking-mr text-mr-fg">{title}</h1>
                     {sub && <p className="mt-2 max-w-2xl text-mr-body text-mr-fg-muted">{sub}</p>}
 
@@ -91,10 +100,7 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                     </div>
 
                     {/* Doc tabs */}
-                    <nav
-                        aria-label={t('shell.tabsAriaLabel')}
-                        className="mt-6 flex gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                    >
+                    <nav aria-label={t('shell.tabsAriaLabel')} className="mt-6 flex w-full flex-wrap gap-1">
                         {TAB_META.map(tab => {
                             const Icon = tab.icon;
                             const active = tab.key === page;
@@ -106,8 +112,8 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                                     aria-current={active ? 'page' : undefined}
                                     onClick={() => navigate(tab.path)}
                                     className={cn(
-                                        'inline-flex shrink-0 items-center gap-1.5 rounded-mr-xs px-3 py-2 text-mr-small font-mr-bold transition-colors',
-                                        active ? 'bg-mr-accent text-mr-primary' : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
+                                        'inline-flex max-w-full items-center gap-1.5 rounded-mr-xs px-3 py-2 text-mr-small font-mr-bold transition-colors',
+                                        active ? 'bg-mr-accent text-mr-on-accent' : 'text-mr-fg-muted hover:bg-mr-accent-25 hover:text-mr-fg',
                                     )}
                                 >
                                     <Icon className="size-3.5" />
@@ -122,9 +128,9 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
             {/* Body */}
             <PageContainer asMain paddingY="lg">
                 {toc && toc.length > 0 ? (
-                    <div className="flex gap-10">
+                    <div className="flex min-w-0 flex-col gap-6 lg:gap-10 lg:flex-row">
                         {/* TOC mobile chips */}
-                        <nav aria-label={t('shell.tocAriaLabel')} className="mb-6 flex gap-2 overflow-x-auto [scrollbar-width:none] lg:hidden">
+                        <nav aria-label={t('shell.tocAriaLabel')} className="mb-0 flex w-full min-w-0 gap-2 overflow-x-auto [scrollbar-width:none] lg:hidden">
                             {toc.map(item => (
                                 <button
                                     key={item.id}
@@ -133,8 +139,8 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                                     className={cn(
                                         'shrink-0 rounded-mr-full border px-3 py-1 text-mr-tiny font-mr-bold transition-colors',
                                         activeId === item.id
-                                            ? 'border-mr-accent bg-mr-accent text-mr-primary'
-                                            : 'border-mr-border text-mr-fg-muted hover:border-mr-accent hover:text-mr-accent',
+                                            ? 'border-mr-accent-border bg-mr-accent text-mr-on-accent'
+                                            : 'border-mr-border text-mr-fg-muted hover:border-mr-accent-border hover:text-mr-accent-fg',
                                     )}
                                 >
                                     {item.label}
@@ -153,7 +159,7 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                                         onClick={() => scrollTo(item.id)}
                                         className={cn(
                                             'rounded-mr-xs px-3 py-2 text-left text-mr-small transition-colors',
-                                            activeId === item.id ? 'bg-mr-accent-25 font-mr-bold text-mr-accent' : 'text-mr-fg-muted hover:text-mr-fg',
+                                            activeId === item.id ? 'bg-mr-accent-25 font-mr-bold text-mr-accent-fg' : 'text-mr-fg-muted hover:text-mr-fg',
                                         )}
                                     >
                                         {item.label}
@@ -162,10 +168,10 @@ export const LegalShell = ({ page, eyebrow, title, sub, updated, version, toc, c
                             </div>
                         </aside>
 
-                        <div className="min-w-0 flex-1 divide-y divide-mr-border-subtle">{children}</div>
+                        <div className="w-full min-w-0 flex-1 divide-y divide-mr-border-subtle">{children}</div>
                     </div>
                 ) : (
-                    <div className="mx-auto">{children}</div>
+                    <div className="mx-auto min-w-0">{children}</div>
                 )}
             </PageContainer>
         </div>

@@ -1,50 +1,32 @@
-import { ROUTES } from '@shared/constant/ROUTES';
+import { ArrowRight, Clock, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL.ts';
-
+import { ROUTES } from '@shared/constant/ROUTES';
+import { Badge } from '@ui/Badge';
+import type { NewsSummary } from '../model/news.types';
 import { formatRelativeDate } from '../api/newsService';
 
-import type { NewsItem } from '@entities/news';
-
-type HeroNewsProps = {
-    news: NewsItem;
-};
-
-const HeroNews = ({ news }: HeroNewsProps) => {
+const HeroNews = ({ news }: { news: NewsSummary }) => {
     const { t, i18n } = useTranslation('news');
-    const locale = i18n.language || 'pt-BR';
-
+    const categoryLabel = typeof news.category === 'string' ? news.category : news.category?.label;
     return (
-        <Link
-            to={`${WEB_BASE_URL}${ROUTES.NEWS_DETAIL(news.id)}`}
-            className="block overflow-hidden transition border rounded-2xl border-tertiary bg-secondary hover:-translate-y-1"
-        >
-            <div className="relative">
-                <img src={news.coverImage} alt={news.title} className="object-cover w-full aspect-video" />
-                <span className="absolute px-2 py-1 text-xs font-semibold text-white bg-purple-600 rounded-full left-4 top-4">
-                    {news.isExclusive ? t('hero.exclusive') : t('hero.highlight')}
-                </span>
-            </div>
-            <div className="p-4 space-y-2">
-                <p className="text-xs text-purple-300">{news.category}</p>
-                <h2 className="text-2xl font-bold line-clamp-3">{news.title}</h2>
-                <p className="text-sm text-tertiary line-clamp-3">{news.excerpt}</p>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-tertiary">
-                    <span>{news.author.name}</span>
-                    <span>{formatRelativeDate(news.publishedAt)}</span>
-                    <span>{t('card.readMinutes', { count: news.readTime })}</span>
-                    <span>
-                        {t('hero.views', {
-                            count: news.views,
-                            formattedCount: news.views.toLocaleString(locale),
-                        })}
-                    </span>
+        <article className="overflow-hidden rounded-mr-xs border border-mr-border bg-mr-surface">
+            <Link to={ROUTES.NEWS_DETAIL(news.slug || news.id)} className="group grid lg:grid-cols-[1.35fr_1fr]">
+                <div className="relative min-h-64 overflow-hidden bg-mr-secondary lg:min-h-[430px]">
+                    {news.coverImage && <img src={news.coverImage} alt={news.coverAlt || news.title} className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-[1.02]" />}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/20" />
                 </div>
-            </div>
-        </Link>
+                <div className="flex flex-col justify-center gap-5 p-6 sm:p-8 lg:p-10">
+                    <div className="flex flex-wrap items-center gap-2">{news.isFeatured && <Badge>{t('page.pinnedLabel')}</Badge>}{categoryLabel && <Badge variant="neutral">{categoryLabel}</Badge>}</div>
+                    <p className="text-mr-tiny font-mr-bold uppercase tracking-[0.1em] text-mr-accent-fg">{formatRelativeDate(news.publishedAt)}</p>
+                    <h1 className="text-mr-h2 font-mr-extrabold leading-[1.05] tracking-mr text-mr-fg lg:text-[2.75rem]">{news.title}</h1>
+                    <p className="text-mr-body leading-relaxed text-mr-fg-muted">{news.excerpt}</p>
+                    <div className="flex flex-wrap items-center gap-4 text-mr-small text-mr-fg-subtle"><span className="inline-flex items-center gap-1.5"><Clock className="size-4" />{t('card.readMinutes', { count: news.readTime })}</span><span className="inline-flex items-center gap-1.5"><Eye className="size-4" />{news.views.toLocaleString(i18n.language)}</span></div>
+                    <span className="inline-flex items-center gap-2 font-mr-bold text-mr-accent-fg">{t('page.readMore')}<ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
+                </div>
+            </Link>
+        </article>
     );
 };
-
 export default HeroNews;

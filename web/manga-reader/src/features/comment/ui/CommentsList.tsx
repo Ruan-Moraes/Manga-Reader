@@ -11,7 +11,6 @@ import Comment from './Comment';
 
 const DESKTOP_MEDIA_QUERY = '(min-width: 768px)';
 const MAX_DEPTH_DESKTOP = 7;
-const MAX_DEPTH_MOBILE = 2;
 
 type CommentsListProps = {
     targetId: string;
@@ -38,9 +37,9 @@ const CommentsList = ({ targetId, targetType, comments, isLoading, isError, erro
 
     const { reactionsMap, toggleLike, toggleDislike } = useCommentReactions(commentIds);
 
-    // Profundidade visual: 3 níveis no desktop, 2 no mobile (igual ao protótipo).
+    // Mobile limita apenas o recuo visual; a árvore continua sendo renderizada por completo.
     const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
-    const maxDepth = isDesktop ? MAX_DEPTH_DESKTOP : MAX_DEPTH_MOBILE;
+    const maxDepth = isDesktop ? MAX_DEPTH_DESKTOP : Number.POSITIVE_INFINITY;
 
     const handleClickProfile = useCallback(
         (user: User): void => {
@@ -80,12 +79,12 @@ const CommentsList = ({ targetId, targetType, comments, isLoading, isError, erro
                 <button
                     type="button"
                     onClick={loadMore}
-                    className="mt-4 self-center text-sm font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
+                    className="mt-4 self-center text-sm font-semibold text-mr-accent-fg hover:text-mr-accent-fg transition-colors cursor-pointer"
                 >
                     {t('list.loadMore')}
                 </button>
             )}
-            {roots.length === 0 && !isLoading && !isError && <div className="text-gray-400 text-center mt-12 font-bold">{t('list.empty')}</div>}
+            {roots.length === 0 && !isLoading && !isError && <div className="mt-12 text-center font-bold text-mr-fg-muted">{t('list.empty')}</div>}
         </div>
     );
 };

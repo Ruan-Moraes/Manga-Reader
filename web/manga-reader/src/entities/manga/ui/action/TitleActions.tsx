@@ -16,7 +16,7 @@ const TitleActions: React.FC<TitleActionsProps> = ({ onBookmarkClick, onLikeClic
                 className="flex items-center justify-center grow cursor-pointer"
                 onClick={onBookmarkClick}
             >
-                {isBookmarked ? <Bookmark className="text-2xl text-quaternary-default" /> : <Bookmark className="text-2xl" />}
+                {isBookmarked ? <Bookmark className="text-2xl text-mr-accent-fg" /> : <Bookmark className="text-2xl" />}
             </button>
             <div className="h-8 mx-2 border rounded-xs border-secondary"></div>
             <button aria-label="Curtir" className="flex items-center justify-center grow cursor-pointer" onClick={onLikeClick}>

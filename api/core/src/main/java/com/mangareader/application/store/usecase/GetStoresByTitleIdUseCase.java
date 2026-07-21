@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mangareader.application.store.port.StoreRepositoryPort;
-import com.mangareader.domain.store.entity.Store;
+import com.mangareader.application.store.port.StoreTitleRepositoryPort;
+import com.mangareader.domain.store.entity.StoreTitle;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,9 +17,9 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetStoresByTitleIdUseCase {
-    private final StoreRepositoryPort storeRepository;
+    private final StoreTitleRepositoryPort storeTitleRepository;
 
-    public Page<Store> execute(String titleId, Pageable pageable) {
-        return storeRepository.findByTitleId(titleId, pageable);
+    public Page<StoreTitle> execute(String titleId, Pageable pageable) {
+        return storeTitleRepository.findByTitleId(titleId, pageable);
     }
 }

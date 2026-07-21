@@ -9,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.manga.service.GenreValidator;
 import com.mangareader.application.manga.service.TitleAssociationWriter;
+import com.mangareader.application.manga.service.TitleStoreAssociationWriter;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -28,20 +31,31 @@ public class UpdateTitleUseCase {
     private final TitleRepositoryPort titleRepository;
     private final GenreValidator genreValidator;
     private final TitleAssociationWriter associationWriter;
+    private final TitleStoreAssociationWriter storeAssociationWriter;
+    private final CacheInvalidationPort cacheInvalidation;
 
     public Title execute(String titleId, Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
                          List<String> genres, String status,
                          String author, String artist, String publisher, Boolean adult) {
         return execute(titleId, name, type, cover, synopsis, genres, status, author,
-                artist, publisher, adult, null, null);
+                artist, publisher, adult, null, null, null);
+    }
+
+    /** Compatibilidade com consumidores que ainda não enviam vínculos de loja. */
+    public Title execute(String titleId, Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis, List<String> genres, String status,
+                         String author, String artist, String publisher, Boolean adult,
+                         List<TitleAuthorAssignment> authors, List<Long> publisherIds) {
+        return execute(titleId, name, type, cover, synopsis, genres, status, author, artist, publisher,
+                adult, authors, publisherIds, null);
     }
 
     public Title execute(String titleId, Map<String, String> name, String type, String cover,
                          Map<String, String> synopsis,
                          List<String> genres, String status,
                          String author, String artist, String publisher, Boolean adult,
-                         List<TitleAuthorAssignment> authors, List<Long> publisherIds) {
+                         List<TitleAuthorAssignment> authors, List<Long> publisherIds, List<TitleStoreAssignment> stores) {
         Title title = titleRepository.findById(titleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Title", "id", titleId));
 
@@ -60,8 +74,10 @@ public class UpdateTitleUseCase {
 
         Title saved = titleRepository.save(title);
 
-        if (authors != null) associationWriter.replaceAuthors(titleId, authors);
-        if (publisherIds != null) associationWriter.replacePublishers(titleId, publisherIds);
+        if (authors != null || publisherIds != null) associationWriter.replace(titleId, authors, publisherIds);
+        if (stores != null) storeAssociationWriter.replace(titleId, stores);
+
+        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, titleId);
 
         return saved;
     }

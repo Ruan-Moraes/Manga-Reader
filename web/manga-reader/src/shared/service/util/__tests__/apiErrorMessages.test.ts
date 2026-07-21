@@ -51,6 +51,16 @@ describe('resolveApiErrorMessage', () => {
         expect(mensagem).toBe('Sem conexão com o servidor. Verifique sua internet e tente novamente.');
     });
 
+    it('deve retornar serverMessage para BUSINESS_RULE_VIOLATION (mensagem de negocio ja e amigavel)', () => {
+        const mensagem = resolveApiErrorMessage(
+            API_ERROR_CODES.BUSINESS_RULE_VIOLATION,
+            400,
+            'O líder não pode sair do grupo. Transfira a liderança antes.',
+        );
+
+        expect(mensagem).toBe('O líder não pode sair do grupo. Transfira a liderança antes.');
+    });
+
     it('deve mapear todos os codigos de auth', () => {
         const authCodes = [
             API_ERROR_CODES.AUTH_TOKEN_EXPIRED,

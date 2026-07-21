@@ -14,6 +14,7 @@ import { EditedFlag } from '@ui/EditedFlag';
 
 import useCommentModals from '../model/internal/useCommentModals';
 import useCommentScrollToParent from '../model/internal/useCommentScrollToParent';
+import { getCommentVisualDepth } from '../model/commentVisualDepth';
 
 import { type CommentProps, CommentContent } from '@entities/comment';
 
@@ -80,7 +81,8 @@ const Comment = ({
 
     const when = formatPostDate(data.createdAt);
 
-    const isReply = depth > 0;
+    const visualDepth = getCommentVisualDepth(depth, isDesktop);
+    const isReply = visualDepth > 0;
     const replies = data.children ?? [];
     const userReaction = reactionsMap[data.id] ?? null;
     const score = Number(data.likeCount) - Number(data.dislikeCount);
@@ -104,7 +106,7 @@ const Comment = ({
             <ThreadPost
                 anchorId={`comment-${data.id}`}
                 avatar={{ src: user.photo, name: user.name }}
-                avatarSize={avatarSizeForDepth(depth)}
+                avatarSize={avatarSizeForDepth(visualDepth)}
                 onClickAvatar={() => onClickProfile(userData)}
                 flat={isReply}
                 highlighted={data.isHighlighted}
@@ -114,9 +116,9 @@ const Comment = ({
                         <button
                             type="button"
                             onClick={scrollToParent}
-                            className="inline-flex items-center gap-1 self-start text-mr-tiny font-mr-semibold text-mr-fg-subtle transition-colors hover:text-mr-accent"
+                            className="inline-flex items-center gap-1 rounded-mr-full border border-mr-chip-border bg-mr-chip px-2 py-0.5 text-mr-tiny font-mr-semibold text-mr-fg-subtle transition-colors hover:border-mr-accent-50 hover:text-mr-accent-fg"
                         >
-                            {t('reply.replyingTo')} <span className="font-mr-bold text-mr-accent">{parentUserName}</span>
+                            {t('reply.replyingTo')} <span className="font-mr-bold text-mr-accent-fg">{parentUserName}</span>
                         </button>
                     ) : null
                 }

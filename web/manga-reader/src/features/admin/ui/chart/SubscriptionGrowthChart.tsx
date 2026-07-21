@@ -26,9 +26,9 @@ const CustomTooltip =
         return (
             <div className="rounded-mr-xs border border-mr-border bg-mr-surface p-3 text-mr-small shadow-mr-black">
                 <p className="font-mr-bold text-mr-fg">{formatMonth(data.yearMonth)}</p>
-                <p className="text-mr-accent">{t('subscriptionGrowthChart.new', { count: data.newSubscriptions })}</p>
+                <p className="text-mr-accent-fg">{t('subscriptionGrowthChart.new', { count: data.newSubscriptions })}</p>
                 <p className="text-mr-danger">{t('subscriptionGrowthChart.cancelled', { count: data.cancelledSubscriptions })}</p>
-                <p className={data.netGrowth >= 0 ? 'text-mr-accent' : 'text-mr-danger'}>
+                <p className={data.netGrowth >= 0 ? 'text-mr-accent-fg' : 'text-mr-danger'}>
                     {t('subscriptionGrowthChart.balance', { value: `${data.netGrowth > 0 ? '+' : ''}${data.netGrowth}` })}
                 </p>
             </div>
@@ -46,13 +46,13 @@ const SubscriptionGrowthChart = ({ entries }: Props) => {
             <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1a1a1a" />
-                        <XAxis dataKey="label" tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} />
-                        <YAxis tick={{ fill: '#999999', fontSize: 12 }} tickLine={false} allowDecimals={false} />
-                        <Tooltip content={CustomTooltip(t)} cursor={{ fill: 'rgba(221,218,42,0.10)' }} />
-                        <Legend wrapperStyle={{ fontSize: 12, color: '#999999' }} />
-                        <Bar dataKey="newSubscriptions" name={t('subscriptionGrowthChart.newLegend')} fill="#ddda2a" radius={[2, 2, 0, 0]} />
-                        <Bar dataKey="cancelledSubscriptions" name={t('subscriptionGrowthChart.cancelledLegend')} fill="#ff784f" radius={[2, 2, 0, 0]} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--mr-border)" />
+                        <XAxis dataKey="label" tick={{ fill: 'var(--mr-fg-subtle)', fontSize: 12 }} tickLine={false} />
+                        <YAxis tick={{ fill: 'var(--mr-fg-subtle)', fontSize: 12 }} tickLine={false} allowDecimals={false} />
+                        <Tooltip content={CustomTooltip(t)} cursor={{ fill: 'var(--mr-accent-10)' }} />
+                        <Legend wrapperStyle={{ fontSize: 12, color: 'var(--mr-fg-subtle)' }} />
+                        <Bar dataKey="newSubscriptions" name={t('subscriptionGrowthChart.newLegend')} fill="var(--mr-accent)" radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="cancelledSubscriptions" name={t('subscriptionGrowthChart.cancelledLegend')} fill="var(--mr-danger)" radius={[2, 2, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

@@ -20,6 +20,21 @@
         "goHome": "Ir para o início",
         "searchWorks": "Buscar obras"
     },
+    "errorPage": {
+        "eyebrow": "Erro inesperado",
+        "title": "Algo saiu do roteiro.",
+        "description": "Não foi possível concluir esta página. Você pode tentar recarregar ou voltar ao início enquanto cuidamos disso.",
+        "reload": "Recarregar página",
+        "goHome": "Voltar ao início",
+        "technicalDetails": "Detalhes técnicos",
+        "message": "Mensagem",
+        "file": "Arquivo",
+        "position": "Localização",
+        "lineColumn": "Linha {{line}}, coluna {{column}}",
+        "unavailable": "Não disponível",
+        "copyDiagnostic": "Copiar diagnóstico",
+        "copied": "Diagnóstico copiado"
+    },
     "aboutUs": {
         "hero": {
             "eyebrow": "A plataforma",

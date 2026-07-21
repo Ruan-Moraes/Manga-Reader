@@ -46,8 +46,7 @@ const CommentInput = ({ placeholder, targetId, targetType, onCommentCreated }: C
 
             onCommentCreated?.();
         } catch (error) {
-            showErrorToast(t('toast.createError'), { toastId: 'create-comment-error' });
-
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts).
             throw error;
         }
     };

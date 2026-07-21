@@ -15,7 +15,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
+import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.AdultContentAccessPolicy;
 import com.mangareader.domain.manga.entity.Chapter;
+import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -24,6 +27,12 @@ import com.mangareader.shared.exception.ResourceNotFoundException;
 class GetChapterByNumberUseCaseTest {
     @Mock
     private ChapterRepositoryPort chapterRepository;
+
+    @Mock
+    private TitleRepositoryPort titleRepository;
+
+    @Mock
+    private AdultContentAccessPolicy adultPolicy;
 
     @InjectMocks
     private GetChapterByNumberUseCase getChapterByNumberUseCase;
@@ -38,6 +47,8 @@ class GetChapterByNumberUseCaseTest {
                     .title(LocalizedString.ofDefault("A Jornada"))
                     .releaseDate("2020-01-15").pages("22").build();
 
+            when(titleRepository.findById("abc123"))
+                    .thenReturn(Optional.of(Title.builder().id("abc123").build()));
             when(chapterRepository.findByTitleIdAndNumber("abc123", "2"))
                     .thenReturn(Optional.of(chapter));
 
@@ -55,6 +66,8 @@ class GetChapterByNumberUseCaseTest {
         @Test
         @DisplayName("Deve lançar ResourceNotFoundException quando capítulo não existe")
         void deveLancarExcecaoQuandoCapituloNaoExiste() {
+            when(titleRepository.findById("abc123"))
+                    .thenReturn(Optional.of(Title.builder().id("abc123").build()));
             when(chapterRepository.findByTitleIdAndNumber("abc123", "999"))
                     .thenReturn(Optional.empty());
 

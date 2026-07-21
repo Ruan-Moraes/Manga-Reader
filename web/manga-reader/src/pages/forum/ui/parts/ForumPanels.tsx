@@ -52,8 +52,8 @@ export const ForumPanelRecentComments = ({ onOpenTopic }: PanelNavProps) => {
                             <SquareAvatar initials={u.initials} color={u.color} size={30} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div className="forum-recent-head">
-                                    <span style={{ color: '#fff', fontWeight: 700, fontSize: 12, letterSpacing: '.0625rem' }}>{u.name}</span>
-                                    <span style={{ color: '#727273', fontSize: 11 }}>· {c.when}</span>
+                                    <span style={{ color: 'var(--mr-fg)', fontWeight: 700, fontSize: 12, letterSpacing: '.0625rem' }}>{u.name}</span>
+                                    <span style={{ color: 'var(--mr-tertiary)', fontSize: 11 }}>· {c.when}</span>
                                 </div>
                                 <div className="forum-recent-text">{c.text}</div>
                                 <div className="forum-recent-on">

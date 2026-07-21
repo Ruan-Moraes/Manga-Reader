@@ -10,6 +10,8 @@ import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.domain.user.entity.UserRecommendation;
 
 import lombok.RequiredArgsConstructor;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 /**
  * Reordena as recomendações do perfil do usuário.
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReorderRecommendationsUseCase {
     private final RecommendationRepositoryPort recommendationRepository;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     @Transactional
     public List<UserRecommendation> execute(UUID userId, List<String> titleIdsInOrder) {
@@ -30,6 +33,9 @@ public class ReorderRecommendationsUseCase {
             }
         }
 
-        return recommendationRepository.findByUserIdOrderByPosition(userId);
+        List<UserRecommendation> result = recommendationRepository.findByUserIdOrderByPosition(userId);
+        behaviorEventRecorder.record(userId, BehaviorEventType.PROFILE_RECOMMENDATION_REORDERED,
+                null, null, "PROFILE");
+        return result;
     }
 }

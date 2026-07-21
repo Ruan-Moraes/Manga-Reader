@@ -23,6 +23,7 @@ import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.library.usecase.SaveToLibraryUseCase.SaveToLibraryInput;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.domain.manga.entity.Title;
@@ -47,6 +48,9 @@ class SaveToLibraryUseCaseTest {
 
     @Mock
     private LocaleResolutionService localeResolutionService;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private SaveToLibraryUseCase saveToLibraryUseCase;

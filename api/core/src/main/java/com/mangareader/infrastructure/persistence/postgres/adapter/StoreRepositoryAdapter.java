@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.mangareader.application.store.port.StoreRepositoryPort;
 import com.mangareader.domain.store.entity.Store;
+import com.mangareader.domain.store.valueobject.StoreStatus;
 import com.mangareader.infrastructure.persistence.postgres.repository.StoreJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,16 @@ public class StoreRepositoryAdapter implements StoreRepositoryPort {
     @Override
     public Page<Store> findAll(Pageable pageable) {
         return jpaRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Store> search(String search, StoreStatus status, Pageable pageable) {
+        return jpaRepository.search(search, status, pageable);
+    }
+
+    @Override
+    public Page<Store> findActive(Pageable pageable) {
+        return jpaRepository.findByStatus(StoreStatus.ACTIVE, pageable);
     }
 
     @Override

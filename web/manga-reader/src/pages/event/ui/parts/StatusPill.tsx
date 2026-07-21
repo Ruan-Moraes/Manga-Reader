@@ -7,9 +7,9 @@ import type { EventLiveStatus } from '../eventsData';
  * usa o accent amarelo-lima (com glow de "ao vivo"), **não** o verde do protótipo.
  */
 const MAP: Record<EventLiveStatus, { key: string; bg: string; fg: string; dot: string; glow: boolean }> = {
-    active: { key: 'statusActive', bg: 'rgba(221,218,42,0.15)', fg: 'var(--mr-accent)', dot: 'var(--mr-accent)', glow: true },
-    upcoming: { key: 'statusUpcoming', bg: 'rgba(255,255,255,0.06)', fg: '#cccccc', dot: '#999999', glow: false },
-    ended: { key: 'statusEnded', bg: 'rgba(255,255,255,0.06)', fg: '#888888', dot: '#666666', glow: false },
+    active: { key: 'statusActive', bg: 'var(--mr-accent-10)', fg: 'var(--mr-accent-fg)', dot: 'var(--mr-accent)', glow: true },
+    upcoming: { key: 'statusUpcoming', bg: 'var(--mr-surface-elevated)', fg: 'var(--mr-fg-muted)', dot: 'var(--mr-fg-subtle)', glow: false },
+    ended: { key: 'statusEnded', bg: 'var(--mr-surface-elevated)', fg: 'var(--mr-fg-disabled)', dot: 'var(--mr-fg-disabled)', glow: false },
 };
 
 export const StatusPill = ({ status }: { status: EventLiveStatus }) => {

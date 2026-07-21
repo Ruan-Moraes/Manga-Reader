@@ -11,3 +11,4 @@ export * from './types/subscription.types';
 export * from './types/tag.types';
 export * from './types/author.types';
 export * from './types/publisher.types';
+export * from './types/store.types';

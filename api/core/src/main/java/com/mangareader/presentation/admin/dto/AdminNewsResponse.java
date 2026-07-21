@@ -1,6 +1,6 @@
 package com.mangareader.presentation.admin.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -9,11 +9,13 @@ import java.util.Map;
  */
 public record AdminNewsResponse(
         String id,
+        String slug,
         Map<String, String> title,
         Map<String, String> subtitle,
         Map<String, String> excerpt,
         Map<String, List<String>> content,
         String coverImage,
+        Map<String, String> coverAlt,
         String category,
         List<String> tags,
         String authorName,
@@ -22,7 +24,13 @@ public record AdminNewsResponse(
         int views,
         boolean isExclusive,
         boolean isFeatured,
-        LocalDateTime publishedAt,
-        LocalDateTime updatedAt
+        String status,
+        Instant createdAt,
+        Instant publishedAt,
+        Instant scheduledAt,
+        Instant updatedAt,
+        Map<String, String> seoTitle,
+        Map<String, String> seoDescription,
+        Map<String, List<String>> seoKeywords
 ) {
 }

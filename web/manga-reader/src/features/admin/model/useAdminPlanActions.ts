@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { createPlan, updatePlan } from '../api/adminSubscriptionService';
@@ -23,7 +23,7 @@ const useAdminPlanActions = () => {
                 showSuccessToast('Plano criado com sucesso.');
                 invalidatePlans();
             } catch {
-                showErrorToast('Erro ao criar plano.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -39,7 +39,7 @@ const useAdminPlanActions = () => {
                 showSuccessToast('Plano atualizado com sucesso.');
                 invalidatePlans();
             } catch {
-                showErrorToast('Erro ao atualizar plano.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

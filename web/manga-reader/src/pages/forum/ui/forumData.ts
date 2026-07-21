@@ -92,8 +92,8 @@ export const FORUM_TAGS: Record<string, ForumTag> = {
 
 export const FORUM_USERS: Record<string, ForumUser> = {
     ak: { id: 'ak', name: 'AkariReads', handle: 'akarireads', initials: 'AK', color: 'var(--mr-accent)', level: 42, badge: 'Top Reader', role: null },
-    kj: { id: 'kj', name: 'Kenji_99', handle: 'kenji99', initials: 'KJ', color: '#FF784F', level: 28, badge: null, role: null },
-    yl: { id: 'yl', name: 'YukiLove', handle: 'yukilove', initials: 'YL', color: '#cccccc', level: 35, badge: 'Postador', role: null },
+    kj: { id: 'kj', name: 'Kenji_99', handle: 'kenji99', initials: 'KJ', color: 'var(--mr-danger)', level: 28, badge: null, role: null },
+    yl: { id: 'yl', name: 'YukiLove', handle: 'yukilove', initials: 'YL', color: 'var(--mr-fg-muted)', level: 35, badge: 'Postador', role: null },
     rm: { id: 'rm', name: 'Ruan Moraes', handle: 'ruanmoraes', initials: 'RM', color: 'var(--mr-accent)', level: 18, badge: null, role: 'admin' },
     tk: { id: 'tk', name: 'TakeshiScan', handle: 'takeshiscan', initials: 'TK', color: '#3a2a10', level: 51, badge: 'Tradutor', role: 'mod' },
     hl: { id: 'hl', name: 'Helena_Lin', handle: 'helenalin', initials: 'HL', color: '#1f3a2a', level: 24, badge: null, role: null },

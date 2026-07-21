@@ -10,15 +10,15 @@ type MetricsCardProps = {
 };
 
 const ACCENTS: Record<NonNullable<MetricsCardProps['accent']>, string> = {
-    default: 'bg-mr-accent-25 text-mr-accent',
-    success: 'bg-mr-accent-25 text-mr-accent',
+    default: 'bg-mr-accent-25 text-mr-accent-fg',
+    success: 'bg-mr-accent-25 text-mr-accent-fg',
     warning: 'bg-mr-gray-800 text-mr-fg-muted',
     danger: 'bg-mr-danger-15 text-mr-danger',
 };
 
 const VALUE_TONE: Record<NonNullable<MetricsCardProps['accent']>, string> = {
     default: 'text-mr-fg',
-    success: 'text-mr-accent',
+    success: 'text-mr-accent-fg',
     warning: 'text-mr-fg',
     danger: 'text-mr-danger',
 };

@@ -9,13 +9,15 @@ import { Button } from '@ui/Button';
 import { MangaCard } from '@entities/manga';
 import type { Group } from '@entities/group';
 
+import { useBookmark } from '@features/library';
+
 const Heading = ({ children }: { children: React.ReactNode }) => (
-    <div className="mb-3 text-mr-tiny font-mr-extrabold uppercase tracking-[0.08em] text-mr-accent">{children}</div>
+    <div className="mb-3 text-mr-tiny font-mr-extrabold uppercase tracking-[0.08em] text-mr-accent-fg">{children}</div>
 );
 
 const SocialRow = ({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) => (
-    <div className="flex items-center gap-2.5 border-t border-[#2d2d2d] py-2 first:border-t-0">
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent">
+    <div className="flex items-center gap-2.5 border-t border-mr-border py-2 first:border-t-0">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-10 text-mr-accent-fg">
             <Icon className="size-3.5" strokeWidth={2} aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
@@ -44,7 +46,7 @@ export const GroupAbout = ({ group }: { group: Group }) => {
                 </div>
             </div>
 
-            <aside className="self-start rounded-mr-sm border border-[#333] bg-mr-gray-900 p-3.5">
+            <aside className="self-start rounded-mr-sm border border-mr-border bg-mr-gray-900 p-3.5">
                 <Heading>{t('profile.whereToFind')}</Heading>
                 {/* TODO: Transforma em link, porem quando o usuario clicar vai abrir um modal falando que esta saindo do dominio do manga reader*/}
                 {group.website && <SocialRow icon={Newspaper} label={t('profile.socialSite')} value={group.website} />}
@@ -61,6 +63,7 @@ export const GroupAbout = ({ group }: { group: Group }) => {
 
 export const GroupWorks = ({ group, onOpenTitle }: { group: Group; onOpenTitle: (id: string) => void }) => {
     const { t } = useTranslation('group');
+    const { isSaved, toggleBookmark } = useBookmark();
 
     const works = group.translatedWorks ?? [];
 
@@ -76,6 +79,8 @@ export const GroupWorks = ({ group, onOpenTitle }: { group: Group; onOpenTitle: 
                         size="sm"
                         manga={{ id: w.id, title: w.title, cover: w.cover, chapter: w.chapters, genre: w.genres }}
                         onClick={() => onOpenTitle(w.id)}
+                        inLibrary={isSaved(w.id)}
+                        onToggleLibrary={() => toggleBookmark(w.id)}
                     />
                 ))}
             </div>
@@ -92,11 +97,11 @@ export const GroupTeam = ({ group }: { group: Group }) => {
             <div className="grid gap-2.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
                 {/* TODO: Ser um link que vai levar na pagina do usuario */}
                 {group.members.map(m => (
-                    <div key={m.id} className="flex items-center gap-3 rounded-mr-sm border border-[#333] bg-mr-gray-900 p-3">
+                    <div key={m.id} className="flex items-center gap-3 rounded-mr-sm border border-mr-border bg-mr-gray-900 p-3">
                         <Avatar src={m.avatar || undefined} name={m.name} size={40} />
                         <div className="min-w-0 flex-1">
                             <div className="truncate text-mr-small font-mr-bold tracking-mr text-mr-fg">{m.name}</div>
-                            <div className="text-mr-tiny font-mr-bold tracking-mr text-mr-accent">{m.role}</div>
+                            <div className="text-mr-tiny font-mr-bold tracking-mr text-mr-accent-fg">{m.role}</div>
                         </div>
                     </div>
                 ))}
@@ -111,7 +116,7 @@ export const GroupDiscussion = ({ onViewForum }: { onViewForum: () => void }) =>
     return (
         <div>
             <Heading>{t('profile.discussionHeading')}</Heading>
-            <div className="rounded-mr-sm border border-[#333] bg-mr-gray-900 px-5 py-10 text-center">
+            <div className="rounded-mr-sm border border-mr-border bg-mr-gray-900 px-5 py-10 text-center">
                 <div className="mb-3 text-mr-small leading-normal text-mr-gray-200">{t('profile.discussionText')}</div>
                 <Button variant="ghost" onClick={onViewForum}>
                     {t('profile.viewInForum')}

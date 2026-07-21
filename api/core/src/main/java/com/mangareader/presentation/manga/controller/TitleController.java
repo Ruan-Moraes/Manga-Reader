@@ -29,6 +29,8 @@ import com.mangareader.presentation.manga.mapper.TitleMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
 import com.mangareader.shared.web.PageParams;
+import com.mangareader.shared.web.CurrentUserId;
+import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,17 +60,18 @@ public class TitleController {
     @Operation(summary = "Listar títulos", description = "Retorna todos os títulos do catálogo com paginação")
     public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> getAll(
             @PageParams(defaultSort = "name", defaultDirection = "asc")
-            Pageable pageable
+            Pageable pageable,
+            @CurrentUserId UUID userId
     ) {
-        var result = getTitlesUseCase.execute(pageable);
+        var result = getTitlesUseCase.execute(pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapWithStats(result))));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar título por ID", description = "Retorna os detalhes de um título específico")
-    public ResponseEntity<ApiResponse<TitleResponse>> getById(@PathVariable String id) {
-        var title = getTitleByIdUseCase.execute(id);
+    public ResponseEntity<ApiResponse<TitleResponse>> getById(@PathVariable String id, @CurrentUserId UUID userId) {
+        var title = getTitleByIdUseCase.execute(id, userId);
 
         var stats = getChapterStatsUseCase.execute(List.of(id))
                 .getOrDefault(id, ChapterStats.EMPTY);
@@ -84,9 +87,10 @@ public class TitleController {
             @RequestParam(defaultValue = "") String q,
             @PageParams(defaultSort = "name", defaultDirection = "asc",
                     ignoreRequestSort = true)
-            Pageable pageable
+            Pageable pageable,
+            @CurrentUserId UUID userId
     ) {
-        var result = searchTitlesUseCase.execute(q, pageable);
+        var result = searchTitlesUseCase.execute(q, pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapWithStats(result))));
     }
@@ -97,9 +101,10 @@ public class TitleController {
             @PathVariable String genre,
             @PageParams(defaultSort = "name", defaultDirection = "asc",
                     ignoreRequestSort = true)
-            Pageable pageable
+            Pageable pageable,
+            @CurrentUserId UUID userId
     ) {
-        var result = getTitlesByGenreUseCase.execute(genre, pageable);
+        var result = getTitlesByGenreUseCase.execute(genre, pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapWithStats(result))));
     }
@@ -114,7 +119,8 @@ public class TitleController {
             @RequestParam(required = false, defaultValue = "MOST_READ") String sort,
             @PageParams(defaultSort = "name", defaultDirection = "asc",
                     ignoreRequestSort = true)
-            Pageable pageable
+            Pageable pageable,
+            @CurrentUserId UUID userId
     ) {
         SortCriteria sortCriteria;
 
@@ -124,7 +130,7 @@ public class TitleController {
             sortCriteria = SortCriteria.MOST_READ;
         }
 
-        var result = filterTitlesUseCase.execute(genres, status, adult, authorId, sortCriteria, pageable);
+        var result = filterTitlesUseCase.execute(genres, status, adult, authorId, sortCriteria, pageable, userId);
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapWithStats(result))));
     }

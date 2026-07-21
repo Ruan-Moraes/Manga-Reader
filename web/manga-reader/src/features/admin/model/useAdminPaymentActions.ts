@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { updatePaymentStatus } from '../api/adminPaymentService';
@@ -30,7 +30,7 @@ const useAdminPaymentActions = () => {
                 showSuccessToast('Status do pagamento atualizado com sucesso.');
                 invalidatePayments();
             } catch {
-                showErrorToast('Erro ao atualizar status do pagamento.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

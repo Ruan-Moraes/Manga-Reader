@@ -13,6 +13,7 @@ public record SavedMangaResponse(
         String name,
         String cover,
         String type,
+        boolean adult,
         String list,
         String savedAt
 ) {}

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { createTitle, updateTitle, deleteTitle } from '../api/adminTitleService';
@@ -32,7 +32,6 @@ const useAdminTitleActions = () => {
                 invalidateTitles();
                 return result;
             } catch {
-                showErrorToast('Erro ao criar título.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -50,7 +49,6 @@ const useAdminTitleActions = () => {
                 invalidateTitles();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar título.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -67,7 +65,7 @@ const useAdminTitleActions = () => {
                 showSuccessToast('Título excluído com sucesso.');
                 invalidateTitles();
             } catch {
-                showErrorToast('Erro ao excluir título.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

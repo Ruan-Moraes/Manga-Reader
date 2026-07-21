@@ -6,7 +6,7 @@ import { chapterPublicGateway, type ReaderChapter } from '@entities/chapter';
 type UseReaderPagesResult = {
     /** Capítulo com páginas reais, quando existe no armazenamento provisório. */
     readerChapter: ReaderChapter | null;
-    /** Capítulo existe mas não é público (hidden/unavailable/archived/draft/scheduled) e não há preview. */
+    /** A API não expôs o capítulo (ausente, adulto oculto ou não publicado). */
     isBlocked: boolean;
     isLoading: boolean;
 };
@@ -14,8 +14,8 @@ type UseReaderPagesResult = {
 /**
  * Páginas públicas do capítulo via ChapterPublicGateway.
  *
- * `null` do gateway (capítulo inexistente no armazenamento provisório) mantém
- * o leitor no fallback de placeholders atual — nenhum erro é propagado.
+ * Respostas não encontradas são exibidas como indisponíveis; nenhum conteúdo
+ * sintético é criado no cliente.
  * `preview` permite ao admin/poster visualizar capítulos não publicados.
  */
 const useReaderPages = (titleId: string | undefined, chapterNumber: string | undefined, preview = false): UseReaderPagesResult => {

@@ -22,12 +22,16 @@ services:
           memory: 512M
           cpus: "1.0"
   mongodb:
-    image: mongo:8.0
+    image: mongo:8.0.26
     container_name: mangareader-mongodb
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: mangareader
+      # Workaround para SERVER-121912: TCMalloc do Mongo 8.x colide com o
+      # suporte a RSEQ do kernel Linux 6.19+, causando crash no boot. Sem
+      # patch oficial ainda; força o caminho compatível de RSEQ do glibc.
+      GLIBC_TUNABLES: glibc.pthread.rseq=1
     command: mongod --replSet rs0 --bind_ip_all --wiredTigerCacheSizeGB 0.25
     volumes:
       - mongo_data:/data/db

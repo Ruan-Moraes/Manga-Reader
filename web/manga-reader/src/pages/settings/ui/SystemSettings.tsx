@@ -18,9 +18,18 @@ import useSettingsState from '../model/useSettingsState';
 
 type SettingTab = 'reader' | 'appearance' | 'language' | 'accessibility' | 'data' | 'about';
 
+const SETTING_TABS: SettingTab[] = ['reader', 'appearance', 'language', 'accessibility', 'data', 'about'];
+
+const getInitialTab = (): SettingTab => {
+    if (typeof window === 'undefined') return 'reader';
+
+    const requestedTab = new URLSearchParams(window.location.search).get('tab');
+    return SETTING_TABS.includes(requestedTab as SettingTab) ? (requestedTab as SettingTab) : 'reader';
+};
+
 const SystemSettings = () => {
     const { t } = useTranslation('user');
-    const [tab, setTab] = useState<SettingTab>('reader');
+    const [tab, setTab] = useState<SettingTab>(getInitialTab);
     const state = useSettingsState();
     const isDesktop = useMediaQuery('(min-width: 1024px)');
 
@@ -44,19 +53,19 @@ const SystemSettings = () => {
             label: t('settings.system.metaSyncing'),
             icon: LoaderCircle,
             indicator: 'bg-mr-accent',
-            iconClassName: 'animate-spin text-mr-accent',
+            iconClassName: 'animate-spin text-mr-accent-fg',
         },
         syncing: {
             label: t('settings.system.metaSyncing'),
             icon: LoaderCircle,
             indicator: 'bg-mr-accent',
-            iconClassName: 'animate-spin text-mr-accent',
+            iconClassName: 'animate-spin text-mr-accent-fg',
         },
         synced: {
             label: t('settings.system.metaSynced'),
             icon: CheckCircle2,
             indicator: 'bg-mr-accent',
-            iconClassName: 'text-mr-accent',
+            iconClassName: 'text-mr-accent-fg',
         },
         error: {
             label: t('settings.system.metaError'),
@@ -95,7 +104,7 @@ const SystemSettings = () => {
             {state.needsReload && (
                 <div className="mb-6 flex flex-col gap-3 rounded-mr-xs border border-mr-accent-50 bg-mr-accent-10 p-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="flex items-center gap-2 text-mr-small text-mr-fg">
-                        <RefreshCw className="size-4 shrink-0 text-mr-accent" aria-hidden="true" />
+                        <RefreshCw className="size-4 shrink-0 text-mr-accent-fg" aria-hidden="true" />
                         {t('settings.system.reloadBanner')}
                     </p>
                     <Button variant="ghost" size="sm" icon={RefreshCw} onClick={state.reload} className="shrink-0">

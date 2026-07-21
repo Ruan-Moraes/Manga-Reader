@@ -1,6 +1,7 @@
 package com.mangareader.infrastructure.persistence.mongo.adapter;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +30,11 @@ public class UserChapterReadRepositoryAdapter implements UserChapterReadReposito
     @Override
     public Optional<UserChapterRead> findByUserIdAndTitleIdAndChapterNumber(String userId, String titleId, String chapterNumber) {
         return repository.findByUserIdAndTitleIdAndChapterNumber(userId, titleId, chapterNumber);
+    }
+
+    @Override
+    public List<UserChapterRead> findAllByUserId(String userId) {
+        return repository.findAllByUserIdOrderByReadAtDesc(userId);
     }
 
     @Override

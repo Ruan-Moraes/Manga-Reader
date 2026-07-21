@@ -117,6 +117,19 @@ class GetUserViewHistoryUseCaseTest {
     }
 
     @Test
+    @DisplayName("Dono recebe página vazia quando visibilidade é DO_NOT_TRACK")
+    void donoRecebeVazioQuandoDoNotTrack() {
+        UUID userId = UUID.randomUUID();
+        stubUser(userId, VisibilitySetting.DO_NOT_TRACK);
+
+        Page<ViewHistory> result = useCase.execute(userId, userId, pageable);
+
+        assertThat(result.getContent()).isEmpty();
+        verify(viewHistoryRepository, never())
+                .findByUserIdOrderByViewedAtDesc(any(), any());
+    }
+
+    @Test
     @DisplayName("Propaga ResourceNotFoundException quando usuário não existe")
     void propagaQuandoUsuarioNaoExiste() {
         UUID targetId = UUID.randomUUID();

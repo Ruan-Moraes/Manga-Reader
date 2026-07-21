@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Download, Trash2, Upload } from 'lucide-react';
 
@@ -6,14 +6,15 @@ import { Button } from '@ui/Button';
 import { Modal } from '@ui/Modal';
 import { ProgressBar } from '@ui/ProgressBar';
 import { useToast } from '@ui/Toast';
+import { clearMyTrackedHistory, exportMyData } from '@entities/user';
+import { clearClientCache, measureClientCache, queryClient, type ClientCacheUsage } from '@shared/service/util/queryCache';
 
 import { SettingSection } from './settingsShared';
 import type { SettingsState } from '../../model/useSettingsState';
 
-const CACHE_USED_MB = 186;
-const CACHE_TOTAL_MB = 512;
-
 type ConfirmKind = 'cache' | 'history' | null;
+
+const formatMiB = (bytes: number) => (bytes / (1024 * 1024)).toFixed(bytes >= 10 * 1024 * 1024 ? 0 : 1);
 
 const DataRow = ({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) => (
     <div className="flex flex-col gap-3 rounded-mr-xs border border-mr-gray-800 bg-mr-secondary p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -33,20 +34,58 @@ const DataTab = ({ state }: { state: SettingsState }) => {
     const { isLoggedIn } = state;
 
     const [confirm, setConfirm] = useState<ConfirmKind>(null);
-    const [importOpen, setImportOpen] = useState(false);
+    const [cacheUsage, setCacheUsage] = useState<ClientCacheUsage>({ usedBytes: 0, quotaBytes: 0 });
+    const [busy, setBusy] = useState(false);
 
-    const usagePct = Math.round((CACHE_USED_MB / CACHE_TOTAL_MB) * 100);
+    const refreshUsage = useCallback(() => {
+        void measureClientCache()
+            .then(setCacheUsage)
+            .catch(() => setCacheUsage({ usedBytes: 0, quotaBytes: 0 }));
+    }, []);
 
-    const runConfirm = () => {
-        if (confirm === 'cache') {
-            toast({ tone: 'accent', title: t('settings.system.data.cacheCleared'), duration: 2200 });
+    useEffect(refreshUsage, [refreshUsage]);
+
+    const usagePct = cacheUsage.quotaBytes > 0 ? Math.min(100, Math.round((cacheUsage.usedBytes / cacheUsage.quotaBytes) * 100)) : 0;
+
+    const runConfirm = async () => {
+        setBusy(true);
+        try {
+            if (confirm === 'cache') {
+                await clearClientCache();
+                refreshUsage();
+                toast({ tone: 'accent', title: t('settings.system.data.cacheCleared'), duration: 2200 });
+            }
+
+            if (confirm === 'history') {
+                await clearMyTrackedHistory();
+                await queryClient.invalidateQueries();
+            }
+
+            if (confirm === 'history') toast({ tone: 'accent', title: t('settings.system.data.historyCleared'), duration: 2200 });
+            setConfirm(null);
+        } catch {
+            toast({ tone: 'danger', title: t('settings.system.data.actionFailed'), duration: 3200 });
+        } finally {
+            setBusy(false);
         }
+    };
 
-        if (confirm === 'history') {
-            toast({ tone: 'accent', title: t('settings.system.data.historyCleared'), duration: 2200 });
+    const runExport = async () => {
+        setBusy(true);
+        try {
+            const blob = await exportMyData();
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `mangahost-data-export-${new Date().toISOString().slice(0, 10)}.json`;
+            anchor.click();
+            URL.revokeObjectURL(url);
+            toast({ tone: 'accent', title: t('settings.system.data.exportStarted'), duration: 2200 });
+        } catch {
+            toast({ tone: 'danger', title: t('settings.system.data.actionFailed'), duration: 3200 });
+        } finally {
+            setBusy(false);
         }
-
-        setConfirm(null);
     };
 
     return (
@@ -68,7 +107,7 @@ const DataTab = ({ state }: { state: SettingsState }) => {
                         <div className="mb-2 flex items-center justify-between text-mr-small">
                             <span className="text-mr-fg-muted">{t('settings.system.data.cacheUsageLabel')}</span>
                             <span className="font-mr-mono tabular-nums text-mr-fg">
-                                {t('settings.system.data.cacheUsage', { used: CACHE_USED_MB, total: CACHE_TOTAL_MB })}
+                                {t('settings.system.data.cacheUsage', { used: formatMiB(cacheUsage.usedBytes), total: formatMiB(cacheUsage.quotaBytes) })}
                             </span>
                         </div>
                         <ProgressBar value={usagePct} thickness="thick" label={t('settings.system.data.cacheTitle')} />
@@ -83,14 +122,15 @@ const DataTab = ({ state }: { state: SettingsState }) => {
                             variant="ghost"
                             icon={Download}
                             disabled={!isLoggedIn}
-                            onClick={() => toast({ tone: 'accent', title: t('settings.system.data.exportStarted'), duration: 2200 })}
+                            loading={busy}
+                            onClick={() => void runExport()}
                         >
                             {t('settings.system.data.exportAction')}
                         </Button>
                     </DataRow>
                     <DataRow title={t('settings.system.data.importTitle')} desc={t('settings.system.data.importDesc')}>
-                        <Button variant="ghost" icon={Upload} onClick={() => setImportOpen(true)}>
-                            {t('settings.system.data.importAction')}
+                        <Button variant="ghost" icon={Upload} disabled>
+                            {t('settings.system.data.importUnavailable')}
                         </Button>
                     </DataRow>
                 </div>
@@ -115,37 +155,13 @@ const DataTab = ({ state }: { state: SettingsState }) => {
                         <Button variant="ghost" onClick={() => setConfirm(null)}>
                             {t('settings.system.data.confirmCancel')}
                         </Button>
-                        <Button variant="ghost" danger icon={Trash2} onClick={runConfirm}>
+                        <Button variant="ghost" danger icon={Trash2} loading={busy} onClick={() => void runConfirm()}>
                             {t('settings.system.data.confirmClear')}
                         </Button>
                     </div>
                 }
             >
                 <p className="text-mr-small text-mr-fg-muted">{t('settings.system.data.confirmIrreversible')}</p>
-            </Modal>
-
-            <Modal
-                open={importOpen}
-                onClose={() => setImportOpen(false)}
-                title={t('settings.system.data.importModalTitle')}
-                description={t('settings.system.data.importModalDesc')}
-                size="sm"
-            >
-                <div className="flex flex-col gap-2">
-                    {(['mal', 'anilist', 'csv'] as const).map(src => (
-                        <Button
-                            key={src}
-                            variant="ghost"
-                            block
-                            onClick={() => {
-                                setImportOpen(false);
-                                toast({ tone: 'accent', title: t('settings.system.data.importStarted'), duration: 2200 });
-                            }}
-                        >
-                            {t(`settings.system.data.importSource.${src}`)}
-                        </Button>
-                    ))}
-                </div>
             </Modal>
         </>
     );

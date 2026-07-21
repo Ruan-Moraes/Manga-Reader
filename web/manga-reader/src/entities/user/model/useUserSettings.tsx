@@ -9,11 +9,12 @@ import { type UserSettings } from './userSettings.types';
  * Lê e sincroniza as configurações do sistema com o api. Só ativa para usuários logados — o
  * estado offline/deslogado é resolvido no store da página (localStorage). Espelha useContentLocales.
  */
-const useUserSettings = (isLoggedIn: boolean) => {
+const useUserSettings = (isLoggedIn: boolean, userId?: string) => {
     const queryClient = useQueryClient();
+    const queryKey = [QUERY_KEYS.USER_SETTINGS, userId ?? 'guest'] as const;
 
     const query = useQuery({
-        queryKey: [QUERY_KEYS.USER_SETTINGS],
+        queryKey,
         queryFn: getMySettings,
         enabled: isLoggedIn,
         staleTime: 5 * 60 * 1000,
@@ -22,7 +23,7 @@ const useUserSettings = (isLoggedIn: boolean) => {
     const mutation = useMutation({
         mutationFn: (payload: UserSettings) => updateMySettings(payload),
         onSuccess: data => {
-            queryClient.setQueryData([QUERY_KEYS.USER_SETTINGS], data);
+            queryClient.setQueryData(queryKey, data);
         },
     });
 

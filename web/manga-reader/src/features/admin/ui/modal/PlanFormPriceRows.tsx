@@ -70,7 +70,7 @@ const PlanFormPriceRows = ({ rows, currencyOptions, onChange }: PlanFormPriceRow
                         <button
                             type="button"
                             onClick={() => removePriceRow(idx)}
-                            className="mt-1.5 p-1.5 text-mr-danger border border-[rgba(255,120,79,0.4)] rounded-xs hover:bg-mr-danger-15"
+                            className="mt-1.5 p-1.5 text-mr-danger border border-mr-danger-border rounded-xs hover:bg-mr-danger-15"
                         >
                             <Trash2 size={14} />
                         </button>
@@ -79,7 +79,7 @@ const PlanFormPriceRows = ({ rows, currencyOptions, onChange }: PlanFormPriceRow
             ))}
 
             {availableCurrencyOptions.length > 0 && (
-                <button type="button" onClick={addPriceRow} className="flex items-center gap-1.5 text-xs text-tertiary hover:text-primary w-fit">
+                <button type="button" onClick={addPriceRow} className="flex items-center gap-1.5 text-xs text-tertiary hover:text-mr-fg w-fit">
                     <Plus size={12} />
                     {t('planForm.addCurrency')}
                 </button>

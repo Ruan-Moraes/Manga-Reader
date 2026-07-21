@@ -3,12 +3,20 @@ package com.mangareader.application.auth.usecase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,12 +27,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.auth.usecase.SignInUseCase.SignInInput;
 import com.mangareader.application.auth.usecase.SignInUseCase.SignInOutput;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.valueobject.UserRole;
+import com.mangareader.infrastructure.security.jwt.JwtTokenProvider;
+import com.mangareader.shared.dto.ApiErrorCode;
 import com.mangareader.shared.exception.BusinessRuleException;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +51,9 @@ class SignInUseCaseTest {
     @Mock
     private TokenPort tokenPort;
 
+    @Mock
+    private RefreshTokenRepositoryPort refreshTokenRepository;
+
     @InjectMocks
     private SignInUseCase signInUseCase;
 
@@ -49,6 +63,7 @@ class SignInUseCaseTest {
     private final String PASSWORD_HASH = "encoded_senha123";
     private final String ACCESS_TOKEN = "access.jwt.token";
     private final String REFRESH_TOKEN = "refresh.jwt.token";
+    private final LocalDateTime EXPIRES_AT = LocalDateTime.now().plusDays(7);
 
     private User buildUser() {
         return User.builder()
@@ -76,6 +91,7 @@ class SignInUseCaseTest {
             when(passwordEncoder.matches(PASSWORD, PASSWORD_HASH)).thenReturn(true);
             when(tokenPort.generateAccessToken(USER_ID, EMAIL, "MEMBER")).thenReturn(ACCESS_TOKEN);
             when(tokenPort.generateRefreshToken(USER_ID)).thenReturn(REFRESH_TOKEN);
+            when(tokenPort.extractExpiration(REFRESH_TOKEN)).thenReturn(EXPIRES_AT);
 
             // Act
             SignInOutput output = signInUseCase.execute(input);
@@ -88,6 +104,103 @@ class SignInUseCaseTest {
             assertThat(output.email()).isEqualTo(EMAIL);
             assertThat(output.role()).isEqualTo("MEMBER");
             assertThat(output.photoUrl()).isEqualTo("https://example.com/photo.jpg");
+        }
+
+        @Test
+        @DisplayName("Deve persistir o refresh token em uma família nova")
+        void devePersistirRefreshTokenEmFamiliaNova() {
+            // Arrange
+            SignInInput input = new SignInInput(EMAIL, PASSWORD);
+            User user = buildUser();
+
+            when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(passwordEncoder.matches(PASSWORD, PASSWORD_HASH)).thenReturn(true);
+            when(tokenPort.generateAccessToken(USER_ID, EMAIL, "MEMBER")).thenReturn(ACCESS_TOKEN);
+            when(tokenPort.generateRefreshToken(USER_ID)).thenReturn(REFRESH_TOKEN);
+            when(tokenPort.extractExpiration(REFRESH_TOKEN)).thenReturn(EXPIRES_AT);
+
+            // Act
+            signInUseCase.execute(input);
+
+            // Assert
+            verify(refreshTokenRepository).store(
+                    eq(REFRESH_TOKEN), eq(USER_ID), notNull(), eq(EXPIRES_AT)
+            );
+        }
+
+        @Test
+        @DisplayName("Dois logins do mesmo usuário no mesmo segundo devem emitir refresh tokens únicos")
+        void doisLoginsNoMesmoSegundoSaoUnicos() {
+            var realTokenProvider = new JwtTokenProvider(
+                    "manga-reader-test-secret-key-for-jwt-signing-minimum-256-bits",
+                    3_600_000L,
+                    86_400_000L
+            );
+            var useCase = new SignInUseCase(
+                    userRepository, passwordEncoder, realTokenProvider, refreshTokenRepository
+            );
+            stubCredentials();
+
+            SignInOutput first = useCase.execute(new SignInInput(EMAIL, PASSWORD));
+            SignInOutput second = useCase.execute(new SignInInput(EMAIL, PASSWORD));
+
+            assertThat(first.refreshToken()).isNotEqualTo(second.refreshToken());
+            assertThat(realTokenProvider.extractTokenId(first.refreshToken()))
+                    .isNotEqualTo(realTokenProvider.extractTokenId(second.refreshToken()));
+        }
+
+        @Test
+        @DisplayName("Logins concorrentes em instâncias distintas devem persistir tokens únicos")
+        void loginsConcorrentesEmInstanciasDistintasSaoUnicos() throws Exception {
+            var firstProvider = new JwtTokenProvider(
+                    "manga-reader-test-secret-key-for-jwt-signing-minimum-256-bits",
+                    3_600_000L,
+                    86_400_000L
+            );
+            var secondProvider = new JwtTokenProvider(
+                    "manga-reader-test-secret-key-for-jwt-signing-minimum-256-bits",
+                    3_600_000L,
+                    86_400_000L
+            );
+            var firstInstance = new SignInUseCase(
+                    userRepository, passwordEncoder, firstProvider, refreshTokenRepository
+            );
+            var secondInstance = new SignInUseCase(
+                    userRepository, passwordEncoder, secondProvider, refreshTokenRepository
+            );
+            var persistedTokens = ConcurrentHashMap.<String>newKeySet();
+            stubCredentials();
+            doAnswer(invocation -> {
+                persistedTokens.add(invocation.getArgument(0));
+                return null;
+            }).when(refreshTokenRepository).store(any(), eq(USER_ID), any(), any());
+
+            try (var executor = Executors.newFixedThreadPool(8)) {
+                var tasks = IntStream.range(0, 32)
+                        .mapToObj(index -> (Callable<String>) () -> {
+                            var instance = index % 2 == 0 ? firstInstance : secondInstance;
+                            return instance.execute(new SignInInput(EMAIL, PASSWORD)).refreshToken();
+                        })
+                        .toList();
+
+                var emittedTokens = executor.invokeAll(tasks).stream()
+                        .map(future -> {
+                            try {
+                                return future.get();
+                            } catch (Exception e) {
+                                throw new IllegalStateException(e);
+                            }
+                        })
+                        .toList();
+
+                assertThat(emittedTokens).hasSize(32).doesNotHaveDuplicates();
+                assertThat(persistedTokens).containsExactlyInAnyOrderElementsOf(emittedTokens);
+            }
+        }
+
+        private void stubCredentials() {
+            when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(buildUser()));
+            when(passwordEncoder.matches(PASSWORD, PASSWORD_HASH)).thenReturn(true);
         }
     }
 
@@ -141,6 +254,23 @@ class SignInUseCaseTest {
                     .isInstanceOf(BusinessRuleException.class)
                     .extracting("statusCode")
                     .isEqualTo(401);
+        }
+
+        @Test
+        @DisplayName("Não deve emitir tokens para usuário banido mesmo com senha correta")
+        void deveRejeitarUsuarioBanido() {
+            User user = buildUser();
+            user.setBanned(true);
+            when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
+            when(passwordEncoder.matches(PASSWORD, PASSWORD_HASH)).thenReturn(true);
+
+            assertThatThrownBy(() -> signInUseCase.execute(new SignInInput(EMAIL, PASSWORD)))
+                    .isInstanceOf(BusinessRuleException.class)
+                    .extracting("statusCode", "errorCode")
+                    .containsExactly(403, ApiErrorCode.AUTH_ACCESS_DENIED);
+
+            verify(tokenPort, never()).generateAccessToken(any(), any(), any());
+            verify(refreshTokenRepository, never()).store(any(), any(), any(), any());
         }
     }
 }

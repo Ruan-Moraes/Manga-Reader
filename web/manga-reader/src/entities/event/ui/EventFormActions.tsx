@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '@ui/Button';
+
 type EventFormActionsProps = {
     asDraft: boolean;
     toggleDraft: () => void;
@@ -11,15 +13,15 @@ const EventFormActions = ({ asDraft, toggleDraft, onCancel }: EventFormActionsPr
 
     return (
         <div className="flex flex-wrap gap-2 lg:col-span-2">
-            <button type="submit" className="px-4 py-2 text-white bg-purple-600 rounded-lg">
+            <Button type="submit" variant="primary">
                 {t('form.actions.submit')}
-            </button>
-            <button type="button" onClick={toggleDraft} className="px-4 py-2 border rounded-lg border-tertiary">
+            </Button>
+            <Button type="button" variant="raised" onClick={toggleDraft}>
                 {asDraft ? t('form.actions.draftSaved') : t('form.actions.saveDraft')}
-            </button>
-            <button type="button" onClick={onCancel} className="px-4 py-2 border rounded-lg border-tertiary">
+            </Button>
+            <Button type="button" variant="ghost" onClick={onCancel}>
                 {t('form.actions.cancel')}
-            </button>
+            </Button>
         </div>
     );
 };

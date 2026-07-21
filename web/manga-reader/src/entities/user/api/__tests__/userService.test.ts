@@ -15,7 +15,6 @@ import {
     updatePrivacySettings,
     getUserComments,
     getUserHistory,
-    recordView,
 } from '../userService';
 
 const buildUser = (overrides = {}) => ({
@@ -241,14 +240,6 @@ describe('userService', () => {
         });
     });
 
-    describe('recordView', () => {
-        it('deve registrar visualizacao sem erro', async () => {
-            server.use(http.post(`*${API_URLS.USERS}/me/history`, () => new HttpResponse(null, { status: 204 })));
-
-            await expect(recordView('title-1')).resolves.toBeUndefined();
-        });
-    });
-
     // ── Sad path (error) tests ──────────────────────────────────────────
 
     describe('getUserProfile — erro', () => {
@@ -321,10 +312,4 @@ describe('userService', () => {
         });
     });
 
-    describe('recordView — erro', () => {
-        it('deve lançar erro quando API retorna 500', async () => {
-            server.use(http.post(`*${API_URLS.USERS}/me/history`, () => HttpResponse.json(null, { status: 500 })));
-            await expect(recordView('title-1')).rejects.toThrow();
-        });
-    });
 });

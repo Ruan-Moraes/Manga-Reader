@@ -37,7 +37,7 @@ const ImageLightbox = ({ isOpen, onClose, src, alt }: ImageLightboxProps) => {
 
     return (
         <div role="dialog" aria-modal="true" aria-label={alt} className="fixed inset-0 z-30 flex items-center justify-center">
-            <div onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-xs" style={{ transition: 'opacity 300ms' }} />
+            <div onClick={onClose} className="absolute inset-0 bg-mr-overlay-strong backdrop-blur-xs" style={{ transition: 'opacity 300ms' }} />
 
             <div className="relative z-10 flex flex-col items-center gap-3 mx-4 max-w-full max-h-full">
                 {src ? (

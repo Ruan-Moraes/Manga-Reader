@@ -65,7 +65,7 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                 </div>
 
                 {user.banned && (
-                    <div className="rounded-mr-md border border-[rgba(255,120,79,0.4)] bg-mr-danger-15 p-4">
+                    <div className="rounded-mr-md border border-mr-danger-border bg-mr-danger-15 p-4">
                         <h3 className="mb-2 text-mr-body font-mr-bold text-mr-danger">{t('userDetail.banDetails')}</h3>
                         <dl className="flex flex-col gap-1 text-sm">
                             <div className="flex justify-between">
@@ -96,7 +96,7 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                     <button
                         onClick={() => handleUnban(user.id)}
                         disabled={isSubmitting}
-                        className="rounded-mr-xs border border-mr-accent-50 bg-mr-accent-25 px-4 py-2 text-mr-small font-mr-bold text-mr-accent transition-colors hover:bg-mr-accent-50 disabled:opacity-50"
+                        className="rounded-mr-xs border border-mr-accent-50 bg-mr-accent-25 px-4 py-2 text-mr-small font-mr-bold text-mr-accent-fg transition-colors hover:bg-mr-accent-50 disabled:opacity-50"
                     >
                         {isSubmitting ? t('userDetail.unbanning') : t('userDetail.unban')}
                     </button>
@@ -104,7 +104,7 @@ const AdminUserDetail = ({ user }: AdminUserDetailProps) => {
                     <button
                         onClick={() => setShowBanModal(true)}
                         disabled={user.role === 'ADMIN'}
-                        className="rounded-mr-xs border border-[rgba(255,120,79,0.4)] bg-mr-danger-15 px-4 py-2 text-mr-small font-mr-bold text-mr-danger transition-colors hover:bg-mr-danger-15 disabled:opacity-50"
+                        className="rounded-mr-xs border border-mr-danger-border bg-mr-danger-15 px-4 py-2 text-mr-small font-mr-bold text-mr-danger transition-colors hover:bg-mr-danger-15 disabled:opacity-50"
                     >
                         {t('userDetail.ban')}
                     </button>

@@ -1,8 +1,8 @@
 # Architecture
 
-Padrões arquiteturais do Manga-Reader. Ler antes de criar controller/use
-case/mapper, mexer em domínio, dual-DB, rating-aggregator, i18n ou contrato de
-resposta da API. Referenciado por `CLAUDE.md`.
+Padrões arquiteturais do Manga-Reader. Ler antes de criar controller, use case
+ou mapper, alterar domínios, persistência poliglota, jobs, i18n ou contratos de
+resposta da API. Referenciado por `AGENTS.md` e `CLAUDE.md`.
 
 **Clean Architecture — 4 camadas, dependência flui para dentro:**
 
@@ -15,16 +15,26 @@ presentation → application → domain ← infrastructure
 - **domain**: entities, value objects, enums — zero dependência de framework
 - **infrastructure**: persistence adapters, security, email, messaging
 
-### Domínios (17 pacotes)
+### Domínios
 
-`author`, `category`, `comment`, `errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`, `news`, `payment`, `publisher`, `review`, `store`, `subscription`, `user` — Auth vive em Security (infrastructure). Cada domínio tem package próprio em todas as camadas.
+Os 19 pacotes de domínio atuais são `auth`, `author`, `category`, `comment`,
+`errorlog`, `event`, `forum`, `group`, `label`, `library`, `manga`, `news`,
+`payment`, `publisher`, `review`, `store`, `subscription`, `trending` e `user`.
+Nem todo pacote precisa possuir artefatos em todas as camadas; os limites seguem
+as responsabilidades implementadas.
 
-### Dual Database
+### Persistência poliglota
 
-| DB | Tech | Responsável por |
-|----|------|----------------|
-| PostgreSQL | JPA/Hibernate + Flyway | users, groups, events, library, stores, tags, subscriptions, payments, authors/publishers, domain labels (tabelas do fórum permanecem só como rollback da migração p/ Mongo — DT-50) |
-| MongoDB | Spring Data Mongo + Mongock | titles, chapters, comments (coleção unificada polimórfica), reviews, forum_topics, votos (`<pai>_votes`), news, view history, **reviews_aggregate** |
+| Tecnologia | Papel principal |
+|---|---|
+| PostgreSQL + JPA/Hibernate + Flyway | Usuários, grupos, eventos, biblioteca, lojas, tags, assinaturas, pagamentos, autores, editoras e labels de domínio. As tabelas antigas do fórum permanecem apenas para rollback da migração (DT-50). |
+| MongoDB + Spring Data + Mongock | Títulos, capítulos, comentários polimórficos, avaliações, tópicos do fórum, votos, notícias, histórico de leitura e projeções `reviews_aggregate`/`title_trend_daily`. |
+| Neo4j + `Neo4jClient` | Grafo social de seguidores, seguindo e remoção dos nós relacionados à conta. |
+| Redis | Cache de aplicação; não é fonte canônica de dados de negócio. |
+
+PostgreSQL, MongoDB e Neo4j possuem transações independentes. Operações entre
+tecnologias não são atomicamente distribuídas; use cases, eventos e jobs de
+reconciliação tratam as janelas de divergência conhecidas.
 
 ### Serviço de Agregação de Avaliações (`api/jobs/rating-aggregator`)
 
@@ -35,11 +45,29 @@ Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **do
 - **Contrato de evento**: `RatingEvent` replicado no **mesmo FQN** `com.mangareader.application.shared.event.RatingEvent`; consumer usa `TypePrecedence.INFERRED` (robusto a divergência de FQN). Sem jar compartilhado entre os apps.
 - **Monolito**: apenas **publica** os eventos (já fazia) e **lê** o agregado via `TitleRatingAggregateReadPort` (`findByTitleIdIn` em lote, sem N+1). `GetRatingAverageUseCase`/`GetRatingDistributionUseCase` e `TitleMapper`/`AdminTitleMapper` consomem o agregado — **nenhuma** agregação `AVG/COUNT` durante a renderização. O `RatingEventConsumer` e a fila de recalc do monolito foram removidos (recompute migrou para o serviço).
 
+### Job de Tendências (`api/jobs/trending-aggregator`)
+
+Job Spring Boot separado, porta 8083, que lê sinais temporais em lote do PostgreSQL e MongoDB uma vez por dia. O score combina leituras, biblioteca, avaliações, comentários e lançamentos, comparando dias UTC completos em janelas adjacentes de 1/7/30 dias com suavização de amostras pequenas. Persiste snapshots idempotentes em `title_trend_daily`, incluindo crescimento geral e por sinal; a API principal só consulta o snapshot mais recente via `TrendingReadPort`, ordenando por score, leituras, avaliações ou salvamentos sem agregações no request.
+
+`title_trend_daily` é uma projeção derivada e reconstruível: `(titleId, snapshotDate)` determina `calculatedAt` e os scores, materializado no `_id` como `titleId:data`. Os mapas por janela são uma desnormalização deliberada para leitura ordenada. Não há FK cross-DB; títulos removidos são filtrados pela API. Índices compostos cobrem data+ranking e cada fonte temporal; snapshots expiram após 90 dias por TTL, pois não são fonte para o próximo cálculo.
+
+### Job de Reconciliação (`api/jobs/orphan-cleaner`)
+
+Serviço separado, porta 8082, responsável pelo caminho frio de consistência
+entre PostgreSQL e MongoDB. Reconcilia contadores desnormalizados a partir das
+fontes canônicas e remove referências PostgreSQL cujo `title_id` não existe mais
+no MongoDB. As operações são idempotentes e incluem proteção contra remoção em
+massa quando a verificação de títulos não retorna resultados confiáveis.
+
+Detalhes operacionais ficam no
+[`README` do serviço](../api/jobs/orphan-cleaner/README.md).
+
 ### Key Patterns
 
 - **Ports & Adapters**: use cases dependem de port interfaces; infrastructure implementa
 - **MapStruct**: mappers gerados como `@Component` (Spring beans) por padrão. Apenas mappers puros sem dependências externas podem ser `final class` estáticos. Mappers que injetam serviços (ex.: `DomainLabelService`) **devem** ser beans.
 - **JWT Auth**: `JwtAuthenticationFilter` depende de `TokenPort` — todo `@WebMvcTest` **deve** mockar `TokenPort` via `@MockitoBean`
+- **Refresh token rotation (server-side)**: refresh tokens persistidos em `refresh_tokens` (Postgres, V40) como **SHA-256 hex** (nunca em claro), com `family_id` por sessão. Cada `POST /api/auth/refresh` revoga o token usado e emite par novo na mesma família; **reuso de token revogado derruba a família inteira** (detecção de roubo). `POST /api/auth/logout` revoga a família. No **web** o refresh trafega em cookie `HttpOnly + SameSite=Strict + Path=/api/auth` (Secure via `app.auth.cookie-secure`); o **mobile** segue enviando no body — o controller aceita ambos, cookie tem precedência. No web o access token vive **só em memória** (`shared/service/session/accessTokenMemory`); o interceptor axios faz refresh silencioso single-flight (fila) e emite `authExpired` (pub/sub em `shared/service/session`) quando a sessão morre — `AuthProvider` assina e os guards reagem ao contexto (`isInitializing` segura render de conteúdo protegido). `@WebMvcTest` do `AuthController` **deve** `@Import(RefreshTokenCookieFactory.class)`.
 - **Paginação & usuário no controller (DT-23)**: **nunca** criar `buildPageable(...)` privado nem `extractUserId(Authentication)` no controller. Listagens recebem `@PageParams(defaultSort=..., defaultDirection=..., allow={...}, ignoreRequestSort=...) Pageable` (resolvido por `PageableArgumentResolver`, contrato de query `page/size/sort/direction`, whitelist via `SortValidator`); o id do usuário autenticado vem de `@CurrentUserId UUID userId` (`CurrentUserIdArgumentResolver`). Ambos registrados em `shared/web/PageableWebConfig`. `SpringDataWebAutoConfiguration` está **excluída** (não usar `sort=campo,dir` do Spring Data). `@WebMvcTest` que exercita esses endpoints **deve** `@Import(PageableWebConfig.class)`.
 - **@Transactional**: use cases que modificam dados ou acessam lazy collections **devem** ter `@Transactional`. Read-only com lazy collections: `@Transactional(readOnly = true)`. Para todas as nuances de transação (propagação, rollback rules, anti-padrões, timeouts), consultar [`docs/orm-persistence.md`](orm-persistence.md).
 - **I18n**: `I18nConfig` expõe `MessageSource` + `LocaleResolver` (Accept-Language) + `LocalValidatorFactoryBean`. Mensagens em `src/main/resources/messages/messages*.properties` (pt-BR default, en-US, es-ES). DTOs usam chaves: `@NotBlank(message = "{validation.email.required}")`. `SecurityExceptionHandler` e use cases de email resolvem via `messageSource.getMessage(key, null, LocaleContextHolder.getLocale())`. Frontend usa `react-i18next` com namespaces por feature em `src/i18n/locales/<lang>/<feature>.json` (ver `src/i18n/locales/README.md`). Receitas de implementação consolidadas em [`docs/i18n-guide.md`](i18n-guide.md).
@@ -81,8 +109,9 @@ Dois eixos separados, com modelos de armazenamento distintos:
 - `PATCH /api/users/me/content-locales` (body: `{ contentLocales }`; valida via `User.updateContentLocales`)
 
 **Frontend**:
-- Hook `useContentLocales(isLoggedIn)` (TanStack Query) — sync com backend somente para users autenticados.
-- `LanguageSettings.tsx`: troca de UI lang só dispara `i18n.changeLanguage`; troca de content lang dispara mutation quando logado.
+- `useInterfaceLang.ts` altera somente a UI via `i18n.changeLanguage()`.
+- `useContentLocales(isLoggedIn)` e `useReadingLangs.ts` sincronizam idiomas de
+  conteúdo com o backend somente para usuários autenticados.
 
 ### API Response Patterns
 
@@ -108,6 +137,19 @@ Frontend acessa: `response.data.data`
 Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `data.data` no service)
 
 **Regra**: Endpoints de listagem **devem** retornar `ApiResponse<PageResponse<T>>` com paginação. Endpoints de item único retornam `ApiResponse<T>` direto.
+
+### Notícias — workflow editorial e mídia provisória
+
+`NewsItem` é um agregado de domínio puro; `NewsDocument` concentra o mapeamento Spring Data
+e o adapter converte entre ambos. O workflow `DRAFT → SCHEDULED/PUBLISHED → UNPUBLISHED`
+é validado no domínio e usa `Instant`/`Clock`; um job UTC promove agendamentos vencidos de
+forma idempotente. Leituras públicas filtram exclusivamente `PUBLISHED`, enquanto a listagem
+admin aceita status/categoria e ordenação allow-listed.
+
+`slug` é chave candidata única além de `_id`. SEO e textos localizados são subdocumentos do
+mesmo agregado. A URL da capa é temporariamente uma referência externa: o admin pode informar
+uma URL ou gerar `https://picsum.photos/seed/{slug}/1600/900`. `NewsCoverStoragePort` registra
+o seam para S3/Cloudinary/R2, mas nenhum upload binário é simulado antes desse adapter existir.
 
 ### Capítulos admin — ports & armazenamento provisório (frontend-only, DT-57)
 

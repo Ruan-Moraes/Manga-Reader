@@ -88,6 +88,21 @@
             "meta": "Los cambios se guardan conforme editas"
         },
         "noActivity": "Sin actividad pública",
+        "activity": {
+            "chapterRead": "Leyó el capítulo {{chapter}} de {{title}}",
+            "reviewPosted": "Publicó una reseña de {{title}}",
+            "titleCompleted": "Marcó {{title}} como completado",
+            "userFollowed": "Empezó a seguir a {{name}}",
+            "groupFollowed": "Empezó a seguir el grupo {{name}}",
+            "loadMore": "Cargar más",
+            "hide": "Ocultar",
+            "hideConfirm": "¿Ocultar de tu historial?",
+            "hideYes": "Sí",
+            "hideNo": "No",
+            "hideError": "No se pudo ocultar esta actividad. Inténtalo de nuevo.",
+            "loadError": "No se pudo cargar el historial de actividades.",
+            "retry": "Intentar de nuevo"
+        },
         "editTabs": {
             "account": "Cuenta",
             "identity": "Identidad",
@@ -122,7 +137,7 @@
             "save": "Guardar configuración",
             "saving": "Guardando...",
             "savedMessage": "Configuración de privacidad actualizada.",
-            "doNotTrackConfirm": "Al seleccionar \"No rastrear\", todo tu historial de visualización será eliminado permanentemente. ¿Deseas continuar?"
+            "doNotTrackConfirm": "Al seleccionar \"No rastrear\", tu historial de visualización, capítulos leídos y actividades del perfil se eliminarán permanentemente. El progreso de lectura se conservará. ¿Deseas continuar?"
         },
         "recommendations": {
             "empty": "Aún no hay recomendaciones.",
@@ -243,7 +258,11 @@
             },
             "privacy": {
                 "intro": "Controla lo que aparece públicamente en tu perfil.",
-                "historyLabel": "Historial de lectura",
+                "historyLabel": "Historial y actividades",
+                "analyticsLabel": "Analítica de comportamiento privada",
+                "analyticsDesc": "Permite usar acciones significativas para mejorar análisis y recomendaciones. Al desactivarla, se eliminan los eventos existentes.",
+                "analyticsOn": "Activada",
+                "analyticsOff": "Desactivada",
                 "commentsLabel": "Comentarios en las obras",
                 "adultContentLabel": "Contenido adulto",
                 "adultContentDesc": "Elige cómo aparecen los títulos +18 en el catálogo y recomendaciones.",
@@ -256,7 +275,7 @@
                 "deleteDesc": "Eliminar tu cuenta desactiva el acceso y anonimiza datos personales. Esta acción no se puede deshacer.",
                 "deleteConfirmPlaceholder": "Escribe \"{{name}}\" para confirmar",
                 "deleteAccount": "Eliminar cuenta",
-                "historyDesc": "Define si otros lectores pueden ver títulos leídos, fechas y ritmo.",
+                "historyDesc": "Controla visualizaciones, capítulos leídos y actividades mostradas en tu perfil. El progreso de lectura permanece privado y se conserva.",
                 "commentsDesc": "Define si reseñas y respuestas aparecen en tu perfil público.",
                 "libraryLabel": "Biblioteca",
                 "libraryDesc": "Define si tus listas de lectura (leyendo, quiero leer, completados) aparecen en tu perfil público.",
@@ -542,6 +561,8 @@
                 "importTitle": "Importar lista",
                 "importDesc": "Trae tu lista desde otro servicio.",
                 "importAction": "Importar",
+                "importUnavailable": "No disponible",
+                "actionFailed": "No se pudo completar la acción",
                 "importModalTitle": "Importar lista",
                 "importModalDesc": "Elige el origen de la importación.",
                 "importStarted": "Importación iniciada",

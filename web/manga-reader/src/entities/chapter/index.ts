@@ -59,4 +59,4 @@ export {
 // Somente os singletons são API pública: as factories/store são detalhe de
 // implementação (testes as importam por caminho relativo, dentro do slice).
 export { chapterAdminGateway, chapterAnalyticsGateway, chapterPublicGateway, readerProgressGateway } from './api/admin/chapterGateways';
-export { CHAPTER_STORE_KEY } from './api/admin/localStorageChapterStore';
+export { CHAPTER_STORE_KEY, readLegacyChapterImport, type LegacyChapterReadResult } from './api/admin/legacyChapterMigration';

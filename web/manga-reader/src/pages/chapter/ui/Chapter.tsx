@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -6,9 +6,10 @@ import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
 import { EmptyState } from '@ui/EmptyState';
 import { useAuth } from '@features/auth';
+import { useBookmark } from '@features/library';
+import { useTrackReadingSession } from '@features/track-user-behavior';
 import { useTitle } from '@entities/manga';
 import { useChapter } from '@entities/chapter';
-import { recordChapterRead } from '@entities/user';
 
 import { useChapterReader } from '../model/useChapterReader';
 import useReaderPages from '../model/useReaderPages';
@@ -35,17 +36,18 @@ const Chapter = () => {
     const isPreview = searchParams.get('preview') === '1' && (user?.role === 'admin' || user?.role === 'poster');
 
     const { title } = useTitle(titleId ?? '');
+    const { isSaved, toggleBookmark } = useBookmark();
     const { readerChapter, isBlocked } = useReaderPages(titleId, chapterParam, isPreview);
     const maxChapter = Number(title?.latestChapterNumber) || title?.chaptersCount || undefined;
-    const r = useChapterReader(titleId, chapterParam, maxChapter, readerChapter?.pages.length);
+    const r = useChapterReader(titleId, chapterParam, maxChapter, readerChapter?.pages.length, isLoggedIn);
     const { chapter: chapterData } = useChapter(titleId, chapterParam);
-
-    // Marca o capítulo como lido (fire-and-forget; idempotente no backend). Só
-    // para usuário autenticado e quando o capítulo realmente carregou.
-    useEffect(() => {
-        if (!isLoggedIn || !titleId || !chapterParam || !chapterData) return;
-        void recordChapterRead(titleId, chapterParam).catch(() => {});
-    }, [isLoggedIn, titleId, chapterParam, chapterData]);
+    useTrackReadingSession({
+        enabled: isLoggedIn && !isPreview,
+        titleId,
+        chapterNumber: r.chapter,
+        page: r.page,
+        totalPages: r.total,
+    });
 
     const displayTitle = title?.name ?? t('reader.untitled');
     const status = title?.status ?? '';
@@ -101,7 +103,7 @@ const Chapter = () => {
                     total={r.total}
                     status={status}
                     hidden={r.topbarHidden}
-                    saved={r.saved}
+                    saved={titleId ? isSaved(titleId) : false}
                     chaptersOpen={r.chaptersOpen}
                     commentsOpen={r.commentsOpen}
                     settingsOpen={r.settingsOpen}
@@ -109,13 +111,13 @@ const Chapter = () => {
                     onBack={r.goBack}
                     onToggleChapters={() => r.setChaptersOpen(o => !o)}
                     onPickChapter={r.pickChapter}
-                    onToggleSaved={() => r.setSaved(s => !s)}
+                    onToggleSaved={() => titleId && toggleBookmark(titleId)}
                     onToggleComments={() => r.setCommentsOpen(o => !o)}
                     onToggleSettings={() => r.setSettingsOpen(o => !o)}
                 />
 
                 {isPreview && (
-                    <div className="pointer-events-none fixed left-1/2 top-16 z-20 -translate-x-1/2 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 px-4 py-1.5 text-mr-tiny font-mr-bold uppercase tracking-mr text-mr-accent">
+                    <div className="pointer-events-none fixed left-1/2 top-16 z-20 -translate-x-1/2 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 px-4 py-1.5 text-mr-tiny font-mr-bold uppercase tracking-mr text-mr-accent-fg">
                         {t('reader.previewBadge')}
                     </div>
                 )}
@@ -125,6 +127,8 @@ const Chapter = () => {
                     direction={r.direction}
                     fit={r.fit}
                     gap={r.gap}
+                    quality={r.quality}
+                    preload={r.preload}
                     chapter={r.chapter}
                     page={r.page}
                     listRef={r.listRef}

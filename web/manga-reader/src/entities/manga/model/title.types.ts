@@ -1,5 +1,20 @@
 import { type Chapter } from '@entities/chapter/@x/manga';
 
+export type AuthorRole = 'AUTHOR' | 'ARTIST' | 'STORY' | 'LETTERER' | 'COLORIST' | 'EDITOR';
+
+export type TitleAuthor = {
+    authorId: number;
+    name: string;
+    slug: string;
+    role: AuthorRole;
+};
+
+export type TitlePublisher = {
+    publisherId: number;
+    name: string;
+    slug: string;
+};
+
 export type Title = {
     id: string;
     type: string;
@@ -21,6 +36,8 @@ export type Title = {
     author: string;
     artist: string;
     publisher: string;
+    authors: TitleAuthor[];
+    publishers: TitlePublisher[];
     createdAt: string;
     updatedAt: string;
 };

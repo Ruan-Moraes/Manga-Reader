@@ -58,7 +58,7 @@ export const Slider = ({ value, onChange, min = 0, max = 100, step = 1, label, u
             </div>
 
             {!hideValue && (
-                <span className="inline-flex min-w-[3.25rem] shrink-0 justify-center rounded-mr-xs border border-mr-gray-700 bg-mr-gray-800 px-2 py-0.5 font-mr-mono text-mr-tiny tabular-nums text-mr-accent">
+                <span className="inline-flex min-w-[3.25rem] shrink-0 justify-center rounded-mr-xs border border-mr-gray-700 bg-mr-gray-800 px-2 py-0.5 font-mr-mono text-mr-tiny tabular-nums text-mr-accent-fg">
                     {value}
                     {unit ? ` ${unit}` : ''}
                 </span>

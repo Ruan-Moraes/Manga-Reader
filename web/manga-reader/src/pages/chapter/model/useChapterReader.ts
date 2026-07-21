@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { readStoredUserSettings, subscribeStoredUserSettings, updateStoredUserSettings, SETTINGS_STORAGE_KEY, type UserSettings } from '@entities/user';
+import { readStoredUserSettings, subscribeStoredUserSettings, updateMySettings, updateStoredUserSettings, useDebouncedCallback, type UserSettings } from '@entities/user';
 import { readerProgressGateway } from '@entities/chapter';
 
 import { TOTAL_PAGES } from './readerData';
@@ -20,17 +20,10 @@ interface ReaderPrefs {
     fit: Fit;
     gap: number;
     bg: Bg;
+    quality: UserSettings['reader']['quality'];
+    preload: number;
+    autoMarkRead: boolean;
 }
-
-const PREFS_KEY = 'reader:prefs';
-
-const DEFAULT_PREFS: ReaderPrefs = {
-    mode: 'vertical',
-    direction: 'rtl',
-    fit: 'width',
-    gap: 8,
-    bg: 'dark',
-};
 
 const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     mode: settings.reader.direction === 'WEBTOON' ? 'vertical' : (settings.reader.mode.toLowerCase() as ReadMode),
@@ -38,6 +31,9 @@ const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     fit: settings.reader.fit.toLowerCase() as Fit,
     gap: settings.reader.gap,
     bg: settings.reader.background.toLowerCase() as Bg,
+    quality: settings.reader.quality,
+    preload: settings.reader.preload,
+    autoMarkRead: settings.reader.autoMarkRead,
 });
 
 const toSettingsMode = (mode: ReadMode): UserSettings['reader']['mode'] => mode.toUpperCase() as UserSettings['reader']['mode'];
@@ -50,51 +46,20 @@ const samePrefs = (left: ReaderPrefs, right: ReaderPrefs) =>
     left.direction === right.direction &&
     left.fit === right.fit &&
     left.gap === right.gap &&
-    left.bg === right.bg;
+    left.bg === right.bg &&
+    left.quality === right.quality &&
+    left.preload === right.preload &&
+    left.autoMarkRead === right.autoMarkRead;
 
-const readPrefs = (): ReaderPrefs => {
-    try {
-        const systemPrefs = toReaderPrefs(readStoredUserSettings());
-        const raw = localStorage.getItem(PREFS_KEY);
+const readPrefs = (): ReaderPrefs => toReaderPrefs(readStoredUserSettings());
 
-        if (!raw) {
-            return systemPrefs;
-        }
-
-        const stored = JSON.parse(raw) as Partial<ReaderPrefs> & { inlineCmts?: unknown };
-
-        // Migração: o campo `inlineCmts` foi removido do leitor — limpa resíduos persistidos.
-        if ('inlineCmts' in stored) {
-            const { inlineCmts: _removed, ...cleaned } = stored;
-            try {
-                localStorage.setItem(PREFS_KEY, JSON.stringify(cleaned));
-            } catch {
-                /* ignore */
-            }
-            if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
-                return { ...DEFAULT_PREFS, ...cleaned };
-            }
-            return systemPrefs;
-        }
-
-        if (!localStorage.getItem(SETTINGS_STORAGE_KEY)) {
-            return { ...DEFAULT_PREFS, ...stored };
-        }
-
-        return systemPrefs;
-    } catch {
-        return DEFAULT_PREFS;
-    }
-};
-
-/** Continuação da última página lida (mesmas chaves legadas, via gateway). */
-const readSavedPage = (titleId: string | undefined, chapter: number, total: number): number => {
-    if (!titleId) return 1;
-    const pos = readerProgressGateway.getProgress(titleId);
-    return pos && pos.chapter === chapter && pos.page ? Math.min(total, Math.max(1, pos.page)) : 1;
-};
-
-export function useChapterReader(titleId: string | undefined, chapterParam: string | undefined, maxChapter?: number, totalPages?: number) {
+export function useChapterReader(
+    titleId: string | undefined,
+    chapterParam: string | undefined,
+    maxChapter?: number,
+    totalPages?: number,
+    isLoggedIn = false,
+) {
     const navigate = useAppNavigate();
     const chapter = Number(chapterParam) || 1;
     const lastChapter = maxChapter && maxChapter > 0 ? maxChapter : undefined;
@@ -110,11 +75,13 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const [fit, setFit] = useState<Fit>(initialPrefs.fit);
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
+    const [quality, setQuality] = useState(initialPrefs.quality);
+    const [preload, setPreload] = useState(initialPrefs.preload);
+    const [autoMarkRead, setAutoMarkRead] = useState(initialPrefs.autoMarkRead);
 
-    // Sem clamp na restauração: o total real ainda não chegou no mount — o
-    // efeito abaixo re-clampa quando ele resolve (evita perder o bookmark).
-    const [page, setPage] = useState(() => readSavedPage(titleId, chapter, Number.MAX_SAFE_INTEGER));
-    const [saved, setSaved] = useState(false);
+    // Restauração da posição salva é assíncrona (backend) — parte de 1 e
+    // corrige quando a resposta chega (efeito abaixo, roda só no mount).
+    const [page, setPage] = useState(1);
 
     const [topbarHidden, setTopbarHidden] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
@@ -127,11 +94,24 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
     const lastY = useRef(0);
     const didInitPrefs = useRef(false);
     const applyingExternalPrefs = useRef(false);
+    // Bloqueia o efeito de salvar até a restauração inicial resolver — evita
+    // sobrescrever o progresso salvo com page=1 enquanto o GET está em voo.
+    const progressInitialized = useRef(false);
+    const latestProgressRef = useRef({ page, total, hasRealTotal });
+    const persistSettings = useDebouncedCallback((next: UserSettings) => {
+        void updateMySettings(next)
+            .then(updateStoredUserSettingsFromServer => {
+                updateStoredUserSettings(() => updateStoredUserSettingsFromServer);
+            })
+            .catch(() => {
+                // A cópia local permanece como estado efêmero e será reconciliada no próximo GET.
+            });
+    }, 400);
 
     const step = mode === 'double' ? 2 : 1;
     const lastPage = mode === 'vertical' ? total : total + 1;
 
-    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg }), [mode, direction, fit, gap, bg]);
+    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg, quality, preload, autoMarkRead }), [mode, direction, fit, gap, bg, quality, preload, autoMarkRead]);
 
     const applyPrefs = useCallback(
         (next: ReaderPrefs) => {
@@ -143,6 +123,9 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
             setFit(next.fit);
             setGap(next.gap);
             setBg(next.bg);
+            setQuality(next.quality);
+            setPreload(next.preload);
+            setAutoMarkRead(next.autoMarkRead);
         },
         [currentPrefs],
     );
@@ -159,13 +142,7 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
             return;
         }
 
-        try {
-            localStorage.setItem(PREFS_KEY, JSON.stringify(currentPrefs));
-        } catch {
-            /* ignore */
-        }
-
-        updateStoredUserSettings(current => ({
+        const next = updateStoredUserSettings(current => ({
             ...current,
             reader: {
                 ...current.reader,
@@ -174,9 +151,14 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
                 fit: toSettingsFit(fit),
                 gap,
                 background: toSettingsBackground(bg),
+                quality,
+                preload,
+                autoMarkRead,
             },
         }));
-    }, [currentPrefs, mode, direction, fit, gap, bg]);
+
+        if (isLoggedIn) persistSettings(next);
+    }, [currentPrefs, mode, direction, fit, gap, bg, quality, preload, autoMarkRead, isLoggedIn, persistSettings]);
 
     useEffect(
         () =>
@@ -191,14 +173,80 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         if (hasRealTotal) setPage(p => Math.min(p, total));
     }, [hasRealTotal, total]);
 
-    // ---------- persist reading position (contrato ReaderProgressGateway) ----------
+    // Mantém os valores mais recentes acessíveis ao flush síncrono do cleanup
+    // (evita reler estado React dentro de uma closure potencialmente stale).
     useEffect(() => {
-        if (!titleId) return;
-        readerProgressGateway.saveProgress(titleId, String(chapter), page);
+        latestProgressRef.current = { page, total, hasRealTotal };
+    }, [page, total, hasRealTotal]);
+
+    // ---------- restore reading position (roda só uma vez, no mount) ----------
+    useEffect(() => {
+        if (!titleId || !isLoggedIn) {
+            progressInitialized.current = true;
+            return;
+        }
+
+        let cancelled = false;
+        readerProgressGateway
+            .getProgress(titleId)
+            .then(pos => {
+                if (cancelled) return;
+                if (pos && pos.chapter === chapter && pos.page) {
+                    setPage(Math.max(1, pos.page));
+                }
+            })
+            .catch(() => {
+                /* ignore — mantém page=1 */
+            })
+            .finally(() => {
+                if (!cancelled) progressInitialized.current = true;
+            });
+
+        return () => {
+            cancelled = true;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- restaura só uma vez no mount (mesmo comportamento do initializer síncrono anterior)
+    }, []);
+
+    // ---------- persist reading position (contrato ReaderProgressGateway) ----------
+    const saveProgressNow = useCallback(
+        (p: number, tot: number, completed: boolean) => {
+            if (!isLoggedIn || !titleId) return;
+            void readerProgressGateway.saveProgress(titleId, String(chapter), p, tot, completed).catch(() => {});
+        },
+        [isLoggedIn, titleId, chapter],
+    );
+
+    const saveProgressDebounced = useDebouncedCallback((p: number, tot: number) => {
+        saveProgressNow(p, tot, false);
+    }, 800);
+
+    useEffect(() => {
+        if (!titleId || !progressInitialized.current) return;
+
         // Última página alcançada ⇒ capítulo concluído. Só com o total REAL
-        // conhecido — o fallback (18) marcaria conclusão falsa.
-        if (hasRealTotal && page >= total) readerProgressGateway.markCompleted(titleId, String(chapter));
-    }, [titleId, chapter, page, total, hasRealTotal]);
+        // conhecido — o fallback (18) marcaria conclusão falsa. Conclusão
+        // dispara imediatamente (sem debounce): é um marco, não pode se perder.
+        if (autoMarkRead && hasRealTotal && page >= total) {
+            saveProgressNow(page, total, true);
+            return;
+        }
+
+        saveProgressDebounced(page, total);
+    }, [titleId, page, total, hasRealTotal, autoMarkRead, saveProgressNow, saveProgressDebounced]);
+
+    // Flush imediato ao trocar de capítulo/desmontar: evita perder a última
+    // posição por causa de um debounce pendente (usa os valores mais
+    // recentes via ref, já que o cleanup roda com a closure do capítulo que
+    // está terminando).
+    useEffect(
+        () => () => {
+            if (!progressInitialized.current) return;
+            const { page: p, total: tot, hasRealTotal: real } = latestProgressRef.current;
+            saveProgressNow(p, tot, autoMarkRead && real && p >= tot);
+        },
+        [titleId, chapter, autoMarkRead, saveProgressNow],
+    );
 
     // ---------- navigation ----------
     const goNext = useCallback(() => {
@@ -319,6 +367,9 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         fit,
         gap,
         bg,
+        quality,
+        preload,
+        autoMarkRead,
         setMode,
         setDirection,
         setFit,
@@ -327,8 +378,6 @@ export function useChapterReader(titleId: string | undefined, chapterParam: stri
         // reading state
         page,
         setPage,
-        saved,
-        setSaved,
         step,
         fillPct,
         isEnd,

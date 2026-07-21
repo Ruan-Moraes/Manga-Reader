@@ -27,7 +27,7 @@ const AppearanceTab = ({ state }: { state: SettingsState }) => {
                         onChange={v => updateGroup('appearance', { theme: v as ThemePreference }, t('settings.system.appearance.themeToast'))}
                         options={[
                             { value: 'DARK', label: t('settings.system.appearance.themeDark') },
-                            { value: 'LIGHT', label: t('settings.system.appearance.themeLight'), disabled: true, badge: t('settings.system.soon') },
+                            { value: 'LIGHT', label: t('settings.system.appearance.themeLight') },
                             { value: 'SYSTEM', label: t('settings.system.appearance.themeSystem') },
                         ]}
                     />

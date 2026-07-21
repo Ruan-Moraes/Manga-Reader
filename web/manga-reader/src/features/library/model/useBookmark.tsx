@@ -29,7 +29,7 @@ const useBookmark = () => {
     const isSaved = useCallback((titleId: string) => savedIds.has(titleId), [savedIds]);
 
     const toggleBookmark = useCallback(
-        async ({ titleId, name, cover, type }: { titleId: string; name: string; cover: string; type: string }) => {
+        async (titleId: string) => {
             if (!requireAuth('salvar na biblioteca')) return false;
 
             if (savedIds.has(titleId)) {
@@ -57,9 +57,6 @@ const useBookmark = () => {
                 });
             }
 
-            void name;
-            void cover;
-            void type;
             return true;
         },
         [savedIds, queryClient],

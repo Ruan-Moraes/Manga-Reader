@@ -2,6 +2,7 @@ import { Suspense, useCallback, useState } from 'react';
 import { Outlet, ScrollRestoration } from 'react-router-dom';
 
 import RouteSuspenseFallback from '@ui/RouteSuspenseFallback';
+import Logo from '@ui/Logo.tsx';
 
 import AdminFloatingActions from './AdminFloatingActions';
 import AdminHeader from './AdminHeader';
@@ -17,6 +18,7 @@ const AdminLayout = () => {
         <>
             <ScrollRestoration />
             <div className="flex flex-col h-screen overflow-hidden">
+                <Logo />
                 <AdminHeader onToggleSidebar={toggleSidebar} />
                 <div className="flex flex-1 min-h-0">
                     <AdminSidebar isOpen={sidebarOpen} onClose={closeSidebar} />

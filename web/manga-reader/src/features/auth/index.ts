@@ -12,6 +12,7 @@ export { buildLoginSchema, buildSignUpSchema } from './model/authSchemas';
 export type { LoginFormValues, SignUpFormValues } from './model/authSchemas';
 
 export { AuthGuard, RoleGuard } from './ui/RouteGuards';
+export { ADMIN_PORTAL_ROLES, canAccessAdminPortal } from './lib/canAccessAdminPortal';
 
 export { AuthShell } from './ui/AuthShell';
 export { AuthField } from './ui/AuthField';

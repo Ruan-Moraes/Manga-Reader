@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -40,16 +40,18 @@ describe('DashboardChapterDetail', () => {
 
     it('tab Páginas lista as páginas do capítulo', async () => {
         const chapter = await seededPublished();
+        const pages = await chapterAdminGateway.listPages(chapter.id);
         renderDetail(chapter.id);
         await screen.findByRole('heading', { name: new RegExp(chapter.title) }, { timeout: 5000 });
 
-        await userEvent.click(screen.getByRole('tab', { name: /Páginas/ }));
+        fireEvent.click(screen.getByRole('tab', { name: /Páginas/ }));
 
-        await waitFor(() => expect(screen.getByText(`${chapter.pagesCount} páginas`)).toBeInTheDocument(), { timeout: 5000 });
-        expect(screen.getAllByLabelText(/Posição da página/).length).toBe(chapter.pagesCount);
+        expect(await screen.findByRole('status')).toHaveTextContent('Gerenciamento de arquivos indisponível');
+        expect(screen.getByText(`${pages.length} páginas`)).toBeInTheDocument();
+        expect(screen.queryAllByLabelText(/Posição da página/).length).toBe(pages.length);
     });
 
-    it('tab Métricas mostra os cards principais (dados simulados)', async () => {
+    it('tab Métricas mostra os cards principais retornados pela API', async () => {
         const chapter = await seededPublished();
         renderDetail(chapter.id);
         await screen.findByRole('heading', { name: new RegExp(chapter.title) }, { timeout: 5000 });
@@ -69,7 +71,7 @@ describe('DashboardChapterDetail', () => {
         expect(screen.getByRole('button', { name: 'Prévia' })).toBeInTheDocument();
     });
 
-    it('adicionar páginas simuladas atualiza a contagem (pipeline inicia em uploading)', async () => {
+    it('expõe páginas como somente leitura enquanto o serviço de mídia está indisponível', async () => {
         const draft = await (async () => {
             await chapterAdminGateway.list({ page: 0, size: 1 });
             return chapterAdminGateway.create({ titleId: '1', title: 'Draft com páginas', number: '950' });
@@ -79,10 +81,7 @@ describe('DashboardChapterDetail', () => {
         await screen.findByRole('heading', { name: /Draft com páginas/ }, { timeout: 5000 });
         await userEvent.click(screen.getByRole('tab', { name: /Páginas/ }));
 
-        const input = await screen.findByTestId('add-pages-input');
-        await userEvent.upload(input, [new File(['a'], 'p1.jpg', { type: 'image/jpeg' })]);
-
-        expect(await screen.findByText('Enviando', {}, { timeout: 5000 })).toBeInTheDocument();
-        expect(screen.getByText('1 páginas')).toBeInTheDocument();
+        expect(await screen.findByRole('status')).toHaveTextContent('Gerenciamento de arquivos indisponível');
+        expect(screen.getByRole('button', { name: 'Adicionar páginas' })).toBeDisabled();
     });
 });

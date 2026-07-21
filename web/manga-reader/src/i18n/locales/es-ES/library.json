@@ -53,5 +53,8 @@
         "title": "Nada por aquí todavía",
         "description": "¿Qué tal si empiezas tu colección?",
         "discoverButton": "Descubrir obras"
+    },
+    "adultContent": {
+        "reveal": "Contenido adulto — revelar"
     }
 }

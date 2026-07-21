@@ -4,7 +4,7 @@ type LogoSize = 'xs' | 'sm' | 'md';
 
 type LogoTypes = {
     size?: LogoSize;
-    onNavigate: (path: string) => void;
+    onNavigate?: (path: string) => void;
     ariaLabel?: string;
 };
 
@@ -14,7 +14,9 @@ const sizeMap: Record<LogoSize, { img: number; text: string; gap: string }> = {
     md: { img: 26, text: 'text-[18px]', gap: 'gap-[10px]' },
 };
 
-const Logo = ({ size = 'md', onNavigate, ariaLabel = 'Manga Reader, ir para home' }: LogoTypes) => {
+const noop = () => {};
+
+const Logo = ({ size = 'md', onNavigate = noop, ariaLabel = 'Manga Reader, ir para home' }: LogoTypes) => {
     const [logoError, setLogoError] = useState<boolean>(false);
 
     const dims = sizeMap[size];
@@ -30,7 +32,7 @@ const Logo = ({ size = 'md', onNavigate, ariaLabel = 'Manga Reader, ir para home
                     <span className="text-[10px] font-mr-extrabold text-mr-fg">MR</span>
                 ) : (
                     <img
-                        src={`${import.meta.env.BASE_URL}/favicon-64x64.png`}
+                        src={`${import.meta.env.BASE_URL}favicon-64x64.png`}
                         alt=""
                         width={dims.img}
                         height={dims.img}
@@ -40,7 +42,7 @@ const Logo = ({ size = 'md', onNavigate, ariaLabel = 'Manga Reader, ir para home
                 )}
             </span>
             <span className={`italic font-mr-extrabold leading-none text-mr-fg ${dims.text}`} style={{ letterSpacing: '1.2px' }}>
-                Manga <span className="text-mr-accent">Reader</span>
+                Manga <span className="text-mr-accent-fg">Reader</span>
             </span>
         </button>
     );

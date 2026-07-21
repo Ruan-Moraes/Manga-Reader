@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.library.service.LibraryVisibilityService;
+import com.mangareader.application.library.service.LibraryAdultContentService;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 
@@ -34,11 +36,20 @@ class GetUserLibraryUseCaseTest {
     @Mock
     private LibraryVisibilityService libraryVisibilityService;
 
+    @Mock
+    private LibraryAdultContentService adultContentService;
+
     @InjectMocks
     private GetUserLibraryUseCase getUserLibraryUseCase;
 
     private final UUID USER_ID = UUID.randomUUID();
     private final UUID VIEWER_ID = UUID.randomUUID();
+
+    @org.junit.jupiter.api.BeforeEach
+    void preserveRepositoryPageWhenAdultFilteringIsDisabled() {
+        lenient().when(adultContentService.enrichPage(org.mockito.ArgumentMatchers.any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+    }
 
     @Test
     @DisplayName("Deve retornar página de mangás salvos quando viewer pode ver")

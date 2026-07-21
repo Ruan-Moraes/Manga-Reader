@@ -2,13 +2,13 @@ package com.mangareader.application.review.usecase;
 
 import java.util.UUID;
 
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.shared.event.RatingEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.review.entity.Review;
 import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.exception.BusinessRuleException;
@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class UpdateReviewUseCase {
     private final ReviewRepositoryPort reviewRepository;
     private final EventPublisherPort eventPublisher;
+    private final CacheInvalidationPort cacheInvalidation;
 
     public record UpdateReviewInput(
             String reviewId,
@@ -42,7 +43,6 @@ public class UpdateReviewUseCase {
             Boolean spoiler
     ) {}
 
-    @CacheEvict(value = CacheNames.RATING_AVERAGE, allEntries = true)
     public Review execute(UpdateReviewInput input) {
         Review review = reviewRepository.findById(input.reviewId())
                 .orElseThrow(() -> new ResourceNotFoundException("Review", "id", input.reviewId()));
@@ -95,6 +95,7 @@ public class UpdateReviewUseCase {
         Review saved = reviewRepository.save(review);
 
         eventPublisher.publish("rating.updated", new RatingEvent(review.getTitleId(), input.userId().toString()));
+        cacheInvalidation.evictAfterCommit(CacheNames.RATING_AVERAGE, review.getTitleId());
 
         return saved;
     }

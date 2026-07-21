@@ -39,4 +39,14 @@ describe('toastStore', () => {
         dismissToast(id);
         expect(getToastsSnapshot()).toHaveLength(0);
     });
+
+    it('usa position "bottom" por padrão', () => {
+        pushToast({ title: 'padrão' });
+        expect(getToastsSnapshot()[0].position).toBe('bottom');
+    });
+
+    it('respeita position "top" quando informado', () => {
+        pushToast({ title: 'topo', position: 'top' });
+        expect(getToastsSnapshot()[0].position).toBe('top');
+    });
 });

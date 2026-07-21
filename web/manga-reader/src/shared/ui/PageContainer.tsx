@@ -31,7 +31,7 @@ export const PageContainer = ({ size = 'default', paddingY = 'md', asMain, child
 
     return (
         <Comp
-            className={cn('mx-auto w-full px-4 sm:px-5 lg:px-6', sizeMap[size], paddingYMap[paddingY], className)}
+            className={cn('mx-auto w-full px-3 mobile-md:px-4 sm:px-5 lg:px-6', sizeMap[size], paddingYMap[paddingY], className)}
             {...(rest as HTMLAttributes<HTMLDivElement>)}
         >
             {children}

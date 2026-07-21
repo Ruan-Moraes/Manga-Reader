@@ -26,25 +26,17 @@ export interface FooterProps {
     texts?: FooterTexts;
 }
 
-const noop = () => {};
-
 export const Footer = ({ columns, onSubscribe, copyright, apps, socials, preferenceItems, preferences, onBrandNavigate, texts }: FooterProps) => {
     const t = { ...DEFAULT_TEXTS, ...(texts ?? {}) } satisfies Required<FooterTexts>;
 
     const [openIndex, setOpenIndex] = useState(0);
 
     return (
-        <footer
-            className="tracking-mr"
-            style={{
-                background: 'var(--mr-primary)',
-                borderTop: '1px solid #242424',
-            }}
-        >
-            <div className="mx-auto max-w-mr-container px-6 pt-10">
+        <footer className="border-t border-mr-separator bg-mr-primary tracking-mr">
+            <div className="mx-auto max-w-mr-container px-3 pt-8 mobile-md:px-4 sm:px-5 sm:pt-10 lg:px-6">
                 <div className="grid gap-4 md:gap-10 lg:grid-cols-[minmax(300px,1fr)_2fr]">
                     <div className="flex min-w-0 flex-col gap-2">
-                        <Logo onNavigate={onBrandNavigate ?? noop} />
+                        <Logo onNavigate={onBrandNavigate} />
                         <p className="text-sm leading-relaxed text-mr-fg-subtle mb-4">{t.tagline}</p>
                         <NewsletterCard onSubscribe={onSubscribe} texts={t} />
                         {apps && apps.length > 0 && (
@@ -54,9 +46,9 @@ export const Footer = ({ columns, onSubscribe, copyright, apps, socials, prefere
                                 ))}
                             </div>
                         )}
-                        <div className="hidden md:block border-t border-mr-border-subtle my-auto" />
+                        <div className="hidden lg:block border-t border-mr-border-subtle my-auto" />
                         {socials && socials.length > 0 && (
-                            <div className="flex flex-col gap-2 mt-4 md:mt-0">
+                            <div className="flex flex-col gap-2 mt-4 lg:mt-0">
                                 <span className="block text-xs font-mr-bold uppercase tracking-[0.1rem]">{t.socialsLabel}</span>
                                 <div className="flex flex-wrap gap-2">
                                     {socials.map(s => (

@@ -58,7 +58,7 @@ export const ForumReplyBox = ({ open, onToggle }: ForumReplyBoxProps) => {
                         <button type="button" title={t('ui.mdImage')}>
                             IMG
                         </button>
-                        <span style={{ width: 1, height: 18, background: '#444', margin: '0 4px' }} />
+                        <span style={{ width: 1, height: 18, background: 'var(--mr-border)', margin: '0 4px' }} />
                         <button type="button" title={t('ui.spoiler')} className="forum-md-spoiler">
                             <Eye size={12} strokeWidth={2} />
                             {t('ui.spoiler')}

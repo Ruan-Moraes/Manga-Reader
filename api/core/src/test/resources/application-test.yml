@@ -55,3 +55,17 @@ logging:
   level:
     root: WARN
     com.mangareader: DEBUG
+
+app:
+  # O contexto de integração compartilha IP entre muitas requests. Limites
+  # pequenos são exercitados diretamente em RateLimitFilterTest.
+  rate-limit:
+    general:
+      capacity: 10000
+      window: 1m
+    auth:
+      capacity: 10000
+      window: 1m
+    trusted-proxies:
+      - 127.0.0.1
+      - ::1

@@ -9,7 +9,7 @@ const NavBrand = ({ onNavigate }: Props) => (
         aria-label="Manga Reader, ir para home"
         className="shrink-0 font-mr-sans font-mr-extrabold italic tracking-mr-logo text-mr-fg"
     >
-        Manga <span className="text-mr-accent">Reader</span>
+        Manga <span className="text-mr-accent-fg">Reader</span>
     </button>
 );
 

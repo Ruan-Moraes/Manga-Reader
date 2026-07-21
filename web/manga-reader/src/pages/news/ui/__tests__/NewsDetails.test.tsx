@@ -72,7 +72,7 @@ describe('NewsDetails', () => {
 
     it('renders article title', () => {
         renderNews();
-        expect(screen.getByText(/manga reader v3\.0/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: /manga reader v3\.0/i })).toBeInTheDocument();
     });
 
     it('renders article content', () => {

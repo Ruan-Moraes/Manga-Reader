@@ -3,12 +3,11 @@ import { useUserReviews, type Review } from '@entities/review';
 import { useUserLibrary, type SavedMangaItem } from '@features/library';
 import { type Manga } from '@entities/manga';
 
-import { ACTIVITY } from '@mock/userProfile';
-
 const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
     id: item.titleId,
     title: item.name,
     cover: item.cover,
+    adult: item.adult,
     status: item.list === 'Lendo' ? 'reading' : item.list === 'Concluído' ? 'completed' : 'planned',
 });
 
@@ -17,8 +16,8 @@ const toMangaFromLibrary = (item: SavedMangaItem): Manga => ({
  *
  * Real (banco): header/bio, stats, seguidores/seguindo (grafo Neo4j — DT-48),
  * username/verificado, grupos seguidos (SUPPORTER), recomendações, comentários
- * recentes, resenhas, listas "lendo"/"concluído", gêneros favoritos. Ainda
- * **mock** (sem backend — ver docs/tech-debt.md DT-48): feed de atividade.
+ * recentes, resenhas, listas "lendo"/"concluído", gêneros favoritos, feed de
+ * atividades.
  *
  * @param userId perfil-alvo; ausente = perfil do usuário logado.
  */
@@ -63,6 +62,7 @@ export default function useProfileData(userId?: string) {
             id: r.titleId,
             title: r.titleName,
             cover: r.titleCover,
+            adult: r.adult,
         })),
         recentComments: enriched?.recentComments ?? [],
         // Grupos seguidos reais (SUPPORTER); shape adaptado ao GroupCard da entity.
@@ -75,7 +75,5 @@ export default function useProfileData(userId?: string) {
             projects: g.totalTitles,
             tags: g.focusTags?.length ? g.focusTags : undefined,
         })),
-        // TODO(tech-debt): feed de atividade sem backend — mock (DT-48 residual).
-        activity: ACTIVITY,
     };
 }

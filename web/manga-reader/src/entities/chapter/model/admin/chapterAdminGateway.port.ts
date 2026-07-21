@@ -9,6 +9,8 @@ import type {
     CreateChapterRequest,
     NewPageInput,
     UpdateChapterRequest,
+    LegacyChapterImportPayload,
+    LegacyChapterImportResult,
 } from './chapterAdmin.types';
 
 /**
@@ -37,6 +39,7 @@ export interface ChapterAdminGateway {
     /** Valida item a item; itens inválidos não abortam o lote (resultado parcial). */
     bulkChangeStatus(ids: string[], status: ChapterStatus): Promise<BulkResult>;
     bulkDelete(ids: string[]): Promise<BulkResult>;
+    importLegacy(payload: LegacyChapterImportPayload): Promise<LegacyChapterImportResult>;
 
     listPages(chapterId: string): Promise<ChapterPage[]>;
     /** Inicia o pipeline simulado uploading→processing→ready|error de cada página. */

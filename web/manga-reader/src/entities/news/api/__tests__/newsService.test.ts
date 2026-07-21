@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { http, HttpResponse } from 'msw';
 
 import { server } from '@/test/mocks/server';
@@ -7,7 +7,7 @@ import { API_URLS } from '@shared/constant/API_URLS';
 
 import type { NewsItem } from '@entities/news';
 
-import { getNews, getNewsById, getRelatedNews, isNewsFresh, formatNewsDate, filterNews } from '../newsService';
+import { buildTemporaryNewsCoverUrl, getNews, getNewsById, getRelatedNews, formatNewsDate } from '../newsService';
 
 const buildNewsItem = (overrides: Partial<NewsItem> = {}): NewsItem => ({
     id: 'news-1',
@@ -49,10 +49,6 @@ const buildPageResponse = (content: unknown[] = []) => ({
 });
 
 describe('newsService', () => {
-    afterEach(() => {
-        vi.useRealTimers();
-    });
-
     describe('getNews', () => {
         it('deve retornar pagina de noticias', async () => {
             server.use(
@@ -67,6 +63,22 @@ describe('newsService', () => {
             const result = await getNews();
 
             expect(result.content).toHaveLength(1);
+        });
+
+        it('envia paginação, pesquisa, categoria, período e ordenação para a API', async () => {
+            let receivedParams: URLSearchParams | undefined;
+            server.use(
+                http.get(`*${API_URLS.NEWS}`, ({ request }) => {
+                    receivedParams = new URL(request.url).searchParams;
+                    return HttpResponse.json({ data: buildPageResponse(), success: true });
+                }),
+            );
+
+            await getNews({ page: 2, size: 12, q: 'one piece', category: 'Lançamentos', period: 'week', sort: 'trending' });
+
+            expect(Object.fromEntries(receivedParams ?? [])).toMatchObject({
+                page: '2', size: '12', q: 'one piece', category: 'Lançamentos', period: 'week', sort: 'trending',
+            });
         });
     });
 
@@ -118,22 +130,6 @@ describe('newsService', () => {
         });
     });
 
-    describe('isNewsFresh', () => {
-        it('deve retornar true para noticia de menos de 24h', () => {
-            vi.useFakeTimers();
-            vi.setSystemTime(new Date('2025-06-15T12:00:00Z'));
-
-            expect(isNewsFresh('2025-06-15T10:00:00Z')).toBe(true);
-        });
-
-        it('deve retornar false para noticia de mais de 24h', () => {
-            vi.useFakeTimers();
-            vi.setSystemTime(new Date('2025-06-17T12:00:00Z'));
-
-            expect(isNewsFresh('2025-06-15T10:00:00Z')).toBe(false);
-        });
-    });
-
     describe('formatNewsDate', () => {
         it('deve formatar data em portugues', () => {
             const result = formatNewsDate('2025-06-15T10:00:00Z');
@@ -142,47 +138,12 @@ describe('newsService', () => {
         });
     });
 
-    describe('filterNews', () => {
-        it('deve filtrar por categoria', () => {
-            const items = [buildNewsItem({ category: 'Lançamentos' }), buildNewsItem({ id: 'n2', category: 'Indústria' })];
-
-            const result = filterNews(items, {
-                tab: 'releases',
-                query: '',
-                period: 'all',
-                source: 'all',
-                sort: 'recent',
-            });
-
-            expect(result).toHaveLength(1);
-        });
-
-        it('deve filtrar por query no titulo', () => {
-            const items = [buildNewsItem({ title: 'One Piece capitulo novo' }), buildNewsItem({ id: 'n2', title: 'Naruto remake' })];
-
-            const result = filterNews(items, {
-                tab: 'all',
-                query: 'one piece',
-                period: 'all',
-                source: 'all',
-                sort: 'recent',
-            });
-
-            expect(result).toHaveLength(1);
-        });
-
-        it('deve ordenar por mais lidos', () => {
-            const items = [buildNewsItem({ id: 'n1', views: 100 }), buildNewsItem({ id: 'n2', views: 500 })];
-
-            const result = filterNews(items, {
-                tab: 'all',
-                query: '',
-                period: 'all',
-                source: 'all',
-                sort: 'most-read',
-            });
-
-            expect(result[0].id).toBe('n2');
+    describe('buildTemporaryNewsCoverUrl', () => {
+        it('gera uma URL Picsum determinística e segura para o slug', () => {
+            expect(buildTemporaryNewsCoverUrl('one piece/2026')).toBe(
+                'https://picsum.photos/seed/one%20piece%2F2026/1600/900',
+            );
+            expect(buildTemporaryNewsCoverUrl('one piece/2026')).toBe(buildTemporaryNewsCoverUrl('one piece/2026'));
         });
     });
 });

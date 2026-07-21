@@ -7,6 +7,7 @@ export { default as DashboardOverview } from './ui/DashboardOverview';
 export { default as DashboardSubscriptions } from './ui/DashboardSubscriptions';
 export { default as DashboardTags } from './ui/DashboardTags';
 export { default as DashboardTitles } from './ui/DashboardTitles';
+export { default as DashboardStores } from './ui/DashboardStores';
 export { default as Dashboard } from './ui/Dashboard';
 export { default as DashboardUserDetail } from './ui/DashboardUserDetail';
 export { default as DashboardUsers } from './ui/DashboardUsers';

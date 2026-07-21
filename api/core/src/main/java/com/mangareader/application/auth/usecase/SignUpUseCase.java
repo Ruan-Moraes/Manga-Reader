@@ -1,9 +1,12 @@
 package com.mangareader.application.auth.usecase;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.auth.port.TokenPort;
 import com.mangareader.application.user.port.UserProfileSettingsRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
@@ -30,6 +33,7 @@ public class SignUpUseCase {
     private final UserSystemSettingsRepositoryPort systemSettingsRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenPort tokenPort;
+    private final RefreshTokenRepositoryPort refreshTokenRepository;
 
     public record SignUpInput(String name, String email, String password) {}
 
@@ -63,6 +67,11 @@ public class SignUpUseCase {
         );
 
         String refreshToken = tokenPort.generateRefreshToken(user.getId());
+
+        refreshTokenRepository.store(
+                refreshToken, user.getId(), UUID.randomUUID(),
+                tokenPort.extractExpiration(refreshToken)
+        );
 
         return new SignUpOutput(
                 accessToken,

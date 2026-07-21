@@ -26,8 +26,8 @@ export const LegalCrossLinks = ({ current }: { current: LegalPage }) => {
                     const Icon = meta.icon;
 
                     return (
-                        <Card key={key} variant="default" interactive onClick={() => navigate(meta.path)} className="flex items-center gap-3">
-                            <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-25 text-mr-accent">
+                        <Card key={key} variant="default" interactive onClick={() => navigate(meta.path)} className="flex min-w-0 items-center gap-3">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-mr-xs bg-mr-accent-25 text-mr-accent-fg">
                                 <Icon className="size-4" />
                             </div>
                             <div className="min-w-0 flex-1">

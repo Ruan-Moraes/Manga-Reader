@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { createPublisher, updatePublisher, deletePublisher } from '../api/adminPublisherService';
@@ -24,7 +24,6 @@ const useAdminPublisherActions = () => {
                 invalidatePublishers();
                 return result;
             } catch {
-                showErrorToast('Erro ao criar editora.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -42,7 +41,6 @@ const useAdminPublisherActions = () => {
                 invalidatePublishers();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar editora.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -59,7 +57,7 @@ const useAdminPublisherActions = () => {
                 showSuccessToast('Editora excluída com sucesso.');
                 invalidatePublishers();
             } catch {
-                showErrorToast('Erro ao excluir editora.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

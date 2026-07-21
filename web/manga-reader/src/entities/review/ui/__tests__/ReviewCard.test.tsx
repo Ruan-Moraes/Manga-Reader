@@ -32,3 +32,16 @@ describe('ReviewCard — data do comentário', () => {
         vi.useRealTimers();
     });
 });
+
+describe('ReviewCard — modo sem autor (Minhas Resenhas)', () => {
+    it('omite avatar/nome e mostra data + nota na linha compacta', () => {
+        render(
+            <ReviewCard rating={4.5} upvotes={0} when="2025-06-12T12:00:00Z">
+                conteúdo
+            </ReviewCard>,
+        );
+
+        expect(screen.queryByText('Tester')).toBeNull();
+        expect(screen.getByText('4.5')).toBeTruthy();
+    });
+});

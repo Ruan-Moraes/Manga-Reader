@@ -20,7 +20,7 @@ const Track = ({ checked }: { checked: boolean }) => (
         <span
             className={cn(
                 'absolute top-0.5 size-4 rounded-mr-full transition-all duration-mr-default',
-                checked ? 'left-[18px] bg-mr-primary' : 'left-0.5 bg-white',
+                checked ? 'left-[18px] bg-mr-on-accent' : 'left-0.5 bg-mr-fg',
             )}
         />
     </span>

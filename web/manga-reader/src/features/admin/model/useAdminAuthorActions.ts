@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
 import { createAuthor, updateAuthor, deleteAuthor } from '../api/adminAuthorService';
@@ -24,7 +24,6 @@ const useAdminAuthorActions = () => {
                 invalidateAuthors();
                 return result;
             } catch {
-                showErrorToast('Erro ao criar autor.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -42,7 +41,6 @@ const useAdminAuthorActions = () => {
                 invalidateAuthors();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar autor.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -59,7 +57,7 @@ const useAdminAuthorActions = () => {
                 showSuccessToast('Autor excluído com sucesso.');
                 invalidateAuthors();
             } catch {
-                showErrorToast('Erro ao excluir autor.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }

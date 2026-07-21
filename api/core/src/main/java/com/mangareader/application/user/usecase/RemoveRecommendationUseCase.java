@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RemoveRecommendationUseCase {
     private final RecommendationRepositoryPort recommendationRepository;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     @Transactional
     public void execute(UUID userId, String titleId) {
@@ -24,5 +27,7 @@ public class RemoveRecommendationUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Recommendation", "titleId", titleId));
 
         recommendationRepository.deleteByUserIdAndTitleId(userId, titleId);
+        behaviorEventRecorder.record(userId, BehaviorEventType.PROFILE_RECOMMENDATION_REMOVED,
+                titleId, null, "PROFILE");
     }
 }

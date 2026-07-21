@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRouteError } from 'react-router-dom';
 
 import { reportError } from '@shared/service/errorReporting/errorReportingService';
@@ -17,7 +18,9 @@ function RouteErrorFallback() {
 
     const error = routeError instanceof Error ? routeError : new Error(String(routeError));
 
-    reportError(error.message, error.stack ?? null, 'error-boundary');
+    useEffect(() => {
+        reportError(error.message, error.stack ?? null, 'error-boundary');
+    }, [error.message, error.stack]);
 
     return <ErrorFallback error={error} />;
 }

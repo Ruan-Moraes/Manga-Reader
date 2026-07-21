@@ -30,6 +30,9 @@ public final class ApiErrorCode {
     /** Refresh token expirado ou inválido. */
     public static final String AUTH_REFRESH_TOKEN_EXPIRED = "AUTH_REFRESH_TOKEN_EXPIRED";
 
+    /** Conflito inesperado ao persistir a identidade de um refresh token. */
+    public static final String AUTH_REFRESH_TOKEN_CONFLICT = "AUTH_REFRESH_TOKEN_CONFLICT";
+
     /** Token de redefinição de senha expirado ou inválido. */
     public static final String AUTH_RESET_TOKEN_INVALID = "AUTH_RESET_TOKEN_INVALID";
 

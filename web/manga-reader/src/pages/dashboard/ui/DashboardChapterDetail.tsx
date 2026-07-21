@@ -67,7 +67,7 @@ const DashboardChapterDetail = () => {
                 </Button>
                 <div className="min-w-0 flex-1">
                     <h1 className="truncate text-[24px] font-mr-extrabold leading-tight text-mr-fg md:text-[28px]">
-                        <span className="text-mr-accent">#{chapter.number}</span> {chapter.title}
+                        <span className="text-mr-accent-fg">#{chapter.number}</span> {chapter.title}
                     </h1>
                     <p className="mt-1 text-mr-small text-mr-fg-subtle">{chapter.titleName}</p>
                 </div>
@@ -111,6 +111,7 @@ const DashboardChapterDetail = () => {
 
             {tab === 'pages' && (
                 <ChapterPageGrid
+                    readOnly
                     pages={pages}
                     isSubmitting={pagesActions.isSubmitting}
                     onAddPages={files => void pagesActions.addPages(files)}

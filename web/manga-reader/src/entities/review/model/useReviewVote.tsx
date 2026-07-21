@@ -1,9 +1,7 @@
 import { useMutation, useQueryClient, type InfiniteData, type QueryKey } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
 
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 import type { PageResponse } from '@shared/service/http';
-import { showErrorToast } from '@shared/service/util/toastService';
 
 import { castReviewVote, removeReviewVote, type ReviewVoteResult } from '../api/reviewService';
 import { type Review } from './review.types';
@@ -48,11 +46,11 @@ function applyOptimistic(review: Review, prev: Vote | null, next: Vote | null): 
 /**
  * Voto Útil/Contrário em resenha (DT-47) com **verdade do servidor + otimista**:
  * `onMutate` ajusta o cache imediatamente; `onSuccess` grava os contadores reais
- * retornados pelo backend; `onError` faz rollback e mostra toast.
+ * retornados pelo backend; `onError` faz rollback (o toast de erro é do
+ * interceptor Axios global).
  */
 const useReviewVote = (titleId: string) => {
     const queryClient = useQueryClient();
-    const { t } = useTranslation('rating');
 
     const cacheKey = { queryKey: [QUERY_KEYS.RATINGS_BY_TITLE, titleId] };
 
@@ -70,7 +68,6 @@ const useReviewVote = (titleId: string) => {
         },
         onError: (_error, _vars, context) => {
             context?.snapshot.forEach(([key, data]) => queryClient.setQueryData<ReviewsCache>(key, data));
-            showErrorToast(t('reviews.voteError'));
         },
         onSuccess: (result, { id }) => {
             // Reconcilia com os contadores autoritativos do backend.

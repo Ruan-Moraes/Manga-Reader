@@ -2,14 +2,15 @@ package com.mangareader.application.review.usecase;
 
 import java.util.UUID;
 
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.shared.event.RatingEvent;
+import com.mangareader.application.shared.event.ReviewPostedEvent;
 import com.mangareader.application.shared.port.EventPublisherPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.review.entity.Review;
 import com.mangareader.domain.user.entity.User;
@@ -33,6 +34,7 @@ public class SubmitReviewUseCase {
     private final TitleRepositoryPort titleRepository;
     private final EventPublisherPort eventPublisher;
     private final LocaleResolutionService localeResolver;
+    private final CacheInvalidationPort cacheInvalidation;
 
     public record SubmitReviewInput(
             String titleId,
@@ -48,7 +50,6 @@ public class SubmitReviewUseCase {
             boolean spoiler
     ) {}
 
-    @CacheEvict(value = CacheNames.RATING_AVERAGE, key = "#input.titleId()")
     public Review execute(SubmitReviewInput input) {
         User user = userRepository.findById(input.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", input.userId()));
@@ -93,6 +94,14 @@ public class SubmitReviewUseCase {
         Review saved = reviewRepository.save(rating);
 
         eventPublisher.publish("rating.submitted", new RatingEvent(input.titleId(), input.userId().toString()));
+
+        if (!isEdit) {
+            eventPublisher.publish("activity.review-posted", new ReviewPostedEvent(
+                    input.userId().toString(), input.titleId(), rating.getTitleName(), title.getCover(),
+                    saved.getId(), saved.getOverallRating()));
+        }
+
+        cacheInvalidation.evictAfterCommit(CacheNames.RATING_AVERAGE, input.titleId());
 
         return saved;
     }

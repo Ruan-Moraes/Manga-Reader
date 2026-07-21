@@ -24,11 +24,11 @@ export const peSmallBtn = (kind: 'ghost' | 'danger') =>
     );
 
 export const peEyebrow = (tone: 'accent' | 'muted' = 'accent') =>
-    cn('mb-2 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label', tone === 'accent' ? 'text-mr-accent' : 'text-mr-tertiary');
+    cn('mb-2 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label', tone === 'accent' ? 'text-mr-accent-fg' : 'text-mr-tertiary');
 
 export const PEField = ({ label, hint, children }: { label: string; hint?: ReactNode; children: ReactNode }) => (
     <label className="mb-[14px] block">
-        <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label text-mr-accent">{label}</div>
+        <div className="mb-1.5 text-mr-tiny font-mr-extrabold uppercase tracking-mr-label text-mr-accent-fg">{label}</div>
         {children}
         {hint && <div className="mt-1 text-mr-tiny leading-normal text-mr-fg-subtle">{hint}</div>}
     </label>

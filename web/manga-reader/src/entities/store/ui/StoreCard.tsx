@@ -9,6 +9,7 @@ import type { Store } from '../model/store.types';
 interface StoreCardProps {
     store: Store;
     isLoading?: boolean;
+    onVisit?: (store: Store) => void;
 }
 
 function StoreLogo({ store, size = 48 }: { store: Store; size?: number }) {
@@ -17,7 +18,7 @@ function StoreLogo({ store, size = 48 }: { store: Store; size?: number }) {
     }
     return (
         <span
-            className="inline-flex shrink-0 items-center justify-center rounded-mr-sm text-[14px] font-mr-extrabold text-white"
+            className="inline-flex shrink-0 items-center justify-center rounded-mr-sm text-[14px] font-mr-extrabold text-mr-on-overlay"
             style={{ width: size, height: size, background: store.color ?? 'var(--mr-tertiary)' }}
             aria-hidden="true"
         >
@@ -26,12 +27,12 @@ function StoreLogo({ store, size = 48 }: { store: Store; size?: number }) {
     );
 }
 
-const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
+const StoreCard = ({ store, isLoading = false, onVisit }: StoreCardProps) => {
     const { t } = useTranslation('store');
 
     if (isLoading) {
         return (
-            <div className="animate-pulse flex items-center gap-3 rounded-mr-xs border border-[#333] bg-[#1c1c1d] p-4">
+            <div className="animate-pulse flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface-interactive p-4">
                 <div className="size-12 rounded-mr-sm bg-mr-gray-700 shrink-0" />
                 <div className="flex-1">
                     <div className="mb-2 h-3 w-1/2 rounded bg-mr-gray-700" />
@@ -45,8 +46,8 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
     return (
         <article
             className={cn(
-                'flex items-center gap-3 rounded-mr-xs border bg-[#1c1c1d] p-4 transition-colors duration-200',
-                store.official ? 'border-mr-accent' : 'border-[#333]',
+                'flex items-center gap-3 rounded-mr-xs border bg-mr-surface-interactive p-4 transition-colors duration-200',
+                store.official ? 'border-mr-accent-border' : 'border-mr-border',
             )}
         >
             <StoreLogo store={store} size={48} />
@@ -56,8 +57,8 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
                     <p className="text-[14px] font-mr-bold text-mr-fg">{store.name}</p>
                     {store.official && (
                         <span
-                            className="inline-flex items-center gap-0.5 rounded-xs px-1 py-0.5 text-[10px] font-mr-bold uppercase tracking-mr-label text-mr-accent"
-                            style={{ background: 'rgba(221,218,42,.15)' }}
+                            className="inline-flex items-center gap-0.5 rounded-xs px-1 py-0.5 text-[10px] font-mr-bold uppercase tracking-mr-label text-mr-accent-fg"
+                            style={{ background: 'var(--mr-accent-10)' }}
                         >
                             ✓ {t('card.official')}
                         </span>
@@ -70,7 +71,7 @@ const StoreCard = ({ store, isLoading = false }: StoreCardProps) => {
                 variant="primary"
                 size="sm"
                 icon={ExternalLink}
-                onClick={() => window.open(store.website, '_blank', 'noopener,noreferrer')}
+                onClick={() => onVisit?.(store)}
                 className="shrink-0"
             >
                 {t('card.goToStore')}

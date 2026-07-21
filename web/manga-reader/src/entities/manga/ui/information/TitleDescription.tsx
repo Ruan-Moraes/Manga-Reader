@@ -45,7 +45,7 @@ const TitleDescription = ({ name, genres, synopsis }: TitleDescriptionTypes) => 
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(true)}
-                            className="mt-1 text-xs font-semibold text-quaternary-default hover:text-quaternary-light transition-colors cursor-pointer"
+                            className="mt-1 text-xs font-semibold text-mr-accent-fg hover:text-mr-accent-fg transition-colors cursor-pointer"
                         >
                             {t('readMore')}
                         </button>

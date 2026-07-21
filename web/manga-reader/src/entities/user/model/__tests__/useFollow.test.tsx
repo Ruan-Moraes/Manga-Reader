@@ -8,8 +8,10 @@ import { API_URLS } from '@shared/constant/API_URLS';
 import useFollow from '../useFollow';
 
 // Sessão autenticada — requireAuth lê a sessão armazenada.
-vi.mock('@shared/service/session', () => ({
-    getStoredSession: () => ({ accessToken: 'token' }),
+vi.mock('@shared/service/session', async importOriginal => ({
+    ...(await importOriginal<typeof import('@shared/service/session')>()),
+    getStoredSession: () => ({ userId: 'u1' }),
+    getAccessToken: () => 'token',
 }));
 
 const wrap = <T,>(data: T) => ({ data, success: true });

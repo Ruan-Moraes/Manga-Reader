@@ -21,6 +21,7 @@
         órfãs cross-DB (linhas Postgres com title_id sem título correspondente no Mongo).</description>
 
     <properties>
+        <testcontainers.version>1.21.4</testcontainers.version>
         <java.version>23</java.version>
         <!-- Suíte leve sem Docker: mvn test -Dtest.excludedGroups=testcontainers -->
         <test.excludedGroups></test.excludedGroups>
@@ -30,6 +31,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,6 +89,23 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>add-shared-test-support</id>
+                        <phase>generate-test-sources</phase>
+                        <goals><goal>add-test-source</goal></goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/../../testing-support/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

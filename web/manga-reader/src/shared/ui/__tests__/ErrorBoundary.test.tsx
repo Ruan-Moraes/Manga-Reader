@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import ErrorBoundary from '../ErrorBoundary';
+import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
 
 vi.mock('@shared/service/errorReporting/errorReportingService', () => ({
     reportError: vi.fn(),
@@ -57,9 +58,9 @@ describe('ErrorBoundary', () => {
             </ErrorBoundary>,
         );
 
-        expect(screen.getByText('Ops! Algo deu errado.')).toBeInTheDocument();
-        expect(screen.getByText(/Ocorreu um erro inesperado/)).toBeInTheDocument();
-        expect(screen.getByText('Voltar à página inicial')).toBeInTheDocument();
+        expect(screen.getByText('Algo saiu do roteiro.')).toBeInTheDocument();
+        expect(screen.getByText(/Não foi possível concluir esta página/)).toBeInTheDocument();
+        expect(screen.getByText('Voltar ao início')).toBeInTheDocument();
     });
 
     it('deve chamar reportError com source error-boundary', () => {
@@ -80,8 +81,10 @@ describe('ErrorBoundary', () => {
             </ErrorBoundary>,
         );
 
-        expect(screen.getByText('[DEV] Detalhes do erro')).toBeInTheDocument();
+        expect(screen.getByText('Detalhes técnicos')).toBeInTheDocument();
         expect(screen.getByText('Test rendering error')).toBeInTheDocument();
+        expect(screen.getByText('ErrorBoundary.test.tsx')).toBeInTheDocument();
+        expect(screen.getByText(/Linha \d+, coluna \d+/)).toBeInTheDocument();
     });
 
     it('deve ter link para pagina inicial', () => {
@@ -91,8 +94,8 @@ describe('ErrorBoundary', () => {
             </ErrorBoundary>,
         );
 
-        const link = screen.getByText('Voltar à página inicial');
+        const link = screen.getByText('Voltar ao início');
 
-        expect(link).toHaveAttribute('href', '/Manga-Reader');
+        expect(link).toHaveAttribute('href', WEB_BASE_URL);
     });
 });

@@ -38,7 +38,7 @@ export const ChapterDropdown = ({ list, onPick, onClose }: ChapterDropdownProps)
                     <button
                         type="button"
                         onClick={onClose}
-                        style={{ background: 'transparent', border: 0, color: '#999', cursor: 'pointer', display: 'inline-flex' }}
+                        style={{ background: 'transparent', border: 0, color: 'var(--mr-fg-subtle)', cursor: 'pointer', display: 'inline-flex' }}
                         aria-label={t('reader.closeAria')}
                     >
                         <X size={14} strokeWidth={2} />

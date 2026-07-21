@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.mangareader.domain.store.entity.Store;
+import com.mangareader.domain.store.valueobject.StoreStatus;
 
 /**
  * Port de saída — acesso a dados de Stores (PostgreSQL).
@@ -29,6 +30,10 @@ public interface StoreRepositoryPort {
     Page<Store> findByTitleId(String titleId, Pageable pageable);
 
     Page<Store> findAll(Pageable pageable);
+
+    Page<Store> search(String search, StoreStatus status, Pageable pageable);
+
+    Page<Store> findActive(Pageable pageable);
 
     /** Remove o título de todas as lojas (limpeza de órfão cross-DB). */
     void deleteByTitleId(String titleId);

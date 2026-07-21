@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 import com.mangareader.domain.user.entity.UserRecommendation;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
@@ -25,6 +26,9 @@ class RemoveRecommendationUseCaseTest {
 
     @Mock
     private RecommendationRepositoryPort recommendationRepository;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private RemoveRecommendationUseCase removeRecommendationUseCase;

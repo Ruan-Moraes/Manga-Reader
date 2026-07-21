@@ -40,9 +40,9 @@ export function Field({
 }: Props) {
     const { tokens } = useTheme();
     const [focused, setFocused] = useState(false);
-    const borderColor = error ? tokens.danger : focused ? tokens.accent : tokens.inputBorder;
-    const iconColor = focused ? tokens.accent : tokens.tertiary;
-    const labelColor = error ? tokens.danger : tokens.accent;
+    const borderColor = error ? tokens.danger : focused ? tokens.accentBorder : tokens.inputBorder;
+    const iconColor = focused ? tokens.accentText : tokens.tertiary;
+    const labelColor = error ? tokens.danger : tokens.accentText;
 
     return (
         <View style={{ marginBottom: 16 }}>
@@ -65,7 +65,7 @@ export function Field({
                     value={value}
                     onChangeText={onChange}
                     placeholder={placeholder}
-                    placeholderTextColor={tokens.tertiary}
+                    placeholderTextColor={tokens.placeholder}
                     secureTextEntry={type === 'password'}
                     keyboardType={inputMode === 'email' ? 'email-address' : 'default'}
                     autoCapitalize={autoCapitalize}

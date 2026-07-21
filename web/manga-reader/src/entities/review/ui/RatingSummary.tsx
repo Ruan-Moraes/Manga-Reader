@@ -26,10 +26,10 @@ export const RatingSummary = ({ dist, total, avg, activeStar, onFilterStar }: Ra
 
     return (
         <section
-            className="mb-6 flex flex-col gap-4 rounded-[12px] border border-[#333] bg-[#1c1c1d] p-4 sm:flex-row sm:items-center sm:gap-6"
+            className="mb-6 flex flex-col gap-4 rounded-[12px] border border-mr-border bg-mr-surface-interactive p-4 sm:flex-row sm:items-center sm:gap-6"
             aria-label={t('reviews.summary.aria')}
         >
-            <div className="flex flex-col items-center gap-1 sm:border-r sm:border-[#333] sm:pr-6">
+            <div className="flex flex-col items-center gap-1 sm:border-r sm:border-mr-border sm:pr-6">
                 <p className="text-[clamp(48px,8vw,56px)] font-mr-extrabold leading-none text-mr-fg">{avg.toFixed(1)}</p>
                 <Stars value={avg} size={18} />
                 <p className="text-[13px] text-mr-fg-subtle">{t('reviews.ratingsCount', { count: total })}</p>
@@ -68,7 +68,7 @@ export const RatingSummary = ({ dist, total, avg, activeStar, onFilterStar }: Ra
                 {activeStar && (
                     <button
                         type="button"
-                        className="mt-1 flex items-center gap-1.5 self-start rounded-mr-xs bg-mr-accent-25 px-2 py-1 text-[12px] font-mr-bold text-mr-accent hover:bg-mr-accent-50"
+                        className="mt-1 flex items-center gap-1.5 self-start rounded-mr-xs bg-mr-accent-25 px-2 py-1 text-[12px] font-mr-bold text-mr-accent-fg hover:bg-mr-accent-50"
                         onClick={() => onFilterStar(null)}
                     >
                         <Check className="size-3" aria-hidden="true" />

@@ -28,14 +28,14 @@ const PublishersInput = ({ value, onChange }: PublishersInputProps) => {
                     {value.map(entry => (
                         <span
                             key={entry.id}
-                            className="inline-flex items-center gap-1.5 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 py-1 pl-2.5 pr-1.5 text-mr-tiny font-mr-bold text-mr-accent"
+                            className="inline-flex items-center gap-1.5 rounded-mr-full border border-mr-accent-50 bg-mr-accent-25 py-1 pl-2.5 pr-1.5 text-mr-tiny font-mr-bold text-mr-accent-fg"
                         >
                             {entry.name ?? `#${entry.id}`}
                             <button
                                 type="button"
                                 aria-label={t('dashboard.titles.form.removePublisher')}
                                 onClick={() => remove(entry.id)}
-                                className="flex size-4 items-center justify-center rounded-mr-full text-mr-accent transition-colors hover:bg-mr-accent-50 hover:text-mr-primary"
+                                className="flex size-4 items-center justify-center rounded-mr-full text-mr-accent-fg transition-colors hover:bg-mr-accent-50 hover:text-mr-on-accent"
                             >
                                 <X size={12} />
                             </button>

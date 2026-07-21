@@ -24,6 +24,7 @@ public record StoreResponse(
         String shipping,
         String note,
         String mono,
-        String color
+        String color,
+        String purchaseUrl
 ) {
 }

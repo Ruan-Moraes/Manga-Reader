@@ -21,9 +21,9 @@ export function Button({ children, onPress, variant = 'primary', loading, disabl
 
     const bg = variant === 'primary' ? (off ? tokens.inputBorder : tokens.accent) : 'transparent';
 
-    const borderColor = variant === 'outline' ? (off ? tokens.inputBorder : tokens.accent) : 'transparent';
+    const borderColor = variant === 'outline' ? (off ? tokens.inputBorder : tokens.accentBorder) : 'transparent';
 
-    const textColor = variant === 'primary' ? (off ? tokens.tertiary : tokens.bg) : off ? tokens.tertiary : tokens.accent;
+    const textColor = variant === 'primary' ? (off ? tokens.disabled : tokens.onAccent) : off ? tokens.disabled : tokens.accentText;
 
     return (
         <TouchableOpacity

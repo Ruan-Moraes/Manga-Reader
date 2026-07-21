@@ -107,7 +107,7 @@ const NavMegaMenu = ({ openSection, onSectionChange, onNavigate }: Props) => {
                             aria-haspopup="true"
                             className={cn(
                                 'flex items-center gap-[5px] rounded-mr-xs px-3 py-[9px] text-mr-small font-mr-bold text-mr-fg transition-colors duration-mr-default',
-                                'hover:bg-mr-accent-25 focus-visible:outline-2 focus-visible:outline-mr-accent focus-visible:outline-offset-2',
+                                'hover:bg-mr-accent-25 focus-visible:outline-2 focus-visible:outline-mr-focus-ring focus-visible:outline-offset-2',
                                 isOpen && 'bg-mr-accent-25',
                             )}
                             style={{ letterSpacing: '0.0625rem' }}
@@ -129,7 +129,7 @@ const NavMegaMenu = ({ openSection, onSectionChange, onNavigate }: Props) => {
                                     className="absolute left-0 top-[calc(100%+0.5rem)] min-w-[280px] border border-mr-gray-700 bg-mr-secondary p-2"
                                     style={{
                                         borderRadius: 8,
-                                        boxShadow: '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25), 0 12px 40px -12px rgba(0,0,0,0.7)',
+                                        boxShadow: '-0.25rem 0.25rem 0 0 var(--mr-accent-25), var(--mr-elevated-shadow)',
                                         zIndex: 50,
                                     }}
                                 >
@@ -144,11 +144,11 @@ const NavMegaMenu = ({ openSection, onSectionChange, onNavigate }: Props) => {
                                                     onNavigate(item.path);
                                                     onSectionChange(null);
                                                 }}
-                                                className="flex w-full items-center gap-3 rounded-mr-xs p-[10px] text-left text-mr-fg transition-colors duration-mr-default hover:bg-mr-accent-25 focus-visible:outline-2 focus-visible:outline-mr-accent"
+                                                className="flex w-full items-center gap-3 rounded-mr-xs p-[10px] text-left text-mr-fg transition-colors duration-mr-default hover:bg-mr-accent-25 focus-visible:outline-2 focus-visible:outline-mr-focus-ring"
                                             >
                                                 <span
                                                     className="flex shrink-0 items-center justify-center rounded-mr-xs"
-                                                    style={{ width: 34, height: 34, background: 'rgba(221,218,42,0.10)', color: 'var(--mr-accent)' }}
+                                                    style={{ width: 34, height: 34, background: 'var(--mr-accent-10)', color: 'var(--mr-accent)' }}
                                                     aria-hidden="true"
                                                 >
                                                     <Icon className="size-[18px]" strokeWidth={2} />

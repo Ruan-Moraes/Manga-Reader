@@ -1,15 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { MessageCircle, Moon, GitBranch, Bird, Camera } from 'lucide-react';
+import { MessageCircle, GitBranch, Bird, Camera } from 'lucide-react';
 
 import { Footer as DSFooter } from '@ui/Footer';
-import type { FooterAppLink, FooterColumn, FooterLink, FooterPreferenceItem, FooterSocialLink, FooterStatusInfo } from '@ui/Footer';
+import type { FooterAppLink, FooterColumn, FooterLink, FooterSocialLink, FooterStatusInfo } from '@ui/Footer';
 
 import { useAuth } from '@features/auth';
 
+import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import { showInfoToast } from '@shared/service/util/toastService';
 
 import LanguagePreferenceMenu from './LanguagePreferenceMenu';
+import ThemePreferenceMenu from './ThemePreferenceMenu';
 
 type FooterProps = {
     styles?: React.CSSProperties;
@@ -50,7 +51,7 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
         ? [
               mkLink(t('footer.links.profile'), '/profile', navigate),
               mkLink(t('footer.links.settings'), '/settings', navigate),
-              mkLink(t('footer.links.notifications'), '/notifications', navigate),
+              mkLink(t('footer.links.notifications'), ROUTES.NOTIFICATIONS, navigate),
           ]
         : [
               mkLink(t('footer.links.login'), '/login', navigate),
@@ -141,20 +142,6 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
         statusAriaLabel: t('footer.statusBanner.ariaLabel'),
     };
 
-    // Idioma (UI + conteúdo) gerido pelo dropdown de dois eixos (LanguagePreferenceMenu);
-    // tema ainda em desenvolvimento.
-    const preferenceItems: FooterPreferenceItem[] = [
-        {
-            key: 'theme',
-            label: t('footer.preferences.theme'),
-            value: t('footer.preferences.themeValue'),
-            icon: Moon,
-            showChevron: true,
-            ariaLabel: t('footer.preferences.themeAria'),
-            onClick: () => showInfoToast(t('footer.preferences.themeWip')),
-        },
-    ];
-
     return (
         <DSFooter
             columns={columns}
@@ -163,8 +150,12 @@ const Footer = ({ showLinks, onNavigate, onSubscribe }: FooterProps) => {
             statusInfo={statusInfo}
             apps={apps}
             socials={socials}
-            preferenceItems={preferenceItems}
-            preferences={<LanguagePreferenceMenu />}
+            preferences={
+                <>
+                    <ThemePreferenceMenu />
+                    <LanguagePreferenceMenu />
+                </>
+            }
             onBrandNavigate={navigate}
             texts={{
                 tagline: t('footer.tagline'),

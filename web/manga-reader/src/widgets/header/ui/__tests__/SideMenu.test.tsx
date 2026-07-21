@@ -8,6 +8,7 @@ const defaultProps = {
     onClose: vi.fn(),
     user: { name: 'Leitor BR' },
     isLoggedIn: true,
+    canAccessAdminPortal: false,
     onNavigate: vi.fn(),
 };
 
@@ -60,6 +61,28 @@ describe('layout/SideMenu', () => {
     it('shows Sair button when logged in', () => {
         render(<SideMenu {...defaultProps} isLoggedIn={true} />);
         expect(screen.getByRole('button', { name: /sair/i })).toBeInTheDocument();
+    });
+
+    it('shows the dashboard item for users who can access the admin portal', () => {
+        render(<SideMenu {...defaultProps} canAccessAdminPortal />);
+        expect(screen.getByRole('button', { name: /dashboard/i })).toBeInTheDocument();
+    });
+
+    it('does not show the dashboard item without admin portal access', () => {
+        render(<SideMenu {...defaultProps} canAccessAdminPortal={false} />);
+        expect(screen.queryByRole('button', { name: /dashboard/i })).not.toBeInTheDocument();
+    });
+
+    it('navigates to the dashboard and closes the menu', async () => {
+        const onNavigate = vi.fn();
+        const onClose = vi.fn();
+        const user = userEvent.setup();
+        render(<SideMenu {...defaultProps} canAccessAdminPortal onNavigate={onNavigate} onClose={onClose} />);
+
+        await user.click(screen.getByRole('button', { name: /dashboard/i }));
+
+        expect(onNavigate).toHaveBeenCalledWith('/dashboard');
+        expect(onClose).toHaveBeenCalled();
     });
 
     it('shows Entrar and Cadastrar when not logged in', () => {

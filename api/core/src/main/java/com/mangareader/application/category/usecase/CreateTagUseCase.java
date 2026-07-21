@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.category.entity.Tag;
 import com.mangareader.domain.category.entity.TagSlug;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateTagUseCase {
     private final TagRepositoryPort tagRepository;
+    private final CacheInvalidationPort cacheInvalidation;
 
     @Transactional
     public Tag execute(Map<String, String> label) {
@@ -38,7 +41,9 @@ public class CreateTagUseCase {
                 .label(LocalizedString.of(label))
                 .build();
 
-        return tagRepository.save(tag);
+        Tag saved = tagRepository.save(tag);
+        cacheInvalidation.evictAfterCommit(CacheNames.TAG, saved.getId());
+        return saved;
     }
 
     private String generateUniqueSlug(Map<String, String> label) {

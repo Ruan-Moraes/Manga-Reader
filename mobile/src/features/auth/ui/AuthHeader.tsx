@@ -22,7 +22,7 @@ export function LogoMark({ size = 28 }: { size?: number }) {
                 height: size,
                 borderRadius: tokens.radius,
                 overflow: 'hidden',
-                backgroundColor: '#000',
+                backgroundColor: tokens.logoBg,
                 borderWidth: 0.5,
                 borderColor: tokens.accentGlow,
             }}
@@ -45,7 +45,7 @@ export function Wordmark({ fontSize = 16 }: { fontSize?: number }) {
             }}
         >
             {'Manga '}
-            <Text style={{ color: tokens.accent }}>Reader</Text>
+            <Text style={{ color: tokens.accentText }}>Reader</Text>
         </Text>
     );
 }
@@ -67,7 +67,7 @@ export function AuthHeader({ layout = 'mascote', eyebrow, title, sub }: Props) {
                             fontFamily: FONTS.extrabold,
                             letterSpacing: 1.4,
                             textTransform: 'uppercase',
-                            color: tokens.accent,
+                            color: tokens.accentText,
                             marginBottom: 8,
                         }}
                     >
@@ -98,7 +98,7 @@ export function AuthHeader({ layout = 'mascote', eyebrow, title, sub }: Props) {
                         fontFamily: FONTS.extrabold,
                         letterSpacing: 1.4,
                         textTransform: 'uppercase',
-                        color: tokens.accent,
+                        color: tokens.accentText,
                         marginBottom: 8,
                     }}
                 >

@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.reconciler.scheduling.CounterReconciliationJob;
 import com.mangareader.reconciler.scheduling.ReconciliationReport;
+import com.mangareader.reconciler.config.ReconcilerProperties;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,9 +34,9 @@ public class AdminReconcileController {
 
     public AdminReconcileController(
             CounterReconciliationJob reconciliationJob,
-            @Value("${reconciler.admin.token:}") String adminToken) {
+            ReconcilerProperties properties) {
         this.reconciliationJob = reconciliationJob;
-        this.adminToken = adminToken;
+        this.adminToken = properties.admin().token();
     }
 
     @PostMapping("/reconcile")

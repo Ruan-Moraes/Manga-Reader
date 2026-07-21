@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.category.port.TagRepositoryPort;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
+import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeleteTagUseCase {
     private final TagRepositoryPort tagRepository;
+    private final CacheInvalidationPort cacheInvalidation;
 
     @Transactional
     public void execute(Long id) {
@@ -22,5 +25,6 @@ public class DeleteTagUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id.toString()));
 
         tagRepository.deleteById(id);
+        cacheInvalidation.evictAfterCommit(CacheNames.TAG, id);
     }
 }

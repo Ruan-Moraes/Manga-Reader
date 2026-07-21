@@ -1,11 +1,9 @@
 import type { FocusEvent, KeyboardEvent, RefObject } from 'react';
 import { useRef } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import IconButton from '@ui/IconButton.tsx';
-
-import { cn } from '@shared/lib/cn';
+import SearchField from '@ui/SearchField';
 
 type Suggestion = {
     key: string;
@@ -23,7 +21,6 @@ type Props = {
     onSelectRecent: (q: string) => void;
     onSelectSuggestion: (s: Suggestion) => void;
     inputRef: RefObject<HTMLInputElement | null>;
-    height?: number;
     showShortcut?: boolean;
 };
 
@@ -45,7 +42,6 @@ const NavSearch = ({
     onSelectRecent,
     onSelectSuggestion,
     inputRef,
-    height = 42,
     showShortcut = true,
 }: Props) => {
     const { t } = useTranslation('layout');
@@ -64,56 +60,19 @@ const NavSearch = ({
         if (!containerRef.current?.contains(e.relatedTarget as Node | null)) onBlur();
     };
 
-    const clearSearch = () => {
-        onChange('');
-        inputRef.current?.focus();
-    };
-
     return (
         <div ref={containerRef} onBlur={handleBlur} className="relative w-full">
-            <label
-                className={cn(
-                    'flex w-full items-center gap-[10px] border bg-mr-primary p-1.5 transition-colors duration-mr-default',
-                    focused ? 'border-mr-accent' : 'border-mr-tertiary',
-                )}
-                style={{ height, borderRadius: 2 }}
-            >
-                <Search aria-hidden="true" className="size-5 shrink-0 text-mr-tertiary" />
-                <input
-                    ref={inputRef}
-                    type="search"
-                    value={value}
-                    onChange={e => onChange(e.target.value)}
-                    onFocus={onFocus}
-                    onKeyDown={onKeyDown}
-                    placeholder={t('search.placeholder')}
-                    aria-label={t('search.ariaLabel')}
-                    className="min-w-0 flex-1 bg-transparent text-mr-body text-mr-fg outline-none placeholder:text-mr-tertiary"
-                    style={{ letterSpacing: '0.0625rem' }}
-                />
-                {showShortcut && !value && (
-                    <kbd
-                        aria-label={t('search.kbdHint')}
-                        className="flex items-stretch font-mr-mono text-[11px] text-mr-gray-300 rounded-xs bg-mr-gray-800 border border-mr-gray-700 px-1.5 py-0.5"
-                        style={{
-                            letterSpacing: '0.0625rem',
-                        }}
-                    >
-                        <span className="flex items-center justify-center text-[14px] mb-0.5">⌘</span>
-                        <span className="flex items-center justify-center">K</span>
-                    </kbd>
-                )}
-                {value && (
-                    <IconButton
-                        type="button"
-                        icon={X}
-                        aria-label={t('search.clearAria')}
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={clearSearch}
-                        className="p-2 shrink-0 rounded-mr-xs bg-mr-accent-25 text-mr-accent transition-colors duration-mr-default hover:bg-mr-accent/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mr-accent"
-                    />
-                )}
-            </label>
+            <SearchField
+                ref={inputRef}
+                value={value}
+                onChange={onChange}
+                onFocus={onFocus}
+                onKeyDown={onKeyDown}
+                placeholder={t('search.placeholder')}
+                aria-label={t('search.ariaLabel')}
+                clearAriaLabel={t('search.clearAria')}
+                shortcut={showShortcut ? '⌘K' : undefined}
+            />
             {focused && (
                 <div
                     role="listbox"
@@ -121,11 +80,11 @@ const NavSearch = ({
                     className="absolute left-0 right-0 top-[calc(100%+8px)] border border-mr-gray-700 bg-mr-secondary p-2"
                     style={{
                         borderRadius: 8,
-                        boxShadow: '-0.25rem 0.25rem 0 0 rgba(221,218,42,0.25), 0 12px 40px -12px rgba(0,0,0,0.7)',
+                        boxShadow: '-0.25rem 0.25rem 0 0 var(--mr-accent-25), var(--mr-elevated-shadow)',
                         zIndex: 50,
                     }}
                 >
-                    <div className="px-2 pb-1 pt-2 text-[10px] font-mr-extrabold uppercase text-mr-accent" style={{ letterSpacing: '0.12em' }}>
+                    <div className="px-2 pb-1 pt-2 text-[10px] font-mr-extrabold uppercase text-mr-accent-fg" style={{ letterSpacing: '0.12em' }}>
                         {t('search.suggestionsTitle')}
                     </div>
                     <ul className="flex flex-col">
@@ -149,7 +108,7 @@ const NavSearch = ({
                                             height: 40,
                                             border: '1px solid var(--mr-gray-700)',
                                             borderRadius: 3,
-                                            background: 'linear-gradient(135deg,#2a2a2c,#1d1d1f)',
+                                            background: 'var(--mr-poster-gradient)',
                                         }}
                                     />
                                     <span className="flex min-w-0 flex-col">
@@ -163,7 +122,7 @@ const NavSearch = ({
                         ))}
                     </ul>
 
-                    <div className="mt-2 px-2 pb-1 pt-1 text-[10px] font-mr-extrabold uppercase text-mr-accent" style={{ letterSpacing: '0.12em' }}>
+                    <div className="mt-2 px-2 pb-1 pt-1 text-[10px] font-mr-extrabold uppercase text-mr-accent-fg" style={{ letterSpacing: '0.12em' }}>
                         {t('search.recentTitle')}
                     </div>
                     <ul className="flex flex-col">

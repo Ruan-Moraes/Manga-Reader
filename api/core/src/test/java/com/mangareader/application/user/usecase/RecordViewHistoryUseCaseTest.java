@@ -2,6 +2,7 @@ package com.mangareader.application.user.usecase;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -101,6 +103,61 @@ class RecordViewHistoryUseCaseTest {
             assertThat(captor.getValue().getTitleId()).isEqualTo(TITLE_ID);
             assertThat(captor.getValue().getTitleName()).isEqualTo("Solo Leveling");
             assertThat(captor.getValue().getTitleCover()).isEqualTo("cover.jpg");
+        }
+
+        @Test
+        @DisplayName("Deve recarregar (sem escrever de novo) quando a inserção perde a corrida (DuplicateKeyException)")
+        void deveRecarregarQuandoDuplicateKey() {
+            stubUser(VisibilitySetting.PUBLIC);
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
+                    Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).build()));
+
+            ViewHistory concurrentlyCreated = ViewHistory.builder()
+                    .id("vh-concurrent")
+                    .userId(USER_ID.toString())
+                    .titleId(TITLE_ID)
+                    .titleName("Solo Leveling")
+                    .viewedAt(LocalDateTime.of(2025, 1, 1, 0, 0))
+                    .build();
+
+            when(viewHistoryRepository.findByUserIdAndTitleId(USER_ID.toString(), TITLE_ID))
+                    .thenReturn(Optional.empty())
+                    .thenReturn(Optional.of(concurrentlyCreated));
+            when(viewHistoryRepository.save(org.mockito.ArgumentMatchers.argThat(vh -> vh.getId() == null)))
+                    .thenThrow(new DuplicateKeyException("dup"));
+
+            recordViewHistoryUseCase.execute(USER_ID, TITLE_ID);
+
+            verify(viewHistoryRepository, times(2)).findByUserIdAndTitleId(USER_ID.toString(), TITLE_ID);
+            verify(viewHistoryRepository, times(1)).save(any());
+            assertThat(concurrentlyCreated.getViewedAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 0, 0));
+        }
+
+        @Test
+        @DisplayName("Deve recarregar (sem escrever de novo) em WriteConflict transacional (DataIntegrityViolationException genérica)")
+        void deveRecarregarQuandoWriteConflict() {
+            stubUser(VisibilitySetting.PUBLIC);
+            when(titleRepository.findById(TITLE_ID)).thenReturn(Optional.of(
+                    Title.builder().id(TITLE_ID).name(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Solo Leveling")).build()));
+
+            ViewHistory concurrentlyCreated = ViewHistory.builder()
+                    .id("vh-concurrent")
+                    .userId(USER_ID.toString())
+                    .titleId(TITLE_ID)
+                    .titleName("Solo Leveling")
+                    .viewedAt(LocalDateTime.of(2025, 1, 1, 0, 0))
+                    .build();
+
+            when(viewHistoryRepository.findByUserIdAndTitleId(USER_ID.toString(), TITLE_ID))
+                    .thenReturn(Optional.empty())
+                    .thenReturn(Optional.of(concurrentlyCreated));
+            when(viewHistoryRepository.save(org.mockito.ArgumentMatchers.argThat(vh -> vh.getId() == null)))
+                    .thenThrow(new org.springframework.dao.DataIntegrityViolationException("WriteConflict"));
+
+            recordViewHistoryUseCase.execute(USER_ID, TITLE_ID);
+
+            verify(viewHistoryRepository, times(2)).findByUserIdAndTitleId(USER_ID.toString(), TITLE_ID);
+            verify(viewHistoryRepository, times(1)).save(any());
         }
     }
 

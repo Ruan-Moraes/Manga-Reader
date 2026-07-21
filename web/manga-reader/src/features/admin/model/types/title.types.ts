@@ -1,4 +1,5 @@
 import type { LocalizedString } from '@shared/type/i18n';
+import type { TitleStoreRef } from './store.types';
 
 /** Autor relacionado a um título, com papel (role). */
 export type TitleAuthorRef = {
@@ -29,6 +30,7 @@ export type AdminTitle = {
     publisher: string | null;
     authors?: TitleAuthorRef[];
     publishers?: TitlePublisherRef[];
+    stores?: TitleStoreRef[];
     adult: boolean;
     ratingAverage: number | null;
     ratingCount: number | null;
@@ -49,6 +51,7 @@ export type CreateTitleRequest = {
     authors?: { authorId: number; role: string }[];
     /** IDs de editoras. Opcional: se omitido, backend preserva o estado atual. */
     publishers?: number[];
+    stores?: { storeId: string; url: string }[];
 };
 
 export type UpdateTitleRequest = Partial<CreateTitleRequest>;

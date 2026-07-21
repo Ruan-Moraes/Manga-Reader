@@ -13,7 +13,6 @@
     "format": "prettier --write src"
   },
   "dependencies": {
-    "@manga-reader/design-tokens": "workspace:*",
     "@manga-reader/types": "workspace:*",
     "@tanstack/react-query": "^5.73.3",
     "axios": "^1.7.2",

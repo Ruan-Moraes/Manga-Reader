@@ -75,17 +75,17 @@ const UserDetails = () => {
                             <h3 className="mb-2 text-sm font-semibold">{t('details.accountSection')}</h3>
                             <ul className="space-y-1 text-xs text-tertiary">
                                 <li>
-                                    <span className="font-semibold text-primary-default">{t('details.roleLabel')}</span> {roleLabel}
+                                    <span className="font-semibold text-mr-fg">{t('details.roleLabel')}</span> {roleLabel}
                                 </li>
                                 {targetUser.member?.isMember && (
                                     <li>
-                                        <span className="font-semibold text-primary-default">{t('details.memberSince')}</span>{' '}
+                                        <span className="font-semibold text-mr-fg">{t('details.memberSince')}</span>{' '}
                                         {formatDate(targetUser.member.since, dateOptions)}
                                     </li>
                                 )}
                                 {targetUser.moderator?.isModerator && (
                                     <li>
-                                        <span className="font-semibold text-primary-default">{t('details.moderatorSince')}</span>{' '}
+                                        <span className="font-semibold text-mr-fg">{t('details.moderatorSince')}</span>{' '}
                                         {formatDate(targetUser.moderator.since, dateOptions)}
                                     </li>
                                 )}

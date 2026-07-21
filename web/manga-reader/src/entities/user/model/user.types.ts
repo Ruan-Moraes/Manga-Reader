@@ -50,6 +50,7 @@ export type RecommendedTitle = {
     titleId: string;
     titleName: string;
     titleCover: string;
+    adult?: boolean;
     position: number;
 };
 
@@ -57,6 +58,7 @@ export type ViewHistoryItem = {
     titleId: string;
     titleName: string;
     titleCover: string;
+    adult?: boolean;
     viewedAt: string;
 };
 
@@ -72,6 +74,7 @@ export type PrivacySettings = {
     viewHistoryVisibility: VisibilitySetting;
     libraryVisibility: VisibilitySetting;
     adultContentPreference: AdultContentPreference;
+    behaviorAnalyticsEnabled: boolean;
 };
 
 export type SocialLinkResponse = {

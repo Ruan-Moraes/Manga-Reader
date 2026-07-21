@@ -26,6 +26,9 @@ class CreateTitleUseCaseTest {
     private TitleRepositoryPort titleRepository;
 
     @Mock
+    private com.mangareader.application.shared.port.CacheInvalidationPort cacheInvalidation;
+
+    @Mock
     private GenreValidator genreValidator;
 
     @InjectMocks

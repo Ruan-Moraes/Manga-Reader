@@ -116,8 +116,19 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
     }
 
     @Override
+    public Page<Title> findAllExcludingAdult(Pageable pageable) {
+        return findPage(new Query(Criteria.where("adult").ne(true)), pageable);
+    }
+
+    @Override
     public Page<Title> findByGenresContaining(String genre, Pageable pageable) {
         return mongoRepository.findByGenresContaining(genre, pageable);
+    }
+
+    @Override
+    public Page<Title> findByGenreExcludingAdult(String genre, Pageable pageable) {
+        return findPage(new Query(new Criteria().andOperator(
+                Criteria.where("genres").is(genre), Criteria.where("adult").ne(true))), pageable);
     }
 
     @Override
@@ -128,6 +139,20 @@ public class TitleRepositoryAdapter implements TitleRepositoryPort {
         Query q = buildNameSearchQuery(query);
         long total = mongoTemplate.count(q, Title.class);
         var results = mongoTemplate.find(q.with(pageable), Title.class);
+        return new org.springframework.data.domain.PageImpl<>(results, pageable, total);
+    }
+
+    @Override
+    public Page<Title> searchByNameExcludingAdult(String query, Pageable pageable) {
+        if (query == null || query.isBlank()) return findAllExcludingAdult(pageable);
+        Query q = buildNameSearchQuery(query);
+        q.addCriteria(Criteria.where("adult").ne(true));
+        return findPage(q, pageable);
+    }
+
+    private Page<Title> findPage(Query query, Pageable pageable) {
+        long total = mongoTemplate.count(query, Title.class);
+        var results = mongoTemplate.find(query.with(pageable), Title.class);
         return new org.springframework.data.domain.PageImpl<>(results, pageable, total);
     }
 

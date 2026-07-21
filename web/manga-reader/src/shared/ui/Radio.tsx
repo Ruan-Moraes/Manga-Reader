@@ -39,7 +39,7 @@ export const RadioGroup = ({ name, value, onChange, options, layout = 'vertical'
                             htmlFor={id}
                             className={cn(
                                 'flex cursor-pointer items-center gap-3 rounded-mr-xs border bg-mr-secondary px-3 py-2.5 transition-all duration-mr-default',
-                                active ? 'border-mr-accent' : 'border-mr-gray-800 hover:border-mr-accent-50',
+                                active ? 'border-mr-accent-border' : 'border-mr-gray-800 hover:border-mr-accent-50',
                                 o.disabled && 'cursor-not-allowed opacity-50 hover:border-mr-gray-800',
                                 layout === 'horizontal' && 'flex-1',
                             )}
@@ -58,7 +58,7 @@ export const RadioGroup = ({ name, value, onChange, options, layout = 'vertical'
                                 aria-hidden="true"
                                 className={cn(
                                     'grid size-[18px] shrink-0 place-items-center rounded-mr-full border transition-colors duration-mr-default',
-                                    active ? 'border-mr-accent' : 'border-mr-tertiary',
+                                    active ? 'border-mr-accent-border' : 'border-mr-tertiary',
                                 )}
                             >
                                 {active && <span className="size-2 rounded-mr-full bg-mr-accent" />}

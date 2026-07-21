@@ -21,6 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mangareader.application.library.port.LibraryRepositoryPort;
 import com.mangareader.application.library.usecase.ChangeReadingListUseCase.ChangeListInput;
+import com.mangareader.application.shared.event.TitleCompletedEvent;
+import com.mangareader.application.shared.port.EventPublisherPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
 import com.mangareader.domain.library.entity.SavedManga;
 import com.mangareader.domain.library.valueobject.ReadingListType;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -31,6 +34,12 @@ class ChangeReadingListUseCaseTest {
 
     @Mock
     private LibraryRepositoryPort libraryRepository;
+
+    @Mock
+    private EventPublisherPort eventPublisher;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private ChangeReadingListUseCase changeReadingListUseCase;
@@ -65,13 +74,14 @@ class ChangeReadingListUseCaseTest {
         }
 
         @Test
-        @DisplayName("Deve salvar alteração no repositório")
+        @DisplayName("Deve salvar alteração no repositório e emitir evento de atividade ao concluir")
         void deveSalvarAlteracaoNoRepositorio() {
             // Arrange
             ChangeListInput input = new ChangeListInput(USER_ID, TITLE_ID, ReadingListType.CONCLUIDO);
             SavedManga existing = SavedManga.builder()
                     .titleId(TITLE_ID)
                     .name("Naruto")
+                    .cover("naruto.jpg")
                     .list(ReadingListType.LENDO)
                     .build();
 
@@ -86,6 +96,33 @@ class ChangeReadingListUseCaseTest {
             ArgumentCaptor<SavedManga> captor = ArgumentCaptor.forClass(SavedManga.class);
             verify(libraryRepository).save(captor.capture());
             assertThat(captor.getValue().getList()).isEqualTo(ReadingListType.CONCLUIDO);
+
+            ArgumentCaptor<TitleCompletedEvent> eventCaptor = ArgumentCaptor.forClass(TitleCompletedEvent.class);
+            verify(eventPublisher).publish(org.mockito.ArgumentMatchers.eq("activity.title-completed"), eventCaptor.capture());
+            assertThat(eventCaptor.getValue().titleId()).isEqualTo(TITLE_ID);
+            assertThat(eventCaptor.getValue().titleName()).isEqualTo("Naruto");
+        }
+
+        @Test
+        @DisplayName("Não deve reemitir evento quando o título já estava concluído")
+        void naoReemiteEventoQuandoJaConcluido() {
+            // Arrange
+            ChangeListInput input = new ChangeListInput(USER_ID, TITLE_ID, ReadingListType.CONCLUIDO);
+            SavedManga existing = SavedManga.builder()
+                    .titleId(TITLE_ID)
+                    .name("Naruto")
+                    .list(ReadingListType.CONCLUIDO)
+                    .build();
+
+            when(libraryRepository.findByUserIdAndTitleId(USER_ID, TITLE_ID))
+                    .thenReturn(Optional.of(existing));
+            when(libraryRepository.save(any(SavedManga.class))).thenAnswer(i -> i.getArgument(0));
+
+            // Act
+            changeReadingListUseCase.execute(input);
+
+            // Assert
+            verify(eventPublisher, never()).publish(org.mockito.ArgumentMatchers.eq("activity.title-completed"), any());
         }
     }
 

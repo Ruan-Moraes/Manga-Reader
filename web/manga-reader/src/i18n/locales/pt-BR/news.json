@@ -11,6 +11,7 @@
     },
     "filter": {
         "period": {
+            "label": "Período",
             "all": "Todo período",
             "today": "Hoje",
             "week": "Última semana",
@@ -20,6 +21,7 @@
             "all": "Todas as fontes"
         },
         "sort": {
+            "label": "Ordenação",
             "recent": "Mais recentes",
             "mostRead": "Mais lidas",
             "trending": "Trending"
@@ -38,6 +40,15 @@
     },
     "page": {
         "title": "Notícias",
+        "description": "Reportagens, lançamentos e movimentos que ajudam você a acompanhar o universo dos mangás.",
+        "results": "{{count}} notícias encontradas",
+        "searchAction": "Buscar",
+        "filters": "Filtros",
+        "allCategories": "Todas",
+        "errorTitle": "Não foi possível carregar as notícias",
+        "errorDescription": "Verifique sua conexão e tente novamente.",
+        "retry": "Tentar novamente",
+        "clearFilters": "Limpar filtros",
         "eyebrow": "Novidades",
         "weekTitle": "O que rolou essa semana",
         "readMore": "Ler mais",
@@ -71,6 +82,10 @@
         "reactions": "Reações e engajamento",
         "commentsCount": "{{count}} comentários",
         "share": "Compartilhar",
+        "linkCopied": "Link copiado.",
+        "breadcrumb": "Navegação estrutural",
+        "home": "Início",
+        "relatedError": "As relacionadas estão indisponíveis no momento.",
         "save": "Salvar notícia",
         "comments": "Comentários",
         "sortRecent": "Mais recentes",

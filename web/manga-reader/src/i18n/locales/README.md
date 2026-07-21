@@ -1,169 +1,179 @@
-# i18n Locales — Manga Reader
+# Locales da aplicação web
 
-Arquivos de tradução de **UI estática** consumidos via `react-i18next`. Três
-idiomas suportados:
+Traduções de texto estático da interface do `web/manga-reader`, consumidas por
+`i18next` e `react-i18next`.
 
-- `pt-BR` (padrão / fallback)
-- `en-US`
-- `es-ES`
+## Idiomas
 
-> **UI vs Conteúdo.** Estes JSONs cobrem **somente texto estático de interface**
-> (botões, placeholders, validações, títulos de tela). Labels de **dados de
-> negócio** (status, categorias, tipos, gêneros, moedas, classificações) **não**
-> ficam aqui — vêm do backend via `DomainLabel` + hook `useDomainLabels(type)`.
-> Ver seção [UI vs Conteúdo](#ui-vs-conteúdo-dois-eixos) abaixo.
+- `pt-BR`: idioma padrão e fallback;
+- `en-US`;
+- `es-ES`.
+
+A fonte de verdade é
+[`../config.ts`](../config.ts): `SUPPORTED_LANGUAGES`,
+`DEFAULT_LANGUAGE` e `NAMESPACES`.
 
 ## Estrutura
 
-Um arquivo JSON por **feature** (namespace), replicado em cada idioma. 19
-namespaces:
+Cada idioma contém os mesmos 19 namespaces:
 
-```
-src/i18n/locales/
-├── pt-BR/
-│   ├── common.json        # default NS — botões, labels genéricos, validações
-│   ├── home.json
-│   ├── layout.json        # Header, Footer, navegação
-│   ├── auth.json
-│   ├── user.json
-│   ├── manga.json         # inclui strings de capítulo (chapter)
-│   ├── comment.json
-│   ├── news.json
-│   ├── category.json
-│   ├── rating.json
-│   ├── forum.json
-│   ├── group.json
-│   ├── event.json
-│   ├── admin.json
-│   ├── contact.json
-│   ├── library.json
-│   ├── store.json
-│   ├── help.json
-│   └── legal.json
-├── en-US/ (mesma estrutura)
-└── es-ES/ (mesma estrutura)
+```text
+locales/<idioma>/
+├── common.json
+├── home.json
+├── layout.json
+├── auth.json
+├── user.json
+├── manga.json
+├── comment.json
+├── news.json
+├── category.json
+├── rating.json
+├── forum.json
+├── group.json
+├── event.json
+├── admin.json
+├── contact.json
+├── library.json
+├── store.json
+├── help.json
+└── legal.json
 ```
 
-Fonte da verdade da lista: `SUPPORTED_LANGUAGES`, `DEFAULT_LANGUAGE` e
-`NAMESPACES` em `src/i18n/config.ts`. `defaultNS = 'common'`.
+`common` é o namespace padrão.
+
+## O que deve ser traduzido aqui
+
+Use os JSONs para texto fixo da UI:
+
+- títulos, botões e labels;
+- placeholders e mensagens de validação;
+- estados visuais fixos, toasts e textos de ajuda.
+
+Não use os JSONs para dados persistidos ou labels de negócio. Status,
+categorias, tipos, moedas e outros valores administráveis são resolvidos pela
+API por meio de `DomainLabel` e do hook `useDomainLabels(type)`.
 
 ## Convenção de chaves
 
-- Agrupar por **contexto** dentro do namespace: `page.section.field`
-- camelCase para segmentos da chave: `login.emailLabel`
-- Mensagens de validação sob `validation.*`: `validation.passwordRequired`
-- Ações genéricas (submit, cancel) sob `common.json` → `actions.*`
-- Labels que aparecem em mais de uma feature → promover para `common.json`
-- Capítulos (admin): `admin.json` → `dashboard.chapters.*` (lista, form, páginas,
-  métricas, bulk, toasts), `dashboard.status.chapter.*` (7 status minúsculos) e
-  erros de validação por code do domínio em `dashboard.chapters.errors.*`;
-  leitor: `manga.json` → `reader.pageError`, `reader.retryPage`,
-  `reader.chapterUnavailableTitle/Body`, `reader.previewBadge`.
+- agrupar por contexto: `page.section.field`;
+- usar `camelCase` em cada segmento;
+- manter validações sob `validation.*`;
+- manter ações genéricas em `common:actions.*`;
+- promover para `common` apenas textos realmente compartilhados;
+- não usar frases traduzidas como chave.
 
-## Uso
+Exemplo:
 
 ```tsx
 import { useTranslation } from 'react-i18next';
 
-function LoginPage() {
+function LoginAction() {
     const { t } = useTranslation('auth');
     return <button>{t('login.submit')}</button>;
 }
 ```
 
-Múltiplos namespaces numa tela (`common` é default, não precisa prefixo):
+Com mais de um namespace:
 
 ```tsx
 const { t } = useTranslation(['auth', 'common']);
-<button>{t('common:actions.submit')}</button>;
+
+return <button>{t('common:actions.submit')}</button>;
 ```
 
-## Detecção e troca de idioma (UI)
+## Idioma da UI
 
-`config.ts` usa `i18next-browser-languagedetector`:
+O detector configurado em `src/i18n/config.ts` usa esta ordem:
 
-- Ordem: `localStorage` → `navigator`
-- Cache em `localStorage`, chave **`i18nextLng`**
+1. `localStorage`, chave `i18nextLng`;
+2. idioma do navegador.
 
-A troca de UI dispara só `i18n.changeLanguage()` (não persiste no backend). O
-interceptor HTTP envia `Accept-Language: <i18n.language>`, então emails /
-validações / mensagens de erro do backend respeitam a UI atual via
-`AcceptHeaderLocaleResolver`. UI lang trocada em
-`widgets/header/ui/settings/tabs/LanguageSettings.tsx`.
+A troca chama `i18n.changeLanguage()` em
+`pages/settings/model/useInterfaceLang.ts` e no seletor do footer. O cliente
+HTTP envia `Accept-Language`, permitindo que mensagens, validações e e-mails da
+API usem o mesmo locale.
 
-## UI vs Conteúdo (dois eixos)
+## Idiomas de conteúdo
 
-Dois eixos separados, armazenamento distinto:
+Idioma da UI e preferência de conteúdo são conceitos diferentes:
 
-| Eixo                 | O que cobre                                                     | Onde mora                                   |
-| -------------------- | --------------------------------------------------------------- | ------------------------------------------- |
-| **UI language**      | interface estática                                              | estes JSONs + `localStorage` (`i18nextLng`) |
-| **Content language** | catálogo + UGC (Title, News, Tag, Chapter, Comment, ForumTopic) | `users.content_locales` (JSONB) no backend  |
+| Eixo | Persistência | Responsabilidade |
+|---|---|---|
+| Idioma da UI | JSONs + `localStorage` | Texto estático da interface |
+| Idiomas de conteúdo | `users.content_locales` no backend | Catálogo e conteúdo gerado por usuários |
 
-- **Content lang** sincroniza via hook `useContentLocales(isLoggedIn)`
-  (`entities/user/model/useContentLocales.tsx`) — só para users autenticados.
-  `LanguageSettings.tsx` dispara mutation quando logado.
-- Endpoints: `GET`/`PATCH /api/users/me/content-locales`.
+Usuários autenticados sincronizam idiomas de conteúdo por
+`entities/user/model/useContentLocales.tsx` e pelos endpoints:
 
-### Configurações do sistema (`/settings`)
+```http
+GET   /api/users/me/content-locales
+PATCH /api/users/me/content-locales
+```
 
-Tela de preferências globais não-perfil (leitor, aparência, idioma/região, acessibilidade, dados,
-sobre). Strings sob o namespace **`user` → `settings.system.*`** (pt-BR/en-US/es-ES). Persistência:
+As configurações gerais usam `pages/settings/model/useSettingsSync.ts` e
+`entities/user/model/useUserSettings.tsx`, com cache local em `mr.settings.v1`
+e sincronização pelos endpoints `/api/users/me/settings`.
 
-- Preferências (reader/appearance/locale/a11y) salvas live em `localStorage` (`mr.settings.v1`) e
-  sincronizadas via `useUserSettings(isLoggedIn)` → `GET`/`PATCH /api/users/me/settings` (JSONB no
-  backend). **UI lang** continua client-only (i18n + reload banner); **idiomas de leitura** reusam
-  `content-locales`.
+## Labels de domínio
 
-### Domain labels (DB-backed)
+O hook `entities/label/model/useDomainLabels.ts` consulta:
 
-Labels de entidades de negócio **não** usam `t('...')`. Padrão:
+```http
+GET /api/labels?type={type}
+```
 
-- Hook `useDomainLabels(type)` (`entities/label/model/useDomainLabels.ts`),
-  queryKey `[QUERY_KEYS.DOMAIN_LABELS, type, i18n.language]`, cache 3 dias.
-- Endpoint público `GET /api/labels?type={type}` → `[{ value, label }]`
-  (locale-resolved pelo backend conforme `Accept-Language`).
-- Tipos seed: `publication_status`, `news_category`, `event_type`,
-  `event_status`, `event_timeline`, `currency`.
+A query inclui `i18n.language` na chave e mantém cache por três dias. Os tipos
+seed atualmente documentados no backend incluem `publication_status`,
+`news_category`, `event_type`, `event_status`, `event_timeline` e `currency`.
 
-**Não usar `t('...')` para**: enums de negócio, dados dinâmicos, conteúdo
-administrativo, qualquer dado persistido.
+## Datas, números e moedas
 
-## Adicionando um novo idioma
-
-1. Criar diretório `src/i18n/locales/<code>/` (ex.: `fr-FR`).
-2. Copiar todos os JSONs de `pt-BR/` e traduzir os valores.
-3. Registrar em `src/i18n/config.ts`:
-    - Importar cada namespace do novo idioma.
-    - Adicionar ao objeto `resources`.
-    - Adicionar a `SUPPORTED_LANGUAGES`.
-4. Registrar no backend em `I18nConfig.SUPPORTED_LOCALES` e criar
-   `messages/messages_<code>.properties`.
-5. Garantir que a troca apareça em `LanguageSettings.tsx`.
-
-## Revisão de traduções
-
-- **Todas as chaves de `pt-BR` devem existir em todos os idiomas.**
-- Chave faltante → i18next retorna a key literal (ex.: `"login.submit"`),
-  quebrando a UI.
-- Em PR que altera strings, verificar o diff dos três arquivos.
-- Auditoria/pruning de chaves órfãs: utilitário `i18n-cleaner` (ver `scripts/`).
-
-## Formatação de datas, números e moedas
-
-Helpers de `@shared/lib/formatters` (respeitam `i18n.language`):
+Use os helpers de `@shared/lib/formatters`, que respeitam o idioma atual:
 
 ```tsx
-import { formatDate, formatCurrency } from '@shared/lib/formatters';
+import { formatCurrency, formatDate } from '@shared/lib/formatters';
 
-formatDate(new Date()); // "19/04/2026" pt-BR, "4/19/2026" en-US
-formatCurrency(1999); // "R$ 19,99" pt-BR, "$19.99" en-US
+formatDate(new Date());
+formatCurrency(19.99, 'BRL');
 ```
 
-## Backend
+O valor de `formatCurrency` é expresso na unidade monetária, não em centavos.
 
-Mensagens de validação (`@NotBlank`, `@Size`, etc.) usam keys do backend
-(`{validation.email.required}`) resolvidas via `MessageSource` a partir de
-`backend/src/main/resources/messages/messages*.properties`. Ver
-`backend/src/main/java/com/mangareader/shared/config/I18nConfig.java`.
-</content>
+## Alterando traduções
+
+1. Adicione ou altere a chave nos três idiomas.
+2. Confirme que a chave pertence ao namespace correto.
+3. Execute os testes da área afetada.
+4. Rode a auditoria a partir de `web/`:
+
+```bash
+pnpm i18n:clean:app
+```
+
+O utilitário é uma análise estática e pode exigir revisão manual antes de usar a
+variante `:write`.
+
+## Adicionando um namespace
+
+1. Crie o mesmo arquivo JSON em `pt-BR`, `en-US` e `es-ES`.
+2. Importe os três arquivos em `src/i18n/config.ts`.
+3. Adicione o namespace a `NAMESPACES` e aos três blocos de `resources`.
+4. Atualize este README.
+
+## Adicionando um idioma
+
+1. Crie `locales/<tag-BCP-47>/` com todos os namespaces.
+2. Registre imports, resources e `SUPPORTED_LANGUAGES` em `config.ts`.
+3. Registre o locale no backend e adicione
+   `api/core/src/main/resources/messages/messages_<locale>.properties`.
+4. Exponha a opção nos seletores de idioma e teste o fallback.
+
+## Backend relacionado
+
+- Configuração:
+  `api/core/src/main/java/com/mangareader/shared/config/I18nConfig.java`.
+- Mensagens:
+  `api/core/src/main/resources/messages/messages*.properties`.
+- Guia completo: [`../../../../../docs/i18n-guide.md`](../../../../../docs/i18n-guide.md).
+- README da aplicação: [`../../../README.md`](../../../README.md).

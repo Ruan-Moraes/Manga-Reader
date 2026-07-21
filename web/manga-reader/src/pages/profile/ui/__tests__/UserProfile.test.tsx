@@ -27,7 +27,6 @@ const buildProfileData = (isOwn: boolean) => ({
     recommendations: [],
     recentComments: [],
     groupsFollowed: [],
-    activity: [],
 });
 
 const mockUseProfileData = vi.fn((_userId?: string) => buildProfileData(true));

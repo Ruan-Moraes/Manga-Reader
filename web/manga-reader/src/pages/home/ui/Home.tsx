@@ -77,11 +77,11 @@ const Home = () => {
         <PageContainer asMain paddingY="md">
             <a
                 href="#main-content"
-                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:bg-mr-accent focus:px-3 focus:py-1 focus:text-mr-primary"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:bg-mr-accent focus:px-3 focus:py-1 focus:text-mr-on-accent"
             >
                 {t('skipToContent')}
             </a>
-            <div id="main-content" className="flex flex-col gap-12">
+            <div id="main-content" className="flex flex-col gap-8 md:gap-12">
                 <HomeHero featuredTitles={featuredTitles} />
 
                 {isLoggedIn && (continueLoading || continueReading.length > 0) && (

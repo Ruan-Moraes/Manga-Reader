@@ -43,7 +43,7 @@ const LocalizedTextInput = ({
     const hasContent = (lang: LanguageTag) => Boolean(value[lang] && value[lang]!.trim().length > 0);
 
     const inputClasses =
-        'w-full rounded-mr-sm border border-mr-border bg-mr-primary px-3 py-2 text-mr-body text-mr-fg placeholder:text-mr-tertiary transition-[border-color,box-shadow] duration-mr-fast outline-none hover:border-mr-gray-500 focus:border-mr-accent focus:ring-2 focus:ring-mr-accent-25';
+        'w-full rounded-mr-sm border border-mr-border bg-mr-primary px-3 py-2 text-mr-body text-mr-fg placeholder:text-mr-tertiary transition-[border-color,box-shadow] duration-mr-fast outline-none hover:border-mr-gray-500 focus:border-mr-accent-border focus:ring-2 focus:ring-mr-accent-25';
 
     return (
         <div className="flex flex-col gap-2">
@@ -68,12 +68,12 @@ const LocalizedTextInput = ({
                             aria-controls={`i18n-panel-${lang}`}
                             onClick={() => setActiveTab(lang)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 text-mr-tiny font-mr-bold transition-colors ${
-                                isActive ? 'border-b-2 border-mr-accent text-mr-accent' : 'text-mr-fg-subtle hover:text-mr-fg'
+                                isActive ? 'border-b-2 border-mr-accent-border text-mr-accent-fg' : 'text-mr-fg-subtle hover:text-mr-fg'
                             }`}
                         >
                             <span>{t(`i18n.language.${lang}`, lang)}</span>
                             {filled && (
-                                <span className="text-mr-accent" aria-label={t('i18n.filled', 'preenchido')}>
+                                <span className="text-mr-accent-fg" aria-label={t('i18n.filled', 'preenchido')}>
                                     ●
                                 </span>
                             )}

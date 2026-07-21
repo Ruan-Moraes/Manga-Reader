@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserProfileSettings;
@@ -35,6 +36,7 @@ public class UserSeed implements EntitySeeder {
     }
 
     @Override
+    @Transactional
     public void seed() {
         if (userRepository.count() > 0) {
             log.info("Usuários já existem — seed de users ignorado.");

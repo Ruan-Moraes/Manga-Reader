@@ -44,6 +44,6 @@ public class StoreTitle {
     @Column(name = "title_id", nullable = false)
     private String titleId;
 
-    @Column(length = 500)
+    @Column(nullable = false, length = 500)
     private String url;
 }

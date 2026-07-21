@@ -52,7 +52,7 @@ export const EVENTS: CommunityEvent[] = [
         tagline: 'O maior crossover de shounens do ano',
         description: 'Quatro semanas de batalhas em capítulos exclusivos, ranking semanal da comunidade e recompensas raras para quem participar até o fim.',
         cover: 'linear-gradient(135deg,#ff784f 0%,var(--mr-accent) 100%)',
-        start: '2026-05-01', end: '2026-05-31', badge: 'Especial', accent: '#ff784f',
+        start: '2026-05-01', end: '2026-05-31', badge: 'Especial', accent: 'var(--mr-danger)',
         rewards: ['Avatar exclusivo', 'Capítulo bônus', 'Badge de perfil'], participants: 12847, chapters: 24,
     },
     {
@@ -77,7 +77,7 @@ export const EVENTS: CommunityEvent[] = [
         id: 'evt-leitura-coletiva-fr', type: 'normal',
         name: 'Leitura coletiva: Fire Force',
         description: 'Cinco capítulos por dia, discussões abertas no fórum.',
-        cover: '#ff784f', start: '2026-05-05', end: '2026-05-12', chapters: 35,
+        cover: 'var(--mr-danger)', start: '2026-05-05', end: '2026-05-12', chapters: 35,
     },
     {
         id: 'evt-clube-shoujo', type: 'normal',
@@ -101,7 +101,7 @@ export const EVENTS: CommunityEvent[] = [
         id: 'evt-maratona-isekai', type: 'normal',
         name: 'Maratona Isekai',
         description: 'Trinta e seis horas de leitura ininterrupta com badges por hora.',
-        cover: '#10b981', start: '2026-06-15', end: '2026-06-16', chapters: 120,
+        cover: 'var(--mr-success)', start: '2026-06-15', end: '2026-06-16', chapters: 120,
     },
     {
         id: 'evt-traducao-aberta', type: 'normal',

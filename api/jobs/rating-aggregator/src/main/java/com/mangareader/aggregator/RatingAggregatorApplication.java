@@ -2,7 +2,9 @@ package com.mangareader.aggregator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import io.mongock.runner.springboot.EnableMongock;
 
 /**
  * Serviço de agregação de avaliações.
@@ -15,6 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * </ul>
  */
 @SpringBootApplication
+@ConfigurationPropertiesScan
+@EnableMongock
 @EnableScheduling
 public class RatingAggregatorApplication {
     public static void main(String[] args) {

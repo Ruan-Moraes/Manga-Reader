@@ -1,5 +1,5 @@
-// Shape for the public profile-detail view (currently served by the mock in
-// `@mock/userProfile` via the `pages/profile` page hook; swap to API later).
+// Shape for the public profile-detail view (served by `pages/profile`'s
+// `useProfileData` hook, backed by the real profile endpoints).
 
 export type ProfileData = {
     handle: string;

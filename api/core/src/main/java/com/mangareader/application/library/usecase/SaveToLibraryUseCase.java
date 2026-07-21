@@ -15,6 +15,8 @@ import com.mangareader.domain.user.entity.User;
 import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.shared.exception.DuplicateResourceException;
 import com.mangareader.shared.exception.ResourceNotFoundException;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.domain.analytics.entity.BehaviorEventType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,7 @@ public class SaveToLibraryUseCase {
     private final UserRepositoryPort userRepository;
     private final TitleRepositoryPort titleRepository;
     private final LocaleResolutionService localeResolutionService;
+    private final BehaviorEventRecorder behaviorEventRecorder;
 
     public record SaveToLibraryInput(UUID userId, String titleId, ReadingListType list) {}
 
@@ -50,9 +53,13 @@ public class SaveToLibraryUseCase {
                 .name(localeResolutionService.resolve(title.getName()))
                 .cover(title.getCover())
                 .type(title.getType())
+                .adult(title.isAdult())
                 .list(input.list())
                 .build();
 
-        return libraryRepository.save(saved);
+        SavedManga result = libraryRepository.save(saved);
+        behaviorEventRecorder.record(input.userId(), BehaviorEventType.LIBRARY_ITEM_ADDED,
+                input.titleId(), null, input.list().name());
+        return result;
     }
 }

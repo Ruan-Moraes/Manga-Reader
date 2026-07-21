@@ -24,6 +24,7 @@ import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.review.usecase.SubmitReviewUseCase.SubmitReviewInput;
 import com.mangareader.application.shared.event.RatingEvent;
+import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.application.shared.port.EventPublisherPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.manga.entity.Title;
@@ -46,6 +47,9 @@ class SubmitRatingUseCaseTest {
 
     @Mock
     private EventPublisherPort eventPublisher;
+
+    @Mock
+    private CacheInvalidationPort cacheInvalidation;
 
     @Mock
     private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolver;

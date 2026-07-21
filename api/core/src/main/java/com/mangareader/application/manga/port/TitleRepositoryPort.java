@@ -38,9 +38,15 @@ public interface TitleRepositoryPort {
 
     Page<Title> findAll(Pageable pageable);
 
+    Page<Title> findAllExcludingAdult(Pageable pageable);
+
     Page<Title> findByGenresContaining(String genre, Pageable pageable);
 
+    Page<Title> findByGenreExcludingAdult(String genre, Pageable pageable);
+
     Page<Title> searchByName(String query, Pageable pageable);
+
+    Page<Title> searchByNameExcludingAdult(String query, Pageable pageable);
 
     Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);
 

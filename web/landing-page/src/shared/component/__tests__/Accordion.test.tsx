@@ -17,12 +17,13 @@ describe('Accordion', () => {
         expect(screen.getByText('Question 2?')).toBeInTheDocument();
     });
 
-    it('hides answers by default', () => {
+    it('keeps answers collapsed by default so the transition can run', () => {
         render(<Accordion items={ITEMS} />);
 
-        const answer = screen.getByText('Answer 1.');
+        const panel = document.getElementById('faq-panel-0');
 
-        expect(answer.closest('.grid')).toHaveClass('grid-rows-[0fr]');
+        expect(panel).toHaveAttribute('aria-hidden', 'true');
+        expect(panel).toHaveClass('grid-rows-[0fr]', 'opacity-0');
     });
 
     it('expands answer on click', async () => {
@@ -36,9 +37,13 @@ describe('Accordion', () => {
 
         expect(button).toHaveAttribute('aria-expanded', 'true');
 
-        const answer = screen.getByText('Answer 1.');
-
-        expect(answer.closest('.grid')).toHaveClass('grid-rows-[1fr]');
+        expect(
+            screen.getByRole('region', { name: 'Question 1?' }),
+        ).toBeVisible();
+        expect(screen.getByRole('region', { name: 'Question 1?' })).toHaveClass(
+            'grid-rows-[1fr]',
+            'opacity-100',
+        );
     });
 
     it('collapses answer on second click', async () => {

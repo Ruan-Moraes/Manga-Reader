@@ -15,7 +15,7 @@ type RowActionsProps = {
 const baseBtn = 'flex size-8 items-center justify-center rounded-mr-xs border transition-colors';
 
 /** Classe base exportada p/ botões extras manterem o mesmo visual. */
-export const rowActionBtnClass = cn(baseBtn, 'border-mr-border text-mr-fg-muted hover:border-mr-accent-50 hover:bg-mr-accent-25 hover:text-mr-accent');
+export const rowActionBtnClass = cn(baseBtn, 'border-mr-border text-mr-fg-muted hover:border-mr-accent-50 hover:bg-mr-accent-25 hover:text-mr-accent-fg');
 
 /** Botões de ação de linha (32px) — editar (hover accent) + excluir (danger). */
 const RowActions = ({ onEdit, onDelete, editLabel, deleteLabel, extra }: RowActionsProps) => (
@@ -29,7 +29,7 @@ const RowActions = ({ onEdit, onDelete, editLabel, deleteLabel, extra }: RowActi
                     e.stopPropagation();
                     onEdit();
                 }}
-                className={cn(baseBtn, 'border-mr-border text-mr-fg-muted hover:border-mr-accent-50 hover:bg-mr-accent-25 hover:text-mr-accent')}
+                className={cn(baseBtn, 'border-mr-border text-mr-fg-muted hover:border-mr-accent-50 hover:bg-mr-accent-25 hover:text-mr-accent-fg')}
             >
                 <Pencil size={15} />
             </button>
@@ -42,7 +42,7 @@ const RowActions = ({ onEdit, onDelete, editLabel, deleteLabel, extra }: RowActi
                     e.stopPropagation();
                     onDelete();
                 }}
-                className={cn(baseBtn, 'border-[rgba(255,120,79,0.4)] text-mr-danger hover:bg-mr-danger-15')}
+                className={cn(baseBtn, 'border-mr-danger-border text-mr-danger hover:bg-mr-danger-15')}
             >
                 <Trash2 size={15} />
             </button>

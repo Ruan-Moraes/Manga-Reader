@@ -57,7 +57,7 @@
             "Dentro del lector, el icono de engranaje permite sobrescribir la dirección solo para el capítulo actual, sin cambiar tu preferencia global."
         ],
         "3": [
-            "En la pantalla de inicio de sesión, haz clic en \"Olvidé mi contraseña\" e introduce el correo registrado. Enviaremos un enlace de restablecimiento válido por 30 minutos.",
+            "En la pantalla de inicio de sesión, haz clic en \"Olvidé mi contraseña\" e introduce el correo registrado. Enviaremos un enlace temporal; su validez se mostrará después de la solicitud.",
             "Revisa también la carpeta de spam si el correo no llega en unos minutos. El enlace solo puede usarse una vez.",
             "Tras definir la nueva contraseña, todas las sesiones activas en otros dispositivos se cierran por seguridad."
         ],

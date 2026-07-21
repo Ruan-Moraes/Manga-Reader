@@ -38,7 +38,7 @@ const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape 
                     : undefined
             }
             className={cn(
-                'overflow-hidden border border-mr-border bg-mr-surface',
+                'mx-auto max-w-full overflow-hidden border border-mr-border bg-mr-surface',
                 radiusMap[radius],
                 elevated && 'shadow-mr-elevated',
                 onClick && 'cursor-pointer transition-transform duration-mr-default hover:-translate-y-0.5',
@@ -46,7 +46,7 @@ const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape 
             style={{
                 width: size,
                 aspectRatio: ratio,
-                background: !cover ? (fallbackGradient ?? 'linear-gradient(135deg, #2a1f0f, #161616)') : undefined,
+                background: !cover ? (fallbackGradient ?? 'var(--mr-poster-gradient)') : undefined,
             }}
         >
             {cover && <img src={cover} alt={alt} loading="lazy" className="size-full object-cover" />}

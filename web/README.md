@@ -1,71 +1,107 @@
-# Frontend — `web/` (pnpm workspace)
+# Frontend — `web/`
 
-Workspace pnpm com dois apps React e pacotes compartilhados.
+Workspace pnpm com duas aplicações React e pacotes privados compartilhados.
 
-```
+## Estrutura
+
+```text
 web/
-├── manga-reader/       # App principal — React 19 + Vite + FSD
-├── landing-page/       # Landing page — React + Vite (layout próprio simplificado)
+├── manga-reader/       # aplicação principal React + Vite + FSD
+├── landing-page/       # landing page React + Vite
 ├── packages/
+│   ├── assets/         # ícones e manifestos servidos pelo Vite
 │   ├── design-tokens/  # @manga-reader/design-tokens
-│   ├── tsconfig/       # @manga-reader/tsconfig — configs TS base
-│   ├── types/          # @manga-reader/types — tipos compartilhados
-│   └── assets/         # @manga-reader/assets — favicons/ícones servidos como publicDir do Vite
-├── scripts/            # i18n-cleaner — auditoria/limpeza de chaves de tradução órfãs
-├── package.json        # scripts do workspace
+│   ├── tsconfig/       # configurações TypeScript compartilhadas
+│   └── types/          # contratos TypeScript compartilhados
+├── scripts/            # auditoria de chaves i18n
+├── package.json
 └── pnpm-workspace.yaml
 ```
 
-## Comandos (raiz `web/`)
+## Requisitos
+
+- Node.js 20 ou superior;
+- pnpm 9 ou superior.
+
+As versões mínimas estão declaradas em `engines` no `package.json` da raiz do
+workspace.
+
+## Instalação e execução
 
 ```bash
-pnpm install            # instala todo o workspace
+cd web
+pnpm install
 
-pnpm dev:app            # manga-reader :5173 (proxy /api → :8080)
-pnpm dev:landing        # landing-page
-
-pnpm build              # packages primeiro, depois apps
-pnpm test:app           # vitest do manga-reader (⚠️ baseline quebrado — DT-53)
-pnpm test:landing       # vitest da landing-page
-
-pnpm i18n:clean         # relatório de chaves i18n órfãs (dry-run, ambos os apps)
-pnpm i18n:clean:app:write     # remove órfãs do manga-reader (com backup)
+pnpm dev:app       # http://localhost:5173
+pnpm dev:landing   # http://localhost:5174
 ```
 
-Requisitos: Node ≥ 20, pnpm ≥ 9 (ver `engines` no `package.json`).
+As duas aplicações encaminham `/api` para `http://localhost:8080` durante o
+desenvolvimento.
 
-## `manga-reader/` — app principal
-
-Feature-Sliced Design completo: `app / pages / widgets / features / entities / shared`
-(+ cross-cutting `i18n/`, `styles/`, `test/`, `mock/`). Onde colocar cada arquivo,
-regras de boundary e public API por barrel: [`docs/source-layout.md`](../docs/source-layout.md).
-
-Gates de qualidade (rodar dentro de `manga-reader/`):
+## Comandos do workspace
 
 ```bash
-npx tsc -b              # type-check — 0 erros exigido (--noEmit puro é vácuo: tsconfig raiz tem files:[])
-npm run lint:fsd        # steiger — boundaries FSD, verde exigido
-npx vitest run          # suíte (no sandbox do Claude: --pool=forks)
+pnpm build:app          # aplicação principal
+pnpm build:landing      # landing page
+pnpm test:app           # testes do manga-reader
+pnpm test:landing       # testes da landing page
+
+pnpm i18n:clean         # relatório dry-run das duas aplicações
+pnpm i18n:clean:app:write
+pnpm i18n:clean:landing:write
 ```
 
-> `npm run lint` (eslint+prettier) é **vermelho no baseline** repo-wide — não usar
-> `format`/`--fix` em arquivos existentes; combinar o estilo dos vizinhos.
+Os comandos `*:write` removem chaves consideradas órfãs e criam backup. Revise o
+relatório e o diff antes de utilizá-los.
 
-i18n: 19 namespaces por idioma (pt-BR/en-US/es-ES) — guia em
-[`manga-reader/src/i18n/locales/README.md`](manga-reader/src/i18n/locales/README.md).
-Labels de dados de negócio **não** ficam nos JSONs — vêm do backend via `DomainLabel`
-([`docs/i18n-guide.md`](../docs/i18n-guide.md)).
+No ambiente de sandbox do projeto, execute a suíte principal explicitamente
+com forks:
 
-## `landing-page/`
+```bash
+pnpm --filter manga-reader exec vitest run --pool=forks
+```
 
-App menor e independente do FSD do app principal — estrutura própria
-(`section/` por seção da página, `feature/`, `shared/`, i18n de namespace único
-`translation.json`). Testes com Vitest + Testing Library.
+O script agregado `pnpm build` existe no manifest, mas atualmente falha porque
+os quatro pacotes em `packages/` não declaram um script `build`. Até que o
+orquestrador seja corrigido, use `build:app` e `build:landing` separadamente.
 
-## Pontos de atenção
+## Aplicações
 
-- **Pasta `Manga Reader Design System/`** (aqui e dentro de `manga-reader/`):
-  artefato **local** de design/handoff, ignorado pelo git — não referenciar em código.
-- **`packages/assets`** não tem código importável: os apps o consomem via
-  `publicDir` nos `vite.config.ts` (caminho relativo) — favicons/manifest servidos na raiz.
-- Dívidas do frontend: [`TECHNICAL_DEBT.md`](../TECHNICAL_DEBT.md) + [`docs/tech-debt.md`](../docs/tech-debt.md).
+### Manga Reader
+
+Aplicação principal com Feature-Sliced Design, roteamento, autenticação,
+catálogo, leitor e áreas de comunidade/administração.
+
+Consulte [`manga-reader/README.md`](manga-reader/README.md) para variáveis,
+estrutura, execução e gates.
+
+### Landing page
+
+Aplicação de página única com estrutura própria baseada em seções. Não adota o
+FSD completo da aplicação principal.
+
+Consulte [`landing-page/README.md`](landing-page/README.md).
+
+## Pacotes compartilhados
+
+- `@manga-reader/design-tokens`: tokens visuais e preset Tailwind.
+- `@manga-reader/types`: contratos TypeScript usados entre os apps.
+- `@manga-reader/tsconfig`: bases de configuração TypeScript.
+- `@manga-reader/assets`: metadados do workspace; os arquivos são consumidos
+  como `publicDir` nos `vite.config.ts`, não por imports JavaScript.
+
+Diretórios locais de design/handoff ignorados pelo Git não são dependências de
+runtime e não devem ser importados pelo código.
+
+## Convenções
+
+- O app principal segue as regras de
+  [`../docs/source-layout.md`](../docs/source-layout.md).
+- Textos visíveis devem usar i18n.
+- Labels persistidas de negócio vêm da API, não dos JSONs de UI.
+- Não executar `format` ou `--fix` de forma indiscriminada em arquivos
+  existentes; combine o estilo dos arquivos vizinhos.
+- O lint FSD e o typecheck são os gates estruturais do app principal.
+
+[Voltar ao README principal](../README.md)

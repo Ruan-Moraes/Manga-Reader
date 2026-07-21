@@ -74,7 +74,7 @@ const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
                                 <Button variant="primary" icon={BookOpen} onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))}>
                                     {t('hero.start')}
                                 </Button>
-                                <Button variant="raised" onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))}>
+                                <Button variant="inverse" onClick={() => navigate(ROUTES.TITLE_DETAIL(hero.id))}>
                                     {t('hero.add')}
                                 </Button>
                             </>
@@ -103,7 +103,9 @@ const HomeHero = ({ featuredTitles }: HomeHeroProps) => {
                                         setPaused(true);
                                     }}
                                     className={`h-1.5 rounded-mr-full transition-all duration-mr-default ${
-                                        i === heroIdx ? 'w-6 bg-mr-accent' : 'w-1.5 bg-mr-border hover:bg-mr-accent-50'
+                                        i === heroIdx
+                                            ? 'w-6 bg-mr-accent-border'
+                                            : 'w-1.5 bg-mr-fg-subtle/60 hover:bg-mr-accent-border/70'
                                     }`}
                                 />
                             ))}

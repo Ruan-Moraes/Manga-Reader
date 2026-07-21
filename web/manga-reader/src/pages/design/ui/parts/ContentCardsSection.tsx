@@ -126,7 +126,7 @@ export default function ContentCardsSection() {
                             manga={{
                                 id: '1',
                                 title: 'Berserk',
-                                gradient: 'linear-gradient(135deg, #2a1f0f, #161616)',
+                                gradient: 'var(--mr-poster-gradient)',
                             }}
                             upvotes={247}
                             myVote="up"
@@ -195,7 +195,7 @@ export default function ContentCardsSection() {
                                 attendees: 1240,
                                 special: true,
                                 going: false,
-                                coverGradient: 'linear-gradient(135deg, #2a1f0f, #161616)',
+                                coverGradient: 'var(--mr-poster-gradient)',
                             }}
                             onToggleGoing={() => {}}
                             onClick={() => {}}

@@ -44,7 +44,7 @@ const AccessibilityTab = ({ state, onNavigateToAbout }: AccessibilityTabProps) =
                     <button
                         type="button"
                         onClick={onNavigateToAbout}
-                        className="mr-focus-ring inline-flex items-center gap-1.5 rounded-mr-xs text-mr-small font-mr-bold text-mr-accent hover:underline"
+                        className="mr-focus-ring inline-flex items-center gap-1.5 rounded-mr-xs text-mr-small font-mr-bold text-mr-accent-fg hover:underline"
                     >
                         {t('settings.system.a11y.shortcutsAction')}
                         <ArrowRight className="size-4" aria-hidden="true" />

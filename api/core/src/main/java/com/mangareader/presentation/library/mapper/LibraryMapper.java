@@ -40,6 +40,7 @@ public class LibraryMapper {
                 saved.getName(),
                 saved.getCover(),
                 saved.getType(),
+                saved.isAdult(),
                 listLabel,
                 formatDate(saved.getSavedAt())
         );

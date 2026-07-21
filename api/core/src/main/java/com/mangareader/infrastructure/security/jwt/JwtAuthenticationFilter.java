@@ -38,10 +38,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         if (token != null && tokenPort.isTokenValid(token)) {
-            // Ignora tokens que não são access tokens (refresh, password_reset)
+            // Ignora tokens que não são explicitamente access tokens.
             String tokenType = tokenPort.extractType(token);
 
-            if (tokenType != null) {
+            if (!"access".equals(tokenType)) {
                 filterChain.doFilter(request, response);
 
                 return;

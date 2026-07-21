@@ -1,7 +1,7 @@
 import { AlertTriangle } from 'lucide-react';
 
 import { pushToast } from '@ui/toast/toastStore';
-import type { ToastTone } from '@ui/toast/types';
+import type { ToastPosition, ToastTone } from '@ui/toast/types';
 
 /**
  * Notificações transacionais (serviços/mutations) — fachada imperativa sobre o toast unificado da
@@ -13,6 +13,8 @@ export interface AppToastOptions {
     toastId?: string;
     /** Duração em ms (0 = não fecha sozinho). Padrão do toast: 4000ms. */
     duration?: number;
+    /** Viewport onde o toast aparece. Padrão: 'bottom'. */
+    position?: ToastPosition;
 }
 
 type ToastType = 'info' | 'success' | 'error' | 'warning';
@@ -30,6 +32,7 @@ const showToast = (type: ToastType, message: string, options?: AppToastOptions) 
         tone: TONE_BY_TYPE[type],
         title: message,
         duration: options?.duration,
+        position: options?.position,
         // O amarelo accent representa "aviso"; diferencia do sucesso pelo ícone.
         icon: type === 'warning' ? AlertTriangle : undefined,
     });

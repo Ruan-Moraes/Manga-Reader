@@ -1,30 +1,71 @@
 import { useTranslation } from 'react-i18next';
-import { Avatar } from '@ui/Avatar';
-import { EmptyState } from '@ui/EmptyState';
 
-type ActivityItem = { text: string; when: string };
+import { Button } from '@ui/Button';
+import { EmptyState } from '@ui/EmptyState';
+import { Skeleton } from '@ui/Skeleton';
+
+import { ActivityEventRow, useActivityFeed } from '@entities/activity';
+import { HideActivityEventAction } from '@features/hide-activity-event';
 
 type ActivityTabProps = {
-    activity: ActivityItem[];
-    profileName: string;
+    profileUserId?: string;
+    isOwn: boolean;
 };
 
-const ActivityTab = ({ activity, profileName }: ActivityTabProps) => {
+const ActivityTab = ({ profileUserId, isOwn }: ActivityTabProps) => {
     const { t } = useTranslation('user');
 
-    if (activity.length === 0) {
+    const { events, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } = useActivityFeed(profileUserId);
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col gap-2">
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} className="h-[52px] w-full rounded-mr-xs" />
+                ))}
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <EmptyState
+                illustration="pensando"
+                title={t('profile.activity.loadError')}
+                action={
+                    <Button variant="ghost" onClick={() => void refetch()}>
+                        {t('profile.activity.retry')}
+                    </Button>
+                }
+            />
+        );
+    }
+
+    if (events.length === 0) {
         return <EmptyState illustration="surpresa" title={t('profile.noActivity')} />;
     }
 
     return (
         <div className="flex flex-col gap-2">
-            {activity.map((a, i) => (
-                <div key={i} className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3">
-                    <Avatar name={profileName} size={32} />
-                    <p className="flex-1 text-mr-small text-mr-fg-muted">{a.text}</p>
-                    <span className="shrink-0 text-mr-tiny text-mr-fg-subtle">{a.when}</span>
-                </div>
+            {events.map(event => (
+                <ActivityEventRow
+                    key={event.id}
+                    event={event}
+                    actions={isOwn ? <HideActivityEventAction eventId={event.id} /> : undefined}
+                />
             ))}
+
+            {hasNextPage && (
+                <Button
+                    variant="ghost"
+                    className="self-center"
+                    loading={isFetchingNextPage}
+                    disabled={isFetchingNextPage}
+                    onClick={() => fetchNextPage()}
+                >
+                    {t('profile.activity.loadMore')}
+                </Button>
+            )}
         </div>
     );
 };

@@ -288,7 +288,7 @@ export default function CompositesSection() {
                             ]}
                         />
                         <div className="mt-4 text-mr-small text-mr-fg-muted">
-                            Aba ativa: <span className="text-mr-accent">{activeTab}</span>
+                            Aba ativa: <span className="text-mr-accent-fg">{activeTab}</span>
                         </div>
                     </div>
                 </SubSection>

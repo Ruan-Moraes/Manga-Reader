@@ -17,18 +17,20 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.mangareader.testing.mongo.Mongo8TestContainerFactory;
+
 /**
  * Integração Mongo (TestContainers) dos reconcilers de Mongo: reply count dos
  * tópicos e contadores de voto (incl. zeragem via {@code $nin}).
  */
-@DataMongoTest
+@DataMongoTest(properties = "mongock.enabled=false")
 @Import({ForumReplyCountReconciler.class, VoteCounterReconciler.class})
 @Testcontainers
 @Tag("testcontainers")
 @DisplayName("Mongo reconcilers — IT")
 class MongoReconcilersTest {
     @Container
-    static MongoDBContainer mongo = new MongoDBContainer("mongo:8.0");
+    static MongoDBContainer mongo = Mongo8TestContainerFactory.create();
 
     @DynamicPropertySource
     static void mongoProps(DynamicPropertyRegistry registry) {

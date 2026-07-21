@@ -124,15 +124,6 @@ export const getUserHistory = async (userId: string, page = 0, size = 10): Promi
     return response.data.data;
 };
 
-export const recordView = async (titleId: string): Promise<void> => {
-    await api.post(`${API_URLS.USERS}/me/history`, { titleId });
-};
-
-/** Registra a leitura de um capítulo (idempotente no backend). Requer autenticação. */
-export const recordChapterRead = async (titleId: string, chapterNumber: string): Promise<void> => {
-    await api.post(`${API_URLS.USERS}/me/chapter-reads`, { titleId, chapterNumber });
-};
-
 export const getMyContentLocales = async (): Promise<ContentLocales> => {
     const response = await api.get<ApiResponse<ContentLocales>>(`${API_URLS.USERS}/me/content-locales`);
 
@@ -155,4 +146,13 @@ export const updateMySettings = async (payload: UserSettings): Promise<UserSetti
     const response = await api.patch<ApiResponse<UserSettings>>(`${API_URLS.USERS}/me/settings`, payload);
 
     return response.data.data;
+};
+
+export const clearMyTrackedHistory = async (): Promise<void> => {
+    await api.delete(`${API_URLS.USERS}/me/tracked-history`);
+};
+
+export const exportMyData = async (): Promise<Blob> => {
+    const response = await api.get(`${API_URLS.USERS}/me/data-export`, { responseType: 'blob' });
+    return response.data as Blob;
 };

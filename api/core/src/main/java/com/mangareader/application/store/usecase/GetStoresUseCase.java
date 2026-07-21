@@ -20,6 +20,6 @@ public class GetStoresUseCase {
     private final StoreRepositoryPort storeRepository;
 
     public Page<Store> execute(Pageable pageable) {
-        return storeRepository.findAll(pageable);
+        return storeRepository.findActive(pageable);
     }
 }

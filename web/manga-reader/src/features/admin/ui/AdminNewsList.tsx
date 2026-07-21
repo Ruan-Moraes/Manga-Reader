@@ -60,6 +60,12 @@ const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (news: AdminNews)
         render: news => <Badge variant={news.isFeatured ? 'accent' : 'neutral'}>{news.isFeatured ? t('dashboard.news.featuredYes') : t('dashboard.news.featuredNo')}</Badge>,
     },
     {
+        key: 'status',
+        header: t('dashboard.news.columnStatus'),
+        sortable: true,
+        render: news => <Badge variant={news.status === 'PUBLISHED' ? 'accent' : 'neutral'}>{news.status ? t(`newsForm.status.${news.status}`) : '—'}</Badge>,
+    },
+    {
         key: 'publishedAt',
         header: t('dashboard.news.columnPublishedAt'),
         sortable: true,

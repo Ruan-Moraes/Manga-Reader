@@ -44,7 +44,7 @@ describe('ForgotPassword', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        requestResetMock.mockResolvedValue('ok');
+        requestResetMock.mockResolvedValue({ message: 'ok', expiresInSeconds: 1800 });
     });
 
     it('renders form state by default', () => {
@@ -77,6 +77,7 @@ describe('ForgotPassword', () => {
             expect(screen.getByText(/verifique seu e-mail/i)).toBeInTheDocument();
         });
         expect(screen.getByText(/user@test.com/i)).toBeInTheDocument();
+        expect(screen.getByText(/30 minutos/i)).toBeInTheDocument();
     });
 
     it('shows link with sent email in success state', async () => {

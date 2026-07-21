@@ -42,7 +42,7 @@ const ProfileTabs = ({ activeTab, onTabChange, isOwner, hasComments, hasHistory 
                         key={tab.id}
                         onClick={() => onTabChange(tab.id)}
                         className={`px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
-                            activeTab === tab.id ? 'border-quaternary text-quaternary' : 'border-transparent text-tertiary hover:text-primary-default'
+                            activeTab === tab.id ? 'border-mr-accent-border text-mr-accent-fg' : 'border-transparent text-tertiary hover:text-mr-fg'
                         }`}
                     >
                         {t(`profile.tabs.${tab.i18nKey}`)}

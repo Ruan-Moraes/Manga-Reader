@@ -28,6 +28,9 @@ class UpdateTagUseCaseTest {
     @Mock
     private TagRepositoryPort tagRepository;
 
+    @Mock
+    private com.mangareader.application.shared.port.CacheInvalidationPort cacheInvalidation;
+
     @InjectMocks
     private UpdateTagUseCase useCase;
 

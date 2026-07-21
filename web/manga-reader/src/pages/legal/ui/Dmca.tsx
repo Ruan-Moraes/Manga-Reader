@@ -64,13 +64,13 @@ export default function Dmca() {
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-mr-fg-muted">
                     <li>
                         <strong>{t('dmca.sections.como-pedir.emailLabel')}</strong>{' '}
-                        <a href={`mailto:${t('dmca.sections.como-pedir.emailAddress')}`} className="text-mr-accent underline hover:no-underline">
+                        <a href={`mailto:${t('dmca.sections.como-pedir.emailAddress')}`} className="text-mr-accent-fg underline hover:no-underline">
                             {t('dmca.sections.como-pedir.emailAddress')}
                         </a>
                     </li>
                     <li>
                         <strong>{t('dmca.sections.como-pedir.channelLabel')}</strong>{' '}
-                        <a onClick={() => navigate(ROUTES.LEGAL_CONTACT)} className="cursor-pointer text-mr-accent underline hover:no-underline">
+                        <a onClick={() => navigate(ROUTES.LEGAL_CONTACT)} className="cursor-pointer text-mr-accent-fg underline hover:no-underline">
                             {t('dmca.sections.como-pedir.channelLinkText')}
                         </a>
                     </li>
@@ -86,9 +86,9 @@ export default function Dmca() {
                     ))}
                 </ol>
 
-                <div className="mt-4 flex gap-3 rounded-mr-sm border border-mr-danger/40 border-l-[3px] border-l-mr-danger bg-[rgba(255,120,79,0.06)] p-3">
+                <div className="mt-4 flex gap-3 rounded-mr-sm border border-mr-danger/40 border-l-[3px] border-l-mr-danger bg-mr-danger-15 p-3">
                     <AlertTriangle className="size-4 shrink-0 text-mr-danger mt-0.5" />
-                    <p className="text-mr-small text-[#ffb59c]">
+                    <p className="text-mr-small text-mr-danger">
                         <strong>{t('dmca.sections.informacoes.warningTitle')}</strong> {t('dmca.sections.informacoes.warningBody')}
                     </p>
                 </div>
@@ -130,10 +130,10 @@ export default function Dmca() {
 
                         return (
                             <div key={row.term} className="rounded-mr-sm border border-mr-border bg-mr-surface p-3">
-                                <dt className="mr-label text-mr-accent uppercase tracking-[0.08em]">{row.term}</dt>
+                                <dt className="mr-label text-mr-accent-fg uppercase tracking-[0.08em]">{row.term}</dt>
                                 <dd className="mt-1 text-mr-small text-mr-fg-muted">
                                     {isEmail ? (
-                                        <a href={`mailto:${row.value}`} className="text-mr-accent underline hover:no-underline">
+                                        <a href={`mailto:${row.value}`} className="text-mr-accent-fg underline hover:no-underline">
                                             {row.value}
                                         </a>
                                     ) : (

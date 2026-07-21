@@ -1,6 +1,8 @@
 {
     "tagSelect": {
-        "loading": "Cargando..."
+        "loading": "Cargando...",
+        "searchPlaceholder": "Buscar...",
+        "noResults": "No se encontraron opciones"
     },
     "filters": {
         "title": "Filtrar Obras",

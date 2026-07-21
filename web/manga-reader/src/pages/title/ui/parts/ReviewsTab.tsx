@@ -52,7 +52,7 @@ function LoginPrompt({ onLogin, onRegister }: { onLogin: () => void; onRegister:
     const { t } = useTranslation('rating');
 
     return (
-        <div className="mb-4 flex flex-col items-center gap-4 rounded-mr-lg border border-[#333] bg-[#1c1c1d] p-6 text-center sm:flex-row sm:text-left">
+        <div className="mb-4 flex flex-col items-center gap-4 rounded-mr-lg border border-mr-border bg-mr-surface-interactive p-6 text-center sm:flex-row sm:text-left">
             <Illustration type="pensando" alt="" width={92} height={92} className="shrink-0" />
             <div className="min-w-0">
                 <h3 className="text-[16px] font-mr-extrabold text-mr-fg">{t('reviews.login.title')}</h3>

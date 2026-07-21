@@ -7,13 +7,6 @@ import { renderHookWithProviders, seedAuthSession } from '@/test/testUtils';
 
 import useBookmark from '../useBookmark';
 
-const bookmarkPayload = {
-    titleId: 'title-1',
-    name: 'One Piece',
-    cover: 'https://example.com/cover.jpg',
-    type: 'MANGA',
-};
-
 describe('useBookmark', () => {
     it('deve ter savedIds vazio quando não há sessão', async () => {
         const { result } = renderHookWithProviders(() => useBookmark());
@@ -75,12 +68,7 @@ describe('useBookmark', () => {
         });
 
         await act(async () => {
-            await result.current.toggleBookmark({
-                titleId: 'title-new',
-                name: 'Naruto',
-                cover: 'https://example.com/naruto.jpg',
-                type: 'MANGA',
-            });
+            await result.current.toggleBookmark('title-new');
         });
 
         await waitFor(() => expect(result.current.isSaved('title-new')).toBe(true));
@@ -94,7 +82,7 @@ describe('useBookmark', () => {
         await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
 
         await act(async () => {
-            await result.current.toggleBookmark(bookmarkPayload);
+            await result.current.toggleBookmark('title-1');
         });
 
         await waitFor(() => expect(result.current.isSaved('title-1')).toBe(false));
@@ -127,12 +115,7 @@ describe('useBookmark', () => {
         });
 
         await act(async () => {
-            await result.current.toggleBookmark({
-                titleId: 'title-fail',
-                name: 'Fail',
-                cover: '',
-                type: 'MANGA',
-            });
+            await result.current.toggleBookmark('title-fail');
         });
 
         expect(result.current.isSaved('title-fail')).toBe(false);
@@ -148,7 +131,7 @@ describe('useBookmark', () => {
         await waitFor(() => expect(result.current.isSaved('title-1')).toBe(true));
 
         await act(async () => {
-            await result.current.toggleBookmark(bookmarkPayload);
+            await result.current.toggleBookmark('title-1');
         });
 
         expect(result.current.isSaved('title-1')).toBe(true);

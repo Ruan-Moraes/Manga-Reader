@@ -1,6 +1,7 @@
 package com.mangareader.application.user.port;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,6 +12,8 @@ import com.mangareader.domain.user.entity.UserChapterRead;
  */
 public interface UserChapterReadRepositoryPort {
     Optional<UserChapterRead> findByUserIdAndTitleIdAndChapterNumber(String userId, String titleId, String chapterNumber);
+
+    List<UserChapterRead> findAllByUserId(String userId);
 
     UserChapterRead save(UserChapterRead read);
 

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Avatar } from '@ui/Avatar';
 import { Badge } from '@ui/Badge';
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 
 import useUserGroups from '../../../model/useUserGroups';
 import { type UserGroupItem } from '../../../api/userService';
@@ -30,7 +30,8 @@ const GruposTab = () => {
             await action(groupId);
             showSuccessToast(t('profile.edit.saved'));
         } catch {
-            showErrorToast(t('profile.edit.saveError'));
+            // Toast de erro já disparado pelo interceptor Axios (httpInterceptors.ts),
+            // com a mensagem real vinda do backend.
         } finally {
             setPendingId(null);
         }
@@ -46,7 +47,7 @@ const GruposTab = () => {
             onClick={() => run(g.id, linked ? unlink : link)}
             className={cn(
                 'mr-focus-ring cursor-pointer whitespace-nowrap rounded-mr-xs border px-3 py-2 font-mr-sans text-mr-tiny font-mr-bold tracking-mr disabled:cursor-default disabled:opacity-60',
-                linked ? 'border-mr-danger bg-transparent text-mr-danger' : 'border-mr-accent bg-mr-accent text-mr-primary',
+                linked ? 'border-mr-danger bg-transparent text-mr-danger' : 'border-mr-accent-border bg-mr-accent text-mr-on-accent',
             )}
         >
             {linked ? t('profile.edit.groups.unlink') : t('profile.edit.groups.link')}
@@ -58,7 +59,7 @@ const GruposTab = () => {
             key={g.id}
             className={cn(
                 'mb-2 flex items-center gap-3 rounded-mr-sm border p-3',
-                linked ? 'border-mr-accent bg-[#1f1f20]' : 'border-[#333333] bg-mr-gray-900',
+                linked ? 'border-mr-accent-border bg-mr-surface-interactive' : 'border-mr-border bg-mr-gray-900',
             )}
         >
             <Avatar src={g.logo ?? undefined} name={initials(g.name)} size={40} />

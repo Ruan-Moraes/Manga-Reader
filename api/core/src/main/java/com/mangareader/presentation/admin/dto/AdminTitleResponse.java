@@ -23,6 +23,7 @@ public record AdminTitleResponse(
         String publisher,
         List<TitleAuthorResponse> authors,
         List<TitlePublisherResponse> publishers,
+        List<TitleStoreResponse> stores,
         boolean adult,
         Double ratingAverage,
         Long ratingCount,

@@ -25,6 +25,11 @@ export const buildTitle = (overrides: Partial<Title> = {}): Title => {
         author: 'Autor Teste',
         artist: 'Artista Teste',
         publisher: 'Publisher Teste',
+        authors: [
+            { authorId: 1, name: 'Autor Teste', slug: 'autor-teste', role: 'AUTHOR' },
+            { authorId: 2, name: 'Artista Teste', slug: 'artista-teste', role: 'ARTIST' },
+        ],
+        publishers: [{ publisherId: 1, name: 'Publisher Teste', slug: 'publisher-teste' }],
         createdAt: '2025-01-01T00:00:00Z',
         updatedAt: '2025-01-01T00:00:00Z',
         ...overrides,

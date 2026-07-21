@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { showErrorToast, showSuccessToast } from '@shared/service/util/toastService';
+import { showSuccessToast } from '@shared/service/util/toastService';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
 
-import { createNews, updateNews, deleteNews } from '../api/adminNewsService';
+import { createNews, updateNews, deleteNews, publishNews, unpublishNews, moveNewsToDraft, scheduleNews } from '../api/adminNewsService';
 import type { CreateNewsRequest, UpdateNewsRequest } from '../model/admin.types';
 
 const useAdminNewsActions = () => {
@@ -32,7 +32,6 @@ const useAdminNewsActions = () => {
                 invalidateNews();
                 return result;
             } catch {
-                showErrorToast('Erro ao criar notícia.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -50,7 +49,6 @@ const useAdminNewsActions = () => {
                 invalidateNews();
                 return result;
             } catch {
-                showErrorToast('Erro ao atualizar notícia.');
                 return null;
             } finally {
                 setIsSubmitting(false);
@@ -67,7 +65,7 @@ const useAdminNewsActions = () => {
                 showSuccessToast('Notícia excluída com sucesso.');
                 invalidateNews();
             } catch {
-                showErrorToast('Erro ao excluir notícia.');
+                // Toast de erro já disparado pelo interceptor Axios.
             } finally {
                 setIsSubmitting(false);
             }
@@ -75,11 +73,28 @@ const useAdminNewsActions = () => {
         [invalidateNews],
     );
 
+    const changeStatus = useCallback(async (action: () => Promise<unknown>) => {
+        setIsSubmitting(true);
+        try {
+            const result = await action();
+            invalidateNews();
+            return result;
+        } catch {
+            return null;
+        } finally {
+            setIsSubmitting(false);
+        }
+    }, [invalidateNews]);
+
     return {
         isSubmitting,
         handleCreate,
         handleUpdate,
         handleDelete,
+        handlePublish: (id: string) => changeStatus(() => publishNews(id)),
+        handleUnpublish: (id: string) => changeStatus(() => unpublishNews(id)),
+        handleDraft: (id: string) => changeStatus(() => moveNewsToDraft(id)),
+        handleSchedule: (id: string, scheduledAt: string) => changeStatus(() => scheduleNews(id, scheduledAt)),
     };
 };
 

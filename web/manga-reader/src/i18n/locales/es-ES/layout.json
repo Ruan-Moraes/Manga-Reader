@@ -68,11 +68,9 @@
             "languageValue": "Español (ES)",
             "languageAria": "Cambiar idioma",
             "theme": "Tema",
-            "themeValue": "Oscuro",
             "themeAria": "Cambiar tema",
             "help": "Ayuda",
             "helpAria": "Abrir centro de ayuda",
-            "themeWip": "Tema en desarrollo.",
             "uiGroup": "Interfaz",
             "contentGroup": "Contenido",
             "contentLoginHint": "Inicia sesión para elegir"
@@ -200,7 +198,15 @@
             "events": "Eventos",
             "groups": "Grupos",
             "forum": "Foro",
-            "profile": "Mi Perfil"
+            "profile": "Mi Perfil",
+            "notifications": "Notificaciones",
+            "dashboard": "Panel"
         }
+    },
+    "notifications": {
+        "title": "Notificaciones",
+        "subtitle": "Sigue tus actualizaciones aquí",
+        "emptyState": "Nada por aquí todavía",
+        "emptyDesc": "Estamos preparando las notificaciones. Pronto podrás seguir todo aquí."
     }
 }

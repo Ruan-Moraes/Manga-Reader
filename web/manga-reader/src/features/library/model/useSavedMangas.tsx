@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { getStoredSession } from '@shared/service/session';
-import { showErrorToast } from '@shared/service/util/toastService';
 
 import {
     getLibraryCounts,
@@ -106,7 +105,6 @@ const useSavedMangas = (initialTab: ActiveTab = 'Todos') => {
             } catch {
                 setItems(prev);
                 setCounts(prevCounts);
-                showErrorToast('Erro ao alterar lista.');
             }
         },
         [items, counts, activeTab],
@@ -134,7 +132,6 @@ const useSavedMangas = (initialTab: ActiveTab = 'Todos') => {
             } catch {
                 setItems(prev);
                 setCounts(prevCounts);
-                showErrorToast('Erro ao remover da biblioteca.');
             }
         },
         [items, counts],

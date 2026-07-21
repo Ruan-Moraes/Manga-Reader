@@ -38,7 +38,7 @@ export default function HelpCenter() {
                     <Card variant="flat" className="flex flex-col items-center gap-4 py-8 text-center sm:flex-row sm:text-left sm:py-6">
                         <img src={illustrationUrl('pensando')} alt="" className="h-20 w-auto sm:h-16" />
                         <div className="flex-1">
-                            <p className="mr-label mb-1 text-mr-accent">{t('contact.eyebrow')}</p>
+                            <p className="mr-label mb-1 text-mr-accent-fg">{t('contact.eyebrow')}</p>
                             <h3 className="text-mr-h3 font-mr-extrabold tracking-mr text-mr-fg">{t('contact.title')}</h3>
                             <p className="mt-1 text-mr-small text-mr-fg-muted">
                                 {t('contact.responseTime')} <strong className="text-mr-fg">{t('contact.responseTimeValue')}</strong>

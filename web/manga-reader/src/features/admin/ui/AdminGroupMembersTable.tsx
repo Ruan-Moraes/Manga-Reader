@@ -77,7 +77,7 @@ const AdminGroupMembersTable = ({ members, isSubmitting, onEditRole, onRemove }:
                                             <button
                                                 onClick={() => onRemove(member.userId, member.userName)}
                                                 disabled={isSubmitting}
-                                                className="px-2 py-1 text-xs text-mr-danger border rounded-mr-xs border-[rgba(255,120,79,0.4)] hover:bg-mr-danger-15 transition-colors disabled:opacity-50"
+                                                className="px-2 py-1 text-xs text-mr-danger border rounded-mr-xs border-mr-danger-border hover:bg-mr-danger-15 transition-colors disabled:opacity-50"
                                             >
                                                 {t('groupDetail.actions.remove')}
                                             </button>

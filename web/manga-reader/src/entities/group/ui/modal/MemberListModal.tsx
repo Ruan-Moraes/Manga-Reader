@@ -38,7 +38,7 @@ const MemberListModal = ({ isOpen, closeModal, group }: MemberListModalProps) =>
                             <button
                                 key={member.id}
                                 onClick={() => setSelectedUser(member)}
-                                className="flex gap-3 items-center p-2 text-left border rounded-xs border-tertiary hover:border-quaternary hover:shadow-default transition-all"
+                                className="flex gap-3 items-center p-2 text-left border rounded-xs border-tertiary hover:border-mr-accent-border hover:shadow-default transition-all"
                             >
                                 <Avatar src={member.avatar} name={member.name} size={40} />
                                 <div>

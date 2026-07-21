@@ -38,6 +38,7 @@ describe('UserDetails', () => {
         vi.mocked(useAuth).mockReturnValue({
             user: null,
             isLoggedIn: false,
+            isInitializing: false,
             login: vi.fn(),
             register: vi.fn(),
             logout: vi.fn(),

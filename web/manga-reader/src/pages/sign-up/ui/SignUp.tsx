@@ -5,19 +5,19 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuth, AuthShell, AuthField, AuthSubmit, buildSignUpSchema, type SignUpFormValues } from '@features/auth';
-import { WEB_BASE_URL } from '@shared/constant/WEB_BASE_URL';
+import { WEB_BASE_URL, withWebBasePath } from '@shared/constant/WEB_BASE_URL';
 import { ROUTES } from '@shared/constant/ROUTES';
 import { showSuccessToast } from '@shared/service/util/toastService';
 
 const STRENGTHS = [
-    { level: 1, labelKey: 'passwordStrength.weak', color: '#ff784f' },
-    { level: 2, labelKey: 'passwordStrength.medium', color: '#ddda2a' },
-    { level: 3, labelKey: 'passwordStrength.strong', color: '#10b981' },
-    { level: 4, labelKey: 'passwordStrength.great', color: '#10b981' },
+    { level: 1, labelKey: 'passwordStrength.weak', color: 'var(--mr-danger)' },
+    { level: 2, labelKey: 'passwordStrength.medium', color: 'var(--mr-accent)' },
+    { level: 3, labelKey: 'passwordStrength.strong', color: 'var(--mr-success)' },
+    { level: 4, labelKey: 'passwordStrength.great', color: 'var(--mr-success)' },
 ] as const;
 
 function calcStrength(password: string) {
-    if (!password) return { level: 0 as const, labelKey: null, color: '#444' };
+    if (!password) return { level: 0 as const, labelKey: null, color: 'var(--mr-border)' };
     let s = 0;
     if (password.length >= 8) s++;
     if (/[A-Z]/.test(password)) s++;
@@ -73,9 +73,9 @@ const SignUp = () => {
                 <>
                     {t('signUp.noAccount')}{' '}
                     <a
-                        href={`${WEB_BASE_URL}${ROUTES.LOGIN}`}
-                        onClick={go(`${WEB_BASE_URL}${ROUTES.LOGIN}`)}
-                        className="font-mr-bold text-mr-accent tracking-mr no-underline"
+                        href={withWebBasePath(ROUTES.LOGIN)}
+                        onClick={go(withWebBasePath(ROUTES.LOGIN))}
+                        className="font-mr-bold text-mr-accent-fg tracking-mr no-underline"
                     >
                         {t('signUp.loginLink')}
                     </a>
@@ -144,7 +144,7 @@ const SignUp = () => {
                                 key={i}
                                 className="h-[3px] flex-1 rounded-[1px] transition-colors duration-150"
                                 style={{
-                                    background: i <= strength.level ? strength.color : '#2a2a2a',
+                                    background: i <= strength.level ? strength.color : 'var(--mr-surface-elevated)',
                                 }}
                             />
                         ))}
@@ -161,15 +161,15 @@ const SignUp = () => {
                                 checked={field.value}
                                 onChange={e => field.onChange(e.target.checked)}
                                 className="mt-0.5 size-3.5 shrink-0"
-                                style={{ accentColor: '#ddda2a' }}
+                                style={{ accentColor: 'var(--mr-accent)' }}
                             />
                             <span className="text-mr-small leading-snug tracking-mr text-mr-gray-200">
                                 {t('signUp.termsPrefix')}{' '}
-                                <a href="/legal/terms" onClick={go('/legal/terms')} className="text-mr-accent no-underline">
+                                <a href="/legal/terms" onClick={go('/legal/terms')} className="text-mr-accent-fg no-underline">
                                     {t('signUp.termsLinkLabel')}
                                 </a>{' '}
                                 {t('signUp.termsAnd')}{' '}
-                                <a href="/legal/privacy" onClick={go('/legal/privacy')} className="text-mr-accent no-underline">
+                                <a href="/legal/privacy" onClick={go('/legal/privacy')} className="text-mr-accent-fg no-underline">
                                     {t('signUp.privacyLinkLabel')}
                                 </a>
                                 .
@@ -178,7 +178,7 @@ const SignUp = () => {
                     )}
                 />
                 {errors.accept && (
-                    <div className="mb-3.5 text-mr-tiny tracking-mr" style={{ color: '#ff784f' }}>
+                    <div className="mb-3.5 text-mr-tiny tracking-mr" style={{ color: 'var(--mr-danger)' }}>
                         {errors.accept.message}
                     </div>
                 )}

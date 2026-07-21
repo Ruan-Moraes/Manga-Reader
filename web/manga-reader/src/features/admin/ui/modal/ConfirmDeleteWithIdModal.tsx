@@ -49,7 +49,7 @@ const ConfirmDeleteWithIdModal = ({ isOpen, onClose, onConfirm, entityId, title,
                 <p className="text-mr-body leading-relaxed text-mr-fg-muted">{message}</p>
                 <label className="flex flex-col gap-1.5">
                     <span className="text-mr-small font-mr-bold text-mr-fg-muted">
-                        {t('common.deleteIdPrompt')} <code className="font-mr-mono text-mr-accent">{entityId}</code>
+                        {t('common.deleteIdPrompt')} <code className="font-mr-mono text-mr-accent-fg">{entityId}</code>
                     </span>
                     <Input value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder={entityId} autoComplete="off" autoFocus />
                 </label>

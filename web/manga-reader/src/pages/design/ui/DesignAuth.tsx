@@ -22,7 +22,7 @@ const DesignAuth = () => {
                         key={v.key}
                         type="button"
                         onClick={() => setView(v.key)}
-                        className={`text-mr-small font-mr-bold transition-colors ${view === v.key ? 'text-mr-accent' : 'text-mr-fg-subtle hover:text-mr-fg'}`}
+                        className={`text-mr-small font-mr-bold transition-colors ${view === v.key ? 'text-mr-accent-fg' : 'text-mr-fg-subtle hover:text-mr-fg'}`}
                     >
                         {v.label}
                     </button>

@@ -132,6 +132,7 @@ export const buildPrivacySettings = (overrides: Partial<PrivacySettings> = {}): 
     viewHistoryVisibility: 'PUBLIC',
     libraryVisibility: 'PUBLIC',
     adultContentPreference: 'BLUR',
+    behaviorAnalyticsEnabled: true,
     ...overrides,
 });
 

@@ -1,5 +1,6 @@
 package com.mangareader.application.auth.usecase;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,6 +64,7 @@ class ForgotPasswordUseCaseTest {
         lenient()
                 .when(messageSource.getMessage(eq("email.footer.tagline"), any(), any()))
                 .thenReturn("Manga Reader — Sua plataforma de mangás");
+        lenient().when(tokenPort.passwordResetExpiration()).thenReturn(Duration.ofMinutes(30));
     }
 
     private User buildUser() {
@@ -85,18 +88,20 @@ class ForgotPasswordUseCaseTest {
             User user = buildUser();
 
             when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
-            when(tokenPort.generatePasswordResetToken(USER_ID, EMAIL)).thenReturn(RESET_TOKEN);
+            when(tokenPort.generatePasswordResetToken(USER_ID, EMAIL, "hash")).thenReturn(RESET_TOKEN);
 
             // Act
-            forgotPasswordUseCase.execute(EMAIL);
+            Duration expiration = forgotPasswordUseCase.execute(EMAIL);
 
             // Assert
-            verify(tokenPort).generatePasswordResetToken(USER_ID, EMAIL);
+            assertThat(expiration).isEqualTo(Duration.ofMinutes(30));
+            verify(tokenPort).generatePasswordResetToken(USER_ID, EMAIL, "hash");
             verify(emailPort).sendHtml(
                     eq(EMAIL),
                     eq("Manga Reader — Recuperação de Senha"),
                     contains(BASE_URL + "/reset-password?token=" + RESET_TOKEN)
             );
+            verify(emailPort).sendHtml(eq(EMAIL), any(), contains("30 minutos"));
         }
 
         @Test
@@ -106,7 +111,7 @@ class ForgotPasswordUseCaseTest {
             User user = buildUser();
 
             when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
-            when(tokenPort.generatePasswordResetToken(USER_ID, EMAIL)).thenReturn(RESET_TOKEN);
+            when(tokenPort.generatePasswordResetToken(USER_ID, EMAIL, "hash")).thenReturn(RESET_TOKEN);
 
             // Act
             forgotPasswordUseCase.execute(EMAIL);
@@ -134,7 +139,7 @@ class ForgotPasswordUseCaseTest {
             forgotPasswordUseCase.execute("naoexiste@email.com");
 
             // Assert
-            verify(tokenPort, never()).generatePasswordResetToken(any(), any());
+            verify(tokenPort, never()).generatePasswordResetToken(any(), any(), any());
             verify(emailPort, never()).sendHtml(any(), any(), any());
         }
     }

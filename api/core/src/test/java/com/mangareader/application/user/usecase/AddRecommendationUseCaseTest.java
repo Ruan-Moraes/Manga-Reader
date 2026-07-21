@@ -20,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
 import com.mangareader.application.user.port.RecommendationRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.analytics.service.BehaviorEventRecorder;
+import com.mangareader.shared.application.i18n.LocaleResolutionService;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.user.entity.User;
 import com.mangareader.domain.user.entity.UserRecommendation;
@@ -39,7 +41,10 @@ class AddRecommendationUseCaseTest {
     private TitleRepositoryPort titleRepository;
 
     @Mock
-    private com.mangareader.shared.application.i18n.LocaleResolutionService localeResolutionService;
+    private LocaleResolutionService localeResolutionService;
+
+    @Mock
+    private BehaviorEventRecorder behaviorEventRecorder;
 
     @InjectMocks
     private AddRecommendationUseCase addRecommendationUseCase;

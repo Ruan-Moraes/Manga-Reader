@@ -17,7 +17,15 @@
         "artist": "Artista:",
         "publisher": "Editorial:",
         "type": "Tipo:",
-        "notAvailable": "N/D"
+        "notAvailable": "N/D",
+        "role": {
+            "AUTHOR": "Autor",
+            "ARTIST": "Artista",
+            "STORY": "Guionista",
+            "LETTERER": "Rotulista",
+            "COLORIST": "Colorista",
+            "EDITOR": "Editor"
+        }
     },
     "card": {
         "chaptersCount": "({{count}} Capítulos)",
@@ -73,6 +81,7 @@
         "noReviews": "Aún no hay reseñas",
         "noGroups": "No se encontraron grupos",
         "fullSynopsis": "Sinopsis completa",
+        "credits": "Ficha técnica",
         "expandCover": "Ampliar portada"
     },
     "chapterEnd": {

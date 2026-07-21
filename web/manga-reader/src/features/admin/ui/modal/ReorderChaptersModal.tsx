@@ -31,10 +31,10 @@ const SortableRow = ({ chapter }: { chapter: AdminChapter }) => {
                 isDragging && 'z-10 border-mr-accent-50 bg-mr-accent-25 shadow-mr-black',
             )}
         >
-            <button type="button" {...attributes} {...listeners} className="cursor-grab text-mr-fg-muted hover:text-mr-accent" aria-label={chapter.title}>
+            <button type="button" {...attributes} {...listeners} className="cursor-grab text-mr-fg-muted hover:text-mr-accent-fg" aria-label={chapter.title}>
                 <GripVertical size={16} />
             </button>
-            <span className="w-12 tabular-nums text-mr-small font-mr-bold text-mr-accent">#{chapter.number}</span>
+            <span className="w-12 tabular-nums text-mr-small font-mr-bold text-mr-accent-fg">#{chapter.number}</span>
             <span className="min-w-0 flex-1 truncate text-mr-small text-mr-fg">{chapter.title}</span>
         </li>
     );

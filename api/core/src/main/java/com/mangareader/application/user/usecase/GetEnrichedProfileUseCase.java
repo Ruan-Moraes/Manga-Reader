@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.comment.port.CommentRepositoryPort;
 import com.mangareader.application.library.port.LibraryRepositoryPort;
+import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.manga.service.AdultContentAccessPolicy;
 import com.mangareader.application.review.port.ReviewRepositoryPort;
 import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.social.port.SocialGraphPort.ProfileSocial;
@@ -47,6 +49,8 @@ public class GetEnrichedProfileUseCase {
     private final ViewHistoryRepositoryPort viewHistoryRepository;
     private final UserProfileSettingsResolver profileSettingsResolver;
     private final SocialGraphPort socialGraph;
+    private final TitleRepositoryPort titleRepository;
+    private final AdultContentAccessPolicy adultContentPolicy;
 
     public record EnrichedProfile(
             User user,
@@ -58,6 +62,7 @@ public class GetEnrichedProfileUseCase {
             VisibilitySetting viewHistoryVisibility,
             VisibilitySetting libraryVisibility,
             AdultContentPreference adultContentPreference,
+            boolean behaviorAnalyticsEnabled,
             ProfileSocial social,
             boolean isOwner
     ) {}
@@ -108,11 +113,25 @@ public class GetEnrichedProfileUseCase {
 
         List<ViewHistory> recentHistory = null;
 
-        if (isOwner || settings.getViewHistoryVisibility() == VisibilitySetting.PUBLIC) {
+        if (settings.getViewHistoryVisibility() != VisibilitySetting.DO_NOT_TRACK
+                && (isOwner || settings.getViewHistoryVisibility() == VisibilitySetting.PUBLIC)) {
             var page = viewHistoryRepository.findByUserIdOrderByViewedAtDesc(userIdStr,
                     PageRequest.of(0, 10));
 
             recentHistory = page.getContent();
+        }
+
+        java.util.Set<String> referencedTitleIds = new java.util.HashSet<>();
+        recommendations.forEach(item -> referencedTitleIds.add(item.getTitleId()));
+        if (recentHistory != null) recentHistory.forEach(item -> referencedTitleIds.add(item.getTitleId()));
+        java.util.Map<String, Boolean> adultByTitle = titleRepository.findByIds(referencedTitleIds).stream()
+                .collect(java.util.stream.Collectors.toMap(com.mangareader.domain.manga.entity.Title::getId,
+                        com.mangareader.domain.manga.entity.Title::isAdult, (left, right) -> left));
+        recommendations.forEach(item -> item.setAdult(adultByTitle.getOrDefault(item.getTitleId(), false)));
+        if (recentHistory != null) recentHistory.forEach(item -> item.setAdult(adultByTitle.getOrDefault(item.getTitleId(), false)));
+        if (adultContentPolicy.mustExcludeAdult(viewerUserId)) {
+            recommendations = recommendations.stream().filter(item -> !item.isAdult()).toList();
+            if (recentHistory != null) recentHistory = recentHistory.stream().filter(item -> !item.isAdult()).toList();
         }
 
         // DT-48: contagens + isFollowedByMe em 1 round-trip no grafo
@@ -122,6 +141,7 @@ public class GetEnrichedProfileUseCase {
                 user, stats, recommendations, recentComments, recentHistory,
                 settings.getCommentVisibility(), settings.getViewHistoryVisibility(),
                 settings.getLibraryVisibility(), settings.getAdultContentPreference(),
+                settings.isBehaviorAnalyticsEnabled(),
                 social, isOwner
         );
     }

@@ -1,33 +1,43 @@
 import { Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { authService } from '@/src/features/auth';
 import { useSessionStore } from '@/src/shared/store';
+import { useTheme } from '@/src/shared/theme';
+import { PageContainer } from '@/src/shared/ui';
 
 export function ProfilePage() {
     const { user, logout } = useSessionStore();
     const { t } = useTranslation('common');
+    const { tokens } = useTheme();
 
     const handleLogout = async () => {
-        await logout();
-        router.replace('/(auth)/login');
+        try {
+            await authService.logout();
+        } finally {
+            await logout();
+            router.replace('/(auth)/login');
+        }
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-mr-bg">
-            <View className="flex-1 px-6 pt-8">
-                <Text className="text-2xl font-bold text-mr-text">{t('nav.profile')}</Text>
+        <PageContainer>
+            <View style={{ flex: 1, paddingHorizontal: 8, paddingTop: 32 }}>
+                <Text style={{ fontSize: 24, fontWeight: '700', color: tokens.text }}>{t('nav.profile')}</Text>
                 {user && (
-                    <View className="mt-4">
-                        <Text className="text-lg font-medium text-mr-text">{user.name}</Text>
-                        <Text className="text-mr-muted">{user.email}</Text>
+                    <View style={{ marginTop: 16 }}>
+                        <Text style={{ fontSize: 18, fontWeight: '500', color: tokens.text }}>{user.name}</Text>
+                        <Text style={{ color: tokens.muted }}>{user.email}</Text>
                     </View>
                 )}
-                <Pressable className="mt-8 items-center rounded-lg border border-mr-danger/30 py-3" onPress={handleLogout}>
-                    <Text className="font-semibold text-mr-danger">{t('user.logout')}</Text>
+                <Pressable
+                    style={{ marginTop: 32, alignItems: 'center', borderRadius: 8, borderWidth: 1, borderColor: tokens.danger, paddingVertical: 12 }}
+                    onPress={handleLogout}
+                >
+                    <Text style={{ fontWeight: '600', color: tokens.danger }}>{t('user.logout')}</Text>
                 </Pressable>
             </View>
-        </SafeAreaView>
+        </PageContainer>
     );
 }

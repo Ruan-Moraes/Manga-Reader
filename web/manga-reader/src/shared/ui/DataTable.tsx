@@ -159,7 +159,7 @@ function DataTable<T>({
                         className={cn(
                             'h-[42px] w-full rounded-l-mr-xs border border-r-0 border-mr-tertiary bg-mr-primary pl-9 pr-3',
                             'text-mr-body text-mr-fg placeholder:text-mr-tertiary',
-                            'transition-colors hover:border-mr-accent-50 focus:border-mr-accent focus:outline-none',
+                            'transition-colors hover:border-mr-accent-50 focus:border-mr-accent-border focus:outline-none',
                         )}
                     />
                     <button

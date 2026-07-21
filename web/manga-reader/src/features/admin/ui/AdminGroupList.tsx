@@ -55,7 +55,7 @@ const buildColumns = (t: TFunction, lang: LanguageTag, onEdit: (group: AdminGrou
         header: t('dashboard.groups.columnUsername'),
         sortable: true,
         hideBelow: 'sm',
-        render: group => <span className="font-mr-mono text-mr-tiny text-mr-accent">@{group.username}</span>,
+        render: group => <span className="font-mr-mono text-mr-tiny text-mr-accent-fg">@{group.username}</span>,
     },
     {
         key: 'status',
