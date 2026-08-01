@@ -115,6 +115,8 @@
         "noSocials": "Sin enlaces registrados.",
         "worksCount": "Obras traducidas — {{count}}",
         "worksEmpty": "Este grupo aún no tiene obras catalogadas.",
+        "worksError": "No se pudieron cargar las obras del grupo.",
+        "retry": "Intentar de nuevo",
         "teamCount": "Equipo — {{count}} integrantes",
         "discussionHeading": "Discusión reciente",
         "discussionText": "El foro interno del grupo aparece aquí.",

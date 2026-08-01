@@ -16,11 +16,11 @@ export const createAuthor = async (data: CreateAuthorRequest): Promise<AdminAuth
     return response.data.data;
 };
 
-export const updateAuthor = async (id: string, data: UpdateAuthorRequest): Promise<AdminAuthor> => {
+export const updateAuthor = async (id: number, data: UpdateAuthorRequest): Promise<AdminAuthor> => {
     const response = await api.put<ApiResponse<AdminAuthor>>(`${API_URLS.ADMIN_AUTHORS}/${id}`, data);
     return response.data.data;
 };
 
-export const deleteAuthor = async (id: string): Promise<void> => {
+export const deleteAuthor = async (id: number): Promise<void> => {
     await api.delete(`${API_URLS.ADMIN_AUTHORS}/${id}`);
 };

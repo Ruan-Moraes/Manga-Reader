@@ -12,8 +12,6 @@ type NewsFilterPanelProps = {
     sources: readonly string[];
 };
 
-const filterSelectClass = 'w-full px-3 py-2 border rounded-xs border-tertiary bg-secondary';
-
 const NewsFilterPanel = ({ period, setPeriod, source, setSource, sort, setSort, sources }: NewsFilterPanelProps) => {
     const { t } = useTranslation('news');
 
@@ -29,7 +27,6 @@ const NewsFilterPanel = ({ period, setPeriod, source, setSource, sort, setSort, 
                     ]}
                     value={period}
                     onChange={event => setPeriod(event.target.value as 'all' | 'today' | 'week' | 'month')}
-                    className={filterSelectClass}
                 />
 
                 <Select
@@ -39,7 +36,6 @@ const NewsFilterPanel = ({ period, setPeriod, source, setSource, sort, setSort, 
                     ]}
                     value={source}
                     onChange={event => setSource(event.target.value)}
-                    className={filterSelectClass}
                 />
 
                 <Select
@@ -56,7 +52,6 @@ const NewsFilterPanel = ({ period, setPeriod, source, setSource, sort, setSort, 
                     ]}
                     value={sort}
                     onChange={event => setSort(event.target.value as 'recent' | 'most-read' | 'trending')}
-                    className={filterSelectClass}
                 />
             </div>
         </div>

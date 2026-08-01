@@ -4,9 +4,11 @@ export { default as useTitles } from './model/useTitles';
 export { default as useTitlesFetch } from './model/data/useTitlesFetch';
 export { default as useTitleModals } from './model/useTitleModals';
 export { default as useSearchTitles } from './model/useSearchTitles';
+export { default as useRecentTitles } from './model/useRecentTitles';
 
 // Components - Cards
 export { default as MangaCard } from './ui/MangaCard';
+export { default as RelatedWorkCard } from './ui/card/RelatedWorkCard';
 export type { Manga, MangaCardProps } from './ui/MangaCard';
 export { default as BaseCard } from './ui/card/base/BaseCard';
 export { default as CarouselContainer } from './ui/card/carousel/CarouselContainer';
@@ -21,10 +23,10 @@ export { default as TitleDescription } from './ui/information/TitleDescription';
 export { default as TitleActions } from './ui/action/TitleActions';
 
 // Services
-export { filterTitles, searchTitles } from './api/titleService';
+export { filterTitles, getRecentTitles, searchTitles } from './api/titleService';
 
 // Types
-export type { Title, AuthorRole, TitleAuthor, TitlePublisher } from './model/title.types';
+export type { Title, TitleSearchResult, TitleSearchMatchType, AuthorRole, TitleAuthor, TitlePublisher, RelatedTitle } from './model/title.types';
 export type {
     BaseCard as BaseCardProps,
     CarouselCard,

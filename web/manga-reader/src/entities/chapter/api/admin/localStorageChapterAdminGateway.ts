@@ -127,7 +127,8 @@ export const createLocalStorageChapterAdminGateway = (store: ChapterStore): Chap
             let created: AdminChapter | undefined;
 
             store.write(state => {
-                const errors = validateChapterInput(data, siblingNumbers(state, data.titleId));
+                const normalizedData = { ...data, contentLanguage: data.contentLanguage ?? 'pt-BR' };
+                const errors = validateChapterInput(normalizedData, siblingNumbers(state, data.titleId));
                 if (errors.length) throw new ChapterDomainError(errors[0]);
 
                 const status = data.status ?? 'draft';
@@ -147,6 +148,10 @@ export const createLocalStorageChapterAdminGateway = (store: ChapterStore): Chap
                     displayOrder: data.displayOrder ?? siblings.length + 1,
                     description: data.description?.trim() || null,
                     status,
+                    contentLanguage: normalizedData.contentLanguage,
+                    scanGroupId: data.scanGroupId ?? null,
+                    scanGroupName: null,
+                    scanGroupLogo: null,
                     pagesCount: 0,
                     readyPagesCount: 0,
                     publishedAt: null,
@@ -172,13 +177,19 @@ export const createLocalStorageChapterAdminGateway = (store: ChapterStore): Chap
 
             store.write(state => {
                 const chapter = findOrThrow(state, chapterId);
-                const errors = validateChapterInput({ ...data, titleId: chapter.titleId }, siblingNumbers(state, chapter.titleId, chapterId));
+                const errors = validateChapterInput({
+                    ...data,
+                    titleId: chapter.titleId,
+                    contentLanguage: data.contentLanguage ?? chapter.contentLanguage ?? 'pt-BR',
+                }, siblingNumbers(state, chapter.titleId, chapterId));
                 if (errors.length) throw new ChapterDomainError(errors[0]);
 
                 if (data.title !== undefined) chapter.title = data.title.trim();
                 if (data.number !== undefined) chapter.number = normalizeChapterNumber(data.number);
                 if (data.displayOrder !== undefined) chapter.displayOrder = data.displayOrder;
                 if (data.description !== undefined) chapter.description = data.description.trim() || null;
+                if (data.contentLanguage !== undefined) chapter.contentLanguage = data.contentLanguage;
+                if (data.scanGroupId !== undefined) chapter.scanGroupId = data.scanGroupId;
                 if (data.status !== undefined && data.status !== chapter.status) {
                     changeStatusInState(chapter, data.status, data.scheduledAt);
                 } else if (data.scheduledAt !== undefined && chapter.status === 'scheduled') {

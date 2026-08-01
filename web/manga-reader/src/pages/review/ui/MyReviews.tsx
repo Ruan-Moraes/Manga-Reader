@@ -14,7 +14,7 @@ import { cn } from '@shared/lib/cn';
 
 import { showSuccessToast } from '@shared/service/util/toastService';
 
-import { getUserReviews, updateReview, deleteReview, ReviewCard, RatingModal, ReviewSortDropdown, type Review, type ReviewSortKey } from '@entities/review';
+import { getUserReviews, updateReview, deleteReview, UserReviewCard, RatingModal, ReviewSortDropdown, type Review, type ReviewSortKey } from '@entities/review';
 
 /** Ordena resenhas no cliente (sobre as já carregadas), espelhando o backend. */
 const SORT_FN: Record<ReviewSortKey, (a: Review, b: Review) => number> = {
@@ -252,37 +252,15 @@ const MyReviews = () => {
                     ) : (
                         <div className="flex flex-col gap-3">
                             {visible.map(r => (
-                                <ReviewCard
+                                <UserReviewCard
                                     key={r.id}
-                                    subjectTitle={{
-                                        label: r.titleName ?? t('myReviews.workPlaceholder', { id: r.titleId }),
-                                        onClick: () => navigate(ROUTES.TITLE_DETAIL(r.titleId)),
+                                    review={r}
+                                    onOpenTitle={titleId => navigate(ROUTES.TITLE_DETAIL(titleId))}
+                                    actions={{
+                                        onEdit: () => setEditing(r),
+                                        onDelete: () => handleDelete(r.id),
                                     }}
-                                    genres={r.genres}
-                                    manga={{ id: r.titleId, title: r.titleName ?? '', cover: r.cover }}
-                                    when={r.createdAt}
-                                    edited={r.edited}
-                                    updatedAt={r.updatedAt}
-                                    rating={r.overallRating}
-                                    title={r.reviewTitle}
-                                    upvotes={r.upvotes ?? 0}
-                                    downvotes={r.downvotes ?? 0}
-                                    myVote={r.myVote ?? null}
-                                    badge={r.top ? 'top' : null}
-                                    spoiler={r.spoiler}
-                                    onEdit={() => setEditing(r)}
-                                    onDelete={() => handleDelete(r.id)}
-                                    reviewScores={{
-                                        funRating: r.funRating,
-                                        artRating: r.artRating,
-                                        storylineRating: r.storylineRating,
-                                        charactersRating: r.charactersRating,
-                                        originalityRating: r.originalityRating,
-                                        pacingRating: r.pacingRating,
-                                    }}
-                                >
-                                    {r.comment ?? ''}
-                                </ReviewCard>
+                                />
                             ))}
 
                             {hasMore && (

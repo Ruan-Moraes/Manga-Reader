@@ -1,66 +1,58 @@
-import { describe, it, expect } from 'vitest';
-import { screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import { axeComponent } from '@/test/helpers/axe';
+
 import NewReleases from '../NewReleases';
 
 describe('NewReleases', () => {
+    beforeEach(() => {
+        window.history.replaceState({}, '', '/releases');
+    });
+
+    it('renders the integrated release feed without raw translation keys', async () => {
+        const { container } = renderWithProviders(<NewReleases />);
+        expect(await screen.findByRole('heading', { name: /lançamentos recentes/i })).toBeInTheDocument();
+        expect(await screen.findByText('Berserk')).toBeInTheDocument();
+        expect(screen.getByText(/2 capítulos encontrados/i)).toBeInTheDocument();
+        expect(container.textContent).not.toMatch(/releases\.(todayMeta|chaptersCount)/i);
+    });
+
+    it('combines title and language filters through the URL-backed query', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<NewReleases />);
+        await screen.findByText('Berserk');
+        await user.type(screen.getByRole('searchbox'), 'Berserk');
+        await user.click(screen.getByRole('combobox', { name: /idioma do capítulo/i }));
+        await user.click(await screen.findByRole('menuitem', { name: 'pt-BR' }));
+        await waitFor(() => expect(window.location.search).toContain('q=Berserk'));
+        expect(window.location.search).toContain('language=pt-BR');
+        expect(screen.getByText('1 capítulo encontrado')).toBeInTheDocument();
+        expect(screen.getByText('Berserk')).toBeInTheDocument();
+    });
+
+    it('keeps title and chapter navigation as separate actions', async () => {
+        renderWithProviders(<NewReleases />);
+        const titleLink = await screen.findByRole('link', { name: 'Berserk' });
+        const chapterButton = screen.getAllByRole('button', { name: /abrir capítulo/i })[0];
+        expect(titleLink).toHaveAttribute('href', expect.stringContaining('/titles/title-berserk'));
+        expect(chapterButton).toBeInTheDocument();
+    });
+
+    it('shows a contextual empty state and clears filters', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<NewReleases />);
+        await user.type(screen.getByRole('searchbox'), 'inexistente');
+        expect(await screen.findByText(/tudo em dia/i)).toBeInTheDocument();
+        await user.click(screen.getAllByRole('button', { name: /limpar filtros/i })[0]);
+        expect(await screen.findByText('Berserk')).toBeInTheDocument();
+    });
+
     it('has no axe violations', async () => {
         const { container } = renderWithProviders(<NewReleases />);
+        await screen.findByText('Berserk');
         expect(await axeComponent(container)).toHaveNoViolations();
-    });
-
-    it('renders main landmark', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getByRole('main')).toBeInTheDocument();
-    });
-
-    it('renders section heading', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getByRole('heading', { name: /lançamentos recentes/i })).toBeInTheDocument();
-    });
-
-    it('renders search field', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getByRole('searchbox')).toBeInTheDocument();
-    });
-
-    it('renders language select', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getByRole('combobox')).toBeInTheDocument();
-    });
-
-    it('renders library-only switch', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getByRole('switch', { name: /só minha biblioteca/i })).toBeInTheDocument();
-    });
-
-    it('renders release group headings', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getByText(/hoje/i)).toBeInTheDocument();
-    });
-
-    it('renders manga titles in releases', () => {
-        renderWithProviders(<NewReleases />);
-        expect(screen.getAllByText(/berserk/i).length).toBeGreaterThan(0);
-    });
-
-    it('filters by search query', async () => {
-        const user = userEvent.setup();
-        renderWithProviders(<NewReleases />);
-        const search = screen.getByRole('searchbox');
-        await user.type(search, 'Berserk');
-        expect(screen.getAllByText(/berserk/i).length).toBeGreaterThan(0);
-        expect(screen.queryByText('One Piece')).not.toBeInTheDocument();
-    });
-
-    it('library-only switch toggles state', async () => {
-        const user = userEvent.setup();
-        renderWithProviders(<NewReleases />);
-        const sw = screen.getByRole('switch', { name: /só minha biblioteca/i });
-        expect(sw).toHaveAttribute('aria-checked', 'false');
-        await user.click(sw);
-        expect(sw).toHaveAttribute('aria-checked', 'true');
     });
 });

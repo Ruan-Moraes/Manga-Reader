@@ -126,6 +126,7 @@ const Chapter = () => {
                     mode={r.mode}
                     direction={r.direction}
                     fit={r.fit}
+                    saturation={r.saturation}
                     gap={r.gap}
                     quality={r.quality}
                     preload={r.preload}
@@ -156,11 +157,13 @@ const Chapter = () => {
                     mode={r.mode}
                     direction={r.direction}
                     fit={r.fit}
+                    saturation={r.saturation}
                     gap={r.gap}
                     bg={r.bg}
                     onMode={r.setMode}
                     onDirection={r.setDirection}
                     onFit={r.setFit}
+                    onSaturation={r.setSaturation}
                     onGap={r.setGap}
                     onBg={r.setBg}
                     onClose={() => r.setSettingsOpen(false)}

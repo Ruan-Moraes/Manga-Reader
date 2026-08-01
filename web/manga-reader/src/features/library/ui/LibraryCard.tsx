@@ -37,7 +37,7 @@ const LibraryCard = ({ manga, onChangeList, onRemove }: Props) => {
                     }))}
                     value={manga.list}
                     onChange={e => onChangeList(manga.titleId, e.target.value as ReadingListType)}
-                    className="px-2 py-1 text-xs border rounded-xs border-tertiary bg-primary-default w-fit"
+                    className="w-fit"
                 />
                 {confirming ? (
                     <div className="flex items-center gap-2 text-xs">

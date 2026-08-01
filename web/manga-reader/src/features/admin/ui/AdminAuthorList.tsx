@@ -73,7 +73,7 @@ const AdminAuthorList = ({ authors, page, totalPages, isLoading, onPageChange, o
         <DataTable
             columns={buildColumns(t, onEdit, onDelete)}
             data={sortedData}
-            keyExtractor={author => author.id}
+            keyExtractor={author => String(author.id)}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}

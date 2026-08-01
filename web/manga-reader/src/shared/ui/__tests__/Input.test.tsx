@@ -37,6 +37,10 @@ describe('Input', () => {
 
     it('disabled passa pro input nativo', () => {
         render(<Input disabled />);
-        expect(screen.getByRole('textbox')).toBeDisabled();
+        const input = screen.getByRole('textbox');
+
+        expect(input).toBeDisabled();
+        expect(input).toHaveClass('text-mr-fg-disabled', 'placeholder:text-mr-fg-disabled');
+        expect(input.parentElement).toHaveClass('bg-mr-surface-muted', 'border-mr-border-subtle');
     });
 });

@@ -52,8 +52,9 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
     const [authors, setAuthors] = useState<TitleAuthorRef[]>([]);
     const [publishers, setPublishers] = useState<TitlePublisherRef[]>([]);
     const [stores, setStores] = useState<TitleStoreRef[]>([]);
+    const [aliases, setAliases] = useState('');
 
-    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { form, selectedTags, name, synopsis, authors, publishers, stores });
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { form, selectedTags, name, synopsis, authors, publishers, stores, aliases });
 
     // Reset ao abrir para criação; preenche ao carregar detalhe na edição.
     useEffect(() => {
@@ -66,6 +67,7 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             setAuthors([]);
             setPublishers([]);
             setStores([]);
+            setAliases('');
             resetDirty();
         }
     }, [isOpen, isEditing, resetDirty]);
@@ -86,6 +88,7 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             setAuthors(existing.authors ?? []);
             setPublishers(existing.publishers ?? []);
             setStores(existing.stores ?? []);
+            setAliases(existing.aliases?.map(alias => `${alias.type}|${alias.locale ?? ''}|${alias.name}`).join('\n') ?? '');
             resetDirty();
         }
     }, [existing, allTags, resetDirty]);
@@ -103,6 +106,18 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
             authors: authors.map(a => ({ authorId: a.authorId, role: a.role })),
             publishers: publishers.map(p => p.id),
             stores: stores.map(store => ({ storeId: store.storeId, url: store.url })),
+            aliases: aliases
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean)
+                .slice(0, 20)
+                .map(line => {
+                    const [candidateType, candidateLocale, ...nameParts] = line.split('|');
+                    const type = candidateType === 'SYNONYM' ? 'SYNONYM' : 'ALTERNATE';
+                    const aliasName = nameParts.length > 0 ? nameParts.join('|').trim() : candidateLocale?.trim() || candidateType;
+                    const locale = nameParts.length > 0 ? candidateLocale.trim() || undefined : undefined;
+                    return { name: aliasName.slice(0, 255), type, locale };
+                }),
         };
 
         const result = isEditing && titleId ? await handleUpdate(titleId, data) : await handleCreate(data);
@@ -127,6 +142,8 @@ const useTitleFormModalState = (titleId: string | null, isOpen: boolean) => {
         setPublishers,
         stores,
         setStores,
+        aliases,
+        setAliases,
         availableStores,
         allTags,
         statusOptions,

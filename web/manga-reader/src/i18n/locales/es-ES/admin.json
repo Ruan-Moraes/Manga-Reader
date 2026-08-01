@@ -448,6 +448,9 @@
                 "name": "Nombre",
                 "type": "Tipo",
                 "synopsis": "Sinopsis",
+                "aliases": "Títulos alternativos y sinónimos",
+                "aliasesHint": "Uno por línea: TIPO|locale opcional|Nombre. Tipos: ALTERNATE o SYNONYM. Máximo 20.",
+                "aliasesPlaceholder": "ALTERNATE|ja-JP|Título original",
                 "cover": "URL de portada",
                 "status": "Estado",
                 "genres": "Géneros (separados por coma)",
@@ -555,6 +558,13 @@
                 "description": "Nota interna",
                 "descriptionHint": "Visible solo en el panel de administración.",
                 "descriptionPlaceholder": "Notas para el equipo...",
+                "contentLanguage": "Idioma del capítulo",
+                "languagePt": "Portugués (Brasil)",
+                "languageEn": "Inglés (EE. UU.)",
+                "languageEs": "Español",
+                "scanGroup": "Grupo de scan",
+                "scanGroupHint": "Opcional; la atribución se conservará en el lanzamiento.",
+                "noScanGroup": "Sin grupo",
                 "status": "Estado",
                 "publishHint": "Publicar requiere al menos 1 página procesada.",
                 "scheduledAt": "Programar para"
@@ -668,7 +678,8 @@
                 "invalid_transition": "Transición de estado inválida ({{from}} → {{to}}).",
                 "reorder_incomplete_set": "La reordenación debe incluir todos los capítulos de la obra.",
                 "chapter_not_found": "Capítulo no encontrado.",
-                "title_id_required": "Selecciona la obra del capítulo."
+                "title_id_required": "Selecciona la obra del capítulo.",
+                "content_language_required": "Selecciona el idioma del capítulo."
             }
         },
         "events": {
@@ -933,7 +944,12 @@
         "bio": "Biografía",
         "bioPlaceholder": "Breve biografía del autor",
         "nationality": "Nacionalidad",
-        "nationalityHint": "Código ISO de 2 letras (ej.: JP, KR, BR)."
+        "nationalityHint": "Código ISO de 2 letras (ej.: JP, KR, BR).",
+        "imageUrl": "URL de la imagen",
+        "imageUrlPlaceholder": "https://...",
+        "aliases": "Alias y seudónimos",
+        "aliasesHint": "Uno por línea como ALTERNATE|Nombre o PEN_NAME|Nombre. Máximo 20.",
+        "aliasesPlaceholder": "PEN_NAME|Seudónimo"
     },
     "publisherForm": {
         "newTitle": "Nueva editorial",
@@ -944,7 +960,14 @@
         "slugHint": "Generado a partir del nombre; editable.",
         "country": "País",
         "countryHint": "Código ISO de 2 letras (ej.: JP, KR, BR).",
-        "website": "Sitio web"
+        "website": "Sitio web",
+        "logoUrl": "URL del logo",
+        "logoUrlPlaceholder": "https://...",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Breve descripción de la editorial",
+        "aliases": "Alias y abreviaturas",
+        "aliasesHint": "Uno por línea: ALTERNATE, ABBREVIATION u ORIGINAL seguido de |Nombre. Máximo 20.",
+        "aliasesPlaceholder": "ABBREVIATION|Sigla"
     },
     "stores": { "title": "Tiendas", "count": "{{count}} tiendas", "new": "Nueva tienda", "edit": "Editar tienda", "name": "Nombre", "website": "Sitio web", "logo": "URL del logo", "icon": "URL del icono", "status": "Estado", "active": "Activa", "inactive": "Inactiva", "order": "Orden", "actions": "Acciones", "search": "Buscar tiendas", "empty": "No se encontraron tiendas.", "deleteTitle": "Eliminar tienda", "deleteConfirm": "Se eliminarán los vínculos con títulos.", "addToTitle": "Vincular tienda", "removeFromTitle": "Eliminar tienda" },
     "titleAuthorRole": {

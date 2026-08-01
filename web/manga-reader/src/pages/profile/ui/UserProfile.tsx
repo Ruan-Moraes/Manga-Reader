@@ -4,10 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@shared/constant/ROUTES';
 import useAppNavigate from '@shared/hook/useAppNavigate';
-import formatRelativeDate from '@shared/service/util/formatRelativeDate';
-
 import { MangaCard } from '@entities/manga';
-import { ReviewCard, RatingModal, useUpdateReview, useDeleteReview, type Review } from '@entities/review';
+import { UserReviewCard, RatingModal, useUpdateReview, useDeleteReview, type Review } from '@entities/review';
 import { GroupCard } from '@entities/group';
 
 import { PageContainer } from '@ui/PageContainer';
@@ -23,34 +21,6 @@ import useProfileData from '../model/useProfileData';
 import UserProfileHeader from './parts/UserProfileHeader';
 import FollowListModal from './parts/FollowListModal';
 import ActivityTab from './parts/ActivityTab';
-
-const ProfileReviewCard = ({ review, onEdit, onDelete }: { review: Review; onEdit?: () => void; onDelete?: () => void }) => (
-    <ReviewCard
-        author={{ name: review.userName }}
-        when={formatRelativeDate(review.createdAt)}
-        rating={review.overallRating}
-        title={review.reviewTitle}
-        upvotes={review.upvotes ?? 0}
-        downvotes={review.downvotes ?? 0}
-        myVote={null}
-        onVote={() => {}}
-        badge={review.top ? 'top' : null}
-        spoiler={review.spoiler}
-        manga={{ id: review.titleId, title: review.titleName ?? '' }}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        reviewScores={{
-            funRating: review.funRating,
-            artRating: review.artRating,
-            storylineRating: review.storylineRating,
-            charactersRating: review.charactersRating,
-            originalityRating: review.originalityRating,
-            pacingRating: review.pacingRating,
-        }}
-    >
-        {review.comment ?? ''}
-    </ReviewCard>
-);
 
 const UserProfile = () => {
     const { t } = useTranslation('user');
@@ -155,7 +125,12 @@ const UserProfile = () => {
                         <p className="mr-label mb-3 text-mr-fg-subtle">{t('profile.tabs.reviews')}</p>
                         <div className="flex flex-col gap-3">
                             {reviews.map(r => (
-                                <ProfileReviewCard key={r.id} review={r} {...ownerActions(r)} />
+                                <UserReviewCard
+                                    key={r.id}
+                                    review={r}
+                                    onOpenTitle={titleId => navigate(ROUTES.TITLE_DETAIL(titleId))}
+                                    actions={ownerActions(r)}
+                                />
                             ))}
                         </div>
                     </section>
@@ -207,7 +182,12 @@ const UserProfile = () => {
                 ) : (
                     <div className="flex flex-col gap-3">
                         {reviews.map(r => (
-                            <ProfileReviewCard key={r.id} review={r} {...ownerActions(r)} />
+                            <UserReviewCard
+                                key={r.id}
+                                review={r}
+                                onOpenTitle={titleId => navigate(ROUTES.TITLE_DETAIL(titleId))}
+                                actions={ownerActions(r)}
+                            />
                         ))}
                     </div>
                 ))}

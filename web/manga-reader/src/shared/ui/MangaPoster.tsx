@@ -11,6 +11,7 @@ export interface MangaPosterProps {
     radius?: 'sm' | 'md' | 'lg';
     elevated?: boolean;
     onClick?: () => void;
+    className?: string;
 }
 
 const radiusMap = {
@@ -19,7 +20,7 @@ const radiusMap = {
     lg: 'rounded-mr-lg',
 };
 
-const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape = 'rect', radius = 'md', elevated, onClick }: MangaPosterProps) => {
+const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape = 'rect', radius = 'md', elevated, onClick, className }: MangaPosterProps) => {
     const ratio = shape === 'square' ? '1 / 1' : '2 / 3';
     return (
         <div
@@ -42,6 +43,7 @@ const MangaPosterBase = ({ cover, fallbackGradient, alt = '', size = 240, shape 
                 radiusMap[radius],
                 elevated && 'shadow-mr-elevated',
                 onClick && 'cursor-pointer transition-transform duration-mr-default hover:-translate-y-0.5',
+                className,
             )}
             style={{
                 width: size,

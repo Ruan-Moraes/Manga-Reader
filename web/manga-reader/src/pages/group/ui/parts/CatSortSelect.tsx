@@ -31,8 +31,8 @@ export const CatSortSelect = <T extends string>({ value, options, onChange }: Ca
                 <button
                     type="button"
                     className={cn(
-                        'inline-flex h-10 shrink-0 items-center gap-1.5 rounded-mr-xs border bg-mr-secondary px-3 text-mr-small font-mr-bold text-mr-fg tracking-mr cursor-pointer mr-focus-ring',
-                        open ? 'border-mr-accent-border' : 'border-mr-gray-700',
+                        'inline-flex h-11 shrink-0 items-center gap-1.5 rounded-mr-sm bg-mr-primary px-3 text-mr-body font-mr-bold text-mr-fg tracking-mr cursor-pointer mr-focus-ring transition-colors',
+                        open && 'bg-mr-surface-muted',
                     )}
                 >
                     <CurIcon className="size-3.5" strokeWidth={2} aria-hidden="true" />
@@ -47,7 +47,7 @@ export const CatSortSelect = <T extends string>({ value, options, onChange }: Ca
                     align="end"
                     sideOffset={4}
                     style={{ zIndex: 'var(--z-index-mr-dropdown)' }}
-                    className="min-w-[200px] overflow-hidden rounded-mr-xs border border-mr-gray-700 bg-mr-primary shadow-mr-elevated"
+                    className="min-w-[200px] overflow-hidden rounded-mr-md bg-mr-surface-elevated p-1.5 shadow-mr-elevated"
                 >
                     {options.map(o => {
                         const Icon = o.icon;
@@ -57,8 +57,8 @@ export const CatSortSelect = <T extends string>({ value, options, onChange }: Ca
                                 key={o.key}
                                 onSelect={() => onChange(o.key)}
                                 className={cn(
-                                    'flex w-full items-center gap-2 border-l-2 px-3 py-2.5 text-left text-mr-small font-mr-semibold tracking-mr cursor-pointer outline-none',
-                                    active ? 'border-mr-accent-border bg-mr-accent-10 text-mr-accent-fg' : 'border-transparent text-mr-fg hover:bg-mr-accent-10',
+                                    'flex h-10 w-full items-center gap-2 rounded-mr-sm px-3 text-left text-mr-body font-mr-semibold tracking-mr cursor-pointer outline-none',
+                                    active ? 'bg-mr-accent text-mr-on-accent' : 'text-mr-fg hover:bg-mr-accent-25',
                                 )}
                             >
                                 <Icon className="size-3.5" strokeWidth={2} aria-hidden="true" />

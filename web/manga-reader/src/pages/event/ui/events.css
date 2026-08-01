@@ -2,6 +2,8 @@
    O restante do estilo é inline/Tailwind nos componentes. */
 
 .events-page {
+    width: 100%;
+    min-width: 0;
     max-width: 1240px;
     margin: 0 auto;
     padding: 16px 12px;

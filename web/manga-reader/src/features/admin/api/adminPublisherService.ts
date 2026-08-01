@@ -16,11 +16,11 @@ export const createPublisher = async (data: CreatePublisherRequest): Promise<Adm
     return response.data.data;
 };
 
-export const updatePublisher = async (id: string, data: UpdatePublisherRequest): Promise<AdminPublisher> => {
+export const updatePublisher = async (id: number, data: UpdatePublisherRequest): Promise<AdminPublisher> => {
     const response = await api.put<ApiResponse<AdminPublisher>>(`${API_URLS.ADMIN_PUBLISHERS}/${id}`, data);
     return response.data.data;
 };
 
-export const deletePublisher = async (id: string): Promise<void> => {
+export const deletePublisher = async (id: number): Promise<void> => {
     await api.delete(`${API_URLS.ADMIN_PUBLISHERS}/${id}`);
 };

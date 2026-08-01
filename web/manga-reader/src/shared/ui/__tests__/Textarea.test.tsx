@@ -30,6 +30,9 @@ describe('Textarea', () => {
 
     it('disabled', () => {
         render(<Textarea disabled />);
-        expect(screen.getByRole('textbox')).toBeDisabled();
+        const textarea = screen.getByRole('textbox');
+
+        expect(textarea).toBeDisabled();
+        expect(textarea).toHaveClass('bg-mr-surface-muted', 'text-mr-fg-disabled', 'placeholder:text-mr-fg-disabled');
     });
 });

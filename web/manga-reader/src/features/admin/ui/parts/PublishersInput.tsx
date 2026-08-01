@@ -14,7 +14,7 @@ const PublishersInput = ({ value, onChange }: PublishersInputProps) => {
     const { t } = useTranslation('admin');
 
     const add = (publisher: AdminPublisher) => {
-        onChange([...value, { id: Number(publisher.id), name: publisher.name }]);
+        onChange([...value, { id: publisher.id, name: publisher.name }]);
     };
 
     const remove = (id: number) => {
@@ -51,7 +51,7 @@ const PublishersInput = ({ value, onChange }: PublishersInputProps) => {
                 getLabel={publisher => publisher.name}
                 onPick={add}
                 placeholder={t('dashboard.titles.form.publishersSearch')}
-                excludeKeys={value.map(entry => String(entry.id))}
+                excludeKeys={value.map(entry => entry.id)}
                 emptyLabel={t('dashboard.titles.form.publishersEmpty')}
             />
         </div>

@@ -6,8 +6,11 @@ import { Compass, MessagesSquare, Newspaper, type LucideIcon } from 'lucide-reac
 import { Avatar } from '@ui/Avatar';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
-import { MangaCard } from '@entities/manga';
+import { Pagination } from '@ui/Pagination';
+import { Skeleton } from '@ui/Skeleton';
+import { MangaCard, type RelatedTitle } from '@entities/manga';
 import type { Group } from '@entities/group';
+import type { PageResponse } from '@shared/service/http';
 
 import { useBookmark } from '@features/library';
 
@@ -61,29 +64,54 @@ export const GroupAbout = ({ group }: { group: Group }) => {
     );
 };
 
-export const GroupWorks = ({ group, onOpenTitle }: { group: Group; onOpenTitle: (id: string) => void }) => {
+type GroupWorksProps = {
+    group: Group;
+    page?: PageResponse<RelatedTitle>;
+    pageIndex: number;
+    loading: boolean;
+    error: boolean;
+    onRetry: () => void;
+    onPageChange: (page: number) => void;
+    onOpenTitle: (id: string) => void;
+};
+
+export const GroupWorks = ({ group, page, pageIndex, loading, error, onRetry, onPageChange, onOpenTitle }: GroupWorksProps) => {
     const { t } = useTranslation('group');
     const { isSaved, toggleBookmark } = useBookmark();
 
-    const works = group.translatedWorks ?? [];
+    const works = page?.content;
 
-    if (!works.length) return <div className="px-5 py-10 text-center text-mr-small text-mr-fg-muted">{t('profile.worksEmpty')}</div>;
+    if (loading && !page) return <Skeleton variant="rect" height={240} className="w-full rounded-mr-sm" />;
+    if (error) {
+        return (
+            <div className="flex flex-col items-center gap-3 px-5 py-10 text-center text-mr-small text-mr-fg-muted">
+                {t('profile.worksError')}
+                <Button variant="ghost" size="sm" onClick={onRetry}>{t('profile.retry')}</Button>
+            </div>
+        );
+    }
+    if (!works?.length) return <div className="px-5 py-10 text-center text-mr-small text-mr-fg-muted">{t('profile.worksEmpty')}</div>;
 
     return (
         <div>
-            <Heading>{t('profile.worksCount', { count: works.length })}</Heading>
+            <Heading>{t('profile.worksCount', { count: page?.totalElements ?? group.totalTitles })}</Heading>
             <div className="grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))' }}>
                 {works.map(w => (
                     <MangaCard
                         key={w.id}
                         size="sm"
-                        manga={{ id: w.id, title: w.title, cover: w.cover, chapter: w.chapters, genre: w.genres }}
+                        manga={{ id: w.id, title: w.name, cover: w.cover ?? undefined, chapter: 0, genre: [] }}
                         onClick={() => onOpenTitle(w.id)}
                         inLibrary={isSaved(w.id)}
                         onToggleLibrary={() => toggleBookmark(w.id)}
                     />
                 ))}
             </div>
+            {(page?.totalPages ?? 0) > 1 && (
+                <div className="mt-6">
+                    <Pagination page={pageIndex + 1} total={page!.totalPages} onChange={value => onPageChange(value - 1)} />
+                </div>
+            )}
         </div>
     );
 };

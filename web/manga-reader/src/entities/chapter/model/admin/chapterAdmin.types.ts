@@ -38,6 +38,10 @@ export type AdminChapter = {
     /** Descrição/observação interna (não aparece no site público). */
     description: string | null;
     status: ChapterStatus;
+    contentLanguage?: string | null;
+    scanGroupId?: string | null;
+    scanGroupName?: string | null;
+    scanGroupLogo?: string | null;
     pagesCount: number;
     /** Páginas com processamento concluído — pré-requisito de publicação. */
     readyPagesCount: number;
@@ -80,6 +84,8 @@ export type CreateChapterRequest = {
     description?: string;
     status?: Extract<ChapterStatus, 'draft' | 'scheduled' | 'published'>;
     scheduledAt?: string;
+    contentLanguage?: string;
+    scanGroupId?: string | null;
 };
 
 export type UpdateChapterRequest = Partial<Omit<CreateChapterRequest, 'titleId'>>;
@@ -102,6 +108,8 @@ export type LegacyChapterImportPayload = {
         number: string;
         displayOrder?: number;
         description?: string | null;
+        contentLanguage?: string | null;
+        scanGroupId?: string | null;
         status: string;
         scheduledAt?: string | null;
         publishedAt?: string | null;
@@ -147,4 +155,5 @@ export type ChapterValidationError =
     | { code: 'invalid_transition'; from: ChapterStatus; to: ChapterStatus }
     | { code: 'reorder_incomplete_set' }
     | { code: 'chapter_not_found' }
-    | { code: 'title_id_required' };
+    | { code: 'title_id_required' }
+    | { code: 'content_language_required' };

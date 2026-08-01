@@ -33,7 +33,7 @@ const useAdminPublisherActions = () => {
     );
 
     const handleUpdate = useCallback(
-        async (publisherId: string, data: UpdatePublisherRequest) => {
+        async (publisherId: number, data: UpdatePublisherRequest) => {
             setIsSubmitting(true);
             try {
                 const result = await updatePublisher(publisherId, data);
@@ -50,7 +50,7 @@ const useAdminPublisherActions = () => {
     );
 
     const handleDelete = useCallback(
-        async (publisherId: string) => {
+        async (publisherId: number) => {
             setIsSubmitting(true);
             try {
                 await deletePublisher(publisherId);

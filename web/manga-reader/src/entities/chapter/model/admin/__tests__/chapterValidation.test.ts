@@ -14,7 +14,11 @@ const codes = (errors: { code: string }[]) => errors.map(e => e.code);
 
 describe('chapterValidation', () => {
     describe('validateChapterInput', () => {
-        const base = { titleId: 't1', title: 'Capítulo válido', number: '10' };
+        const base = { titleId: 't1', title: 'Capítulo válido', number: '10', contentLanguage: 'pt-BR' };
+
+        it('exige idioma do conteúdo', () => {
+            expect(codes(validateChapterInput({ ...base, contentLanguage: ' ' }, []))).toContain('content_language_required');
+        });
 
         it('aceita entrada válida', () => {
             expect(validateChapterInput(base, ['1', '2'])).toEqual([]);

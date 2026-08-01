@@ -13,14 +13,22 @@ export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
     bare?: boolean;
 }
 
-const Track = ({ checked }: { checked: boolean }) => (
+const Track = ({ checked, disabled }: { checked: boolean; disabled?: boolean }) => (
     <span
-        className={cn('relative ml-auto h-5 w-9 shrink-0 rounded-mr-full transition-colors duration-mr-default', checked ? 'bg-mr-accent' : 'bg-mr-gray-700')}
+        className={cn(
+            'relative ml-auto h-5 w-9 shrink-0 rounded-mr-full transition-colors duration-mr-default',
+            disabled
+                ? 'border border-mr-border-subtle bg-mr-surface-muted'
+                : checked
+                  ? 'bg-mr-accent'
+                  : 'bg-mr-control-track-off',
+        )}
     >
         <span
             className={cn(
                 'absolute top-0.5 size-4 rounded-mr-full transition-all duration-mr-default',
-                checked ? 'left-[18px] bg-mr-on-accent' : 'left-0.5 bg-mr-fg',
+                checked ? 'left-[18px]' : 'left-0.5',
+                disabled ? 'bg-mr-fg-disabled' : checked ? 'bg-mr-on-accent' : 'bg-mr-control-thumb-off',
             )}
         />
     </span>
@@ -41,12 +49,12 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
                 onClick={() => onChange(!checked)}
                 className={cn(
                     'mr-focus-ring inline-flex rounded-mr-full transition-opacity duration-mr-default',
-                    disabled && 'cursor-not-allowed opacity-mr-disabled',
+                    disabled && 'cursor-not-allowed opacity-[0.7]',
                     className,
                 )}
                 {...rest}
             >
-                <Track checked={checked} />
+                <Track checked={checked} disabled={disabled} />
             </button>
         );
     }
@@ -62,7 +70,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
             className={cn(
                 'flex w-full items-center justify-between gap-3 rounded-mr-sm border border-mr-border-subtle bg-mr-surface-muted p-3 text-left transition-colors duration-mr-default hover:border-mr-border',
                 'mr-focus-ring',
-                disabled && 'cursor-not-allowed opacity-mr-disabled',
+                disabled && 'cursor-not-allowed opacity-[0.7]',
                 className,
             )}
             {...rest}
@@ -73,7 +81,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
                     {description && <span className="text-mr-tiny text-mr-fg-subtle">{description}</span>}
                 </span>
             )}
-            <Track checked={checked} />
+            <Track checked={checked} disabled={disabled} />
         </button>
     );
 });

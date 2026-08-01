@@ -24,6 +24,7 @@ interface ReadingAreaProps {
     mode: ReadMode;
     direction: Direction;
     fit: Fit;
+    saturation: number;
     gap: number;
     quality: ImageQuality;
     preload: number;
@@ -37,7 +38,7 @@ interface ReadingAreaProps {
 
 const FALLBACK_PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1);
 
-export const ReadingArea = ({ mode, direction, fit, gap, quality, preload, chapter, page, listRef, end, pages }: ReadingAreaProps) => {
+export const ReadingArea = ({ mode, direction, fit, saturation, gap, quality, preload, chapter, page, listRef, end, pages }: ReadingAreaProps) => {
     const rowDir = direction === 'rtl' ? 'row-reverse' : 'row';
 
     const hasRealPages = Boolean(pages?.length);
@@ -53,12 +54,13 @@ export const ReadingArea = ({ mode, direction, fit, gap, quality, preload, chapt
     const numbers = hasRealPages ? pages!.map((_, i) => i + 1) : FALLBACK_PAGES;
 
     return (
-        <div className="reader-area" data-mode={mode} style={{ ['--reader-gap' as string]: `${gap}px` }}>
+        <div className="reader-area" data-mode={mode} data-gap={gap === 0 ? 'zero' : undefined} style={{ ['--reader-gap' as string]: `${gap}px`, ['--reader-saturation' as string]: `${saturation}%` }}>
             {mode === 'vertical' && (
                 <div className="reader-pages-vertical" ref={listRef}>
-                    {numbers.map(n => (
-                        <ReaderPagePlaceholder key={n} n={n} chapter={chapter} src={srcOf(n)} eager={n <= page + preload} quality={quality} />
-                    ))}
+                    {numbers.map(n => {
+                        const edge = n === 1 && n === total ? 'both' : n === 1 ? 'first' : n === total ? 'last' : undefined;
+                        return <ReaderPagePlaceholder key={n} n={n} chapter={chapter} src={srcOf(n)} eager={n <= page + preload} quality={quality} edge={edge} />;
+                    })}
                     <EndOfChapter {...end} />
                 </div>
             )}

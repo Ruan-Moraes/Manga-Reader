@@ -33,7 +33,7 @@ const useAdminAuthorActions = () => {
     );
 
     const handleUpdate = useCallback(
-        async (authorId: string, data: UpdateAuthorRequest) => {
+        async (authorId: number, data: UpdateAuthorRequest) => {
             setIsSubmitting(true);
             try {
                 const result = await updateAuthor(authorId, data);
@@ -50,7 +50,7 @@ const useAdminAuthorActions = () => {
     );
 
     const handleDelete = useCallback(
-        async (authorId: string) => {
+        async (authorId: number) => {
             setIsSubmitting(true);
             try {
                 await deleteAuthor(authorId);

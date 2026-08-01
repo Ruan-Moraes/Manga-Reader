@@ -104,9 +104,9 @@ function EntitySearchSelect<T>({ queryKey, fetcher, getKey, getLabel, onPick, pl
                         onBlur={() => setTimeout(() => setOpen(false), 150)}
                         onKeyDown={onKeyDown}
                         className={cn(
-                            'h-11 w-full rounded-mr-sm border border-mr-border bg-mr-primary pl-9 pr-3 text-mr-body text-mr-fg',
-                            'placeholder:text-mr-tertiary transition-[border-color,box-shadow] duration-mr-fast outline-none',
-                            'hover:border-mr-gray-500 focus:border-mr-accent-border focus:ring-2 focus:ring-mr-accent-25',
+                            'h-11 w-full rounded-mr-sm bg-mr-primary pl-9 pr-3 text-mr-body text-mr-fg',
+                            'placeholder:text-mr-tertiary transition-[background-color,box-shadow] duration-mr-fast outline-none',
+                            'hover:bg-mr-surface-muted focus:bg-mr-surface-muted focus:ring-2 focus:ring-mr-accent-25',
                         )}
                     />
                 </div>
@@ -125,7 +125,7 @@ function EntitySearchSelect<T>({ queryKey, fetcher, getKey, getLabel, onPick, pl
                         <ul
                             id={listboxId}
                             role="listbox"
-                            className="max-h-56 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-surface-elevated p-1.5 shadow-mr-elevated"
+                            className="max-h-56 overflow-y-auto rounded-mr-md bg-mr-surface-elevated p-1.5 shadow-mr-elevated"
                         >
                             {isFetching && <li className="px-3 py-2 text-mr-small text-mr-fg-subtle">…</li>}
                             {!isFetching && results.length === 0 && <li className="px-3 py-2 text-mr-small text-mr-fg-subtle">{emptyLabel}</li>}
@@ -137,7 +137,7 @@ function EntitySearchSelect<T>({ queryKey, fetcher, getKey, getLabel, onPick, pl
                                         onMouseDown={e => e.preventDefault()}
                                         onClick={() => pick(item)}
                                         className={cn(
-                                            'block w-full rounded-mr-sm px-3 py-2 text-left text-mr-small text-mr-fg transition-colors hover:bg-mr-accent-25 hover:text-mr-accent-fg',
+                                            'flex h-10 w-full items-center rounded-mr-sm px-3 text-left text-mr-body text-mr-fg transition-colors hover:bg-mr-accent-25 hover:text-mr-accent-fg',
                                             index === activeIndex && 'bg-mr-accent-25 text-mr-accent-fg',
                                         )}
                                     >

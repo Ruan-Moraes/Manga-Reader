@@ -92,7 +92,7 @@ const AdminPublisherList = ({ publishers, page, totalPages, isLoading, onPageCha
         <DataTable
             columns={buildColumns(t, onEdit, onDelete)}
             data={sortedData}
-            keyExtractor={publisher => publisher.id}
+            keyExtractor={publisher => String(publisher.id)}
             page={page}
             totalPages={totalPages}
             onPageChange={onPageChange}

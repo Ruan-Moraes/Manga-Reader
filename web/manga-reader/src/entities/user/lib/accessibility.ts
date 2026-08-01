@@ -41,7 +41,7 @@ type LegacyReaderPrefs = Partial<{
     direction: 'ltr' | 'rtl';
     fit: 'width' | 'height' | 'original';
     gap: number;
-    bg: 'black' | 'dark' | 'paper';
+    bg: 'black' | 'dark' | 'paper' | 'light' | 'white';
 }>;
 
 const legacyReaderPatch = (legacy: LegacyReaderPrefs): Partial<UserSettings['reader']> => {
@@ -50,7 +50,7 @@ const legacyReaderPatch = (legacy: LegacyReaderPrefs): Partial<UserSettings['rea
     if (legacy.mode && ['vertical', 'paged', 'double'].includes(legacy.mode)) patch.mode = legacy.mode.toUpperCase() as UserSettings['reader']['mode'];
     if (legacy.direction && ['ltr', 'rtl'].includes(legacy.direction)) patch.direction = legacy.direction.toUpperCase() as UserSettings['reader']['direction'];
     if (legacy.fit && ['width', 'height', 'original'].includes(legacy.fit)) patch.fit = legacy.fit.toUpperCase() as UserSettings['reader']['fit'];
-    if (legacy.bg && ['black', 'dark', 'paper'].includes(legacy.bg)) patch.background = legacy.bg.toUpperCase() as UserSettings['reader']['background'];
+    if (legacy.bg && ['black', 'dark', 'paper', 'light', 'white'].includes(legacy.bg)) patch.background = legacy.bg.toUpperCase() as UserSettings['reader']['background'];
     if (typeof legacy.gap === 'number' && Number.isFinite(legacy.gap) && legacy.gap >= 0 && legacy.gap <= 32) patch.gap = legacy.gap;
 
     return patch;

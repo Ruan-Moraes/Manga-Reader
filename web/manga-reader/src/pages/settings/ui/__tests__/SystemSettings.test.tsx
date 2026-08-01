@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
 
@@ -109,5 +109,26 @@ describe('SystemSettings', () => {
         expect(sw).toHaveAttribute('aria-checked', 'true');
         await user.click(sw);
         expect(sw).toHaveAttribute('aria-checked', 'false');
+    });
+
+    it('offers and selects all five reader backgrounds', async () => {
+        const user = userEvent.setup();
+        renderPage();
+
+        for (const label of [/preto/i, /escuro/i, /sépia/i, /claro/i, /branco/i]) {
+            expect(screen.getByRole('radio', { name: label })).toBeInTheDocument();
+        }
+
+        const light = screen.getByRole('radio', { name: /claro/i });
+        await user.click(light);
+        expect(light).toHaveAttribute('aria-checked', 'true');
+    });
+
+    it('offers the reader saturation control', () => {
+        renderPage();
+        const saturation = screen.getByRole('slider', { name: /saturação/i });
+        expect(saturation).toHaveValue('100');
+        fireEvent.change(saturation, { target: { value: '50' } });
+        expect(saturation).toHaveValue('50');
     });
 });

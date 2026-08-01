@@ -4,17 +4,26 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderWithProviders } from '@/test/helpers/renderWithProviders';
 import { axeComponent } from '@/test/helpers/axe';
 
+const mOverview = {
+    isLoading: false,
+    isError: false,
+    data: undefined as unknown,
+    refetch: vi.fn(),
+};
+
 const mSearch = {
     isLoading: false,
     isError: false,
     data: undefined as unknown,
+    refetch: vi.fn(),
 };
 
-vi.mock('@entities/manga', async importOriginal => {
-    const actual = await importOriginal<typeof import('@entities/manga')>();
+vi.mock('@features/search-catalog', async importOriginal => {
+    const actual = await importOriginal<typeof import('@features/search-catalog')>();
     return {
         ...actual,
-        useSearchTitles: () => mSearch,
+        useGlobalSearchSuggestions: () => mOverview,
+        useCatalogSearch: () => mSearch,
     };
 });
 
@@ -44,10 +53,13 @@ describe('SearchResults route', () => {
         mSearch.isLoading = false;
         mSearch.isError = false;
         mSearch.data = undefined;
+        mOverview.isLoading = false;
+        mOverview.isError = false;
+        mOverview.data = undefined;
     });
 
     it('mostra mensagem de erro quando isError=true', () => {
-        mSearch.isError = true;
+        mOverview.isError = true;
 
         renderWithProviders(<SearchResults />);
 
@@ -55,11 +67,9 @@ describe('SearchResults route', () => {
     });
 
     it('mostra empty state quando data.content vazio', () => {
-        mSearch.data = {
-            content: [],
+        mOverview.data = {
+            sections: [],
             totalElements: 0,
-            totalPages: 0,
-            last: true,
         };
 
         renderWithProviders(<SearchResults />);
@@ -68,21 +78,28 @@ describe('SearchResults route', () => {
     });
 
     it('renderiza títulos quando data.content presente', () => {
-        mSearch.data = {
-            content: [
-                {
+        mOverview.data = {
+            sections: [{
+                type: 'TITLE',
+                totalElements: 1,
+                items: [{
                     id: 't1',
+                    slug: null,
+                    entityType: 'TITLE',
                     name: 'One Piece',
-                    author: 'Oda',
-                    cover: 'cover.jpg',
-                    ratingAverage: 4.8,
-                    type: 'MANGA',
-                    genres: ['Action', 'Adventure'],
-                },
-            ],
+                    image: 'cover.jpg',
+                    matchedBy: 'PRIMARY_NAME',
+                    matchedText: 'One Piece',
+                    roles: [],
+                    workCount: 0,
+                    titleType: 'MANGA',
+                    titleStatus: 'ONGOING',
+                    adult: false,
+                    primaryContributor: 'Oda',
+                    country: null,
+                }],
+            }],
             totalElements: 1,
-            totalPages: 1,
-            last: true,
         };
 
         renderWithProviders(<SearchResults />);

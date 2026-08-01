@@ -24,7 +24,10 @@ export const createHttpChapterAdminGateway = (): ChapterAdminGateway => ({
         return mapChapter(response.data.data);
     },
     async update(id, data) {
-        const response = await api.patch<ApiResponse<ApiChapter>>(`/api/admin/chapters/${id}`, data);
+        const response = await api.patch<ApiResponse<ApiChapter>>(`/api/admin/chapters/${id}`, {
+            ...data,
+            clearScanGroup: data.scanGroupId === null,
+        });
         return mapChapter(response.data.data);
     },
     async duplicate(id) {

@@ -121,10 +121,13 @@
         "fitWidth": "Width",
         "fitHeight": "Height",
         "fitOriginal": "Original",
+        "saturation": "Saturation",
         "bgSection": "Background",
         "bgBlack": "Black",
         "bgDark": "Dark",
-        "bgPaper": "Paper",
+        "bgPaper": "Sepia",
+        "bgLight": "Light",
+        "bgWhite": "White",
         "shortcutsSection": "Keyboard shortcuts",
         "shortcuts": {
             "prevPage": "Previous page",
@@ -190,12 +193,46 @@
     "releases": {
         "eyebrow": "New chapters",
         "title": "Recent releases",
+        "description": "Follow newly published chapters, discover titles added to the platform and keep your reading up to date.",
+        "total_one": "{{count}} chapter found",
+        "total_other": "{{count}} chapters found",
         "allLanguages": "All languages",
+        "languageLabel": "Chapter language",
+        "periodLabel": "Period",
+        "filtersLabel": "Release filters",
         "filterPlaceholder": "Filter by title",
         "libraryOnly": "My library only",
         "newBadge": "New",
+        "seenBadge": "Seen",
+        "markSeen": "Mark as seen",
+        "alreadySeen": "Chapter already marked as seen",
         "markAllSeen": "Mark all as seen",
+        "markSeenError": "The seen state could not be updated.",
+        "openChapter": "Open chapter",
+        "clearFilters": "Clear filters",
+        "retry": "Try again",
         "publishedAt": "published at {{time}}",
+        "chaptersCount_one": "{{count}} chapter",
+        "chaptersCount_other": "{{count}} chapters",
+        "period": {
+            "day": "Today",
+            "week": "Last 7 days",
+            "month": "Last 30 days"
+        },
+        "days": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "ago_one": "{{count}} day ago",
+            "ago_other": "{{count}} days ago"
+        },
+        "error": {
+            "title": "Releases could not be loaded",
+            "description": "Check your connection and try again."
+        },
+        "emptyPeriod": {
+            "title": "No recent releases",
+            "description": "No chapters have been published in this period yet."
+        },
         "emptyLibrary": {
             "title": "No new chapters in your followed titles",
             "description": "Add titles to your library to see releases here."
@@ -203,12 +240,33 @@
         "emptyFilter": {
             "title": "All caught up!",
             "description": "No releases match the current filter."
+        },
+        "recentTitles": {
+            "eyebrow": "New in the catalog",
+            "title": "Recently added titles"
+        },
+        "trending": {
+            "eyebrow": "Discover more",
+            "title": "Trending in this period",
+            "position": "Position {{position}}",
+            "updates_one": "{{count}} update in this period",
+            "updates_other": "{{count}} updates in this period"
+        },
+        "status": {
+            "ongoing": "Ongoing",
+            "complete": "Completed",
+            "completed": "Completed",
+            "hiatus": "On hiatus",
+            "cancelled": "Cancelled"
         }
     },
     "filters": {
         "searchPlaceholder": "Search titles...",
         "filtersButton": "Filters",
         "filtersButtonCount": "Filters ({{count}})",
+        "refine": "Refine your search",
+        "activeFilters": "Active filters",
+        "resultsControlsAria": "Result controls",
         "genres": "Genres",
         "tagSearchPlaceholder": "Search genre...",
         "noTagsFound": "No genres found",
@@ -249,10 +307,88 @@
         "titleWithQuery": "Results for \"{{query}}\"",
         "emptyTitle": "What do you want to read today?",
         "emptyDescription": "Type a title name to get started.",
+        "tooShortDescription": "Type at least 2 characters to search.",
         "errorTitle": "Search error",
         "errorDescription": "Could not load results. Please try again.",
         "noResultsTitle": "No results",
-        "noResultsDescription": "Nothing found for \"{{query}}\". Try other terms."
+        "noResultsDescription": "Nothing found for \"{{query}}\". Try other terms.",
+        "resultsMeta": "{{count}} results",
+        "filtersAria": "Filter results by category",
+        "filter": {
+            "ALL": "All",
+            "TITLE": "Titles",
+            "AUTHOR": "Authors",
+            "ARTIST": "Artists",
+            "PUBLISHER": "Publishers",
+            "GROUP": "Groups"
+        },
+        "categoryCount": "{{count}} results in {{category}}",
+        "viewCategory": "View all in {{category}}",
+        "workCount": "{{count}} works",
+        "type": {
+            "TITLE": "Title",
+            "AUTHOR": "Author",
+            "ARTIST": "Artist",
+            "PUBLISHER": "Publisher",
+            "GROUP": "Group"
+        },
+        "role": {
+            "AUTHOR": "Author",
+            "STORY": "Story",
+            "ARTIST": "Artist",
+            "COLORIST": "Colorist",
+            "LETTERER": "Letterer",
+            "EDITOR": "Editor"
+        },
+        "match": {
+            "TRANSLATED_TITLE": "Translated title: {{value}}",
+            "ALTERNATE_NAME": "Alternate name: {{value}}",
+            "PEN_NAME": "Pen name: {{value}}",
+            "ABBREVIATION": "Abbreviation: {{value}}",
+            "ORIGINAL_NAME": "Original name: {{value}}",
+            "USERNAME": "Username: {{value}}",
+            "RELATED_AUTHOR": "Related author: {{value}}",
+            "RELATED_ARTIST": "Related artist: {{value}}",
+            "RELATED_PUBLISHER": "Related publisher: {{value}}",
+            "RELATED_GROUP": "Related group: {{value}}"
+        },
+        "retry": "Try again"
+    },
+    "person": {
+        "notFoundTitle": "Person not found",
+        "notFoundDescription": "This profile does not exist or is no longer available.",
+        "errorTitle": "Could not load profile",
+        "errorDescription": "Please try again in a moment.",
+        "backToSearch": "Back to search",
+        "artistEyebrow": "Artist profile",
+        "authorEyebrow": "Author profile",
+        "alsoKnownAs": "Also known as",
+        "noBiography": "No biography available yet.",
+        "illustratedWorks": "Works as artist",
+        "writtenWorks": "Works as author",
+        "workCount": "{{count}} works",
+        "worksErrorTitle": "Could not load works",
+        "worksErrorDescription": "Try loading this list again.",
+        "noWorksTitle": "No works found",
+        "noWorksDescription": "There are no public works associated with this role yet."
+    },
+    "publisher": {
+        "notFoundTitle": "Publisher not found",
+        "notFoundDescription": "This publisher does not exist or is no longer available.",
+        "errorTitle": "Could not load publisher",
+        "errorDescription": "Please try again in a moment.",
+        "backToSearch": "Back to search",
+        "eyebrow": "Publisher profile",
+        "countryUnknown": "Country not provided",
+        "alsoKnownAs": "Also known as",
+        "noDescription": "No description available yet.",
+        "officialWebsite": "Official website",
+        "publishedWorks": "Published works",
+        "workCount": "{{count}} works",
+        "worksErrorTitle": "Could not load works",
+        "worksErrorDescription": "Try loading this list again.",
+        "noWorksTitle": "No works found",
+        "noWorksDescription": "There are no public works associated with this publisher yet."
     },
     "chapter": {
         "heading": "Chapters:",

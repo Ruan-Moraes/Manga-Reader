@@ -8,6 +8,8 @@ const TitleDetailsPage = lazy(() => import('@pages/title/ui/TitleDetails'));
 const Chapter = lazy(() => import('@pages/chapter/ui/Chapter'));
 const Groups = lazy(() => import('@pages/group/ui/Groups'));
 const GroupProfile = lazy(() => import('@pages/group/ui/GroupProfile'));
+const AuthorProfile = lazy(() => import('@pages/author'));
+const PublisherProfile = lazy(() => import('@pages/publisher'));
 const News = lazy(() => import('@pages/news/ui/News'));
 const NewsDetails = lazy(() => import('@pages/news/ui/NewsDetails'));
 const Events = lazy(() => import('@pages/event/ui/Events'));
@@ -53,6 +55,9 @@ export const contentRoutes = [
     // Groups
     { path: 'groups', element: <Groups /> },
     { path: 'groups/:groupId', element: <GroupProfile /> },
+    { path: 'authors/:slug', element: <AuthorProfile /> },
+    { path: 'artists/:slug', element: <AuthorProfile /> },
+    { path: 'publishers/:slug', element: <PublisherProfile /> },
 
     // Profile
     { path: 'profile', element: <UserProfile /> },

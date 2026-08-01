@@ -121,10 +121,13 @@
         "fitWidth": "Largura",
         "fitHeight": "Altura",
         "fitOriginal": "Original",
+        "saturation": "Saturação",
         "bgSection": "Fundo",
         "bgBlack": "Preto",
         "bgDark": "Escuro",
-        "bgPaper": "Papel",
+        "bgPaper": "Sépia",
+        "bgLight": "Claro",
+        "bgWhite": "Branco",
         "shortcutsSection": "Atalhos de teclado",
         "shortcuts": {
             "prevPage": "Página anterior",
@@ -190,12 +193,46 @@
     "releases": {
         "eyebrow": "Capítulos novos",
         "title": "Lançamentos recentes",
+        "description": "Acompanhe capítulos recém-publicados, encontre obras adicionadas à plataforma e mantenha sua leitura em dia.",
+        "total_one": "{{count}} capítulo encontrado",
+        "total_other": "{{count}} capítulos encontrados",
         "allLanguages": "Todos idiomas",
+        "languageLabel": "Idioma do capítulo",
+        "periodLabel": "Período",
+        "filtersLabel": "Filtros de lançamentos",
         "filterPlaceholder": "Filtrar por obra",
         "libraryOnly": "Só minha biblioteca",
         "newBadge": "Novo",
+        "seenBadge": "Visto",
+        "markSeen": "Marcar como visto",
+        "alreadySeen": "Capítulo já marcado como visto",
         "markAllSeen": "Marcar tudo como visto",
+        "markSeenError": "Não foi possível atualizar o estado de leitura.",
+        "openChapter": "Abrir capítulo",
+        "clearFilters": "Limpar filtros",
+        "retry": "Tentar novamente",
         "publishedAt": "publicado às {{time}}",
+        "chaptersCount_one": "{{count}} capítulo",
+        "chaptersCount_other": "{{count}} capítulos",
+        "period": {
+            "day": "Hoje",
+            "week": "Últimos 7 dias",
+            "month": "Últimos 30 dias"
+        },
+        "days": {
+            "today": "Hoje",
+            "yesterday": "Ontem",
+            "ago_one": "Há {{count}} dia",
+            "ago_other": "Há {{count}} dias"
+        },
+        "error": {
+            "title": "Não foi possível carregar os lançamentos",
+            "description": "Verifique sua conexão e tente novamente."
+        },
+        "emptyPeriod": {
+            "title": "Nenhum lançamento recente",
+            "description": "Ainda não há capítulos publicados neste período."
+        },
         "emptyLibrary": {
             "title": "Nenhum cap. novo nas obras que você segue",
             "description": "Adicione obras à sua biblioteca para ver os lançamentos aqui."
@@ -203,12 +240,33 @@
         "emptyFilter": {
             "title": "Tudo em dia!",
             "description": "Nenhum lançamento corresponde ao filtro."
+        },
+        "recentTitles": {
+            "eyebrow": "Novidades no catálogo",
+            "title": "Obras adicionadas recentemente"
+        },
+        "trending": {
+            "eyebrow": "Descubra mais",
+            "title": "Em alta no período",
+            "position": "Posição {{position}}",
+            "updates_one": "{{count}} atualização no período",
+            "updates_other": "{{count}} atualizações no período"
+        },
+        "status": {
+            "ongoing": "Em andamento",
+            "complete": "Concluído",
+            "completed": "Concluído",
+            "hiatus": "Em hiato",
+            "cancelled": "Cancelado"
         }
     },
     "filters": {
         "searchPlaceholder": "Buscar obras...",
         "filtersButton": "Filtros",
         "filtersButtonCount": "Filtros ({{count}})",
+        "refine": "Refine sua busca",
+        "activeFilters": "Filtros ativos",
+        "resultsControlsAria": "Controles dos resultados",
         "genres": "Gêneros",
         "tagSearchPlaceholder": "Buscar gênero...",
         "noTagsFound": "Nenhum gênero encontrado",
@@ -249,10 +307,88 @@
         "titleWithQuery": "Resultados para \"{{query}}\"",
         "emptyTitle": "O que você quer ler hoje?",
         "emptyDescription": "Digite o nome de uma obra para começar.",
+        "tooShortDescription": "Digite pelo menos 2 caracteres para pesquisar.",
         "errorTitle": "Erro ao buscar",
         "errorDescription": "Não foi possível carregar os resultados. Tente novamente.",
         "noResultsTitle": "Nenhum resultado",
-        "noResultsDescription": "Não encontramos nada para \"{{query}}\". Tente outros termos."
+        "noResultsDescription": "Não encontramos nada para \"{{query}}\". Tente outros termos.",
+        "resultsMeta": "{{count}} resultados",
+        "filtersAria": "Filtrar resultados por categoria",
+        "filter": {
+            "ALL": "Todos",
+            "TITLE": "Obras",
+            "AUTHOR": "Autores",
+            "ARTIST": "Artistas",
+            "PUBLISHER": "Editoras",
+            "GROUP": "Grupos"
+        },
+        "categoryCount": "{{count}} resultados em {{category}}",
+        "viewCategory": "Ver todos em {{category}}",
+        "workCount": "{{count}} obras",
+        "type": {
+            "TITLE": "Obra",
+            "AUTHOR": "Autor",
+            "ARTIST": "Artista",
+            "PUBLISHER": "Editora",
+            "GROUP": "Grupo"
+        },
+        "role": {
+            "AUTHOR": "Autor",
+            "STORY": "Roteiro",
+            "ARTIST": "Artista",
+            "COLORIST": "Colorista",
+            "LETTERER": "Letrista",
+            "EDITOR": "Editor"
+        },
+        "match": {
+            "TRANSLATED_TITLE": "Título traduzido: {{value}}",
+            "ALTERNATE_NAME": "Nome alternativo: {{value}}",
+            "PEN_NAME": "Pseudônimo: {{value}}",
+            "ABBREVIATION": "Abreviação: {{value}}",
+            "ORIGINAL_NAME": "Nome original: {{value}}",
+            "USERNAME": "Usuário: {{value}}",
+            "RELATED_AUTHOR": "Autor relacionado: {{value}}",
+            "RELATED_ARTIST": "Artista relacionado: {{value}}",
+            "RELATED_PUBLISHER": "Editora relacionada: {{value}}",
+            "RELATED_GROUP": "Grupo relacionado: {{value}}"
+        },
+        "retry": "Tentar novamente"
+    },
+    "person": {
+        "notFoundTitle": "Pessoa não encontrada",
+        "notFoundDescription": "Este perfil não existe ou não está mais disponível.",
+        "errorTitle": "Não foi possível carregar o perfil",
+        "errorDescription": "Tente novamente em alguns instantes.",
+        "backToSearch": "Voltar para a busca",
+        "artistEyebrow": "Perfil de artista",
+        "authorEyebrow": "Perfil de autor",
+        "alsoKnownAs": "Também conhecido como",
+        "noBiography": "Biografia ainda não informada.",
+        "illustratedWorks": "Obras como artista",
+        "writtenWorks": "Obras como autor",
+        "workCount": "{{count}} obras",
+        "worksErrorTitle": "Não foi possível carregar as obras",
+        "worksErrorDescription": "Tente carregar esta lista novamente.",
+        "noWorksTitle": "Nenhuma obra encontrada",
+        "noWorksDescription": "Ainda não há obras públicas associadas a este papel."
+    },
+    "publisher": {
+        "notFoundTitle": "Editora não encontrada",
+        "notFoundDescription": "Esta editora não existe ou não está mais disponível.",
+        "errorTitle": "Não foi possível carregar a editora",
+        "errorDescription": "Tente novamente em alguns instantes.",
+        "backToSearch": "Voltar para a busca",
+        "eyebrow": "Perfil da editora",
+        "countryUnknown": "País não informado",
+        "alsoKnownAs": "Também conhecida como",
+        "noDescription": "Descrição ainda não informada.",
+        "officialWebsite": "Site oficial",
+        "publishedWorks": "Obras publicadas",
+        "workCount": "{{count}} obras",
+        "worksErrorTitle": "Não foi possível carregar as obras",
+        "worksErrorDescription": "Tente carregar esta lista novamente.",
+        "noWorksTitle": "Nenhuma obra encontrada",
+        "noWorksDescription": "Ainda não há obras públicas associadas a esta editora."
     },
     "chapter": {
         "heading": "Capítulos:",

@@ -9,6 +9,7 @@ export { default as useDeleteReview } from './model/useDeleteReview';
 
 // Components
 export { default as ReviewCard } from './ui/ReviewCard';
+export { default as UserReviewCard, type UserReviewCardActions, type UserReviewCardProps } from './ui/UserReviewCard';
 export { default as RatingStars } from './ui/RatingStars';
 export { default as RatingModal } from './ui/modal/RatingModal';
 export { default as RatingSummary, type RatingSummaryProps } from './ui/RatingSummary';

@@ -3,13 +3,16 @@ import type { ApiResponse, PageResponse } from '@shared/service/http';
 import { API_URLS } from '@shared/constant/API_URLS';
 
 import { type GroupStatus, type Group, type GroupSummary } from '../model/group.types';
+import type { RelatedTitle } from '@entities/manga/@x/group';
 
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
-export const getGroups = async (page = 0, size = 20): Promise<PageResponse<Group>> => {
-    const response = await api.get<ApiResponse<PageResponse<Group>>>(API_URLS.GROUPS, { params: { page, size } });
+export const getGroups = async (page = 0, size = 20, search?: string): Promise<PageResponse<Group>> => {
+    const response = await api.get<ApiResponse<PageResponse<Group>>>(API_URLS.GROUPS, {
+        params: { page, size, ...(search ? { search } : {}) },
+    });
 
     return response.data.data;
 };
@@ -17,6 +20,19 @@ export const getGroups = async (page = 0, size = 20): Promise<PageResponse<Group
 export const getGroupById = async (groupId: string): Promise<Group> => {
     const response = await api.get<ApiResponse<Group>>(`${API_URLS.GROUPS}/${groupId}`);
 
+    return response.data.data;
+};
+
+export const getGroupWorks = async (
+    groupId: string,
+    page: number,
+    size: number,
+    signal?: AbortSignal,
+): Promise<PageResponse<RelatedTitle>> => {
+    const response = await api.get<ApiResponse<PageResponse<RelatedTitle>>>(`${API_URLS.GROUPS}/${groupId}/works`, {
+        params: { page, size },
+        signal,
+    });
     return response.data.data;
 };
 

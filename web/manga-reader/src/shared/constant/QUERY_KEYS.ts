@@ -5,7 +5,15 @@ export enum QUERY_KEYS {
     TITLES_ON_THE_RISE = 'titlesMostViewed',
     RANDOM_TITLES = 'randomTitles',
     UPDATED_TITLES = 'updatedTitles',
+    RECENT_TITLES = 'recentTitles',
     TITLES_SEARCH = 'titlesSearch',
+    GLOBAL_SEARCH = 'globalSearch',
+    GLOBAL_SEARCH_SUGGESTIONS = 'globalSearchSuggestions',
+    AUTHOR_DETAIL = 'authorDetail',
+    AUTHOR_WORKS = 'authorWorks',
+    PUBLISHER_DETAIL = 'publisherDetail',
+    PUBLISHER_WORKS = 'publisherWorks',
+    GROUP_WORKS = 'groupWorks',
 
     // Trending
     TRENDING = 'trending',
@@ -13,6 +21,7 @@ export enum QUERY_KEYS {
 
     // Chapters
     CHAPTERS = 'chapters',
+    RELEASES = 'releases',
 
     // Comments
     COMMENTS = 'comments',

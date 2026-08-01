@@ -10,7 +10,7 @@ import { TOTAL_PAGES } from './readerData';
 export type ReadMode = 'vertical' | 'paged' | 'double';
 export type Direction = 'ltr' | 'rtl';
 export type Fit = 'width' | 'height' | 'original';
-export type Bg = 'black' | 'dark' | 'paper';
+export type Bg = 'black' | 'dark' | 'paper' | 'light' | 'white';
 
 export const TOTAL = TOTAL_PAGES;
 
@@ -18,6 +18,7 @@ interface ReaderPrefs {
     mode: ReadMode;
     direction: Direction;
     fit: Fit;
+    saturation: number;
     gap: number;
     bg: Bg;
     quality: UserSettings['reader']['quality'];
@@ -29,6 +30,7 @@ const toReaderPrefs = (settings: UserSettings): ReaderPrefs => ({
     mode: settings.reader.direction === 'WEBTOON' ? 'vertical' : (settings.reader.mode.toLowerCase() as ReadMode),
     direction: settings.reader.direction === 'LTR' ? 'ltr' : 'rtl',
     fit: settings.reader.fit.toLowerCase() as Fit,
+    saturation: settings.reader.saturation,
     gap: settings.reader.gap,
     bg: settings.reader.background.toLowerCase() as Bg,
     quality: settings.reader.quality,
@@ -45,6 +47,7 @@ const samePrefs = (left: ReaderPrefs, right: ReaderPrefs) =>
     left.mode === right.mode &&
     left.direction === right.direction &&
     left.fit === right.fit &&
+    left.saturation === right.saturation &&
     left.gap === right.gap &&
     left.bg === right.bg &&
     left.quality === right.quality &&
@@ -73,6 +76,7 @@ export function useChapterReader(
     const [mode, setMode] = useState<ReadMode>(initialPrefs.mode);
     const [direction, setDirection] = useState<Direction>(initialPrefs.direction);
     const [fit, setFit] = useState<Fit>(initialPrefs.fit);
+    const [saturation, setSaturation] = useState<number>(initialPrefs.saturation);
     const [gap, setGap] = useState<number>(initialPrefs.gap);
     const [bg, setBg] = useState<Bg>(initialPrefs.bg);
     const [quality, setQuality] = useState(initialPrefs.quality);
@@ -111,7 +115,7 @@ export function useChapterReader(
     const step = mode === 'double' ? 2 : 1;
     const lastPage = mode === 'vertical' ? total : total + 1;
 
-    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, gap, bg, quality, preload, autoMarkRead }), [mode, direction, fit, gap, bg, quality, preload, autoMarkRead]);
+    const currentPrefs = useMemo<ReaderPrefs>(() => ({ mode, direction, fit, saturation, gap, bg, quality, preload, autoMarkRead }), [mode, direction, fit, saturation, gap, bg, quality, preload, autoMarkRead]);
 
     const applyPrefs = useCallback(
         (next: ReaderPrefs) => {
@@ -121,6 +125,7 @@ export function useChapterReader(
             setMode(next.mode);
             setDirection(next.direction);
             setFit(next.fit);
+            setSaturation(next.saturation);
             setGap(next.gap);
             setBg(next.bg);
             setQuality(next.quality);
@@ -149,6 +154,7 @@ export function useChapterReader(
                 mode: toSettingsMode(mode),
                 direction: mode === 'vertical' && current.reader.direction === 'WEBTOON' ? 'WEBTOON' : toSettingsDirection(direction),
                 fit: toSettingsFit(fit),
+                saturation,
                 gap,
                 background: toSettingsBackground(bg),
                 quality,
@@ -158,7 +164,7 @@ export function useChapterReader(
         }));
 
         if (isLoggedIn) persistSettings(next);
-    }, [currentPrefs, mode, direction, fit, gap, bg, quality, preload, autoMarkRead, isLoggedIn, persistSettings]);
+    }, [currentPrefs, mode, direction, fit, saturation, gap, bg, quality, preload, autoMarkRead, isLoggedIn, persistSettings]);
 
     useEffect(
         () =>
@@ -365,6 +371,7 @@ export function useChapterReader(
         mode,
         direction,
         fit,
+        saturation,
         gap,
         bg,
         quality,
@@ -373,6 +380,7 @@ export function useChapterReader(
         setMode,
         setDirection,
         setFit,
+        setSaturation,
         setGap,
         setBg,
         // reading state

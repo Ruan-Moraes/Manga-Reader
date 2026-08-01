@@ -4,7 +4,7 @@ export type ReadingDirection = 'LTR' | 'RTL' | 'WEBTOON';
 export type ReadingMode = 'VERTICAL' | 'PAGED' | 'DOUBLE';
 export type ReadingFit = 'WIDTH' | 'HEIGHT' | 'ORIGINAL';
 export type ImageQuality = 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ORIGINAL';
-export type ReaderBackground = 'BLACK' | 'DARK' | 'PAPER';
+export type ReaderBackground = 'BLACK' | 'DARK' | 'PAPER' | 'LIGHT' | 'WHITE';
 export type ThemePreference = 'DARK' | 'LIGHT' | 'SYSTEM';
 export type FontSizePreference = 'COMPACT' | 'DEFAULT' | 'COMFORTABLE';
 export type DensityPreference = 'COMFORTABLE' | 'COMPACT';
@@ -15,6 +15,7 @@ export interface ReaderSettings {
     mode: ReadingMode;
     fit: ReadingFit;
     quality: ImageQuality;
+    saturation: number;
     gap: number;
     background: ReaderBackground;
     autoMarkRead: boolean;
@@ -47,7 +48,7 @@ export interface UserSettings {
 
 /** Espelha UserSettings.defaults() do api — usado para hidratação offline/deslogado. */
 export const DEFAULT_USER_SETTINGS: UserSettings = {
-    reader: { direction: 'RTL', mode: 'VERTICAL', fit: 'WIDTH', quality: 'AUTO', gap: 8, background: 'DARK', autoMarkRead: true, preload: 3 },
+    reader: { direction: 'RTL', mode: 'VERTICAL', fit: 'WIDTH', quality: 'AUTO', saturation: 100, gap: 0, background: 'DARK', autoMarkRead: true, preload: 3 },
     appearance: { theme: 'DARK', fontSize: 'DEFAULT', density: 'COMFORTABLE', animations: true },
     locale: { dateFormat: 'D_MON', timezone: 'America/Sao_Paulo' },
     accessibility: { reduceMotion: false, highContrast: false },

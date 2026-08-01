@@ -42,4 +42,22 @@ describe('Switch', () => {
         await userEvent.click(screen.getByRole('switch'));
         expect(onChange).not.toHaveBeenCalled();
     });
+
+    it('usa cores semânticas próprias no track desabilitado', () => {
+        render(<Switch checked onChange={() => {}} disabled />);
+
+        const track = screen.getByRole('switch').firstElementChild;
+
+        expect(track).toHaveClass('bg-mr-surface-muted', 'border-mr-border-subtle');
+        expect(track?.firstElementChild).toHaveClass('bg-mr-fg-disabled');
+    });
+
+    it('usa tokens próprios no estado desligado', () => {
+        render(<Switch checked={false} onChange={() => {}} />);
+
+        const track = screen.getByRole('switch').firstElementChild;
+
+        expect(track).toHaveClass('bg-mr-control-track-off');
+        expect(track?.firstElementChild).toHaveClass('bg-mr-control-thumb-off');
+    });
 });

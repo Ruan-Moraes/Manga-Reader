@@ -63,6 +63,8 @@ export const readLegacyChapterImport = (storage: Storage = window.localStorage):
                 number: requiredString(chapter, 'number'),
                 displayOrder: typeof chapter.displayOrder === 'number' ? chapter.displayOrder : undefined,
                 description: optionalString(chapter.description),
+                contentLanguage: optionalString(chapter.contentLanguage),
+                scanGroupId: optionalString(chapter.scanGroupId),
                 status: requiredString(chapter, 'status'),
                 scheduledAt: optionalString(chapter.scheduledAt),
                 publishedAt: optionalString(chapter.publishedAt),

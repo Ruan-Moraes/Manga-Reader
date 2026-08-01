@@ -100,6 +100,50 @@ export const mockComment = {
 };
 
 export const handlers = [
+    http.get('*/api/releases', ({ request }) => {
+        const params = new URL(request.url).searchParams;
+        const q = (params.get('q') ?? '').toLocaleLowerCase();
+        const language = params.get('language');
+        const now = new Date();
+        const releases = [
+            {
+                chapterId: 'chapter-370', titleId: 'title-berserk', titleName: 'Berserk',
+                titleCover: 'https://example.com/berserk.jpg', chapterNumber: '370',
+                chapterTitle: 'Crepúsculo', publishedAt: now.toISOString(), contentLanguage: 'pt-BR',
+                scanGroup: { id: 'group-1', name: 'Scan Brasileiro', logo: null }, seen: false,
+            },
+            {
+                chapterId: 'chapter-1110', titleId: 'title-one-piece', titleName: 'One Piece',
+                chapterNumber: '1110', chapterTitle: '', publishedAt: new Date(now.getTime() - 3_600_000).toISOString(),
+                contentLanguage: 'en-US', scanGroup: null, seen: true,
+            },
+        ].filter(item => (!q || item.titleName.toLocaleLowerCase().includes(q))
+            && (!language || item.contentLanguage === language));
+        return HttpResponse.json(wrap({
+            releases: {
+                content: releases, page: 0, size: 30, totalElements: releases.length,
+                totalPages: releases.length ? 1 : 0, last: true,
+            },
+            availableLanguages: ['en-US', 'pt-BR'],
+        }));
+    }),
+
+    http.put('*/api/releases/:chapterId/seen', () => HttpResponse.json(wrap(null))),
+    http.put('*/api/releases/days/:date/seen', () => HttpResponse.json(wrap({ markedCount: 2 }))),
+
+    http.get('*/api/trending', () => HttpResponse.json(wrap([]))),
+
+    http.get('*/api/titles', () => HttpResponse.json(wrapPage([{
+        ...mockTitle,
+        cover: mockTitle.coverImage,
+        ratingAverage: mockTitle.rating,
+        ratingCount: 100,
+        popularity: 'HIGH',
+        adult: false,
+        authors: [],
+        publishers: [],
+    }]))),
+
     http.get('*/api/titles/:titleId/chapters/:number/reader', async ({ params, request }) => {
         const preview = new URL(request.url).searchParams.get('preview') === 'true';
         const chapter = await chapterTestPublicGateway.getReaderChapter(

@@ -3,16 +3,15 @@ import { useEffect, useState } from 'react';
 const SCROLL_THRESHOLD = 8;
 
 type NavBarChromeHandlers = {
-    focusSearch: () => void;
-    setSearchFocused: (focused: boolean) => void;
     setOpenSection: (section: string | null) => void;
 };
 
 /**
  * Header chrome behavior for the NavBar: shrinks on scroll and wires the
- * Cmd/Ctrl+K (focus search) and Escape (collapse) shortcuts.
+ * Handles the shrinking header and Escape for the mega-menu.
+ * Global search owns its keyboard behavior in the search feature.
  */
-const useNavBarChrome = ({ focusSearch, setSearchFocused, setOpenSection }: NavBarChromeHandlers) => {
+const useNavBarChrome = ({ setOpenSection }: NavBarChromeHandlers) => {
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -41,27 +40,15 @@ const useNavBarChrome = ({ focusSearch, setSearchFocused, setOpenSection }: NavB
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-
-                focusSearch();
-
-                setSearchFocused(true);
-            }
-
             if (e.key === 'Escape') {
                 setOpenSection(null);
-
-                setSearchFocused(false);
-
-                (document.activeElement as HTMLElement | null)?.blur?.();
             }
         };
 
         document.addEventListener('keydown', onKey);
 
         return () => document.removeEventListener('keydown', onKey);
-    }, [focusSearch, setSearchFocused, setOpenSection]);
+    }, [setOpenSection]);
 
     return { isScrolled };
 };

@@ -86,7 +86,50 @@
         "suggestionsTitle": "Sugestões para você",
         "recentTitle": "Buscas recentes",
         "kbdHint": "Atalho ⌘K para focar a busca",
-        "clearAria": "Limpar busca"
+        "clearAria": "Limpar busca",
+        "resultsAria": "Resultados da busca global",
+        "coverAlt": "Capa de {{title}}",
+        "chapterCount_one": "{{count}} capítulo",
+        "chapterCount_other": "{{count}} capítulos",
+        "clearRecent": "Limpar",
+        "removeRecentAria": "Remover busca recente {{term}}",
+        "tooShort": "Digite pelo menos 2 caracteres para buscar.",
+        "tooLong": "O termo deve ter no máximo 100 caracteres.",
+        "errorDescription": "Não foi possível buscar agora.",
+        "retry": "Tentar novamente",
+        "noResults": "Nenhuma obra encontrada para “{{term}}”.",
+        "viewAll": "Ver todos os resultados para “{{term}}”",
+        "loadingAnnouncement": "Buscando obras",
+        "resultsAnnouncement": "{{count}} resultados encontrados",
+        "workCount_one": "{{count}} obra",
+        "workCount_other": "{{count}} obras",
+        "type": {
+            "TITLE": "Obras",
+            "AUTHOR": "Autores",
+            "ARTIST": "Artistas",
+            "PUBLISHER": "Editoras",
+            "GROUP": "Grupos"
+        },
+        "role": {
+            "AUTHOR": "Autor",
+            "ARTIST": "Artista",
+            "STORY": "Roteiro",
+            "LETTERER": "Letrista",
+            "COLORIST": "Colorista",
+            "EDITOR": "Editor"
+        },
+        "match": {
+            "TRANSLATED_TITLE": "Título traduzido: {{value}}",
+            "ALTERNATE_NAME": "Nome alternativo: {{value}}",
+            "PEN_NAME": "Pseudônimo: {{value}}",
+            "ABBREVIATION": "Abreviação: {{value}}",
+            "ORIGINAL_NAME": "Nome original: {{value}}",
+            "USERNAME": "Usuário: {{value}}",
+            "RELATED_AUTHOR": "Autor relacionado: {{value}}",
+            "RELATED_ARTIST": "Artista relacionado: {{value}}",
+            "RELATED_PUBLISHER": "Editora relacionada: {{value}}",
+            "RELATED_GROUP": "Grupo relacionado: {{value}}"
+        }
     },
     "navigation": {
         "openMenu": "Abrir menu"

@@ -86,7 +86,50 @@
         "suggestionsTitle": "Suggestions for you",
         "recentTitle": "Recent searches",
         "kbdHint": "Shortcut ⌘K to focus search",
-        "clearAria": "Clear search"
+        "clearAria": "Clear search",
+        "resultsAria": "Global search results",
+        "coverAlt": "{{title}} cover",
+        "chapterCount_one": "{{count}} chapter",
+        "chapterCount_other": "{{count}} chapters",
+        "clearRecent": "Clear",
+        "removeRecentAria": "Remove recent search {{term}}",
+        "tooShort": "Type at least 2 characters to search.",
+        "tooLong": "The query must be at most 100 characters.",
+        "errorDescription": "Search is unavailable right now.",
+        "retry": "Try again",
+        "noResults": "No title found for “{{term}}”.",
+        "viewAll": "View all results for “{{term}}”",
+        "loadingAnnouncement": "Searching titles",
+        "resultsAnnouncement": "{{count}} results found",
+        "workCount_one": "{{count}} work",
+        "workCount_other": "{{count}} works",
+        "type": {
+            "TITLE": "Titles",
+            "AUTHOR": "Authors",
+            "ARTIST": "Artists",
+            "PUBLISHER": "Publishers",
+            "GROUP": "Groups"
+        },
+        "role": {
+            "AUTHOR": "Author",
+            "ARTIST": "Artist",
+            "STORY": "Story",
+            "LETTERER": "Letterer",
+            "COLORIST": "Colorist",
+            "EDITOR": "Editor"
+        },
+        "match": {
+            "TRANSLATED_TITLE": "Translated title: {{value}}",
+            "ALTERNATE_NAME": "Alternate name: {{value}}",
+            "PEN_NAME": "Pen name: {{value}}",
+            "ABBREVIATION": "Abbreviation: {{value}}",
+            "ORIGINAL_NAME": "Original name: {{value}}",
+            "USERNAME": "Username: {{value}}",
+            "RELATED_AUTHOR": "Related author: {{value}}",
+            "RELATED_ARTIST": "Related artist: {{value}}",
+            "RELATED_PUBLISHER": "Related publisher: {{value}}",
+            "RELATED_GROUP": "Related group: {{value}}"
+        }
     },
     "navigation": {
         "openMenu": "Open menu"

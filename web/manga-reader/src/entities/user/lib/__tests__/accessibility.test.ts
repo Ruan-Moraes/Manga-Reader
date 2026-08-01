@@ -103,4 +103,16 @@ describe('system preferences storage', () => {
         expect(document.documentElement.classList.contains('mr-theme-light')).toBe(true);
         expect(document.documentElement.classList.contains('mr-theme-dark')).toBe(false);
     });
+
+    it.each([
+        ['LIGHT', false, 'mr-theme-light'],
+        ['LIGHT', true, 'mr-theme-light'],
+        ['DARK', false, 'mr-theme-dark'],
+        ['DARK', true, 'mr-theme-dark'],
+    ] as const)('keeps the %s theme class and high-contrast state %s', (theme, highContrast, expectedThemeClass) => {
+        applySystemPreferences(mergeUserSettings({ appearance: { theme }, accessibility: { highContrast } }));
+
+        expect(document.documentElement).toHaveClass(expectedThemeClass);
+        expect(document.documentElement.classList.contains('mr-high-contrast')).toBe(highContrast);
+    });
 });

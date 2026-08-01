@@ -17,9 +17,12 @@ export const API_URLS = {
 
     TITLES: `${BASE}/api/titles`,
     TITLES_SEARCH: `${BASE}/api/titles/search`,
+    GLOBAL_SEARCH: `${BASE}/api/search`,
+    GLOBAL_SEARCH_SUGGESTIONS: `${BASE}/api/search/suggestions`,
     TITLES_BY_GENRE: `${BASE}/api/titles/genre`,
     TITLES_FILTER: `${BASE}/api/titles/filter`,
     TRENDING: `${BASE}/api/trending`,
+    RELEASES: `${BASE}/api/releases`,
 
     COMMENTS: `${BASE}/api/comments`,
 
@@ -54,7 +57,7 @@ export const API_URLS = {
     ADMIN_USERS: `${BASE}/api/admin/users`,
     ADMIN_TITLES: `${BASE}/api/admin/titles`,
     ADMIN_STORES: `${BASE}/api/admin/stores`,
-    /** Reservado: usado apenas pelo futuro service axios de capítulos (hoje o gateway é fake — DT-44). */
+    /** CRUD administrativo de capítulos; upload binário permanece pendente em DT-44. */
     ADMIN_CHAPTERS: `${BASE}/api/admin/chapters`,
     ADMIN_NEWS: `${BASE}/api/admin/news`,
     ADMIN_EVENTS: `${BASE}/api/admin/events`,

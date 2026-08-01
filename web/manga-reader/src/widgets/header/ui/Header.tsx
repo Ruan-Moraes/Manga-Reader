@@ -40,7 +40,6 @@ const Header = () => {
                 user={navUser}
                 onNavigate={navigate}
                 onOpenSideMenu={() => setSideOpen(true)}
-                onSearchSubmit={q => navigate(`${ROUTES.SEARCH}?q=${encodeURIComponent(q)}`)}
                 onNotificationsClick={() => {}}
                 onLibraryClick={() => navigate(ROUTES.LIBRARY)}
                 onProfileClick={() => navigate(ROUTES.PROFILE)}

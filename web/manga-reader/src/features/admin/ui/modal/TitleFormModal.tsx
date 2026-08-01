@@ -7,6 +7,7 @@ import { ModalSection } from '@ui/ModalSection';
 import { FormRow } from '@ui/FormRow';
 import { Button } from '@ui/Button';
 import { Input } from '@ui/Input';
+import { Textarea } from '@ui/Textarea';
 import { Select } from '@ui/Select';
 import { Switch } from '@ui/Switch';
 import LocalizedTextInput from '@ui/LocalizedTextInput';
@@ -45,6 +46,8 @@ const TitleFormModal = ({ isOpen, onClose, titleId, onSaved, onDelete }: TitleFo
         setPublishers,
         stores,
         setStores,
+        aliases,
+        setAliases,
         availableStores,
         allTags,
         statusOptions,
@@ -90,6 +93,10 @@ const TitleFormModal = ({ isOpen, onClose, titleId, onSaved, onDelete }: TitleFo
                     <LocalizedTextInput label={t('dashboard.titles.form.name')} value={name} onChange={setName} maxLength={200} />
 
                     <LocalizedTextInput label={t('dashboard.titles.form.synopsis')} value={synopsis} onChange={setSynopsis} multiline rows={3} requiredLanguages={[]} />
+
+                    <Field label={t('dashboard.titles.form.aliases')} hint={t('dashboard.titles.form.aliasesHint')}>
+                        <Textarea value={aliases} onChange={event => setAliases(event.target.value)} rows={4} placeholder={t('dashboard.titles.form.aliasesPlaceholder')} />
+                    </Field>
                 </ModalSection>
 
                 <ModalSection title={t('dashboard.titles.form.sectionClassification')}>

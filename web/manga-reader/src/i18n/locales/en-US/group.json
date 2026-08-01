@@ -115,6 +115,8 @@
         "noSocials": "No links registered.",
         "worksCount": "Translated works — {{count}}",
         "worksEmpty": "This group has no catalogued works yet.",
+        "worksError": "Could not load this group's works.",
+        "retry": "Try again",
         "teamCount": "Team — {{count}} members",
         "discussionHeading": "Recent discussion",
         "discussionText": "The group's internal forum shows up here.",

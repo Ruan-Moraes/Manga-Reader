@@ -5,6 +5,7 @@ import { server } from '@/test/mocks/server';
 import { mockTitle } from '@/test/mocks/handlers';
 import { renderHookWithProviders } from '@/test/testUtils';
 
+import * as titleService from '../../api/titleService';
 import useSearchTitles from '../useSearchTitles';
 
 describe('useSearchTitles', () => {
@@ -64,5 +65,45 @@ describe('useSearchTitles', () => {
 
         // placeholderData mantém dados anteriores enquanto nova página carrega
         expect(result.current.data).toEqual(firstPageData);
+    });
+
+    it('cancela a consulta anterior e não deixa resposta antiga substituir o termo atual', async () => {
+        const page = (name: string) => ({
+            content: [{
+                id: name.toLowerCase(),
+                name,
+                adult: false,
+                ratingAverage: 0,
+                ratingCount: 0,
+                matchedBy: 'TITLE' as const,
+                matchedText: name,
+            }],
+            page: 0,
+            size: 20,
+            totalElements: 1,
+            totalPages: 1,
+            last: true,
+        });
+        const signals: AbortSignal[] = [];
+        const search = vi.spyOn(titleService, 'searchTitles').mockImplementation(async (query, _page, _size, signal) => {
+            if (signal) signals.push(signal);
+            if (query === 'Naruto') {
+                await new Promise(resolve => setTimeout(resolve, 250));
+                return page('Naruto');
+            }
+            return page('Berserk');
+        });
+
+        const { result, rerender } = renderHookWithProviders(
+            ({ query }: { query: string }) => useSearchTitles(query),
+            { initialProps: { query: 'Naruto' } },
+        );
+        await waitFor(() => expect(result.current.fetchStatus).toBe('fetching'));
+
+        rerender({ query: 'Berserk' });
+
+        await waitFor(() => expect(result.current.data?.content[0].name).toBe('Berserk'));
+        expect(signals[0]?.aborted).toBe(true);
+        search.mockRestore();
     });
 });

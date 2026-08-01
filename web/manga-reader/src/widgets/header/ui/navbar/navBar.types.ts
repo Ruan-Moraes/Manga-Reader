@@ -10,7 +10,6 @@ export interface LayoutNavBarProps {
     activeKey?: string;
     onNavigate: (path: string) => void;
     onOpenSideMenu: () => void;
-    onSearchSubmit?: (query: string) => void;
     onNotificationsClick?: () => void;
     onLibraryClick?: () => void;
     onProfileClick?: () => void;

@@ -120,6 +120,30 @@ describe('CategoryFilters', () => {
         expect(chips.length).toBeGreaterThan(0);
     });
 
+    it('shows the selected status as a removable active filter', async () => {
+        const user = userEvent.setup();
+
+        setup();
+
+        await user.click(screen.getByRole('radio', { name: /em andamento/i }));
+
+        expect(screen.getByRole('button', { name: /remover filtro em andamento/i })).toBeInTheDocument();
+    });
+
+    it('clears every active filter from the catalog controls', async () => {
+        const user = userEvent.setup();
+
+        setup();
+
+        await user.click(screen.getByRole('checkbox', { name: /seinen/i }));
+        await user.click(screen.getByRole('radio', { name: /em andamento/i }));
+
+        await user.click(screen.getAllByRole('button', { name: /limpar tudo/i })[0]);
+
+        expect(screen.getByRole('checkbox', { name: /seinen/i })).not.toBeChecked();
+        expect(screen.getByRole('radio', { name: /todos/i })).toBeChecked();
+    });
+
     it('shows layout toggle controls', () => {
         setup();
 

@@ -9,7 +9,7 @@ type ConfirmDeleteWithIdModalProps = {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
-    entityId: string;
+    entityId: string | number;
     title: string;
     message: string;
     isSubmitting: boolean;
@@ -23,7 +23,8 @@ const ConfirmDeleteWithIdModal = ({ isOpen, onClose, onConfirm, entityId, title,
         if (!isOpen) setInputValue('');
     }, [isOpen]);
 
-    const locked = inputValue.trim() !== entityId;
+    const canonicalEntityId = String(entityId);
+    const locked = inputValue.trim() !== canonicalEntityId;
 
     return (
         <Modal
@@ -49,9 +50,9 @@ const ConfirmDeleteWithIdModal = ({ isOpen, onClose, onConfirm, entityId, title,
                 <p className="text-mr-body leading-relaxed text-mr-fg-muted">{message}</p>
                 <label className="flex flex-col gap-1.5">
                     <span className="text-mr-small font-mr-bold text-mr-fg-muted">
-                        {t('common.deleteIdPrompt')} <code className="font-mr-mono text-mr-accent-fg">{entityId}</code>
+                        {t('common.deleteIdPrompt')} <code className="font-mr-mono text-mr-accent-fg">{canonicalEntityId}</code>
                     </span>
-                    <Input value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder={entityId} autoComplete="off" autoFocus />
+                    <Input value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder={canonicalEntityId} autoComplete="off" autoFocus />
                 </label>
             </div>
         </Modal>

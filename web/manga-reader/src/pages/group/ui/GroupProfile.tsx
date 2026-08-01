@@ -12,7 +12,7 @@ import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { PageContainer } from '@ui/PageContainer';
 import { Skeleton } from '@ui/Skeleton';
-import { useGroupDetails, useSupportGroup, type Group } from '@entities/group';
+import { useGroupDetails, usePagedGroupWorks, useSupportGroup, type Group } from '@entities/group';
 
 import { SquareAvatar } from '@ui/SquareAvatar';
 import { GroupAbout, GroupDiscussion, GroupTeam, GroupWorks } from './parts/GroupTabs';
@@ -45,6 +45,8 @@ const GroupProfile = () => {
     const { following, supportersCount, pending, toggle } = useSupportGroup(groupId, currentUserId, initialSupportState);
 
     const [tab, setTab] = useState<Tab>('about');
+    const [worksPage, setWorksPage] = useState(0);
+    const pagedWorks = usePagedGroupWorks(tab === 'works' ? groupId : undefined, worksPage);
 
     const followersCount = group ? group.members.length + supportersCount : 0;
 
@@ -168,7 +170,18 @@ const GroupProfile = () => {
 
                 <div className="py-[18px] pb-[60px]">
                     {tab === 'about' && <GroupAbout group={group} />}
-                    {tab === 'works' && <GroupWorks group={group} onOpenTitle={id => navigate(ROUTES.TITLE_DETAIL(id))} />}
+                    {tab === 'works' && (
+                        <GroupWorks
+                            group={group}
+                            page={pagedWorks.data}
+                            pageIndex={worksPage}
+                            loading={pagedWorks.isLoading}
+                            error={pagedWorks.isError}
+                            onRetry={() => void pagedWorks.refetch()}
+                            onPageChange={setWorksPage}
+                            onOpenTitle={id => navigate(ROUTES.TITLE_DETAIL(id))}
+                        />
+                    )}
                     {tab === 'team' && <GroupTeam group={group} />}
                     {tab === 'discussion' && <GroupDiscussion onViewForum={() => navigate(ROUTES.FORUM)} />}
                 </div>

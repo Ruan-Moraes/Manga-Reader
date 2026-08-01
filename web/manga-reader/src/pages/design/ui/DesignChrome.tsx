@@ -31,7 +31,6 @@ const DesignChrome = () => {
                 user={MOCK_USER}
                 onNavigate={navigate}
                 onOpenSideMenu={() => setSideOpen(true)}
-                onSearchSubmit={() => {}}
                 onNotificationsClick={() => {}}
                 onLibraryClick={() => navigate(ROUTES.LIBRARY)}
                 onProfileClick={() => navigate(ROUTES.PROFILE)}

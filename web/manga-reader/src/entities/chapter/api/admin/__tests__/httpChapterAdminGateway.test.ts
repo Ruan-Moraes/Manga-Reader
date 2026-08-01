@@ -46,4 +46,21 @@ describe('httpChapterAdminGateway', () => {
         expect(requested).toBe(true);
         expect(copy).toMatchObject({ id: 'copy', status: 'draft' });
     });
+
+    it('envia intenção explícita ao remover o grupo de scan', async () => {
+        let receivedBody: unknown;
+        server.use(
+            http.patch('*/api/admin/chapters/chapter-1', async ({ request }) => {
+                receivedBody = await request.json();
+                return HttpResponse.json({
+                    success: true,
+                    data: { id: 'chapter-1', titleId: 'title-1', title: 'Capítulo', number: '1', status: 'DRAFT' },
+                });
+            }),
+        );
+
+        await createHttpChapterAdminGateway().update('chapter-1', { scanGroupId: null });
+
+        expect(receivedBody).toMatchObject({ scanGroupId: null, clearScanGroup: true });
+    });
 });

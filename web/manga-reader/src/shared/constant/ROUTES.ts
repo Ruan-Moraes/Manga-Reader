@@ -23,6 +23,9 @@ export const ROUTES = {
 
     GROUPS: '/groups',
     GROUP_DETAIL: (groupId: string) => `/groups/${groupId}`,
+    AUTHOR_DETAIL: (slug: string) => `/authors/${slug}`,
+    ARTIST_DETAIL: (slug: string) => `/artists/${slug}`,
+    PUBLISHER_DETAIL: (slug: string) => `/publishers/${slug}`,
 
     PROFILE: '/profile',
     PROFILE_EDIT: '/profile/edit',

@@ -52,6 +52,8 @@
     --mr-fg-subtle: var(--mr-gray-300);
     --mr-fg-disabled: var(--mr-tertiary);
     --mr-placeholder: var(--mr-tertiary);
+    --mr-control-track-off: var(--mr-gray-700);
+    --mr-control-thumb-off: var(--mr-fg);
     --mr-on-accent: #161616;
     --mr-accent-fg: var(--mr-accent);
     --mr-accent-border: var(--mr-accent);
@@ -181,6 +183,8 @@
     --color-mr-fg-muted: var(--mr-fg-muted);
     --color-mr-fg-subtle: var(--mr-fg-subtle);
     --color-mr-fg-disabled: var(--mr-fg-disabled);
+    --color-mr-control-track-off: var(--mr-control-track-off);
+    --color-mr-control-thumb-off: var(--mr-control-thumb-off);
     --color-mr-link: var(--mr-link);
     --color-mr-focus-ring: var(--mr-focus-ring);
     --color-mr-placeholder: var(--mr-placeholder);
@@ -422,7 +426,10 @@ html.mr-density-compact {
     --mr-space-3xl: 48px;
 }
 
-html.mr-high-contrast {
+/* Alto contraste precisa acompanhar a luminância do tema. A versão escura
+   preserva a paleta histórica; a clara evita misturar superfícies brancas
+   estruturais com o fundo preto que causava os problemas de legibilidade. */
+html.mr-theme-dark.mr-high-contrast {
     --mr-bg: #000000;
     --mr-surface: #181818;
     --mr-surface-muted: #0d0d0d;
@@ -434,6 +441,130 @@ html.mr-high-contrast {
     --mr-fg-subtle: #d8d8d8;
     --mr-link: #fff86a;
     --mr-focus-ring: #fff86a;
+}
+
+html.mr-theme-light.mr-high-contrast {
+    color-scheme: light;
+    --mr-primary: #ffffff;
+    --mr-primary-80: rgba(255, 255, 255, 0.88);
+    --mr-primary-75: rgba(255, 255, 255, 0.8);
+    --mr-secondary: #ffffff;
+    --mr-tertiary: #4a4a4a;
+    --mr-text: #000000;
+    --mr-separator: #333333;
+    --mr-chip: #f5f5f5;
+    --mr-chip-border: #1f1f1f;
+    --mr-rail: rgba(77, 74, 0, 0.72);
+    --mr-rail-soft: rgba(77, 74, 0, 0.38);
+    --mr-gray-900: #f5f5f5;
+    --mr-gray-800: #e8e8e8;
+    --mr-gray-700: #1f1f1f;
+    --mr-gray-600: #333333;
+    --mr-gray-500: #4a4a4a;
+    --mr-gray-400: #595959;
+    --mr-gray-300: #333333;
+    --mr-gray-200: #1f1f1f;
+    --mr-bg: #ffffff;
+    --mr-surface: #ffffff;
+    --mr-surface-muted: #f5f5f5;
+    --mr-surface-elevated: #ffffff;
+    --mr-surface-interactive: #f5f5f5;
+    --mr-input-bg: #ffffff;
+    --mr-border: #1f1f1f;
+    --mr-border-subtle: #333333;
+    --mr-fg: #000000;
+    --mr-fg-muted: #1f1f1f;
+    --mr-fg-subtle: #333333;
+    --mr-fg-disabled: #595959;
+    --mr-placeholder: #4a4a4a;
+    --mr-control-track-off: #d6d6d0;
+    --mr-control-thumb-off: #1f1f1f;
+    --mr-on-accent: #000000;
+    --mr-accent-fg: #4d4a00;
+    --mr-accent-border: #4d4a00;
+    --mr-link: #333100;
+    --mr-focus-ring: #333100;
+    --mr-overlay: rgba(0, 0, 0, 0.72);
+    --mr-overlay-control: rgba(0, 0, 0, 0.68);
+    --mr-overlay-strong: rgba(0, 0, 0, 0.82);
+    --mr-on-overlay: #ffffff;
+    --mr-danger-border: #8f2e14;
+    --mr-danger-surface: rgba(184, 61, 27, 0.16);
+    --mr-success-border: #07563a;
+    --mr-success-surface: rgba(8, 122, 79, 0.14);
+    --mr-elevated-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+    --mr-shadow-black: 0 0 1.25rem 0.125rem rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+    html.mr-theme-system.mr-high-contrast {
+        --mr-bg: #000000;
+        --mr-surface: #181818;
+        --mr-surface-muted: #0d0d0d;
+        --mr-border: #8c8c8c;
+        --mr-border-subtle: #b0b0b0;
+        --mr-separator: #5f5f5f;
+        --mr-fg: #ffffff;
+        --mr-fg-muted: #f2f2f2;
+        --mr-fg-subtle: #d8d8d8;
+        --mr-link: #fff86a;
+        --mr-focus-ring: #fff86a;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    html.mr-theme-system.mr-high-contrast {
+        color-scheme: light;
+        --mr-primary: #ffffff;
+        --mr-primary-80: rgba(255, 255, 255, 0.88);
+        --mr-primary-75: rgba(255, 255, 255, 0.8);
+        --mr-secondary: #ffffff;
+        --mr-tertiary: #4a4a4a;
+        --mr-text: #000000;
+        --mr-separator: #333333;
+        --mr-chip: #f5f5f5;
+        --mr-chip-border: #1f1f1f;
+        --mr-rail: rgba(77, 74, 0, 0.72);
+        --mr-rail-soft: rgba(77, 74, 0, 0.38);
+        --mr-gray-900: #f5f5f5;
+        --mr-gray-800: #e8e8e8;
+        --mr-gray-700: #1f1f1f;
+        --mr-gray-600: #333333;
+        --mr-gray-500: #4a4a4a;
+        --mr-gray-400: #595959;
+        --mr-gray-300: #333333;
+        --mr-gray-200: #1f1f1f;
+        --mr-bg: #ffffff;
+        --mr-surface: #ffffff;
+        --mr-surface-muted: #f5f5f5;
+        --mr-surface-elevated: #ffffff;
+        --mr-surface-interactive: #f5f5f5;
+        --mr-input-bg: #ffffff;
+        --mr-border: #1f1f1f;
+        --mr-border-subtle: #333333;
+        --mr-fg: #000000;
+        --mr-fg-muted: #1f1f1f;
+        --mr-fg-subtle: #333333;
+        --mr-fg-disabled: #595959;
+        --mr-placeholder: #4a4a4a;
+        --mr-control-track-off: #d6d6d0;
+        --mr-control-thumb-off: #1f1f1f;
+        --mr-on-accent: #000000;
+        --mr-accent-fg: #4d4a00;
+        --mr-accent-border: #4d4a00;
+        --mr-link: #333100;
+        --mr-focus-ring: #333100;
+        --mr-overlay: rgba(0, 0, 0, 0.72);
+        --mr-overlay-control: rgba(0, 0, 0, 0.68);
+        --mr-overlay-strong: rgba(0, 0, 0, 0.82);
+        --mr-on-overlay: #ffffff;
+        --mr-danger-border: #8f2e14;
+        --mr-danger-surface: rgba(184, 61, 27, 0.16);
+        --mr-success-border: #07563a;
+        --mr-success-surface: rgba(8, 122, 79, 0.14);
+        --mr-elevated-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+        --mr-shadow-black: 0 0 1.25rem 0.125rem rgba(0, 0, 0, 0.2);
+    }
 }
 
 html.mr-font-compact .text-mr-body {

@@ -7,16 +7,14 @@ export type { LayoutNavBarUser, LayoutNavBarProps } from './navBar.types';
 
 import NavMegaMenu from './NavMegaMenu';
 import NavActions from './NavActions';
-import NavSearch from './NavSearch';
-import useNavSearch from '../../model/useNavSearch';
 import useNavBarChrome from '../../model/useNavBarChrome';
 import Logo from '@ui/Logo';
+import { GlobalSearch } from '@features/search-catalog';
 
 export const NavBar = ({
     user,
     onNavigate,
     onOpenSideMenu,
-    onSearchSubmit,
     onNotificationsClick,
     onLibraryClick,
     onProfileClick,
@@ -28,9 +26,7 @@ export const NavBar = ({
 
     const [openSection, setOpenSection] = useState<string | null>(null);
 
-    const { searchValue, setSearchValue, searchFocused, setSearchFocused, inputRef, handleSearch, focusSearch } = useNavSearch(onSearchSubmit);
-
-    const { isScrolled } = useNavBarChrome({ focusSearch, setSearchFocused, setOpenSection });
+    const { isScrolled } = useNavBarChrome({ setOpenSection });
 
     const desktopBandHeight = isScrolled ? 54 : 68;
     const desktopActionSize = isScrolled ? 38 : 42;
@@ -43,19 +39,6 @@ export const NavBar = ({
         transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
         zIndex: 40,
         isolation: 'isolate' as const,
-    };
-
-    const onSelectRecent = (q: string) => {
-        setSearchValue('');
-        setSearchFocused(false);
-
-        onSearchSubmit?.(q);
-    };
-
-    const onSelectSuggestion = (s: { key: string }) => {
-        setSearchFocused(false);
-
-        onNavigate(`/manga/${s.key}`);
     };
 
     return (
@@ -82,17 +65,7 @@ export const NavBar = ({
 
                 <div className="flex flex-1 justify-center">
                     <div className="w-full">
-                        <NavSearch
-                            value={searchValue}
-                            onChange={setSearchValue}
-                            focused={searchFocused}
-                            onFocus={() => setSearchFocused(true)}
-                            onBlur={() => setSearchFocused(false)}
-                            onSubmit={handleSearch}
-                            onSelectRecent={onSelectRecent}
-                            onSelectSuggestion={onSelectSuggestion}
-                            inputRef={inputRef}
-                        />
+                        <GlobalSearch onNavigate={onNavigate} />
                     </div>
                 </div>
 
@@ -121,18 +94,7 @@ export const NavBar = ({
                 </button>
 
                 <div className="min-w-0 flex-1">
-                    <NavSearch
-                        value={searchValue}
-                        onChange={setSearchValue}
-                        focused={searchFocused}
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setSearchFocused(false)}
-                        onSubmit={handleSearch}
-                        onSelectRecent={onSelectRecent}
-                        onSelectSuggestion={onSelectSuggestion}
-                        inputRef={inputRef}
-                        showShortcut={false}
-                    />
+                    <GlobalSearch onNavigate={onNavigate} showShortcut={false} />
                 </div>
 
                 <div className="shrink-0">

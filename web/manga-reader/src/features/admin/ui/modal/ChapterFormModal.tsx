@@ -7,7 +7,8 @@ import Input from '@ui/Input';
 import { Textarea } from '@ui/Textarea';
 import { Select } from '@ui/Select';
 import { QUERY_KEYS } from '@shared/constant/QUERY_KEYS';
-import { searchTitles, type Title } from '@entities/manga';
+import { searchTitles, type TitleSearchResult } from '@entities/manga';
+import { getGroups, type Group } from '@entities/group';
 import type { ChapterValidationError } from '@entities/chapter';
 
 import useChapterFormModalState from '../../model/useChapterFormModalState';
@@ -31,7 +32,7 @@ const errorText = (t: (key: string, opts?: Record<string, unknown>) => string, e
 
 const ChapterFormModal = ({ isOpen, onClose, chapterId, presetTitleId, presetTitleName, onSaved }: ChapterFormModalProps) => {
     const { t } = useTranslation('admin');
-    const { isEditing, isLoadingDetail, isSubmitting, form, setForm, errors, valid, dirty, titleName, submit } = useChapterFormModalState(chapterId, isOpen, presetTitleId);
+    const { isEditing, isLoadingDetail, isSubmitting, form, setForm, errors, valid, dirty, titleName, scanGroupName, submit } = useChapterFormModalState(chapterId, isOpen, presetTitleId);
 
     const errorFor = (codes: ChapterValidationError['code'][]) => errors.find(e => codes.includes(e.code));
 
@@ -76,9 +77,9 @@ const ChapterFormModal = ({ isOpen, onClose, chapterId, presetTitleId, presetTit
                                 </Button>
                             </div>
                         ) : (
-                            <EntitySearchSelect<Title>
+                            <EntitySearchSelect<TitleSearchResult>
                                 queryKey={QUERY_KEYS.TITLES_SEARCH}
-                                fetcher={async term => (await searchTitles(term, 0, 8)).content}
+                                fetcher={async term => (term.trim().length < 2 ? [] : (await searchTitles(term, 0, 8)).content)}
                                 getKey={title => title.id}
                                 getLabel={title => title.name}
                                 onPick={title => setForm(f => ({ ...f, titleId: title.id }))}
@@ -121,6 +122,43 @@ const ChapterFormModal = ({ isOpen, onClose, chapterId, presetTitleId, presetTit
                         maxLength={500}
                     />
                 </Field>
+
+                <FormRow columns={2}>
+                    <Field label={t('dashboard.chapters.form.contentLanguage')}>
+                        <Select
+                            value={form.contentLanguage}
+                            onChange={e => setForm(f => ({ ...f, contentLanguage: e.target.value }))}
+                            options={[
+                                { value: 'pt-BR', label: t('dashboard.chapters.form.languagePt') },
+                                { value: 'en-US', label: t('dashboard.chapters.form.languageEn') },
+                                { value: 'es-ES', label: t('dashboard.chapters.form.languageEs') },
+                            ]}
+                            aria-label={t('dashboard.chapters.form.contentLanguage')}
+                        />
+                    </Field>
+                    <Field label={t('dashboard.chapters.form.scanGroup')} hint={t('dashboard.chapters.form.scanGroupHint')}>
+                        {form.scanGroupId ? (
+                            <div className="flex items-center gap-2.5">
+                                <span className="flex-1 truncate rounded-mr-xs border border-mr-border bg-mr-surface-muted px-3 py-2.5 text-mr-body text-mr-fg">
+                                    {scanGroupName ?? form.scanGroupId}
+                                </span>
+                                <Button variant="ghost" size="sm" onClick={() => setForm(f => ({ ...f, scanGroupId: '' }))}>
+                                    {t('dashboard.chapters.form.noScanGroup')}
+                                </Button>
+                            </div>
+                        ) : (
+                            <EntitySearchSelect<Group>
+                                queryKey={`${QUERY_KEYS.GROUPS}:chapter-form`}
+                                fetcher={async term => (await getGroups(0, 8, term)).content}
+                                getKey={group => group.id}
+                                getLabel={group => group.name}
+                                onPick={group => setForm(f => ({ ...f, scanGroupId: group.id }))}
+                                placeholder={t('dashboard.chapters.form.scanGroupHint')}
+                                emptyLabel={t('dashboard.chapters.form.noScanGroup')}
+                            />
+                        )}
+                    </Field>
+                </FormRow>
 
                 <FormRow columns={2}>
                     <Field label={t('dashboard.chapters.form.status')} hint={form.status === 'published' ? t('dashboard.chapters.form.publishHint') : undefined}>

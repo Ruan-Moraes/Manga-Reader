@@ -14,6 +14,12 @@ export type TitlePublisherRef = {
     name?: string | null;
 };
 
+export type TitleAlias = {
+    name: string;
+    type: 'ALTERNATE' | 'SYNONYM';
+    locale?: string | null;
+};
+
 export type AdminTitle = {
     id: string;
     name: LocalizedString;
@@ -31,6 +37,7 @@ export type AdminTitle = {
     authors?: TitleAuthorRef[];
     publishers?: TitlePublisherRef[];
     stores?: TitleStoreRef[];
+    aliases?: TitleAlias[];
     adult: boolean;
     ratingAverage: number | null;
     ratingCount: number | null;
@@ -52,6 +59,7 @@ export type CreateTitleRequest = {
     /** IDs de editoras. Opcional: se omitido, backend preserva o estado atual. */
     publishers?: number[];
     stores?: { storeId: string; url: string }[];
+    aliases?: TitleAlias[];
 };
 
 export type UpdateTitleRequest = Partial<CreateTitleRequest>;

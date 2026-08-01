@@ -17,9 +17,10 @@ type CategoryFilterPanelProps = {
     selectedStatus: PublicationStatus;
     onStatusChange: (v: PublicationStatus) => void;
     onClearAll: () => void;
+    activeCount: number;
 };
 
-const CategoryFilterPanel = ({ tags, selectedTags, onTagToggle, selectedStatus, onStatusChange, onClearAll }: CategoryFilterPanelProps) => {
+const CategoryFilterPanel = ({ tags, selectedTags, onTagToggle, selectedStatus, onStatusChange, onClearAll, activeCount }: CategoryFilterPanelProps) => {
     const { t } = useTranslation('manga');
 
     const [tagQuery, setTagQuery] = useState('');
@@ -36,7 +37,16 @@ const CategoryFilterPanel = ({ tags, selectedTags, onTagToggle, selectedStatus, 
     ];
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="rounded-mr-md border border-mr-border bg-mr-surface p-4 shadow-mr-elevated xl:p-5">
+            <div className="mb-5 flex items-center justify-between gap-3 border-b border-mr-border pb-4">
+                <div>
+                    <p className="mr-label text-mr-fg-subtle">{t('filters.refine')}</p>
+                    <h3 className="mt-1 text-mr-h4 font-mr-extrabold text-mr-fg">{t('filters.filtersButton')}</h3>
+                </div>
+                {activeCount > 0 && <span className="rounded-mr-full bg-mr-accent px-2.5 py-1 text-mr-tiny font-mr-bold text-mr-on-accent">{activeCount}</span>}
+            </div>
+
+            <div className="flex flex-col gap-5">
             <fieldset className="m-0 border-none p-0">
                 <legend className="mb-2 text-mr-tiny font-mr-bold text-mr-fg">{t('filters.genres')}</legend>
                 <SearchField
@@ -73,9 +83,12 @@ const CategoryFilterPanel = ({ tags, selectedTags, onTagToggle, selectedStatus, 
                 options={statusOptions}
             />
 
-            <Button variant="ghost" onClick={onClearAll} className="mt-2">
-                {t('filters.clearAll')}
-            </Button>
+            {activeCount > 0 && (
+                <Button variant="ghost" onClick={onClearAll} className="mt-1 w-full">
+                    {t('filters.clearAll')}
+                </Button>
+            )}
+            </div>
         </div>
     );
 };

@@ -15,6 +15,8 @@ type ChapterFormState = {
     description: string;
     status: Extract<ChapterStatus, 'draft' | 'scheduled' | 'published'>;
     scheduledAt: string;
+    contentLanguage: string;
+    scanGroupId: string;
 };
 
 const DEFAULT_FORM: ChapterFormState = {
@@ -25,6 +27,8 @@ const DEFAULT_FORM: ChapterFormState = {
     description: '',
     status: 'draft',
     scheduledAt: '',
+    contentLanguage: 'pt-BR',
+    scanGroupId: '',
 };
 
 /**
@@ -71,6 +75,8 @@ const useChapterFormModalState = (chapterId: string | null, isOpen: boolean, pre
                 description: existing.description ?? '',
                 status: existing.status === 'scheduled' ? 'scheduled' : existing.status === 'published' ? 'published' : 'draft',
                 scheduledAt: existing.scheduledAt ?? '',
+                contentLanguage: existing.contentLanguage ?? 'pt-BR',
+                scanGroupId: existing.scanGroupId ?? '',
             });
             resetDirty();
         }
@@ -87,6 +93,8 @@ const useChapterFormModalState = (chapterId: string | null, isOpen: boolean, pre
             // datetime-local não tem timezone — normaliza para ISO completo (o
             // fake compara strings ISO na lazy promotion).
             scheduledAt: form.scheduledAt && !Number.isNaN(Date.parse(form.scheduledAt)) ? new Date(form.scheduledAt).toISOString() : undefined,
+            contentLanguage: form.contentLanguage,
+            scanGroupId: form.scanGroupId || null,
         }),
         [form],
     );
@@ -101,8 +109,10 @@ const useChapterFormModalState = (chapterId: string | null, isOpen: boolean, pre
 
     /** Nome da obra selecionada (denormalizado nos capítulos irmãos). */
     const titleName = existing?.titleName ?? siblings?.content[0]?.titleName;
+    const scanGroupName = existing?.scanGroupId === form.scanGroupId ? existing.scanGroupName : undefined;
 
-    const valid = form.titleId.trim().length > 0 && form.title.trim().length > 0 && form.number.trim().length > 0 && errors.length === 0;
+    const valid = form.titleId.trim().length > 0 && form.title.trim().length > 0
+        && form.number.trim().length > 0 && form.contentLanguage.trim().length > 0 && errors.length === 0;
 
     const submit = async (): Promise<boolean> => {
         if (!valid) return false;
@@ -120,6 +130,7 @@ const useChapterFormModalState = (chapterId: string | null, isOpen: boolean, pre
         valid,
         dirty,
         titleName,
+        scanGroupName,
         submit,
     };
 };

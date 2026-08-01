@@ -41,21 +41,35 @@ export interface MultiSelectProps extends SelectBaseProps {
 
 export type SelectProps = SingleSelectProps | MultiSelectProps;
 
+const MENU_CONTENT_CLASS =
+    'z-mr-dropdown flex max-h-72 w-[var(--radix-dropdown-menu-trigger-width)] flex-col gap-y-0.5 overflow-y-auto scroll-py-1 rounded-mr-md bg-mr-surface-elevated p-1.5 shadow-mr-elevated animate-mr-fade-in';
+
+const OPTION_CLASS =
+    'flex h-10 cursor-pointer items-center gap-2 rounded-mr-sm border-0 px-3 text-mr-body outline-none ring-0 transition-[background-color,color] duration-mr-fast focus-visible:!outline-none focus-visible:!outline-offset-0 focus-visible:!ring-0 data-[highlighted]:border-0 data-[highlighted]:ring-0';
+
+const SELECTED_OPTION_CLASS = 'bg-mr-accent-10 text-mr-accent-fg font-mr-bold';
+
+const toSelectValue = (value: string | number | readonly string[] | undefined) => (typeof value === 'string' || typeof value === 'number' ? String(value) : '');
+
 const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function SingleSelect(
-    { options, placeholder, error, hint, disabled, className, id, value, onChange, 'aria-label': ariaLabel, ...rest },
+    { options, placeholder, error, hint, disabled, className, id, value, defaultValue, onChange, 'aria-label': ariaLabel, ...rest },
     ref,
 ) {
     const describedBy = hint || error ? `${id ?? 'select'}-hint` : undefined;
     const internalRef = useRef<HTMLSelectElement>(null);
+    const [uncontrolledValue, setUncontrolledValue] = useState(() => toSelectValue(defaultValue));
     // Dentro de um Modal (<dialog> na top layer), o menu precisa portalar para o próprio dialog.
     const portalContainer = useFloatingPortalContainer();
 
     useImperativeHandle(ref, () => internalRef.current!);
 
-    const selectedOption = useMemo(() => options.find(o => String(o.value) === String(value)), [options, value]);
+    const selectedValue = value ?? uncontrolledValue;
+    const selectedOption = useMemo(() => options.find(o => String(o.value) === selectedValue), [options, selectedValue]);
     const displayLabel = selectedOption ? selectedOption.label : placeholder;
 
     const handleSelect = (val: string) => {
+        if (value === undefined) setUncontrolledValue(val);
+
         if (internalRef.current) {
             // Mudança programática do valor para garantir que o evento de mudança seja disparado
             const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')?.set;
@@ -80,19 +94,19 @@ const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function S
                         id={id}
                         disabled={disabled}
                         className={cn(
-                            'relative flex h-11 w-full items-center rounded-mr-sm border bg-mr-primary px-3 pr-9 text-left text-mr-body text-mr-fg transition-[border-color,box-shadow] duration-mr-fast outline-none',
+                            'group relative flex h-11 w-full items-center rounded-mr-sm border bg-mr-primary px-3 pr-9 text-left text-mr-body text-mr-fg transition-[border-color,box-shadow] duration-mr-fast outline-none',
                             'hover:not(:disabled):border-mr-gray-500 focus-visible:border-mr-accent-border focus-visible:ring-2 focus-visible:ring-mr-accent-25',
                             'data-[state=open]:border-mr-accent-border data-[state=open]:ring-2 data-[state=open]:ring-mr-accent-25',
                             error ? 'border-mr-danger' : 'border-mr-border',
-                            disabled && 'opacity-mr-disabled cursor-not-allowed',
+                            disabled && 'cursor-not-allowed bg-mr-surface-muted border-mr-border-subtle text-mr-fg-disabled opacity-100',
                             className,
                         )}
                         aria-invalid={!!error || undefined}
                         aria-describedby={describedBy}
                         aria-label={ariaLabel ?? (typeof displayLabel === 'string' && displayLabel ? displayLabel : undefined)}
                     >
-                        <span className={cn('block truncate', !selectedOption && 'text-mr-fg-muted')}>{displayLabel}</span>
-                        <ChevronDown className="pointer-events-none absolute right-3 size-4 text-mr-tertiary transition-transform duration-mr-default data-[state=open]:rotate-180" />
+                        <span className={cn('block truncate', disabled ? 'text-mr-fg-disabled' : selectedOption ? 'font-mr-semibold text-mr-fg' : 'text-mr-fg-muted')}>{displayLabel}</span>
+                        <ChevronDown className={cn('pointer-events-none absolute right-3 size-4 text-mr-tertiary transition-transform duration-mr-default group-data-[state=open]:rotate-180 group-data-[state=open]:text-mr-accent-fg', disabled && 'text-mr-fg-disabled')} />
                     </button>
                 </RD.Trigger>
 
@@ -100,7 +114,7 @@ const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function S
                     <RD.Content
                         align="start"
                         sideOffset={4}
-                        className="z-mr-dropdown flex max-h-72 min-w-[var(--radix-dropdown-menu-trigger-width)] flex-col gap-y-0.5 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-surface-elevated p-1.5 shadow-mr-elevated animate-mr-fade-in"
+                        className={MENU_CONTENT_CLASS}
                     >
                         {options.map(o => (
                             <RD.Item
@@ -108,21 +122,21 @@ const SingleSelect = forwardRef<HTMLSelectElement, SingleSelectProps>(function S
                                 disabled={o.disabled}
                                 onSelect={() => handleSelect(o.value)}
                                 className={cn(
-                                    'flex h-10 cursor-pointer items-center gap-2 rounded-mr-sm px-3 text-mr-body outline-none transition-colors',
+                                    OPTION_CLASS,
                                     'data-[highlighted]:bg-mr-accent-25 data-[highlighted]:text-mr-fg',
-                                    String(o.value) === String(value) ? 'bg-mr-accent text-mr-on-accent font-mr-bold' : 'text-mr-fg',
+                                    String(o.value) === selectedValue ? SELECTED_OPTION_CLASS : 'text-mr-fg',
                                     o.disabled && 'opacity-mr-disabled cursor-not-allowed',
                                 )}
                             >
                                 <span className="flex-1 truncate">{o.label}</span>
-                                {String(o.value) === String(value) && <Check className="size-4 shrink-0" />}
+                                {String(o.value) === selectedValue && <Check className="size-4 shrink-0 text-mr-accent-fg" />}
                             </RD.Item>
                         ))}
                     </RD.Content>
                 </RD.Portal>
             </RD.Root>
 
-            <select ref={internalRef} value={value} onChange={onChange} disabled={disabled} className="sr-only" tabIndex={-1} aria-hidden="true" {...rest}>
+            <select ref={internalRef} value={selectedValue} onChange={onChange} disabled={disabled} className="sr-only" tabIndex={-1} aria-hidden="true" {...rest}>
                 {placeholder && (
                     <option value="" disabled hidden>
                         {placeholder}
@@ -194,14 +208,15 @@ function MultiSelect({
                         aria-invalid={!!error || undefined}
                         aria-describedby={describedBy}
                         aria-label={ariaLabel}
+                        aria-disabled={disabled || undefined}
                         id={id}
                         tabIndex={disabled ? -1 : 0}
                         className={cn(
-                            'relative flex min-h-11 w-full flex-wrap items-center gap-1 rounded-mr-sm border bg-mr-primary px-3 py-1.5 pr-9 text-left text-mr-body text-mr-fg transition-[border-color,box-shadow] duration-mr-fast outline-none',
+                            'group relative flex min-h-11 w-full flex-wrap items-center gap-1 rounded-mr-sm border bg-mr-primary px-3 py-1.5 pr-9 text-left text-mr-body text-mr-fg transition-[border-color,box-shadow] duration-mr-fast outline-none',
                             'hover:not(:disabled):border-mr-gray-500 focus-visible:border-mr-accent-border focus-visible:ring-2 focus-visible:ring-mr-accent-25',
                             'data-[state=open]:border-mr-accent-border data-[state=open]:ring-2 data-[state=open]:ring-mr-accent-25',
                             error ? 'border-mr-danger' : 'border-mr-border',
-                            disabled && 'pointer-events-none opacity-mr-disabled cursor-not-allowed',
+                            disabled && 'pointer-events-none cursor-not-allowed bg-mr-surface-muted border-mr-border-subtle text-mr-fg-disabled opacity-100',
                             className,
                         )}
                     >
@@ -230,7 +245,7 @@ function MultiSelect({
                                 </span>
                             ))
                         )}
-                        <ChevronDown className="pointer-events-none absolute right-3 size-4 text-mr-tertiary transition-transform duration-mr-default data-[state=open]:rotate-180" />
+                        <ChevronDown className="pointer-events-none absolute right-3 size-4 text-mr-tertiary transition-transform duration-mr-default group-data-[state=open]:rotate-180 group-data-[state=open]:text-mr-accent-fg" />
                     </div>
                 </RD.Trigger>
 
@@ -239,7 +254,7 @@ function MultiSelect({
                         align="start"
                         sideOffset={4}
                         onCloseAutoFocus={e => e.preventDefault()}
-                        className="z-mr-dropdown flex max-h-72 min-w-[var(--radix-dropdown-menu-trigger-width)] flex-col gap-y-0.5 overflow-y-auto rounded-mr-md border border-mr-border bg-mr-surface-elevated p-1.5 shadow-mr-elevated animate-mr-fade-in"
+                        className={MENU_CONTENT_CLASS}
                     >
                         {searchable && (
                             <input
@@ -249,7 +264,7 @@ function MultiSelect({
                                 onChange={e => setQuery(e.target.value)}
                                 onKeyDown={e => e.stopPropagation()}
                                 placeholder={searchPlaceholder}
-                                className="mb-1 h-9 shrink-0 rounded-mr-sm border border-mr-border bg-mr-primary px-2 text-mr-body text-mr-fg outline-none focus-visible:border-mr-accent-border"
+                                className="mb-1 h-9 shrink-0 rounded-mr-sm bg-mr-primary px-2 text-mr-body text-mr-fg outline-none transition-[background-color,box-shadow] duration-mr-fast placeholder:text-mr-tertiary focus-visible:bg-mr-surface-muted focus-visible:ring-2 focus-visible:ring-mr-accent-25"
                             />
                         )}
 
@@ -268,9 +283,9 @@ function MultiSelect({
                                     onSelect={e => e.preventDefault()}
                                     onCheckedChange={() => toggleValue(o.value)}
                                     className={cn(
-                                        'flex h-10 cursor-pointer items-center gap-2 rounded-mr-sm px-3 text-mr-body outline-none transition-colors',
+                                        OPTION_CLASS,
                                         'data-[highlighted]:bg-mr-accent-25 data-[highlighted]:text-mr-fg',
-                                        checked ? 'bg-mr-accent text-mr-on-accent font-mr-bold' : 'text-mr-fg',
+                                        checked ? SELECTED_OPTION_CLASS : 'text-mr-fg',
                                         o.disabled && 'opacity-mr-disabled cursor-not-allowed',
                                     )}
                                 >

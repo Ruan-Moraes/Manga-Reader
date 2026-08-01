@@ -1,5 +1,5 @@
 import { beforeEach, describe, it, expect } from 'vitest';
-import { screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -139,7 +139,49 @@ describe('Chapter (Reader)', () => {
         expect(screen.getByRole('button', { name: /paginado/i }).getAttribute('aria-pressed')).toBe('true');
         expect(screen.getByRole('button', { name: /^ltr$/i }).getAttribute('aria-pressed')).toBe('true');
         expect(screen.getByRole('button', { name: /original/i }).getAttribute('aria-pressed')).toBe('true');
-        expect(screen.getByRole('button', { name: /papel/i }).getAttribute('aria-pressed')).toBe('true');
+        expect(screen.getByRole('button', { name: /sépia/i }).getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('persists the light reader background options', async () => {
+        const user = userEvent.setup();
+
+        renderChapter();
+
+        await user.click(screen.getByRole('button', { name: /configurações/i }));
+        await user.click(screen.getByRole('button', { name: /^claro$/i }));
+
+        await waitFor(() => {
+            const stored = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? '{}');
+            expect(stored.reader.background).toBe('LIGHT');
+        });
+
+        await user.click(screen.getByRole('button', { name: /^branco$/i }));
+
+        await waitFor(() => {
+            const stored = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? '{}');
+            expect(stored.reader.background).toBe('WHITE');
+        });
+    });
+
+    it('persists saturation changes and applies them to chapter images', async () => {
+        const user = userEvent.setup();
+        renderChapter();
+
+        await user.click(screen.getByRole('button', { name: /configurações/i }));
+        const saturation = screen.getByRole('slider', { name: /saturação/i });
+        fireEvent.change(saturation, { target: { value: '0' } });
+
+        await waitFor(() => {
+            const stored = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? '{}');
+            expect(stored.reader.saturation).toBe(0);
+        });
+        expect(document.querySelector('.reader-area')).toHaveStyle({ '--reader-saturation': '0%' });
+
+        fireEvent.change(saturation, { target: { value: '50' } });
+        await waitFor(() => {
+            const stored = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) ?? '{}');
+            expect(stored.reader.saturation).toBe(50);
+        });
     });
 
     it('does not navigate past the latest chapter', async () => {

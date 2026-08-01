@@ -13,7 +13,7 @@ export { default as useChapter } from './model/useChapter';
 // Types
 export type { Chapter } from './model/chapter.types';
 
-// Domínio administrativo de capítulos (armazenamento provisório — ver docs/architecture.md)
+// Domínio administrativo de capítulos — ver docs/architecture.md.
 export type {
     AdminChapter,
     BulkResult,
@@ -55,8 +55,7 @@ export {
     validateStatusChange,
 } from './model/admin/chapterValidation';
 
-// Gateways (implementação provisória localStorage — ponto de troca: chapterGateways.ts).
-// Somente os singletons são API pública: as factories/store são detalhe de
-// implementação (testes as importam por caminho relativo, dentro do slice).
+// Gateways HTTP compostos em chapterGateways.ts. Somente os singletons são API
+// pública; factories e adapters legados são detalhes internos do slice.
 export { chapterAdminGateway, chapterAnalyticsGateway, chapterPublicGateway, readerProgressGateway } from './api/admin/chapterGateways';
 export { CHAPTER_STORE_KEY, readLegacyChapterImport, type LegacyChapterReadResult } from './api/admin/legacyChapterMigration';

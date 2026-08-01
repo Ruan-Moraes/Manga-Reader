@@ -80,6 +80,17 @@ const ReaderTab = ({ state }: { state: SettingsState }) => {
                     />
                 </SettingRow>
 
+                <SettingRow label={t('settings.system.reader.saturation')} desc={t('settings.system.reader.saturationDesc')} block>
+                    <Slider
+                        min={0}
+                        max={100}
+                        unit="%"
+                        value={r.saturation}
+                        onChange={v => updateGroup('reader', { saturation: v }, t('settings.system.reader.saturationToast'))}
+                        aria-label={t('settings.system.reader.saturation')}
+                    />
+                </SettingRow>
+
                 <SettingRow label={t('settings.system.reader.gap')} desc={t('settings.system.reader.gapDesc')} block>
                     <Slider
                         min={0}
@@ -102,6 +113,8 @@ const ReaderTab = ({ state }: { state: SettingsState }) => {
                             { value: 'BLACK', label: t('settings.system.reader.bgBlack') },
                             { value: 'DARK', label: t('settings.system.reader.bgDark') },
                             { value: 'PAPER', label: t('settings.system.reader.bgPaper') },
+                            { value: 'LIGHT', label: t('settings.system.reader.bgLight') },
+                            { value: 'WHITE', label: t('settings.system.reader.bgWhite') },
                         ]}
                     />
                 </SettingRow>

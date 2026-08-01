@@ -53,7 +53,7 @@ const Events = () => {
     ];
 
     return (
-        <main className="events-page">
+        <main className="events-page w-full">
             <div style={{ marginBottom: 24 }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--mr-accent)', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: 6 }}>{t('page.eyebrow')}</div>
                 <h1 style={{ fontSize: 'clamp(24px,5vw,32px)', color: 'var(--mr-fg)', margin: '0 0 8px', letterSpacing: '.0625rem', fontWeight: 800 }}>{t('page.title')}</h1>

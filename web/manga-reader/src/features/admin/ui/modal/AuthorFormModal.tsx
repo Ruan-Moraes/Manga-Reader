@@ -29,8 +29,10 @@ const AuthorFormModal = ({ isOpen, onClose, onSubmit, author, isSubmitting }: Au
     const [slugTouched, setSlugTouched] = useState(false);
     const [bio, setBio] = useState('');
     const [nationality, setNationality] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [aliases, setAliases] = useState('');
 
-    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { name, slug, bio, nationality });
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { name, slug, bio, nationality, imageUrl, aliases });
 
     useEffect(() => {
         if (!isOpen) return;
@@ -39,6 +41,8 @@ const AuthorFormModal = ({ isOpen, onClose, onSubmit, author, isSubmitting }: Au
         setSlugTouched(Boolean(author));
         setBio(author?.bio ?? '');
         setNationality(author?.nationality ?? '');
+        setImageUrl(author?.imageUrl ?? '');
+        setAliases(author?.aliases.map(alias => `${alias.type}|${alias.name}`).join('\n') ?? '');
         resetDirty();
     }, [author, isOpen, resetDirty]);
 
@@ -56,6 +60,18 @@ const AuthorFormModal = ({ isOpen, onClose, onSubmit, author, isSubmitting }: Au
             slug: slug.trim() || undefined,
             bio: bio.trim() || undefined,
             nationality: nationality.trim() || undefined,
+            imageUrl: imageUrl.trim() || undefined,
+            aliases: aliases
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean)
+                .slice(0, 20)
+                .map(line => {
+                    const [candidateType, ...nameParts] = line.split('|');
+                    const type = candidateType === 'PEN_NAME' ? 'PEN_NAME' : 'ALTERNATE';
+                    const aliasName = nameParts.length > 0 ? nameParts.join('|').trim() : candidateType;
+                    return { name: aliasName.slice(0, 255), type };
+                }),
         });
     };
 
@@ -100,6 +116,12 @@ const AuthorFormModal = ({ isOpen, onClose, onSubmit, author, isSubmitting }: Au
                 </Field>
                 <Field label={t('authorForm.nationality')} hint={t('authorForm.nationalityHint')}>
                     <Input type="text" value={nationality} onChange={e => setNationality(e.target.value)} placeholder="JP" maxLength={2} />
+                </Field>
+                <Field label={t('authorForm.imageUrl')}>
+                    <Input type="url" value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder={t('authorForm.imageUrlPlaceholder')} />
+                </Field>
+                <Field label={t('authorForm.aliases')} hint={t('authorForm.aliasesHint')}>
+                    <Textarea value={aliases} onChange={e => setAliases(e.target.value)} rows={4} placeholder={t('authorForm.aliasesPlaceholder')} />
                 </Field>
             </div>
         </Modal>

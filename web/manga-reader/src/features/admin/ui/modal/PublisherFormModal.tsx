@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@ui/Modal';
 import { ModalActions } from '@ui/ModalActions';
 import { Input } from '@ui/Input';
+import { Textarea } from '@ui/Textarea';
 import { FormRow } from '@ui/FormRow';
 import { useDirtyTracker } from '@shared/hook/useDirtyTracker';
 
@@ -28,8 +29,11 @@ const PublisherFormModal = ({ isOpen, onClose, onSubmit, publisher, isSubmitting
     const [slugTouched, setSlugTouched] = useState(false);
     const [country, setCountry] = useState('');
     const [website, setWebsite] = useState('');
+    const [logoUrl, setLogoUrl] = useState('');
+    const [description, setDescription] = useState('');
+    const [aliases, setAliases] = useState('');
 
-    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { name, slug, country, website });
+    const { dirty, reset: resetDirty } = useDirtyTracker(isOpen, { name, slug, country, website, logoUrl, description, aliases });
 
     useEffect(() => {
         if (!isOpen) return;
@@ -38,6 +42,9 @@ const PublisherFormModal = ({ isOpen, onClose, onSubmit, publisher, isSubmitting
         setSlugTouched(Boolean(publisher));
         setCountry(publisher?.country ?? '');
         setWebsite(publisher?.website ?? '');
+        setLogoUrl(publisher?.logoUrl ?? '');
+        setDescription(publisher?.description ?? '');
+        setAliases(publisher?.aliases.map(alias => `${alias.type}|${alias.name}`).join('\n') ?? '');
         resetDirty();
     }, [publisher, isOpen, resetDirty]);
 
@@ -55,6 +62,20 @@ const PublisherFormModal = ({ isOpen, onClose, onSubmit, publisher, isSubmitting
             slug: slug.trim() || undefined,
             country: country.trim() || undefined,
             website: website.trim() || undefined,
+            logoUrl: logoUrl.trim() || undefined,
+            description: description.trim() || undefined,
+            aliases: aliases
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean)
+                .slice(0, 20)
+                .map(line => {
+                    const [candidateType, ...nameParts] = line.split('|');
+                    const allowed = ['ALTERNATE', 'ABBREVIATION', 'ORIGINAL'] as const;
+                    const type = allowed.find(value => value === candidateType) ?? 'ALTERNATE';
+                    const aliasName = nameParts.length > 0 ? nameParts.join('|').trim() : candidateType;
+                    return { name: aliasName.slice(0, 255), type };
+                }),
         });
     };
 
@@ -94,6 +115,15 @@ const PublisherFormModal = ({ isOpen, onClose, onSubmit, publisher, isSubmitting
                         />
                     </Field>
                 </FormRow>
+                <Field label={t('publisherForm.logoUrl')}>
+                    <Input type="url" value={logoUrl} onChange={e => setLogoUrl(e.target.value)} placeholder={t('publisherForm.logoUrlPlaceholder')} />
+                </Field>
+                <Field label={t('publisherForm.description')}>
+                    <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={4} placeholder={t('publisherForm.descriptionPlaceholder')} />
+                </Field>
+                <Field label={t('publisherForm.aliases')} hint={t('publisherForm.aliasesHint')}>
+                    <Textarea value={aliases} onChange={e => setAliases(e.target.value)} rows={4} placeholder={t('publisherForm.aliasesPlaceholder')} />
+                </Field>
                 <FormRow columns={2}>
                     <Field label={t('publisherForm.country')} hint={t('publisherForm.countryHint')}>
                         <Input type="text" value={country} onChange={e => setCountry(e.target.value)} placeholder="JP" maxLength={2} />

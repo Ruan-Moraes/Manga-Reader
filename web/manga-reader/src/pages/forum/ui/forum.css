@@ -1051,3 +1051,161 @@
   letter-spacing: .0625rem;
 }
 .composer-meta svg { color: var(--mr-accent); }
+
+/* O fórum nasceu antes dos tokens semânticos e possui uma paleta escura
+   própria. Esta camada converte as superfícies e textos estruturais quando o
+   contraste claro está ativo, sem alterar a composição visual escura. */
+html.mr-theme-light.mr-high-contrast .forum-shell {
+  background: var(--mr-bg);
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-cats-foot, .forum-drawer, .forum-search, .forum-kbd,
+  .forum-card, .forum-panel, .forum-stat-tile, .forum-empty,
+  .forum-skeleton-card, .forum-page-btn, .forum-userhover, .forum-topic,
+  .forum-react, .forum-reply-placeholder, .forum-md-toolbar,
+  .forum-md-editor, .composer-editor, .forum-comment, .forum-spoiler,
+  .composer-shell, .composer-title-input, .composer-cat, .composer-upload,
+  .composer-preview
+) {
+  background: var(--mr-surface) !important;
+  border-color: var(--mr-border) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-comment.nested, .composer-drop, .composer-foot
+) {
+  background: var(--mr-surface-muted) !important;
+  border-color: var(--mr-border) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-title, .forum-search input, .forum-author, .forum-card-title,
+  .forum-panel-head h4, .forum-trending-title, .forum-rank-name,
+  .forum-event-title, .forum-userhover-name, .forum-topic-title,
+  .forum-comments-title, .forum-md-editor, .composer-editor,
+  .forum-comment-name, .forum-spoiler-head, .composer-title,
+  .composer-title-input, .composer-upload-name
+) {
+  color: var(--mr-fg) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-cat, .forum-subtitle, .forum-cat-count, .forum-search,
+  .forum-search input::placeholder, .forum-kbd, .forum-tab,
+  .forum-card-meta, .forum-card-excerpt, .forum-stat, .forum-stat-up,
+  .forum-trending-meta, .forum-recent-text, .forum-recent-on,
+  .forum-rank-pos, .forum-rank-pos.silver, .forum-rank-meta,
+  .forum-stat-tile-l, .forum-page-btn, .forum-userhover-handle,
+  .forum-crumbs, .forum-topic-when, .forum-topic-content,
+  .forum-react, .forum-reply-placeholder, .forum-md-toolbar button,
+  .forum-reply-hints, .forum-comment-when, .forum-comment-edited,
+  .forum-comment-text, .forum-react-mini, .forum-spoiler-instruction,
+  .forum-spoiler-body, .composer-step, .composer-cat, .composer-upload-size,
+  .composer-check, .composer-meta
+) {
+  color: var(--mr-fg-muted) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-tabs, .forum-card-footer, .forum-panel-head, .forum-events li,
+  .forum-panel-link, .forum-stats-grid, .forum-userhover-body,
+  .forum-topic-author, .forum-topic-reactions, .forum-comment-replies,
+  .forum-spoiler.revealed .forum-spoiler-head, .composer-head,
+  .composer-steps, .composer-foot
+) {
+  border-color: var(--mr-border-subtle) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-cat.active, .forum-card-cat, .forum-panel-head, .forum-trending-rank,
+  .forum-rank-pos.gold, .forum-rank-points, .forum-event-when,
+  .forum-panel-link, .forum-stat-tile-v, .forum-userhover-v,
+  .forum-crumbs a, .forum-topic-cat, .forum-react:hover,
+  .forum-react-up:hover svg, .forum-react-up:hover span,
+  .forum-md-toolbar button:hover, .forum-reply-hints svg,
+  .forum-react-mini:hover, .forum-react-up:hover svg,
+  .composer-label .mr-label, .composer-step.active, .composer-drop,
+  .composer-upload-thumb, .composer-meta svg
+) {
+  color: var(--mr-accent-fg) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-cat:hover, .forum-tab:hover, .forum-page-btn:hover:not(:disabled):not(.active),
+  .forum-icon-btn, .forum-spoiler-head, .composer-step:hover,
+  .composer-cat:hover
+) {
+  color: var(--mr-fg) !important;
+}
+html.mr-theme-light.mr-high-contrast .forum-shell :is(
+  .forum-card:hover, .forum-search:focus-within, .forum-page-btn:hover:not(:disabled):not(.active),
+  .forum-icon-btn:hover, .forum-toggle-btn.active, .forum-reply.open,
+  .forum-comment:hover, .forum-spoiler.revealed, .composer-title-input:focus,
+  .composer-cat:hover, .composer-cat.active, .composer-drop.dragging
+) {
+  border-color: var(--mr-accent-border) !important;
+}
+
+@media (prefers-color-scheme: light) {
+  html.mr-theme-system.mr-high-contrast .forum-shell {
+    background: var(--mr-bg);
+  }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-cats-foot, .forum-drawer, .forum-search, .forum-kbd, .forum-card,
+    .forum-panel, .forum-stat-tile, .forum-empty, .forum-skeleton-card,
+    .forum-page-btn, .forum-userhover, .forum-topic, .forum-react,
+    .forum-reply-placeholder, .forum-md-toolbar, .forum-md-editor,
+    .composer-editor, .forum-comment, .forum-spoiler, .composer-shell,
+    .composer-title-input, .composer-cat, .composer-upload, .composer-preview
+  ) {
+    background: var(--mr-surface) !important;
+    border-color: var(--mr-border) !important;
+  }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-comment.nested, .composer-drop, .composer-foot
+  ) {
+    background: var(--mr-surface-muted) !important;
+    border-color: var(--mr-border) !important;
+  }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-title, .forum-search input, .forum-author, .forum-card-title,
+    .forum-panel-head h4, .forum-trending-title, .forum-rank-name,
+    .forum-event-title, .forum-userhover-name, .forum-topic-title,
+    .forum-comments-title, .forum-md-editor, .composer-editor,
+    .forum-comment-name, .forum-spoiler-head, .composer-title,
+    .composer-title-input, .composer-upload-name
+  ) { color: var(--mr-fg) !important; }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-cat, .forum-subtitle, .forum-cat-count, .forum-search,
+    .forum-search input::placeholder, .forum-kbd, .forum-tab, .forum-card-meta,
+    .forum-card-excerpt, .forum-stat, .forum-stat-up, .forum-trending-meta,
+    .forum-recent-text, .forum-recent-on, .forum-rank-pos, .forum-rank-pos.silver,
+    .forum-rank-meta, .forum-stat-tile-l, .forum-page-btn, .forum-userhover-handle,
+    .forum-crumbs, .forum-topic-when, .forum-topic-content, .forum-react,
+    .forum-reply-placeholder, .forum-md-toolbar button, .forum-reply-hints,
+    .forum-comment-when, .forum-comment-edited, .forum-comment-text,
+    .forum-react-mini, .forum-spoiler-instruction, .forum-spoiler-body,
+    .composer-step, .composer-cat, .composer-upload-size, .composer-check,
+    .composer-meta
+  ) { color: var(--mr-fg-muted) !important; }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-tabs, .forum-card-footer, .forum-panel-head, .forum-events li,
+    .forum-panel-link, .forum-stats-grid, .forum-userhover-body,
+    .forum-topic-author, .forum-topic-reactions, .forum-comment-replies,
+    .forum-spoiler.revealed .forum-spoiler-head, .composer-head,
+    .composer-steps, .composer-foot
+  ) { border-color: var(--mr-border-subtle) !important; }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-cat.active, .forum-card-cat, .forum-panel-head, .forum-trending-rank,
+    .forum-rank-pos.gold, .forum-rank-points, .forum-event-when,
+    .forum-panel-link, .forum-stat-tile-v, .forum-userhover-v, .forum-crumbs a,
+    .forum-topic-cat, .forum-react:hover, .forum-react-up:hover svg,
+    .forum-react-up:hover span, .forum-md-toolbar button:hover,
+    .forum-reply-hints svg, .forum-react-mini:hover, .composer-label .mr-label,
+    .composer-step.active, .composer-drop, .composer-upload-thumb, .composer-meta svg
+  ) { color: var(--mr-accent-fg) !important; }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-cat:hover, .forum-tab:hover, .forum-page-btn:hover:not(:disabled):not(.active),
+    .forum-icon-btn, .forum-spoiler-head, .composer-step:hover, .composer-cat:hover
+  ) { color: var(--mr-fg) !important; }
+  html.mr-theme-system.mr-high-contrast .forum-shell :is(
+    .forum-card:hover, .forum-search:focus-within, .forum-page-btn:hover:not(:disabled):not(.active),
+    .forum-icon-btn:hover, .forum-toggle-btn.active, .forum-reply.open,
+    .forum-comment:hover, .forum-spoiler.revealed, .composer-title-input:focus,
+    .composer-cat:hover, .composer-cat.active, .composer-drop.dragging
+  ) { border-color: var(--mr-accent-border) !important; }
+}

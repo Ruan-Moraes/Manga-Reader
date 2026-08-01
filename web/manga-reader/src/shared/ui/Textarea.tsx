@@ -60,7 +60,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
                     'placeholder:text-mr-tertiary outline-none',
                     'hover:not(:disabled):border-mr-gray-500 focus:border-mr-accent-border focus:ring-2 focus:ring-mr-accent-25',
                     error ? 'border-mr-danger focus:border-mr-danger focus:ring-mr-danger-15' : 'border-mr-border',
-                    disabled && 'opacity-mr-disabled',
+                    disabled && 'cursor-not-allowed bg-mr-surface-muted border-mr-border-subtle text-mr-fg-disabled placeholder:text-mr-fg-disabled opacity-100',
                     className,
                 )}
                 {...rest}

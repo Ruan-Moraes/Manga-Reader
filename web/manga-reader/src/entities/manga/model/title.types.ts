@@ -41,3 +41,32 @@ export type Title = {
     createdAt: string;
     updatedAt: string;
 };
+
+export type TitleSearchMatchType = 'TITLE' | 'ALTERNATE_TITLE' | 'AUTHOR' | 'ARTIST' | 'PUBLISHER' | 'GROUP';
+
+export type TitleSearchResult = {
+    id: string;
+    name: string;
+    alternateTitle?: string | null;
+    cover?: string | null;
+    type?: string | null;
+    status?: string | null;
+    chaptersCount?: number | null;
+    latestChapterNumber?: string | null;
+    adult: boolean;
+    ratingAverage: number;
+    ratingCount: number;
+    author?: string | null;
+    matchedBy: TitleSearchMatchType;
+    matchedText?: string | null;
+};
+
+export type RelatedTitle = {
+    id: string;
+    name: string;
+    cover?: string | null;
+    type?: string | null;
+    status?: string | null;
+    adult: boolean;
+    roles: AuthorRole[];
+};

@@ -23,6 +23,7 @@ const setup = (overrides = {}) =>
             selectedStatus="all"
             onStatusChange={vi.fn()}
             onClearAll={vi.fn()}
+            activeCount={0}
             {...overrides}
         />,
     );

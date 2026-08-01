@@ -21,7 +21,7 @@ const AuthorRolesInput = ({ value, onChange }: AuthorRolesInputProps) => {
     const roleOptions = AUTHOR_ROLES.map(role => ({ value: role, label: t(`titleAuthorRole.${role}`, role) }));
 
     const addAuthor = (author: AdminAuthor) => {
-        onChange([...value, { authorId: Number(author.id), authorName: author.name, role: 'AUTHOR' }]);
+        onChange([...value, { authorId: author.id, authorName: author.name, role: 'AUTHOR' }]);
     };
 
     const setRole = (index: number, role: string) => {
@@ -60,7 +60,7 @@ const AuthorRolesInput = ({ value, onChange }: AuthorRolesInputProps) => {
                 getLabel={author => author.name}
                 onPick={addAuthor}
                 placeholder={t('dashboard.titles.form.authorsSearch')}
-                excludeKeys={value.map(entry => String(entry.authorId))}
+                excludeKeys={value.map(entry => entry.authorId)}
                 emptyLabel={t('dashboard.titles.form.authorsEmpty')}
             />
         </div>

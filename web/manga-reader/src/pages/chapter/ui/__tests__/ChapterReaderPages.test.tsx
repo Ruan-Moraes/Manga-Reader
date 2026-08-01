@@ -72,6 +72,17 @@ describe('Chapter (Reader) — páginas reais entregues pela API', () => {
         expect(first.src).toContain('picsum.photos');
     });
 
+    it('com espaçamento zero mantém cantos apenas nas extremidades da leitura vertical', async () => {
+        serveReaderChapter();
+        renderReader('1', '1');
+
+        await waitFor(() => expect(document.querySelectorAll('img.reader-page-img')).toHaveLength(readerChapter.pages.length));
+
+        expect(document.querySelector('.reader-area')).toHaveAttribute('data-gap', 'zero');
+        expect(document.querySelector('[data-rd-page="1"]')).toHaveAttribute('data-rd-edge', 'first');
+        expect(document.querySelector('[data-rd-page="2"]')).toHaveAttribute('data-rd-edge', 'last');
+    });
+
     it('capítulo oculto mostra "capítulo indisponível" para o público', async () => {
         serveUnavailableChapter();
         renderReader('2', '1');

@@ -35,7 +35,7 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-5">
                 {Array.from({ length: 12 }).map((_, i) => (
                     <Skeleton key={i} variant="rect" height={260} className="rounded-mr-xs" />
                 ))}
@@ -60,7 +60,7 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
 
     if (layout === 'grid') {
         return (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-5">
                 {items.map(m => (
                     <MangaCard
                         key={m.id}
@@ -83,13 +83,13 @@ const CategoryResults = ({ items, isLoading, layout, onNavigate, onClearAll }: C
     }
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
             {items.map(m => (
                 <button
                     key={m.id}
                     type="button"
                     onClick={() => onNavigate(m.id)}
-                    className="flex items-center gap-3 rounded-mr-xs border border-mr-border bg-mr-surface px-4 py-3 text-left transition-colors hover:border-mr-accent-border"
+                    className="flex items-center gap-3 rounded-mr-md border border-mr-border bg-mr-surface px-4 py-3 text-left shadow-mr-elevated transition-colors hover:border-mr-accent-border"
                 >
                     <div
                         className="size-12 shrink-0 rounded-mr-xs bg-cover bg-center bg-mr-tertiary/20"

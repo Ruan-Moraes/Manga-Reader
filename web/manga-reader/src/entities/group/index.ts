@@ -1,9 +1,10 @@
 export { default as useGroups } from './model/useGroups';
-export { getGroups, getGroupsByTitleId } from './api/groupService';
+export { getGroups, getGroupsByTitleId, getGroupWorks } from './api/groupService';
 export { default as useGroupDetails } from './model/useGroupDetails';
 export { default as useSupportGroup } from './model/useSupportGroup';
 export { getGroupFollowersCount } from './model/groupFollowers';
 export { default as useGroupWorks } from './model/useGroupWorks';
+export { default as usePagedGroupWorks } from './model/usePagedGroupWorks';
 export type { WorkSortOption } from './model/useGroupWorks';
 
 export { default as GroupCard } from './ui/card/GroupCard';

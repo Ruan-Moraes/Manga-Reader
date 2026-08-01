@@ -448,6 +448,9 @@
                 "name": "Name",
                 "type": "Type",
                 "synopsis": "Synopsis",
+                "aliases": "Alternate titles and synonyms",
+                "aliasesHint": "One per line: TYPE|optional locale|Name. Types: ALTERNATE or SYNONYM. Up to 20.",
+                "aliasesPlaceholder": "ALTERNATE|ja-JP|Original title",
                 "cover": "Cover URL",
                 "status": "Status",
                 "genres": "Genres (comma-separated)",
@@ -555,6 +558,13 @@
                 "description": "Internal note",
                 "descriptionHint": "Visible only in the admin panel.",
                 "descriptionPlaceholder": "Notes for the team...",
+                "contentLanguage": "Chapter language",
+                "languagePt": "Portuguese (Brazil)",
+                "languageEn": "English (US)",
+                "languageEs": "Spanish",
+                "scanGroup": "Scan group",
+                "scanGroupHint": "Optional; attribution will be preserved in the release.",
+                "noScanGroup": "No group",
                 "status": "Status",
                 "publishHint": "Publishing requires at least 1 processed page.",
                 "scheduledAt": "Schedule for"
@@ -668,7 +678,8 @@
                 "invalid_transition": "Invalid status transition ({{from}} → {{to}}).",
                 "reorder_incomplete_set": "Reordering must include every chapter of the series.",
                 "chapter_not_found": "Chapter not found.",
-                "title_id_required": "Select the chapter series."
+                "title_id_required": "Select the chapter series.",
+                "content_language_required": "Select the chapter language."
             }
         },
         "events": {
@@ -933,7 +944,12 @@
         "bio": "Biography",
         "bioPlaceholder": "Short author biography",
         "nationality": "Nationality",
-        "nationalityHint": "2-letter ISO code (e.g. JP, KR, BR)."
+        "nationalityHint": "2-letter ISO code (e.g. JP, KR, BR).",
+        "imageUrl": "Image URL",
+        "imageUrlPlaceholder": "https://...",
+        "aliases": "Aliases and pen names",
+        "aliasesHint": "One per line as ALTERNATE|Name or PEN_NAME|Name. Up to 20.",
+        "aliasesPlaceholder": "PEN_NAME|Pen name"
     },
     "publisherForm": {
         "newTitle": "New publisher",
@@ -944,7 +960,14 @@
         "slugHint": "Generated from the name; editable.",
         "country": "Country",
         "countryHint": "2-letter ISO code (e.g. JP, KR, BR).",
-        "website": "Website"
+        "website": "Website",
+        "logoUrl": "Logo URL",
+        "logoUrlPlaceholder": "https://...",
+        "description": "Description",
+        "descriptionPlaceholder": "Short publisher description",
+        "aliases": "Aliases and abbreviations",
+        "aliasesHint": "One per line: ALTERNATE, ABBREVIATION or ORIGINAL followed by |Name. Up to 20.",
+        "aliasesPlaceholder": "ABBREVIATION|Initials"
     },
     "stores": { "title": "Stores", "count": "{{count}} stores", "new": "New store", "edit": "Edit store", "name": "Name", "website": "Website", "logo": "Logo URL", "icon": "Icon URL", "status": "Status", "active": "Active", "inactive": "Inactive", "order": "Order", "actions": "Actions", "search": "Search stores", "empty": "No stores found.", "deleteTitle": "Delete store", "deleteConfirm": "Title links will be removed.", "addToTitle": "Link store", "removeFromTitle": "Remove store" },
     "titleAuthorRole": {

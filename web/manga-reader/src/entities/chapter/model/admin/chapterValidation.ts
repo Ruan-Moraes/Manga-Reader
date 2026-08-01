@@ -43,6 +43,7 @@ export const validateChapterInput = (input: ChapterInput, siblingNumbers: string
     const errors: ChapterValidationError[] = [];
 
     if (!input.titleId?.trim()) errors.push({ code: 'title_id_required' });
+    if (!input.contentLanguage?.trim()) errors.push({ code: 'content_language_required' });
 
     if (input.title !== undefined) {
         if (!input.title.trim()) errors.push({ code: 'title_required' });

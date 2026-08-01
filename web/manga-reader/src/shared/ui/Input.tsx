@@ -33,7 +33,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
                 readOnly={readOnly}
                 aria-invalid={!!error || undefined}
                 aria-describedby={describedBy}
-                className={cn('w-full bg-transparent text-mr-body outline-none placeholder:text-mr-tertiary', disabled && 'opacity-mr-disabled', className)}
+                className={cn(
+                    'w-full bg-transparent text-mr-body outline-none placeholder:text-mr-tertiary',
+                    disabled && 'cursor-not-allowed text-mr-fg-disabled placeholder:text-mr-fg-disabled opacity-100',
+                    className,
+                )}
                 {...rest}
             />
         );
@@ -47,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
                     'has-[:hover:not(:disabled)]:border-mr-gray-500 has-[:focus]:border-mr-accent-border has-[:focus]:ring-2 has-[:focus]:ring-mr-accent-25',
                     readOnly && 'bg-mr-gray-900',
                     error ? 'border-mr-danger has-[:focus]:border-mr-danger has-[:focus]:ring-mr-danger-15' : 'border-mr-border',
-                    disabled && 'opacity-mr-disabled',
+                    disabled && 'cursor-not-allowed bg-mr-surface-muted border-mr-border-subtle',
                 )}
             >
                 {Lead && <Lead className="size-4 shrink-0 text-mr-tertiary" />}
@@ -58,7 +62,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
                     readOnly={readOnly}
                     aria-invalid={!!error || undefined}
                     aria-describedby={describedBy}
-                    className={cn('size-full min-w-0 flex-1 bg-transparent text-mr-body outline-none placeholder:text-mr-tertiary', className)}
+                    className={cn(
+                        'size-full min-w-0 flex-1 bg-transparent text-mr-body outline-none placeholder:text-mr-tertiary',
+                        disabled && 'cursor-not-allowed text-mr-fg-disabled placeholder:text-mr-fg-disabled opacity-100',
+                        className,
+                    )}
                     {...rest}
                 />
                 {Trail &&

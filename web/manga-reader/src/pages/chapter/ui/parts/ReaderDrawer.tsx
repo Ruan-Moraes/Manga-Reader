@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Bookmark, Library, Newspaper, X, type LucideIcon } from 'lucide-react';
+import { Slider } from '@ui/Slider';
 
 import type { Bg, Direction, Fit, ReadMode } from '../../model/useChapterReader';
 
@@ -8,11 +9,13 @@ interface ReaderDrawerProps {
     mode: ReadMode;
     direction: Direction;
     fit: Fit;
+    saturation: number;
     gap: number;
     bg: Bg;
     onMode: (v: ReadMode) => void;
     onDirection: (v: Direction) => void;
     onFit: (v: Fit) => void;
+    onSaturation: (v: number) => void;
     onGap: (v: number) => void;
     onBg: (v: Bg) => void;
     onClose: () => void;
@@ -32,7 +35,7 @@ const Pill = ({ icon: Icon, label, active, onClick }: { icon?: LucideIcon; label
     </button>
 );
 
-export const ReaderDrawer = ({ mode, direction, fit, gap, bg, onMode, onDirection, onFit, onGap, onBg, onClose }: ReaderDrawerProps) => {
+export const ReaderDrawer = ({ mode, direction, fit, saturation, gap, bg, onMode, onDirection, onFit, onSaturation, onGap, onBg, onClose }: ReaderDrawerProps) => {
     const { t } = useTranslation('manga');
 
     return (
@@ -72,6 +75,10 @@ export const ReaderDrawer = ({ mode, direction, fit, gap, bg, onMode, onDirectio
                         </div>
                     </OptGroup>
 
+                    <OptGroup label={t('reader.saturation')}>
+                        <Slider min={0} max={100} unit="%" value={saturation} onChange={onSaturation} aria-label={t('reader.saturation')} />
+                    </OptGroup>
+
                     {mode === 'vertical' && (
                         <OptGroup label={t('reader.gapSection')}>
                             <div className="reader-opt-grid cols-4">
@@ -83,10 +90,12 @@ export const ReaderDrawer = ({ mode, direction, fit, gap, bg, onMode, onDirectio
                     )}
 
                     <OptGroup label={t('reader.bgSection')}>
-                        <div className="reader-opt-grid cols-3">
+                        <div className="reader-opt-grid cols-5">
                             <Pill label={t('reader.bgBlack')} active={bg === 'black'} onClick={() => onBg('black')} />
                             <Pill label={t('reader.bgDark')} active={bg === 'dark'} onClick={() => onBg('dark')} />
                             <Pill label={t('reader.bgPaper')} active={bg === 'paper'} onClick={() => onBg('paper')} />
+                            <Pill label={t('reader.bgLight')} active={bg === 'light'} onClick={() => onBg('light')} />
+                            <Pill label={t('reader.bgWhite')} active={bg === 'white'} onClick={() => onBg('white')} />
                         </div>
                     </OptGroup>
 
