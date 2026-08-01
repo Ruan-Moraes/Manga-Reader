@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mangareader.domain.author.entity.TitleAuthor;
+import com.mangareader.application.manga.port.TitleReferenceMatch;
 
 /**
  * Port de saída — junção título ↔ autor (PostgreSQL).
@@ -16,6 +17,10 @@ public interface TitleAuthorRepositoryPort {
 
     /** Busca invertida: IDs de títulos (Mongo) associados a um autor. */
     List<String> findTitleIdsByAuthorId(Long authorId);
+
+    List<TitleAuthor> findByAuthorIdIn(Collection<Long> authorIds);
+
+    List<TitleReferenceMatch> searchTitleReferences(String query);
 
     TitleAuthor save(TitleAuthor titleAuthor);
 

@@ -70,14 +70,18 @@ public class AdminChapterController {
     @PostMapping
     public ResponseEntity<ApiResponse<AdminChapterResponse>> create(@Valid @RequestBody AdminChapterRequest.Create request, Authentication auth) {
         ChapterStatus status = request.status() == null ? ChapterStatus.DRAFT : ChapterStatus.valueOf(request.status());
-        var input = new CreateInput(request.titleId(), Map.of("pt-BR", request.title()), request.number(), request.displayOrder(), request.description(), status, request.scheduledAt());
+        var input = new CreateInput(request.titleId(), Map.of("pt-BR", request.title()), request.number(),
+                request.displayOrder(), request.description(), status, request.scheduledAt(),
+                request.contentLanguage(), request.scanGroupId());
         return ResponseEntity.ok(ApiResponse.success(toResponse(useCase.create(input, (UUID) auth.getPrincipal()))));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<AdminChapterResponse>> update(@PathVariable String id, @RequestBody AdminChapterRequest.Update request, Authentication auth) {
         Map<String, String> title = request.title() == null ? null : Map.of("pt-BR", request.title());
-        var input = new UpdateInput(title, request.number(), request.displayOrder(), request.description(), request.scheduledAt(), request.version());
+        var input = new UpdateInput(title, request.number(), request.displayOrder(), request.description(),
+                request.scheduledAt(), request.version(), request.contentLanguage(), request.scanGroupId(),
+                Boolean.TRUE.equals(request.clearScanGroup()));
         return ResponseEntity.ok(ApiResponse.success(toResponse(useCase.update(id, input, (UUID) auth.getPrincipal()))));
     }
 
@@ -114,6 +118,7 @@ public class AdminChapterController {
         var chapters = request.chapters().stream().map(chapter -> new LegacyChapterInput(
                 chapter.legacyId(), chapter.titleId(), chapter.title(), chapter.number(),
                 chapter.displayOrder(), chapter.description(),
+                chapter.contentLanguage(), chapter.scanGroupId(),
                 chapter.status(),
                 chapter.scheduledAt(), chapter.publishedAt(), chapter.createdAt(), chapter.updatedAt(),
                 chapter.pages() == null ? List.of() : chapter.pages().stream().map(page -> new LegacyPageInput(

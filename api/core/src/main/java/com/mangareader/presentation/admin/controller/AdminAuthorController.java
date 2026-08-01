@@ -40,7 +40,12 @@ public class AdminAuthorController {
             @Valid @RequestBody CreateAuthorRequest request
     ) {
         var author = createAuthorUseCase.execute(
-                new CreateAuthorInput(request.name(), request.bio(), request.nationality()));
+                new CreateAuthorInput(
+                        request.name(), request.bio(), request.nationality(), request.imageUrl(),
+                        request.aliases() == null ? null : request.aliases().stream()
+                                .map(alias -> new CreateAuthorUseCase.AliasInput(
+                                        alias.name(), alias.type()))
+                                .toList()));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(AuthorMapper.toResponse(author)));
@@ -52,7 +57,13 @@ public class AdminAuthorController {
             @Valid @RequestBody UpdateAuthorRequest request
     ) {
         var author = updateAuthorUseCase.execute(
-                new UpdateAuthorInput(id, request.name(), request.bio(), request.nationality()));
+                new UpdateAuthorInput(
+                        id, request.name(), request.bio(), request.nationality(),
+                        request.imageUrl(),
+                        request.aliases() == null ? null : request.aliases().stream()
+                                .map(alias -> new CreateAuthorUseCase.AliasInput(
+                                        alias.name(), alias.type()))
+                                .toList()));
 
         return ResponseEntity.ok(ApiResponse.success(AuthorMapper.toResponse(author)));
     }

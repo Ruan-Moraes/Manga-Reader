@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
+import com.mangareader.shared.domain.SearchText;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,18 @@ public class GetGroupsUseCase {
             group.getTranslatedWorks().size();
         });
 
+        return page;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Group> execute(String query, Pageable pageable) {
+        if (query == null || query.isBlank()) return execute(pageable);
+
+        Page<Group> page = groupRepository.searchCatalog(SearchText.normalize(query), pageable);
+        page.getContent().forEach(group -> {
+            group.getGroupUsers().size();
+            group.getTranslatedWorks().size();
+        });
         return page;
     }
 }

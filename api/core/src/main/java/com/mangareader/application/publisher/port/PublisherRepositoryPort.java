@@ -1,11 +1,14 @@
 package com.mangareader.application.publisher.port;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.mangareader.domain.publisher.entity.Publisher;
+import com.mangareader.domain.publisher.entity.PublisherAlias;
 
 /**
  * Port de saída — acesso a dados de Publishers (PostgreSQL).
@@ -20,6 +23,10 @@ public interface PublisherRepositoryPort {
     Page<Publisher> findAll(Pageable pageable);
 
     Page<Publisher> searchByName(String query, Pageable pageable);
+
+    Page<Publisher> searchCatalog(String normalizedQuery, Pageable pageable);
+
+    List<PublisherAlias> findAliasesByPublisherIds(Collection<Long> publisherIds);
 
     Publisher save(Publisher publisher);
 

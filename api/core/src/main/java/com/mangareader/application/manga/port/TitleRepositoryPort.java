@@ -3,6 +3,7 @@ package com.mangareader.application.manga.port;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,11 @@ public interface TitleRepositoryPort {
     Optional<Title> findById(String id);
 
     List<Title> findByIds(Collection<String> ids);
+
+    List<String> findVisibleIds(Collection<String> ids, boolean excludeAdult);
+
+    Page<Title> findVisibleByIds(
+            Collection<String> ids, boolean excludeAdult, Pageable pageable);
 
     List<Title> searchByName(String query);
 
@@ -47,6 +53,13 @@ public interface TitleRepositoryPort {
     Page<Title> searchByName(String query, Pageable pageable);
 
     Page<Title> searchByNameExcludingAdult(String query, Pageable pageable);
+
+    Page<TitleSearchHit> searchGlobal(
+            String normalizedQuery,
+            List<String> contentLanguageTags,
+            Map<String, TitleReferenceMatch> relationalMatches,
+            boolean excludeAdult,
+            Pageable pageable);
 
     Page<Title> findByGenresContainingAll(List<String> genres, Pageable pageable);
 

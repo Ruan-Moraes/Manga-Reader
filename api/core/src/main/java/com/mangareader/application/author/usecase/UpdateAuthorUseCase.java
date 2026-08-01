@@ -1,10 +1,13 @@
 package com.mangareader.application.author.usecase;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.author.port.AuthorRepositoryPort;
 import com.mangareader.domain.author.entity.Author;
+import com.mangareader.application.author.usecase.CreateAuthorUseCase.AliasInput;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +24,15 @@ public class UpdateAuthorUseCase {
             Long authorId,
             String name,
             String bio,
-            String nationality
-    ) {}
+            String nationality,
+            String imageUrl,
+            List<AliasInput> aliases
+    ) {
+        public UpdateAuthorInput(
+                Long authorId, String name, String bio, String nationality) {
+            this(authorId, name, bio, nationality, null, null);
+        }
+    }
 
     @Transactional
     public Author execute(UpdateAuthorInput input) {
@@ -37,6 +47,12 @@ public class UpdateAuthorUseCase {
         }
         if (input.nationality() != null) {
             author.setNationality(input.nationality());
+        }
+        if (input.imageUrl() != null) {
+            author.setImageUrl(input.imageUrl());
+        }
+        if (input.aliases() != null) {
+            CreateAuthorUseCase.replaceAliases(author, input.aliases());
         }
 
         return authorRepository.save(author);

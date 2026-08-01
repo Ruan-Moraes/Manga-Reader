@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mangareader.shared.domain.i18n.LocalizedString;
+import com.mangareader.domain.manga.valueobject.TitleSearchIndex;
+import com.mangareader.domain.manga.valueobject.TitleAlias;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,6 +41,12 @@ public class Title {
 
     @Builder.Default
     private LocalizedString name = LocalizedString.empty();
+
+    @Builder.Default
+    private List<TitleAlias> aliases = new ArrayList<>();
+
+    @Builder.Default
+    private TitleSearchIndex searchIndex = new TitleSearchIndex();
 
     private String cover;
 

@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.publisher.usecase.GetPublisherUseCase;
+import com.mangareader.application.publisher.usecase.GetPublisherWorksUseCase;
+import com.mangareader.presentation.search.dto.RelatedTitleResponse;
+import com.mangareader.presentation.search.mapper.RelatedTitleMapper;
+import com.mangareader.shared.web.CurrentUserId;
+import com.mangareader.shared.web.PageParams;
+import java.util.UUID;
 import com.mangareader.application.publisher.usecase.ListPublishersUseCase;
 import com.mangareader.presentation.publisher.dto.PublisherResponse;
 import com.mangareader.presentation.publisher.mapper.PublisherMapper;
@@ -28,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class PublisherController {
     private final ListPublishersUseCase listPublishersUseCase;
     private final GetPublisherUseCase getPublisherUseCase;
+    private final GetPublisherWorksUseCase getPublisherWorksUseCase;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<PublisherResponse>>> list(
@@ -48,5 +55,24 @@ public class PublisherController {
         var publisher = getPublisherUseCase.execute(id);
 
         return ResponseEntity.ok(ApiResponse.success(PublisherMapper.toResponse(publisher)));
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<ApiResponse<PublisherResponse>> getBySlug(
+            @PathVariable String slug) {
+        return ResponseEntity.ok(ApiResponse.success(
+                PublisherMapper.toResponse(getPublisherUseCase.executeBySlug(slug))));
+    }
+
+    @GetMapping("/{id}/works")
+    public ResponseEntity<ApiResponse<PageResponse<RelatedTitleResponse>>> getWorks(
+            @PathVariable Long id,
+            @PageParams(defaultSort = "name", defaultDirection = "asc",
+                    ignoreRequestSort = true)
+            Pageable pageable,
+            @CurrentUserId UUID userId) {
+        var result = getPublisherWorksUseCase.execute(id, pageable, userId)
+                .map(RelatedTitleMapper::toResponse);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(result)));
     }
 }

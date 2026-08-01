@@ -30,9 +30,11 @@ import com.mangareader.application.manga.usecase.admin.UpdateTitleUseCase;
 import com.mangareader.application.manga.usecase.admin.TitleStoreAssignment;
 import com.mangareader.domain.author.valueobject.AuthorRole;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.domain.manga.valueobject.TitleAlias;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
 import com.mangareader.presentation.admin.dto.AuthorAssignmentRequest;
 import com.mangareader.presentation.admin.dto.CreateTitleRequest;
+import com.mangareader.presentation.admin.dto.TitleAliasRequest;
 import com.mangareader.presentation.admin.dto.UpdateTitleRequest;
 import com.mangareader.presentation.admin.mapper.AdminTitleMapper;
 import com.mangareader.shared.dto.ApiResponse;
@@ -105,6 +107,7 @@ public class AdminTitleController {
                 request.name(), request.type(), request.cover(), request.synopsis(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult(),
+                toAliases(request.aliases()),
                 toAssignments(request.authors()), request.publishers(), toStoreAssignments(request.stores())
         );
 
@@ -115,12 +118,13 @@ public class AdminTitleController {
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<AdminTitleResponse>> updateTitle(
             @PathVariable String id,
-            @RequestBody UpdateTitleRequest request
+            @Valid @RequestBody UpdateTitleRequest request
     ) {
         var title = updateTitleUseCase.execute(
                 id, request.name(), request.type(), request.cover(), request.synopsis(),
                 request.genres(), request.status(), request.author(),
                 request.artist(), request.publisher(), request.adult(),
+                toAliases(request.aliases()),
                 toAssignments(request.authors()), request.publishers(), toStoreAssignments(request.stores())
         );
 
@@ -142,6 +146,18 @@ public class AdminTitleController {
 
         return authors.stream()
                 .map(a -> new TitleAuthorAssignment(a.authorId(), parseRole(a.role())))
+                .toList();
+    }
+
+    private static List<TitleAlias> toAliases(
+            List<TitleAliasRequest> aliases) {
+        if (aliases == null) return null;
+        return aliases.stream()
+                .map(alias -> TitleAlias.builder()
+                        .name(alias.name())
+                        .type(alias.type())
+                        .locale(alias.locale())
+                        .build())
                 .toList();
     }
 

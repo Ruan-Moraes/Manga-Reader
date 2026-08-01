@@ -1,10 +1,13 @@
 package com.mangareader.application.publisher.usecase;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.publisher.port.PublisherRepositoryPort;
 import com.mangareader.domain.publisher.entity.Publisher;
+import com.mangareader.application.publisher.usecase.CreatePublisherUseCase.AliasInput;
 import com.mangareader.shared.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +24,16 @@ public class UpdatePublisherUseCase {
             Long publisherId,
             String name,
             String country,
-            String website
-    ) {}
+            String website,
+            String logoUrl,
+            String description,
+            List<AliasInput> aliases
+    ) {
+        public UpdatePublisherInput(
+                Long publisherId, String name, String country, String website) {
+            this(publisherId, name, country, website, null, null, null);
+        }
+    }
 
     @Transactional
     public Publisher execute(UpdatePublisherInput input) {
@@ -37,6 +48,15 @@ public class UpdatePublisherUseCase {
         }
         if (input.website() != null) {
             publisher.setWebsite(input.website());
+        }
+        if (input.logoUrl() != null) {
+            publisher.setLogoUrl(input.logoUrl());
+        }
+        if (input.description() != null) {
+            publisher.setDescription(input.description());
+        }
+        if (input.aliases() != null) {
+            CreatePublisherUseCase.replaceAliases(publisher, input.aliases());
         }
 
         return publisherRepository.save(publisher);

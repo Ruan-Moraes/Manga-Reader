@@ -1,6 +1,11 @@
 package com.mangareader.infrastructure.persistence.postgres.adapter;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -9,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.mangareader.application.publisher.port.PublisherRepositoryPort;
 import com.mangareader.domain.publisher.entity.Publisher;
+import com.mangareader.domain.publisher.entity.PublisherAlias;
+import com.mangareader.infrastructure.persistence.postgres.repository.PublisherAliasJpaRepository;
 import com.mangareader.infrastructure.persistence.postgres.repository.PublisherJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PublisherRepositoryAdapter implements PublisherRepositoryPort {
     private final PublisherJpaRepository repository;
+    private final PublisherAliasJpaRepository aliasRepository;
 
     @Override
     public Optional<Publisher> findById(Long id) {
@@ -38,7 +46,7 @@ public class PublisherRepositoryAdapter implements PublisherRepositoryPort {
 
     @Override
     public Page<Publisher> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+        return hydrateAliases(repository.findAll(pageable));
     }
 
     @Override
@@ -46,7 +54,19 @@ public class PublisherRepositoryAdapter implements PublisherRepositoryPort {
         if (query == null || query.isBlank()) {
             return new PageImpl<>(java.util.List.of(), pageable, 0);
         }
-        return repository.findByNameContainingIgnoreCase(query.trim(), pageable);
+        return hydrateAliases(repository.findByNameContainingIgnoreCase(query.trim(), pageable));
+    }
+
+    @Override
+    public Page<Publisher> searchCatalog(String normalizedQuery, Pageable pageable) {
+        return repository.searchCatalog(normalizedQuery, pageable);
+    }
+
+    @Override
+    public List<PublisherAlias> findAliasesByPublisherIds(Collection<Long> publisherIds) {
+        return publisherIds == null || publisherIds.isEmpty()
+                ? List.of()
+                : aliasRepository.findByPublisherIdIn(publisherIds);
     }
 
     @Override
@@ -62,5 +82,20 @@ public class PublisherRepositoryAdapter implements PublisherRepositoryPort {
     @Override
     public long count() {
         return repository.count();
+    }
+
+    private Page<Publisher> hydrateAliases(Page<Publisher> page) {
+        if (page.isEmpty()) {
+            return page;
+        }
+
+        List<Long> ids = page.getContent().stream().map(Publisher::getId).toList();
+        Map<Long, Publisher> publishersById = repository.findAllWithAliasesByIdIn(ids).stream()
+                .collect(Collectors.toMap(Publisher::getId, Function.identity()));
+        List<Publisher> content = page.getContent().stream()
+                .map(publisher -> publishersById.getOrDefault(publisher.getId(), publisher))
+                .toList();
+
+        return new PageImpl<>(content, page.getPageable(), page.getTotalElements());
     }
 }

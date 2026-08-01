@@ -24,7 +24,9 @@ public class AdminChapterMapper {
         var metrics = details.metrics();
         return new AdminChapterResponse(chapter.getId(), chapter.getTitleId(), titleName,
                 locale.resolve(chapter.getTitle()), chapter.getNumber(), chapter.getDisplayOrder(), chapter.getDescription(),
-                chapter.getStatus().name(), chapter.getPageItems().size(), chapter.readyPagesCount(), chapter.getPublishedAt(),
+                chapter.getStatus().name(), chapter.getContentLanguage(), chapter.getScanGroupId(),
+                chapter.getScanGroupName() == null ? null : locale.resolve(chapter.getScanGroupName()),
+                chapter.getScanGroupLogo(), chapter.getPageItems().size(), chapter.readyPagesCount(), chapter.getPublishedAt(),
                 chapter.getScheduledAt(), metrics == null ? 0 : metrics.totalReads(),
                 metrics == null ? 0 : metrics.completionRate(), chapter.getCreatedAt(), chapter.getUpdatedAt(), chapter.getCreatedBy(),
                 chapter.getUpdatedBy(), chapter.getDeletedAt(), chapter.getVersion(), pages);

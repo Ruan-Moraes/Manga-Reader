@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,8 @@ import org.springframework.dao.DuplicateKeyException;
 
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.user.port.ReleaseFeedViewRepositoryPort;
 import com.mangareader.domain.manga.entity.Chapter;
 import com.mangareader.domain.manga.entity.ChapterPage;
 import com.mangareader.domain.manga.valueobject.ChapterStatus;
@@ -30,11 +33,13 @@ import com.mangareader.shared.exception.BusinessRuleException;
 class AdminChapterUseCaseTest {
     @Mock private ChapterRepositoryPort chapters;
     @Mock private TitleRepositoryPort titles;
+    @Mock private GroupRepositoryPort groups;
+    @Mock private ReleaseFeedViewRepositoryPort releaseViews;
     private AdminChapterUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new AdminChapterUseCase(chapters, titles,
+        useCase = new AdminChapterUseCase(chapters, titles, groups, releaseViews,
                 Clock.fixed(Instant.parse("2026-07-19T18:00:00Z"), ZoneOffset.UTC));
     }
 
@@ -52,10 +57,64 @@ class AdminChapterUseCaseTest {
     }
 
     @Test
+    void requiresBcp47LanguageForNewChaptersAndAcceptsScriptTags() {
+        when(titles.findById("title-1")).thenReturn(Optional.of(
+                com.mangareader.domain.manga.entity.Title.builder().id("title-1").build()));
+
+        assertThatThrownBy(() -> useCase.create(new AdminChapterUseCase.CreateInput(
+                "title-1", Map.of("pt-BR", "Capítulo"), "1", 1, null,
+                ChapterStatus.DRAFT, null, null, null), UUID.randomUUID()))
+                .isInstanceOf(BusinessRuleException.class)
+                .hasMessage("Chapter content language must be a valid BCP 47 tag");
+
+        when(chapters.save(org.mockito.ArgumentMatchers.any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        Chapter created = useCase.create(new AdminChapterUseCase.CreateInput(
+                "title-1", Map.of("pt-BR", "Capítulo"), "1", 1, null,
+                ChapterStatus.DRAFT, null, "zh-Hant", null), UUID.randomUUID());
+
+        org.assertj.core.api.Assertions.assertThat(created.getContentLanguage())
+                .isEqualTo("zh-Hant");
+    }
+
+    @Test
+    void requiresLanguageBeforePublishingLegacyChapter() {
+        Chapter legacy = Chapter.builder().id("legacy").status(ChapterStatus.DRAFT)
+                .pageItems(List.of(ChapterPage.builder().processingStatus("ready").build()))
+                .build();
+        when(chapters.findById("legacy")).thenReturn(Optional.of(legacy));
+
+        assertThatThrownBy(() -> useCase.changeStatus(
+                "legacy", ChapterStatus.PUBLISHED, null, UUID.randomUUID()))
+                .isInstanceOf(BusinessRuleException.class)
+                .hasMessage("Chapter content language must be a valid BCP 47 tag");
+    }
+
+    @Test
+    void explicitlyClearsDenormalizedScanGroupSnapshot() {
+        Chapter chapter = Chapter.builder().id("chapter-1")
+                .scanGroupId(UUID.randomUUID().toString())
+                .scanGroupName(com.mangareader.shared.domain.i18n.LocalizedString.of(
+                        Map.of("pt-BR", "Grupo")))
+                .scanGroupLogo("https://cdn.example/group.png")
+                .build();
+        when(chapters.findById("chapter-1")).thenReturn(Optional.of(chapter));
+        when(chapters.save(chapter)).thenReturn(chapter);
+
+        Chapter updated = useCase.update("chapter-1", new AdminChapterUseCase.UpdateInput(
+                null, null, null, null, null, null, null, null, true), UUID.randomUUID());
+
+        org.assertj.core.api.Assertions.assertThat(updated.getScanGroupId()).isNull();
+        org.assertj.core.api.Assertions.assertThat(updated.getScanGroupName()).isNull();
+        org.assertj.core.api.Assertions.assertThat(updated.getScanGroupLogo()).isNull();
+        verifyNoInteractions(groups);
+    }
+
+    @Test
     void legacyImportRejectsInvalidStatusWithoutAbortingTheBatch() {
         var input = new AdminChapterUseCase.LegacyChapterInput(
                 "legacy-1", "title-1", "Capítulo", "1", null, null,
-                "NOT_A_STATUS", null, null, null, null, List.of());
+                null, null, "NOT_A_STATUS", null, null, null, null, List.of());
         when(titles.findById("title-1")).thenReturn(Optional.of(
                 com.mangareader.domain.manga.entity.Title.builder().id("title-1").build()));
 

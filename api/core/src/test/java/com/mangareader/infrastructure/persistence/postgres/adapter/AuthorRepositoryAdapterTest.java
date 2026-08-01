@@ -16,6 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.author.port.AuthorRepositoryPort;
 import com.mangareader.domain.author.entity.Author;
+import com.mangareader.domain.author.entity.AuthorAlias;
+import com.mangareader.domain.author.valueobject.AuthorAliasType;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -34,8 +36,10 @@ class AuthorRepositoryAdapterTest {
 
     @BeforeEach
     void setUp() {
-        oda = entityManager.persistAndFlush(
-                Author.builder().name("Eiichiro Oda").slug("eiichiro-oda").nationality("JP").build());
+        oda = Author.builder().name("Eiichiro Oda").slug("eiichiro-oda").nationality("JP").build();
+        oda.getAliases().add(AuthorAlias.builder().author(oda).name("Oda-sensei")
+                .type(AuthorAliasType.PEN_NAME).build());
+        oda = entityManager.persistAndFlush(oda);
         entityManager.persistAndFlush(
                 Author.builder().name("Kentaro Miura").slug("kentaro-miura").build());
     }
@@ -85,10 +89,14 @@ class AuthorRepositoryAdapterTest {
         @Test
         @DisplayName("Deve filtrar por nome ignorando caixa")
         void deveFiltrarPorNome() {
+            entityManager.clear();
             var page = authorRepository.searchByName("oda", PageRequest.of(0, 10));
 
             assertThat(page.getContent()).hasSize(1);
             assertThat(page.getContent().get(0).getId()).isEqualTo(oda.getId());
+            assertThat(page.getContent().get(0).getAliases())
+                    .extracting(AuthorAlias::getName)
+                    .containsExactly("Oda-sensei");
         }
 
         @Test

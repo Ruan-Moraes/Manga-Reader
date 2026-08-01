@@ -29,29 +29,50 @@ class UserSettingsTest {
         UserSettings s = UserSettings.defaults();
 
         assertThat(s.reader().direction()).isEqualTo(ReadingDirection.RTL);
-        assertThat(s.reader().gap()).isEqualTo(8);
+        assertThat(s.reader().gap()).isZero();
+        assertThat(s.reader().saturation()).isEqualTo(100);
         assertThat(s.appearance().theme()).isEqualTo(ThemePreference.DARK);
         assertThat(s.locale().dateFormat()).isEqualTo(DateFormatPreference.D_MON);
     }
 
     @Test
+    @DisplayName("Deve disponibilizar fundos claros para o leitor")
+    void deveDisponibilizarFundosClaros() {
+        assertThat(ReaderBackground.values()).contains(ReaderBackground.LIGHT, ReaderBackground.WHITE);
+    }
+
+    @Test
     @DisplayName("Deve rejeitar gap fora de 0–32")
     void deveRejeitarGapForaDoIntervalo() {
-        assertThatThrownBy(() -> new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 64, ReaderBackground.DARK, true, 3))
+        assertThatThrownBy(() -> new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 100, 64, ReaderBackground.DARK, true, 3))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Deve rejeitar saturação fora de 0–100")
+    void deveRejeitarSaturacaoForaDoIntervalo() {
+        assertThatThrownBy(() -> new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 101, 0, ReaderBackground.DARK, true, 3))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Deve aceitar saturação mínima e máxima")
+    void deveAceitarExtremosDeSaturacao() {
+        assertThat(new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 0, 0, ReaderBackground.DARK, true, 3).saturation()).isZero();
+        assertThat(new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 100, 0, ReaderBackground.DARK, true, 3).saturation()).isEqualTo(100);
     }
 
     @Test
     @DisplayName("Deve rejeitar preload fora de 0–10")
     void deveRejeitarPreloadForaDoIntervalo() {
-        assertThatThrownBy(() -> new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 8, ReaderBackground.DARK, true, 20))
+        assertThatThrownBy(() -> new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 100, 8, ReaderBackground.DARK, true, 20))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("Deve rejeitar enum nulo no leitor")
     void deveRejeitarEnumNulo() {
-        assertThatThrownBy(() -> new ReaderSettings(null, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 8, ReaderBackground.DARK, true, 3))
+        assertThatThrownBy(() -> new ReaderSettings(null, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 100, 8, ReaderBackground.DARK, true, 3))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

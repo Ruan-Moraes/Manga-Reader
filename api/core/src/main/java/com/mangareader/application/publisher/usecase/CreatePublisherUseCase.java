@@ -1,10 +1,16 @@
 package com.mangareader.application.publisher.usecase;
 
+import java.util.HashSet;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.publisher.port.PublisherRepositoryPort;
 import com.mangareader.domain.publisher.entity.Publisher;
+import com.mangareader.domain.publisher.entity.PublisherAlias;
+import com.mangareader.domain.publisher.valueobject.PublisherAliasType;
+import com.mangareader.shared.domain.SearchText;
 import com.mangareader.shared.domain.Slugs;
 
 import lombok.RequiredArgsConstructor;
@@ -20,8 +26,18 @@ public class CreatePublisherUseCase {
     public record CreatePublisherInput(
             String name,
             String country,
-            String website
-    ) {}
+            String website,
+            String logoUrl,
+            String description,
+            List<AliasInput> aliases
+    ) {
+        public CreatePublisherInput(String name, String country, String website) {
+            this(name, country, website, null, null, null);
+        }
+    }
+
+    public record AliasInput(String name, PublisherAliasType type) {
+    }
 
     @Transactional
     public Publisher execute(CreatePublisherInput input) {
@@ -32,8 +48,30 @@ public class CreatePublisherUseCase {
                 .slug(slug)
                 .country(input.country())
                 .website(input.website())
+                .logoUrl(input.logoUrl())
+                .description(input.description())
                 .build();
+        replaceAliases(publisher, input.aliases());
 
         return publisherRepository.save(publisher);
+    }
+
+    static void replaceAliases(Publisher publisher, List<AliasInput> inputs) {
+        publisher.getAliases().clear();
+        if (inputs == null) return;
+
+        var normalizedNames = new HashSet<String>();
+        for (var input : inputs) {
+            var name = input.name() == null ? "" : input.name().trim();
+            var normalized = SearchText.normalize(name);
+            if (name.isBlank() || input.type() == null || !normalizedNames.add(normalized)) {
+                throw new IllegalArgumentException("Publisher aliases must be non-empty and unique");
+            }
+            publisher.getAliases().add(PublisherAlias.builder()
+                    .publisher(publisher)
+                    .name(name)
+                    .type(input.type())
+                    .build());
+        }
     }
 }

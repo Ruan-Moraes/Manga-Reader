@@ -40,7 +40,13 @@ public class AdminPublisherController {
             @Valid @RequestBody CreatePublisherRequest request
     ) {
         var publisher = createPublisherUseCase.execute(
-                new CreatePublisherInput(request.name(), request.country(), request.website()));
+                new CreatePublisherInput(
+                        request.name(), request.country(), request.website(),
+                        request.logoUrl(), request.description(),
+                        request.aliases() == null ? null : request.aliases().stream()
+                                .map(alias -> new CreatePublisherUseCase.AliasInput(
+                                        alias.name(), alias.type()))
+                                .toList()));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(PublisherMapper.toResponse(publisher)));
@@ -52,7 +58,13 @@ public class AdminPublisherController {
             @Valid @RequestBody UpdatePublisherRequest request
     ) {
         var publisher = updatePublisherUseCase.execute(
-                new UpdatePublisherInput(id, request.name(), request.country(), request.website()));
+                new UpdatePublisherInput(
+                        id, request.name(), request.country(), request.website(),
+                        request.logoUrl(), request.description(),
+                        request.aliases() == null ? null : request.aliases().stream()
+                                .map(alias -> new CreatePublisherUseCase.AliasInput(
+                                        alias.name(), alias.type()))
+                                .toList()));
 
         return ResponseEntity.ok(ApiResponse.success(PublisherMapper.toResponse(publisher)));
     }

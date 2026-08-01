@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -163,7 +164,7 @@ class AdminTitleControllerTest {
         Title created = buildTitle();
         when(createTitleUseCase.execute(
                 any(), anyString(), any(), any(), any(), any(), any(), any(), any(), any(boolean.class),
-                any(), any(), any()
+                any(), any(), any(), any()
         )).thenReturn(created);
 
         mockMvc.perform(post("/api/admin/titles")
@@ -207,7 +208,7 @@ class AdminTitleControllerTest {
         updated.setName(com.mangareader.shared.domain.i18n.LocalizedString.ofDefault("Naruto Shippuden"));
         when(updateTitleUseCase.execute(
                 eq("title-1"), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(updated);
 
         mockMvc.perform(patch("/api/admin/titles/title-1")
@@ -217,6 +218,21 @@ class AdminTitleControllerTest {
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name['pt-BR']").value("Naruto Shippuden"));
+    }
+
+    @Test
+    @DisplayName("PATCH /api/admin/titles/{id} — deve validar aliases aninhados")
+    void deveRejeitarAliasAninhadoInvalidoAoAtualizar() throws Exception {
+        mockMvc.perform(patch("/api/admin/titles/title-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "aliases": [{"name": "%s", "type": "ALTERNATE"}]
+                                }
+                                """.formatted("x".repeat(256))))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(updateTitleUseCase);
     }
 
     @Test

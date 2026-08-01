@@ -10,8 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.group.port.GroupWorkReference;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.infrastructure.persistence.postgres.repository.GroupJpaRepository;
+import com.mangareader.application.manga.port.TitleReferenceMatch;
+import com.mangareader.domain.manga.valueobject.TitleSearchMatchType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -132,6 +135,33 @@ public class GroupRepositoryAdapter implements GroupRepositoryPort {
         int to = Math.min(from + pageable.getPageSize(), matches.size());
 
         return new PageImpl<>(matches.subList(from, to), pageable, matches.size());
+    }
+
+    @Override
+    public Page<Group> searchCatalog(String normalizedQuery, Pageable pageable) {
+        return repository.searchCatalog(normalizedQuery, pageable);
+    }
+
+    @Override
+    public List<GroupWorkReference> findWorkTitleIdsByGroupIds(List<UUID> groupIds) {
+        if (groupIds == null || groupIds.isEmpty()) return List.of();
+
+        return repository.findWorkTitleIdsByGroupIds(groupIds).stream()
+                .map(reference -> new GroupWorkReference(
+                        reference.getGroupId(), reference.getTitleId()))
+                .toList();
+    }
+
+    @Override
+    public List<TitleReferenceMatch> searchTitleReferences(String query) {
+        if (query == null || query.isBlank()) return List.of();
+
+        return repository.searchTitleReferences(query).stream()
+                .map(match -> new TitleReferenceMatch(
+                        match.getTitleId(),
+                        TitleSearchMatchType.GROUP,
+                        match.getMatchedText()))
+                .toList();
     }
 
     private static boolean matchesAnyLocale(Group g, String lowerQuery) {

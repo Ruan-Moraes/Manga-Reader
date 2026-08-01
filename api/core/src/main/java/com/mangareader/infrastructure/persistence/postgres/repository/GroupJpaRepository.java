@@ -17,6 +17,16 @@ import com.mangareader.domain.group.entity.Group;
  * Spring Data JPA repository para grupos de tradução.
  */
 public interface GroupJpaRepository extends JpaRepository<Group, UUID> {
+    interface SearchReferenceProjection {
+        String getTitleId();
+        String getMatchedText();
+    }
+
+    interface GroupWorkReferenceProjection {
+        UUID getGroupId();
+        String getTitleId();
+    }
+
     Optional<Group> findByUsername(String username);
 
     boolean existsByUsername(String username);
@@ -38,6 +48,58 @@ public interface GroupJpaRepository extends JpaRepository<Group, UUID> {
 
     @Query("SELECT DISTINCT g FROM Group g JOIN g.translatedWorks w WHERE w.titleId = :titleId")
     Page<Group> findByTitleId(@Param("titleId") String titleId, Pageable pageable);
+
+    @Query(value = """
+            SELECT DISTINCT gw.title_id AS titleId,
+                   COALESCE(g.name ->> 'pt-BR', g.username) AS matchedText
+            FROM group_works gw
+            JOIN groups g ON g.id = gw.group_id
+            WHERE mr_localized_values_search(g.name) LIKE CONCAT('%', :query, '%')
+               OR mr_normalize_search(g.username) LIKE CONCAT('%', :query, '%')
+            ORDER BY gw.title_id
+            """, nativeQuery = true)
+    List<SearchReferenceProjection> searchTitleReferences(@Param("query") String query);
+
+    @Query(value = """
+            SELECT g.*
+            FROM groups g
+            WHERE mr_normalize_search(g.username) LIKE CONCAT('%', :query, '%')
+               OR EXISTS (
+                   SELECT 1 FROM jsonb_each_text(g.name) entry
+                   WHERE mr_normalize_search(entry.value) LIKE CONCAT('%', :query, '%')
+               )
+            ORDER BY CASE
+                WHEN EXISTS (
+                    SELECT 1 FROM jsonb_each_text(g.name) entry
+                    WHERE mr_normalize_search(entry.value) = :query
+                ) THEN 0
+                WHEN mr_normalize_search(g.username) = :query THEN 0
+                WHEN EXISTS (
+                    SELECT 1 FROM jsonb_each_text(g.name) entry
+                    WHERE mr_normalize_search(entry.value) LIKE CONCAT(:query, '%')
+                ) THEN 1
+                WHEN mr_normalize_search(g.username) LIKE CONCAT(:query, '%') THEN 1
+                ELSE 2
+            END, g.popularity DESC, g.username
+            """,
+            countQuery = """
+            SELECT COUNT(*)
+            FROM groups g
+            WHERE mr_normalize_search(g.username) LIKE CONCAT('%', :query, '%')
+               OR EXISTS (
+                   SELECT 1 FROM jsonb_each_text(g.name) entry
+                   WHERE mr_normalize_search(entry.value) LIKE CONCAT('%', :query, '%')
+               )
+            """, nativeQuery = true)
+    Page<Group> searchCatalog(@Param("query") String query, Pageable pageable);
+
+    @Query(value = """
+            SELECT gw.group_id AS groupId, gw.title_id AS titleId
+            FROM group_works gw
+            WHERE gw.group_id IN :groupIds
+            """, nativeQuery = true)
+    List<GroupWorkReferenceProjection> findWorkTitleIdsByGroupIds(
+            @Param("groupIds") List<UUID> groupIds);
 
     @Query("""
             SELECT DISTINCT g FROM Group g

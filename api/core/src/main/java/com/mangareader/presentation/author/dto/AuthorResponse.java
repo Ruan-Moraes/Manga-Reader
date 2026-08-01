@@ -1,6 +1,8 @@
 package com.mangareader.presentation.author.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import com.mangareader.domain.author.valueobject.AuthorRole;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -14,6 +16,9 @@ public record AuthorResponse(
         String slug,
         String bio,
         String nationality,
+        String imageUrl,
+        List<AuthorAliasResponse> aliases,
+        List<AuthorRole> roles,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

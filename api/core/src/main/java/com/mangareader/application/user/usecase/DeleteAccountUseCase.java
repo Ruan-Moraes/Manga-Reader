@@ -9,6 +9,7 @@ import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.social.port.SocialGraphPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
+import com.mangareader.application.user.port.ReleaseFeedViewRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.user.entity.User;
@@ -29,6 +30,7 @@ public class DeleteAccountUseCase {
     private final UserRepositoryPort userRepository;
     private final ClearTrackedHistoryUseCase clearTrackedHistoryUseCase;
     private final ReadingProgressRepositoryPort readingProgressRepository;
+    private final ReleaseFeedViewRepositoryPort releaseFeedViews;
     private final GroupRepositoryPort groupRepository;
     private final SocialGraphPort socialGraph;
     private final RefreshTokenRepositoryPort refreshTokens;
@@ -45,6 +47,7 @@ public class DeleteAccountUseCase {
 
         clearTrackedHistoryUseCase.execute(userId.toString());
         readingProgressRepository.deleteAllByUserId(userId.toString());
+        releaseFeedViews.deleteAllByUserId(userId.toString());
 
         // Grafo ANTES do save JPA: se o Cypher falhar, a tx JPA aborta.
         // Não-atômico cross-DB — nó órfão residual é inerte (só userId) e as

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -113,6 +114,50 @@ class AuthSecurityIntegrationTest {
         void hideActivityShouldRequireAuthentication() throws Exception {
             mockMvc.perform(delete("/api/users/me/activity-feed/{eventId}", "event-1"))
                     .andExpect(status().isUnauthorized());
+        }
+    }
+
+    @Nested
+    @DisplayName("Fronteira de segurança do feed de lançamentos")
+    class ReleaseFeedAccessTests {
+
+        @Test
+        @DisplayName("GET público deve aceitar visitante anônimo")
+        void publicReleaseFeedShouldAllowAnonymousVisitor() throws Exception {
+            mockMvc.perform(get("/api/releases"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
+        }
+
+        @Test
+        @DisplayName("Filtro de biblioteca deve exigir autenticação")
+        void libraryReleaseFeedShouldRequireAuthentication() throws Exception {
+            mockMvc.perform(get("/api/releases").param("libraryOnly", "true"))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Marcações por capítulo e por dia devem rejeitar anônimos")
+        void releaseSeenWritesShouldRequireAuthentication() throws Exception {
+            mockMvc.perform(put("/api/releases/{chapterId}/seen", "chapter-1"))
+                    .andExpect(status().isUnauthorized());
+            mockMvc.perform(put("/api/releases/days/{date}/seen", "2026-08-01"))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Marcação autenticada deve atravessar o filtro de segurança")
+        void authenticatedReleaseSeenShouldReachApplicationBoundary() throws Exception {
+            MvcResult signUpResult = mockMvc.perform(post(SIGN_UP_URL)
+                            .header("X-Refresh-Token-Transport", "body")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(signUpJson("Release User", "release-seen@test.com", "senha123")))
+                    .andReturn();
+            String accessToken = extractData(signUpResult).get("accessToken").asText();
+
+            mockMvc.perform(put("/api/releases/{chapterId}/seen", "missing-chapter")
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isNotFound());
         }
     }
 

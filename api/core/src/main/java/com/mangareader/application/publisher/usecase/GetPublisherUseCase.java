@@ -22,4 +22,10 @@ public class GetPublisherUseCase {
         return publisherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Publisher", "id", id));
     }
+
+    @Transactional(readOnly = true)
+    public Publisher executeBySlug(String slug) {
+        return publisherRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Publisher", "slug", slug));
+    }
 }

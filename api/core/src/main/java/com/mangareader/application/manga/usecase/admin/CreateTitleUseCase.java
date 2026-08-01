@@ -2,6 +2,7 @@ package com.mangareader.application.manga.usecase.admin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,8 @@ import com.mangareader.application.manga.service.TitleAssociationWriter;
 import com.mangareader.application.manga.service.TitleStoreAssociationWriter;
 import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.domain.manga.valueobject.TitleAlias;
+import com.mangareader.shared.domain.SearchText;
 import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 
@@ -55,11 +58,40 @@ public class CreateTitleUseCase {
                          Map<String, String> synopsis,
                          List<String> genres, String status, String author,
                          String artist, String publisher, boolean adult,
+                         List<TitleAlias> aliases,
+                         List<TitleAuthorAssignment> authors, List<Long> publisherIds,
+                         List<TitleStoreAssignment> stores) {
+        validateAliases(aliases);
+        var title = buildAndSave(name, type, cover, synopsis, genres, status, author,
+                artist, publisher, adult, aliases);
+        if (authors != null || publisherIds != null) {
+            associationWriter.replace(title.getId(), authors, publisherIds);
+        }
+        if (stores != null) storeAssociationWriter.replace(title.getId(), stores);
+        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, title.getId());
+        cacheInvalidation.clearAfterCommit(CacheNames.PUBLIC_STATS);
+        return title;
+    }
+
+    public Title execute(Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis,
+                         List<String> genres, String status, String author,
+                         String artist, String publisher, boolean adult,
                          List<TitleAuthorAssignment> authors, List<Long> publisherIds, List<TitleStoreAssignment> stores) {
+        return execute(name, type, cover, synopsis, genres, status, author, artist,
+                publisher, adult, List.of(), authors, publisherIds, stores);
+    }
+
+    private Title buildAndSave(Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis,
+                         List<String> genres, String status, String author,
+                         String artist, String publisher, boolean adult,
+                         List<TitleAlias> aliases) {
         genreValidator.validate(genres);
 
         Title title = Title.builder()
                 .name(toLocalized(name))
+                .aliases(aliases != null ? aliases : List.of())
                 .type(type)
                 .cover(cover)
                 .synopsis(toLocalized(synopsis))
@@ -71,18 +103,24 @@ public class CreateTitleUseCase {
                 .adult(adult)
                 .build();
 
-        Title saved = titleRepository.save(title);
-
-        if (authors != null || publisherIds != null) associationWriter.replace(saved.getId(), authors, publisherIds);
-        if (stores != null) storeAssociationWriter.replace(saved.getId(), stores);
-
-        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, saved.getId());
-        cacheInvalidation.clearAfterCommit(CacheNames.PUBLIC_STATS);
-
-        return saved;
+        return titleRepository.save(title);
     }
 
     private static LocalizedString toLocalized(Map<String, String> map) {
         return (map == null || map.isEmpty()) ? LocalizedString.empty() : LocalizedString.of(map);
+    }
+
+    static void validateAliases(List<TitleAlias> aliases) {
+        if (aliases == null) return;
+        if (aliases.size() > 20) throw new IllegalArgumentException("At most 20 title aliases are allowed");
+        var normalized = new HashSet<String>();
+        for (var alias : aliases) {
+            if (alias == null || alias.getType() == null || alias.getName() == null
+                    || alias.getName().isBlank()
+                    || !normalized.add(SearchText.normalize(alias.getName()))) {
+                throw new IllegalArgumentException("Title aliases must be non-empty and unique");
+            }
+            alias.setName(alias.getName().trim());
+        }
     }
 }

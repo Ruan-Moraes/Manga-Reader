@@ -24,6 +24,7 @@ import com.mangareader.application.group.port.GroupRepositoryPort;
 import com.mangareader.application.auth.port.RefreshTokenRepositoryPort;
 import com.mangareader.application.user.port.ReadingProgressRepositoryPort;
 import com.mangareader.application.user.port.UserRepositoryPort;
+import com.mangareader.application.user.port.ReleaseFeedViewRepositoryPort;
 import com.mangareader.domain.group.entity.Group;
 import com.mangareader.domain.group.entity.GroupUser;
 import com.mangareader.domain.group.valueobject.GroupUserType;
@@ -43,6 +44,9 @@ class DeleteAccountUseCaseTest {
 
     @Mock
     private ReadingProgressRepositoryPort readingProgressRepository;
+
+    @Mock
+    private ReleaseFeedViewRepositoryPort releaseFeedViews;
 
     @Mock
     private GroupRepositoryPort groupRepository;
@@ -85,6 +89,7 @@ class DeleteAccountUseCaseTest {
         verify(groupRepository).save(group);
         verify(clearTrackedHistoryUseCase).execute(USER_ID.toString());
         verify(readingProgressRepository).deleteAllByUserId(USER_ID.toString());
+        verify(releaseFeedViews).deleteAllByUserId(USER_ID.toString());
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());

@@ -1,6 +1,7 @@
 package com.mangareader.presentation.publisher.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -14,6 +15,9 @@ public record PublisherResponse(
         String slug,
         String country,
         String website,
+        String logoUrl,
+        String description,
+        List<PublisherAliasResponse> aliases,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

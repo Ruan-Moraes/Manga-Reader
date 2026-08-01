@@ -12,6 +12,7 @@ import com.mangareader.application.manga.service.TitleAssociationWriter;
 import com.mangareader.application.manga.service.TitleStoreAssociationWriter;
 import com.mangareader.application.shared.port.CacheInvalidationPort;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.domain.manga.valueobject.TitleAlias;
 import com.mangareader.shared.constant.CacheNames;
 import com.mangareader.shared.domain.i18n.LocalizedString;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -55,13 +56,40 @@ public class UpdateTitleUseCase {
                          Map<String, String> synopsis,
                          List<String> genres, String status,
                          String author, String artist, String publisher, Boolean adult,
-                         List<TitleAuthorAssignment> authors, List<Long> publisherIds, List<TitleStoreAssignment> stores) {
+                         List<TitleAlias> aliases,
+                         List<TitleAuthorAssignment> authors, List<Long> publisherIds,
+                         List<TitleStoreAssignment> stores) {
         Title title = titleRepository.findById(titleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Title", "id", titleId));
-
         if (genres != null) genreValidator.validate(genres);
+        if (aliases != null) CreateTitleUseCase.validateAliases(aliases);
 
+        apply(title, name, type, cover, synopsis, genres, status, author, artist,
+                publisher, adult, aliases);
+        Title saved = titleRepository.save(title);
+        if (authors != null || publisherIds != null) {
+            associationWriter.replace(titleId, authors, publisherIds);
+        }
+        if (stores != null) storeAssociationWriter.replace(titleId, stores);
+        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, titleId);
+        return saved;
+    }
+
+    public Title execute(String titleId, Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis,
+                         List<String> genres, String status,
+                         String author, String artist, String publisher, Boolean adult,
+                         List<TitleAuthorAssignment> authors, List<Long> publisherIds, List<TitleStoreAssignment> stores) {
+        return execute(titleId, name, type, cover, synopsis, genres, status, author,
+                artist, publisher, adult, null, authors, publisherIds, stores);
+    }
+
+    private static void apply(Title title, Map<String, String> name, String type, String cover,
+                         Map<String, String> synopsis, List<String> genres, String status,
+                         String author, String artist, String publisher, Boolean adult,
+                         List<TitleAlias> aliases) {
         if (name != null) title.setName(LocalizedString.of(name));
+        if (aliases != null) title.setAliases(aliases);
         if (type != null) title.setType(type);
         if (cover != null) title.setCover(cover);
         if (synopsis != null) title.setSynopsis(LocalizedString.of(synopsis));
@@ -71,14 +99,5 @@ public class UpdateTitleUseCase {
         if (artist != null) title.setArtist(artist);
         if (publisher != null) title.setPublisher(publisher);
         if (adult != null) title.setAdult(adult);
-
-        Title saved = titleRepository.save(title);
-
-        if (authors != null || publisherIds != null) associationWriter.replace(titleId, authors, publisherIds);
-        if (stores != null) storeAssociationWriter.replace(titleId, stores);
-
-        cacheInvalidation.evictAfterCommit(CacheNames.TITLE, titleId);
-
-        return saved;
     }
 }

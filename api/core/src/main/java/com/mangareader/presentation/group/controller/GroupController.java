@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mangareader.application.group.usecase.AddWorkToGroupUseCase;
@@ -21,6 +22,7 @@ import com.mangareader.application.group.usecase.GetGroupByIdUseCase;
 import com.mangareader.application.group.usecase.GetGroupByUsernameUseCase;
 import com.mangareader.application.group.usecase.GetGroupsByTitleIdUseCase;
 import com.mangareader.application.group.usecase.GetGroupsUseCase;
+import com.mangareader.application.group.usecase.GetGroupWorksUseCase;
 import com.mangareader.application.group.usecase.JoinGroupUseCase;
 import com.mangareader.application.group.usecase.LeaveGroupUseCase;
 import com.mangareader.application.group.usecase.RemoveWorkFromGroupUseCase;
@@ -34,6 +36,8 @@ import com.mangareader.presentation.group.dto.GroupPreviewResponse;
 import com.mangareader.presentation.group.dto.GroupResponse;
 import com.mangareader.presentation.group.dto.UpdateGroupRequest;
 import com.mangareader.presentation.group.mapper.GroupMapper;
+import com.mangareader.presentation.search.dto.RelatedTitleResponse;
+import com.mangareader.presentation.search.mapper.RelatedTitleMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
 import com.mangareader.shared.web.PageParams;
@@ -54,6 +58,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Groups", description = "Grupos de tradução / scanlation")
 public class GroupController {
     private final GetGroupsUseCase getGroupsUseCase;
+    private final GetGroupWorksUseCase getGroupWorksUseCase;
     private final GetGroupByIdUseCase getGroupByIdUseCase;
     private final GetGroupByUsernameUseCase getGroupByUsernameUseCase;
     private final GetGroupsByTitleIdUseCase getGroupsByTitleIdUseCase;
@@ -70,12 +75,15 @@ public class GroupController {
     @GetMapping
     @Operation(summary = "Listar grupos", description = "Retorna grupos de tradução com paginação")
     public ResponseEntity<ApiResponse<PageResponse<GroupResponse>>> getAll(
+            @RequestParam(required = false) String search,
             @PageParams(defaultSort = "id", defaultDirection = "asc",
                     allow = {"id", "platformJoinedAt", "totalTitles",
                             "rating", "popularity"})
             Pageable pageable
     ) {
-        var result = getGroupsUseCase.execute(pageable);
+        var result = search == null || search.isBlank()
+                ? getGroupsUseCase.execute(pageable)
+                : getGroupsUseCase.execute(search, pageable);
 
         var mapped = result.map(groupMapper::toResponse);
 
@@ -88,6 +96,19 @@ public class GroupController {
         var group = getGroupByIdUseCase.execute(id);
 
         return ResponseEntity.ok(ApiResponse.success(groupMapper.toResponse(group)));
+    }
+
+    @GetMapping("/{id}/works")
+    @Operation(summary = "Listar obras do grupo", description = "Retorna obras visíveis do grupo com paginação")
+    public ResponseEntity<ApiResponse<PageResponse<RelatedTitleResponse>>> getWorks(
+            @PathVariable UUID id,
+            @PageParams(defaultSort = "name", defaultDirection = "asc",
+                    ignoreRequestSort = true)
+            Pageable pageable,
+            @CurrentUserId UUID userId) {
+        var result = getGroupWorksUseCase.execute(id, pageable, userId)
+                .map(RelatedTitleMapper::toResponse);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(result)));
     }
 
     @GetMapping("/username/{username}")

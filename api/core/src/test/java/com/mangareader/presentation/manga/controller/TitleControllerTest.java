@@ -32,6 +32,8 @@ import com.mangareader.application.manga.usecase.GetTitleByIdUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesByGenreUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesUseCase;
 import com.mangareader.application.manga.usecase.SearchTitlesUseCase;
+import com.mangareader.application.manga.port.TitleSearchHit;
+import com.mangareader.domain.manga.valueobject.TitleSearchMatchType;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.shared.exception.ResourceNotFoundException;
@@ -187,14 +189,16 @@ class TitleControllerTest {
         @Test
         @DisplayName("Deve retornar 200 com resultados da busca")
         void deveRetornar200() throws Exception {
-            var titles = List.of(buildTitle("t1"));
+            var titles = List.of(new TitleSearchHit(buildTitle("t1"), TitleSearchMatchType.TITLE, "Solo Leveling"));
             when(searchTitlesUseCase.execute(eq("Solo"), any(Pageable.class), org.mockito.ArgumentMatchers.isNull()))
                     .thenReturn(new PageImpl<>(titles));
 
             mockMvc.perform(get("/api/titles/search").param("q", "Solo"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
-                    .andExpect(jsonPath("$.data.content.length()").value(1));
+                    .andExpect(jsonPath("$.data.content.length()").value(1))
+                    .andExpect(jsonPath("$.data.content[0].matchedBy").value("TITLE"))
+                    .andExpect(jsonPath("$.data.content[0].chaptersCount").value(12));
         }
 
         @Test
@@ -206,6 +210,13 @@ class TitleControllerTest {
             mockMvc.perform(get("/api/titles/search").param("q", "xyz"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve rejeitar termo menor que dois caracteres")
+        void deveRejeitarTermoCurto() throws Exception {
+            mockMvc.perform(get("/api/titles/search").param("q", "a"))
+                    .andExpect(status().isBadRequest());
         }
     }
 

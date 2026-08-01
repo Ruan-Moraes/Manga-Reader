@@ -1,6 +1,10 @@
 package com.mangareader.presentation.publisher.dto;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -13,6 +17,10 @@ public record CreatePublisherRequest(
         @Size(max = 10, message = "{validation.publisher.country.size}")
         String country,
         @Size(max = 512, message = "{validation.publisher.website.size}")
-        String website
+        @Pattern(regexp = "(?i)^https?://[^\\s]+$", message = "{validation.publisher.website.url}")
+        String website,
+        @Size(max = 512) String logoUrl,
+        String description,
+        @Valid @Size(max = 20) List<PublisherAliasRequest> aliases
 ) {
 }

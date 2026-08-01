@@ -26,6 +26,7 @@ public record CreateTitleRequest(
         String artist,
         String publisher,
         boolean adult,
+        @Valid @jakarta.validation.constraints.Size(max = 20) List<TitleAliasRequest> aliases,
         @Valid List<AuthorAssignmentRequest> authors,
         List<Long> publishers,
         @Valid List<StoreAssignmentRequest> stores

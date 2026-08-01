@@ -2,36 +2,43 @@ package com.mangareader.presentation.manga.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mangareader.application.manga.port.TitleSearchHit;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort;
 import com.mangareader.application.manga.port.TitleRatingAggregateReadPort.TitleRatingAggregateView;
+import com.mangareader.application.manga.service.TitleAssociationReader;
 import com.mangareader.application.manga.usecase.ChapterStats;
 import com.mangareader.application.manga.usecase.FilterTitlesUseCase;
 import com.mangareader.application.manga.usecase.GetChapterStatsUseCase;
 import com.mangareader.application.manga.usecase.GetTitleByIdUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesByGenreUseCase;
 import com.mangareader.application.manga.usecase.GetTitlesUseCase;
-import com.mangareader.application.manga.service.TitleAssociationReader;
 import com.mangareader.application.manga.usecase.SearchTitlesUseCase;
 import com.mangareader.domain.category.valueobject.SortCriteria;
 import com.mangareader.domain.manga.entity.Title;
+import com.mangareader.domain.manga.valueobject.TitleSearchMatchType;
+import com.mangareader.presentation.manga.dto.TitleAuthorResponse;
 import com.mangareader.presentation.manga.dto.TitleResponse;
+import com.mangareader.presentation.manga.dto.TitleSearchResultResponse;
 import com.mangareader.presentation.manga.mapper.TitleMapper;
 import com.mangareader.shared.dto.ApiResponse;
 import com.mangareader.shared.dto.PageResponse;
-import com.mangareader.shared.web.PageParams;
 import com.mangareader.shared.web.CurrentUserId;
-import java.util.UUID;
+import com.mangareader.shared.web.PageParams;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/titles")
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "Titles", description = "Catálogo de títulos de manga/manhwa/manhua")
 public class TitleController {
     private final GetTitlesUseCase getTitlesUseCase;
@@ -82,9 +90,12 @@ public class TitleController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Pesquisar títulos", description = "Busca títulos por nome (pesquisa parcial)")
-    public ResponseEntity<ApiResponse<PageResponse<TitleResponse>>> search(
-            @RequestParam(defaultValue = "") String q,
+    @Operation(summary = "Pesquisar títulos", description = "Busca obras por título localizado, autor, artista ou grupo")
+    public ResponseEntity<ApiResponse<PageResponse<TitleSearchResultResponse>>> search(
+            @RequestParam
+            @NotBlank(message = "{validation.title.search.required}")
+            @Size(min = 2, max = 100, message = "{validation.title.search.length}")
+            String q,
             @PageParams(defaultSort = "name", defaultDirection = "asc",
                     ignoreRequestSort = true)
             Pageable pageable,
@@ -92,7 +103,7 @@ public class TitleController {
     ) {
         var result = searchTitlesUseCase.execute(q, pageable, userId);
 
-        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapWithStats(result))));
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.from(mapSearchResults(result))));
     }
 
     @GetMapping("/genre/{genre}")
@@ -149,5 +160,51 @@ public class TitleController {
                 ratings.get(title.getId()),
                 authorsByTitle,
                 publishersByTitle));
+    }
+
+    private Page<TitleSearchResultResponse> mapSearchResults(
+            Page<TitleSearchHit> result) {
+        var titleIds = result.getContent().stream().map(hit -> hit.title().getId()).toList();
+        var stats = getChapterStatsUseCase.execute(titleIds);
+        Map<String, TitleRatingAggregateView> ratings = ratingAggregateReadPort.findByTitleIdIn(titleIds);
+        var authorsByTitle = titleAssociationReader.authorsByTitle(titleIds);
+        var publishersByTitle = titleAssociationReader.publishersByTitle(titleIds);
+
+        return result.map(hit -> {
+            var titleId = hit.title().getId();
+            var response = titleMapper.toResponse(
+                    hit.title(),
+                    stats.getOrDefault(titleId, ChapterStats.EMPTY),
+                    ratings.get(titleId),
+                    authorsByTitle,
+                    publishersByTitle);
+            var author = response.authors().stream()
+                    .filter(item -> "AUTHOR".equals(item.role()))
+                    .findFirst()
+                    .or(() -> response.authors().stream().findFirst())
+                    .map(TitleAuthorResponse::name)
+                    .orElse(null);
+            var alternateTitle = hit.matchedBy()
+                    == TitleSearchMatchType.ALTERNATE_TITLE
+                    && !hit.matchedText().equals(response.name())
+                    ? hit.matchedText()
+                    : null;
+
+            return new TitleSearchResultResponse(
+                    response.id(),
+                    response.name(),
+                    alternateTitle,
+                    response.cover(),
+                    response.type(),
+                    response.status(),
+                    response.chaptersCount(),
+                    response.latestChapterNumber(),
+                    response.adult(),
+                    response.ratingAverage(),
+                    response.ratingCount(),
+                    author,
+                    hit.matchedBy(),
+                    hit.matchedText());
+        });
     }
 }

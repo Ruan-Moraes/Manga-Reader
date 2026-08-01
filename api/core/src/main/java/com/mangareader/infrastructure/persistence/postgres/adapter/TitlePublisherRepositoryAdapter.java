@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import com.mangareader.application.publisher.port.TitlePublisherRepositoryPort;
 import com.mangareader.domain.publisher.entity.TitlePublisher;
 import com.mangareader.infrastructure.persistence.postgres.repository.TitlePublisherJpaRepository;
+import com.mangareader.application.manga.port.TitleReferenceMatch;
+import com.mangareader.domain.manga.valueobject.TitleSearchMatchType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,30 @@ public class TitlePublisherRepositoryAdapter implements TitlePublisherRepository
             return List.of();
         }
         return repository.findByTitleIdIn(titleIds);
+    }
+
+    @Override
+    public List<String> findTitleIdsByPublisherId(Long publisherId) {
+        return repository.findTitleIdsByPublisherId(publisherId);
+    }
+
+    @Override
+    public List<TitlePublisher> findByPublisherIdIn(Collection<Long> publisherIds) {
+        return publisherIds == null || publisherIds.isEmpty()
+                ? List.of()
+                : repository.findByPublisherIdIn(publisherIds);
+    }
+
+    @Override
+    public List<TitleReferenceMatch> searchTitleReferences(String query) {
+        if (query == null || query.isBlank()) return List.of();
+
+        return repository.searchTitleReferences(query).stream()
+                .map(match -> new TitleReferenceMatch(
+                        match.getTitleId(),
+                        TitleSearchMatchType.PUBLISHER,
+                        match.getMatchedText()))
+                .toList();
     }
 
     @Override

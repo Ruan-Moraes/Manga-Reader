@@ -38,6 +38,7 @@ public record UserSettings(
             ReadingMode mode,
             ReadingFit fit,
             ImageQuality quality,
+            int saturation,
             int gap,
             ReaderBackground background,
             boolean autoMarkRead,
@@ -45,6 +46,8 @@ public record UserSettings(
     ) {
         public static final int GAP_MIN = 0;
         public static final int GAP_MAX = 32;
+        public static final int SATURATION_MIN = 0;
+        public static final int SATURATION_MAX = 100;
         public static final int PRELOAD_MIN = 0;
         public static final int PRELOAD_MAX = 10;
 
@@ -55,13 +58,16 @@ public record UserSettings(
             if (gap < GAP_MIN || gap > GAP_MAX) {
                 throw new IllegalArgumentException("reader gap must be between " + GAP_MIN + " and " + GAP_MAX);
             }
+            if (saturation < SATURATION_MIN || saturation > SATURATION_MAX) {
+                throw new IllegalArgumentException("reader saturation must be between " + SATURATION_MIN + " and " + SATURATION_MAX);
+            }
             if (preload < PRELOAD_MIN || preload > PRELOAD_MAX) {
                 throw new IllegalArgumentException("reader preload must be between " + PRELOAD_MIN + " and " + PRELOAD_MAX);
             }
         }
 
         public static ReaderSettings defaults() {
-            return new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 8, ReaderBackground.DARK, true, 3);
+            return new ReaderSettings(ReadingDirection.RTL, ReadingMode.VERTICAL, ReadingFit.WIDTH, ImageQuality.AUTO, 100, 0, ReaderBackground.DARK, true, 3);
         }
     }
 
@@ -130,7 +136,9 @@ public record UserSettings(
     public enum ReaderBackground {
         BLACK,
         DARK,
-        PAPER
+        PAPER,
+        LIGHT,
+        WHITE
     }
 
     public enum ThemePreference {

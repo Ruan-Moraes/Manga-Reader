@@ -1,6 +1,7 @@
 package com.mangareader.presentation.user.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -424,6 +425,7 @@ class UserControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.reader.direction").value("RTL"))
+                    .andExpect(jsonPath("$.data.reader.saturation").value(100))
                     .andExpect(jsonPath("$.data.appearance.theme").value("DARK"));
         }
     }
@@ -443,6 +445,63 @@ class UserControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.reader.direction").value("RTL"));
+        }
+
+        @Test
+        @DisplayName("Deve aceitar os novos fundos claros")
+        void deveAceitarFundosClaros() throws Exception {
+            when(updateUserSettingsUseCase.execute(any(), any())).thenReturn(UserSettings.defaults());
+
+            String body = VALID_SETTINGS.replace("\"background\":\"DARK\"", "\"background\":\"LIGHT\"");
+
+            mockMvc.perform(patch("/api/users/me/settings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body)
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
+        }
+
+        @Test
+        @DisplayName("Deve aceitar saturação entre 0 e 100 e usar 100 quando ausente")
+        void deveAceitarSaturacaoEManterCompatibilidade() throws Exception {
+            when(updateUserSettingsUseCase.execute(any(), argThat(settings -> settings != null && settings.reader().saturation() == 100))).thenReturn(UserSettings.defaults());
+
+            mockMvc.perform(patch("/api/users/me/settings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(VALID_SETTINGS)
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk());
+
+            String body = VALID_SETTINGS.replace("\"gap\":8", "\"saturation\":50,\"gap\":8");
+            when(updateUserSettingsUseCase.execute(any(), argThat(settings -> settings != null && settings.reader().saturation() == 50))).thenReturn(UserSettings.defaults());
+
+            mockMvc.perform(patch("/api/users/me/settings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body)
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk());
+
+            String grayscale = VALID_SETTINGS.replace("\"gap\":8", "\"saturation\":0,\"gap\":8");
+            when(updateUserSettingsUseCase.execute(any(), argThat(settings -> settings != null && settings.reader().saturation() == 0))).thenReturn(UserSettings.defaults());
+
+            mockMvc.perform(patch("/api/users/me/settings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(grayscale)
+                            .principal(mockAuth()))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("Deve retornar 400 quando saturação está fora do intervalo")
+        void deveRetornar400SaturacaoInvalida() throws Exception {
+            String body = VALID_SETTINGS.replace("\"gap\":8", "\"saturation\":101,\"gap\":8");
+
+            mockMvc.perform(patch("/api/users/me/settings")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(body)
+                            .principal(mockAuth()))
+                    .andExpect(status().isBadRequest());
         }
 
         @Test

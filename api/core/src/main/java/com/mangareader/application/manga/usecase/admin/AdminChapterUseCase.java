@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mangareader.application.manga.port.ChapterRepositoryPort;
 import com.mangareader.application.manga.port.TitleRepositoryPort;
+import com.mangareader.application.group.port.GroupRepositoryPort;
+import com.mangareader.application.user.port.ReleaseFeedViewRepositoryPort;
 import com.mangareader.domain.manga.entity.Chapter;
 import com.mangareader.domain.manga.entity.ChapterPage;
 import com.mangareader.domain.manga.valueobject.ChapterStatus;
@@ -35,17 +37,22 @@ import lombok.RequiredArgsConstructor;
 public class AdminChapterUseCase {
     private final ChapterRepositoryPort chapters;
     private final TitleRepositoryPort titles;
+    private final GroupRepositoryPort groups;
+    private final ReleaseFeedViewRepositoryPort releaseViews;
     private final Clock clock;
 
     public record CreateInput(String titleId, Map<String, String> title, String number, Integer displayOrder,
-            String description, ChapterStatus status, Instant scheduledAt) {}
+            String description, ChapterStatus status, Instant scheduledAt,
+            String contentLanguage, UUID scanGroupId) {}
     public record UpdateInput(Map<String, String> title, String number, Integer displayOrder, String description,
-            Instant scheduledAt, Long version) {}
+            Instant scheduledAt, Long version, String contentLanguage, UUID scanGroupId,
+            boolean clearScanGroup) {}
     public record LegacyPageInput(String id, int order, String originalFilename, String imageUrl,
             String thumbnailUrl, int width, int height, long fileSize, String format,
             String processingStatus, Instant createdAt, Instant updatedAt) {}
     public record LegacyChapterInput(String legacyId, String titleId, String title, String number,
-            Integer displayOrder, String description, String status, Instant scheduledAt,
+            Integer displayOrder, String description, String contentLanguage, UUID scanGroupId,
+            String status, Instant scheduledAt,
             Instant publishedAt, Instant createdAt, Instant updatedAt, List<LegacyPageInput> pages) {}
     public record LegacyImportFailure(String legacyId, String reason) {}
     public record LegacyImportResult(List<String> accepted, List<String> skipped,
@@ -60,12 +67,15 @@ public class AdminChapterUseCase {
         ChapterStatus status = input.status() == null ? ChapterStatus.DRAFT : input.status();
         validateSchedule(status, input.scheduledAt());
         if (status == ChapterStatus.PUBLISHED) throw new BusinessRuleException("Chapter publication requires at least one ready page", 422);
+        String contentLanguage = requireLanguage(input.contentLanguage());
         Instant now = clock.instant();
         Chapter chapter = Chapter.builder()
                 .titleId(input.titleId()).title(requiredTitle(input.title())).number(number)
                 .displayOrder(input.displayOrder() == null ? 0 : input.displayOrder())
                 .description(trimToNull(input.description())).status(status).scheduledAt(input.scheduledAt())
+                .contentLanguage(contentLanguage)
                 .createdAt(now).updatedAt(now).createdBy(actorId.toString()).build();
+        applyScanGroup(chapter, input.scanGroupId());
         return saveWithUniqueNumber(chapter);
     }
 
@@ -82,6 +92,9 @@ public class AdminChapterUseCase {
         }
         if (input.displayOrder() != null) chapter.setDisplayOrder(input.displayOrder());
         if (input.description() != null) chapter.setDescription(trimToNull(input.description()));
+        if (input.contentLanguage() != null) chapter.setContentLanguage(requireLanguage(input.contentLanguage()));
+        if (input.clearScanGroup()) applyScanGroup(chapter, null);
+        else if (input.scanGroupId() != null) applyScanGroup(chapter, input.scanGroupId());
         if (input.scheduledAt() != null) {
             validateSchedule(ChapterStatus.SCHEDULED, input.scheduledAt());
             chapter.setScheduledAt(input.scheduledAt());
@@ -99,6 +112,7 @@ public class AdminChapterUseCase {
         if (status == ChapterStatus.PUBLISHED && !hasReadyPages(chapter)) {
             throw new BusinessRuleException("Chapter publication requires at least one ready page", 422);
         }
+        if (status == ChapterStatus.PUBLISHED) requireLanguage(chapter.getContentLanguage());
         chapter.setStatus(status);
         if (status == ChapterStatus.PUBLISHED) {
             chapter.setPublishedAt(chapter.getPublishedAt() == null ? clock.instant() : chapter.getPublishedAt());
@@ -119,6 +133,7 @@ public class AdminChapterUseCase {
         chapter.setStatus(ChapterStatus.ARCHIVED);
         touch(chapter, actorId);
         chapters.save(chapter);
+        releaseViews.deleteByChapterId(id);
     }
 
     public void reorder(String titleId, List<String> orderedIds, UUID actorId) {
@@ -159,6 +174,8 @@ public class AdminChapterUseCase {
                 .releaseDate(source.getReleaseDate()).pages(source.getPages())
                 .displayOrder(siblings.size() + 1).description(source.getDescription())
                 .status(ChapterStatus.DRAFT).pageItems(pages)
+                .contentLanguage(source.getContentLanguage()).scanGroupId(source.getScanGroupId())
+                .scanGroupName(source.getScanGroupName()).scanGroupLogo(source.getScanGroupLogo())
                 .createdAt(now).updatedAt(now).createdBy(actorId.toString()).build();
         return saveWithUniqueNumber(copy);
     }
@@ -203,12 +220,15 @@ public class AdminChapterUseCase {
                         .title(requiredTitle(Map.of("pt-BR", input.title()))).number(number)
                         .displayOrder(input.displayOrder() == null ? 0 : input.displayOrder())
                         .description(trimToNull(input.description())).status(status)
+                        .contentLanguage(input.contentLanguage() == null
+                                ? null : requireLanguage(input.contentLanguage()))
                         .scheduledAt(status == ChapterStatus.SCHEDULED ? input.scheduledAt() : null)
                         .publishedAt(status == ChapterStatus.PUBLISHED
                                 ? (input.publishedAt() == null ? now : input.publishedAt()) : null)
                         .createdAt(input.createdAt() == null ? now : input.createdAt())
                         .updatedAt(input.updatedAt() == null ? now : input.updatedAt())
                         .createdBy(actorId.toString()).updatedBy(actorId.toString()).pageItems(pages).build();
+                applyScanGroup(chapter, input.scanGroupId());
                 saveWithUniqueNumber(chapter);
                 accepted.add(legacyId);
             } catch (BusinessRuleException | ResourceNotFoundException exception) {
@@ -252,6 +272,34 @@ public class AdminChapterUseCase {
 
     private boolean hasReadyPages(Chapter chapter) {
         return chapter.hasReadyPages();
+    }
+
+    private String requireLanguage(String value) {
+        String language = trimToNull(value);
+        if (language == null) {
+            throw new BusinessRuleException("Chapter content language must be a valid BCP 47 tag", 422);
+        }
+        try {
+            var locale = new java.util.Locale.Builder().setLanguageTag(language).build();
+            if (locale.getLanguage().isBlank()) throw new java.util.IllformedLocaleException();
+            return locale.toLanguageTag();
+        } catch (java.util.IllformedLocaleException exception) {
+            throw new BusinessRuleException("Chapter content language must be a valid BCP 47 tag", 422);
+        }
+    }
+
+    private void applyScanGroup(Chapter chapter, UUID groupId) {
+        if (groupId == null) {
+            chapter.setScanGroupId(null);
+            chapter.setScanGroupName(null);
+            chapter.setScanGroupLogo(null);
+            return;
+        }
+        var group = groups.findById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException("Group", "id", groupId));
+        chapter.setScanGroupId(groupId.toString());
+        chapter.setScanGroupName(group.getName());
+        chapter.setScanGroupLogo(group.getLogo());
     }
 
     private String normalizeNumber(String value) {

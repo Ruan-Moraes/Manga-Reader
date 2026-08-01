@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.mangareader.domain.group.entity.Group;
+import com.mangareader.application.manga.port.TitleReferenceMatch;
 
 /**
  * Port de saída — acesso a dados de Groups (PostgreSQL).
@@ -51,6 +52,12 @@ public interface GroupRepositoryPort {
     Page<Group> findAll(Pageable pageable);
 
     Page<Group> searchByName(String query, Pageable pageable);
+
+    Page<Group> searchCatalog(String normalizedQuery, Pageable pageable);
+
+    List<GroupWorkReference> findWorkTitleIdsByGroupIds(List<UUID> groupIds);
+
+    List<TitleReferenceMatch> searchTitleReferences(String query);
 
     long count();
 }

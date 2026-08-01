@@ -21,7 +21,7 @@ public final class UserSettingsMapper {
         var ac = req.accessibility();
 
         return new UserSettings(
-                new ReaderSettings(r.direction(), r.mode(), r.fit(), r.quality(), r.gap(), r.background(), r.autoMarkRead(), r.preload()),
+                new ReaderSettings(r.direction(), r.mode(), r.fit(), r.quality(), r.saturation() == null ? 100 : r.saturation(), r.gap(), r.background(), r.autoMarkRead(), r.preload()),
                 new AppearanceSettings(a.theme(), a.fontSize(), a.density(), a.animations()),
                 new LocaleSettings(l.dateFormat(), l.timezone()),
                 new AccessibilitySettings(ac.reduceMotion(), ac.highContrast()));

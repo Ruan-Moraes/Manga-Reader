@@ -36,6 +36,7 @@ import com.mangareader.application.group.usecase.GetGroupByIdUseCase;
 import com.mangareader.application.group.usecase.GetGroupByUsernameUseCase;
 import com.mangareader.application.group.usecase.GetGroupsByTitleIdUseCase;
 import com.mangareader.application.group.usecase.GetGroupsUseCase;
+import com.mangareader.application.group.usecase.GetGroupWorksUseCase;
 import com.mangareader.application.group.usecase.JoinGroupUseCase;
 import com.mangareader.application.group.usecase.LeaveGroupUseCase;
 import com.mangareader.application.group.usecase.RemoveWorkFromGroupUseCase;
@@ -60,6 +61,9 @@ class GroupControllerTest {
 
     @MockitoBean
     private GetGroupsUseCase getGroupsUseCase;
+
+    @MockitoBean
+    private GetGroupWorksUseCase getGroupWorksUseCase;
 
     @MockitoBean
     private GetGroupByIdUseCase getGroupByIdUseCase;
@@ -163,6 +167,20 @@ class GroupControllerTest {
             mockMvc.perform(get("/api/groups"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.content").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Deve encaminhar a busca ao caso de uso")
+        void deveEncaminharBusca() throws Exception {
+            var group = buildGroup(UUID.randomUUID());
+            when(getGroupsUseCase.execute(org.mockito.ArgumentMatchers.eq("scan"), any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(group)));
+
+            mockMvc.perform(get("/api/groups").param("search", "scan"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.length()").value(1));
+
+            verify(getGroupsUseCase).execute(org.mockito.ArgumentMatchers.eq("scan"), any(Pageable.class));
         }
     }
 

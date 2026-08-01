@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mangareader.domain.publisher.entity.TitlePublisher;
+import com.mangareader.application.manga.port.TitleReferenceMatch;
 
 /**
  * Port de saída — junção título ↔ editora (PostgreSQL).
@@ -13,6 +14,12 @@ public interface TitlePublisherRepositoryPort {
 
     /** Batch fetch para evitar N+1 ao montar respostas de listagem. */
     List<TitlePublisher> findByTitleIdIn(Collection<String> titleIds);
+
+    List<String> findTitleIdsByPublisherId(Long publisherId);
+
+    List<TitlePublisher> findByPublisherIdIn(Collection<Long> publisherIds);
+
+    List<TitleReferenceMatch> searchTitleReferences(String query);
 
     TitlePublisher save(TitlePublisher titlePublisher);
 

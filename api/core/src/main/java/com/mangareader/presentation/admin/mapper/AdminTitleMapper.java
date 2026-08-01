@@ -11,6 +11,7 @@ import com.mangareader.domain.manga.entity.Title;
 import com.mangareader.domain.publisher.entity.TitlePublisher;
 import com.mangareader.domain.store.entity.StoreTitle;
 import com.mangareader.presentation.admin.dto.AdminTitleResponse;
+import com.mangareader.presentation.admin.dto.TitleAliasResponse;
 import com.mangareader.presentation.admin.dto.TitleStoreResponse;
 import com.mangareader.presentation.manga.mapper.TitleAssociationMapper;
 import com.mangareader.shared.domain.i18n.LocalizedString;
@@ -53,6 +54,10 @@ public class AdminTitleMapper {
                 title.getAuthor(),
                 title.getArtist(),
                 title.getPublisher(),
+                title.getAliases().stream()
+                        .map(alias -> new TitleAliasResponse(
+                                alias.getName(), alias.getType(), alias.getLocale()))
+                        .toList(),
                 TitleAssociationMapper.toAuthorResponses(authorLinks),
                 TitleAssociationMapper.toPublisherResponses(publisherLinks),
                 storeLinks.stream().map(link -> new TitleStoreResponse(

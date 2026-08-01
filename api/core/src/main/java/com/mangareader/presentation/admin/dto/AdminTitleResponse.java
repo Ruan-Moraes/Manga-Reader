@@ -21,6 +21,7 @@ public record AdminTitleResponse(
         String author,
         String artist,
         String publisher,
+        List<TitleAliasResponse> aliases,
         List<TitleAuthorResponse> authors,
         List<TitlePublisherResponse> publishers,
         List<TitleStoreResponse> stores,

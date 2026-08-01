@@ -22,4 +22,10 @@ public class GetAuthorUseCase {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author", "id", id));
     }
+
+    @Transactional(readOnly = true)
+    public Author executeBySlug(String slug) {
+        return authorRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Author", "slug", slug));
+    }
 }

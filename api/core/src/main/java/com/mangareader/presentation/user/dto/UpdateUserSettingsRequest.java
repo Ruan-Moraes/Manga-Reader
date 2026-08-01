@@ -33,6 +33,7 @@ public record UpdateUserSettingsRequest(
             @NotNull(message = "{validation.settings.required}") ReadingMode mode,
             @NotNull(message = "{validation.settings.required}") ReadingFit fit,
             @NotNull(message = "{validation.settings.required}") ImageQuality quality,
+            @Min(value = 0, message = "{validation.settings.range}") @Max(value = 100, message = "{validation.settings.range}") Integer saturation,
             @Min(value = 0, message = "{validation.settings.range}") @Max(value = 32, message = "{validation.settings.range}") int gap,
             @NotNull(message = "{validation.settings.required}") ReaderBackground background,
             boolean autoMarkRead,

@@ -15,6 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mangareader.application.publisher.port.PublisherRepositoryPort;
 import com.mangareader.domain.publisher.entity.Publisher;
+import com.mangareader.domain.publisher.entity.PublisherAlias;
+import com.mangareader.domain.publisher.valueobject.PublisherAliasType;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -29,12 +31,16 @@ class PublisherRepositoryAdapterTest {
     @Autowired
     private TestEntityManager entityManager;
 
+    private Publisher kodansha;
+
     @BeforeEach
     void setUp() {
         entityManager.persistAndFlush(
                 Publisher.builder().name("Shueisha").slug("shueisha").country("JP").build());
-        entityManager.persistAndFlush(
-                Publisher.builder().name("Kodansha").slug("kodansha").country("JP").build());
+        kodansha = Publisher.builder().name("Kodansha").slug("kodansha").country("JP").build();
+        kodansha.getAliases().add(PublisherAlias.builder().publisher(kodansha).name("Kōdansha")
+                .type(PublisherAliasType.ALTERNATE).build());
+        kodansha = entityManager.persistAndFlush(kodansha);
     }
 
     @Test
@@ -60,10 +66,14 @@ class PublisherRepositoryAdapterTest {
     @Test
     @DisplayName("Deve filtrar por nome ignorando caixa")
     void deveFiltrarPorNome() {
+        entityManager.clear();
         var page = publisherRepository.searchByName("kodan", PageRequest.of(0, 10));
 
         assertThat(page.getContent()).hasSize(1);
         assertThat(page.getContent().get(0).getName()).isEqualTo("Kodansha");
+        assertThat(page.getContent().get(0).getAliases())
+                .extracting(PublisherAlias::getName)
+                .containsExactly("Kōdansha");
     }
 
     @Test

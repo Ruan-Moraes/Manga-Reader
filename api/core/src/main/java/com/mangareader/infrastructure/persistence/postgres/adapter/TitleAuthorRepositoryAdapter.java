@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import com.mangareader.application.author.port.TitleAuthorRepositoryPort;
 import com.mangareader.domain.author.entity.TitleAuthor;
 import com.mangareader.infrastructure.persistence.postgres.repository.TitleAuthorJpaRepository;
+import com.mangareader.application.manga.port.TitleReferenceMatch;
+import com.mangareader.domain.manga.valueobject.TitleSearchMatchType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +37,29 @@ public class TitleAuthorRepositoryAdapter implements TitleAuthorRepositoryPort {
     @Override
     public List<String> findTitleIdsByAuthorId(Long authorId) {
         return repository.findTitleIdsByAuthorId(authorId);
+    }
+
+    @Override
+    public List<TitleAuthor> findByAuthorIdIn(Collection<Long> authorIds) {
+        return authorIds == null || authorIds.isEmpty()
+                ? List.of()
+                : repository.findByAuthorIdIn(authorIds);
+    }
+
+    @Override
+    public List<TitleReferenceMatch> searchTitleReferences(String query) {
+        if (query == null || query.isBlank()) return List.of();
+
+        return repository.searchTitleReferences(query).stream()
+                .map(match -> new TitleReferenceMatch(
+                        match.getTitleId(),
+                        isArtistRole(match.getRole()) ? TitleSearchMatchType.ARTIST : TitleSearchMatchType.AUTHOR,
+                        match.getMatchedText()))
+                .toList();
+    }
+
+    private static boolean isArtistRole(String role) {
+        return "ARTIST".equals(role) || "COLORIST".equals(role);
     }
 
     @Override

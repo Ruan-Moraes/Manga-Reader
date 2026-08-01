@@ -46,6 +46,13 @@ public class Chapter {
     private LocalizedString title;
     private String releaseDate;
     private String pages;
+    /** BCP 47 content language of this release (legacy chapters may be null). */
+    private String contentLanguage;
+    /** Optional PostgreSQL group id copied as a cross-DB reference. */
+    private String scanGroupId;
+    /** Historical snapshot: attribution must survive a later group rename/removal. */
+    private LocalizedString scanGroupName;
+    private String scanGroupLogo;
 
     @Builder.Default
     private int displayOrder = 0;

@@ -75,9 +75,13 @@ public class UserSystemSettings {
     @Builder.Default
     private ImageQuality readerQuality = ImageQuality.AUTO;
 
+    @Column(name = "reader_saturation", nullable = false)
+    @Builder.Default
+    private int readerSaturation = 100;
+
     @Column(name = "reader_gap", nullable = false)
     @Builder.Default
-    private int readerGap = 8;
+    private int readerGap = 0;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "reader_background", nullable = false, length = 20)
@@ -149,6 +153,7 @@ public class UserSystemSettings {
                         readerMode,
                         readerFit,
                         readerQuality,
+                        readerSaturation,
                         readerGap,
                         readerBackground,
                         autoMarkRead,
@@ -180,6 +185,7 @@ public class UserSystemSettings {
         this.readerMode = reader.mode();
         this.readerFit = reader.fit();
         this.readerQuality = reader.quality();
+        this.readerSaturation = reader.saturation();
         this.readerGap = reader.gap();
         this.readerBackground = reader.background();
         this.autoMarkRead = reader.autoMarkRead();

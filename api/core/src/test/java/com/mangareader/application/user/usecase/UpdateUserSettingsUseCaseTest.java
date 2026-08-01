@@ -54,6 +54,7 @@ class UpdateUserSettingsUseCaseTest {
                 UserSettings.ReadingMode.PAGED,
                 UserSettings.ReadingFit.HEIGHT,
                 UserSettings.ImageQuality.HIGH,
+                50,
                 16,
                 UserSettings.ReaderBackground.PAPER,
                 false,
@@ -79,6 +80,7 @@ class UpdateUserSettingsUseCaseTest {
 
         assertThat(result.reader().direction()).isEqualTo(ReadingDirection.LTR);
         assertThat(result.reader().gap()).isEqualTo(16);
+        assertThat(result.reader().saturation()).isEqualTo(50);
         assertThat(result.locale().timezone()).isEqualTo("UTC");
     }
 
