@@ -36,6 +36,30 @@ PostgreSQL, MongoDB e Neo4j possuem transações independentes. Operações entr
 tecnologias não são atomicamente distribuídas; use cases, eventos e jobs de
 reconciliação tratam as janelas de divergência conhecidas.
 
+### Feed de últimos lançamentos
+
+`GET /api/releases` consulta capítulos públicos no MongoDB por janela de
+calendário (`DAY`, `WEEK` ou `MONTH`) e usa o timezone IANA do cliente para
+definir os limites. A busca combina título localizado, idioma do capítulo,
+política de conteúdo adulto e, quando autenticado, os ids da biblioteca no
+PostgreSQL. O retorno é paginado por `publishedAt desc`; títulos legados sem
+idioma ou grupo continuam válidos e são exibidos com metadados desconhecidos.
+
+Cada `Chapter` novo persiste `contentLanguage` em BCP 47. O grupo de scan é
+opcional: seu id é validado no PostgreSQL na escrita, enquanto nome localizado
+e logo são copiados para o capítulo como snapshot histórico cross-DB. Não há FK
+Mongo→PostgreSQL e alterações posteriores no grupo não reescrevem capítulos já
+publicados.
+
+O estado privado de visualização fica em `release_feed_views`, com dependência
+funcional `(userId, chapterId) → seenAt`, índice composto único e índice simples
+por `chapterId` para limpeza. O `PUT` individual é um upsert idempotente que
+preserva o primeiro `seenAt`; a ação diária usa bulk upsert para todos os
+capítulos públicos do dia, inclusive os que não estão na página carregada.
+Esse estado não conclui leitura, não publica atividade, não incrementa métricas
+e não é histórico comportamental sujeito a `DO_NOT_TRACK`. A exclusão de conta
+ou capítulo remove as respectivas marcações.
+
 ### Serviço de Agregação de Avaliações (`api/jobs/rating-aggregator`)
 
 Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **dono** da coleção `reviews_aggregate` (ex-`title_rating_aggregate`, renomeada no rename `ratings`→`reviews` — DT-50), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
@@ -113,6 +137,33 @@ Dois eixos separados, com modelos de armazenamento distintos:
 - `useContentLocales(isLoggedIn)` e `useReadingLangs.ts` sincronizam idiomas de
   conteúdo com o backend somente para usuários autenticados.
 
+### Busca global do catálogo
+
+`GET /api/search/suggestions` e `GET /api/search` pesquisam obras, autores,
+artistas, editoras e grupos. O endpoint legado `GET /api/titles/search`
+permanece compatível e delega ao mesmo mecanismo de obras. A busca combina o
+catálogo do MongoDB com relações do PostgreSQL sem transferir o catálogo inteiro
+entre bancos: pessoas usam `title_authors`, editoras usam `title_publishers` e
+grupos usam `groups + group_works`. IDs relacionais são enviados em lote para
+o Mongo, que mantém paginação e política de conteúdo adulto.
+
+O subdocumento Mongo `Title.searchIndex` é uma projeção reconstruível de
+`Title.name` e `Title.aliases`, com nomes normalizados e bigramas. Ele é recalculado por
+`TitleSearchIndexCallback` em toda gravação e recebe backfill/índice multikey
+pela Mongock V028. A fonte canônica continua sendo `Title.name`; código de
+negócio não deve escrever `searchIndex` diretamente. No PostgreSQL, a Flyway
+V44 fornece normalização imutável e índices GIN trigram para as correspondências
+relacionais. A V45 adiciona imagens e aliases de pessoas, logo/descrição e
+aliases de editoras em tabelas filhas BCNF, com unicidade normalizada e FKs
+`ON DELETE CASCADE`; contagens de obras continuam derivadas.
+
+No frontend, `features/search-catalog` é proprietária do combobox global, do
+debounce e do histórico local versionado. `entities/manga` mantém o contrato
+de obras, enquanto `entities/author`, `entities/publisher` e `entities/group`
+mantêm seus contratos de leitura. `widgets/header` apenas compõe a mesma feature
+nas disposições desktop e mobile. O histórico contém no máximo seis termos e
+permanece local ao navegador.
+
 ### API Response Patterns
 
 Todas as respostas da API seguem um dos dois padrões:
@@ -151,11 +202,10 @@ mesmo agregado. A URL da capa é temporariamente uma referência externa: o admi
 uma URL ou gerar `https://picsum.photos/seed/{slug}/1600/900`. `NewsCoverStoragePort` registra
 o seam para S3/Cloudinary/R2, mas nenhum upload binário é simulado antes desse adapter existir.
 
-### Capítulos admin — ports & armazenamento provisório (frontend-only, DT-57)
+### Capítulos admin — ports & gateways HTTP
 
-O gerenciamento de capítulos (painel admin, páginas, métricas e leitor) foi
-implementado antes do backend correspondente existir. O contrato é isolado por
-**ports** no frontend, em `web/manga-reader/src/entities/chapter/`:
+O gerenciamento de capítulos isola os contratos por **ports** no frontend, em
+`web/manga-reader/src/entities/chapter/`:
 
 - `model/admin/` — domínio puro: types (`AdminChapter`, `ChapterPage`,
   `ChapterMetrics`), máquina de status (`draft/processing/scheduled/published/
@@ -163,16 +213,12 @@ implementado antes do backend correspondente existir. O contrato é isolado por
   **codes** (i18n só na UI), e 3 ports: `ChapterAdminGateway` (CRUD, bulk,
   reorder atômico, páginas), `ChapterPublicGateway` (leitor: só `published`,
   `'blocked'` para o resto) e `ChapterAnalyticsGateway` (métricas).
-- `api/admin/` — implementação provisória em localStorage: seed demo
-  determinístico (PRNG mulberry32 por titleId), latência simulada, pipeline
-  fake de processamento de páginas (`uploading→processing→ready|error`) e
-  "lazy promotion" de agendados. **Ponto único de troca**:
-  `api/admin/chapterGateways.ts` — quando `/api/admin/.../chapters` existir,
-  reescrever só este arquivo com services axios (status convertido via
-  `CHAPTER_STATUS_TO_API`, minúsculo no front ⇄ MAIÚSCULO na API).
+- `api/admin/` — gateways HTTP para CRUD admin, leitura pública, progresso e
+  analytics. `chapterGateways.ts` é o ponto único de composição; status é
+  convertido entre minúsculo no frontend e maiúsculo na API. Os adapters de
+  `localStorage` existem somente para testes e importação controlada do legado.
 
 Consumo: `features/admin` (hooks React Query + UI, padrão Titles) e
-`pages/chapter` (leitor: `useReaderPages`, fallback para placeholders quando o
-armazenamento provisório está vazio). Regras de negócio nunca em componentes —
-o fake valida com as mesmas funções do domínio que o form usa inline.
-Detalhes e plano de substituição: `docs/tech-debt.md` DT-57 (dep.: DT-44).
+`pages/chapter` (leitor via `useReaderPages`). Regras de negócio nunca ficam em
+componentes; as validações puras continuam compartilhadas com os formulários.
+Upload binário de páginas permanece separado em `docs/tech-debt.md` DT-44.

@@ -1192,29 +1192,11 @@ Criar/substituir páginas continua deliberadamente indisponível porque o projet
 possui armazenamento binário/presigned upload. Essa pendência já é a dívida de upload
 de arquivos em DT-44 e não mantém este item aberto.
 
-**Contexto (2026-07-04).** A feature de gerenciamento de capítulos (painel admin
-+ preparação do leitor) foi implementada **frontend-only**: o domínio vive em
-`web/manga-reader/src/entities/chapter/model/admin/` (types, validações puras,
-máquina de status e 3 ports — `ChapterAdminGateway`, `ChapterPublicGateway`,
-`ChapterAnalyticsGateway`) e a implementação atual é um repositório fake em
-localStorage (`entities/chapter/api/admin/`), com seed determinístico, latência
-simulada e pipeline fake de processamento de páginas. Depende de DT-44 (upload
-de arquivos) para o armazenamento real de imagens.
-
-**Dívida.** Quando o backend expor o CRUD admin de capítulos:
-1. Backend: `AdminChapterController` sob `/api/admin/**` (herda guard ADMIN),
-   status no `Chapter` Mongo (enum MAIÚSCULO + `fromValue`, DomainLabel),
-   coleção/endpoint de páginas, job de publicação agendada, soft delete.
-2. Frontend: reescrever **apenas** `entities/chapter/api/admin/chapterGateways.ts`
-   com services axios que implementem os mesmos ports (conversão de status via
-   `CHAPTER_STATUS_TO_API`); nenhum componente/hook/validação muda.
-3. Remover o fake (`localStorageChapter*.ts`) e a chave `mr:chapters:admin:v1`.
-
-**Comportamentos provisórios do fake** (não reimplementar no service real):
-- "Lazy promotion": agendado vence ⇒ publicado na leitura (no backend será job);
-- Métricas determinísticas por PRNG (no backend virão do analytics real);
-- `NewPageInput { originalFilename }` sem bytes — o upload real (DT-44) troca
-  por `File` + presigned URL e o pipeline real substitui os timers.
+**Histórico.** A primeira implementação (2026-07-04) foi frontend-only sobre
+`localStorage`. Ela foi substituída pelos gateways HTTP compostos em
+`entities/chapter/api/admin/chapterGateways.ts`. Os adapters locais são mantidos
+somente como fixtures de teste e fonte da importação legada; não são fallback de
+produção. O único comportamento ainda pendente é upload binário, coberto por DT-44.
 
 **Prioridade:** Baixa (acompanha DT-44; sem agendamento até produção).
 
