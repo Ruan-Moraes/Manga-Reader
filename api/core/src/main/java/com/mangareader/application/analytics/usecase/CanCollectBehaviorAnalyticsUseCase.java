@@ -20,10 +20,13 @@ public class CanCollectBehaviorAnalyticsUseCase {
     @Transactional(readOnly = true)
     public boolean execute(UUID userId) {
         var user = userRepository.findById(userId).orElse(null);
+
         if (user == null || user.isDeactivated()) {
             return false;
         }
+
         var settings = settingsResolver.getOrDefault(user);
+
         return settings.isBehaviorAnalyticsEnabled()
                 && settings.getViewHistoryVisibility() != VisibilitySetting.DO_NOT_TRACK;
     }

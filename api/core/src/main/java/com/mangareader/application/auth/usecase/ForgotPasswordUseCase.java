@@ -57,7 +57,9 @@ public class ForgotPasswordUseCase {
 
     private String buildResetEmailHtml(String username, String resetUrl, Duration expiration) {
         String footer = messageSource.getMessage("email.footer.tagline", null, localeResolutionService.currentLocale());
+
         long expirationMinutes = Math.max(1, (expiration.toSeconds() + 59) / 60);
+
         String expirationUnit = expirationMinutes == 1 ? "minuto" : "minutos";
 
         return EmailTemplateBuilder.create()

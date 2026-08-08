@@ -41,33 +41,44 @@ public class IngestBehaviorEventsUseCase {
         }
 
         Instant receivedAt = clock.instant();
+
         List<BehaviorEvent> events = inputs.stream()
                 .map(input -> validateAndMap(userId, input, receivedAt))
                 .toList();
+
         repository.insertIgnoringDuplicates(events);
+
         return events.size();
     }
 
     private BehaviorEvent validateAndMap(UUID userId, EventInput input, Instant receivedAt) {
         UUID.fromString(input.eventId());
         UUID.fromString(input.sessionId());
+
         if (input.occurredAt() == null || input.occurredAt().isAfter(receivedAt.plus(MAX_FUTURE_SKEW))) {
             throw new IllegalArgumentException("Invalid behavior event timestamp");
         }
+
         if (input.progressPercent() != null && (input.progressPercent() < 0 || input.progressPercent() > 100)) {
             throw new IllegalArgumentException("Progress must be between 0 and 100");
         }
+
         if (input.dwellMillis() != null && input.dwellMillis() < 0) {
             throw new IllegalArgumentException("Dwell time must not be negative");
         }
+
         if (input.resultCount() != null && input.resultCount() < 0) {
             throw new IllegalArgumentException("Result count must not be negative");
         }
+
         String searchTerm = input.searchTerm() == null ? null : input.searchTerm().trim();
+
         if (searchTerm != null && searchTerm.length() > 200) {
             throw new IllegalArgumentException("Search term must not exceed 200 characters");
         }
+
         validatePayload(input, searchTerm);
+
         return new BehaviorEvent(input.eventId(), 1, input.type(), userId.toString(), input.sessionId(),
                 input.occurredAt(), receivedAt, receivedAt.plus(Duration.ofDays(properties.retentionDays())), input.platform(),
                 input.appVersion(), input.source(), input.titleId(), input.chapterNumber(), input.dwellMillis(),
@@ -78,6 +89,7 @@ public class IngestBehaviorEventsUseCase {
         if (input.type() == null || input.platform() == null) {
             throw new IllegalArgumentException("Behavior event type and platform are required");
         }
+
         switch (input.type()) {
             case TITLE_VIEW_QUALIFIED, TITLE_VIEW_BOUNCE -> require(input.titleId(), "titleId");
             case CHAPTER_COMPLETED, CHAPTER_SESSION_STARTED, CHAPTER_PROGRESS_CHECKPOINT,
