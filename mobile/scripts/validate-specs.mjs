@@ -4,6 +4,7 @@ import process from 'node:process';
 import { fileURLToPath, URL } from 'node:url';
 
 import { validateCoverage } from './spec-coverage.mjs';
+import { validateFeatureGates } from './feature-gates.mjs';
 
 const log = (...messages) => process.stdout.write(`${messages.join(' ')}\n`);
 const logError = (...messages) => process.stderr.write(`${messages.join(' ')}\n`);
@@ -29,6 +30,7 @@ const requiredHeadings = {
         '## Casos de erro',
         '## Critérios de aceite',
         '## Estratégia de evidência',
+        '## Gate de implementação',
         '## Fora de escopo',
         '## Aprovação humana',
     ],
@@ -83,16 +85,44 @@ function parseArtifact(path) {
 
     const metadata = {};
 
-    for (const line of match[1].split('\n')) {
+    const frontmatterLines = match[1].split('\n');
+
+    for (let index = 0; index < frontmatterLines.length; index += 1) {
+        const line = frontmatterLines[index];
         const separator = line.indexOf(':');
 
         if (separator < 1) continue;
 
-        metadata[line.slice(0, separator).trim()] = parseScalar(line.slice(separator + 1));
+        const key = line.slice(0, separator).trim();
+        const rawValue = line.slice(separator + 1);
+
+        if (rawValue.trim() === '') {
+            const items = [];
+
+            while (frontmatterLines[index + 1]?.match(/^\s+-\s+(.+)$/)) {
+                index += 1;
+                items.push(
+                    frontmatterLines[index]
+                        .replace(/^\s+-\s+/, '')
+                        .trim()
+                        .replace(/^['"]|['"]$/g, ''),
+                );
+            }
+
+            metadata[key] = items;
+        } else {
+            metadata[key] = parseScalar(rawValue);
+        }
     }
 
     for (const field of ['id', 'type', 'title', 'status', 'created', 'updated', 'supersedes', 'superseded_by']) {
         if (!(field in metadata)) errors.push(`${displayPath}: campo '${field}' ausente`);
+    }
+
+    if (metadata.type === 'feature') {
+        for (const field of ['implementation_gate', 'blocked_by']) {
+            if (!(field in metadata)) errors.push(`${displayPath}: campo '${field}' ausente`);
+        }
     }
 
     if (!allowedStatuses[metadata.type]?.has(metadata.status)) {
@@ -129,6 +159,12 @@ for (const artifact of artifacts) {
 
     byId.set(id, artifact);
 }
+
+validateFeatureGates({
+    artifacts,
+    errors,
+    tasksExist: artifact => existsSync(resolve(artifact.path, '..', 'tasks.md')),
+});
 
 if (!existsSync(reconciliationPath)) {
     errors.push('specs/BASELINE-RECONCILIATION-REPORT.md: relatório ausente');
@@ -180,9 +216,11 @@ for (const line of registry.split('\n')) {
     registryRows.set(cells[0], {
         type: cells[1],
         status: cells[3],
-        path: cells[4],
-        supersedes: parseRegistryRelations(cells[6]),
-        supersededBy: parseRegistryRelations(cells[7]),
+        gate: cells[4],
+        blockedBy: parseRegistryRelations(cells[5]),
+        path: cells[6],
+        supersedes: parseRegistryRelations(cells[8]),
+        supersededBy: parseRegistryRelations(cells[9]),
     });
 }
 
@@ -200,6 +238,14 @@ for (const artifact of artifacts) {
     if (row.type !== type) errors.push(`${id}: tipo no registry '${row.type}' diverge de '${type}'`);
 
     if (row.status !== status) errors.push(`${id}: status no registry '${row.status}' diverge de '${status}'`);
+
+    if (type === 'feature' && row.gate !== artifact.metadata.implementation_gate) {
+        errors.push(`${id}: gate no registry '${row.gate}' diverge de '${artifact.metadata.implementation_gate}'`);
+    }
+
+    if (type === 'feature' && JSON.stringify(row.blockedBy) !== JSON.stringify(artifact.metadata.blocked_by)) {
+        errors.push(`${id}: blocked_by no registry diverge do frontmatter`);
+    }
 
     if (row.path !== artifact.specPath) errors.push(`${id}: caminho no registry '${row.path}' diverge de '${artifact.specPath}'`);
 
@@ -246,13 +292,14 @@ for (const artifact of artifacts) {
     const tasksPath = resolve(featureDirectory, 'tasks.md');
     const reviewPath = resolve(featureDirectory, 'review.md');
 
-    const requiresTasks = ['approved', 'in-progress', 'implemented'].includes(artifact.metadata.status);
+    const requiresApproval = ['approved', 'in-progress', 'implemented'].includes(artifact.metadata.status);
+    const requiresTasks = artifact.metadata.implementation_gate === 'open' && requiresApproval;
 
     if (artifact.metadata.status === 'draft' && existsSync(tasksPath)) {
         errors.push(`${artifact.metadata.id}: spec draft não pode possuir tasks.md`);
     }
 
-    if (requiresTasks && (/Aprovador:\s*pendente/i.test(artifact.content) || /Data:\s*pendente/i.test(artifact.content))) {
+    if (requiresApproval && (/Aprovador:\s*pendente/i.test(artifact.content) || /Data:\s*pendente/i.test(artifact.content))) {
         errors.push(`${artifact.metadata.id}: status '${artifact.metadata.status}' exige aprovação humana preenchida`);
     }
 

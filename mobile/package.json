@@ -9,7 +9,7 @@
         "web": "expo start --web",
         "test": "jest --watch",
         "test:ci": "jest --ci --runInBand",
-        "specs:check": "node --test scripts/spec-coverage.test.mjs && node scripts/validate-specs.mjs",
+        "specs:check": "node --test scripts/spec-coverage.test.mjs scripts/feature-gates.test.mjs && node scripts/validate-specs.mjs",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "typecheck": "tsc --noEmit",

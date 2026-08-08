@@ -8,8 +8,9 @@ description: Implementa Target Specs aprovadas do Manga Reader Mobile seguindo t
 ## Pré-condições
 
 1. Confirmar status `approved` na spec e no registry.
-2. Confirmar `tasks.md`, critérios `AC-*`, decisões e baselines afetados.
-3. Parar se houver contradição, requisito ausente ou decisão de produto não resolvida.
+2. Confirmar `implementation_gate: open` e todas as dependências em `blocked_by` como `implemented`.
+3. Confirmar `tasks.md`, critérios `AC-*`, decisões e baselines afetados.
+4. Parar se houver contradição, requisito ausente, gate bloqueado ou decisão de produto não resolvida.
 
 ## Execução
 

@@ -7,7 +7,7 @@ description: Deriva tasks implementáveis e rastreáveis de Target Specs aprovad
 
 ## Fluxo
 
-1. Confirmar no arquivo e no registry que a Target Spec está `approved`.
+1. Confirmar no arquivo e no registry que a Target Spec está `approved`, com `implementation_gate: open`, e que toda dependência em `blocked_by` está `implemented`.
 2. Ler decisões, baselines afetados, arquitetura e `_templates/tasks.md`.
 3. Criar `tasks.md` ao lado da spec com passos pequenos e ordenados.
 4. Mapear todo `AC-*` a pelo menos uma task e uma evidência automatizada ou justificativa aceita.
@@ -16,6 +16,7 @@ description: Deriva tasks implementáveis e rastreáveis de Target Specs aprovad
 ## Limites
 
 - Recusar specs `draft`, contraditórias ou sem critérios verificáveis.
+- Recusar specs com gate `blocked`, ainda que humanamente aprovadas; não criar `tasks.md` para contornar dependências.
 - Não inventar validações, telas, contratos, fallback ou refactors fora da spec.
 - Não implementar código e não modificar o texto normativo da Target Spec.
 

@@ -2,6 +2,8 @@
 
 - Spec revisada: `spec.md`
 - Implementação/revisão: referência de commit ou working tree
+- Gate na entrada do planejamento: `open`/`blocked`
+- Dependências verificadas: listar IDs e status
 - Verdict: `approved` ou `changes-requested`
 
 ## Findings

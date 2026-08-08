@@ -9,8 +9,8 @@ description: Detecta drift entre código, Baseline Specs, Target Specs, decisõe
 
 1. Ler guardrails, registry, `coverage.json`, relatório de reconciliação e specs relacionadas à área auditada.
 2. Inspecionar código, testes, rotas, configuração e histórico relevante sem alterar comportamento.
-3. Comparar `OBS-*` e `AC-*` com evidências atuais, procurar arquivos runtime descobertos ou caminhos obsoletos e executar `pnpm specs:check` e gates focados.
-4. Classificar drift como código divergente, spec divergente, evidência obsoleta, supersession incompleta ou comportamento sem spec.
+3. Comparar `OBS-*` e `AC-*` com evidências atuais, conferir `implementation_gate`/`blocked_by`, procurar arquivos runtime descobertos ou caminhos obsoletos e executar `pnpm specs:check` e gates focados.
+4. Classificar drift como código divergente, spec divergente, evidência obsoleta, supersession incompleta, gate violado ou comportamento sem spec.
 5. Indicar o papel responsável: Reverse Spec, Spec Architect, Executor ou Reviewer.
 
 ## Limites

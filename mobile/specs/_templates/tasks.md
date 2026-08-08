@@ -2,6 +2,8 @@
 
 - Spec: `spec.md`
 - Status da spec no planejamento: `approved`
+- Gate no planejamento: `open`
+- Dependências implementadas: listar `blocked_by` ou `nenhuma`
 
 ## Rastreabilidade
 
@@ -17,4 +19,4 @@
 
 ## Riscos e bloqueios
 
-- Registrar dependências e decisões ainda válidas. Não acrescentar requisitos.
+- Registrar dependências e decisões ainda válidas. Não acrescentar requisitos. Este arquivo não pode existir enquanto `implementation_gate` estiver `blocked`.

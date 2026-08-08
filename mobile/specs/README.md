@@ -41,6 +41,10 @@ Reverse Spec (quando necessário)
 
 Uma feature usa `features/MOB-FEAT-###-slug/` com `spec.md`, `tasks.md` e `review.md`. O Task Planner e o Executor recusam specs `draft`. Somente uma pessoa pode mudar `draft` para `approved`.
 
+### Gate de implementação
+
+Toda Target Spec declara `implementation_gate` e `blocked_by`. `draft`/`approved` representam maturidade e aprovação do contrato; o gate representa prontidão das dependências. Uma spec `blocked` pode ser aprovada, mas não recebe `tasks.md` e não entra em execução. Para abrir o gate, todas as Target Specs listadas em `blocked_by` devem estar `implemented`. O validador rejeita dependências inexistentes, autorreferências, ciclos, execução bloqueada e desbloqueio prematuro.
+
 ## Status
 
 | Tipo     | Status permitidos                                               |
