@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Reverse Spec'
+    short_description: 'Mapeia código brownfield para observações'
+    default_prompt: 'Use $sdd-reverse-spec para documentar e mapear o baseline observado de uma capacidade mobile.'

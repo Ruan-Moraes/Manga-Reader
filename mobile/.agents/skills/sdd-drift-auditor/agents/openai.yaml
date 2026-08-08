@@ -1,0 +1,4 @@
+interface:
+    display_name: 'SDD Drift Auditor'
+    short_description: 'Detecta drift e arquivos sem cobertura'
+    default_prompt: 'Use $sdd-drift-auditor para detectar drift e arquivos descobertos no mobile.'

@@ -1,3 +1,3 @@
 export { api } from './apiClient';
-export { subscribeAuthExpired } from './authExpired';
+export { notifyAuthExpired, subscribeAuthExpired } from './authExpired';
 export { tokenStorage } from './tokenStorage';

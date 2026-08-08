@@ -19,4 +19,7 @@ O diretório permanece fora de `app/` e `src/` para impedir imports acidentais n
 bundle. Não copie lógica, estado ou estilos diretamente para runtime sem
 adaptá-los aos componentes de `src/shared/ui`, aos tokens de tema e ao i18n.
 
-Fonte de verdade do app: [`../../README.md`](../../README.md).
+O contexto técnico está em [`../../README.md`](../../README.md). Comportamento
+observado e intenção futura são governados pelo
+[`../../specs/registry.md`](../../specs/registry.md); estes protótipos não são
+fonte comportamental.

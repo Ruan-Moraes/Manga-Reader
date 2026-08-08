@@ -3,6 +3,14 @@
 Aplicativo React Native com Expo SDK 54 e Expo Router. A fundação e o fluxo de
 autenticação existem; as tabs de conteúdo ainda são placeholders.
 
+Este README é a referência técnica do módulo. Os contratos comportamentais e o
+workflow de desenvolvimento ficam em [`specs/`](specs/README.md), sob os
+guardrails de [`AGENTS.md`](AGENTS.md).
+
+O baseline brownfield possui paridade arquivo→spec verificada por
+[`specs/coverage.json`](specs/coverage.json). Código existente é descrito por
+`OBS-*`; mudanças futuras continuam exigindo Target Spec aprovada com `AC-*`.
+
 ## Estado atual
 
 Implementado:
@@ -14,14 +22,15 @@ Implementado:
 - stores Zustand de sessão e configurações;
 - cliente Axios com access token, refresh single-flight e `Accept-Language`;
 - armazenamento de tokens no Expo SecureStore;
-- TanStack Query e componentes básicos reutilizáveis.
+- TanStack Query e componentes básicos reutilizáveis;
+- testes automatizados para os riscos centrais de fundação, auth e navegação.
 
 Ainda não implementado:
 
 - catálogo e detalhes de obras;
 - leitor de capítulos e biblioteca real;
 - fórum, perfil e outras tabs com dados;
-- testes automatizados;
+- testes E2E;
 - notificações, cache offline e build/release com EAS.
 
 ## Stack instalada
@@ -47,6 +56,7 @@ atuais.
 
 ```text
 mobile/
+├── .agents/skills/        # papéis reutilizáveis do workflow SDD
 ├── app/                  # arquivos de rota do Expo Router; cascas finas
 │   ├── (auth)/
 │   ├── (tabs)/
@@ -59,6 +69,7 @@ mobile/
 │   └── shared/           # api, tema, i18n, stores, modelos e UI
 ├── assets/
 ├── docs/
+├── specs/                # baselines, Target Specs, decisões e registry
 ├── app.json
 └── package.json
 ```
@@ -146,15 +157,32 @@ header `Accept-Language`.
 Scripts disponíveis:
 
 ```bash
+pnpm specs:check
+pnpm test
+pnpm test:ci
 pnpm typecheck
 pnpm lint
 pnpm lint:fsd
 pnpm format:check
-pnpm check          # executa os quatro comandos anteriores
+pnpm check          # specs + typecheck + lint + FSD + format + testes
 ```
 
-O projeto ainda não possui runner ou script de testes. Adicionar testes faz
-parte da evolução antes das telas de dados.
+O runner usa Jest com `jest-expo` e React Native Testing Library. Não há meta
+percentual arbitrária: cada critério de aceite relevante deve indicar seu teste
+ou outra evidência adequada na Target Spec.
+
+## Spec-Driven Development
+
+Antes de alterar comportamento:
+
+1. consultar [`specs/registry.md`](specs/registry.md);
+2. confirmar a cobertura do arquivo em [`specs/coverage.json`](specs/coverage.json) e aplicar Reverse Spec se a área ainda não estiver documentada;
+3. criar uma Target Spec `draft` em `specs/features/`;
+4. obter aprovação humana antes de tasks ou código;
+5. implementar, testar, revisar e auditar drift seguindo `AGENTS.md`.
+
+Baselines descrevem apenas como o código funciona hoje. Eles não transformam
+login obrigatório, dependência da Core ou placeholders em requisitos futuros.
 
 ## Roadmap
 
@@ -164,21 +192,25 @@ parte da evolução antes das telas de dados.
 4. **Monetização:** assinaturas, loja e carrinho.
 5. **Polimento:** notificações, cache offline, deep links e testes E2E.
 
-O roadmap expressa intenção de produto, não dependências ou funcionalidades já
-entregues.
+O roadmap expressa direção não normativa, não dependências ou funcionalidades
+entregues. Cada item só se torna implementável por meio de uma Target Spec
+aprovada.
 
 ## Checklist para mudanças
 
 1. `pnpm check` sem erros.
-2. Texto visível via i18n nos três idiomas.
-3. Cores reativas via tokens de tema.
-4. UI reutilizável em `shared/ui`.
-5. Boundaries FSD respeitados.
-6. Estado implementado e roadmap mantidos separados neste README.
+2. Target Spec aprovada e tasks rastreáveis para qualquer mudança comportamental.
+3. Texto visível via i18n nos três idiomas.
+4. Cores reativas via tokens de tema.
+5. UI reutilizável em `shared/ui`.
+6. Boundaries FSD respeitados.
 
 ## Links relacionados
 
 - [README principal](../README.md)
+- [Guardrails SDD](AGENTS.md)
+- [Workflow e contratos SDD](specs/README.md)
+- [Registry de specs](specs/registry.md)
 - [Workspace web](../web/README.md)
 - [Layout FSD](../docs/source-layout.md)
 - [Guia de i18n](../docs/i18n-guide.md)
