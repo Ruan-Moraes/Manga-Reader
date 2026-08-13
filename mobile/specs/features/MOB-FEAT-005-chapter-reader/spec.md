@@ -2,10 +2,10 @@
 id: MOB-FEAT-005
 type: feature
 title: Leitor de capítulos
-status: draft
+status: verification-pending
 created: 2026-08-08
-updated: 2026-08-08
-implementation_gate: blocked
+updated: 2026-08-09
+implementation_gate: open
 blocked_by: [MOB-FEAT-001, MOB-FEAT-004]
 supersedes: []
 superseded_by: []
@@ -103,11 +103,11 @@ Quando leitor de tela, escala de fonte, redução de movimento ou rotação do d
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-001`, `MOB-FEAT-004`
 - Motivo: o leitor depende da fundação de preferências e da política efetiva de idiomas de conteúdo.
 
-O gate só pode ser aberto quando as duas dependências estiverem `implemented`.
+O gate foi aberto após as duas dependências alcançarem `implemented`.
 
 ## Fora de escopo
 
@@ -119,7 +119,7 @@ O gate só pode ser aberto quando as duas dependências estiverem `implemented`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
-Não criar `tasks.md` antes de status `approved`, aprovação preenchida e `implementation_gate: open`.
+O usuário aprovou explicitamente a continuação da implementação das Target Specs; o planejamento pode ser criado com o gate aberto.

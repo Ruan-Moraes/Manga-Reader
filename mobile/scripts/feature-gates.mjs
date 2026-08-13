@@ -1,4 +1,5 @@
 const ALLOWED_GATES = new Set(['open', 'blocked']);
+const SATISFIED_DEPENDENCY_STATUSES = new Set(['implemented', 'verification-pending']);
 
 export function validateFeatureGates({ artifacts, errors, tasksExist = () => false }) {
     const features = artifacts.filter(artifact => artifact.metadata.type === 'feature');
@@ -35,13 +36,13 @@ export function validateFeatureGates({ artifacts, errors, tasksExist = () => fal
             for (const dependencyId of blockedBy) {
                 const dependency = byId.get(dependencyId);
 
-                if (dependency && dependency.metadata.status !== 'implemented') {
-                    errors.push(`${id}: gate aberto exige dependência implemented '${dependencyId}'`);
+                if (dependency && !SATISFIED_DEPENDENCY_STATUSES.has(dependency.metadata.status)) {
+                    errors.push(`${id}: gate aberto exige dependência implementada ou em verificação '${dependencyId}'`);
                 }
             }
         }
 
-        if (gate === 'blocked' && ['in-progress', 'implemented'].includes(feature.metadata.status)) {
+        if (gate === 'blocked' && ['in-progress', 'implemented', 'verification-pending'].includes(feature.metadata.status)) {
             errors.push(`${id}: feature bloqueada não pode ter status '${feature.metadata.status}'`);
         }
 

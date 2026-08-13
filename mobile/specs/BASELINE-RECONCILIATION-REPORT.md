@@ -1,129 +1,98 @@
-# Reconciliação completa — código mobile versus Baseline Specs
+# Reconciliação corrente — código mobile versus Baseline Specs
 
-Data: 2026-08-08
+Data: 2026-08-09
 
 ## Resultado
 
-O código em `mobile/` foi tratado como fonte real. Cada arquivo de `app/` e `src/` está individualmente ligado a uma observação em `coverage.json`; arquivos de suporte estão classificados como evidência, infraestrutura, recurso ou governança.
+Somente baselines com status `observed` participam desta fotografia. Baselines superseded permanecem no histórico normativo, mas não geram seções nem mappings comportamentais correntes. Os contadores abaixo são derivados das seis seções atuais.
 
 | Indicador                    | Resultado |
 | ---------------------------- | --------: |
-| Baselines observados         |         9 |
-| Verdicts `match`             |        55 |
+| Baselines observados         |         6 |
+| Verdicts `match`             |        39 |
 | Verdicts `mismatch`          |         0 |
 | Verdicts `undocumented`      |         0 |
 | Arquivos runtime descobertos |         0 |
 
 ## MOB-BASE-001 — Fundação e bootstrap
 
-| Observação | Evidência reconciliada              | Verdict | Correção documental                                      |
-| ---------- | ----------------------------------- | ------- | -------------------------------------------------------- |
-| OBS-001    | `app/_layout.tsx`                   | `match` | —                                                        |
-| OBS-002    | `SettingsGate.tsx`, fontes e splash | `match` | —                                                        |
-| OBS-003    | `AppProviders.tsx`                  | `match` | —                                                        |
-| OBS-004    | `QueryProvider.tsx`                 | `match` | —                                                        |
-| OBS-005    | barrels, ESLint e Steiger           | `match` | —                                                        |
-| OBS-006    | `app.json`                          | `match` | Metadados e plugins antes implícitos foram documentados. |
-| OBS-007    | `app/+html.tsx`, configuração web   | `match` | Shell web antes sem baseline foi documentado.            |
-| OBS-008    | Babel, Metro, CSS e TypeScript      | `match` | Contratos de build/resolução foram incorporados.         |
-
-## MOB-BASE-002 — Tema
-
-| Observação | Evidência reconciliada                          | Verdict | Correção documental |
-| ---------- | ----------------------------------------------- | ------- | ------------------- |
-| OBS-001    | `ThemeProvider.tsx` e teste focado              | `match` | —                   |
-| OBS-002    | `tokens.ts`, `fonts.ts` e typecheck             | `match` | —                   |
-| OBS-003    | `settingsStore.ts` e teste de persistência      | `match` | —                   |
-| OBS-004    | `ThemeProvider.tsx`, `AppProviders.tsx` e teste | `match` | —                   |
-
-## MOB-BASE-003 — Internacionalização
-
-| Observação | Evidência reconciliada              | Verdict | Correção documental |
-| ---------- | ----------------------------------- | ------- | ------------------- |
-| OBS-001    | inicialização i18n e seis catálogos | `match` | —                   |
-| OBS-002    | teste de paridade de chaves         | `match` | —                   |
-| OBS-003    | settings store e testes             | `match` | —                   |
-| OBS-004    | `SettingsGate.tsx`                  | `match` | —                   |
-| OBS-005    | interceptor Axios e testes          | `match` | —                   |
+| Observação | Evidência reconciliada                                    | Verdict | Correção documental                                     |
+| ---------- | --------------------------------------------------------- | ------- | ------------------------------------------------------- |
+| OBS-001    | `app/_layout.tsx`; `src/application/RootApplication.tsx`  | `match` | Ordem efetiva corrigida para providers antes dos gates. |
+| OBS-002    | `src/application/gates/SettingsGate.tsx`; fontes e splash | `match` | —                                                       |
+| OBS-003    | `src/application/providers`; gates de conta               | `match` | Composição global retirada de widgets.                  |
+| OBS-004    | `src/application/providers/QueryProvider.tsx`             | `match` | —                                                       |
+| OBS-005    | barrels, Steiger e validador FSD local                    | `match` | `src/application` agora possui cobertura explícita.     |
+| OBS-006    | `app.json`                                                | `match` | —                                                       |
+| OBS-007    | `app/+html.tsx`; configuração web                         | `match` | —                                                       |
+| OBS-008    | Babel, Metro, CSS e TypeScript                            | `match` | —                                                       |
 
 ## MOB-BASE-004 — Autenticação
 
-| Observação | Evidência reconciliada                  | Verdict | Correção documental                                           |
-| ---------- | --------------------------------------- | ------- | ------------------------------------------------------------- |
-| OBS-001    | LoginPage, auth service e session store | `match` | —                                                             |
-| OBS-002    | RegisterPage e validações locais        | `match` | —                                                             |
-| OBS-003    | ForgotPage e endpoint correspondente    | `match` | —                                                             |
-| OBS-004    | auth service, modelos e testes          | `match` | —                                                             |
-| OBS-005    | logout remoto e teste                   | `match` | —                                                             |
-| OBS-006    | SocialRow e DemoCredentials             | `match` | —                                                             |
-| OBS-007    | `src/features/auth/ui`                  | `match` | Toolkit visual e medidor antes implícitos foram documentados. |
+| Observação | Evidência reconciliada                             | Verdict | Correção documental                                         |
+| ---------- | -------------------------------------------------- | ------- | ----------------------------------------------------------- |
+| OBS-001    | LoginPage; `features/authenticate`; SessionGate    | `match` | Retorno atual usa allowlist e `/platform/status`, não tabs. |
+| OBS-002    | RegisterPage; `features/authenticate`; SessionGate | `match` | Retorno seguro alinhado ao login.                           |
+| OBS-003    | ForgotPage; API de recuperação                     | `match` | —                                                           |
+| OBS-004    | `features/authenticate/api`; `entities/user`       | `match` | Tipos separados por responsabilidade.                       |
+| OBS-005    | ação `signOut`; teste da API                       | `match` | Saída local é garantida pela feature.                       |
+| OBS-006    | SocialRow; DemoCredentials                         | `match` | —                                                           |
+| OBS-007    | `features/authenticate/ui`; primitives `shared/ui` | `match` | Wrappers antigos removidos da API atual.                    |
 
 ## MOB-BASE-005 — Sessão e tokens
 
-| Observação | Evidência reconciliada                    | Verdict | Correção documental |
-| ---------- | ----------------------------------------- | ------- | ------------------- |
-| OBS-001    | token storage e teste do store            | `match` | —                   |
-| OBS-002    | hidratação do session store e teste       | `match` | —                   |
-| OBS-003    | login/logout local e testes               | `match` | —                   |
-| OBS-004    | interceptor de request e teste            | `match` | —                   |
-| OBS-005    | refresh single-flight e teste concorrente | `match` | —                   |
-| OBS-006    | authExpired, interceptor e SessionGate    | `match` | —                   |
+| Observação | Evidência reconciliada                                   | Verdict | Correção documental                       |
+| ---------- | -------------------------------------------------------- | ------- | ----------------------------------------- |
+| OBS-001    | token storage; teste de `entities/session`               | `match` | —                                         |
+| OBS-002    | restauração em `features/authenticate`; entity de sessão | `match` | Sessão não reside mais em shared.         |
+| OBS-003    | transições de sessão; ações sign-in/sign-up/sign-out     | `match` | Escritas controladas pela feature.        |
+| OBS-004    | interceptor de request e teste                           | `match` | —                                         |
+| OBS-005    | refresh single-flight e teste concorrente                | `match` | —                                         |
+| OBS-006    | authExpired; interceptor; SessionGate                    | `match` | Expiração usa ação local de authenticate. |
 
 ## MOB-BASE-006 — Navegação
 
-| Observação | Evidência reconciliada               | Verdict | Correção documental |
-| ---------- | ------------------------------------ | ------- | ------------------- |
-| OBS-001    | RootNavigator e root stack           | `match` | —                   |
-| OBS-002    | layout do grupo auth                 | `match` | —                   |
-| OBS-003    | layout das tabs                      | `match` | —                   |
-| OBS-004    | teste de redirect visitante          | `match` | —                   |
-| OBS-005    | teste de redirect autenticado        | `match` | —                   |
-| OBS-006    | teste de bloqueio durante hidratação | `match` | —                   |
-
-## MOB-BASE-007 — Shared UI
-
-| Observação | Evidência reconciliada           | Verdict | Correção documental                             |
-| ---------- | -------------------------------- | ------- | ----------------------------------------------- |
-| OBS-001    | `Avatar.tsx`                     | `match` | Capacidade antes sem baseline foi documentada.  |
-| OBS-002    | `Button.tsx` e teste de loading  | `match` | Capacidade antes sem baseline foi documentada.  |
-| OBS-003    | `Card.tsx`, `EmptyState.tsx`     | `match` | Capacidade antes sem baseline foi documentada.  |
-| OBS-004    | `Input.tsx` e teste de erro/blur | `match` | Capacidade antes sem baseline foi documentada.  |
-| OBS-005    | `PageContainer.tsx`              | `match` | Capacidade antes sem baseline foi documentada.  |
-| OBS-006    | `Skeleton.tsx`                   | `match` | Capacidade antes sem baseline foi documentada.  |
-| OBS-007    | barrel `shared/ui`               | `match` | API pública antes sem baseline foi documentada. |
+| Observação | Evidência reconciliada              | Verdict | Correção documental                          |
+| ---------- | ----------------------------------- | ------- | -------------------------------------------- |
+| OBS-001    | RootNavigator; launcher; root stack | `match` | —                                            |
+| OBS-002    | layout auth e tema efetivo          | `match` | —                                            |
+| OBS-003    | tabs sob `/platform`; Profile       | `match` | —                                            |
+| OBS-004    | matriz de rotas públicas/privadas   | `match` | Rotas técnicas vivem em `shared/navigation`. |
+| OBS-005    | allowlist e status autenticado      | `match` | —                                            |
+| OBS-006    | feedback durante hidratação         | `match` | —                                            |
 
 ## MOB-BASE-008 — Superfícies do shell
 
-| Observação | Evidência reconciliada                | Verdict | Correção documental                            |
-| ---------- | ------------------------------------- | ------- | ---------------------------------------------- |
-| OBS-001    | pages Home, Library e Forum           | `match` | Inventário informal virou baseline mínimo.     |
-| OBS-002    | ProfilePage                           | `match` | Superfície mínima e logout foram documentados. |
-| OBS-003    | ModalPage                             | `match` | Placeholder ganhou baseline mínimo.            |
-| OBS-004    | NotFoundPage                          | `match` | Utilitário de navegação foi documentado.       |
-| OBS-005    | wrappers em `app/` e barrels de pages | `match` | Fronteira route→page foi explicitada.          |
+| Observação | Evidência reconciliada                      | Verdict | Correção documental                                           |
+| ---------- | ------------------------------------------- | ------- | ------------------------------------------------------------- |
+| OBS-001    | pages Home, Library e Forum; leitor público | `match` | Placeholders continuam bloqueados; leitor é uma rota própria. |
+| OBS-002    | ProfilePage; settings                       | `match` | —                                                             |
+| OBS-003    | ModalPage                                   | `match` | —                                                             |
+| OBS-004    | NotFoundPage                                | `match` | —                                                             |
+| OBS-005    | wrappers Expo Router e barrels de pages     | `match` | Root global pertence a `src/application`.                     |
 
 ## MOB-BASE-009 — Contratos e utilitários
 
-| Observação | Evidência reconciliada               | Verdict | Correção documental                                       |
-| ---------- | ------------------------------------ | ------- | --------------------------------------------------------- |
-| OBS-001    | `useDebounce.ts` e testes com timers | `match` | Hook antes sem baseline/evidência foi documentado.        |
-| OBS-002    | `routes.ts`                          | `match` | Constantes atuais foram documentadas sem criar roadmap.   |
-| OBS-003    | `query-keys.ts`                      | `match` | Exports não consumidos foram separados de features reais. |
-| OBS-004    | `demo.ts` e consumidor `__DEV__`     | `match` | Contrato demo foi documentado.                            |
-| OBS-005    | `model/api.ts`                       | `match` | Envelope e paginação foram documentados.                  |
-| OBS-006    | `model/auth.ts` e consumidores       | `match` | Tipos compartilhados foram reconciliados.                 |
-| OBS-007    | barrels de constant, hook e model    | `match` | APIs públicas foram documentadas.                         |
+| Observação | Evidência reconciliada                             | Verdict | Correção documental                          |
+| ---------- | -------------------------------------------------- | ------- | -------------------------------------------- |
+| OBS-001    | `useDebounce.ts`; testes com timers                | `match` | —                                            |
+| OBS-002    | `shared/navigation`; testes de allowlist           | `match` | Rotas atuais e parsers seguros documentados. |
+| OBS-003    | factories em chapter/progress; scopes nas features | `match` | Registry global removido.                    |
+| OBS-004    | configuração interna de `features/authenticate`    | `match` | Credenciais demo retiradas de shared.        |
+| OBS-005    | `shared/model/api.ts`                              | `match` | —                                            |
+| OBS-006    | `entities/user`; `entities/session`; authenticate  | `match` | Modelos de negócio retirados de shared.      |
+| OBS-007    | barrels de navigation, hook e model                | `match` | —                                            |
 
 ## Áreas deliberadamente sem Target Spec
 
-- catálogo, busca, detalhes e leitor;
+- catálogo, busca e detalhes;
 - biblioteca persistida e sincronizada;
 - fórum, tópicos e comentários;
-- perfil completo, notificações e cache offline;
+- perfil completo, notificações e armazenamento de capítulos offline;
 - reset password mobile, login social, newsletter e termos funcionais.
 
-Essas ausências não são `undocumented`: não existe código de comportamento correspondente. Chaves, textos, protótipos ou constantes isoladas permanecem inventário observado, não intenção aprovada.
+Essas ausências não são `undocumented`: não existe código de comportamento correspondente. Chaves, textos, protótipos ou superfícies bloqueadas não criam intenção aprovada.
 
 ## Critério para próximas mudanças
 
-Uma nova Target Spec pode entrar no ciclo somente com `pnpm specs:check` verde. Durante a implementação aprovada, cada arquivo novo precisa de entrada individual ligada ao `AC-*`; comportamento brownfield encontrado sem contrato retorna ao Reverse Spec.
+Uma nova Target Spec entra no ciclo somente com `pnpm specs:check` verde. Cada arquivo novo recebe mapping individual, cada AC recebe evidência classificada e qualquer review de working tree usa o checksum reproduzível exigido por `MOB-DEC-003`.

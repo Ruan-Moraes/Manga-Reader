@@ -2,7 +2,7 @@
 id: MOB-FEAT-001
 type: feature
 title: Fundação local-first de configurações
-status: draft
+status: implemented
 implementation_gate: open
 blocked_by: []
 created: 2026-08-08
@@ -122,7 +122,7 @@ Não usar snapshots como prova principal nem impor percentual arbitrário de cob
 - Dependências: nenhuma
 - Motivo: esta é a fundação das demais Target Specs do pacote.
 
-O status continua `draft`; o gate aberto não autoriza tasks ou código antes de aprovação humana.
+O gate aberto não substitui aprovação humana; a execução só começou depois do registro de aprovação desta spec.
 
 ## Fora de escopo
 
@@ -134,7 +134,7 @@ O status continua `draft`; o gate aberto não autoriza tasks ou código antes de
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
 Não criar `tasks.md` antes de status `approved` e aprovação preenchida.

@@ -159,7 +159,8 @@ export function validateCoverage({ mobileRoot, coverage, artifactsById, errors }
     }
 
     for (const path of managedFiles) {
-        const matches = [exact.get(path), ...patterns.filter(pattern => pattern.regex.test(path))].filter(Boolean);
+        const exactMatch = exact.get(path);
+        const matches = exactMatch ? [exactMatch] : patterns.filter(pattern => pattern.regex.test(path));
 
         if (matches.length === 0) {
             errors.push(`${path}: arquivo sem classificação no coverage.json`);

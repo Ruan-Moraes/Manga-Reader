@@ -93,6 +93,9 @@ api.interceptors.response.use(
                 },
             );
             const { accessToken, refreshToken: newRefresh } = data.data;
+            if (typeof accessToken !== 'string' || !accessToken || typeof newRefresh !== 'string' || !newRefresh) {
+                throw new Error('Invalid refresh response');
+            }
 
             await tokenStorage.setTokens(accessToken, newRefresh);
 
@@ -102,11 +105,14 @@ api.interceptors.response.use(
 
             return api(originalRequest);
         } catch (refreshError) {
-            await tokenStorage.clear();
-
             rejectRefreshQueue(refreshError);
-
             notifyAuthExpired();
+
+            try {
+                await tokenStorage.clear();
+            } catch {
+                // A falha de storage não pode impedir a expiração da sessão nem deixar requests pendentes.
+            }
 
             return Promise.reject(error);
         } finally {

@@ -4,7 +4,7 @@ type: baseline
 title: Contratos, constantes e hooks compartilhados
 status: observed
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 supersedes: []
 superseded_by: []
 ---
@@ -23,40 +23,42 @@ Fotografia dos utilitários e tipos compartilhados, inclusive exports planejados
 
 ### OBS-002 — Rotas constantes
 
-`ROUTES` enumera o grupo tabs, Home, Library, Forum, Profile e as rotas Login, Register e Forgot atualmente existentes.
+`shared/navigation` expõe launcher, tradução offline, plataforma/status/tabs, settings e autenticação, além das allowlists e parsers que aceitam somente retornos internos conhecidos.
 
-### OBS-003 — Query keys
+### OBS-003 — Query keys proprietárias
 
-`QUERY_KEYS` exporta strings para titles, title, chapters, chapter, user, comments, review, library e notifications. A presença dessas chaves não demonstra queries nem features correspondentes.
+Não existe registry global. `entities/chapter` e `entities/reading-progress` expõem factories para seus próprios dados; `features/data-controls`, `manage-content-languages` e `update-privacy` mantêm internamente os scopes que invalidam.
 
 ### OBS-004 — Credenciais demo
 
-`DEMO_CREDS` contém o e-mail e a senha seedados pelo backend não produtivo e é consumido apenas pela apresentação demo condicionada a `__DEV__`.
+`DEMO_CREDS` pertence à configuração interna de `features/authenticate` e é consumido apenas pela apresentação demo condicionada a `__DEV__`.
 
 ### OBS-005 — Envelope e paginação
 
 `ApiResponse<T>` modela data, success, message e statusCode. `PageResponse<T>` modela content, page, size, totais e flag last; o contrato paginado não possui consumidor atual no mobile.
 
-### OBS-006 — Modelos de autenticação
+### OBS-006 — Separação dos modelos de autenticação
 
-Os tipos compartilhados modelam requests de login/cadastro, tokens, usuário, roles MEMBER/ADMIN/MODERATOR, resposta flat da Core e snapshot da sessão. Campos nullable da resposta são convertidos pela feature auth antes de entrar no estado local.
+`User` e `UserRole` pertencem a `entities/user`; tokens e snapshot pertencem a `entities/session`; requests e resposta flat permanecem internos a `features/authenticate`. `shared/model` conserva apenas envelopes HTTP genéricos.
 
 ### OBS-007 — Barrels compartilhados
 
-Os barrels de constant, hook e model reexportam somente os símbolos declarados nos respectivos segmentos.
+Os barrels de `navigation`, `hook` e `model` reexportam somente os símbolos declarados nos respectivos segmentos.
 
 ## Evidências
 
-| Observação       | Código/teste/comando                            | Resultado esperado                                   |
-| ---------------- | ----------------------------------------------- | ---------------------------------------------------- |
-| OBS-001          | `src/shared/hook/__tests__/useDebounce.test.ts` | Delay, cancelamento e valor mais recente verificados |
-| OBS-002–OBS-004  | `src/shared/constant`                           | Valores e consumidores correspondem ao inventário    |
-| OBS-005, OBS-006 | `src/shared/model`; `pnpm typecheck`            | Contratos aceitos pelos consumidores atuais          |
-| OBS-007          | `src/shared/{constant,hook,model}/index.ts`     | Exports explícitos observados                        |
+| Observação       | Código/teste/comando                                    | Resultado esperado                                   |
+| ---------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| OBS-001          | `src/shared/hook/__tests__/useDebounce.test.ts`         | Delay, cancelamento e valor mais recente verificados |
+| OBS-002          | `src/shared/navigation`; consumidores de rotas          | Allowlist e parsers correspondem às rotas atuais     |
+| OBS-003          | factories/scopes em entities e features proprietárias   | Não há registry global                               |
+| OBS-004          | `src/features/authenticate/config/demoCredentials.ts`   | Uso restrito à feature                               |
+| OBS-005, OBS-006 | `src/shared/model`; `src/entities/{user,session}`; auth | Contratos aceitos pelos consumidores atuais          |
+| OBS-007          | barrels públicos dos segmentos relacionados             | Exports explícitos observados                        |
 
 ## Desconhecidos
 
-- Não há convenção aprovada para factories de query keys futuras.
+- Novas query keys devem permanecer no slice proprietário; convenções adicionais dependem de uso real.
 - O contrato `PageResponse` ainda não foi exercitado contra um endpoint mobile.
 
 ## Conflitos com intenção futura

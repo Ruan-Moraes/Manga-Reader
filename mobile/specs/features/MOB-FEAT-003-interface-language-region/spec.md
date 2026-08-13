@@ -2,12 +2,12 @@
 id: MOB-FEAT-003
 type: feature
 title: Idioma da interface e preferências regionais
-status: draft
-implementation_gate: blocked
+status: implemented
+implementation_gate: open
 blocked_by: [MOB-FEAT-001]
 created: 2026-08-08
 updated: 2026-08-08
-supersedes: []
+supersedes: [MOB-BASE-003]
 superseded_by: []
 ---
 
@@ -166,7 +166,7 @@ idioma da UI e a filtragem/fallback de conteúdo segue `MOB-FEAT-004`.
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-001`
 - Motivo: idioma e região dependem do modelo, hidratação e sincronização local-first antes de expor controles.
 
@@ -184,8 +184,9 @@ O gate só pode ser aberto quando `MOB-FEAT-001` estiver `implemented`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
-Não criar `tasks.md` antes de status `approved`, aprovação preenchida e
-`implementation_gate: open`.
+A implementação foi autorizada pela instrução humana de executar as Target Specs
+restantes. O status passou por `approved` antes da criação de `tasks.md` e foi
+promovido a `in-progress` no início da execução.

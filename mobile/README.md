@@ -1,7 +1,8 @@
 # Manga Reader Mobile — `mobile/`
 
-Aplicativo React Native com Expo SDK 54 e Expo Router. A fundação e o fluxo de
-autenticação existem; as tabs de conteúdo ainda são placeholders.
+Aplicativo React Native com Expo SDK 54 e Expo Router. O app inicia em um
+launcher público; a plataforma autenticada permanece em construção e suas tabs
+de conteúdo não são expostas.
 
 Este README é a referência técnica do módulo. Os contratos comportamentais e o
 workflow de desenvolvimento ficam em [`specs/`](specs/README.md), sob os
@@ -10,16 +11,22 @@ guardrails de [`AGENTS.md`](AGENTS.md).
 O baseline brownfield possui paridade arquivo→spec verificada por
 [`specs/coverage.json`](specs/coverage.json). Código existente é descrito por
 `OBS-*`; mudanças futuras continuam exigindo Target Spec aprovada com `AC-*`.
+Código executado com verificação real pendente usa `verification-pending` e não é
+apresentado como concluído.
 
 ## Estado atual
 
 Implementado:
 
-- rotas de login, cadastro e recuperação de senha;
-- shell das tabs Home, Biblioteca, Fórum e Perfil;
+- seletor público entre plataforma e tradução offline;
+- shell honesto da tradução offline, sem importação ou tradução simulada;
+- status autenticado da plataforma, sem expor tabs incompletas;
+- rotas de login, cadastro e recuperação de senha com retorno interno seguro;
+- leitor público de capítulos com modos vertical, paginado e duplo, preferências e progresso autenticado;
 - tema claro/escuro com tokens e preferência do sistema;
 - i18n em `pt-BR`, `en-US` e `es-ES`;
-- stores Zustand de sessão e configurações;
+- preferências locais v2 com merge seletivo na autenticação;
+- stores Zustand de sessão (`entities/session`) e configurações;
 - cliente Axios com access token, refresh single-flight e `Accept-Language`;
 - armazenamento de tokens no Expo SecureStore;
 - TanStack Query e componentes básicos reutilizáveis;
@@ -27,8 +34,7 @@ Implementado:
 
 Ainda não implementado:
 
-- catálogo e detalhes de obras;
-- leitor de capítulos e biblioteca real;
+- catálogo, detalhes de obras e biblioteca real;
 - fórum, perfil e outras tabs com dados;
 - testes E2E;
 - notificações, cache offline e build/release com EAS.
@@ -59,14 +65,18 @@ mobile/
 ├── .agents/skills/        # papéis reutilizáveis do workflow SDD
 ├── app/                  # arquivos de rota do Expo Router; cascas finas
 │   ├── (auth)/
-│   ├── (tabs)/
+│   ├── platform/          # status conectado e tabs futuras bloqueadas
+│   ├── index.tsx          # seletor público
+│   ├── offline-translation.tsx
 │   ├── _layout.tsx
 │   └── modal.tsx
 ├── src/
-│   ├── application/      # providers, gates e navegação
+│   ├── application/      # app layer local: providers, gates e navegação
 │   ├── pages/            # telas completas
-│   ├── features/         # interações, atualmente auth
-│   └── shared/           # api, tema, i18n, stores, modelos e UI
+│   ├── widgets/          # blocos compostos
+│   ├── features/         # ações, inclusive authenticate e data-controls
+│   ├── entities/         # sessão, usuário, settings, capítulo e progresso
+│   └── shared/           # api, navegação técnica, tema, i18n e UI genérica
 ├── assets/
 ├── docs/
 ├── specs/                # baselines, Target Specs, decisões e registry
@@ -77,11 +87,12 @@ mobile/
 O app segue as dependências do FSD:
 
 ```text
-pages -> widgets -> features -> entities -> shared
+application -> pages -> widgets -> features -> entities -> shared
 ```
 
-Camadas ainda vazias devem ser criadas apenas quando houver responsabilidade
-real. Não são permitidos imports cruzados entre slices do mesmo nível.
+`src/application` representa a app layer porque `app/` é reservado pelo Expo
+Router. Não são permitidos imports cruzados entre slices do mesmo nível; entities
+usam `@x` somente para cross-reference tipada explícita.
 
 ## Instalação e execução
 
@@ -140,12 +151,15 @@ cores que precisam reagir ao toggle.
 
 ## Internacionalização
 
-O mobile possui atualmente dois namespaces:
+O mobile possui atualmente cinco namespaces:
 
 - `common`;
-- `auth`.
+- `auth`;
+- `launcher`;
+- `reader`.
+- `settingsNavigation`.
 
-Ambos existem nos três idiomas. Novos namespaces devem ser adicionados somente
+Todos existem nos três idiomas. Novos namespaces devem ser adicionados somente
 com a feature correspondente e replicados em todos os locales. Nenhum texto
 visível novo deve ser hardcoded.
 

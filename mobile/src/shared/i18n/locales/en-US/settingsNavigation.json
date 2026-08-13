@@ -1,0 +1,77 @@
+{
+    "index": {
+        "title": "Settings",
+        "subtitle": "Customize your Manga Reader experience."
+    },
+    "groups": {
+        "app": "App",
+        "reading": "Reading",
+        "device": "Device",
+        "account": "Account"
+    },
+    "sections": {
+        "appearance": {
+            "title": "Appearance and accessibility",
+            "description": "Theme, text, density, motion, and contrast."
+        },
+        "locale": {
+            "title": "Language and region",
+            "description": "Interface language, dates, and time zone."
+        },
+        "contentLanguages": {
+            "title": "Content languages",
+            "description": "Choose and order your preferred content languages."
+        },
+        "reader": {
+            "title": "Reader",
+            "description": "Reading mode, direction, fit, and page presentation."
+        },
+        "privacy": {
+            "title": "Privacy",
+            "description": "Visibility, tracking, and sensitive content."
+        },
+        "data": {
+            "title": "Data and storage",
+            "description": "Cache, export, and account history."
+        },
+        "about": {
+            "title": "About",
+            "description": "App version and available official links."
+        }
+    },
+    "access": {
+        "loginRequired": "Login required",
+        "hint": "Sign in to access this setting. You will return here after login."
+    },
+    "sync": {
+        "local": "Saved on this device",
+        "pending": "Change pending",
+        "syncing": "Syncing",
+        "synced": "Synced",
+        "error": "Unable to sync. Your change remains saved on this device.",
+        "retry": "Try syncing again"
+    },
+    "about": {
+        "title": "About",
+        "version": "Version",
+        "build": "Build",
+        "links": {
+            "support": "Support",
+            "terms": "Terms of use",
+            "privacy": "Privacy policy",
+            "project": "Project"
+        },
+        "openError": "Unable to open this link.",
+        "retry": "Try opening again"
+    },
+    "actions": {
+        "open": "Open {{section}}",
+        "back": "Back",
+        "login": "Sign in",
+        "settings": "Open settings",
+        "backToModules": "Back to modules"
+    },
+    "errors": {
+        "externalLink": "Unable to open the external link. Try again."
+    }
+}

@@ -2,8 +2,8 @@
 id: MOB-FEAT-004
 type: feature
 title: Cadeia de idiomas de conteúdo
-status: draft
-implementation_gate: blocked
+status: implemented
+implementation_gate: open
 blocked_by: [MOB-FEAT-001, MOB-FEAT-003]
 created: 2026-08-08
 updated: 2026-08-08
@@ -173,11 +173,11 @@ remover possui nome e estado perceptíveis, e `pt-BR` é anunciado como fallback
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-001`, `MOB-FEAT-003`
 - Motivo: a cadeia de conteúdo depende do isolamento local-first e de um idioma de interface efetivo.
 
-O gate só pode ser aberto quando as duas dependências estiverem `implemented`.
+O gate foi aberto após as duas dependências alcançarem `implemented`.
 
 ## Fora de escopo
 
@@ -192,8 +192,7 @@ O gate só pode ser aberto quando as duas dependências estiverem `implemented`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
-Não criar `tasks.md` antes de status `approved`, aprovação preenchida e
-`implementation_gate: open`.
+O usuário aprovou explicitamente a continuação da implementação das Target Specs; o planejamento pode ser criado com o gate aberto.

@@ -1,0 +1,77 @@
+{
+    "index": {
+        "title": "Ajustes",
+        "subtitle": "Personaliza tu experiencia en Manga Reader."
+    },
+    "groups": {
+        "app": "Aplicación",
+        "reading": "Lectura",
+        "device": "Dispositivo",
+        "account": "Cuenta"
+    },
+    "sections": {
+        "appearance": {
+            "title": "Apariencia y accesibilidad",
+            "description": "Tema, texto, densidad, movimiento y contraste."
+        },
+        "locale": {
+            "title": "Idioma y región",
+            "description": "Idioma de la interfaz, fechas y zona horaria."
+        },
+        "contentLanguages": {
+            "title": "Idiomas del contenido",
+            "description": "Elige y ordena tus idiomas preferidos para el contenido."
+        },
+        "reader": {
+            "title": "Lector",
+            "description": "Modo de lectura, dirección, ajuste y presentación de las páginas."
+        },
+        "privacy": {
+            "title": "Privacidad",
+            "description": "Visibilidad, seguimiento y contenido sensible."
+        },
+        "data": {
+            "title": "Datos y almacenamiento",
+            "description": "Caché, exportación e historial de la cuenta."
+        },
+        "about": {
+            "title": "Acerca de",
+            "description": "Versión de la app y enlaces oficiales disponibles."
+        }
+    },
+    "access": {
+        "loginRequired": "Inicio de sesión necesario",
+        "hint": "Inicia sesión para acceder a este ajuste. Después volverás aquí."
+    },
+    "sync": {
+        "local": "Guardado en este dispositivo",
+        "pending": "Cambio pendiente",
+        "syncing": "Sincronizando",
+        "synced": "Sincronizado",
+        "error": "No se pudo sincronizar. Tu cambio sigue guardado en este dispositivo.",
+        "retry": "Intentar sincronizar de nuevo"
+    },
+    "about": {
+        "title": "Acerca de",
+        "version": "Versión",
+        "build": "Compilación",
+        "links": {
+            "support": "Soporte",
+            "terms": "Términos de uso",
+            "privacy": "Política de privacidad",
+            "project": "Proyecto"
+        },
+        "openError": "No se pudo abrir este enlace.",
+        "retry": "Intentar abrir de nuevo"
+    },
+    "actions": {
+        "open": "Abrir {{section}}",
+        "back": "Volver",
+        "login": "Iniciar sesión",
+        "settings": "Abrir ajustes",
+        "backToModules": "Volver a los módulos"
+    },
+    "errors": {
+        "externalLink": "No se pudo abrir el enlace externo. Inténtalo de nuevo."
+    }
+}

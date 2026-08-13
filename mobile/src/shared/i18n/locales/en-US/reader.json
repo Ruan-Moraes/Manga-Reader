@@ -1,0 +1,63 @@
+{
+    "actions": {
+        "controlsHint": "Opens or closes reader controls and preferences",
+        "exit": "Exit reader",
+        "hideControls": "Hide controls",
+        "nextPage": "Next page",
+        "previousPage": "Previous page",
+        "retry": "Try again",
+        "retryImage": "Try loading page {{page}} again",
+        "retryProgress": "Try syncing progress again",
+        "retryProgressHydration": "Try loading progress again",
+        "showControls": "Show controls"
+    },
+    "controls": { "decrease": "Decrease {{label}}", "increase": "Increase {{label}}" },
+    "errors": {
+        "image": "This page could not be loaded.",
+        "progress": "Progress is pending. Tap to try again.",
+        "progressHydration": "Your progress could not be loaded. Reading remains available."
+    },
+    "options": {
+        "AUTO": "Automatic",
+        "BLACK": "Black",
+        "DARK": "Dark",
+        "DOUBLE": "Double",
+        "HEIGHT": "Height",
+        "HIGH": "High",
+        "LIGHT": "Light",
+        "LOW": "Low",
+        "LTR": "Left to right",
+        "MEDIUM": "Medium",
+        "ORIGINAL": "Original",
+        "PAGED": "Paged",
+        "PAPER": "Paper",
+        "RTL": "Right to left",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "White",
+        "WIDTH": "Width"
+    },
+    "resume": {
+        "continue": "Continue reading",
+        "description": "Your latest progress is chapter {{chapter}}, page {{page}}.",
+        "requested": "Open requested chapter",
+        "title": "Continue where you left off?"
+    },
+    "settings": {
+        "background": "Background",
+        "direction": "Direction",
+        "fit": "Fit",
+        "gap": "Gap",
+        "mode": "Mode",
+        "preload": "Preload",
+        "quality": "Quality",
+        "saturation": "Saturation"
+    },
+    "states": {
+        "error": "The chapter could not be loaded.",
+        "loading": "Loading chapter…",
+        "safeExit": "You can try again or safely go back.",
+        "unavailable": "This chapter has no available pages."
+    },
+    "viewport": { "page": "Page {{page}} of {{total}}" }
+}

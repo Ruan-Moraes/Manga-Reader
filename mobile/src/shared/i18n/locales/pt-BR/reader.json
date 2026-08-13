@@ -1,0 +1,68 @@
+{
+    "actions": {
+        "controlsHint": "Abre ou fecha os controles e preferências do leitor",
+        "exit": "Sair do leitor",
+        "hideControls": "Ocultar controles",
+        "nextPage": "Próxima página",
+        "previousPage": "Página anterior",
+        "retry": "Tentar novamente",
+        "retryImage": "Tentar carregar a página {{page}} novamente",
+        "retryProgress": "Tentar sincronizar o progresso novamente",
+        "retryProgressHydration": "Tentar carregar o progresso novamente",
+        "showControls": "Mostrar controles"
+    },
+    "controls": {
+        "decrease": "Diminuir {{label}}",
+        "increase": "Aumentar {{label}}"
+    },
+    "errors": {
+        "image": "Não foi possível carregar esta página.",
+        "progress": "O progresso está pendente. Toque para tentar novamente.",
+        "progressHydration": "Não foi possível carregar seu progresso. A leitura continua disponível."
+    },
+    "options": {
+        "AUTO": "Automática",
+        "BLACK": "Preto",
+        "DARK": "Escuro",
+        "DOUBLE": "Dupla",
+        "HEIGHT": "Altura",
+        "HIGH": "Alta",
+        "LIGHT": "Claro",
+        "LOW": "Baixa",
+        "LTR": "Esquerda para direita",
+        "MEDIUM": "Média",
+        "ORIGINAL": "Original",
+        "PAGED": "Paginado",
+        "PAPER": "Papel",
+        "RTL": "Direita para esquerda",
+        "VERTICAL": "Vertical",
+        "WEBTOON": "Webtoon",
+        "WHITE": "Branco",
+        "WIDTH": "Largura"
+    },
+    "resume": {
+        "continue": "Continuar leitura",
+        "description": "Seu progresso mais recente está no capítulo {{chapter}}, página {{page}}.",
+        "requested": "Abrir capítulo solicitado",
+        "title": "Continuar de onde parou?"
+    },
+    "settings": {
+        "background": "Fundo",
+        "direction": "Direção",
+        "fit": "Ajuste",
+        "gap": "Espaçamento",
+        "mode": "Modo",
+        "preload": "Pré-carregamento",
+        "quality": "Qualidade",
+        "saturation": "Saturação"
+    },
+    "states": {
+        "error": "Não foi possível carregar o capítulo.",
+        "loading": "Carregando capítulo…",
+        "safeExit": "Você pode tentar novamente ou voltar com segurança.",
+        "unavailable": "Este capítulo não possui páginas disponíveis."
+    },
+    "viewport": {
+        "page": "Página {{page}} de {{total}}"
+    }
+}

@@ -20,23 +20,8 @@ $$;
 CREATE INDEX IF NOT EXISTS idx_authors_name_trgm
     ON authors USING gin (mr_normalize_search(name) gin_trgm_ops);
 
--- Indexa apenas os textos traduzidos. Serializar o jsonb inteiro também
--- indexaria chaves de locale ("pt-BR", "en-US") e produziria falsos positivos.
-CREATE OR REPLACE FUNCTION mr_localized_values_search(value jsonb)
-RETURNS text
-LANGUAGE sql
-IMMUTABLE
-PARALLEL SAFE
-STRICT
-AS $$
-    SELECT public.mr_normalize_search(COALESCE(
-        string_agg(entry.value, ' ' ORDER BY entry.key),
-        ''))
-    FROM jsonb_each_text(value) AS entry
-$$;
-
 CREATE INDEX IF NOT EXISTS idx_groups_name_trgm
-    ON groups USING gin (mr_localized_values_search(name) gin_trgm_ops);
+    ON groups USING gin (mr_normalize_search(name::text) gin_trgm_ops);
 
 CREATE INDEX IF NOT EXISTS idx_groups_username_trgm
     ON groups USING gin (mr_normalize_search(username) gin_trgm_ops);

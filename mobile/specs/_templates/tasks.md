@@ -11,11 +11,15 @@
 | -------- | -------- | ------------------- |
 | AC-001   | TASK-001 | Teste/comando       |
 
+Cada `AC-*` deve ocupar exatamente uma linha; não agrupar critérios na mesma célula.
+
 ## Checklist
 
 - [ ] TASK-001 — Implementar alteração mínima derivada do AC-001.
 - [ ] TASK-002 — Criar ou atualizar a evidência do AC-001.
 - [ ] TASK-003 — Executar gates focados e `pnpm check`.
+
+`implemented` exige todos os checkboxes concluídos. Quando o código estiver pronto, mas uma verificação real ainda estiver aberta, usar `verification-pending` e manter a task correspondente desmarcada.
 
 ## Riscos e bloqueios
 

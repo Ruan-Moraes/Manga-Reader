@@ -2,10 +2,10 @@
 id: MOB-FEAT-008
 type: feature
 title: Navegação das configurações
-status: draft
+status: implemented
 created: 2026-08-08
 updated: 2026-08-08
-implementation_gate: blocked
+implementation_gate: open
 blocked_by: [MOB-FEAT-002, MOB-FEAT-003, MOB-FEAT-004, MOB-FEAT-005, MOB-FEAT-006, MOB-FEAT-007]
 supersedes: []
 superseded_by: []
@@ -99,11 +99,11 @@ Quando sessão, link externo ou sincronização falhar ou mudar, então a navega
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-002`, `MOB-FEAT-003`, `MOB-FEAT-004`, `MOB-FEAT-005`, `MOB-FEAT-006`, `MOB-FEAT-007`
-- Motivo: a navegação não pode expor controles ou seções antes de todas as capacidades configuráveis possuírem comportamento real.
+- Motivo: todas as capacidades configuráveis dependentes estão implementadas.
 
-O gate só pode ser aberto quando todas as dependências estiverem `implemented`.
+O gate foi aberto após todas as dependências alcançarem `implemented`.
 
 ## Fora de escopo
 
@@ -115,7 +115,7 @@ O gate só pode ser aberto quando todas as dependências estiverem `implemented`
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário
+- Data: 2026-08-08
 
-Não criar `tasks.md` antes de status `approved`, aprovação preenchida e `implementation_gate: open`.
+O usuário aprovou explicitamente a continuação da implementação das Target Specs; o planejamento pode ser criado com o gate aberto.

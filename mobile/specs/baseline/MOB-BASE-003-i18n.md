@@ -2,11 +2,11 @@
 id: MOB-BASE-003
 type: baseline
 title: Internacionalização e preferência de idioma
-status: observed
+status: superseded
 created: 2026-08-08
 updated: 2026-08-08
 supersedes: []
-superseded_by: []
+superseded_by: [MOB-FEAT-003]
 ---
 
 # MOB-BASE-003 — Internacionalização e preferência de idioma
@@ -27,7 +27,7 @@ Cada idioma contém os dois namespaces e a mesma estrutura de chaves dos demais 
 
 ### OBS-003 — Persistência e fallback
 
-O settings store aceita apenas idiomas suportados. Na hidratação, valor ausente ou inválido volta para `pt-BR`; mudanças válidas são persistidas no SecureStore.
+O settings store aceita apenas idiomas suportados. Na hidratação do envelope local versionado, valor ausente ou inválido volta para `pt-BR`; mudanças válidas são persistidas no SecureStore. Chaves legadas separadas são migradas para esse envelope.
 
 ### OBS-004 — Aplicação do idioma
 
@@ -39,11 +39,11 @@ O interceptor adiciona o idioma corrente ao header `Accept-Language`; valor ativ
 
 ## Evidências
 
-| Observação                | Código/teste/comando                               | Resultado esperado                        |
-| ------------------------- | -------------------------------------------------- | ----------------------------------------- |
-| OBS-001, OBS-002, OBS-005 | `src/shared/i18n/__tests__/i18n.test.ts`           | Registro, paridade e fallback verificados |
-| OBS-003                   | `src/shared/store/__tests__/settingsStore.test.ts` | Hidratação e persistência verificadas     |
-| OBS-005                   | `src/shared/api/__tests__/apiClient.test.ts`       | Header verificado em request              |
+| Observação                | Código/teste/comando                                                 | Resultado esperado                              |
+| ------------------------- | -------------------------------------------------------------------- | ----------------------------------------------- |
+| OBS-001, OBS-002, OBS-005 | `src/shared/i18n/__tests__/i18n.test.ts`                             | Registro, paridade e fallback verificados       |
+| OBS-003                   | `src/features/manage-settings/model/__tests__/settingsStore.test.ts` | Hidratação, migração e persistência verificadas |
+| OBS-005                   | `src/shared/api/__tests__/apiClient.test.ts`                         | Header verificado em request                    |
 
 ## Desconhecidos
 

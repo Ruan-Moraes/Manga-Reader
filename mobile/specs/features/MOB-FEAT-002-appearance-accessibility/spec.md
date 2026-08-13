@@ -2,12 +2,12 @@
 id: MOB-FEAT-002
 type: feature
 title: Aparência e acessibilidade globais
-status: draft
+status: implemented
 created: 2026-08-08
 updated: 2026-08-08
-implementation_gate: blocked
+implementation_gate: open
 blocked_by: [MOB-FEAT-001]
-supersedes: []
+supersedes: [MOB-BASE-002]
 superseded_by: []
 ---
 
@@ -33,8 +33,8 @@ autoplay que ignora a opção manual de movimento — a comportamento desejado.
   `es-ES`, sem alterar o contrato de idioma desta feature.
 - Preserva `MOB-BASE-007`: componentes compartilhados continuam consumindo
   tokens semânticos em vez de cores literais.
-- Segue `MOB-DEC-001`: permanece `draft`, sem tasks ou código, até aprovação
-  humana e desbloqueio explícito de `MOB-FEAT-001`.
+- Segue `MOB-DEC-001`: a implementação foi iniciada após aprovação humana e
+  desbloqueio de `MOB-FEAT-001`.
 
 ### Referência web não normativa
 
@@ -272,7 +272,7 @@ asserts sobre tokens/estados e inspeção manual dirigida da matriz de variantes
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-001`
 - Motivo: aparência e acessibilidade precisam da fundação de hidratação, persistência e sincronização antes de produzir controles reais.
 
@@ -280,8 +280,6 @@ O gate só pode ser aberto quando `MOB-FEAT-001` estiver `implemented`.
 
 ## Fora de escopo
 
-- Implementar esta spec, criar `tasks.md`, alterar código runtime ou promover o
-  status para `approved`.
 - Preferências do leitor de capítulos, idiomas de interface/conteúdo, timezone,
   formato de data, dados, atalhos ou telas de perfil.
 - Reproduzir CSS, seletores HTML, Tailwind ou workarounds específicos do fórum web.
@@ -292,9 +290,7 @@ O gate só pode ser aberto quando `MOB-FEAT-001` estiver `implemented`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
-`implementation_gate` permanece `blocked` enquanto `MOB-FEAT-001` não estiver
-`implemented`. Não criar
-`tasks.md` antes de status `approved`, aprovação preenchida e gate desbloqueado.
+`implementation_gate` está `open` porque `MOB-FEAT-001` está `implemented`.

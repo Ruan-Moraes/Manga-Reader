@@ -1,10 +1,10 @@
 # Review — MOB-FEAT-###
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: referência de commit ou working tree
+- Implementação/revisão: commit `<40-hex>` ou `working-tree sha256:<64-hex>`
 - Gate na entrada do planejamento: `open`/`blocked`
 - Dependências verificadas: listar IDs e status
-- Verdict: `approved` ou `changes-requested`
+- Verdict: `approved`, `verification-pending` ou `changes-requested`
 
 ## Findings
 

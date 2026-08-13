@@ -1,0 +1,50 @@
+{
+    "startup": {
+        "settings": "Carregando suas preferências…",
+        "session": "Verificando a sessão…",
+        "error": "Não foi possível carregar as preferências salvas. O app está usando valores seguros neste momento.",
+        "retry": "Tentar carregar novamente"
+    },
+    "selector": {
+        "eyebrow": "MANGA READER",
+        "title": "O que você quer fazer?",
+        "subtitle": "Escolha um módulo. Suas preferências ficam neste aparelho mesmo sem uma conta.",
+        "settings": "Configurações do aparelho"
+    },
+    "platform": {
+        "title": "Plataforma de leitura",
+        "description": "O espaço futuro para leitura, comentários e avaliações. As áreas incompletas permanecem fechadas.",
+        "status": "Em construção",
+        "loginAction": "Entrar na plataforma",
+        "connectedAction": "Ver status conectado",
+        "connectedTitle": "Conta conectada",
+        "connectedDescription": "Sua sessão está ativa. A plataforma de leitura ainda está em construção.",
+        "sessionAccount": "Sessão autenticada",
+        "accountLoading": "Carregando os dados da conta…",
+        "accountError": "Não foi possível carregar os dados da conta.",
+        "accountRetry": "Tentar carregar a conta novamente",
+        "constructionTitle": "Estamos preparando a plataforma",
+        "constructionDescription": "Catálogo, leitura, comentários e avaliações só serão liberados quando estiverem completos.",
+        "logout": "Sair da conta"
+    },
+    "offline": {
+        "title": "Tradução offline de capítulos",
+        "description": "Um espaço local e privado para o futuro fluxo de tradução, sem depender de login ou rede.",
+        "status": "Offline e local",
+        "action": "Conhecer o módulo",
+        "pageTitle": "Tradução offline",
+        "unavailableTitle": "O tradutor ainda não está disponível",
+        "unavailableDescription": "Nenhum arquivo pode ser importado ou traduzido nesta versão. Esta tela não envia dados pela rede e será habilitada somente quando o fluxo real estiver pronto."
+    },
+    "navigation": {
+        "selector": "Módulos",
+        "backToSelector": "Voltar aos módulos"
+    },
+    "sync": {
+        "local": "Preferências salvas neste aparelho",
+        "syncing": "Sincronizando preferências…",
+        "synced": "Preferências sincronizadas",
+        "error": "Há preferências pendentes de sincronização",
+        "retry": "Tentar sincronizar novamente"
+    }
+}

@@ -3,14 +3,12 @@ import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, Vie
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AuthCheckbox, AuthFooter, AuthHeader, authService, Field, MRIcon, PrimaryButton, StrengthMeter } from '@/src/features/auth';
-import { useSessionStore } from '@/src/shared/store';
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { AuthCheckbox, AuthFooter, AuthHeader, MRIcon, signUp, StrengthMeter } from '@/src/features/authenticate';
+import { FONTS, useTheme } from '@/src/shared/theme';
+import { Button, Input } from '@/src/shared/ui';
 
 export function RegisterPage() {
-    const login = useSessionStore(state => state.login);
-    const { tokens } = useTheme();
+    const { layout, minimumTouchTarget, spacing, tokens, typography } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
@@ -19,7 +17,6 @@ export function RegisterPage() {
     const [pw2, setPw2] = useState('');
     const [showPw, setShowPw] = useState(false);
     const [terms, setTerms] = useState(false);
-    const [news, setNews] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
 
@@ -38,16 +35,14 @@ export function RegisterPage() {
         if (!email.trim()) next.email = t('validation.emailRequired');
         if (!name.trim()) next.name = t('validation.nameRequired');
         if (pw.length < 8) next.pw = t('validation.passwordMin');
-        if (pw2 && pw2 !== pw) next.pw2 = t('validation.passwordsDoNotMatch');
+        if (!pw2 || pw2 !== pw) next.pw2 = t('validation.passwordsDoNotMatch');
         if (!terms) next.terms = t('signUp.termsError');
         setErrors(next);
         if (Object.keys(next).length) return;
 
         setLoading(true);
         try {
-            const result = await authService.register({ name: name.trim(), email: email.trim(), password: pw });
-            await login(result.user, { accessToken: result.accessToken, refreshToken: result.refreshToken });
-            router.replace('/(tabs)');
+            await signUp({ name: name.trim(), email: email.trim(), password: pw });
         } catch {
             setErrors({ root: t('signUp.createAccountError') });
         } finally {
@@ -59,17 +54,17 @@ export function RegisterPage() {
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ScrollView
                 style={{ flex: 1 }}
-                contentContainerStyle={{ paddingHorizontal: tokens.screenPadding, paddingTop: 58, paddingBottom: 36 }}
+                contentContainerStyle={{ paddingHorizontal: layout.screenGutter, paddingTop: spacing['2xl'], paddingBottom: spacing.xl }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
                 <AuthHeader eyebrow={t('signUp.eyebrow')} title={t('signUp.title')} sub={t('signUp.subtitle')} />
 
-                <Field
+                <Input
                     label={t('signUp.emailLabel')}
-                    icon="mail"
-                    type="email"
-                    inputMode="email"
+                    leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                     value={email}
                     onChange={v => {
                         setEmail(v);
@@ -79,9 +74,9 @@ export function RegisterPage() {
                     error={errors.email}
                 />
 
-                <Field
+                <Input
                     label={t('signUp.nameLabel')}
-                    icon="user"
+                    leading={<MRIcon name="user" size={18} color={tokens.tertiary} />}
                     value={name}
                     onChange={v => {
                         setName(v);
@@ -92,10 +87,10 @@ export function RegisterPage() {
                     error={errors.name}
                 />
 
-                <Field
+                <Input
                     label={t('signUp.passwordLabel')}
-                    icon="lock"
-                    type={showPw ? 'text' : 'password'}
+                    leading={<MRIcon name="lock" size={18} color={tokens.tertiary} />}
+                    secureTextEntry={!showPw}
                     value={pw}
                     onChange={v => {
                         setPw(v);
@@ -106,7 +101,15 @@ export function RegisterPage() {
                     trailing={
                         <TouchableOpacity
                             onPress={() => setShowPw(s => !s)}
-                            style={{ position: 'absolute', right: 8, height: 36, width: 36, alignItems: 'center', justifyContent: 'center' }}
+                            accessibilityRole="button"
+                            style={{
+                                position: 'absolute',
+                                right: 0,
+                                minHeight: minimumTouchTarget,
+                                minWidth: minimumTouchTarget,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
                         >
                             <MRIcon name={showPw ? 'eye-off' : 'eye'} size={18} color={tokens.tertiary} />
                         </TouchableOpacity>
@@ -114,10 +117,10 @@ export function RegisterPage() {
                 />
                 {!errors.pw && <StrengthMeter value={pw} />}
 
-                <Field
+                <Input
                     label={t('signUp.confirmPasswordLabel')}
-                    icon="lock"
-                    type={showPw ? 'text' : 'password'}
+                    leading={<MRIcon name="lock" size={18} color={tokens.tertiary} />}
+                    secureTextEntry={!showPw}
                     value={pw2}
                     onChange={v => {
                         setPw2(v);
@@ -127,7 +130,7 @@ export function RegisterPage() {
                     error={errors.pw2}
                 />
 
-                <View style={{ height: 4 }} />
+                <View style={{ height: spacing.xs }} />
 
                 <AuthCheckbox
                     checked={terms}
@@ -140,39 +143,37 @@ export function RegisterPage() {
                     <Text
                         style={{
                             fontFamily: FONTS.regular,
-                            fontSize: 13,
+                            fontSize: typography.body,
                             color: errors.terms ? tokens.danger : tokens.muted,
-                            letterSpacing: tokens.ls,
-                            lineHeight: 19,
+                            letterSpacing: 0,
+                            lineHeight: typography.body * 1.45,
                         }}
                     >
-                        {t('signUp.termsPrefix')} <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('signUp.termsLinkLabel')}</Text>{' '}
-                        {t('signUp.termsAnd')} <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold }}>{t('signUp.privacyLinkLabel')}</Text>.
+                        {t('signUp.termsPrefix')} {t('signUp.termsLinkLabel')} {t('signUp.termsAnd')} {t('signUp.privacyLinkLabel')}.
                     </Text>
                 </AuthCheckbox>
 
                 {errors.terms && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: -8, marginBottom: 12 }}>
+                    <View
+                        accessibilityRole="alert"
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: -spacing.sm, marginBottom: spacing.md }}
+                    >
                         <MRIcon name="alert" size={13} color={tokens.danger} />
-                        <Text style={{ fontSize: 11, color: tokens.danger, letterSpacing: tokens.ls, fontFamily: FONTS.regular }}>{errors.terms}</Text>
+                        <Text style={{ fontSize: typography.minimum, color: tokens.danger, fontFamily: FONTS.regular }}>{errors.terms}</Text>
                     </View>
                 )}
-
-                <AuthCheckbox checked={news} onChange={() => setNews(n => !n)}>
-                    {t('signUp.newsletterOptIn')}
-                </AuthCheckbox>
 
                 {errors.root && (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                    <View accessibilityRole="alert" style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
                         <MRIcon name="alert" size={13} color={tokens.danger} />
-                        <Text style={{ fontSize: 11, color: tokens.danger, letterSpacing: tokens.ls, fontFamily: FONTS.regular }}>{errors.root}</Text>
+                        <Text style={{ fontSize: typography.minimum, color: tokens.danger, fontFamily: FONTS.regular }}>{errors.root}</Text>
                     </View>
                 )}
 
-                <View style={{ height: 6 }} />
-                <PrimaryButton onPress={submit} loading={loading}>
+                <View style={{ height: spacing.sm }} />
+                <Button onPress={submit} loading={loading}>
                     {t('signUp.submit')}
-                </PrimaryButton>
+                </Button>
 
                 <AuthFooter prompt={t('signUp.noAccount')} action={t('signUp.loginLink')} onAction={() => router.back()} />
             </ScrollView>

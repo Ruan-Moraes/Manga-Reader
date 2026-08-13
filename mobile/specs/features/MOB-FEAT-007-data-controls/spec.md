@@ -2,10 +2,10 @@
 id: MOB-FEAT-007
 type: feature
 title: Controles de dados
-status: draft
+status: implemented
 created: 2026-08-08
 updated: 2026-08-08
-implementation_gate: blocked
+implementation_gate: open
 blocked_by: [MOB-FEAT-001]
 supersedes: []
 superseded_by: []
@@ -94,7 +94,7 @@ Quando uma operação falhar, então os dados preservados devem continuar utiliz
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-001`
 - Motivo: os controles devem distinguir dados protegidos, preferências e identidade antes de limpar ou exportar conteúdo.
 
@@ -110,7 +110,7 @@ O gate só pode ser aberto quando `MOB-FEAT-001` estiver `implemented`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
-Não criar `tasks.md` antes de status `approved`, aprovação preenchida e `implementation_gate: open`.
+O planejamento foi criado após aprovação humana explícita e confirmação do gate aberto.

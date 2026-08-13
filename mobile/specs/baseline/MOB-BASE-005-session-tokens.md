@@ -4,7 +4,7 @@ type: baseline
 title: Sessão, armazenamento e rotação de tokens
 status: observed
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 supersedes: []
 superseded_by: []
 ---
@@ -23,29 +23,29 @@ Access e refresh tokens usam chaves separadas no Expo SecureStore. `setTokens` g
 
 ### OBS-002 — Hidratação da sessão
 
-O store marca a sessão autenticada apenas quando encontra os dois tokens. A hidratação não busca `/auth/me` e mantém `user` nulo.
+A restauração controlada por `features/authenticate` marca `entities/session` como autenticada apenas quando encontra os dois tokens. A restauração não busca `/auth/me` e mantém `user` nulo.
 
 ### OBS-003 — Login e logout local
 
-Login persiste tokens antes de publicar usuário/sessão autenticada. Logout limpa o SecureStore e zera usuário, tokens e flag.
+As transições da entity persistem tokens antes de publicar usuário/sessão autenticada. Saída limpa o SecureStore e zera usuário, tokens e flag; superfícies executam essa transição por `features/authenticate`.
 
 ### OBS-004 — Autorização de requests
 
-Cada request lê o access token diretamente do SecureStore, não de `sessionStore.tokens`, e, quando presente, envia `Authorization: Bearer`.
+Cada request lê o access token diretamente do SecureStore, não do snapshot de `entities/session`, e, quando presente, envia `Authorization: Bearer`.
 
 ### OBS-005 — Refresh single-flight
 
-O primeiro 401 elegível chama `/api/auth/refresh` com refresh token no body. Outros 401 enquanto o refresh está ativo aguardam a mesma operação; sucesso persiste tokens rotacionados e repete os requests com o novo access token. O snapshot `sessionStore.tokens` não é sincronizado pelo interceptor.
+O primeiro 401 elegível chama `/api/auth/refresh` com refresh token no body. Outros 401 enquanto o refresh está ativo aguardam a mesma operação; sucesso persiste tokens rotacionados e repete os requests com o novo access token. O snapshot da entity não é sincronizado pelo interceptor.
 
 ### OBS-006 — Falha e expiração
 
-401 de endpoint auth (exceto `/auth/me`) não tenta refresh. Falha de refresh limpa tokens, rejeita a fila e notifica listeners; `SessionGate` responde executando logout local. Se a limpeza do SecureStore rejeitar, a rejeição da fila e a notificação não são alcançadas.
+401 de endpoint auth (exceto `/auth/me`) não tenta refresh. Falha de refresh limpa tokens, rejeita a fila e notifica listeners; `SessionGate` responde executando a ação de expiração local de `features/authenticate`. Se a limpeza do SecureStore rejeitar, a rejeição da fila e a notificação não são alcançadas.
 
 ## Evidências
 
 | Observação      | Código/teste/comando                                   | Resultado esperado                                |
 | --------------- | ------------------------------------------------------ | ------------------------------------------------- |
-| OBS-001–OBS-003 | `src/shared/store/__tests__/sessionStore.test.ts`      | Hidratação, login e logout verificados            |
+| OBS-001–OBS-003 | `src/entities/session/model/__tests__/session.test.ts` | Restauração, início e encerramento verificados    |
 | OBS-004–OBS-006 | `src/shared/api/__tests__/apiClient.test.ts`           | Headers, single-flight, retry e falha verificados |
 | OBS-006         | `src/application/gates/__tests__/SessionGate.test.tsx` | Listener de expiração dispara logout              |
 

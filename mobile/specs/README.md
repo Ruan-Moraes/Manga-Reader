@@ -11,7 +11,7 @@ Este diretório é o contrato comportamental do Manga Reader Mobile. O README do
 - `registry.md`: índice de todos os artefatos normativos.
 - `coverage.json`: mapa verificável de cada arquivo runtime e classificação dos arquivos de suporte.
 
-Inventários e relatórios são informativos. Eles não criam requisitos.
+Relatórios informativos não criam requisitos. O histórico útil da migração brownfield, conflitos baseline/target e superfícies placeholder foi consolidado neste workflow, no registry e nos próprios contratos; relatórios intermediários redundantes foram removidos em 2026-08-09.
 
 ## Paridade brownfield
 
@@ -36,22 +36,22 @@ Reverse Spec (quando necessário)
   → tasks
   → implementação + evidências
   → review
-  → auditoria de drift
+  → auditoria de drift persistida
 ```
 
-Uma feature usa `features/MOB-FEAT-###-slug/` com `spec.md`, `tasks.md` e `review.md`. O Task Planner e o Executor recusam specs `draft`. Somente uma pessoa pode mudar `draft` para `approved`.
+Uma feature usa `features/MOB-FEAT-###-slug/` com `spec.md`, `tasks.md`, `review.md` e, quando implementada ou em verificação, `drift-audit.md`. O Task Planner e o Executor recusam specs `draft`. Somente uma pessoa pode mudar `draft` para `approved`.
 
 ### Gate de implementação
 
-Toda Target Spec declara `implementation_gate` e `blocked_by`. `draft`/`approved` representam maturidade e aprovação do contrato; o gate representa prontidão das dependências. Uma spec `blocked` pode ser aprovada, mas não recebe `tasks.md` e não entra em execução. Para abrir o gate, todas as Target Specs listadas em `blocked_by` devem estar `implemented`. O validador rejeita dependências inexistentes, autorreferências, ciclos, execução bloqueada e desbloqueio prematuro.
+Toda Target Spec declara `implementation_gate` e `blocked_by`. `draft`/`approved` representam maturidade e aprovação do contrato; o gate representa prontidão das dependências. Uma spec `blocked` pode ser aprovada, mas não recebe `tasks.md` e não entra em execução. Para abrir o gate, todas as Target Specs listadas em `blocked_by` devem estar `implemented` ou `verification-pending`; este último significa código executado, ainda não concluído por uma verificação real pendente. O validador rejeita dependências inexistentes, autorreferências, ciclos, execução bloqueada e desbloqueio prematuro.
 
 ## Status
 
-| Tipo     | Status permitidos                                               |
-| -------- | --------------------------------------------------------------- |
-| baseline | `observed`, `superseded`                                        |
-| feature  | `draft`, `approved`, `in-progress`, `implemented`, `superseded` |
-| decision | `proposed`, `accepted`, `superseded`                            |
+| Tipo     | Status permitidos                                                                       |
+| -------- | --------------------------------------------------------------------------------------- |
+| baseline | `observed`, `superseded`                                                                |
+| feature  | `draft`, `approved`, `in-progress`, `verification-pending`, `implemented`, `superseded` |
+| decision | `proposed`, `accepted`, `superseded`                                                    |
 
 Ao substituir um contrato, preencher `supersedes`/`superseded_by` nos dois artefatos e no registry. Mudança parcial deve listar os `OBS-*` afetados na Target Spec sem marcar todo o baseline como superseded.
 
@@ -63,7 +63,11 @@ Ao substituir um contrato, preencher `supersedes`/`superseded_by` nos dois artef
 
 ## Critérios e evidências
 
-Target Specs usam critérios `AC-001`, `AC-002`, etc. Cada critério precisa de teste automatizado ou de uma evidência adequada explicitamente justificada. Baselines usam `OBS-*`; seus testes preservam uma fotografia substituível, não uma promessa futura. Não existe meta percentual arbitrária de cobertura.
+Target Specs usam critérios `AC-001`, `AC-002`, etc. Cada critério precisa de exatamente uma linha em `tasks.md`, uma linha em `review.md` e ao menos uma entrada `evidence` no manifesto. Evidência manual só existe após execução real; nunca é inferida ou fabricada. Baselines usam `OBS-*`; seus testes preservam uma fotografia substituível, não uma promessa futura. Não existe meta percentual arbitrária de cobertura.
+
+`implemented` exige checklist integralmente concluído, verdict `approved`, drift persistido e referência imutável. `verification-pending` exige ao menos uma task aberta, verdict homônimo e descrição explícita do que falta. Reviews apontam para commit completo ou checksum SHA-256 reproduzível da implementação em `app/` e `src/`.
+
+Mappings exatos em `coverage.json` prevalecem sobre patterns. Isso permite que testes, índices e capturas dentro de diretórios de governança sejam classificados como `evidence` sem perder o pattern geral de suporte.
 
 ## Comandos
 

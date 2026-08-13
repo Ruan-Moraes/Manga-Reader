@@ -95,6 +95,8 @@ React Native + Expo. Segue a mesma arquitetura FSD do web.
 
 Regras principais: fundação (tema, i18n, estado global) antes de qualquer tela; componentes em `shared/ui`; boundaries FSD; nenhum texto ou cor hardcoded.
 
+No mobile, `src/application` representa a app layer porque `app/` é reservado pelo Expo Router. O workflow SDD também admite `verification-pending` para código executado com verificação real aberta; esse status não significa conclusão.
+
 ---
 
 ## Verification Checklist

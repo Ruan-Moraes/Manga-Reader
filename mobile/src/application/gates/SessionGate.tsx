@@ -1,41 +1,71 @@
-import { type PropsWithChildren, useEffect, useState } from 'react';
-import { useRouter, useSegments } from 'expo-router';
+import { type PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { useGlobalSearchParams, useRouter, useSegments } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
+import { useSessionStore } from '@/src/entities/session';
+import { clearExpiredSession, restoreSession } from '@/src/features/authenticate';
 import { subscribeAuthExpired } from '@/src/shared/api';
-import { useSessionStore } from '@/src/shared/store';
+import { parseAuthReturnRoute, ROUTES } from '@/src/shared/navigation';
+import { StartupFeedback } from '@/src/shared/ui';
 
 export function SessionGate({ children }: PropsWithChildren) {
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
-    const hydrate = useSessionStore(state => state.hydrate);
+    const identityEpoch = useSessionStore(state => state.identityEpoch);
     const [isHydrated, setIsHydrated] = useState(false);
     const segments = useSegments();
+    const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
     const router = useRouter();
+    const { t } = useTranslation('launcher');
+    const consumedReturnTo = useRef<{ identityEpoch: number; route: string } | null>(null);
 
     useEffect(() => {
-        hydrate().then(() => setIsHydrated(true));
-    }, [hydrate]);
+        void restoreSession().finally(() => setIsHydrated(true));
+    }, []);
 
     useEffect(
         () =>
             subscribeAuthExpired(() => {
-                void useSessionStore.getState().logout();
+                void clearExpiredSession().finally(() => router.replace(ROUTES.ROOT as never));
             }),
-        [],
+        [router],
     );
 
     useEffect(() => {
         if (!isHydrated) return;
 
-        const inAuthGroup = segments[0] === '(auth)';
+        const first = segments[0] as string | undefined;
+        const second = segments[1] as string | undefined;
+        const inAuthGroup = first === '(auth)';
+        const inSettingsGroup = first === 'settings';
+        const inOfflineTranslation = first === 'offline-translation';
+        const inReader = first === 'reader';
+        const atRoot = first === undefined || first === 'index';
+        const inNotFound = first === '+not-found';
+        const inPlatform = first === 'platform';
+        const inPlatformTabs = inPlatform && (second === '(tabs)' || segments.includes('(tabs)' as never));
 
-        if (!isAuthenticated && !inAuthGroup) {
-            router.replace('/(auth)/login');
-        } else if (isAuthenticated && inAuthGroup) {
-            router.replace('/(tabs)');
+        if (!isAuthenticated) {
+            if (inPlatform) {
+                router.replace({ pathname: ROUTES.AUTH.LOGIN, params: { returnTo: ROUTES.PLATFORM.STATUS } } as never);
+            } else if (!inAuthGroup && !inSettingsGroup && !inOfflineTranslation && !inReader && !atRoot && !inNotFound) {
+                router.replace(ROUTES.AUTH.LOGIN as never);
+            }
+            return;
         }
-    }, [isAuthenticated, isHydrated, router, segments]);
 
-    if (!isHydrated) return null;
+        if (inAuthGroup) {
+            const returnTo = parseAuthReturnRoute(params.returnTo) ?? ROUTES.PLATFORM.STATUS;
+            const alreadyConsumed = consumedReturnTo.current?.identityEpoch === identityEpoch && consumedReturnTo.current.route === returnTo;
+            if (!alreadyConsumed) {
+                consumedReturnTo.current = { identityEpoch, route: returnTo };
+                router.replace(returnTo as never);
+            }
+        } else if (inPlatformTabs) {
+            router.replace(ROUTES.PLATFORM.STATUS as never);
+        }
+    }, [identityEpoch, isAuthenticated, isHydrated, params.returnTo, router, segments]);
+
+    if (!isHydrated) return <StartupFeedback label={t('startup.session')} />;
 
     return children;
 }

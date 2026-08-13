@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import process from 'node:process';
@@ -5,6 +6,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { validateCoverage } from './spec-coverage.mjs';
 import { validateFeatureGates } from './feature-gates.mjs';
+import { implementationChecksum, validateFeatureIntegrity, validateReconciliationSummary } from './sdd-integrity.mjs';
 
 const log = (...messages) => process.stdout.write(`${messages.join(' ')}\n`);
 const logError = (...messages) => process.stderr.write(`${messages.join(' ')}\n`);
@@ -14,10 +16,18 @@ const specsRoot = resolve(mobileRoot, 'specs');
 const registryPath = resolve(specsRoot, 'registry.md');
 const coveragePath = resolve(specsRoot, 'coverage.json');
 const reconciliationPath = resolve(specsRoot, 'BASELINE-RECONCILIATION-REPORT.md');
+const commitExists = sha => {
+    try {
+        execFileSync('git', ['cat-file', '-e', `${sha}^{commit}`], { cwd: resolve(mobileRoot, '..'), stdio: 'ignore' });
+        return true;
+    } catch {
+        return false;
+    }
+};
 
 const allowedStatuses = {
     baseline: new Set(['observed', 'superseded']),
-    feature: new Set(['draft', 'approved', 'in-progress', 'implemented', 'superseded']),
+    feature: new Set(['draft', 'approved', 'in-progress', 'verification-pending', 'implemented', 'superseded']),
     decision: new Set(['proposed', 'accepted', 'superseded']),
 };
 
@@ -170,8 +180,15 @@ if (!existsSync(reconciliationPath)) {
     errors.push('specs/BASELINE-RECONCILIATION-REPORT.md: relatório ausente');
 } else {
     const reconciliation = readFileSync(reconciliationPath, 'utf8');
+    const observedBaselines = artifacts.filter(item => item.metadata.type === 'baseline' && item.metadata.status === 'observed');
 
-    for (const artifact of artifacts.filter(item => item.metadata.type === 'baseline' && item.metadata.status === 'observed')) {
+    validateReconciliationSummary({
+        content: reconciliation,
+        observedBaselineIds: observedBaselines.map(artifact => artifact.metadata.id),
+        errors,
+    });
+
+    for (const artifact of observedBaselines) {
         const section = reconciliation.match(new RegExp(`^## ${artifact.metadata.id}\\b([\\s\\S]*?)(?=^## |\\Z)`, 'm'))?.[1] ?? '';
         const observations = [...artifact.content.matchAll(/^### (OBS-\d{3})\b/gm)].map(match => match[1]);
 
@@ -192,10 +209,11 @@ if (!existsSync(reconciliationPath)) {
 }
 
 let coverageSummary = { classified: 0, behavior: 0, evidence: 0 };
+let coverageManifest = { entries: [], patterns: [] };
 
 try {
-    const coverage = JSON.parse(readFileSync(coveragePath, 'utf8'));
-    coverageSummary = validateCoverage({ mobileRoot, coverage, artifactsById: byId, errors });
+    coverageManifest = JSON.parse(readFileSync(coveragePath, 'utf8'));
+    coverageSummary = validateCoverage({ mobileRoot, coverage: coverageManifest, artifactsById: byId, errors });
 } catch (error) {
     errors.push(`specs/coverage.json: não foi possível ler o manifesto (${error.message})`);
 }
@@ -292,7 +310,7 @@ for (const artifact of artifacts) {
     const tasksPath = resolve(featureDirectory, 'tasks.md');
     const reviewPath = resolve(featureDirectory, 'review.md');
 
-    const requiresApproval = ['approved', 'in-progress', 'implemented'].includes(artifact.metadata.status);
+    const requiresApproval = ['approved', 'in-progress', 'verification-pending', 'implemented'].includes(artifact.metadata.status);
     const requiresTasks = artifact.metadata.implementation_gate === 'open' && requiresApproval;
 
     if (artifact.metadata.status === 'draft' && existsSync(tasksPath)) {
@@ -313,8 +331,8 @@ for (const artifact of artifacts) {
         for (const id of acceptanceIds) if (!tasks.includes(id)) errors.push(`${artifact.metadata.id}: ${id} não aparece em tasks.md`);
     }
 
-    if (artifact.metadata.status === 'implemented' && !existsSync(reviewPath)) {
-        errors.push(`${artifact.metadata.id}: status implemented exige review.md`);
+    if (['implemented', 'verification-pending'].includes(artifact.metadata.status) && !existsSync(reviewPath)) {
+        errors.push(`${artifact.metadata.id}: status ${artifact.metadata.status} exige review.md`);
     }
 
     if (existsSync(reviewPath)) {
@@ -326,6 +344,23 @@ for (const artifact of artifacts) {
             errors.push(`${artifact.metadata.id}: status implemented exige verdict approved`);
         }
     }
+
+    const evidenceReferences = new Set(
+        [...(coverageManifest.entries ?? []), ...(coverageManifest.patterns ?? [])]
+            .filter(mapping => mapping.category === 'evidence')
+            .flatMap(mapping => mapping.observations ?? []),
+    );
+    const driftPath = resolve(featureDirectory, 'drift-audit.md');
+    validateFeatureIntegrity({
+        artifact,
+        tasksContent: existsSync(tasksPath) ? readFileSync(tasksPath, 'utf8') : null,
+        reviewContent: existsSync(reviewPath) ? readFileSync(reviewPath, 'utf8') : null,
+        driftContent: existsSync(driftPath) ? readFileSync(driftPath, 'utf8') : null,
+        evidenceReferences,
+        expectedChecksum: implementationChecksum(mobileRoot),
+        commitExists,
+        errors,
+    });
 }
 
 if (errors.length > 0) {

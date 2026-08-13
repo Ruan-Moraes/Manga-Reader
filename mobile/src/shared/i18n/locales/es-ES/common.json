@@ -78,5 +78,168 @@
     },
     "user": {
         "logout": "Cerrar sesión"
+    },
+    "dataControls": {
+        "title": "Datos y almacenamiento",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "removes": "Elimina",
+        "preserves": "Conserva",
+        "storageUsage": "{{bytes}} bytes en {{scope}}",
+        "storageScopes": { "temporaryExports": "exportaciones temporales controladas por la aplicación" },
+        "cache": {
+            "action": "Limpiar caché",
+            "confirmTitle": "¿Limpiar datos regenerables?",
+            "confirmBody": "La limpieza puede requerir volver a descargar imágenes y datos.",
+            "queries": "datos de consultas",
+            "images": "imágenes en caché",
+            "temporary": "archivos temporales",
+            "session": "sesión",
+            "preferences": "preferencias",
+            "pending": "cambios pendientes"
+        },
+        "export": { "action": "Exportar mis datos" },
+        "history": {
+            "action": "Limpiar historial rastreado",
+            "confirmTitle": "¿Limpiar el historial rastreado?",
+            "confirmBody": "Esta acción es irreversible. La posición actual de lectura se conservará.",
+            "history": "historial",
+            "readChapters": "capítulos leídos",
+            "activities": "actividades",
+            "readingProgress": "posición de lectura"
+        },
+        "offline": {
+            "action": "Limpiar datos sin conexión ({{bytes}} bytes)",
+            "empty": "No hay proyectos ni archivos sin conexión almacenados en este dispositivo.",
+            "confirmTitle": "¿Limpiar datos sin conexión?",
+            "confirmBody": "Los proyectos y archivos sin conexión registrados se eliminarán de este dispositivo.",
+            "projects": "proyectos y archivos sin conexión"
+        },
+        "error": {
+            "cache": "No se pudo limpiar toda la caché. Inténtalo de nuevo.",
+            "cachePartial": "No se pudieron eliminar estas categorías:",
+            "export": "No se pudieron exportar los datos. Inténtalo de nuevo.",
+            "exportUnavailable": "La exportación no está disponible en esta plataforma.",
+            "history": "No se pudo limpiar el historial. Inténtalo de nuevo.",
+            "offline": "No se pudieron limpiar los datos sin conexión. Inténtalo de nuevo."
+        }
+    },
+    "localeControls": {
+        "title": "Idioma y región",
+        "language": "Idioma de la interfaz",
+        "dateFormat": "Formato de fecha",
+        "timezone": "Zona horaria",
+        "option": {
+            "pt-BR": "Português (Brasil)",
+            "en-US": "English (US)",
+            "es-ES": "Español",
+            "D_MON": "Día, mes",
+            "D_M": "Día/mes",
+            "MON_D": "Mes, día",
+            "America/Sao_Paulo": "São Paulo",
+            "America/New_York": "Nueva York",
+            "Europe/Lisbon": "Lisboa",
+            "Asia/Tokyo": "Tokio",
+            "UTC": "UTC"
+        }
+    },
+    "privacy": {
+        "title": "Privacidad y contenido sensible",
+        "comments": "Comentarios",
+        "history": "Historial",
+        "library": "Biblioteca",
+        "adultContent": "Contenido adulto",
+        "sensitivePreview": { "content": "Vista previa de contenido sensible", "reveal": "Revelar vista previa de contenido sensible" },
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "error": "No se pudo actualizar la privacidad. Inténtalo de nuevo.",
+        "consumerError": "La privacidad se guardó, pero no se pudo actualizar el contenido.",
+        "retryWrite": "Intentar guardar de nuevo",
+        "retryConsumers": "Intentar actualizar el contenido de nuevo",
+        "option": {
+            "PUBLIC": "Público",
+            "PRIVATE": "Privado",
+            "DO_NOT_TRACK": "No rastrear",
+            "BLUR": "Ocultar inicialmente",
+            "HIDE": "No mostrar",
+            "SHOW": "Mostrar"
+        },
+        "dnt": {
+            "confirmTitle": "¿Dejar de rastrear el historial?",
+            "confirmBody": "La Core eliminará el historial, las lecturas y las actividades rastreadas. Tu posición funcional de lectura se conservará."
+        },
+        "analytics": {
+            "enable": "Activar analytics de comportamiento",
+            "disable": "Desactivar analytics de comportamiento",
+            "confirmTitle": "¿Desactivar analytics?",
+            "confirmBody": "La Core eliminará los eventos de comportamiento existentes."
+        }
+    },
+    "contentLanguages": {
+        "title": "Idiomas del contenido",
+        "description": "El orden define la prioridad del contenido. Portugués (Brasil) es el fallback obligatorio.",
+        "fallback": "fallback obligatorio",
+        "fallbackAnnouncement": "fallback obligatorio",
+        "position": "Posición {{position}}: {{language}} {{fallback}}",
+        "moveUp": "Mover {{language}} hacia arriba",
+        "moveDown": "Mover {{language}} hacia abajo",
+        "remove": "Eliminar {{language}}",
+        "add": "Añadir {{language}}",
+        "loading": "Cargando preferencia de la cuenta...",
+        "pending": "Guardando el orden elegido...",
+        "readError": "La preferencia remota no está disponible. La política de la interfaz se usa temporalmente.",
+        "retryRead": "Intentar cargar de nuevo",
+        "writeError": "No se pudo guardar. El orden elegido sigue pendiente.",
+        "retryWrite": "Intentar guardar de nuevo",
+        "consumerError": "La preferencia se guardó, pero parte del contenido aún debe actualizarse.",
+        "retryConsumers": "Intentar actualizar el contenido de nuevo",
+        "consumerRetrying": "Actualizando el contenido afectado..."
+    },
+    "settings": {
+        "appearance": {
+            "title": "Apariencia",
+            "theme": {
+                "label": "Tema",
+                "options": {
+                    "SYSTEM": "Seguir el sistema",
+                    "LIGHT": "Claro",
+                    "DARK": "Oscuro"
+                }
+            },
+            "fontSize": {
+                "label": "Tamaño del texto",
+                "options": {
+                    "COMPACT": "Compacto",
+                    "DEFAULT": "Predeterminado",
+                    "COMFORTABLE": "Cómodo"
+                }
+            },
+            "density": {
+                "label": "Densidad",
+                "options": {
+                    "COMFORTABLE": "Cómoda",
+                    "COMPACT": "Compacta"
+                }
+            },
+            "animations": {
+                "label": "Animaciones decorativas",
+                "description": "Permite movimiento visual y reproducción automática no esenciales."
+            }
+        },
+        "accessibility": {
+            "title": "Accesibilidad",
+            "reduceMotion": {
+                "label": "Reducir movimiento",
+                "description": "Detiene movimientos decorativos y transiciones espaciales."
+            },
+            "highContrast": {
+                "label": "Alto contraste",
+                "description": "Aumenta el contraste de textos, bordes y estados interactivos."
+            }
+        },
+        "sync": {
+            "error": "No se pudo sincronizar. Tu elección sigue activa en este dispositivo.",
+            "retry": "Intentar de nuevo"
+        }
     }
 }

@@ -1,0 +1,50 @@
+{
+    "startup": {
+        "settings": "Cargando tus preferencias…",
+        "session": "Comprobando la sesión…",
+        "error": "No se pudieron cargar las preferencias guardadas. La aplicación está usando valores seguros por ahora.",
+        "retry": "Intentar cargar de nuevo"
+    },
+    "selector": {
+        "eyebrow": "MANGA READER",
+        "title": "¿Qué quieres hacer?",
+        "subtitle": "Elige un módulo. Tus preferencias permanecen en este dispositivo incluso sin una cuenta.",
+        "settings": "Configuración del dispositivo"
+    },
+    "platform": {
+        "title": "Plataforma de lectura",
+        "description": "El futuro espacio para lectura, comentarios y valoraciones. Las áreas incompletas permanecen cerradas.",
+        "status": "En construcción",
+        "loginAction": "Iniciar sesión en la plataforma",
+        "connectedAction": "Ver estado conectado",
+        "connectedTitle": "Cuenta conectada",
+        "connectedDescription": "Tu sesión está activa. La plataforma de lectura aún está en construcción.",
+        "sessionAccount": "Sesión autenticada",
+        "accountLoading": "Cargando los datos de la cuenta…",
+        "accountError": "No se pudieron cargar los datos de la cuenta.",
+        "accountRetry": "Intentar cargar la cuenta de nuevo",
+        "constructionTitle": "Estamos preparando la plataforma",
+        "constructionDescription": "El catálogo, la lectura, los comentarios y las valoraciones solo se publicarán cuando estén completos.",
+        "logout": "Cerrar sesión"
+    },
+    "offline": {
+        "title": "Traducción offline de capítulos",
+        "description": "Un espacio local y privado para el futuro flujo de traducción, sin depender de una cuenta o de la red.",
+        "status": "Offline y local",
+        "action": "Conocer el módulo",
+        "pageTitle": "Traducción offline",
+        "unavailableTitle": "El traductor aún no está disponible",
+        "unavailableDescription": "No se puede importar ni traducir ningún archivo en esta versión. Esta pantalla no envía datos por la red y solo se habilitará cuando el flujo real esté listo."
+    },
+    "navigation": {
+        "selector": "Módulos",
+        "backToSelector": "Volver a los módulos"
+    },
+    "sync": {
+        "local": "Preferencias guardadas en este dispositivo",
+        "syncing": "Sincronizando preferencias…",
+        "synced": "Preferencias sincronizadas",
+        "error": "Hay preferencias pendientes de sincronización",
+        "retry": "Intentar sincronizar de nuevo"
+    }
+}

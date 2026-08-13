@@ -1,22 +1,21 @@
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useGlobalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { AuthCheckbox, AuthFooter, AuthHeader, authService, DemoCredentials, Field, MRIcon, PrimaryButton, SocialRow } from '@/src/features/auth';
-import { useSessionStore } from '@/src/shared/store';
+import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn } from '@/src/features/authenticate';
 import { useTheme } from '@/src/shared/theme';
 import { FONTS } from '@/src/shared/theme';
+import { Button, Input } from '@/src/shared/ui';
 
 export function LoginPage() {
-    const login = useSessionStore(state => state.login);
-    const { tokens } = useTheme();
+    const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
+    const { layout, minimumTouchTarget, spacing, tokens, typography } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPw, setShowPw] = useState(false);
-    const [remember, setRemember] = useState(true);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -25,9 +24,7 @@ export function LoginPage() {
         setError('');
         setLoading(true);
         try {
-            const result = await authService.login({ email: email.trim(), password });
-            await login(result.user, { accessToken: result.accessToken, refreshToken: result.refreshToken });
-            router.replace('/(tabs)');
+            await signIn({ email: email.trim(), password });
         } catch {
             setError(t('login.invalidCredentials'));
         } finally {
@@ -39,17 +36,17 @@ export function LoginPage() {
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ScrollView
                 style={{ flex: 1 }}
-                contentContainerStyle={{ paddingHorizontal: tokens.screenPadding, paddingTop: 58, paddingBottom: 36 }}
+                contentContainerStyle={{ paddingHorizontal: layout.screenGutter, paddingTop: spacing['2xl'], paddingBottom: spacing.xl }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
                 <AuthHeader eyebrow={t('login.eyebrow')} title={t('login.title')} sub={t('login.subtitle')} />
 
-                <Field
+                <Input
                     label={t('login.emailLabel')}
-                    icon="mail"
-                    type="email"
-                    inputMode="email"
+                    leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
                     value={email}
                     onChange={v => {
                         setEmail(v);
@@ -59,10 +56,10 @@ export function LoginPage() {
                     error={error ? ' ' : ''}
                 />
 
-                <Field
+                <Input
                     label={t('login.passwordLabel')}
-                    icon="lock"
-                    type={showPw ? 'text' : 'password'}
+                    leading={<MRIcon name="lock" size={18} color={tokens.tertiary} />}
+                    secureTextEntry={!showPw}
                     value={password}
                     onChange={v => {
                         setPassword(v);
@@ -70,33 +67,37 @@ export function LoginPage() {
                     }}
                     placeholder={t('login.passwordPlaceholder')}
                     error={error}
-                    rightSlot={
-                        <TouchableOpacity onPress={() => router.push('/(auth)/forgot')}>
-                            <Text style={{ fontSize: 11, color: tokens.subtle, letterSpacing: tokens.ls, fontFamily: FONTS.regular }}>
-                                {t('login.forgotPassword')}
-                            </Text>
+                    labelAction={
+                        <TouchableOpacity
+                            accessibilityRole="button"
+                            onPress={() => router.push('/(auth)/forgot')}
+                            style={{ alignItems: 'center', justifyContent: 'center', minHeight: minimumTouchTarget, paddingHorizontal: spacing.xs }}
+                        >
+                            <Text style={{ fontSize: typography.minimum, color: tokens.subtle, fontFamily: FONTS.regular }}>{t('login.forgotPassword')}</Text>
                         </TouchableOpacity>
                     }
                     trailing={
                         <TouchableOpacity
                             onPress={() => setShowPw(s => !s)}
-                            style={{ position: 'absolute', right: 8, height: 36, width: 36, alignItems: 'center', justifyContent: 'center' }}
+                            accessibilityRole="button"
+                            style={{
+                                position: 'absolute',
+                                right: 0,
+                                minHeight: minimumTouchTarget,
+                                minWidth: minimumTouchTarget,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
                         >
                             <MRIcon name={showPw ? 'eye-off' : 'eye'} size={18} color={tokens.tertiary} />
                         </TouchableOpacity>
                     }
                 />
 
-                <AuthCheckbox checked={remember} onChange={() => setRemember(r => !r)}>
-                    {t('login.rememberSession')}
-                </AuthCheckbox>
-
-                <View style={{ height: 6 }} />
-                <PrimaryButton onPress={submit} loading={loading}>
+                <View style={{ height: spacing.sm }} />
+                <Button onPress={submit} loading={loading}>
                     {t('login.submit')}
-                </PrimaryButton>
-
-                <SocialRow />
+                </Button>
 
                 {__DEV__ && (
                     <DemoCredentials
@@ -108,7 +109,11 @@ export function LoginPage() {
                     />
                 )}
 
-                <AuthFooter prompt={t('login.noAccount')} action={t('login.signUpLink')} onAction={() => router.push('/(auth)/register')} />
+                <AuthFooter
+                    prompt={t('login.noAccount')}
+                    action={t('login.signUpLink')}
+                    onAction={() => router.push({ pathname: '/(auth)/register', params: { returnTo: params.returnTo } } as never)}
+                />
             </ScrollView>
         </KeyboardAvoidingView>
     );

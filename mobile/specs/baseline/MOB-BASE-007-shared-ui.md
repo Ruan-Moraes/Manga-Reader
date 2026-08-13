@@ -2,18 +2,18 @@
 id: MOB-BASE-007
 type: baseline
 title: Componentes compartilhados de interface
-status: observed
+status: superseded
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 supersedes: []
-superseded_by: []
+superseded_by: [MOB-FEAT-011]
 ---
 
 # MOB-BASE-007 — Componentes compartilhados de interface
 
 ## Contexto
 
-Fotografia dos componentes públicos em `src/shared/ui`. Eles são infraestrutura visual existente, não um compromisso de design futuro.
+Fotografia histórica dos componentes públicos em `src/shared/ui`, substituída integralmente por `MOB-FEAT-011`. As observações abaixo permanecem apenas para rastreabilidade e não participam da reconciliação corrente.
 
 ## Comportamento observado
 

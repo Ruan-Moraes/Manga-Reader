@@ -116,3 +116,25 @@ test('rejeita observação sem arquivo relacionado', () => {
 
     assert.ok(errors.some(error => error.includes('MOB-BASE-001/OBS-001: observação sem arquivo relacionado')));
 });
+
+test('mapeamento exato prevalece sobre pattern amplo', () => {
+    const { errors, summary } = fixture({
+        mutate: coverage => {
+            coverage.patterns.push({
+                pattern: '**/*.md',
+                category: 'governance',
+                specs: ['MOB-BASE-001'],
+                rationale: 'Documentação da fixture.',
+            });
+            coverage.entries[2] = {
+                ...coverage.entries[2],
+                category: 'evidence',
+                observations: ['MOB-BASE-001/OBS-001'],
+            };
+            delete coverage.entries[2].rationale;
+        },
+    });
+
+    assert.deepEqual(errors, []);
+    assert.equal(summary.evidence, 1);
+});

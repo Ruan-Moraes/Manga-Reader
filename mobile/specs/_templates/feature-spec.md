@@ -47,7 +47,7 @@ Dado um estado, quando ocorrer uma ação, então o resultado observável deve s
 - Dependências: nenhuma
 - Motivo: não aplicável
 
-Quando bloqueada, usar `implementation_gate: blocked`, listar Target Specs em `blocked_by` e explicar o motivo. Aprovação humana não remove a trava: Task Planner e Executor recusam a feature até todas as dependências estarem `implemented` e o gate ser alterado para `open`.
+Quando bloqueada, usar `implementation_gate: blocked`, listar Target Specs em `blocked_by` e explicar o motivo. Aprovação humana não remove a trava: Task Planner e Executor recusam a feature até todas as dependências estarem `implemented` ou `verification-pending` e o gate ser alterado para `open`.
 
 ## Fora de escopo
 

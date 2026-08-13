@@ -2,10 +2,10 @@
 id: MOB-FEAT-006
 type: feature
 title: Privacidade e conteúdo sensível
-status: draft
+status: implemented
 created: 2026-08-08
 updated: 2026-08-08
-implementation_gate: blocked
+implementation_gate: open
 blocked_by: [MOB-FEAT-001]
 supersedes: []
 superseded_by: []
@@ -100,7 +100,7 @@ Quando houver logout ou troca de conta, então preferências privadas da identid
 
 ## Gate de implementação
 
-- Estado: `blocked`
+- Estado: `open`
 - Dependências: `MOB-FEAT-001`
 - Motivo: privacidade precisa do isolamento entre identidades e dos estados de persistência definidos pela fundação.
 
@@ -116,7 +116,7 @@ O gate só pode ser aberto quando `MOB-FEAT-001` estiver `implemented`.
 
 ## Aprovação humana
 
-- Aprovador: pendente
-- Data: pendente
+- Aprovador: usuário responsável pelo produto
+- Data: 2026-08-08
 
 Não criar `tasks.md` antes de status `approved`, aprovação preenchida e `implementation_gate: open`.

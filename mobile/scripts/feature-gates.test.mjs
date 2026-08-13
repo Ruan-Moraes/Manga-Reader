@@ -60,7 +60,7 @@ test('aceita aprovação humana sem tasks enquanto bloqueada', () => {
 test('rejeita desbloqueio antes das dependências implementadas', () => {
     const errors = validate([feature('MOB-FEAT-001', { status: 'approved' }), feature('MOB-FEAT-002', { gate: 'open', blockedBy: ['MOB-FEAT-001'] })]);
 
-    assert.ok(errors.some(error => error.includes("dependência implemented 'MOB-FEAT-001'")));
+    assert.ok(errors.some(error => error.includes("dependência implementada ou em verificação 'MOB-FEAT-001'")));
 });
 
 test('aceita cadeia desbloqueada com dependências implementadas', () => {
@@ -68,6 +68,16 @@ test('aceita cadeia desbloqueada com dependências implementadas', () => {
         validate([
             feature('MOB-FEAT-001', { status: 'implemented' }),
             feature('MOB-FEAT-002', { gate: 'open', blockedBy: ['MOB-FEAT-001'], status: 'approved' }),
+        ]),
+        [],
+    );
+});
+
+test('aceita verification-pending como dependência executada', () => {
+    assert.deepEqual(
+        validate([
+            feature('MOB-FEAT-001', { status: 'verification-pending' }),
+            feature('MOB-FEAT-002', { gate: 'open', blockedBy: ['MOB-FEAT-001'], status: 'implemented' }),
         ]),
         [],
     );

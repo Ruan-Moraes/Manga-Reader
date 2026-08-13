@@ -4,7 +4,7 @@ type: baseline
 title: Fundação e bootstrap do aplicativo
 status: observed
 created: 2026-08-08
-updated: 2026-08-08
+updated: 2026-08-09
 supersedes: []
 superseded_by: []
 ---
@@ -19,7 +19,7 @@ Fotografia da inicialização global, providers, hidratação de settings, fonte
 
 ### OBS-001 — Ordem de inicialização
 
-O root importa CSS, i18n e Reanimated, mantém a splash aberta e compõe `SettingsGate → AppProviders → SessionGate → RootNavigator`.
+O root importa CSS, i18n e Reanimated, mantém a splash aberta e renderiza a API pública de `src/application`. A composição efetiva é `AppProviders → SettingsGate → SessionGate → SettingsAccountGate → PrivacyAccountGate → ContentLanguagesAccountGate → DataControlsAccountGate → RootNavigator`.
 
 ### OBS-002 — Gate de settings e fontes
 
@@ -27,7 +27,7 @@ O `SettingsGate` carrega cinco variantes Nunito Sans e hidrata configurações p
 
 ### OBS-003 — Providers globais
 
-`AppProviders` conecta o override persistido ao `ThemeProvider`, envolve a árvore em `SafeAreaProvider` e instala um `QueryClientProvider`.
+A camada local `application` conecta preferências de aparência ao `ThemeProvider`, envolve a árvore em `SafeAreaProvider`, instala um `QueryClientProvider` e invalida seletivamente queries dependentes do locale. Seus gates de conta ativam, hidratam, cancelam e limpam configurações, privacidade, idiomas de conteúdo e temporários conforme a identidade da sessão; o gate de settings também tenta flush ao desmontar.
 
 ### OBS-004 — Defaults de server state
 
@@ -35,7 +35,7 @@ O Query Client global usa uma tentativa de retry e stale time de cinco minutos p
 
 ### OBS-005 — Boundaries atualmente verificados
 
-Rotas em `app/` são cascas finas para pages. Slices de pages e feature auth expõem barrels. ESLint restringe deep imports e caminhos legados; Steiger analisa `src/`, mas ignora `src/application/**` e testes.
+Rotas em `app/` são cascas finas para pages ou para a API pública de `src/application`. Slices canônicos expõem barrels. ESLint, Steiger e o validador local de boundaries restringem fluxo invertido, imports horizontais e deep imports; o validador local cobre explicitamente `src/application`.
 
 ### OBS-006 — Metadados e integrações Expo
 
@@ -55,7 +55,7 @@ Babel usa o preset Expo, Metro integra NativeWind pelo `global.css`, TypeScript 
 | ---------- | ----------------------------------------------------- | ---------------------------------------------- |
 | OBS-001    | `app/_layout.tsx`                                     | Ordem de gates e navigator observável no JSX   |
 | OBS-002    | `src/application/gates/SettingsGate.tsx`              | Render bloqueado até hidratação/fontes         |
-| OBS-003    | `src/application/providers/AppProviders.tsx`          | Tema, safe area e Query compostos              |
+| OBS-003    | `src/application/{providers,gates}`                   | Tema, locale, Query e identidades compostos    |
 | OBS-004    | `src/application/providers/QueryProvider.tsx`         | `retry: 1`, `staleTime: 300000`                |
 | OBS-005    | `pnpm lint` e `pnpm lint:fsd`                         | Imports e estrutura aceitos pelos gates atuais |
 | OBS-006    | `app.json`                                            | Metadados, plugins e flags de plataforma       |
@@ -65,7 +65,7 @@ Babel usa o preset Expo, Metro integra NativeWind pelo `global.css`, TypeScript 
 ## Desconhecidos
 
 - Não há evidência automatizada de comportamento da splash em dispositivo real.
-- A camada `application` é uma convenção local fora das camadas canônicas inspecionadas pelo Steiger.
+- A camada `application` é uma convenção local fora das camadas canônicas do Steiger e está normatizada por `MOB-DEC-004` e pelo validador local.
 - O atributo `lang` do shell web é fixo e não acompanha o idioma ativo do i18n.
 
 ## Conflitos com intenção futura
@@ -75,4 +75,4 @@ Babel usa o preset Expo, Metro integra NativeWind pelo `global.css`, TypeScript 
 ## Não garantias
 
 - Este baseline não exige que futuras features usem o Query Client.
-- O ignore de `application` registra o gate atual; não declara essa exceção como arquitetura ideal permanente.
+- `src/application` representa exclusivamente a app layer local e não autoriza lógica de domínio nessa camada.

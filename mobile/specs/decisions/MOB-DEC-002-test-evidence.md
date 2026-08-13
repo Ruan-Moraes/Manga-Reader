@@ -32,6 +32,7 @@ Adicionar `specs:check` para validar o contrato documental e incluir testes e va
 - Gates ficam mais lentos, mas executáveis sem dispositivo.
 - Comportamentos brownfield testados continuam sendo observações substituíveis.
 - E2E e publicação permanecem fora do escopo.
+- `MOB-DEC-003` refina esta decisão: uma verificação manual explicitamente normativa permanece bloqueante para conclusão e usa `verification-pending` até sua execução real.
 
 ## Relações
 

@@ -1,0 +1,56 @@
+import { Text, TouchableOpacity, View } from 'react-native';
+
+import { useTheme } from '@/src/shared/theme';
+import { FONTS } from '@/src/shared/theme';
+
+import { MRIcon } from './MRIcon';
+
+interface Props {
+    checked: boolean;
+    onChange: () => void;
+    children: React.ReactNode;
+    error?: string;
+}
+
+export function AuthCheckbox({ checked, onChange, children, error }: Props) {
+    const { minimumTouchTarget, radii, spacing, tokens, typography } = useTheme();
+    const borderColor = checked ? tokens.accentBorder : error ? tokens.danger : tokens.tertiary;
+
+    return (
+        <TouchableOpacity
+            onPress={onChange}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked }}
+            activeOpacity={0.7}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md, minHeight: minimumTouchTarget }}
+        >
+            <View
+                style={{
+                    width: 20,
+                    height: 20,
+                    flexShrink: 0,
+                    borderRadius: radii.sm,
+                    borderWidth: 1.5,
+                    borderColor,
+                    backgroundColor: checked ? tokens.accent : 'transparent',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                {checked && <MRIcon name="check" size={13} color={tokens.onAccent} strokeWidth={3} />}
+            </View>
+            <Text
+                style={{
+                    flex: 1,
+                    fontFamily: FONTS.regular,
+                    fontSize: typography.body,
+                    color: error ? tokens.danger : tokens.muted,
+                    letterSpacing: 0,
+                    lineHeight: typography.body * 1.45,
+                }}
+            >
+                {children}
+            </Text>
+        </TouchableOpacity>
+    );
+}

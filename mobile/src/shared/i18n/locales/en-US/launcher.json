@@ -1,0 +1,50 @@
+{
+    "startup": {
+        "settings": "Loading your preferences…",
+        "session": "Checking your session…",
+        "error": "Saved preferences could not be loaded. The app is using safe values for now.",
+        "retry": "Try loading again"
+    },
+    "selector": {
+        "eyebrow": "MANGA READER",
+        "title": "What would you like to do?",
+        "subtitle": "Choose a module. Your preferences stay on this device even without an account.",
+        "settings": "Device settings"
+    },
+    "platform": {
+        "title": "Reading platform",
+        "description": "The future home for reading, comments, and ratings. Incomplete areas remain closed.",
+        "status": "Under construction",
+        "loginAction": "Sign in to the platform",
+        "connectedAction": "View connected status",
+        "connectedTitle": "Account connected",
+        "connectedDescription": "Your session is active. The reading platform is still under construction.",
+        "sessionAccount": "Authenticated session",
+        "accountLoading": "Loading account details…",
+        "accountError": "Account details could not be loaded.",
+        "accountRetry": "Try loading the account again",
+        "constructionTitle": "We are preparing the platform",
+        "constructionDescription": "Catalog, reading, comments, and ratings will only be released when complete.",
+        "logout": "Sign out"
+    },
+    "offline": {
+        "title": "Offline chapter translation",
+        "description": "A local, private space for the future translation workflow, without requiring an account or network.",
+        "status": "Offline and local",
+        "action": "Learn about the module",
+        "pageTitle": "Offline translation",
+        "unavailableTitle": "The translator is not available yet",
+        "unavailableDescription": "No file can be imported or translated in this version. This screen sends no data over the network and will only be enabled when the real workflow is ready."
+    },
+    "navigation": {
+        "selector": "Modules",
+        "backToSelector": "Back to modules"
+    },
+    "sync": {
+        "local": "Preferences saved on this device",
+        "syncing": "Syncing preferences…",
+        "synced": "Preferences synced",
+        "error": "Some preferences are waiting to sync",
+        "retry": "Try syncing again"
+    }
+}

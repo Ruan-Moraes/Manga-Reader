@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function PageContainer({ children, scroll = false, padded = true }: Props) {
-    const { tokens } = useTheme();
+    const { layout, tokens } = useTheme();
     const insets = useSafeAreaInsets();
 
     const inner = (
@@ -21,7 +21,7 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
                 backgroundColor: tokens.bg,
                 paddingTop: insets.top,
                 paddingBottom: insets.bottom,
-                paddingHorizontal: padded ? tokens.screenPadding : 0,
+                paddingHorizontal: padded ? layout.screenGutter : 0,
             }}
         >
             {children}

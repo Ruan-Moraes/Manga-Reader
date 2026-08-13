@@ -69,16 +69,16 @@ describe('MOB-BASE-003/005 apiClient', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
 
         expect(axiosMock.history.post).toHaveLength(1);
+        expect(axiosMock.history.post[0].headers?.['Accept-Language']).toBe('es-ES');
+        expect(axiosMock.history.post[0].headers?.['Content-Language']).toBeUndefined();
+        expect(JSON.parse(axiosMock.history.post[0].data as string)).toEqual({ refreshToken: 'refresh-1' });
         releaseRefresh();
 
         const responses = await Promise.all([first, second]);
         expect(responses.map(response => response.status)).toEqual([200, 200]);
-        expect(storedTokens).toMatchObject(
-            new Map([
-                ['mr_access_token', 'access-2'],
-                ['mr_refresh_token', 'refresh-2'],
-            ]),
-        );
+        expect(JSON.parse(storedTokens.get('mr_tokens') ?? '{}')).toEqual({ accessToken: 'access-2', refreshToken: 'refresh-2' });
+        expect(storedTokens.has('mr_access_token')).toBe(false);
+        expect(storedTokens.has('mr_refresh_token')).toBe(false);
         expect(apiMock.history.get.slice(-2).every(request => request.headers?.Authorization === 'Bearer access-2')).toBe(true);
     });
 
@@ -91,6 +91,28 @@ describe('MOB-BASE-003/005 apiClient', () => {
         await expect(api.get('/protected')).rejects.toBeDefined();
 
         expect(storedTokens.size).toBe(0);
+        expect(listener).toHaveBeenCalledTimes(1);
+        unsubscribe();
+    });
+
+    it('rejeita toda a fila e expira a sessão mesmo quando a limpeza segura falha', async () => {
+        const listener = jest.fn();
+        const unsubscribe = subscribeAuthExpired(listener);
+        let protectedCalls = 0;
+        apiMock.onGet('/protected').reply(() => {
+            protectedCalls += 1;
+            return [401];
+        });
+        axiosMock.onPost('http://localhost:8080/api/auth/refresh').reply(async () => {
+            await new Promise(resolve => setTimeout(resolve, 0));
+            return [401];
+        });
+        secureStore.deleteItemAsync.mockRejectedValue(new Error('secure storage unavailable'));
+
+        const results = await Promise.allSettled([api.get('/protected'), api.get('/protected')]);
+
+        expect(results.every(result => result.status === 'rejected')).toBe(true);
+        expect(protectedCalls).toBe(2);
         expect(listener).toHaveBeenCalledTimes(1);
         unsubscribe();
     });

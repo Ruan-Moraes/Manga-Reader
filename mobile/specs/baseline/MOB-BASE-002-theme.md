@@ -2,11 +2,11 @@
 id: MOB-BASE-002
 type: baseline
 title: Tema e tokens visuais
-status: observed
+status: superseded
 created: 2026-08-08
 updated: 2026-08-08
 supersedes: []
-superseded_by: []
+superseded_by: [MOB-FEAT-002]
 ---
 
 # MOB-BASE-002 — Tema e tokens visuais
@@ -27,7 +27,7 @@ O provider expõe `tokens`, `colorScheme`, `override` e `setOverride`. Os mapas 
 
 ### OBS-003 — Persistência do override
 
-`settingsStore` persiste `dark` ou `light` no SecureStore. `null` remove a chave e volta a seguir o sistema.
+O settings store representa a escolha como `DARK`, `LIGHT` ou `SYSTEM` dentro de um envelope local versionado no SecureStore. `SYSTEM` produz override `null`; as antigas chaves separadas de tema e idioma são migradas para o envelope.
 
 ### OBS-004 — Sincronização externa
 
@@ -35,11 +35,11 @@ Mudança de `initialOverride` atualiza o estado interno. `setOverride` também c
 
 ## Evidências
 
-| Observação                | Código/teste/comando                                | Resultado esperado                       |
-| ------------------------- | --------------------------------------------------- | ---------------------------------------- |
-| OBS-001, OBS-002, OBS-004 | `src/shared/theme/__tests__/ThemeProvider.test.tsx` | Sistema, override e callback verificados |
-| OBS-003                   | `src/shared/store/__tests__/settingsStore.test.ts`  | Set/delete no SecureStore verificados    |
-| OBS-002                   | `pnpm typecheck`                                    | Mapas satisfazem `ThemeTokens`           |
+| Observação                | Código/teste/comando                                                 | Resultado esperado                            |
+| ------------------------- | -------------------------------------------------------------------- | --------------------------------------------- |
+| OBS-001, OBS-002, OBS-004 | `src/shared/theme/__tests__/ThemeProvider.test.tsx`                  | Sistema, override e callback verificados      |
+| OBS-003                   | `src/features/manage-settings/model/__tests__/settingsStore.test.ts` | Envelope, migração e persistência verificados |
+| OBS-002                   | `pnpm typecheck`                                                     | Mapas satisfazem `ThemeTokens`                |
 
 ## Desconhecidos
 

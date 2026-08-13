@@ -1,19 +1,20 @@
-import { useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { type ReactNode, useState } from 'react';
+import { TextInput, type TextInputProps, View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
+import { FONTS, useTheme } from '@/src/shared/theme';
 
-interface Props {
+import { AppText } from './AppText';
+
+interface Props extends Omit<TextInputProps, 'onBlur' | 'onChange' | 'onChangeText' | 'style' | 'value'> {
     label?: string;
     value: string;
     onChange: (v: string) => void;
     placeholder?: string;
-    secureTextEntry?: boolean;
     error?: string;
-    multiline?: boolean;
-    autoCapitalize?: 'none' | 'words' | 'sentences' | 'characters';
-    keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+    helperText?: string;
+    labelAction?: ReactNode;
+    leading?: ReactNode;
+    trailing?: ReactNode;
     onBlur?: () => void;
 }
 
@@ -22,64 +23,89 @@ export function Input({
     value,
     onChange,
     placeholder,
-    secureTextEntry,
     error,
-    multiline,
-    autoCapitalize = 'sentences',
-    keyboardType = 'default',
+    helperText,
+    labelAction,
+    leading,
+    trailing,
     onBlur,
+    onFocus,
+    multiline,
+    editable = true,
+    autoCapitalize = 'sentences',
+    autoCorrect = false,
+    ...textInputProps
 }: Props) {
-    const { tokens } = useTheme();
+    const { layout, minimumTouchTarget, radii, spacing, textStyles, tokens } = useTheme();
     const [focused, setFocused] = useState(false);
-    const borderColor = error ? tokens.danger : focused ? tokens.accentBorder : tokens.inputBorder;
+    const borderColor = error ? tokens.danger : focused ? tokens.focus : tokens.inputBorder;
 
     return (
-        <View style={{ marginBottom: 16 }}>
+        <View style={{ marginBottom: spacing.md }}>
             {label && (
-                <Text
-                    style={{
-                        fontSize: 11,
-                        fontFamily: FONTS.extrabold,
-                        letterSpacing: 1.1,
-                        textTransform: 'uppercase',
-                        color: error ? tokens.danger : tokens.accentText,
-                        marginBottom: 7,
-                    }}
-                >
-                    {label}
-                </Text>
+                <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm, justifyContent: 'space-between', marginBottom: spacing.sm }}>
+                    <AppText variant="label" tone={error ? 'danger' : 'default'}>
+                        {label}
+                    </AppText>
+                    {labelAction}
+                </View>
             )}
-            <TextInput
-                value={value}
-                onChangeText={onChange}
-                placeholder={placeholder}
-                placeholderTextColor={tokens.placeholder}
-                secureTextEntry={secureTextEntry}
-                multiline={multiline}
-                autoCapitalize={autoCapitalize}
-                autoCorrect={false}
-                keyboardType={keyboardType}
-                onFocus={() => setFocused(true)}
-                onBlur={() => {
-                    setFocused(false);
-                    onBlur?.();
-                }}
+            <View
                 style={{
-                    height: multiline ? undefined : tokens.controlHeight,
-                    minHeight: multiline ? 80 : undefined,
-                    paddingHorizontal: 14,
-                    paddingVertical: multiline ? 12 : undefined,
+                    alignItems: multiline ? 'flex-start' : 'center',
                     backgroundColor: tokens.inputBg,
-                    color: tokens.text,
-                    borderWidth: 1,
                     borderColor,
-                    borderRadius: tokens.radius,
-                    fontFamily: FONTS.regular,
-                    fontSize: 15,
-                    letterSpacing: tokens.ls,
+                    borderRadius: radii.control,
+                    borderWidth: focused || error ? 2 : 1,
+                    flexDirection: 'row',
+                    gap: spacing.sm,
+                    minHeight: multiline ? Math.max(96, minimumTouchTarget) : Math.max(layout.controlHeight, minimumTouchTarget),
+                    paddingHorizontal: spacing.md,
                 }}
-            />
-            {error && <Text style={{ marginTop: 6, fontSize: 11, color: tokens.danger, fontFamily: FONTS.regular }}>{error}</Text>}
+            >
+                {leading}
+                <TextInput
+                    {...textInputProps}
+                    accessible
+                    accessibilityLabel={textInputProps.accessibilityLabel ?? label}
+                    value={value}
+                    onChangeText={onChange}
+                    placeholder={placeholder}
+                    placeholderTextColor={tokens.placeholder}
+                    multiline={multiline}
+                    editable={editable}
+                    autoCapitalize={autoCapitalize}
+                    autoCorrect={autoCorrect}
+                    onFocus={event => {
+                        setFocused(true);
+                        onFocus?.(event);
+                    }}
+                    onBlur={() => {
+                        setFocused(false);
+                        onBlur?.();
+                    }}
+                    style={{
+                        color: editable ? tokens.text : tokens.disabled,
+                        flex: 1,
+                        fontFamily: FONTS.regular,
+                        fontSize: textStyles.body.fontSize,
+                        lineHeight: textStyles.body.lineHeight,
+                        minHeight: multiline ? 88 : layout.compactControlHeight,
+                        paddingVertical: spacing.sm,
+                        textAlignVertical: multiline ? 'top' : 'center',
+                    }}
+                />
+                {trailing}
+            </View>
+            {error ? (
+                <AppText accessibilityRole="alert" variant="caption" tone="danger" style={{ marginTop: spacing.sm }}>
+                    {error}
+                </AppText>
+            ) : helperText ? (
+                <AppText variant="caption" tone="subtle" style={{ marginTop: spacing.sm }}>
+                    {helperText}
+                </AppText>
+            ) : null}
         </View>
     );
 }

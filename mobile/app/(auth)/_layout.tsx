@@ -3,14 +3,14 @@ import { Stack } from 'expo-router';
 import { useTheme } from '@/src/shared/theme';
 
 export default function AuthLayout() {
-    const { tokens } = useTheme();
+    const { decorativeMotionEnabled, tokens } = useTheme();
 
     return (
         <Stack
             screenOptions={{
                 headerShown: false,
                 contentStyle: { backgroundColor: tokens.bg },
-                animation: 'slide_from_right',
+                animation: decorativeMotionEnabled ? 'slide_from_right' : 'none',
             }}
         >
             <Stack.Screen name="login" />
