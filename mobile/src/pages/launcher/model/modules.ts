@@ -1,5 +1,5 @@
 export type AppModuleId = 'platform' | 'offline-translation';
-export type AppModuleAvailability = 'construction' | 'offline';
+export type AppModuleAvailability = 'construction' | 'local-first';
 
 export interface AppModuleDescriptor {
     id: AppModuleId;
@@ -9,5 +9,5 @@ export interface AppModuleDescriptor {
 
 export const APP_MODULES: readonly AppModuleDescriptor[] = [
     { id: 'platform', availability: 'construction', icon: 'book-outline' },
-    { id: 'offline-translation', availability: 'offline', icon: 'language-outline' },
+    { id: 'offline-translation', availability: 'local-first', icon: 'language-outline' },
 ];

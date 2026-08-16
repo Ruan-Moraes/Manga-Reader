@@ -1,6 +1,8 @@
-import type { PropsWithChildren } from 'react';
+import { type PropsWithChildren, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { registerLocalMediaImportDataParticipant } from '@/src/entities/local-media-import';
+import { registerTranslationProjectDataParticipant } from '@/src/entities/translation-project';
 import { themePreferenceToColorScheme } from '@/src/entities/user-setting';
 import { useSettingsStore } from '@/src/features/manage-settings';
 import { ThemeProvider, useTheme } from '@/src/shared/theme';
@@ -21,6 +23,15 @@ export function AppProviders({ children }: PropsWithChildren) {
     const appearance = useSettingsStore(state => state.settings.appearance);
     const accessibility = useSettingsStore(state => state.settings.accessibility);
     const setThemeOverride = useSettingsStore(state => state.setThemeOverride);
+
+    useEffect(() => {
+        const unregisterImports = registerLocalMediaImportDataParticipant();
+        const unregisterProjects = registerTranslationProjectDataParticipant();
+        return () => {
+            unregisterProjects();
+            unregisterImports();
+        };
+    }, []);
 
     return (
         <ThemeProvider

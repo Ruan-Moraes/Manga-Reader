@@ -1,1 +1,1 @@
-export { OfflineTranslationPage as default } from '@/src/pages/launcher';
+export { OfflineTranslationPage as default } from '@/src/pages/offline-translation';

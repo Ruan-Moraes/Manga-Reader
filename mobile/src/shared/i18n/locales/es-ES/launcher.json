@@ -28,13 +28,140 @@
         "logout": "Cerrar sesión"
     },
     "offline": {
-        "title": "Traducción offline de capítulos",
-        "description": "Un espacio local y privado para el futuro flujo de traducción, sin depender de una cuenta o de la red.",
-        "status": "Offline y local",
-        "action": "Conocer el módulo",
-        "pageTitle": "Traducción offline",
-        "unavailableTitle": "El traductor aún no está disponible",
-        "unavailableDescription": "No se puede importar ni traducir ningún archivo en esta versión. Esta pantalla no envía datos por la red y solo se habilitará cuando el flujo real esté listo."
+        "title": "Traducción de imágenes",
+        "description": "Importa imágenes a un espacio privado en este dispositivo. No necesitas una cuenta para empezar.",
+        "status": "Local-first",
+        "action": "Traducir desde el dispositivo",
+        "pageTitle": "Traducir desde el dispositivo",
+        "import": {
+            "title": "Elige tus páginas",
+            "description": "Selecciona una o varias imágenes con el selector seguro del sistema.",
+            "loading": "Cargando el borrador local…",
+            "selectAction": "Seleccionar imágenes",
+            "replaceAction": "Reemplazar selección",
+            "readyTitle": "Selección guardada en este dispositivo",
+            "readyDescription": "Revisa las páginas a continuación antes de confirmar el lote.",
+            "selectedCount_one": "{{count}} imagen importada",
+            "selectedCount_other": "{{count}} imágenes importadas",
+            "privacyNote": "Solo se copian las imágenes que eliges. La aplicación no examina tu galería.",
+            "errorTitle": "No se pudo importar",
+            "retry": "Intentar de nuevo",
+            "errors": {
+                "picker-unavailable": "El selector de imágenes no está disponible. Inténtalo de nuevo.",
+                "invalid-selection": "El selector no devolvió una imagen válida.",
+                "storage-unavailable": "No se pudieron guardar las imágenes en el almacenamiento privado."
+            }
+        },
+        "review": {
+            "title": "Revisa tus páginas",
+            "description_one": "Revisa y organiza {{count}} página antes de confirmar.",
+            "description_other": "Revisa y organiza {{count}} páginas antes de confirmar.",
+            "page": "Página {{page}} de {{total}}",
+            "thumbnail": "Miniatura de la página {{page}} de {{total}}",
+            "openPreview": "Ampliar la página {{page}} de {{total}}",
+            "previewTitle": "Viendo la página {{page}} de {{total}}",
+            "previewImage": "Imagen ampliada de la página {{page}} de {{total}}",
+            "closePreview": "Cerrar",
+            "imageError": "No se pudo abrir la imagen de la página {{page}}.",
+            "possibleDuplicate": "Posible duplicado — revísalo antes de continuar",
+            "moveEarlier": "Mover la página {{page}} hacia antes",
+            "moveLater": "Mover la página {{page}} hacia después",
+            "remove": "Eliminar la página {{page}}",
+            "removeAction": "Eliminar",
+            "viewLabel": "Modo de visualización",
+            "viewKanban": "Kanban",
+            "viewScroll": "Scroll",
+            "add": "Añadir imágenes",
+            "confirm": "Confirmar orden",
+            "confirmedAction": "Orden confirmado",
+            "editing": "Revisa el orden y confirma cuando esté listo.",
+            "confirmedTitle": "Lote revisado",
+            "confirmedDescription": "El orden está guardado en este dispositivo. Elige abajo los idiomas de traducción.",
+            "errorTitle": "No se pudo actualizar el lote",
+            "retry": "Intentar de nuevo",
+            "errors": {
+                "picker-unavailable": "El selector de imágenes no está disponible. Inténtalo de nuevo.",
+                "invalid-selection": "El selector no devolvió una imagen válida.",
+                "storage-unavailable": "No se pudo guardar el cambio. Se restauró el último estado seguro."
+            }
+        },
+        "languages": {
+            "title": "Elige los idiomas",
+            "description": "Japonés a portugués es solo la sugerencia inicial. Elige origen y destino por separado; la aplicación aún no analizó las imágenes.",
+            "source": "Idioma de origen",
+            "target": "Idioma de destino",
+            "priorityTarget": "{{language}} — recomendado",
+            "options": {
+                "ja": "Japonés",
+                "en": "Inglés",
+                "es": "Español",
+                "ko": "Coreano",
+                "zh-Hans": "Chino simplificado",
+                "zh-Hant": "Chino tradicional",
+                "pt-BR": "Portugués (Brasil)"
+            },
+            "confirm": "Confirmar idiomas",
+            "confirmedAction": "Idiomas confirmados",
+            "confirmedTitle": "Idiomas guardados",
+            "confirmedDescription": "El origen y el destino están guardados en este dispositivo. El procesamiento aún no comenzó.",
+            "retry": "Intentar de nuevo",
+            "errors": {
+                "same-language": "El origen y el destino deben ser diferentes.",
+                "review-required": "Confirma de nuevo el orden de las páginas antes de elegir los idiomas.",
+                "stale-draft": "El lote cambió en otra acción. Se restauró el último estado guardado.",
+                "storage-unavailable": "No se pudieron guardar los idiomas. Se restauró el último estado seguro."
+            }
+        },
+        "validation": {
+            "title": "Validar páginas",
+            "description": "Comprueba el formato real, la integridad y las dimensiones de las copias privadas antes del procesamiento.",
+            "validCount": "{{valid}} de {{total}} válidas",
+            "invalidCount": "{{count}} con un problema",
+            "pageStatus": "Página {{page}}: {{status}}",
+            "status": { "PENDING": "pendiente", "VALID": "válida", "INVALID": "inválida" },
+            "progress": "Validando {{completed}} de {{total}}…",
+            "action": "Validar imágenes",
+            "retryInvalid": "Reintentar páginas inválidas",
+            "retry": "Intentar de nuevo",
+            "validatedAction": "Imágenes validadas",
+            "ready": "Las páginas están listas para la siguiente etapa.",
+            "itemErrors": {
+                "MISSING_FILE": "archivo ausente",
+                "EMPTY_FILE": "archivo vacío",
+                "FILE_CHANGED": "archivo modificado",
+                "UNSUPPORTED_FORMAT": "formato no compatible",
+                "CORRUPTED": "archivo dañado",
+                "DIMENSIONS_UNSAFE": "tamaño o dimensiones fuera del límite"
+            },
+            "errors": {
+                "prerequisite-required": "Confirma el orden y los idiomas antes de validar.",
+                "stale-draft": "El lote cambió. Se restauró el último estado guardado.",
+                "storage-unavailable": "La validación no pudo continuar. Se conservaron los resultados guardados."
+            }
+        },
+        "project": {
+            "loading": "Cargando el proyecto local…",
+            "action": "Preparar proyecto",
+            "preparedTitle": "Proyecto preparado en el dispositivo",
+            "preparedDescription": "Las páginas están protegidas localmente. El procesamiento aún no comenzó.",
+            "summary_one": "{{count}} página · {{source}} → {{target}} · {{status}}",
+            "summary_other": "{{count}} páginas · {{source}} → {{target}} · {{status}}",
+            "status": {
+                "DRAFT": "preparado",
+                "QUEUED": "en cola",
+                "PROCESSING": "procesando",
+                "READY": "listo",
+                "FAILED": "con error",
+                "CANCELLED": "cancelado"
+            },
+            "errors": {
+                "prerequisite-required": "Confirma y valida todas las páginas antes de preparar el proyecto.",
+                "stale-draft": "El lote cambió. Se conservó el último estado seguro.",
+                "file-copy-failed": "No fue posible proteger todos los archivos del proyecto.",
+                "storage-unavailable": "No fue posible guardar el proyecto en este dispositivo.",
+                "project-conflict": "Ya existe un proyecto diferente con esta identidad. Tus datos fueron preservados."
+            }
+        }
     },
     "navigation": {
         "selector": "Módulos",

@@ -28,13 +28,140 @@
         "logout": "Sign out"
     },
     "offline": {
-        "title": "Offline chapter translation",
-        "description": "A local, private space for the future translation workflow, without requiring an account or network.",
-        "status": "Offline and local",
-        "action": "Learn about the module",
-        "pageTitle": "Offline translation",
-        "unavailableTitle": "The translator is not available yet",
-        "unavailableDescription": "No file can be imported or translated in this version. This screen sends no data over the network and will only be enabled when the real workflow is ready."
+        "title": "Image translation",
+        "description": "Import images into a private space on this device. No account is required to begin.",
+        "status": "Local-first",
+        "action": "Translate from device",
+        "pageTitle": "Translate from device",
+        "import": {
+            "title": "Choose your pages",
+            "description": "Select one or more images with the secure system picker.",
+            "loading": "Loading the local draft…",
+            "selectAction": "Select images",
+            "replaceAction": "Replace selection",
+            "readyTitle": "Selection saved on this device",
+            "readyDescription": "Review the pages below before confirming the batch.",
+            "selectedCount_one": "{{count}} image imported",
+            "selectedCount_other": "{{count}} images imported",
+            "privacyNote": "Only the images you choose are copied. The app does not scan your gallery.",
+            "errorTitle": "Import failed",
+            "retry": "Try again",
+            "errors": {
+                "picker-unavailable": "The image picker is unavailable. Try again.",
+                "invalid-selection": "The picker did not return a valid image.",
+                "storage-unavailable": "The images could not be saved in private storage."
+            }
+        },
+        "review": {
+            "title": "Review your pages",
+            "description_one": "Check and organize {{count}} page before confirming.",
+            "description_other": "Check and organize {{count}} pages before confirming.",
+            "page": "Page {{page}} of {{total}}",
+            "thumbnail": "Thumbnail for page {{page}} of {{total}}",
+            "openPreview": "Enlarge page {{page}} of {{total}}",
+            "previewTitle": "Viewing page {{page}} of {{total}}",
+            "previewImage": "Enlarged image for page {{page}} of {{total}}",
+            "closePreview": "Close",
+            "imageError": "The image for page {{page}} could not be opened.",
+            "possibleDuplicate": "Possible duplicate — check before continuing",
+            "moveEarlier": "Move page {{page}} earlier",
+            "moveLater": "Move page {{page}} later",
+            "remove": "Remove page {{page}}",
+            "removeAction": "Delete",
+            "viewLabel": "View mode",
+            "viewKanban": "Kanban",
+            "viewScroll": "Scroll",
+            "add": "Add images",
+            "confirm": "Confirm order",
+            "confirmedAction": "Order confirmed",
+            "editing": "Review the order and confirm when it is ready.",
+            "confirmedTitle": "Batch reviewed",
+            "confirmedDescription": "The order is saved on this device. Choose the translation languages below.",
+            "errorTitle": "The batch could not be updated",
+            "retry": "Try again",
+            "errors": {
+                "picker-unavailable": "The image picker is unavailable. Try again.",
+                "invalid-selection": "The picker did not return a valid image.",
+                "storage-unavailable": "The change could not be saved. The last safe state was restored."
+            }
+        },
+        "languages": {
+            "title": "Choose languages",
+            "description": "Japanese to Portuguese is only the initial suggestion. Choose source and target separately; the app has not analyzed the images yet.",
+            "source": "Source language",
+            "target": "Target language",
+            "priorityTarget": "{{language}} — recommended",
+            "options": {
+                "ja": "Japanese",
+                "en": "English",
+                "es": "Spanish",
+                "ko": "Korean",
+                "zh-Hans": "Simplified Chinese",
+                "zh-Hant": "Traditional Chinese",
+                "pt-BR": "Portuguese (Brazil)"
+            },
+            "confirm": "Confirm languages",
+            "confirmedAction": "Languages confirmed",
+            "confirmedTitle": "Languages saved",
+            "confirmedDescription": "The source and target are saved on this device. Processing has not started.",
+            "retry": "Try again",
+            "errors": {
+                "same-language": "Source and target must be different.",
+                "review-required": "Confirm the page order again before choosing languages.",
+                "stale-draft": "The batch changed in another action. The latest saved state was restored.",
+                "storage-unavailable": "The languages could not be saved. The last safe state was restored."
+            }
+        },
+        "validation": {
+            "title": "Validate pages",
+            "description": "Check the actual format, integrity and dimensions of private copies before processing.",
+            "validCount": "{{valid}} of {{total}} valid",
+            "invalidCount": "{{count}} with an issue",
+            "pageStatus": "Page {{page}}: {{status}}",
+            "status": { "PENDING": "pending", "VALID": "valid", "INVALID": "invalid" },
+            "progress": "Validating {{completed}} of {{total}}…",
+            "action": "Validate images",
+            "retryInvalid": "Retry invalid pages",
+            "retry": "Try again",
+            "validatedAction": "Images validated",
+            "ready": "The pages are ready for the next step.",
+            "itemErrors": {
+                "MISSING_FILE": "file is missing",
+                "EMPTY_FILE": "file is empty",
+                "FILE_CHANGED": "file changed",
+                "UNSUPPORTED_FORMAT": "unsupported format",
+                "CORRUPTED": "corrupted file",
+                "DIMENSIONS_UNSAFE": "size or dimensions exceed the limit"
+            },
+            "errors": {
+                "prerequisite-required": "Confirm the order and languages before validation.",
+                "stale-draft": "The batch changed. The latest saved state was restored.",
+                "storage-unavailable": "Validation could not continue. Saved results were preserved."
+            }
+        },
+        "project": {
+            "loading": "Loading the local project…",
+            "action": "Prepare project",
+            "preparedTitle": "Project prepared on this device",
+            "preparedDescription": "The pages are protected locally. Processing has not started yet.",
+            "summary_one": "{{count}} page · {{source}} → {{target}} · {{status}}",
+            "summary_other": "{{count}} pages · {{source}} → {{target}} · {{status}}",
+            "status": {
+                "DRAFT": "prepared",
+                "QUEUED": "queued",
+                "PROCESSING": "processing",
+                "READY": "ready",
+                "FAILED": "failed",
+                "CANCELLED": "cancelled"
+            },
+            "errors": {
+                "prerequisite-required": "Confirm and validate every page before preparing the project.",
+                "stale-draft": "The batch changed. The last safe state was preserved.",
+                "file-copy-failed": "The app could not protect every project file.",
+                "storage-unavailable": "The project could not be saved on this device.",
+                "project-conflict": "A different project already uses this identity. Your data was preserved."
+            }
+        }
     },
     "navigation": {
         "selector": "Modules",

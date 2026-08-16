@@ -27,15 +27,15 @@ describe('MOB-FEAT-010 module selector', () => {
 
         expect(screen.getByRole('header', { name: 'O que você quer fazer?' })).toBeOnTheScreen();
         expect(screen.getByText('Em construção')).toBeOnTheScreen();
-        expect(screen.getByText('Offline e local')).toBeOnTheScreen();
+        expect(screen.getByText('Local-first')).toBeOnTheScreen();
 
         fireEvent.press(screen.getByRole('button', { name: /Plataforma de leitura/ }));
         expect(mockPush).toHaveBeenCalledWith({ pathname: '/(auth)/login', params: { returnTo: '/platform/status' } });
     });
 
-    it('abre o shell offline e usa o status quando já autenticado', () => {
+    it('abre a importação local e usa o status quando já autenticado', () => {
         const view = renderPage();
-        fireEvent.press(screen.getByRole('button', { name: /Tradução offline de capítulos/ }));
+        fireEvent.press(screen.getByRole('button', { name: /Tradução de imagens/ }));
         expect(mockPush).toHaveBeenCalledWith('/offline-translation');
 
         view.unmount();
