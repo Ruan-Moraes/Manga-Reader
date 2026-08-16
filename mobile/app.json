@@ -11,6 +11,13 @@
             "supportsTablet": true
         },
         "android": {
+            "blockedPermissions": [
+                "android.permission.CAMERA",
+                "android.permission.RECORD_AUDIO",
+                "android.permission.READ_MEDIA_IMAGES",
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
             "adaptiveIcon": {
                 "backgroundColor": "#E6F4FE",
                 "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -39,7 +46,16 @@
             ],
             "expo-font",
             "expo-secure-store",
-            "expo-web-browser"
+            "expo-web-browser",
+            [
+                "expo-image-picker",
+                {
+                    "cameraPermission": false,
+                    "microphonePermission": false,
+                    "photosPermission": "Select only the images you want to import into Manga Reader."
+                }
+            ],
+            "expo-sqlite"
         ],
         "experiments": {
             "typedRoutes": true

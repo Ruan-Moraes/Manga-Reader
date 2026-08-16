@@ -11,9 +11,10 @@ interface ChoiceGroupProps<T extends string> {
     optionLabel: (option: T) => string;
     onChange: (option: T) => void;
     accessibilityHint?: string;
+    disabled?: boolean;
 }
 
-export function ChoiceGroup<T extends string>({ label, value, options, optionLabel, onChange, accessibilityHint }: ChoiceGroupProps<T>) {
+export function ChoiceGroup<T extends string>({ label, value, options, optionLabel, onChange, accessibilityHint, disabled = false }: ChoiceGroupProps<T>) {
     const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
 
     return (
@@ -28,9 +29,10 @@ export function ChoiceGroup<T extends string>({ label, value, options, optionLab
                             accessibilityLabel={optionLabel(option)}
                             accessibilityHint={accessibilityHint}
                             accessibilityRole="radio"
-                            accessibilityState={{ disabled: false, selected }}
+                            accessibilityState={{ disabled, selected }}
                             activeOpacity={0.8}
                             onPress={() => onChange(option)}
+                            disabled={disabled}
                             style={{
                                 alignItems: 'center',
                                 backgroundColor: selected ? tokens.accent : tokens.surface,
@@ -39,6 +41,7 @@ export function ChoiceGroup<T extends string>({ label, value, options, optionLab
                                 borderWidth: selected ? 2 : 1,
                                 justifyContent: 'center',
                                 minHeight: minimumTouchTarget,
+                                opacity: disabled ? 0.46 : 1,
                                 paddingHorizontal: spacing.md,
                                 paddingVertical: spacing.sm,
                             }}
