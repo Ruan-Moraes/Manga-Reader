@@ -6,27 +6,28 @@ contêm instruções operacionais específicas.
 
 ## Guias normativos
 
-| Documento | Quando consultar |
-|---|---|
-| [`architecture.md`](architecture.md) | Antes de alterar domínio, use cases, controllers, integrações, respostas da API ou persistência poliglota |
-| [`orm-persistence.md`](orm-persistence.md) | Antes de modificar JPA, MongoDB, repositories, transações, paginação ou índices |
-| [`database-modeling.md`](database-modeling.md) | Antes de criar ou alterar entidades persistidas, migrations, colunas, FKs ou coleções |
-| [`source-layout.md`](source-layout.md) | Antes de criar ou mover módulos do frontend FSD |
-| [`clean-code.md`](clean-code.md) | Para naming, estilo, imports, Tailwind, i18n e convenções gerais |
-| [`testing.md`](testing.md) | Antes de escrever ou alterar testes |
-| [`i18n-guide.md`](i18n-guide.md) | Para UI multilíngue, conteúdo localizado e labels de domínio |
-| [`documentation-policy.md`](documentation-policy.md) | Para decidir quais documentos atualizar em cada tipo de mudança |
+| Documento                                            | Quando consultar                                                                                          |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| [`architecture.md`](architecture.md)                 | Antes de alterar domínio, use cases, controllers, integrações, respostas da API ou persistência poliglota |
+| [`orm-persistence.md`](orm-persistence.md)           | Antes de modificar JPA, MongoDB, repositories, transações, paginação ou índices                           |
+| [`database-modeling.md`](database-modeling.md)       | Antes de criar ou alterar entidades persistidas, migrations, colunas, FKs ou coleções                     |
+| [`source-layout.md`](source-layout.md)               | Antes de criar ou mover módulos do frontend FSD                                                           |
+| [`clean-code.md`](clean-code.md)                     | Para naming, estilo, imports, Tailwind, i18n e convenções gerais                                          |
+| [`testing.md`](testing.md)                           | Antes de escrever ou alterar testes                                                                       |
+| [`i18n-guide.md`](i18n-guide.md)                     | Para UI multilíngue, conteúdo localizado e labels de domínio                                              |
+| [`documentation-policy.md`](documentation-policy.md) | Para decidir quais documentos atualizar em cada tipo de mudança                                           |
 
 ## Operação e evolução
 
-| Documento | Conteúdo |
-|---|---|
-| [`deployment-plan.md`](deployment-plan.md) | Plano de deploy, infraestrutura, CI/CD e segurança |
-| [`behavior-analytics.md`](behavior-analytics.md) | Política, thresholds, contratos e inventário da telemetria privada |
-| [`tech-debt.md`](tech-debt.md) | Resumo ativo e histórico das dívidas `DT-NN`; fonte única para pendências técnicas |
-| [`audits/2026-07-18-mangahost-config-audit.md`](audits/2026-07-18-mangahost-config-audit.md) | Auditoria completa de configurações do produto, clientes, persistência e operação em 18/07/2026 |
-| [`audits/2026-07-18-mangahost-config-inventory.csv`](audits/2026-07-18-mangahost-config-inventory.csv) | Inventário filtrável, uma linha por configuração auditada |
-| [`audits/2026-07-18-mangahost-remediation-matrix.md`](audits/2026-07-18-mangahost-remediation-matrix.md) | Estado pós-remediação A-01–A-12, provas dinâmicas, restauração e gates finais |
+| Documento                                                                                                | Conteúdo                                                                                          |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [`deployment-plan.md`](deployment-plan.md)                                                               | Plano de deploy, infraestrutura, CI/CD e segurança                                                |
+| [`translation-gateway-plan.md`](translation-gateway-plan.md)                                             | Plano aprovado do gateway separado, contrato, Cloud, schemas, privacidade e vertical slice mobile |
+| [`behavior-analytics.md`](behavior-analytics.md)                                                         | Política, thresholds, contratos e inventário da telemetria privada                                |
+| [`tech-debt.md`](tech-debt.md)                                                                           | Resumo ativo e histórico das dívidas `DT-NN`; fonte única para pendências técnicas                |
+| [`audits/2026-07-18-mangahost-config-audit.md`](audits/2026-07-18-mangahost-config-audit.md)             | Auditoria completa de configurações do produto, clientes, persistência e operação em 18/07/2026   |
+| [`audits/2026-07-18-mangahost-config-inventory.csv`](audits/2026-07-18-mangahost-config-inventory.csv)   | Inventário filtrável, uma linha por configuração auditada                                         |
+| [`audits/2026-07-18-mangahost-remediation-matrix.md`](audits/2026-07-18-mangahost-remediation-matrix.md) | Estado pós-remediação A-01–A-12, provas dinâmicas, restauração e gates finais                     |
 
 ## Relatórios e referências
 

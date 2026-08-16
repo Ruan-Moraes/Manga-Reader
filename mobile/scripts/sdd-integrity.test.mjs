@@ -37,6 +37,11 @@ test('aceita implemented concluída e verification-pending aberta', () => {
     assert.deepEqual(validate('verification-pending'), []);
 });
 
+test('não exige evidência de execução antes de a spec entrar em execução', () => {
+    assert.deepEqual(validate('draft', { tasksContent: null, reviewContent: null, driftContent: null, evidenceReferences: new Set() }), []);
+    assert.deepEqual(validate('approved', { tasksContent: null, reviewContent: null, driftContent: null, evidenceReferences: new Set() }), []);
+});
+
 test('rejeita task aberta em implemented e fechada em verification-pending', () => {
     assert.ok(validate('implemented', { tasksContent: tasks(true) }).some(error => error.includes('não permite task aberta')));
     assert.ok(validate('verification-pending', { tasksContent: tasks(false) }).some(error => error.includes('exige ao menos uma task aberta')));

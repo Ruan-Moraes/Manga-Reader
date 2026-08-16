@@ -25,12 +25,12 @@ as responsabilidades implementadas.
 
 ### Persistência poliglota
 
-| Tecnologia | Papel principal |
-|---|---|
+| Tecnologia                          | Papel principal                                                                                                                                                                                      |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PostgreSQL + JPA/Hibernate + Flyway | Usuários, grupos, eventos, biblioteca, lojas, tags, assinaturas, pagamentos, autores, editoras e labels de domínio. As tabelas antigas do fórum permanecem apenas para rollback da migração (DT-50). |
-| MongoDB + Spring Data + Mongock | Títulos, capítulos, comentários polimórficos, avaliações, tópicos do fórum, votos, notícias, histórico de leitura e projeções `reviews_aggregate`/`title_trend_daily`. |
-| Neo4j + `Neo4jClient` | Grafo social de seguidores, seguindo e remoção dos nós relacionados à conta. |
-| Redis | Cache de aplicação; não é fonte canônica de dados de negócio. |
+| MongoDB + Spring Data + Mongock     | Títulos, capítulos, comentários polimórficos, avaliações, tópicos do fórum, votos, notícias, histórico de leitura e projeções `reviews_aggregate`/`title_trend_daily`.                               |
+| Neo4j + `Neo4jClient`               | Grafo social de seguidores, seguindo e remoção dos nós relacionados à conta.                                                                                                                         |
+| Redis                               | Cache de aplicação; não é fonte canônica de dados de negócio.                                                                                                                                        |
 
 PostgreSQL, MongoDB e Neo4j possuem transações independentes. Operações entre
 tecnologias não são atomicamente distribuídas; use cases, eventos e jobs de
@@ -86,6 +86,16 @@ massa quando a verificação de títulos não retorna resultados confiáveis.
 Detalhes operacionais ficam no
 [`README` do serviço](../api/jobs/orphan-cleaner/README.md).
 
+### Gateway de tradução planejado
+
+O pipeline privado de OCR/tradução não será incorporado à Core. O plano aprovado
+cria um serviço Spring Boot independente, com contrato versionado para o mobile,
+processamento assíncrono e conteúdo remoto efêmero. A arquitetura, modelo
+relacional, fronteiras FSD, retenção e gates estão em
+[`translation-gateway-plan.md`](translation-gateway-plan.md). Enquanto o serviço
+não for implementado e implantado, esta seção descreve intenção aprovada, não
+comportamento disponível.
+
 ### Key Patterns
 
 - **Ports & Adapters**: use cases dependem de port interfaces; infrastructure implementa
@@ -105,6 +115,7 @@ Detalhes operacionais ficam no
 **Não usar `t('...')` para**: enums de negócio, dados dinâmicos, conteúdos administrativos, qualquer dado persistido.
 
 **Padrão**: entidade `DomainLabel { type, value, labelI18n }` em PostgreSQL.
+
 - Endpoint público: `GET /api/labels?type={type}` → `[{ value, label }]` (locale-resolved, cache 3 dias no frontend)
 - Endpoint admin: `GET /api/labels/admin?type={type}` → `[{ value, labelI18n: Map }]` (todos os idiomas)
 - Frontend: hook `useDomainLabels(type)` + queryKey `[QUERY_KEYS.DOMAIN_LABELS, type, i18n.language]`
@@ -123,16 +134,19 @@ Dois eixos separados, com modelos de armazenamento distintos:
 - **Content language** (catálogo + UGC): persistido em `users.content_locales` (JSONB, BCP 47). Resolve `LocalizedString` (Title, News, Tag, Chapter) e filtra UGC (Comment, ForumTopic). Lista ordenada = cadeia de fallback.
 
 **Backend**:
+
 - `User.contentLocales: List<String>` (default `["pt-BR"]`); método `updateContentLocales` valida BCP 47.
 - `LocaleResolutionService.currentContentLocales()` retorna a cadeia: autenticado → `user.contentLocales`; anônimo → parse de `Accept-Language`; sempre termina em `pt-BR`.
 - `LocaleResolutionService.resolve(LocalizedString)` percorre a cadeia antes do fallback global. Mappers (`TitleMapper`, `NewsMapper`, `TagMapper`, `LocalizedMappingHelper`) herdam automaticamente.
 - UGC: use cases públicos (`GetForumTopicsUseCase`, `GetForumTopicsByCategoryUseCase`, `GetCommentsByTitleUseCase`) usam `findByLanguageIn(currentContentLanguageTags(), ...)`. Admin cross-language toggle (`crossLanguage=true`) bypassa filtro.
 
 **Endpoints**:
+
 - `GET /api/users/me/content-locales` → `{ contentLocales: string[] }`
 - `PATCH /api/users/me/content-locales` (body: `{ contentLocales }`; valida via `User.updateContentLocales`)
 
 **Frontend**:
+
 - `useInterfaceLang.ts` altera somente a UI via `i18n.changeLanguage()`.
 - `useContentLocales(isLoggedIn)` e `useReadingLangs.ts` sincronizam idiomas de
   conteúdo com o backend somente para usuários autenticados.
@@ -169,22 +183,29 @@ permanece local ao navegador.
 Todas as respostas da API seguem um dos dois padrões:
 
 **Resposta simples** — `ApiResponse<T>`:
+
 ```json
 { "data": T, "success": true, "message": "...", "statusCode": 200 }
 ```
+
 Frontend acessa: `response.data.data`
 
 **Resposta paginada** — `ApiResponse<PageResponse<T>>`:
+
 ```json
 {
   "data": {
     "content": [],
-    "page": 0, "size": 20,
-    "totalElements": 100, "totalPages": 5, "last": false
+    "page": 0,
+    "size": 20,
+    "totalElements": 100,
+    "totalPages": 5,
+    "last": false
   },
   "success": true
 }
 ```
+
 Frontend acessa: `response.data.data.content` (ou `res.content` após extrair `data.data` no service)
 
 **Regra**: Endpoints de listagem **devem** retornar `ApiResponse<PageResponse<T>>` com paginação. Endpoints de item único retornam `ApiResponse<T>` direto.
@@ -209,7 +230,7 @@ O gerenciamento de capítulos isola os contratos por **ports** no frontend, em
 
 - `model/admin/` — domínio puro: types (`AdminChapter`, `ChapterPage`,
   `ChapterMetrics`), máquina de status (`draft/processing/scheduled/published/
-  hidden/unavailable/archived`), validações como funções puras que retornam
+hidden/unavailable/archived`), validações como funções puras que retornam
   **codes** (i18n só na UI), e 3 ports: `ChapterAdminGateway` (CRUD, bulk,
   reorder atômico, páginas), `ChapterPublicGateway` (leitor: só `published`,
   `'blocked'` para o resto) e `ChapterAnalyticsGateway` (métricas).

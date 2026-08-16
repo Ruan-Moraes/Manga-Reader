@@ -18,8 +18,18 @@ apresentado como concluído.
 
 Implementado:
 
-- seletor público entre plataforma e tradução offline;
-- shell honesto da tradução offline, sem importação ou tradução simulada;
+- seletor público entre plataforma e tradução local-first;
+- importação guest-first de uma ou várias imagens pelo seletor do sistema;
+- revisão virtualizada do draft em kanban padrão ou scroll, preview ampliado privado, adição/remoção, ordenação persistente, aviso de possível duplicata e confirmação local;
+- seleção independente e persistente entre sete idiomas e 42 pares direcionais,
+  com chinês simplificado e tradicional separados;
+- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com limites defensivos, erros por página, retry seletivo e profiling Android físico concluído;
+- preparação local de projeto privado com páginas ordenadas, snapshot validado,
+  SQLite v6, estados canônicos e restauração determinística (verificação física
+  final pendente);
+- migração SQLite v1/v2/v3→v4 preservando drafts, itens, ordem, idiomas e resultados por página;
+- draft ativo durável com metadados em SQLite e arquivos no diretório privado do app;
+- cancelamento, substituição atômica, recuperação do resultado pendente Android e erros localizados, sem tradução simulada;
 - status autenticado da plataforma, sem expor tabs incompletas;
 - rotas de login, cadastro e recuperação de senha com retorno interno seguro;
 - leitor público de capítulos com modos vertical, paginado e duplo, preferências e progresso autenticado;
@@ -34,6 +44,8 @@ Implementado:
 
 Ainda não implementado:
 
+- gateway remoto, OCR, tradução, renderização e leitor de projetos locais
+  (`MOB-FEAT-017..021` já possuem specs aprovadas);
 - catálogo, detalhes de obras e biblioteca real;
 - fórum, perfil e outras tabs com dados;
 - testes E2E;
@@ -41,19 +53,22 @@ Ainda não implementado:
 
 ## Stack instalada
 
-| Área                   | Tecnologia                            |
-| ---------------------- | ------------------------------------- |
-| Framework              | Expo 54, React Native 0.81 e React 19 |
-| Navegação              | Expo Router 6                         |
-| Linguagem              | TypeScript 5.9                        |
-| Estado global          | Zustand 5                             |
-| Server state           | TanStack Query 5                      |
-| HTTP                   | Axios                                 |
-| Formulários            | React Hook Form + Zod                 |
-| Estilos                | NativeWind 4 + Tailwind CSS 3         |
-| i18n                   | i18next + react-i18next               |
-| Armazenamento sensível | Expo SecureStore                      |
-| Imagens e fontes       | Expo Image + Nunito Sans              |
+| Área                     | Tecnologia                            |
+| ------------------------ | ------------------------------------- |
+| Framework                | Expo 54, React Native 0.81 e React 19 |
+| Navegação                | Expo Router 6                         |
+| Linguagem                | TypeScript 5.9                        |
+| Estado global            | Zustand 5                             |
+| Server state             | TanStack Query 5                      |
+| HTTP                     | Axios                                 |
+| Formulários              | React Hook Form + Zod                 |
+| Estilos                  | NativeWind 4 + Tailwind CSS 3         |
+| i18n                     | i18next + react-i18next               |
+| Armazenamento sensível   | Expo SecureStore                      |
+| Dados locais relacionais | Expo SQLite                           |
+| Arquivos privados        | Expo FileSystem                       |
+| Seleção de imagens       | Expo ImagePicker / picker do sistema  |
+| Imagens e fontes         | Expo Image + Nunito Sans              |
 
 Bibliotecas planejadas para fases futuras não são listadas como dependências
 atuais.
@@ -74,8 +89,8 @@ mobile/
 │   ├── application/      # app layer local: providers, gates e navegação
 │   ├── pages/            # telas completas
 │   ├── widgets/          # blocos compostos
-│   ├── features/         # ações, inclusive authenticate e data-controls
-│   ├── entities/         # sessão, usuário, settings, capítulo e progresso
+│   ├── features/         # ações, inclusive autenticação e importação local
+│   ├── entities/         # sessão, settings, capítulos e drafts de mídia local
 │   └── shared/           # api, navegação técnica, tema, i18n e UI genérica
 ├── assets/
 ├── docs/
@@ -124,6 +139,12 @@ outro endereço acessível pelo dispositivo.
 
 O cliente acrescenta `/api`, portanto a variável deve conter apenas a origem,
 sem `/api` no final.
+
+O gateway de tradução ainda não existe em runtime. Seu contrato utilizará uma
+origem independente (`EXPO_PUBLIC_TRANSLATION_GATEWAY_URL`) sem `/api` da Core,
+com validação fail-closed. Não configurar essa variável não pode ativar upload ou
+fallback direto para provider. Consulte o
+[plano arquitetural aprovado](../docs/translation-gateway-plan.md).
 
 ## Autenticação
 
@@ -200,11 +221,13 @@ login obrigatório, dependência da Core ou placeholders em requisitos futuros.
 
 ## Roadmap
 
-1. **Core de leitura:** catálogo, busca, detalhe, leitor e biblioteca.
-2. **Engajamento:** histórico, avaliações, comentários e perfil.
-3. **Comunidade:** fórum, grupos, notícias e eventos.
-4. **Monetização:** assinaturas, loja e carrinho.
-5. **Polimento:** notificações, cache offline, deep links e testes E2E.
+1. **Entrada local:** revisão, ordenação, idiomas independentes e validação da mídia.
+2. **Prova ponta a ponta:** consentimento remoto, gateway separado, OCR,
+   tradução, renderização e reader local. `MOB-FEAT-017..021` estão aprovadas;
+   somente 017 tem gate aberto.
+3. **Continuidade:** processamento incremental, retry, biblioteca e retomada offline.
+4. **Qualidade e proteção:** edição, benchmark, identidade anônima, quotas e controle de abuso.
+5. **Produção:** privacidade, observabilidade, E2E, hardware físico e release Google Play.
 
 O roadmap expressa direção não normativa, não dependências ou funcionalidades
 entregues. Cada item só se torna implementável por meio de uma Target Spec

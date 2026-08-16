@@ -56,6 +56,7 @@ export function validateFeatureIntegrity({
     const id = artifact.metadata.id;
     const status = artifact.metadata.status;
     const acceptanceIds = [...artifact.content.matchAll(/^### (AC-\d{3})\b/gm)].map(match => match[1]);
+    const requiresExecutionEvidence = ['implemented', 'verification-pending'].includes(status);
 
     for (const acceptanceId of acceptanceIds) {
         if (tasksContent !== null && traceabilityRows(tasksContent, acceptanceId).length !== 1) {
@@ -64,7 +65,7 @@ export function validateFeatureIntegrity({
         if (reviewContent !== null && traceabilityRows(reviewContent, acceptanceId).length !== 1) {
             errors.push(`${id}/${acceptanceId}: review.md exige exatamente uma linha de resultado`);
         }
-        if (!evidenceReferences.has(`${id}/${acceptanceId}`)) {
+        if (requiresExecutionEvidence && !evidenceReferences.has(`${id}/${acceptanceId}`)) {
             errors.push(`${id}/${acceptanceId}: critério sem evidência classificada no coverage.json`);
         }
     }
