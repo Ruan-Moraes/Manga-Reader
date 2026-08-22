@@ -76,3 +76,12 @@ export function formatNumber(value: number, language?: SupportedLanguage | strin
 export function formatCurrency(value: number, currency: string, language?: SupportedLanguage | string | null): string {
     return new Intl.NumberFormat(normalizeInterfaceLanguage(language ?? getCurrentLanguage()), { style: 'currency', currency }).format(value);
 }
+
+export function formatByteSize(value: number, language?: SupportedLanguage | string | null): string {
+    const bytes = Number.isFinite(value) && value > 0 ? value : 0;
+    const units = ['B', 'KB', 'MB', 'GB'] as const;
+    const unitIndex = Math.min(Math.floor(Math.log(Math.max(bytes, 1)) / Math.log(1024)), units.length - 1);
+    const scaled = bytes / 1024 ** unitIndex;
+    const maximumFractionDigits = unitIndex === 0 ? 0 : 1;
+    return `${new Intl.NumberFormat(normalizeInterfaceLanguage(language ?? getCurrentLanguage()), { maximumFractionDigits }).format(scaled)} ${units[unitIndex]}`;
+}

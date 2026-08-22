@@ -72,6 +72,9 @@ export const darkHighContrastTokens: ThemeTokens = {
     surface: '#181818',
     surfaceMuted: '#0d0d0d',
     surfaceElevated: '#181818',
+    surfacePressed: '#333333',
+    surfaceSelected: '#181818',
+    disabledSurface: '#0d0d0d',
     inputBg: '#000000',
     inputBorder: '#8c8c8c',
     separator: '#b0b0b0',
@@ -96,7 +99,11 @@ export const darkHighContrastTokens: ThemeTokens = {
     placeholder: '#d8d8d8',
     disabled: '#8c8c8c',
     overlay: '#000000',
+    scrim: '#000000',
     logoBg: '#000000',
+    heroSurface: '#181818',
+    heroAccent: '#fff86a',
+    heroLine: '#b0b0b0',
 };
 
 export const lightHighContrastTokens: ThemeTokens = {
@@ -104,6 +111,9 @@ export const lightHighContrastTokens: ThemeTokens = {
     surface: '#ffffff',
     surfaceMuted: '#f5f5f5',
     surfaceElevated: '#f5f5f5',
+    surfacePressed: '#e5e5e5',
+    surfaceSelected: '#f5f5f5',
+    disabledSurface: '#f5f5f5',
     inputBg: '#ffffff',
     inputBorder: '#1f1f1f',
     separator: '#333333',
@@ -128,7 +138,11 @@ export const lightHighContrastTokens: ThemeTokens = {
     placeholder: '#333333',
     disabled: '#666666',
     overlay: '#000000',
+    scrim: 'rgba(0,0,0,0.72)',
     logoBg: '#000000',
+    heroSurface: '#333333',
+    heroAccent: '#fff86a',
+    heroLine: '#ffffff',
 };
 
 export function resolveThemeTokens(colorScheme: ColorScheme, highContrast: boolean, normal: Record<ColorScheme, ThemeTokens>): ThemeTokens {

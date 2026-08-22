@@ -1,3 +1,4 @@
+export { navigateBackOrReplace } from './back';
 export {
     AUTH_RETURN_ROUTES,
     type AuthReturnRoute,

@@ -1,7 +1,8 @@
-import { AccessibilityInfo, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react-native';
 import type { PropsWithChildren } from 'react';
 
+import { AppText } from '../../ui/AppText';
 import { darkHighContrastTokens } from '../appearance';
 import { ThemeProvider, useTheme } from '../ThemeProvider';
 import { darkTokens, lightTokens } from '../tokens';
@@ -117,8 +118,8 @@ describe('MOB-BASE-002 ThemeProvider', () => {
         expect(screen.getByTestId('application')).toBeTruthy();
     });
 
-    it('compõe a variante confortável com a escala de fonte nativa', () => {
-        mockedUseWindowDimensions.mockReturnValue({ fontScale: 1.6, height: 800, scale: 2, width: 400 });
+    it('compõe a variante confortável com escala de fonte nativa de 200%', () => {
+        mockedUseWindowDimensions.mockReturnValue({ fontScale: 2, height: 800, scale: 2, width: 400 });
         const wrapper = ({ children }: PropsWithChildren) => (
             <ThemeProvider fontSize="COMFORTABLE" waitForPlatform={false}>
                 {children}
@@ -130,6 +131,19 @@ describe('MOB-BASE-002 ThemeProvider', () => {
         expect(result.current.textStyles.title.fontSize).toBe(26);
         expect(result.current.layout.screenGutter).toBe(20);
         expect(result.current.radii.card).toBe(16);
-        expect(result.current.fontScale).toBe(1.6);
+        expect(result.current.fontScale).toBe(2);
+    });
+
+    it('escala a altura de linha junto com a fonte nativa', () => {
+        mockedUseWindowDimensions.mockReturnValue({ fontScale: 2, height: 800, scale: 2, width: 400 });
+
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <AppText variant="body">Texto ampliado</AppText>
+            </ThemeProvider>,
+        );
+
+        expect(StyleSheet.flatten(screen.getByText('Texto ampliado').props.style)).toMatchObject({ fontSize: 28, lineHeight: 42 });
+        expect(screen.getByText('Texto ampliado').props.allowFontScaling).toBe(false);
     });
 });

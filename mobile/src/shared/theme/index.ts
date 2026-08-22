@@ -28,6 +28,8 @@ export {
     TYPOGRAPHY_SCALES,
 } from './appearance';
 export { FONTS } from './fonts';
+export type { ResponsiveLayout, ResponsiveOrientation, ResponsiveSizeClass } from './responsive';
+export { resolveResponsiveLayout, RESPONSIVE_BREAKPOINTS, useResponsiveLayout } from './responsive';
 export { ThemeProvider, useTheme } from './ThemeProvider';
 export type { ColorScheme, ThemeTokens } from './tokens';
 export { darkTokens, lightTokens } from './tokens';

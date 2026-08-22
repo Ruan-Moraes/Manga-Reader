@@ -9,18 +9,30 @@ interface ChoiceGroupProps<T extends string> {
     value: T;
     options: readonly T[];
     optionLabel: (option: T) => string;
+    optionDescription?: (option: T) => string | undefined;
     onChange: (option: T) => void;
     accessibilityHint?: string;
     disabled?: boolean;
+    layout?: 'horizontal' | 'stacked';
 }
 
-export function ChoiceGroup<T extends string>({ label, value, options, optionLabel, onChange, accessibilityHint, disabled = false }: ChoiceGroupProps<T>) {
+export function ChoiceGroup<T extends string>({
+    label,
+    value,
+    options,
+    optionLabel,
+    optionDescription,
+    onChange,
+    accessibilityHint,
+    disabled = false,
+    layout = 'horizontal',
+}: ChoiceGroupProps<T>) {
     const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
 
     return (
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
             <AppText variant="label">{label}</AppText>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+            <View style={{ flexDirection: layout === 'stacked' ? 'column' : 'row', flexWrap: layout === 'stacked' ? 'nowrap' : 'wrap', gap: spacing.sm }}>
                 {options.map(option => {
                     const selected = option === value;
                     return (
@@ -30,12 +42,12 @@ export function ChoiceGroup<T extends string>({ label, value, options, optionLab
                             accessibilityHint={accessibilityHint}
                             accessibilityRole="radio"
                             accessibilityState={{ disabled, selected }}
-                            activeOpacity={0.8}
+                            activeOpacity={0.76}
                             onPress={() => onChange(option)}
                             disabled={disabled}
                             style={{
-                                alignItems: 'center',
-                                backgroundColor: selected ? tokens.accent : tokens.surface,
+                                alignItems: optionDescription ? 'flex-start' : 'center',
+                                backgroundColor: selected ? tokens.surfaceSelected : tokens.surface,
                                 borderColor: selected ? tokens.focus : tokens.inputBorder,
                                 borderRadius: radii.control,
                                 borderWidth: selected ? 2 : 1,
@@ -46,9 +58,14 @@ export function ChoiceGroup<T extends string>({ label, value, options, optionLab
                                 paddingVertical: spacing.sm,
                             }}
                         >
-                            <AppText variant="label" style={selected ? { color: tokens.onAccent } : undefined}>
+                            <AppText variant="label" style={selected ? { color: tokens.accentText } : undefined}>
                                 {optionLabel(option)}
                             </AppText>
+                            {optionDescription ? (
+                                <AppText variant="caption" tone="muted">
+                                    {optionDescription(option)}
+                                </AppText>
+                            ) : null}
                         </TouchableOpacity>
                     );
                 })}

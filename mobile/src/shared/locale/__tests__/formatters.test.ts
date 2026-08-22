@@ -3,6 +3,7 @@ import i18n from '@/src/shared/i18n';
 import {
     DEFAULT_DATE_FORMAT,
     DEFAULT_TIMEZONE,
+    formatByteSize,
     formatCurrency,
     formatDate,
     formatNumber,
@@ -55,6 +56,12 @@ describe('MOB-FEAT-003 formatadores regionais', () => {
         expect(formatNumber(1234.5, 'pt-BR')).toContain('1.234');
         expect(formatNumber(1234.5, 'en-US')).toContain('1,234');
         expect(formatCurrency(10, 'USD', 'en-US')).toContain('$');
+    });
+
+    it('resume bytes em uma unidade legível e localizada', () => {
+        expect(formatByteSize(0, 'pt-BR')).toBe('0 B');
+        expect(formatByteSize(21_173_692, 'pt-BR')).toBe('20,2 MB');
+        expect(formatByteSize(21_173_692, 'en-US')).toBe('20.2 MB');
     });
 
     it('usa o idioma efetivo do i18n quando a superfície não repete o locale', async () => {

@@ -4,6 +4,7 @@ export {
     type DateFormattingOptions,
     DEFAULT_DATE_FORMAT,
     DEFAULT_TIMEZONE,
+    formatByteSize,
     formatCurrency,
     formatDate,
     formatNumber,

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { ActivityIndicator, TouchableOpacity, type TouchableOpacityProps } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { ActivityIndicator, Pressable, type PressableProps, View } from 'react-native';
 
 import { useTheme } from '@/src/shared/theme';
 
@@ -9,7 +9,7 @@ type Variant = 'primary' | 'ghost' | 'outline';
 type ButtonTone = 'accent' | 'danger';
 type ButtonSize = 'compact' | 'default';
 
-interface Props extends Omit<TouchableOpacityProps, 'children' | 'disabled' | 'onPress' | 'style'> {
+interface Props extends Omit<PressableProps, 'children' | 'disabled' | 'onPress' | 'style'> {
     children: ReactNode;
     onPress?: () => void;
     variant?: Variant;
@@ -47,29 +47,48 @@ export function Button({
     const borderColor = variant === 'outline' ? (off ? tokens.inputBorder : tone === 'danger' ? tokens.danger : tokens.accentBorder) : 'transparent';
 
     const textTone = tone === 'danger' ? 'danger' : 'accent';
+    const [focused, setFocused] = useState(false);
+    const [pressed, setPressed] = useState(false);
+    const pressedBackground = variant === 'primary' ? (tone === 'danger' ? tokens.danger : tokens.accentBorder) : tokens.surfacePressed;
 
-    return (
-        <TouchableOpacity
+    const control = (
+        <Pressable
             {...pressableProps}
             accessibilityRole="button"
             accessibilityState={{ disabled: !!off, busy: !!loading }}
-            activeOpacity={0.76}
             onPress={onPress}
+            onFocus={event => {
+                setFocused(true);
+                pressableProps.onFocus?.(event);
+            }}
+            onBlur={event => {
+                setFocused(false);
+                pressableProps.onBlur?.(event);
+            }}
+            onPressIn={event => {
+                setPressed(true);
+                pressableProps.onPressIn?.(event);
+            }}
+            onPressOut={event => {
+                setPressed(false);
+                pressableProps.onPressOut?.(event);
+            }}
             disabled={!!off}
             style={{
                 alignItems: 'center',
-                backgroundColor: bg,
-                borderColor,
+                backgroundColor: off ? tokens.disabledSurface : pressed ? pressedBackground : bg,
+                borderColor: focused ? tokens.focus : off && variant === 'primary' ? tokens.separator : borderColor,
                 borderRadius: radii.control,
-                borderWidth: variant === 'outline' ? 1 : 0,
+                borderWidth: focused ? 2 : variant === 'outline' || (off && variant === 'primary') ? 1 : 0,
                 flexDirection: 'row',
                 gap: spacing.sm,
                 justifyContent: 'center',
                 minHeight: Math.max(height, minimumTouchTarget),
-                opacity: off ? 0.46 : 1,
+                opacity: off ? 0.62 : 1,
                 paddingHorizontal: size === 'compact' ? spacing.md : spacing.lg,
                 paddingVertical: spacing.sm,
                 width: fullWidth ? '100%' : undefined,
+                ...(pressed && !off ? { transform: [{ scale: 0.985 }] } : {}),
             }}
         >
             {loading ? (
@@ -77,12 +96,18 @@ export function Button({
             ) : (
                 <>
                     {leading}
-                    <AppText variant="button" tone={textTone} style={variant === 'primary' ? { color: primaryTextColor } : undefined}>
+                    <AppText
+                        variant="button"
+                        tone={textTone}
+                        style={off ? { color: tokens.disabled } : variant === 'primary' ? { color: primaryTextColor } : undefined}
+                    >
                         {children}
                     </AppText>
                     {trailing}
                 </>
             )}
-        </TouchableOpacity>
+        </Pressable>
     );
+
+    return fullWidth ? <View style={{ alignSelf: 'stretch', width: '100%' }}>{control}</View> : control;
 }

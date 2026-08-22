@@ -8,6 +8,9 @@ export interface ThemeTokens {
     surface: string;
     surfaceMuted: string;
     surfaceElevated: string;
+    surfacePressed: string;
+    surfaceSelected: string;
+    disabledSurface: string;
     inputBg: string;
     // Borders
     inputBorder: string;
@@ -36,7 +39,11 @@ export interface ThemeTokens {
     placeholder: string;
     disabled: string;
     overlay: string;
+    scrim: string;
     logoBg: string;
+    heroSurface: string;
+    heroAccent: string;
+    heroLine: string;
 }
 
 export const darkTokens: ThemeTokens = {
@@ -44,6 +51,9 @@ export const darkTokens: ThemeTokens = {
     surface: '#1B1B18',
     surfaceMuted: '#24231F',
     surfaceElevated: '#2B2A25',
+    surfacePressed: '#34332D',
+    surfaceSelected: 'rgba(230,224,55,0.12)',
+    disabledSurface: '#24231F',
     inputBg: '#1B1B18',
     inputBorder: '#3A3932',
     separator: '#34332D',
@@ -68,7 +78,11 @@ export const darkTokens: ThemeTokens = {
     placeholder: '#777268',
     disabled: '#6D685F',
     overlay: 'rgba(0,0,0,0.78)',
+    scrim: 'rgba(0,0,0,0.72)',
     logoBg: '#000000',
+    heroSurface: '#5A5953',
+    heroAccent: '#E6E037',
+    heroLine: 'rgba(247,244,234,0.28)',
 };
 
 export const lightTokens: ThemeTokens = {
@@ -76,6 +90,9 @@ export const lightTokens: ThemeTokens = {
     surface: '#FFFEFA',
     surfaceMuted: '#EFEDE5',
     surfaceElevated: '#FFFFFF',
+    surfacePressed: '#E5E1D7',
+    surfaceSelected: 'rgba(220,214,41,0.16)',
+    disabledSurface: '#EFEDE5',
     inputBg: '#FFFEFA',
     inputBorder: '#C9C3B5',
     separator: '#DDD8CA',
@@ -100,7 +117,11 @@ export const lightTokens: ThemeTokens = {
     placeholder: '#8A857B',
     disabled: '#9E988D',
     overlay: 'rgba(10,10,10,0.68)',
+    scrim: 'rgba(10,10,10,0.56)',
     logoBg: '#000000',
+    heroSurface: '#77766F',
+    heroAccent: '#F2ED84',
+    heroLine: 'rgba(255,254,250,0.38)',
 };
 
 export type ColorScheme = 'dark' | 'light';

@@ -17,7 +17,8 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
     const inner = (
         <View
             style={{
-                flex: 1,
+                flex: scroll ? undefined : 1,
+                flexGrow: scroll ? 1 : undefined,
                 backgroundColor: tokens.bg,
                 paddingTop: insets.top,
                 paddingBottom: insets.bottom,
@@ -32,6 +33,7 @@ export function PageContainer({ children, scroll = false, padded = true }: Props
         return (
             <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView
+                    automaticallyAdjustKeyboardInsets
                     style={{ flex: 1 }}
                     contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={false}
