@@ -47,14 +47,46 @@
         "title": "Continuar de onde parou?"
     },
     "settings": {
+        "autoMarkRead": "Marcar automaticamente como lido",
         "background": "Fundo",
+        "closeSelection": "Fechar seleção",
+        "descriptions": {
+            "autoMarkRead": "Atualiza o progresso quando a página é concluída.",
+            "gap": "Espaço visual entre páginas no fluxo vertical.",
+            "mode": {
+                "DOUBLE": "Duas páginas lado a lado.",
+                "PAGED": "Uma página por vez.",
+                "VERTICAL": "Fluxo contínuo para leitura por rolagem."
+            },
+            "preload": "Quantidade de páginas preparadas ao redor da atual.",
+            "saturation": "Ajuste a intensidade das cores das páginas."
+        },
         "direction": "Direção",
         "fit": "Ajuste",
         "gap": "Espaçamento",
         "mode": "Modo",
         "preload": "Pré-carregamento",
         "quality": "Qualidade",
-        "saturation": "Saturação"
+        "saturation": "Saturação",
+        "sections": {
+            "behavior": {
+                "description": "Espaçamento, antecipação e atualização do progresso.",
+                "title": "Comportamento"
+            },
+            "image": {
+                "description": "Qualidade, fundo e tratamento visual das páginas.",
+                "title": "Imagem"
+            },
+            "navigation": {
+                "description": "Como as páginas avançam e ocupam a tela.",
+                "title": "Navegação"
+            }
+        },
+        "values": {
+            "pages": "{{value}} páginas",
+            "percent": "{{value}}%",
+            "pixels": "{{value}} px"
+        }
     },
     "states": {
         "error": "Não foi possível carregar o capítulo.",

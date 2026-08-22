@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 
@@ -79,7 +79,7 @@ describe('MOB-FEAT-002 appearance controls', () => {
         useSettingsStore.setState({ syncError: 'network', retry });
         const screen = render(<Harness />);
 
-        expect(screen.getByRole('alert').props.children).toContain('Não foi possível sincronizar');
+        expect(screen.getByText('Não foi possível sincronizar. Sua escolha continua ativa neste dispositivo.')).toBeOnTheScreen();
         expect(screen.getByRole('radio', { name: 'Escuro' }).props.accessibilityHint).toContain('Não foi possível sincronizar');
         fireEvent.press(screen.getByRole('button', { name: 'Tentar novamente' }));
 
@@ -108,7 +108,7 @@ describe('MOB-FEAT-002 appearance controls', () => {
         const title = view.getByRole('header', { name: 'Aparência' });
         const dark = view.getByRole('radio', { name: 'Escuro' });
 
-        expect(title.props.style.fontSize).toBe(26);
+        expect(StyleSheet.flatten(title.props.style).fontSize).toBe(44);
         expect(dark.props.style.minHeight).toBeGreaterThanOrEqual(44);
         expect(view.UNSAFE_getAllByType(View).some(node => node.props.style?.flexWrap === 'wrap')).toBe(true);
         expect(dark.props.style.height).toBeUndefined();

@@ -6,14 +6,14 @@
         "retry": "Try loading again"
     },
     "selector": {
-        "eyebrow": "MANGA READER",
-        "title": "What would you like to do?",
-        "subtitle": "Choose a module. Your preferences stay on this device even without an account.",
+        "eyebrow": "READ WITHOUT NOISE",
+        "title": "Your chapters, at your pace.",
+        "subtitle": "Prepare pages on your device and continue exactly where you stopped.",
         "settings": "Device settings"
     },
     "platform": {
         "title": "Reading platform",
-        "description": "The future home for reading, comments, and ratings. Incomplete areas remain closed.",
+        "description": "Access your account and follow the library development.",
         "status": "Under construction",
         "loginAction": "Sign in to the platform",
         "connectedAction": "View connected status",
@@ -28,14 +28,55 @@
         "logout": "Sign out"
     },
     "offline": {
-        "title": "Image translation",
-        "description": "Import images into a private space on this device. No account is required to begin.",
+        "title": "Translate chapter",
+        "description": "Import and prepare your pages",
         "status": "Local-first",
         "action": "Translate from device",
-        "pageTitle": "Translate from device",
+        "pageTitle": "Translate chapter",
+        "flow": {
+            "label": "Preparation progress",
+            "steps": {
+                "import": "Import",
+                "organize": "Organize",
+                "languages": "Languages",
+                "validate": "Validate",
+                "review": "Review"
+            },
+            "back": "Previous step",
+            "reviewTitle": "Review before preparing",
+            "reviewDescription": "Check the pages, languages, and validation. Processing will not start yet.",
+            "pages": "Pages",
+            "languagePair": "Languages",
+            "validation": "Validation",
+            "validationReady": "All pages valid",
+            "intro": {
+                "import": {
+                    "eyebrow": "SELECT IMAGES",
+                    "title": "Each image is a page.",
+                    "description": "Choose every page in the chapter. You can adjust their order next."
+                },
+                "organize": { "eyebrow": "ORGANIZE PAGES", "title": "Set the reading order.", "description": "The sequence below will be the chapter order." },
+                "languages": {
+                    "eyebrow": "TRANSLATION LANGUAGES",
+                    "title": "How do you want to read?",
+                    "description": "Choose the page language and the final chapter language."
+                },
+                "validate": {
+                    "eyebrow": "VALIDATE IMAGES",
+                    "title": "Everything is ready.",
+                    "description": "We check the files so preparation does not stop halfway."
+                },
+                "review": {
+                    "eyebrow": "REVIEW AND PREPARE",
+                    "title": "Ready to prepare?",
+                    "description": "Review the details before creating the project on this device."
+                }
+            }
+        },
         "import": {
             "title": "Choose your pages",
             "description": "Select one or more images with the secure system picker.",
+            "formats": "JPG, PNG, or WEBP · multiple selection",
             "loading": "Loading the local draft…",
             "selectAction": "Select images",
             "replaceAction": "Replace selection",

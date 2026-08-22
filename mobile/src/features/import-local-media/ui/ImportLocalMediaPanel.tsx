@@ -1,10 +1,10 @@
-import { ActivityIndicator, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { LocalMediaImportDraft } from '@/src/entities/local-media-import';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card } from '@/src/shared/ui';
+import { AppText, Button, Card, Icon } from '@/src/shared/ui';
 
 import { type LocalMediaImportController } from '../model/importLocalMedia';
 import { useLocalMediaImport } from '../model/useLocalMediaImport';
@@ -22,6 +22,7 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Prop
     const visibleDraft = draft === undefined ? state.draft : draft;
     const busy = state.status === 'loading' || state.status === 'importing';
     const errorKey = state.error ? `offline.import.errors.${state.error}` : null;
+    const [pressed, setPressed] = useState(false);
 
     if (visibleDraft && !errorKey) {
         return (
@@ -37,7 +38,7 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Prop
                     loading={state.status === 'importing'}
                     disabled={busy}
                     accessibilityLabel={t('offline.import.replaceAction')}
-                    leading={!busy ? <Ionicons name="folder-open-outline" size={20} color={tokens.accentText} /> : undefined}
+                    leading={!busy ? <Icon name="folder-open-outline" size={20} color={tokens.accentText} /> : undefined}
                 >
                     {t('offline.import.replaceAction')}
                 </Button>
@@ -46,16 +47,45 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Prop
     }
 
     return (
-        <Card variant="elevated" style={{ gap: spacing.lg }}>
-            <View style={{ alignItems: 'center', gap: spacing.sm }}>
-                <Ionicons name="images-outline" size={42} color={tokens.accentText} accessibilityElementsHidden />
-                <AppText variant="title" style={{ textAlign: 'center' }}>
-                    {t('offline.import.title')}
+        <View style={{ gap: spacing.md }}>
+            <Pressable
+                accessibilityLabel={t('offline.import.selectAction')}
+                accessibilityRole="button"
+                disabled={busy}
+                onPress={() => void selectImages()}
+                onPressIn={() => setPressed(true)}
+                onPressOut={() => setPressed(false)}
+                style={{
+                    alignItems: 'center',
+                    backgroundColor: pressed ? tokens.surfacePressed : tokens.accentSoft,
+                    borderColor: tokens.accentBorder,
+                    borderRadius: 24,
+                    borderStyle: 'dashed',
+                    borderWidth: 1,
+                    gap: spacing.sm,
+                    justifyContent: 'center',
+                    minHeight: 164,
+                    opacity: busy ? 0.62 : 1,
+                    padding: spacing.lg,
+                }}
+            >
+                <View
+                    style={{
+                        alignItems: 'center',
+                        backgroundColor: tokens.accent,
+                        borderRadius: 14,
+                        height: 52,
+                        justifyContent: 'center',
+                        width: 52,
+                    }}
+                >
+                    <Icon name="add" size={28} color={tokens.onAccent} />
+                </View>
+                <AppText variant="section">{t('offline.import.selectAction')}</AppText>
+                <AppText variant="caption" tone="muted" style={{ textAlign: 'center' }}>
+                    {t('offline.import.formats')}
                 </AppText>
-                <AppText tone="muted" style={{ textAlign: 'center' }}>
-                    {t('offline.import.description')}
-                </AppText>
-            </View>
+            </Pressable>
 
             {state.status === 'loading' && (
                 <View accessibilityRole="progressbar" accessibilityLabel={t('offline.import.loading')} style={{ alignItems: 'center', gap: spacing.sm }}>
@@ -88,18 +118,9 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Prop
                 </View>
             )}
 
-            <Button
-                onPress={() => void selectImages()}
-                loading={state.status === 'importing'}
-                disabled={busy}
-                accessibilityLabel={visibleDraft ? t('offline.import.replaceAction') : t('offline.import.selectAction')}
-                leading={!busy ? <Ionicons name="folder-open-outline" size={20} color={tokens.onAccent} /> : undefined}
-            >
-                {visibleDraft ? t('offline.import.replaceAction') : t('offline.import.selectAction')}
-            </Button>
             <AppText variant="caption" tone="subtle" style={{ textAlign: 'center' }}>
                 {t('offline.import.privacyNote')}
             </AppText>
-        </Card>
+        </View>
     );
 }

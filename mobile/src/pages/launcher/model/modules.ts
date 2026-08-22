@@ -8,6 +8,6 @@ export interface AppModuleDescriptor {
 }
 
 export const APP_MODULES: readonly AppModuleDescriptor[] = [
-    { id: 'platform', availability: 'construction', icon: 'book-outline' },
     { id: 'offline-translation', availability: 'local-first', icon: 'language-outline' },
+    { id: 'platform', availability: 'construction', icon: 'book-outline' },
 ];

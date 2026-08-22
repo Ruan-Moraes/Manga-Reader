@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { type LayoutChangeEvent, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { type LayoutChangeEvent, ScrollView, useWindowDimensions, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 
@@ -7,6 +7,7 @@ import type { ChapterPage } from '@/src/entities/chapter';
 import type { ReaderSettings } from '@/src/entities/user-setting';
 import { buildReaderItems, effectiveReaderMode, logicalItemIndex } from '@/src/features/navigate-chapter-reader';
 import { useTheme } from '@/src/shared/theme';
+import { StatusMessage } from '@/src/shared/ui';
 
 import { adjacentPages, pageAtOffset, pageOffset, readerBackgroundColor, type ReaderPageLayout } from '../model/viewport';
 
@@ -20,7 +21,7 @@ interface Props {
 export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChange }: Props) {
     const { t } = useTranslation('reader');
     const { width, height } = useWindowDimensions();
-    const { minimumTouchTarget, tokens } = useTheme();
+    const { spacing, tokens } = useTheme();
     const scrollRef = useRef<ScrollView>(null);
     const layoutsRef = useRef(new Map<string, ReaderPageLayout>());
     const [failedPages, setFailedPages] = useState<Set<string>>(new Set());
@@ -65,14 +66,11 @@ export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChan
                 style={{ alignItems: 'center' }}
             >
                 {failed ? (
-                    <View style={{ minHeight: Math.min(height, 320), alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-                        <Text accessibilityRole="alert" style={{ color: tokens.danger }}>
-                            {t('errors.image')}
-                        </Text>
-                        <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={t('actions.retryImage', { page: pages.indexOf(page) + 1 })}
-                            onPress={() => {
+                    <View style={{ minHeight: Math.min(height, 320), alignItems: 'center', justifyContent: 'center', gap: spacing.md }}>
+                        <StatusMessage
+                            actionLabel={t('actions.retry')}
+                            title={t('errors.image')}
+                            onAction={() => {
                                 setFailedPages(current => {
                                     const next = new Set(current);
                                     next.delete(page.id);
@@ -80,10 +78,8 @@ export function ReaderViewport({ pages, settings, currentPage, onCurrentPageChan
                                 });
                                 setRetryVersions(current => ({ ...current, [page.id]: (current[page.id] ?? 0) + 1 }));
                             }}
-                            style={{ minHeight: minimumTouchTarget, justifyContent: 'center' }}
-                        >
-                            <Text style={{ color: tokens.accentText }}>{t('actions.retry')}</Text>
-                        </Pressable>
+                            tone="danger"
+                        />
                     </View>
                 ) : (
                     <View style={{ filter: [{ saturate: settings.saturation / 100 }] }}>

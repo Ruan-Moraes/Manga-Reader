@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { useSessionStore } from '@/src/entities/session';
 import { signOut } from '@/src/features/authenticate';
-import { ROUTES } from '@/src/shared/navigation';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, PageContainer } from '@/src/shared/ui';
+import { AppText, Button, NavigationHeader, PageContainer } from '@/src/shared/ui';
 import { SettingsIndex, SettingsSections } from '@/src/widgets/settings-index';
 
 export function ProfilePage() {
@@ -22,7 +22,8 @@ export function ProfilePage() {
 
     return (
         <PageContainer scroll>
-            <View style={{ flex: 1, paddingHorizontal: spacing.sm, paddingTop: spacing.xl }}>
+            <View style={{ alignSelf: 'center', flex: 1, maxWidth: 720, paddingTop: spacing.sm, width: '100%' }}>
+                <NavigationHeader backLabel={tSettings('actions.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
                 <AppText accessibilityRole="header" variant="title">
                     {t('nav.profile')}
                 </AppText>

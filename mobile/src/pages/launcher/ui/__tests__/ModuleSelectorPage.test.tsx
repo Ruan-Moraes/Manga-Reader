@@ -25,9 +25,9 @@ describe('MOB-FEAT-010 module selector', () => {
     it('mostra os dois módulos e encaminha guest da plataforma ao login', () => {
         renderPage();
 
-        expect(screen.getByRole('header', { name: 'O que você quer fazer?' })).toBeOnTheScreen();
-        expect(screen.getByText('Em construção')).toBeOnTheScreen();
-        expect(screen.getByText('Local-first')).toBeOnTheScreen();
+        expect(screen.getByRole('header', { name: 'Seus capítulos, no seu ritmo.' })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: /Em construção/ })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: /Local-first/ })).toBeOnTheScreen();
 
         fireEvent.press(screen.getByRole('button', { name: /Plataforma de leitura/ }));
         expect(mockPush).toHaveBeenCalledWith({ pathname: '/(auth)/login', params: { returnTo: '/platform/status' } });
@@ -35,7 +35,7 @@ describe('MOB-FEAT-010 module selector', () => {
 
     it('abre a importação local e usa o status quando já autenticado', () => {
         const view = renderPage();
-        fireEvent.press(screen.getByRole('button', { name: /Tradução de imagens/ }));
+        fireEvent.press(screen.getByRole('button', { name: /Traduzir capítulo/ }));
         expect(mockPush).toHaveBeenCalledWith('/offline-translation');
 
         view.unmount();

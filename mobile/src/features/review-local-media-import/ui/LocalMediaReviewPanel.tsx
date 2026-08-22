@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { LocalMediaImportDraft, LocalMediaImportItem } from '@/src/entities/local-media-import';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card } from '@/src/shared/ui';
+import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
+import { AppText, Button } from '@/src/shared/ui';
 
 import { possibleDuplicateItemIds, type ReviewLocalMediaImportController, reviewLocalMediaImportController } from '../model/reviewLocalMediaImport';
 import { useReviewLocalMediaImport } from '../model/useReviewLocalMediaImport';
 
 const THUMBNAIL_SIZE = 76;
-const KANBAN_THUMBNAIL_HEIGHT = 112;
+const KANBAN_THUMBNAIL_HEIGHT = 148;
 
 type ViewMode = 'kanban' | 'scroll';
 
@@ -36,9 +36,10 @@ interface ItemProps {
     onRemove: () => void;
     onPreview: () => void;
     itemMeta?: ReactNode;
+    columnCount: number;
 }
 
-function ReviewItem({ draft, item, duplicate, busy, mode, uri, onMove, onRemove, onPreview, itemMeta }: ItemProps) {
+function ReviewItem({ draft, item, duplicate, busy, mode, uri, onMove, onRemove, onPreview, itemMeta, columnCount }: ItemProps) {
     const { t } = useTranslation('launcher');
     const { radii, spacing, tokens } = useTheme();
     const [failed, setFailed] = useState(false);
@@ -53,11 +54,11 @@ function ReviewItem({ draft, item, duplicate, busy, mode, uri, onMove, onRemove,
                 alignItems: kanban ? 'stretch' : 'center',
                 borderColor: duplicate ? tokens.warn : tokens.separator,
                 borderRadius: radii.card,
-                borderWidth: 1,
+                borderWidth: kanban ? 0 : 1,
                 flexDirection: kanban ? 'column' : 'row',
                 gap: spacing.sm,
-                padding: spacing.xs,
-                width: kanban ? '48%' : undefined,
+                padding: kanban ? 0 : spacing.xs,
+                width: kanban ? (`${Math.max(30, 100 / columnCount - 2)}%` as `${number}%`) : undefined,
             }}
         >
             <Pressable
@@ -158,20 +159,20 @@ function ViewModeButton({ icon, label, selected, onPress }: ViewModeButtonProps)
             onPress={onPress}
             style={{
                 alignItems: 'center',
-                backgroundColor: selected ? tokens.accent : tokens.surfaceMuted,
-                borderColor: selected ? tokens.accent : tokens.separator,
-                borderRadius: radii.control,
+                backgroundColor: selected ? tokens.text : tokens.surfaceMuted,
+                borderColor: selected ? tokens.text : tokens.separator,
+                borderRadius: radii.sm,
                 borderWidth: 1,
-                flex: 1,
                 flexDirection: 'row',
                 gap: spacing.xs,
                 justifyContent: 'center',
                 minHeight: minimumTouchTarget,
-                paddingHorizontal: spacing.sm,
+                minWidth: 88,
+                paddingHorizontal: spacing.md,
             }}
         >
-            <Ionicons name={icon} size={18} color={selected ? tokens.onAccent : tokens.accentText} accessibilityElementsHidden />
-            <AppText variant="label" style={{ color: selected ? tokens.onAccent : tokens.accentText }}>
+            <Ionicons name={icon} size={18} color={selected ? tokens.bg : tokens.accentText} accessibilityElementsHidden />
+            <AppText variant="label" style={{ color: selected ? tokens.bg : tokens.accentText }}>
                 {label}
             </AppText>
         </Pressable>
@@ -181,6 +182,7 @@ function ViewModeButton({ icon, label, selected, onPress }: ViewModeButtonProps)
 export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterReview, renderItemMeta }: Props) {
     const { t } = useTranslation('launcher');
     const { spacing, tokens } = useTheme();
+    const { reviewColumns } = useResponsiveLayout();
     const reviewController = controller ?? reviewLocalMediaImportController;
     const actions = useReviewLocalMediaImport(draft, onDraftChange, reviewController);
     const [viewMode, setViewMode] = useState<ViewMode>('kanban');
@@ -242,15 +244,8 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
 
     return (
         <>
-            <Card variant="elevated" style={{ flex: 1, gap: spacing.sm, minHeight: 0, padding: spacing.md }}>
-                <View style={{ gap: spacing.xs }}>
-                    <AppText variant="section">{t('offline.review.title')}</AppText>
-                    <AppText variant="caption" tone="muted">
-                        {t('offline.review.description', { count: draft.items.length })}
-                    </AppText>
-                </View>
-
-                <View accessibilityLabel={t('offline.review.viewLabel')} style={{ flexDirection: 'row', gap: spacing.sm }}>
+            <View style={{ flex: 1, gap: spacing.sm, minHeight: 0 }}>
+                <View accessibilityLabel={t('offline.review.viewLabel')} style={{ flexDirection: 'row', gap: spacing.xs }}>
                     <ViewModeButton
                         icon="grid-outline"
                         label={t('offline.review.viewKanban')}
@@ -266,11 +261,11 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                 </View>
 
                 <FlatList
-                    key={viewMode}
+                    key={`${viewMode}-${reviewColumns}`}
                     testID={`local-media-review-list-${viewMode}`}
                     data={draft.items}
                     keyExtractor={item => item.id}
-                    numColumns={viewMode === 'kanban' ? 2 : 1}
+                    numColumns={viewMode === 'kanban' ? reviewColumns : 1}
                     columnWrapperStyle={viewMode === 'kanban' ? { gap: spacing.sm } : undefined}
                     initialNumToRender={viewMode === 'kanban' ? 8 : 6}
                     maxToRenderPerBatch={8}
@@ -294,10 +289,11 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
                                 setPreviewItem(item);
                             }}
                             itemMeta={renderItemMeta?.(item)}
+                            columnCount={reviewColumns}
                         />
                     )}
                 />
-            </Card>
+            </View>
 
             <Modal testID="local-media-preview-modal" visible={!!previewItem} animationType="fade" presentationStyle="fullScreen" onRequestClose={closePreview}>
                 <SafeAreaView style={{ backgroundColor: tokens.overlay, flex: 1 }}>

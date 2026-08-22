@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/src/entities/session';
 import { ContentLanguagesEditor, useContentLanguagesStore } from '@/src/features/manage-content-languages';
 import { resolveSettingsAccess, SETTINGS_SECTIONS } from '@/src/features/navigate-settings';
-import { ROUTES } from '@/src/shared/navigation';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
 import { Button, ScreenScaffold } from '@/src/shared/ui';
 
@@ -20,7 +20,12 @@ export function SettingsContentLanguagesPage() {
     const access = resolveSettingsAccess(section, isAuthenticated);
 
     return (
-        <ScreenScaffold backLabel={t('actions.back')} title={t('sections.contentLanguages.title')}>
+        <ScreenScaffold
+            backLabel={t('actions.back')}
+            description={t('sections.contentLanguages.description')}
+            onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
+            title={t('sections.contentLanguages.title')}
+        >
             {aligned ? (
                 <ContentLanguagesEditor />
             ) : access.kind === 'open' ? (

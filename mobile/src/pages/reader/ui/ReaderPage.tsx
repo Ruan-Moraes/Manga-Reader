@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
-import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
@@ -11,8 +10,9 @@ import { normalizeReaderSettings } from '@/src/features/configure-chapter-reader
 import { useSettingsStore } from '@/src/features/manage-settings';
 import { clampLogicalPage } from '@/src/features/navigate-chapter-reader';
 import { createProgressSnapshot, isReadingProgressValidForChapter, ProgressSynchronizer, resolveResumeChoice } from '@/src/features/track-reading-progress';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { Button, EmptyState } from '@/src/shared/ui';
+import { Button, EmptyState, NavigationHeader, PageContainer } from '@/src/shared/ui';
 import { ChapterReader } from '@/src/widgets/chapter-reader';
 
 interface Props {
@@ -39,6 +39,7 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
     const [suppressHydrationWrite, setSuppressHydrationWrite] = useState(false);
     const [syncError, setSyncError] = useState(false);
     const unavailableDiagnosticReported = useRef(false);
+    const exitReader = () => navigateBackOrReplace(ROUTES.ROOT);
 
     const chapterQuery = useQuery(chapterReaderQueryOptions(titleId, chapterNumber));
     const progressQuery = useQuery({
@@ -115,40 +116,53 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
         setResumeResolved(true);
     };
 
-    if (chapterQuery.isPending) return <EmptyState title={t('states.loading')} />;
+    if (chapterQuery.isPending) {
+        return (
+            <PageContainer>
+                <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
+                <EmptyState title={t('states.loading')} />
+            </PageContainer>
+        );
+    }
     if (chapterQuery.isError) {
         return (
-            <EmptyState
-                title={t('states.error')}
-                description={t('states.safeExit')}
-                action={
-                    <View style={{ gap: spacing.sm }}>
-                        <Button onPress={() => void chapterQuery.refetch()}>{t('actions.retry')}</Button>
-                        {pendingResume ? (
-                            <Button variant="outline" onPress={openRequestedChapter}>
-                                {t('resume.requested')}
-                            </Button>
-                        ) : null}
-                    </View>
-                }
-            />
+            <PageContainer>
+                <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
+                <EmptyState
+                    title={t('states.error')}
+                    description={t('states.safeExit')}
+                    action={
+                        <View style={{ gap: spacing.sm }}>
+                            <Button onPress={() => void chapterQuery.refetch()}>{t('actions.retry')}</Button>
+                            {pendingResume ? (
+                                <Button variant="outline" onPress={openRequestedChapter}>
+                                    {t('resume.requested')}
+                                </Button>
+                            ) : null}
+                        </View>
+                    }
+                />
+            </PageContainer>
         );
     }
     if (!chapterQuery.data || chapterQuery.data.pages.length === 0) {
         return (
-            <EmptyState
-                title={t('states.unavailable')}
-                description={t('states.safeExit')}
-                action={
-                    pendingResume ? (
-                        <Button variant="outline" onPress={openRequestedChapter}>
-                            {t('resume.requested')}
-                        </Button>
-                    ) : (
-                        <Button onPress={() => router.back()}>{t('actions.exit')}</Button>
-                    )
-                }
-            />
+            <PageContainer>
+                <NavigationHeader backLabel={t('actions.exit')} onBack={exitReader} />
+                <EmptyState
+                    title={t('states.unavailable')}
+                    description={t('states.safeExit')}
+                    action={
+                        pendingResume ? (
+                            <Button variant="outline" onPress={openRequestedChapter}>
+                                {t('resume.requested')}
+                            </Button>
+                        ) : (
+                            <Button onPress={exitReader}>{t('actions.exit')}</Button>
+                        )
+                    }
+                />
+            </PageContainer>
         );
     }
 
@@ -192,7 +206,7 @@ function IdentityReaderPage({ titleId, requestedChapter, identityEpoch, isAuthen
             }}
             onSettingsChange={patch => void updateSettings(current => ({ ...current, reader: normalizeReaderSettings(patch, current) }), 'reader')}
             onToggleControls={() => setControlsVisible(visible => !visible)}
-            onExit={() => router.back()}
+            onExit={exitReader}
             onRetryProgress={() => void synchronizer.retry().then(() => setSyncError(synchronizer.getState().status === 'error'))}
             onRetryProgressHydration={() => void progressQuery.refetch()}
         />

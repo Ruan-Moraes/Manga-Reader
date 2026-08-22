@@ -6,14 +6,14 @@
         "retry": "Tentar carregar novamente"
     },
     "selector": {
-        "eyebrow": "MANGA READER",
-        "title": "O que você quer fazer?",
-        "subtitle": "Escolha um módulo. Suas preferências ficam neste aparelho mesmo sem uma conta.",
+        "eyebrow": "LEITURA SEM RUÍDO",
+        "title": "Seus capítulos, no seu ritmo.",
+        "subtitle": "Prepare suas páginas no aparelho e continue exatamente de onde parou.",
         "settings": "Configurações do aparelho"
     },
     "platform": {
         "title": "Plataforma de leitura",
-        "description": "O espaço futuro para leitura, comentários e avaliações. As áreas incompletas permanecem fechadas.",
+        "description": "Acesse sua conta e acompanhe o desenvolvimento da biblioteca.",
         "status": "Em construção",
         "loginAction": "Entrar na plataforma",
         "connectedAction": "Ver status conectado",
@@ -28,14 +28,59 @@
         "logout": "Sair da conta"
     },
     "offline": {
-        "title": "Tradução de imagens",
-        "description": "Importe imagens para um espaço privado no aparelho. Nenhuma conta é necessária para começar.",
+        "title": "Traduzir capítulo",
+        "description": "Importe e prepare suas páginas",
         "status": "Local-first",
         "action": "Traduzir do dispositivo",
-        "pageTitle": "Traduzir do dispositivo",
+        "pageTitle": "Traduzir capítulo",
+        "flow": {
+            "label": "Progresso da preparação",
+            "steps": {
+                "import": "Importar",
+                "organize": "Organizar",
+                "languages": "Idiomas",
+                "validate": "Validar",
+                "review": "Revisar"
+            },
+            "back": "Etapa anterior",
+            "reviewTitle": "Revise antes de preparar",
+            "reviewDescription": "Confira páginas, idiomas e validação. O processamento ainda não começará.",
+            "pages": "Páginas",
+            "languagePair": "Idiomas",
+            "validation": "Validação",
+            "validationReady": "Todas as páginas válidas",
+            "intro": {
+                "import": {
+                    "eyebrow": "SELECIONAR IMAGENS",
+                    "title": "Cada imagem é uma página.",
+                    "description": "Escolha todas as páginas do capítulo. Você poderá ajustar a ordem a seguir."
+                },
+                "organize": {
+                    "eyebrow": "ORGANIZAR PÁGINAS",
+                    "title": "Defina a ordem de leitura.",
+                    "description": "A sequência abaixo será a ordem do capítulo."
+                },
+                "languages": {
+                    "eyebrow": "IDIOMAS DA TRADUÇÃO",
+                    "title": "Como você quer ler?",
+                    "description": "Escolha o idioma das páginas e o idioma final do capítulo."
+                },
+                "validate": {
+                    "eyebrow": "VALIDAR IMAGENS",
+                    "title": "Tudo certo para seguir.",
+                    "description": "Conferimos os arquivos para que a preparação não pare no meio."
+                },
+                "review": {
+                    "eyebrow": "REVISAR E PREPARAR",
+                    "title": "Pronto para preparar?",
+                    "description": "Revise os detalhes antes de criar o projeto no aparelho."
+                }
+            }
+        },
         "import": {
             "title": "Escolha suas páginas",
             "description": "Selecione uma ou várias imagens pelo seletor seguro do sistema.",
+            "formats": "JPG, PNG ou WEBP · seleção múltipla",
             "loading": "Carregando o rascunho local…",
             "selectAction": "Selecionar imagens",
             "replaceAction": "Substituir seleção",

@@ -1,17 +1,32 @@
 {
     "index": {
         "title": "Settings",
-        "subtitle": "Customize your Manga Reader experience."
+        "eyebrow": "Preferences",
+        "editorialTitle": "Made for you.",
+        "subtitle": "Tune reading, language, privacy, and data without losing your flow."
     },
     "groups": {
-        "app": "App",
-        "reading": "Reading",
-        "device": "Device",
-        "account": "Account"
+        "app": {
+            "title": "App",
+            "description": "Appearance, accessibility, language, and region."
+        },
+        "reading": {
+            "title": "Reading",
+            "description": "Choose how pages fit and move across the screen."
+        },
+        "device": {
+            "title": "Device",
+            "description": "Manage storage and view app information."
+        },
+        "account": {
+            "title": "Account",
+            "description": "Preferences synced and protected by your account."
+        }
     },
     "sections": {
         "appearance": {
             "title": "Appearance and accessibility",
+            "editorialTitle": "Reading that is easy on the eyes.",
             "description": "Theme, text, density, motion, and contrast."
         },
         "locale": {

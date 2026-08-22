@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import { useSessionStore } from '@/src/entities/session';
 import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } from '@/src/shared/files';
+import { formatByteSize } from '@/src/shared/locale';
 import { type LocalDataSummary, measureLocalData } from '@/src/shared/storage';
 import { useTheme } from '@/src/shared/theme';
-import { Button } from '@/src/shared/ui';
+import { AppText, Button, FormSection, Icon, StatusMessage } from '@/src/shared/ui';
 
 import {
     clearApplicationCache,
@@ -25,14 +26,19 @@ const confirmationBody = (t: (key: string) => string, descriptor: (typeof DATA_C
 interface DataControlsPanelProps {
     storageMeasurement?: StorageMeasurementAdapter;
     onAuthenticationRequired?: () => void;
+    showTitle?: boolean;
 }
 
-export function DataControlsPanel({ storageMeasurement = temporaryExportStorageMeasurement, onAuthenticationRequired }: DataControlsPanelProps) {
+export function DataControlsPanel({
+    storageMeasurement = temporaryExportStorageMeasurement,
+    onAuthenticationRequired,
+    showTitle = true,
+}: DataControlsPanelProps) {
     const queryClient = useQueryClient();
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const { busyAction, errorKey, failedCategories, run } = useDataControlsStore();
     const { t } = useTranslation('common');
-    const { spacing, tokens, typography } = useTheme();
+    const { radii, spacing, tokens } = useTheme();
     const [storage, setStorage] = useState<{ usedBytes: number; scope: string } | null>(null);
     const [offlineData, setOfflineData] = useState<LocalDataSummary | null>({ totalBytes: 0, participantIds: [] });
 
@@ -73,59 +79,84 @@ export function DataControlsPanel({ storageMeasurement = temporaryExportStorageM
     };
 
     return (
-        <View style={{ gap: spacing.md, marginTop: spacing.xl }}>
-            <Text accessibilityRole="header" style={{ color: tokens.text, fontSize: typography.h2 }}>
-                {t('dataControls.title')}
-            </Text>
-            {storage && (
-                <Text style={{ color: tokens.muted }}>
-                    {t('dataControls.storageUsage', {
-                        bytes: storage.usedBytes,
-                        scope: storage.scope === 'temporary-exports' ? t('dataControls.storageScopes.temporaryExports') : storage.scope,
-                    })}
-                </Text>
-            )}
-            <Button
-                loading={busyAction === 'cache'}
-                disabled={busyAction !== null}
-                onPress={() => confirm('cache', () => clearApplicationCache(true, { queryClient }))}
-                variant="outline"
-            >
-                {t('dataControls.cache.action')}
-            </Button>
-            {offlineData && offlineData.totalBytes > 0 ? (
+        <View style={{ gap: spacing.md }}>
+            {showTitle ? (
+                <AppText accessibilityRole="header" variant="title">
+                    {t('dataControls.title')}
+                </AppText>
+            ) : null}
+            <FormSection title={t('dataControls.sections.device.title')} description={t('dataControls.sections.device.description')}>
+                {storage ? (
+                    <View style={{ backgroundColor: tokens.accentSoft, borderRadius: radii.control, gap: spacing.xs, padding: spacing.md }}>
+                        <AppText variant="eyebrow" tone="accent">
+                            {t('dataControls.storageLabel')}
+                        </AppText>
+                        <AppText variant="label">
+                            {t('dataControls.storageUsage', {
+                                size: formatByteSize(storage.usedBytes),
+                                scope: storage.scope === 'temporary-exports' ? t('dataControls.storageScopes.temporaryExports') : storage.scope,
+                            })}
+                        </AppText>
+                    </View>
+                ) : null}
                 <Button
-                    loading={busyAction === 'offline'}
+                    accessibilityHint={t('dataControls.cache.description')}
                     disabled={busyAction !== null}
-                    onPress={() => confirm('offline', () => clearRegisteredLocalData(true, offlineData))}
+                    leading={<Icon name="sparkles-outline" decorative />}
+                    loading={busyAction === 'cache'}
+                    onPress={() => confirm('cache', () => clearApplicationCache(true, { queryClient }))}
+                    tone="danger"
                     variant="outline"
                 >
-                    {t('dataControls.offline.action', { bytes: offlineData.totalBytes })}
+                    {t('dataControls.cache.action')}
                 </Button>
-            ) : (
-                <Text style={{ color: tokens.muted }}>{t('dataControls.offline.empty')}</Text>
-            )}
-            <Button
-                loading={busyAction === 'export'}
-                disabled={busyAction !== null}
-                onPress={() => (isAuthenticated ? void run('export', () => shareAccountExport(true, { queryClient })) : onAuthenticationRequired?.())}
-                variant="outline"
-            >
-                {t('dataControls.export.action')}
-            </Button>
-            <Button
-                loading={busyAction === 'history'}
-                disabled={busyAction !== null}
-                onPress={() => (isAuthenticated ? confirm('history', () => clearTrackedHistory(true, true, { queryClient })) : onAuthenticationRequired?.())}
-                variant="outline"
-            >
-                {t('dataControls.history.action')}
-            </Button>
+                {offlineData && offlineData.totalBytes > 0 ? (
+                    <Button
+                        accessibilityHint={t('dataControls.offline.description')}
+                        disabled={busyAction !== null}
+                        leading={<Icon name="phone-portrait-outline" decorative />}
+                        loading={busyAction === 'offline'}
+                        onPress={() => confirm('offline', () => clearRegisteredLocalData(true, offlineData))}
+                        tone="danger"
+                        variant="outline"
+                    >
+                        {t('dataControls.offline.action', { size: formatByteSize(offlineData.totalBytes) })}
+                    </Button>
+                ) : (
+                    <AppText tone="muted">{t('dataControls.offline.empty')}</AppText>
+                )}
+            </FormSection>
+            <FormSection title={t('dataControls.sections.account.title')} description={t('dataControls.sections.account.description')}>
+                <Button
+                    accessibilityHint={t('dataControls.export.description')}
+                    disabled={busyAction !== null}
+                    leading={<Icon name="download-outline" decorative />}
+                    loading={busyAction === 'export'}
+                    onPress={() => (isAuthenticated ? void run('export', () => shareAccountExport(true, { queryClient })) : onAuthenticationRequired?.())}
+                    variant="outline"
+                >
+                    {t('dataControls.export.action')}
+                </Button>
+                <Button
+                    accessibilityHint={t('dataControls.history.description')}
+                    disabled={busyAction !== null}
+                    leading={<Icon name="time-outline" decorative />}
+                    loading={busyAction === 'history'}
+                    onPress={() =>
+                        isAuthenticated ? confirm('history', () => clearTrackedHistory(true, true, { queryClient })) : onAuthenticationRequired?.()
+                    }
+                    tone="danger"
+                    variant="outline"
+                >
+                    {t('dataControls.history.action')}
+                </Button>
+            </FormSection>
             {errorKey && (
-                <Text style={{ color: tokens.danger }}>
-                    {t(errorKey)}
-                    {failedCategories.length > 0 ? ` ${failedCategories.map(category => t(`dataControls.cache.${category}`)).join(', ')}.` : ''}
-                </Text>
+                <StatusMessage
+                    description={failedCategories.length > 0 ? failedCategories.map(category => t(`dataControls.cache.${category}`)).join(', ') : undefined}
+                    title={t(errorKey)}
+                    tone="danger"
+                />
             )}
         </View>
     );

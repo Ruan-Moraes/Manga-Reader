@@ -1,10 +1,14 @@
 import { View } from 'react-native';
+import { Image } from 'expo-image';
 
-import { useTheme } from '@/src/shared/theme';
-import { AppText, Button } from '@/src/shared/ui';
+import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
+import { AppText, IconButton, StatusMessage } from '@/src/shared/ui';
 
 import { APP_MODULES, type AppModuleId } from '../model/modules';
 import { AppModuleCard } from './AppModuleCard';
+import { EditorialHero } from './EditorialHero';
+
+const LOGO = require('../../../../assets/images/logo.png');
 
 interface ModuleSelectorProps {
     authenticated: boolean;
@@ -21,10 +25,28 @@ interface ModuleSelectorProps {
 }
 
 export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettings, recovery }: ModuleSelectorProps) {
-    const { layout, radii, spacing, tokens } = useTheme();
+    const { radii, spacing } = useTheme();
+    const responsive = useResponsiveLayout();
 
     return (
-        <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl, paddingTop: spacing.xl }}>
+        <View
+            style={{
+                alignSelf: 'center',
+                flex: 1,
+                gap: spacing.lg,
+                maxWidth: responsive.contentMaxWidth,
+                paddingBottom: spacing.xl,
+                paddingTop: spacing.md,
+                width: '100%',
+            }}
+        >
+            <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                <Image source={LOGO} style={{ borderRadius: radii.sm, height: 34, width: 34 }} contentFit="cover" />
+                <AppText variant="title" style={{ flex: 1, marginLeft: spacing.sm }}>
+                    Manga Reader
+                </AppText>
+                <IconButton accessibilityLabel={copy.settings} icon="ellipsis-horizontal" onPress={onOpenSettings} />
+            </View>
             <View style={{ gap: spacing.sm }}>
                 <AppText variant="eyebrow" tone="accent">
                     {copy.eyebrow}
@@ -34,26 +56,8 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
                 </AppText>
                 <AppText tone="muted">{copy.subtitle}</AppText>
             </View>
-            {recovery ? (
-                <View
-                    accessibilityLiveRegion="assertive"
-                    style={{
-                        backgroundColor: tokens.surface,
-                        borderColor: tokens.danger,
-                        borderRadius: radii.card,
-                        borderWidth: 1,
-                        gap: spacing.sm,
-                        padding: spacing.md,
-                    }}
-                >
-                    <AppText accessibilityRole="alert" tone="danger">
-                        {recovery.message}
-                    </AppText>
-                    <Button fullWidth={false} onPress={recovery.onRetry} variant="outline">
-                        {recovery.action}
-                    </Button>
-                </View>
-            ) : null}
+            <EditorialHero />
+            {recovery ? <StatusMessage actionLabel={recovery.action} onAction={recovery.onRetry} title={recovery.message} tone="danger" /> : null}
             <View style={{ gap: spacing.md }}>
                 {APP_MODULES.map(module => {
                     const item = copy.modules[module.id];
@@ -70,9 +74,6 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
                     );
                 })}
             </View>
-            <Button onPress={onOpenSettings} variant="ghost">
-                {copy.settings}
-            </Button>
         </View>
     );
 }

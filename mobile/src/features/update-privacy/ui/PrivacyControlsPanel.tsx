@@ -1,4 +1,4 @@
-import { Alert, Text, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,7 @@ import {
     usePrivacySettingsStore,
 } from '@/src/entities/user';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, ChoiceGroup } from '@/src/shared/ui';
+import { AppText, ChoiceCards, FormSection, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
 
 import { usePrivacyMutationStore } from '../model/privacyMutationStore';
 import { changeHistoryVisibility, retryPrivacyConsumers, retryPrivacyUpdate, updatePrivacy } from '../model/updatePrivacy';
@@ -26,7 +26,7 @@ export function PrivacyControlsPanel() {
     const { radii, spacing, tokens } = useTheme();
     const run = (operation: Promise<unknown>) => void operation.catch(() => undefined);
 
-    if (!current) return hydrationError ? <Text style={{ color: tokens.danger }}>{t('privacy.error')}</Text> : null;
+    if (!current) return hydrationError ? <StatusMessage title={t('privacy.error')} tone="danger" /> : null;
 
     const confirmDnt = () =>
         new Promise<boolean>(resolve =>
@@ -52,54 +52,75 @@ export function PrivacyControlsPanel() {
         ]);
     };
 
-    const group = <T extends string>(label: string, options: readonly T[], value: T, onChange: (option: T) => void) => (
-        <ChoiceGroup label={label} onChange={onChange} optionLabel={option => t(`privacy.option.${option}`)} options={options} value={value} />
-    );
-
     return (
-        <View style={{ gap: spacing.lg, marginTop: spacing.xl }}>
-            <AppText accessibilityRole="header" variant="title">
-                {t('privacy.title')}
-            </AppText>
-            {group(t('privacy.comments'), COMMENT_VISIBILITY_OPTIONS, current.commentVisibility, option =>
-                run(updatePrivacy({ commentVisibility: option }, queryClient)),
-            )}
-            {group(t('privacy.history'), HISTORY_VISIBILITY_OPTIONS, current.viewHistoryVisibility, option =>
-                run(changeHistoryVisibility(option, confirmDnt, queryClient)),
-            )}
-            {group(t('privacy.library'), LIBRARY_VISIBILITY_OPTIONS, current.libraryVisibility, option =>
-                run(updatePrivacy({ libraryVisibility: option }, queryClient)),
-            )}
-            {group(t('privacy.adultContent'), ADULT_CONTENT_OPTIONS, current.adultContentPreference, option =>
-                run(updatePrivacy({ adultContentPreference: option }, queryClient)),
-            )}
-            <SensitiveContentGuard adult preference={current.adultContentPreference} revealLabel={t('privacy.sensitivePreview.reveal')}>
-                <View style={{ backgroundColor: tokens.surface, borderRadius: radii.card, padding: spacing.md }}>
-                    <Text style={{ color: tokens.text }}>{t('privacy.sensitivePreview.content')}</Text>
-                </View>
-            </SensitiveContentGuard>
-            <Button disabled={current.viewHistoryVisibility === 'DO_NOT_TRACK'} onPress={toggleAnalytics} variant="outline">
-                {t(current.behaviorAnalyticsEnabled ? 'privacy.analytics.disable' : 'privacy.analytics.enable')}
-            </Button>
+        <View style={{ gap: spacing.lg }}>
+            <FormSection title={t('privacy.sections.social.title')} description={t('privacy.sections.social.description')}>
+                <SegmentedControl
+                    label={t('privacy.comments')}
+                    onChange={option => run(updatePrivacy({ commentVisibility: option }, queryClient))}
+                    optionLabel={option => t(`privacy.option.${option}`)}
+                    options={COMMENT_VISIBILITY_OPTIONS}
+                    value={current.commentVisibility}
+                />
+                <SegmentedControl
+                    label={t('privacy.library')}
+                    onChange={option => run(updatePrivacy({ libraryVisibility: option }, queryClient))}
+                    optionLabel={option => t(`privacy.option.${option}`)}
+                    options={LIBRARY_VISIBILITY_OPTIONS}
+                    value={current.libraryVisibility}
+                />
+            </FormSection>
+            <FormSection title={t('privacy.sections.activity.title')} description={t('privacy.sections.activity.description')}>
+                <ChoiceCards
+                    label={t('privacy.history')}
+                    layout="stacked"
+                    onChange={option => run(changeHistoryVisibility(option, confirmDnt, queryClient))}
+                    optionDescription={option => t(`privacy.descriptions.history.${option}`)}
+                    optionLabel={option => t(`privacy.option.${option}`)}
+                    options={HISTORY_VISIBILITY_OPTIONS}
+                    value={current.viewHistoryVisibility}
+                />
+                <SwitchRow
+                    description={
+                        current.viewHistoryVisibility === 'DO_NOT_TRACK' ? t('privacy.analytics.disabledDescription') : t('privacy.analytics.description')
+                    }
+                    disabled={current.viewHistoryVisibility === 'DO_NOT_TRACK'}
+                    label={t('privacy.analytics.label')}
+                    onChange={toggleAnalytics}
+                    value={current.behaviorAnalyticsEnabled}
+                />
+            </FormSection>
+            <FormSection title={t('privacy.sections.sensitive.title')} description={t('privacy.sections.sensitive.description')}>
+                <ChoiceCards
+                    label={t('privacy.adultContent')}
+                    layout="stacked"
+                    onChange={option => run(updatePrivacy({ adultContentPreference: option }, queryClient))}
+                    optionDescription={option => t(`privacy.descriptions.adultContent.${option}`)}
+                    optionLabel={option => t(`privacy.option.${option}`)}
+                    options={ADULT_CONTENT_OPTIONS}
+                    value={current.adultContentPreference}
+                />
+                <SensitiveContentGuard adult preference={current.adultContentPreference} revealLabel={t('privacy.sensitivePreview.reveal')}>
+                    <View style={{ backgroundColor: tokens.surfaceMuted, borderRadius: radii.card, padding: spacing.md }}>
+                        <AppText>{t('privacy.sensitivePreview.content')}</AppText>
+                    </View>
+                </SensitiveContentGuard>
+            </FormSection>
             {error && (
-                <View style={{ gap: spacing.sm }}>
-                    <Text accessibilityRole="alert" style={{ color: tokens.danger }}>
-                        {t('privacy.error')}
-                    </Text>
-                    <Button onPress={() => run(retryPrivacyUpdate(queryClient))} variant="outline">
-                        {t('privacy.retryWrite')}
-                    </Button>
-                </View>
+                <StatusMessage
+                    actionLabel={t('privacy.retryWrite')}
+                    onAction={() => run(retryPrivacyUpdate(queryClient))}
+                    title={t('privacy.error')}
+                    tone="danger"
+                />
             )}
             {invalidationError && (
-                <View style={{ gap: spacing.sm }}>
-                    <Text accessibilityRole="alert" style={{ color: tokens.danger }}>
-                        {t('privacy.consumerError')}
-                    </Text>
-                    <Button onPress={() => run(retryPrivacyConsumers(queryClient))} variant="outline">
-                        {t('privacy.retryConsumers')}
-                    </Button>
-                </View>
+                <StatusMessage
+                    actionLabel={t('privacy.retryConsumers')}
+                    onAction={() => run(retryPrivacyConsumers(queryClient))}
+                    title={t('privacy.consumerError')}
+                    tone="danger"
+                />
             )}
         </View>
     );

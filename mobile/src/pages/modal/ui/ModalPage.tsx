@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next';
 
-import { EmptyState, PageContainer } from '@/src/shared/ui';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
+import { EmptyState, ScreenScaffold } from '@/src/shared/ui';
 
 export function ModalPage() {
     const { t } = useTranslation('common');
 
     return (
-        <PageContainer>
+        <ScreenScaffold compact backLabel={t('navigation.dismiss')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} title={t('modal.title')}>
             <EmptyState title={t('modal.title')} />
-        </PageContainer>
+        </ScreenScaffold>
     );
 }

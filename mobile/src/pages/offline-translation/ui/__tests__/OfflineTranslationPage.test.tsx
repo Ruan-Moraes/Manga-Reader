@@ -88,11 +88,10 @@ describe('MOB-FEAT-012 local media import page', () => {
         await waitFor(() => expect(screen.getByRole('button', { name: 'Selecionar imagens' }).props.accessibilityState.disabled).toBe(false));
         fireEvent.press(screen.getByRole('button', { name: 'Selecionar imagens' }));
 
-        expect(await screen.findByText('2 imagens importadas')).toBeOnTheScreen();
-        expect(screen.getByRole('button', { name: 'Substituir seleção' })).toBeOnTheScreen();
-        expect(screen.getByText('Revise suas páginas')).toBeOnTheScreen();
+        expect(await screen.findByTestId('translation-flow-step-organize')).toBeOnTheScreen();
+        expect(screen.getByText('Defina a ordem de leitura.')).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Confirmar ordem' })).toBeOnTheScreen();
-        expect(screen.getByRole('button', { name: 'Configurações do aparelho' })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: 'Módulos' })).toBeOnTheScreen();
         expect(screen.getByTestId('screen-scaffold-content').props.style).toEqual(expect.objectContaining({ gap: 16, paddingBottom: 16, paddingTop: 4 }));
         expect(screen.queryByText('Voltar aos módulos')).toBeNull();
         expect(importController.selectImages).toHaveBeenCalledTimes(1);
@@ -104,7 +103,9 @@ describe('MOB-FEAT-012 local media import page', () => {
     it('keeps cancellation neutral without false success or error', async () => {
         renderPage(controller({ selectImages: jest.fn().mockResolvedValue({ status: 'cancelled' }) }));
 
-        fireEvent.press(await screen.findByRole('button', { name: 'Selecionar imagens' }));
+        await screen.findByRole('button', { name: 'Selecionar imagens' });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Selecionar imagens' })).toBeEnabled());
+        fireEvent.press(screen.getByRole('button', { name: 'Selecionar imagens' }));
         await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
         expect(screen.queryByText(/importada/)).toBeNull();
         expect(screen.getByRole('button', { name: 'Selecionar imagens' })).toBeOnTheScreen();
@@ -129,7 +130,9 @@ describe('MOB-FEAT-012 local media import page', () => {
     it('shows a localized retry without leaking native paths', async () => {
         renderPage(controller({ selectImages: jest.fn().mockRejectedValue(new LocalMediaImportError('storage-unavailable')) }));
 
-        fireEvent.press(await screen.findByRole('button', { name: 'Selecionar imagens' }));
+        await screen.findByRole('button', { name: 'Selecionar imagens' });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Selecionar imagens' })).toBeEnabled());
+        fireEvent.press(screen.getByRole('button', { name: 'Selecionar imagens' }));
 
         expect(await screen.findByText('Não foi possível guardar as imagens no armazenamento privado.')).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Tentar novamente' })).toBeOnTheScreen();

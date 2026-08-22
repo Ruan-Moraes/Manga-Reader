@@ -64,6 +64,10 @@
         "forum": "Foro",
         "profile": "Perfil"
     },
+    "navigation": {
+        "back": "Volver",
+        "dismiss": "Cerrar"
+    },
     "home": {
         "comingSoon": "Próximamente: descubrimiento de manga"
     },
@@ -81,14 +85,20 @@
     },
     "dataControls": {
         "title": "Datos y almacenamiento",
+        "storageLabel": "Uso temporal",
+        "sections": {
+            "device": { "title": "En este dispositivo", "description": "Libera espacio sin eliminar tu cuenta ni tus preferencias." },
+            "account": { "title": "Datos de la cuenta", "description": "Exporta tu información o elimina la actividad rastreada." }
+        },
         "cancel": "Cancelar",
         "confirm": "Confirmar",
         "removes": "Elimina",
         "preserves": "Conserva",
-        "storageUsage": "{{bytes}} bytes en {{scope}}",
+        "storageUsage": "{{size}} en {{scope}}",
         "storageScopes": { "temporaryExports": "exportaciones temporales controladas por la aplicación" },
         "cache": {
             "action": "Limpiar caché",
+            "description": "Elimina imágenes y datos que se pueden descargar de nuevo.",
             "confirmTitle": "¿Limpiar datos regenerables?",
             "confirmBody": "La limpieza puede requerir volver a descargar imágenes y datos.",
             "queries": "datos de consultas",
@@ -98,9 +108,10 @@
             "preferences": "preferencias",
             "pending": "cambios pendientes"
         },
-        "export": { "action": "Exportar mis datos" },
+        "export": { "action": "Exportar mis datos", "description": "Crea un archivo para compartir con los datos disponibles de tu cuenta." },
         "history": {
             "action": "Limpiar historial rastreado",
+            "description": "Elimina capítulos leídos y actividad; conserva tu posición actual.",
             "confirmTitle": "¿Limpiar el historial rastreado?",
             "confirmBody": "Esta acción es irreversible. La posición actual de lectura se conservará.",
             "history": "historial",
@@ -109,7 +120,8 @@
             "readingProgress": "posición de lectura"
         },
         "offline": {
-            "action": "Limpiar datos sin conexión ({{bytes}} bytes)",
+            "action": "Limpiar datos sin conexión ({{size}})",
+            "description": "Elimina proyectos y archivos locales registrados en este dispositivo.",
             "empty": "No hay proyectos ni archivos sin conexión almacenados en este dispositivo.",
             "confirmTitle": "¿Limpiar datos sin conexión?",
             "confirmBody": "Los proyectos y archivos sin conexión registrados se eliminarán de este dispositivo.",
@@ -126,6 +138,9 @@
     },
     "localeControls": {
         "title": "Idioma y región",
+        "closeSelection": "Cerrar selección",
+        "interfaceSection": { "title": "Interfaz", "description": "Elige el idioma de los menús y mensajes." },
+        "regionSection": { "title": "Fechas y hora", "description": "Define cómo aparecen las fechas y qué zona horaria orienta las horas." },
         "language": "Idioma de la interfaz",
         "dateFormat": "Formato de fecha",
         "timezone": "Zona horaria",
@@ -149,6 +164,23 @@
         "history": "Historial",
         "library": "Biblioteca",
         "adultContent": "Contenido adulto",
+        "sections": {
+            "social": { "title": "Visibilidad social", "description": "Controla quién puede ver tus comentarios y biblioteca." },
+            "activity": { "title": "Actividad y datos", "description": "Elige cómo se tratan el historial y los eventos de comportamiento." },
+            "sensitive": { "title": "Contenido sensible", "description": "Define cómo aparece el contenido adulto antes de abrirlo." }
+        },
+        "descriptions": {
+            "history": {
+                "PUBLIC": "Mantiene el historial disponible según las reglas de la cuenta.",
+                "PRIVATE": "Mantiene el historial visible solo para ti.",
+                "DO_NOT_TRACK": "Detiene el seguimiento y solicita eliminar los eventos existentes."
+            },
+            "adultContent": {
+                "BLUR": "Muestra una protección antes de revelar el contenido.",
+                "HIDE": "Oculta el contenido adulto de resultados y superficies.",
+                "SHOW": "Muestra contenido adulto sin protección inicial."
+            }
+        },
         "sensitivePreview": { "content": "Vista previa de contenido sensible", "reveal": "Revelar vista previa de contenido sensible" },
         "cancel": "Cancelar",
         "confirm": "Confirmar",
@@ -169,6 +201,9 @@
             "confirmBody": "La Core eliminará el historial, las lecturas y las actividades rastreadas. Tu posición funcional de lectura se conservará."
         },
         "analytics": {
+            "label": "Analítica de comportamiento",
+            "description": "Ayuda a comprender el uso del lector y mejorar la experiencia.",
+            "disabledDescription": "No disponible mientras No rastrear esté activo.",
             "enable": "Activar analytics de comportamiento",
             "disable": "Desactivar analytics de comportamiento",
             "confirmTitle": "¿Desactivar analytics?",
@@ -177,6 +212,9 @@
     },
     "contentLanguages": {
         "title": "Idiomas del contenido",
+        "priorityTitle": "Orden de preferencia",
+        "availableTitle": "Añadir idioma",
+        "availableDescription": "Incluye otros idiomas en la cadena de fallback.",
         "description": "El orden define la prioridad del contenido. Portugués (Brasil) es el fallback obligatorio.",
         "fallback": "fallback obligatorio",
         "fallbackAnnouncement": "fallback obligatorio",
@@ -198,8 +236,14 @@
     "settings": {
         "appearance": {
             "title": "Apariencia",
+            "description": "Personaliza la base visual y cuánto contenido cabe en pantalla.",
             "theme": {
                 "label": "Tema",
+                "descriptions": {
+                    "SYSTEM": "Sigue la apariencia elegida en el dispositivo.",
+                    "LIGHT": "Superficies claras y neutros cálidos.",
+                    "DARK": "Fondo oscuro para ambientes con poca luz."
+                },
                 "options": {
                     "SYSTEM": "Seguir el sistema",
                     "LIGHT": "Claro",
@@ -228,6 +272,7 @@
         },
         "accessibility": {
             "title": "Accesibilidad",
+            "description": "Ajustes para mejorar comodidad, contraste y previsibilidad.",
             "reduceMotion": {
                 "label": "Reducir movimiento",
                 "description": "Detiene movimientos decorativos y transiciones espaciales."
@@ -238,6 +283,7 @@
             }
         },
         "sync": {
+            "errorTitle": "Sincronización pendiente",
             "error": "No se pudo sincronizar. Tu elección sigue activa en este dispositivo.",
             "retry": "Intentar de nuevo"
         }

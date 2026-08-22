@@ -29,7 +29,7 @@ const mockPush = jest.fn();
 const mockBack = jest.fn();
 
 jest.mock('expo-router', () => ({
-    router: { back: () => mockBack(), push: (value: unknown) => mockPush(value), replace: jest.fn() },
+    router: { back: () => mockBack(), canGoBack: () => true, push: (value: unknown) => mockPush(value), replace: jest.fn() },
 }));
 
 const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
@@ -87,7 +87,7 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
         const index = render(shell(<SettingsIndexPage />));
         const buttons = screen.getAllByRole('button');
         expect(buttons).toHaveLength(8);
-        buttons.slice(0, 7).forEach(button => fireEvent.press(button));
+        buttons.slice(1).forEach(button => fireEvent.press(button));
         expect(mockPush.mock.calls.slice(-7).map(call => call[0])).toEqual([
             ROUTES.SETTINGS.APPEARANCE,
             ROUTES.SETTINGS.LOCALE,

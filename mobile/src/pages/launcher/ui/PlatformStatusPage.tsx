@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { useSessionStore } from '@/src/entities/session';
 import { loadCurrentUser, signOut } from '@/src/features/authenticate';
 import { useSettingsStore } from '@/src/features/manage-settings';
-import { ROUTES } from '@/src/shared/navigation';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card, PageContainer } from '@/src/shared/ui';
+import { AppText, Button, Card, NavigationHeader, PageContainer, StatusMessage } from '@/src/shared/ui';
 
 export function PlatformStatusPage() {
     const { t } = useTranslation('launcher');
-    const { layout, spacing, tokens } = useTheme();
+    const { layout, spacing } = useTheme();
     const user = useSessionStore(state => state.user);
     const identityEpoch = useSessionStore(state => state.identityEpoch);
     const syncStatus = useSettingsStore(state => state.syncStatus);
@@ -46,6 +46,7 @@ export function PlatformStatusPage() {
     return (
         <PageContainer scroll>
             <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl, paddingTop: spacing.xl }}>
+                <NavigationHeader backLabel={t('navigation.backToSelector')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
                 <View style={{ gap: spacing.sm }}>
                     <AppText variant="eyebrow" tone="accent">
                         {t('platform.status')}
@@ -57,16 +58,14 @@ export function PlatformStatusPage() {
                 </View>
                 <Card>
                     <View style={{ gap: spacing.sm }}>
-                        {accountStatus === 'loading' ? <Text style={{ color: tokens.muted }}>{t('platform.accountLoading')}</Text> : null}
+                        {accountStatus === 'loading' ? <StatusMessage tone="loading" title={t('platform.accountLoading')} /> : null}
                         {accountStatus === 'error' ? (
-                            <View accessibilityLiveRegion="assertive" style={{ gap: spacing.sm }}>
-                                <Text accessibilityRole="alert" style={{ color: tokens.danger }}>
-                                    {t('platform.accountError')}
-                                </Text>
-                                <Button onPress={() => void loadAccount()} variant="outline">
-                                    {t('platform.accountRetry')}
-                                </Button>
-                            </View>
+                            <StatusMessage
+                                tone="danger"
+                                title={t('platform.accountError')}
+                                actionLabel={t('platform.accountRetry')}
+                                onAction={() => void loadAccount()}
+                            />
                         ) : null}
                         {accountStatus === 'ready' ? (
                             <>
@@ -74,9 +73,9 @@ export function PlatformStatusPage() {
                                 {user?.email ? <AppText tone="muted">{user.email}</AppText> : null}
                             </>
                         ) : null}
-                        <Text accessibilityLiveRegion="polite" style={{ color: syncStatus === 'error' ? tokens.danger : tokens.subtle }}>
+                        <AppText accessibilityLiveRegion="polite" tone={syncStatus === 'error' ? 'danger' : 'subtle'}>
                             {t(`sync.${syncStatus}`)}
-                        </Text>
+                        </AppText>
                         {syncStatus === 'error' ? (
                             <Button onPress={() => void retry()} variant="outline">
                                 {t('sync.retry')}
@@ -92,9 +91,6 @@ export function PlatformStatusPage() {
                 </Card>
                 <Button onPress={() => router.push(ROUTES.SETTINGS.INDEX as never)} variant="outline">
                     {t('selector.settings')}
-                </Button>
-                <Button onPress={() => router.replace(ROUTES.ROOT as never)} variant="ghost">
-                    {t('navigation.backToSelector')}
                 </Button>
                 <Button onPress={() => void handleLogout()} tone="danger" variant="outline">
                     {t('platform.logout')}

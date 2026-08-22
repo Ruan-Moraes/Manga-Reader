@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next';
 
-import { EmptyState, PageContainer } from '@/src/shared/ui';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
+import { EmptyState, ScreenScaffold } from '@/src/shared/ui';
 
 export function HomePage() {
     const { t } = useTranslation('common');
     return (
-        <PageContainer>
+        <ScreenScaffold compact backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} title={t('nav.home')}>
             <EmptyState title={t('nav.home')} description={t('home.comingSoon')} />
-        </PageContainer>
+        </ScreenScaffold>
     );
 }

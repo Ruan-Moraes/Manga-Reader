@@ -74,7 +74,8 @@ describe('MOB-FEAT-016 project UI', () => {
         const consumed = jest.fn();
         render(<CreateTranslationProjectPanel draft={draft} onDraftConsumed={consumed} controller={controller} />);
 
-        fireEvent.press(await screen.findByRole('button', { name: 'Preparar projeto' }));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Preparar projeto' })).toBeEnabled());
+        fireEvent.press(screen.getByRole('button', { name: 'Preparar projeto' }));
 
         expect(await screen.findByText('Projeto preparado no aparelho')).toBeOnTheScreen();
         expect(screen.getByText('As páginas estão protegidas localmente. O processamento ainda não começou.')).toBeOnTheScreen();

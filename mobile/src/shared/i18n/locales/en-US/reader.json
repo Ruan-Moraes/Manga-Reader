@@ -44,14 +44,33 @@
         "title": "Continue where you left off?"
     },
     "settings": {
+        "autoMarkRead": "Automatically mark as read",
         "background": "Background",
+        "closeSelection": "Close selection",
+        "descriptions": {
+            "autoMarkRead": "Updates progress when the page is completed.",
+            "gap": "Visual space between pages in vertical flow.",
+            "mode": {
+                "DOUBLE": "Two pages side by side.",
+                "PAGED": "One page at a time.",
+                "VERTICAL": "Continuous flow for scrolling."
+            },
+            "preload": "Number of pages prepared around the current one.",
+            "saturation": "Adjust the color intensity of pages."
+        },
         "direction": "Direction",
         "fit": "Fit",
         "gap": "Gap",
         "mode": "Mode",
         "preload": "Preload",
         "quality": "Quality",
-        "saturation": "Saturation"
+        "saturation": "Saturation",
+        "sections": {
+            "behavior": { "description": "Spacing, preloading, and progress updates.", "title": "Behavior" },
+            "image": { "description": "Page quality, background, and visual treatment.", "title": "Image" },
+            "navigation": { "description": "How pages advance and fill the screen.", "title": "Navigation" }
+        },
+        "values": { "pages": "{{value}} pages", "percent": "{{value}}%", "pixels": "{{value}} px" }
     },
     "states": {
         "error": "The chapter could not be loaded.",

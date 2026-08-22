@@ -1,13 +1,11 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/src/shared/theme';
+import { Icon, type IconName } from '@/src/shared/ui';
 
-type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
-
-function TabIcon({ name, color }: { name: IoniconName; color: string }) {
-    return <Ionicons name={name} size={24} color={color} />;
+function TabIcon({ name, color }: { name: IconName; color: string }) {
+    return <Icon name={name} size={24} color={color} />;
 }
 
 export default function TabLayout() {

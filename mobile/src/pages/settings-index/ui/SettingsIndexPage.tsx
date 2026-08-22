@@ -9,16 +9,28 @@ import { useContentLanguagesStore } from '@/src/features/manage-content-language
 import { useSettingsStore } from '@/src/features/manage-settings';
 import { resolveSettingsAccess, SETTINGS_SECTIONS, type SettingsGroup, type SettingsSectionId } from '@/src/features/navigate-settings';
 import { usePrivacyMutationStore } from '@/src/features/update-privacy';
-import { ROUTES } from '@/src/shared/navigation';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, PageContainer, Section } from '@/src/shared/ui';
-import { SettingsIndex, type SettingsIndexItem, SettingsSections } from '@/src/widgets/settings-index';
+import { AppText, type IconName, NavigationHeader, PageContainer } from '@/src/shared/ui';
+import { SettingsGroupCard, SettingsIndex, type SettingsIndexItem, SettingsSections } from '@/src/widgets/settings-index';
 
 type VisibleStatus = 'local' | 'pending' | 'syncing' | 'synced' | 'error';
 
+const SETTINGS_ICONS: Record<SettingsSectionId, IconName> = {
+    'appearance-accessibility': 'contrast-outline',
+    'interface-language-region': 'language-outline',
+    'content-languages': 'chatbubbles-outline',
+    reader: 'book-outline',
+    privacy: 'shield-checkmark-outline',
+    data: 'server-outline',
+    about: 'information-circle-outline',
+};
+
+const GROUPS = ['app', 'reading', 'device', 'account'] as const;
+
 export function SettingsIndexPage() {
     const { t } = useTranslation('settingsNavigation');
-    const { layout, spacing } = useTheme();
+    const { fontScale, layout, spacing } = useTheme();
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const settings = useSettingsStore();
     const content = useContentLanguagesStore();
@@ -60,7 +72,9 @@ export function SettingsIndexPage() {
             title: t(section.titleKey.replace('settingsNavigation.', '')),
             description: t(section.descriptionKey.replace('settingsNavigation.', '')),
             statusLabel: t(`sync.${status}`),
+            statusTone: status === 'error' ? 'danger' : status === 'synced' ? 'success' : status === 'pending' || status === 'syncing' ? 'warning' : 'neutral',
             loginRequired: access.kind === 'authenticate',
+            icon: SETTINGS_ICONS[section.id],
             group: section.group,
             onPress: () => {
                 if (access.kind === 'authenticate') {
@@ -74,27 +88,32 @@ export function SettingsIndexPage() {
 
     return (
         <PageContainer scroll>
-            <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl, paddingTop: spacing.xl }}>
+            <View style={{ flex: 1, gap: layout.sectionGap, paddingBottom: spacing.xl, paddingTop: spacing.xs }}>
+                <NavigationHeader
+                    backLabel={t('actions.backToModules')}
+                    onBack={() => navigateBackOrReplace(ROUTES.ROOT)}
+                    title={fontScale < 1.6 ? t('index.title') : undefined}
+                />
                 <View style={{ gap: spacing.sm }}>
+                    <AppText variant="eyebrow" tone="accent">
+                        {t('index.eyebrow')}
+                    </AppText>
                     <AppText accessibilityRole="header" variant="display">
-                        {t('index.title')}
+                        {t('index.editorialTitle')}
                     </AppText>
                     <AppText tone="muted">{t('index.subtitle')}</AppText>
                 </View>
                 <SettingsSections>
-                    {(['app', 'reading', 'device', 'account'] as const).map(group => (
-                        <Section key={group} title={t(`groups.${group}`)}>
+                    {GROUPS.map(group => (
+                        <SettingsGroupCard key={group} title={t(`groups.${group}.title`)} description={t(`groups.${group}.description`)}>
                             <SettingsIndex
                                 items={items.filter(item => item.group === group)}
                                 loginRequiredLabel={t('access.loginRequired')}
                                 openHint={t('actions.open', { section: t('index.title') })}
                             />
-                        </Section>
+                        </SettingsGroupCard>
                     ))}
                 </SettingsSections>
-                <Button onPress={() => router.replace(ROUTES.ROOT as never)} variant="ghost">
-                    {t('actions.backToModules')}
-                </Button>
             </View>
         </PageContainer>
     );

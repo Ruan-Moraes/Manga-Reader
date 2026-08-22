@@ -1,4 +1,4 @@
-jest.mock('expo-router', () => ({ router: { back: jest.fn() } }));
+jest.mock('expo-router', () => ({ router: { back: jest.fn(), canGoBack: () => true, replace: jest.fn() } }));
 jest.mock('expo-image', () => {
     const Image = () => null;
     Image.prefetch = jest.fn().mockResolvedValue(true);
@@ -8,6 +8,7 @@ jest.mock('expo-image', () => {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { subscribeReadingProgressDiagnostics } from '@/src/entities/reading-progress';
 import { useSessionStore } from '@/src/entities/session';
@@ -51,11 +52,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
         apiMock.onGet('/titles/title-1/chapters/1/reader').reply(200, chapterEnvelope);
         const queryClient = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
         const screen = render(
-            <QueryClientProvider client={queryClient}>
-                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
-                    <ReaderPage titleId="title-1" requestedChapter="1" />
-                </ThemeProvider>
-            </QueryClientProvider>,
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, right: 0, bottom: 0, left: 0 } }}>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                        <ReaderPage titleId="title-1" requestedChapter="1" />
+                    </ThemeProvider>
+                </QueryClientProvider>
+            </SafeAreaProvider>,
         );
 
         await waitFor(() => expect(screen.getByText('Título vindo da API')).toBeTruthy());
@@ -74,11 +77,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
         apiMock.onPut('/users/me/reading-progress').reply(200);
         const queryClient = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
         const screen = render(
-            <QueryClientProvider client={queryClient}>
-                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
-                    <ReaderPage titleId="title-1" requestedChapter="7.5" />
-                </ThemeProvider>
-            </QueryClientProvider>,
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, right: 0, bottom: 0, left: 0 } }}>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                        <ReaderPage titleId="title-1" requestedChapter="7.5" />
+                    </ThemeProvider>
+                </QueryClientProvider>
+            </SafeAreaProvider>,
         );
 
         const retry = await screen.findByRole('button', { name: 'Tentar carregar o progresso novamente' });
@@ -114,11 +119,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
         apiMock.onPut('/users/me/reading-progress').reply(200);
         const queryClient = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
         const screen = render(
-            <QueryClientProvider client={queryClient}>
-                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
-                    <ReaderPage titleId="title-1" requestedChapter="1" />
-                </ThemeProvider>
-            </QueryClientProvider>,
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, right: 0, bottom: 0, left: 0 } }}>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                        <ReaderPage titleId="title-1" requestedChapter="1" />
+                    </ThemeProvider>
+                </QueryClientProvider>
+            </SafeAreaProvider>,
         );
         await waitFor(() => expect(apiMock.history.get.filter(request => request.url?.includes('reading-progress'))).toHaveLength(1));
 
@@ -149,11 +156,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
         const unsubscribe = subscribeReadingProgressDiagnostics(diagnostic);
         const queryClient = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
         const screen = render(
-            <QueryClientProvider client={queryClient}>
-                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
-                    <ReaderPage titleId="title-1" requestedChapter="7.5" />
-                </ThemeProvider>
-            </QueryClientProvider>,
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, right: 0, bottom: 0, left: 0 } }}>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                        <ReaderPage titleId="title-1" requestedChapter="7.5" />
+                    </ThemeProvider>
+                </QueryClientProvider>
+            </SafeAreaProvider>,
         );
 
         await waitFor(() => {
@@ -179,11 +188,13 @@ describe('MOB-FEAT-005/AC-005/006 ReaderPage session integration', () => {
         const unsubscribe = subscribeReadingProgressDiagnostics(diagnostic);
         const queryClient = new QueryClient({ defaultOptions: { queries: { gcTime: Infinity, retry: false } } });
         const screen = render(
-            <QueryClientProvider client={queryClient}>
-                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
-                    <ReaderPage titleId="title-1" requestedChapter="1" />
-                </ThemeProvider>
-            </QueryClientProvider>,
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, right: 0, bottom: 0, left: 0 } }}>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                        <ReaderPage titleId="title-1" requestedChapter="1" />
+                    </ThemeProvider>
+                </QueryClientProvider>
+            </SafeAreaProvider>,
         );
 
         fireEvent.press(await screen.findByText('Continuar leitura'));

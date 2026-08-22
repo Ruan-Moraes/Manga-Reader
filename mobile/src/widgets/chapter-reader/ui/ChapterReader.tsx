@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { Chapter, ImageVariantCapabilities } from '@/src/entities/chapter';
@@ -6,6 +6,7 @@ import type { ReaderSettings } from '@/src/entities/user-setting';
 import { ReaderSettingsControls } from '@/src/features/configure-chapter-reader';
 import type { ProgressSyncState } from '@/src/features/track-reading-progress';
 import { useTheme } from '@/src/shared/theme';
+import { AppText, BackButton, IconButton, StatusMessage } from '@/src/shared/ui';
 
 import { ReaderViewport } from './ReaderViewport';
 
@@ -41,7 +42,7 @@ export function ChapterReader({
     onRetryProgressHydration,
 }: Props) {
     const { t } = useTranslation('reader');
-    const { minimumTouchTarget, spacing, tokens, typography } = useTheme();
+    const { spacing, tokens } = useTheme();
     return (
         <View style={{ flex: 1 }}>
             <ReaderViewport pages={chapter.pages} settings={settings} currentPage={currentPage} onCurrentPageChange={onCurrentPageChange} />
@@ -56,58 +57,34 @@ export function ChapterReader({
                         gap: spacing.sm,
                     }}
                 >
-                    <Pressable
-                        accessibilityRole="button"
+                    <IconButton
                         accessibilityLabel={t('actions.previousPage')}
-                        accessibilityState={{ disabled: currentPage <= 1 }}
                         disabled={currentPage <= 1}
+                        icon="chevron-back"
                         onPress={() => onCurrentPageChange(Math.max(1, currentPage - (settings.mode === 'DOUBLE' ? 2 : 1)))}
-                        style={{
-                            minHeight: minimumTouchTarget,
-                            minWidth: minimumTouchTarget,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: tokens.overlay,
-                        }}
-                    >
-                        <Text style={{ color: tokens.inverseText }}>‹</Text>
-                    </Pressable>
-                    <Pressable
-                        accessibilityRole="button"
+                        surface="overlay"
+                        tone="inverse"
+                    />
+                    <IconButton
                         accessibilityLabel={t('actions.nextPage')}
-                        accessibilityState={{ disabled: currentPage >= chapter.pages.length }}
                         disabled={currentPage >= chapter.pages.length}
+                        icon="chevron-forward"
                         onPress={() => onCurrentPageChange(Math.min(chapter.pages.length, currentPage + (settings.mode === 'DOUBLE' ? 2 : 1)))}
-                        style={{
-                            minHeight: minimumTouchTarget,
-                            minWidth: minimumTouchTarget,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: tokens.overlay,
-                        }}
-                    >
-                        <Text style={{ color: tokens.inverseText }}>›</Text>
-                    </Pressable>
+                        surface="overlay"
+                        tone="inverse"
+                    />
                 </View>
             ) : null}
-            <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={controlsVisible ? t('actions.hideControls') : t('actions.showControls')}
-                accessibilityHint={t('actions.controlsHint')}
-                onPress={onToggleControls}
-                style={{
-                    position: 'absolute',
-                    right: spacing.sm,
-                    bottom: spacing.sm,
-                    minHeight: minimumTouchTarget,
-                    minWidth: minimumTouchTarget,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: tokens.overlay,
-                }}
-            >
-                <Text style={{ color: tokens.inverseText, fontSize: typography.body }}>{controlsVisible ? '×' : '☰'}</Text>
-            </Pressable>
+            <View style={{ position: 'absolute', right: spacing.sm, bottom: spacing.sm }}>
+                <IconButton
+                    accessibilityLabel={controlsVisible ? t('actions.hideControls') : t('actions.showControls')}
+                    accessibilityHint={t('actions.controlsHint')}
+                    icon={controlsVisible ? 'close' : 'menu'}
+                    onPress={onToggleControls}
+                    surface="overlay"
+                    tone="inverse"
+                />
+            </View>
             {controlsVisible ? (
                 <ScrollView
                     testID="reader-controls-panel"
@@ -124,43 +101,23 @@ export function ChapterReader({
                         gap: spacing.sm,
                     }}
                 >
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel={t('actions.exit')}
-                        onPress={onExit}
-                        style={{ minHeight: minimumTouchTarget, justifyContent: 'center' }}
-                    >
-                        <Text style={{ color: tokens.accentText }}>{t('actions.exit')}</Text>
-                    </Pressable>
-                    <Text accessibilityRole="header" style={{ color: tokens.text, fontSize: typography.h3 }}>
+                    <BackButton accessibilityLabel={t('actions.exit')} onPress={onExit} appearance="surface" />
+                    <AppText accessibilityRole="header" variant="section">
                         {chapter.title}
-                    </Text>
-                    <Text testID="reader-current-page" style={{ color: tokens.muted, fontSize: typography.body }}>
+                    </AppText>
+                    <AppText testID="reader-current-page" tone="muted">
                         {t('viewport.page', { page: currentPage, total: chapter.pages.length })}
-                    </Text>
+                    </AppText>
                     {progressHydrationError ? (
-                        <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={t('actions.retryProgressHydration')}
-                            onPress={onRetryProgressHydration}
-                            style={{ minHeight: minimumTouchTarget, justifyContent: 'center' }}
-                        >
-                            <Text accessibilityRole="alert" style={{ color: tokens.danger }}>
-                                {t('errors.progressHydration')}
-                            </Text>
-                        </Pressable>
+                        <StatusMessage
+                            actionLabel={t('actions.retryProgressHydration')}
+                            title={t('errors.progressHydration')}
+                            onAction={onRetryProgressHydration}
+                            tone="danger"
+                        />
                     ) : null}
                     {syncStatus === 'error' ? (
-                        <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel={t('actions.retryProgress')}
-                            onPress={onRetryProgress}
-                            style={{ minHeight: minimumTouchTarget, justifyContent: 'center' }}
-                        >
-                            <Text accessibilityRole="alert" style={{ color: tokens.danger }}>
-                                {t('errors.progress')}
-                            </Text>
-                        </Pressable>
+                        <StatusMessage actionLabel={t('actions.retryProgress')} title={t('errors.progress')} onAction={onRetryProgress} tone="danger" />
                     ) : null}
                     <ReaderSettingsControls value={settings} capabilities={capabilities} onChange={onSettingsChange} />
                 </ScrollView>

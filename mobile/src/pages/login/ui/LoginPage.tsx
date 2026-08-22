@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { AuthFooter, AuthHeader, DemoCredentials, MRIcon, signIn } from '@/src/features/authenticate';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { FONTS } from '@/src/shared/theme';
-import { Button, Input } from '@/src/shared/ui';
+import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/src/shared/ui';
 
 export function LoginPage() {
     const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
-    const { layout, minimumTouchTarget, spacing, tokens, typography } = useTheme();
+    const { spacing, tokens } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
@@ -33,14 +33,18 @@ export function LoginPage() {
     };
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingHorizontal: layout.screenGutter, paddingTop: spacing['2xl'], paddingBottom: spacing.xl }}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
+        <PageContainer scroll>
+            <View
+                style={{
+                    alignSelf: 'center',
+                    maxWidth: 440,
+                    paddingTop: spacing.sm,
+                    paddingBottom: spacing.xl,
+                    width: '100%',
+                }}
             >
-                <AuthHeader eyebrow={t('login.eyebrow')} title={t('login.title')} sub={t('login.subtitle')} />
+                <NavigationHeader backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
+                <AuthHeader artwork eyebrow={t('login.eyebrow')} title={t('login.title')} sub={t('login.subtitle')} />
 
                 <Input
                     label={t('login.emailLabel')}
@@ -67,36 +71,22 @@ export function LoginPage() {
                     }}
                     placeholder={t('login.passwordPlaceholder')}
                     error={error}
-                    labelAction={
-                        <TouchableOpacity
-                            accessibilityRole="button"
-                            onPress={() => router.push('/(auth)/forgot')}
-                            style={{ alignItems: 'center', justifyContent: 'center', minHeight: minimumTouchTarget, paddingHorizontal: spacing.xs }}
-                        >
-                            <Text style={{ fontSize: typography.minimum, color: tokens.subtle, fontFamily: FONTS.regular }}>{t('login.forgotPassword')}</Text>
-                        </TouchableOpacity>
-                    }
                     trailing={
-                        <TouchableOpacity
+                        <IconButton
+                            icon={showPw ? 'eye-off-outline' : 'eye-outline'}
+                            accessibilityLabel={showPw ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')}
                             onPress={() => setShowPw(s => !s)}
-                            accessibilityRole="button"
-                            style={{
-                                position: 'absolute',
-                                right: 0,
-                                minHeight: minimumTouchTarget,
-                                minWidth: minimumTouchTarget,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <MRIcon name={showPw ? 'eye-off' : 'eye'} size={18} color={tokens.tertiary} />
-                        </TouchableOpacity>
+                        />
                     }
                 />
 
                 <View style={{ height: spacing.sm }} />
-                <Button onPress={submit} loading={loading}>
+                <Button onPress={submit} loading={loading} disabled={!email.trim() || !password}>
                     {t('login.submit')}
+                </Button>
+
+                <Button size="compact" fullWidth={false} variant="ghost" onPress={() => router.push('/(auth)/forgot')}>
+                    {t('login.forgotPassword')}
                 </Button>
 
                 {__DEV__ && (
@@ -114,7 +104,7 @@ export function LoginPage() {
                     action={t('login.signUpLink')}
                     onAction={() => router.push({ pathname: '/(auth)/register', params: { returnTo: params.returnTo } } as never)}
                 />
-            </ScrollView>
-        </KeyboardAvoidingView>
+            </View>
+        </PageContainer>
     );
 }

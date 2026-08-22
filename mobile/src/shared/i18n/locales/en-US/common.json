@@ -64,6 +64,10 @@
         "forum": "Forum",
         "profile": "Profile"
     },
+    "navigation": {
+        "back": "Back",
+        "dismiss": "Close"
+    },
     "home": {
         "comingSoon": "Coming soon: manga discovery"
     },
@@ -81,14 +85,20 @@
     },
     "dataControls": {
         "title": "Data and storage",
+        "storageLabel": "Temporary usage",
+        "sections": {
+            "device": { "title": "On this device", "description": "Free up space without removing your account or preferences." },
+            "account": { "title": "Account data", "description": "Export your information or remove tracked activity." }
+        },
         "cancel": "Cancel",
         "confirm": "Confirm",
         "removes": "Removes",
         "preserves": "Preserves",
-        "storageUsage": "{{bytes}} bytes in {{scope}}",
+        "storageUsage": "{{size}} in {{scope}}",
         "storageScopes": { "temporaryExports": "temporary exports controlled by the app" },
         "cache": {
             "action": "Clear cache",
+            "description": "Removes images and data that can be downloaded again.",
             "confirmTitle": "Clear regenerable data?",
             "confirmBody": "Clearing may require images and data to be downloaded again.",
             "queries": "query data",
@@ -98,9 +108,10 @@
             "preferences": "preferences",
             "pending": "pending changes"
         },
-        "export": { "action": "Export my data" },
+        "export": { "action": "Export my data", "description": "Creates a shareable file with the available account data." },
         "history": {
             "action": "Clear tracked history",
+            "description": "Removes read chapters and activity while preserving your current position.",
             "confirmTitle": "Clear tracked history?",
             "confirmBody": "This action cannot be undone. Your current reading position will be preserved.",
             "history": "history",
@@ -109,7 +120,8 @@
             "readingProgress": "reading position"
         },
         "offline": {
-            "action": "Clear offline data ({{bytes}} bytes)",
+            "action": "Clear offline data ({{size}})",
+            "description": "Removes registered local projects and files from this device.",
             "empty": "No offline projects or files are stored on this device.",
             "confirmTitle": "Clear offline data?",
             "confirmBody": "Registered offline projects and files will be removed from this device.",
@@ -126,6 +138,9 @@
     },
     "localeControls": {
         "title": "Language and region",
+        "closeSelection": "Close selection",
+        "interfaceSection": { "title": "Interface", "description": "Choose the language used in menus and messages." },
+        "regionSection": { "title": "Dates and time", "description": "Choose how dates appear and which timezone drives times." },
         "language": "Interface language",
         "dateFormat": "Date format",
         "timezone": "Time zone",
@@ -149,6 +164,23 @@
         "history": "History",
         "library": "Library",
         "adultContent": "Adult content",
+        "sections": {
+            "social": { "title": "Social visibility", "description": "Control who can see your comments and library." },
+            "activity": { "title": "Activity and data", "description": "Choose how history and behavioral events are handled." },
+            "sensitive": { "title": "Sensitive content", "description": "Define how adult content appears before it is opened." }
+        },
+        "descriptions": {
+            "history": {
+                "PUBLIC": "Keeps history available according to account rules.",
+                "PRIVATE": "Keeps history visible only to you.",
+                "DO_NOT_TRACK": "Stops tracking and requests removal of existing events."
+            },
+            "adultContent": {
+                "BLUR": "Shows a protective layer before revealing content.",
+                "HIDE": "Hides adult content from results and surfaces.",
+                "SHOW": "Shows adult content without an initial protective layer."
+            }
+        },
         "sensitivePreview": { "content": "Sensitive content preview", "reveal": "Reveal sensitive content preview" },
         "cancel": "Cancel",
         "confirm": "Confirm",
@@ -169,6 +201,9 @@
             "confirmBody": "The Core will clear tracked history, reads, and activities. Your functional reading position will be preserved."
         },
         "analytics": {
+            "label": "Behavior analytics",
+            "description": "Helps understand reader usage and improve the experience.",
+            "disabledDescription": "Unavailable while Do Not Track is active.",
             "enable": "Enable behavioral analytics",
             "disable": "Disable behavioral analytics",
             "confirmTitle": "Disable analytics?",
@@ -177,6 +212,9 @@
     },
     "contentLanguages": {
         "title": "Content languages",
+        "priorityTitle": "Preference order",
+        "availableTitle": "Add a language",
+        "availableDescription": "Include other languages in the fallback chain.",
         "description": "The order defines content priority. Portuguese (Brazil) is the required fallback.",
         "fallback": "required fallback",
         "fallbackAnnouncement": "required fallback",
@@ -198,8 +236,14 @@
     "settings": {
         "appearance": {
             "title": "Appearance",
+            "description": "Customize the visual foundation and how much content fits on screen.",
             "theme": {
                 "label": "Theme",
+                "descriptions": {
+                    "SYSTEM": "Follows the appearance selected on your device.",
+                    "LIGHT": "Light surfaces and warm neutrals.",
+                    "DARK": "Dark background for low-light environments."
+                },
                 "options": {
                     "SYSTEM": "Follow system",
                     "LIGHT": "Light",
@@ -228,6 +272,7 @@
         },
         "accessibility": {
             "title": "Accessibility",
+            "description": "Adjustments for comfort, contrast, and predictability.",
             "reduceMotion": {
                 "label": "Reduce motion",
                 "description": "Stops decorative motion and spatial transitions."
@@ -238,6 +283,7 @@
             }
         },
         "sync": {
+            "errorTitle": "Sync pending",
             "error": "Could not sync. Your choice remains active on this device.",
             "retry": "Try again"
         }

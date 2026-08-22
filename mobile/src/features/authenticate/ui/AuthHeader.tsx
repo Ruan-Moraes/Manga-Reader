@@ -8,6 +8,7 @@ const LOGO = require('../../../../assets/images/logo.png');
 
 interface Props {
     layout?: 'mascote' | 'minimal';
+    artwork?: boolean;
     eyebrow?: string;
     title: string;
     sub?: string;
@@ -50,8 +51,8 @@ export function Wordmark({ fontSize = 16 }: { fontSize?: number }) {
     );
 }
 
-export function AuthHeader({ layout = 'mascote', eyebrow, title, sub }: Props) {
-    const { spacing, textStyles, tokens, typography } = useTheme();
+export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title, sub }: Props) {
+    const { radii, spacing, textStyles, tokens, typography } = useTheme();
 
     if (layout === 'minimal') {
         return (
@@ -105,6 +106,51 @@ export function AuthHeader({ layout = 'mascote', eyebrow, title, sub }: Props) {
                 <Wordmark fontSize={16} />
             </View>
 
+            {artwork ? (
+                <View
+                    accessibilityElementsHidden
+                    style={{
+                        alignItems: 'center',
+                        backgroundColor: tokens.accent,
+                        borderRadius: radii.feature,
+                        height: 152,
+                        justifyContent: 'center',
+                        marginBottom: spacing.xl,
+                        overflow: 'hidden',
+                        width: '100%',
+                    }}
+                >
+                    <View
+                        style={{
+                            borderColor: tokens.onAccent,
+                            borderRadius: 999,
+                            borderWidth: 2,
+                            height: 106,
+                            opacity: 0.22,
+                            position: 'absolute',
+                            width: 220,
+                        }}
+                    />
+                    <View
+                        style={{
+                            backgroundColor: tokens.onAccent,
+                            height: 38,
+                            opacity: 0.9,
+                            transform: [{ rotate: '45deg' }],
+                            width: 38,
+                        }}
+                    />
+                    <View
+                        style={{
+                            backgroundColor: tokens.accent,
+                            height: 18,
+                            position: 'absolute',
+                            width: 54,
+                        }}
+                    />
+                </View>
+            ) : null}
+
             {eyebrow && (
                 <Text
                     style={{
@@ -122,7 +168,7 @@ export function AuthHeader({ layout = 'mascote', eyebrow, title, sub }: Props) {
 
             <Text
                 style={{
-                    ...textStyles.title,
+                    ...textStyles.display,
                     fontFamily: FONTS.extrabold,
                     color: tokens.text,
                     textAlign: 'center',
@@ -138,7 +184,7 @@ export function AuthHeader({ layout = 'mascote', eyebrow, title, sub }: Props) {
                         ...textStyles.body,
                         color: tokens.subtle,
                         textAlign: 'center',
-                        maxWidth: 300,
+                        maxWidth: 340,
                         fontFamily: FONTS.regular,
                     }}
                 >

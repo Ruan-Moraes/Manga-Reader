@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
+import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AuthCheckbox, AuthFooter, AuthHeader, MRIcon, signUp, StrengthMeter } from '@/src/features/authenticate';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { FONTS, useTheme } from '@/src/shared/theme';
-import { Button, Input } from '@/src/shared/ui';
+import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/src/shared/ui';
 
 export function RegisterPage() {
-    const { layout, minimumTouchTarget, spacing, tokens, typography } = useTheme();
+    const { spacing, tokens, typography } = useTheme();
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
@@ -51,13 +51,17 @@ export function RegisterPage() {
     };
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: tokens.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingHorizontal: layout.screenGutter, paddingTop: spacing['2xl'], paddingBottom: spacing.xl }}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
+        <PageContainer scroll>
+            <View
+                style={{
+                    alignSelf: 'center',
+                    maxWidth: 440,
+                    paddingBottom: spacing.xl,
+                    paddingTop: spacing.sm,
+                    width: '100%',
+                }}
             >
+                <NavigationHeader backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
                 <AuthHeader eyebrow={t('signUp.eyebrow')} title={t('signUp.title')} sub={t('signUp.subtitle')} />
 
                 <Input
@@ -99,20 +103,11 @@ export function RegisterPage() {
                     placeholder={t('signUp.passwordPlaceholder')}
                     error={errors.pw}
                     trailing={
-                        <TouchableOpacity
+                        <IconButton
+                            icon={showPw ? 'eye-off-outline' : 'eye-outline'}
+                            accessibilityLabel={showPw ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')}
                             onPress={() => setShowPw(s => !s)}
-                            accessibilityRole="button"
-                            style={{
-                                position: 'absolute',
-                                right: 0,
-                                minHeight: minimumTouchTarget,
-                                minWidth: minimumTouchTarget,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <MRIcon name={showPw ? 'eye-off' : 'eye'} size={18} color={tokens.tertiary} />
-                        </TouchableOpacity>
+                        />
                     }
                 />
                 {!errors.pw && <StrengthMeter value={pw} />}
@@ -175,8 +170,8 @@ export function RegisterPage() {
                     {t('signUp.submit')}
                 </Button>
 
-                <AuthFooter prompt={t('signUp.noAccount')} action={t('signUp.loginLink')} onAction={() => router.back()} />
-            </ScrollView>
-        </KeyboardAvoidingView>
+                <AuthFooter prompt={t('signUp.noAccount')} action={t('signUp.loginLink')} onAction={() => navigateBackOrReplace(ROUTES.AUTH.LOGIN)} />
+            </View>
+        </PageContainer>
     );
 }

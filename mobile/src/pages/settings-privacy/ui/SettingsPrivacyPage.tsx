@@ -6,7 +6,7 @@ import { useSessionStore } from '@/src/entities/session';
 import { usePrivacySettingsStore } from '@/src/entities/user';
 import { resolveSettingsAccess, SETTINGS_SECTIONS } from '@/src/features/navigate-settings';
 import { PrivacyControlsPanel } from '@/src/features/update-privacy';
-import { ROUTES } from '@/src/shared/navigation';
+import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
 import { Button, ScreenScaffold } from '@/src/shared/ui';
 
@@ -21,7 +21,12 @@ export function SettingsPrivacyPage() {
     const access = resolveSettingsAccess(section, isAuthenticated);
 
     return (
-        <ScreenScaffold backLabel={t('actions.back')} title={t('sections.privacy.title')}>
+        <ScreenScaffold
+            backLabel={t('actions.back')}
+            description={t('sections.privacy.description')}
+            onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
+            title={t('sections.privacy.title')}
+        >
             {aligned ? (
                 <PrivacyControlsPanel />
             ) : access.kind === 'open' ? (

@@ -47,7 +47,7 @@ describe('MOB-FEAT-005/AC-002/004/008/009 chapter reader UI', () => {
         expect(screen.getByRole('button', { name: 'Próxima página' }).props.style.minHeight).toBeGreaterThanOrEqual(44);
         fireEvent.press(screen.getByRole('button', { name: 'Próxima página' }));
         expect(onCurrentPageChange).toHaveBeenCalledWith(2);
-        expect(screen.getByRole('radio', { name: 'Automática' })).toBeTruthy();
+        expect(screen.getByRole('button', { name: 'Qualidade: Automática' })).toBeTruthy();
         expect(screen.queryByRole('radio', { name: 'Baixa' })).toBeNull();
         expect(screen.queryByRole('radio', { name: 'Média' })).toBeNull();
         expect(screen.queryByRole('radio', { name: 'Alta' })).toBeNull();
@@ -130,6 +130,7 @@ describe('MOB-FEAT-005/AC-002/004/008/009 chapter reader UI', () => {
         expect(screen.getByTestId('reader-navigation-controls').props.style.flexDirection).toBe('row-reverse');
         expect(screen.getByRole('button', { name: 'Tentar carregar o progresso novamente' })).toBeTruthy();
         expect(screen.getByTestId('reader-controls-panel').props.contentContainerStyle.height).toBeUndefined();
-        expect(screen.getByText(/^Pré-carregamento:/)).toBeTruthy();
+        expect(screen.getByText('Pré-carregamento')).toBeTruthy();
+        expect(screen.getByText('3 páginas')).toBeTruthy();
     });
 });

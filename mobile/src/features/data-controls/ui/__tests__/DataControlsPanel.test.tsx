@@ -60,7 +60,7 @@ describe('MOB-FEAT-007 DataControlsPanel', () => {
             </QueryClientProvider>,
         );
 
-        await waitFor(() => expect(screen.getByText('512 bytes em exportações temporárias controladas pelo app')).toBeTruthy());
+        await waitFor(() => expect(screen.getByText('512 B em exportações temporárias controladas pelo app')).toBeTruthy());
     });
 
     it('omite a medição quando o adaptador nativo falha', async () => {

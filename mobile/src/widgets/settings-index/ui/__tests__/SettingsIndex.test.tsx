@@ -12,13 +12,24 @@ describe('MOB-FEAT-008/AC-001/004/008 SettingsIndex', () => {
             <ThemeProvider initialOverride="light" waitForPlatform={false}>
                 <SettingsIndex
                     items={[
-                        { id: 'appearance', title: 'Aparência', description: 'Tema', statusLabel: 'Salvo localmente', loginRequired: false, onPress: local },
+                        {
+                            id: 'appearance',
+                            title: 'Aparência',
+                            description: 'Tema',
+                            statusLabel: 'Salvo localmente',
+                            loginRequired: false,
+                            icon: 'contrast-outline',
+                            statusTone: 'neutral',
+                            onPress: local,
+                        },
                         {
                             id: 'privacy',
                             title: 'Privacidade',
                             description: 'Visibilidade',
                             statusLabel: 'Salvo localmente',
                             loginRequired: true,
+                            icon: 'shield-checkmark-outline',
+                            statusTone: 'neutral',
                             onPress: privateAction,
                         },
                     ]}
@@ -32,6 +43,8 @@ describe('MOB-FEAT-008/AC-001/004/008 SettingsIndex', () => {
             'Aparência. Salvo localmente',
             'Privacidade. Salvo localmente',
         ]);
+        expect(screen.getByText('Salvo localmente')).toBeOnTheScreen();
+        expect(screen.getByText('Login necessário')).toBeOnTheScreen();
         fireEvent.press(screen.getByLabelText('Privacidade. Salvo localmente'));
         expect(privateAction).toHaveBeenCalledTimes(1);
     });

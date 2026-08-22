@@ -61,7 +61,7 @@ describe('MOB-FEAT-010 platform status', () => {
             });
 
         renderPage();
-        await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar os dados da conta.'));
+        expect(await screen.findByText('Não foi possível carregar os dados da conta.')).toBeOnTheScreen();
         fireEvent.press(screen.getByRole('button', { name: 'Tentar carregar a conta novamente' }));
 
         await waitFor(() => expect(screen.getByText('Conta recuperada')).toBeOnTheScreen());

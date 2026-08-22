@@ -1,17 +1,32 @@
 {
     "index": {
         "title": "Ajustes",
-        "subtitle": "Personaliza tu experiencia en Manga Reader."
+        "eyebrow": "Preferencias",
+        "editorialTitle": "A tu manera.",
+        "subtitle": "Ajusta lectura, idioma, privacidad y datos sin perder tu ritmo."
     },
     "groups": {
-        "app": "Aplicación",
-        "reading": "Lectura",
-        "device": "Dispositivo",
-        "account": "Cuenta"
+        "app": {
+            "title": "Aplicación",
+            "description": "Apariencia, accesibilidad, idioma y región."
+        },
+        "reading": {
+            "title": "Lectura",
+            "description": "Define cómo se ajustan y avanzan las páginas."
+        },
+        "device": {
+            "title": "Dispositivo",
+            "description": "Gestiona el almacenamiento y consulta información de la app."
+        },
+        "account": {
+            "title": "Cuenta",
+            "description": "Preferencias sincronizadas y protegidas por tu cuenta."
+        }
     },
     "sections": {
         "appearance": {
             "title": "Apariencia y accesibilidad",
+            "editorialTitle": "Una lectura que descansa la vista.",
             "description": "Tema, texto, densidad, movimiento y contraste."
         },
         "locale": {

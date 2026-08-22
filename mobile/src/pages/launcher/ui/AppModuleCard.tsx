@@ -1,7 +1,8 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { Pressable, View } from 'react-native';
 
-import { FONTS, useTheme } from '@/src/shared/theme';
+import { useTheme } from '@/src/shared/theme';
+import { AppText, Icon } from '@/src/shared/ui';
 
 import type { AppModuleDescriptor } from '../model/modules';
 
@@ -15,49 +16,64 @@ interface AppModuleCardProps {
 }
 
 export function AppModuleCard({ module, title, description, availabilityLabel, actionLabel, onPress }: AppModuleCardProps) {
-    const { minimumTouchTarget, radii, spacing, tokens, typography } = useTheme();
+    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const [focused, setFocused] = useState(false);
+    const [pressed, setPressed] = useState(false);
 
     return (
-        <TouchableOpacity
+        <Pressable
             accessibilityHint={description}
             accessibilityLabel={`${title}. ${availabilityLabel}. ${actionLabel}`}
             accessibilityRole="button"
-            activeOpacity={0.86}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             onPress={onPress}
+            onPressIn={() => setPressed(true)}
+            onPressOut={() => setPressed(false)}
             style={{
-                backgroundColor: tokens.surface,
-                borderColor: tokens.accentBorder,
-                borderRadius: radii.feature,
-                borderWidth: 1,
-                gap: spacing.md,
-                minHeight: minimumTouchTarget * 3,
-                padding: spacing.lg,
+                backgroundColor: pressed ? tokens.surfacePressed : tokens.surface,
+                borderColor: focused ? tokens.focus : tokens.separator,
+                borderRadius: radii.card,
+                borderWidth: focused ? 2 : 0,
+                minHeight: 78,
+                padding: spacing.md,
+                shadowColor: tokens.overlay,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.05,
+                shadowRadius: 16,
+                elevation: 1,
+                ...(pressed ? { transform: [{ scale: 0.99 }] } : {}),
             }}
         >
-            <View style={{ alignItems: 'flex-start', flexDirection: 'row', gap: spacing.md, justifyContent: 'space-between' }}>
+            <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}>
                 <View
                     style={{
                         alignItems: 'center',
                         backgroundColor: tokens.accentSoft,
-                        borderRadius: radii.control,
+                        borderRadius: radii.sm,
                         height: minimumTouchTarget,
                         justifyContent: 'center',
                         width: minimumTouchTarget,
                     }}
                 >
-                    <Ionicons name={module.icon} size={24} color={tokens.accentText} />
+                    {module.id === 'offline-translation' ? (
+                        <AppText variant="section" tone="accent">
+                            01
+                        </AppText>
+                    ) : (
+                        <AppText variant="section" tone="accent">
+                            読
+                        </AppText>
+                    )}
                 </View>
-                <View style={{ backgroundColor: tokens.surfaceMuted, borderRadius: radii.pill, paddingHorizontal: spacing.sm, paddingVertical: spacing.xs }}>
-                    <Text style={{ color: tokens.accentText, fontFamily: FONTS.bold, fontSize: typography.minimum }}>{availabilityLabel}</Text>
+                <View style={{ flex: 1, gap: spacing.xs }}>
+                    <AppText variant="section">{title}</AppText>
+                    <AppText variant="caption" tone="muted">
+                        {description}
+                    </AppText>
                 </View>
+                <Icon name="chevron-forward" size={18} color={tokens.muted} />
             </View>
-            <View style={{ gap: spacing.xs }}>
-                <Text style={{ color: tokens.text, fontFamily: FONTS.bold, fontSize: typography.h2 }}>{title}</Text>
-                <Text style={{ color: tokens.muted, fontFamily: FONTS.regular, fontSize: typography.body, lineHeight: typography.body * 1.45 }}>
-                    {description}
-                </Text>
-            </View>
-            <Text style={{ color: tokens.accentText, fontFamily: FONTS.extrabold, fontSize: typography.small }}>{actionLabel} →</Text>
-        </TouchableOpacity>
+        </Pressable>
     );
 }

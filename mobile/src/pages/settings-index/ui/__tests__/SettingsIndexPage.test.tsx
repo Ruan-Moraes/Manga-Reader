@@ -44,6 +44,11 @@ describe('MOB-FEAT-008 settings index integration', () => {
         for (const forbidden of ['Notificações', 'Newsletter', 'Importar', 'Recarregar']) {
             expect(screen.queryByText(forbidden)).toBeNull();
         }
+        expect(screen.getByText('Do seu jeito.')).toBeOnTheScreen();
+        expect(screen.getByText('Aparência, acessibilidade, idioma e região.')).toBeOnTheScreen();
+        expect(screen.getByText('Defina como as páginas ocupam e avançam na tela.')).toBeOnTheScreen();
+        expect(screen.getByText('Controle o armazenamento e consulte informações do app.')).toBeOnTheScreen();
+        expect(screen.getByText('Preferências sincronizadas e protegidas pela sua conta.')).toBeOnTheScreen();
         expect(screen.getAllByRole('button')).toHaveLength(8);
         expect(screen.getByRole('button', { name: 'Voltar aos módulos' })).toBeOnTheScreen();
         expect(screen.getAllByText('Login necessário')).toHaveLength(2);
