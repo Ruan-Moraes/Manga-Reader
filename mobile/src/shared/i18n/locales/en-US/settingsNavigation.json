@@ -31,26 +31,32 @@
         },
         "locale": {
             "title": "Language and region",
+            "editorialTitle": "Your language, your context.",
             "description": "Interface language, dates, and time zone."
         },
         "contentLanguages": {
             "title": "Content languages",
+            "editorialTitle": "Prioritize what you understand.",
             "description": "Choose and order your preferred content languages."
         },
         "reader": {
             "title": "Reader",
+            "editorialTitle": "Every page at the right pace.",
             "description": "Reading mode, direction, fit, and page presentation."
         },
         "privacy": {
             "title": "Privacy",
+            "editorialTitle": "Control what stays visible.",
             "description": "Visibility, tracking, and sensitive content."
         },
         "data": {
             "title": "Data and storage",
+            "editorialTitle": "Your data under control.",
             "description": "Cache, export, and account history."
         },
         "about": {
             "title": "About",
+            "editorialTitle": "The app, without mystery.",
             "description": "App version and available official links."
         }
     },
@@ -70,11 +76,25 @@
         "title": "About",
         "version": "Version",
         "build": "Build",
+        "appSection": {
+            "title": "Application",
+            "description": "Information about this installation."
+        },
+        "linksSection": {
+            "title": "Official links",
+            "description": "Help, documents, and project code."
+        },
         "links": {
             "support": "Support",
             "terms": "Terms of use",
             "privacy": "Privacy policy",
             "project": "Project"
+        },
+        "linkDescriptions": {
+            "support": "Find help for using the application.",
+            "terms": "Read the platform terms of use.",
+            "privacy": "Learn how your data is handled.",
+            "project": "Explore the project's code and development."
         },
         "openError": "Unable to open this link.",
         "retry": "Try opening again"

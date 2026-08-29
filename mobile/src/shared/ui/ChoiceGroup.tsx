@@ -1,4 +1,5 @@
-import { TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, View } from 'react-native';
 
 import { useTheme } from '@/src/shared/theme';
 
@@ -16,6 +17,10 @@ interface ChoiceGroupProps<T extends string> {
     layout?: 'horizontal' | 'stacked';
 }
 
+export function resolveChoiceGroupStacked(layout: 'horizontal' | 'stacked', fontScale: number): boolean {
+    return layout === 'stacked' || fontScale >= 1.6;
+}
+
 export function ChoiceGroup<T extends string>({
     label,
     value,
@@ -27,46 +32,83 @@ export function ChoiceGroup<T extends string>({
     disabled = false,
     layout = 'horizontal',
 }: ChoiceGroupProps<T>) {
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const [focusedOption, setFocusedOption] = useState<T | null>(null);
+    const stacked = resolveChoiceGroupStacked(layout, fontScale);
 
     return (
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
             <AppText variant="label">{label}</AppText>
-            <View style={{ flexDirection: layout === 'stacked' ? 'column' : 'row', flexWrap: layout === 'stacked' ? 'nowrap' : 'wrap', gap: spacing.sm }}>
+            <View style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: stacked ? 'nowrap' : 'wrap', gap: spacing.sm }}>
                 {options.map(option => {
                     const selected = option === value;
+                    const focused = option === focusedOption;
                     return (
-                        <TouchableOpacity
+                        <Pressable
                             key={option}
                             accessibilityLabel={optionLabel(option)}
                             accessibilityHint={accessibilityHint}
                             accessibilityRole="radio"
                             accessibilityState={{ disabled, selected }}
-                            activeOpacity={0.76}
-                            onPress={() => onChange(option)}
                             disabled={disabled}
+                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
+                            onFocus={() => setFocusedOption(option)}
+                            onPress={() => onChange(option)}
                             style={{
-                                alignItems: optionDescription ? 'flex-start' : 'center',
-                                backgroundColor: selected ? tokens.surfaceSelected : tokens.surface,
-                                borderColor: selected ? tokens.focus : tokens.inputBorder,
-                                borderRadius: radii.control,
-                                borderWidth: selected ? 2 : 1,
-                                justifyContent: 'center',
                                 minHeight: minimumTouchTarget,
+                                maxWidth: '100%',
+                                minWidth: 0,
                                 opacity: disabled ? 0.46 : 1,
-                                paddingHorizontal: spacing.md,
-                                paddingVertical: spacing.sm,
+                                ...(stacked ? { alignSelf: 'stretch' } : {}),
                             }}
                         >
-                            <AppText variant="label" style={selected ? { color: tokens.accentText } : undefined}>
-                                {optionLabel(option)}
-                            </AppText>
-                            {optionDescription ? (
-                                <AppText variant="caption" tone="muted">
-                                    {optionDescription(option)}
-                                </AppText>
-                            ) : null}
-                        </TouchableOpacity>
+                            {({ pressed }) => (
+                                <View
+                                    testID={`choice-group-row-${option}`}
+                                    style={{
+                                        alignItems: 'center',
+                                        backgroundColor: pressed ? tokens.surfacePressed : selected ? tokens.surfaceSelected : tokens.surface,
+                                        borderColor: focused ? tokens.focus : selected ? tokens.accentBorder : tokens.inputBorder,
+                                        borderRadius: radii.control,
+                                        borderWidth: 2,
+                                        flexDirection: 'row',
+                                        gap: spacing.sm,
+                                        maxWidth: '100%',
+                                        minHeight: minimumTouchTarget,
+                                        paddingHorizontal: spacing.md,
+                                        paddingVertical: spacing.sm,
+                                        width: stacked ? '100%' : undefined,
+                                    }}
+                                >
+                                    <View
+                                        testID={`choice-group-indicator-${option}`}
+                                        accessibilityElementsHidden
+                                        style={{
+                                            alignItems: 'center',
+                                            borderColor: selected ? tokens.accent : tokens.borderStrong,
+                                            borderRadius: radii.pill,
+                                            borderWidth: 2,
+                                            flexShrink: 0,
+                                            height: 22,
+                                            justifyContent: 'center',
+                                            width: 22,
+                                        }}
+                                    >
+                                        {selected ? <View style={{ backgroundColor: tokens.accent, borderRadius: radii.pill, height: 10, width: 10 }} /> : null}
+                                    </View>
+                                    <View testID={`choice-group-copy-${option}`} style={{ flexShrink: 1, gap: spacing.xs, minWidth: 0 }}>
+                                        <AppText variant="label" tone={selected ? 'accent' : 'default'}>
+                                            {optionLabel(option)}
+                                        </AppText>
+                                        {optionDescription ? (
+                                            <AppText variant="caption" tone="muted">
+                                                {optionDescription(option)}
+                                            </AppText>
+                                        ) : null}
+                                    </View>
+                                </View>
+                            )}
+                        </Pressable>
                     );
                 })}
             </View>

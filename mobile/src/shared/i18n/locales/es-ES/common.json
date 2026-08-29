@@ -120,6 +120,7 @@
             "readingProgress": "posición de lectura"
         },
         "offline": {
+            "title": "Datos sin conexión",
             "action": "Limpiar datos sin conexión ({{size}})",
             "description": "Elimina proyectos y archivos locales registrados en este dispositivo.",
             "empty": "No hay proyectos ni archivos sin conexión almacenados en este dispositivo.",

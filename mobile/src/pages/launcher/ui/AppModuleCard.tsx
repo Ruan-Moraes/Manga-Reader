@@ -56,15 +56,7 @@ export function AppModuleCard({ module, title, description, availabilityLabel, a
                         width: minimumTouchTarget,
                     }}
                 >
-                    {module.id === 'offline-translation' ? (
-                        <AppText variant="section" tone="accent">
-                            01
-                        </AppText>
-                    ) : (
-                        <AppText variant="section" tone="accent">
-                            読
-                        </AppText>
-                    )}
+                    <Icon name={module.icon} size={22} color={tokens.accentText} />
                 </View>
                 <View style={{ flex: 1, gap: spacing.xs }}>
                     <AppText variant="section">{title}</AppText>

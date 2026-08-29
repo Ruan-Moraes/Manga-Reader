@@ -14,8 +14,9 @@ export function SettingsReaderPage() {
         <ScreenScaffold
             backLabel={t('actions.back')}
             description={t('sections.reader.description')}
+            eyebrow={t('sections.reader.title')}
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
-            title={t('sections.reader.title')}
+            title={t('sections.reader.editorialTitle')}
         >
             <ReaderPreferencesSection
                 value={value}

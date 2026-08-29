@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native';
 
 import { DEFAULT_USER_SETTINGS, themePreferenceToColorScheme } from '@/src/entities/user-setting';
 import i18n, { DEFAULT_LANGUAGE } from '@/src/shared/i18n';
@@ -8,6 +8,7 @@ import { ThemeProvider, useTheme } from '@/src/shared/theme';
 
 import { resetSettingsRuntimeForTests, useSettingsStore } from '../../model/settingsStore';
 import { AppearanceAccessibilityControls } from '../AppearanceAccessibilityControls';
+import { SettingsSyncStatus } from '../SettingsSyncStatus';
 
 const secureStore = jest.mocked(SecureStore);
 
@@ -86,6 +87,29 @@ describe('MOB-FEAT-002 appearance controls', () => {
         expect(retry).toHaveBeenCalledTimes(1);
     });
 
+    it('persiste tamanho, densidade e todos os booleanos no grupo de aparência', async () => {
+        const screen = render(<Harness />);
+        const fontGroup = screen.getByLabelText('Tamanho do texto');
+        const densityGroup = screen.getByLabelText('Densidade');
+
+        fireEvent.press(within(fontGroup).getByRole('radio', { name: 'Confortável' }));
+        fireEvent.press(within(densityGroup).getByRole('radio', { name: 'Compacta' }));
+        fireEvent.press(screen.getByRole('switch', { name: 'Animações decorativas' }));
+        fireEvent.press(screen.getByRole('switch', { name: 'Reduzir movimento' }));
+        fireEvent.press(screen.getByRole('switch', { name: 'Alto contraste' }));
+
+        await waitFor(() => {
+            expect(useSettingsStore.getState().settings.appearance).toEqual({
+                animations: false,
+                density: 'COMPACT',
+                fontSize: 'COMFORTABLE',
+                theme: 'SYSTEM',
+            });
+            expect(useSettingsStore.getState().settings.accessibility).toEqual({ highContrast: true, reduceMotion: true });
+        });
+        expect(secureStore.setItemAsync).toHaveBeenCalled();
+    });
+
     it.each([
         ['en-US', 'Appearance', 'Follow system'],
         ['es-ES', 'Apariencia', 'Seguir el sistema'],
@@ -110,7 +134,26 @@ describe('MOB-FEAT-002 appearance controls', () => {
 
         expect(StyleSheet.flatten(title.props.style).fontSize).toBe(44);
         expect(dark.props.style.minHeight).toBeGreaterThanOrEqual(44);
-        expect(view.UNSAFE_getAllByType(View).some(node => node.props.style?.flexWrap === 'wrap')).toBe(true);
+        expect(view.UNSAFE_getAllByType(View).some(node => node.props.style?.flexWrap === 'wrap' || node.props.style?.flexDirection === 'column')).toBe(true);
         expect(dark.props.style.height).toBeUndefined();
+    });
+
+    it('oculta estados passivos e mantém sincronização operacional visível', () => {
+        const view = render(
+            <ThemeProvider waitForPlatform={false}>
+                <SettingsSyncStatus group="appearance" />
+            </ThemeProvider>,
+        );
+
+        expect(view.queryByText('Salvo neste dispositivo')).toBeNull();
+
+        act(() => useSettingsStore.setState({ activeIdentityEpoch: 7, pendingGroup: 'appearance', syncStatus: 'syncing' }));
+        view.rerender(
+            <ThemeProvider waitForPlatform={false}>
+                <SettingsSyncStatus group="appearance" />
+            </ThemeProvider>,
+        );
+
+        expect(view.getByText('Sincronizando')).toBeOnTheScreen();
     });
 });

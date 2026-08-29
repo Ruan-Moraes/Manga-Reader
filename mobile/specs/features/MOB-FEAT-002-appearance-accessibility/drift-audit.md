@@ -1,7 +1,7 @@
 # Drift audit — MOB-FEAT-002
 
 - Data: 2026-08-09
-- Implementação auditada: working-tree sha256:2a9c4a85c0b28420394a6cf36082e65787410c03624e1609fc95423e27d42a37
+- Implementação auditada: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
 - Status da feature: `implemented`
 
 ## Escopo auditado

@@ -38,8 +38,11 @@ describe('MOB-FEAT-008/AC-007/009 About', () => {
         mockOpen.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce(undefined);
         renderPage();
 
-        expect(screen.getByText('Versão: 2.4.0')).toBeOnTheScreen();
-        expect(screen.getByText('Build: 87')).toBeOnTheScreen();
+        expect(screen.getByText('Versão')).toBeOnTheScreen();
+        expect(screen.getByText('2.4.0')).toBeOnTheScreen();
+        expect(screen.getByText('Build')).toBeOnTheScreen();
+        expect(screen.getByText('87')).toBeOnTheScreen();
+        expect(screen.getByText('Encontre ajuda para usar o aplicativo.')).toBeOnTheScreen();
         expect(screen.queryByText('Termos de uso')).toBeNull();
         fireEvent.press(screen.getByText('Suporte'));
         await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível abrir este link.'));

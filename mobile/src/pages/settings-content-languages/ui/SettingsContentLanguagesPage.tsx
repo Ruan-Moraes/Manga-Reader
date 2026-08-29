@@ -23,8 +23,9 @@ export function SettingsContentLanguagesPage() {
         <ScreenScaffold
             backLabel={t('actions.back')}
             description={t('sections.contentLanguages.description')}
+            eyebrow={t('sections.contentLanguages.title')}
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
-            title={t('sections.contentLanguages.title')}
+            title={t('sections.contentLanguages.editorialTitle')}
         >
             {aligned ? (
                 <ContentLanguagesEditor />

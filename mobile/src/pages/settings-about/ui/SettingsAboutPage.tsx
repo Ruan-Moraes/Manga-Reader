@@ -5,11 +5,18 @@ import { useTranslation } from 'react-i18next';
 import { appMetadata, type ExternalLinkKey, externalLinks } from '@/src/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, Card, ScreenScaffold } from '@/src/shared/ui';
+import { AppText, Button, FormSection, Icon, type IconName, ListRow, ScreenScaffold } from '@/src/shared/ui';
+
+const LINK_ICONS: Record<ExternalLinkKey, IconName> = {
+    privacy: 'shield-checkmark-outline',
+    project: 'logo-github',
+    support: 'help-buoy-outline',
+    terms: 'document-text-outline',
+};
 
 export function SettingsAboutPage() {
     const { t } = useTranslation('settingsNavigation');
-    const { spacing } = useTheme();
+    const { radii, spacing, tokens } = useTheme();
     const metadata = useMemo(() => appMetadata.read(), []);
     const links = useMemo(() => externalLinks.read(), []);
     const [failedLink, setFailedLink] = useState<{ key: ExternalLinkKey; url: string } | null>(null);
@@ -27,29 +34,44 @@ export function SettingsAboutPage() {
         <ScreenScaffold
             backLabel={t('actions.back')}
             description={t('sections.about.description')}
+            eyebrow={t('sections.about.title')}
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
-            title={t('about.title')}
+            title={t('sections.about.editorialTitle')}
         >
-            <View style={{ gap: spacing.md }}>
-                <Card>
-                    <View style={{ gap: spacing.sm }}>
-                        {metadata.version ? (
-                            <AppText variant="label">
-                                {t('about.version')}: {metadata.version}
-                            </AppText>
-                        ) : null}
-                        {metadata.build ? (
-                            <AppText tone="muted">
-                                {t('about.build')}: {metadata.build}
-                            </AppText>
-                        ) : null}
-                    </View>
-                </Card>
-                {(Object.entries(links) as [ExternalLinkKey, string][]).map(([key, url]) => (
-                    <Button fullWidth={false} key={key} onPress={() => void open(key, url)} variant="outline">
-                        {t(`about.links.${key}`)}
-                    </Button>
-                ))}
+            <View style={{ gap: spacing.lg }}>
+                <FormSection contentPadding="none" title={t('about.appSection.title')} description={t('about.appSection.description')}>
+                    {metadata.version ? (
+                        <ListRow meta={metadata.version} showDivider={Boolean(metadata.build)} title={t('about.version')} variant="plain" />
+                    ) : null}
+                    {metadata.build ? <ListRow meta={metadata.build} showDivider={false} title={t('about.build')} variant="plain" /> : null}
+                </FormSection>
+                <FormSection contentPadding="none" title={t('about.linksSection.title')} description={t('about.linksSection.description')}>
+                    {(Object.entries(links) as [ExternalLinkKey, string][]).map(([key, url], index, entries) => (
+                        <ListRow
+                            description={t(`about.linkDescriptions.${key}`)}
+                            key={key}
+                            leading={
+                                <View
+                                    accessibilityElementsHidden
+                                    style={{
+                                        alignItems: 'center',
+                                        backgroundColor: tokens.accentSoft,
+                                        borderRadius: radii.control,
+                                        height: 42,
+                                        justifyContent: 'center',
+                                        width: 42,
+                                    }}
+                                >
+                                    <Icon name={LINK_ICONS[key]} color={tokens.accentText} decorative />
+                                </View>
+                            }
+                            onPress={() => void open(key, url)}
+                            showDivider={index < entries.length - 1}
+                            title={t(`about.links.${key}`)}
+                            variant="plain"
+                        />
+                    ))}
+                </FormSection>
                 {failedLink ? (
                     <View accessibilityLiveRegion="assertive" style={{ gap: spacing.sm }}>
                         <AppText accessibilityRole="alert" tone="danger">

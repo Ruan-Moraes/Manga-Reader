@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { useTheme } from '@/src/shared/theme';
+import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
 
 import { AppText } from './AppText';
+import { Icon } from './Icon';
 
 interface SegmentedControlProps<T extends string> {
     label: string;
@@ -15,6 +17,10 @@ interface SegmentedControlProps<T extends string> {
     disabled?: boolean;
 }
 
+export function resolveSegmentedControlStacked(sizeClass: ReturnType<typeof useResponsiveLayout>['sizeClass'], fontScale: number): boolean {
+    return sizeClass === 'compact' || fontScale >= 1.6;
+}
+
 export function SegmentedControl<T extends string>({
     label,
     description,
@@ -25,7 +31,10 @@ export function SegmentedControl<T extends string>({
     accessibilityHint,
     disabled = false,
 }: SegmentedControlProps<T>) {
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const { sizeClass } = useResponsiveLayout();
+    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const [focusedOption, setFocusedOption] = useState<T | null>(null);
+    const stacked = resolveSegmentedControlStacked(sizeClass, fontScale);
 
     return (
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={{ gap: spacing.sm }}>
@@ -43,14 +52,14 @@ export function SegmentedControl<T extends string>({
                     borderColor: tokens.separator,
                     borderRadius: radii.control,
                     borderWidth: 1,
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
+                    flexDirection: stacked ? 'column' : 'row',
                     gap: spacing.xs,
                     padding: spacing.xs,
                 }}
             >
                 {options.map(option => {
                     const selected = option === value;
+                    const focused = option === focusedOption;
                     return (
                         <Pressable
                             key={option}
@@ -59,25 +68,46 @@ export function SegmentedControl<T extends string>({
                             accessibilityRole="radio"
                             accessibilityState={{ disabled, selected }}
                             disabled={disabled}
+                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
+                            onFocus={() => setFocusedOption(option)}
                             onPress={() => onChange(option)}
-                            style={({ pressed }) => ({
-                                alignItems: 'center',
-                                backgroundColor: selected ? tokens.accentSoft : pressed ? tokens.surfacePressed : 'transparent',
-                                borderColor: selected ? tokens.accentBorder : 'transparent',
-                                borderRadius: radii.control,
-                                borderWidth: 1,
-                                flex: 1,
-                                justifyContent: 'center',
+                            style={{
+                                flex: stacked ? undefined : 1,
                                 minHeight: minimumTouchTarget,
-                                minWidth: 82,
+                                minWidth: stacked ? undefined : 82,
                                 opacity: disabled ? 0.48 : 1,
-                                paddingHorizontal: spacing.sm,
-                                paddingVertical: spacing.sm,
-                            })}
+                                width: stacked ? '100%' : undefined,
+                            }}
                         >
-                            <AppText variant="label" tone={selected ? 'accent' : 'muted'} style={{ textAlign: 'center' }}>
-                                {optionLabel(option)}
-                            </AppText>
+                            {({ pressed }) => (
+                                <View
+                                    testID={`segmented-option-surface-${option}`}
+                                    style={{
+                                        alignItems: 'center',
+                                        backgroundColor: selected ? tokens.accent : pressed ? tokens.surfacePressed : tokens.surface,
+                                        borderColor: focused ? tokens.focus : selected ? tokens.accent : tokens.inputBorder,
+                                        borderRadius: radii.control,
+                                        borderWidth: 2,
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        gap: spacing.xs,
+                                        justifyContent: 'center',
+                                        minHeight: minimumTouchTarget,
+                                        paddingHorizontal: spacing.sm,
+                                        paddingVertical: spacing.sm,
+                                        width: '100%',
+                                    }}
+                                >
+                                    <AppText
+                                        variant="label"
+                                        tone={selected ? 'default' : 'muted'}
+                                        style={{ color: selected ? tokens.onAccent : tokens.muted, textAlign: 'center' }}
+                                    >
+                                        {optionLabel(option)}
+                                    </AppText>
+                                    {selected && stacked ? <Icon name="checkmark-circle" size={18} decorative /> : null}
+                                </View>
+                            )}
                         </Pressable>
                     );
                 })}

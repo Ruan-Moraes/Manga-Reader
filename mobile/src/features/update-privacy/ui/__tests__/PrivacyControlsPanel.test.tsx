@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 import { usePrivacySettingsStore } from '@/src/entities/user';
@@ -28,6 +28,41 @@ describe('MOB-FEAT-006 PrivacyControlsPanel', () => {
         usePrivacySettingsStore.getState().hydrate(1, privacy);
     });
     afterAll(() => apiMock.restore());
+
+    it('mapeia cada preferência para o grupo correto e identifica a seleção', () => {
+        render(
+            <QueryClientProvider client={new QueryClient()}>
+                <ThemeProvider waitForPlatform={false}>
+                    <PrivacyControlsPanel />
+                </ThemeProvider>
+            </QueryClientProvider>,
+        );
+
+        const comments = screen.getByLabelText('Comentários');
+        const library = screen.getByLabelText('Biblioteca');
+        const history = screen.getByLabelText('Histórico');
+        const adult = screen.getByLabelText('Conteúdo adulto');
+
+        expect(within(comments).getByRole('radio', { name: 'Público' }).props.accessibilityState.selected).toBe(true);
+        expect(within(library).getByRole('radio', { name: 'Público' }).props.accessibilityState.selected).toBe(true);
+        expect(within(history).getByRole('radio', { name: 'Privado' }).props.accessibilityState.selected).toBe(true);
+        expect(within(adult).getByRole('radio', { name: 'Ocultar inicialmente' }).props.accessibilityState.selected).toBe(true);
+        expect(screen.getByRole('switch', { name: 'Analytics comportamental' }).props.accessibilityState).toEqual({ checked: true, disabled: false });
+    });
+
+    it('explica e desabilita analytics quando não rastrear está confirmado', () => {
+        usePrivacySettingsStore.getState().hydrate(1, { ...privacy, behaviorAnalyticsEnabled: false, viewHistoryVisibility: 'DO_NOT_TRACK' });
+        render(
+            <QueryClientProvider client={new QueryClient()}>
+                <ThemeProvider waitForPlatform={false}>
+                    <PrivacyControlsPanel />
+                </ThemeProvider>
+            </QueryClientProvider>,
+        );
+
+        expect(screen.getByText('Indisponível enquanto “Não rastrear” estiver ativo.')).toBeOnTheScreen();
+        expect(screen.getByRole('switch', { name: 'Analytics comportamental' })).toBeDisabled();
+    });
 
     it('cancela DNT sem request e confirma com explicação da limpeza', async () => {
         const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);

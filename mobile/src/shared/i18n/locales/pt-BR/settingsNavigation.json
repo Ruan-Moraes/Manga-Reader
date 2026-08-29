@@ -31,26 +31,32 @@
         },
         "locale": {
             "title": "Idioma e região",
+            "editorialTitle": "Seu idioma, seu contexto.",
             "description": "Idioma da interface, datas e fuso horário."
         },
         "contentLanguages": {
             "title": "Idiomas do conteúdo",
+            "editorialTitle": "Prioridade para o que você entende.",
             "description": "Escolha e ordene os idiomas preferidos para o conteúdo."
         },
         "reader": {
             "title": "Leitor",
+            "editorialTitle": "Cada página no ritmo certo.",
             "description": "Modo de leitura, direção, ajuste e apresentação das páginas."
         },
         "privacy": {
             "title": "Privacidade",
+            "editorialTitle": "Controle o que fica visível.",
             "description": "Visibilidade, rastreamento e conteúdo sensível."
         },
         "data": {
             "title": "Dados e armazenamento",
+            "editorialTitle": "Seus dados sob controle.",
             "description": "Cache, exportação e histórico da conta."
         },
         "about": {
             "title": "Sobre",
+            "editorialTitle": "O aplicativo, sem mistério.",
             "description": "Versão do app e links oficiais disponíveis."
         }
     },
@@ -70,11 +76,25 @@
         "title": "Sobre",
         "version": "Versão",
         "build": "Build",
+        "appSection": {
+            "title": "Aplicativo",
+            "description": "Informações da instalação atual."
+        },
+        "linksSection": {
+            "title": "Links oficiais",
+            "description": "Ajuda, documentos e código do projeto."
+        },
         "links": {
             "support": "Suporte",
             "terms": "Termos de uso",
             "privacy": "Política de privacidade",
             "project": "Projeto"
+        },
+        "linkDescriptions": {
+            "support": "Encontre ajuda para usar o aplicativo.",
+            "terms": "Consulte as condições de uso da plataforma.",
+            "privacy": "Veja como seus dados são tratados.",
+            "project": "Conheça o código e o desenvolvimento do projeto."
         },
         "openError": "Não foi possível abrir este link.",
         "retry": "Tentar abrir novamente"

@@ -59,7 +59,9 @@ export const minimumTouchTarget = (platform: typeof Platform.OS = Platform.OS): 
 
 export const resolveColorScheme = (preference: ThemePreference, systemScheme: ColorScheme | null | undefined): ColorScheme => {
     if (preference === 'DARK') return 'dark';
+
     if (preference === 'LIGHT') return 'light';
+
     return systemScheme === 'dark' ? 'dark' : 'light';
 };
 
@@ -147,5 +149,6 @@ export const lightHighContrastTokens: ThemeTokens = {
 
 export function resolveThemeTokens(colorScheme: ColorScheme, highContrast: boolean, normal: Record<ColorScheme, ThemeTokens>): ThemeTokens {
     if (!highContrast) return normal[colorScheme];
+
     return colorScheme === 'dark' ? darkHighContrastTokens : lightHighContrastTokens;
 }

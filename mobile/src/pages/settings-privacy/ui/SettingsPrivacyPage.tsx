@@ -24,8 +24,9 @@ export function SettingsPrivacyPage() {
         <ScreenScaffold
             backLabel={t('actions.back')}
             description={t('sections.privacy.description')}
+            eyebrow={t('sections.privacy.title')}
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
-            title={t('sections.privacy.title')}
+            title={t('sections.privacy.editorialTitle')}
         >
             {aligned ? (
                 <PrivacyControlsPanel />

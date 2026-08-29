@@ -26,6 +26,8 @@ export function SettingsSyncStatus({ group }: { group: SettingsSyncGroup }) {
                   ? 'pending'
                   : 'synced';
 
+    if (status === 'local' || status === 'synced') return null;
+
     return (
         <View accessibilityLiveRegion="polite" style={{ gap: spacing.sm }}>
             <Text

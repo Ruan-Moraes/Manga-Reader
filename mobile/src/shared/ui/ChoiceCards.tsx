@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import type { ReactNode } from 'react';
 
@@ -21,6 +22,14 @@ interface ChoiceCardsProps<T extends string> {
     layout?: 'grid' | 'stacked';
 }
 
+export function resolveChoiceCardsStacked(
+    layout: 'grid' | 'stacked',
+    sizeClass: ReturnType<typeof useResponsiveLayout>['sizeClass'],
+    fontScale: number,
+): boolean {
+    return layout === 'stacked' || sizeClass === 'compact' || fontScale >= 1.6;
+}
+
 export function ChoiceCards<T extends string>({
     label,
     description,
@@ -36,8 +45,9 @@ export function ChoiceCards<T extends string>({
     layout = 'grid',
 }: ChoiceCardsProps<T>) {
     const { sizeClass } = useResponsiveLayout();
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
-    const stacked = layout === 'stacked' || sizeClass === 'compact';
+    const { fontScale, minimumTouchTarget, radii, spacing, tokens } = useTheme();
+    const [focusedOption, setFocusedOption] = useState<T | null>(null);
+    const stacked = resolveChoiceCardsStacked(layout, sizeClass, fontScale);
     const cardBasis = sizeClass === 'regular' ? '46%' : '29%';
 
     return (
@@ -53,6 +63,7 @@ export function ChoiceCards<T extends string>({
             <View style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: stacked ? 'nowrap' : 'wrap', gap: spacing.sm }}>
                 {options.map(option => {
                     const selected = option === value;
+                    const focused = option === focusedOption;
                     const icon = optionIcon?.(option);
                     return (
                         <Pressable
@@ -62,6 +73,8 @@ export function ChoiceCards<T extends string>({
                             accessibilityRole="radio"
                             accessibilityState={{ disabled, selected }}
                             disabled={disabled}
+                            onBlur={() => setFocusedOption(current => (current === option ? null : current))}
+                            onFocus={() => setFocusedOption(option)}
                             onPress={() => onChange(option)}
                             style={{
                                 minHeight: minimumTouchTarget,
@@ -72,30 +85,65 @@ export function ChoiceCards<T extends string>({
                         >
                             {({ pressed }) => (
                                 <View
+                                    testID={`choice-card-surface-${option}`}
                                     style={{
-                                        backgroundColor: selected ? tokens.accentSoft : pressed ? tokens.surfacePressed : tokens.surfaceMuted,
-                                        borderColor: selected ? tokens.accentBorder : tokens.separator,
+                                        backgroundColor: selected ? tokens.surfaceSelected : pressed ? tokens.surfacePressed : tokens.surfaceMuted,
+                                        borderColor: focused ? tokens.focus : selected ? tokens.accentBorder : tokens.separator,
                                         borderRadius: radii.card,
-                                        borderWidth: selected ? 2 : 1,
+                                        borderWidth: 2,
                                         flex: 1,
-                                        gap: spacing.sm,
+                                        gap: spacing.xs,
                                         justifyContent: 'center',
                                         minHeight: minimumTouchTarget,
                                         padding: spacing.md,
                                     }}
                                 >
-                                    <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
-                                        {optionPreview?.(option) ?? (icon ? <Icon name={icon} decorative /> : null)}
-                                        <AppText variant="label" tone={selected ? 'accent' : 'default'} style={{ flex: 1 }}>
-                                            {optionLabel(option)}
-                                        </AppText>
-                                        {selected ? <Icon name="checkmark-circle" decorative /> : null}
+                                    <View testID={`choice-card-row-${option}`} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.md }}>
+                                        {optionPreview?.(option) ??
+                                            (icon ? (
+                                                <View
+                                                    accessibilityElementsHidden
+                                                    style={{
+                                                        alignItems: 'center',
+                                                        backgroundColor: selected ? tokens.accent : tokens.accentSoft,
+                                                        borderRadius: radii.control,
+                                                        height: 36,
+                                                        justifyContent: 'center',
+                                                        width: 36,
+                                                    }}
+                                                >
+                                                    <Icon name={icon} color={selected ? tokens.onAccent : tokens.accentText} decorative />
+                                                </View>
+                                            ) : null)}
+                                        <View testID={`choice-card-copy-${option}`} style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
+                                            <AppText variant="label" tone={selected ? 'accent' : 'default'}>
+                                                {optionLabel(option)}
+                                            </AppText>
+                                            {optionDescription ? (
+                                                <AppText variant="caption" tone="muted">
+                                                    {optionDescription(option)}
+                                                </AppText>
+                                            ) : null}
+                                        </View>
+                                        <View
+                                            testID={`choice-card-indicator-${option}`}
+                                            accessibilityElementsHidden
+                                            style={{
+                                                alignItems: 'center',
+                                                borderColor: selected ? tokens.accentText : tokens.borderStrong,
+                                                borderRadius: radii.pill,
+                                                borderWidth: 2,
+                                                flexShrink: 0,
+                                                height: 22,
+                                                justifyContent: 'center',
+                                                width: 22,
+                                            }}
+                                        >
+                                            {selected ? (
+                                                <View style={{ backgroundColor: tokens.accentText, borderRadius: radii.pill, height: 10, width: 10 }} />
+                                            ) : null}
+                                        </View>
                                     </View>
-                                    {optionDescription ? (
-                                        <AppText variant="caption" tone="muted">
-                                            {optionDescription(option)}
-                                        </AppText>
-                                    ) : null}
                                 </View>
                             )}
                         </Pressable>

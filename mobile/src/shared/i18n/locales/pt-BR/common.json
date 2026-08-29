@@ -120,6 +120,7 @@
             "readingProgress": "posição de leitura"
         },
         "offline": {
+            "title": "Dados offline",
             "action": "Limpar dados offline ({{size}})",
             "description": "Remove projetos e arquivos locais registrados neste aparelho.",
             "empty": "Nenhum projeto ou arquivo offline foi armazenado neste aparelho.",

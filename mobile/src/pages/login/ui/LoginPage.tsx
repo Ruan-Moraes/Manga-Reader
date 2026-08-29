@@ -10,7 +10,9 @@ import { Button, IconButton, Input, NavigationHeader, PageContainer } from '@/sr
 
 export function LoginPage() {
     const params = useGlobalSearchParams<{ returnTo?: string | string[] }>();
+
     const { spacing, tokens } = useTheme();
+
     const { t } = useTranslation('auth');
 
     const [email, setEmail] = useState('');
@@ -21,8 +23,11 @@ export function LoginPage() {
 
     const submit = async () => {
         if (loading || !email.trim() || !password) return;
+
         setError('');
+
         setLoading(true);
+
         try {
             await signIn({ email: email.trim(), password });
         } catch {
@@ -43,9 +48,8 @@ export function LoginPage() {
                     width: '100%',
                 }}
             >
-                <NavigationHeader backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} />
+                <NavigationHeader backLabel={t('navigation.back')} onBack={() => navigateBackOrReplace(ROUTES.ROOT)} title={t('navigation.login')} />
                 <AuthHeader artwork eyebrow={t('login.eyebrow')} title={t('login.title')} sub={t('login.subtitle')} />
-
                 <Input
                     label={t('login.emailLabel')}
                     leading={<MRIcon name="mail" size={18} color={tokens.tertiary} />}

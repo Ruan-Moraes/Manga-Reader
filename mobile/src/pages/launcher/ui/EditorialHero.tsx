@@ -1,32 +1,34 @@
 import { View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import { Image } from 'expo-image';
 
 import { useTheme } from '@/src/shared/theme';
-import { AppText } from '@/src/shared/ui';
+
+const LAUNCHER_HERO = require('../../../../assets/images/launcher-hero.png');
+const LAUNCHER_HERO_LIGHT = require('../../../../assets/images/launcher-hero-light.png');
 
 export function EditorialHero() {
-    const { radii, spacing, tokens } = useTheme();
+    const { colorScheme, radii, spacing, tokens } = useTheme();
 
     return (
         <View
             accessibilityElementsHidden
             style={{
                 backgroundColor: tokens.heroSurface,
-                borderRadius: radii.feature,
+                borderColor: tokens.borderStrong,
+                borderRadius: radii.control,
+                borderWidth: 1,
                 height: 218,
                 justifyContent: 'center',
                 overflow: 'hidden',
                 padding: spacing.lg,
             }}
         >
-            <Svg height="100%" width="100%" viewBox="0 0 360 218" style={{ position: 'absolute' }}>
-                <Circle cx="36" cy="198" r="82" fill="none" stroke={tokens.heroLine} strokeWidth="1" />
-                <Circle cx="332" cy="44" r="104" fill="none" stroke={tokens.heroLine} strokeWidth="1" />
-                <Path d="M180 26 L202 89 L330 109 L202 129 L180 192 L158 129 L30 109 L158 89 Z" fill={tokens.heroAccent} />
-            </Svg>
-            <AppText variant="eyebrow" tone="inverse" style={{ marginTop: 'auto', letterSpacing: 1.7 }}>
-                MANGA READER TRANSLATE
-            </AppText>
+            <Image
+                accessibilityLabel="Garota lendo um mangá em um universo dourado"
+                source={colorScheme === 'light' ? LAUNCHER_HERO_LIGHT : LAUNCHER_HERO}
+                style={{ bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 }}
+                contentFit="cover"
+            />
         </View>
     );
 }

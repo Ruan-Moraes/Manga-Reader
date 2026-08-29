@@ -135,8 +135,10 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
         routes.forEach(([Page, title]) => {
             const route = render(shell(createElement(Page)));
             expect(screen.getAllByText(title).length).toBeGreaterThan(0);
+            fireEvent.press(screen.getByRole('button', { name: 'Voltar' }));
             route.unmount();
         });
+        expect(mockBack).toHaveBeenCalledTimes(routes.length);
     });
 
     it('abre subrotas privadas/mistas em guest sem qualquer request /users/me', () => {

@@ -4,7 +4,7 @@ export interface SettingsIndexItem {
     id: string;
     title: string;
     description: string;
-    statusLabel: string;
+    statusLabel?: string;
     loginRequired: boolean;
     icon?: IconName;
     statusTone?: 'danger' | 'neutral' | 'success' | 'warning';

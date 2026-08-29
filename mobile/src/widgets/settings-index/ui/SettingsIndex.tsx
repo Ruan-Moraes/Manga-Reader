@@ -20,7 +20,7 @@ export function SettingsIndex({ items, openHint, loginRequiredLabel }: SettingsI
                 <ListRow
                     key={item.id}
                     accessibilityHint={item.loginRequired ? loginRequiredLabel : openHint}
-                    accessibilityLabel={`${item.title}. ${item.statusLabel}`}
+                    accessibilityLabel={item.statusLabel ? `${item.title}. ${item.statusLabel}` : item.title}
                     description={item.description}
                     leading={
                         item.icon ? (

@@ -56,6 +56,13 @@
                 "VERTICAL": "Continuous flow for scrolling."
             },
             "preload": "Number of pages prepared around the current one.",
+            "quality": {
+                "AUTO": "Balances sharpness and data usage.",
+                "HIGH": "Prioritizes sharpness with higher data usage.",
+                "LOW": "Prioritizes lower data usage and faster loading.",
+                "MEDIUM": "Keeps good sharpness with moderate data usage.",
+                "ORIGINAL": "Keeps the page at its original resolution."
+            },
             "saturation": "Adjust the color intensity of pages."
         },
         "direction": "Direction",

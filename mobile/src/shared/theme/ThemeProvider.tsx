@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { AccessibilityInfo, ActivityIndicator, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 import {
     createTypographyStyles,
@@ -62,13 +63,19 @@ const PLATFORM_ACCESSIBILITY_TIMEOUT_MS = 1500;
 function resolveWithTimeout(operation: Promise<boolean>): Promise<boolean> {
     return new Promise(resolve => {
         let settled = false;
+
         const finish = (value: boolean) => {
             if (settled) return;
+
             settled = true;
+
             clearTimeout(timeout);
+
             resolve(value);
         };
+
         const timeout = setTimeout(() => finish(false), PLATFORM_ACCESSIBILITY_TIMEOUT_MS);
+
         operation.then(finish, () => finish(false));
     });
 }
@@ -97,7 +104,9 @@ export function ThemeProvider({
     onOverrideChange,
 }: Props) {
     const systemScheme = useColorScheme();
+
     const { fontScale } = useWindowDimensions();
+
     const [override, setOverrideState] = useState<ColorScheme | null>(initialOverride);
     const [systemReduceMotion, setSystemReduceMotion] = useState(false);
     const [systemHighTextContrast, setSystemHighTextContrast] = useState(false);
@@ -116,9 +125,11 @@ export function ThemeProvider({
         void reduceMotion.then(value => {
             if (mounted) setSystemReduceMotion(value);
         });
+
         void highTextContrast.then(value => {
             if (mounted) setSystemHighTextContrast(value);
         });
+
         void darkerColors.then(value => {
             if (mounted) setSystemDarkerColors(value);
         });
@@ -126,6 +137,7 @@ export function ThemeProvider({
         void Promise.all([resolveWithTimeout(reduceMotion), resolveWithTimeout(highTextContrast), resolveWithTimeout(darkerColors)]).then(
             ([motion, highTextContrast, darkerColors]) => {
                 if (!mounted) return;
+
                 setSystemReduceMotion(motion);
                 setSystemHighTextContrast(highTextContrast);
                 setSystemDarkerColors(darkerColors);
@@ -180,6 +192,7 @@ export function ThemeProvider({
     if (waitForPlatform && !platformReady) {
         return (
             <View accessible accessibilityRole="progressbar" style={{ alignItems: 'center', backgroundColor: tokens.bg, flex: 1, justifyContent: 'center' }}>
+                <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
                 <ActivityIndicator color={tokens.accent} />
             </View>
         );

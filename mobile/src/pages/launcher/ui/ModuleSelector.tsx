@@ -26,6 +26,7 @@ interface ModuleSelectorProps {
 
 export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettings, recovery }: ModuleSelectorProps) {
     const { radii, spacing } = useTheme();
+
     const responsive = useResponsiveLayout();
 
     return (
@@ -47,11 +48,11 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
                 </AppText>
                 <IconButton accessibilityLabel={copy.settings} icon="ellipsis-horizontal" onPress={onOpenSettings} />
             </View>
-            <View style={{ gap: spacing.sm }}>
+            <View style={{ gap: spacing.xs }}>
                 <AppText variant="eyebrow" tone="accent">
                     {copy.eyebrow}
                 </AppText>
-                <AppText accessibilityRole="header" variant="display">
+                <AppText accessibilityRole="header" variant="title">
                     {copy.title}
                 </AppText>
                 <AppText tone="muted">{copy.subtitle}</AppText>
@@ -61,6 +62,7 @@ export function ModuleSelector({ authenticated, copy, onOpenModule, onOpenSettin
             <View style={{ gap: spacing.md }}>
                 {APP_MODULES.map(module => {
                     const item = copy.modules[module.id];
+
                     return (
                         <AppModuleCard
                             key={module.id}

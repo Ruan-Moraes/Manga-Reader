@@ -120,6 +120,7 @@
             "readingProgress": "reading position"
         },
         "offline": {
+            "title": "Offline data",
             "action": "Clear offline data ({{size}})",
             "description": "Removes registered local projects and files from this device.",
             "empty": "No offline projects or files are stored on this device.",

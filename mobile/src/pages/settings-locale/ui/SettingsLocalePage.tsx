@@ -10,8 +10,9 @@ export function SettingsLocalePage() {
         <ScreenScaffold
             backLabel={t('actions.back')}
             description={t('sections.locale.description')}
+            eyebrow={t('sections.locale.title')}
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
-            title={t('sections.locale.title')}
+            title={t('sections.locale.editorialTitle')}
         >
             <InterfaceLanguageRegionControls showTitle={false} />
             <SettingsSyncStatus group="locale" />

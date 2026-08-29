@@ -1,4 +1,6 @@
 import { type PropsWithChildren, useEffect } from 'react';
+import { StatusBar as RNStatusBar } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { registerLocalMediaImportDataParticipant } from '@/src/entities/local-media-import';
@@ -10,10 +12,15 @@ import { ThemeProvider, useTheme } from '@/src/shared/theme';
 import { QueryProvider } from './QueryProvider';
 
 function ThemedApplicationSurface({ children }: PropsWithChildren) {
-    const { tokens } = useTheme();
+    const { colorScheme, tokens } = useTheme();
+
+    useEffect(() => {
+        RNStatusBar.setBarStyle(colorScheme === 'dark' ? 'light-content' : 'dark-content', true);
+    }, [colorScheme]);
 
     return (
         <SafeAreaProvider style={{ backgroundColor: tokens.bg }}>
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
             <QueryProvider>{children}</QueryProvider>
         </SafeAreaProvider>
     );
@@ -27,6 +34,7 @@ export function AppProviders({ children }: PropsWithChildren) {
     useEffect(() => {
         const unregisterImports = registerLocalMediaImportDataParticipant();
         const unregisterProjects = registerTranslationProjectDataParticipant();
+
         return () => {
             unregisterProjects();
             unregisterImports();

@@ -2,7 +2,7 @@
 
 Data: 2026-08-14
 
-- Implementação auditada: working-tree sha256:1dd45235243ecfc27d4eec289f36a307310311ed09e03dc5129f0f3c067384a6
+- Implementação auditada: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
 - Status da feature: `implemented`
 
 | Severidade | Evidência                                                                   | Classificação    | Artefato     | Ação recomendada |

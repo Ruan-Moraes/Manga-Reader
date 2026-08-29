@@ -67,11 +67,12 @@ export function SettingsIndexPage() {
     const items: (SettingsIndexItem & { group: SettingsGroup })[] = SETTINGS_SECTIONS.map(section => {
         const access = resolveSettingsAccess(section, isAuthenticated);
         const status = statusFor(section.id);
+        const visibleStatus = status === 'error' || status === 'pending' || status === 'syncing';
         return {
             id: section.id,
             title: t(section.titleKey.replace('settingsNavigation.', '')),
             description: t(section.descriptionKey.replace('settingsNavigation.', '')),
-            statusLabel: t(`sync.${status}`),
+            statusLabel: visibleStatus ? t(`sync.${status}`) : undefined,
             statusTone: status === 'error' ? 'danger' : status === 'synced' ? 'success' : status === 'pending' || status === 'syncing' ? 'warning' : 'neutral',
             loginRequired: access.kind === 'authenticate',
             icon: SETTINGS_ICONS[section.id],

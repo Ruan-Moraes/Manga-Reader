@@ -28,4 +28,5 @@ export { StartupFeedback } from './StartupFeedback';
 export { StatusMessage } from './StatusMessage';
 export { StepperControl } from './StepperControl';
 export { StickyActionBar } from './StickyActionBar';
+export { SwatchPicker } from './SwatchPicker';
 export { SwitchRow } from './SwitchRow';

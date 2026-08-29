@@ -1,13 +1,13 @@
-import { Animated, ScrollView, Switch, View } from 'react-native';
-import { fireEvent, render } from '@testing-library/react-native';
+import { Animated, Modal, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { act, fireEvent, render, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ThemeProvider } from '@/src/shared/theme';
 
 import { BackButton } from '../BackButton';
 import { Button } from '../Button';
-import { ChoiceCards } from '../ChoiceCards';
-import { ChoiceGroup } from '../ChoiceGroup';
+import { ChoiceCards, resolveChoiceCardsStacked } from '../ChoiceCards';
+import { ChoiceGroup, resolveChoiceGroupStacked } from '../ChoiceGroup';
 import { FormSection } from '../FormSection';
 import { IconButton } from '../IconButton';
 import { Input } from '../Input';
@@ -15,12 +15,13 @@ import { ListRow } from '../ListRow';
 import { NavigationHeader } from '../NavigationHeader';
 import { PageContainer } from '../PageContainer';
 import { ProgressSteps } from '../ProgressSteps';
-import { RangeSlider } from '../RangeSlider';
-import { SegmentedControl } from '../SegmentedControl';
-import { SelectField } from '../SelectField';
+import { RangeSlider, resolveRangeSliderValue } from '../RangeSlider';
+import { resolveSegmentedControlStacked, SegmentedControl } from '../SegmentedControl';
+import { resolveSelectSheetHeight, SelectField } from '../SelectField';
 import { Skeleton } from '../Skeleton';
 import { StatusMessage } from '../StatusMessage';
-import { SwitchRow } from '../SwitchRow';
+import { SwatchPicker } from '../SwatchPicker';
+import { resolveSwitchRowStacked, SwitchRow } from '../SwitchRow';
 
 function withTheme(node: React.ReactNode) {
     return render(
@@ -40,10 +41,12 @@ describe('shared ui', () => {
             </PageContainer>,
         );
         const scroll = view.UNSAFE_getByType(ScrollView);
-        const safeContent = view.UNSAFE_getAllByType(View).find(node => node.props.style?.paddingTop === 47 && node.props.style?.paddingBottom === 34);
+        const safeFrame = view.getByTestId('page-container-safe-frame');
+        const scrollContent = view.getByTestId('page-container-scroll-content');
 
         expect(scroll.props.automaticallyAdjustKeyboardInsets).toBe(true);
-        expect(safeContent?.props.style).toEqual(expect.objectContaining({ flexGrow: 1, paddingBottom: 34, paddingTop: 47 }));
+        expect(StyleSheet.flatten(safeFrame.props.style)).toEqual(expect.objectContaining({ flex: 1, paddingBottom: 34, paddingTop: 47 }));
+        expect(StyleSheet.flatten(scrollContent.props.style)).toEqual(expect.objectContaining({ flexGrow: 1, paddingBottom: 0, paddingTop: 0 }));
     });
 
     it('bloqueia Button durante loading e substitui seu conteúdo', () => {
@@ -128,6 +131,60 @@ describe('shared ui', () => {
         expect(view.getByText('Login necessário')).toBeTruthy();
     });
 
+    it('não anuncia linhas informativas como controles desabilitados', () => {
+        const view = withTheme(<ListRow title="Versão" description="2.4.0" />);
+        const row = view.getByLabelText('Versão');
+
+        expect(view.queryByRole('button', { name: 'Versão' })).toBeNull();
+        expect(row.props.accessibilityState?.disabled).not.toBe(true);
+    });
+
+    it('oferece amostras visuais acessíveis para escolhas de cor', () => {
+        const onChange = jest.fn();
+        const view = withTheme(
+            <SwatchPicker
+                label="Fundo"
+                value="SEPIA"
+                options={['WHITE', 'SEPIA', 'BLACK'] as const}
+                optionLabel={option => option}
+                optionColor={option => ({ WHITE: '#FFFFFF', SEPIA: '#E6D2A6', BLACK: '#000000' })[option]}
+                onChange={onChange}
+            />,
+        );
+
+        expect(view.getByRole('radio', { name: 'SEPIA' }).props.accessibilityState.selected).toBe(true);
+        expect(view.getByRole('radio', { name: 'WHITE' })).toBeOnTheScreen();
+        expect(view.getByRole('radio', { name: 'BLACK' })).toBeOnTheScreen();
+        expect(view.getByText('SEPIA')).toBeOnTheScreen();
+        fireEvent.press(view.getByRole('radio', { name: 'BLACK' }));
+        expect(onChange).toHaveBeenCalledWith('BLACK');
+    });
+
+    it('mantém título e descrição ao lado do preview no card de escolha', () => {
+        const view = withTheme(
+            <ChoiceCards
+                label="Tema"
+                value="SYSTEM"
+                options={['SYSTEM'] as const}
+                optionLabel={() => 'Seguir o sistema'}
+                optionDescription={() => 'Acompanha a aparência do aparelho'}
+                optionPreview={() => <View testID="theme-preview" />}
+                onChange={jest.fn()}
+                layout="stacked"
+            />,
+        );
+
+        const copy = view.getByTestId('choice-card-copy-SYSTEM');
+        const indicator = view.UNSAFE_getByProps({ testID: 'choice-card-indicator-SYSTEM' });
+        const row = view.getByTestId('choice-card-row-SYSTEM');
+        expect(within(copy).getByText('Seguir o sistema')).toBeOnTheScreen();
+        expect(within(copy).getByText('Acompanha a aparência do aparelho')).toBeOnTheScreen();
+        expect(within(row).getByTestId('theme-preview')).toBeOnTheScreen();
+        expect(within(row).getByTestId('choice-card-copy-SYSTEM')).toBeOnTheScreen();
+        expect(StyleSheet.flatten(row.props.style)).toEqual(expect.objectContaining({ alignItems: 'center', flexDirection: 'row' }));
+        expect(StyleSheet.flatten(indicator.props.style)).toEqual(expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }));
+    });
+
     it('expõe icon button, progresso e status com semântica consistente', () => {
         const retry = jest.fn();
         const close = jest.fn();
@@ -194,6 +251,13 @@ describe('shared ui', () => {
 
         expect(view.getByText('Fluxo contínuo')).toBeOnTheScreen();
         expect(view.getByRole('radio', { name: 'VERTICAL' }).props.accessibilityState.selected).toBe(true);
+        expect(StyleSheet.flatten(view.getByTestId('choice-group-row-VERTICAL').props.style)).toEqual(
+            expect.objectContaining({ alignItems: 'center', borderWidth: 2, flexDirection: 'row' }),
+        );
+        expect(StyleSheet.flatten(view.UNSAFE_getByProps({ testID: 'choice-group-indicator-VERTICAL' }).props.style)).toEqual(
+            expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }),
+        );
+        expect(StyleSheet.flatten(view.getByTestId('choice-group-copy-VERTICAL').props.style)).toEqual(expect.objectContaining({ flexShrink: 1, minWidth: 0 }));
     });
 
     it('oferece padrões distintos para escolhas curtas, visuais e extensas', () => {
@@ -226,6 +290,202 @@ describe('shared ui', () => {
         expect(view.getByRole('header', { name: 'Preferências' })).toBeOnTheScreen();
     });
 
+    it('torna seleção e foco visíveis sem depender apenas de cor', () => {
+        const view = withTheme(
+            <>
+                <SegmentedControl label="Formato" value="AUTO" options={['AUTO', 'SHORT'] as const} optionLabel={option => option} onChange={jest.fn()} />
+                <ChoiceCards label="Tema" value="LIGHT" options={['LIGHT', 'DARK'] as const} optionLabel={option => option} onChange={jest.fn()} />
+                <SelectField
+                    closeLabel="Fechar seleção"
+                    label="Fuso"
+                    value="UTC"
+                    options={['UTC', 'LOCAL'] as const}
+                    optionLabel={option => option}
+                    onChange={jest.fn()}
+                />
+            </>,
+        );
+        const segment = view.getByRole('radio', { name: 'AUTO' });
+        const card = view.getByRole('radio', { name: 'DARK' });
+        const select = view.getByRole('button', { name: 'Fuso: UTC' });
+
+        expect(segment.props.accessibilityState.selected).toBe(true);
+        fireEvent(segment, 'focus');
+        fireEvent(card, 'focus');
+        fireEvent(select, 'focus');
+
+        expect(segment.findByType(View).props.style).toEqual(
+            expect.objectContaining({ backgroundColor: '#E6E037', borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }),
+        );
+        expect(card.findByType(View).props.style).toEqual(expect.objectContaining({ borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }));
+        expect(select.props.style).toEqual(expect.objectContaining({ borderColor: expect.not.stringMatching(/^transparent$/), borderWidth: 2 }));
+    });
+
+    it('mantém borda e alinhamento dos rádios estáveis ao alternar seleção', () => {
+        const view = withTheme(
+            <>
+                <ChoiceCards label="Tema" value="LIGHT" options={['LIGHT', 'DARK'] as const} optionLabel={option => option} onChange={jest.fn()} />
+                <ChoiceGroup
+                    label="Idioma"
+                    value="PT"
+                    options={['PT', 'EN'] as const}
+                    optionLabel={option => option}
+                    optionDescription={option => `Descrição ${option}`}
+                    onChange={jest.fn()}
+                    layout="stacked"
+                />
+                <SegmentedControl label="Formato" value="AUTO" options={['AUTO', 'FIXED'] as const} optionLabel={option => option} onChange={jest.fn()} />
+                <SelectField
+                    closeLabel="Fechar seleção"
+                    label="Qualidade"
+                    value="AUTO"
+                    options={['AUTO', 'ORIGINAL'] as const}
+                    optionLabel={option => option}
+                    optionDescription={option => `Descrição ${option}`}
+                    onChange={jest.fn()}
+                />
+            </>,
+        );
+
+        expect(['LIGHT', 'DARK'].map(option => StyleSheet.flatten(view.getByTestId(`choice-card-surface-${option}`).props.style).borderWidth)).toEqual([2, 2]);
+        expect(['PT', 'EN'].map(option => StyleSheet.flatten(view.getByTestId(`choice-group-row-${option}`).props.style).borderWidth)).toEqual([2, 2]);
+        expect(StyleSheet.flatten(view.getByTestId('choice-group-row-PT').props.style).alignItems).toBe('center');
+        expect(['AUTO', 'FIXED'].map(option => StyleSheet.flatten(view.getByTestId(`segmented-option-surface-${option}`).props.style).borderWidth)).toEqual([
+            2, 2,
+        ]);
+
+        fireEvent.press(view.getByRole('button', { name: 'Qualidade: AUTO' }));
+
+        expect(['AUTO', 'ORIGINAL'].map(option => StyleSheet.flatten(view.getByTestId(`select-field-option-${option}`).props.style).borderWidth)).toEqual([
+            2, 2,
+        ]);
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-row-AUTO').props.style).alignItems).toBe('center');
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-indicator-AUTO').props.style).flexShrink).toBe(0);
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-copy-AUTO').props.style)).toEqual(expect.objectContaining({ flex: 1, minWidth: 0 }));
+    });
+
+    it('apresenta SelectField com affordance clara e folha inferior multiplataforma', () => {
+        const onChange = jest.fn();
+        const view = withTheme(
+            <SelectField
+                closeLabel="Fechar seleção"
+                description="Define a qualidade das páginas"
+                label="Qualidade"
+                value="AUTO"
+                options={['AUTO', 'ORIGINAL'] as const}
+                optionLabel={option => (option === 'AUTO' ? 'Automática' : 'Original')}
+                optionDescription={option => (option === 'AUTO' ? 'Equilibra nitidez e dados' : 'Preserva o arquivo')}
+                onChange={onChange}
+            />,
+        );
+        const trigger = view.getByTestId('select-field-trigger');
+
+        expect(trigger.props.style).toEqual(expect.objectContaining({ minHeight: 64, backgroundColor: '#1B1B18', borderColor: '#3A3932' }));
+        expect(view.getByTestId('select-field-leading-icon')).toBeOnTheScreen();
+        expect(StyleSheet.flatten(view.getByTestId('select-field-trigger-content').props.style)).toEqual(
+            expect.objectContaining({ alignItems: 'center', flexDirection: 'row', minWidth: 0, width: '100%' }),
+        );
+        expect(StyleSheet.flatten(view.getByTestId('select-field-expand-affordance').props.style)).toEqual(
+            expect.objectContaining({ borderWidth: 1, height: 40, width: 40 }),
+        );
+        fireEvent.press(trigger);
+
+        const modal = view.UNSAFE_getByType(Modal);
+        expect(modal.props).toEqual(
+            expect.objectContaining({
+                animationType: 'slide',
+                navigationBarTranslucent: true,
+                presentationStyle: 'overFullScreen',
+                statusBarTranslucent: true,
+            }),
+        );
+        const sheetStyle = StyleSheet.flatten(view.getByTestId('select-field-sheet').props.style);
+        expect(sheetStyle).toEqual(
+            expect.objectContaining({ bottom: 0, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTopWidth: 1, left: 0, right: 0 }),
+        );
+        expect(sheetStyle.height).toBeGreaterThan(0);
+        expect(view.getByTestId('select-field-sheet-handle')).toBeOnTheScreen();
+        expect(view.getByRole('header', { name: 'Qualidade' })).toBeOnTheScreen();
+        expect(view.getByText('Equilibra nitidez e dados')).toBeOnTheScreen();
+        expect(view.getByRole('radio', { name: 'Automática' }).props.accessibilityState.selected).toBe(true);
+        expect(StyleSheet.flatten(view.getByTestId('select-field-options-group').props.style)).toEqual(
+            expect.objectContaining({ borderRadius: 16, borderWidth: 1, padding: 4 }),
+        );
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-AUTO').props.style)).toEqual(
+            expect.objectContaining({ borderWidth: 2, minHeight: 112, paddingHorizontal: 32, paddingVertical: 32 }),
+        );
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-ORIGINAL').props.style)).toEqual(
+            expect.objectContaining({ borderColor: 'transparent', minHeight: 112 }),
+        );
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-indicator-AUTO').props.style)).toEqual(
+            expect.objectContaining({ flexShrink: 0, height: 28, width: 28 }),
+        );
+        expect(view.getByTestId('select-field-option-indicator-AUTO').props.children).toBeTruthy();
+        expect(view.getByTestId('select-field-option-indicator-ORIGINAL').props.children).toBeNull();
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-divider-AUTO').props.style)).toEqual(
+            expect.objectContaining({ height: 1, marginHorizontal: 32 }),
+        );
+        expect(view.queryByTestId('select-field-option-divider-ORIGINAL')).toBeNull();
+
+        fireEvent.press(view.getByTestId('select-field-backdrop'));
+        expect(onChange).not.toHaveBeenCalled();
+
+        fireEvent.press(trigger);
+        fireEvent(view.getByTestId('select-field-sheet-layer'), 'accessibilityEscape');
+        expect(onChange).not.toHaveBeenCalled();
+
+        fireEvent.press(trigger);
+        act(() => modal.props.onRequestClose());
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('dimensiona a folha pela viewport e pelo conteúdo sem extrapolar a área segura', () => {
+        expect(resolveSelectSheetHeight({ height: 844 }, { bottom: 34, top: 47 }, 5)).toBe(618);
+        expect(resolveSelectSheetHeight({ height: 844 }, { bottom: 34, top: 47 }, 2, true)).toBe(402);
+        expect(resolveSelectSheetHeight({ height: 390 }, { bottom: 21, top: 0 }, 12)).toBeCloseTo(319.8);
+        expect(resolveSelectSheetHeight({ height: Number.NaN }, { bottom: -10, top: Number.POSITIVE_INFINITY }, 5)).toBe(0);
+    });
+
+    it('permite alternar switch pela linha inteira e comunica disabled', () => {
+        const onChange = jest.fn();
+        const view = withTheme(<SwitchRow label="Contraste" description="Realça bordas" value={false} onChange={onChange} />);
+        const control = view.getByRole('switch', { name: 'Contraste' });
+
+        fireEvent.press(view.getByText('Contraste'));
+
+        expect(control.props.accessibilityState).toEqual({ checked: false, disabled: false });
+        const contentStyle = StyleSheet.flatten(view.getByTestId('switch-row-content').props.style);
+        const copyStyle = StyleSheet.flatten(view.getByTestId('switch-row-copy').props.style);
+        const switchStyle = StyleSheet.flatten(view.getByTestId('switch-row-control').props.style);
+        expect(['row', 'column']).toContain(contentStyle.flexDirection);
+        expect(contentStyle).toEqual(expect.objectContaining({ minWidth: 0 }));
+        expect(contentStyle.position).toBeUndefined();
+        if (contentStyle.flexDirection === 'row') {
+            expect(copyStyle).toEqual(expect.objectContaining({ flexBasis: 0, flexGrow: 1, flexShrink: 1, minWidth: 0 }));
+            expect(switchStyle.alignSelf).toBe('center');
+        } else {
+            expect(copyStyle).toEqual(expect.objectContaining({ flexGrow: 0, flexShrink: 0, minWidth: 0, width: '100%' }));
+            expect(switchStyle.alignSelf).toBe('flex-end');
+        }
+        expect(switchStyle).toEqual(expect.objectContaining({ flexShrink: 0, minWidth: 52, width: 52 }));
+        expect(switchStyle.position).toBeUndefined();
+        expect(onChange).toHaveBeenCalledWith(true);
+    });
+
+    it('empilha o switch após a copy com fonte ampliada sem usar sobreposição absoluta', () => {
+        expect(resolveSwitchRowStacked(2)).toBe(true);
+        expect(resolveSwitchRowStacked(1)).toBe(false);
+    });
+
+    it('empilha segmentos com fonte a 200% para não mesclar alternativas', () => {
+        expect(resolveSegmentedControlStacked('regular', 2)).toBe(true);
+        expect(resolveChoiceCardsStacked('grid', 'regular', 2)).toBe(true);
+        expect(resolveChoiceGroupStacked('horizontal', 2)).toBe(true);
+        expect(resolveSegmentedControlStacked('regular', 1)).toBe(false);
+        expect(resolveChoiceCardsStacked('grid', 'regular', 1)).toBe(false);
+        expect(resolveChoiceGroupStacked('horizontal', 1)).toBe(false);
+    });
+
     it('expõe slider como ajustável e respeita o passo nas ações assistivas', () => {
         const onChange = jest.fn();
         const view = withTheme(
@@ -247,6 +507,14 @@ describe('shared ui', () => {
 
         expect(slider.props.accessibilityValue).toEqual({ max: 100, min: 0, now: 50, text: '50%' });
         expect(onChange).toHaveBeenCalledWith(55);
+    });
+
+    it('calcula o slider pela posição local sem inverter o gesto', () => {
+        expect(resolveRangeSliderValue(190, 200, 0, 100, 5)).toBe(95);
+        expect(resolveRangeSliderValue(10, 200, 0, 100, 5)).toBe(5);
+        expect(resolveRangeSliderValue(40, 200, 0, 100, 5)).toBe(20);
+        expect(resolveRangeSliderValue(-20, 200, 0, 100, 5)).toBe(0);
+        expect(resolveRangeSliderValue(220, 200, 0, 100, 5)).toBe(100);
     });
 
     it.each([

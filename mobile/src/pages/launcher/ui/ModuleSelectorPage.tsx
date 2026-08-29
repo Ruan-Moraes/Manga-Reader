@@ -11,6 +11,7 @@ import { ModuleSelector } from './ModuleSelector';
 
 export function ModuleSelectorPage() {
     const { t } = useTranslation('launcher');
+
     const authenticated = useSessionStore(state => state.isAuthenticated);
     const localError = useSettingsStore(state => state.localError);
     const retryLocalHydration = useSettingsStore(state => state.retryLocalHydration);
@@ -18,10 +19,13 @@ export function ModuleSelectorPage() {
     const openModule = (module: AppModuleId) => {
         if (module === 'offline-translation') {
             router.push(ROUTES.OFFLINE_TRANSLATION as never);
+
             return;
         }
+
         if (authenticated) {
             router.push(ROUTES.PLATFORM.STATUS as never);
+
             return;
         }
         router.push({ pathname: ROUTES.AUTH.LOGIN, params: { returnTo: ROUTES.PLATFORM.STATUS } } as never);

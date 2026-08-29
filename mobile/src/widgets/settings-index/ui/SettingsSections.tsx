@@ -19,24 +19,29 @@ export function SettingsGroupCard({ title, description, children }: SettingsGrou
     const { radii, spacing, tokens } = useTheme();
 
     return (
-        <View
-            style={{
-                backgroundColor: tokens.surface,
-                borderColor: tokens.separator,
-                borderRadius: radii.card,
-                borderWidth: 1,
-                overflow: 'hidden',
-            }}
-        >
-            <View style={{ borderBottomColor: tokens.separator, borderBottomWidth: 1, gap: spacing.xs, padding: spacing.md }}>
-                <AppText accessibilityRole="header" variant="eyebrow" tone="accent">
-                    {title}
-                </AppText>
+        <View style={{ gap: spacing.sm }}>
+            <View style={{ gap: spacing.xs, paddingHorizontal: spacing.xs }}>
+                <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
+                    <View accessibilityElementsHidden style={{ backgroundColor: tokens.accent, borderRadius: radii.pill, height: 16, width: 4 }} />
+                    <AppText accessibilityRole="header" variant="eyebrow" tone="accent">
+                        {title}
+                    </AppText>
+                </View>
                 <AppText variant="caption" tone="muted">
                     {description}
                 </AppText>
             </View>
-            {children}
+            <View
+                style={{
+                    backgroundColor: tokens.surface,
+                    borderColor: tokens.separator,
+                    borderRadius: radii.card,
+                    borderWidth: 1,
+                    overflow: 'hidden',
+                }}
+            >
+                {children}
+            </View>
         </View>
     );
 }

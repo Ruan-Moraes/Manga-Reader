@@ -4,7 +4,8 @@ import { Image } from 'expo-image';
 import { useTheme } from '@/src/shared/theme';
 import { FONTS } from '@/src/shared/theme';
 
-const LOGO = require('../../../../assets/images/logo.png');
+const LOGIN_HERO = require('../../../../assets/images/login-hero.png');
+const LOGIN_HERO_LIGHT = require('../../../../assets/images/login-hero-light.png');
 
 interface Props {
     layout?: 'mascote' | 'minimal';
@@ -14,53 +15,12 @@ interface Props {
     sub?: string;
 }
 
-export function LogoMark({ size = 28 }: { size?: number }) {
-    const { radii, tokens } = useTheme();
-    return (
-        <View
-            style={{
-                width: size,
-                height: size,
-                borderRadius: radii.sm,
-                overflow: 'hidden',
-                backgroundColor: tokens.logoBg,
-                borderWidth: 0.5,
-                borderColor: tokens.accentGlow,
-            }}
-        >
-            <Image source={LOGO} style={{ width: size, height: size }} contentFit="cover" />
-        </View>
-    );
-}
-
-export function Wordmark({ fontSize = 16 }: { fontSize?: number }) {
-    const { tokens } = useTheme();
-    return (
-        <Text
-            style={{
-                fontFamily: FONTS.extraboldItalic,
-                fontSize,
-                color: tokens.text,
-                letterSpacing: 1.4,
-                lineHeight: fontSize,
-            }}
-        >
-            {'Manga '}
-            <Text style={{ color: tokens.accentText }}>Reader</Text>
-        </Text>
-    );
-}
-
 export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title, sub }: Props) {
-    const { radii, spacing, textStyles, tokens, typography } = useTheme();
+    const { colorScheme, radii, spacing, textStyles, tokens, typography } = useTheme();
 
     if (layout === 'minimal') {
         return (
             <View style={{ marginBottom: spacing.lg }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
-                    <LogoMark size={32} />
-                    <Wordmark fontSize={16} />
-                </View>
                 {eyebrow && (
                     <Text
                         style={{
@@ -101,18 +61,15 @@ export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title
 
     return (
         <View style={{ alignItems: 'center', marginBottom: spacing.lg }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.lg }}>
-                <LogoMark size={28} />
-                <Wordmark fontSize={16} />
-            </View>
-
             {artwork ? (
                 <View
                     accessibilityElementsHidden
                     style={{
                         alignItems: 'center',
                         backgroundColor: tokens.accent,
-                        borderRadius: radii.feature,
+                        borderColor: tokens.borderStrong,
+                        borderRadius: radii.control,
+                        borderWidth: 1,
                         height: 152,
                         justifyContent: 'center',
                         marginBottom: spacing.xl,
@@ -120,32 +77,20 @@ export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title
                         width: '100%',
                     }}
                 >
-                    <View
-                        style={{
-                            borderColor: tokens.onAccent,
-                            borderRadius: 999,
-                            borderWidth: 2,
-                            height: 106,
-                            opacity: 0.22,
-                            position: 'absolute',
-                            width: 220,
-                        }}
+                    <Image
+                        accessibilityLabel="Garota abrindo uma porta mágica para uma biblioteca" // TODO: Label precisa ter o I18n
+                        source={colorScheme === 'light' ? LOGIN_HERO_LIGHT : LOGIN_HERO}
+                        style={{ height: '100%', position: 'absolute', width: '100%' }}
+                        contentFit="cover"
                     />
                     <View
                         style={{
-                            backgroundColor: tokens.onAccent,
-                            height: 38,
-                            opacity: 0.9,
-                            transform: [{ rotate: '45deg' }],
-                            width: 38,
-                        }}
-                    />
-                    <View
-                        style={{
-                            backgroundColor: tokens.accent,
-                            height: 18,
+                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                            bottom: 0,
+                            left: 0,
                             position: 'absolute',
-                            width: 54,
+                            right: 0,
+                            top: 0,
                         }}
                     />
                 </View>

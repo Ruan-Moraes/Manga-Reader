@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import type { ReactNode } from 'react';
 
 import { useTheme } from '@/src/shared/theme';
@@ -20,6 +20,9 @@ interface ListRowProps {
     metaPlacement?: 'inline' | 'supporting';
     statusTone?: 'accent' | 'danger' | 'neutral' | 'success' | 'warning';
     showDivider?: boolean;
+    disabled?: boolean;
+    loading?: boolean;
+    tone?: 'default' | 'danger';
 }
 
 export function ListRow({
@@ -35,6 +38,9 @@ export function ListRow({
     metaPlacement = 'inline',
     statusTone = 'neutral',
     showDivider = true,
+    disabled = false,
+    loading = false,
+    tone = 'default',
 }: ListRowProps) {
     const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
     const [pressed, setPressed] = useState(false);
@@ -51,13 +57,14 @@ export function ListRow({
             accessibilityLabel={accessibilityLabel ?? title}
             accessibilityHint={accessibilityHint}
             accessibilityRole={onPress ? 'button' : undefined}
-            disabled={!onPress}
+            accessibilityState={onPress ? { busy: loading, disabled: disabled || loading } : undefined}
+            disabled={disabled || loading}
             onPress={onPress}
-            onPressIn={() => setPressed(true)}
-            onPressOut={() => setPressed(false)}
+            onPressIn={onPress ? () => setPressed(true) : undefined}
+            onPressOut={onPress ? () => setPressed(false) : undefined}
             style={{
                 alignItems: 'center',
-                backgroundColor: pressed ? tokens.surfacePressed : tokens.surface,
+                backgroundColor: disabled ? tokens.disabledSurface : pressed ? tokens.surfacePressed : tokens.surface,
                 borderColor: tokens.separator,
                 borderRadius: variant === 'card' ? radii.card : 0,
                 borderBottomWidth: variant === 'plain' && showDivider ? 1 : 0,
@@ -66,14 +73,15 @@ export function ListRow({
                 gap: spacing.md,
                 minHeight: minimumTouchTarget,
                 padding: spacing.md,
-                paddingRight: spacing.md + 24,
+                paddingRight: trailing || onPress || loading ? spacing.md + 24 : spacing.md,
                 position: 'relative',
+                opacity: disabled ? 0.58 : 1,
             }}
         >
             {leading}
             <View style={{ flex: 1, gap: spacing.xs, minWidth: 0 }}>
                 <View style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm }}>
-                    <AppText numberOfLines={2} variant="label" style={{ flex: 1, minWidth: 0 }}>
+                    <AppText numberOfLines={2} variant="label" tone={tone === 'danger' ? 'danger' : 'default'} style={{ flex: 1, minWidth: 0 }}>
                         {title}
                     </AppText>
                     {meta && metaPlacement === 'inline' ? (
@@ -99,9 +107,13 @@ export function ListRow({
                     </View>
                 ) : null}
             </View>
-            {trailing || onPress ? (
+            {trailing || onPress || loading ? (
                 <View style={{ bottom: 0, justifyContent: 'center', position: 'absolute', right: spacing.md, top: 0 }}>
-                    {trailing ?? <Icon name="chevron-forward" color={tokens.accentText} decorative />}
+                    {loading ? (
+                        <ActivityIndicator color={tokens.accentText} />
+                    ) : (
+                        (trailing ?? <Icon name="chevron-forward" color={tokens.accentText} decorative />)
+                    )}
                 </View>
             ) : null}
         </Pressable>

@@ -59,6 +59,13 @@
                 "VERTICAL": "Fluxo contínuo para leitura por rolagem."
             },
             "preload": "Quantidade de páginas preparadas ao redor da atual.",
+            "quality": {
+                "AUTO": "Equilibra nitidez e uso de dados.",
+                "HIGH": "Prioriza nitidez com maior uso de dados.",
+                "LOW": "Prioriza economia de dados e carregamento rápido.",
+                "MEDIUM": "Mantém boa nitidez com uso moderado de dados.",
+                "ORIGINAL": "Preserva a resolução original da página."
+            },
             "saturation": "Ajuste a intensidade das cores das páginas."
         },
         "direction": "Direção",

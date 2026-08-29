@@ -8,7 +8,7 @@ import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } fro
 import { formatByteSize } from '@/src/shared/locale';
 import { type LocalDataSummary, measureLocalData } from '@/src/shared/storage';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, FormSection, Icon, StatusMessage } from '@/src/shared/ui';
+import { AppText, FormSection, Icon, type IconName, ListRow, StatusMessage } from '@/src/shared/ui';
 
 import {
     clearApplicationCache,
@@ -77,6 +77,21 @@ export function DataControlsPanel({
             { text: t('dataControls.confirm'), style: 'destructive', onPress: () => void run(kind, operation) },
         ]);
     };
+    const leading = (icon: IconName, danger = false) => (
+        <View
+            accessibilityElementsHidden
+            style={{
+                alignItems: 'center',
+                backgroundColor: danger ? tokens.disabledSurface : tokens.accentSoft,
+                borderRadius: radii.control,
+                height: 42,
+                justifyContent: 'center',
+                width: 42,
+            }}
+        >
+            <Icon color={danger ? tokens.danger : tokens.accentText} name={icon} decorative />
+        </View>
+    );
 
     return (
         <View style={{ gap: spacing.md }}>
@@ -85,71 +100,80 @@ export function DataControlsPanel({
                     {t('dataControls.title')}
                 </AppText>
             ) : null}
-            <FormSection title={t('dataControls.sections.device.title')} description={t('dataControls.sections.device.description')}>
+            <FormSection contentPadding="none" title={t('dataControls.sections.device.title')} description={t('dataControls.sections.device.description')}>
                 {storage ? (
-                    <View style={{ backgroundColor: tokens.accentSoft, borderRadius: radii.control, gap: spacing.xs, padding: spacing.md }}>
-                        <AppText variant="eyebrow" tone="accent">
-                            {t('dataControls.storageLabel')}
-                        </AppText>
-                        <AppText variant="label">
-                            {t('dataControls.storageUsage', {
-                                size: formatByteSize(storage.usedBytes),
-                                scope: storage.scope === 'temporary-exports' ? t('dataControls.storageScopes.temporaryExports') : storage.scope,
-                            })}
-                        </AppText>
-                    </View>
+                    <ListRow
+                        description={t('dataControls.storageLabel')}
+                        leading={leading('pie-chart-outline')}
+                        showDivider
+                        title={t('dataControls.storageUsage', {
+                            size: formatByteSize(storage.usedBytes),
+                            scope: storage.scope === 'temporary-exports' ? t('dataControls.storageScopes.temporaryExports') : storage.scope,
+                        })}
+                        variant="plain"
+                    />
                 ) : null}
-                <Button
+                <ListRow
                     accessibilityHint={t('dataControls.cache.description')}
                     disabled={busyAction !== null}
-                    leading={<Icon name="sparkles-outline" decorative />}
+                    description={t('dataControls.cache.description')}
+                    leading={leading('sparkles-outline', true)}
                     loading={busyAction === 'cache'}
                     onPress={() => confirm('cache', () => clearApplicationCache(true, { queryClient }))}
+                    showDivider
                     tone="danger"
-                    variant="outline"
-                >
-                    {t('dataControls.cache.action')}
-                </Button>
+                    title={t('dataControls.cache.action')}
+                    variant="plain"
+                />
                 {offlineData && offlineData.totalBytes > 0 ? (
-                    <Button
+                    <ListRow
                         accessibilityHint={t('dataControls.offline.description')}
                         disabled={busyAction !== null}
-                        leading={<Icon name="phone-portrait-outline" decorative />}
+                        description={t('dataControls.offline.description')}
+                        leading={leading('phone-portrait-outline', true)}
                         loading={busyAction === 'offline'}
                         onPress={() => confirm('offline', () => clearRegisteredLocalData(true, offlineData))}
+                        showDivider={false}
                         tone="danger"
-                        variant="outline"
-                    >
-                        {t('dataControls.offline.action', { size: formatByteSize(offlineData.totalBytes) })}
-                    </Button>
+                        title={t('dataControls.offline.action', { size: formatByteSize(offlineData.totalBytes) })}
+                        variant="plain"
+                    />
                 ) : (
-                    <AppText tone="muted">{t('dataControls.offline.empty')}</AppText>
+                    <ListRow
+                        description={t('dataControls.offline.empty')}
+                        leading={leading('phone-portrait-outline')}
+                        showDivider={false}
+                        title={t('dataControls.offline.title')}
+                        variant="plain"
+                    />
                 )}
             </FormSection>
-            <FormSection title={t('dataControls.sections.account.title')} description={t('dataControls.sections.account.description')}>
-                <Button
+            <FormSection contentPadding="none" title={t('dataControls.sections.account.title')} description={t('dataControls.sections.account.description')}>
+                <ListRow
                     accessibilityHint={t('dataControls.export.description')}
                     disabled={busyAction !== null}
-                    leading={<Icon name="download-outline" decorative />}
+                    description={t('dataControls.export.description')}
+                    leading={leading('download-outline')}
                     loading={busyAction === 'export'}
                     onPress={() => (isAuthenticated ? void run('export', () => shareAccountExport(true, { queryClient })) : onAuthenticationRequired?.())}
-                    variant="outline"
-                >
-                    {t('dataControls.export.action')}
-                </Button>
-                <Button
+                    showDivider
+                    title={t('dataControls.export.action')}
+                    variant="plain"
+                />
+                <ListRow
                     accessibilityHint={t('dataControls.history.description')}
                     disabled={busyAction !== null}
-                    leading={<Icon name="time-outline" decorative />}
+                    description={t('dataControls.history.description')}
+                    leading={leading('time-outline', true)}
                     loading={busyAction === 'history'}
                     onPress={() =>
                         isAuthenticated ? confirm('history', () => clearTrackedHistory(true, true, { queryClient })) : onAuthenticationRequired?.()
                     }
+                    showDivider={false}
                     tone="danger"
-                    variant="outline"
-                >
-                    {t('dataControls.history.action')}
-                </Button>
+                    title={t('dataControls.history.action')}
+                    variant="plain"
+                />
             </FormSection>
             {errorKey && (
                 <StatusMessage

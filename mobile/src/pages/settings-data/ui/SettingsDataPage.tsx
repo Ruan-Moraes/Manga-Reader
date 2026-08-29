@@ -11,8 +11,9 @@ export function SettingsDataPage() {
         <ScreenScaffold
             backLabel={t('actions.back')}
             description={t('sections.data.description')}
+            eyebrow={t('sections.data.title')}
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
-            title={t('sections.data.title')}
+            title={t('sections.data.editorialTitle')}
         >
             <DataControlsPanel
                 showTitle={false}

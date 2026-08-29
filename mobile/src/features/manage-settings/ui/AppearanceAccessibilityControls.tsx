@@ -2,8 +2,8 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { AppearanceSettings, DensityPreference, FontSizePreference, ThemePreference } from '@/src/entities/user-setting';
-import { useTheme } from '@/src/shared/theme';
-import { ChoiceCards, FormSection, type IconName, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
+import { darkTokens, lightTokens, useTheme } from '@/src/shared/theme';
+import { ChoiceCards, FormSection, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 
@@ -12,11 +12,36 @@ type AppearanceKey = keyof AppearanceSettings;
 const THEME_OPTIONS: readonly ThemePreference[] = ['SYSTEM', 'LIGHT', 'DARK'];
 const FONT_OPTIONS: readonly FontSizePreference[] = ['COMPACT', 'DEFAULT', 'COMFORTABLE'];
 const DENSITY_OPTIONS: readonly DensityPreference[] = ['COMFORTABLE', 'COMPACT'];
-const THEME_ICONS: Record<ThemePreference, IconName> = {
-    SYSTEM: 'phone-portrait-outline',
-    LIGHT: 'sunny-outline',
-    DARK: 'moon-outline',
-};
+const THEME_PREVIEW_HEIGHT = 38;
+const THEME_PREVIEW_WIDTH = 54;
+const THEME_PREVIEW_ACCENT_HEIGHT = 4;
+const THEME_PREVIEW_PADDING = 4;
+
+function ThemePreview({ option }: { option: ThemePreference }) {
+    const { radii, tokens } = useTheme();
+    const left = option === 'DARK' ? darkTokens : lightTokens;
+    const right = option === 'LIGHT' ? lightTokens : darkTokens;
+    return (
+        <View
+            accessibilityElementsHidden
+            style={{
+                borderColor: tokens.borderStrong,
+                borderRadius: radii.control,
+                borderWidth: 1,
+                flexDirection: 'row',
+                height: THEME_PREVIEW_HEIGHT,
+                overflow: 'hidden',
+                width: THEME_PREVIEW_WIDTH,
+            }}
+        >
+            {[left, right].map((preview, index) => (
+                <View key={`${option}-${index}`} style={{ backgroundColor: preview.bg, flex: 1, justifyContent: 'flex-end', padding: THEME_PREVIEW_PADDING }}>
+                    <View style={{ backgroundColor: preview.accent, borderRadius: radii.pill, height: THEME_PREVIEW_ACCENT_HEIGHT, width: '100%' }} />
+                </View>
+            ))}
+        </View>
+    );
+}
 
 export function AppearanceAccessibilityControls() {
     const { t } = useTranslation('common');
@@ -42,9 +67,10 @@ export function AppearanceAccessibilityControls() {
                     label={t('settings.appearance.theme.label')}
                     onChange={value => void updateAppearance('theme', value)}
                     optionDescription={option => t(`settings.appearance.theme.descriptions.${option}`)}
-                    optionIcon={option => THEME_ICONS[option]}
                     optionLabel={option => t(`settings.appearance.theme.options.${option}`)}
+                    optionPreview={option => <ThemePreview option={option} />}
                     options={THEME_OPTIONS}
+                    layout="stacked"
                     value={appearance.theme}
                 />
                 <SegmentedControl

@@ -40,4 +40,21 @@ describe('MOB-FEAT-003 interface language controls', () => {
         expect(useSettingsStore.getState().language).toBe('en-US');
         expect(SecureStore.setItemAsync).toHaveBeenCalled();
     });
+
+    it('persiste formato de data e escolhe fuso em sheet sem conflitar controles', async () => {
+        render(
+            <ThemeProvider waitForPlatform={false}>
+                <InterfaceLanguageRegionControls />
+            </ThemeProvider>,
+        );
+
+        fireEvent.press(screen.getByRole('radio', { name: 'Mês, dia' }));
+        fireEvent.press(screen.getByRole('button', { name: 'Fuso horário: São Paulo' }));
+        fireEvent.press(screen.getByRole('radio', { name: 'Tóquio' }));
+
+        await waitFor(() => {
+            expect(useSettingsStore.getState().settings.locale).toEqual({ dateFormat: 'MON_D', timezone: 'Asia/Tokyo' });
+        });
+        expect(SecureStore.setItemAsync).toHaveBeenCalled();
+    });
 });

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { ImageVariantCapabilities } from '@/src/entities/chapter';
 import type { ImageQuality, ReaderBackground, ReaderSettings, ReadingDirection, ReadingFit, ReadingMode } from '@/src/entities/user-setting';
-import { useTheme } from '@/src/shared/theme';
-import { ChoiceCards, FormSection, type IconName, RangeSlider, SegmentedControl, SelectField, StepperControl, SwitchRow } from '@/src/shared/ui';
+import { darkTokens, lightTokens, useTheme } from '@/src/shared/theme';
+import { ChoiceCards, FormSection, type IconName, RangeSlider, SegmentedControl, SelectField, StepperControl, SwatchPicker, SwitchRow } from '@/src/shared/ui';
 
 import { selectableQualities } from '../model/readerConfiguration';
 
@@ -55,20 +55,21 @@ function Stepper({
 
 export function ReaderSettingsControls({ value, capabilities, onChange }: Props) {
     const { t } = useTranslation('reader');
-    const { radii, spacing, tokens } = useTheme();
+    const { spacing } = useTheme();
     const qualities = selectableQualities(capabilities);
     const backgroundColors: Record<ReaderBackground, string> = {
-        BLACK: tokens.logoBg,
-        DARK: tokens.bg,
-        PAPER: tokens.surfaceMuted,
-        LIGHT: tokens.surfaceElevated,
-        WHITE: tokens.surface,
+        BLACK: darkTokens.logoBg,
+        DARK: darkTokens.surface,
+        PAPER: lightTokens.surfaceMuted,
+        LIGHT: lightTokens.bg,
+        WHITE: lightTokens.surface,
     };
     return (
         <View style={{ gap: spacing.lg }}>
             <FormSection title={t('settings.sections.navigation.title')} description={t('settings.sections.navigation.description')}>
                 <ChoiceCards
                     label={t('settings.mode')}
+                    layout="stacked"
                     onChange={mode => onChange({ mode })}
                     optionDescription={option => t(`settings.descriptions.mode.${option}`)}
                     optionIcon={option => MODE_ICONS[option]}
@@ -98,27 +99,16 @@ export function ReaderSettingsControls({ value, capabilities, onChange }: Props)
                     closeLabel={t('settings.closeSelection')}
                     label={t('settings.quality')}
                     onChange={(quality: ImageQuality) => onChange({ quality })}
+                    optionDescription={option => t(`settings.descriptions.quality.${option}`)}
                     optionLabel={option => t(`options.${option}`)}
                     options={qualities}
                     value={qualities.includes(value.quality) ? value.quality : 'AUTO'}
                 />
-                <ChoiceCards
+                <SwatchPicker
                     label={t('settings.background')}
                     onChange={background => onChange({ background })}
                     optionLabel={option => t(`options.${option}`)}
-                    optionPreview={option => (
-                        <View
-                            accessibilityElementsHidden
-                            style={{
-                                backgroundColor: backgroundColors[option],
-                                borderColor: tokens.borderStrong,
-                                borderRadius: radii.pill,
-                                borderWidth: 1,
-                                height: 24,
-                                width: 24,
-                            }}
-                        />
-                    )}
+                    optionColor={option => backgroundColors[option]}
                     options={BACKGROUNDS}
                     value={value.background}
                 />

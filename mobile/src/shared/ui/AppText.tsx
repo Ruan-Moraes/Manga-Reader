@@ -11,6 +11,7 @@ interface AppTextProps extends TextProps {
 
 export function AppText({ variant = 'body', tone = 'default', style, ...props }: AppTextProps) {
     const { fontScale, textStyles, tokens } = useTheme();
+
     const colors: Record<Tone, string> = {
         default: tokens.text,
         muted: tokens.muted,
@@ -20,7 +21,9 @@ export function AppText({ variant = 'body', tone = 'default', style, ...props }:
         success: tokens.success,
         inverse: tokens.inverseText,
     };
+
     const typographyStyle = textStyles[variant];
+
     const fontSize = typographyStyle.fontSize ?? 14;
     const lineHeight = typographyStyle.lineHeight ?? fontSize * 1.4;
 
