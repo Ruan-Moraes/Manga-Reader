@@ -13,8 +13,8 @@
 services:
   app:
     build:
-      context: ./core
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/core/Dockerfile
     container_name: mangareader-app
     ports:
       - "8080:8080"
@@ -95,8 +95,8 @@ services:
           cpus: "1.0"
   rating-aggregator:
     build:
-      context: ./jobs/rating-aggregator
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/jobs/rating-aggregator/Dockerfile
     container_name: mangareader-rating-aggregator
     ports:
       - "8081:8081"
@@ -132,8 +132,8 @@ services:
           cpus: "0.5"
   orphan-cleaner:
     build:
-      context: ./jobs/orphan-cleaner
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/jobs/orphan-cleaner/Dockerfile
     container_name: mangareader-orphan-cleaner
     ports:
       - "8082:8082"
@@ -169,8 +169,8 @@ services:
           cpus: "0.5"
   trending-aggregator:
     build:
-      context: ./jobs/trending-aggregator
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/jobs/trending-aggregator/Dockerfile
     container_name: mangareader-trending-aggregator
     ports:
       - "8083:8083"

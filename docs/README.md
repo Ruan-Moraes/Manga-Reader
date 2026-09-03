@@ -47,7 +47,7 @@ contêm instruções operacionais específicas.
 ## Documentação por módulo
 
 - [`../api/README.md`](../api/README.md): backend e jobs.
-- [`../api/core/README.md`](../api/core/README.md): API principal.
+- [`../api/apps/core/README.md`](../api/apps/core/README.md): API principal.
 - [`../web/README.md`](../web/README.md): workspace frontend.
 - [`../web/manga-reader/README.md`](../web/manga-reader/README.md): aplicação web principal.
 - [`../web/landing-page/README.md`](../web/landing-page/README.md): landing page.

@@ -6,15 +6,13 @@
 
 ## Build & Run
 
-### Backend (`/api/core/`)
+### Backend (`/api/`)
 
 ```bash
-mvn test                                        # Todos os testes (JUnit 5 + Mockito + H2 + TestContainers)
-mvn test -Dtest=UserTest                        # Classe específica
-mvn test -Dtest=UserTest#shouldInitialize...    # Método específico
-mvn test -Dtest=**/domain/**/*Test              # Por camada (domain/application/presentation/infrastructure)
-mvn package -DskipTests                         # Build JAR
-mvn spring-boot:run                             # Iniciar (Docker Compose sobe automaticamente)
+./mvnw test                                         # Todos os módulos (JUnit 5 + Mockito + H2 + TestContainers)
+./mvnw -pl apps/core -am test -Dtest=UserTest        # Classe específica
+./mvnw -pl apps/core -am package -DskipTests         # Build do core
+./mvnw -pl apps/core spring-boot:run                 # Iniciar core (Docker Compose sobe automaticamente)
 ```
 
 ### Frontend (`/web/manga-reader/`)
@@ -36,7 +34,7 @@ npx vitest run --pool=forks             # Suíte completa (--pool=forks obrigat�
 
 ### Infra
 
-Docker Compose em `/api/core/docker-compose.yml`: PostgreSQL 17, MongoDB 8.0,
+Docker Compose em `/api/apps/core/docker-compose.yml`: PostgreSQL 17, MongoDB 8.0,
 RabbitMQ 4, Redis 7 e Neo4j 5. Gerenciado automaticamente via
 `spring-boot-docker-compose`. Prod: `/api/docker-compose.prod.yml` (API principal
 e três jobs auxiliares).
@@ -47,12 +45,12 @@ Microserviços standalone que rodam fora da API principal (mesmo padrão: Spring
 `@Scheduled` + gatilho manual `POST /admin/reconcile` protegido por token, infra subida
 pelo `core`). Ver README de cada um:
 
-- **`jobs/rating-aggregator`** (8081) — agrega avaliações em `reviews_aggregate`.
-- **`jobs/orphan-cleaner`** (8082) — duas redes de segurança Postgres↔Mongo: reconcilia
+- **`apps/jobs/rating-aggregator`** (8081) — agrega avaliações em `reviews_aggregate`.
+- **`apps/jobs/orphan-cleaner`** (8082) — duas redes de segurança Postgres↔Mongo: reconcilia
   contadores desnormalizados (drift) de Postgres (`groups.total_titles`,
   `events.participants`) e Mongo (`replyCount`, votos), de hora em hora; e limpa
   referências órfãs cross-DB (`title_id` sem título no Mongo), diariamente.
-- **`jobs/trending-aggregator`** (8083) — calcula rankings diários reconstruíveis
+- **`apps/jobs/trending-aggregator`** (8083) — calcula rankings diários reconstruíveis
   em `title_trend_daily`, usando sinais do PostgreSQL e MongoDB.
 
 ---

@@ -149,7 +149,7 @@ segurança no caminho frio):**
    `groups.total_titles` dos grupos afetados. As junções `title_authors`/`title_publishers`
    já eram limpas por `TitleAssociationWriter`.
 2. **Assíncrona (safety net)** — `OrphanTitleRefReconciler` no serviço
-   [`api/jobs/orphan-cleaner`](../api/jobs/orphan-cleaner) (ex-`counter-reconciler`, renomeado): job
+   [`api/apps/jobs/orphan-cleaner`](../api/apps/jobs/orphan-cleaner) (ex-`counter-reconciler`, renomeado): job
    diário (03:30) que varre os `title_id` distintos das 5 tabelas, confere existência em
    `titles` (batch `$in`, tratando `_id` ObjectId/String) e apaga os órfãos em lote. **Guard
    anti-wipe:** não apaga nada se o Mongo não devolve nenhum título (provável falha de
