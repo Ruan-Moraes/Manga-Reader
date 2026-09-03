@@ -1,21 +1,18 @@
-import { type ReactNode, useState } from 'react';
-import { FlatList, Modal, Pressable, View } from 'react-native';
-import { Image } from 'expo-image';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { LocalMediaImportDraft, LocalMediaImportItem } from '@/src/entities/local-media-import';
 import { useResponsiveLayout, useTheme } from '@/src/shared/theme';
-import { AppText, Button } from '@/src/shared/ui';
+import { AppText, Button, MediaPreviewSheet, SegmentedControl } from '@/src/shared/ui';
 
+import type { ReviewViewMode } from '../config/reviewLayout';
 import { possibleDuplicateItemIds, type ReviewLocalMediaImportController, reviewLocalMediaImportController } from '../model/reviewLocalMediaImport';
 import { useReviewLocalMediaImport } from '../model/useReviewLocalMediaImport';
-
-const THUMBNAIL_SIZE = 76;
-const KANBAN_THUMBNAIL_HEIGHT = 148;
-
-type ViewMode = 'kanban' | 'scroll';
+import { ReviewImageActionsSheet } from './ReviewImageActionsSheet';
+import { ReviewImageCard } from './ReviewImageCard';
+import { SortableReviewList } from './SortableReviewList';
 
 interface Props {
     draft: LocalMediaImportDraft;
@@ -25,189 +22,66 @@ interface Props {
     renderItemMeta?: (item: LocalMediaImportItem) => ReactNode;
 }
 
-interface ItemProps {
-    draft: LocalMediaImportDraft;
-    item: LocalMediaImportItem;
-    duplicate: boolean;
-    busy: boolean;
-    mode: ViewMode;
-    uri: string;
-    onMove: (offset: -1 | 1) => void;
-    onRemove: () => void;
-    onPreview: () => void;
-    itemMeta?: ReactNode;
-    columnCount: number;
-}
-
-function ReviewItem({ draft, item, duplicate, busy, mode, uri, onMove, onRemove, onPreview, itemMeta, columnCount }: ItemProps) {
-    const { t } = useTranslation('launcher');
-    const { radii, spacing, tokens } = useTheme();
-    const [failed, setFailed] = useState(false);
-    const page = item.position + 1;
-    const total = draft.items.length;
-    const kanban = mode === 'kanban';
-
-    return (
-        <View
-            testID={`review-item-${item.id}`}
-            style={{
-                alignItems: kanban ? 'stretch' : 'center',
-                borderColor: duplicate ? tokens.warn : tokens.separator,
-                borderRadius: radii.card,
-                borderWidth: kanban ? 0 : 1,
-                flexDirection: kanban ? 'column' : 'row',
-                gap: spacing.sm,
-                padding: kanban ? 0 : spacing.xs,
-                width: kanban ? (`${Math.max(30, 100 / columnCount - 2)}%` as `${number}%`) : undefined,
-            }}
-        >
-            <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('offline.review.openPreview', { page, total })}
-                onPress={onPreview}
-                style={{ width: kanban ? '100%' : THUMBNAIL_SIZE }}
-            >
-                {failed ? (
-                    <View
-                        accessibilityRole="alert"
-                        accessibilityLabel={t('offline.review.imageError', { page })}
-                        style={{
-                            alignItems: 'center',
-                            backgroundColor: tokens.surfaceMuted,
-                            borderRadius: radii.sm,
-                            height: kanban ? KANBAN_THUMBNAIL_HEIGHT : THUMBNAIL_SIZE,
-                            justifyContent: 'center',
-                            width: '100%',
-                        }}
-                    >
-                        <Ionicons name="image-outline" size={28} color={tokens.danger} />
-                    </View>
-                ) : (
-                    <Image
-                        source={{ uri }}
-                        contentFit="cover"
-                        cachePolicy="memory"
-                        accessibilityElementsHidden
-                        onError={() => setFailed(true)}
-                        style={{ borderRadius: radii.sm, height: kanban ? KANBAN_THUMBNAIL_HEIGHT : THUMBNAIL_SIZE, width: '100%' }}
-                    />
-                )}
-            </Pressable>
-
-            <View style={{ flex: kanban ? undefined : 1, gap: spacing.xs }}>
-                <AppText variant={kanban ? 'label' : 'section'}>{t('offline.review.page', { page, total })}</AppText>
-                {duplicate && (
-                    <AppText accessibilityRole="text" variant="caption" style={{ color: tokens.warn }}>
-                        {t('offline.review.possibleDuplicate')}
-                    </AppText>
-                )}
-                {itemMeta}
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs }}>
-                    <Button
-                        size="compact"
-                        variant="outline"
-                        fullWidth={false}
-                        disabled={busy || item.position === 0}
-                        accessibilityLabel={t('offline.review.moveEarlier', { page })}
-                        onPress={() => onMove(-1)}
-                    >
-                        <Ionicons name="arrow-up" size={20} color={tokens.accentText} accessibilityElementsHidden />
-                    </Button>
-                    <Button
-                        size="compact"
-                        variant="outline"
-                        fullWidth={false}
-                        disabled={busy || item.position === total - 1}
-                        accessibilityLabel={t('offline.review.moveLater', { page })}
-                        onPress={() => onMove(1)}
-                    >
-                        <Ionicons name="arrow-down" size={20} color={tokens.accentText} accessibilityElementsHidden />
-                    </Button>
-                    <Button
-                        size="compact"
-                        variant="outline"
-                        tone="danger"
-                        fullWidth={kanban}
-                        disabled={busy}
-                        accessibilityLabel={t('offline.review.remove', { page })}
-                        onPress={onRemove}
-                        leading={<Ionicons name="trash-outline" size={18} color={tokens.danger} accessibilityElementsHidden />}
-                    >
-                        {t('offline.review.removeAction')}
-                    </Button>
-                </View>
-            </View>
-        </View>
-    );
-}
-
-interface ViewModeButtonProps {
-    icon: 'grid-outline' | 'list-outline';
-    label: string;
-    selected: boolean;
-    onPress: () => void;
-}
-
-function ViewModeButton({ icon, label, selected, onPress }: ViewModeButtonProps) {
-    const { minimumTouchTarget, radii, spacing, tokens } = useTheme();
-
-    return (
-        <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={label}
-            accessibilityState={{ selected }}
-            onPress={onPress}
-            style={{
-                alignItems: 'center',
-                backgroundColor: selected ? tokens.text : tokens.surfaceMuted,
-                borderColor: selected ? tokens.text : tokens.separator,
-                borderRadius: radii.sm,
-                borderWidth: 1,
-                flexDirection: 'row',
-                gap: spacing.xs,
-                justifyContent: 'center',
-                minHeight: minimumTouchTarget,
-                minWidth: 88,
-                paddingHorizontal: spacing.md,
-            }}
-        >
-            <Ionicons name={icon} size={18} color={selected ? tokens.bg : tokens.accentText} accessibilityElementsHidden />
-            <AppText variant="label" style={{ color: selected ? tokens.bg : tokens.accentText }}>
-                {label}
-            </AppText>
-        </Pressable>
-    );
-}
+const VIEW_MODES = ['grid', 'list'] as const;
+const normalizePositions = (items: LocalMediaImportItem[]): LocalMediaImportItem[] => items.map((item, position) => ({ ...item, position }));
 
 export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterReview, renderItemMeta }: Props) {
     const { t } = useTranslation('launcher');
+
     const { spacing, tokens } = useTheme();
     const { reviewColumns } = useResponsiveLayout();
+
     const reviewController = controller ?? reviewLocalMediaImportController;
+
     const actions = useReviewLocalMediaImport(draft, onDraftChange, reviewController);
-    const [viewMode, setViewMode] = useState<ViewMode>('kanban');
+
+    const [viewMode, setViewMode] = useState<ReviewViewMode>('grid');
+    const [orderedItems, setOrderedItems] = useState(() => normalizePositions(draft.items));
+    const [actionItem, setActionItem] = useState<LocalMediaImportItem | null>(null);
     const [previewItem, setPreviewItem] = useState<LocalMediaImportItem | null>(null);
-    const [previewFailed, setPreviewFailed] = useState(false);
+    const [draggingId, setDraggingId] = useState<string | null>(null);
+
+    const dragGestureRef = useRef({ active: false, endedAt: 0 });
+
     const duplicates = possibleDuplicateItemIds(draft);
+
     const itemUri = (item: LocalMediaImportItem) => reviewController.itemUri(draft, item);
-    const closePreview = () => {
-        setPreviewItem(null);
-        setPreviewFailed(false);
+
+    const canOpenImage = () => !dragGestureRef.current.active && Date.now() - dragGestureRef.current.endedAt > 350;
+
+    useEffect(() => {
+        setOrderedItems(normalizePositions(draft.items));
+    }, [draft.items]);
+
+    const closePreview = () => setPreviewItem(null);
+    const handleReorder = (items: LocalMediaImportItem[]) => {
+        const nextItems = normalizePositions(items);
+
+        const nextIds = nextItems.map(item => item.id);
+        const currentIds = orderedItems.map(item => item.id);
+
+        if (nextIds.every((id, index) => id === currentIds[index])) return;
+
+        setOrderedItems(nextItems);
+
+        void actions.reorderItems(nextIds).then(persisted => {
+            if (persisted === false) setOrderedItems(normalizePositions(draft.items));
+        });
     };
+
     const footer = (
-        <View testID="local-media-review-footer" style={{ gap: spacing.sm }}>
-            {actions.error && (
+        <View testID="local-media-review-footer" style={{ gap: spacing.sm, paddingTop: spacing.xs }}>
+            {actions.error ? (
                 <View accessibilityRole="alert" style={{ gap: spacing.sm }}>
                     <AppText variant="section" tone="danger">
                         {t('offline.review.errorTitle')}
                     </AppText>
                     <AppText tone="muted">{t(`offline.review.errors.${actions.error}`)}</AppText>
-                    <Button variant="outline" onPress={() => void actions.retry()} disabled={actions.busy}>
+                    <Button variant="outline" onPress={() => void actions.retry()} disabled={actions.busy || draggingId !== null}>
                         {t('offline.review.retry')}
                     </Button>
                 </View>
-            )}
-
+            ) : null}
             {draft.confirmedAt ? (
                 <View accessibilityRole="summary" style={{ gap: spacing.xs }}>
                     <AppText variant="section" tone="success">
@@ -218,19 +92,18 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
             ) : (
                 <AppText tone="muted">{t('offline.review.editing')}</AppText>
             )}
-
             <View style={{ gap: spacing.sm }}>
                 <Button
                     variant="outline"
-                    disabled={actions.busy}
+                    disabled={actions.busy || draggingId !== null}
                     onPress={() => void actions.addImages()}
                     accessibilityLabel={t('offline.review.add')}
-                    leading={<Ionicons name="add-circle-outline" size={20} color={tokens.accentText} />}
+                    leading={<Ionicons name="add-circle-outline" size={20} color={tokens.accentText} accessibilityElementsHidden />}
                 >
                     {t('offline.review.add')}
                 </Button>
                 <Button
-                    disabled={actions.busy || !!draft.confirmedAt}
+                    disabled={actions.busy || draggingId !== null || !!draft.confirmedAt}
                     loading={actions.busy}
                     onPress={() => void actions.confirm()}
                     accessibilityLabel={draft.confirmedAt ? t('offline.review.confirmedAction') : t('offline.review.confirm')}
@@ -245,101 +118,97 @@ export function LocalMediaReviewPanel({ draft, onDraftChange, controller, afterR
     return (
         <>
             <View style={{ flex: 1, gap: spacing.sm, minHeight: 0 }}>
-                <View accessibilityLabel={t('offline.review.viewLabel')} style={{ flexDirection: 'row', gap: spacing.xs }}>
-                    <ViewModeButton
-                        icon="grid-outline"
-                        label={t('offline.review.viewKanban')}
-                        selected={viewMode === 'kanban'}
-                        onPress={() => setViewMode('kanban')}
-                    />
-                    <ViewModeButton
-                        icon="list-outline"
-                        label={t('offline.review.viewScroll')}
-                        selected={viewMode === 'scroll'}
-                        onPress={() => setViewMode('scroll')}
-                    />
-                </View>
+                <SegmentedControl
+                    label={t('offline.review.viewLabel')}
+                    description={t('offline.review.dragHint')}
+                    value={viewMode}
+                    options={VIEW_MODES}
+                    optionLabel={mode => (mode === 'grid' ? t('offline.review.viewGrid') : t('offline.review.viewList'))}
+                    onChange={setViewMode}
+                    disabled={actions.busy || draggingId !== null}
+                />
+                <SortableReviewList
+                    items={orderedItems}
+                    mode={viewMode}
+                    columns={reviewColumns}
+                    busy={actions.busy}
+                    footer={footer}
+                    onReorder={handleReorder}
+                    onDragStart={item => {
+                        dragGestureRef.current.active = true;
 
-                <FlatList
-                    key={`${viewMode}-${reviewColumns}`}
-                    testID={`local-media-review-list-${viewMode}`}
-                    data={draft.items}
-                    keyExtractor={item => item.id}
-                    numColumns={viewMode === 'kanban' ? reviewColumns : 1}
-                    columnWrapperStyle={viewMode === 'kanban' ? { gap: spacing.sm } : undefined}
-                    initialNumToRender={viewMode === 'kanban' ? 8 : 6}
-                    maxToRenderPerBatch={8}
-                    windowSize={5}
-                    removeClippedSubviews
-                    style={{ flex: 1, minHeight: 0 }}
-                    contentContainerStyle={{ gap: spacing.sm, paddingBottom: spacing.xs }}
-                    ListFooterComponent={footer}
-                    renderItem={({ item }) => (
-                        <ReviewItem
-                            draft={draft}
-                            item={item}
-                            duplicate={duplicates.has(item.id)}
-                            busy={actions.busy}
-                            mode={viewMode}
+                        setDraggingId(item.id);
+                    }}
+                    onDragEnd={() => {
+                        dragGestureRef.current = { active: false, endedAt: Date.now() };
+
+                        setDraggingId(null);
+                    }}
+                    renderItem={({ item, index, overlay }) => (
+                        <ReviewImageCard
+                            id={item.id}
+                            index={index}
+                            total={orderedItems.length}
                             uri={itemUri(item)}
+                            duplicate={duplicates.has(item.id)}
+                            busy={actions.busy || draggingId !== null}
+                            mode={viewMode}
+                            overlay={overlay}
                             onMove={offset => void actions.moveItem(item.id, offset)}
                             onRemove={() => void actions.removeItem(item.id)}
                             onPreview={() => {
-                                setPreviewFailed(false);
+                                if (!canOpenImage()) return;
+
                                 setPreviewItem(item);
                             }}
+                            onOpenActions={() => {
+                                if (canOpenImage()) setActionItem(item);
+                            }}
                             itemMeta={renderItemMeta?.(item)}
-                            columnCount={reviewColumns}
                         />
                     )}
                 />
             </View>
 
-            <Modal testID="local-media-preview-modal" visible={!!previewItem} animationType="fade" presentationStyle="fullScreen" onRequestClose={closePreview}>
-                <SafeAreaView style={{ backgroundColor: tokens.overlay, flex: 1 }}>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            flexDirection: 'row',
-                            gap: spacing.sm,
-                            justifyContent: 'space-between',
-                            padding: spacing.md,
-                        }}
-                    >
-                        <AppText variant="section" tone="inverse">
-                            {previewItem ? t('offline.review.previewTitle', { page: previewItem.position + 1, total: draft.items.length }) : ''}
-                        </AppText>
-                        <Button
-                            size="compact"
-                            fullWidth={false}
-                            variant="outline"
-                            accessibilityLabel={t('offline.review.closePreview')}
-                            onPress={closePreview}
-                            leading={<Ionicons name="close" size={20} color={tokens.accentText} accessibilityElementsHidden />}
-                        >
-                            {t('offline.review.closePreview')}
-                        </Button>
-                    </View>
-                    {previewItem && !previewFailed ? (
-                        <Image
-                            source={{ uri: itemUri(previewItem) }}
-                            contentFit="contain"
-                            cachePolicy="memory"
-                            accessibilityLabel={t('offline.review.previewImage', {
-                                page: previewItem.position + 1,
-                                total: draft.items.length,
-                            })}
-                            onError={() => setPreviewFailed(true)}
-                            style={{ flex: 1, width: '100%' }}
-                        />
-                    ) : (
-                        <View accessibilityRole="alert" style={{ alignItems: 'center', flex: 1, gap: spacing.sm, justifyContent: 'center' }}>
-                            <Ionicons name="image-outline" size={42} color={tokens.danger} accessibilityElementsHidden />
-                            <AppText tone="inverse">{previewItem ? t('offline.review.imageError', { page: previewItem.position + 1 }) : ''}</AppText>
-                        </View>
-                    )}
-                </SafeAreaView>
-            </Modal>
+            <ReviewImageActionsSheet
+                visible={!!actionItem}
+                page={actionItem ? orderedItems.findIndex(item => item.id === actionItem.id) + 1 : 0}
+                total={orderedItems.length}
+                duplicate={actionItem ? duplicates.has(actionItem.id) : false}
+                busy={actions.busy}
+                itemMeta={actionItem ? renderItemMeta?.(actionItem) : undefined}
+                onPreview={() => {
+                    if (!actionItem) return;
+
+                    setPreviewItem(actionItem);
+
+                    setActionItem(null);
+                }}
+                onRemove={() => {
+                    if (!actionItem) return;
+
+                    const itemId = actionItem.id;
+
+                    setActionItem(null);
+
+                    void actions.removeItem(itemId);
+                }}
+                onClose={() => setActionItem(null)}
+            />
+
+            <MediaPreviewSheet
+                testID="local-media-preview-modal"
+                headerTestID="local-media-preview-header"
+                visible={!!previewItem}
+                uri={previewItem ? itemUri(previewItem) : null}
+                eyebrow={previewItem ? t('offline.review.previewTitle', { page: previewItem.position + 1, total: draft.items.length }) : ''}
+                title={t('offline.review.previewAction')}
+                imageAccessibilityLabel={previewItem ? t('offline.review.previewImage', { page: previewItem.position + 1, total: draft.items.length }) : ''}
+                unavailableAccessibilityLabel={previewItem ? t('offline.review.imageError', { page: previewItem.position + 1 }) : ''}
+                closeAccessibilityLabel={t('offline.review.closePreview')}
+                closeLabel={t('offline.review.closePreview')}
+                onClose={closePreview}
+            />
         </>
     );
 }

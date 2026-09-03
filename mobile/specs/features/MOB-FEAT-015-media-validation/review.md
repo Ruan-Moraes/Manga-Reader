@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-015
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação/revisão: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Gate na entrada do planejamento: `open`
 - Dependências verificadas: `MOB-FEAT-012`, `MOB-FEAT-013` e `MOB-FEAT-014` implementadas
 - Verdict: `approved`
@@ -34,7 +34,7 @@ crescimento contínuo e ausência de crash, congelamento ou ANR.
 | AC-006   | sim          | identidade do item governa update; reorder/idioma preservam e append inicia pendente      | pass      |
 | AC-007   | sim          | imagem estruturalmente válida passa sem OCR ou heurística de texto                        | pass      |
 | AC-008   | sim          | leitura sequencial automatizada e matriz com 67 imagens confirmada em Android físico      | pass      |
-| AC-009   | sim          | RNTL trilíngue, estados acessíveis e slot dentro da lista kanban/scroll                   | pass      |
+| AC-009   | sim          | RNTL trilíngue, estados acessíveis e slot dentro da lista grid/scroll                     | pass      |
 | AC-010   | sim          | fluxo usa apenas filesystem/SQLite privados e não importa cliente HTTP/Core               | pass      |
 | AC-011   | sim          | dupla ação coalescida, stale protection, commit por item e retry seletivo                 | pass      |
 | AC-012   | sim          | readiness é derivada de confirmações, política e todos os itens válidos                   | pass      |
@@ -59,3 +59,7 @@ processamento ou navegação de sucesso.
 
 Código, evidências automatizadas e profiling Android físico estão completos. Os
 doze critérios foram satisfeitos e o verdict é `approved`.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

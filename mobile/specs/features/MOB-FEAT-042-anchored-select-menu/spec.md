@@ -56,7 +56,9 @@ um diálogo central.
   (24 dp na densidade compacta e 32 dp na confortável), copy flexível e área
   fixa de 28 dp para seleção.
 - A lista usa um único agrupamento visual e uma escala constante entre borda,
-  opções, copy e indicador; opções não podem parecer cards desconectados.
+  opções, copy e indicador; opções não podem parecer cards desconectados e não
+  usam linhas divisórias. Um gap vertical `sm` separa os fundos de seleção e
+  pressão dos itens vizinhos.
 - Seleção usa fundo sutil, texto destacado e check; pressão e foco não mudam
   altura, padding ou espessura da borda.
 - Selecionar aplica imediatamente e fecha. Toque no scrim, back do Android e

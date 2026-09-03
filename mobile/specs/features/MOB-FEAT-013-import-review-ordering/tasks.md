@@ -20,7 +20,7 @@
 | AC-009   | TASK-009, TASK-014 | RNTL acessível, i18n trilíngue e ação destrutiva                           |
 | AC-010   | TASK-010           | Teste SQLite de instalação v2 e migração v1→v2 sem perda                   |
 | AC-011   | TASK-013           | RNTL do modal ampliado privado, fechamento e preservação                   |
-| AC-012   | TASK-014           | RNTL do kanban padrão e alternância com scroll sem mutação                 |
+| AC-012   | TASK-014           | RNTL do grid padrão e alternância com scroll sem mutação                   |
 
 ## Checklist
 
@@ -37,7 +37,7 @@
 - [x] TASK-011 — Atualizar coverage/README e executar `pnpm check`.
 - [x] TASK-012 — Produzir review e drift audit com o status comprovado pelas evidências.
 - [x] TASK-013 — Implementar preview ampliado privado e acessível para cada miniatura.
-- [x] TASK-014 — Implementar kanban padrão, scroll alternativo e melhorar a ação de exclusão.
+- [x] TASK-014 — Implementar grid padrão, scroll alternativo e melhorar a ação de exclusão.
 
 ## Ordem de execução
 

@@ -8,8 +8,11 @@ import { ReaderPreferencesSection } from '@/src/widgets/chapter-reader';
 
 export function SettingsReaderPage() {
     const { t } = useTranslation('settingsNavigation');
+
     const value = useSettingsStore(state => state.settings.reader);
+
     const updateSettings = useSettingsStore(state => state.updateSettings);
+
     return (
         <ScreenScaffold
             backLabel={t('actions.back')}

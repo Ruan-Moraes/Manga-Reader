@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-037
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação/revisão: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Gate na entrada do planejamento: `open`
 - Dependência verificada: `MOB-FEAT-036`
 - Verdict: `approved`
@@ -26,3 +26,7 @@ compensações locais. Nenhum finding bloqueante permanece.
 ## Conclusão
 
 Copy e switch agora possuem áreas de layout independentes e verificáveis.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

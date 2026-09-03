@@ -1,10 +1,8 @@
-import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { SUPPORTED_LANGUAGES } from '@/src/shared/i18n';
 import { DATE_FORMATS, SUPPORTED_TIMEZONES } from '@/src/shared/locale';
-import { useTheme } from '@/src/shared/theme';
-import { AppText, ChoiceCards, FormSection, SegmentedControl, SelectField } from '@/src/shared/ui';
+import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, SelectField } from '@/src/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 
@@ -14,10 +12,8 @@ export function InterfaceLanguageRegionControls({ showTitle = true }: { showTitl
     const locale = useSettingsStore(state => state.settings.locale);
     const setLanguage = useSettingsStore(state => state.setLanguage);
     const updateSettings = useSettingsStore(state => state.updateSettings);
-    const { spacing } = useTheme();
-
     return (
-        <View style={{ gap: spacing.lg }}>
+        <SectionStack>
             {showTitle ? (
                 <AppText accessibilityRole="header" variant="title">
                     {t('localeControls.title')}
@@ -66,6 +62,6 @@ export function InterfaceLanguageRegionControls({ showTitle = true }: { showTitl
                     value={locale.timezone}
                 />
             </FormSection>
-        </View>
+        </SectionStack>
     );
 }

@@ -97,10 +97,16 @@ interface TableSqlRow {
 }
 
 export type NewLocalMediaImportItem = Omit<LocalMediaImportItem, 'position'>;
+export type LocalMediaImportItemReplacement = Pick<NewLocalMediaImportItem, 'localFilename' | 'byteSize' | 'mimeHint' | 'createdAt'>;
 
 export interface RemovedLocalMediaImportItem {
     draft: LocalMediaImportDraft | null;
     filename: string;
+}
+
+export interface ReplacedLocalMediaImportItem {
+    draft: LocalMediaImportDraft;
+    previousFilename: string;
 }
 
 export interface LocalMediaImportRepository {
@@ -108,6 +114,13 @@ export interface LocalMediaImportRepository {
     getActive(): Promise<LocalMediaImportDraft | null>;
     replaceActive(draft: NewLocalMediaImportDraft): Promise<string | null>;
     appendItems(draftId: string, items: readonly NewLocalMediaImportItem[], updatedAt: number): Promise<LocalMediaImportDraft>;
+    replaceItem(
+        draftId: string,
+        itemId: string,
+        replacement: LocalMediaImportItemReplacement,
+        updatedAt: number,
+        expectedUpdatedAt: number,
+    ): Promise<ReplacedLocalMediaImportItem>;
     removeItem(draftId: string, itemId: string, updatedAt: number): Promise<RemovedLocalMediaImportItem>;
     reorderItems(draftId: string, orderedItemIds: readonly string[], updatedAt: number): Promise<LocalMediaImportDraft>;
     confirm(draftId: string, confirmedAt: number): Promise<LocalMediaImportDraft>;
@@ -456,6 +469,28 @@ export function createSqliteLocalMediaImportRepository(openDatabase: () => Promi
                 result = await requireDraft(transaction, draftId);
             });
             if (!result) throw new Error('localMediaImport.draftNotFound');
+            return result;
+        },
+        async replaceItem(draftId, itemId, replacement, updatedAt, expectedUpdatedAt) {
+            const db = await database();
+            let result: ReplacedLocalMediaImportItem | null = null;
+            await db.withExclusiveTransactionAsync(async transaction => {
+                const current = await requireDraft(transaction, draftId);
+                if (current.updatedAt !== expectedUpdatedAt) throw new Error('localMediaImport.staleDraft');
+                const previous = current.items.find(item => item.id === itemId);
+                if (!previous) throw new Error('localMediaImport.itemNotFound');
+                await transaction.runAsync(
+                    `UPDATE local_media_import_items SET
+                        local_filename = ?, byte_size = ?, mime_hint = ?, created_at = ?,
+                        media_validation_status = 'PENDING', media_validation_error = NULL, detected_mime_type = NULL,
+                        width_px = NULL, height_px = NULL, validated_at = NULL, validation_policy_version = NULL
+                     WHERE draft_id = ? AND id = ?`,
+                    [replacement.localFilename, replacement.byteSize, replacement.mimeHint, replacement.createdAt, draftId, itemId],
+                );
+                await transaction.runAsync('UPDATE local_media_import_drafts SET updated_at = ? WHERE id = ?', [updatedAt, draftId]);
+                result = { draft: await requireDraft(transaction, draftId), previousFilename: previous.localFilename };
+            });
+            if (!result) throw new Error('localMediaImport.itemNotFound');
             return result;
         },
         async removeItem(draftId, itemId, updatedAt) {

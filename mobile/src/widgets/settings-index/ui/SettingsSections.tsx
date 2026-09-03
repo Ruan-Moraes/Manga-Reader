@@ -2,11 +2,10 @@ import { View } from 'react-native';
 import type { PropsWithChildren, ReactNode } from 'react';
 
 import { useTheme } from '@/src/shared/theme';
-import { AppText } from '@/src/shared/ui';
+import { AppText, SectionStack } from '@/src/shared/ui';
 
 export function SettingsSections({ children }: PropsWithChildren) {
-    const { spacing } = useTheme();
-    return <View style={{ gap: spacing.md }}>{children}</View>;
+    return <SectionStack testID="settings-sections">{children}</SectionStack>;
 }
 
 interface SettingsGroupCardProps {

@@ -6,7 +6,7 @@ status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-032]
 created: 2026-08-24
-updated: 2026-08-24
+updated: 2026-09-03
 supersedes: []
 superseded_by: []
 ---
@@ -26,15 +26,18 @@ visível e escolhas visuais representadas por controles genéricos.
   preferências, autenticação, persistência, sincronização e navegação.
 - A solicitação explícita de acabamento e implementação em 2026-08-24 constitui
   aprovação humana desta evolução visual.
-- A referência `design/manga-translation-mobile.html` orienta ritmo editorial,
-  grupos, linhas, superfícies e destaque amarelo; capacidades apenas simuladas
-  no HTML continuam fora do aplicativo.
+- Ritmo editorial, grupos, linhas, superfícies e destaque amarelo seguem os
+  contratos de `MOB-FEAT-028..032`, os tokens de tema e as primitivas
+  compartilhadas; capacidades sem contrato continuam fora do aplicativo.
 - A execução permanece incremental em `shared → features → widgets → pages`.
 
 ## Requisitos e regras
 
 - Títulos e descrições de seção ficam fora das superfícies que agrupam os
   controles; cards internos são reservados às decisões ou ações.
+- No índice e em todas as subtelas, grupos editoriais consecutivos usam o mesmo
+  `SectionStack` com separação vertical `xl`, sem aumentar o espaço interno das
+  linhas.
 - Escolhas visuais e descritivas não usam grids assimétricos.
 - Cada preferência preserva o controle contextual definido em `MOB-FEAT-032`.
 - Estados e textos permanecem derivados dos stores existentes, sem estado de
@@ -109,7 +112,7 @@ equivalentes, i18n mantém paridade e `pnpm check` passa integralmente.
 ## Fora de escopo
 
 - Adicionar perfil de leitura, avanço automático, tradução experimental,
-  downloads ou laboratório existentes apenas no protótipo HTML.
+  downloads ou laboratório sem contrato funcional aprovado.
 - Alterar payloads, banco, API, política de privacidade ou regras de sessão.
 - Redesenhar autenticação, launcher, tradução local ou o viewport do leitor.
 

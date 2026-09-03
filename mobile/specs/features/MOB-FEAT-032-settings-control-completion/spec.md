@@ -6,7 +6,7 @@ status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-031]
 created: 2026-08-22
-updated: 2026-08-22
+updated: 2026-09-03
 supersedes: []
 superseded_by: []
 ---
@@ -25,9 +25,9 @@ persistência, aplicação imediata e navegação continuam corretas.
 - Refina `MOB-FEAT-031` sem criar preferências ou capacidades novas.
 - Mantém `UserSettings`, preferências de conta, idiomas priorizados, stores,
   requests, confirmações e políticas de sincronização como fontes de verdade.
-- A referência `design/manga-translation-mobile.html` orienta agrupamento,
-  hierarquia e personalidade visual; controles de protótipo sem contrato real
-  permanecem descartados.
+- Agrupamento, hierarquia e personalidade visual seguem os contratos de
+  `MOB-FEAT-028..031`, os tokens de tema e as primitivas compartilhadas;
+  controles sem contrato real permanecem descartados.
 - Primitivas agnósticas continuam em `shared/ui`; features escolhem a entrada
   adequada e pages apenas compõem navegação e estados de acesso.
 
@@ -48,7 +48,7 @@ persistência, aplicação imediata e navegação continuam corretas.
 | qualidade de imagem                           | select em sheet          | conjunto dependente das capacidades do capítulo         |
 | fundo do leitor                               | cards com amostra        | decisão visual que não pode depender apenas da cor      |
 | saturação                                     | slider ajustável         | intervalo contínuo limitado, com valor textual          |
-| espaçamento e pré-carregamento                | stepper                  | inteiros pequenos com incremento/decremento preciso     |
+| espaçamento e pré-carregamento                | slider ajustável         | intervalos inteiros equivalentes aos controles web      |
 | marcar como lido e analytics                  | switch em linha          | booleanos independentes com dependências explícitas     |
 | visibilidades sociais                         | segmentado adaptativo    | conjuntos pequenos; reflow deve evitar opções mescladas |
 | histórico e conteúdo adulto                   | cards empilhados         | consequências que exigem descrição por alternativa      |
@@ -157,7 +157,7 @@ integralmente sem regressão de contratos.
 ## Fora de escopo
 
 - Criar botão de reset ou qualquer preferência sem contrato funcional aprovado.
-- Adicionar controles existentes apenas no HTML de referência.
+- Adicionar controles sem contrato funcional aprovado.
 - Alterar API, payload, banco, autenticação ou política de privacidade.
 - Redesenhar superfícies que não pertencem à jornada de configurações.
 

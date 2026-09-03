@@ -59,6 +59,9 @@ function fixture(pick: LocalMediaPickerResult = { status: 'cancelled' }) {
             };
             return active;
         }),
+        replaceItem: jest.fn(async () => {
+            throw new Error('not used');
+        }),
         removeItem: jest.fn(async (_draftId, itemId, updatedAt) => {
             if (!active) throw new Error('missing');
             const removed = active.items.find(item => item.id === itemId);
@@ -175,5 +178,21 @@ describe('MOB-FEAT-013 review local media import controller', () => {
         const pending = setup.controller.confirm(setup.getActive()!);
         expect(setup.controller.confirm(setup.getActive()!)).toBe(pending);
         await pending;
+    });
+
+    it('persists an arbitrary ordered id sequence in a single repository call', async () => {
+        const setup = fixture();
+
+        await expect(setup.controller.reorderItems(initialDraft(), ['item-2', 'item-1'])).resolves.toMatchObject({
+            status: 'updated',
+            draft: {
+                items: [
+                    { id: 'item-2', position: 0 },
+                    { id: 'item-1', position: 1 },
+                ],
+            },
+        });
+        expect(setup.repository.reorderItems).toHaveBeenCalledTimes(1);
+        expect(setup.repository.reorderItems).toHaveBeenCalledWith('draft-1', ['item-2', 'item-1'], 100);
     });
 });

@@ -6,7 +6,7 @@ status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-033]
 created: 2026-08-24
-updated: 2026-08-24
+updated: 2026-09-01
 supersedes: []
 superseded_by: []
 ---
@@ -35,17 +35,35 @@ amostras de cor isoladas, gesto incorreto do slider e rodapé local repetitivo.
 - Cards com preview agrupam título e descrição ao lado do preview; o estado de
   seleção continua no extremo direito.
 - Cores formam uma faixa única de segmentos quadrados contíguos; somente as
-  extremidades externas são arredondadas e a seleção não depende apenas da cor.
-- O slider deriva o valor da posição local absoluta do ponteiro durante todo o
-  gesto, sem reutilizar valor inicial obsoleto.
+  extremidades externas são arredondadas. A seleção usa apenas o check e o
+  estado assistivo, sem borda destacada ao redor da amostra.
+- O `RangeSlider` compartilhado usa o controle nativo
+  `@react-native-community/slider` para capturar, movimentar e finalizar o
+  gesto; a camada compartilhada preserva somente a apresentação visual e a
+  semântica do componente.
+- O rail reserva lateralmente o raio do thumb visual (12 px). Assim, seus
+  centros nos limites mínimo e máximo permanecem dentro da área interativa e
+  o thumb de 24 px não ultrapassa o contêiner. Toques nas margens continuam
+  representando os limites.
+- Durante o gesto, o valor visual é otimista, limitado ao intervalo e
+  arredondado pelo `step`. No release, o último valor nativo é capturado uma
+  única vez, fica exibido até a confirmação do pai e é o único valor enviado
+  ao callback externo e à persistência. Props antigas e eventos tardios não
+  podem mover o thumb depois do release; a reconciliação visual só ocorre após
+  a confirmação do valor normalizado pelo pai.
+- Saturação, espaçamento e pré-carregamento compartilham o slider; seus
+  intervalos permanecem equivalentes ao web (`0..100`, `0..32` e `0..10`).
 - Status locais ou já sincronizados não ocupam rodapé; erro, pending e syncing
   continuam visíveis e acessíveis.
 
 ## Casos de erro
 
-- Drag iniciado em qualquer ponto do slider permanece limitado ao intervalo e
-  arredondado pelo step.
+- Drag iniciado em qualquer ponto do slider, inclusive sobre ambos os
+  extremos, permanece limitado ao intervalo e arredondado pelo step.
 - Mudança de props durante o gesto não pode inverter nem reiniciar o valor.
+  Após soltar, uma prop atrasada não pode deslocar o thumb do valor liberado
+  para um valor adjacente; o valor somente reconcilia quando o pai confirma o
+  mesmo valor normalizado.
 - Labels longos e font scale de 200% não podem sobrepor switch, preview, check
   ou amostras.
 - Ao rolar, rótulos e opções não podem atravessar a safe area superior nem
@@ -67,12 +85,21 @@ visível e nenhum texto fica solto abaixo do ícone.
 ### AC-003 — Faixa de cores segmentada
 
 Fundos do leitor aparecem como cinco quadrados contíguos com cantos somente no
-primeiro e último, check contrastante e identificação textual da seleção.
+primeiro e último, sem borda de seleção, com check contrastante e identificação
+textual de cada opção. Todas as cinco células preservam largura equivalente
+mesmo sem conteúdo interno selecionado. A largura deve ser calculada a partir
+da medição real do grupo e aplicada numericamente às células, sem depender de
+percentuais ou flex para a superfície colorida no iOS. Tocar uma amostra
+atualiza e mantém o valor escolhido.
 
 ### AC-004 — Slider preciso
 
-Toque e drag para esquerda/direita produzem valores monotônicos coerentes com a
-posição, respeitando 0..100 e step 5.
+Toque e drag para esquerda/direita produzem valores monotônicos coerentes sem
+recuar durante atualizações do componente ou depois do release. O thumb
+permanece integralmente dentro do contêiner nos valores mínimo e máximo.
+Saturação respeita step 5;
+espaçamento e pré-carregamento respeitam step 1 e os limites equivalentes ao web.
+O movimento permanece responsivo sem gravar no storage a cada frame.
 
 ### AC-005 — Status não intrusivo
 
@@ -93,7 +120,7 @@ integralmente.
 | AC-001   | teste de layout/semântica do SwitchRow e auditoria nativa |
 | AC-002   | teste de ChoiceCards e aparência no simulador             |
 | AC-003   | teste de SwatchPicker e leitor no simulador               |
-| AC-004   | regressão unitária do gesto do RangeSlider                |
+| AC-004   | regressões unitárias de extremos, release e prop atrasada |
 | AC-005   | teste de SettingsSyncStatus e integração das subtelas     |
 | AC-006   | matriz nativa e gates completos                           |
 
@@ -107,7 +134,7 @@ integralmente.
 ## Fora de escopo
 
 - Criar novas preferências ou alterar payloads e persistência.
-- Trocar o componente nativo `Switch` ou adicionar biblioteca de slider.
+- Trocar o componente nativo `Switch`.
 - Alterar o design de superfícies fora das configurações.
 
 ## Aprovação humana
@@ -115,3 +142,11 @@ integralmente.
 - Aprovador: Ruan Moraes
 - Data: 2026-08-24
 - Decisão: correções solicitadas e implementação autorizada.
+
+### Aditivo de regressão do slider
+
+- Aprovador: Ruan Moraes
+- Data: 2026-09-01
+- Decisão: após a persistência do desvio no Android e a pesquisa técnica,
+  autorizada a substituição do gesto manual pelo controle nativo do Expo para
+  cumprir o AC-004, sem alterar a API pública ou as preferências.

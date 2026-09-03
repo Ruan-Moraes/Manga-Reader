@@ -2,7 +2,7 @@
 
 Data: 2026-08-27
 
-- Implementação auditada: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação auditada: working-tree sha256:de7220e3953e1866fac8a5f009523781e9e5691dd2079d6a0eb9bf7d9278d5c2
 - Status da feature: `implemented`
 
 ## Divergências
@@ -25,3 +25,7 @@ inalterados.
 
 Spec, tasks, registry, coverage, `SelectField`, testes compartilhados,
 consumidores e gates completos.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

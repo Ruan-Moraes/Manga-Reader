@@ -28,6 +28,7 @@ export interface ThemeTokens {
     link: string;
     // Semantic
     danger: string;
+    onDanger: string;
     success: string;
     warn: string;
     // Text
@@ -68,6 +69,7 @@ export const darkTokens: ThemeTokens = {
     focus: '#E6E037',
     link: '#E6E037',
     danger: '#FF8A68',
+    onDanger: '#ffffff',
     success: '#10b981',
     warn: '#e0a32e',
     text: '#F7F4EA',
@@ -107,6 +109,7 @@ export const lightTokens: ThemeTokens = {
     focus: '#666200',
     link: '#575300',
     danger: '#b83d1b',
+    onDanger: '#ffffff',
     success: '#087a4f',
     warn: '#845500',
     text: '#1B1A17',

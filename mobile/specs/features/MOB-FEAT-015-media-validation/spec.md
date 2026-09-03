@@ -269,7 +269,7 @@ limites não apresenta travamento, ANR ou crescimento contínuo de memória.
 
 Progresso, resumo, resultados por página, ações e erros possuem paridade
 pt-BR/en-US/es-ES, tokens e semântica acessível, permanecendo operáveis no
-kanban e scroll em tela compacta.
+grid e scroll em tela compacta.
 
 ### AC-010 — Privacidade e isolamento
 
@@ -300,7 +300,7 @@ navegação ou sucesso fictício de OCR/tradução.
 | AC-006   | Repository/integração de append/remove/reorder/language preservando identidade                   |
 | AC-007   | Fixture autorizada arte-only decodificável sem qualquer detector de texto                        |
 | AC-008   | Teste de leitura limitada/sequencial e profiling em Android modesto                              |
-| AC-009   | RNTL nos três locales, kanban/scroll, progresso, erro, toque e tela compacta                     |
+| AC-009   | RNTL nos três locales, grid/scroll, progresso, erro, toque e tela compacta                       |
 | AC-010   | Integração offline com HTTP mock vazio e inspeção de mensagens/logs                              |
 | AC-011   | Testes de duplo toque, interrupção, stale draft, falha transacional e retry seletivo             |
 | AC-012   | Teste de readiness para matriz de confirmações/status e ausência de processamento/navegação fake |

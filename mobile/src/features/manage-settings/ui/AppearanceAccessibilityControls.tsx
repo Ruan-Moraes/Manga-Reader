@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { AppearanceSettings, DensityPreference, FontSizePreference, ThemePreference } from '@/src/entities/user-setting';
 import { darkTokens, lightTokens, useTheme } from '@/src/shared/theme';
-import { ChoiceCards, FormSection, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
+import { ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
 
 import { useSettingsStore } from '../model/settingsStore';
 
@@ -45,7 +45,6 @@ function ThemePreview({ option }: { option: ThemePreference }) {
 
 export function AppearanceAccessibilityControls() {
     const { t } = useTranslation('common');
-    const { spacing } = useTheme();
     const appearance = useSettingsStore(state => state.settings.appearance);
     const accessibility = useSettingsStore(state => state.settings.accessibility);
     const syncError = useSettingsStore(state => state.syncError);
@@ -60,7 +59,7 @@ export function AppearanceAccessibilityControls() {
         updateSettings(current => ({ ...current, accessibility: { ...current.accessibility, [key]: value } }), 'appearance');
 
     return (
-        <View style={{ gap: spacing.lg }}>
+        <SectionStack>
             <FormSection title={t('settings.appearance.title')} description={t('settings.appearance.description')}>
                 <ChoiceCards
                     accessibilityHint={syncHint}
@@ -124,6 +123,6 @@ export function AppearanceAccessibilityControls() {
                     tone="danger"
                 />
             ) : null}
-        </View>
+        </SectionStack>
     );
 }

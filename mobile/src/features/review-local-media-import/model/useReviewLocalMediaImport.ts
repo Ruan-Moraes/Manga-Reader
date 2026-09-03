@@ -36,9 +36,11 @@ export function useReviewLocalMediaImport(
             try {
                 const outcome = await action();
                 onDraftChange(outcome.status === 'cleared' ? null : outcome.draft);
+                return true;
             } catch (caught) {
                 setError(errorCode(caught));
                 onDraftChange(await controller.reload().catch(() => draft));
+                return false;
             } finally {
                 setBusy(false);
             }
@@ -52,6 +54,7 @@ export function useReviewLocalMediaImport(
         addImages: () => execute(() => controller.addImages(draft)),
         removeItem: (itemId: string) => execute(() => controller.removeItem(draft, itemId)),
         moveItem: (itemId: string, offset: -1 | 1) => execute(() => controller.moveItem(draft, itemId, offset)),
+        reorderItems: (orderedItemIds: readonly string[]) => execute(() => controller.reorderItems(draft, orderedItemIds)),
         confirm: () => execute(() => controller.confirm(draft)),
         retry: () => (retryRef.current ? execute(retryRef.current) : Promise.resolve()),
     };

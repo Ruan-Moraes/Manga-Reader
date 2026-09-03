@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { SUPPORTED_CONTENT_LANGUAGES } from '@/src/entities/content-language-preference';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, FormSection, Icon, IconButton, type IconName, StatusMessage } from '@/src/shared/ui';
+import { AppText, Button, FormSection, Icon, IconButton, type IconName, SectionStack, StatusMessage } from '@/src/shared/ui';
 
 import { hydrateContentLanguages } from '../model/contentLanguagesHydration';
 import { useContentLanguagesStore } from '../model/contentLanguagesStore';
@@ -37,7 +37,7 @@ export function ContentLanguagesEditor() {
     );
 
     return (
-        <View style={{ gap: spacing.lg }}>
+        <SectionStack>
             <FormSection title={t('contentLanguages.priorityTitle')} description={t('contentLanguages.description')}>
                 {state.effective.map((language, index) => {
                     const fallback = language === 'pt-BR';
@@ -148,6 +148,6 @@ export function ContentLanguagesEditor() {
                     tone="danger"
                 />
             )}
-        </View>
+        </SectionStack>
     );
 }

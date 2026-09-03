@@ -8,7 +8,7 @@ import { type StorageMeasurementAdapter, temporaryExportStorageMeasurement } fro
 import { formatByteSize } from '@/src/shared/locale';
 import { type LocalDataSummary, measureLocalData } from '@/src/shared/storage';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, FormSection, Icon, type IconName, ListRow, StatusMessage } from '@/src/shared/ui';
+import { AppText, FormSection, Icon, type IconName, ListRow, SectionStack, StatusMessage } from '@/src/shared/ui';
 
 import {
     clearApplicationCache,
@@ -38,7 +38,7 @@ export function DataControlsPanel({
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const { busyAction, errorKey, failedCategories, run } = useDataControlsStore();
     const { t } = useTranslation('common');
-    const { radii, spacing, tokens } = useTheme();
+    const { radii, tokens } = useTheme();
     const [storage, setStorage] = useState<{ usedBytes: number; scope: string } | null>(null);
     const [offlineData, setOfflineData] = useState<LocalDataSummary | null>({ totalBytes: 0, participantIds: [] });
 
@@ -94,7 +94,7 @@ export function DataControlsPanel({
     );
 
     return (
-        <View style={{ gap: spacing.md }}>
+        <SectionStack>
             {showTitle ? (
                 <AppText accessibilityRole="header" variant="title">
                     {t('dataControls.title')}
@@ -182,6 +182,6 @@ export function DataControlsPanel({
                     tone="danger"
                 />
             )}
-        </View>
+        </SectionStack>
     );
 }

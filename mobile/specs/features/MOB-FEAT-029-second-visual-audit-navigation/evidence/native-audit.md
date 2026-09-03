@@ -3,13 +3,14 @@
 Data: 2026-08-22  
 Ambiente: Expo Go, iPhone 17 Simulator, iOS 26.5
 
-## Referência visual
+## Critérios visuais
 
-`design/manga-translation-mobile.html` foi aberto e percorrido antes da segunda
-passagem. Foram usados como referência a composição editorial, os neutros
-quentes, o amarelo de marca, os cards arredondados, a hierarquia tipográfica, a
-drop zone, o stepper e a grade de páginas. Tabs e capacidades futuras
-continuaram descartadas.
+A segunda passagem verificou a composição editorial consolidada no aplicativo:
+neutros quentes, amarelo de marca, cards arredondados, hierarquia tipográfica,
+drop zone, stepper e grade de páginas. Tabs e capacidades futuras continuaram
+descartadas. O artefato visual usado durante a auditoria não integra mais o
+repositório; os critérios preservados estão registrados nesta evidência e nas
+specs correspondentes.
 
 ## Matriz executada
 

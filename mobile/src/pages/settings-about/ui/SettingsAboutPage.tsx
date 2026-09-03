@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { appMetadata, type ExternalLinkKey, externalLinks } from '@/src/shared/config';
 import { navigateBackOrReplace, ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, FormSection, Icon, type IconName, ListRow, ScreenScaffold } from '@/src/shared/ui';
+import { AppText, Button, FormSection, Icon, type IconName, ListRow, ScreenScaffold, SectionStack } from '@/src/shared/ui';
 
 const LINK_ICONS: Record<ExternalLinkKey, IconName> = {
     privacy: 'shield-checkmark-outline',
@@ -38,7 +38,7 @@ export function SettingsAboutPage() {
             onBack={() => navigateBackOrReplace(ROUTES.SETTINGS.INDEX)}
             title={t('sections.about.editorialTitle')}
         >
-            <View style={{ gap: spacing.lg }}>
+            <SectionStack>
                 <FormSection contentPadding="none" title={t('about.appSection.title')} description={t('about.appSection.description')}>
                     {metadata.version ? (
                         <ListRow meta={metadata.version} showDivider={Boolean(metadata.build)} title={t('about.version')} variant="plain" />
@@ -82,7 +82,7 @@ export function SettingsAboutPage() {
                         </Button>
                     </View>
                 ) : null}
-            </View>
+            </SectionStack>
         </ScreenScaffold>
     );
 }

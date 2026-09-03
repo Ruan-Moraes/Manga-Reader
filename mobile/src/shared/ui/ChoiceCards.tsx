@@ -134,9 +134,9 @@ export function ChoiceCards<T extends string>({
                                                 borderRadius: radii.pill,
                                                 borderWidth: 2,
                                                 flexShrink: 0,
-                                                height: 22,
+                                                height: 24,
                                                 justifyContent: 'center',
-                                                width: 22,
+                                                width: 24,
                                             }}
                                         >
                                             {selected ? (

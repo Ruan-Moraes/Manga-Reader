@@ -2,7 +2,7 @@
 
 Data: 2026-08-15
 
-- Implementação auditada: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação auditada: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Status da feature: `implemented`
 
 ## Divergências
@@ -27,3 +27,7 @@ i18n, testes e boundaries FSD.
 
 Não houve ampliação para OCR, rede, provider, tradução, upload ou Core. Não há
 trabalho ou verificação aberta nesta feature.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

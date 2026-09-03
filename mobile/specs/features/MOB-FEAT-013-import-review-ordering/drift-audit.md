@@ -2,13 +2,13 @@
 
 Data: 2026-08-14
 
-- Implementação auditada: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação auditada: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Status da feature: `implemented`
 
-| Severidade | Evidência                                                                   | Classificação    | Artefato     | Ação recomendada |
-| ---------- | --------------------------------------------------------------------------- | ---------------- | ------------ | ---------------- |
-| —          | `pnpm specs:check`, coverage e review AC-001–AC-012                         | sem divergência  | MOB-FEAT-013 | nenhuma          |
-| —          | Fluxo completo com 100 imagens, Kanban, Scroll, modal e exclusão em Android | evidência física | AC-008       | nenhuma          |
+| Severidade | Evidência                                                                 | Classificação    | Artefato     | Ação recomendada |
+| ---------- | ------------------------------------------------------------------------- | ---------------- | ------------ | ---------------- |
+| —          | `pnpm specs:check`, coverage e review AC-001–AC-012                       | sem divergência  | MOB-FEAT-013 | nenhuma          |
+| —          | Fluxo completo com 100 imagens, Grid, Scroll, modal e exclusão em Android | evidência física | AC-008       | nenhuma          |
 
 ## Contadores
 
@@ -23,8 +23,12 @@ Data: 2026-08-14
 
 Spec, tasks, registry, coverage, dependência e gate; migração SQLite v1→v2;
 arquivos privados; modelo e repositório do draft; controller/hook/UI de revisão;
-kanban/scroll, modal privado, ação destrutiva, page, i18n, testes e boundaries FSD.
+grid/scroll, modal privado, ação destrutiva, page, i18n, testes e boundaries FSD.
 
 Não houve ampliação para seleção de idiomas, validação de mídia, OCR, tradução,
 provider remoto, biblioteca final, conta ou Core. Não há trabalho ou verificação
 aberta nesta feature.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

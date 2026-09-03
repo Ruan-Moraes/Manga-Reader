@@ -17,7 +17,7 @@
 | AC-006   | TASK-006 | Repository para append/remove/reorder/language preservando identidade      |
 | AC-007   | TASK-007 | Fixture arte-only válida sem detector de texto                             |
 | AC-008   | TASK-008 | Leitura limitada/sequencial e profiling físico Android                     |
-| AC-009   | TASK-009 | RNTL trilíngue nos modos kanban/scroll e estados acessíveis                |
+| AC-009   | TASK-009 | RNTL trilíngue nos modos grid/scroll e estados acessíveis                  |
 | AC-010   | TASK-010 | Integração offline, sem HTTP e sanitização de mensagens/logs               |
 | AC-011   | TASK-011 | Duplo toque, interrupção, stale draft, falha transacional e retry seletivo |
 | AC-012   | TASK-012 | Matriz de readiness e ausência de processamento/navegação fictícios        |
@@ -32,7 +32,7 @@
 - [x] TASK-006 — Coordenar resultados por identidade nas edições existentes sem invalidação excessiva.
 - [x] TASK-007 — Provar que arte-only decodificável é válida sem OCR ou heurística semântica.
 - [x] TASK-008 — Limitar leituras/memória e executar profiling Android com lote misto e imagem de fronteira.
-- [x] TASK-009 — Criar UI acessível e i18n pt-BR/en-US/es-ES integrada a kanban e scroll.
+- [x] TASK-009 — Criar UI acessível e i18n pt-BR/en-US/es-ES integrada a grid e scroll.
 - [x] TASK-010 — Provar operação guest/offline, sem HTTP/Core e com mensagens/logs sanitizados.
 - [x] TASK-011 — Implementar serialização, stale protection, rollback e retry seletivo.
 - [x] TASK-012 — Derivar prontidão honesta, atualizar coverage/README, executar gates, review e drift audit.

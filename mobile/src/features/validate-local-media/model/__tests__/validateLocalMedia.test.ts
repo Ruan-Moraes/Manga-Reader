@@ -1,6 +1,7 @@
 import { type LocalMediaImportDraft, type LocalMediaImportRepository, PENDING_MEDIA_VALIDATION } from '@/src/entities/local-media-import';
 import type { PrivateBatchFiles } from '@/src/shared/files';
 import type { MediaInspectionResult } from '@/src/shared/media-inspection';
+import type { LocalMediaPicker } from '@/src/shared/media-picker';
 
 import { createValidateLocalMediaController, ValidateLocalMediaError } from '../validateLocalMedia';
 
@@ -91,5 +92,56 @@ describe('MOB-FEAT-015 media validation controller', () => {
         await expect(fixture.controller.validate({ ...fixture.active(), languagesConfirmedAt: null })).rejects.toEqual(
             new ValidateLocalMediaError('prerequisite-required'),
         );
+    });
+
+    it('replaces one private file and keeps the other validation results intact', async () => {
+        const current: LocalMediaImportDraft = {
+            ...draft(),
+            items: [
+                {
+                    ...draft().items[0],
+                    mediaValidationStatus: 'VALID',
+                    detectedMimeType: 'image/png',
+                    widthPx: 100,
+                    heightPx: 200,
+                    validatedAt: 9,
+                    validationPolicyVersion: 1,
+                },
+                { ...draft().items[1], mediaValidationStatus: 'INVALID', mediaValidationError: 'CORRUPTED', validatedAt: 9, validationPolicyVersion: 1 },
+            ],
+        };
+        const next: LocalMediaImportDraft = {
+            ...current,
+            updatedAt: 11,
+            items: [current.items[0], { ...current.items[1], ...PENDING_MEDIA_VALIDATION, localFilename: 'item-2-replacement-1', byteSize: 30 }],
+        };
+        const picker: LocalMediaPicker = {
+            pickImages: jest.fn(async () => ({ status: 'selected' as const, images: [{ uri: 'content://replacement', mimeType: 'image/png', fileSize: 30 }] })),
+            getPendingImages: jest.fn(async () => null),
+        };
+        const files = {
+            stageBatch: jest.fn(async () => [{ filename: 'item-2-replacement-1', byteSize: 30 }]),
+            promoteStagedFiles: jest.fn(async () => undefined),
+            discardStaging: jest.fn(async () => undefined),
+            removeFile: jest.fn(async () => undefined),
+            fileUri: (_namespace: string, draftId: string, filename: string) => `file://${draftId}/${filename}`,
+        } as unknown as PrivateBatchFiles;
+        const repository = {
+            replaceItem: jest.fn(async () => ({ draft: next, previousFilename: 'two' })),
+            getActive: jest.fn(async () => next),
+        } as unknown as LocalMediaImportRepository;
+        const controller = createValidateLocalMediaController({ repository, files, picker, createId: () => 'replacement-1', now: () => 11 });
+
+        await expect(controller.replaceItem(current, 'item-2')).resolves.toEqual(next);
+        expect(picker.pickImages).toHaveBeenCalledWith({ selectionLimit: 1 });
+        expect(repository.replaceItem).toHaveBeenCalledWith(
+            'draft-1',
+            'item-2',
+            expect.objectContaining({ localFilename: 'item-2-replacement-1', byteSize: 30 }),
+            11,
+            10,
+        );
+        expect(files.removeFile).toHaveBeenCalledWith('local-media-imports', 'draft-1', 'two');
+        expect(next.items[0]).toEqual(current.items[0]);
     });
 });

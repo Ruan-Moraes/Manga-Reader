@@ -2,7 +2,7 @@
 
 Data: 2026-08-22
 
-- Implementação auditada: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação auditada: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Status da feature: `implemented`
 
 ## Divergências
@@ -24,3 +24,7 @@ na spec após a auditoria nativa.
 
 Spec, tasks, registry, coverage, tema, shared UI, widget, page, i18n, rotas,
 controle de acesso, testes, tema claro/escuro, orientação e font scale 200%.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

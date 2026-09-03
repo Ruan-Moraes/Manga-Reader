@@ -38,7 +38,7 @@ a escolha independente dos idiomas, sem login, rede ou processamento simulado.
 - Cada item exibe miniatura, posição atual e ações para remover e reordenar. A
   implementação pode oferecer gesto de arrastar, mas deve sempre possuir uma
   alternativa acessível e determinística para mover o item antes/depois.
-- A revisão oferece duas apresentações da mesma ordem: `kanban`, uma grade
+- A revisão oferece duas apresentações da mesma ordem: `grid`, uma grade
   virtualizada de duas colunas e modo padrão ao abrir a tela, e `scroll`, uma
   lista vertical virtualizada. Alternar o modo não altera itens, posições,
   confirmação ou arquivos e a escolha permanece apenas durante a sessão da tela.
@@ -48,7 +48,7 @@ a escolha independente dos idiomas, sem login, rede ou processamento simulado.
   revela URI, path ou nome privado.
 - A remoção usa affordance destrutiva inequívoca com ícone, texto localizado,
   cor de perigo, label acessível e alvo mínimo. A apresentação pode adaptar sua
-  largura entre kanban e scroll, mas a ação e seu estado disabled são equivalentes.
+  largura entre grid e scroll, mas a ação e seu estado disabled são equivalentes.
 - A lista preserva a ordem crescente de `position`, usa renderização virtualizada
   e thumbnails dimensionadas; não decodifica simultaneamente todas as imagens em
   resolução integral.
@@ -230,9 +230,9 @@ Tocar em qualquer miniatura abre somente sua imagem privada em modal proporciona
 com posição atual e fechamento por ação acessível ou back; fechar retorna à revisão
 sem alterar ordem, confirmação ou arquivos e nenhum identificador privado é exibido.
 
-### AC-012 — Kanban padrão e scroll alternativo
+### AC-012 — Grid padrão e scroll alternativo
 
-A revisão inicia em kanban virtualizado de duas colunas e permite alternar para
+A revisão inicia em grid virtualizado de duas colunas e permite alternar para
 scroll vertical e voltar, preservando exatamente itens, ordem e ações. O modo ativo
 é perceptível e acessível, não é persistido e não compromete a escala de 100 imagens.
 
@@ -251,7 +251,7 @@ scroll vertical e voltar, preservando exatamente itens, ordem e ações. O modo 
 | AC-009   | RNTL de labels/ações, paridade i18n, tema e auditoria de toque             |
 | AC-010   | Teste de migração SQLite v1→v2 com draft real e schema novo limpo          |
 | AC-011   | RNTL abrindo/fechando modal, imagem privada, posição e back                |
-| AC-012   | RNTL do default kanban, troca scroll↔kanban e preservação da ordem         |
+| AC-012   | RNTL do default grid, troca scroll↔grid e preservação da ordem             |
 
 AC-008 exige execução em aparelho Android com lote de 100 imagens antes do status
 `implemented`; código completo sem essa evidência usa `verification-pending`.
@@ -275,7 +275,7 @@ AC-008 exige execução em aparelho Android com lote de 100 imagens antes do sta
 - Deduplicação exata obrigatória, remoção automática ou persistência de nome/URI
   original.
 - Biblioteca final, múltiplos projetos, conta, sync, backup, analytics e Core.
-- Persistência da preferência kanban/scroll, zoom gestual, compartilhamento ou
+- Persistência da preferência grid/scroll, zoom gestual, compartilhamento ou
   exportação pelo modal.
 
 ## Aprovação humana

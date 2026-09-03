@@ -6,7 +6,7 @@ status: implemented
 implementation_gate: open
 blocked_by: [MOB-FEAT-029]
 created: 2026-08-22
-updated: 2026-08-22
+updated: 2026-09-03
 supersedes: []
 superseded_by: []
 ---
@@ -15,9 +15,9 @@ superseded_by: []
 
 ## Objetivo
 
-Aproximar a tela inicial de configurações da hierarquia editorial de
-`design/manga-translation-mobile.html`, preservando as sete capacidades reais,
-as subtelas, o controle de acesso e todos os contratos funcionais existentes.
+Aprimorar a tela inicial de configurações com a hierarquia editorial consolidada
+no sistema visual mobile, preservando as sete capacidades reais, as subtelas, o
+controle de acesso e todos os contratos funcionais existentes.
 
 ## Contexto e contratos relacionados
 
@@ -40,8 +40,9 @@ as subtelas, o controle de acesso e todos os contratos funcionais existentes.
 - Usar ícones semânticos em superfícies de accent suave para facilitar varredura.
 - Mover o status para uma linha de apoio discreta, evitando competir com o título.
 - Manter chevron, estados pressionados, tema, contraste e alvos mínimos existentes.
-- Não copiar controles fictícios do HTML nem concentrar todas as preferências na
-  página inicial; as subtelas continuam sendo a arquitetura de interação.
+- Não introduzir controles sem contrato funcional nem concentrar todas as
+  preferências na página inicial; as subtelas continuam sendo a arquitetura de
+  interação.
 
 ## Requisitos e regras
 

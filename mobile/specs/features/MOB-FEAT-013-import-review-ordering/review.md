@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-013
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação/revisão: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Gate na entrada do planejamento: `open`
 - Dependência verificada: `MOB-FEAT-012` implementada
 - Verdict: `approved`
@@ -10,7 +10,7 @@
 
 Nenhum finding bloqueante no código, nas evidências automatizadas ou na validação
 física. O aprovador executou o fluxo completo no aparelho com o lote de 100
-imagens e confirmou Kanban, Scroll, preview ampliado, exclusão e demais ações
+imagens e confirmou Grid, Scroll, preview ampliado, exclusão e demais ações
 funcionando.
 
 A captura em aparelho revelou transbordamento vertical das ações em uma tela
@@ -23,7 +23,7 @@ configurações dividem o cabeçalho, título e gaps usam a variante compacta, o
 resumo de importação ocupa uma faixa horizontal, e card/miniaturas consomem menos
 altura sem reduzir os alvos mínimos de toque.
 
-A ampliação aprovada foi implementada sem persistência adicional: kanban de duas
+A ampliação aprovada foi implementada sem persistência adicional: grid de duas
 colunas é o default, lista é a alternativa da sessão, miniaturas abrem modal
 privado fechável por ação ou back, e exclusão passou a exibir ícone, texto e tom
 destrutivo nos dois modos.
@@ -43,7 +43,7 @@ destrutivo nos dois modos.
 | AC-009   | sim          | RNTL acessível, cabeçalho responsivo, paridade pt-BR/en-US/es-ES, tokens e alvos mínimos                | pass      |
 | AC-010   | sim          | testes de schema v2 limpo e migração v1→v2 preservando draft, itens, IDs e ordem                        | pass      |
 | AC-011   | sim          | RNTL abre imagem privada em modal, valida posição/ausência de path e fecha por botão ou request de back | pass      |
-| AC-012   | sim          | RNTL valida kanban como default, duas colunas e troca para scroll preservando itens e ordem             | pass      |
+| AC-012   | sim          | RNTL valida grid como default, duas colunas e troca para scroll preservando itens e ordem               | pass      |
 
 ## Gates
 
@@ -67,3 +67,7 @@ tradução, upload, biblioteca final ou alteração da Core.
 Os doze critérios possuem implementação e evidência proporcional ao risco. A
 validação física fecha AC-008 e todas as tasks estão concluídas; o verdict é
 `approved`.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

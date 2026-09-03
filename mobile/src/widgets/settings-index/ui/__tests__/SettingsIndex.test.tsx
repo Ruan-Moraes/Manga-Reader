@@ -1,10 +1,25 @@
+import { StyleSheet, View } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { ThemeProvider } from '@/src/shared/theme';
 
 import { SettingsIndex } from '../SettingsIndex';
+import { SettingsSections } from '../SettingsSections';
 
 describe('MOB-FEAT-008/AC-001/004/008 SettingsIndex', () => {
+    it('mantém separação editorial ampla entre os grupos do índice', () => {
+        render(
+            <ThemeProvider initialOverride="light" waitForPlatform={false}>
+                <SettingsSections>
+                    <View />
+                    <View />
+                </SettingsSections>
+            </ThemeProvider>,
+        );
+
+        expect(StyleSheet.flatten(screen.getByTestId('settings-sections').props.style)).toEqual(expect.objectContaining({ gap: 32 }));
+    });
+
     it('anuncia status, mantém alvo acionável para login e preserva a ordem do manifesto', () => {
         const local = jest.fn();
         const privateAction = jest.fn();

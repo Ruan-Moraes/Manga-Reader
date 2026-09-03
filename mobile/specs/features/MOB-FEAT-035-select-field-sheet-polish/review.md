@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-035
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação/revisão: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Gate na entrada do planejamento: `open`
 - Dependência verificada: `MOB-FEAT-034`
 - Verdict: `approved`
@@ -31,3 +31,7 @@ Os resultados completos estão em `evidence/automated-gates.md`.
 
 O select ganhou identidade, hierarquia e interação consistente sem alterar sua
 API pública ou os contratos das preferências.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

@@ -3,12 +3,11 @@
 Data: 2026-08-22  
 Ambiente: Expo Go, iPhone 17 Simulator, iOS 26.5
 
-## Referência e composição
+## Composição verificada
 
-O estado `#settings` de `design/manga-translation-mobile.html` foi analisado
-como referência de hierarquia, superfícies, agrupamento e ritmo editorial. A
-implementação manteve as sete rotas reais do aplicativo e descartou os controles
-demonstrativos sem contrato funcional.
+A auditoria verificou hierarquia, superfícies, agrupamento e ritmo editorial
+consolidados na implementação. As sete rotas reais do aplicativo foram mantidas,
+sem introduzir controles demonstrativos ou capacidades sem contrato funcional.
 
 ## Matriz executada
 

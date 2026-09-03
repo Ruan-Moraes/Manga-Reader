@@ -24,8 +24,10 @@ Data: 2026-08-24
 
 - O hit inicial do slider podia ser relativo ao thumb. A trilha passou a
   capturar o responder e seus elementos decorativos saíram do hit-testing.
-- Amostras vazias podiam colapsar no iOS. Cada cor passou a possuir uma célula
-  de layout própria e o Pressable ocupa a célula inteira.
+- Amostras vazias podiam colapsar no iOS. O grupo mede a própria largura no
+  layout e aplica a cada `Pressable` uma largura numérica equivalente; assim a
+  superfície de cada cor permanece renderizada sem depender de percentual ou
+  flex, e os cinco rótulos continuam alinhados às respectivas opções.
 - O Switch nativo não mantinha o extremo direito em composições estreitas. O
   controle ganhou uma coluna absoluta reservada, sem sobrepor a copy.
 - O padding superior estava dentro do conteúdo rolável e desaparecia durante a

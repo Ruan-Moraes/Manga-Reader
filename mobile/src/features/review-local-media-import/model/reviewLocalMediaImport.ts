@@ -30,6 +30,7 @@ export interface ReviewLocalMediaImportController {
     addImages(draft: LocalMediaImportDraft): Promise<ReviewLocalMediaImportOutcome>;
     removeItem(draft: LocalMediaImportDraft, itemId: string): Promise<ReviewLocalMediaImportOutcome>;
     moveItem(draft: LocalMediaImportDraft, itemId: string, offset: -1 | 1): Promise<ReviewLocalMediaImportOutcome>;
+    reorderItems(draft: LocalMediaImportDraft, orderedItemIds: readonly string[]): Promise<ReviewLocalMediaImportOutcome>;
     confirm(draft: LocalMediaImportDraft): Promise<ReviewLocalMediaImportOutcome>;
     reload(): Promise<LocalMediaImportDraft | null>;
 }
@@ -145,6 +146,15 @@ export function createReviewLocalMediaImportController(overrides: Partial<Depend
                 [ids[index], ids[target]] = [ids[target], ids[index]];
                 try {
                     return { status: 'updated', draft: await dependencies.repository.reorderItems(draft.id, ids, dependencies.now()) };
+                } catch {
+                    throw new ReviewLocalMediaImportError('storage-unavailable');
+                }
+            });
+        },
+        reorderItems(draft, orderedItemIds) {
+            return runExclusively(async () => {
+                try {
+                    return { status: 'updated', draft: await dependencies.repository.reorderItems(draft.id, orderedItemIds, dependencies.now()) };
                 } catch {
                     throw new ReviewLocalMediaImportError('storage-unavailable');
                 }

@@ -31,6 +31,9 @@ Data: 2026-08-24
 - Linhas apenas informativas deixaram de expor estado desabilitado para leitores
   de tela.
 - Ações de dados deixaram de depender do hint para explicar consequência.
+- Os grupos Aplicativo, Leitura, Dispositivo e Conta e as seções das telas
+  internas passaram a compartilhar `SectionStack` com gap `xl`, reforçando a
+  separação entre listas sem fragmentar suas linhas internas.
 
 ## Resultado
 

@@ -30,7 +30,9 @@ const GROUPS = ['app', 'reading', 'device', 'account'] as const;
 
 export function SettingsIndexPage() {
     const { t } = useTranslation('settingsNavigation');
+
     const { fontScale, layout, spacing } = useTheme();
+
     const isAuthenticated = useSessionStore(state => state.isAuthenticated);
     const settings = useSettingsStore();
     const content = useContentLanguagesStore();
@@ -40,34 +42,53 @@ export function SettingsIndexPage() {
 
     const settingsStatus = (group: 'appearance' | 'locale' | 'reader'): VisibleStatus => {
         if (!isAuthenticated) return 'local';
+
         if (settings.syncStatus === 'error' && (settings.pendingGroup === null || settings.pendingGroup === group)) return 'error';
+
         if (settings.syncStatus === 'syncing' && (settings.pendingGroup === null || settings.pendingGroup === group)) return 'syncing';
+
         if (settings.pendingVersion !== null && settings.pendingGroup === group) return 'pending';
+
         return 'synced';
     };
+
     const statusFor = (id: SettingsSectionId): VisibleStatus => {
         if (id === 'appearance-accessibility') return settingsStatus('appearance');
+
         if (id === 'interface-language-region') return settingsStatus('locale');
+
         if (id === 'reader') return settingsStatus('reader');
+
         if (id === 'content-languages') {
             if (!isAuthenticated) return 'local';
+
             if (content.readError || content.writeError || content.invalidationError || content.syncStatus === 'error') return 'error';
+
             if (content.hydrationStatus === 'loading' || content.syncStatus === 'syncing' || content.consumerRetrying) return 'syncing';
+
             return content.pending ? 'pending' : 'synced';
         }
+
         if (id === 'privacy') {
             if (!isAuthenticated) return 'local';
+
             if (privacy.error || privacyMutation.error || privacyMutation.invalidationError || privacyMutation.syncStatus === 'error') return 'error';
+
             return privacyMutation.syncStatus === 'syncing' ? 'syncing' : 'synced';
         }
+
         if (id === 'data') return data.errorKey ? 'error' : data.busyAction ? 'syncing' : 'local';
+
         return 'local';
     };
 
     const items: (SettingsIndexItem & { group: SettingsGroup })[] = SETTINGS_SECTIONS.map(section => {
         const access = resolveSettingsAccess(section, isAuthenticated);
+
         const status = statusFor(section.id);
+
         const visibleStatus = status === 'error' || status === 'pending' || status === 'syncing';
+
         return {
             id: section.id,
             title: t(section.titleKey.replace('settingsNavigation.', '')),

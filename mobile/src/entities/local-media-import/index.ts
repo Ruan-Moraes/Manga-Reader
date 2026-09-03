@@ -1,11 +1,13 @@
 export {
     createSqliteLocalMediaImportRepository,
     LOCAL_MEDIA_IMPORT_NAMESPACE,
+    type LocalMediaImportItemReplacement,
     type LocalMediaImportRepository,
     localMediaImportRepository,
     type NewLocalMediaImportItem,
     registerLocalMediaImportDataParticipant,
     type RemovedLocalMediaImportItem,
+    type ReplacedLocalMediaImportItem,
 } from './api/localMediaImportRepository';
 export {
     DEFAULT_TRANSLATION_LANGUAGE_PAIR,

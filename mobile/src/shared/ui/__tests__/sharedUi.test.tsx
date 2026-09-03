@@ -1,4 +1,4 @@
-import { Animated, Modal, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { AccessibilityInfo, Animated, Modal, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { act, fireEvent, render, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -15,7 +15,7 @@ import { ListRow } from '../ListRow';
 import { NavigationHeader } from '../NavigationHeader';
 import { PageContainer } from '../PageContainer';
 import { ProgressSteps } from '../ProgressSteps';
-import { RangeSlider, resolveRangeSliderValue } from '../RangeSlider';
+import { RANGE_SLIDER_THUMB_RADIUS, RANGE_SLIDER_THUMB_SIZE, RangeSlider, resolveRangeSliderValue } from '../RangeSlider';
 import { resolveSegmentedControlStacked, SegmentedControl } from '../SegmentedControl';
 import { resolveSelectSheetHeight, SelectField } from '../SelectField';
 import { Skeleton } from '../Skeleton';
@@ -155,7 +155,14 @@ describe('shared ui', () => {
         expect(view.getByRole('radio', { name: 'SEPIA' }).props.accessibilityState.selected).toBe(true);
         expect(view.getByRole('radio', { name: 'WHITE' })).toBeOnTheScreen();
         expect(view.getByRole('radio', { name: 'BLACK' })).toBeOnTheScreen();
-        expect(view.getByText('SEPIA')).toBeOnTheScreen();
+        fireEvent(view.getByTestId('swatch-picker-track'), 'layout', { nativeEvent: { layout: { width: 302 } } });
+        expect(StyleSheet.flatten(view.getByTestId('swatch-picker-surface-SEPIA').props.style)).toEqual(
+            expect.objectContaining({ backgroundColor: '#E6D2A6', width: 100 }),
+        );
+        expect(['WHITE', 'SEPIA', 'BLACK'].map(option => StyleSheet.flatten(view.getByTestId(`swatch-picker-surface-${option}`).props.style).width)).toEqual([
+            100, 100, 100,
+        ]);
+        expect(StyleSheet.flatten(view.getByTestId('swatch-picker-group').props.style)).toEqual(expect.objectContaining({ alignSelf: 'stretch' }));
         fireEvent.press(view.getByRole('radio', { name: 'BLACK' }));
         expect(onChange).toHaveBeenCalledWith('BLACK');
     });
@@ -182,7 +189,7 @@ describe('shared ui', () => {
         expect(within(row).getByTestId('theme-preview')).toBeOnTheScreen();
         expect(within(row).getByTestId('choice-card-copy-SYSTEM')).toBeOnTheScreen();
         expect(StyleSheet.flatten(row.props.style)).toEqual(expect.objectContaining({ alignItems: 'center', flexDirection: 'row' }));
-        expect(StyleSheet.flatten(indicator.props.style)).toEqual(expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }));
+        expect(StyleSheet.flatten(indicator.props.style)).toEqual(expect.objectContaining({ flexShrink: 0, height: 24, width: 24 }));
     });
 
     it('expõe icon button, progresso e status com semântica consistente', () => {
@@ -197,6 +204,7 @@ describe('shared ui', () => {
                     steps={[
                         { id: 'one', label: 'Importar' },
                         { id: 'two', label: 'Organizar' },
+                        { id: 'three', label: 'Revisar' },
                     ]}
                 />
                 <StatusMessage tone="danger" title="Falha" description="Tente novamente" actionLabel="Tentar" onAction={retry} />
@@ -207,8 +215,36 @@ describe('shared ui', () => {
         fireEvent.press(view.getByRole('button', { name: 'Tentar' }));
         expect(close).toHaveBeenCalledTimes(1);
         expect(retry).toHaveBeenCalledTimes(1);
-        expect(view.getByRole('progressbar').props.accessibilityLabel).toContain('Organizar. 2/2');
+        expect(view.getByRole('progressbar').props.accessibilityLabel).toContain('Organizar. 2/3');
+        expect(view.getByRole('progressbar').props.style).toEqual(expect.objectContaining({ alignItems: 'center' }));
+        const currentLabel = view.getByText('Organizar');
+        expect(currentLabel.props.numberOfLines).toBeUndefined();
+        expect(currentLabel.props.ellipsizeMode).toBeUndefined();
+        expect(StyleSheet.flatten(currentLabel.props.style)).toEqual(expect.objectContaining({ textAlign: 'center', width: 84 }));
         expect(view.getByRole('alert')).toBeOnTheScreen();
+    });
+
+    it('mantém as legendas completas e centralizadas nos marcadores', () => {
+        const steps = [
+            { id: 'import', label: 'Importar' },
+            { id: 'organize', label: 'Organizar' },
+            { id: 'languages', label: 'Idiomas' },
+            { id: 'validate', label: 'Validar' },
+            { id: 'review', label: 'Revisar' },
+        ] as const;
+        const middleView = withTheme(<ProgressSteps accessibilityLabel="Progresso" currentIndex={2} steps={steps} />);
+
+        expect(middleView.getByText('Idiomas')).toBeOnTheScreen();
+        expect(StyleSheet.flatten(middleView.getByText('Idiomas').props.style)).toEqual(expect.objectContaining({ textAlign: 'center' }));
+
+        const firstView = withTheme(<ProgressSteps accessibilityLabel="Progresso" currentIndex={0} steps={steps} />);
+        expect(firstView.getByText('Importar')).toBeOnTheScreen();
+        expect(StyleSheet.flatten(firstView.getByText('Importar').props.style)).toEqual(expect.objectContaining({ textAlign: 'center' }));
+
+        const lastView = withTheme(<ProgressSteps accessibilityLabel="Progresso" currentIndex={4} steps={steps} />);
+        expect(lastView.getByText('Revisar')).toBeOnTheScreen();
+        expect(StyleSheet.flatten(lastView.getByText('Revisar').props.style)).toEqual(expect.objectContaining({ textAlign: 'center' }));
+        expect(lastView.getByRole('progressbar').props.accessibilityLabel).toContain('Revisar. 5/5');
     });
 
     it('mantém retorno e título central independentes da ação direita', () => {
@@ -255,7 +291,7 @@ describe('shared ui', () => {
             expect.objectContaining({ alignItems: 'center', borderWidth: 2, flexDirection: 'row' }),
         );
         expect(StyleSheet.flatten(view.UNSAFE_getByProps({ testID: 'choice-group-indicator-VERTICAL' }).props.style)).toEqual(
-            expect.objectContaining({ flexShrink: 0, height: 22, width: 22 }),
+            expect.objectContaining({ flexShrink: 0, height: 24, width: 24 }),
         );
         expect(StyleSheet.flatten(view.getByTestId('choice-group-copy-VERTICAL').props.style)).toEqual(expect.objectContaining({ flexShrink: 1, minWidth: 0 }));
     });
@@ -356,9 +392,9 @@ describe('shared ui', () => {
 
         fireEvent.press(view.getByRole('button', { name: 'Qualidade: AUTO' }));
 
-        expect(['AUTO', 'ORIGINAL'].map(option => StyleSheet.flatten(view.getByTestId(`select-field-option-${option}`).props.style).borderWidth)).toEqual([
-            2, 2,
-        ]);
+        expect(
+            ['AUTO', 'ORIGINAL'].map(option => StyleSheet.flatten(view.getByTestId(`select-field-option-surface-${option}`).props.style).borderWidth),
+        ).toEqual([2, 2]);
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-row-AUTO').props.style).alignItems).toBe('center');
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-indicator-AUTO').props.style).flexShrink).toBe(0);
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-copy-AUTO').props.style)).toEqual(expect.objectContaining({ flex: 1, minWidth: 0 }));
@@ -409,22 +445,20 @@ describe('shared ui', () => {
         expect(view.getByText('Equilibra nitidez e dados')).toBeOnTheScreen();
         expect(view.getByRole('radio', { name: 'Automática' }).props.accessibilityState.selected).toBe(true);
         expect(StyleSheet.flatten(view.getByTestId('select-field-options-group').props.style)).toEqual(
-            expect.objectContaining({ borderRadius: 16, borderWidth: 1, padding: 4 }),
+            expect.objectContaining({ borderRadius: 16, borderWidth: 1, gap: 8, padding: 4 }),
         );
-        expect(StyleSheet.flatten(view.getByTestId('select-field-option-AUTO').props.style)).toEqual(
-            expect.objectContaining({ borderWidth: 2, minHeight: 112, paddingHorizontal: 32, paddingVertical: 32 }),
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-surface-AUTO').props.style)).toEqual(
+            expect.objectContaining({ borderWidth: 2, paddingHorizontal: 16, paddingVertical: 16 }),
         );
-        expect(StyleSheet.flatten(view.getByTestId('select-field-option-ORIGINAL').props.style)).toEqual(
-            expect.objectContaining({ borderColor: 'transparent', minHeight: 112 }),
+        expect(StyleSheet.flatten(view.getByTestId('select-field-option-surface-ORIGINAL').props.style)).toEqual(
+            expect.objectContaining({ borderColor: 'transparent', paddingHorizontal: 16, paddingVertical: 16 }),
         );
         expect(StyleSheet.flatten(view.getByTestId('select-field-option-indicator-AUTO').props.style)).toEqual(
             expect.objectContaining({ flexShrink: 0, height: 28, width: 28 }),
         );
         expect(view.getByTestId('select-field-option-indicator-AUTO').props.children).toBeTruthy();
         expect(view.getByTestId('select-field-option-indicator-ORIGINAL').props.children).toBeNull();
-        expect(StyleSheet.flatten(view.getByTestId('select-field-option-divider-AUTO').props.style)).toEqual(
-            expect.objectContaining({ height: 1, marginHorizontal: 32 }),
-        );
+        expect(view.queryByTestId('select-field-option-divider-AUTO')).toBeNull();
         expect(view.queryByTestId('select-field-option-divider-ORIGINAL')).toBeNull();
 
         fireEvent.press(view.getByTestId('select-field-backdrop'));
@@ -437,6 +471,67 @@ describe('shared ui', () => {
         fireEvent.press(trigger);
         act(() => modal.props.onRequestClose());
         expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('oferece variante input sem blocos de ícones, com foco e folha existentes', () => {
+        const onChange = jest.fn();
+        const view = withTheme(
+            <SelectField
+                variant="input"
+                closeLabel="Fechar seleção"
+                label="Idioma"
+                value="ja"
+                options={['ja', 'pt-BR'] as const}
+                optionLabel={option => option}
+                onChange={onChange}
+            />,
+        );
+        const trigger = view.getByRole('button', { name: 'Idioma: ja' });
+        const surface = view.getByTestId('select-field-trigger-content');
+        expect(surface.props.style).toEqual(
+            expect.objectContaining({ minHeight: 52, borderRadius: 12, paddingHorizontal: 16, backgroundColor: '#1B1B18', borderWidth: 1 }),
+        );
+        expect(view.queryByTestId('select-field-leading-icon')).toBeNull();
+        expect(view.queryByTestId('select-field-expand-affordance')).toBeNull();
+        fireEvent(trigger, 'focus');
+        expect(surface.props.style.borderColor).toBe('#E6E037');
+        fireEvent.press(trigger);
+        expect(surface.props.style.backgroundColor).toBe('#1B1B18');
+        expect(trigger.props.accessibilityState.expanded).toBe(true);
+        expect(view.getByRole('radio', { name: 'ja' }).props.accessibilityState.selected).toBe(true);
+        fireEvent.press(view.getByRole('radio', { name: 'pt-BR' }));
+        expect(onChange).toHaveBeenCalledWith('pt-BR');
+        expect(view.queryByTestId('select-field-sheet')).toBeNull();
+    });
+
+    it.each(['light', 'dark'] as const)('mantém campo expansível e foco assistivo com movimento reduzido em %s', scheme => {
+        const sendFocus = jest.spyOn(AccessibilityInfo, 'sendAccessibilityEvent').mockImplementation(() => {});
+        const view = render(
+            <ThemeProvider initialOverride={scheme} fontSize="COMFORTABLE" reduceMotion waitForPlatform={false}>
+                <SelectField
+                    variant="input"
+                    closeLabel="Fechar seleção"
+                    label="Idioma"
+                    value="zh-Hant"
+                    options={['zh-Hant', 'ja'] as const}
+                    optionLabel={option => (option === 'zh-Hant' ? 'Chinês tradicional' : 'Japonês')}
+                    onChange={jest.fn()}
+                />
+            </ThemeProvider>,
+            { createNodeMock: () => ({ focus: jest.fn() }) },
+        );
+        expect(view.getByText('Chinês tradicional').props.numberOfLines).toBeUndefined();
+        expect(view.getByTestId('select-field-trigger-content').props.style.backgroundColor).toBe(scheme === 'light' ? '#FFFEFA' : '#1B1B18');
+        fireEvent.press(view.getByRole('button', { name: 'Idioma: Chinês tradicional' }));
+        const modal = view.UNSAFE_getByType(Modal);
+        expect(modal.props.animationType).toBe('none');
+        act(() => modal.props.onShow());
+        expect(sendFocus).toHaveBeenCalledWith(expect.anything(), 'focus');
+        sendFocus.mockClear();
+        fireEvent.press(view.getByTestId('select-field-backdrop'));
+        act(() => modal.props.onDismiss());
+        expect(sendFocus).toHaveBeenCalledWith(expect.anything(), 'focus');
+        sendFocus.mockRestore();
     });
 
     it('dimensiona a folha pela viewport e pelo conteúdo sem extrapolar a área segura', () => {
@@ -461,8 +556,9 @@ describe('shared ui', () => {
         expect(contentStyle).toEqual(expect.objectContaining({ minWidth: 0 }));
         expect(contentStyle.position).toBeUndefined();
         if (contentStyle.flexDirection === 'row') {
+            expect(contentStyle.alignItems).toBe('center');
             expect(copyStyle).toEqual(expect.objectContaining({ flexBasis: 0, flexGrow: 1, flexShrink: 1, minWidth: 0 }));
-            expect(switchStyle.alignSelf).toBe('center');
+            expect(switchStyle.alignSelf).toBeUndefined();
         } else {
             expect(copyStyle).toEqual(expect.objectContaining({ flexGrow: 0, flexShrink: 0, minWidth: 0, width: '100%' }));
             expect(switchStyle.alignSelf).toBe('flex-end');
@@ -505,16 +601,87 @@ describe('shared ui', () => {
 
         fireEvent(slider, 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
 
-        expect(slider.props.accessibilityValue).toEqual({ max: 100, min: 0, now: 50, text: '50%' });
+        expect(view.getByRole('adjustable', { name: 'Saturação' }).props.accessibilityValue).toEqual({ max: 100, min: 0, now: 55, text: '55%' });
         expect(onChange).toHaveBeenCalledWith(55);
     });
 
-    it('calcula o slider pela posição local sem inverter o gesto', () => {
-        expect(resolveRangeSliderValue(190, 200, 0, 100, 5)).toBe(95);
-        expect(resolveRangeSliderValue(10, 200, 0, 100, 5)).toBe(5);
-        expect(resolveRangeSliderValue(40, 200, 0, 100, 5)).toBe(20);
-        expect(resolveRangeSliderValue(-20, 200, 0, 100, 5)).toBe(0);
-        expect(resolveRangeSliderValue(220, 200, 0, 100, 5)).toBe(100);
+    it('calcula o slider pela largura útil entre os centros do thumb', () => {
+        expect(resolveRangeSliderValue(190, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(100);
+        expect(resolveRangeSliderValue(10, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(0);
+        expect(resolveRangeSliderValue(40, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(15);
+        expect(resolveRangeSliderValue(-20, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(0);
+        expect(resolveRangeSliderValue(220, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(100);
+        expect(resolveRangeSliderValue(100, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(50);
+        expect(resolveRangeSliderValue(135, 200, 0, 100, 5, RANGE_SLIDER_THUMB_RADIUS)).toBe(70);
+    });
+
+    it.each([
+        { expectedLeft: 0, value: 0 },
+        { expectedLeft: 176, value: 100 },
+    ])('mantém o thumb dentro da área interativa no extremo $value', ({ expectedLeft, value }) => {
+        const view = withTheme(
+            <RangeSlider
+                decrementLabel="Diminuir saturação"
+                incrementLabel="Aumentar saturação"
+                label="Saturação"
+                maximum={100}
+                minimum={0}
+                onChange={jest.fn()}
+                value={value}
+            />,
+        );
+        const slider = view.getByTestId('range-slider-native');
+
+        act(() => {
+            fireEvent(slider, 'layout', { nativeEvent: { layout: { width: 200 } } });
+        });
+
+        const thumbStyle = StyleSheet.flatten(view.UNSAFE_getByProps({ testID: 'range-slider-thumb' }).props.style);
+        const railStyle = StyleSheet.flatten(view.getByTestId('range-slider-rail').props.style);
+        expect(thumbStyle).toEqual(expect.objectContaining({ height: RANGE_SLIDER_THUMB_SIZE, left: expectedLeft, width: RANGE_SLIDER_THUMB_SIZE }));
+        expect(thumbStyle.left + thumbStyle.width).toBeLessThanOrEqual(200);
+        expect(railStyle.marginHorizontal).toBe(RANGE_SLIDER_THUMB_RADIUS);
+    });
+
+    it.each([
+        { releasedValue: 60, value: 50 },
+        { releasedValue: 40, value: 50 },
+    ])('MOB-FEAT-034 AC-004 mantém o valor $releasedValue liberado enquanto aguarda a confirmação do pai', ({ releasedValue, value }) => {
+        const onChange = jest.fn();
+        const renderSlider = (controlledValue: number) => (
+            <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 47, right: 0, bottom: 34, left: 0 } }}>
+                <ThemeProvider initialOverride="dark" waitForPlatform={false}>
+                    <RangeSlider
+                        decrementLabel="Diminuir saturação"
+                        incrementLabel="Aumentar saturação"
+                        label="Saturação"
+                        maximum={100}
+                        minimum={0}
+                        onChange={onChange}
+                        step={5}
+                        value={controlledValue}
+                    />
+                </ThemeProvider>
+            </SafeAreaProvider>
+        );
+        const view = render(renderSlider(value));
+        const slider = view.getByTestId('range-slider-native');
+
+        act(() => {
+            fireEvent(slider, 'slidingStart', value);
+            fireEvent(slider, 'valueChange', releasedValue);
+            fireEvent(slider, 'slidingComplete', releasedValue);
+        });
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(releasedValue);
+        expect(view.getByTestId('range-slider-native').props.accessibilityValue.now).toBe(releasedValue);
+
+        act(() => view.rerender(renderSlider(value)));
+        expect(view.getByTestId('range-slider-native').props.accessibilityValue.now).toBe(releasedValue);
+
+        act(() => view.rerender(renderSlider(releasedValue)));
+        expect(view.getByTestId('range-slider-native').props.accessibilityValue.now).toBe(releasedValue);
     });
 
     it.each([

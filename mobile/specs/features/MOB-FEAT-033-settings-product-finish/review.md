@@ -1,7 +1,7 @@
 # Review — MOB-FEAT-033
 
 - Spec revisada: `spec.md`
-- Implementação/revisão: working-tree sha256:278ae7859c561b28cd18b9c93b437243612da58ac0e65c5866c3af4eeb03499e
+- Implementação/revisão: working-tree sha256:38172ac139f24be05ddf591a77830ea02b9586b8729bba5be6c131da60bffe58
 - Gate na entrada do planejamento: `open`
 - Dependência verificada: `MOB-FEAT-032`
 - Verdict: `approved`
@@ -23,7 +23,9 @@
 Nenhum finding bloqueante permanece. A auditoria nativa encontrou e a
 implementação corrigiu superfícies excessivamente aninhadas, grids 2+1,
 seleção de cor genérica, ações sem contexto visível e semântica indevida em
-linhas informativas.
+linhas informativas. Índice e subtelas também compartilham `SectionStack` com
+separação `xl` entre seus grupos editoriais, preservando a densidade interna das
+listas.
 
 ## Gates
 
@@ -40,3 +42,7 @@ linhas informativas.
 
 Composição, controles, estados, responsividade e acessibilidade das
 configurações estão finalizados sem ampliar o domínio funcional.
+
+Revalidação global de 2026-08-30: checksum da working tree atualizado após a
+manutenção dos TODOs de auth/review local. A referência é global por definição
+do validador; não representa nova inspeção nativa desta feature.

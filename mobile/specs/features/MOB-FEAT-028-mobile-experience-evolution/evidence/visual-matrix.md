@@ -15,11 +15,11 @@ página lógica do reader e paridade das traduções existentes.
 
 ## Matriz física pendente
 
-O HTML de referência foi servido localmente e inspecionado em viewport mobile,
-incluindo launcher, seleção, organização, validação, revisão, autenticação,
-configurações, aparência e leitor. A inspeção orientou a segunda passagem visual:
-composição editorial, hero geométrico, títulos de impacto, módulos compactos,
-drop zone tracejada e grade de páginas sem card externo redundante.
+Os critérios da segunda passagem visual foram consolidados nesta evidência e nas
+specs: composição editorial, hero geométrico, títulos de impacto, módulos
+compactos, drop zone tracejada e grade de páginas sem card externo redundante.
+A matriz abrange launcher, seleção, organização, validação, revisão,
+autenticação, configurações, aparência e leitor.
 
 A tentativa de abrir a implementação pelo Expo Web chegou ao bundler, mas a
 renderização SSR foi bloqueada pelo resolvedor do Metro para o WASM transitivo do

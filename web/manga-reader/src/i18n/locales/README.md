@@ -166,14 +166,14 @@ variante `:write`.
 1. Crie `locales/<tag-BCP-47>/` com todos os namespaces.
 2. Registre imports, resources e `SUPPORTED_LANGUAGES` em `config.ts`.
 3. Registre o locale no backend e adicione
-   `api/core/src/main/resources/messages/messages_<locale>.properties`.
+   `api/apps/core/src/main/resources/messages/messages_<locale>.properties`.
 4. Exponha a opção nos seletores de idioma e teste o fallback.
 
 ## Backend relacionado
 
 - Configuração:
-  `api/core/src/main/java/com/mangareader/shared/config/I18nConfig.java`.
+  `api/apps/core/src/main/java/com/mangareader/shared/config/I18nConfig.java`.
 - Mensagens:
-  `api/core/src/main/resources/messages/messages*.properties`.
+  `api/apps/core/src/main/resources/messages/messages*.properties`.
 - Guia completo: [`../../../../../docs/i18n-guide.md`](../../../../../docs/i18n-guide.md).
 - README da aplicação: [`../../../README.md`](../../../README.md).

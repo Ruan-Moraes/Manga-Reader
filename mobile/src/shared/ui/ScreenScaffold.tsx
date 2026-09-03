@@ -36,6 +36,7 @@ export function ScreenScaffold({
     contentWidth = 'page',
 }: ScreenScaffoldProps) {
     const { layout, spacing } = useTheme();
+
     const responsive = useResponsiveLayout();
 
     return (

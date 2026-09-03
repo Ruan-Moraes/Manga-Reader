@@ -43,7 +43,7 @@ export function SwitchRow({ label, description, value, onChange, accessibilityHi
         >
             <View
                 testID="switch-row-content"
-                style={{ alignItems: stacked ? 'stretch' : 'flex-start', flexDirection: stacked ? 'column' : 'row', gap: spacing.md, minWidth: 0 }}
+                style={{ alignItems: stacked ? 'stretch' : 'center', flexDirection: stacked ? 'column' : 'row', gap: spacing.md, minWidth: 0 }}
             >
                 <View
                     testID="switch-row-copy"
@@ -69,7 +69,7 @@ export function SwitchRow({ label, description, value, onChange, accessibilityHi
                     testID="switch-row-control"
                     style={{
                         alignItems: 'flex-end',
-                        alignSelf: stacked ? 'flex-end' : 'center',
+                        alignSelf: stacked ? 'flex-end' : undefined,
                         flexShrink: 0,
                         justifyContent: 'center',
                         minWidth: SWITCH_CONTROL_WIDTH,

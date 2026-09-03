@@ -132,6 +132,15 @@ function databaseFixture(
                     validated_at: values.length >= 14 ? (values[12] as number | null) : null,
                     validation_policy_version: values.length >= 14 ? (values[13] as number | null) : null,
                 });
+            } else if (source.includes("media_validation_status = 'PENDING'")) {
+                const item = rows.items.find(candidate => candidate.draft_id === String(values[4]) && candidate.id === String(values[5]));
+                if (item) {
+                    item.local_filename = String(values[0]);
+                    item.byte_size = Number(values[1]);
+                    item.mime_hint = values[2] === null ? null : String(values[2]);
+                    item.created_at = Number(values[3]);
+                    Object.assign(item, pendingItem(item));
+                }
             } else if (source.includes('media_validation_status = ?')) {
                 const item = rows.items.find(candidate => candidate.draft_id === String(values[7]) && candidate.id === String(values[8]));
                 if (item) {
@@ -382,6 +391,46 @@ describe('MOB-FEAT-012/013 SQLite local import repository', () => {
                 { id: 'item-2', position: 1 },
             ],
         });
+    });
+
+    it('replaces one page, resets only its validation and preserves order and confirmations', async () => {
+        const fixture = databaseFixture();
+        const repository = createSqliteLocalMediaImportRepository(async () => fixture.database);
+        await repository.replaceActive({
+            ...draft(),
+            confirmedAt: 9,
+            languagesConfirmedAt: 9,
+            items: draft().items.map(item =>
+                item.id === 'item-1'
+                    ? {
+                          ...item,
+                          mediaValidationStatus: 'VALID' as const,
+                          detectedMimeType: 'image/png' as const,
+                          widthPx: 100,
+                          heightPx: 200,
+                          validatedAt: 11,
+                          validationPolicyVersion: 1,
+                      }
+                    : item,
+            ),
+        });
+
+        await expect(
+            repository.replaceItem('draft-1', 'item-1', { localFilename: 'item-1-new', byteSize: 42, mimeHint: 'image/jpeg', createdAt: 12 }, 12, 10),
+        ).resolves.toMatchObject({
+            previousFilename: 'item-1',
+            draft: {
+                confirmedAt: 9,
+                languagesConfirmedAt: 9,
+                items: [
+                    { id: 'item-1', position: 0, localFilename: 'item-1-new', mediaValidationStatus: 'PENDING' },
+                    { id: 'item-2', position: 1, localFilename: 'item-2', mediaValidationStatus: 'PENDING' },
+                ],
+            },
+        });
+        await expect(
+            repository.replaceItem('draft-1', 'item-1', { localFilename: 'stale', byteSize: 1, mimeHint: null, createdAt: 13 }, 13, 999),
+        ).rejects.toThrow('localMediaImport.staleDraft');
     });
 
     it('reorders without changing ids and clears confirmation', async () => {

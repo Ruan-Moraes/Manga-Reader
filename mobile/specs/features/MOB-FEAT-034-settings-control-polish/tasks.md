@@ -20,6 +20,6 @@
 - [x] TASK-001 — Reposicionar e estabilizar controles booleanos.
 - [x] TASK-002 — Reorganizar conteúdo dos cards com preview.
 - [x] TASK-003 — Implementar faixa contígua de amostras de cor.
-- [x] TASK-004 — Corrigir cálculo de toque e arraste do slider.
+- [x] TASK-004 — Corrigir extremos, gesto nativo e estabilidade no release do slider.
 - [x] TASK-005 — Ocultar estados locais/sincronizados não acionáveis.
 - [x] TASK-006 — Executar auditoria visual, testes e gates finais.

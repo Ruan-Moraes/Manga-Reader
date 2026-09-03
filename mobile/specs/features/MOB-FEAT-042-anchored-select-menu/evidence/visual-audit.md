@@ -26,9 +26,18 @@ A primeira montagem empilhou ícone, valor e seta no iOS. A linha interna foi
 isolada da superfície pressionável e recebeu `flexDirection: row`, largura total
 e filhos não retráteis. Um teste estrutural passou a proteger essa regressão.
 
-Na revisão final, o espaçamento solto entre alternativas foi substituído por
-divisores recuados dentro de um único grupo. Isso reforça a leitura de lista e
-remove a aparência de cards independentes sem adicionar ornamentação.
+Na revisão final, as alternativas permaneceram dentro de um único grupo. Após o
+padding passar a ser materializado corretamente no iOS, as linhas divisórias
+foram removidas: o próprio espaço interno separa as opções sem aproximar um
+traço da copy ou criar ornamentação desnecessária. Um gap vertical `sm` mantém
+os fundos selecionado e pressionado visualmente separados dos itens vizinhos.
+
+Uma nova inspeção com bundle recompilado mostrou que o iOS compactava a
+geometria quando padding e altura estavam diretamente no callback de estilo do
+`Pressable`. Esses valores foram movidos para uma superfície interna estável.
+No iPhone 17, as cinco opções de fuso passaram a ocupar a altura prevista e as
+duas opções de qualidade preservaram título, descrição e indicador com respiro
+vertical, sem corte ou mudança geométrica na opção selecionada.
 
 ## Resultado
 

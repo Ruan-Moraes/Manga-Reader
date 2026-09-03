@@ -2,11 +2,11 @@
 id: MOB-FEAT-028
 type: feature
 title: Evolução visual e migração de experiência mobile
-status: implemented
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-011, MOB-FEAT-012, MOB-FEAT-013, MOB-FEAT-014, MOB-FEAT-015, MOB-FEAT-016]
 created: 2026-08-21
-updated: 2026-08-22
+updated: 2026-09-03
 supersedes: []
 superseded_by: []
 ---
@@ -15,10 +15,10 @@ superseded_by: []
 
 ## Objetivo
 
-Evoluir as superfícies mobile com a identidade editorial de
-`design/manga-translation-mobile.html`, preservando contratos funcionais e
-transformando `/offline-translation` em uma jornada clara de cinco etapas dentro
-da mesma rota: importar, organizar, escolher idiomas, validar e revisar/preparar.
+Evoluir as superfícies mobile com a identidade editorial consolidada nos tokens
+e componentes compartilhados, preservando contratos funcionais e transformando
+`/offline-translation` em uma jornada clara de cinco etapas dentro da mesma rota:
+importar, organizar, escolher idiomas, validar e revisar/preparar.
 
 ## Contexto e contratos relacionados
 
@@ -26,8 +26,9 @@ da mesma rota: importar, organizar, escolher idiomas, validar e revisar/preparar
   densidade, tipografia, i18n ou acessibilidade.
 - Preserva launcher, autenticação, settings, leitores e o fluxo local descrito em
   `MOB-FEAT-010..016`; capacidades de `MOB-FEAT-017..021` não são simuladas.
-- O HTML é referência visual estática, não dependência de runtime nem autoridade
-  sobre persistência, navegação, privacidade ou regras de domínio.
+- Os contratos desta spec, os tokens de tema e as primitivas compartilhadas são
+  a autoridade visual; persistência, navegação, privacidade e regras de domínio
+  permanecem regidas por seus contratos próprios.
 - A execução segue `shared → entities → features → widgets → pages → application`.
 
 ## Requisitos e regras
@@ -57,6 +58,9 @@ da mesma rota: importar, organizar, escolher idiomas, validar e revisar/preparar
   retorna à primeira etapa cuja confirmação deixou de ser verdadeira.
 - O stepper não permite pular pré-condições. A ação primária respeita teclado e
   safe area e não cobre o conteúdo.
+- O indicador de etapas ocupa toda a largura disponível do conteúdo, respeitando
+  o padding da página; a primeira e a última etapa alinham-se às bordas dos demais
+  itens, com espaçamento uniforme entre os marcadores.
 - O resumo final antecede Preparar projeto e comunica somente fatos locais; não
   há porcentagem, ETA, processamento, tradução ou reader simulados.
 
@@ -200,3 +204,5 @@ A matriz visual cobre temas, contraste, larguras e estados sem exigir comparaç�
 - Aprovador: Ruan Moraes
 - Data: 2026-08-21
 - Decisão: implementação autorizada explicitamente.
+- Refinamento aprovado em 2026-08-30: Ruan solicitou explicitamente o indicador
+  de etapas com 100% da largura útil da página e alinhado aos demais itens.

@@ -1,7 +1,7 @@
 # Aplicação web — `web/manga-reader`
 
 SPA principal do Manga Reader, construída com React 19, TypeScript, Vite e
-Tailwind CSS. Consome a API em `api/core` e organiza o código com
+Tailwind CSS. Consome a API em `api/apps/core` e organiza o código com
 Feature-Sliced Design.
 
 ## Funcionalidades
@@ -103,7 +103,7 @@ O cliente Axios central:
 
 Respostas simples usam `ApiResponse<T>` e listagens usam
 `ApiResponse<PageResponse<T>>`. Consulte o
-[`README da API`](../../api/core/README.md) e o Swagger para contratos
+[`README da API`](../../api/apps/core/README.md) e o Swagger para contratos
 específicos.
 
 ## Internacionalização

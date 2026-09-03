@@ -11,7 +11,7 @@ import {
     usePrivacySettingsStore,
 } from '@/src/entities/user';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, ChoiceCards, FormSection, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
+import { AppText, ChoiceCards, FormSection, SectionStack, SegmentedControl, StatusMessage, SwitchRow } from '@/src/shared/ui';
 
 import { usePrivacyMutationStore } from '../model/privacyMutationStore';
 import { changeHistoryVisibility, retryPrivacyConsumers, retryPrivacyUpdate, updatePrivacy } from '../model/updatePrivacy';
@@ -53,7 +53,7 @@ export function PrivacyControlsPanel() {
     };
 
     return (
-        <View style={{ gap: spacing.lg }}>
+        <SectionStack>
             <FormSection title={t('privacy.sections.social.title')} description={t('privacy.sections.social.description')}>
                 <SegmentedControl
                     label={t('privacy.comments')}
@@ -122,6 +122,6 @@ export function PrivacyControlsPanel() {
                     tone="danger"
                 />
             )}
-        </View>
+        </SectionStack>
     );
 }

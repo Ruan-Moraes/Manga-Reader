@@ -18,6 +18,8 @@ export function useValidateLocalMedia(
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<ValidateLocalMediaErrorCode | null>(null);
     const [progress, setProgress] = useState<ValidationProgress | null>(null);
+    const [replacingItemId, setReplacingItemId] = useState<string | null>(null);
+    const [failedReplacementItemId, setFailedReplacementItemId] = useState<string | null>(null);
 
     const forceRef = useRef(false);
 
@@ -26,6 +28,7 @@ export function useValidateLocalMedia(
             if (busy) return;
 
             forceRef.current = force;
+            setFailedReplacementItemId(null);
 
             setBusy(true);
             setError(null);
@@ -47,5 +50,36 @@ export function useValidateLocalMedia(
         [busy, controller, draft, onDraftChange],
     );
 
-    return { busy, error, progress, validate: () => execute(false), retry: () => execute(forceRef.current) };
+    const replaceItem = useCallback(
+        async (itemId: string) => {
+            if (busy || replacingItemId) return;
+            setReplacingItemId(itemId);
+            setError(null);
+            try {
+                const updated = await controller.replaceItem(draft, itemId);
+                onDraftChange(updated);
+                setFailedReplacementItemId(null);
+                return updated !== draft;
+            } catch (caught) {
+                setFailedReplacementItemId(itemId);
+                setError(caught instanceof ValidateLocalMediaError ? caught.code : 'storage-unavailable');
+                const persisted = await controller.reload().catch(() => null);
+                if (persisted) onDraftChange(persisted);
+                return false;
+            } finally {
+                setReplacingItemId(null);
+            }
+        },
+        [busy, controller, draft, onDraftChange, replacingItemId],
+    );
+
+    return {
+        busy,
+        error,
+        progress,
+        replacingItemId,
+        replaceItem,
+        validate: () => execute(false),
+        retry: () => (failedReplacementItemId ? replaceItem(failedReplacementItemId) : execute(forceRef.current)),
+    };
 }

@@ -116,6 +116,26 @@ describe('MOB-FEAT-008 Router/pages integration', () => {
         expect(screen.getByRole('radio', { name: 'Escuro' }).props.accessibilityState).toEqual(expect.objectContaining({ selected: true }));
     });
 
+    it('mantém fundo e intervalos do leitor após a interação', async () => {
+        render(shell(<SettingsReaderPage />));
+
+        fireEvent.press(screen.getByRole('radio', { name: 'Papel' }));
+        fireEvent(screen.getByRole('adjustable', { name: 'Saturação' }), 'accessibilityAction', {
+            nativeEvent: { actionName: 'decrement' },
+        });
+        fireEvent(screen.getByRole('adjustable', { name: 'Espaçamento' }), 'accessibilityAction', {
+            nativeEvent: { actionName: 'increment' },
+        });
+        fireEvent(screen.getByRole('adjustable', { name: 'Pré-carregamento' }), 'accessibilityAction', {
+            nativeEvent: { actionName: 'increment' },
+        });
+
+        await waitFor(() =>
+            expect(useSettingsStore.getState().settings.reader).toEqual(expect.objectContaining({ background: 'PAPER', gap: 1, preload: 4, saturation: 95 })),
+        );
+        expect(screen.getByRole('radio', { name: 'Papel' }).props.accessibilityState.selected).toBe(true);
+    });
+
     it('compõe diretamente as sete subrotas localizadas com identidade alinhada', () => {
         useSessionStore.setState({ isAuthenticated: true, identityEpoch: 9 });
         useSettingsStore.setState({ activeIdentityEpoch: 9, syncStatus: 'synced' });

@@ -31,23 +31,31 @@
 - [x] TASK-001 — Evoluir tokens semânticos e seus testes.
 - [x] TASK-002 — Criar/evoluir primitivas compartilhadas e migrar duplicações.
 - [x] TASK-003 — Implementar a jornada visual de cinco etapas.
+- [x] TASK-003a — Distribuir os marcadores por toda a largura útil, conforme refinamento aprovado em 2026-08-30.
+- [ ] TASK-003b — Conferir visualmente o alinhamento nas extremidades; prévia web bloqueada por erro do Expo em 2026-08-30.
 - [x] TASK-004 — Provar transições e retomada determinísticas.
 - [x] TASK-005 — Cobrir estados interativos e semântica assistiva.
 - [x] TASK-006 — Padronizar estados de conteúdo e retry.
 - [x] TASK-007 — Migrar superfícies atuais por camada FSD.
 - [x] TASK-008 — Provar ausência de tabs e processamento fictício.
 - [x] TASK-009 — Implementar e testar responsividade.
-- [x] TASK-010 — Auditar font scale de 200% em simulador/dispositivo.
+- [ ] TASK-010 — Revalidar o botão Continuar com fonte ampliada; controle do simulador interrompeu a auditoria de 2026-08-30.
 - [x] TASK-011 — Verificar contraste e alvos mínimos.
 - [x] TASK-012 — Cobrir continuidade do reader em dimensão/controles.
 - [x] TASK-013 — Atualizar e validar i18n trilíngue.
 - [x] TASK-014 — Executar regressão dos contratos preservados.
-- [x] TASK-015 — Executar `pnpm check` e corrigir regressões da feature.
-- [x] TASK-016 — Registrar matriz visual em simulador/dispositivo.
+- [ ] TASK-015 — Revalidar `pnpm check` após resolver as divergências preexistentes de checksum das reviews.
+- [ ] TASK-016 — Completar a matriz visual do botão Continuar; navegação nativa com fonte padrão verificada em 2026-08-30.
 
 ## Riscos e bloqueios
+
+- Correção de 2026-08-30: TASK-004/005/013/014 revalidadas com regressão da
+  continuidade sem substituir imagens. Detalhes em
+  `evidence/continue-existing-import.md`. Os itens reabertos acima referem-se
+  à correção atual e não invalidam a auditoria histórica de 2026-08-22.
 
 - A matriz física foi executada no iPhone Simulator; estados dependentes de uma
   sessão/API indisponível permanecem cobertos por testes sem fabricar sessão.
 - APIs compartilhadas permanecem compatíveis até a migração de todos os consumidores.
-- O diretório `design/` pertence ao usuário e não será alterado.
+- Não há artefato externo de design a preservar; a direção visual aprovada está
+  consolidada na spec, nos tokens e nas evidências versionadas.

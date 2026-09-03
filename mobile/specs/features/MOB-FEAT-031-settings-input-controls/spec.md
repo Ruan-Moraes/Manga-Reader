@@ -40,8 +40,8 @@ alterar contratos, stores, persistência, requests ou navegação.
   seletores segmentados quando os rótulos couberem de forma legível.
 - Idioma da interface, formato de data e opções sensíveis com explicação usam
   cards de escolha; fuso horário e qualidade usam campo de seleção em sheet.
-- Saturação usa slider ajustável e apresenta valor atual; espaçamento e
-  pré-carregamento usam steppers com incremento/decremento.
+- Saturação, espaçamento e pré-carregamento usam sliders ajustáveis com valor
+  atual e limites visíveis, mantendo paridade funcional com o web.
 - Animações, reduzir movimento, alto contraste, marcar como lido e analytics são
   booleanos apresentados como switches.
 - Fundo do leitor usa amostras visuais selecionáveis, mantendo label textual.

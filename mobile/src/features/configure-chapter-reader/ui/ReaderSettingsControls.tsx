@@ -1,10 +1,9 @@
-import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { ImageVariantCapabilities } from '@/src/entities/chapter';
 import type { ImageQuality, ReaderBackground, ReaderSettings, ReadingDirection, ReadingFit, ReadingMode } from '@/src/entities/user-setting';
-import { darkTokens, lightTokens, useTheme } from '@/src/shared/theme';
-import { ChoiceCards, FormSection, type IconName, RangeSlider, SegmentedControl, SelectField, StepperControl, SwatchPicker, SwitchRow } from '@/src/shared/ui';
+import { darkTokens, lightTokens } from '@/src/shared/theme';
+import { ChoiceCards, FormSection, type IconName, RangeSlider, SectionStack, SegmentedControl, SelectField, SwatchPicker, SwitchRow } from '@/src/shared/ui';
 
 import { selectableQualities } from '../model/readerConfiguration';
 
@@ -20,43 +19,11 @@ interface Props {
     onChange: (patch: Partial<ReaderSettings>) => void;
 }
 
-function Stepper({
-    label,
-    description,
-    value,
-    min,
-    max,
-    valueLabel,
-    onChange,
-}: {
-    label: string;
-    description: string;
-    value: number;
-    min: number;
-    max: number;
-    valueLabel: (value: number) => string;
-    onChange: (value: number) => void;
-}) {
-    const { t } = useTranslation('reader');
-    return (
-        <StepperControl
-            decrementLabel={t('controls.decrease', { label })}
-            description={description}
-            incrementLabel={t('controls.increase', { label })}
-            label={label}
-            maximum={max}
-            minimum={min}
-            onChange={onChange}
-            value={value}
-            valueLabel={valueLabel}
-        />
-    );
-}
-
 export function ReaderSettingsControls({ value, capabilities, onChange }: Props) {
     const { t } = useTranslation('reader');
-    const { spacing } = useTheme();
+
     const qualities = selectableQualities(capabilities);
+
     const backgroundColors: Record<ReaderBackground, string> = {
         BLACK: darkTokens.logoBg,
         DARK: darkTokens.surface,
@@ -64,8 +31,9 @@ export function ReaderSettingsControls({ value, capabilities, onChange }: Props)
         LIGHT: lightTokens.bg,
         WHITE: lightTokens.surface,
     };
+
     return (
-        <View style={{ gap: spacing.lg }}>
+        <SectionStack>
             <FormSection title={t('settings.sections.navigation.title')} description={t('settings.sections.navigation.description')}>
                 <ChoiceCards
                     label={t('settings.mode')}
@@ -126,21 +94,27 @@ export function ReaderSettingsControls({ value, capabilities, onChange }: Props)
                 />
             </FormSection>
             <FormSection title={t('settings.sections.behavior.title')} description={t('settings.sections.behavior.description')}>
-                <Stepper
+                <RangeSlider
+                    decrementLabel={t('controls.decrease', { label: t('settings.gap') })}
                     description={t('settings.descriptions.gap')}
+                    incrementLabel={t('controls.increase', { label: t('settings.gap') })}
                     label={t('settings.gap')}
-                    max={32}
-                    min={0}
+                    maximum={32}
+                    minimum={0}
                     onChange={gap => onChange({ gap })}
+                    step={1}
                     value={value.gap}
                     valueLabel={current => t('settings.values.pixels', { value: current })}
                 />
-                <Stepper
+                <RangeSlider
+                    decrementLabel={t('controls.decrease', { label: t('settings.preload') })}
                     description={t('settings.descriptions.preload')}
+                    incrementLabel={t('controls.increase', { label: t('settings.preload') })}
                     label={t('settings.preload')}
-                    max={10}
-                    min={0}
+                    maximum={10}
+                    minimum={0}
                     onChange={preload => onChange({ preload })}
+                    step={1}
                     value={value.preload}
                     valueLabel={current => t('settings.values.pages', { value: current })}
                 />
@@ -151,6 +125,6 @@ export function ReaderSettingsControls({ value, capabilities, onChange }: Props)
                     value={value.autoMarkRead}
                 />
             </FormSection>
-        </View>
+        </SectionStack>
     );
 }
