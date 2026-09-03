@@ -47,6 +47,9 @@ function fixture(options: { active?: LocalMediaImportDraft | null; pick?: LocalM
         appendItems: jest.fn(async () => {
             throw new Error('not used');
         }),
+        replaceItem: jest.fn(async () => {
+            throw new Error('not used');
+        }),
         removeItem: jest.fn(async () => {
             throw new Error('not used');
         }),

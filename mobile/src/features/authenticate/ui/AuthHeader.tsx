@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/src/shared/theme';
 import { FONTS } from '@/src/shared/theme';
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title, sub }: Props) {
+    const { t } = useTranslation('auth');
     const { colorScheme, radii, spacing, textStyles, tokens, typography } = useTheme();
 
     if (layout === 'minimal') {
@@ -78,20 +80,10 @@ export function AuthHeader({ layout = 'mascote', artwork = false, eyebrow, title
                     }}
                 >
                     <Image
-                        accessibilityLabel="Garota abrindo uma porta mágica para uma biblioteca" // TODO: Label precisa ter o I18n
+                        accessibilityLabel={t('artwork.libraryDoor')}
                         source={colorScheme === 'light' ? LOGIN_HERO_LIGHT : LOGIN_HERO}
                         style={{ height: '100%', position: 'absolute', width: '100%' }}
                         contentFit="cover"
-                    />
-                    <View
-                        style={{
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                            bottom: 0,
-                            left: 0,
-                            position: 'absolute',
-                            right: 0,
-                            top: 0,
-                        }}
                     />
                 </View>
             ) : null}

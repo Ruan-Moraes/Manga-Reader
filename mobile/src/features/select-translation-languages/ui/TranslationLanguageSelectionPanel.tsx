@@ -1,10 +1,9 @@
 import { View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { type LocalMediaImportDraft, TRANSLATION_LANGUAGE_CODES, type TranslationLanguageCode } from '@/src/entities/local-media-import';
 import { useTheme } from '@/src/shared/theme';
-import { AppText, Button, ChoiceGroup } from '@/src/shared/ui';
+import { AppText, Button, Icon, SelectField } from '@/src/shared/ui';
 
 import type { SelectTranslationLanguagesController } from '../model/selectTranslationLanguages';
 import { useSelectTranslationLanguages } from '../model/useSelectTranslationLanguages';
@@ -19,23 +18,17 @@ interface Props {
 
 export function TranslationLanguageSelectionPanel({ draft, onDraftChange, controller }: Props) {
     const { t } = useTranslation('launcher');
-    const { spacing, tokens } = useTheme();
+    const { spacing } = useTheme();
     const actions = useSelectTranslationLanguages(draft, onDraftChange, controller);
     const languageLabel = (language: TranslationLanguageCode) => t(`offline.languages.options.${language}`);
-    const targetLabel = (language: TranslationLanguageCode) =>
-        language === 'pt-BR' ? t('offline.languages.priorityTarget', { language: languageLabel(language) }) : languageLabel(language);
+    const targetDescription = (language: TranslationLanguageCode) => (language === 'pt-BR' ? t('offline.languages.recommended') : undefined);
     const confirmed = draft.languagesConfirmedAt !== null;
 
     return (
-        <View testID="translation-language-selection" style={{ borderTopColor: tokens.separator, borderTopWidth: 1, gap: spacing.md, paddingTop: spacing.md }}>
-            <View style={{ gap: spacing.xs }}>
-                <AppText variant="section">{t('offline.languages.title')}</AppText>
-                <AppText variant="caption" tone="muted">
-                    {t('offline.languages.description')}
-                </AppText>
-            </View>
-
-            <ChoiceGroup
+        <View testID="translation-language-selection" style={{ gap: spacing.md }}>
+            <SelectField
+                variant="input"
+                closeLabel={t('common:localeControls.closeSelection')}
                 label={t('offline.languages.source')}
                 value={actions.selection.sourceLanguage}
                 options={TRANSLATION_LANGUAGE_CODES}
@@ -44,18 +37,30 @@ export function TranslationLanguageSelectionPanel({ draft, onDraftChange, contro
                 disabled={actions.busy}
             />
 
-            <View accessibilityElementsHidden style={{ alignItems: 'center' }}>
-                <Ionicons name="arrow-down" size={22} color={tokens.accentText} />
+            <View
+                testID="translation-language-direction"
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+                style={{ alignItems: 'center' }}
+            >
+                <Icon testID="translation-language-direction-icon" name="arrow-down" size={28} decorative />
             </View>
 
-            <ChoiceGroup
+            <SelectField
+                variant="input"
+                closeLabel={t('common:localeControls.closeSelection')}
                 label={t('offline.languages.target')}
                 value={actions.selection.targetLanguage}
                 options={TARGET_LANGUAGE_CODES}
-                optionLabel={targetLabel}
+                optionLabel={languageLabel}
+                optionDescription={targetDescription}
                 onChange={actions.selectTarget}
                 disabled={actions.busy}
             />
+
+            <AppText variant="caption" tone="muted">
+                {t('offline.languages.description')}
+            </AppText>
 
             {actions.error && (
                 <View accessibilityRole="alert" style={{ gap: spacing.sm }}>

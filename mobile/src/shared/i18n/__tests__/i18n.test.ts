@@ -6,16 +6,19 @@ import enUSAuth from '../locales/en-US/auth.json';
 import enUSCommon from '../locales/en-US/common.json';
 import enUSLauncher from '../locales/en-US/launcher.json';
 import enUSReader from '../locales/en-US/reader.json';
+import enUSRemoteProcessing from '../locales/en-US/remoteProcessing.json';
 import enUSSettingsNavigation from '../locales/en-US/settingsNavigation.json';
 import esESAuth from '../locales/es-ES/auth.json';
 import esESCommon from '../locales/es-ES/common.json';
 import esESLauncher from '../locales/es-ES/launcher.json';
 import esESReader from '../locales/es-ES/reader.json';
+import esESRemoteProcessing from '../locales/es-ES/remoteProcessing.json';
 import esESSettingsNavigation from '../locales/es-ES/settingsNavigation.json';
 import ptBRAuth from '../locales/pt-BR/auth.json';
 import ptBRCommon from '../locales/pt-BR/common.json';
 import ptBRLauncher from '../locales/pt-BR/launcher.json';
 import ptBRReader from '../locales/pt-BR/reader.json';
+import ptBRRemoteProcessing from '../locales/pt-BR/remoteProcessing.json';
 import ptBRSettingsNavigation from '../locales/pt-BR/settingsNavigation.json';
 
 function flattenKeys(value: unknown, prefix = ''): string[] {
@@ -38,7 +41,7 @@ describe('MOB-BASE-003 i18n', () => {
 
     it('registra os três idiomas e os namespaces observados', () => {
         expect(SUPPORTED_LANGUAGES).toEqual(['pt-BR', 'en-US', 'es-ES']);
-        expect(NAMESPACES).toEqual(['common', 'auth', 'launcher', 'reader', 'settingsNavigation']);
+        expect(NAMESPACES).toEqual(['common', 'auth', 'launcher', 'reader', 'remoteProcessing', 'settingsNavigation']);
         expect(DEFAULT_LANGUAGE).toBe('pt-BR');
     });
 
@@ -47,6 +50,7 @@ describe('MOB-BASE-003 i18n', () => {
         ['auth', ptBRAuth, enUSAuth, esESAuth],
         ['launcher', ptBRLauncher, enUSLauncher, esESLauncher],
         ['reader', ptBRReader, enUSReader, esESReader],
+        ['remoteProcessing', ptBRRemoteProcessing, enUSRemoteProcessing, esESRemoteProcessing],
         ['settingsNavigation', ptBRSettingsNavigation, enUSSettingsNavigation, esESSettingsNavigation],
     ])('mantém paridade de chaves no namespace %s', (_namespace, ptBR, enUS, esES) => {
         const reference = flattenKeys(ptBR).sort();

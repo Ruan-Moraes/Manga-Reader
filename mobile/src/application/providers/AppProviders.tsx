@@ -1,14 +1,17 @@
 import { type PropsWithChildren, useEffect } from 'react';
 import { StatusBar as RNStatusBar } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { registerLocalMediaImportDataParticipant } from '@/src/entities/local-media-import';
+import { registerRemoteProcessingIdentityDataParticipant } from '@/src/entities/remote-processing-identity';
 import { registerTranslationProjectDataParticipant } from '@/src/entities/translation-project';
 import { themePreferenceToColorScheme } from '@/src/entities/user-setting';
 import { useSettingsStore } from '@/src/features/manage-settings';
 import { ThemeProvider, useTheme } from '@/src/shared/theme';
 
+import { RemoteProcessingRecoveryGate } from '../gates';
 import { QueryProvider } from './QueryProvider';
 
 function ThemedApplicationSurface({ children }: PropsWithChildren) {
@@ -21,7 +24,9 @@ function ThemedApplicationSurface({ children }: PropsWithChildren) {
     return (
         <SafeAreaProvider style={{ backgroundColor: tokens.bg }}>
             <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+                <RemoteProcessingRecoveryGate>{children}</RemoteProcessingRecoveryGate>
+            </QueryProvider>
         </SafeAreaProvider>
     );
 }
@@ -34,27 +39,31 @@ export function AppProviders({ children }: PropsWithChildren) {
     useEffect(() => {
         const unregisterImports = registerLocalMediaImportDataParticipant();
         const unregisterProjects = registerTranslationProjectDataParticipant();
+        const unregisterRemoteIdentity = registerRemoteProcessingIdentityDataParticipant();
 
         return () => {
+            unregisterRemoteIdentity();
             unregisterProjects();
             unregisterImports();
         };
     }, []);
 
     return (
-        <ThemeProvider
-            initialOverride={themePreferenceToColorScheme(appearance.theme)}
-            fontSize={appearance.fontSize}
-            density={appearance.density}
-            animations={appearance.animations}
-            reduceMotion={accessibility.reduceMotion}
-            highContrast={accessibility.highContrast}
-            waitForPlatform
-            onOverrideChange={scheme => {
-                void setThemeOverride(scheme);
-            }}
-        >
-            <ThemedApplicationSurface>{children}</ThemedApplicationSurface>
-        </ThemeProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <ThemeProvider
+                initialOverride={themePreferenceToColorScheme(appearance.theme)}
+                fontSize={appearance.fontSize}
+                density={appearance.density}
+                animations={appearance.animations}
+                reduceMotion={accessibility.reduceMotion}
+                highContrast={accessibility.highContrast}
+                waitForPlatform
+                onOverrideChange={scheme => {
+                    void setThemeOverride(scheme);
+                }}
+            >
+                <ThemedApplicationSurface>{children}</ThemedApplicationSurface>
+            </ThemeProvider>
+        </GestureHandlerRootView>
     );
 }

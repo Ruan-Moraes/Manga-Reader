@@ -3,15 +3,18 @@ import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import type { LocalMediaImportDraft } from '@/src/entities/local-media-import';
+import { isMediaValidationReady, type LocalMediaImportDraft } from '@/src/entities/local-media-import';
+import type { TranslationProject } from '@/src/entities/translation-project';
 import { type CreateTranslationProjectController, CreateTranslationProjectPanel } from '@/src/features/create-translation-project';
 import { ImportLocalMediaPanel, type LocalMediaImportController } from '@/src/features/import-local-media';
 import { LocalMediaReviewPanel, type ReviewLocalMediaImportController } from '@/src/features/review-local-media-import';
 import { type SelectTranslationLanguagesController, TranslationLanguageSelectionPanel } from '@/src/features/select-translation-languages';
 import { LocalMediaValidationItemStatus, LocalMediaValidationPanel, type ValidateLocalMediaController } from '@/src/features/validate-local-media';
+import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
 import { ROUTES } from '@/src/shared/navigation';
 import { useTheme } from '@/src/shared/theme';
 import { AppText, Card, IconButton, ProgressSteps, ScreenScaffold } from '@/src/shared/ui';
+import { RemoteProcessingPanel } from '@/src/widgets/remote-processing';
 
 import { availableTranslationFlowStep, TRANSLATION_FLOW_STEPS, type TranslationFlowStep, visibleTranslationFlowStep } from '../model/translationFlow';
 
@@ -28,13 +31,20 @@ export function OfflineTranslationPage({ importController, reviewController, lan
     const { spacing } = useTheme();
     const [draft, setDraft] = useState<LocalMediaImportDraft | null>(null);
     const [requestedStep, setRequestedStep] = useState<TranslationFlowStep | null>(null);
+    const [preparedProject, setPreparedProject] = useState<TranslationProject | null>(null);
     const handleDraftChange = useCallback((nextDraft: LocalMediaImportDraft | null) => setDraft(nextDraft), []);
+    const handleValidationDraftChange = useCallback((nextDraft: LocalMediaImportDraft) => {
+        setDraft(nextDraft);
+        if (isMediaValidationReady(nextDraft, MEDIA_VALIDATION_POLICY_VERSION)) setRequestedStep('validate');
+    }, []);
     const availableStep = availableTranslationFlowStep(draft);
     const currentStep = visibleTranslationFlowStep(availableStep, requestedStep);
     const currentIndex = TRANSLATION_FLOW_STEPS.indexOf(currentStep);
     const steps = useMemo(() => TRANSLATION_FLOW_STEPS.map(id => ({ id, label: t(`offline.flow.steps.${id}`) })), [t]);
 
-    useEffect(() => setRequestedStep(null), [availableStep]);
+    useEffect(() => {
+        setRequestedStep(requested => (availableStep === 'review' && requested === 'validate' ? requested : null));
+    }, [availableStep]);
 
     const goBack = () => {
         if (currentIndex > 0) {
@@ -45,13 +55,13 @@ export function OfflineTranslationPage({ importController, reviewController, lan
     };
 
     const stage = (() => {
-        const intro = (step: TranslationFlowStep) => (
+        const intro = (step: TranslationFlowStep, title?: string) => (
             <View style={{ gap: spacing.sm }}>
                 <AppText variant="eyebrow" tone="accent">
                     {t(`offline.flow.intro.${step}.eyebrow`)}
                 </AppText>
                 <AppText accessibilityRole="header" variant="display">
-                    {t(`offline.flow.intro.${step}.title`)}
+                    {title ?? t(`offline.flow.intro.${step}.title`)}
                 </AppText>
                 <AppText tone="muted">{t(`offline.flow.intro.${step}.description`)}</AppText>
             </View>
@@ -61,14 +71,25 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                 <View style={{ gap: spacing.md }}>
                     {intro('import')}
                     {!draft ? (
-                        <CreateTranslationProjectPanel
-                            key="latest-project"
-                            draft={null}
-                            onDraftConsumed={() => setDraft(null)}
-                            controller={projectController}
-                        />
+                        <>
+                            <CreateTranslationProjectPanel
+                                key="latest-project"
+                                draft={null}
+                                onDraftConsumed={() => setDraft(null)}
+                                controller={projectController}
+                                onProjectChange={setPreparedProject}
+                            />
+                            {preparedProject ? <RemoteProcessingPanel /> : null}
+                        </>
                     ) : null}
-                    <ImportLocalMediaPanel controller={importController} draft={draft} onDraftChange={handleDraftChange} />
+                    <ImportLocalMediaPanel
+                        controller={importController}
+                        draft={draft}
+                        onDraftChange={handleDraftChange}
+                        onContinue={() => {
+                            if (draft && draft.items.length > 0) setRequestedStep('organize');
+                        }}
+                    />
                 </View>
             );
         }
@@ -95,18 +116,22 @@ export function OfflineTranslationPage({ importController, reviewController, lan
             );
         }
         if (currentStep === 'validate') {
+            const invalid = draft.items.filter(item => item.mediaValidationStatus === 'INVALID').length;
+            const ready = isMediaValidationReady(draft, MEDIA_VALIDATION_POLICY_VERSION);
+            const title = ready
+                ? t('offline.flow.intro.validate.readyTitle')
+                : invalid > 0
+                  ? t('offline.flow.intro.validate.issueTitle', { count: invalid })
+                  : t('offline.flow.intro.validate.pendingTitle');
             return (
-                <View style={{ gap: spacing.md }}>
-                    {intro('validate')}
-                    <Card style={{ gap: spacing.sm }}>
-                        {draft.items.map(item => (
-                            <View key={item.id} style={{ gap: spacing.xs }}>
-                                <AppText variant="label">{t('offline.review.page', { page: item.position + 1, total: draft.items.length })}</AppText>
-                                <LocalMediaValidationItemStatus item={item} />
-                            </View>
-                        ))}
-                    </Card>
-                    <LocalMediaValidationPanel draft={draft} onDraftChange={handleDraftChange} controller={validationController} />
+                <View style={{ flex: 1, gap: spacing.md, minHeight: 0 }}>
+                    {intro('validate', title)}
+                    <LocalMediaValidationPanel
+                        draft={draft}
+                        onDraftChange={handleValidationDraftChange}
+                        onContinue={() => setRequestedStep('review')}
+                        controller={validationController}
+                    />
                 </View>
             );
         }
@@ -133,7 +158,13 @@ export function OfflineTranslationPage({ importController, reviewController, lan
                         </AppText>
                     </View>
                 </Card>
-                <CreateTranslationProjectPanel key="prepare-project" draft={draft} onDraftConsumed={() => setDraft(null)} controller={projectController} />
+                <CreateTranslationProjectPanel
+                    key="prepare-project"
+                    draft={draft}
+                    onDraftConsumed={() => setDraft(null)}
+                    controller={projectController}
+                    onProjectChange={setPreparedProject}
+                />
             </View>
         );
     })();
@@ -141,7 +172,7 @@ export function OfflineTranslationPage({ importController, reviewController, lan
     return (
         <ScreenScaffold
             compact
-            scroll={currentStep !== 'organize'}
+            scroll={currentStep !== 'organize' && currentStep !== 'validate'}
             title={t('offline.pageTitle')}
             backLabel={currentIndex > 0 ? t('offline.flow.back') : t('navigation.selector')}
             onBack={goBack}

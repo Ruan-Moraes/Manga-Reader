@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { isMediaValidationReady, type LocalMediaImportDraft } from '@/src/entities/local-media-import';
+import type { TranslationProject } from '@/src/entities/translation-project';
 import { MEDIA_VALIDATION_POLICY_VERSION } from '@/src/shared/media-inspection';
 import { useTheme } from '@/src/shared/theme';
 import { AppText, Button } from '@/src/shared/ui';
@@ -13,13 +15,18 @@ interface Props {
     draft: LocalMediaImportDraft | null;
     onDraftConsumed: () => void;
     controller?: CreateTranslationProjectController;
+    onProjectChange?: (project: TranslationProject | null) => void;
 }
 
-export function CreateTranslationProjectPanel({ draft, onDraftConsumed, controller }: Props) {
+export function CreateTranslationProjectPanel({ draft, onDraftConsumed, controller, onProjectChange }: Props) {
     const { t } = useTranslation('launcher');
     const { spacing, tokens } = useTheme();
     const actions = useCreateTranslationProject(controller);
     const ready = draft ? isMediaValidationReady(draft, MEDIA_VALIDATION_POLICY_VERSION) : false;
+
+    useEffect(() => {
+        onProjectChange?.(actions.project);
+    }, [actions.project, onProjectChange]);
     if (!draft && !actions.project && !actions.loading && !actions.error) return null;
 
     return (

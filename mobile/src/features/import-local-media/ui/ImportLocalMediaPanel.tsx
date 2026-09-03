@@ -13,9 +13,10 @@ interface Props {
     controller?: LocalMediaImportController;
     draft?: LocalMediaImportDraft | null;
     onDraftChange?: (draft: LocalMediaImportDraft | null) => void;
+    onContinue?: () => void;
 }
 
-export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Props) {
+export function ImportLocalMediaPanel({ controller, draft, onDraftChange, onContinue }: Props) {
     const { t } = useTranslation('launcher');
     const { spacing, tokens } = useTheme();
     const { state, selectImages, retry } = useLocalMediaImport(controller, onDraftChange);
@@ -23,26 +24,35 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Prop
     const busy = state.status === 'loading' || state.status === 'importing';
     const errorKey = state.error ? `offline.import.errors.${state.error}` : null;
     const [pressed, setPressed] = useState(false);
+    const continueAction =
+        visibleDraft && visibleDraft.items.length > 0 && onContinue ? (
+            <Button onPress={onContinue} disabled={busy} accessibilityLabel={t('offline.import.continueAction')}>
+                {t('offline.import.continueAction')}
+            </Button>
+        ) : null;
 
     if (visibleDraft && !errorKey) {
         return (
-            <Card padded={false} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm, padding: spacing.sm }}>
-                <AppText variant="caption" style={{ flex: 1 }} numberOfLines={2}>
-                    {t('offline.import.selectedCount', { count: visibleDraft.items.length })}
-                </AppText>
-                <Button
-                    size="compact"
-                    fullWidth={false}
-                    variant="outline"
-                    onPress={() => void selectImages()}
-                    loading={state.status === 'importing'}
-                    disabled={busy}
-                    accessibilityLabel={t('offline.import.replaceAction')}
-                    leading={!busy ? <Icon name="folder-open-outline" size={20} color={tokens.accentText} /> : undefined}
-                >
-                    {t('offline.import.replaceAction')}
-                </Button>
-            </Card>
+            <View style={{ gap: spacing.md }}>
+                <Card padded={false} style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm, padding: spacing.sm }}>
+                    <AppText variant="caption" style={{ flex: 1 }} numberOfLines={2}>
+                        {t('offline.import.selectedCount', { count: visibleDraft.items.length })}
+                    </AppText>
+                    <Button
+                        size="compact"
+                        fullWidth={false}
+                        variant="outline"
+                        onPress={() => void selectImages()}
+                        loading={state.status === 'importing'}
+                        disabled={busy}
+                        accessibilityLabel={t('offline.import.replaceAction')}
+                        leading={!busy ? <Icon name="folder-open-outline" size={20} color={tokens.accentText} /> : undefined}
+                    >
+                        {t('offline.import.replaceAction')}
+                    </Button>
+                </Card>
+                {continueAction}
+            </View>
         );
     }
 
@@ -117,6 +127,8 @@ export function ImportLocalMediaPanel({ controller, draft, onDraftChange }: Prop
                     </Button>
                 </View>
             )}
+
+            {continueAction}
 
             <AppText variant="caption" tone="subtle" style={{ textAlign: 'center' }}>
                 {t('offline.import.privacyNote')}

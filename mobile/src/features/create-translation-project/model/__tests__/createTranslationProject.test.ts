@@ -41,6 +41,7 @@ function fixture() {
         getActive: jest.fn(async () => active),
         replaceActive: jest.fn(),
         appendItems: jest.fn(),
+        replaceItem: jest.fn(),
         removeItem: jest.fn(),
         reorderItems: jest.fn(),
         confirm: jest.fn(),

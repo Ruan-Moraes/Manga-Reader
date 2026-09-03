@@ -12,7 +12,7 @@ export type LocalMediaPickerResult =
     | { status: 'error'; code: 'picker-unavailable' | 'invalid-result' };
 
 export interface LocalMediaPicker {
-    pickImages(): Promise<LocalMediaPickerResult>;
+    pickImages(options?: { selectionLimit?: number }): Promise<LocalMediaPickerResult>;
     getPendingImages(): Promise<LocalMediaPickerResult | null>;
 }
 
@@ -44,9 +44,13 @@ function mapPickerResult(result: ImagePicker.ImagePickerResult | ImagePicker.Ima
 }
 
 export const systemLocalMediaPicker: LocalMediaPicker = {
-    async pickImages() {
+    async pickImages(options) {
         try {
-            return mapPickerResult(await ImagePicker.launchImageLibraryAsync(LOCAL_IMAGE_PICKER_OPTIONS));
+            const selectionLimit = options?.selectionLimit;
+            const pickerOptions = selectionLimit
+                ? { ...LOCAL_IMAGE_PICKER_OPTIONS, allowsMultipleSelection: selectionLimit > 1, orderedSelection: selectionLimit > 1, selectionLimit }
+                : LOCAL_IMAGE_PICKER_OPTIONS;
+            return mapPickerResult(await ImagePicker.launchImageLibraryAsync(pickerOptions));
         } catch {
             return { status: 'error', code: 'picker-unavailable' };
         }

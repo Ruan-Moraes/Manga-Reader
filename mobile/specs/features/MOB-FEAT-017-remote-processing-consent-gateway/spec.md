@@ -2,11 +2,11 @@
 id: MOB-FEAT-017
 type: feature
 title: Consentimento e gateway de processamento remoto
-status: approved
+status: verification-pending
 implementation_gate: open
 blocked_by: [MOB-FEAT-016]
 created: 2026-08-15
-updated: 2026-08-15
+updated: 2026-09-03
 supersedes: []
 superseded_by: []
 ---
@@ -93,6 +93,10 @@ mobile e sem expor segredo de provider no aplicativo.
 - O response mínimo possui versão do contrato, referência opaca do job, status
   canônico, instante do servidor e erro estruturado quando aplicável. Resultados
   de OCR/tradução/render ficam fora desta feature.
+- `shared/remote-gateway` contém somente transporte agnóstico ao domínio:
+  origem HTTPS validada, timeout, limites de request/response, política de
+  redirects e cancelamento. Capabilities, estados, erros e parsers Zod do
+  contrato remoto pertencem às entities de processamento remoto.
 - Transporte exige HTTPS, timeout explícito, tamanho máximo, cancelamento do
   request local e parser de resposta não confiável. Redirect para origem não
   autorizada, downgrade de TLS, resposta excedente ou payload inválido falham
@@ -109,6 +113,10 @@ mobile e sem expor segredo de provider no aplicativo.
 - Antes da primeira chamada, o app persiste um attempt `CREATED` com UUID opaco e
   `idempotencyKey` único. Repetir toque, restart ou retry de timeout usa o mesmo
   attempt e a mesma chave; nunca cria submissão paralela para a mesma tentativa.
+- O estado local do attempt e o estado observado do job remoto são eixos
+  separados. O primeiro descreve a coordenação/recovery do aplicativo; o segundo
+  registra apenas o último estado remoto validado, sem antecipar resultado das
+  specs seguintes.
 - A ordem é:
     1. revalidar projeto, página, consentimento, capability e arquivo;
     2. persistir attempt `CREATED` e depois `SUBMITTING`;
@@ -167,7 +175,8 @@ tabela é criada na Core; o estado server-side pertence ao serviço externo.
 
 ### 📐 Modelo em BCNF
 
-Plano provisório `v5 → v6`, bloqueado até o contrato real validar os campos:
+Migração `v6 → v7`; v6 já pertence à separação `zh-Hans`/`zh-Hant` e ao campo
+`language_review_required` executados por `MOB-FEAT-016`:
 
 `remote_processing_consents`:
 
@@ -190,23 +199,34 @@ sobrescrever aceite anterior.
 - `gateway_key TEXT NOT NULL`;
 - `gateway_contract_version TEXT NOT NULL`;
 - `status TEXT NOT NULL`;
-- `remote_job_ref TEXT UNIQUE` nullable;
+- `remote_status TEXT` nullable;
+- `remote_job_ref TEXT` nullable;
 - `error_code TEXT` nullable e sanitizado;
-- `created_at`, `updated_at` e timestamps opcionais de submissão/aceite/consulta.
+- `created_at`, `updated_at` e timestamps opcionais de
+  submissão/aceite/consulta/cancelamento.
 
 Dependências funcionais: `id → atributos`; `(page_id, attempt_number) → attempt`;
-`idempotency_key → attempt`; e `remote_job_ref → attempt` quando presente. Todas
-as determinantes são chaves candidatas. Projeto, idiomas, MIME e filename não são
-duplicados: derivam das FKs/snapshot de `MOB-FEAT-016`.
+`idempotency_key → attempt`; e `(gateway_key, remote_job_ref) → attempt` quando a
+referência existe. Todas as determinantes são chaves candidatas. Projeto,
+idiomas, MIME e filename não são duplicados: derivam das FKs/snapshot de
+`MOB-FEAT-016`. `gateway_key` e `gateway_contract_version` são snapshots técnicos
+deliberados necessários para reconciliar a tentativa contra a origem correta
+mesmo após uma mudança de configuração.
 
 ### 🔗 Integridade
 
 - consent `project_id → translation_projects.id ON DELETE CASCADE`;
 - attempt `page_id → translation_pages.id ON DELETE CASCADE`;
 - `UNIQUE(page_id, attempt_number)`, attempts numerados a partir de 1;
+- índice `UNIQUE(page_id) WHERE status IN (...)` impede dois attempts locais
+  ativos concorrentes para a mesma página;
+- `UNIQUE(gateway_key, remote_job_ref)` impede colisão sem presumir que uma ref
+  seja global entre gateways substituíveis;
 - `presented_locale` restrito aos três locales da interface;
-- status restrito a `CREATED`, `SUBMITTING`, `ACCEPTED`, `REJECTED`, `UNKNOWN`,
-  `PROCESSING`, `READY`, `FAILED`, `CANCEL_PENDING`, `CANCELLED` e
+- status local restrito a `CREATED`, `SUBMITTING`, `ACCEPTED`, `REJECTED`,
+  `UNKNOWN`, `FAILED`, `CANCEL_PENDING` e `CANCELLED`;
+- `remote_status`, quando presente, restrito a `QUEUED`, `OCR`, `TRANSLATING`,
+  `RENDERING`, `READY`, `FAILED`, `CANCEL_PENDING`, `CANCELLED` e
   `RESULT_EXPIRED`;
 - remote ref obrigatório apenas em estados que receberam receipt, conforme CHECK
   final alinhado ao contrato;
@@ -216,8 +236,10 @@ duplicados: derivam das FKs/snapshot de `MOB-FEAT-016`.
 
 - PK do consent cobre a FK `project_id` e busca por projeto;
 - UNIQUE `(page_id, attempt_number)` cobre a FK e histórico ordenado da página;
-- UNIQUE de `idempotency_key` e `remote_job_ref` cobre reconciliação;
-- nenhum índice por status antes de haver volume/query que o justifique.
+- UNIQUE de `idempotency_key` e `(gateway_key, remote_job_ref)` cobre
+  reconciliação;
+- o índice parcial por página ativa é uma garantia de integridade, não uma
+  otimização por baixa cardinalidade; nenhum índice geral de status será criado.
 
 ### 🧮 Derivados
 
@@ -227,17 +249,18 @@ Não há contador, progresso ou cache de resultado. A tentativa corrente é a ma
 
 ### 🛠️ Migration + código
 
-- Migration SQLite v6 forward-only e transacional, coordenada com a evolução de
-  idiomas, resultados e regiões aprovada para `MOB-FEAT-014/018..021`.
+- Migration SQLite v7 forward-only e transacional, limitada a consentimentos e
+  attempts; resultados e regiões continuam pertencendo a `MOB-FEAT-018..021`.
 - Mudança coordenada futura: migration/helper, entities de consent/attempt,
   repository, adapter gateway, feature, page, i18n, registry de dados locais,
   coverage e testes de instalação limpa/upgrade/restart.
 - Estrutura FSD planejada, de baixo para cima:
 
 ```text
-shared/remote-gateway (transporte/parsing genéricos, sem domínio)
-  → entities/remote-processing-attempt
-  → entities/translation-project (@x controlada)
+shared/remote-gateway (HTTPS, timeout, limites e redirects; sem domínio)
+  → entities/remote-processing-capability (contrato Zod e leitura)
+  → entities/remote-processing-attempt (estado, consent e SQLite v7)
+  → entities/translation-project (@x controlada quando necessária)
     → features/start-remote-processing
     → features/cancel-remote-processing
       → pages/offline-translation
@@ -250,9 +273,13 @@ shared/remote-gateway (transporte/parsing genéricos, sem domínio)
 ## Contrato externo aprovado
 
 - API HTTP `/v1` com capabilities, instalação/sessão anônima, submit multipart,
-  status, cancel e ACK; OpenAPI será a referência executável.
+  consulta por idempotency key ou job ref, cancel e ACK; OpenAPI será a
+  referência executável.
 - Gateway Spring Boot separado da Core, com adapters para providers e Terraform
   para Cloud Run/Tasks/SQL/Storage/Secret Manager/Scheduler.
+- A aceitação do job e o pedido de dispatch usam outbox PostgreSQL. Criar Cloud
+  Task não participa da transação do banco; dispatcher e reconciliação retomam
+  linhas pendentes de modo idempotente antes de declarar a fila operacional.
 - Conteúdo remoto efêmero: original apagado após OCR (failsafe de uma hora) e
   resultado/manifesto após ACK ou uma hora; metadados sanitizados por sete dias.
 - Região e transferência: gateway/dados temporários em São Paulo; OCR e tradução
@@ -312,7 +339,8 @@ OCR/tradução/gateway; esquema de autorização é verificável e revogável.
 ### AC-006 — Submissão idempotente e persistível
 
 Attempt e idempotency key existem antes da rede; duplo toque, timeout, restart e
-retry usam a mesma identidade sem duplicar job ou consumo.
+retry usam a mesma identidade sem duplicar job ou consumo. No gateway, commit do
+job e outbox de dispatch são atômicos.
 
 ### AC-007 — Estados locais refletem receipts reais
 
@@ -371,6 +399,14 @@ processamento, quota pública, reader, Core ou provider direto.
 - Gate de verificação real: cloud configurada, páginas legais públicas, secret
   scan e teste Android; ausência mantém a implementação em
   `verification-pending`, não refecha o planejamento.
+
+## Manutenção autorizada em 2026-09-01
+
+Ruan autorizou iniciar o plano revisado após a auditoria do estado atual. A
+revisão promove a migration local para v7, separa estado local/remoto, escopa a
+unicidade da referência por gateway, adiciona proteção de attempt ativo e outbox
+remota e corrige a fronteira FSD. O objetivo, os ACs e os limites de produto
+permanecem os mesmos.
 
 ## Fora de escopo
 

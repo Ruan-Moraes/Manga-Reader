@@ -20,13 +20,17 @@ Implementado:
 
 - seletor público entre plataforma e tradução local-first;
 - importação guest-first de uma ou várias imagens pelo seletor do sistema;
-- revisão virtualizada do draft em kanban padrão ou scroll, preview ampliado privado, adição/remoção, ordenação persistente, aviso de possível duplicata e confirmação local;
+- revisão virtualizada do draft em Grade minimalista ou Lista, preview ampliado privado, adição/remoção, ordenação persistente por arraste na imagem, aviso de possível duplicata e confirmação local;
 - seleção independente e persistente entre sete idiomas e 42 pares direcionais,
   com chinês simplificado e tradicional separados;
-- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com limites defensivos, erros por página, retry seletivo e profiling Android físico concluído;
+- validação local sequencial de JPEG, PNG e WebP estáticos pelos bytes reais, com galeria virtualizada, resumo do lote, correção localizada por página, limites defensivos, retry seletivo e profiling Android físico concluído;
 - preparação local de projeto privado com páginas ordenadas, snapshot validado,
   SQLite v6, estados canônicos e restauração determinística (verificação física
   final pendente);
+- fundação do processamento remoto com SQLite v7, capabilities validadas,
+  consentimento contextual trilíngue, identidade anônima no SecureStore,
+  submissão idempotente da primeira página, retomada e cancelamento; o upload
+  permanece fail-closed enquanto o gateway estiver desabilitado;
 - migração SQLite v1/v2/v3→v4 preservando drafts, itens, ordem, idiomas e resultados por página;
 - draft ativo durável com metadados em SQLite e arquivos no diretório privado do app;
 - cancelamento, substituição atômica, recuperação do resultado pendente Android e erros localizados, sem tradução simulada;
@@ -44,8 +48,8 @@ Implementado:
 
 Ainda não implementado:
 
-- gateway remoto, OCR, tradução, renderização e leitor de projetos locais
-  (`MOB-FEAT-017..021` já possuem specs aprovadas);
+- OCR, tradução, renderização e leitor de projetos locais
+  (`MOB-FEAT-018..021` já possuem specs aprovadas);
 - catálogo, detalhes de obras e biblioteca real;
 - fórum, perfil e outras tabs com dados;
 - testes E2E;
@@ -53,22 +57,24 @@ Ainda não implementado:
 
 ## Stack instalada
 
-| Área                     | Tecnologia                            |
-| ------------------------ | ------------------------------------- |
-| Framework                | Expo 54, React Native 0.81 e React 19 |
-| Navegação                | Expo Router 6                         |
-| Linguagem                | TypeScript 5.9                        |
-| Estado global            | Zustand 5                             |
-| Server state             | TanStack Query 5                      |
-| HTTP                     | Axios                                 |
-| Formulários              | React Hook Form + Zod                 |
-| Estilos                  | NativeWind 4 + Tailwind CSS 3         |
-| i18n                     | i18next + react-i18next               |
-| Armazenamento sensível   | Expo SecureStore                      |
-| Dados locais relacionais | Expo SQLite                           |
-| Arquivos privados        | Expo FileSystem                       |
-| Seleção de imagens       | Expo ImagePicker / picker do sistema  |
-| Imagens e fontes         | Expo Image + Nunito Sans              |
+| Área                     | Tecnologia                              |
+| ------------------------ | --------------------------------------- |
+| Framework                | Expo 54, React Native 0.81 e React 19   |
+| Navegação                | Expo Router 6                           |
+| Linguagem                | TypeScript 5.9                          |
+| Estado global            | Zustand 5                               |
+| Server state             | TanStack Query 5                        |
+| HTTP                     | Axios                                   |
+| Formulários              | React Hook Form + Zod                   |
+| Estilos                  | NativeWind 4 + Tailwind CSS 3           |
+| i18n                     | i18next + react-i18next                 |
+| Armazenamento sensível   | Expo SecureStore                        |
+| Dados locais relacionais | Expo SQLite                             |
+| Arquivos privados        | Expo FileSystem                         |
+| Seleção de imagens       | Expo ImagePicker / picker do sistema    |
+| Imagens e fontes         | Expo Image + Nunito Sans                |
+| Ordenação por gesto      | Reanimated + Worklets + Gesture Handler |
+| Slider nativo            | React Native Community Slider           |
 
 Bibliotecas planejadas para fases futuras não são listadas como dependências
 atuais.
@@ -140,10 +146,10 @@ outro endereço acessível pelo dispositivo.
 O cliente acrescenta `/api`, portanto a variável deve conter apenas a origem,
 sem `/api` no final.
 
-O gateway de tradução ainda não existe em runtime. Seu contrato utilizará uma
-origem independente (`EXPO_PUBLIC_TRANSLATION_GATEWAY_URL`) sem `/api` da Core,
-com validação fail-closed. Não configurar essa variável não pode ativar upload ou
-fallback direto para provider. Consulte o
+O gateway de tradução usa uma origem independente
+(`EXPO_PUBLIC_TRANSLATION_GATEWAY_URL`) sem `/api` da Core. Apenas origens HTTPS
+sem path, credenciais, query ou fragment são aceitas; ausência ou configuração
+inválida fecha o upload e nunca ativa fallback direto para provider. Consulte o
 [plano arquitetural aprovado](../docs/translation-gateway-plan.md).
 
 ## Autenticação
@@ -172,13 +178,14 @@ cores que precisam reagir ao toggle.
 
 ## Internacionalização
 
-O mobile possui atualmente cinco namespaces:
+O mobile possui atualmente seis namespaces:
 
 - `common`;
 - `auth`;
 - `launcher`;
-- `reader`.
-- `settingsNavigation`.
+- `reader`;
+- `settingsNavigation`;
+- `remoteProcessing`.
 
 Todos existem nos três idiomas. Novos namespaces devem ser adicionados somente
 com a feature correspondente e replicados em todos os locales. Nenhum texto

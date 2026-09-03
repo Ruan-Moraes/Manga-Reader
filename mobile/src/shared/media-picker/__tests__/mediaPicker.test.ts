@@ -58,6 +58,16 @@ describe('MOB-FEAT-012 system media picker', () => {
         expect(ImagePicker.getPendingResultAsync).toHaveBeenCalledTimes(1);
     });
 
+    it('limits replacement selection to one image', async () => {
+        jest.mocked(ImagePicker.launchImageLibraryAsync).mockResolvedValue({ canceled: true, assets: null });
+
+        await systemLocalMediaPicker.pickImages({ selectionLimit: 1 });
+
+        expect(ImagePicker.launchImageLibraryAsync).toHaveBeenCalledWith(
+            expect.objectContaining({ allowsMultipleSelection: false, orderedSelection: false, selectionLimit: 1 }),
+        );
+    });
+
     it('sanitizes native failures into stable error codes', async () => {
         jest.mocked(ImagePicker.launchImageLibraryAsync).mockRejectedValue(new Error('content://private/path permission denied'));
         jest.mocked(ImagePicker.getPendingResultAsync).mockResolvedValue({ code: 'E_ACTIVITY_DOES_NOT_EXIST', message: 'private native detail' });

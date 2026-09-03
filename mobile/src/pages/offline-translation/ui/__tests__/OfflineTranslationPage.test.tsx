@@ -6,6 +6,7 @@ import { type LocalMediaImportDraft, PENDING_MEDIA_VALIDATION } from '@/src/enti
 import type { CreateTranslationProjectController } from '@/src/features/create-translation-project';
 import { type LocalMediaImportController, LocalMediaImportError } from '@/src/features/import-local-media';
 import type { ReviewLocalMediaImportController } from '@/src/features/review-local-media-import';
+import type { ValidateLocalMediaController } from '@/src/features/validate-local-media';
 import { api } from '@/src/shared/api';
 import i18n from '@/src/shared/i18n';
 
@@ -50,6 +51,7 @@ function reviewController(overrides: Partial<ReviewLocalMediaImportController> =
         addImages: jest.fn().mockResolvedValue({ status: 'unchanged', draft }),
         removeItem: jest.fn().mockResolvedValue({ status: 'updated', draft }),
         moveItem: jest.fn().mockResolvedValue({ status: 'updated', draft }),
+        reorderItems: jest.fn().mockResolvedValue({ status: 'updated', draft }),
         confirm: jest.fn().mockResolvedValue({ status: 'updated', draft: { ...draft, confirmedAt: 20 } }),
         reload: jest.fn().mockResolvedValue(draft),
         ...overrides,
@@ -61,10 +63,24 @@ const projectController: CreateTranslationProjectController = {
     prepare: jest.fn(),
 };
 
-function renderPage(importController = controller(), reviewer = reviewController()) {
+function validationController(): ValidateLocalMediaController {
+    return {
+        itemUri: (_draft, item) => `file:///private/draft-1/${item.localFilename}`,
+        validate: jest.fn(async current => current),
+        replaceItem: jest.fn(async current => current),
+        reload: jest.fn(async () => null),
+    };
+}
+
+function renderPage(importController = controller(), reviewer = reviewController(), validator = validationController()) {
     return render(
         <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
-            <OfflineTranslationPage importController={importController} reviewController={reviewer} projectController={projectController} />
+            <OfflineTranslationPage
+                importController={importController}
+                reviewController={reviewer}
+                validationController={validator}
+                projectController={projectController}
+            />
         </SafeAreaProvider>,
     );
 }
@@ -111,18 +127,58 @@ describe('MOB-FEAT-012 local media import page', () => {
         expect(screen.getByRole('button', { name: 'Selecionar imagens' })).toBeOnTheScreen();
     });
 
+    it('continues from import to organization with the saved pages without replacing or confirming them', async () => {
+        const savedDraft = {
+            ...draft,
+            sourceLanguage: 'en' as const,
+            items: [
+                { ...draft.items[1], position: 0 },
+                { ...draft.items[0], position: 1 },
+            ],
+        };
+        const snapshot = JSON.stringify(savedDraft);
+        const importer = controller({ initialize: jest.fn().mockResolvedValue(savedDraft) });
+        const reviewer = reviewController();
+        renderPage(importer, reviewer);
+
+        expect(await screen.findByTestId('translation-flow-step-organize')).toBeOnTheScreen();
+        fireEvent.press(screen.getByRole('button', { name: 'Etapa anterior' }));
+        expect(await screen.findByTestId('translation-flow-step-import')).toBeOnTheScreen();
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Continuar' })).toBeEnabled());
+        expect(screen.getByText('2 imagens importadas')).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: 'Substituir seleção' })).toBeOnTheScreen();
+        jest.mocked(reviewer.itemUri).mockClear();
+
+        fireEvent.press(screen.getByRole('button', { name: 'Continuar' }));
+
+        expect(await screen.findByTestId('translation-flow-step-organize')).toBeOnTheScreen();
+        expect(reviewer.itemUri).toHaveBeenCalledWith(savedDraft, savedDraft.items[0]);
+        expect(reviewer.itemUri).toHaveBeenCalledWith(savedDraft, savedDraft.items[1]);
+        expect(JSON.stringify(savedDraft)).toBe(snapshot);
+        expect(importer.selectImages).not.toHaveBeenCalled();
+        expect(reviewer.confirm).not.toHaveBeenCalled();
+        expect(reviewer.reorderItems).not.toHaveBeenCalled();
+        expect(reviewer.addImages).not.toHaveBeenCalled();
+        expect(reviewer.removeItem).not.toHaveBeenCalled();
+        expect(projectController.prepare).not.toHaveBeenCalled();
+        expect(apiMock.history.get).toHaveLength(0);
+        expect(apiMock.history.post).toHaveLength(0);
+    });
+
     it('reveals independent language selection only after the page order is confirmed without HTTP', async () => {
         const reviewer = reviewController();
         renderPage(controller({ initialize: jest.fn().mockResolvedValue(draft) }), reviewer);
 
         expect(await screen.findByRole('button', { name: 'Confirmar ordem' })).toBeOnTheScreen();
-        expect(screen.queryByText('Escolha os idiomas')).toBeNull();
+        expect(screen.queryByRole('button', { name: /^Idioma de origem:/ })).toBeNull();
 
         fireEvent.press(screen.getByRole('button', { name: 'Confirmar ordem' }));
 
-        expect(await screen.findByText('Escolha os idiomas')).toBeOnTheScreen();
-        expect(screen.getByLabelText('Idioma de origem').props.accessibilityRole).toBe('radiogroup');
-        expect(screen.getByLabelText('Idioma de destino').props.accessibilityRole).toBe('radiogroup');
+        expect(await screen.findByRole('button', { name: 'Idioma de origem: Japonês' })).toBeOnTheScreen();
+        expect(screen.getByRole('button', { name: 'Idioma de destino: Português (Brasil)' })).toBeOnTheScreen();
+        expect(screen.getByRole('header', { name: 'Como você quer ler?' })).toBeOnTheScreen();
+        expect(screen.queryByText('Escolha os idiomas')).toBeNull();
+        expect(screen.queryAllByRole('radio')).toHaveLength(0);
         expect(apiMock.history.get).toHaveLength(0);
         expect(apiMock.history.post).toHaveLength(0);
     });
@@ -137,6 +193,31 @@ describe('MOB-FEAT-012 local media import page', () => {
         expect(await screen.findByText('Não foi possível guardar as imagens no armazenamento privado.')).toBeOnTheScreen();
         expect(screen.getByRole('button', { name: 'Tentar novamente' })).toBeOnTheScreen();
         expect(screen.queryByText(/content:\/\/|file:\/\//)).toBeNull();
+    });
+
+    it('keeps a ready validation result visible until the user continues to review', async () => {
+        const readyDraft: LocalMediaImportDraft = {
+            ...draft,
+            confirmedAt: 9,
+            languagesConfirmedAt: 9,
+            items: draft.items.map(item => ({
+                ...item,
+                mediaValidationStatus: 'VALID',
+                detectedMimeType: 'image/png',
+                widthPx: 100,
+                heightPx: 200,
+                validatedAt: 9,
+                validationPolicyVersion: 1,
+            })),
+        };
+        renderPage(controller({ initialize: jest.fn().mockResolvedValue(readyDraft) }));
+
+        expect(await screen.findByTestId('translation-flow-step-review')).toBeOnTheScreen();
+        fireEvent.press(screen.getByRole('button', { name: 'Etapa anterior' }));
+
+        expect(await screen.findByRole('header', { name: 'Suas imagens estão prontas.' })).toBeOnTheScreen();
+        fireEvent.press(screen.getByRole('button', { name: 'Continuar para revisão' }));
+        expect(await screen.findByTestId('translation-flow-step-review')).toBeOnTheScreen();
     });
 
     it.each([
