@@ -1,0 +1,85 @@
+spring:
+  application:
+    name: translation-gateway
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/manga_translation_gateway}
+    username: ${SPRING_DATASOURCE_USERNAME:manga}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    hikari:
+      maximum-pool-size: ${GATEWAY_DB_POOL_SIZE:5}
+      connection-timeout: 5000
+  docker:
+    compose:
+      enabled: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+  servlet:
+    multipart:
+      max-file-size: ${GATEWAY_MAX_UPLOAD_BYTES:15728640}
+      max-request-size: ${GATEWAY_MAX_REQUEST_BYTES:16777216}
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+server:
+  port: ${SERVER_PORT:8084}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+gateway:
+  enabled: ${GATEWAY_ENABLED:false}
+  key: ${GATEWAY_KEY:local-disabled}
+  session-ttl: ${GATEWAY_SESSION_TTL:PT15M}
+  capabilities-ttl: ${GATEWAY_CAPABILITIES_TTL:PT5M}
+  installation-daily-quota: 20
+  global-daily-quota: 100
+  media:
+    max-bytes: ${GATEWAY_MEDIA_MAX_BYTES:12582912}
+    max-width-px: ${GATEWAY_MEDIA_MAX_WIDTH_PX:12000}
+    max-height-px: ${GATEWAY_MEDIA_MAX_HEIGHT_PX:12000}
+    max-pixels: ${GATEWAY_MEDIA_MAX_PIXELS:80000000}
+  disclosure:
+    version: ${GATEWAY_DISCLOSURE_VERSION:}
+    operator-name: ${GATEWAY_OPERATOR_NAME:}
+    operator-contact: ${GATEWAY_OPERATOR_CONTACT:}
+    privacy-policy-url: ${GATEWAY_PRIVACY_POLICY_URL:}
+    terms-url: ${GATEWAY_TERMS_URL:}
+    provider-training-policy: ${GATEWAY_PROVIDER_TRAINING_POLICY:}
+    original-retention-seconds: 3600
+    result-retention-seconds: 3600
+    metadata-retention-days: 7
+  storage:
+    mode: ${GATEWAY_STORAGE_MODE:local}
+    local-directory: ${GATEWAY_LOCAL_STORAGE_DIR:${java.io.tmpdir}/manga-reader-translation-gateway}
+    bucket: ${GATEWAY_STORAGE_BUCKET:}
+  dispatch:
+    mode: ${GATEWAY_DISPATCH_MODE:disabled}
+    project-id: ${GATEWAY_GCP_PROJECT_ID:}
+    location: ${GATEWAY_TASKS_LOCATION:southamerica-east1}
+    queue: ${GATEWAY_TASKS_QUEUE:translation-jobs}
+    worker-url: ${GATEWAY_WORKER_URL:}
+    service-account-email: ${GATEWAY_TASKS_SERVICE_ACCOUNT:}
+    max-attempts: 8
+    batch-size: 50

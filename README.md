@@ -22,11 +22,14 @@ Visão detalhada: [`docs/architecture.md`](docs/architecture.md).
 ```text
 Manga-Reader/
 ├── api/
-│   ├── core/                         # API principal — porta 8080
-│   ├── jobs/
-│   │   ├── rating-aggregator/        # Agregados de avaliações — porta 8081
-│   │   ├── orphan-cleaner/           # Reconciliação e limpeza — porta 8082
-│   │   └── trending-aggregator/      # Rankings de tendência — porta 8083
+│   ├── apps/
+│   │   ├── core/                     # API principal — porta 8080
+│   │   ├── jobs/
+│   │   │   ├── rating-aggregator/    # Agregados de avaliações — porta 8081
+│   │   │   ├── orphan-cleaner/       # Reconciliação e limpeza — porta 8082
+│   │   │   └── trending-aggregator/  # Rankings de tendência — porta 8083
+│   │   └── translation-gateway/      # Gateway privado mobile — porta 8084 (em construção)
+│   ├── libs/testing-support/          # Utilitários internos de testes
 │   └── docker-compose.prod.yml       # Base da stack de produção
 ├── web/
 │   ├── manga-reader/                 # Aplicação React principal
@@ -46,38 +49,38 @@ Documentação por área:
 
 ## Pré-requisitos
 
-| Ferramenta | Uso |
-|---|---|
-| Java 23 | API e jobs Spring Boot |
+| Ferramenta              | Uso                                              |
+| ----------------------- | ------------------------------------------------ |
+| Java 23                 | API e jobs Spring Boot                           |
 | Docker e Docker Compose | Bancos, mensageria, cache e testes de integração |
-| Node.js 20 ou superior | Aplicações web |
-| pnpm 9 ou superior | Workspace web e aplicativo mobile |
-| Maven 3.9.x | Jobs auxiliares; o core possui Maven Wrapper |
+| Node.js 20 ou superior  | Aplicações web                                   |
+| pnpm 9 ou superior      | Workspace web e aplicativo mobile                |
+| Maven 3.9.x             | Jobs auxiliares; o core possui Maven Wrapper     |
 
 ## Configuração inicial
 
 ### Backend
 
 O profile padrão conecta-se à infraestrutura definida em
-`api/core/docker-compose.yml`. O Spring Boot gerencia esse Compose durante a
+`api/apps/core/docker-compose.yml`. O Spring Boot gerencia esse Compose durante a
 execução local.
 
 ```bash
-cd api/core
-./mvnw spring-boot:run
+cd api
+./mvnw -pl apps/core spring-boot:run
 ```
 
 Para carregar os dados de demonstração, ative explicitamente o profile `dev`:
 
 ```bash
-./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+./mvnw -pl apps/core spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 - API: `http://localhost:8080`
 - Swagger UI: `http://localhost:8080/swagger-ui`
 - OpenAPI JSON: `http://localhost:8080/api-docs`
 
-Configuração, profiles e variáveis: [`api/core/README.md`](api/core/README.md).
+Configuração, profiles e variáveis: [`api/apps/core/README.md`](api/apps/core/README.md).
 
 ### Web
 
@@ -107,9 +110,9 @@ acessível pelo dispositivo. Consulte [`mobile/README.md`](mobile/README.md).
 ### API principal
 
 ```bash
-cd api/core
-./mvnw test                                      # suíte completa; requer Docker
-./mvnw test -Dtest.excludedGroups=testcontainers # suíte sem grupos de containers
+cd api
+./mvnw -pl apps/core -am test                                      # suíte completa; requer Docker
+./mvnw -pl apps/core -am test -Dtest.excludedGroups=testcontainers # suíte sem grupos de containers
 ```
 
 ### Web

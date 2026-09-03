@@ -132,6 +132,12 @@ node-compile-cache/
 coverage/
 *.tsbuildinfo
 
+# Terraform local state and provider cache (keep .terraform.lock.hcl tracked)
+**/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+
 /frontend-apps/design_handoff_header_redesign/
 /frontend-apps/Manga Reader Design System/
 /frontend-apps/design_handoff_footer_redesign/

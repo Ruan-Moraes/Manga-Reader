@@ -1,8 +1,9 @@
 # Plano arquitetural do gateway de tradução
 
-> Documento de arquitetura planejada, aprovado em 2026-08-15. Não descreve um
-> serviço já implantado. Os contratos normativos do aplicativo permanecem nas
-> Target Specs `MOB-FEAT-017..021`.
+> Documento de arquitetura aprovado em 2026-08-15. A fundação server-side de
+> `MOB-FEAT-017` está implementada de forma fail-closed, mas não está implantada.
+> Mobile, worker e providers continuam planejados. Os contratos normativos do
+> aplicativo permanecem nas Target Specs `MOB-FEAT-017..021`.
 
 ## Objetivo e limites
 
@@ -56,22 +57,24 @@ Cloud Run e suas service accounts são separados. Cloud Tasks chama o worker com
 OIDC. Credenciais ficam em workload identity/service accounts e Secret Manager,
 nunca em arquivo versionado.
 
-Infraestrutura futura será declarada em Terraform: APIs, Artifact Registry,
-service accounts/IAM, Cloud Run, Cloud Tasks, Cloud SQL, bucket, Secret Manager,
-Scheduler, alertas e variáveis de quota. `terraform apply`, billing e deploy são
+A fundação de infraestrutura já está declarada em Terraform: APIs, Artifact
+Registry, service accounts/IAM, Cloud Run, Cloud Run Jobs, Cloud Tasks, Cloud
+SQL, bucket, Secret Manager, Scheduler e alerta de 5xx. O worker e o destino
+operacional continuam desabilitados. `terraform apply`, billing e deploy são
 ações externas e exigem aprovação no momento da execução.
 
 ## Contrato HTTP v1
 
-| Método | Rota                            | Contrato                                                                                    |
-| ------ | ------------------------------- | ------------------------------------------------------------------------------------------- |
-| `GET`  | `/v1/capabilities`              | Versões, idiomas/pares, MIME/limites, regiões, retenção, etapas, URLs legais e kill switch. |
-| `POST` | `/v1/anonymous/installations`   | Cria instalação opaca e devolve uma credencial longa uma única vez.                         |
-| `POST` | `/v1/anonymous/sessions`        | Troca credencial do SecureStore por bearer curto.                                           |
-| `POST` | `/v1/page-jobs`                 | Multipart da primeira página, metadados mínimos e `Idempotency-Key`; retorna `202`.         |
-| `GET`  | `/v1/page-jobs/{jobRef}`        | Estado/etapa, erro sanitizado e manifesto terminal.                                         |
-| `POST` | `/v1/page-jobs/{jobRef}/cancel` | Pedido idempotente de cancelamento.                                                         |
-| `POST` | `/v1/page-jobs/{jobRef}/ack`    | Confirma persistência local e solicita exclusão dos objetos remotos.                        |
+| Método | Rota                                            | Contrato                                                                                    |
+| ------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `GET`  | `/v1/capabilities`                              | Versões, idiomas/pares, MIME/limites, regiões, retenção, etapas, URLs legais e kill switch. |
+| `POST` | `/v1/anonymous/installations`                   | Cria instalação opaca e devolve uma credencial longa uma única vez.                         |
+| `POST` | `/v1/anonymous/sessions`                        | Troca credencial do SecureStore por bearer curto.                                           |
+| `POST` | `/v1/page-jobs`                                 | Multipart da primeira página, metadados mínimos e `Idempotency-Key`; retorna `202`.         |
+| `GET`  | `/v1/page-jobs/by-idempotency/{idempotencyKey}` | Reconcilia timeout anterior ao receipt sem criar nova chave ou cobrança.                    |
+| `GET`  | `/v1/page-jobs/{jobRef}`                        | Estado/etapa, erro sanitizado e manifesto terminal.                                         |
+| `POST` | `/v1/page-jobs/{jobRef}/cancel`                 | Pedido idempotente de cancelamento.                                                         |
+| `POST` | `/v1/page-jobs/{jobRef}/ack`                    | Confirma persistência local e solicita exclusão dos objetos remotos.                        |
 
 O upload envia bytes, MIME detectado, dimensões e idiomas. Filename, URI/path,
 ID de conta e IDs locais de projeto/página não saem do aparelho. Resultado
@@ -113,6 +116,13 @@ efêmero, nunca em colunas ou logs.
 Dependência funcional: `id → atributos`; `credential_hash → instalação`. Ambas
 as determinantes são chaves candidatas.
 
+`anonymous_sessions`:
+
+- `id UUID PRIMARY KEY` e `installation_id UUID NOT NULL`;
+- somente `token_hash CHAR(64) UNIQUE`, nunca o bearer opaco;
+- `created_at`, `expires_at` e `revoked_at` com checks temporais;
+- FK para a instalação com `ON DELETE CASCADE`.
+
 `processing_jobs`:
 
 - `id UUID PRIMARY KEY` e `job_ref UUID NOT NULL UNIQUE`;
@@ -136,7 +146,18 @@ e atributos técnicos são snapshots imutáveis da submissão, não dados mestre
 
 Dependência funcional: `(job_id, stage) → atributos`; a determinante é chave.
 Não há contador diário desnormalizado: quota consulta jobs aceitos no dia UTC sob
-lock da instalação.
+lock da instalação e lock transacional global por dia, evitando corrida no limite
+global sem introduzir contador derivado.
+
+`processing_job_dispatches`:
+
+- `job_id UUID PRIMARY KEY`;
+- status, timestamps de tentativa, próxima execução e erro sanitizado;
+- FK para `processing_jobs.id ON DELETE CASCADE`.
+
+Dependência funcional: `job_id → atributos`; a PK é chave candidata. A tabela é
+outbox transacional: aceitar o job e registrar o dispatch ocorre no mesmo commit;
+um dispatcher idempotente cria a Cloud Task e reconcilia linhas pendentes.
 
 ### Integridade e índices
 
@@ -147,10 +168,11 @@ lock da instalação.
   MIME e combinações de timestamps/erros.
 - Índice `(installation_id, created_at)` atende quota e histórico.
 - Índice parcial de jobs não terminais atende reconciliação/cleanup.
+- Índice parcial de dispatches pendentes por `next_attempt_at` atende a outbox.
 - UNIQUEs já cobrem `job_ref`, credential e idempotência; não criar índices
   redundantes nos mesmos prefixos.
-- Flyway será forward-only e validado em PostgreSQL Testcontainers e na cadeia
-  limpa do novo serviço.
+- Flyway é forward-only; a suíte PostgreSQL Testcontainers cobre cadeia limpa e
+  constraints, com execução real pendente enquanto Docker não estiver disponível.
 
 ## Processamento
 
@@ -171,7 +193,8 @@ lock da instalação.
 ## Fronteiras mobile FSD
 
 ```text
-shared/remote-gateway
+shared/remote-gateway (somente HTTPS, timeout, limites e redirects)
+  → entities/remote-processing-capability (contrato e parser de domínio)
   → entities/remote-processing-attempt
   → entities/text-region
   → entities/translation-project (@x somente quando necessário)
@@ -189,18 +212,15 @@ semanticamente Chapter nem importa a feature do leitor publicado.
 
 ## Persistência local planejada
 
-SQLite v6 fará rebuild atômico dos checks de idioma e adicionará:
+SQLite v6 já fez o rebuild atômico dos checks de idioma. SQLite v7 adicionará:
 
 - `remote_processing_consents`;
-- `remote_processing_attempts`;
-- `translation_page_results`;
-- `text_regions`;
-- `text_region_vertices`.
+- `remote_processing_attempts`.
 
-`translation_projects` recebe ainda `language_review_required` booleano por
-CHECK. Registros legados com o código ambíguo `zh` são mapeados provisoriamente,
-marcados para revisão e bloqueados antes de upload até a escolha explícita de
-`zh-Hans` ou `zh-Hant`.
+Resultados, regiões e vértices serão adicionados somente por
+`MOB-FEAT-018..021`. `translation_projects.language_review_required` e a migração
+de `zh` ambíguo já pertencem ao schema v6; projetos marcados continuam bloqueados
+antes de upload até a escolha explícita de `zh-Hans` ou `zh-Hant`.
 
 PKs, chaves candidatas e FKs usam `ON DELETE CASCADE`. Polígonos ficam
 normalizados por vértice, não em JSON. Original e resultado permanecem no

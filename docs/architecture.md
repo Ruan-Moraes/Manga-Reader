@@ -10,6 +10,14 @@ resposta da API. Referenciado por `AGENTS.md` e `CLAUDE.md`.
 presentation → application → domain ← infrastructure
 ```
 
+### Suporte compartilhado de testes
+
+`api/libs/testing-support` é um módulo Maven interno, incluído no reactor
+`api/pom.xml`, que reúne apenas utilitários de teste reutilizáveis entre a Core
+e os jobs. Ele não é dependência de produção nem canal de compartilhamento de
+contratos de negócio. Os consumidores o declaram com escopo `test`; atualmente
+ele centraliza a configuração do MongoDB 8 usada pelo Testcontainers.
+
 - **presentation**: REST controllers, DTOs, MapStruct mappers
 - **application**: use cases (cada um implementa uma Port interface)
 - **domain**: entities, value objects, enums — zero dependência de framework
@@ -60,22 +68,22 @@ Esse estado não conclui leitura, não publica atividade, não incrementa métri
 e não é histórico comportamental sujeito a `DO_NOT_TRACK`. A exclusão de conta
 ou capítulo remove as respectivas marcações.
 
-### Serviço de Agregação de Avaliações (`api/jobs/rating-aggregator`)
+### Serviço de Agregação de Avaliações (`api/apps/jobs/rating-aggregator`)
 
-Módulo Spring Boot **separado** do monolito (`api/core`), porta 8081. É o **dono** da coleção `reviews_aggregate` (ex-`title_rating_aggregate`, renomeada no rename `ratings`→`reviews` — DT-50), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
+Módulo Spring Boot **separado** do monolito (`api/apps/core`), porta 8081. É o **dono** da coleção `reviews_aggregate` (ex-`title_rating_aggregate`, renomeada no rename `ratings`→`reviews` — DT-50), **fonte oficial única** de nota/contagem exibida em todas as telas (detalhe, cards, busca, ranking, recomendações, admin).
 
 - **Por quê**: nota/contagem eram divergentes — listagens liam `Title.ratingAverage/ratingCount` (nunca atualizados; o "job periódico" do javadoc não existia) e o detalhe lia agregação `AVG/COUNT` ao vivo. Agora há fonte única denormalizada, sem agregação pesada por request.
 - **Recompute (2 gatilhos)**: (1) consome `RatingEvent` (`rating.*`: submit/update/delete) do RabbitMQ (exchange `manga.events`, fila própria `manga.rating.aggregate`, routing `rating.#`) e recalcula o título; (2) job `@Scheduled` de reconciliação (rede de segurança). Mongock `V001` faz backfill a partir das avaliações (`V002` renomeou as coleções p/ `reviews`/`reviews_aggregate`).
 - **Contrato de evento**: `RatingEvent` replicado no **mesmo FQN** `com.mangareader.application.shared.event.RatingEvent`; consumer usa `TypePrecedence.INFERRED` (robusto a divergência de FQN). Sem jar compartilhado entre os apps.
 - **Monolito**: apenas **publica** os eventos (já fazia) e **lê** o agregado via `TitleRatingAggregateReadPort` (`findByTitleIdIn` em lote, sem N+1). `GetRatingAverageUseCase`/`GetRatingDistributionUseCase` e `TitleMapper`/`AdminTitleMapper` consomem o agregado — **nenhuma** agregação `AVG/COUNT` durante a renderização. O `RatingEventConsumer` e a fila de recalc do monolito foram removidos (recompute migrou para o serviço).
 
-### Job de Tendências (`api/jobs/trending-aggregator`)
+### Job de Tendências (`api/apps/jobs/trending-aggregator`)
 
 Job Spring Boot separado, porta 8083, que lê sinais temporais em lote do PostgreSQL e MongoDB uma vez por dia. O score combina leituras, biblioteca, avaliações, comentários e lançamentos, comparando dias UTC completos em janelas adjacentes de 1/7/30 dias com suavização de amostras pequenas. Persiste snapshots idempotentes em `title_trend_daily`, incluindo crescimento geral e por sinal; a API principal só consulta o snapshot mais recente via `TrendingReadPort`, ordenando por score, leituras, avaliações ou salvamentos sem agregações no request.
 
 `title_trend_daily` é uma projeção derivada e reconstruível: `(titleId, snapshotDate)` determina `calculatedAt` e os scores, materializado no `_id` como `titleId:data`. Os mapas por janela são uma desnormalização deliberada para leitura ordenada. Não há FK cross-DB; títulos removidos são filtrados pela API. Índices compostos cobrem data+ranking e cada fonte temporal; snapshots expiram após 90 dias por TTL, pois não são fonte para o próximo cálculo.
 
-### Job de Reconciliação (`api/jobs/orphan-cleaner`)
+### Job de Reconciliação (`api/apps/jobs/orphan-cleaner`)
 
 Serviço separado, porta 8082, responsável pelo caminho frio de consistência
 entre PostgreSQL e MongoDB. Reconcilia contadores desnormalizados a partir das
@@ -84,17 +92,19 @@ no MongoDB. As operações são idempotentes e incluem proteção contra remoç�
 massa quando a verificação de títulos não retorna resultados confiáveis.
 
 Detalhes operacionais ficam no
-[`README` do serviço](../api/jobs/orphan-cleaner/README.md).
+[`README` do serviço](../api/apps/jobs/orphan-cleaner/README.md).
 
-### Gateway de tradução planejado
+### Gateway de tradução em implementação
 
-O pipeline privado de OCR/tradução não será incorporado à Core. O plano aprovado
-cria um serviço Spring Boot independente, com contrato versionado para o mobile,
-processamento assíncrono e conteúdo remoto efêmero. A arquitetura, modelo
-relacional, fronteiras FSD, retenção e gates estão em
-[`translation-gateway-plan.md`](translation-gateway-plan.md). Enquanto o serviço
-não for implementado e implantado, esta seção descreve intenção aprovada, não
-comportamento disponível.
+O pipeline privado de OCR/tradução não será incorporado à Core. O serviço Spring
+Boot independente em `api/apps/translation-gateway` possui contrato OpenAPI v1,
+identidade e sessão anônimas, capabilities fail-closed, submissão idempotente,
+quota concorrente, consulta/cancelamento, outbox e adapters para storage/Cloud
+Tasks. A infraestrutura está declarada em Terraform, sem `apply`. Worker,
+providers, integração mobile e deploy ainda não estão disponíveis; portanto
+nenhum upload real deve ser anunciado. A arquitetura, modelo relacional,
+fronteiras FSD, retenção e gates estão em
+[`translation-gateway-plan.md`](translation-gateway-plan.md).
 
 ### Key Patterns
 

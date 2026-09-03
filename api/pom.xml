@@ -29,5 +29,6 @@
         <module>apps/jobs/rating-aggregator</module>
         <module>apps/jobs/orphan-cleaner</module>
         <module>apps/jobs/trending-aggregator</module>
+        <module>apps/translation-gateway</module>
     </modules>
 </project>
